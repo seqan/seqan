@@ -1571,6 +1571,7 @@ dl {
 .overview > dl code {
   line-height: 1.7em;
   white-space: pre;
+  padding-left: 0;
 }
 pre {
   background-color: #f5f5f5;
@@ -2377,10 +2378,6 @@ h1[data-lang-entity] :nth-child(2) > div > [data-lang-entity]:first-child > :fir
 h1.data-lang-entity-example :nth-child(2) > div > [data-lang-entity]:first-child > :first-child {
   margin-left: 0;
 }
-[data-lang-entity-container] h2[data-lang-entity] > :first-child,
-[data-lang-entity-container] h2.data-lang-entity-example > :first-child {
-  display: none;
-}
 .data-lang-entity-example > :first-child {
   background: #5b7cde;
   border-color: #2347b0;
@@ -2400,73 +2397,85 @@ html.page_languageentities div[data-lang-entity-container] + div[data-lang-entit
   color: #fff;
   background-color: #5bde7c;
 }
-h3[data-lang-entity=typedef] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=typedef] [data-lang-entity=typedef] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=typedef] > * {
-  display: table-cell !important;
+[data-lang-entity-container=typedef] > h2[data-lang-entity=typedef] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=typedef] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bde7c;
-  border-color: #31d55a;
-  color: #fff;
-}
-h3[data-lang-entity=typedef] > :first-child:hover {
-  background-color: #31d55a;
-}
-h3[data-lang-entity=typedef] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=typedef],
 html.page_languageentities dt[data-lang-entity=typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=typedef]:before,
 html.page_languageentities dt[data-lang-entity=typedef]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=typedef] > :first-child,
 html.page_languageentities dt[data-lang-entity=typedef] > :first-child {
   background-color: #5bde7c;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=typedef] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=typedef] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=typedef] {
+html.page_languageentities dt[data-lang-entity=typedef]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=typedef]:after {
+html:not(.list) h2[data-lang-entity=typedef]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=typedef]:after {
   background-color: #5bde7c;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=typedef] > :first-child {
+html:not(.list) h2[data-lang-entity=typedef] > :first-child {
+  background-color: #5bde7c;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=typedef] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=typedef]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=typedef] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=typedef] label {
   -webkit-box-sizing: border-box;
@@ -2520,73 +2529,85 @@ html.page_languageentities dt[data-lang-entity=typedef]:after {
   color: #fff;
   background-color: #5bde7c;
 }
-h3[data-lang-entity=grouped_typedef] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=grouped_typedef] [data-lang-entity=grouped_typedef] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=grouped_typedef] > * {
-  display: table-cell !important;
+[data-lang-entity-container=grouped_typedef] > h2[data-lang-entity=grouped_typedef] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=grouped_typedef] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bde7c;
-  border-color: #31d55a;
-  color: #fff;
-}
-h3[data-lang-entity=grouped_typedef] > :first-child:hover {
-  background-color: #31d55a;
-}
-h3[data-lang-entity=grouped_typedef] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=grouped_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef],
 html.page_languageentities dt[data-lang-entity=grouped_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef]:before,
 html.page_languageentities dt[data-lang-entity=grouped_typedef]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef] > :first-child,
 html.page_languageentities dt[data-lang-entity=grouped_typedef] > :first-child {
   background-color: #5bde7c;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=grouped_typedef] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef] {
+html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=grouped_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef]:after {
+html:not(.list) h2[data-lang-entity=grouped_typedef]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=grouped_typedef]:after {
   background-color: #5bde7c;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=grouped_typedef] > :first-child {
+html:not(.list) h2[data-lang-entity=grouped_typedef] > :first-child {
+  background-color: #5bde7c;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=grouped_typedef] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=grouped_typedef] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=grouped_typedef] label {
   -webkit-box-sizing: border-box;
@@ -2640,73 +2661,85 @@ html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
   color: #fff;
   background-color: #5bde7c;
 }
-h3[data-lang-entity=global_typedef] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=global_typedef] [data-lang-entity=global_typedef] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=global_typedef] > * {
-  display: table-cell !important;
+[data-lang-entity-container=global_typedef] > h2[data-lang-entity=global_typedef] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=global_typedef] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bde7c;
-  border-color: #31d55a;
-  color: #fff;
-}
-h3[data-lang-entity=global_typedef] > :first-child:hover {
-  background-color: #31d55a;
-}
-h3[data-lang-entity=global_typedef] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=global_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef],
 html.page_languageentities dt[data-lang-entity=global_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef]:before,
 html.page_languageentities dt[data-lang-entity=global_typedef]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef] > :first-child,
 html.page_languageentities dt[data-lang-entity=global_typedef] > :first-child {
   background-color: #5bde7c;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=global_typedef] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef] {
+html.page_languageentities dt[data-lang-entity=global_typedef]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=global_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef]:after {
+html:not(.list) h2[data-lang-entity=global_typedef]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=global_typedef]:after {
   background-color: #5bde7c;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=global_typedef] > :first-child {
+html:not(.list) h2[data-lang-entity=global_typedef] > :first-child {
+  background-color: #5bde7c;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=global_typedef] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=global_typedef]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=global_typedef] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=global_typedef] label {
   -webkit-box-sizing: border-box;
@@ -2760,73 +2793,85 @@ html.page_languageentities dt[data-lang-entity=global_typedef]:after {
   color: #fff;
   background-color: #5bde7c;
 }
-h3[data-lang-entity=member_typedef] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=member_typedef] [data-lang-entity=member_typedef] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=member_typedef] > * {
-  display: table-cell !important;
+[data-lang-entity-container=member_typedef] > h2[data-lang-entity=member_typedef] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=member_typedef] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bde7c;
-  border-color: #31d55a;
-  color: #fff;
-}
-h3[data-lang-entity=member_typedef] > :first-child:hover {
-  background-color: #31d55a;
-}
-h3[data-lang-entity=member_typedef] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=member_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef],
 html.page_languageentities dt[data-lang-entity=member_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef]:before,
 html.page_languageentities dt[data-lang-entity=member_typedef]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef] > :first-child,
 html.page_languageentities dt[data-lang-entity=member_typedef] > :first-child {
   background-color: #5bde7c;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=member_typedef] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef] {
+html.page_languageentities dt[data-lang-entity=member_typedef]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=member_typedef] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef]:after {
+html:not(.list) h2[data-lang-entity=member_typedef]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=member_typedef]:after {
   background-color: #5bde7c;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=member_typedef] > :first-child {
+html:not(.list) h2[data-lang-entity=member_typedef] > :first-child {
+  background-color: #5bde7c;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=member_typedef] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=member_typedef]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=member_typedef] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=member_typedef] label {
   -webkit-box-sizing: border-box;
@@ -2880,73 +2925,85 @@ html.page_languageentities dt[data-lang-entity=member_typedef]:after {
   color: #fff;
   background-color: #b02323;
 }
-h3[data-lang-entity=concept] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=concept] [data-lang-entity=concept] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=concept] > * {
-  display: table-cell !important;
+[data-lang-entity-container=concept] > h2[data-lang-entity=concept] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=concept] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #b02323;
-  border-color: #851b1b;
-  color: #fff;
-}
-h3[data-lang-entity=concept] > :first-child:hover {
-  background-color: #851b1b;
-}
-h3[data-lang-entity=concept] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=concept] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=concept],
 html.page_languageentities dt[data-lang-entity=concept] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=concept]:before,
 html.page_languageentities dt[data-lang-entity=concept]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=concept] > :first-child,
 html.page_languageentities dt[data-lang-entity=concept] > :first-child {
   background-color: #b02323;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=concept] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=concept] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=concept] {
+html.page_languageentities dt[data-lang-entity=concept]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=concept] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=concept]:after {
+html:not(.list) h2[data-lang-entity=concept]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=concept]:after {
   background-color: #b02323;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=concept] > :first-child {
+html:not(.list) h2[data-lang-entity=concept] > :first-child {
+  background-color: #b02323;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=concept] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=concept]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=concept] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=concept] label {
   -webkit-box-sizing: border-box;
@@ -3000,73 +3057,85 @@ html.page_languageentities dt[data-lang-entity=concept]:after {
   color: #fff;
   background-color: #de5b5b;
 }
-h3[data-lang-entity=class] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=class] [data-lang-entity=class] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=class] > * {
-  display: table-cell !important;
+[data-lang-entity-container=class] > h2[data-lang-entity=class] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=class] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #de5b5b;
-  border-color: #d53131;
-  color: #fff;
-}
-h3[data-lang-entity=class] > :first-child:hover {
-  background-color: #d53131;
-}
-h3[data-lang-entity=class] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=class] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=class],
 html.page_languageentities dt[data-lang-entity=class] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=class]:before,
 html.page_languageentities dt[data-lang-entity=class]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=class] > :first-child,
 html.page_languageentities dt[data-lang-entity=class] > :first-child {
   background-color: #de5b5b;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=class] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=class] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=class] {
+html.page_languageentities dt[data-lang-entity=class]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=class] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=class]:after {
+html:not(.list) h2[data-lang-entity=class]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=class]:after {
   background-color: #de5b5b;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=class] > :first-child {
+html:not(.list) h2[data-lang-entity=class] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=class] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=class]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=class] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=class] label {
   -webkit-box-sizing: border-box;
@@ -3120,73 +3189,85 @@ html.page_languageentities dt[data-lang-entity=class]:after {
   color: #fff;
   background-color: #efb0b0;
 }
-h3[data-lang-entity=enum] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=enum] [data-lang-entity=enum] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=enum] > * {
-  display: table-cell !important;
+[data-lang-entity-container=enum] > h2[data-lang-entity=enum] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=enum] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #efb0b0;
-  border-color: #e78585;
-  color: #fff;
-}
-h3[data-lang-entity=enum] > :first-child:hover {
-  background-color: #e78585;
-}
-h3[data-lang-entity=enum] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=enum] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=enum],
 html.page_languageentities dt[data-lang-entity=enum] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=enum]:before,
 html.page_languageentities dt[data-lang-entity=enum]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=enum] > :first-child,
 html.page_languageentities dt[data-lang-entity=enum] > :first-child {
   background-color: #efb0b0;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=enum] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=enum] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=enum] {
+html.page_languageentities dt[data-lang-entity=enum]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=enum] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=enum]:after {
+html:not(.list) h2[data-lang-entity=enum]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=enum]:after {
   background-color: #efb0b0;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=enum] > :first-child {
+html:not(.list) h2[data-lang-entity=enum] > :first-child {
+  background-color: #efb0b0;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=enum] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=enum]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=enum] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=enum] label {
   -webkit-box-sizing: border-box;
@@ -3240,73 +3321,85 @@ html.page_languageentities dt[data-lang-entity=enum]:after {
   color: #fff;
   background-color: #5b7cde;
 }
-h3[data-lang-entity=metafunction] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=metafunction] [data-lang-entity=metafunction] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=metafunction] > * {
-  display: table-cell !important;
+[data-lang-entity-container=metafunction] > h2[data-lang-entity=metafunction] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=metafunction] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5b7cde;
-  border-color: #315ad5;
-  color: #fff;
-}
-h3[data-lang-entity=metafunction] > :first-child:hover {
-  background-color: #315ad5;
-}
-h3[data-lang-entity=metafunction] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=metafunction],
 html.page_languageentities dt[data-lang-entity=metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=metafunction]:before,
 html.page_languageentities dt[data-lang-entity=metafunction]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=metafunction] > :first-child,
 html.page_languageentities dt[data-lang-entity=metafunction] > :first-child {
   background-color: #5b7cde;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=metafunction] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=metafunction] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=metafunction] {
+html.page_languageentities dt[data-lang-entity=metafunction]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=metafunction]:after {
+html:not(.list) h2[data-lang-entity=metafunction]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=metafunction]:after {
   background-color: #5b7cde;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=metafunction] > :first-child {
+html:not(.list) h2[data-lang-entity=metafunction] > :first-child {
+  background-color: #5b7cde;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=metafunction] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=metafunction]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=metafunction] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=metafunction] label {
   -webkit-box-sizing: border-box;
@@ -3360,73 +3453,85 @@ html.page_languageentities dt[data-lang-entity=metafunction]:after {
   color: #fff;
   background-color: #5b7cde;
 }
-h3[data-lang-entity=global_metafunction] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=global_metafunction] [data-lang-entity=global_metafunction] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=global_metafunction] > * {
-  display: table-cell !important;
+[data-lang-entity-container=global_metafunction] > h2[data-lang-entity=global_metafunction] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=global_metafunction] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5b7cde;
-  border-color: #315ad5;
-  color: #fff;
-}
-h3[data-lang-entity=global_metafunction] > :first-child:hover {
-  background-color: #315ad5;
-}
-h3[data-lang-entity=global_metafunction] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=global_metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction],
 html.page_languageentities dt[data-lang-entity=global_metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction]:before,
 html.page_languageentities dt[data-lang-entity=global_metafunction]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction] > :first-child,
 html.page_languageentities dt[data-lang-entity=global_metafunction] > :first-child {
   background-color: #5b7cde;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=global_metafunction] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction] {
+html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=global_metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction]:after {
+html:not(.list) h2[data-lang-entity=global_metafunction]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=global_metafunction]:after {
   background-color: #5b7cde;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=global_metafunction] > :first-child {
+html:not(.list) h2[data-lang-entity=global_metafunction] > :first-child {
+  background-color: #5b7cde;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=global_metafunction] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=global_metafunction] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=global_metafunction] label {
   -webkit-box-sizing: border-box;
@@ -3480,73 +3585,85 @@ html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
   color: #fff;
   background-color: #5b7cde;
 }
-h3[data-lang-entity=interface_metafunction] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=interface_metafunction] [data-lang-entity=interface_metafunction] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=interface_metafunction] > * {
-  display: table-cell !important;
+[data-lang-entity-container=interface_metafunction] > h2[data-lang-entity=interface_metafunction] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=interface_metafunction] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5b7cde;
-  border-color: #315ad5;
-  color: #fff;
-}
-h3[data-lang-entity=interface_metafunction] > :first-child:hover {
-  background-color: #315ad5;
-}
-h3[data-lang-entity=interface_metafunction] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=interface_metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction],
 html.page_languageentities dt[data-lang-entity=interface_metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction]:before,
 html.page_languageentities dt[data-lang-entity=interface_metafunction]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction] > :first-child,
 html.page_languageentities dt[data-lang-entity=interface_metafunction] > :first-child {
   background-color: #5b7cde;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=interface_metafunction] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction] {
+html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=interface_metafunction] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction]:after {
+html:not(.list) h2[data-lang-entity=interface_metafunction]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=interface_metafunction]:after {
   background-color: #5b7cde;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=interface_metafunction] > :first-child {
+html:not(.list) h2[data-lang-entity=interface_metafunction] > :first-child {
+  background-color: #5b7cde;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=interface_metafunction] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=interface_metafunction] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=interface_metafunction] label {
   -webkit-box-sizing: border-box;
@@ -3600,73 +3717,85 @@ html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
   color: #fff;
   background-color: #5bdede;
 }
-h3[data-lang-entity=function] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=function] [data-lang-entity=function] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=function] > * {
-  display: table-cell !important;
+[data-lang-entity-container=function] > h2[data-lang-entity=function] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=function] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bdede;
-  border-color: #31d5d5;
-  color: #fff;
-}
-h3[data-lang-entity=function] > :first-child:hover {
-  background-color: #31d5d5;
-}
-h3[data-lang-entity=function] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=function],
 html.page_languageentities dt[data-lang-entity=function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=function]:before,
 html.page_languageentities dt[data-lang-entity=function]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=function] > :first-child,
 html.page_languageentities dt[data-lang-entity=function] > :first-child {
   background-color: #5bdede;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=function] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=function] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=function] {
+html.page_languageentities dt[data-lang-entity=function]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=function]:after {
+html:not(.list) h2[data-lang-entity=function]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=function]:after {
   background-color: #5bdede;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=function] > :first-child {
+html:not(.list) h2[data-lang-entity=function] > :first-child {
+  background-color: #5bdede;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=function] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=function]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=function] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=function] label {
   -webkit-box-sizing: border-box;
@@ -3720,73 +3849,85 @@ html.page_languageentities dt[data-lang-entity=function]:after {
   color: #fff;
   background-color: #85e7e7;
 }
-h3[data-lang-entity=global_function] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=global_function] [data-lang-entity=global_function] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=global_function] > * {
-  display: table-cell !important;
+[data-lang-entity-container=global_function] > h2[data-lang-entity=global_function] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=global_function] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #85e7e7;
-  border-color: #5bdede;
-  color: #fff;
-}
-h3[data-lang-entity=global_function] > :first-child:hover {
-  background-color: #5bdede;
-}
-h3[data-lang-entity=global_function] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=global_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=global_function],
 html.page_languageentities dt[data-lang-entity=global_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_function]:before,
 html.page_languageentities dt[data-lang-entity=global_function]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=global_function] > :first-child,
 html.page_languageentities dt[data-lang-entity=global_function] > :first-child {
   background-color: #85e7e7;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=global_function] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=global_function] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=global_function] {
+html.page_languageentities dt[data-lang-entity=global_function]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=global_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_function]:after {
+html:not(.list) h2[data-lang-entity=global_function]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=global_function]:after {
   background-color: #85e7e7;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=global_function] > :first-child {
+html:not(.list) h2[data-lang-entity=global_function] > :first-child {
+  background-color: #85e7e7;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=global_function] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=global_function]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=global_function] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=global_function] label {
   -webkit-box-sizing: border-box;
@@ -3840,73 +3981,85 @@ html.page_languageentities dt[data-lang-entity=global_function]:after {
   color: #fff;
   background-color: #23b0b0;
 }
-h3[data-lang-entity=interface_function] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=interface_function] [data-lang-entity=interface_function] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=interface_function] > * {
-  display: table-cell !important;
+[data-lang-entity-container=interface_function] > h2[data-lang-entity=interface_function] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=interface_function] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #23b0b0;
-  border-color: #1b8585;
-  color: #fff;
-}
-h3[data-lang-entity=interface_function] > :first-child:hover {
-  background-color: #1b8585;
-}
-h3[data-lang-entity=interface_function] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=interface_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=interface_function],
 html.page_languageentities dt[data-lang-entity=interface_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=interface_function]:before,
 html.page_languageentities dt[data-lang-entity=interface_function]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=interface_function] > :first-child,
 html.page_languageentities dt[data-lang-entity=interface_function] > :first-child {
   background-color: #23b0b0;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=interface_function] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=interface_function] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=interface_function] {
+html.page_languageentities dt[data-lang-entity=interface_function]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=interface_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=interface_function]:after {
+html:not(.list) h2[data-lang-entity=interface_function]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=interface_function]:after {
   background-color: #23b0b0;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=interface_function] > :first-child {
+html:not(.list) h2[data-lang-entity=interface_function] > :first-child {
+  background-color: #23b0b0;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=interface_function] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=interface_function]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=interface_function] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=interface_function] label {
   -webkit-box-sizing: border-box;
@@ -3960,73 +4113,85 @@ html.page_languageentities dt[data-lang-entity=interface_function]:after {
   color: #fff;
   background-color: #5bdede;
 }
-h3[data-lang-entity=member_function] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=member_function] [data-lang-entity=member_function] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=member_function] > * {
-  display: table-cell !important;
+[data-lang-entity-container=member_function] > h2[data-lang-entity=member_function] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=member_function] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #5bdede;
-  border-color: #31d5d5;
-  color: #fff;
-}
-h3[data-lang-entity=member_function] > :first-child:hover {
-  background-color: #31d5d5;
-}
-h3[data-lang-entity=member_function] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=member_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=member_function],
 html.page_languageentities dt[data-lang-entity=member_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_function]:before,
 html.page_languageentities dt[data-lang-entity=member_function]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=member_function] > :first-child,
 html.page_languageentities dt[data-lang-entity=member_function] > :first-child {
   background-color: #5bdede;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=member_function] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=member_function] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=member_function] {
+html.page_languageentities dt[data-lang-entity=member_function]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=member_function] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_function]:after {
+html:not(.list) h2[data-lang-entity=member_function]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=member_function]:after {
   background-color: #5bdede;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=member_function] > :first-child {
+html:not(.list) h2[data-lang-entity=member_function] > :first-child {
+  background-color: #5bdede;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=member_function] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=member_function]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=member_function] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=member_function] label {
   -webkit-box-sizing: border-box;
@@ -4080,73 +4245,85 @@ html.page_languageentities dt[data-lang-entity=member_function]:after {
   color: #fff;
   background-color: #9d5bde;
 }
-h3[data-lang-entity=tag] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=tag] [data-lang-entity=tag] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=tag] > * {
-  display: table-cell !important;
+[data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=tag] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9d5bde;
-  border-color: #8431d5;
-  color: #fff;
-}
-h3[data-lang-entity=tag] > :first-child:hover {
-  background-color: #8431d5;
-}
-h3[data-lang-entity=tag] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=tag] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=tag],
 html.page_languageentities dt[data-lang-entity=tag] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=tag]:before,
 html.page_languageentities dt[data-lang-entity=tag]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=tag] > :first-child,
 html.page_languageentities dt[data-lang-entity=tag] > :first-child {
   background-color: #9d5bde;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=tag] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=tag] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=tag] {
+html.page_languageentities dt[data-lang-entity=tag]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=tag] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=tag]:after {
+html:not(.list) h2[data-lang-entity=tag]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=tag]:after {
   background-color: #9d5bde;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=tag] > :first-child {
+html:not(.list) h2[data-lang-entity=tag] > :first-child {
+  background-color: #9d5bde;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=tag] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=tag]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=tag] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=tag] label {
   -webkit-box-sizing: border-box;
@@ -4200,73 +4377,85 @@ html.page_languageentities dt[data-lang-entity=tag]:after {
   color: #fff;
   background-color: #9d5bde;
 }
-h3[data-lang-entity=grouped_tag] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=grouped_tag] [data-lang-entity=grouped_tag] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=grouped_tag] > * {
-  display: table-cell !important;
+[data-lang-entity-container=grouped_tag] > h2[data-lang-entity=grouped_tag] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=grouped_tag] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9d5bde;
-  border-color: #8431d5;
-  color: #fff;
-}
-h3[data-lang-entity=grouped_tag] > :first-child:hover {
-  background-color: #8431d5;
-}
-h3[data-lang-entity=grouped_tag] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=grouped_tag] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag],
 html.page_languageentities dt[data-lang-entity=grouped_tag] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag]:before,
 html.page_languageentities dt[data-lang-entity=grouped_tag]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag] > :first-child,
 html.page_languageentities dt[data-lang-entity=grouped_tag] > :first-child {
   background-color: #9d5bde;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=grouped_tag] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag] {
+html.page_languageentities dt[data-lang-entity=grouped_tag]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=grouped_tag] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag]:after {
+html:not(.list) h2[data-lang-entity=grouped_tag]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=grouped_tag]:after {
   background-color: #9d5bde;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=grouped_tag] > :first-child {
+html:not(.list) h2[data-lang-entity=grouped_tag] > :first-child {
+  background-color: #9d5bde;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=grouped_tag] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=grouped_tag]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=grouped_tag] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=grouped_tag] label {
   -webkit-box-sizing: border-box;
@@ -4320,73 +4509,85 @@ html.page_languageentities dt[data-lang-entity=grouped_tag]:after {
   color: #fff;
   background-color: #9dde5b;
 }
-h3[data-lang-entity=variable] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=variable] [data-lang-entity=variable] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=variable] > * {
-  display: table-cell !important;
+[data-lang-entity-container=variable] > h2[data-lang-entity=variable] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=variable] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9dde5b;
-  border-color: #84d531;
-  color: #fff;
-}
-h3[data-lang-entity=variable] > :first-child:hover {
-  background-color: #84d531;
-}
-h3[data-lang-entity=variable] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=variable],
 html.page_languageentities dt[data-lang-entity=variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=variable]:before,
 html.page_languageentities dt[data-lang-entity=variable]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=variable] > :first-child,
 html.page_languageentities dt[data-lang-entity=variable] > :first-child {
   background-color: #9dde5b;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=variable] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=variable] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=variable] {
+html.page_languageentities dt[data-lang-entity=variable]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=variable]:after {
+html:not(.list) h2[data-lang-entity=variable]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=variable]:after {
   background-color: #9dde5b;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=variable] > :first-child {
+html:not(.list) h2[data-lang-entity=variable] > :first-child {
+  background-color: #9dde5b;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=variable] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=variable]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=variable] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=variable] label {
   -webkit-box-sizing: border-box;
@@ -4440,73 +4641,85 @@ html.page_languageentities dt[data-lang-entity=variable]:after {
   color: #fff;
   background-color: #9dde5b;
 }
-h3[data-lang-entity=global_variable] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=global_variable] [data-lang-entity=global_variable] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=global_variable] > * {
-  display: table-cell !important;
+[data-lang-entity-container=global_variable] > h2[data-lang-entity=global_variable] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=global_variable] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9dde5b;
-  border-color: #84d531;
-  color: #fff;
-}
-h3[data-lang-entity=global_variable] > :first-child:hover {
-  background-color: #84d531;
-}
-h3[data-lang-entity=global_variable] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=global_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=global_variable],
 html.page_languageentities dt[data-lang-entity=global_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_variable]:before,
 html.page_languageentities dt[data-lang-entity=global_variable]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=global_variable] > :first-child,
 html.page_languageentities dt[data-lang-entity=global_variable] > :first-child {
   background-color: #9dde5b;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=global_variable] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=global_variable] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=global_variable] {
+html.page_languageentities dt[data-lang-entity=global_variable]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=global_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=global_variable]:after {
+html:not(.list) h2[data-lang-entity=global_variable]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=global_variable]:after {
   background-color: #9dde5b;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=global_variable] > :first-child {
+html:not(.list) h2[data-lang-entity=global_variable] > :first-child {
+  background-color: #9dde5b;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=global_variable] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=global_variable]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=global_variable] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=global_variable] label {
   -webkit-box-sizing: border-box;
@@ -4560,73 +4773,85 @@ html.page_languageentities dt[data-lang-entity=global_variable]:after {
   color: #fff;
   background-color: #9dde5b;
 }
-h3[data-lang-entity=local_variable] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=local_variable] [data-lang-entity=local_variable] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=local_variable] > * {
-  display: table-cell !important;
+[data-lang-entity-container=local_variable] > h2[data-lang-entity=local_variable] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=local_variable] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9dde5b;
-  border-color: #84d531;
-  color: #fff;
-}
-h3[data-lang-entity=local_variable] > :first-child:hover {
-  background-color: #84d531;
-}
-h3[data-lang-entity=local_variable] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=local_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=local_variable],
 html.page_languageentities dt[data-lang-entity=local_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=local_variable]:before,
 html.page_languageentities dt[data-lang-entity=local_variable]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=local_variable] > :first-child,
 html.page_languageentities dt[data-lang-entity=local_variable] > :first-child {
   background-color: #9dde5b;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=local_variable] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=local_variable] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=local_variable] {
+html.page_languageentities dt[data-lang-entity=local_variable]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=local_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=local_variable]:after {
+html:not(.list) h2[data-lang-entity=local_variable]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=local_variable]:after {
   background-color: #9dde5b;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=local_variable] > :first-child {
+html:not(.list) h2[data-lang-entity=local_variable] > :first-child {
+  background-color: #9dde5b;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=local_variable] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=local_variable]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=local_variable] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=local_variable] label {
   -webkit-box-sizing: border-box;
@@ -4680,73 +4905,85 @@ html.page_languageentities dt[data-lang-entity=local_variable]:after {
   color: #fff;
   background-color: #9dde5b;
 }
-h3[data-lang-entity=member_variable] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=member_variable] [data-lang-entity=member_variable] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=member_variable] > * {
-  display: table-cell !important;
+[data-lang-entity-container=member_variable] > h2[data-lang-entity=member_variable] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=member_variable] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #9dde5b;
-  border-color: #84d531;
-  color: #fff;
-}
-h3[data-lang-entity=member_variable] > :first-child:hover {
-  background-color: #84d531;
-}
-h3[data-lang-entity=member_variable] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=member_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=member_variable],
 html.page_languageentities dt[data-lang-entity=member_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_variable]:before,
 html.page_languageentities dt[data-lang-entity=member_variable]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=member_variable] > :first-child,
 html.page_languageentities dt[data-lang-entity=member_variable] > :first-child {
   background-color: #9dde5b;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=member_variable] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=member_variable] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=member_variable] {
+html.page_languageentities dt[data-lang-entity=member_variable]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=member_variable] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=member_variable]:after {
+html:not(.list) h2[data-lang-entity=member_variable]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=member_variable]:after {
   background-color: #9dde5b;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=member_variable] > :first-child {
+html:not(.list) h2[data-lang-entity=member_variable] > :first-child {
+  background-color: #9dde5b;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=member_variable] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=member_variable]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=member_variable] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=member_variable] label {
   -webkit-box-sizing: border-box;
@@ -4800,73 +5037,85 @@ html.page_languageentities dt[data-lang-entity=member_variable]:after {
   color: #fff;
   background-color: #d5ac31;
 }
-h3[data-lang-entity=adaption] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=adaption] [data-lang-entity=adaption] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=adaption] > * {
-  display: table-cell !important;
+[data-lang-entity-container=adaption] > h2[data-lang-entity=adaption] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=adaption] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #d5ac31;
-  border-color: #b08c23;
-  color: #fff;
-}
-h3[data-lang-entity=adaption] > :first-child:hover {
-  background-color: #b08c23;
-}
-h3[data-lang-entity=adaption] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=adaption] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=adaption],
 html.page_languageentities dt[data-lang-entity=adaption] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=adaption]:before,
 html.page_languageentities dt[data-lang-entity=adaption]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=adaption] > :first-child,
 html.page_languageentities dt[data-lang-entity=adaption] > :first-child {
   background-color: #d5ac31;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=adaption] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=adaption] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=adaption] {
+html.page_languageentities dt[data-lang-entity=adaption]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=adaption] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=adaption]:after {
+html:not(.list) h2[data-lang-entity=adaption]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=adaption]:after {
   background-color: #d5ac31;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=adaption] > :first-child {
+html:not(.list) h2[data-lang-entity=adaption] > :first-child {
+  background-color: #d5ac31;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=adaption] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=adaption]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=adaption] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=adaption] label {
   -webkit-box-sizing: border-box;
@@ -4920,73 +5169,85 @@ html.page_languageentities dt[data-lang-entity=adaption]:after {
   color: #fff;
   background-color: #e7ce85;
 }
-h3[data-lang-entity=macro] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=macro] [data-lang-entity=macro] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=macro] > * {
-  display: table-cell !important;
+[data-lang-entity-container=macro] > h2[data-lang-entity=macro] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=macro] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #e7ce85;
-  border-color: #debd5b;
-  color: #fff;
-}
-h3[data-lang-entity=macro] > :first-child:hover {
-  background-color: #debd5b;
-}
-h3[data-lang-entity=macro] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=macro] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=macro],
 html.page_languageentities dt[data-lang-entity=macro] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=macro]:before,
 html.page_languageentities dt[data-lang-entity=macro]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=macro] > :first-child,
 html.page_languageentities dt[data-lang-entity=macro] > :first-child {
   background-color: #e7ce85;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=macro] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=macro] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=macro] {
+html.page_languageentities dt[data-lang-entity=macro]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=macro] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=macro]:after {
+html:not(.list) h2[data-lang-entity=macro]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=macro]:after {
   background-color: #e7ce85;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=macro] > :first-child {
+html:not(.list) h2[data-lang-entity=macro] > :first-child {
+  background-color: #e7ce85;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=macro] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=macro]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=macro] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=macro] label {
   -webkit-box-sizing: border-box;
@@ -5040,73 +5301,85 @@ html.page_languageentities dt[data-lang-entity=macro]:after {
   color: #fff;
   background-color: #999999;
 }
-h3[data-lang-entity=template_parameter] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=template_parameter] [data-lang-entity=template_parameter] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=template_parameter] > * {
-  display: table-cell !important;
+[data-lang-entity-container=template_parameter] > h2[data-lang-entity=template_parameter] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=template_parameter] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #999999;
-  border-color: #808080;
-  color: #fff;
-}
-h3[data-lang-entity=template_parameter] > :first-child:hover {
-  background-color: #808080;
-}
-h3[data-lang-entity=template_parameter] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=template_parameter] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter],
 html.page_languageentities dt[data-lang-entity=template_parameter] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter]:before,
 html.page_languageentities dt[data-lang-entity=template_parameter]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter] > :first-child,
 html.page_languageentities dt[data-lang-entity=template_parameter] > :first-child {
   background-color: #999999;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=template_parameter] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter] {
+html.page_languageentities dt[data-lang-entity=template_parameter]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=template_parameter] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter]:after {
+html:not(.list) h2[data-lang-entity=template_parameter]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=template_parameter]:after {
   background-color: #999999;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=template_parameter] > :first-child {
+html:not(.list) h2[data-lang-entity=template_parameter] > :first-child {
+  background-color: #999999;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=template_parameter] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=template_parameter]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=template_parameter] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=template_parameter] label {
   -webkit-box-sizing: border-box;
@@ -5160,73 +5433,85 @@ html.page_languageentities dt[data-lang-entity=template_parameter]:after {
   color: #fff;
   background-color: #d531ac;
 }
-h3[data-lang-entity=page] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=page] [data-lang-entity=page] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=page] > * {
-  display: table-cell !important;
+[data-lang-entity-container=page] > h2[data-lang-entity=page] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=page] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #d531ac;
-  border-color: #b0238c;
-  color: #fff;
-}
-h3[data-lang-entity=page] > :first-child:hover {
-  background-color: #b0238c;
-}
-h3[data-lang-entity=page] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=page] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=page],
 html.page_languageentities dt[data-lang-entity=page] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=page]:before,
 html.page_languageentities dt[data-lang-entity=page]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=page] > :first-child,
 html.page_languageentities dt[data-lang-entity=page] > :first-child {
   background-color: #d531ac;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=page] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=page] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=page] {
+html.page_languageentities dt[data-lang-entity=page]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=page] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=page]:after {
+html:not(.list) h2[data-lang-entity=page]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=page]:after {
   background-color: #d531ac;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=page] > :first-child {
+html:not(.list) h2[data-lang-entity=page] > :first-child {
+  background-color: #d531ac;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=page] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=page]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=page] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=page] label {
   -webkit-box-sizing: border-box;
@@ -5283,73 +5568,85 @@ html:not(.list) [data-lang-entity=page] > *:first-child {
   color: #fff;
   background-color: #e785ce;
 }
-h3[data-lang-entity=group] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=group] [data-lang-entity=group] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=group] > * {
-  display: table-cell !important;
+[data-lang-entity-container=group] > h2[data-lang-entity=group] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=group] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #e785ce;
-  border-color: #de5bbd;
-  color: #fff;
-}
-h3[data-lang-entity=group] > :first-child:hover {
-  background-color: #de5bbd;
-}
-h3[data-lang-entity=group] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=group] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=group],
 html.page_languageentities dt[data-lang-entity=group] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=group]:before,
 html.page_languageentities dt[data-lang-entity=group]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=group] > :first-child,
 html.page_languageentities dt[data-lang-entity=group] > :first-child {
   background-color: #e785ce;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=group] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=group] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=group] {
+html.page_languageentities dt[data-lang-entity=group]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=group] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=group]:after {
+html:not(.list) h2[data-lang-entity=group]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=group]:after {
   background-color: #e785ce;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=group] > :first-child {
+html:not(.list) h2[data-lang-entity=group] > :first-child {
+  background-color: #e785ce;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=group] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=group]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=group] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=group] label {
   -webkit-box-sizing: border-box;
@@ -5406,73 +5703,85 @@ html:not(.list) [data-lang-entity=group] > *:first-child {
   color: #fff;
   background-color: #000000;
 }
-h3[data-lang-entity=tutorial] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=tutorial] [data-lang-entity=tutorial] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=tutorial] > * {
-  display: table-cell !important;
+[data-lang-entity-container=tutorial] > h2[data-lang-entity=tutorial] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=tutorial] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #000000;
-  border-color: #000000;
-  color: #fff;
-}
-h3[data-lang-entity=tutorial] > :first-child:hover {
-  background-color: #000000;
-}
-h3[data-lang-entity=tutorial] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=tutorial] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=tutorial],
 html.page_languageentities dt[data-lang-entity=tutorial] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=tutorial]:before,
 html.page_languageentities dt[data-lang-entity=tutorial]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=tutorial] > :first-child,
 html.page_languageentities dt[data-lang-entity=tutorial] > :first-child {
   background-color: #000000;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=tutorial] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=tutorial] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=tutorial] {
+html.page_languageentities dt[data-lang-entity=tutorial]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=tutorial] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=tutorial]:after {
+html:not(.list) h2[data-lang-entity=tutorial]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=tutorial]:after {
   background-color: #000000;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=tutorial] > :first-child {
+html:not(.list) h2[data-lang-entity=tutorial] > :first-child {
+  background-color: #000000;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=tutorial] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=tutorial]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=tutorial] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=tutorial] label {
   -webkit-box-sizing: border-box;
@@ -5526,73 +5835,85 @@ html.page_languageentities dt[data-lang-entity=tutorial]:after {
   color: #fff;
   background-color: #ff0000;
 }
-h3[data-lang-entity=unknown] {
-  display: table;
-  font-size: 1.1em;
-  padding-bottom: .3em;
-  width: 100%;
-  font-weight: 700;
+[data-lang-entity-container=unknown] [data-lang-entity=unknown] > :first-child {
+  display: none;
 }
-h3[data-lang-entity=unknown] > * {
-  display: table-cell !important;
+[data-lang-entity-container=unknown] > h2[data-lang-entity=unknown] > :first-child {
+  display: inline-block;
 }
-h3[data-lang-entity=unknown] > :first-child {
-  font-size: 1rem;
-  font-weight: 700 !important;
-  width: 3.6rem;
-  vertical-align: middle;
-  text-align: center;
-  background-color: #ff0000;
-  border-color: #cc0000;
-  color: #fff;
-}
-h3[data-lang-entity=unknown] > :first-child:hover {
-  background-color: #cc0000;
-}
-h3[data-lang-entity=unknown] > :nth-child(2) {
-  padding-left: 1.9rem;
-}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
 html.page_languageentities [data-lang-entity-container=unknown] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
   font-size: 1.0em;
 }
-html.page_languageentities h2[data-lang-entity=unknown],
 html.page_languageentities dt[data-lang-entity=unknown] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=unknown]:before,
 html.page_languageentities dt[data-lang-entity=unknown]:before {
   display: none;
 }
-html.page_languageentities h2[data-lang-entity=unknown] > :first-child,
 html.page_languageentities dt[data-lang-entity=unknown] > :first-child {
   background-color: #ff0000;
   color: #fff;
 }
-html.page_languageentities h2[data-lang-entity=unknown] > :first-child:hover,
 html.page_languageentities dt[data-lang-entity=unknown] > :first-child:hover {
   background-color: color;
 }
-html.page_languageentities h2[data-lang-entity=unknown] {
+html.page_languageentities dt[data-lang-entity=unknown]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=unknown] {
   padding-left: 0;
 }
-html.page_languageentities h2[data-lang-entity=unknown]:after {
+html:not(.list) h2[data-lang-entity=unknown]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=unknown]:after {
   background-color: #ff0000;
   background-image: none;
 }
-html.page_languageentities h2[data-lang-entity=unknown] > :first-child {
+html:not(.list) h2[data-lang-entity=unknown] > :first-child {
+  background-color: #ff0000;
+  color: #fff;
   margin-left: 0;
   margin-right: 1.5em;
   top: -0.35em;
   font-size: .54em;
 }
-html.page_languageentities dt[data-lang-entity=unknown] {
-  padding-left: 0;
-}
-html.page_languageentities dt[data-lang-entity=unknown]:after {
-  content: "";
+html:not(.list) h2[data-lang-entity=unknown] > :first-child:hover {
+  background-color: color;
 }
 [data-lang-entity-container=unknown] label {
   -webkit-box-sizing: border-box;

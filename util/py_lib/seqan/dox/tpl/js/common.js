@@ -143,6 +143,7 @@
 					$this.pimpLangEntityLabel(langEntity);				
 				});
 			}).each(function() {
+			/*
 			    $(this).find('[data-lang-entity-container]').each(function () {
     			    // only use one headline level
     			    var headlineHandled = false;
@@ -163,6 +164,7 @@
         			    }
     			    }
     			 });
+    			 */
 			});
 		}
 	});

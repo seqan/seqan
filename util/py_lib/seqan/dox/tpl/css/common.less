@@ -246,6 +246,7 @@ dl {
 		code {
 			line-height: 1.7em;
 			white-space: pre;
+			padding-left: 0;
 		}	
 	}
 }
@@ -1044,8 +1045,6 @@ form .multiselect-container {
     	  	}
     	}
 	}
-	
-	[data-lang-entity-container] h2& > :first-child { display: none }
 }
 
 .data-lang-entity-example > :first-child { background: @rblue; border-color: darken(@rblue, 20%); }
@@ -1083,9 +1082,20 @@ html.page_languageentities {
            	    color: #fff;
                	background-color: @color;
            	}
+           	
+           	// elements of in a typed container with the same type are not annotated
+           	[data-lang-entity-container=@{langEntity}] & {
+           		display: none;
+           	}
+           	
+           	[data-lang-entity-container=@{langEntity}] > h2& {
+           		display: inline-block;
+           	}
         }
 	}
 	
+	/*
+	// annotates h3
 	h3[data-lang-entity=@{langEntity}] {
 	    display: table;
 	    font-size: 1.1em;
@@ -1114,9 +1124,10 @@ html.page_languageentities {
             padding-left: 1.9rem;
         }
 	}
+	/**/
 	
 		
-	// Language Entities page
+	// Language Entity Type - Variants on the Language Entities page
 	html.page_languageentities [data-lang-entity-container=@{langEntity}] {
 		dt {
 		    padding: 0;
@@ -1125,10 +1136,7 @@ html.page_languageentities {
 		    font-size: 1.0em;
         }
 	}
-	
-	// headings and definitions on the language entity types page are colored and annotated
-   	html.page_languageentities h2,
-   	html.page_languageentities dt {
+	html.page_languageentities dt {
         &[data-lang-entity=@{langEntity}] {
             padding-left: 0;
             
@@ -1139,12 +1147,18 @@ html.page_languageentities {
         		color: #fff;
         		&:hover { background-color: color; }
             }
+            
+            &:after { content: "" }
         }
 	}
 	
-   	html.page_languageentities h2 {
+	
+	// headings and definitions on the language entity types page are colored and annotated
+   	html:not(.list) h2 {
         &[data-lang-entity=@{langEntity}] {
             padding-left: 0;
+            
+            &:before { display: none }
             
             &:after {
                 background-color: @color;
@@ -1152,19 +1166,15 @@ html.page_languageentities {
             }
             
             > :first-child {
-           		margin-left: 0;
+           		background-color: @color;
+        		color: #fff;
+        		&:hover { background-color: color; }
+        		
+        		margin-left: 0;
         		margin-right: 1.5em;
         		top: -.35em;
         		font-size: .54em;
             }
-        }
-	}
-	
-	html.page_languageentities dt {
-        &[data-lang-entity=@{langEntity}] {
-            padding-left: 0;
-            
-            &:after { content: "" }
         }
 	}
 	
