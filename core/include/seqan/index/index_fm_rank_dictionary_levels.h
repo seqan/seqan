@@ -220,6 +220,29 @@ struct RankDictionaryEntry_<TValue, TwoLevels<TSpec> >
 // ----------------------------------------------------------------------------
 // Class TwoLevels RankDictionary
 // ----------------------------------------------------------------------------
+/*!
+ * @class TwoLevelRankDictionary
+ *
+ * @extends RankDictionary
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief A TwoLevelRankDictionary is a @link RankDictionary @endlink
+ * consisting of two levels.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            RankDictionary<TValue, WaveletTree<TSpec> >
+ * 
+ * @tparam TValue The alphabet type of the wavelet tree.
+ * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>
+ * 
+ * @section Remarks
+ * 
+ * This @link RankDictionary @endlink consists of tow levels of rank
+ * infromation, in which one stores information of blocks and the other
+ * information until a specified block. Combining those two informations
+ * leads to constant rank dictionary look ups.
+ */
 
 template <typename TValue, typename TSpec>
 struct RankDictionary<TValue, TwoLevels<TSpec> >
