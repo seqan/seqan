@@ -1425,6 +1425,7 @@ h3:not(#Examples).signature[data-lang-entity] > pre {
 h3:not(#Examples).signature code {
   box-shadow: none;
   white-space: pre;
+  padding-left: 0;
 }
 h4 {
   font-size: 1em;
