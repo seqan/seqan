@@ -174,7 +174,7 @@ and based on the Tipue Search, http://www.tipue.com
             for (var j = 0; j < query.length; j++) {
                 var pattern = new RegExp('(' + query[j] + ')', 'i');
         
-                if (!result.hiTitle && result.title.search(pattern) != -1)
+                if (result.title.search(pattern) != -1)
                 {
                     result.title = highlightString(result.title, pattern);
                     result.hiTitle = true;
