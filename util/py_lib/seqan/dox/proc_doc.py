@@ -487,6 +487,13 @@ class ProcClass(ProcCodeEntry):
     def isSubclass(self):
         return not not self.extends
 
+    @property
+    def kind(self):
+        if self.isSubclass:
+            return 'subclass'
+        else:
+            return 'class'
+
 
 class ProcTag(ProcCodeEntry):
     """A processed tag documentation.

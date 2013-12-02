@@ -39,7 +39,7 @@ and based on the Tipue Search, http://www.tipue.com
 				'function', 'global_function', 'interface_function', 'member_function',
 				'variable', 'global_variable', 'member_variable',
 				'adaption', 'macro',
-				'group', 'page',
+				'group', 'page', 'subclass',
 				'unknown'],
 			maxResultsPerGroup: 5,
             button: $form.find('input[type=submit],input[type=button]'),
