@@ -983,6 +983,25 @@ find(
 ..param.pattern.type:Spec.Pigeonhole
 */
 
+/*!
+ * @fn Pigeonhole#windowFindBegin
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Initializes the pattern. Sets the finder on the begin position.  Gets the first non-repeat range and sets it
+ * in the finder.  Used together with @link Pigeonhole#windowFindEnd @endlink.
+ * 
+ * @signature windowFindBegin(finder, pattern, errorRate)
+ * 
+ * @param pattern A pattern with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * @param errorRate Error rate that is allowed between reads and reference. Should be the same in as in @link
+ *                  Swift#windowFindNext @endlink.  Types: <tt>double</tt>
+ * @param finder A finder with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * 
+ * @see Pigeonhole#windowFindNext
+ * @see Pigeonhole#windowFindEnd
+ */
+
 template <typename THaystack, typename TIndex, typename TSpec>
 inline bool 
 windowFindBegin(
@@ -1011,6 +1030,32 @@ windowFindBegin(
 ..param.finder.type:Spec.Pigeonhole
 ..param.pattern.type:Spec.Pigeonhole
 */
+
+/*!
+ * @fn Pigeonhole#windowFindNext
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Searches over the next window with the finder. The found hits can be retrieved with @link 
+ *        Swift#getWindowFindHits @endlink  Used together with @link Pigeonhole#windowFindBegin @endlink and @link
+ *        Pigeonhole#windowFindEnd @endlink.
+ * 
+ * @signature windowFindNext(finder, pattern, finderWindowLength)
+ * 
+ * @param pattern A pattern with window interface. Types: Pigeonhole, Swift
+ * @param finderWindowLength Number of bases that are scanned beginning from the position the finder is at.  Including
+ * bases that are marked as repeats and that are skipped. Types: nolink:unsigned int
+ * @param finder A finder with window interface. Types: Pigeonhole
+ * 
+ * @return TReturn true, if there are bases that can be scanned. false,
+ *                 otherwise
+ * 
+ * @see Pigeonhole#windowFindBegin
+ * @see Pigeonhole#windowFindEnd
+ * @see Pigeonhole#getWindowFindHits
+ */
+
+
 
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
 inline bool 
@@ -1117,6 +1162,25 @@ windowFindNext(
 ..param.pattern.type:Spec.Pigeonhole
 */
 
+
+/*!
+ * @fn Pigeonhole#windowFindEnd
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Flushes the pattern. Used together with @link Pigeonhole#windowFindBegin @endlink
+ *        and @link Pigeonhole#windowFindNext @endlink.
+ * 
+ * @signature windowFindEnd(finder, pattern)
+ * 
+ * @param pattern A pattern with window interface. Types: @link Swift @endlink
+ * @param finder A finder with window interface. Types: @link Pigeonhole @endlink
+ * 
+ * @see Pigeonhole#windowFindBegin
+ * @see Pigeonhole#windowFindNext
+ */
+
+
 template <typename THaystack, typename TIndex, typename TSpec>
 inline void 
 windowFindEnd(
@@ -1126,6 +1190,23 @@ windowFindEnd(
 }
 
 ///.Function.getWindowFindHits.param.finder.type:Spec.Pigeonhole
+/*!
+ * @fn Pigeonhole#getWindowFindHits
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the string of hits from the finder.
+ * 
+ * @signature getWindowFindHits(finder)
+ * 
+ * @param finder A finder with window interface. Types: @link Swift @endlink
+ * 
+ * @return TReturn @link String @endlink of Hits (use Finder<...>::THitString as Type).
+ * 
+ * @see Pigeonhole#windowFindNext
+ */
+
+
 
 template <typename THaystack, typename TSpec>
 inline typename Finder<THaystack, Pigeonhole<TSpec> >::THitString &
