@@ -39,7 +39,7 @@ and based on the Tipue Search, http://www.tipue.com
 				'function', 'global_function', 'interface_function', 'member_function',
 				'variable', 'global_variable', 'member_variable',
 				'adaption', 'macro',
-				'group', 'page',
+				'group', 'page', 'subclass',
 				'unknown'],
 			maxResultsPerGroup: 5,
             button: $form.find('input[type=submit],input[type=button]'),
@@ -174,13 +174,15 @@ and based on the Tipue Search, http://www.tipue.com
             for (var j = 0; j < query.length; j++) {
                 var pattern = new RegExp('(' + query[j] + ')', 'i');
         
-                if (!result.hiTitle && result.title.search(pattern) != -1)
+                if (result.title.search(pattern) != -1)
                 {
                     result.title = highlightString(result.title, pattern);
                     result.hiTitle = true;
                 }
         
-                if (!result.hiTitle && !result.hiAka)
+                // The following line used to be here to have less results.  Turns out that we do not need this filter
+                // since we want to find Finder#find.
+                //if (!result.hiTitle && !result.hiAka)
                     for (var i = 0; i < akas.length; i++)
                         if (akas[i].search(pattern) != -1)
                         {
@@ -188,8 +190,9 @@ and based on the Tipue Search, http://www.tipue.com
                             result.aka = highlightString(akas[i], pattern);
                             break;
                         }
-        
-                if (!result.hiTitle && !result.hiAka && result.subentries.length < 4)
+
+                // See above.
+                //if (!result.hiTitle && !result.hiAka && result.subentries.length < 4)
                     for (var i = 0; i < subentries.length; ++i)
                     {
                         var xs = subentries[i].split(' ', 2);

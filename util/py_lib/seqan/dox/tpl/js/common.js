@@ -58,7 +58,6 @@
         		$('input[type=search]').focus();
         	}, 50);
         }
-
     });
 
 })(jQuery);

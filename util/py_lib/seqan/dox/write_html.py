@@ -8,6 +8,7 @@ import os.path
 import shutil
 import sys
 import xml.sax.saxutils
+import urllib
 
 import jinja2
 import proc_doc
@@ -29,6 +30,11 @@ def escapeName(name):
         else:
             xs += [escape, str(ord(c))]
     return ''.join(xs)
+
+
+def escapeAnchor(name):
+    """Escape a name such that it is safe to use for anchors."""
+    return name
 
 
 class PathManager(object):
@@ -164,10 +170,12 @@ def transTextNode(text_node, top=True, start_heading=3, path_mgr=None, **kwargs)
 
 def createTransLink(doc, path_mgr):
     link_converter = LinkConverter(doc)
-    def transLink(entity_name):
+    def transLink(entity_name, text=None):
+        if not text:
+            text = entity_name
         text_node = proc_doc.TextNode(type='a')
         text_node.attrs['href'] = 'seqan:%s' % entity_name
-        text_node.children = [proc_doc.TextNode(text=entity_name)]
+        text_node.children = [proc_doc.TextNode(text=text)]
         link_converter.visit(text_node)
         return transTextNode(text_node, path_mgr)
     return transLink
@@ -187,6 +195,8 @@ class TemplateManager(object):
         def identity(x):
             return x
         self.env.filters['escape_name'] = escapeName
+        self.env.filters['escape_anchor'] = escapeAnchor
+        self.env.filters['url_encode'] = urllib.quote
         self.env.filters['transtext'] = transTextNode
         self.env.filters['to_dox'] = toDox
         self.env.filters['translink'] = createTransLink(doc, self)
@@ -225,7 +235,7 @@ class PathConverter(object):
             first, second = proc_doc.splitSecondLevelEntry(name)
             father = self.doc.top_level_entries.get(first)
             entry = self.doc.second_level_entries.get(name)
-            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeName(name))
+            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeAnchor(name))
             return path, name, entry
         else:
             return None, None, None
@@ -432,7 +442,7 @@ class HtmlWriter(object):
             html = self.tpl_manager.render('page.html', page=entry,  **common_kwargs)
         elif entry.kind == 'concept':
             html = self.tpl_manager.render('concept.html', concept=entry,  **common_kwargs)
-        elif entry.kind == 'class':
+        elif entry.kind in ['class', 'subclass']:
             html = self.tpl_manager.render('class.html', klass=entry,  **common_kwargs)
         elif entry.kind == 'enum':
             html = self.tpl_manager.render('enum.html', enum=entry,  **common_kwargs)

@@ -8,7 +8,9 @@
 {% else %}
 <h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a>
 {% endif -%}
-  <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span></h1>
+  <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span>
+  <a href="#" class="permalink">&para;</a>
+</h1>
 
 <div class="overview">
 	{{ sections.top_box(klass) }}

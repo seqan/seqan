@@ -84,12 +84,45 @@ public:
 @subsection Variants
 
 <dl>
+  <dt><a name="subclass">specialization</a></dt>
+	<dd><p>Specializations are similar to subclasses but the mechanism uses template specialization instead of C++ subclassing.</p>
+	    <p>In SeqAn, this is widely used in containers such as strings or indices to achieve good performance.</p>
+	</dd>
   <dt><a name="struct">struct</a></dt>
 	<dd><p>C++ inherited <code>struct</code>s from C. Structs and classes are very similar, the main difference is that all members of structs are declared with public visibility by default.</p>
 	    <p>In SeqAn, structs are used instead of classes for simple record types that only store data and do not provide any major logic through interface or member functions.</p>
 	</dd>
 </dl>
 
+@subsection Example
+
+The following shows a class <code>Klass</code> that is specialized two times using the tags <code>OneKlass</code> and <code>AnotherKlass</code>.
+
+@code{.cpp}
+struct OneKlass_;
+typedef seqan::Tag<OneKlass_> OneKlass;
+
+struct OtherKlass_;
+typedef seqan::Tag<OtherKlass_> OtherKlass;
+
+template <typename TSpec>
+class Klass;
+// Note that the body here is optional.  In this case, we create this class "abstract".
+
+template <>
+class Klass<OneKlass>
+{
+public:
+    int x;
+};
+
+template <>
+class Klass<OtherKlass>
+{
+public:
+    double x;
+};
+@endcode
 
 <h2 data-lang-entity="enum"><a name="enum">Enum</a></h2>
 
