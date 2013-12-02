@@ -1570,6 +1570,7 @@ dl {
 }
 .overview > dl code {
   line-height: 1.7em;
+  white-space: pre;
 }
 pre {
   background-color: #f5f5f5;
