@@ -96,7 +96,7 @@ sequence.
  * @ signature template <typename TValue, typename TSpec>
  *             RankDictionary<TValue, TSpec>
  * 
- * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevels @endlink
+ * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevelRankDictionary @endlink
  */
 template <typename TValue, typename TSpec>
 struct RankDictionary;
