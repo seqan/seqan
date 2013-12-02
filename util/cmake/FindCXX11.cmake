@@ -3,10 +3,11 @@ if(__FIND_CXX11_CMAKE__)
 endif()
 set(__FIND_CXX11_CMAKE__ TRUE)
 
-if (MSVC AND MSVC_VERSION GREATER 1400)
+# Visual Studio 2008 (vs9) doesn't seem to support C++11 directly (only as TR1)
+if (MSVC AND MSVC_VERSION GREATER 1500)
   set(CXX11_FOUND 1)
   return ()
-endif (MSVC AND MSVC_VERSION GREATER 1400)
+endif (MSVC AND MSVC_VERSION GREATER 1500)
 
 include(CheckCXXCompilerFlag)
 enable_language(CXX)
