@@ -60,7 +60,7 @@
         // adds a close link to the search/list frame
 		if(window != window.parent && window.name == 'list') {
 			try {
-        		$('<button class="close" style="position: absolute; top: 10px; right: 10px; line-height: .7em;">&times;</button>').prependTo('body').click(function() {
+        		$('<button class="close" style="position: absolute; top: 5px; right: 5px; line-height: .7em;">&times;</button>').prependTo('body').click(function() {
         			window.parent.location = window.parent['main'].location;
         		});
     		} catch(e) {
