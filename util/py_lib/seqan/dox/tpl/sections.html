@@ -250,7 +250,7 @@ Render the member functions overview
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -268,7 +268,7 @@ Render the member functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -281,7 +281,7 @@ Render the member functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -315,7 +315,7 @@ Render the member typedefs overview
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (member typedef)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (member typedef)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -334,7 +334,7 @@ Render the member typedefs overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_typedef'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -347,7 +347,7 @@ Render the member typedefs overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_typedef'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -380,7 +380,7 @@ Render the interface functions overview
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
     {% else %}
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -398,7 +398,7 @@ Render the interface functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -411,7 +411,7 @@ Render the interface functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -440,7 +440,7 @@ Render the grouped macros overview
     {% if entry.sig_entries %}
     <td>{{ sig_entries[0].toString() }}{{ entry.brief|transtext }}</td>
     {% else %}
-    <td><code><a href="#{{ entry.name|escape_name }}">{{ entry.signatures[0].toHtmlLike(False) }}</a></code> {{ entry.brief|transtext }}</td>
+    <td><code><a href="#{{ entry.name|escape_anchor|url_encode }}">{{ entry.signatures[0].toHtmlLike(False) }}</a></code> {{ entry.brief|transtext }}</td>
     {% endif %}
   </tr>
   {% endfor %}
@@ -467,13 +467,13 @@ Render the interface functions overview
     {% if entry.sig_entries %}
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
     {% elif entry.signatures %}
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
     </a></code></span>
     {% else %}
-    <span class="summary_signature"><code>{{ entry.name }}</code></span>
+    <span class="summary_signature"><code>{{ entry.local_name }}</code></span>
     {% endif %}
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
   </li>
@@ -505,7 +505,7 @@ Render the interface metafunctions overview
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -523,7 +523,7 @@ Render the interface metafunctions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -536,7 +536,7 @@ Render the interface metafunctions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_metafunction'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -563,7 +563,7 @@ Render the member variables overview
 <ul class="summary">
   {% for entry in entry.subentries['member_variable'] %}
   <li class="public">
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
     </a></code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
@@ -578,7 +578,7 @@ Render the member variables overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_variable'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 
@@ -592,7 +592,7 @@ Render the member variables overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_variable'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -619,7 +619,7 @@ Render the member variables overview
 <ul class="summary">
   {% for entry in entry.subentries['variable'] %}
   <li class="public">
-    <span class="summary_signature"><code><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
+    <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
     </a></code></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
@@ -657,30 +657,29 @@ Render the grouped macros details
 
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
-      {% if subentry.headerfiles %}
-      <dl>
-        <dt>Defined in</dt>
-        <dd>
-          {% for h in subentry.headerfiles|sort -%}
-          {{ h|e }}{% if not loop.last %}, {% endif %}
-          {% endfor %}
-          {% else %}
-          &nbsp;
-        </dd>
-      </dl>
-      {% endif %}
-
+    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
       <code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
           {%- else -%}
-          {{ subentry.name|e }}
+          {{ subentry.local_name|e }}
           {%- endif -%}
       </code>
+      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
+
+    {% if subentry.headerfiles %}
+    <dl>
+      <dt>Defined in</dt>
+      <dd>
+        {% for h in subentry.headerfiles|sort -%}
+        {{ h|e }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </dd>
+    </dl>
+    {% endif %}
     
     <div class="docstring">
       <div class="discussion">
@@ -731,7 +730,10 @@ Render the grouped macros details
 <h2>{{ qualifier }} Macros Detail</h2>
 
 {% for subentry in entry.subentries['grouped_macro'] %}
-<h3 id="{{ subentry.name|escape_name }}">{{ subentry.name|e }}</h3>
+<h3 id="{{ subentry.name|escape_anchor }}">
+  {{ subentry.name|e }}
+  <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
+</h3>
 
 {% if subentry.headerfiles %}
 <dl>
@@ -824,12 +826,13 @@ Render the interface functions details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
       </code>
+      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
   </div>
 
@@ -941,7 +944,7 @@ Render the member typedef details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -986,12 +989,13 @@ Render the interface metafunctions details
 
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
-  <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
+  <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
     <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
     </code>
+    <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
   </h3>
 
   {% if subentry.headerfiles and qualifier == 'Grouped' %}
@@ -1074,8 +1078,9 @@ Render the member variables details
 
   {% for subentry in entry.subentries['member_variable'] %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
+    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
+      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
     <div class="docstring">
       <div class="discussion">
@@ -1102,8 +1107,9 @@ Render the member enum details
 
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
+    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
+      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
     <div class="docstring">
       <div class="discussion">
