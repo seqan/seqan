@@ -289,13 +289,12 @@ pre {
     }
 }
 
-html code {
+html code,
+html tt {
     color: #333;
     background: transparent;
     border: none;
-    .border-radius(3px);
-    box-shadow: inset 0 -1px 0px 0px  rgba(0, 0, 0, 0.25);
-    padding: 0;
+    font-size: 1em;
 }
 
 html .summary_signature code,
@@ -632,36 +631,9 @@ ul.summary {
 }
 
 .tags {
-    .tag_title { font-size: 1em; margin-bottom: 0; font-weight: bold; }
-    ul {
-        margin-top: 5px;
-        padding-left: 30px;
-        list-style: none;
-        
-        li {
-            margin-bottom: 3px;
-            position: relative;
-            
-            &:before {
-                position: absolute;
-                left: -20px;
-                top: -1px;
-        		font-family: 'Glyphicons Halflings';
-        		-webkit-font-smoothing: antialiased;
-        		font-style: normal;
-        		font-weight: normal;
-        		line-height: 1;
-        		display: block;
-        		margin: 5px auto 10px;
-        		font-size: .8em;
-        		content: "\e080";
-            }
-        }
-        .name { font-family: monospace; font-weight: bold; }
-        .note { padding: 3px 6px; }
+    li:before {
+    	display: none;
     }
-    
-    margin-bottom: 12px;
     
     .examples .tag_title { margin-bottom: 10px; font-weight: bold; }
     .examples .inline p { padding: 0; margin: 0; margin-left: 15px; font-weight: bold; font-size: 0.9em; }

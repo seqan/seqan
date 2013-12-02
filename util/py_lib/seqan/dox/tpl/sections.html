@@ -870,7 +870,7 @@ Render the interface functions details
     <ul class="param">
       {% for param in subentry.tparams %}
       <li>
-        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
         <div class="inline">{{ param.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -884,7 +884,7 @@ Render the interface functions details
     <ul class="param">
       {% for param in subentry.params %}
       <li>
-        <span class="name"><tt>{{ param.name|e }}</tt></span>
+        <span class="name"><code>{{ param.name|e }}</code></span>
         {% if param.in_out %}
         ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
         {% endif %}
@@ -903,7 +903,7 @@ Render the interface functions details
     <ul class="return">
       {% for ret in subentry.returns %}
       <li>
-        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
         <div class="inline">{{ ret.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -1031,7 +1031,7 @@ Render the interface metafunctions details
     <ul class="param">
       {% for param in subentry.tparams %}
       <li>
-        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
         <div class="inline">{{ param.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -1046,7 +1046,7 @@ Render the interface metafunctions details
     <ul class="return">
       {% for ret in subentry.returns %}
       <li>
-        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
         <div class="inline">{{ ret.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -1132,7 +1132,7 @@ Render the parameter details.
   <ul class="param">
     {% for param in entry.params %}
     <li>
-      <span class="name"><tt>{{ param.name|e }}</tt></span>
+      <span class="name"><code>{{ param.name|e }}</code></span>
       {% if param.in_out %}
       ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
       {% endif %}
@@ -1162,7 +1162,7 @@ Render the template parameter details.
   <ul class="param">
     {% for param in entry.tparams %}
     <li>
-      <span class="name"><tt>{{ param.type|e }}</tt></span>
+      <span class="name"><code>{{ param.type|e }}</code></span>
       &mdash;
       <div class="inline">{{ param.desc|transtext(False) }}</div>
     </li>
@@ -1214,7 +1214,7 @@ Render the template parameter details.
   <ul class="param">
     {% for ret in entry.returns %}
     <li class="public">
-      <span class="type">{{ ret.type|e }}</span> &mdash;
+      <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
       {{ ret.desc|transtext(False) }}
     </li>
     {% endfor %}
