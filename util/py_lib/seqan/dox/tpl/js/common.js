@@ -317,7 +317,7 @@
             highlightEveryTerm: true,
             output: $("#results"),
             data: window.searchData,
-            stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
+            stopWords: [], // filtered out of query
             replaceWords: [ // words replaced in the query
                 ["test_A", "test_B"]
             ],
