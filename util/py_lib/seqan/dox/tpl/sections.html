@@ -268,7 +268,7 @@ Render the member functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -281,7 +281,7 @@ Render the member functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -334,7 +334,7 @@ Render the member typedefs overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_typedef'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -347,7 +347,7 @@ Render the member typedefs overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_typedef'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -398,7 +398,7 @@ Render the interface functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -411,7 +411,7 @@ Render the interface functions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_function'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -473,7 +473,7 @@ Render the interface functions overview
         {%- endfor -%}
     </a></code></span>
     {% else %}
-    <span class="summary_signature"><code>{{ entry.name }}</code></span>
+    <span class="summary_signature"><code>{{ entry.local_name }}</code></span>
     {% endif %}
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
   </li>
@@ -523,7 +523,7 @@ Render the interface metafunctions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -536,7 +536,7 @@ Render the interface metafunctions overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_metafunction'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -578,7 +578,7 @@ Render the member variables overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_variable'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 
@@ -592,7 +592,7 @@ Render the member variables overview
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_variable'] %}
-  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink }}</code></span></li>
+  <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -658,29 +658,27 @@ Render the grouped macros details
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
-      {% if subentry.headerfiles %}
-      <dl>
-        <dt>Defined in</dt>
-        <dd>
-          {% for h in subentry.headerfiles|sort -%}
-          {{ h|e }}{% if not loop.last %}, {% endif %}
-          {% endfor %}
-          {% else %}
-          &nbsp;
-        </dd>
-      </dl>
-      {% endif %}
-
       <code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
           {%- else -%}
-          {{ subentry.name|e }}
+          {{ subentry.local_name|e }}
           {%- endif -%}
       </code>
     </h3>
+
+    {% if subentry.headerfiles %}
+    <dl>
+      <dt>Defined in</dt>
+      <dd>
+        {% for h in subentry.headerfiles|sort -%}
+        {{ h|e }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </dd>
+    </dl>
+    {% endif %}
     
     <div class="docstring">
       <div class="discussion">

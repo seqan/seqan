@@ -164,10 +164,12 @@ def transTextNode(text_node, top=True, start_heading=3, path_mgr=None, **kwargs)
 
 def createTransLink(doc, path_mgr):
     link_converter = LinkConverter(doc)
-    def transLink(entity_name):
+    def transLink(entity_name, text=None):
+        if not text:
+            text = entity_name
         text_node = proc_doc.TextNode(type='a')
         text_node.attrs['href'] = 'seqan:%s' % entity_name
-        text_node.children = [proc_doc.TextNode(text=entity_name)]
+        text_node.children = [proc_doc.TextNode(text=text)]
         link_converter.visit(text_node)
         return transTextNode(text_node, path_mgr)
     return transLink
