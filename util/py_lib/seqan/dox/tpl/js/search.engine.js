@@ -330,7 +330,6 @@ and based on the Tipue Search, http://www.tipue.com
                     	$(langEntitiesKeys).each(function() {
                     		var langEntity = this + '';
                     		if(settings.langEntities[langEntity].belongsTo == langEntityCategory) {
-                    			console.log(langEntity);
                     			langEntitiesToKeep.push(langEntity);
                     		}
                     	});
@@ -377,18 +376,40 @@ and based on the Tipue Search, http://www.tipue.com
                           		c_c = found.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                           		out += '<div class="results_count">' + c_c + ' results</div>';
                         	}
-                        }
+                        }                        
                         
-                        found.sort(function(r1, r2) {
-                        	var o1 = $.inArray(r1.langEntity, settings.langEntityDefaultOrder);
-                        	var o2 = $.inArray(r2.langEntity, settings.langEntityDefaultOrder);
+                        // sorts by group depending on their best match
+                        // step 1: cluster by lang entity
+                        var clusters = {};
+                        $(found).each(function() {
+                        	if(!clusters.hasOwnProperty(this.langEntity)) {
+                        		clusters[this.langEntity] = { bestScore: 1000000000, matches: [] };
+                        	}
                         	
-                        	if(o1 < 0) o1 = 9999;
-                        	if(o2 < 0) o2 = 9999;
+                        	if(this.score < clusters[this.langEntity].bestScore) {
+                        		clusters[this.langEntity].bestScore = this.score;
+                        	}
                         	
-                        	if(o1 == o2) return r1.score - r2.score;
-                        	return o1-o2;
+                        	clusters[this.langEntity].matches.push(this);
                         });
+                        
+                        // step 2: sort by contained best match
+                        var clusters_arr = [];
+                        for(var langEntity in clusters) {
+                        	clusters_arr.push(clusters[langEntity]);
+                        }
+                        clusters_arr.sort(function(c1, c2) {
+                        	return c1.bestScore - c2.bestScore;
+                        });
+                        
+                        // step 3: write sorted groups back to found (and sort the inner-group matches)
+                        found = [];
+                        for(var i=0,m=clusters_arr.length; i<m; i++) {
+                        	clusters_arr[i].matches.sort(function(r1, r2) {
+								return r1.score - r2.score;
+							});
+                        	found = found.concat(clusters_arr[i].matches);
+                        }
                         
                         var l_o = 0;
                         var entriesInGroup;
