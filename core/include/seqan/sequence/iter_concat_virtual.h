@@ -147,9 +147,9 @@ public:
         _testEnd();
     }
 
-    Iter(TStringSet &_host, unsigned objNo, difference_type _offset):
+    Iter(TStringSet &_host, unsigned _objNo, difference_type _offset):
         host(&_host),
-        objNo(objNo)
+        objNo(_objNo)
     {
         if (objNo < length(_host))
         {
