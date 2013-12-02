@@ -162,8 +162,6 @@ for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
 std::cout << "\n";
 @endcode
 
-@link String @endlink implements @link SequenceConcept @endlink. Since the metafunction @link append @endlink is part of @link SequenceConcept @endlink, @link append @endlink accepts @link String @endlink as an argument.
-
 @subsection Variants
 
 <dl>
