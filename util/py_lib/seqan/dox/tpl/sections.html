@@ -1155,7 +1155,7 @@ Render the template parameter details.
 {% macro tparams(entry) %}
 
 {% if entry.tparams %}
-<div data-lang-entity-container="generic">
+<div data-lang-entity-container="template_parameter">
 <h2>Template Parameters</h2>
 
 <div class="tags">
@@ -1183,13 +1183,13 @@ Render the template parameter overview.
 {% if entry.tparams %}
 
 {% if entry.tparams %}
-<div data-lang-entity-container="generic">
+<div data-lang-entity-container="template_parameter">
   <h2>Template Parameters</h2>
 
   <ul class="summary">
     {% for param in entry.tparams %}
     <li class="public">
-      <span class="summary_signature"><code><a href="#" data-lang-entity="generic">{{ param.type|e }}</a></code></span>
+      <span class="summary_signature"><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></span>
       <span class="summary_desc">{{ param.desc|transtext(False) }}</span>
     </li>
     {% endfor %}

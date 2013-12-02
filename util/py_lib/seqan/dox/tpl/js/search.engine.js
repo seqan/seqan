@@ -35,7 +35,7 @@ and based on the Tipue Search, http://www.tipue.com
             	'concept', 'class', 'enum',
 				'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
 				'metafunction', 'global_metafunction', 'interface_metafunction',
-				'tag', 'grouped_tag', 'generic',
+				'tag', 'grouped_tag', 'template_parameter',
 				'function', 'global_function', 'interface_function', 'member_function',
 				'variable', 'global_variable', 'member_variable',
 				'adaption', 'macro',
