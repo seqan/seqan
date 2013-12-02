@@ -500,6 +500,14 @@ class ProcTag(ProcCodeEntry):
         self.tparams.append(t)
 
     @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
+
+    @property
     def kind(self):
         if '#' in self.name:
             return 'grouped_tag'
@@ -592,6 +600,16 @@ class ProcFunction(ProcCodeEntry):
         else:
             return 'global_function'
 
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         ProcCodeEntry.visitTextNodes(self, visitor)
@@ -624,6 +642,14 @@ class ProcMacro(ProcCodeEntry):
         ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.returns = []
+
+    @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -666,6 +692,16 @@ class ProcMetafunction(ProcCodeEntry):
             return 'interface_metafunction'
         else:
             return 'global_metafunction'
+
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
 
     def visitTextNode(self, visitor):
         """Visit all text nodes using the given visitor."""
