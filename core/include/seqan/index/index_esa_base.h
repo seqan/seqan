@@ -67,7 +67,7 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
  * 
  * @brief Pre/postorder selection for depth-first search.
  * 
- * These tags are given to @link goNext @endlink and trigger post-order or pre-
+ * These tags are given to @link InputIteratorConcept#goNext @endlink and trigger post-order or pre-
  * order traversal of a suffix tree. In case of <tt>PreorderEmptyEdges</tt> and
  * <tt>PostorderEmptyEdges</tt>, the empty edges are also traversed.
  * 
@@ -252,7 +252,7 @@ TA
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Default behaviour of @link VSTreeIterator#goNext @endlink when no second parameter is given.
+ * @brief Default behaviour of @link InputIteratorConcept#goNext @endlink when no second parameter is given.
  * 
  * @signature GetVSTreeIteratorTraits<TIterator>::Type
  * 

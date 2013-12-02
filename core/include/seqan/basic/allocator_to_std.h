@@ -59,8 +59,8 @@ namespace seqan {
  *            class ToStdAllocator;
  * 
  * @tparam TValue Type of allocated items.
- * @tparam THost  Type of the host allocator object.This object is used to call @link allocate @endlink and
- *                @link deallocate @endlink.
+ * @tparam THost  Type of the host allocator object.This object is used to call @link Allocator#allocate @endlink and
+ *                @link Allocator#deallocate @endlink.
  * 
  * @section Remarks
  * 

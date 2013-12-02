@@ -101,7 +101,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
  * same q-gram, but in contrast to the @link IndexQGram @endlink index, buckets
  * are in random order due to the hashing.
  * 
- * @var VariableType OpenAddressing::alpha
+ * @var VariableType OpenAddressingQGramIndex::alpha
  * 
  * @brief Load factor. Controls space/time-tradeoff and must be greater 1.
  *        Default value is 1.6.

@@ -58,7 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *                 for prefix search. Default: Tag.FindInfix
  * @tparam TFindBeginPatternSpec 
  *               Specialization of @link Pattern @endlink used to find the begin of matches.This must be a finder for
- *               prefix search, e.g. @link DPSearch <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
+ *               prefix search, e.g. @link DPSearchPattern <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
  *               MyersPattern <tt>Myers&lt;FindPrefix&gt;</tt> @endlink. Specify <tt>void</tt> to suppress prefix
  *               searching. Default: @link DefaultFindBeginPatternSpec @endlink
  * @tparam TNeedle The needle type. Types: String
