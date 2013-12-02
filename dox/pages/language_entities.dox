@@ -263,4 +263,11 @@ All SeqAn macros are prefixed with <tt>SEQAN_</tt>.
 // The SeqAn library defines the SEQAN_ASSERT* macros, for example:
 SEQAN_ASSERT_EQ(SQUARE(10), 100);
 @endcode
+
+
+
+@htmlonly <h2 data-lang-entity="template_parameter"><a name="template_parameter">Template Parameter</a></h2> @endhtmlonly
+
+Templates can take types or constant integral values as parameters.
+
 */
