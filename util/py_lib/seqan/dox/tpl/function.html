@@ -3,7 +3,10 @@
 {% block title %}{{ function.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="function" data-pimped="true"><a href="page_LanguageEntities.html#function">fn()</a> <span>{{ function.title|e }}<div>{{ sections.brief(function) }}</div></span></h1>
+<h1 data-lang-entity="function" data-pimped="true">
+  <a href="page_LanguageEntities.html#function">fn()</a> <span>{{ function.title|e }}<div>{{ sections.brief(function) }}</div></span>
+  <a href="#" class="permalink">&para;</a>
+</h1>
 
 <div class="overview">
 	{{ sections.top_box(function) }}

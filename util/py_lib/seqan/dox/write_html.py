@@ -8,6 +8,7 @@ import os.path
 import shutil
 import sys
 import xml.sax.saxutils
+import urllib
 
 import jinja2
 import proc_doc
@@ -29,6 +30,11 @@ def escapeName(name):
         else:
             xs += [escape, str(ord(c))]
     return ''.join(xs)
+
+
+def escapeAnchor(name):
+    """Escape a name such that it is safe to use for anchors."""
+    return name
 
 
 class PathManager(object):
@@ -189,6 +195,8 @@ class TemplateManager(object):
         def identity(x):
             return x
         self.env.filters['escape_name'] = escapeName
+        self.env.filters['escape_anchor'] = escapeAnchor
+        self.env.filters['url_encode'] = urllib.quote
         self.env.filters['transtext'] = transTextNode
         self.env.filters['to_dox'] = toDox
         self.env.filters['translink'] = createTransLink(doc, self)
@@ -227,7 +235,7 @@ class PathConverter(object):
             first, second = proc_doc.splitSecondLevelEntry(name)
             father = self.doc.top_level_entries.get(first)
             entry = self.doc.second_level_entries.get(name)
-            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeName(name))
+            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeAnchor(name))
             return path, name, entry
         else:
             return None, None, None

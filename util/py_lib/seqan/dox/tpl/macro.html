@@ -3,7 +3,10 @@
 {% block title %}{{ macro.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="macro" data-pimped="true"><a href="page_LanguageEntities.html#macro">#define</a> <span>{{ macro.title|e }}<div>{{ sections.brief(macro) }}</div></span></h1>
+<h1 data-lang-entity="macro" data-pimped="true">
+  <a href="page_LanguageEntities.html#macro">#define</a> <span>{{ macro.title|e }}<div>{{ sections.brief(macro) }}</div></span>
+  <a href="#" class="permalink">&para;</a>
+</h1>
 
 <div class="overview">
 	{{ sections.top_box(macro) }}
