@@ -3,7 +3,10 @@
 {% block title %}{{ tag.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="tag" data-pimped="true"><a href="page_LanguageEntities.html#tag">Tag</a> <span>{{ tag.title|e }}<div>{{ sections.brief(tag) }}</div></span></h1>
+<h1 data-lang-entity="tag" data-pimped="true">
+  <a href="page_LanguageEntities.html#tag">Tag</a> <span>{{ tag.title|e }}<div>{{ sections.brief(tag) }}</div></span>
+  <a href="#" class="permalink">&para;</a>
+</h1>
 
 <div class="overview">
 	{{ sections.top_box(tag) }}
