@@ -1616,15 +1616,12 @@ h3 pre.highlight {
 pre code {
   box-shadow: none;
 }
-html code {
+html code,
+html tt {
   color: #333;
   background: transparent;
   border: none;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  box-shadow: inset 0 -1px 0px 0px rgba(0, 0, 0, 0.25);
-  padding: 0;
+  font-size: 1em;
 }
 html .summary_signature code,
 html .overview code {
@@ -1993,43 +1990,8 @@ ul.summary li.deprecated .summary_signature a:visited {
   text-decoration: line-through;
   font-style: italic;
 }
-.tags {
-  margin-bottom: 12px;
-}
-.tags .tag_title {
-  font-size: 1em;
-  margin-bottom: 0;
-  font-weight: bold;
-}
-.tags ul {
-  margin-top: 5px;
-  padding-left: 30px;
-  list-style: none;
-}
-.tags ul li {
-  margin-bottom: 3px;
-  position: relative;
-}
-.tags ul li:before {
-  position: absolute;
-  left: -20px;
-  top: -1px;
-  font-family: 'Glyphicons Halflings';
-  -webkit-font-smoothing: antialiased;
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  display: block;
-  margin: 5px auto 10px;
-  font-size: .8em;
-  content: "\e080";
-}
-.tags ul .name {
-  font-family: monospace;
-  font-weight: bold;
-}
-.tags ul .note {
-  padding: 3px 6px;
+.tags li:before {
+  display: none;
 }
 .tags .examples .tag_title {
   margin-bottom: 10px;
