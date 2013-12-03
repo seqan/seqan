@@ -1099,12 +1099,13 @@ html.page_languageentities {
                	background-color: @color;
            	}
            	
-           	// elements of in a typed container with the same type are not annotated
-           	[data-lang-entity-container=@{langEntity}] & {
+           	// elements in a typed container with the same type are not annotated
+           	html:not(.list) [data-lang-entity-container=@{langEntity}] & {
            		display: none;
            	}
            	
-           	[data-lang-entity-container=@{langEntity}] > h2& {
+           	// exceptions are the direct headings 
+           	html:not(.list) [data-lang-entity-container=@{langEntity}] > h2& {
            		display: inline-block;
            	}
         }

@@ -2552,10 +2552,10 @@ html.page_languageentities div[data-lang-entity-container] + div[data-lang-entit
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=typedef] [data-lang-entity=typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=typedef] [data-lang-entity=typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=typedef] > h2[data-lang-entity=typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=typedef] > h2[data-lang-entity=typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2684,10 +2684,10 @@ html:not(.list) h2[data-lang-entity=typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=grouped_typedef] [data-lang-entity=grouped_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_typedef] [data-lang-entity=grouped_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=grouped_typedef] > h2[data-lang-entity=grouped_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_typedef] > h2[data-lang-entity=grouped_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2816,10 +2816,10 @@ html:not(.list) h2[data-lang-entity=grouped_typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=global_typedef] [data-lang-entity=global_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=global_typedef] [data-lang-entity=global_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_typedef] > h2[data-lang-entity=global_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=global_typedef] > h2[data-lang-entity=global_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2948,10 +2948,10 @@ html:not(.list) h2[data-lang-entity=global_typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=member_typedef] [data-lang-entity=member_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=member_typedef] [data-lang-entity=member_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_typedef] > h2[data-lang-entity=member_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=member_typedef] > h2[data-lang-entity=member_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -3080,10 +3080,10 @@ html:not(.list) h2[data-lang-entity=member_typedef] > :first-child:hover {
   color: #fff;
   background-color: #b02323;
 }
-[data-lang-entity-container=concept] [data-lang-entity=concept] > :first-child {
+html:not(.list) [data-lang-entity-container=concept] [data-lang-entity=concept] > :first-child {
   display: none;
 }
-[data-lang-entity-container=concept] > h2[data-lang-entity=concept] > :first-child {
+html:not(.list) [data-lang-entity-container=concept] > h2[data-lang-entity=concept] > :first-child {
   display: inline-block;
 }
 /*
@@ -3212,10 +3212,10 @@ html:not(.list) h2[data-lang-entity=concept] > :first-child:hover {
   color: #fff;
   background-color: #de5b5b;
 }
-[data-lang-entity-container=class] [data-lang-entity=class] > :first-child {
+html:not(.list) [data-lang-entity-container=class] [data-lang-entity=class] > :first-child {
   display: none;
 }
-[data-lang-entity-container=class] > h2[data-lang-entity=class] > :first-child {
+html:not(.list) [data-lang-entity-container=class] > h2[data-lang-entity=class] > :first-child {
   display: inline-block;
 }
 /*
@@ -3344,10 +3344,10 @@ html:not(.list) h2[data-lang-entity=class] > :first-child:hover {
   color: #fff;
   background-color: #efb0b0;
 }
-[data-lang-entity-container=enum] [data-lang-entity=enum] > :first-child {
+html:not(.list) [data-lang-entity-container=enum] [data-lang-entity=enum] > :first-child {
   display: none;
 }
-[data-lang-entity-container=enum] > h2[data-lang-entity=enum] > :first-child {
+html:not(.list) [data-lang-entity-container=enum] > h2[data-lang-entity=enum] > :first-child {
   display: inline-block;
 }
 /*
@@ -3476,10 +3476,10 @@ html:not(.list) h2[data-lang-entity=enum] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=metafunction] [data-lang-entity=metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=metafunction] [data-lang-entity=metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=metafunction] > h2[data-lang-entity=metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=metafunction] > h2[data-lang-entity=metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3608,10 +3608,10 @@ html:not(.list) h2[data-lang-entity=metafunction] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=global_metafunction] [data-lang-entity=global_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=global_metafunction] [data-lang-entity=global_metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_metafunction] > h2[data-lang-entity=global_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=global_metafunction] > h2[data-lang-entity=global_metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3740,10 +3740,10 @@ html:not(.list) h2[data-lang-entity=global_metafunction] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=interface_metafunction] [data-lang-entity=interface_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_metafunction] [data-lang-entity=interface_metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=interface_metafunction] > h2[data-lang-entity=interface_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_metafunction] > h2[data-lang-entity=interface_metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3872,10 +3872,10 @@ html:not(.list) h2[data-lang-entity=interface_metafunction] > :first-child:hover
   color: #fff;
   background-color: #5bdede;
 }
-[data-lang-entity-container=function] [data-lang-entity=function] > :first-child {
+html:not(.list) [data-lang-entity-container=function] [data-lang-entity=function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=function] > h2[data-lang-entity=function] > :first-child {
+html:not(.list) [data-lang-entity-container=function] > h2[data-lang-entity=function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4004,10 +4004,10 @@ html:not(.list) h2[data-lang-entity=function] > :first-child:hover {
   color: #fff;
   background-color: #85e7e7;
 }
-[data-lang-entity-container=global_function] [data-lang-entity=global_function] > :first-child {
+html:not(.list) [data-lang-entity-container=global_function] [data-lang-entity=global_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_function] > h2[data-lang-entity=global_function] > :first-child {
+html:not(.list) [data-lang-entity-container=global_function] > h2[data-lang-entity=global_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4136,10 +4136,10 @@ html:not(.list) h2[data-lang-entity=global_function] > :first-child:hover {
   color: #fff;
   background-color: #23b0b0;
 }
-[data-lang-entity-container=interface_function] [data-lang-entity=interface_function] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_function] [data-lang-entity=interface_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=interface_function] > h2[data-lang-entity=interface_function] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_function] > h2[data-lang-entity=interface_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4268,10 +4268,10 @@ html:not(.list) h2[data-lang-entity=interface_function] > :first-child:hover {
   color: #fff;
   background-color: #5bdede;
 }
-[data-lang-entity-container=member_function] [data-lang-entity=member_function] > :first-child {
+html:not(.list) [data-lang-entity-container=member_function] [data-lang-entity=member_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_function] > h2[data-lang-entity=member_function] > :first-child {
+html:not(.list) [data-lang-entity-container=member_function] > h2[data-lang-entity=member_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4400,10 +4400,10 @@ html:not(.list) h2[data-lang-entity=member_function] > :first-child:hover {
   color: #fff;
   background-color: #9d5bde;
 }
-[data-lang-entity-container=tag] [data-lang-entity=tag] > :first-child {
+html:not(.list) [data-lang-entity-container=tag] [data-lang-entity=tag] > :first-child {
   display: none;
 }
-[data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :first-child {
+html:not(.list) [data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :first-child {
   display: inline-block;
 }
 /*
@@ -4532,10 +4532,10 @@ html:not(.list) h2[data-lang-entity=tag] > :first-child:hover {
   color: #fff;
   background-color: #9d5bde;
 }
-[data-lang-entity-container=grouped_tag] [data-lang-entity=grouped_tag] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_tag] [data-lang-entity=grouped_tag] > :first-child {
   display: none;
 }
-[data-lang-entity-container=grouped_tag] > h2[data-lang-entity=grouped_tag] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_tag] > h2[data-lang-entity=grouped_tag] > :first-child {
   display: inline-block;
 }
 /*
@@ -4664,10 +4664,10 @@ html:not(.list) h2[data-lang-entity=grouped_tag] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=variable] [data-lang-entity=variable] > :first-child {
+html:not(.list) [data-lang-entity-container=variable] [data-lang-entity=variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=variable] > h2[data-lang-entity=variable] > :first-child {
+html:not(.list) [data-lang-entity-container=variable] > h2[data-lang-entity=variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -4796,10 +4796,10 @@ html:not(.list) h2[data-lang-entity=variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=global_variable] [data-lang-entity=global_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=global_variable] [data-lang-entity=global_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_variable] > h2[data-lang-entity=global_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=global_variable] > h2[data-lang-entity=global_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -4928,10 +4928,10 @@ html:not(.list) h2[data-lang-entity=global_variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=local_variable] [data-lang-entity=local_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=local_variable] [data-lang-entity=local_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=local_variable] > h2[data-lang-entity=local_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=local_variable] > h2[data-lang-entity=local_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -5060,10 +5060,10 @@ html:not(.list) h2[data-lang-entity=local_variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=member_variable] [data-lang-entity=member_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=member_variable] [data-lang-entity=member_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_variable] > h2[data-lang-entity=member_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=member_variable] > h2[data-lang-entity=member_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -5192,10 +5192,10 @@ html:not(.list) h2[data-lang-entity=member_variable] > :first-child:hover {
   color: #fff;
   background-color: #d5ac31;
 }
-[data-lang-entity-container=adaption] [data-lang-entity=adaption] > :first-child {
+html:not(.list) [data-lang-entity-container=adaption] [data-lang-entity=adaption] > :first-child {
   display: none;
 }
-[data-lang-entity-container=adaption] > h2[data-lang-entity=adaption] > :first-child {
+html:not(.list) [data-lang-entity-container=adaption] > h2[data-lang-entity=adaption] > :first-child {
   display: inline-block;
 }
 /*
@@ -5324,10 +5324,10 @@ html:not(.list) h2[data-lang-entity=adaption] > :first-child:hover {
   color: #fff;
   background-color: #e7ce85;
 }
-[data-lang-entity-container=macro] [data-lang-entity=macro] > :first-child {
+html:not(.list) [data-lang-entity-container=macro] [data-lang-entity=macro] > :first-child {
   display: none;
 }
-[data-lang-entity-container=macro] > h2[data-lang-entity=macro] > :first-child {
+html:not(.list) [data-lang-entity-container=macro] > h2[data-lang-entity=macro] > :first-child {
   display: inline-block;
 }
 /*
@@ -5456,10 +5456,10 @@ html:not(.list) h2[data-lang-entity=macro] > :first-child:hover {
   color: #fff;
   background-color: #999999;
 }
-[data-lang-entity-container=template_parameter] [data-lang-entity=template_parameter] > :first-child {
+html:not(.list) [data-lang-entity-container=template_parameter] [data-lang-entity=template_parameter] > :first-child {
   display: none;
 }
-[data-lang-entity-container=template_parameter] > h2[data-lang-entity=template_parameter] > :first-child {
+html:not(.list) [data-lang-entity-container=template_parameter] > h2[data-lang-entity=template_parameter] > :first-child {
   display: inline-block;
 }
 /*
@@ -5588,10 +5588,10 @@ html:not(.list) h2[data-lang-entity=template_parameter] > :first-child:hover {
   color: #fff;
   background-color: #d531ac;
 }
-[data-lang-entity-container=page] [data-lang-entity=page] > :first-child {
+html:not(.list) [data-lang-entity-container=page] [data-lang-entity=page] > :first-child {
   display: none;
 }
-[data-lang-entity-container=page] > h2[data-lang-entity=page] > :first-child {
+html:not(.list) [data-lang-entity-container=page] > h2[data-lang-entity=page] > :first-child {
   display: inline-block;
 }
 /*
@@ -5723,10 +5723,10 @@ html:not(.list) [data-lang-entity=page] > *:first-child {
   color: #fff;
   background-color: #e785ce;
 }
-[data-lang-entity-container=group] [data-lang-entity=group] > :first-child {
+html:not(.list) [data-lang-entity-container=group] [data-lang-entity=group] > :first-child {
   display: none;
 }
-[data-lang-entity-container=group] > h2[data-lang-entity=group] > :first-child {
+html:not(.list) [data-lang-entity-container=group] > h2[data-lang-entity=group] > :first-child {
   display: inline-block;
 }
 /*
@@ -5858,10 +5858,10 @@ html:not(.list) [data-lang-entity=group] > *:first-child {
   color: #fff;
   background-color: #000000;
 }
-[data-lang-entity-container=tutorial] [data-lang-entity=tutorial] > :first-child {
+html:not(.list) [data-lang-entity-container=tutorial] [data-lang-entity=tutorial] > :first-child {
   display: none;
 }
-[data-lang-entity-container=tutorial] > h2[data-lang-entity=tutorial] > :first-child {
+html:not(.list) [data-lang-entity-container=tutorial] > h2[data-lang-entity=tutorial] > :first-child {
   display: inline-block;
 }
 /*
@@ -5990,10 +5990,10 @@ html:not(.list) h2[data-lang-entity=tutorial] > :first-child:hover {
   color: #fff;
   background-color: #ff0000;
 }
-[data-lang-entity-container=unknown] [data-lang-entity=unknown] > :first-child {
+html:not(.list) [data-lang-entity-container=unknown] [data-lang-entity=unknown] > :first-child {
   display: none;
 }
-[data-lang-entity-container=unknown] > h2[data-lang-entity=unknown] > :first-child {
+html:not(.list) [data-lang-entity-container=unknown] > h2[data-lang-entity=unknown] > :first-child {
   display: inline-block;
 }
 /*
