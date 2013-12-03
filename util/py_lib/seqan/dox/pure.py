@@ -42,7 +42,7 @@ KNOWN_LANGUAGE_ENTITIES = [
     'concept', 'class', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
     'function', 'global_function', 'interface_function', 'member_function',
     'tag', 'grouped_tag', 'variable', 'global_variable', 'member_variable',
-    'adaption', 'macro', 'group', 'page', 'generic', 'tutorial', 'unknown',
+    'adaption', 'macro', 'group', 'page', 'template_parameter', 'tutorial', 'unknown',
     'subclass']
 
 # Properties of language entities.
