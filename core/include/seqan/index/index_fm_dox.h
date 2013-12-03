@@ -373,8 +373,7 @@
  */
 
 /*!
- * @class SequenceBitMaskFibres SequenceBitMask Fibres
- * @headerfile seqan/index.h
+ * @defgroup SequenceBitMaskFibres SequenceBitMask Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
  *
  * @tag SequenceBitMaskFibres#FibreBitStrings
