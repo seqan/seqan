@@ -152,6 +152,7 @@ def main(source_base, binary_base):
               '-st', str(1),
               '-l', str(30),
               '-ith', str(5),
+              '-bth', str(5),
               ],
         to_diff=[(ph.inFile('st1_l30_m.vcf'),
                   ph.outFile('st1_l30_m.vcf'),
