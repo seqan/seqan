@@ -185,7 +185,7 @@ void _setupArgumentParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption(
                   "bth", "breakendThresh", "Allowed initial or ending gap length at begin and end of read that creates a breakend/breakpoint (e.g. for reads extending into insertions)",
                   ArgParseArgument::INTEGER, "INT"));
-    setDefaultValue(parser, "bth", "15");
+    setDefaultValue(parser, "bth", "30");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));

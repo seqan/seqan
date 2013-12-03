@@ -159,6 +159,65 @@ inline bool _isTandemOverlap(TPos const & m1Begin, TPos const & m1End, TPos cons
 }
 
 // Intitialisation of graph structure for combinable StellarMatches of a read
+/*
+template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TVertexDescriptor,
+          typename TBreakpointMap>
+void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+                      TGraph & graph,
+                      TScoreAlloc & matchDistanceScores,
+                      TVertexDescriptor & startVertex,
+                      TVertexDescriptor & endVertex,
+                      TBreakpointMap & queryBreakpoints,
+                      MSplazerOptions const & msplazerOptions)
+*/
+template <typename TSequence, typename TId, typename TMSplazerChain>
+void _initialiseGraphNoBreakend(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+                      TMSplazerChain & chain,
+                      MSplazerOptions const & options)
+{
+    // std::cerr << " Initialising graph structure " << std::endl;
+    typedef typename TMSplazerChain::TGraph TGraph;
+    typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+    typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
+
+    TIterator itStellarMatches = begin(queryMatches.matches);
+    TIterator itEndStellarMatches = end(queryMatches.matches);
+    // The default vertex descriptor is an integer. So if inserted in the same order the vertex descriptor value is
+    // the same as the position of the corresponding vertex within the QueryMatches --> since we can easily iterate
+    // through the QueryMatches and use the iterator we wont keep track of the vertex descriptors
+    for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
+        addVertex(chain.graph);
+
+    // std::cerr << " Created graph " << std::endl;
+    // Add start and end to graph and property map
+    chain.startVertex = addVertex(chain.graph);
+    chain.endVertex = addVertex(chain.graph);
+
+    int cargo = 0;
+    resize(chain.breakpoints.slotLookupTable, 2 * length(queryMatches.matches));
+    // Adding edges to start and end vertices
+    for (unsigned i = 0; i < length(queryMatches.matches); ++i)
+    {
+        cargo = static_cast<int>(queryMatches.matches[i].begin2);
+        if (cargo < (options.initGapThresh + 1))
+        {
+            cargo += chain.matchDistanceScores[i];
+            TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            assignProperty(chain.breakpoints, edge);
+        }
+        cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
+                static_cast<int>(queryMatches.matches[i].end2);
+        if (cargo < (options.initGapThresh + 1))
+        {
+            TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            assignProperty(chain.breakpoints, edge);
+        }
+    }
+}
+
+// Intitialisation of graph structure for combinable StellarMatches of a read
 template <typename TSequence, typename TId, typename TMSplazerChain>
 void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                       TId & queryId,
@@ -191,7 +250,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
     {
         // start vertex
         cargo = static_cast<int>(queryMatches.matches[i].begin2);
-        if (cargo < options.breakendThresh)
+        if (cargo < (options.breakendThresh + 1))
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
@@ -218,7 +277,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
         // end vertex
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
                 static_cast<int>(queryMatches.matches[i].end2);
-        if (cargo < options.breakendThresh)
+        if (cargo < (options.breakendThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
             resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
@@ -386,6 +445,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     startSeqPos = toSourcePosition(stMatch1.row1, toViewPosition(stMatch1.row2, splitPos));
                     endSeqPos = toSourcePosition(stMatch2.row1, toViewPosition(stMatch2.row2, splitPos));
 
+                    // Matches are beeing trimmed during splitAlignment computation --> directly take these positions
                     startSeqPos_test = endPosition(row(match1, 1)) + stMatch1.begin1;
                     endSeqPos_test = beginPosition(row(match2, 1)) + stMatch2.begin1;
                     readStartPos_test = endPosition(row(match1, 0)) + stMatch1.begin2;
@@ -715,6 +775,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                                    (*stMatch2).id,
                                    (*stMatch1).orientation,
                                    (*stMatch2).orientation,
+
                                    /*
                                    startSeqPos,
                                    endSeqPos,
@@ -813,6 +874,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
             if (msplazerOptions.pairedEndMode)
                 _initialiseGraphMatePairs(stellarMatches[i], chain, msplazerOptions);
             else
+                //_initialiseGraphNoBreakend(stellarMatches[i], chain, msplazerOptions);
                 _initialiseGraph(stellarMatches[i], queryIds[i], chain, msplazerOptions);
 
             // Chain compatible matches

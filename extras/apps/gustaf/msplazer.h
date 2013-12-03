@@ -104,6 +104,7 @@ struct MSplazerOptions
         simThresh(0.5),
         gapThresh(10),
         initGapThresh(15),
+        breakendThresh(30),
         breakpointPosRange(6),
         support(2),
         mateSupport(1),
