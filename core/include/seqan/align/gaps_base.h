@@ -88,7 +88,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * stored separately.  Using the clipping is optional and meant for selecting parts of the alignment as a part of the
  * result of a local alignment algorithm.
  *
- * <img src="gaps_illustration.png" title="Illustration of Gaps object and positions with clipping. />
+ * <img src="gaps_illustration.png" title="Illustration of Gaps object and positions with clipping." />
  *
  * In the figure above, the source sequence has seven characters, the gapped sequence has four gaps and thus consists
  * of eleven characters.  The gapped sequence is clipped to start at position 0 in the gapped sequence and to end at
