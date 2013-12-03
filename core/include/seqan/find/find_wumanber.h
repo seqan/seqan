@@ -197,6 +197,8 @@ struct WuManberImpl_
 		//1: first scan: fill me.shift and count verify
 		for (pit = begin(needle(me)); pit != pit_end; ++pit)
 		{
+            if (empty(*pit))
+                continue;  // Skip empty needles.
 			unsigned short hash;
 			TIterator kit = begin(*pit);
 			for (unsigned int i = 0; i <= me.lmin-Q; ++i)
@@ -225,6 +227,8 @@ struct WuManberImpl_
 		pit = begin(needle(me));
 		for (unsigned int i = 0; pit != pit_end; ++i, ++pit)
 		{
+            if (empty(*pit))
+                continue;  // Skip empty needles.
 			unsigned short hash_plus_1;
 			hash_plus_1 = WuManberHash_<TNeedle, Q>::hash(begin(*pit) + me.lmin-Q) + 1;
 
@@ -373,17 +377,12 @@ void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
 	setValue(me.needle, needle_);
 
 	//determine lmin
-	me.lmin = length(needle(me)[0]);
-	for (TNeedleIterator it = begin(needle(me)) + 1; it != end(needle(me)); ++it)
-	{
-		TSize len = length(*it);
-		if (len < me.lmin)
-		{
-			me.lmin = len;
-		}
-	}
-
-	if (me.lmin == 0) return;
+	me.lmin = maxValue<TSize>();
+	for (TNeedleIterator it = begin(needle(me)); it != end(needle(me)); ++it)
+		if (!empty(*it) && length(*it) < me.lmin)  // skipping empty needles
+			me.lmin = length(*it);
+	if (me.lmin == maxValue<TSize>())
+        return;  // only empty needles
 
 	//compute q:
 	unsigned int C = BitsPerValue<TValue>::VALUE;
