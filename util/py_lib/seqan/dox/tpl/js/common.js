@@ -21,16 +21,27 @@
         
         // shows 'open in frameset' link if opened separately
 		if(window == window.parent && window.name != 'list') {
-        	$('#content').prepend('<div class="open-in-frame alert alert-info"><a href="index.html#' + window.location.href.replace(/^.*\/|\.[^.]*$/g, '') + '"><strong>Looking for a different entry?</strong> Unhide the navigation bar and start your search.</a></div>'); 
+        	$('#content').prepend('<div class="open-in-frame alert alert-info"><a href="index.html?p=' + $('html').attr('data-page') + window.location.hash + '"><strong>Looking for a different entry?</strong> Unhide the navigation bar and start your search.</a></div>'); 
         }
         
-        // if loaded in a frame, checks the addresses hash and uses it to load the
-        // specified page in the right frame (e.g. docs.seqan.de/index.html#abc will open abc.html in the main frame) 
+        // if loaded in a frame, checks the URI's p parameter and uses it to load the
+        // specified page in the right frame
+        // (e.g. docs.seqan.de/index.html?p=String#Example will open the example section of the class String in the main frame) 
         if(window != window.parent && window.name == 'list') {
         	try {
         		var redirectTo = null;
         		if($.urlParam('p', window.parent.location)) {
-        			redirectTo = $.urlParam('p', window.parent.location) + '.html';
+        			// TODO: replace by auto generated map
+        			window.lookup = {
+        				'String': 'class_String',
+        				'SequenceConcept': 'concept_SequenceConcept'
+        			};
+        			var p = $.urlParam('p', window.parent.location);
+        			if(window.lookup.hasOwnProperty(p)) {
+        				redirectTo = window.lookup[p] + '.html' + window.parent.location.hash;
+        			} else {
+        				// TODO: start search for p
+        			}
         		} else {
         			var hash = window.parent.location.hash;
         			if(typeof hash === 'string' && hash.length > 1) {
@@ -45,12 +56,23 @@
     		    // some browsers like Chrome don't allow this cross-frame access if using file://
     		}
         }
+        
+        // adds a close link to the search/list frame
+		if(window != window.parent && window.name == 'list') {
+			try {
+        		$('<button class="close" style="position: absolute; top: 5px; right: 5px; line-height: .7em;">&times;</button>').prependTo('body').click(function() {
+        			window.parent.location = window.parent['main'].location;
+        		});
+    		} catch(e) {
+    		    // some browsers like Chrome don't allow this cross-frame access if using file://
+    		}
+        }
  
         // tooltips
         $('[title]:not([href])').tooltip({ container: 'body' });
 
         // smooth scrolling
-        $('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
+        //$('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
         
         // autofocus search field
         if($('html').hasClass('list')) {
@@ -120,6 +142,7 @@
 					$this.pimpLangEntityLabel(langEntity);				
 				});
 			}).each(function() {
+			/*
 			    $(this).find('[data-lang-entity-container]').each(function () {
     			    // only use one headline level
     			    var headlineHandled = false;
@@ -140,6 +163,7 @@
         			    }
     			    }
     			 });
+    			 */
 			});
 		}
 	});
@@ -316,9 +340,9 @@
             highlightEveryTerm: true,
             output: $("#results"),
             data: window.searchData,
-            stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
+            stopWords: [], // filtered out of query
             replaceWords: [ // words replaced in the query
-                ["test_A", "test_B"]
+                []
             ],
             stemWords: [ // silently adds the stem if the corresponding word was found in the query
                 ["javascript", "script"]
