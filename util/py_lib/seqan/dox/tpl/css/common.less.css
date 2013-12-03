@@ -1336,6 +1336,12 @@
 .fa-plus-square-o:before {
   content: "\f196";
 }
+/**
+ * Gives lists a custom bullet point
+ */
+/**
+ * used for less and more links (especially collapsed search result lists and code examples
+ */
 .box {
   border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #fbfbfb;
@@ -1583,9 +1589,9 @@ pre {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.2);
   font-size: .92em;
   line-height: 1.5em;
@@ -1619,6 +1625,135 @@ h3 pre.highlight {
 pre code {
   box-shadow: none;
 }
+pre + .more,
+pre + .less {
+  position: relative;
+  display: block;
+  margin: -1.33em 1px 1px 1px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+pre + .more:hover,
+pre + .less:hover {
+  background-color: rgba(50, 118, 177, 0.6);
+  color: #fff;
+}
+pre + .more {
+  font-size: 1.5em;
+  line-height: .65em;
+  padding: 0 0 0.65em 0;
+  text-align: center;
+  position: relative;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+pre + .more:before {
+  position: absolute;
+  top: 1em;
+  left: 5em;
+  right: auto;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .more:after {
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .more:before,
+pre + .more:after {
+  opacity: 0;
+  font-size: 0.3em;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+pre + .more:hover {
+  text-decoration: none;
+}
+pre + .more:hover:before,
+pre + .more:hover:after {
+  opacity: 1;
+  -webkit-animation: animation2 0.3s linear 0s infinite alternate;
+  animation: animation2 0.3s linear 0s infinite alternate;
+}
+pre + .more:before,
+pre + .more:after {
+  margin-top: .8em;
+}
+pre + .less {
+  font-size: 1.5em;
+  line-height: .65em;
+  padding: 0 0 0.65em 0;
+  text-align: center;
+  position: relative;
+  background-color: transparent;
+}
+pre + .less:before {
+  position: absolute;
+  top: 1em;
+  left: 5em;
+  right: auto;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e113";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .less:after {
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e113";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .less:before,
+pre + .less:after {
+  opacity: 0;
+  font-size: 0.3em;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+pre + .less:hover {
+  text-decoration: none;
+}
+pre + .less:hover:before,
+pre + .less:hover:after {
+  opacity: 1;
+  -webkit-animation: animation2 0.3s linear 0s infinite alternate;
+  animation: animation2 0.3s linear 0s infinite alternate;
+}
+pre + .less:before,
+pre + .less:after {
+  margin-top: -0.8em;
+}
 html code,
 html tt {
   color: #333;
@@ -1631,8 +1766,9 @@ html .overview code {
   box-shadow: none;
   font-size: 1em;
 }
-.highlight {
+html .highlight {
   margin-bottom: 1em;
+  background-color: transparent;
 }
 .path_label {
   text-align: right;
@@ -1645,7 +1781,8 @@ html .overview code {
   color: #000;
 }
 .highlight + .path_label {
-  margin-bottom: 0em;
+  margin-top: -1em;
+  margin-bottom: 1em;
 }
 html.list body {
   padding: 5px 15px;
@@ -2169,15 +2306,16 @@ ul.params {
 #results ol li.more:not(.result) a {
   font-size: 1.5em;
   line-height: .65em;
-  padding: 0 0 0.75em 0;
+  padding: 0 0 0.65em 0;
   text-align: center;
   position: relative;
+  padding-bottom: 0.75em;
 }
-#results ol li.more:not(.result) a:after {
+#results ol li.more:not(.result) a:before {
   position: absolute;
   top: 1em;
-  left: auto;
-  right: 1em;
+  left: 5em;
+  right: auto;
   bottom: auto;
   font-family: 'Glyphicons Halflings';
   content: "\e114";
@@ -2187,26 +2325,39 @@ ul.params {
   display: block;
   font-size: .8em;
 }
-#results ol li.more:not(.result) a:before {
-  margin-left: 5em;
-  content: "\e114";
-}
 #results ol li.more:not(.result) a:after {
-  margin-right: 5em;
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
 }
 #results ol li.more:not(.result) a:before,
 #results ol li.more:not(.result) a:after {
-  margin-top: .8em;
   opacity: 0;
   font-size: 0.3em;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
+}
+#results ol li.more:not(.result) a:hover {
+  text-decoration: none;
 }
 #results ol li.more:not(.result) a:hover:before,
 #results ol li.more:not(.result) a:hover:after {
   opacity: 1;
   -webkit-animation: animation2 0.3s linear 0s infinite alternate;
   animation: animation2 0.3s linear 0s infinite alternate;
+}
+#results ol li.more:not(.result) a:before,
+#results ol li.more:not(.result) a:after {
+  margin-top: .8em;
 }
 #results ol li.result {
   background: transparent;
