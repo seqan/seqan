@@ -25,7 +25,9 @@
 }
 
 
-
+/**
+ * Gives lists a custom bullet point
+ */
 .bullet-icon() {
     .bullet-icon("\e080");
 }
@@ -57,6 +59,40 @@
     font-weight: normal;
     display: block;
     font-size: .8em;
+}
+
+
+/**
+ * used for less and more links (especially collapsed search result lists and code examples
+ */
+.anim-link(@symbol) {
+	font-size: 1.5em;
+	line-height: .65em;
+	padding: 0 0 0.65em 0;
+
+	text-align: center;
+	.bullet-icon("@{symbol}", before, 1em, auto, auto, 5em);
+	.bullet-icon("@{symbol}", after, 1em, 5em, auto, auto);
+	&:before, &:after {
+		opacity: 0;			        
+		font-size: 0.3em;
+		.transition(opacity .5s);
+	}
+
+	&:hover {
+		text-decoration: none;
+		&:before, &:after { opacity: 1; .animation(animation2 .3s linear 0s infinite alternate); }
+	}
+}
+
+.more-link() {
+	.anim-link("\e114");
+	&:before, &:after { margin-top: .8em; }
+}
+
+.less-link() {
+	.anim-link("\e113");
+	&:before, &:after { margin-top: -.8em; }
 }
 
 
