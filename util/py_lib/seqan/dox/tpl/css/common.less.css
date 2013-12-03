@@ -1431,23 +1431,23 @@ h4 {
   font-size: 1em;
   margin-bottom: .3em;
 }
-a:not([href]) {
+a[name]:not([href]) {
   color: inherit;
   text-decoration: none;
 }
-a:not([href]):hover,
-a:not([href]):active {
+a[name]:not([href]):hover,
+a[name]:not([href]):active {
   background-color: transparent !important;
 }
-a:not([href])[title] {
+a[name]:not([href])[title] {
   display: inline-block;
   border-bottom: 1px dotted #222222;
 }
-a:not([href]).error {
+a[name]:not([href]).error {
   background-color: #f00 !important;
   color: #fff !important;
 }
-a:not([href]).error:before {
+a[name]:not([href]).error:before {
   content: "invalid link: ";
 }
 [data-lang-entity] > a:link:first-child,
