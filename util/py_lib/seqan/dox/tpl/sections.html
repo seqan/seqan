@@ -239,7 +239,7 @@ Render the member functions overview
 {% if entry.hasSubEntry('member_function', doc) %}
 
 <div data-lang-entity-container="member_function">
-<h2>{{ qualifier }} Function Overview</h2>
+<h2 data-lang-entity="member_function">{{ qualifier }} Function Overview</h2>
 
 {% if entry.subentries['member_function'] -%}
 <ul class="summary">
@@ -304,7 +304,7 @@ Render the member typedefs overview
 {% if entry.hasSubEntry('member_typedef', doc) %}
 
 <div data-lang-entity-container="member_typedef">
-<h2>{{ qualifier }} Typedef Overview</h2>
+<h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Overview</h2>
 
 {% if entry.subentries['member_typedef'] -%}
 <ul class="summary">
@@ -369,7 +369,7 @@ Render the interface functions overview
 {% if entry.hasSubEntry('interface_function', doc) %}
 
 <div data-lang-entity-container="interface_function">
-<h2>{{ qualifier }} Function Overview</h2>
+<h2 data-lang-entity="interface_function">{{ qualifier }} Function Overview</h2>
 
 {% if entry.subentries['interface_function'] -%}
 <ul class="summary">
@@ -432,7 +432,7 @@ Render the grouped macros overview
 {% macro grouped_macros_ov(entry, doc, qualifier='Grouped') %}
 {% if entry.subentries['grouped_macro'] -%}
 <div class="overview grouped_macros" data-lang-entity-container="macro">
-<h2>{{ qualifier }} Macros Overview</h2>
+<h2 data-lang-entity="macro">{{ qualifier }} Macros Overview</h2>
 
 <table width="100%">
   {% for entry in entry.subentries['grouped_macro'] %}
@@ -459,7 +459,7 @@ Render the interface functions overview
 {% macro grouped_tags_ov(entry, doc, qualifier='Interface') %}
 {% if entry.subentries['grouped_tag'] -%}
 <div data-lang-entity-container="grouped_tag">
-<h2>{{ qualifier }} Tags Overview</h2>
+<h2 data-lang-entity="grouped_tag">{{ qualifier }} Tags Overview</h2>
 
 <ul class="summary">
   {% for entry in entry.subentries['grouped_tag'] %}
@@ -494,7 +494,7 @@ Render the interface metafunctions overview
 {% if entry.hasSubEntry('interface_metafunction', doc) %}
 
 <div data-lang-entity-container="interface_metafunction">
-<h2>{{ qualifier }}  Metafunction Overview</h2>
+<h2 data-lang-entity="interface_metafunction">{{ qualifier }}  Metafunction Overview</h2>
 
 {% if entry.subentries['interface_metafunction'] -%}
 <ul class="summary">
@@ -557,7 +557,7 @@ Render the member variables overview
 {% if entry.hasSubEntry('member_variable', doc) %}
 
 <div data-lang-entity-container="member_variables">
-<h2>{{ qualifier }} Variable Overview</h2>
+<h2 data-lang-entity="member_variables">{{ qualifier }} Variable Overview</h2>
 
 {% if entry.subentries['member_variable'] -%}
 <ul class="summary">
@@ -613,7 +613,7 @@ Render the member variables overview
 {% if entry.hasSubEntry('variables', doc) %}
 
 <div data-lang-entity-container="enum">
-<h2>Enum Values Overview</h2>
+<h2 data-lang-entity="enum">Enum Values Overview</h2>
 
 {% if entry.subentries['variable'] -%}
 <ul class="summary">
@@ -653,7 +653,7 @@ Render the grouped macros details
 {% if entry.subentries['grouped_tag'] -%}
 
 <div class="grouped_tags_details" data-lang-entity-container="grouped_tag">
-  <h2>{{ qualifier }} Tags Detail</h2>
+  <h2 data-lang-entity="grouped_tag">{{ qualifier }} Tags Detail</h2>
 
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
@@ -726,8 +726,8 @@ Render the grouped macros details
 
 {% macro grouped_macros(entry, doc, qualifier='Grouped') %}
 {% if entry.subentries['grouped_macro'] -%}
-<div class="details grouped_macros" data-lang-entity-container="macro">
-<h2>{{ qualifier }} Macros Detail</h2>
+<div class="details grouped_macros" data-lang-entity-container="grouped_macro">
+<h2 data-lang-entity="grouped_macro">{{ qualifier }} Macros Detail</h2>
 
 {% for subentry in entry.subentries['grouped_macro'] %}
 <h3 id="{{ subentry.name|escape_anchor }}">
@@ -822,7 +822,7 @@ Render the interface functions details
 {% macro interface_functions(entry, qualifier='Interface', key='interface_function') %}
 {% if entry.subentries[key] -%}
 <div class="{{ key|e }}_details" data-lang-entity-container="{{ key|e }}">
-  <h2>{{ qualifier }} Functions Detail</h2>
+  <h2 data-lang-entity="{{ key|e }}">{{ qualifier }} Functions Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
@@ -873,7 +873,7 @@ Render the interface functions details
     <ul class="param">
       {% for param in subentry.tparams %}
       <li>
-        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
         <div class="inline">{{ param.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -887,7 +887,7 @@ Render the interface functions details
     <ul class="param">
       {% for param in subentry.params %}
       <li>
-        <span class="name"><tt>{{ param.name|e }}</tt></span>
+        <span class="name"><code>{{ param.name|e }}</code></span>
         {% if param.in_out %}
         ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
         {% endif %}
@@ -906,7 +906,7 @@ Render the interface functions details
     <ul class="return">
       {% for ret in subentry.returns %}
       <li>
-        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
         <div class="inline">{{ ret.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -940,7 +940,7 @@ Render the member typedef details
 {% macro member_typedefs(entry, qualifier='Member', key='member_typedef') %}
 {% if entry.subentries[key] -%}
 <div class="{{ key|e }}_defails" data-lang-entity-container="{{ key|e }}">
-  <h2>{{ qualifier }} Typedef Detail</h2>
+  <h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
@@ -985,7 +985,7 @@ Render the interface metafunctions details
 {% macro interface_metafunctions(entry, qualifier='Interface') %}
 {% if entry.subentries['interface_metafunction'] -%}
 <div class="interface_metafunction_details" data-lang-entity-container="{{ key|e }}">
-<h2>{{ qualifier }} Metafunctions Detail</h2>
+<h2 data-lang-entity="interface_metafunction">{{ qualifier }} Metafunctions Detail</h2>
 
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
@@ -1035,7 +1035,7 @@ Render the interface metafunctions details
     <ul class="param">
       {% for param in subentry.tparams %}
       <li>
-        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
         <div class="inline">{{ param.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -1050,7 +1050,7 @@ Render the interface metafunctions details
     <ul class="return">
       {% for ret in subentry.returns %}
       <li>
-        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
         <div class="inline">{{ ret.desc|transtext(False) }}</div>
       </li>
       {% endfor %}
@@ -1074,7 +1074,7 @@ Render the member variables details
 {% macro member_variables(entry, qualifier='Member') %}
 {% if entry.subentries['member_variable'] -%}
 <div class="member_variable_details" data-lang-entity-container="member_variable">
-  <h2>{{ qualifier }} Variables Detail</h2>
+  <h2 data-lang-entity="member_variable">{{ qualifier }} Variables Detail</h2>
 
   {% for subentry in entry.subentries['member_variable'] %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
@@ -1103,7 +1103,7 @@ Render the member enum details
 {% macro enum_values(entry, qualifier='Member') %}
 {% if entry.subentries['variable'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
-  <h2>Enum Values Detail</h2>
+  <h2 data-lang-entity="member_enum">Enum Values Detail</h2>
 
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
@@ -1138,7 +1138,7 @@ Render the parameter details.
   <ul class="param">
     {% for param in entry.params %}
     <li>
-      <span class="name"><tt>{{ param.name|e }}</tt></span>
+      <span class="name"><code>{{ param.name|e }}</code></span>
       {% if param.in_out %}
       ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
       {% endif %}
@@ -1161,14 +1161,14 @@ Render the template parameter details.
 {% macro tparams(entry) %}
 
 {% if entry.tparams %}
-<div data-lang-entity-container="generic">
-<h2>Template Parameters</h2>
+<div data-lang-entity-container="template_parameter">
+<h2 data-lang-entity="template_parameter">Template Parameters</h2>
 
 <div class="tags">
   <ul class="param">
     {% for param in entry.tparams %}
     <li>
-      <span class="name"><tt>{{ param.type|e }}</tt></span>
+      <span class="name"><code>{{ param.type|e }}</code></span>
       &mdash;
       <div class="inline">{{ param.desc|transtext(False) }}</div>
     </li>
@@ -1189,13 +1189,13 @@ Render the template parameter overview.
 {% if entry.tparams %}
 
 {% if entry.tparams %}
-<div data-lang-entity-container="generic">
-  <h2>Template Parameters</h2>
+<div data-lang-entity-container="template_parameter">
+  <h2 data-lang-entity="template_parameter">Template Parameters</h2>
 
   <ul class="summary">
     {% for param in entry.tparams %}
     <li class="public">
-      <span class="summary_signature"><code><a href="#" data-lang-entity="generic">{{ param.type|e }}</a></code></span>
+      <span class="summary_signature"><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></span>
       <span class="summary_desc">{{ param.desc|transtext(False) }}</span>
     </li>
     {% endfor %}
@@ -1220,7 +1220,7 @@ Render the template parameter details.
   <ul class="param">
     {% for ret in entry.returns %}
     <li class="public">
-      <span class="type">{{ ret.type|e }}</span> &mdash;
+      <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
       {{ ret.desc|transtext(False) }}
     </li>
     {% endfor %}
