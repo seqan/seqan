@@ -46,8 +46,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @class RankDictionaryFibres RankDictionary Fibres
- * @headerfile seqan/index.h
+ * @defgroup RankDictionaryFibres RankDictionary Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
  *
  * @tag RankDictionaryFibres#FibreRanks
