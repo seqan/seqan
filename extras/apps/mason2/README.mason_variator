@@ -177,14 +177,17 @@ breakpoints on the haplotypes with variants.
 
 For this, you can give the parameter --out-breakpoints with a path to a TSV
 file to write.  This file contains three columns, one for the contig/reference
-name, one for the variant name ("." if missing) , and one for the (1-based)
-position on the contig.
+name, one for the variant id, and one for the (1-based) position on the
+contig.
 
 The following shows an example with 4 breakpoints, two on each haplotype,
-spread over three chromosomes.
+spread over three chromosomes.  Note that there are two breakpoints for the
+insertion on chrI, also two for the inversion on chrII and one breakpoint for
+the deletion on chrIII.  Missing variant names are given with dots (".").
 
-  #ref     id         pos
-  chrI/1   sim_var_0  2051
-  chrII/0  sim_var_1  2451
-  chrII/0  .          3573
-  chrIII/1 .          9297
+  #ref     id             pos
+  chrI/1   sim_sv_indel_1 2051
+  chrI/1   sim_sv_indel_1 2351
+  chrII/0  sim_inv_1      2451
+  chrII/0  sim_inv_2      3573
+  chrIII/1 sim_sv_indel_2 9297
