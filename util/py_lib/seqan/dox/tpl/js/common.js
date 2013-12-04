@@ -4,11 +4,6 @@
 (function ($) {
 
 	$(document).ready(function () {
-	
-	    // only keep top-level nav items
-	    // exceptions: examples and mainpage
-	    $('html:not(.page_mainpage) #toc ol ol').filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; }).remove();
-		$('html.page_languageentities #toc ol ol').remove();
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
@@ -79,7 +74,7 @@
         	window.setTimeout(function() {
         		$('input[type=search]').focus();
         	}, 50);
-        }
+		}
     });
 
 })(jQuery);
@@ -255,6 +250,64 @@
     	if(!$('html').hasClass('list')) {
     		$('html').pimpLangEntityLabels();
     	}
+    });
+
+})(jQuery);
+
+
+
+
+
+/**
+ * Code Collapse
+ */
+(function ($) {
+    $.fn.extend({
+		codeCollapse: function(options) {
+		
+			var settings = $.extend({
+				maxHeight: 200,
+				moreLink: '<a class="more">More ...</a>',
+				lessLink: '<a class="less">Less ...</a>'
+			}, options);
+			
+			function createMoreLink(box) {
+				var $box = $(box);
+				
+				$box.height('auto');
+				var expandedHeight = $box.outerHeight();
+				if(expandedHeight <= settings.maxHeight) return;
+				
+				$box.height(settings.maxHeight).css({ overflow: 'hidden' });
+				return $(settings.moreLink).click(function() {
+					var $link = $(this);
+					$box.animate({'height': expandedHeight }, 400);
+					$link.fadeOut(400, function() { $link.replaceWith(createLessLink(box)); });
+				});
+			}
+			
+			function createLessLink(box) {
+				var $box = $(box);
+				
+				return $(settings.lessLink).click(function() {
+					var $link = $(this);
+					$box.animate({'height': settings.maxHeight }, 400);
+					$link.fadeOut(400, function() { $link.replaceWith(createMoreLink(box)); });
+				});
+			}
+		
+			return this.each(function() {
+				$(createMoreLink(this)).insertAfter(this);
+			});
+		}
+	});
+
+    $(document).ready(function () {
+        $('.highlight pre').codeCollapse({
+        	maxHeight: 77,
+        	moreLink: '<a class="more">...</a>',
+        	lessLink: '<a class="less">&nbsp;</a>'
+        });
     });
 
 })(jQuery);
