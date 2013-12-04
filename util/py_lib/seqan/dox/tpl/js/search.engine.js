@@ -358,7 +358,7 @@ and based on the Tipue Search, http://www.tipue.com
                         var subentries = [];
                         for (var i = 0; i < subentriesTmp.length; ++i)
                         {
-                            var idx = subentriesTmp[i].indexOf(" ");
+                            var idx = subentriesTmp[i].indexOf(" ") + 1;
                             if (idx < 0)
                                 idx = 0;
                             subentries.push(subentriesTmp[i].substr(idx));
