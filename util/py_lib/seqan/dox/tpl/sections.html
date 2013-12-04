@@ -264,7 +264,7 @@ Render the member functions overview
 
 {% for cl in entry.all_extended %}
 {% if doc.top_level_entries[cl].subentries['member_function'] %}
-<h3>{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_function'] %}
@@ -277,7 +277,7 @@ Render the member functions overview
 {% if entry.kind == 'class' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_function'] %}
-<h3>{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_function'] %}
@@ -330,7 +330,7 @@ Render the member typedefs overview
 
 {% for cl in entry.all_extended %}
 {% if doc.top_level_entries[cl].subentries['member_typedef'] %}
-<h3>{{ qualifier }} Typedefs Inherited From {{ cl|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_typedef'] %}
@@ -343,7 +343,7 @@ Render the member typedefs overview
 {% if entry.kind == 'class' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_typedef'] %}
-<h3>{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_typedef'] %}
@@ -394,7 +394,7 @@ Render the interface functions overview
 
 {% for cl in entry.all_extended %}
 {% if doc.top_level_entries[cl].subentries['interface_function'] %}
-<h3>{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_function'] %}
@@ -407,7 +407,7 @@ Render the interface functions overview
 {% if entry.kind == 'class' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_function'] %}
-<h3>{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_function'] %}
@@ -519,7 +519,7 @@ Render the interface metafunctions overview
 
 {% for cl in entry.all_extended %}
 {% if doc.top_level_entries[cl].subentries['interface_metafunction'] %}
-<h3>{{ qualifier }} Metafunctions Inherited From {{ cl|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction'] %}
@@ -532,7 +532,7 @@ Render the interface metafunctions overview
 {% if entry.kind == 'class' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_metafunction'] %}
-<h3>{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['interface_metafunction'] %}
@@ -574,7 +574,7 @@ Render the member variables overview
 
 {% for cl in entry.all_extended %}
 {% if doc.top_level_entries[cl].subentries['member_variable'] %}
-<h3>{{ qualifier }} Variables Inherited From {{ cl|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Variables Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[cl].subentries['member_variable'] %}
@@ -588,7 +588,7 @@ Render the member variables overview
 {% if entry.kind == 'class' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_variable'] %}
-<h3>{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
+<h3 data-toc="hidden">{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
   {% for entry in doc.top_level_entries[co].subentries['member_variable'] %}
@@ -657,7 +657,7 @@ Render the grouped macros details
 
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
+    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
       <code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
@@ -730,7 +730,7 @@ Render the grouped macros details
 <h2 data-lang-entity="grouped_macro">{{ qualifier }} Macros Detail</h2>
 
 {% for subentry in entry.subentries['grouped_macro'] %}
-<h3 id="{{ subentry.name|escape_anchor }}">
+<h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}">
   {{ subentry.name|e }}
   <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
 </h3>
@@ -826,7 +826,7 @@ Render the interface functions details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -944,7 +944,7 @@ Render the member typedef details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -989,7 +989,7 @@ Render the interface metafunctions details
 
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
-  <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
+  <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
     <code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -1078,7 +1078,7 @@ Render the member variables details
 
   {% for subentry in entry.subentries['member_variable'] %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
+    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
       <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
@@ -1107,7 +1107,7 @@ Render the member enum details
 
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
+    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
       <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
