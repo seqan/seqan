@@ -1238,6 +1238,7 @@ public:
     {
         // Collect small indel records at the same position.
         seqan::String<SmallIndelRecord> records;
+        unsigned idx = smallIndelIdx - 1;
         do
         {
             if (options.verbosity >= 3)
@@ -1263,7 +1264,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
         vcfRecord.beginPos = front(records).pos;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, smallIndelIdx));
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, idx));
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
         // Build genotype infos.
