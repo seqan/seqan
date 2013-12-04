@@ -3,8 +3,8 @@
 {% block title %}{{ klass.title|e }}{% endblock %}
 
 {% block content %}
-{% if klass.isSubclass %}
-<h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Subclass</a>
+{% if klass.isSpecialization %}
+<h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#specialization">Spec</a>
 {% else %}
 <h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a>
 {% endif -%}

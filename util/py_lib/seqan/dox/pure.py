@@ -39,11 +39,10 @@ DEFAULT_COLORS = {
 # The known language entities.
 KNOWN_LANGUAGE_ENTITIES = [
     'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
-    'concept', 'class', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
+    'concept', 'class', 'specialization', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
     'function', 'global_function', 'interface_function', 'member_function',
     'tag', 'grouped_tag', 'variable', 'global_variable', 'member_variable',
-    'adaption', 'macro', 'group', 'page', 'template_parameter', 'tutorial', 'unknown',
-    'subclass']
+    'adaption', 'macro', 'group', 'page', 'template_parameter', 'tutorial', 'unknown']
 
 # Properties of language entities.
 LANGUAGE_ENTITIES_PROPERTIES = ['name', 'ideogram', 'color', 'description', 'belongsTo']

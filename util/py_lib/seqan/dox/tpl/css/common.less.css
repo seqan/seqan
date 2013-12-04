@@ -1336,6 +1336,12 @@
 .fa-plus-square-o:before {
   content: "\f196";
 }
+/**
+ * Gives lists a custom bullet point
+ */
+/**
+ * used for less and more links (especially collapsed search result lists and code examples
+ */
 .box {
   border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #fbfbfb;
@@ -1364,13 +1370,11 @@ h1 {
 h1 a {
   color: #000000;
 }
-h2,
-h3#Examples {
+h2 {
   margin-top: 2.1em;
   font-size: 1.4em;
 }
-html:not(.list) h2,
-html:not(.list) h3#Examples {
+html:not(.list) h2 {
   text-transform: uppercase;
   padding-bottom: 0.3em;
   position: relative;
@@ -1379,9 +1383,7 @@ html:not(.list) h3#Examples {
   padding-left: 3em;
 }
 html:not(.list) h2:before,
-html:not(.list) h3#Examples:before,
-html:not(.list) h2:after,
-html:not(.list) h3#Examples:after {
+html:not(.list) h2:after {
   position: absolute;
   bottom: .44em;
   overflow: hidden;
@@ -1391,38 +1393,36 @@ html:not(.list) h3#Examples:after {
   margin-left: 1em;
   background-color: #999;
 }
-html:not(.list) h2:before,
-html:not(.list) h3#Examples:before {
+html:not(.list) h2:before {
   margin-left: -3em;
   width: 2em;
   text-align: right;
 }
-html.list h2,
-html.list h3#Examples {
+html.list h2 {
   border-bottom: none;
 }
-h3:not(#Examples) {
+h3 {
   font-size: 1.1em;
   line-height: 1.2em;
   font-weight: 700;
   border-bottom: 1px dotted #222222;
 }
-h3:not(#Examples) [data-lang-entity] > :first-child {
+h3 [data-lang-entity] > :first-child {
   display: none;
 }
-h3:not(#Examples).signature {
+h3.signature {
   text-decoration: none;
 }
-h3:not(#Examples).signature[data-lang-entity] > a:first-child {
+h3.signature[data-lang-entity] > a:first-child {
   font-weight: 500;
   margin: 0 0 -1px 0;
   display: none;
 }
-h3:not(#Examples).signature[data-lang-entity] > pre {
+h3.signature[data-lang-entity] > pre {
   border-top-left-radius: 0;
   margin-top: -1px;
 }
-h3:not(#Examples).signature code {
+h3.signature code {
   box-shadow: none;
   white-space: pre;
   padding-left: 0;
@@ -1431,23 +1431,23 @@ h4 {
   font-size: 1em;
   margin-bottom: .3em;
 }
-a:not([href]) {
+a[name]:not([href]) {
   color: inherit;
   text-decoration: none;
 }
-a:not([href]):hover,
-a:not([href]):active {
+a[name]:not([href]):hover,
+a[name]:not([href]):active {
   background-color: transparent !important;
 }
-a:not([href])[title] {
+a[name]:not([href])[title] {
   display: inline-block;
   border-bottom: 1px dotted #222222;
 }
-a:not([href]).error {
+a[name]:not([href]).error {
   background-color: #f00 !important;
   color: #fff !important;
 }
-a:not([href]).error:before {
+a[name]:not([href]).error:before {
   content: "invalid link: ";
 }
 [data-lang-entity] > a:link:first-child,
@@ -1583,9 +1583,9 @@ pre {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.2);
   font-size: .92em;
   line-height: 1.5em;
@@ -1619,6 +1619,135 @@ h3 pre.highlight {
 pre code {
   box-shadow: none;
 }
+pre + .more,
+pre + .less {
+  position: relative;
+  display: block;
+  margin: -1.33em 1px 1px 1px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+pre + .more:hover,
+pre + .less:hover {
+  background-color: rgba(50, 118, 177, 0.6);
+  color: #fff;
+}
+pre + .more {
+  font-size: 1.5em;
+  line-height: .65em;
+  padding: 0 0 0.65em 0;
+  text-align: center;
+  position: relative;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+pre + .more:before {
+  position: absolute;
+  top: 1em;
+  left: 5em;
+  right: auto;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .more:after {
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .more:before,
+pre + .more:after {
+  opacity: 0;
+  font-size: 0.3em;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+pre + .more:hover {
+  text-decoration: none;
+}
+pre + .more:hover:before,
+pre + .more:hover:after {
+  opacity: 1;
+  -webkit-animation: animation2 0.3s linear 0s infinite alternate;
+  animation: animation2 0.3s linear 0s infinite alternate;
+}
+pre + .more:before,
+pre + .more:after {
+  margin-top: .8em;
+}
+pre + .less {
+  font-size: 1.5em;
+  line-height: .65em;
+  padding: 0 0 0.65em 0;
+  text-align: center;
+  position: relative;
+  background-color: transparent;
+}
+pre + .less:before {
+  position: absolute;
+  top: 1em;
+  left: 5em;
+  right: auto;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e113";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .less:after {
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e113";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
+}
+pre + .less:before,
+pre + .less:after {
+  opacity: 0;
+  font-size: 0.3em;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+pre + .less:hover {
+  text-decoration: none;
+}
+pre + .less:hover:before,
+pre + .less:hover:after {
+  opacity: 1;
+  -webkit-animation: animation2 0.3s linear 0s infinite alternate;
+  animation: animation2 0.3s linear 0s infinite alternate;
+}
+pre + .less:before,
+pre + .less:after {
+  margin-top: -0.8em;
+}
 html code,
 html tt {
   color: #333;
@@ -1631,8 +1760,9 @@ html .overview code {
   box-shadow: none;
   font-size: 1em;
 }
-.highlight {
+html .highlight {
   margin-bottom: 1em;
+  background-color: transparent;
 }
 .path_label {
   text-align: right;
@@ -1645,7 +1775,8 @@ html .overview code {
   color: #000;
 }
 .highlight + .path_label {
-  margin-bottom: 0em;
+  margin-top: -1em;
+  margin-bottom: 1em;
 }
 html.list body {
   padding: 5px 15px;
@@ -2169,15 +2300,16 @@ ul.params {
 #results ol li.more:not(.result) a {
   font-size: 1.5em;
   line-height: .65em;
-  padding: 0 0 0.75em 0;
+  padding: 0 0 0.65em 0;
   text-align: center;
   position: relative;
+  padding-bottom: 0.75em;
 }
-#results ol li.more:not(.result) a:after {
+#results ol li.more:not(.result) a:before {
   position: absolute;
   top: 1em;
-  left: auto;
-  right: 1em;
+  left: 5em;
+  right: auto;
   bottom: auto;
   font-family: 'Glyphicons Halflings';
   content: "\e114";
@@ -2187,26 +2319,39 @@ ul.params {
   display: block;
   font-size: .8em;
 }
-#results ol li.more:not(.result) a:before {
-  margin-left: 5em;
-  content: "\e114";
-}
 #results ol li.more:not(.result) a:after {
-  margin-right: 5em;
+  position: absolute;
+  top: 1em;
+  left: auto;
+  right: 5em;
+  bottom: auto;
+  font-family: 'Glyphicons Halflings';
+  content: "\e114";
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  display: block;
+  font-size: .8em;
 }
 #results ol li.more:not(.result) a:before,
 #results ol li.more:not(.result) a:after {
-  margin-top: .8em;
   opacity: 0;
   font-size: 0.3em;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
+}
+#results ol li.more:not(.result) a:hover {
+  text-decoration: none;
 }
 #results ol li.more:not(.result) a:hover:before,
 #results ol li.more:not(.result) a:hover:after {
   opacity: 1;
   -webkit-animation: animation2 0.3s linear 0s infinite alternate;
   animation: animation2 0.3s linear 0s infinite alternate;
+}
+#results ol li.more:not(.result) a:before,
+#results ol li.more:not(.result) a:after {
+  margin-top: .8em;
 }
 #results ol li.result {
   background: transparent;
@@ -2401,10 +2546,10 @@ html.page_languageentities div[data-lang-entity-container] + div[data-lang-entit
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=typedef] [data-lang-entity=typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=typedef] [data-lang-entity=typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=typedef] > h2[data-lang-entity=typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=typedef] > h2[data-lang-entity=typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2533,10 +2678,10 @@ html:not(.list) h2[data-lang-entity=typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=grouped_typedef] [data-lang-entity=grouped_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_typedef] [data-lang-entity=grouped_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=grouped_typedef] > h2[data-lang-entity=grouped_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_typedef] > h2[data-lang-entity=grouped_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2665,10 +2810,10 @@ html:not(.list) h2[data-lang-entity=grouped_typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=global_typedef] [data-lang-entity=global_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=global_typedef] [data-lang-entity=global_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_typedef] > h2[data-lang-entity=global_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=global_typedef] > h2[data-lang-entity=global_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2797,10 +2942,10 @@ html:not(.list) h2[data-lang-entity=global_typedef] > :first-child:hover {
   color: #fff;
   background-color: #5bde7c;
 }
-[data-lang-entity-container=member_typedef] [data-lang-entity=member_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=member_typedef] [data-lang-entity=member_typedef] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_typedef] > h2[data-lang-entity=member_typedef] > :first-child {
+html:not(.list) [data-lang-entity-container=member_typedef] > h2[data-lang-entity=member_typedef] > :first-child {
   display: inline-block;
 }
 /*
@@ -2929,10 +3074,10 @@ html:not(.list) h2[data-lang-entity=member_typedef] > :first-child:hover {
   color: #fff;
   background-color: #b02323;
 }
-[data-lang-entity-container=concept] [data-lang-entity=concept] > :first-child {
+html:not(.list) [data-lang-entity-container=concept] [data-lang-entity=concept] > :first-child {
   display: none;
 }
-[data-lang-entity-container=concept] > h2[data-lang-entity=concept] > :first-child {
+html:not(.list) [data-lang-entity-container=concept] > h2[data-lang-entity=concept] > :first-child {
   display: inline-block;
 }
 /*
@@ -3061,10 +3206,10 @@ html:not(.list) h2[data-lang-entity=concept] > :first-child:hover {
   color: #fff;
   background-color: #de5b5b;
 }
-[data-lang-entity-container=class] [data-lang-entity=class] > :first-child {
+html:not(.list) [data-lang-entity-container=class] [data-lang-entity=class] > :first-child {
   display: none;
 }
-[data-lang-entity-container=class] > h2[data-lang-entity=class] > :first-child {
+html:not(.list) [data-lang-entity-container=class] > h2[data-lang-entity=class] > :first-child {
   display: inline-block;
 }
 /*
@@ -3184,6 +3329,138 @@ html:not(.list) h2[data-lang-entity=class] > :first-child:hover {
     border-top: none;
   }
 }
+[data-lang-entity=specialization] > :first-child {
+  background-color: transparent;
+  color: #de5b5b;
+  border-color: #da4646;
+}
+[data-lang-entity=specialization] > :first-child:hover {
+  color: #fff;
+  background-color: #de5b5b;
+}
+html:not(.list) [data-lang-entity-container=specialization] [data-lang-entity=specialization] > :first-child {
+  display: none;
+}
+html:not(.list) [data-lang-entity-container=specialization] > h2[data-lang-entity=specialization] > :first-child {
+  display: inline-block;
+}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
+html.page_languageentities [data-lang-entity-container=specialization] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
+}
+html.page_languageentities dt[data-lang-entity=specialization] {
+  padding-left: 0;
+}
+html.page_languageentities dt[data-lang-entity=specialization]:before {
+  display: none;
+}
+html.page_languageentities dt[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+}
+html.page_languageentities dt[data-lang-entity=specialization] > :first-child:hover {
+  background-color: color;
+}
+html.page_languageentities dt[data-lang-entity=specialization]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=specialization] {
+  padding-left: 0;
+}
+html:not(.list) h2[data-lang-entity=specialization]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=specialization]:after {
+  background-color: #de5b5b;
+  background-image: none;
+}
+html:not(.list) h2[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+  margin-left: 0;
+  margin-right: 1.5em;
+  top: -0.35em;
+  font-size: .54em;
+}
+html:not(.list) h2[data-lang-entity=specialization] > :first-child:hover {
+  background-color: color;
+}
+[data-lang-entity-container=specialization] label {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  background-color: #de5b5b;
+  border: 1px solid #da4646;
+}
+.popover[data-lang-entity-container=specialization] .popover-title {
+  background-color: #de5b5b;
+}
+#results li[data-lang-entity-container=specialization] > span[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+}
+#results li[data-lang-entity-container=specialization] > span[data-lang-entity=specialization] > :first-child:hover {
+  background-color: #d53131;
+}
+#results li[data-lang-entity-container=specialization] > ol {
+  background-color: #fff;
+  background-image: none;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #de5b5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+#results li[data-lang-entity-container=specialization] > ol [data-lang-entity] > :first-child {
+  display: none;
+}
+#results li[data-lang-entity-container=specialization] > ol li.more:not(.result) {
+  border-top: 1px dotted #222222;
+  border-color: #de5b5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=specialization] > ol li.more:not(.result) {
+    border-top: none;
+  }
+}
 [data-lang-entity=enum] > :first-child {
   background-color: transparent;
   color: #efb0b0;
@@ -3193,10 +3470,10 @@ html:not(.list) h2[data-lang-entity=class] > :first-child:hover {
   color: #fff;
   background-color: #efb0b0;
 }
-[data-lang-entity-container=enum] [data-lang-entity=enum] > :first-child {
+html:not(.list) [data-lang-entity-container=enum] [data-lang-entity=enum] > :first-child {
   display: none;
 }
-[data-lang-entity-container=enum] > h2[data-lang-entity=enum] > :first-child {
+html:not(.list) [data-lang-entity-container=enum] > h2[data-lang-entity=enum] > :first-child {
   display: inline-block;
 }
 /*
@@ -3325,10 +3602,10 @@ html:not(.list) h2[data-lang-entity=enum] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=metafunction] [data-lang-entity=metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=metafunction] [data-lang-entity=metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=metafunction] > h2[data-lang-entity=metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=metafunction] > h2[data-lang-entity=metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3457,10 +3734,10 @@ html:not(.list) h2[data-lang-entity=metafunction] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=global_metafunction] [data-lang-entity=global_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=global_metafunction] [data-lang-entity=global_metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_metafunction] > h2[data-lang-entity=global_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=global_metafunction] > h2[data-lang-entity=global_metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3589,10 +3866,10 @@ html:not(.list) h2[data-lang-entity=global_metafunction] > :first-child:hover {
   color: #fff;
   background-color: #5b7cde;
 }
-[data-lang-entity-container=interface_metafunction] [data-lang-entity=interface_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_metafunction] [data-lang-entity=interface_metafunction] > :first-child {
   display: none;
 }
-[data-lang-entity-container=interface_metafunction] > h2[data-lang-entity=interface_metafunction] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_metafunction] > h2[data-lang-entity=interface_metafunction] > :first-child {
   display: inline-block;
 }
 /*
@@ -3721,10 +3998,10 @@ html:not(.list) h2[data-lang-entity=interface_metafunction] > :first-child:hover
   color: #fff;
   background-color: #5bdede;
 }
-[data-lang-entity-container=function] [data-lang-entity=function] > :first-child {
+html:not(.list) [data-lang-entity-container=function] [data-lang-entity=function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=function] > h2[data-lang-entity=function] > :first-child {
+html:not(.list) [data-lang-entity-container=function] > h2[data-lang-entity=function] > :first-child {
   display: inline-block;
 }
 /*
@@ -3853,10 +4130,10 @@ html:not(.list) h2[data-lang-entity=function] > :first-child:hover {
   color: #fff;
   background-color: #85e7e7;
 }
-[data-lang-entity-container=global_function] [data-lang-entity=global_function] > :first-child {
+html:not(.list) [data-lang-entity-container=global_function] [data-lang-entity=global_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_function] > h2[data-lang-entity=global_function] > :first-child {
+html:not(.list) [data-lang-entity-container=global_function] > h2[data-lang-entity=global_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -3985,10 +4262,10 @@ html:not(.list) h2[data-lang-entity=global_function] > :first-child:hover {
   color: #fff;
   background-color: #23b0b0;
 }
-[data-lang-entity-container=interface_function] [data-lang-entity=interface_function] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_function] [data-lang-entity=interface_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=interface_function] > h2[data-lang-entity=interface_function] > :first-child {
+html:not(.list) [data-lang-entity-container=interface_function] > h2[data-lang-entity=interface_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4117,10 +4394,10 @@ html:not(.list) h2[data-lang-entity=interface_function] > :first-child:hover {
   color: #fff;
   background-color: #5bdede;
 }
-[data-lang-entity-container=member_function] [data-lang-entity=member_function] > :first-child {
+html:not(.list) [data-lang-entity-container=member_function] [data-lang-entity=member_function] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_function] > h2[data-lang-entity=member_function] > :first-child {
+html:not(.list) [data-lang-entity-container=member_function] > h2[data-lang-entity=member_function] > :first-child {
   display: inline-block;
 }
 /*
@@ -4249,10 +4526,10 @@ html:not(.list) h2[data-lang-entity=member_function] > :first-child:hover {
   color: #fff;
   background-color: #9d5bde;
 }
-[data-lang-entity-container=tag] [data-lang-entity=tag] > :first-child {
+html:not(.list) [data-lang-entity-container=tag] [data-lang-entity=tag] > :first-child {
   display: none;
 }
-[data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :first-child {
+html:not(.list) [data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :first-child {
   display: inline-block;
 }
 /*
@@ -4381,10 +4658,10 @@ html:not(.list) h2[data-lang-entity=tag] > :first-child:hover {
   color: #fff;
   background-color: #9d5bde;
 }
-[data-lang-entity-container=grouped_tag] [data-lang-entity=grouped_tag] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_tag] [data-lang-entity=grouped_tag] > :first-child {
   display: none;
 }
-[data-lang-entity-container=grouped_tag] > h2[data-lang-entity=grouped_tag] > :first-child {
+html:not(.list) [data-lang-entity-container=grouped_tag] > h2[data-lang-entity=grouped_tag] > :first-child {
   display: inline-block;
 }
 /*
@@ -4513,10 +4790,10 @@ html:not(.list) h2[data-lang-entity=grouped_tag] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=variable] [data-lang-entity=variable] > :first-child {
+html:not(.list) [data-lang-entity-container=variable] [data-lang-entity=variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=variable] > h2[data-lang-entity=variable] > :first-child {
+html:not(.list) [data-lang-entity-container=variable] > h2[data-lang-entity=variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -4645,10 +4922,10 @@ html:not(.list) h2[data-lang-entity=variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=global_variable] [data-lang-entity=global_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=global_variable] [data-lang-entity=global_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=global_variable] > h2[data-lang-entity=global_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=global_variable] > h2[data-lang-entity=global_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -4777,10 +5054,10 @@ html:not(.list) h2[data-lang-entity=global_variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=local_variable] [data-lang-entity=local_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=local_variable] [data-lang-entity=local_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=local_variable] > h2[data-lang-entity=local_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=local_variable] > h2[data-lang-entity=local_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -4909,10 +5186,10 @@ html:not(.list) h2[data-lang-entity=local_variable] > :first-child:hover {
   color: #fff;
   background-color: #9dde5b;
 }
-[data-lang-entity-container=member_variable] [data-lang-entity=member_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=member_variable] [data-lang-entity=member_variable] > :first-child {
   display: none;
 }
-[data-lang-entity-container=member_variable] > h2[data-lang-entity=member_variable] > :first-child {
+html:not(.list) [data-lang-entity-container=member_variable] > h2[data-lang-entity=member_variable] > :first-child {
   display: inline-block;
 }
 /*
@@ -5041,10 +5318,10 @@ html:not(.list) h2[data-lang-entity=member_variable] > :first-child:hover {
   color: #fff;
   background-color: #d5ac31;
 }
-[data-lang-entity-container=adaption] [data-lang-entity=adaption] > :first-child {
+html:not(.list) [data-lang-entity-container=adaption] [data-lang-entity=adaption] > :first-child {
   display: none;
 }
-[data-lang-entity-container=adaption] > h2[data-lang-entity=adaption] > :first-child {
+html:not(.list) [data-lang-entity-container=adaption] > h2[data-lang-entity=adaption] > :first-child {
   display: inline-block;
 }
 /*
@@ -5173,10 +5450,10 @@ html:not(.list) h2[data-lang-entity=adaption] > :first-child:hover {
   color: #fff;
   background-color: #e7ce85;
 }
-[data-lang-entity-container=macro] [data-lang-entity=macro] > :first-child {
+html:not(.list) [data-lang-entity-container=macro] [data-lang-entity=macro] > :first-child {
   display: none;
 }
-[data-lang-entity-container=macro] > h2[data-lang-entity=macro] > :first-child {
+html:not(.list) [data-lang-entity-container=macro] > h2[data-lang-entity=macro] > :first-child {
   display: inline-block;
 }
 /*
@@ -5305,10 +5582,10 @@ html:not(.list) h2[data-lang-entity=macro] > :first-child:hover {
   color: #fff;
   background-color: #999999;
 }
-[data-lang-entity-container=template_parameter] [data-lang-entity=template_parameter] > :first-child {
+html:not(.list) [data-lang-entity-container=template_parameter] [data-lang-entity=template_parameter] > :first-child {
   display: none;
 }
-[data-lang-entity-container=template_parameter] > h2[data-lang-entity=template_parameter] > :first-child {
+html:not(.list) [data-lang-entity-container=template_parameter] > h2[data-lang-entity=template_parameter] > :first-child {
   display: inline-block;
 }
 /*
@@ -5437,10 +5714,10 @@ html:not(.list) h2[data-lang-entity=template_parameter] > :first-child:hover {
   color: #fff;
   background-color: #d531ac;
 }
-[data-lang-entity-container=page] [data-lang-entity=page] > :first-child {
+html:not(.list) [data-lang-entity-container=page] [data-lang-entity=page] > :first-child {
   display: none;
 }
-[data-lang-entity-container=page] > h2[data-lang-entity=page] > :first-child {
+html:not(.list) [data-lang-entity-container=page] > h2[data-lang-entity=page] > :first-child {
   display: inline-block;
 }
 /*
@@ -5572,10 +5849,10 @@ html:not(.list) [data-lang-entity=page] > *:first-child {
   color: #fff;
   background-color: #e785ce;
 }
-[data-lang-entity-container=group] [data-lang-entity=group] > :first-child {
+html:not(.list) [data-lang-entity-container=group] [data-lang-entity=group] > :first-child {
   display: none;
 }
-[data-lang-entity-container=group] > h2[data-lang-entity=group] > :first-child {
+html:not(.list) [data-lang-entity-container=group] > h2[data-lang-entity=group] > :first-child {
   display: inline-block;
 }
 /*
@@ -5707,10 +5984,10 @@ html:not(.list) [data-lang-entity=group] > *:first-child {
   color: #fff;
   background-color: #000000;
 }
-[data-lang-entity-container=tutorial] [data-lang-entity=tutorial] > :first-child {
+html:not(.list) [data-lang-entity-container=tutorial] [data-lang-entity=tutorial] > :first-child {
   display: none;
 }
-[data-lang-entity-container=tutorial] > h2[data-lang-entity=tutorial] > :first-child {
+html:not(.list) [data-lang-entity-container=tutorial] > h2[data-lang-entity=tutorial] > :first-child {
   display: inline-block;
 }
 /*
@@ -5839,10 +6116,10 @@ html:not(.list) h2[data-lang-entity=tutorial] > :first-child:hover {
   color: #fff;
   background-color: #ff0000;
 }
-[data-lang-entity-container=unknown] [data-lang-entity=unknown] > :first-child {
+html:not(.list) [data-lang-entity-container=unknown] [data-lang-entity=unknown] > :first-child {
   display: none;
 }
-[data-lang-entity-container=unknown] > h2[data-lang-entity=unknown] > :first-child {
+html:not(.list) [data-lang-entity-container=unknown] > h2[data-lang-entity=unknown] > :first-child {
   display: inline-block;
 }
 /*
