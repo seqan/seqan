@@ -107,6 +107,10 @@ class ProcDoc(object):
     def registerEntry(self, x):
         """Register an entry."""
         name = x.name
+        if name == '':
+            msg = 'Entry must not have an empty name.'
+            raise DocumentationBuildException(token=x.raw_entry.first_token,
+                                              msg=msg)
         if name.endswith(';'):
             name = name[:-1]
         if name in self.entries:
