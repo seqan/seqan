@@ -20,7 +20,7 @@ We call the above mentioned things like variables, functions, metafunctions, cla
 
 When programming SeqAn, they are often used for giving short names to complicated, nested template instantiations or to the result of a <a href="#metafunction">metafunction</a>.
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 The following example shows you how the lengthy type <code>Iterator&lt;String&lt;char, Alloc&lt;&gt; &gt;::Type</code> is shortened to <code>TIt</code>.
 (@link ContainerConcept#Iterator @endlink is a <a href="#metafunction">metafunction</a> that returns the iterator type of a container).
@@ -43,11 +43,11 @@ In contrast to Java interfaces, C++ concepts can be added to custom types and bu
 
 Concepts are currently still a proposal for a future C++ language release and thus not respected by IDEs and compilers. As a consequence, your IDE can't tell you if a concept's function is actually implemented for a given <a href="#class">class</a> or not. You may still expect the implementation to exist for an implementing <a href="#class">class</a> because this is what the SeqAn library guarantees. Functions and metafunctions that are part of a concept are called <a href="#interface_function">interface functions</a> respectively <a href="#interface_metafunction">interface metafunctions</a>.
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 You can expect the globally implemented interface functions @link appendValue @endlink, @link append @endlink, @link assignValue @endlink and many others to work with @link String @endlink because they are part of @link SequenceConcept @endlink which is implemented by @link String @endlink.
 
-@subsection External Resources
+@htmlonly <h3 data-toc="hidden">External Resources</h3> @endhtmlonly
 
 See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
 
@@ -60,7 +60,7 @@ In SeqAn, classes usually have few or no technical member functions. Instead, th
 
 SeqAn provides many class templates that are roughly comparable to Java Generic.
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 The following example shows a class template for objects that can hold two values of the same type.
 
@@ -81,10 +81,10 @@ public:
 
 <code>Pair</code> can now be instantiated using <code>Pair&lt;int&gt; myPair1(42, 115);</code> or <code>Pair&lt;float&gt;(3.141, 2.72);</code>.
 
-@subsection Variants
+@htmlonly <h3 data-toc="hidden">Variants</h3> @endhtmlonly
 
 <dl>
-  <dt><a name="subclass">specialization</a></dt>
+  <dt data-lang-entity="specialization"><a name="specialization">specialization</a></dt>
 	<dd><p>Specializations are similar to subclasses but the mechanism uses template specialization instead of C++ subclassing.</p>
 	    <p>In SeqAn, this is widely used in containers such as strings or indices to achieve good performance.</p>
 	</dd>
@@ -94,7 +94,7 @@ public:
 	</dd>
 </dl>
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 The following shows a class <code>Klass</code> that is specialized two times using the tags <code>OneKlass</code> and <code>AnotherKlass</code>.
 
@@ -130,7 +130,7 @@ public:
 
 In SeqAn, they are mainly used to define the integral value of the <code>VALUE</code> member of a metafunction, e.g. <code>Log2&lt;32&gt;::VALUE</code>.
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 In the following example, the enum <code>MyEnum</code> with the constants <code>ENUM_VALUE1</code> and <code>ENUM_VALUE2</code> is defined.
 
@@ -171,7 +171,7 @@ In SeqAn, they are mainly used to retrieve the appropriate type for a specific t
 See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
 
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 The following two examples iterate over each character of <code>str</code> and print it.
 The first example is not recommended but purely demonstrates the use of a metafunction.
@@ -195,7 +195,7 @@ for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
 std::cout << "\n";
 @endcode
 
-@subsection Variants
+@htmlonly <h3 data-toc="hidden">Variants</h3> @endhtmlonly
 
 <dl>
   <dt data-lang-entity="global_metafunction"><a name="global_metafunction">Global Metafunction</a></dt>
@@ -213,7 +213,7 @@ std::cout << "\n";
 
 <strong>Functions are a common, fundamental C++ feature and the basic building block for programs.</strong>
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 A runnable C++ program always contains a <code>main</code> function.
 
@@ -224,7 +224,7 @@ int main()
 }
 @endcode
 
-<h3>Variants</h3>
+<h3 data-toc="hidden">Variants</h3>
 
 <dl>
   <dt data-lang-entity="global_function"><a name="global_function">Global Function</a></dt>
@@ -256,7 +256,7 @@ Variables are a standard C++ feature.
 
 Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</b>.  This can be used to make a class from an external library follow a SeqAn concept.
 
-@subsection Example
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 The following shows a small part of the adaption of <code>std::string</code> to the @link ContainerConcept @endlink: the implementation of the length functions.
 
@@ -281,7 +281,7 @@ Macros are pieces of code evaluated by the C preprocessor.
 
 All SeqAn macros are prefixed with <tt>SEQAN_</tt>.
 
-@htmlonly <h3>Example</h3> @endhtmlonly
+@htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
 @code{.cpp}
 // If SeqAn would provide a macro to compute the square of a number, it would
