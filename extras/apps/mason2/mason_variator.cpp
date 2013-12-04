@@ -1150,7 +1150,7 @@ public:
         resize(inTos, 4, false);
         seqan::Dna5String tos;
         resize(tos, options.numHaplotypes, from);
-        unsigned idx = snpsIdx;
+        unsigned idx = snpsIdx - 1;
         do
         {
             SEQAN_ASSERT(snpRecord.to != from);
