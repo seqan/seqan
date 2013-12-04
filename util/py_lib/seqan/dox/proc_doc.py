@@ -484,13 +484,13 @@ class ProcClass(ProcCodeEntry):
         self.typedefs.append(t)
 
     @property
-    def isSubclass(self):
+    def isSpecialization(self):
         return not not self.extends
 
     @property
     def kind(self):
-        if self.isSubclass:
-            return 'subclass'
+        if self.isSpecialization:
+            return 'specialization'
         else:
             return 'class'
 
@@ -1502,7 +1502,7 @@ class DocProcessor(object):
         known extending concepts, (c) all known implementing classes.
 
         For classes, this is the list of (a) all implemented concepts, (b) all
-        direct known subclasses, (c) all extended classes.
+        direct known specializations, (c) all extended classes.
 
         @param doc: The ProcDoc object with the classes and concept.
 
