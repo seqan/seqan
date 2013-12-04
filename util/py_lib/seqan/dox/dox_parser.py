@@ -127,6 +127,9 @@ class GenericSimpleClauseState(object):
     def entered(self, token):
         self.first_token = token
 
+    def left(self):
+        pass
+
     def getEntry(self):
         """Returns the Entry for the brief clause."""
         if self.normalize_tokens:
@@ -345,6 +348,9 @@ class SectionState(object):
     def entered(self, token):
         self.first_token = token
 
+    def left(self):
+        pass
+
     def handle(self, token):
         # One or more empty lines end a @section raw_doc.Raw
         if token.type in ['EMPTYLINE', 'EOF']:
@@ -380,6 +386,9 @@ class IncludeState(object):
     def entered(self, token):
         self.first_token = token
 
+    def left(self):
+        pass
+
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
             self.parent.endClause()
@@ -407,6 +416,9 @@ class SnippetState(object):
 
     def entered(self, token):
         self.first_token = token
+
+    def left(self):
+        pass
 
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
@@ -492,6 +504,9 @@ class GenericDocState(object):
         self.name_tokens = []
         self.title_tokens = []
 
+    def left(self):
+        pass
+
     def handle(self, token):
         #print 'state = class, substate = %s, clause_state %s' % (self.substate, self.clause_state)
         if self.substate == 'first_line':
@@ -559,6 +574,8 @@ class GenericDocState(object):
                     msg = 'Invalid command %s, expecting one of %s.'
                     args = (repr(token.val), map(dox_tokens.transToken, self.allowed_commands))
                     raise ParserError(token, msg % args)
+                if self.clause_state:
+                    self.clause_state.left()
                 self.clause_state = state_map[token.type]
                 self.clause_state.entered(token)
                 #print '>>> SWITCHING TO CLAUSE STATE %s' % self.clause_state
@@ -736,6 +753,12 @@ class VariableState(GenericDocState):
         self.type_tokens = []
         self.name_tokens = []
 
+    def left(self):
+        if not self.type_tokens or not self.name_tokens:
+            msg = ('Missing variable type or name! Must be given as "@var '
+                   '<type> <name>".')
+            raise ParserError(self.first_token, msg)
+
     def handle(self, token):
         # Handle first state here and the remaining in the parent class.
         #print >>sys.stderr, token.type, repr(token.val), self.type_read
@@ -863,6 +886,7 @@ class Parser(object):
     def leaveState(self, state):
         #print 'leaving state %s' % state
         if self.states[-1] == state:
+            self.handlers[state].left()
             if self.handlers[state].getEntry():
                 self.documentation.addEntry(self.handlers[state].getEntry())
             return self.states.pop()
