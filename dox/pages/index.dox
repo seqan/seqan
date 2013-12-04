@@ -23,7 +23,7 @@ Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/s
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <table>
-            <tr><td><ul><li><a href="https://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>
