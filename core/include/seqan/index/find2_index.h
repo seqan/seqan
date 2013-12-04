@@ -270,6 +270,9 @@ find(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, T
         // Backtrack.
         do
         {
+            // Termination.
+            if (isRoot(textIt)) break;
+
             goPrevious(patternIt);
             finder._score -= _getVertexScore(finder);
         }
