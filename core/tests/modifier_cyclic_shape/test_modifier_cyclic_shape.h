@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_modified_string_construct)
     TConstModString con;
     TConstModString con2(s);
     con = con2;
-// TODO:
+// TODO(meiers):
 // compile error due to missing assignment operator in the general
 // ModifiedString, see Ticket #1118
 //    con = mod2;

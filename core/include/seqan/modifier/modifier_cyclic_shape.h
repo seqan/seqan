@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
+// Modified Iterator and Modified String for CyclicShapes
+// ==========================================================================
 
 #ifndef SEQAN_HEADER_MODIFIER_SHAPE_H
 #define SEQAN_HEADER_MODIFIER_SHAPE_H
@@ -39,639 +41,659 @@
 namespace seqan
 {
 
-    // ==========================================================================
-    // Forwards
-    // ==========================================================================
+// NOTE(meiers): Only a few functions are documented, the rest should be derived
 
-    // ==========================================================================
-    // Classes, Enums, Typedefs
-    // ==========================================================================
+// ==========================================================================
+// Classes, Enums, Typedefs
+// ==========================================================================
 
-    // --------------------------------------------------------------------------
-    // Class ModCyclicShape Iterator
-    // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Class ModCyclicShape Iterator
+// --------------------------------------------------------------------------
+
+template <typename TSpec>
+struct ModCyclicShape
+{};
 
 /*!
  * @class ModCyclicShapeModifiedIterator ModCyclicShape ModifiedIterator
  * @extends ModifiedIterator
  * @headerfile <seqan/modifier.h>
  *
- * @brief Iterates over a string leaving out gaps as stated by a CyclicShape.
+ * @brief Iterates over a string leaving out don't-care-positions defined in 
+ *      CyclicShape.
  *
  * @signature template <typename THost, typename TSpec>
  *            class ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >;
  *
- * @tparam THost    The host iterator.
+ * @tparam THost The host iterator.
  * @tparam TSpec The specialization of @link CyclicShape @endlink.
  *
- * @section Remarks
- *
- * The save way to create this ModifiedIterator is to use the begin/end functions of the ModifiedString.
- * Note that when constructed on a host iterator, the CyclicShape is not taken into account and you have
- * to set it up yourself (e.g. a CyclicShape starting with a 0 would skip the position the
- * current position of the host iterator).
+ * Using ModCyclicShape you can <i>mask</i> characters at certain positions of a text.
+ * A CylcicShape defines these positions (so called don't-care-positions) and the 
+ * CyclicShape is repeated till the end of the string. The iterator behaves as if 
+ * the don't-care-positions had been deleted without actually copying the string.
  */
 
+template <typename THost, typename TSpec>
+class ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >
+{
+public:
+    typedef typename Cargo<ModifiedIterator>::Type TCargo_;
+    typedef CyclicShape<TSpec>  TCyclicShape;
+
+    THost _host;
+    /*!
+     * @var ModCyclicShapeModifiedIterator::_cargo 
+     * @brief Copy of a Cargo object, which is a CyclicShape.
+     * 
+     * The Cargo is a CyclicShape. This can be very heavy in case of GenericCyclicShape,
+     * so prefer the lightweight FixedCyclicShape.
+     */
+    TCargo_ _cargo;
+    /*!
+     * @var ModCyclicShapeModifiedIterator::_idx 
+     * @brief Internal position inside <tt>diffs</tt> of the CylicShape.
+     */
+    typename Size<TCyclicShape>::Type _idx;
+
+    /*!
+     * @fn ModCyclicShapeModifiedIterator::ModifiedIterator
+     * @brief The constructor.
+     *
+     * @signature ModifiedIterator::ModifiedIterator();
+     * @signature ModifiedIterator::ModifiedIterator(host);
+     * @signature ModifiedIterator::ModifiedIterator(otherModIter);
+     * @param[in] host Host iterator to set.
+     * @param[in] otherModIter ModifiedIterator which may differ in its host type. 
+     *      Copy construction.
+     *
+     * The safe way to create this ModifiedIterator is to use the <tt>begin</tt> and <tt>end<tt> 
+     * functions of the ModifiedString or to copy construct. 
+     * When directly initialized with a host iterator,
+     * the CyclicShape is not yet taken into account and you have to set it up yourself,
+     * for example a CyclicShape starting with a 01... will have skip the first position.
+     * So you would have to reset the host iterator using <tt>++host(myCyclicShape)</tt>.
+     * Use <tt>cargo()</tt> to assign a shape to the iterator.
+     */
+    ModifiedIterator() : _idx(0)
+    {}
+
+    template <typename TOtherHost>
+    ModifiedIterator(ModifiedIterator<TOtherHost, ModCyclicShape<CyclicShape<TSpec> > > const & origin):
+    _host(origin._host), _cargo(origin._cargo), _idx(origin._idx)
+    {}
+
+    template <typename T>
+    explicit
+    ModifiedIterator(T const & host) : _host(host), _idx(0)
+    {}
+};
+
+    
 /*!
  * @class ModCyclicShapeModifiedString ModCyclicShape ModifiedString
  * @extends ModifiedString
  * @headerfile <seqan/modifier.h>
  *
- * @brief A string leaving out gaps as stated by a CyclicShape.
+ * @brief A string leaving out don't-care-positions defined in
+ *      CyclicShape.
  *
  * @signature template <typename THost, typename TSpec>
- *            class ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >
+ *            class ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >;
  *
- * @tparam THost    The host iterator.
+ * @tparam THost The host string.
  * @tparam TSpec The specialization of CyclicShape.
+ *
+ * Explanation here.
  *
  * @section Example
  *
- * @code{.cpp}
- * CharString s = "Veni Vidi Vici";
- * CyclicShape<GenericShape> shape;
- * stringToCyclicShape(shape, "10010");
+ * include a snippet here
  *
- * ModifiedString<CharString, ModCyclicShape<CyclicShape<GenericShape> > > modStr(s, shape);
- * Iterator<ModifiedString<CharString, ModCyclicShape<CyclicShape<GenericShape> > > >::Type iter = begin(modStr);
- * Iterator<ModifiedString<CharString, ModCyclicShape<CyclicShape<GenericShape> > > >::Type iterEnd = end(modStr);
- *
- * for(; iter != iterEnd; ++iter)
- *     std::cout << *iter;
- * std::cout << std::endl;     // Output: ViViVi
- * @endcode
+ * @see CyclicShape
  */
 
-    template <typename TSpec>
-    struct ModCyclicShape
-    {};
+template <typename THost, typename TSpec>
+class ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >
+{
+public:
+    typedef typename Pointer_<THost>::Type                  THostPointer_;
+    typedef typename Cargo<ModifiedString>::Type            TCargo_;
+    typedef CyclicShape<TSpec>                              TCyclicShape;
 
-    template <typename THost, typename TSpec>
-    class ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >
+    mutable THostPointer_ _host;
+    TCargo_ _cargo;
+
+    // Default constructor.
+    ModifiedString()
+    {}
+
+    // Construct with the actual host.
+    explicit
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host))
+    {}
+
+    // Construct with the actual host; variant with shape.
+    explicit
+    ModifiedString(typename Parameter_<THost>::Type host, TCyclicShape const & shape) :
+        _host(_toPointer(host)), _cargo(shape)
+    {}
+
+    // Constructor for creating a ModifiedString with const host with a non-const host.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
+        _host(_toPointer(host))
     {
-    public:
-        typedef typename Cargo<ModifiedIterator>::Type TCargo_;
-        typedef CyclicShape<TSpec>  TCyclicShape;
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-        THost _host;
-        TCargo_ _cargo;
-        typename Size<TCyclicShape>::Type _idx; // position in diff array of CyclicShape
-
-        ModifiedIterator() : _idx(0)
-        {}
-
-        template <typename TOtherHost>
-        ModifiedIterator(ModifiedIterator<TOtherHost, ModCyclicShape<CyclicShape<TSpec> > > const & origin):
-        _host(origin._host), _cargo(origin._cargo), _idx(origin._idx)
-        {}
-
-        template <typename T>
-        explicit
-        ModifiedIterator(T const & host) : _host(host), _idx(0)
-        {}
-    };
-
-
-    template <typename THost, typename TSpec>
-    class ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >
+    // Constructor for creating a ModifiedString with const host with a non-const host; variant with shape.
+    template <typename THost_>
+    explicit ModifiedString(THost_ & host,
+                            TCyclicShape const & shape,
+                            SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
+        _host(_toPointer(host)), _cargo(shape)
     {
-    public:
-        typedef typename Pointer_<THost>::Type                  THostPointer_;
-        typedef typename Cargo<ModifiedString>::Type            TCargo_;
-        typedef CyclicShape<TSpec>                              TCyclicShape;
-
-        mutable THostPointer_ _host;
-        TCargo_ _cargo;
-
-        // Default constructor.
-        ModifiedString()
-        {}
-
-        // Construct with the actual host.
-        explicit
-        ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host))
-        {}
-
-        // Construct with the actual host; variant with shape.
-        explicit
-        ModifiedString(typename Parameter_<THost>::Type host, TCyclicShape const & shape) :
-            _host(_toPointer(host)), _cargo(shape)
-        {}
-
-        // Constructor for creating a ModifiedString with const host with a non-const host.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ & host,
-                       SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host))
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
-
-        // Constructor for creating a ModifiedString with const host with a non-const host; variant with shape.
-        template <typename THost_>
-        explicit ModifiedString(THost_ & host,
-                                TCyclicShape const & shape,
-                                SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host)), _cargo(shape)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+        ignoreUnusedVariableWarning(dummy);
+    }
 
 #ifdef SEQAN_CXX11_STANDARD
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ && host,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
-                                            typename RemoveReference<THost>::Type,
-                                            typename RemoveReference<THost_>::Type >)) :
-        _host(host)                         // TODO: need std::forward<THost_>(host) here?
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ && host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
+                                        typename RemoveReference<THost>::Type,
+                                        typename RemoveReference<THost_>::Type >)) :
+    _host(host)                         // TODO(meiers): need std::forward<THost_>(host) here?
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
-        // shape.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ && host,
-                       TCyclicShape const & shape,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
-                                            typename RemoveReference<THost>::Type,
-                                            typename RemoveReference<THost_>::Type >)) :
-        _host(host), _cargo(shape)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
+    // shape.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ && host,
+                   TCyclicShape const & shape,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
+                                        typename RemoveReference<THost>::Type,
+                                        typename RemoveReference<THost_>::Type >)) :
+    _host(host), _cargo(shape)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
 #else // SEQAN_CXX11_STANDARD
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ & host,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
+        _host(host)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ const & host,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+        _host(host)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
-        // shape.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ & host,
-                       TCyclicShape const & shape,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host), _cargo(shape)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
+    // shape.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   TCyclicShape const & shape,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
+        _host(host), _cargo(shape)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-        // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant with shape.
-        template <typename THost_>
-        explicit
-        ModifiedString(THost_ const & host,
-                       TCyclicShape const & shape,
-                       SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo(shape)
-        {
-            ignoreUnusedVariableWarning(dummy);
-        }
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant with shape.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   TCyclicShape const & shape,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+        _host(host), _cargo(shape)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
 #endif // SEQAN_CXX11_STANDARD
 
-        template <typename TPos>
-        inline typename Reference<ModifiedString>::Type
-        operator[](TPos pos)
-        {
-            return value(*this, pos);
-        }
-
-        template <typename TPos>
-        inline typename Reference<ModifiedString const>::Type
-        operator[](TPos pos) const
-        {
-            return value(*this, pos);
-        }
-    };
-
-    // ==========================================================================
-    // Metafunctions
-    // ==========================================================================
-
-    // --------------------------------------------------------------------------
-    // Metafunction Cargo                       [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    struct Cargo<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >
+    template <typename TPos>
+    inline typename Reference<ModifiedString>::Type
+    operator[](TPos pos)
     {
-        typedef CyclicShape<TSpec> Type;
-    };
-
-    // --------------------------------------------------------------------------
-    // Metafunction Cargo                         [ModCyclicShape ModifiedString]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    struct Cargo<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >
-    {
-        typedef CyclicShape<TSpec> Type;
-    };
-
-    // --------------------------------------------------------------------------
-    // Metafunction Iterator                      [ModCyclicShape ModifiedString]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Standard>
-    {
-        typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
-    };
-
-    // TODO: Rooted ?
-
-    template <typename THost, typename TSpec>
-    struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Standard>
-    {
-        typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
-    };
-
-    // --------------------------------------------------------------------------
-    // Metafunction DefaultIteratorSpec           [ModCyclicShape ModifiedString]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    struct DefaultIteratorSpec< ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >
-    {
-        typedef Standard Type;
-    };
-
-    // ==========================================================================
-    // Functions
-    // ==========================================================================
-
-
-    // --------------------------------------------------------------------------
-    // Function begin()                           [ModCyclicShape ModifiedString]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec, typename TTagSpec>
-    inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
-    begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
-    {
-        typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
-        TResult tmp(begin(host(me), tag_));
-        _copyCargo(tmp, me);
-        host(tmp) += cargo(me).loffset;
-        return tmp;
+        return value(*this, pos);
     }
 
-    template <typename THost, typename TSpec, typename TTagSpec>
-    inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
-    begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
+    template <typename TPos>
+    inline typename Reference<ModifiedString const>::Type
+    operator[](TPos pos) const
     {
-        typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
-        TResult tmp(begin(host(me), tag_));
-        _copyCargo(tmp, me);
-        host(tmp) += cargo(me).loffset;
-        return tmp;
+        return value(*this, pos);
     }
+};
+
+// ==========================================================================
+// Metafunctions
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction Cargo                       [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct Cargo<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >
+{
+    typedef CyclicShape<TSpec> Type;
+};
+
+// --------------------------------------------------------------------------
+// Metafunction Cargo                         [ModCyclicShape ModifiedString]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct Cargo<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >
+{
+    typedef CyclicShape<TSpec> Type;
+};
+
+// --------------------------------------------------------------------------
+// Metafunction Iterator                      [ModCyclicShape ModifiedString]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Standard>
+{
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
+};
+
+// TODO(meiers): Rooted ?
+
+template <typename THost, typename TSpec>
+struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Standard>
+{
+    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
+};
+
+// --------------------------------------------------------------------------
+// Metafunction DefaultIteratorSpec           [ModCyclicShape ModifiedString]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct DefaultIteratorSpec< ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >
+{
+    typedef Standard Type;
+};
+
+// ==========================================================================
+// Functions
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Function begin()                           [ModCyclicShape ModifiedString]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
+begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
+    TResult tmp(begin(host(me), tag_));
+    _copyCargo(tmp, me);
+    host(tmp) += cargo(me).loffset;
+    return tmp;
+}
+
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
+begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
+    TResult tmp(begin(host(me), tag_));
+    _copyCargo(tmp, me);
+    host(tmp) += cargo(me).loffset;
+    return tmp;
+}
 
 
 
 
-    // --------------------------------------------------------------------------
-    // Function end()                             [ModCyclicShape ModifiedString]
-    //  ... uses goEnd()
-    // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Function end()                             [ModCyclicShape ModifiedString]
+//  ... uses goEnd()
+// --------------------------------------------------------------------------
 
 
-    template <typename THost, typename TSpec, typename TTagSpec>
-    inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
-    end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
+end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
+    TResult tmp(end(host(me), tag_));
+    _copyCargo(tmp, me);
+    goEnd(tmp, me);
+    return tmp;
+}
+
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
+end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
+    TResult tmp(end(host(me), tag_));
+    _copyCargo(tmp, me);
+    goEnd(tmp, me);
+    return tmp;
+}
+
+
+// --------------------------------------------------------------------------
+// Function goNext()                        [ModCyclicShape ModifiedIterator]
+//  ... is used by operator++
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline void
+goNext(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    host(me) += cargo(me).diffs[me._idx];
+    ++me._idx;
+if (me._idx == weight(cargo(me))) me._idx = 0;
+    // TDOD: replace modulo by small if
+}
+
+// --------------------------------------------------------------------------
+// Function goPrevious()                    [ModCyclicShape ModifiedIterator]
+//  ... is used by operator--
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline void
+goPrevious(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    if(me._idx==0) me._idx = weight(cargo(me));
+--me._idx;
+    host(me) -= cargo(me).diffs[me._idx];
+}
+
+// --------------------------------------------------------------------------
+// Function goBegin()                       [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline void
+goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    goBegin(host(me));
+    me._idx =0;
+    host(me) += cargo(me).loffset;
+}
+
+template <typename THost, typename TSpec, typename TContainer>
+inline void
+goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer & cont)
+{
+    goBegin(host(me), host(cont));
+    me._idx =0;
+    host(me) += cargo(me).loffset;
+}
+
+template <typename THost, typename TSpec, typename TContainer>
+inline void
+goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer const & cont)
+{
+    goBegin(host(me), host(cont));
+    me._idx =0;
+    host(me) += cargo(me).loffset;
+}
+
+// --------------------------------------------------------------------------
+// Function goEnd()                         [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline void
+goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    goBegin(host(me));
+
+    THost _end (host(me));
+    goEnd(_end);
+
+    typedef typename Position<THost>::Type TPos;
+    TPos len = _end - host(me);
+    TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
+
+    for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
+        pos += cargo(me).diffs[me._idx];
+
+    host(me) += pos;
+}
+
+template <typename THost, typename TSpec, typename TContainer>
+inline void
+goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer & cont)
+{
+    goBegin(host(me), host(cont));
+
+    typedef typename Position<THost>::Type TPos;
+    TPos len = length(host(cont));
+    TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
+
+    for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
+        pos += cargo(me).diffs[me._idx];
+
+    host(me) += pos;
+}
+
+template <typename THost, typename TSpec, typename TContainer>
+inline void
+goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer const & cont)
+{
+    goBegin(host(me), host(cont));
+
+    typedef typename Position<THost>::Type TPos;
+    TPos len = length(host(cont));
+    TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
+
+    for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
+        pos += cargo(me).diffs[me._idx];
+
+    host(me) += pos;
+}
+
+
+// --------------------------------------------------------------------------
+// Function operator+=()                    [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TDelta>
+inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
+operator+=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TDelta delta_)
+{
+    typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
+    typedef typename Position<TIterator>::Type TPosition;
+    TPosition delta = delta_;
+
+    if (delta == 0)
     {
-        typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
-        TResult tmp(end(host(me), tag_));
-        _copyCargo(tmp, me);
-        goEnd(tmp, me);
-        return tmp;
+        return me;
     }
-
-    template <typename THost, typename TSpec, typename TTagSpec>
-    inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
-    end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
+    else if ( delta == 1)
     {
-        typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
-        TResult tmp(end(host(me), tag_));
-        _copyCargo(tmp, me);
-        goEnd(tmp, me);
-        return tmp;
+        goNext(me);
+        return me;
     }
-
-
-    // --------------------------------------------------------------------------
-    // Function goNext()                        [ModCyclicShape ModifiedIterator]
-    //  ... is used by operator++
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline void
-    goNext(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+    else if (delta > 1)                         // runtime O(Q)
     {
-        host(me) += cargo(me).diffs[me._idx];
-        ++me._idx;
-	if (me._idx == weight(cargo(me))) me._idx = 0;
-        // TDOD: replace modulo by small if
-    }
+        // jump full patterns
+        host(me) += (delta / weight(cargo(me))) * cargo(me).span;
 
-    // --------------------------------------------------------------------------
-    // Function goPrevious()                    [ModCyclicShape ModifiedIterator]
-    //  ... is used by operator--
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline void
-    goPrevious(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
-    {
-        if(me._idx==0) me._idx = weight(cargo(me));
-	--me._idx;
-        host(me) -= cargo(me).diffs[me._idx];
-    }
-
-    // --------------------------------------------------------------------------
-    // Function goBegin()                       [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline void
-    goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
-    {
-        goBegin(host(me));
-        me._idx =0;
-        host(me) += cargo(me).loffset;
-    }
-
-    template <typename THost, typename TSpec, typename TContainer>
-    inline void
-    goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer & cont)
-    {
-        goBegin(host(me), host(cont));
-        me._idx =0;
-        host(me) += cargo(me).loffset;
-    }
-
-    template <typename THost, typename TSpec, typename TContainer>
-    inline void
-    goBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer const & cont)
-    {
-        goBegin(host(me), host(cont));
-        me._idx =0;
-        host(me) += cargo(me).loffset;
-    }
-
-    // --------------------------------------------------------------------------
-    // Function goEnd()                         [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline void
-    goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
-    {
-        goBegin(host(me));
-
-        THost _end (host(me));
-        goEnd(_end);
-
-        typedef typename Position<THost>::Type TPos;
-        TPos len = _end - host(me);
-        TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
-
-        for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
-            pos += cargo(me).diffs[me._idx];
-
-        host(me) += pos;
-    }
-
-    template <typename THost, typename TSpec, typename TContainer>
-    inline void
-    goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer & cont)
-    {
-        goBegin(host(me), host(cont));
-
-        typedef typename Position<THost>::Type TPos;
-        TPos len = length(host(cont));
-        TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
-
-        for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
-            pos += cargo(me).diffs[me._idx];
-
-        host(me) += pos;
-    }
-
-    template <typename THost, typename TSpec, typename TContainer>
-    inline void
-    goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TContainer const & cont)
-    {
-        goBegin(host(me), host(cont));
-
-        typedef typename Position<THost>::Type TPos;
-        TPos len = length(host(cont));
-        TPos pos = cargo(me).span * (len/cargo(me).span) + cargo(me).loffset;
-
-        for(me._idx = 0; pos < len; me._idx = (me._idx +1) % weight(cargo(me)))
-            pos += cargo(me).diffs[me._idx];
-
-        host(me) += pos;
-    }
-
-
-    // --------------------------------------------------------------------------
-    // Function operator+=()                    [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec, typename TDelta>
-    inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
-    operator+=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TDelta delta_)
-    {
-        typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
-        typedef typename Position<TIterator>::Type TPosition;
-        TPosition delta = delta_;
-
-        if (delta == 0)
-        {
-            return me;
-        }
-        else if ( delta == 1)
-        {
+        // number of jumps in dist that remain
+        for(delta = delta % weight(cargo(me)); delta != 0; --delta)
             goNext(me);
-            return me;
-        }
-        else if (delta > 1)                         // runtime O(Q)
-        {
-            // jump full patterns
-            host(me) += (delta / weight(cargo(me))) * cargo(me).span;
+    }
+    else
+    {
+        me -= -delta;
+    }
+    return me;
+}
 
-            // number of jumps in dist that remain
-            for(delta = delta % weight(cargo(me)); delta != 0; --delta)
-                goNext(me);
-        }
-        else
-        {
-            me -= -delta;
-        }
+// --------------------------------------------------------------------------
+// Function operator-=()                    [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TDelta>
+inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
+operator-=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TDelta delta_)
+{
+    typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
+    typedef typename Position<TIterator>::Type TPosition;
+    TPosition delta = delta_;
+
+    if (delta == 0)
+    {
         return me;
     }
-
-    // --------------------------------------------------------------------------
-    // Function operator-=()                    [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec, typename TDelta>
-    inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
-    operator-=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TDelta delta_)
+    else if ( delta == 1)
     {
-        typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
-        typedef typename Position<TIterator>::Type TPosition;
-        TPosition delta = delta_;
+        goPrevious(me);
+        return me;
+    }
+    else if (delta > 1)                         // runtime O(Q)
+    {
+        // jump full patterns
+        host(me) -= (delta / weight(cargo(me))) * cargo(me).span;
 
-        if (delta == 0)
-        {
-            return me;
-        }
-        else if ( delta == 1)
-        {
+        // number of jumps in dist that remain
+        for(delta = delta % weight(cargo(me)); delta != 0; --delta)
             goPrevious(me);
-            return me;
-        }
-        else if (delta > 1)                         // runtime O(Q)
-        {
-            // jump full patterns
-            host(me) -= (delta / weight(cargo(me))) * cargo(me).span;
-
-            // number of jumps in dist that remain
-            for(delta = delta % weight(cargo(me)); delta != 0; --delta)
-                goPrevious(me);
-        }
-        else
-        {
-            me -= -delta;
-        }
-        return me;
     }
-
-    // --------------------------------------------------------------------------
-    // Function atBegin()                       [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline bool
-    atBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+    else
     {
-        THost _beg(host(me));
-        goBegin(_beg);
-        _beg += cargo(me).DIFFS[0];
-        return host(me) == _beg && me._idx == 0;
+        me -= -delta;
     }
+    return me;
+}
 
-    // --------------------------------------------------------------------------
-    // Function atEnd()                         [ModCyclicShape ModifiedIterator]
-    //  ... uses goEnd() and operator==
-    // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Function atBegin()                       [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
 
-    template <typename THost, typename TSpec>
-    inline bool
-    atEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
-    {
-        ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > _tmp(me);
-        goEnd(_tmp);
-        return _tmp == me;
+template <typename THost, typename TSpec>
+inline bool
+atBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    THost _beg(host(me));
+    goBegin(_beg);
+    _beg += cargo(me).DIFFS[0];
+    return host(me) == _beg && me._idx == 0;
+}
+
+// --------------------------------------------------------------------------
+// Function atEnd()                         [ModCyclicShape ModifiedIterator]
+//  ... uses goEnd() and operator==
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline bool
+atEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
+{
+    ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > _tmp(me);
+    goEnd(_tmp);
+    return _tmp == me;
+}
+
+
+// --------------------------------------------------------------------------
+// Function operator==()                        [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline bool
+operator==(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
+           ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & b)
+{
+    // TODO(meiers): check whether cargo is equal (but there is no operator == for CyclicShape yet)
+
+    return host(a) == host(b) && a._idx == b._idx;
+}
+
+// --------------------------------------------------------------------------
+// Function operator<()                     [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+// uses general version from modifier_iterator.h
+
+// --------------------------------------------------------------------------
+// Function operator-()                     [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Difference< ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type
+operator-(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
+          ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & b)
+{
+    if (host(a) == host(b)) return 0;
+    if (a > b) {
+        THost _a(host(a));
+        THost _b(host(b));
+        typename Difference< ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type diff = ((_a - _b) / cargo(a).span ) * weight(cargo(a));
+        diff += a._idx;
+        diff -= b._idx;
+        return diff;
     }
+    else
+        return -(b-a);
+}
 
+// --------------------------------------------------------------------------
+// Function length()                          [ModCyclicShape ModifiedString]
+// --------------------------------------------------------------------------
 
-    // --------------------------------------------------------------------------
-    // Function operator==()                        [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline bool
-    operator==(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
-               ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & b)
-    {
-        // TODO: check whether cargo is equal (but there is no operator == for CyclicShape yet)
-
-        return host(a) == host(b) && a._idx == b._idx;
-    }
-
-    // --------------------------------------------------------------------------
-    // Function operator<()                     [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    // uses general version from modifier_iterator.h
-
-    // --------------------------------------------------------------------------
-    // Function operator-()                     [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline typename Difference< ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type
-    operator-(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
-              ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & b)
-    {
-        if (host(a) == host(b)) return 0;
-        if (a > b) {
-            THost _a(host(a));
-            THost _b(host(b));
-            typename Difference< ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type diff = ((_a - _b) / cargo(a).span ) * weight(cargo(a));
-            diff += a._idx;
-            diff -= b._idx;
-            return diff;
-        }
-        else
-            return -(b-a);
-    }
-
-    // --------------------------------------------------------------------------
-    // Function length()                          [ModCyclicShape ModifiedString]
-    // --------------------------------------------------------------------------
-
-    template <typename THost, typename TSpec>
-    inline typename Size<ModifiedString<THost, ModCyclicShape<TSpec> > >::Type
-    length(ModifiedString<THost, ModCyclicShape<TSpec> > const & me)
-    {
-        return end(me, Standard()) - begin(me, Standard());
-    }
+template <typename THost, typename TSpec>
+inline typename Size<ModifiedString<THost, ModCyclicShape<TSpec> > >::Type
+length(ModifiedString<THost, ModCyclicShape<TSpec> > const & me)
+{
+    return end(me, Standard()) - begin(me, Standard());
+}
 
 
 
-    // --------------------------------------------------------------------------
-    // Function position()                      [ModCyclicShape ModifiedIterator]
-    // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Function position()                      [ModCyclicShape ModifiedIterator]
+// --------------------------------------------------------------------------
 
-    template <typename THost, typename TSpec>
-    inline typename Position<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const>::Type
-    position(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me)
-    {
-        ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > _tmp(me);
-        goEnd(_tmp);
-        return _tmp - me;
-    }
+template <typename THost, typename TSpec>
+inline typename Position<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const>::Type
+position(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me)
+{
+    ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > _tmp(me);
+    goEnd(_tmp);
+    return _tmp - me;
+}
 
 
-    // TODO: What about setPosition() ??
+// TODO(meiers): What about setPosition() ??
 
 
 } // namespace
