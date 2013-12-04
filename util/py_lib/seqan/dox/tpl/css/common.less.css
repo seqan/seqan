@@ -1370,13 +1370,11 @@ h1 {
 h1 a {
   color: #000000;
 }
-h2,
-h3#Examples {
+h2 {
   margin-top: 2.1em;
   font-size: 1.4em;
 }
-html:not(.list) h2,
-html:not(.list) h3#Examples {
+html:not(.list) h2 {
   text-transform: uppercase;
   padding-bottom: 0.3em;
   position: relative;
@@ -1385,9 +1383,7 @@ html:not(.list) h3#Examples {
   padding-left: 3em;
 }
 html:not(.list) h2:before,
-html:not(.list) h3#Examples:before,
-html:not(.list) h2:after,
-html:not(.list) h3#Examples:after {
+html:not(.list) h2:after {
   position: absolute;
   bottom: .44em;
   overflow: hidden;
@@ -1397,38 +1393,36 @@ html:not(.list) h3#Examples:after {
   margin-left: 1em;
   background-color: #999;
 }
-html:not(.list) h2:before,
-html:not(.list) h3#Examples:before {
+html:not(.list) h2:before {
   margin-left: -3em;
   width: 2em;
   text-align: right;
 }
-html.list h2,
-html.list h3#Examples {
+html.list h2 {
   border-bottom: none;
 }
-h3:not(#Examples) {
+h3 {
   font-size: 1.1em;
   line-height: 1.2em;
   font-weight: 700;
   border-bottom: 1px dotted #222222;
 }
-h3:not(#Examples) [data-lang-entity] > :first-child {
+h3 [data-lang-entity] > :first-child {
   display: none;
 }
-h3:not(#Examples).signature {
+h3.signature {
   text-decoration: none;
 }
-h3:not(#Examples).signature[data-lang-entity] > a:first-child {
+h3.signature[data-lang-entity] > a:first-child {
   font-weight: 500;
   margin: 0 0 -1px 0;
   display: none;
 }
-h3:not(#Examples).signature[data-lang-entity] > pre {
+h3.signature[data-lang-entity] > pre {
   border-top-left-radius: 0;
   margin-top: -1px;
 }
-h3:not(#Examples).signature code {
+h3.signature code {
   box-shadow: none;
   white-space: pre;
   padding-left: 0;
@@ -3332,6 +3326,138 @@ html:not(.list) h2[data-lang-entity=class] > :first-child:hover {
 }
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
   #results li[data-lang-entity-container=class] > ol li.more:not(.result) {
+    border-top: none;
+  }
+}
+[data-lang-entity=specialization] > :first-child {
+  background-color: transparent;
+  color: #de5b5b;
+  border-color: #da4646;
+}
+[data-lang-entity=specialization] > :first-child:hover {
+  color: #fff;
+  background-color: #de5b5b;
+}
+html:not(.list) [data-lang-entity-container=specialization] [data-lang-entity=specialization] > :first-child {
+  display: none;
+}
+html:not(.list) [data-lang-entity-container=specialization] > h2[data-lang-entity=specialization] > :first-child {
+  display: inline-block;
+}
+/*
+	// annotates h3
+	h3[data-lang-entity=@{langEntity}] {
+	    display: table;
+	    font-size: 1.1em;
+	    padding-bottom: .3em;
+        width: 100%;
+        font-weight: 700;
+	    
+	    > * { display: table-cell !important; }
+	    
+    	> :first-child {
+    	    font-size: 1rem;
+    	    font-weight: 700 !important;
+        	width: 3.6rem;
+        	vertical-align: middle;
+        	text-align: center;
+        	background-color: @color;
+        	border-color: darken(@color, 10%);
+        	color: #fff;
+        	
+        	&:hover {
+            	background-color: darken(@color, 10%);
+        	}
+        }
+        
+        > :nth-child(2) {
+            padding-left: 1.9rem;
+        }
+	}
+	/**/
+html.page_languageentities [data-lang-entity-container=specialization] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
+}
+html.page_languageentities dt[data-lang-entity=specialization] {
+  padding-left: 0;
+}
+html.page_languageentities dt[data-lang-entity=specialization]:before {
+  display: none;
+}
+html.page_languageentities dt[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+}
+html.page_languageentities dt[data-lang-entity=specialization] > :first-child:hover {
+  background-color: color;
+}
+html.page_languageentities dt[data-lang-entity=specialization]:after {
+  content: "";
+}
+html:not(.list) h2[data-lang-entity=specialization] {
+  padding-left: 0;
+}
+html:not(.list) h2[data-lang-entity=specialization]:before {
+  display: none;
+}
+html:not(.list) h2[data-lang-entity=specialization]:after {
+  background-color: #de5b5b;
+  background-image: none;
+}
+html:not(.list) h2[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+  margin-left: 0;
+  margin-right: 1.5em;
+  top: -0.35em;
+  font-size: .54em;
+}
+html:not(.list) h2[data-lang-entity=specialization] > :first-child:hover {
+  background-color: color;
+}
+[data-lang-entity-container=specialization] label {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  background-color: #de5b5b;
+  border: 1px solid #da4646;
+}
+.popover[data-lang-entity-container=specialization] .popover-title {
+  background-color: #de5b5b;
+}
+#results li[data-lang-entity-container=specialization] > span[data-lang-entity=specialization] > :first-child {
+  background-color: #de5b5b;
+  color: #fff;
+}
+#results li[data-lang-entity-container=specialization] > span[data-lang-entity=specialization] > :first-child:hover {
+  background-color: #d53131;
+}
+#results li[data-lang-entity-container=specialization] > ol {
+  background-color: #fff;
+  background-image: none;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #de5b5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+#results li[data-lang-entity-container=specialization] > ol [data-lang-entity] > :first-child {
+  display: none;
+}
+#results li[data-lang-entity-container=specialization] > ol li.more:not(.result) {
+  border-top: 1px dotted #222222;
+  border-color: #de5b5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=specialization] > ol li.more:not(.result) {
     border-top: none;
   }
 }
