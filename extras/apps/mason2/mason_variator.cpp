@@ -294,8 +294,16 @@ public:
                 switch (record.kind)
                 {
                     case VariationSizeRecord::INDEL:
-                        if (!simulateSVIndel(variants, haploCount, rId, pos, record.size))
-                            continue;
+                        if (empty(record.seq))
+                        {
+                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size))
+                                continue;
+                        }
+                        else
+                        {
+                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size, record.seq))
+                                continue;
+                        }
                         break;
                     case VariationSizeRecord::INVERSION:
                         if (!simulateInversion(variants, haploCount, rId, pos, record.size))
@@ -399,23 +407,15 @@ public:
         }
     }
 
-    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size)
+    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size, seqan::CharString const & seq)
     {
-        // Indels are simulated for one haplotype only.
         if (options.verbosity >= 2)
-            std::cerr << "Simulating SV INDEL size = " << size << '\n';
+            std::cerr << "Simulating SV INDEL seq = " << seq << '\n';
+
         int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
-        seqan::CharString indelSeq;
-        reserve(indelSeq, options.maxSVSize);
-        bool deletion = (size < 0);
-        if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
-            return false;  // not enough space at the end
-        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
-        for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INDEL, hId, rId, pos, size));
-        back(variants.svRecords).seq = indelSeq;
+        back(variants.svRecords).seq = seq;
         if (options.genVarIDs)
         {
             // Add name.
@@ -425,6 +425,23 @@ public:
             SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
         }
         return true;
+    }
+
+    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size)
+    {
+        // Indels are simulated for one haplotype only.
+        if (options.verbosity >= 2)
+            std::cerr << "Simulating SV INDEL seq for size = " << size << '\n';
+        seqan::CharString indelSeq;
+        reserve(indelSeq, options.maxSVSize);
+        bool deletion = (size < 0);
+        if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
+            return false;  // not enough space at the end
+        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
+        for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
+            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
+
+        return simulateSVIndel(variants, haploCount, rId, pos, size, indelSeq);
     }
 
     bool simulateInversion(Variants & variants, int haploCount, int rId, unsigned pos, int size)
@@ -1150,7 +1167,7 @@ public:
         resize(inTos, 4, false);
         seqan::Dna5String tos;
         resize(tos, options.numHaplotypes, from);
-        unsigned idx = snpsIdx;
+        unsigned idx = snpsIdx - 1;
         do
         {
             SEQAN_ASSERT(snpRecord.to != from);
@@ -1792,7 +1809,9 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addText(parser,
             "Instead of simulating the SVs from per-base rates, the user can specify a TSV (tab separated values) "
             "file to load the variations from with \\fB--in-variant-tsv\\fP/\\fB-it\\fP.  The first two columns of "
-            "this TSV file are interpreted as the type of the variation and the size.");
+            "this TSV file are interpreted as the type of the variation and the size.  For insertions, you can give "
+            "the sequence that is to be inserted.  The length of the given sequence overrides the length given in "
+            "the second column.");
     addText(parser,
             "Indels smaller than 50 bp are considered small indels whereas larger indels are considered structural "
             "variants in the VCF file.");
