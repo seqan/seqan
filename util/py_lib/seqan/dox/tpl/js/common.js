@@ -4,11 +4,6 @@
 (function ($) {
 
 	$(document).ready(function () {
-	
-	    // only keep top-level nav items
-	    // exceptions: examples and mainpage
-	    $('html:not(.page_mainpage) #toc ol ol').filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; }).remove();
-		$('html.page_languageentities #toc ol ol').remove();
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
