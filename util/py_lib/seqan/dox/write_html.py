@@ -442,7 +442,7 @@ class HtmlWriter(object):
             html = self.tpl_manager.render('page.html', page=entry,  **common_kwargs)
         elif entry.kind == 'concept':
             html = self.tpl_manager.render('concept.html', concept=entry,  **common_kwargs)
-        elif entry.kind in ['class', 'subclass']:
+        elif entry.kind in ['class', 'specialization']:
             html = self.tpl_manager.render('class.html', klass=entry,  **common_kwargs)
         elif entry.kind == 'enum':
             html = self.tpl_manager.render('enum.html', enum=entry,  **common_kwargs)
