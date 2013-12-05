@@ -76,6 +76,7 @@
         		$('input[type=search]').focus();
         	}, 50);
 		}
+		
     });
 
 })(jQuery);
@@ -254,6 +255,174 @@
     });
 
 })(jQuery);
+
+
+
+
+
+/**
+ * Permalink Modal
+ */
+(function ($) {
+    $.fn.extend({
+		permalinkModal: function(options) {
+		
+			var settings = $.extend({
+				modalId: 'permalinkModal',
+				modalTemplate: '<div class="modal fade" id="permalinkModal" tabindex="-1" role="dialog" aria-hidden="true">\
+									<div class="modal-dialog">\
+										<div class="modal-content">\
+											<div class="modal-header">\
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+												<h4 class="modal-title">Permalink</h4>\
+											</div>\
+											<div class="modal-body">\
+												<p>The permalinks for <strong></strong> are:</p>\
+												<table>\
+													<tr><th>Frame-based</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+													<tr><th>Frame-less</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+													<tr><th>Dox</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+												</table>\
+											</div>\
+											<div class="modal-footer">\
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
+											</div>\
+										</div>\
+									</div>\
+								</div>',
+				elementSelector: '.modal-body strong',
+				linkSelectors: ['.modal-body tr:nth-child(1) td:nth-child(2)', '.modal-body tr:nth-child(2) td:nth-child(2)', '.modal-body tr:nth-child(3) td:nth-child(2)'],
+				element: 'myElement',
+				links: ['#', '#', '#']
+			}, options);
+					
+			function createModal(parent) {
+				if($('#' + settings.modalId).length == 0) {
+					var $modal = $(settings.modalTemplate)
+						.attr('id', settings.modalId)
+						.attr('aria-labelledby', settings.modalId + 'Label');
+					$modal
+						.find('h4')
+						.first()
+						.attr('id', settings.modalId + 'Label');
+					$modal.appendTo(parent);
+					
+					$modal.find('[data-link]').each(function() {
+						var clip = new ZeroClipboard(this, {
+							moviePath: "lib/ZeroClipboard/ZeroClipboard.swf"
+						});
+					
+						clip.on("load", function(client) {
+							client.on( "complete", function(client, args) {
+								$modal.modal('hide');
+							});
+						});
+					});
+				}
+			}
+			
+			function changeElement(element) {
+				$('#' + settings.modalId + ' ' + settings.elementSelector).html(element);
+			}
+			
+			function changeLinks(links) {
+				for(var i=0; i<settings.linkSelectors.length; i++) {
+					var html = (links[i].substring(0,1) != '@')
+						? '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a>'
+						: links[i];
+					$('#' + settings.modalId + ' ' + settings.linkSelectors[i]).html(html);
+					$($('#' + settings.modalId + ' [data-link]')[i]).attr('data-clipboard-text', links[i]);
+				}			
+			}
+		
+			return this.each(function() {
+				createModal(this);
+				changeElement(settings.element);
+				changeLinks(settings.links);
+				$('#' + settings.modalId).modal({});
+			});
+			
+		}
+	});
+
+    $(document).ready(function () {
+    	if($('html').hasClass('list')) return;
+    	
+    	function handleClick() {
+    		var href = window.location.href;
+			var fragmentName = $(this).attr('id') || $(this).attr('name') || null;
+			var fragment = fragmentName ? '#' + encodeURIComponent(fragmentName) : '';
+			$('body').permalinkModal({
+				element: fragmentName ? 'fragment ' + fragmentName : 'this page',
+				links: [
+					href.substring(0, href.lastIndexOf('/')+1) + '?p=' + $('html').data('page') + fragment,
+					href.split('#')[0] + fragment,
+					'@link ' + $('html').data('page') + fragment + ' @endlink'
+				]
+			});
+    	}
+    	
+		function permalinks(activate) {
+			if(activate) {				
+				$('h1,[id],[name]')
+					.filter(function() {
+						if($.inArray($(this).attr('id'), ['content', 'toc', 'filecontents']) != -1) return false;
+						if($(this).hasClass('global-zeroclipboard-container')) return false;
+						if($(this).hasClass('modal')) return false;
+						if($(this).parents('.modal').length > 0) return false;
+						return true; })
+					.addClass('permalink')
+					.bind('click', handleClick);
+				permalinksVisible = true;
+			} else {
+				$('.permalink').unbind('click', handleClick);
+				$('.permalink').removeClass('permalink');
+				permalinksVisible = false;
+			}
+		}
+		
+		permalinks($.devMode());
+		$(document).bind('devMode', function(e) {
+			permalinks(e.active);
+		});
+    });
+
+})(jQuery);
+
+
+
+
+/**
+ * Developer Mode
+ * Activated / deactivated by pressing Ctrl + Shift at the same time
+ */
+(function ($) {
+    $.extend({
+		devMode: function() {
+			var args = Array.prototype.slice.call(arguments);
+			if(args.length == 1) {
+				var active = args[0] ? true : false;
+				localStorage.setItem('devMode', active ? 'true' : 'false');
+				$.event.trigger({
+					type: 'devMode',
+					active: active,
+					time: new Date()
+				});
+				console.log('developer mode: ' + (active ? 'on' : 'off'));
+			} else {
+				return localStorage.getItem('devMode') == 'true' ? true : false;
+			}
+		}
+	});
+
+	$(document).bind('keyup keydown', function(e) {
+		if(e.ctrlKey && e.shiftKey) {
+			if($.devMode()) $.devMode(false);
+			else $.devMode(true);
+		}
+	});
+})(jQuery);
+		
 
 
 
