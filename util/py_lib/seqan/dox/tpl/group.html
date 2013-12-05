@@ -32,6 +32,7 @@
  =============================================================================
 -->
 
+{% if group.internals or group.deprecation_msgs or group.warnings or group.notes or group.akas or not group.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -83,6 +84,8 @@
     {{ sections.body(group) }}
   </div>
 </div>
+
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(group) }}

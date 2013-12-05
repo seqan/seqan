@@ -14,6 +14,7 @@
 	{{ sections.signatures(typedef) }}
 </div>
 
+{% if typedef.internals or typedef.deprecation_msgs or typedef.warnings or typedef.notes or typedef.akas or not typedef.body.empty %}
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -62,6 +63,7 @@
     {{ sections.body(typedef) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(typedef) }}

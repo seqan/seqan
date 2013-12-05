@@ -21,6 +21,7 @@
  =============================================================================
 -->
 
+{% if macro.internals or macro.deprecation_msgs or macro.warnings or macro.notes or macro.akas or not macro.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -68,6 +69,7 @@
     {{ sections.body(macro) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(macro) }}
