@@ -76,7 +76,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief A variable shape with one optional gap.
  * 
- * @signature Shape<TValue, OneGappedShape>
+ * @signature template <typename TValue>
+ *            class Shape<TValue, OneGappedShape>;
  * 
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).

@@ -99,7 +99,7 @@ namespace seqan {
  * @brief Represents a file.
  *
  * @signature template <[typename TSpec]>
- *            class File;
+ *            class File<TSpec>;
  *
  * @tparam TSpec Specializing type.  Default: <tt>Async&lt;&gt;</tt>.
  */

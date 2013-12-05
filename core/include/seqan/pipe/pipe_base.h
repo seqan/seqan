@@ -187,7 +187,8 @@ namespace seqan {
  * 
  * @brief Stores references to three arbitrary objects.
  * 
- * @signature Bundle3<TInput1, TInput2, TInput3>
+ * @signature template <typename TInput1, typename TInput2, typename TInput3>
+ *            struct Bundle3<TInput1, TInput2, TInput3>;
  * 
  * @tparam TInput3 The type of the third object.
  * @tparam TInput2 The type of the second object.
@@ -282,7 +283,7 @@ namespace seqan {
  * @brief Stores references to five arbitrary objects.
  *
  * @signature template <typename TInput1, typename TInput2, typename TInput3, typename TInput4, typename TInput5>
- *            class Bundle 5;
+ *            class Bundle5;
  * 
  * @tparam TInput1 The type of the first object.
  * @tparam TInput2 The type of the second object.

@@ -62,7 +62,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief A structure to define a fixed gapped shape.
  * 
- * @signature HardwiredShape<P1, P2, ..., Pn>
+ * @signature template <typename TValue, typename P1[, typename P2[, ..., typename Pn]]>
+ *            class Shape<TValue, HardwiredShape<P1[, P2[, ..., Pn]]> >;
  * 
  * @tparam Pi Pi is the distance of the i'th '1' to the next '1' in the shape.At
  *            most 20 parameters are allowed, so the maximal shape weight is 21.
@@ -242,7 +243,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief A variable gapped shape.
  * 
- * @signature Shape<TValue, GenericShape>
+ * @signature template <typename TValue>
+ *            class Shape<TValue, GenericShape>;
  * 
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
@@ -425,7 +427,8 @@ You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
  * 
  * @brief A fixed gapped shape.
  * 
- * @signature Shape<TValue, GappedShape<TSpec> >
+ * @signature template <typename TValue, typename TSpec>
+ *            class Shape<TValue, GappedShape<TSpec> >;
  * 
  * @tparam TSpec A structure to store the shape at compile-time. Types:
  *               @link HardwiredShape @endlink

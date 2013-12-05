@@ -74,8 +74,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Iterator to search for all maximum unique matches.
  * 
  * @signature Iterator<TContainer, Mums>::Type
- * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(iterator)
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<Mums> > >(index[, minLength]);
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<Mums> > >(iterator);
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: @link IndexEsa @endlink
@@ -208,8 +210,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Iterator to search for MultiMems.
  * 
  * @signature Iterator<TContainer, MultiMems>::Type
- * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(iterator)
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<MultiMems> > >(index[, minLength]);
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<MultiMems> > >(iterator);
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: IndexEsa

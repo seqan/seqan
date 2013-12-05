@@ -121,7 +121,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @brief A wavelet tree is a tree like binary encoding of a text.
  * 
  * @signature template <typename TValue, typename TSpec>
- *            RankDictionary<TValue, WaveletTree<TSpec> >
+ *            class RankDictionary<TValue, WaveletTree<TSpec> >;
  * 
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>

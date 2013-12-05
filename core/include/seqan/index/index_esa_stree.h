@@ -84,7 +84,8 @@ ttobe
  * 
  * @brief Abstract iterator for string trees, where string trees are trees constructed from a string.
  * 
- * @signature Iter<TContainer, VSTree<TSpec> >
+ * @signature template <typename TContainer, typename TSpec>
+ *            class Iter<TContainer, VSTree<TSpec> >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TContainer Type of the container that can be iterated. Types:
@@ -217,7 +218,7 @@ The iterator starts in the root node by default.
  * @brief Iterator for virtual trees/tries that can go down and right beginning from the root.
  * 
  * @signature template <typename TIndex, typename TSpec>
- *            Iter<TContainer, VSTree< TopDown<TSpec> > >
+ *            class Iter<TContainer, VSTree< TopDown<TSpec> > >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
@@ -361,7 +362,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  *        first search.
  * 
  * @signature template <typename TIndex, typename TSpec> 
- *            Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
+ *            class Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >;
  * 
  * @tparam TSpec Specifies the depth-first search mode.  Types: @link DfsOrder @endlink
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
@@ -526,7 +527,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @brief Iterator for an efficient postorder depth-first search in a virtual string tree.
  * 
  * @signature template <typename TIndex, typename TSpec>
- *            Iter<TContainer, VSTree< BottomUp<TSpec> > >
+ *            class Iter<TContainer, VSTree< BottomUp<TSpec> > >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TIndex Type of the container that can be iterated.
