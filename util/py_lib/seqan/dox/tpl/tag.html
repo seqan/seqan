@@ -23,6 +23,7 @@
  =============================================================================
 -->
 
+{% if tag.internals or tag.deprecation_msgs or tag.warnings or tag.notes or tag.akas or not tag.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -71,6 +72,7 @@
     {{ sections.body(tag) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(tag) }}

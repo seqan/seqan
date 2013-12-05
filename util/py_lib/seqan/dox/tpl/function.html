@@ -29,6 +29,7 @@
  =============================================================================
 -->
 
+{% if function.internals or function.deprecation_msgs or function.warnings or function.notes or function.akas or not function.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -77,6 +78,7 @@
     {{ sections.body(function) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(function) }}
