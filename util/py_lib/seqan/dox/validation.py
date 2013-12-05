@@ -37,9 +37,11 @@ class MissingSignatureKeywordsValidator(ProcDocValidator):
         if proc_entry.kind not in ['class', 'specialization']:
             return  # only handle those
         for i, sig in enumerate(proc_entry.raw.signatures):
-            # TODO(holtgrew): Really allow typedef here?
+            # TODO(holtgrew): Really allow typedef and ::Type/mfns here?
             if 'class ' not in sig.text.text and 'struct ' not in sig.text.text \
-                    and 'typedef ' not in sig.text.text:
+                    and 'typedef ' not in sig.text.text \
+                    and not sig.text.text.strip().endswith('::Type') \
+                    and not sig.text.text.strip().endswith('::Type;'):
                 msg = 'Missing keyword "class", "struct", "typedef" in signature.'
                 self.msg_printer.printTokenError(proc_entry.raw.signatures[i].text.tokens[0], msg, 'warning')
 
