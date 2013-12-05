@@ -53,7 +53,7 @@ echo $?
 
 # Variation with variation library.
 echo "${VARIATOR} -it variants.var10.tsv -ir adeno_virus.fa -ov random_var10.vcf -of random_var10.fasta >random_var10.vcf.stdout 2>random_var10.vcf.stderr"
-${VARIATOR} -it variants.var10.tsv adeno_virus.fa -ov random_var10.vcf -of random_var10.fasta >random_var10.vcf.stdout 2>random_var10.vcf.stderr
+${VARIATOR} -it variants.var10.tsv -ir adeno_virus.fa -ov random_var10.vcf -of random_var10.fasta >random_var10.vcf.stdout 2>random_var10.vcf.stderr
 echo $?
 
 # ============================================================
