@@ -171,7 +171,13 @@ namespace seqan {
  * @class Exception
  * @headerfile <seqan/basic.h>
  * @brief Generic SeqAn exception.
- * @signature Exception();
+ * @signature typedef std::exception RuntimeError;
+ *
+ * @fn Exception::Exception
+ * @brief Constructor.
+ *
+ * @signature Exception::Exception(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::exception          Exception;
@@ -183,8 +189,14 @@ typedef std::exception          Exception;
 /*!
  * @class BadAlloc
  * @headerfile <seqan/basic.h>
- * @brief Bad memory allocation exception.
- * @signature BadAlloc();
+ * @brief Generic SeqAn exception.
+ * @signature typedef std::bad_alloc BadAlloc;
+ *
+ * @fn BadAlloc::BadAlloc
+ * @brief Constructor.
+ *
+ * @signature BadAlloc::BadAlloc(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::bad_alloc          BadAlloc;
@@ -196,8 +208,14 @@ typedef std::bad_alloc          BadAlloc;
 /*!
  * @class BadCast
  * @headerfile <seqan/basic.h>
- * @brief Bad cast exception.
- * @signature BadCast();
+ * @brief Generic SeqAn exception.
+ * @signature typedef std::bad_cast BadCast;
+ *
+ * @fn BadCast::BadCast
+ * @brief Constructor.
+ *
+ * @signature BadCast::BadCast(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::bad_cast           BadCast;
@@ -220,7 +238,14 @@ typedef std::bad_cast           BadCast;
  * @class RuntimeError
  * @headerfile <seqan/basic.h>
  * @brief Runtime error exception.
- * @signature RuntimeError("Message");
+ * @signature typedef std::runtime_error RuntimeError;
+ *
+ *
+ * @fn RuntimeError::RuntimeError
+ * @brief Constructor.
+ *
+ * @signature RuntimeError::RuntimeError(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::runtime_error      RuntimeError;
