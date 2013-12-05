@@ -31,11 +31,12 @@
         				'String': 'class_String',
         				'SequenceConcept': 'concept_SequenceConcept'
         			};
-        			var p = $.urlParam('p', window.parent.location);
+        			var p = $.urlParam('p', window.parent.location).split('/')[0];
         			if(window.lookup.hasOwnProperty(p)) {
         				redirectTo = window.lookup[p] + '.html' + window.parent.location.hash;
         			} else {
-        				// TODO: start search for p
+        				$(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
+        				// TODO: start search using search form for p
         			}
         		} else {
         			var hash = window.parent.location.hash;
