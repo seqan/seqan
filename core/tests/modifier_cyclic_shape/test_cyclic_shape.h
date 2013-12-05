@@ -32,29 +32,47 @@
 // Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
 
+#ifndef SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
+#define SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
+
 #include <seqan/basic.h>
-#include "test_modifier_cyclic_shape.h"
-#include "test_cyclic_shape.h"
+#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/modifier.h>
 
-SEQAN_BEGIN_TESTSUITE(test_modifier_cyclic_shape)
+using namespace seqan;
+
+
+SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_cyclic_shape)
 {
-    // Test Cyclic Shape class
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_cyclic_shape);
+    CyclicShape<GenericShape> shape;
+    CharString tmp;
 
-    // Tests for Iteration.
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_alloc_charstring);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_mod_charstring);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_infix_charstring);
+    cyclicShapeToString(tmp, shape);
+    SEQAN_ASSERT_EQ(tmp, "1");
+    SEQAN_ASSERT_EQ(weight(shape), 1u);
+    SEQAN_ASSERT_EQ(shape.span, 1u);
 
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_alloc_charstring);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_mod_charstring);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_infix_charstring);
+    unsigned DIFF[] = {1, 1, 1, 4, 1, 5};
+    typedef CyclicShape<FixedShape<1, GappedShape<HardwiredShape<1, 1, 1, 4, 1> >, 3> > TShape;
 
+    TShape s;
+    cyclicShapeToString(tmp, s);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(s), 6u);
+    SEQAN_ASSERT_EQ(static_cast<unsigned>(s.span), 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(s.diffs[i]), DIFF[i]);
 
-    // Tests for other functionanlity of modifiers
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_string_construct);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_string_functions);
-    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_iterator);
+    stringToCyclicShape(shape, tmp);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(shape), 6u);
+    SEQAN_ASSERT_EQ(shape.span, 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(shape.diffs[i]), DIFF[i]);
+
 
 }
-SEQAN_END_TESTSUITE
+
+
+#endif  // SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
