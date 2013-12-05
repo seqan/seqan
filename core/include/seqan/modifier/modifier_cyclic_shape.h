@@ -76,6 +76,9 @@ struct ModCyclicShape
  * the don't-care-positions had been deleted without actually copying the string.
  *
  * @snippet demos/cyclic_shape_snippets.cpp Define CyclicShape Modified Iterator
+ *
+ * @note ModCyclicShape Modifiers should only be used to read a sequence, never to change 
+ *      the underlying sequence.
  */
 
 template<typename THost, typename TSpec>
@@ -161,6 +164,9 @@ public:
  * Use case for FixedCyclicShapes:
  *
  * @snippet demos/cyclic_shape_snippets.cpp Define FixedCyclicShape Modified String
+ *
+ * @note ModCyclicShape Modifiers should only be used to read a sequence, never to change
+ *      the underlying sequence.
  *
  * @see CyclicShape
  */
