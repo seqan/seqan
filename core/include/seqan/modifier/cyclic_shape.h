@@ -40,15 +40,14 @@
 #include <seqan/index/shape_base.h>
 #include <seqan/index/shape_gapped.h>
 
-namespace seqan
-{
+namespace seqan {
 
 // ==========================================================================
 // Forwards
 // ==========================================================================
 
 // needed for GappedShape<HardwiredShape<...> >
-template <typename TSpec> struct GappedShape;
+template<typename TSpec> struct GappedShape;
 
 // GenericShape defined in shape_gapped.h via typedef
 typedef GappedShape<Default> GenericShape;
@@ -67,36 +66,39 @@ typedef GappedShape<Default> GenericShape;
  *
  * @brief A pattern of zeros and ones to mark "don't care"-positions in a text.
  *
- * @signature template <typename TShapeSpec> 
+ * @signature template <typename TShapeSpec>
  *            CyclicShape<TShapeSpec>;
  *
  * @tparam TShapeSpec The specializing type. Default is @link GenericCyclicShape
- *         GenericShape @endlink, another option is @link FixedCyclicShape 
+ *         GenericShape @endlink, another option is @link FixedCyclicShape
  *         FixedShape @endlink.
  * @tparam TSize Size type of the CyclicShape
  *
+ * CyclicShapes store a pattern like <tt>11010100110</tt> that mark
+ * care (match) positions and don't-care positions.
  * Unlike @link Shape @endlink, the CyclicShape does not perform hashing of q-grams.
  * It is instead useful to modify a text in such a way that zero
  * position are ignored. The pattern is applied repeatedly on the whole
  * text, as the example shows.
  *
- * @note Note that CyclicShapes can start and end with zero characters, which
- *      is not allowed in @link Shape @endlink.
+ * Note that CyclicShapes can start and end with zero characters, which
+ * is not allowed in @link Shape @endlink.
  *
  * @section Examples
- * @include demos/generic_cyclic_shape.cpp
+ * @include demos/cyclic_shape.cpp
  *
  * The output is as follows:
  *
- * @include demos/generic_cyclic_shape.cpp.stdout
+ * @include demos/cyclic_shape.cpp.stdout
  *
  * @see ModCyclicShapeModifiedString
+ * @see ModCyclicShapeModifiedIterator
  *
  */
-template <typename TCyclicSpec = GenericShape>
+template<typename TCyclicSpec = GenericShape>
 class CyclicShape;                           // member: diffs, loffset, span
-    
-template <unsigned L, typename THardWiredShape, unsigned R>
+
+template<unsigned L, typename THardWiredShape, unsigned R>
 struct FixedShape;
 
 // --------------------------------------------------------------------------
@@ -115,19 +117,27 @@ struct FixedShape;
  * @signature template <>
  *            class CyclicShape<GenericShape>;
  *
- * @snippet demos/generic_cyclic_shape.cpp Define GenericCyclicShape
- *
  * Generic Shapes can be easily created using <tt>stringToCyclicShape</tt>,
  * but their usage comes with a significant loss in efficiency.
  * For longer sequences, prefer the @link FixedCyclicShape @endlink.
  *
+ * @section Examples
+ * @include demos/cyclic_shape.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/cyclic_shape.cpp.stdout
+ *
+ * @see ModCyclicShapeModifiedString
+ * @see ModCyclicShapeModifiedIterator
+ *
  */
-template <>
+template<>
 class CyclicShape<GenericShape>
 {
 public:
     /*!
-     * @var String<TSize> GenericCyclicShape::diffs
+     * @var String<TSize> GenericCyclicShape::diffs;
      * @brief Distances between care positions.
      *
      * <tt>diffs</tt> has <i>weight</i> many non-zero entries describing the size
@@ -136,14 +146,14 @@ public:
      */
     String<Size<CyclicShape>::Type> diffs;
     /*!
-     * @var TSize CyclicShape::span
+     * @var TSize CyclicShape::span;
      * @brief span of the CyclicShape.
-     * @var TSize CyclicShape::loffset
+     * @var TSize CyclicShape::loffset;
      * @brief left offset (number of leading zeros) of the CyclicShape.
      */
     Size<CyclicShape>::Type loffset, span;
-    
-    
+
+
     /*!
      * @fn GenericCyclicShape::CyclicShape
      * @brief The constructor
@@ -154,19 +164,20 @@ public:
      * The default constructor generates the pattern "1".
      * The copy constructor copies the GenericCyclicShape shape.
      *
-     * @snippet demos/generic_cyclic_shape.cpp Define GenericCyclicShape
+     * @snippet demos/cyclic_shape_snippets.cpp Define GenericCyclicShape
      *
      * @Remarks
      *
      * If you want to generate a GenericCyclicShape from a FixedCyclicShape,
      * use @link CyclicShape#cyclicShapeToString @endlink and @link GenericCyclicShape#stringToCyclicShape @endlink
      */
-    CyclicShape() : loffset(0), span(1)
+    CyclicShape() :
+        loffset(0), span(1)
     {
         // Pattern "1"
         appendValue(diffs, 1);
     }
-    
+
     CyclicShape(CyclicShape const & other) :
         diffs(other.diffs), loffset(other.loffset), span(other.span)
     {}
@@ -193,49 +204,49 @@ public:
  *
  * Fixed CylcicShapes contain their information at compile time, so in
  * most cases no object must be created.
- * The notation is similar to the one of @link HardwiredShape @endlink: Template 
+ * The notation is similar to the one of @link HardwiredShape @endlink: Template
  * paramters code for the distance between ones. Additionally you have to specify
  * the number of leading and trailing zeros.
  *
  * The notation is chosen in such a way that predefined Shapes like
- * @link PatternHunter @endlink can be plugged into a CyclicShape. Like 
+ * @link PatternHunter @endlink can be plugged into a CyclicShape. Like
  * HardwiredShapes, Fixed CyclicShapes are limited to a weight of 21.
  *
- * @section Examples
- * @include demos/fixed_cyclic_shape.cpp
+ * See @link CyclicShape @endlink for an example on how to use a CyclicShape.
  *
- * The output is as follows:
- *
- * @include demos/fixed_cyclic_shape.cpp.stdout
+ * @see ModCyclicShapeModifiedString
+ * @see ModCyclicShapeModifiedIterator
  */
-template <unsigned LeftOffset, unsigned RightOffset,
-int P00, int P01, int P02, int P03, int P04,
-int P05, int P06, int P07, int P08, int P09,
-int P10, int P11, int P12, int P13, int P14,
-int P15, int P16, int P17, int P18, int P19 >
+template<unsigned LeftOffset, unsigned RightOffset,
+         int P00, int P01, int P02, int P03, int P04,
+         int P05, int P06, int P07, int P08, int P09,
+         int P10, int P11, int P12, int P13, int P14,
+         int P15, int P16, int P17, int P18, int P19>
 class CyclicShape<FixedShape<LeftOffset, GappedShape<HardwiredShape<
-P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,
-P10,P11,P12,P13,P14,P15,P16,P17,P18,P19	>
->, RightOffset> >
+                                                         P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
+                                                         P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+                                                     >, RightOffset> >
 {
 public:
     typedef HardwiredShape<
-    P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,
-    P10,P11,P12,P13,P14,P15,P16,P17,P18,P19>      THardWiredShape;
-    
-    enum { loffset = LeftOffset };
-    enum { span = LeftOffset + LENGTH<THardWiredShape>::VALUE + RightOffset };
+            P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
+            P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>      THardWiredShape;
+
+    enum {loffset = LeftOffset};
+    enum {span = LeftOffset + LENGTH<THardWiredShape>::VALUE + RightOffset};
     /*!
-     * @var TSize[] FixedCyclicShape::diffs
+     * @var TSize[] FixedCyclicShape::diffs;
      * @brief Distances between care positions.
      *
      * <tt>static const TSize diffs[]</tt> has <i>weight</i> many non-zero entries
-     * in the beginning, the remaining ones are zero. Entry at position
-     * <i>weight-1</i> holds the cyclic distance from the last "1" to the first one.
+     * in the beginning, the remaining ones are zero. An additional entry at position
+     * <i>weight1</i> holds the cyclic distance from the last "1" to the first one.
+     * During the iteration with a @link ModCyclicShapeModifiedIterator @endlink
+     * an index position keeps track of the position inside <tt>diffs</tt>.
      */
     static const typename Size<CyclicShape>::Type diffs[];
-    
-    
+
+
     /*!
      * @fn FixedCyclicShape::CyclicShape
      * @brief The constructor
@@ -248,15 +259,15 @@ public:
      * This constructor does not do anything, the FixedCyclicShape is defined by its type alone.
      * See the example on how to create a CyclicShape:
      *
-     * @snippet demos/fixed_cyclic_shape.cpp Define FixedCyclicShape
+     * @snippet demos/cyclic_shape_snippets.cpp Define FixedCyclicShape
      */
     CyclicShape()
     {}
-    
+
     CyclicShape(CyclicShape const &)
     {}
 };
-    
+
 // --------------------------------------------------------------------------
 // static const int CyclicShape<FixedShape<L, TSpec, R> >::diffs[]
 //
@@ -267,60 +278,63 @@ public:
 // HardwiredShape::DIFFS are zero.
 // --------------------------------------------------------------------------
 
-template <unsigned entry, typename TFixedS>
-struct _tmparrEntry;
+template<unsigned entry, typename TFixedS>
+struct _tmpArrEntry;
 
 // normal positions in diff[]
-template <unsigned entry, unsigned L, unsigned R,
-int P00, int P01, int P02, int P03, int P04,
-int P05, int P06, int P07, int P08, int P09,
-int P10, int P11, int P12, int P13, int P14,
-int P15, int P16, int P17, int P18, int P19>
-struct _tmparrEntry<entry, FixedShape<L, GappedShape<HardwiredShape
-<P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,
-P10,P11,P12,P13,P14,P15,P16,P17,P18,P19> >, R> >
+template<unsigned entry, unsigned L, unsigned R,
+         int P00, int P01, int P02, int P03, int P04,
+         int P05, int P06, int P07, int P08, int P09,
+         int P10, int P11, int P12, int P13, int P14,
+         int P15, int P16, int P17, int P18, int P19>
+struct _tmpArrEntry<entry, FixedShape<L, GappedShape<HardwiredShape
+                                                     <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
+                                                      P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
 {
     enum {VALUE = entry};
 };
 
 // zero positions in diff[]
-template <unsigned L, unsigned R,
-int P00, int P01, int P02, int P03, int P04,
-int P05, int P06, int P07, int P08, int P09,
-int P10, int P11, int P12, int P13, int P14,
-int P15, int P16, int P17, int P18, int P19>
-struct _tmparrEntry<0, FixedShape<L, GappedShape<HardwiredShape
-<P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,
-P10,P11,P12,P13,P14,P15,P16,P17,P18,P19> >, R> >
+template<unsigned L, unsigned R,
+         int P00, int P01, int P02, int P03, int P04,
+         int P05, int P06, int P07, int P08, int P09,
+         int P10, int P11, int P12, int P13, int P14,
+         int P15, int P16, int P17, int P18, int P19>
+struct _tmpArrEntry<0, FixedShape<L, GappedShape<HardwiredShape
+                                                 <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
+                                                  P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
 {
     enum {VALUE = L + R + 1};
 };
 
-#define ENTRY(X) _tmparrEntry<X, FixedShape<L, GappedShape<HardwiredShape\
-<P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,\
-P10,P11,P12,P13,P14,P15,P16,P17,P18,P19> >, R> >::VALUE
+#define ENTRY(X) \
+    _tmpArrEntry<X, FixedShape<L, GappedShape<HardwiredShape \
+                                              <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, \
+                                               P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >::VALUE
 
-template <unsigned L, unsigned R,
-int P00, int P01, int P02, int P03, int P04,
-int P05, int P06, int P07, int P08, int P09,
-int P10, int P11, int P12, int P13, int P14,
-int P15, int P16, int P17, int P18, int P19 >
+template<unsigned L, unsigned R,
+         int P00, int P01, int P02, int P03, int P04,
+         int P05, int P06, int P07, int P08, int P09,
+         int P10, int P11, int P12, int P13, int P14,
+         int P15, int P16, int P17, int P18, int P19>
 const typename Size<CyclicShape<FixedShape<L, GappedShape<HardwiredShape<
-    P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,P10,P11,P12,P13,P14,P15,P16,P17,P18,P19>
-    >, R> > >::Type
+                                                              P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+                                                          >, R> > >::Type
 CyclicShape<FixedShape<L, GappedShape<HardwiredShape<
-    P00,P01,P02,P03,P04,P05,P06,P07,P08,P09,P10,P11,P12,P13,P14,P15,P16,P17,P18,P19>
-    >, R> >::diffs[] =
-{ ENTRY(P00), ENTRY(P01), ENTRY(P02), ENTRY(P03), ENTRY(P04),
+                                          P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+                                      >, R> >::diffs[] =
+{
+    ENTRY(P00), ENTRY(P01), ENTRY(P02), ENTRY(P03), ENTRY(P04),
     ENTRY(P05), ENTRY(P06), ENTRY(P07), ENTRY(P08), ENTRY(P09),
     ENTRY(P10), ENTRY(P11), ENTRY(P12), ENTRY(P13), ENTRY(P14),
     ENTRY(P15), ENTRY(P16), ENTRY(P17), ENTRY(P18), ENTRY(P19),
-    ENTRY(0) };
+    ENTRY(0)
+};
 
 #undef ENTRY
 
 
-  
+
 // ==========================================================================
 // Metafunctions
 // ==========================================================================
@@ -342,14 +356,14 @@ CyclicShape<FixedShape<L, GappedShape<HardwiredShape<
  * @tparam TInnerShape specialization of a hardwired GappedShape
  *
  * @return Weight of a fixed CyclicShape (enum).
- * 
+ *
  * @see CyclicShape#weight
  */
 
-template <unsigned L, typename THardwiredShape, unsigned R>
+template<unsigned L, typename THardwiredShape, unsigned R>
 struct WEIGHT<CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > >
 {
-    enum {VALUE = WEIGHT<THardwiredShape>::VALUE };
+    enum {VALUE = WEIGHT<THardwiredShape>::VALUE};
     typedef CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > TCyclicShape;
     typedef typename Size<TCyclicShape>::Type Type;
 };
@@ -372,11 +386,11 @@ struct WEIGHT<CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > >
 *
 * @section Remarks
 */
-template <typename TSpec>
+template<typename TSpec>
 struct Size<CyclicShape<TSpec> >
 {
     typedef unsigned char Type;
-};    
+};
 
 // ==========================================================================
 // Functions
@@ -399,21 +413,20 @@ struct Size<CyclicShape<TSpec> >
  * @param[in] cyclicShape CyclicShape object
  * @return weight of the CyclicShape (number of care positions)
  */
-template <typename TSpec>
+template<typename TSpec>
 inline typename Size<CyclicShape<TSpec> >::Type
 weight(CyclicShape<TSpec> const & s)
 {
     return static_cast<Size<CyclicShape<> >::Type>(length(s.diffs));
 }
-    
-template <unsigned L, typename THardwiredShape, unsigned R>
+
+template<unsigned L, typename THardwiredShape, unsigned R>
 inline typename Size<CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > >::Type
 weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
 {
     typedef CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > TCyclicShape;
     return WEIGHT<TCyclicShape>::VALUE;
 }
-
 
 // --------------------------------------------------------------------------
 // Function stringToCyclicShape()
@@ -432,35 +445,37 @@ weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
  * @param[in] bitmap 0/1 string. CyclicShapes may start and end with zeros,
  *      but must contain at least one 1.
  *
+ * @see Shape#stringToShape Equivalent for Shapes
  */
-template <typename TString>
+template<typename TString>
 inline bool
 stringToCyclicShape(CyclicShape<GenericShape> & shape, TString const & bitmap)
 {
     typename Iterator<TString const>::Type it    = begin(bitmap);
     typename Iterator<TString const>::Type itBeg = begin(bitmap);
     typename Iterator<TString const>::Type itEnd = end(bitmap);
-    
+
     Size<CyclicShape<GenericShape> >::Type countOnes = 0;
     for (; it != itEnd; ++it)
     {
-        if(*it == '1') ++countOnes;
+        if (*it == '1')
+            ++countOnes;
     }
     SEQAN_ASSERT_GT(countOnes, 0u);
-    
+
     resize(shape.diffs, countOnes);
-    
+
     typename Iterator<String<Size<CyclicShape<GenericShape> >::Type> >::Type diffIter = begin(shape.diffs);
-    
+
     // go to first 1
     for (it = itBeg; *it != '1'; ++it)
         continue;
     shape.loffset = (Size<CyclicShape<GenericShape> >::Type)(it - itBeg);
-    
+
     countOnes = 1; // now used as the distance between 1s
     for (++it; it != itEnd; ++it)
     {
-        if(*it == '1')
+        if (*it == '1')
         {
             *diffIter = countOnes;
             ++diffIter;
@@ -469,12 +484,11 @@ stringToCyclicShape(CyclicShape<GenericShape> & shape, TString const & bitmap)
         else
             ++countOnes;
     }
-    
+
     *diffIter = countOnes + shape.loffset;
-    shape.span = (typename Size<CyclicShape<GenericShape> >::Type) (it - itBeg);
+    shape.span = (typename Size<CyclicShape<GenericShape> >::Type)(it - itBeg);
     return true;
 }
-
 
 // --------------------------------------------------------------------------
 // Function cyclicShapeToString()
@@ -493,36 +507,36 @@ stringToCyclicShape(CyclicShape<GenericShape> & shape, TString const & bitmap)
  *      e.g. CharString
  *
  * @see GenericCyclicShape#stringToCyclicShape
- * @see shapeToString Equivalent for Shapes
+ * @see Shape#shapeToString Equivalent for Shapes
  */
-template <typename TShapeString, typename TSpec>
+template<typename TShapeString, typename TSpec>
 inline void
 cyclicShapeToString(
-                    TShapeString &bitmap,
-                    CyclicShape<TSpec> const &me)
+    TShapeString & bitmap,
+    CyclicShape<TSpec> const & me)
 {
     clear(bitmap);
-    if (weight(me) == 0) return;
-    
-    typename Size<CyclicShape<TSpec> >::Type i,j;
-    for (i=0; i < me.loffset; ++i)
+    if (weight(me) == 0)
+        return;
+
+    typename Size<CyclicShape<TSpec> >::Type i, j;
+    for (i = 0; i < me.loffset; ++i)
         appendValue(bitmap, '0');
-    for (i=0; i < weight(me)-1; ++i)
+    for (i = 0; i < weight(me) - 1; ++i)
     {
         appendValue(bitmap, '1');
-        for (j=1; j < static_cast<typename Size<CyclicShape<TSpec> >::Type>(me.diffs[i]); ++j)
+        for (j = 1; j < static_cast<typename Size<CyclicShape<TSpec> >::Type>(me.diffs[i]); ++j)
             appendValue(bitmap, '0');
     }
     appendValue(bitmap, '1');
-    for (i=length(bitmap); i < me.span; ++i)
+    for (i = length(bitmap); i < me.span; ++i)
         appendValue(bitmap, '0');
 }
-
 
 // --------------------------------------------------------------------------
 // Function carePositions()
 // --------------------------------------------------------------------------
-    
+
 /*!
  * @fn CyclicShape#carePositions
  *
@@ -543,22 +557,22 @@ cyclicShapeToString(
  * @snippet demos/generic_cyclic_shape.cpp CyclicShape Care Positions
  */
 
-template <typename TString, typename TSpec>
+template<typename TString, typename TSpec>
 inline void
 carePositions(TString & output, CyclicShape<TSpec> const & shape)
 {
     typedef typename Size<CyclicShape<TSpec> >::Type TPos;
-    
+
     resize(output, weight(shape));
     TPos val = shape.loffset;
     output[0] = shape.loffset;
-    
-    for (TPos i=1; i< weight(shape); ++i) {
-        val += shape.diffs[i-1];
+
+    for (TPos i = 1; i < weight(shape); ++i)
+    {
+        val += shape.diffs[i - 1];
         output[i] = val;
     }
 }
-
 
 // --------------------------------------------------------------------------
 // Function cyclicShapeToSuffixLengths()
@@ -583,33 +597,32 @@ carePositions(TString & output, CyclicShape<TSpec> const & shape)
  * <tt>suffLengths</tt> therefore must be resized to span beforehands.
  */
 
-template <typename TString,
-typename TShape>
+template<typename TString,
+         typename TShape>
 inline void cyclicShapeToSuffixLengths(TString & suffLengths, TShape const & shape)
 {
     typedef typename Size<TString>::Type TSize;
     typedef typename Iterator<TString, Standard>::Type TIter;
-    
+
     TSize w = weight(shape);
     TSize s = shape.span;
     TSize o = shape.loffset;
-    
+
     SEQAN_ASSERT_GEQ(s, 1u);
     //SEQAN_ASSERT_EQ(length(suffLengths), s); // Disabled to support arrays too.
-    
+
     // build cummulative some of distances first
     String<TSize> sums;
     resize(sums, w);
     sums[0] = o;
-    for (unsigned i=0; i < w-1; ++i)
-        sums[i+1] = sums[i]+shape.diffs[i];
-    
+    for (unsigned i = 0; i < w - 1; ++i)
+        sums[i + 1] = sums[i] + shape.diffs[i];
+
     // write suffixLengths
     unsigned sumPos = 0;
-    for (unsigned i=0; i < s; ++i)
+    for (unsigned i = 0; i < s; ++i)
         suffLengths[i] = (sumPos < w && i == sums[sumPos]) ? sumPos++ : sumPos;
 }
-
 
 } //namespace
 
