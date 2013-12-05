@@ -409,12 +409,24 @@
 					time: new Date()
 				});
 				console.log('developer mode: ' + (active ? 'on' : 'off'));
+				if(active) {
+					$('<div id="devModeWindow"><strong>Developer Mode is active</strong><br>Press <code>Ctrl + Shift</code> to deactivate</div>')
+						.appendTo('body')
+						.click(function() { $.devMode(false); });
+				} else {
+					$('#devModeWindow').remove();
+				}
 			} else {
 				return localStorage.getItem('devMode') == 'true' ? true : false;
 			}
 		}
 	});
-
+	
+	$(document).ready(function () {
+		// trigger devMode event at load
+		$.devMode($.devMode());
+	});
+	
 	$(document).bind('keyup keydown', function(e) {
 		if(e.ctrlKey && e.shiftKey) {
 			if($.devMode()) $.devMode(false);

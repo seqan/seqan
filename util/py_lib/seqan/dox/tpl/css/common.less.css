@@ -2166,6 +2166,19 @@ ul.params {
   list-style-type: none;
 }
 /*
+ * Developer Mode Window
+ */
+#devModeWindow {
+  cursor: pointer;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 4px;
+  padding: 0.5em 0.5em 0.5em .8em;
+  background-color: #ccc;
+  opacity: 0.8;
+}
+/*
  * Tooltip
  */
 .tooltip .tooltip-inner {
