@@ -31,7 +31,8 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_modifier_cyclic_shape
                 test_modifier_cyclic_shape.cpp
-                test_modifier_cyclic_shape.h)
+                test_modifier_cyclic_shape.h
+		test_cyclic_shape.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_modifier_cyclic_shape ${SEQAN_LIBRARIES})
