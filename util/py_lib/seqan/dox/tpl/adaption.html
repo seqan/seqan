@@ -41,6 +41,7 @@
  =============================================================================
 -->
 
+{% if adaption.internals or adaption.deprecation_msgs or adaption.warnings or adaption.notes or adaption.akas or not adaption.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -89,6 +90,7 @@
     {{ sections.body(adaption) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(adaption) }}

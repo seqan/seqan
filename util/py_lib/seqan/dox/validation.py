@@ -30,6 +30,35 @@ class MissingSignatureValidator(ProcDocValidator):
             self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
 
 
+class MissingSignatureKeywordsValidator(ProcDocValidator):
+    """Validates for missing keywords in signature (e.g. "class" for @class)."""
+
+    def validate(self, proc_entry):
+        if proc_entry.kind not in ['class', 'specialization']:
+            return  # only handle those
+        for i, sig in enumerate(proc_entry.raw.signatures):
+            # TODO(holtgrew): Really allow typedef and ::Type/mfns here?
+            if 'class ' not in sig.text.text and 'struct ' not in sig.text.text \
+                    and 'typedef ' not in sig.text.text \
+                    and not sig.text.text.strip().endswith('::Type') \
+                    and not sig.text.text.strip().endswith('::Type;'):
+                msg = 'Missing keyword "class", "struct", "typedef" in signature.'
+                self.msg_printer.printTokenError(proc_entry.raw.signatures[i].text.tokens[0], msg, 'warning')
+
+
+class OnlyRemarksInBodyValidator(ProcDocValidator):
+    """Validates for the body starting with '@section Remarks'."""
+
+    def validate(self, proc_entry):
+        if not hasattr(proc_entry, 'body') or not proc_entry.body.children:
+            return  # only handle if has non-empty body
+        if proc_entry.body.children[0].type in ['h1', 'h2', 'h3', 'h4', 'h5'] and \
+                proc_entry.body.children[0].children and \
+                proc_entry.body.children[0].children[0].text == 'Remarks':
+                msg = 'Detailed descrition starts with Remarks'
+                self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
+
+
 class MissingParameterDescriptionValidator(ProcDocValidator):
     """Warns if the description is missing for a @param or @return."""
 
@@ -88,5 +117,7 @@ class EmptyBriefValidator(ProcDocValidator):
 # Array with the validator classes to use.
 VALIDATORS = [MissingSignatureValidator,
               MissingParameterDescriptionValidator,
+              MissingSignatureKeywordsValidator,
+              #OnlyRemarksInBodyValidator,
               ReturnVoidValidator,
               EmptyBriefValidator]

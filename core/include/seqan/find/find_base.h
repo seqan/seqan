@@ -342,7 +342,8 @@ Hit at position: 16
  * 
  * @brief Holds the haystack and a current search context.
  * 
- * @signature Finder<THaystack[, TSpec]>
+ * @signature template <typename THaystack[, typename TSpec]>
+ *            class Finder;
  * 
  * @tparam TSpec The index-algorithm to search with (Optional).Leave empty for
  *               online pattern matching (see @link Pattern @endlink).If

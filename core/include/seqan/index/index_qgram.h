@@ -288,7 +288,8 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @brief An index based on an array of sorted q-grams.
  * 
- * @signature Index<TText, IndexQGram<TShapeSpec[, TSpec]> >
+ * @signature template <typename TIndex, typename TShapeSpec, typename TSpec>
+ *            class Index<TText, IndexQGram<TShapeSpec[, TSpec]> >;
  * 
  * @tparam TSpec The specializing type. Types: @link OpenAdressingTags#OpenAdressing @endlink, Default: void
  * @tparam TText The text type. Types: @link String @endlink

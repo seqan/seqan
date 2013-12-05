@@ -231,7 +231,7 @@ struct RankDictionaryEntry_<TValue, TwoLevels<TSpec> >
  * consisting of two levels.
  * 
  * @signature template <typename TValue, typename TSpec>
- *            RankDictionary<TValue, WaveletTree<TSpec> >
+ *            class RankDictionary<TValue, WaveletTree<TSpec> >;
  * 
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>

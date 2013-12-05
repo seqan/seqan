@@ -211,7 +211,8 @@ struct Iterator<SparseString<TFibreValues, TSpec> const, Rooted>:
  * 
  * @brief A string storing only a fraction of the values of the original string.
  * 
- * @signature SparseString<TValueString, TSpec>
+ * @signature template <typename TValueString, typename TSpec>
+ *            class SparseString;
  * 
  * @tparam TSpec The specialisation tag. Default: void.
  * @tparam TValueString The type of the string containing the values. Types: @link String @endlink

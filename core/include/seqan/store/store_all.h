@@ -1984,8 +1984,7 @@ calculateMateIndices(TMateIndexString &mateIndices, FragmentStore<TSpec, TConfig
  * @headerfile <seqan/store>
  * @brief Stores a two dimensional visible layout of a multi-read alignment.
  *
- * @signature struct AlignedReadLayout.
- *
+ * @signature struct AlignedReadLayout;
  *
  * @var TContigRows AlignedReadLayout#contigRows;
  * @brief 2D multi-read layout.

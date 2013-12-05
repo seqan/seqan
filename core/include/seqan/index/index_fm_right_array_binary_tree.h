@@ -138,7 +138,7 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
  *        which encodes where the left and right subtree of a given node exist.
  * 
  * @signature template <typename TChar, typename TSpec>
- *                     RightArrayBinaryTree<TValue, TSpec>
+ *            class RightArrayBinaryTree;
  * 
  * @tparam TValue The value type - type of the stored characters.
  *

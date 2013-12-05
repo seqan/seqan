@@ -14,6 +14,7 @@
 	{{ sections.signatures(variable) }}
 </div>
 
+{% if variable.internals or variable.deprecation_msgs or variable.warnings or variable.notes or variable.akas or not variable.body.empty %}
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -62,6 +63,7 @@
     {{ sections.body(variable) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(variable) }}

@@ -29,6 +29,7 @@
  =============================================================================
 -->
 
+{% if metafunction.internals or metafunction.deprecation_msgs or metafunction.warnings or metafunction.notes or metafunction.akas or not metafunction.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -77,6 +78,7 @@
     {{ sections.body(metafunction) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(metafunction) }}

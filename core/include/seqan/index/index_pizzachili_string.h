@@ -66,7 +66,8 @@ needed, this string tries to query only a substring.
  * 
  * @brief String used by the Pizza &amp; Chili indices.
  * 
- * @signature String<TValue, PizzaChili<TSpec> >
+ * @signature template <typename TValue, typename TSpec>
+ *            class String<TValue, PizzaChili<TSpec> >;
  * 
  * @tparam TSpec Tag specifying the Pizza &amp; Chili index library to use. Types:
  *               PizzaChiliIndexTags
