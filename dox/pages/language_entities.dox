@@ -14,7 +14,7 @@ We call the above mentioned things like variables, functions, metafunctions, cla
 </ul>
 
 
-@htmlonly <h2 data-lang-entity="typedef"><a name="typedef">Typedef</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="typedef" id="typedef">Typedef</h2> @endhtmlonly
 
 <strong>Typedefs are a common, standardized C++ language feature that allows to give custom names to arbitrary types.</strong>
 
@@ -35,7 +35,7 @@ for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
 @endcode
 
 
-@htmlonly <h2 data-lang-entity="concept"><a name="concept">Concept</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="concept" id="concept">Concept</h2> @endhtmlonly
 
 <strong>Concepts are a rarely used, not yet standardized C++ language feature. They are <u>informal interfaces</u> that define a set of requirements for a type.</strong>
 
@@ -52,7 +52,7 @@ You can expect the globally implemented interface functions @link appendValue @e
 See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
 
 
-@htmlonly <h2 data-lang-entity="class"><a name="class">Class</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="class" id="class">Class</h2> @endhtmlonly
 
 <strong>Classes are a common, standardized C++ language feature. It allows the definition of custom types using classes that basically encapsulate variables and functions.</strong>
 
@@ -84,11 +84,11 @@ public:
 @htmlonly <h3 data-toc="hidden">Variants</h3> @endhtmlonly
 
 <dl>
-  <dt data-lang-entity="specialization"><a name="specialization">specialization</a></dt>
+  <dt data-lang-entity="specialization" id="specialization">specialization</dt>
 	<dd><p>Specializations are similar to subclasses but the mechanism uses template specialization instead of C++ subclassing.</p>
 	    <p>In SeqAn, this is widely used in containers such as strings or indices to achieve good performance.</p>
 	</dd>
-  <dt><a name="struct">struct</a></dt>
+  <dt id="struct">struct</dt>
 	<dd><p>C++ inherited <code>struct</code>s from C. Structs and classes are very similar, the main difference is that all members of structs are declared with public visibility by default.</p>
 	    <p>In SeqAn, structs are used instead of classes for simple record types that only store data and do not provide any major logic through interface or member functions.</p>
 	</dd>
@@ -124,7 +124,7 @@ public:
 };
 @endcode
 
-<h2 data-lang-entity="enum"><a name="enum">Enum</a></h2>
+<h2 data-lang-entity="enum" id="enum">Enum</h2>
 
 <strong>Enums are a common, standardized C++ feature that allow the definition of a set of named, <u>enum</u>erable integral constants.</strong>
 
@@ -160,7 +160,7 @@ Later you may write <code>int x = QualityValueSize&lt;Dna5Q&gt;::VALUE</code> wh
 If the enum was named (e.g. <code>MyEnum</code>) you would have to write <code>int x = QualityValueSize&lt;Dna5Q&gt;::MyEnum::VALUE (TODO: How is the correct syntax?!?!?!)</code>.<
 
 
-@htmlonly <h2 data-lang-entity="metafunction"><a name="metafunction">Metafunction</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="metafunction" id="metafunction">Metafunction</h2> @endhtmlonly
 
 <strong>Metafunctions are a rarely used, not yet standardized C++ language feature that allows for compile-time evaluated functions.</strong>
 
@@ -198,10 +198,10 @@ std::cout << "\n";
 @htmlonly <h3 data-toc="hidden">Variants</h3> @endhtmlonly
 
 <dl>
-  <dt data-lang-entity="global_metafunction"><a name="global_metafunction">Global Metafunction</a></dt>
+  <dt data-lang-entity="global_metafunction" id="global_metafunction">Global Metafunction</dt>
 	<dd><p>Global metafunctions are technically and semantically implemented globally.</p></dd>
 	<dd><p>A typical global metafunctions is @link MetaprogrammingMath#Log2 @endlink.</p></dd>
-	<dt data-lang-entity="interface_metafunction"><a name="interface_metafunction">Interface Metafunction</a></dt>
+	<dt data-lang-entity="interface_metafunction" id="interface_metafunction">Interface Metafunction</dt>
 	<dd><p>Interface metafunctions semantically belong to one or more <a href="#concept">concepts</a>.
 		   Types that implement a specific concept are guaranteed to work with all interface functions belonging to this specific concept.</p>
 	<p>Example: <span data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a><a href="class_String.html">String</a></span> implement <span data-lang-entity="concept" data-pimped="true"><a href="page_LanguageEntities.html#concept">Concept</a><a href="concept_SequenceConcept.html">SequenceConcept</a></span>. Since the metafunction <span data-lang-entity="global_function" data-pimped="true"><a href="page_LanguageEntities.html#global_function">fn()</a><a href="global_function_append.html">append</a></span> is part of <span data-lang-entity="concept" data-pimped="true"><a href="page_LanguageEntities.html#concept">Concept</a><a href="concept_SequenceConcept.html">SequenceConcept</a></span>, <span data-lang-entity="global_function" data-pimped="true"><a href="page_LanguageEntities.html#global_function">fn()</a><a href="global_function_append.html">append</a></span> accepts <span data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a><a href="class_String.html">String</a></span> as an argument.</p></dd>
@@ -209,7 +209,7 @@ std::cout << "\n";
 </dl>
 
 
-@htmlonly <h2 data-lang-entity="function"><a name="function">Function</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="function" id="function">Function</h2> @endhtmlonly
 
 <strong>Functions are a common, fundamental C++ feature and the basic building block for programs.</strong>
 
@@ -227,27 +227,27 @@ int main()
 <h3 data-toc="hidden">Variants</h3>
 
 <dl>
-  <dt data-lang-entity="global_function"><a name="global_function">Global Function</a></dt>
+  <dt data-lang-entity="global_function" id="global_function">Global Function</dt>
 	<dd><p>Global functions are defined outside any class and not directly connected to one class.
 	       They might be in a namespace (such as the <code>seqan</code> namespace).</p>
 	</dd>
 	<dd>Examples are the functions for the global and local alignment, e.g. @link globalAlignment @endlink and @link localAlignment @endlink. These functions use many classes to realize their behaviour but do not directly belong to any of the signature's data types.</dd>
-	<dt data-lang-entity="interface_function"><a name="interface_function">Interface Function</a></dt>
+	<dt data-lang-entity="interface_function" id="interface_function">Interface Function</dt>
 	<dd><p>SeqAn uses global interface functions instead of member functions.
 	       This allows (1) to extend types without access to their source code and (2) to use template-based inheritance and static type dispatching.</p>
 	</dd>
-	<dt data-lang-entity="member_function"><a name="member_function">Member Function</a></dt>
+	<dt data-lang-entity="member_function" id="member_function">Member Function</dt>
 	<dd><p>Member functions are a standard C++ function.  They are defined in classes or structs.</p></dd>
 	<dd><p>In SeqAn, few member functions are used in the interface of types. Of course, the constructor, and destructor are always implemented as member functions.</p></dd>
 </dl>
 
 
-@htmlonly <h2 data-lang-entity="tag"><a name="tag">Tag</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="tag" id="tag">Tag</h2> @endhtmlonly
 
 Tags are classes that are only used for their type. They are often used for tag-based dispatching.
 
 
-@htmlonly <h2 data-lang-entity="variable"><a name="variable">Variable</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="variable" id="variable">Variable</h2> @endhtmlonly
 
 Variables are a standard C++ feature.
 
