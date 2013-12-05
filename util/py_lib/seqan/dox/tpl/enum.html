@@ -28,6 +28,7 @@
  =============================================================================
 -->
 
+{% if enum.internals or enum.deprecation_msgs or enum.warnings or enum.notes or enum.akas or not enum.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -76,6 +77,7 @@
     {{ sections.body(enum) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(enum) }}

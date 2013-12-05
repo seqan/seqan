@@ -59,7 +59,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Extends the input stream by a second field which enumerates the elements.
  *
  * @signature template <typename TInput>
- *            Pipe<TInput, Counter>;
+ *            class Pipe<TInput, Counter>;
  * 
  * @tparam TInput The type of the pipeline module this module reads from.
  * 

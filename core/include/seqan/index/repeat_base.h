@@ -73,22 +73,23 @@ namespace seqan {
  * 
  * @brief Store information about a repeat.
  * 
- * @signature Repeat<TPos, TPeriod>
+ * @signature template <typename TPos, typename TPeriod>
+ *            struct Repeat;
  * 
  * @tparam TPeriod Type to use for storing the repeat period. Default: 1
  * @tparam TPos Type to use for storing positions.
  * 
  * @see findRepeats
  * 
- * @var VariableType Repeat::endPosition
+ * @var TPos Repeat::endPosition
  * 
  * @brief The end position of the repeat of type <tt>TPos</tt>.
  * 
- * @var VariableType Repeat::beginPosition
+ * @var TPos Repeat::beginPosition
  * 
  * @brief The begin position of the repeat of type <tt>TPos</tt>.
  * 
- * @var VariableType Repeat::period
+ * @var TSize Repeat::period
  * 
  * @brief The period of the repeat of type <tt>TSize</tt>.
  */

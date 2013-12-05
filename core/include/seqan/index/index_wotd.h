@@ -160,7 +160,8 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient
  *        implementation of lazy suffix trees").
  * 
- * @signature Index<TText, IndexWotd<> >
+ * @signature template <typename TText>
+ *            class Index<TText, IndexWotd<> >;
  * 
  * @tparam TText The text type. Types: @link SequenceConcept @endlink
  * 

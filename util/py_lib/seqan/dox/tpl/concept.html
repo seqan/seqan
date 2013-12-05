@@ -14,6 +14,7 @@
 	{{ sections.signatures(concept) }}
 </div>
 
+{% if concept.internals or concept.deprecation_msgs or concept.warnings or concept.notes or concept.akas or not concept.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -62,6 +63,7 @@
     {{ sections.body(concept) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(concept) }}

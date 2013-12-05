@@ -119,7 +119,8 @@
  *        character the number of smaller lexicographic smaller characters in a
  *        given text.
  * 
- * @signature PrefixSumTable<TChar, TSpec>
+ * @signature template <typename TChar, typename TSpec>
+ *            class PrefixSumTable;
  * 
  * @tparam TSpec A specialisation tag. Default: void
  * @tparam TChar The character type
@@ -361,7 +362,7 @@
  *        character at a specified position.
  * 
  * @signature template <typename TValue>
- *            RankDictionary<SequenceBitMask<TValue> >
+ *            class RankDictionary<SequenceBitMask<TValue> >;
  * 
  * @tparam TValue The value type of the .
  * 
@@ -476,7 +477,8 @@
  * 
  * @brief A bit string supporting rank queries in constant time.
  * 
- * @signature RankSupportBitString<TSpec>
+ * @signature template <typename TSpec>
+ *            class RankSupportBitString;
  * 
  * @tparam TSpec Specialisation tag. Default: void
  * 
@@ -751,7 +753,8 @@
  * @brief A rank dictionary, additional storing sentinel character which are not
  *        accounted for in a rank query.
  * 
- * @signature SentinelRankDictionary<TRankDictionary, TSpec>
+ * @signature template <typename TRankDictionary, typename TSpec>
+ *            class SentinelRankDictionary;
  * 
  * @tparam TSpec Specialisation
  * @tparam TRankDictionary The rank dictionary of a text.

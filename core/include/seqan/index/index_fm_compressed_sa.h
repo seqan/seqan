@@ -177,7 +177,7 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
  * @brief A suffix array storing only a few suffix array entries and computing the remaining on demand.
  * 
  * @signature template <typename TText, typename TSpec, typename TConfig>
- *            CompressedSA<CompressedSA<TText, TSpec, TConfig>
+ *            class CompressedSA;
  * 
  * @tparam TSpec Possibility to specialise a compressed suffix array. Default: void.
  * @tparam TText The type of the text the compressed suffix array is created from. Types: @link String @endlink, @link

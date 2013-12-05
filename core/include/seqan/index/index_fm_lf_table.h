@@ -207,7 +207,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
  * @headerfile seqan/Index.h
  *
  * @signature template <typename TText, typename TSpec, typename TConfig>
- *            LF<TText, TSpec, TConfig>
+ *            struct LF;
  * 
  * @brief LF is an object storing all necessary information for the LF-mapping.
  * 

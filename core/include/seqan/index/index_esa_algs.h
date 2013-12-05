@@ -76,8 +76,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief Iterator to search for all supermaximal repeats.
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeats> > >;
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeats> > >;
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: @link IndexEsa @endlink
@@ -201,8 +203,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Iterator to search for all supermaximal repeats (for enh. suffix
  *        arrays only).
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeatsFast> > >;
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeatsFast> > >;
  * 
  * @tparam TContainer Type of an index based on enhanced suffix array. Types:
  *                    @link IndexEsa @endlink
@@ -367,8 +371,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief Iterator to search for all maximal repeats.
  * 
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
+ * @signature template <typename TContainer>
+ 8            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength]);
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator);
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: IndexEsa

@@ -134,8 +134,10 @@ namespace seqan
  * @brief Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors
  *        in the text, every partition into k+1 parts contains one part that matches without error.
  * 
- * @signature Finder<THaystack, Pigeonhole<TSpec> >
- * @signature Pattern<TIndex, Pigeonhole<TSpec> >
+ * @signature template <typename THaystack, typename TSpec>
+ *            class Finder<THaystack, Pigeonhole<TSpec> >;
+ * @signature template <typename THaystack, typename TSpec>
+ *            class Pattern<TIndex, Pigeonhole<TSpec> >;
  * 
  * @tparam TSpec Specifies the type of Swift filter.
  * @tparam TIndex A q-gram index of needle(s) that should be searched for.
