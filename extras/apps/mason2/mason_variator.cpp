@@ -1263,7 +1263,7 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
-        vcfRecord.beginPos = front(records).pos;
+        vcfRecord.beginPos = front(records).pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, idx));
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
@@ -1280,7 +1280,7 @@ public:
             else  // if (records[i].size < 0)
                 numRef = std::max(numRef, 1 - records[i].size);
         }
-        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos - 1, vcfRecord.beginPos - 1 + numRef));
+        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos, vcfRecord.beginPos + numRef));
 
         // Compute ALT columns and a map to the ALT.
         seqan::String<int> toIds;
@@ -1335,7 +1335,7 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         vcfRecord.filter = "PASS";
         std::stringstream ss;
@@ -1353,7 +1353,7 @@ public:
             numRef = 1;
         else
             numRef = 1 - svRecord.size;
-        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos - 1, vcfRecord.beginPos - 1 + numRef));
+        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos, vcfRecord.beginPos + numRef));
 
         // Compute ALT columns and a map to the ALT.
         if (svRecord.size > 0)  // insertion
@@ -1521,7 +1521,7 @@ public:
         seqan::VcfRecord vcfRecord;
 
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
@@ -1563,7 +1563,7 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         vcfRecord.filter = "PASS";
         std::stringstream ss;
