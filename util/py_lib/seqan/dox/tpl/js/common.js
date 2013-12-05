@@ -397,6 +397,8 @@
  * Activated / deactivated by pressing Ctrl + Shift at the same time
  */
 (function ($) {
+	if($('html').hasClass('list')) return;
+	
     $.extend({
 		devMode: function() {
 			var args = Array.prototype.slice.call(arguments);
