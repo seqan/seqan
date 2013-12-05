@@ -46,6 +46,19 @@ class MissingSignatureKeywordsValidator(ProcDocValidator):
                 self.msg_printer.printTokenError(proc_entry.raw.signatures[i].text.tokens[0], msg, 'warning')
 
 
+class OnlyRemarksInBodyValidator(ProcDocValidator):
+    """Validates for the body starting with '@section Remarks'."""
+
+    def validate(self, proc_entry):
+        if not hasattr(proc_entry, 'body') or not proc_entry.body.children:
+            return  # only handle if has non-empty body
+        if proc_entry.body.children[0].type in ['h1', 'h2', 'h3', 'h4', 'h5'] and \
+                proc_entry.body.children[0].children and \
+                proc_entry.body.children[0].children[0].text == 'Remarks':
+                msg = 'Detailed descrition starts with Remarks'
+                self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
+
+
 class MissingParameterDescriptionValidator(ProcDocValidator):
     """Warns if the description is missing for a @param or @return."""
 
@@ -105,5 +118,6 @@ class EmptyBriefValidator(ProcDocValidator):
 VALIDATORS = [MissingSignatureValidator,
               MissingParameterDescriptionValidator,
               MissingSignatureKeywordsValidator,
+              #OnlyRemarksInBodyValidator,
               ReturnVoidValidator,
               EmptyBriefValidator]
