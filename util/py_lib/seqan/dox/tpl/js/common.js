@@ -366,7 +366,7 @@
 			if(activate) {				
 				$('h1,[id],[name]')
 					.filter(function() {
-						if($.inArray($(this).attr('id'), ['content', 'toc', 'filecontents']) != -1) return false;
+						if($.inArray($(this).attr('id'), ['content', 'toc', 'filecontents', 'devModeWindow']) != -1) return false;
 						if($(this).hasClass('global-zeroclipboard-container')) return false;
 						if($(this).hasClass('modal')) return false;
 						if($(this).parents('.modal').length > 0) return false;
@@ -411,7 +411,7 @@
 					time: new Date()
 				});
 				console.log('developer mode: ' + (active ? 'on' : 'off'));
-				if(active) {
+				if(active && $('#devModeWindow').length == 0) {
 					$('<div id="devModeWindow"><strong>Developer Mode is active</strong><br>Press <code>Ctrl + Shift</code> to deactivate</div>')
 						.appendTo('body')
 						.click(function() { $.devMode(false); });
