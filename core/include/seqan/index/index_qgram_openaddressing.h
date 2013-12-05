@@ -87,7 +87,8 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
  * 
  * @brief An index based on an array of sorted q-grams.
  * 
- * @signature Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >
+ * @signature template <typename TIndex, typename TShapeSpec>
+ *            class Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >;
  * 
  * @tparam TText The text type. Types: @link String @endlink
  * @tparam TShapeSpec The @link Shape @endlink specialization type.

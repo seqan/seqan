@@ -291,7 +291,8 @@ template <
  * @brief Indices are data structures which contain preprocessing data of a fixed text (or set of texts). In combination
  *        with a @link Finder @endlink or an @link VSTreeIterator @endlink it allows fast dictionary look-up and advanced computations.
  * @signature template <typename TText, typename TSpec>
- *            Index<TText[, TSpec]>
+ *            class Index<TText[, TSpec]>;
+ *
  * @tparam TSpec The index type. 
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
  * @section Remarks

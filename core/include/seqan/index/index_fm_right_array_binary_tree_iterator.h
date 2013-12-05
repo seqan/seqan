@@ -96,7 +96,8 @@ struct Spec<Iter<RightArrayBinaryTree<TChar, TSpec> const, RightArrayBinaryTreeI
  * 
  * @brief An iterator for @link RightArrayBinaryTree @endlink.
  * 
- * @signature Iter<RightArrayBinaryTree, TSpec >
+ * @signature template <typename TSpec>
+ *            class Iter<RightArrayBinaryTree, TSpec >;
  * 
  * @tparam TSpec Specialisation Tag. Types: TopDownIterator
  * @tparam RightArrayBinaryTree The @link RightArrayBinaryTree @endlink. Types:

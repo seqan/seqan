@@ -507,7 +507,7 @@ information of the suffix tree) are provided.
  * @brief An index based on an enhanced suffix array.
  * 
  * @signature template <typename TText, typename TSpec>
- *            Index<TText, IndexEsa<TSpec> >
+ *            class Index<TText, IndexEsa<TSpec> >;
  * 
  * @tparam TText The text type. Types: @link SequenceConcept @endlink, @link StringSet @endlink
  * @tparam TSpec The specialization which is <tt>void</tt> by default.

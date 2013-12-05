@@ -79,8 +79,10 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
  *        \epsilon-matches. An \epsilon-match is a matching region of minimal length and an error rate of at most
  *        \epsilon.
  * 
- * @signature Finder<THaystack, Swift<TSpec> >
- * @signature Pattern<TIndex, Swift<TSpec> >
+ * @signature template <typename THaystack, typename TSpec>
+ *            class Finder<THaystack, Swift<TSpec> >;
+ * @signature template <typename TIndex, typename TSpec>
+ *            class Pattern<TIndex, Swift<TSpec> >
  * 
  * @tparam TSpec Specifies the type of Swift filter. Types: @link SwiftLocal @endlink, @link SwiftSemiGlobal @endlink
  * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
@@ -120,8 +122,10 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
  * 
  * @brief The specialization for the general swift filter that finds epsilon matches between haystack and needle.
  * 
- * @signature Finder<THaystack, Swift<SwiftLocal> >
- * @signature Pattern<TIndex, Swift<SwiftLocal> >
+ * @signature template <typename THaystack>
+ *            class Finder<THaystack, Swift<SwiftLocal> >;
+ * @signature template <typenam eTIndex>
+ *            class Pattern<TIndex, Swift<SwiftLocal> >;
  * 
  * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
  * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
@@ -156,8 +160,10 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
  *        of the haystack where a needle matches with an error rate less than
  *        \epsilon.
  * 
- * @signature Finder<THaystack, Swift<SwiftSemiGlobal> >
- * @signature Pattern<TIndex, Swift<SwiftSemiGlobal> >
+ * @signature template <typename THaystack>
+ *            class Finder<THaystack, Swift<SwiftSemiGlobal> >;
+ * @signature template <typename TIndex>
+ *            class Pattern<TIndex, Swift<SwiftSemiGlobal> >;
  * 
  * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
  * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink

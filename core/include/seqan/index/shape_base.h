@@ -81,7 +81,8 @@ Hit at position: 17
  * 
  * @brief Stores hash value and shape for an ungapped or gapped q-gram.
  * 
- * @signature Shape<TValue, TSpec>
+ * @signature template <typename TValue, typename TSpec>
+ *            class Shape;
  * 
  * @tparam TSpec The specializing type. Default: @link SimpleShape @endlink, for
  *               ungapped q-grams.
@@ -176,7 +177,8 @@ Hit at position: 17
  * 
  * @brief A variable length ungapped shape (also called q-gram or k-mer).
  * 
- * @signature Shape<TValue, SimpleShape>
+ * @signature template <typename TValue>
+ *            class Shape<TValue, SimpleShape>;
  * 
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
@@ -292,7 +294,8 @@ Hit at position: 17
  * 
  * @brief A fixed length ungapped shape (also called q-gram or k-mer).
  * 
- * @signature Shape<TValue, UngappedShape<q> >
+ * @signature template <typename TValue, unsigned Q>
+ *            class Shape<TValue, UngappedShape<Q> >;
  * 
  * @tparam q The length of the shape.
  * @tparam TValue The @link Value @endlink type of the sequence the shape is

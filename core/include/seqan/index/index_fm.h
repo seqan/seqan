@@ -57,7 +57,7 @@ namespace seqan {
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
  * 
  * @signature template <typename TSpec = void>
- *            FMIndexConfig
+ *            struct FMIndexConfig;
  *
  * @var unsigned FMIndexConfig::SAMPLING
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the @link
@@ -250,7 +250,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
  * @brief An index based on the Burrows-Wheeler transform.
  * 
  * @signature template <typename TText, typename TSpec, typename TConfig>
- *            Index<TText, FMIndex<TSpec, TConfig> >
+ *            class Index<TText, FMIndex<TSpec, TConfig> >;
  * 
  * @tparam TSpec FM index specialisation. 
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
