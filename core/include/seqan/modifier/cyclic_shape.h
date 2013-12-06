@@ -157,7 +157,7 @@ public:
      * @brief The constructor
      * @signature CyclicShape();
      * @signature CyclicShape(shape);
-     * @param shape A GenericCyclicShape to be copied.
+     * @param[in] shape A GenericCyclicShape to be copied.
      *
      * The default constructor generates the pattern "1".
      * The copy constructor copies the GenericCyclicShape shape.
@@ -251,7 +251,7 @@ public:
      * @signature CyclicShape();
      * @signature CyclicShape(shape);
      *
-     * @param shape A FixedCyclicShape of this type
+     * @param[in] shape A FixedCyclicShape of this type
      *
      * This constructor does not do anything, the FixedCyclicShape is defined by its type alone.
      * See the example on how to create a CyclicShape:
