@@ -438,7 +438,7 @@ weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
  * @tparam TString A string type, e.g. CharString.
  * @param[out] shape Generic CyclicShape
  * @param[in] bitmap 0/1 string of type TString. CyclicShapes may start and end with zeros,
- *      but must contain at least one 1.
+ *            but must contain at least one 1.
  *
  * @see Shape#stringToShape Equivalent for Shapes
  */
@@ -499,7 +499,7 @@ stringToCyclicShape(CyclicShape<GenericShape> & shape, TString const & bitmap)
  *
  * @param[in] cyclicShape CyclicShape object. Types: @link CyclicShape @endlink
  * @param[out] bitmap The resulting sequence object. Type: @link String @endlink,
- *      e.g. CharString
+ *             e.g. CharString
  *
  * @see GenericCyclicShape#stringToCyclicShape
  * @see Shape#shapeToString Equivalent for Shapes
@@ -583,7 +583,7 @@ carePositions(TString & output, CyclicShape<TSpec> const & shape)
  *
  * @param[in] cyclicShape CyclicShape object.
  * @param[in,out] suffLengths String to be filled. Must be resized beforehands.
- *      Fixed length arrays also work.
+ *                Fixed length arrays also work.
  *
  * @tparam TString String type or array with an integral value type, i.e. unsigned or int.
  *

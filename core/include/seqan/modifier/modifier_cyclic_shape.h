@@ -81,11 +81,11 @@ struct ModCyclicShape
  * @see CyclicShape
  *
  * @note ModCyclicShape Modifier should only be used to <b>view/read a sequence</b>,
- *      never to change the underlying sequence. Some operations will work, e.g.
- *      you can use the <tt>operator*()</tt> of the ModifiedIterator to change
- *      a character, but other operations like <tt>replace</tt> or <tt>append</tt>
- *      are unsafe or even conceptionally wrong.
- */
+ *       never to change the underlying sequence. Some operations will work, e.g.
+ *       you can use the <tt>operator*()</tt> of the ModifiedIterator to change
+ *       a character, but other operations like <tt>replace</tt> or <tt>append</tt>
+ *       are unsafe or even conceptionally wrong.
+ * /
 
 template<typename THost, typename TSpec>
 class ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >
@@ -120,7 +120,7 @@ public:
      * @signature ModifiedIterator::ModifiedIterator(otherModIter);
      * @param[in] host Host iterator to set.
      * @param[in] otherModIter ModifiedIterator which may differ in its host type.
-     *      Copy construction.
+     *            Copy construction.
      *
      * The safe way to create this ModifiedIterator is to use the <tt>begin</tt> and <tt>end</tt>
      * functions of the ModifiedString or to copy construct.
@@ -152,8 +152,7 @@ public:
  * @extends ModifiedString
  * @headerfile <seqan/modifier.h>
  *
- * @brief A string leaving out don't-care-positions defined in
- *      CyclicShape.
+ * @brief A string leaving out don't-care-positions defined in CyclicShape.
  *
  * @signature template <typename THost, typename TSpec>
  *            class ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >;
@@ -176,16 +175,16 @@ public:
  * @snippet demos/cyclic_shape_snippets.cpp Define FixedCyclicShape Modified String
  *
  * @note ModCyclicShape Modifiers should only be used to read a sequence, never to change
- *      the underlying sequence.
+ *       the underlying sequence.
  *
  * @see CyclicShape
  * @see ModCyclicShapeModifiedIterator
  *
  * @note ModCyclicShape Modifier should only be used to <b>view/read a sequence</b>,
- *      never to change the underlying sequence. Some operations will work, e.g.
- *      you can use the <tt>operator*()</tt> of the ModifiedIterator to change
- *      a character, but other operations like <tt>replace</tt> or <tt>append</tt>
- *      are unsafe or even conceptionally wrong.
+ *       never to change the underlying sequence. Some operations will work, e.g.
+ *       you can use the <tt>operator*()</tt> of the ModifiedIterator to change
+ *       a character, but other operations like <tt>replace</tt> or <tt>append</tt>
+ *       are unsafe or even conceptionally wrong.
  */
 
 template<typename THost, typename TSpec>
@@ -449,10 +448,10 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
  * @tparam TIterator ModCyclicShape Modified Iterator to be returned.
  * @param[in] modStr ModCyclicShape Modified String.
  * @param[in] An optional tag for selecting the type of the iterator.
- *      One of Standard and Rooted. When left out,
- *      @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>modStr</tt> is used.
+ *            One of Standard and Rooted. When left out,
+ *            @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>modStr</tt> is used.
  * @return Iterator to the end of the container, the type is selected by #Fn<>ContainerConcept#Iterator
- *      with the given (or default) tag.
+ *         with the given (or default) tag.
  *
  * The end iterator is not guaranteed to be at position <tt>length(modStr)</tt>, where
  * a standard iterator ends. Due to the jumping-tequniche of ModCyclicShape
