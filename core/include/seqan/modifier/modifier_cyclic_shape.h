@@ -77,8 +77,14 @@ struct ModCyclicShape
  *
  * @snippet demos/cyclic_shape_snippets.cpp Define CyclicShape Modified Iterator
  *
- * @note ModCyclicShape Modifiers should only be used to read a sequence, never to change 
- *      the underlying sequence.
+ * @see ModCyclicShapeModifiedString
+ * @see CyclicShape
+ *
+ * @note ModCyclicShape Modifier should only be used to <b>view/read a sequence</b>,
+ *      never to change the underlying sequence. Some operations will work, e.g.
+ *      you can use the <tt>operator*()</tt> of the ModifiedIterator to change
+ *      a character, but other operations like <tt>replace</tt> or <tt>append</tt>
+ *      are unsafe or even conceptionally wrong.
  */
 
 template<typename THost, typename TSpec>
@@ -89,6 +95,7 @@ public:
     typedef CyclicShape<TSpec>  TCyclicShape;
 
     THost _host;
+
     /*!
      * @var TCargo ModCyclicShapeModifiedIterator::_cargo;
      * @brief Copy of a Cargo object, which is a CyclicShape.
@@ -97,6 +104,7 @@ public:
      * so prefer the lightweight FixedCyclicShape.
      */
     TCargo_ _cargo;
+
     /*!
      * @var TSize ModCyclicShapeModifiedIterator::_idx;
      * @brief Internal position inside <tt>diffs</tt> of the CylicShape.
@@ -157,6 +165,8 @@ public:
  * and can thus be shorter than the original string. Of course the underlying string is not changed
  * by the modifier.
  *
+ * @section Examples
+ *
  * Use case for GenericCyclicShapes:
  *
  * @snippet demos/cyclic_shape_snippets.cpp Define GenericCyclicShape Modified String
@@ -169,6 +179,13 @@ public:
  *      the underlying sequence.
  *
  * @see CyclicShape
+ * @see ModCyclicShapeModifiedIterator
+ *
+ * @note ModCyclicShape Modifier should only be used to <b>view/read a sequence</b>,
+ *      never to change the underlying sequence. Some operations will work, e.g.
+ *      you can use the <tt>operator*()</tt> of the ModifiedIterator to change
+ *      a character, but other operations like <tt>replace</tt> or <tt>append</tt>
+ *      are unsafe or even conceptionally wrong.
  */
 
 template<typename THost, typename TSpec>
@@ -235,8 +252,8 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
-    // shape.
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.
+    // Non-const variant with shape.
     template<typename THost_>
     explicit
     ModifiedString(THost_ && host,
@@ -283,7 +300,8 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant with shape.
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.
+    // Const variant with shape.
     template<typename THost_>
     explicit
     ModifiedString(THost_ const & host,
@@ -362,7 +380,8 @@ struct Cargo<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >
 template<typename THost, typename TSpec>
 struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type,
+        ModCyclicShape<CyclicShape<TSpec> > > Type;
 };
 
 // TODO(meiers): Rooted ?
@@ -370,7 +389,8 @@ struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Sta
 template<typename THost, typename TSpec>
 struct Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, ModCyclicShape<CyclicShape<TSpec> > > Type;
+    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type,
+        ModCyclicShape<CyclicShape<TSpec> > > Type;
 };
 
 // --------------------------------------------------------------------------
@@ -387,16 +407,17 @@ struct DefaultIteratorSpec<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpe
 // Functions
 // ==========================================================================
 
-
 // --------------------------------------------------------------------------
 // Function begin()                           [ModCyclicShape ModifiedString]
 // --------------------------------------------------------------------------
 
 template<typename THost, typename TSpec, typename TTagSpec>
-inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const,
+    Tag<TTagSpec> const>::Type
 begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
 {
-    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const,
+        Tag<TTagSpec> const>::Type TResult;
     TResult tmp(begin(host(me), tag_));
     _copyCargo(tmp, me);
     host(tmp) += cargo(me).loffset;
@@ -404,10 +425,12 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Ta
 }
 
 template<typename THost, typename TSpec, typename TTagSpec>
-inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >,
+    Tag<TTagSpec> const>::Type
 begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
 {
-    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >,
+        Tag<TTagSpec> const>::Type TResult;
     TResult tmp(begin(host(me), tag_));
     _copyCargo(tmp, me);
     host(tmp) += cargo(me).loffset;
@@ -417,7 +440,6 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
 // --------------------------------------------------------------------------
 // Function end()                             [ModCyclicShape ModifiedString]
 // --------------------------------------------------------------------------
-//  ... uses goEnd()
 
 /*!
  * @fn ModCyclicShapeModifiedString#end
@@ -425,11 +447,12 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
  * @brief Returns an iterator to the end of the container.
  * @signature TIterator end(modStr[, tag]);
  * @tparam TIterator ModCyclicShape Modified Iterator to be returned.
- * @param modStr ModCyclicShape Modified String.
- * @param An optional tag for selecting the type of the iterator.
+ * @param[in] modStr ModCyclicShape Modified String.
+ * @param[in] An optional tag for selecting the type of the iterator.
  *      One of Standard and Rooted. When left out,
  *      @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>modStr</tt> is used.
- * @return Iterator to the end of the container, the type is selected by #Fn<>ContainerConcept#Iterator with the given (or default) tag.
+ * @return Iterator to the end of the container, the type is selected by #Fn<>ContainerConcept#Iterator
+ *      with the given (or default) tag.
  *
  * The end iterator is not guaranteed to be at position <tt>length(modStr)</tt>, where
  * a standard iterator ends. Due to the jumping-tequniche of ModCyclicShape
@@ -443,10 +466,12 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
  */
 
 template<typename THost, typename TSpec, typename TTagSpec>
-inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const,
+    Tag<TTagSpec> const>::Type
 end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<TTagSpec> const tag_)
 {
-    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const, Tag<TTagSpec> const>::Type TResult;
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const,
+        Tag<TTagSpec> const>::Type TResult;
     TResult tmp(end(host(me), tag_));
     _copyCargo(tmp, me);
     goEnd(tmp, me);
@@ -454,10 +479,12 @@ end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Tag<
 }
 
 template<typename THost, typename TSpec, typename TTagSpec>
-inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type
+inline typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >,
+    Tag<TTagSpec> const>::Type
 end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSpec> const tag_)
 {
-    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >, Tag<TTagSpec> const>::Type TResult;
+    typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >,
+        Tag<TTagSpec> const>::Type TResult;
     TResult tmp(end(host(me), tag_));
     _copyCargo(tmp, me);
     goEnd(tmp, me);
@@ -467,7 +494,6 @@ end(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTagSp
 // --------------------------------------------------------------------------
 // Function goNext()                        [ModCyclicShape ModifiedIterator]
 // --------------------------------------------------------------------------
-//  ... is used by operator++
 
 template<typename THost, typename TSpec>
 inline void
@@ -483,7 +509,6 @@ goNext(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
 // --------------------------------------------------------------------------
 // Function goPrevious()                    [ModCyclicShape ModifiedIterator]
 // --------------------------------------------------------------------------
-//  ... is used by operator--
 
 template<typename THost, typename TSpec>
 inline void
@@ -587,7 +612,7 @@ goEnd(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, TConta
 
 template<typename THost, typename TSpec, typename TDelta>
 inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
-operator += (ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta_)
+operator+=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta_)
 {
     typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
     typedef typename Position<TIterator>::Type TPosition;
@@ -624,7 +649,7 @@ operator += (ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, T
 
 template<typename THost, typename TSpec, typename TDelta>
 inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
-operator -= (ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta_)
+operator-=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta_)
 {
     typedef ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > TIterator;
     typedef typename Position<TIterator>::Type TPosition;
@@ -672,7 +697,6 @@ atBegin(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > & me)
 // --------------------------------------------------------------------------
 // Function atEnd()                         [ModCyclicShape ModifiedIterator]
 // --------------------------------------------------------------------------
-//  ... uses goEnd() and operator==
 
 template<typename THost, typename TSpec>
 inline bool
@@ -709,7 +733,7 @@ inline bool
 
 template<typename THost, typename TSpec>
 inline typename Difference<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type
-    operator - (ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
+operator-(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & a,
                 ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > const & b)
 {
     typedef typename Difference<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type TDiff;
@@ -726,7 +750,9 @@ inline typename Difference<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TS
         return diff;
     }
     else
+    {
         return -(b - a);
+    }
 }
 
 // --------------------------------------------------------------------------

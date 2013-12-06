@@ -20,7 +20,7 @@ int main(int argc, char const ** argv)
     << ", span: " << shape.span << std::endl;
 
     // modify a text to leave out characters
-    CharString str = "das ist das Haus vom Nikolaus";
+    CharString str = "this is an original string";
     ModifiedString<CharString, ModCyclicShape<TShape> > modStr (str, shape);
 
     // modStr can be used like a normal String
