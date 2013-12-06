@@ -85,7 +85,7 @@ struct ModCyclicShape
  *       you can use the <tt>operator*()</tt> of the ModifiedIterator to change
  *       a character, but other operations like <tt>replace</tt> or <tt>append</tt>
  *       are unsafe or even conceptionally wrong.
- * /
+ */
 
 template<typename THost, typename TSpec>
 class ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >
