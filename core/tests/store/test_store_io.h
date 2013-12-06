@@ -440,7 +440,7 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     // Write Sam to temp file.
     {
         std::ofstream samFileOut(toCString(outFileName));
-        SEQAN_ASSERT(samFileOut);
+        SEQAN_ASSERT(samFileOut.good());
         write(samFileOut, store, Sam());
     }
 
@@ -498,7 +498,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     // Write Sam to temp file.
     {
         std::ofstream samFileOut(toCString(outFileName));
-        SEQAN_ASSERT(samFileOut);
+        SEQAN_ASSERT(samFileOut.good());
         write(samFileOut, store, Sam());
     }
 
