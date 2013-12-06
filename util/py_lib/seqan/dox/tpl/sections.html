@@ -667,7 +667,6 @@ Render the grouped macros details
           {{ subentry.local_name|e }}
           {%- endif -%}
       </code>
-      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
 
     {% if subentry.headerfiles %}
@@ -732,7 +731,6 @@ Render the grouped macros details
 {% for subentry in entry.subentries['grouped_macro'] %}
 <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}">
   {{ subentry.name|e }}
-  <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
 </h3>
 
 {% if subentry.headerfiles %}
@@ -832,7 +830,6 @@ Render the interface functions details
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
       </code>
-      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
   </div>
 
@@ -995,7 +992,6 @@ Render the interface metafunctions details
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
     </code>
-    <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
   </h3>
 
   {% if subentry.headerfiles and qualifier == 'Grouped' %}
@@ -1080,7 +1076,6 @@ Render the member variables details
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
     <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
-      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
     <div class="docstring">
       <div class="discussion">
@@ -1109,7 +1104,6 @@ Render the member enum details
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
     <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
-      <a href="#{{subentry.name|escape_anchor|url_encode}}" class="permalink">&para;</a>
     </h3>
     <div class="docstring">
       <div class="discussion">

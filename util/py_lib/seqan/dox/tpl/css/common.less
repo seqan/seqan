@@ -146,7 +146,8 @@ a:active {
 }
 
 a[target=_top][href],
-a[target=_parent][href] {
+a[target=_parent][href],
+a[target=_blank][href] {
     &:after {
         display: inline-block;
         margin-left: 0.4em;
@@ -689,6 +690,19 @@ ul.params {
 }
 
 
+/*
+ * Developer Mode Window
+ */
+#devModeWindow {
+	cursor: pointer;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	border-top-left-radius: 4px;
+	padding: 0.5em 0.5em 0.5em .8em;
+	background-color: #ccc;
+	opacity: 0.8;
+}
 
 
 
@@ -742,6 +756,42 @@ ul.params {
 		    font-weight: 700;
 		    font-style: italic;
         }
+	}
+}
+
+/*
+ * Permalinks
+ */
+.permalink {
+	cursor: pointer;
+	.border-radius(4px);
+	@color: fadeout(#428bca, 0%);
+	.box-shadow(0 1px 2px @color);
+	
+	@color1: lighten(@color, 30%);
+	@color2: lighten(@color1, 5%);
+	
+	background-color: @color1;
+	background-image: linear-gradient(45deg, @color2 25%, transparent 25%, transparent 75%, @color2 75%, @color2), 
+	linear-gradient(45deg, @color2 25%, transparent 25%, transparent 75%, @color2 75%, @color2);
+	background-size: 6px 6px;
+	background-position:0 0, 3px 3px;
+	
+	position: relative;
+}
+
+#permalinkModal {
+	th, td {
+		vertical-align: top;
+		padding-bottom: .5em;
+	}
+	
+	td {
+		padding-left: .5em;
+		white-space: normal;
+		-ms-word-break: break-all;
+		word-break: break-all;
+		word-break: break-word;
 	}
 }
 
@@ -1459,6 +1509,17 @@ pre {
     word-break: keep-all;
     word-break: normal;
 }
+
+// modal dialog's backgrop does erroneously get opacity 1 making the whole background black
+.modal-backdrop.in {
+	opacity: 0.5 !important;
+}
+
+html { body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom {
+	margin-right: auto;
+} }
+
+.modal h4 { font-size: 18px; }
 
 
 
