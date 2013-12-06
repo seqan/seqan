@@ -67,7 +67,7 @@ typedef GappedShape<Default> GenericShape;
  * @brief A pattern of zeros and ones to mark "don't care"-positions in a text.
  *
  * @signature template <typename TShapeSpec>
- *            CyclicShape<TShapeSpec>;
+ *            class CyclicShape<TShapeSpec>;
  *
  * @tparam TShapeSpec The specializing type. Default is @link GenericCyclicShape
  *         GenericShape @endlink, another option is @link FixedCyclicShape
@@ -93,7 +93,6 @@ typedef GappedShape<Default> GenericShape;
  *
  * @see ModCyclicShapeModifiedString
  * @see ModCyclicShapeModifiedIterator
- *
  */
 template<typename TCyclicSpec = GenericShape>
 class CyclicShape;                           // member: diffs, loffset, span
@@ -130,7 +129,6 @@ struct FixedShape;
  *
  * @see ModCyclicShapeModifiedString
  * @see ModCyclicShapeModifiedIterator
- *
  */
 template<>
 class CyclicShape<GenericShape>
@@ -145,6 +143,7 @@ public:
      * the last "1" to the first one.
      */
     String<Size<CyclicShape>::Type> diffs;
+
     /*!
      * @var TSize CyclicShape::span;
      * @brief span of the CyclicShape.
@@ -152,7 +151,6 @@ public:
      * @brief left offset (number of leading zeros) of the CyclicShape.
      */
     Size<CyclicShape>::Type loffset, span;
-
 
     /*!
      * @fn GenericCyclicShape::CyclicShape
@@ -223,17 +221,17 @@ template<unsigned LeftOffset, unsigned RightOffset,
          int P10, int P11, int P12, int P13, int P14,
          int P15, int P16, int P17, int P18, int P19>
 class CyclicShape<FixedShape<LeftOffset, GappedShape<HardwiredShape<
-                                                         P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
-                                                         P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
-                                                     >, RightOffset> >
+        P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+        >, RightOffset> >
 {
 public:
     typedef HardwiredShape<
-            P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
-            P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>      THardWiredShape;
+            P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+            THardWiredShape;
 
     enum {loffset = LeftOffset};
     enum {span = LeftOffset + LENGTH<THardWiredShape>::VALUE + RightOffset};
+
     /*!
      * @var TSize[] FixedCyclicShape::diffs;
      * @brief Distances between care positions.
@@ -245,7 +243,6 @@ public:
      * an index position keeps track of the position inside <tt>diffs</tt>.
      */
     static const typename Size<CyclicShape>::Type diffs[];
-
 
     /*!
      * @fn FixedCyclicShape::CyclicShape
@@ -288,8 +285,7 @@ template<unsigned entry, unsigned L, unsigned R,
          int P10, int P11, int P12, int P13, int P14,
          int P15, int P16, int P17, int P18, int P19>
 struct _tmpArrEntry<entry, FixedShape<L, GappedShape<HardwiredShape
-                                                     <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
-                                                      P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
+        <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
 {
     enum {VALUE = entry};
 };
@@ -301,28 +297,27 @@ template<unsigned L, unsigned R,
          int P10, int P11, int P12, int P13, int P14,
          int P15, int P16, int P17, int P18, int P19>
 struct _tmpArrEntry<0, FixedShape<L, GappedShape<HardwiredShape
-                                                 <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09,
-                                                  P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
+        <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >
 {
     enum {VALUE = L + R + 1};
 };
 
 #define ENTRY(X) \
     _tmpArrEntry<X, FixedShape<L, GappedShape<HardwiredShape \
-                                              <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, \
-                                               P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >::VALUE
+    <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, \
+    P10, P11, P12, P13, P14, P15, P16, P17, P18, P19> >, R> >::VALUE
 
 template<unsigned L, unsigned R,
-         int P00, int P01, int P02, int P03, int P04,
-         int P05, int P06, int P07, int P08, int P09,
-         int P10, int P11, int P12, int P13, int P14,
-         int P15, int P16, int P17, int P18, int P19>
-const typename Size<CyclicShape<FixedShape<L, GappedShape<HardwiredShape<
-                                                              P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
-                                                          >, R> > >::Type
-CyclicShape<FixedShape<L, GappedShape<HardwiredShape<
-                                          P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
-                                      >, R> >::diffs[] =
+        int P00, int P01, int P02, int P03, int P04,
+        int P05, int P06, int P07, int P08, int P09,
+        int P10, int P11, int P12, int P13, int P14,
+        int P15, int P16, int P17, int P18, int P19>
+const typename Size<CyclicShape<FixedShape<L, GappedShape<HardwiredShape
+        <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+        >, R> > >::Type
+CyclicShape<FixedShape<L, GappedShape<HardwiredShape
+        <P00, P01, P02, P03, P04, P05, P06, P07, P08, P09, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19>
+        >, R> >::diffs[] =
 {
     ENTRY(P00), ENTRY(P01), ENTRY(P02), ENTRY(P03), ENTRY(P04),
     ENTRY(P05), ENTRY(P06), ENTRY(P07), ENTRY(P08), ENTRY(P09),
@@ -438,11 +433,11 @@ weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
  *
  * @brief Converts a 0/1 string to a Generic CyclicShape.
  *
- * @signature void stringToCyclicShape(shape, TString const & bitmap);
+ * @signature void stringToCyclicShape(shape, bitmap);
  *
  * @tparam TString A string type, e.g. CharString.
  * @param[out] shape Generic CyclicShape
- * @param[in] bitmap 0/1 string. CyclicShapes may start and end with zeros,
+ * @param[in] bitmap 0/1 string of type TString. CyclicShapes may start and end with zeros,
  *      but must contain at least one 1.
  *
  * @see Shape#stringToShape Equivalent for Shapes
@@ -542,12 +537,12 @@ cyclicShapeToString(
  *
  * @brief Determine the indices of care positions in the range <i>[0,span)</i>
  *
- * @signature void carePositions(TString positions, cyclicShape);
+ * @signature void carePositions(positions, cyclicShape);
  *
  * @param[in] cyclicShape CyclicShape object.
- * @param[out] positions The resulting @link String @endlink to store the care-positions in.
+ * @param[out] positions The resulting @link String @endlink to store the care-positions in. Type TString.
  *
- * @tparam TString String or array. Value type should be the size type of CyclicShape.
+ * @tparam TString String or array. Value type should be an integral size type.
  * @tparam TSpec Specialization of CyclicShape.
  *
  * This function can be used to convert <tt>CyclicShape.diffs</tt>, which stores
