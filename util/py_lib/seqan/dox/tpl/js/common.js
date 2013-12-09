@@ -412,9 +412,10 @@
 				});
 				console.log('developer mode: ' + (active ? 'on' : 'off'));
 				if(active && $('#devModeWindow').length == 0) {
-					$('<div id="devModeWindow"><strong>Developer Mode is active</strong><br>Press <code>Ctrl + Shift</code> to deactivate</div>')
-						.appendTo('body')
-						.click(function() { $.devMode(false); });
+					$('<div id="devModeWindow"><strong>Developer Mode is active</strong>\
+					   <br>Press <code>Ctrl + Shift</code> to deactivate<br></div>')
+					   	.append($('<a href="#">Show dox sources</a>').click(function() { $('#doxSources').modal({}).find('.modal-dialog').css('width', '90%'); }))
+						.appendTo('body');
 				} else {
 					$('#devModeWindow').remove();
 				}

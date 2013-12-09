@@ -1231,7 +1231,22 @@ Render toggle-able Dox-like documentation.
 
 {% macro dox_source(entry, in_comment=False) %}
 
-<a href="#" onclick="javascript:document.getElementById('dox-source').style.display = 'block'; return false;">Toggle</a>
-<pre style="font-size:.8em; display:none;" id="dox-source">{{ entry|to_dox(in_comment=in_comment)|e }}</pre>
+<div class="modal fade" id="doxSources" tabindex="-1" role="dialog" aria-labelledby="doxSourcesLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="doxSourcesLabel">Dox Sources</h4>
+      </div>
+      <div class="modal-body">
+        <pre>{{ entry|to_dox(in_comment=in_comment)|e }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endmacro %}
