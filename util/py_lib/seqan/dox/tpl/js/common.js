@@ -462,6 +462,9 @@
 				var expandedHeight = $box.outerHeight();
 				if(expandedHeight <= settings.maxHeight) return;
 				
+				//var srcPath = $box.parents('[data-src-path]').data('src-path');
+				//console.log(srcPath, $('[data-src-path="' + srcPath + '.stdout"]').length);
+				
 				$box.height(settings.maxHeight).css({ overflow: 'hidden' });
 				return $(settings.moreLink).click(function() {
 					var $link = $(this);
@@ -487,7 +490,7 @@
 	});
 
     $(document).ready(function () {
-        $('.highlight pre').codeCollapse({
+        $('[data-src-path] pre, pre[data-src-path]').codeCollapse({
         	maxHeight: 77,
         	moreLink: '<a class="more">...</a>',
         	lessLink: '<a class="less">&nbsp;</a>'

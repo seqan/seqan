@@ -1590,9 +1590,7 @@ pre {
   border: 1px solid rgba(0, 0, 0, 0.2);
   font-size: .92em;
   line-height: 1.5em;
-}
-.highlight pre {
-  margin-bottom: 0;
+  margin: 0;
 }
 pre.console {
   background-color: #121212;
@@ -1607,7 +1605,6 @@ pre.console {
 h3 pre,
 h3 pre.highlight {
   padding: 0;
-  margin: 0;
   color: inherit;
   background-color: transparent;
   background-image: none;
@@ -1620,8 +1617,11 @@ h3 pre.highlight {
 pre code {
   box-shadow: none;
 }
-pre + .more,
-pre + .less {
+pre + :not(.more):not(.less) {
+  margin-top: 1.5em;
+}
+.more,
+.less {
   position: relative;
   display: block;
   margin: -1.33em 1px 1px 1px;
@@ -1630,12 +1630,12 @@ pre + .less {
   background-color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
 }
-pre + .more:hover,
-pre + .less:hover {
+.more:hover,
+.less:hover {
   background-color: rgba(50, 118, 177, 0.6);
   color: #fff;
 }
-pre + .more {
+.more {
   font-size: 1.5em;
   line-height: .65em;
   padding: 0 0 0.65em 0;
@@ -1645,7 +1645,7 @@ pre + .more {
   -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-pre + .more:before {
+.more:before {
   position: absolute;
   top: 1em;
   left: 5em;
@@ -1659,7 +1659,7 @@ pre + .more:before {
   display: block;
   font-size: .8em;
 }
-pre + .more:after {
+.more:after {
   position: absolute;
   top: 1em;
   left: auto;
@@ -1673,27 +1673,27 @@ pre + .more:after {
   display: block;
   font-size: .8em;
 }
-pre + .more:before,
-pre + .more:after {
+.more:before,
+.more:after {
   opacity: 0;
   font-size: 0.3em;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
-pre + .more:hover {
+.more:hover {
   text-decoration: none;
 }
-pre + .more:hover:before,
-pre + .more:hover:after {
+.more:hover:before,
+.more:hover:after {
   opacity: 1;
   -webkit-animation: animation2 0.3s linear 0s infinite alternate;
   animation: animation2 0.3s linear 0s infinite alternate;
 }
-pre + .more:before,
-pre + .more:after {
+.more:before,
+.more:after {
   margin-top: .8em;
 }
-pre + .less {
+.less {
   font-size: 1.5em;
   line-height: .65em;
   padding: 0 0 0.65em 0;
@@ -1701,7 +1701,7 @@ pre + .less {
   position: relative;
   background-color: transparent;
 }
-pre + .less:before {
+.less:before {
   position: absolute;
   top: 1em;
   left: 5em;
@@ -1715,7 +1715,7 @@ pre + .less:before {
   display: block;
   font-size: .8em;
 }
-pre + .less:after {
+.less:after {
   position: absolute;
   top: 1em;
   left: auto;
@@ -1729,24 +1729,24 @@ pre + .less:after {
   display: block;
   font-size: .8em;
 }
-pre + .less:before,
-pre + .less:after {
+.less:before,
+.less:after {
   opacity: 0;
   font-size: 0.3em;
   -webkit-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
-pre + .less:hover {
+.less:hover {
   text-decoration: none;
 }
-pre + .less:hover:before,
-pre + .less:hover:after {
+.less:hover:before,
+.less:hover:after {
   opacity: 1;
   -webkit-animation: animation2 0.3s linear 0s infinite alternate;
   animation: animation2 0.3s linear 0s infinite alternate;
 }
-pre + .less:before,
-pre + .less:after {
+.less:before,
+.less:after {
   margin-top: -0.8em;
 }
 html code,
@@ -1776,8 +1776,8 @@ html .highlight {
   color: #000;
 }
 .highlight + .path_label {
-  margin-top: -1em;
-  margin-bottom: 1em;
+  margin-top: -1.5em;
+  margin-bottom: 1.5em;
 }
 html.list body {
   padding: 5px 15px;
