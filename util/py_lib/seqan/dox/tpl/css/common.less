@@ -261,14 +261,12 @@ pre {
     font-size: .92em;
     line-height: 1.5em;
     
-    .highlight & {
-    	margin-bottom: 0;
-    }
-    
     &.console {
         .bg-gradient(#000, 7%);
         color: #fff;
     }
+    
+    margin: 0;
     
     // bootstrap reset
     .overview > dl &,
@@ -276,7 +274,6 @@ pre {
     h3 &,
     h3 &.highlight {
 		padding: 0;
-		margin: 0;
 		color: inherit;
 		background-color: transparent;
 		background-image: none;
@@ -292,8 +289,12 @@ pre {
     }
 }
 
-pre + .more,
-pre + .less {
+pre + :not(.more):not(.less) {
+	margin-top: 1.5em;
+}
+
+.more,
+.less {
 	position: relative;
 	display: block;
 	margin: -1.33em 1px 1px 1px;
@@ -305,12 +306,12 @@ pre + .less {
 	&:hover { background-color: fadeout(#3276b1, 40%); color: #fff; }
 }
 
-pre + .more {
+.more {
 	.more-link();
 	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1));
 }
 
-pre + .less {
+.less {
 	.less-link();
 	background-color: transparent;
 }
@@ -346,8 +347,8 @@ html .highlight {
 	.label { font-size: 1em; color: #000; }
 	
 	.highlight + & {
-		margin-top: -1em;
-		margin-bottom: 1em;
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
 	}
 }
 
@@ -395,10 +396,6 @@ html.list {
 					a {
 						padding: 58px 0 0 0;
 						background-position: center top;
-						
-						
-						image-rendering: optimizeQuality; /* Gecko */
-						-ms-interpolation-mode: bicubic; /* IE */
 					}
 					
 					font-size: 1.2em;
@@ -694,7 +691,6 @@ ul.params {
  * Developer Mode Window
  */
 #devModeWindow {
-	cursor: pointer;
 	position: fixed;
 	bottom: 0;
 	right: 0;
@@ -801,15 +797,10 @@ ul.params {
 #search {
 	margin: 10px 10px 20px 10px;
 	
-	.pre-action {
-		.replace {
-			display: none;
-		}
-		
+	.pre-action {	
 		margin-top: -10px;
 		margin-bottom: 5px;
-		
-		
+				
 		h1 {
 			position: relative;
 			padding: 0;
@@ -823,6 +814,10 @@ ul.params {
 				background-size: 80px 53px;
 				background-repeat: no-repeat;
 				background-position: center left;
+				
+				@media @highres { 
+					background-image: url(../img/seqan_logo.highres.png);
+				}
 			}
 		}
 	}
@@ -833,10 +828,8 @@ ul.params {
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpldj0iaHR0cDovL3d3dy53My5vcmcvMjAwMS94bWwtZXZlbnRzIj4KPGc%2BCgk8cG9seWdvbiBmaWxsPSIjNjY2IiBwb2ludHM9IjkuMjA3LDYuMTI2IDcuNzkzLDcuNTQxIDExLjc5MywxMS41NDEgMTMuMjA3LDEwLjEyNiIgLz4KCTxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik01LjkxNywyYzEuNjA4LDAsMi45MTcsMS4zMDgsMi45MTcsMi45MTdTNy41MjUsNy44MzMsNS45MTcsNy44MzNTMyw2LjUyNSwzLDQuOTE3UzQuMzA4LDIsNS45MTcsMgoJCSBNNS45MTcsMEMzLjIwMSwwLDEsMi4yMDEsMSw0LjkxN3MyLjIwMSw0LjkxNyw0LjkxNyw0LjkxN3M0LjkxNy0yLjIwMSw0LjkxNy00LjkxN0MxMC44MzMsMi4yMDEsOC42MzIsMCw1LjkxNywwTDUuOTE3LDB6IiAvPgo8L2c%2BCjwvc3ZnPgo%3D');
 		background-position: -24px 10px;
 		
-		&.not-empty {
-			//background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAlUlEQVR42o2RSQrDMAxFc5KCD5MTBgw5ioejeFMoybYhyaLdqPpFKp9AaAwPeXgSQu5E5EvO%2BaZE5a6IxRH37rjYKyukI6WUDe%2FwvOKTBSalhIQFHuTBH7Baa9gj4siJA%2BSHwgJHbmeC%2FKLso8i8%2F1ZGz1w5Xuw5Qg42Hjmj1rrD%2B835LEHvd58z%2F2CwH5tNnO0c3PkAGud706ytt0YAAAAASUVORK5CYII%3D');
-			//background-position: center right;
-			//background-repeat: no-repeat;
+		&.not-empty:focus {
+			background-image: none;
 		}
 	}
 	
