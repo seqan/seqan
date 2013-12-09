@@ -593,6 +593,7 @@ macro (seqan_build_demos_develop PREFIX)
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
+    # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
@@ -605,7 +606,7 @@ macro (seqan_build_demos_develop PREFIX)
     seqan_setup_cuda_vars(ARCH sm_20 DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
