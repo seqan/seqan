@@ -81,6 +81,7 @@ struct MSplazerOptions
     int gapThresh;                  // Allowed gap or distance between matches
     int initGapThresh;              // Maximal allowed start or end gap length
     int breakendThresh;             // Maximal allowed length for a breakend
+    int tandemThresh;               // Minimal length of insertion (double overlap) to be called as tandem repeat
     unsigned breakpointPosRange;    // Allowed range of breakpoint positions
     unsigned support;
     unsigned mateSupport;
@@ -105,6 +106,7 @@ struct MSplazerOptions
         gapThresh(10),
         initGapThresh(15),
         breakendThresh(30),
+        tandemThresh(50),
         breakpointPosRange(6),
         support(2),
         mateSupport(1),
@@ -683,7 +685,8 @@ inline bool setSVType(TBreakpoint & bp)
         std::swap(bp.startSeqPos, bp.endSeqPos);
         if (bp.startSeqStrand)
         {
-            setSVType(bp, TBreakpoint::TRANSLOCATION);
+            setSVType(bp, TBreakpoint::DISPDUPLICATION);
+            // setSVType(bp, TBreakpoint::TRANSLOCATION);
             return false;
         }
         setSVType(bp, TBreakpoint::DELETION);
