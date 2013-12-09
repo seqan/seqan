@@ -556,8 +556,8 @@ Render the member variables overview
 {% macro member_variables_ov(entry, doc, qualifier='Member') %}
 {% if entry.hasSubEntry('member_variable', doc) %}
 
-<div data-lang-entity-container="member_variables">
-<h2 data-lang-entity="member_variables">{{ qualifier }} Variable Overview</h2>
+<div data-lang-entity-container="member_variable">
+<h2 data-lang-entity="member_variable">{{ qualifier }} Variable Overview</h2>
 
 {% if entry.subentries['member_variable'] -%}
 <ul class="summary">
