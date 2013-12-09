@@ -136,7 +136,13 @@ _charCompare(int const c, Whitespace_ const & /* tag*/)
 inline int
 _charCompare(int const c, Blank_ const & /* tag*/)
 {
+#if defined(PLATFORM_WINDOWS_MINGW)
+    // MinGW 4.7.2 has problems in C++11 mode with isblank.
+    //return isblank(c);
+    return (c == ' ' || c == '\t');
+#else  // #if defined(PLATFORM_WINDOWS_MINGW)
     return isblank(c);
+#endif  // #if defined(PLATFORM_WINDOWS_MINGW)
 }
 
 inline int
