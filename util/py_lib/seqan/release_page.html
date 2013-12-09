@@ -173,6 +173,30 @@
       <!--(end)-->
     </table>
 
+    <h2>SeqAn Source Packages</h2>
+    <p>
+      The following packages are archives of the whole SeqAn source repository on release.
+    </p>
+
+    <table>
+      <tr>
+        <th>Version</th>
+        <th>Platform Independent Download</th>
+      </tr>
+      <!--(for version in sorted(seqan_src.versions.values(), key=lambda x:x.version, reverse=True))-->
+      <tr>
+        <td id="@!version.version!@">@!version.version!@</td>
+        <td>
+        <!--(for f in FORMATS)-->#!
+          <!--(if version.packages['src'].archs['src'].files.get(f))-->#!
+           <a href="seqan-src/@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
+          <!--(end)-->
+        <!--(end)-->
+        </td>
+      </tr>
+      <!--(end)-->
+    </table>
+
     <h2>Individual App Releases</h2>
     <p>
       The SeqAn apps are also released independently of the apps bundle release.
