@@ -255,7 +255,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     _setGffRecordType(record, bp);
 //    record.type = bp.svtype;
     record.beginPos = bp.startSeqPos;
-    if (bp.svtype == 2 || bp.svtype == 3) // 2=deletion;3=inversion
+    if (bp.svtype == 2 || bp.svtype == 3 || bp.svtype == 7) // 2=deletion;3=inversion;7=breakend
         record.endPos = bp.endSeqPos;
     else
         record.endPos = bp.startSeqPos + 1;
@@ -515,7 +515,7 @@ inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequen
 
     // Compute ALT columns and a map to the ALT.
     // Storing if breakend is left of (0) or right of (1) breakpoint position
-    if (bp.breakend)
+    if (bp.breakend) // breakend=1; right end breakend
     {
         appendValue(record.alt, record.ref[0]);
         appendValue(record.alt, '.');

@@ -76,6 +76,7 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.gapThresh, parser, "gth");
     getOptionValue(msplazerOptions.initGapThresh, parser, "ith");
     getOptionValue(msplazerOptions.breakendThresh, parser, "bth");
+    getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
     getOptionValue(msplazerOptions.support, parser, "st");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
     getOptionValue(msplazerOptions.libError, parser, "le");
@@ -186,6 +187,10 @@ void _setupArgumentParser(ArgumentParser & parser)
                   "bth", "breakendThresh", "Allowed initial or ending gap length at begin and end of read that creates a breakend/breakpoint (e.g. for reads extending into insertions)",
                   ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "bth", "30");
+    addOption(parser, ArgParseOption(
+                  "tth", "tandemThresh", "Minimal length of (small) insertion/duplication with double overlap to be considered tandem repeat",
+                  ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "tth", "50");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));

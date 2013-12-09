@@ -144,15 +144,14 @@ inline bool _checkMatchComp(TPos const & m1Begin, TPos const & m1End, TPos const
 // m1begin <= m2begin < m2end <= m1end
 // m1begin <= m2begin < m1end <= m2end
 // with minimal length constraint of 50bp for the tandem repeat length
-// TODO (ktrappe): make length variable and user definable
 template <typename TPos>
-inline bool _isTandemOverlap(TPos const & m1Begin, TPos const & m1End, TPos const & m2Begin)
+inline bool _isTandemOverlap(TPos const & m1Begin, TPos const & m1End, TPos const & m2Begin, int tandemThresh)
 {
     if (m2Begin < m1Begin)
         return false;
     if (m1End < m2Begin)
         return false;
-    if (m1End-m2Begin < 50) // length/size of tandem repeat
+    if (m1End-m2Begin < static_cast<unsigned>(tandemThresh)) // length/size of tandem repeat (default 50)
         return false;
 
     return true;
@@ -270,7 +269,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
                                queryId);
                 bp.svtype = TBreakpoint::BREAKEND;
                 // bp.imprecise = true;
-                // bp.breakend = 0;
+                bp.breakend = 0; // left breakend
                 assignProperty(chain.breakpoints, edge, bp);
             }
         }
@@ -296,7 +295,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
                                queryId);
                 bp.svtype = TBreakpoint::BREAKEND;
                 // bp.imprecise = true;
-                // bp.breakend = 1;
+                bp.breakend = 1; // right breakend
                 assignProperty(chain.breakpoints, edge, bp);
             }
         }
@@ -503,16 +502,16 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                                stMatch2.id,
                                stMatch1.orientation,
                                stMatch2.orientation,
-                               /*
                                startSeqPos,
                                endSeqPos,
                                readStartPos,
                                readEndPos,
-                               */
+                               /*
                                startSeqPos_test,
                                endSeqPos_test,
                                readStartPos_test,
                                readEndPos_test,
+                               */
                                queryId);
 
                 // Imprecise breakpoint?
@@ -530,10 +529,8 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                         setInsertionSeq(bp, inSeq);
                     }
                 }
-                //if (bp.svtype == "translocation" && _isTandemOverlap(stMatch1.begin1, stMatch1.end1, stMatch2.begin1))
-                // TODO(ktrappe): adjust to DUPLICATION type once that is ready
                 // TODO(ktrappe): needs adjustment of positions?
-                if (bp.svtype == TBreakpoint::TRANSLOCATION && _isTandemOverlap(stMatch1.begin1, startSeqPos_test, endSeqPos_test))
+                if (bp.svtype == TBreakpoint::DISPDUPLICATION && _isTandemOverlap(stMatch1.begin1, startSeqPos_test, endSeqPos_test, msplazerOptions.tandemThresh))
                 {
                     // Double overlap check (not handled jet)
                     // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
@@ -775,17 +772,16 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                                    (*stMatch2).id,
                                    (*stMatch1).orientation,
                                    (*stMatch2).orientation,
-
-                                   /*
                                    startSeqPos,
                                    endSeqPos,
                                    readStartPos,
                                    readEndPos,
-                                   */
+                                   /*
                                    startSeqPos_test,
                                    endSeqPos_test,
                                    readStartPos_test,
                                    readEndPos_test,
+                                   */
                                    queryId);
 
                     // Imprecise breakpoint?
