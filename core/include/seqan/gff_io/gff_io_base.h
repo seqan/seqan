@@ -326,7 +326,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
     if (value(reader) == '=')
     {
         goNext(reader);
-        if (skipWhitespaces(reader) != 0)
+        if (skipBlanks(reader) != 0)
             return 1;
 
         if (atEnd(reader))
