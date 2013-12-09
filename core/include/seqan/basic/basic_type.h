@@ -41,6 +41,8 @@
 #ifndef SEQAN_BASIC_BASIC_TYPE_H_
 #define SEQAN_BASIC_BASIC_TYPE_H_
 
+#include <cstddef>
+
 namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
