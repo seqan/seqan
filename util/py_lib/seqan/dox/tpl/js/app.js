@@ -136,8 +136,10 @@ function generateTOC() {
   // hides all items to be hidden (determined by their data-toc attribute) and the optionally following list of sub items
   $(_toc).find('[data-toc=hidden]').each(function() {
   	var $hiddenNavItem = $(this);
+  	var $parentList = $hiddenNavItem.parent('ol, ul');
   	if($hiddenNavItem, $hiddenNavItem.next().prop("tagName") == 'OL') $hiddenNavItem.next().remove();
   	$hiddenNavItem.remove();
+  	if($parentList.children().length == 0) $parentList.remove();
   });
   $('#toc').append(_toc);
 }
