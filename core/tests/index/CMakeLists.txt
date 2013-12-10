@@ -110,6 +110,9 @@ add_executable (test_index_repeats
                test_index_repeats.h)
 target_link_libraries (test_index_repeats ${SEQAN_LIBRARIES})
 
+add_executable (test_index_swift
+                test_index_swift.cpp)
+target_link_libraries (test_index_swift ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
