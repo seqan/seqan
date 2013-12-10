@@ -453,7 +453,8 @@
 			var settings = $.extend({
 				maxHeight: 200,
 				moreLink: '<a class="more">More ...</a>',
-				lessLink: '<a class="less">Less ...</a>'
+				lessLink: '<a class="less">Less ...</a>',
+				tolerance: 50 // number of pixels a container's height may exceed before it becomes collapsed
 			}, options);
 			
 			function createMoreLink(box) {
@@ -461,7 +462,7 @@
 				
 				$box.height('auto');
 				var expandedHeight = $box.outerHeight();
-				if(expandedHeight <= settings.maxHeight) return;
+				if(expandedHeight <= settings.maxHeight + settings.tolerance) return;
 				
 				//var srcPath = $box.parents('[data-src-path]').data('src-path');
 				//console.log(srcPath, $('[data-src-path="' + srcPath + '.stdout"]').length);

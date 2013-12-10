@@ -252,7 +252,7 @@ Tags are classes that are only used for their type. They are often used for tag-
 Variables are a standard C++ feature.
 
 
-@htmlonly <h2 data-lang-entity="adaption"><a name="adaption">Adaption</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="adaption" id="adaption">Adaption</h2> @endhtmlonly
 
 Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</b>.  This can be used to make a class from an external library follow a SeqAn concept.
 
@@ -275,7 +275,7 @@ size_t length(std::string const & str)
 @endcode
 
 
-@htmlonly <h2 data-lang-entity="macro"><a name="macro">Macro</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="macro" id="macro">Macro</h2> @endhtmlonly
 
 Macros are pieces of code evaluated by the C preprocessor.
 
@@ -297,7 +297,7 @@ SEQAN_ASSERT_EQ(SQUARE(10), 100);
 
 
 
-@htmlonly <h2 data-lang-entity="template_parameter"><a name="template_parameter">Template Parameter</a></h2> @endhtmlonly
+@htmlonly <h2 data-lang-entity="template_parameter" id="template_parameter">Template Parameter</h2> @endhtmlonly
 
 Templates can take types or constant integral values as parameters.
 
