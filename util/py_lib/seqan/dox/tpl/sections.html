@@ -124,11 +124,11 @@ Render the inheritance information of the given entr.
   
   <dt>Signature</dt>
   <dd>
-    <code><pre>
+    <code>
 {%- for s in entry.signatures -%}
 {{ s|transtext(False) }}
 {% endfor -%}
-    </code></pre>
+    </code>
   </dd>
 </dl>
 {% endmacro %}
@@ -940,35 +940,35 @@ Render the member typedef details
   <h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
-  <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
-      <code>
-          {%- for s in subentry.signatures: -%}
-          {{ s|transtext(False) }}{% if not loop.last %}
-{% endif -%}{%- endfor -%}
-      </code>
-    </h3>
-  </div>
-  <div class="docstring">
-    <div class="discussion">
-      {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
-    </div>
-  </div>
+	  <div class="method_details{% if loop.first %} first{% endif %}">
+		<h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+		  <code>
+			  {%- for s in subentry.signatures: -%}
+			  {{ s|transtext(False) }}{% if not loop.last %}
+	{% endif -%}{%- endfor -%}
+		  </code>
+		</h3>
+	  </div>
+	  <div class="docstring">
+		<div class="discussion">
+		  {{ subentry.brief|transtext }}
+		  {{ body(subentry, start_heading=4) }}
+		</div>
+	  </div>
 
-  {% if subentry.sees %}
-  <div class="tags">
-    <p class="tag_title">See Also:</p>
-    
-    <ul class="see">
-      {% for link in subentry.sees %}
-      <li>{{ link|transtext(False)|translink }}</li>
-      {% endfor %}
-      {% endif %}
-    </ul>
-  </div>
+	  {% if subentry.sees %}
+	  <div class="tags">
+		<p class="tag_title">See Also:</p>
+	
+		<ul class="see">
+		  {% for link in subentry.sees %}
+		  	<li>{{ link|transtext(False)|translink }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	  {% endif %}
   {% endfor %}
-
+  
 </div>
 {% endif %}
 {% endmacro %}
