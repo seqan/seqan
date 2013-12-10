@@ -99,6 +99,7 @@ function generateTOC() {
   $(tags.join(', ')).each(function() {
     if ($(this).parents('.method_details .docstring').length != 0) return;
     if (this.id == "filecontents") return;
+    if ($(this).parents('.modal').length != 0) return;
     
     show = true;
     var thisTag = parseInt(this.tagName[1], 10);
@@ -132,7 +133,7 @@ function generateTOC() {
   	$('#content').prepend(html);
   }
   
-  // hides all items to be hidden and the optionally following list of sub items
+  // hides all items to be hidden (determined by their data-toc attribute) and the optionally following list of sub items
   $(_toc).find('[data-toc=hidden]').each(function() {
   	var $hiddenNavItem = $(this);
   	if($hiddenNavItem, $hiddenNavItem.next().prop("tagName") == 'OL') $hiddenNavItem.next().remove();
