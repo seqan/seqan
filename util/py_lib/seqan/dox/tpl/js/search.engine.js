@@ -208,6 +208,21 @@ and based on the Tipue Search, http://www.tipue.com
         
             return result;
         }
+        
+        // Returns the n-th LI element of the search results
+        // The returned LI element is not necessarily visible 
+        function getNthResultItem(i) {
+        	return $(settings.output.find('.result')[i]);
+        }
+        
+        // Returns the focused LI element of the search results
+        function getFocusedResultItem() {
+        	return settings.output.find(':focus');
+        }
+        
+        function getFocusedResultItemIndex() {
+        	return $.inArray(getFocusedResultItem().parents('.result')[0], settings.output.find('.result'));
+        }
 
         return this.each(function () {
 
@@ -232,7 +247,10 @@ and based on the Tipue Search, http://www.tipue.com
                 search(0, true);
             });
             settings.queryInput.keyup(function(event) {
-                if (event.keyCode == '13') {
+                if (event.keyCode == '13') { // ENTER
+                	$(getNthResultItem(3)).find('a:nth-child(2)').focus();
+                	return;
+                	
                     try {
                         $firstResult = settings.output.find('.result a:nth-child(2)').first();
                         var target = $firstResult.attr('target') || 'main';
@@ -243,6 +261,27 @@ and based on the Tipue Search, http://www.tipue.com
                     }
                 } else {
                     search(0, true);
+                }
+            });
+            $(document).keydown(function(event) {
+                if(event.keyCode == '40' || event.keyCode == '38') { // arrow down && arrow up
+                	var el = getFocusedResultItem();
+                	if(el.length == 0) {
+                		el = getNthResultItem(0);
+                	} else {
+                		var i=0;
+                		do {
+                			i+=(event.keyCode == '40') ? +1 : -1;
+                			el = getNthResultItem(getFocusedResultItemIndex()+i);			
+                		} while(el.length != 0 && !el.is(':visible'));
+                		
+                		if(el.length == 0 && i < 0) {
+                			settings.queryInput.focus();
+                			return false;
+                		}
+                	}
+                	el.find('a:nth-child(2)').focus();
+                	return false;
                 }
             });
             settings.langEntitiesInput.change(function (event) {
