@@ -671,14 +671,13 @@ Render the grouped macros details
       </dd>
     </dl>
     {% endif %}
-    
+
     <div class="docstring">
       <div class="discussion">
         {{ subentry.brief|transtext }}
-        {{ body(subentry, start_heading=4) }}
       </div>
     </div>
-
+    
     <dl>
       {% if subentry.tparams %}
       <dt>Template Parameters</dt>
@@ -700,6 +699,12 @@ Render the grouped macros details
       </dd>
       {% endif %}
     </dl>
+
+    <div class="docstring">
+      <div class="discussion">
+        {{ body(subentry, start_heading=4) }}
+      </div>
+    </div>
   </div>
 
 {% endfor %}
@@ -851,7 +856,6 @@ Render the interface functions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -898,6 +902,12 @@ Render the interface functions details
     {% endfor %}
   </dl>
   {% endif %}
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
+  </div>
 
   {% if subentry.sees %}
   <h4>See Also</h4>
@@ -1005,7 +1015,6 @@ Render the interface metafunctions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -1023,6 +1032,12 @@ Render the interface metafunctions details
     </ul>
   </div>
   {% endif %}
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
+  </div>
 
   {% if subentry.returns %}
   <div class="tags">
