@@ -7,11 +7,7 @@
   <a href="page_LanguageEntities.html#typedef">Typedef</a> <span>{{ typedef.title|e }}<div>{{ sections.brief(typedef) }}</div></span>
 </h1>
 
-<div class="overview">
-	{{ sections.top_box(typedef) }}
-
-	{{ sections.signatures(typedef) }}
-</div>
+{{ sections.top_box(typedef) }}
 
 {% if typedef.internals or typedef.deprecation_msgs or typedef.warnings or typedef.notes or typedef.akas or not typedef.body.empty %}
 <h2>Overview</h2>
