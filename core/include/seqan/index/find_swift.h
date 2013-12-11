@@ -1869,6 +1869,9 @@ find(
     TSize minLength)
 {
     //typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
+    // TODO (singer): Dave, is this ok?
+    if (empty(indexText(host(pattern))))
+        return false;
 
     if (empty(finder)) 
     {
