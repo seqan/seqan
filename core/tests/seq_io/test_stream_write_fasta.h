@@ -63,6 +63,36 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_default)
     SEQAN_ASSERT_EQ(CharString(buffer), CharString(EXPECTED));
 }
 
+// Test that no empty lines are written if (seq_len % line_len) == 0.
+SEQAN_DEFINE_TEST(test_stream_write_record_fasta_no_empty_lines)
+{
+    using namespace seqan;
+
+    char buffer[1000];
+    Stream<CharArray<char *> > outStream(&buffer[0], &buffer[0] + 1000);
+
+    CharString meta1 = "meta1";
+    CharString meta2 = "meta2";
+    Dna5String seq1 = "CCCAAATTTN""CCCAAATTTN";
+    Dna5String seq2 = "CGATN";
+    SEQAN_ASSERT_EQ(length(seq1), 20u);
+
+    SequenceOutputOptions options;
+    options.lineLength = 10;
+
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta1, seq1, Fasta(), options), 0);
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta2, seq2, Fasta(), options), 0);
+    streamPut(outStream, '\0');
+
+    char const * EXPECTED =
+            ">meta1\n"
+            "CCCAAATTTN\n"
+            "CCCAAATTTN\n"
+            ">meta2\n"
+            "CGATN\n";
+    SEQAN_ASSERT_EQ(CharString(buffer), CharString(EXPECTED));
+}
+
 SEQAN_DEFINE_TEST(test_stream_write_record_fasta_nolinebreaks)
 {
     using namespace seqan;
