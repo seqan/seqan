@@ -96,6 +96,9 @@ h3 {
         code {
         	box-shadow: none;
         	white-space: pre;
+    		-ms-word-break: break-all;
+			word-break: break-all;
+			word-break: break-word;
         	padding-left: 0;
         }
     }
@@ -187,7 +190,7 @@ dl {
 	margin: 0;
 	padding: 0;
 	
-	:not(.overview) > & {
+	&:not(.overview) {
 		dt {
 			font-size: 1.1em;
 			font-weight: bold;
@@ -217,7 +220,7 @@ dl {
 		}
 	}
 	
-	.overview > & {
+	&.overview {
 		max-width: 100%;
 		
 		dt, dd {
@@ -230,10 +233,48 @@ dl {
 			width: 7em;
 			text-align: right;
 			font-weight: bold;
-    
-			&:after {
-				content: ":";
-			}
+			
+			position: relative;
+			
+			code {
+				@iconSpacing: .5em;
+				@inColor: #d43f3a;
+				@outColor: #4cae4c;
+				
+				&[data-param-type]:before,
+				&[data-param-type]:after {
+					position: absolute;
+					top: .3em;
+					left: -(@iconSpacing)-1em;
+					font-size: 0.7em;
+				}
+			
+				&[data-param-type=in]:before {
+					.glyphicon("\e161");
+					color: @inColor;
+				}
+			
+				&[data-param-type=out]:before {
+					.glyphicon("\e163");
+					color: @outColor;
+				}
+			
+				&[data-param-type=in_out]:before,
+				&[data-param-type=in_out]:after {
+					left: -(@iconSpacing)-2em-.3em;
+				}
+				
+				&[data-param-type=in_out]:before {
+					.glyphicon("\e161");
+					color: @inColor;
+				}
+				
+				&[data-param-type=in_out]:after {
+					.glyphicon("\e163");
+					color: @outColor;
+					margin-left: 1em + .3em;
+				}
+			}			
 		}
 
 		dd {
@@ -245,10 +286,20 @@ dl {
 		}
 		
 		code {
-			line-height: 1.7em;
+			position: relative;
+			top: .15em;
+			line-height: 1.428571429em; // constant copied from bootstrap
 			white-space: pre;
 			padding-left: 0;
-		}	
+			padding-right: 0;
+    		-ms-word-break: break-all;
+			word-break: break-all;
+			word-break: break-word;
+		}
+		
+		.glyphicon {
+			font-size: .7em;
+		}
 	}
 }
 

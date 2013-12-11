@@ -1425,6 +1425,9 @@ h3.signature[data-lang-entity] > pre {
 h3.signature code {
   box-shadow: none;
   white-space: pre;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
   padding-left: 0;
 }
 h4 {
@@ -1517,22 +1520,22 @@ dl {
   margin: 0;
   padding: 0;
 }
-:not(.overview) > dl dt {
+dl:not(.overview) dt {
   font-size: 1.1em;
   font-weight: bold;
   margin: .5em 0 0 0;
   padding: 3px 5px;
   border-radius: 4px;
 }
-:not(.overview) > dl dt:after {
+dl:not(.overview) dt:after {
   content: ':';
 }
-:not(.overview) > dl dd {
+dl:not(.overview) dd {
   margin: 0 0 0 1em;
   padding: .5em;
   position: relative;
 }
-:not(.overview) > dl dd:before {
+dl:not(.overview) dd:before {
   position: absolute;
   top: 0.3em;
   left: -1em;
@@ -1547,33 +1550,92 @@ dl {
   margin: 5px auto 10px;
   font-size: .8em;
 }
-.overview > dl {
+dl.overview {
   max-width: 100%;
 }
-.overview > dl dt,
-.overview > dl dd {
+dl.overview dt,
+dl.overview dd {
   padding: 0.25em 0 0.25em 0;
 }
-.overview > dl dt {
+dl.overview dt {
   float: left;
   clear: left;
   width: 7em;
   text-align: right;
   font-weight: bold;
+  position: relative;
 }
-.overview > dl dt:after {
-  content: ":";
+dl.overview dt code[data-param-type]:before,
+dl.overview dt code[data-param-type]:after {
+  position: absolute;
+  top: .3em;
+  left: -1.5em;
+  font-size: 0.7em;
 }
-.overview > dl dd {
+dl.overview dt code[data-param-type=in]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e161";
+  color: #d43f3a;
+}
+dl.overview dt code[data-param-type=out]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e163";
+  color: #4cae4c;
+}
+dl.overview dt code[data-param-type=in_out]:before,
+dl.overview dt code[data-param-type=in_out]:after {
+  left: -2.8em;
+}
+dl.overview dt code[data-param-type=in_out]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e161";
+  color: #d43f3a;
+}
+dl.overview dt code[data-param-type=in_out]:after {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e163";
+  color: #4cae4c;
+  margin-left: 1.3em;
+}
+dl.overview dd {
   margin: 0 0 0 8em;
 }
-.overview > dl dd [data-lang-entity] > :first-child {
+dl.overview dd [data-lang-entity] > :first-child {
   display: none;
 }
-.overview > dl code {
-  line-height: 1.7em;
+dl.overview code {
+  position: relative;
+  top: .15em;
+  line-height: 1.428571429em;
   white-space: pre;
   padding-left: 0;
+  padding-right: 0;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+dl.overview .glyphicon {
+  font-size: .7em;
 }
 pre {
   background-color: #f5f5f5;
