@@ -7,11 +7,7 @@
   <a href="page_LanguageEntities.html#variable">Variable</a> <span>{{ variable.title|e }}<div>{{ sections.brief(variable) }}</div></span>
 </h1>
 
-<div class="overview">
-	{{ sections.top_box(variable) }}
-	
-	{{ sections.signatures(variable) }}
-</div>
+{{ sections.top_box(variable) }}
 
 {% if variable.internals or variable.deprecation_msgs or variable.warnings or variable.notes or variable.akas or not variable.body.empty %}
 <h2>Overview</h2>

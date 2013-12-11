@@ -64,7 +64,7 @@ Render the inheritance information of the given entr.
 -->
 
 {% macro top_box(entry) %}
-<dl>
+<dl class="overview">
 
   {% if entry.extends %}
   <dt>Extends</dt>
@@ -190,14 +190,6 @@ Render the @brief text for the given entry.
 {% macro brief(entry) -%}
 {{ entry.brief|transtext }}
 {%- endmacro %}
-
-<!--
-Macro signatures(entry)
-
-Render the @signature entries for the given entry.
--->
-
-{% macro signatures(entry) -%}{# moved to top_box #}{%- endmacro %}
 
 <!--
 Macro body(entry, start_heading=2)
@@ -864,63 +856,56 @@ Render the interface functions details
   </div>
 
   {% if subentry.tparams %}
-  <div class="tags">
-    <p class="tag_title">Template Parameters</p>
-
-    <ul class="param">
-      {% for param in subentry.tparams %}
-      <li>
-        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
-        <div class="inline">{{ param.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Template Parameters</h4>
+  <dl class="overview">
+  	{% for param in subentry.tparams %}
+  	<dt><code>{{ param.type|e }}</code></dt>
+  	<dd>{{ param.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
   {% if subentry.params %}
-  <div class="tags">
-    <p class="tag_title">Parameters</p>
-    <ul class="param">
-      {% for param in subentry.params %}
-      <li>
-        <span class="name"><code>{{ param.name|e }}</code></span>
-        {% if param.in_out %}
-        ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
-        {% endif %}
-        &mdash;
-        <div class="inline">{{ param.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Parameters</h4>
+  <dl class="overview">
+  	{% for param in subentry.params %}
+  	<dt>
+  	{% if param.in_out %}
+		{% if param.in_out == 'IN' %}
+			<code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
+		{% elif param.in_out == 'OUT' %}
+			<code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
+		{% elif param.in_out == 'IN_OUT' %}
+			<code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
+		{% else %}
+			<code>{{ param.name|e }}</code>
+		{% endif %}
+	{% else %}
+		<code>{{ param.name|e }}</code>
+	{% endif %}
+  	</dt>
+  	<dd>{{ param.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
   {% if subentry.returns %}
-  <div class="tags">
-    <p class="tag_title">Returns:</p>
-
-    <ul class="return">
-      {% for ret in subentry.returns %}
-      <li>
-        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
-        <div class="inline">{{ ret.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Returns</h4>
+  <dl class="overview">
+  	{% for ret in subentry.returns %}
+  	<dt><code>{{ ret.type|e }}</code></dt>
+  	<dd>{{ ret.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
   {% if subentry.sees %}
-  <div class="tags">
-    <p class="tag_title">See Also:</p>
-    
-    <ul class="see">
-      {% for link in subentry.sees %}
-      <li>{{ link|transtext(False)|translink }}</li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>See Also</h4>
+  <ul>
+    {% for link in subentry.sees %}
+    <li>{{ link|transtext(False)|translink }}</li>
+	{% endfor %}
+  </ul>
   {% endif %}
   {% endfor %}
 
