@@ -64,7 +64,7 @@ Render the inheritance information of the given entr.
 -->
 
 {% macro top_box(entry) %}
-<dl>
+<dl class="overview">
 
   {% if entry.extends %}
   <dt>Extends</dt>
@@ -124,11 +124,11 @@ Render the inheritance information of the given entr.
   
   <dt>Signature</dt>
   <dd>
-    <code><pre>
+    <code>
 {%- for s in entry.signatures -%}
 {{ s|transtext(False) }}
 {% endfor -%}
-    </code></pre>
+    </code>
   </dd>
 </dl>
 {% endmacro %}
@@ -190,14 +190,6 @@ Render the @brief text for the given entry.
 {% macro brief(entry) -%}
 {{ entry.brief|transtext }}
 {%- endmacro %}
-
-<!--
-Macro signatures(entry)
-
-Render the @signature entries for the given entry.
--->
-
-{% macro signatures(entry) -%}{# moved to top_box #}{%- endmacro %}
 
 <!--
 Macro body(entry, start_heading=2)
@@ -556,8 +548,8 @@ Render the member variables overview
 {% macro member_variables_ov(entry, doc, qualifier='Member') %}
 {% if entry.hasSubEntry('member_variable', doc) %}
 
-<div data-lang-entity-container="member_variables">
-<h2 data-lang-entity="member_variables">{{ qualifier }} Variable Overview</h2>
+<div data-lang-entity-container="member_variable">
+<h2 data-lang-entity="member_variable">{{ qualifier }} Variable Overview</h2>
 
 {% if entry.subentries['member_variable'] -%}
 <ul class="summary">
@@ -679,14 +671,13 @@ Render the grouped macros details
       </dd>
     </dl>
     {% endif %}
-    
+
     <div class="docstring">
       <div class="discussion">
         {{ subentry.brief|transtext }}
-        {{ body(subentry, start_heading=4) }}
       </div>
     </div>
-
+    
     <dl>
       {% if subentry.tparams %}
       <dt>Template Parameters</dt>
@@ -708,12 +699,18 @@ Render the grouped macros details
       </dd>
       {% endif %}
     </dl>
+
+    <div class="docstring">
+      <div class="discussion">
+        {{ body(subentry, start_heading=4) }}
+      </div>
+    </div>
   </div>
-</div>
 
 {% endfor %}
 
 </div>
+
 {% endif %}
 {% endmacro %}
 
@@ -859,68 +856,66 @@ Render the interface functions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
   {% if subentry.tparams %}
-  <div class="tags">
-    <p class="tag_title">Template Parameters</p>
-
-    <ul class="param">
-      {% for param in subentry.tparams %}
-      <li>
-        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
-        <div class="inline">{{ param.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Template Parameters</h4>
+  <dl class="overview">
+  	{% for param in subentry.tparams %}
+  	<dt><code>{{ param.type|e }}</code></dt>
+  	<dd>{{ param.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
   {% if subentry.params %}
-  <div class="tags">
-    <p class="tag_title">Parameters</p>
-    <ul class="param">
-      {% for param in subentry.params %}
-      <li>
-        <span class="name"><code>{{ param.name|e }}</code></span>
-        {% if param.in_out %}
-        ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
-        {% endif %}
-        &mdash;
-        <div class="inline">{{ param.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Parameters</h4>
+  <dl class="overview">
+  	{% for param in subentry.params %}
+  	<dt>
+  	{% if param.in_out %}
+		{% if param.in_out == 'IN' %}
+			<code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
+		{% elif param.in_out == 'OUT' %}
+			<code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
+		{% elif param.in_out == 'IN_OUT' %}
+			<code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
+		{% else %}
+			<code>{{ param.name|e }}</code>
+		{% endif %}
+	{% else %}
+		<code>{{ param.name|e }}</code>
+	{% endif %}
+  	</dt>
+  	<dd>{{ param.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
   {% if subentry.returns %}
-  <div class="tags">
-    <p class="tag_title">Returns:</p>
-
-    <ul class="return">
-      {% for ret in subentry.returns %}
-      <li>
-        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
-        <div class="inline">{{ ret.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  <h4>Returns</h4>
+  <dl class="overview">
+  	{% for ret in subentry.returns %}
+  	<dt><code>{{ ret.type|e }}</code></dt>
+  	<dd>{{ ret.desc|transtext(False) }}</dd>
+    {% endfor %}
+  </dl>
   {% endif %}
 
-  {% if subentry.sees %}
-  <div class="tags">
-    <p class="tag_title">See Also:</p>
-    
-    <ul class="see">
-      {% for link in subentry.sees %}
-      <li>{{ link|transtext(False)|translink }}</li>
-      {% endfor %}
-    </ul>
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
   </div>
+
+  {% if subentry.sees %}
+  <h4>See Also</h4>
+  <ul>
+    {% for link in subentry.sees %}
+    <li>{{ link|transtext(False)|translink }}</li>
+	{% endfor %}
+  </ul>
   {% endif %}
   {% endfor %}
 
@@ -940,35 +935,35 @@ Render the member typedef details
   <h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
-  <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
-      <code>
-          {%- for s in subentry.signatures: -%}
-          {{ s|transtext(False) }}{% if not loop.last %}
-{% endif -%}{%- endfor -%}
-      </code>
-    </h3>
-  </div>
-  <div class="docstring">
-    <div class="discussion">
-      {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
-    </div>
-  </div>
+	  <div class="method_details{% if loop.first %} first{% endif %}">
+		<h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+		  <code>
+			  {%- for s in subentry.signatures: -%}
+			  {{ s|transtext(False) }}{% if not loop.last %}
+	{% endif -%}{%- endfor -%}
+		  </code>
+		</h3>
+	  </div>
+	  <div class="docstring">
+		<div class="discussion">
+		  {{ subentry.brief|transtext }}
+		  {{ body(subentry, start_heading=4) }}
+		</div>
+	  </div>
 
-  {% if subentry.sees %}
-  <div class="tags">
-    <p class="tag_title">See Also:</p>
-    
-    <ul class="see">
-      {% for link in subentry.sees %}
-      <li>{{ link|transtext(False)|translink }}</li>
-      {% endfor %}
-      {% endif %}
-    </ul>
-  </div>
+	  {% if subentry.sees %}
+	  <div class="tags">
+		<p class="tag_title">See Also:</p>
+	
+		<ul class="see">
+		  {% for link in subentry.sees %}
+		  	<li>{{ link|transtext(False)|translink }}</li>
+		  {% endfor %}
+		</ul>
+	  </div>
+	  {% endif %}
   {% endfor %}
-
+  
 </div>
 {% endif %}
 {% endmacro %}
@@ -1020,7 +1015,6 @@ Render the interface metafunctions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -1038,6 +1032,12 @@ Render the interface metafunctions details
     </ul>
   </div>
   {% endif %}
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
+  </div>
 
   {% if subentry.returns %}
   <div class="tags">
@@ -1231,7 +1231,22 @@ Render toggle-able Dox-like documentation.
 
 {% macro dox_source(entry, in_comment=False) %}
 
-<a href="#" onclick="javascript:document.getElementById('dox-source').style.display = 'block'; return false;">Toggle</a>
-<pre style="font-size:.8em; display:none;" id="dox-source">{{ entry|to_dox(in_comment=in_comment)|e }}</pre>
+<div class="modal fade" id="doxSources" tabindex="-1" role="dialog" aria-labelledby="doxSourcesLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="doxSourcesLabel">Dox Sources</h4>
+      </div>
+      <div class="modal-body">
+        <pre>{{ entry|to_dox(in_comment=in_comment)|e }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endmacro %}

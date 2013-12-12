@@ -11,11 +11,7 @@
   <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span>
 </h1>
 
-<div class="overview">
-	{{ sections.top_box(klass) }}
-
-	{{ sections.signatures(klass) }}
-</div>
+{{ sections.top_box(klass) }}
 
 <!-- Template Parameters -->
 {{ sections.tparams_ov(klass) }}

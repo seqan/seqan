@@ -41,13 +41,14 @@
 
 SEQAN_BEGIN_TESTSUITE(test_gff_io)
 {
-    // gff tests
+    // GFF tests
 	SEQAN_CALL_TEST(test_store_io_read_record_gff);
 	SEQAN_CALL_TEST(test_store_io_read_record_context_gff);
+	SEQAN_CALL_TEST(test_store_io_read_record_context_empty_trailing_attribute_gff);
 	SEQAN_CALL_TEST(test_store_io_write_record_gff);
 	SEQAN_CALL_TEST(test_store_io_write_record_context_gff);
 
-	//gtf tests
+	// GTF tests
 	SEQAN_CALL_TEST(test_store_io_read_record_gtf);
 	SEQAN_CALL_TEST(test_store_io_read_record_context_gtf);
     SEQAN_CALL_TEST(test_store_io_read_record_gtf_pseudogenes);
