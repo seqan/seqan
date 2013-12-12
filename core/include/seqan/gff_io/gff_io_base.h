@@ -486,21 +486,12 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     //TODO(singer): readUntil taking a char would be good!
     //TODO(singer): readOne
     record.strand = value(iter);
-    if (record.strand != '-' &&record.strand != '+')
-    {
-        record.strand = '.';
-    }
-    skipOne(iter);
+    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
     skipOne(iter, IsTab());
 
     // read column 8: phase
     record.phase = value(iter);
-    if (record.phase != '0' && record.phase != '1' && record.phase != '2')
-    {
-        record.phase = '.';
-    }
-    skipOne(iter);
-    skipOne(iter, IsTab());
+    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
 
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
@@ -508,6 +499,7 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
         skipLine(iter);
         return;
     }
+    skipOne(iter, IsTab());
 
     // read column 9: attributes
     while (!atEnd(iter))
