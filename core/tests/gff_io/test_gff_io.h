@@ -163,6 +163,56 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 }
 
+// Test for the correct reading of empty trailing attrigutes.
+SEQAN_DEFINE_TEST(test_store_io_read_record_context_empty_trailing_attribute_gff)
+{
+    std::stringstream data;
+    data << "ctg123\t.\tmRNA\t1300\t9000\t.\t+\t.\tID=mrna0001;Name=\n"
+         << "ctg123\t.\texon\t1300\t1500\t.\t+\t.\tID=exon00001;Parent=mrn a0001;Name\n";
+    data.clear();
+    data.seekg(std::ios_base::beg);
+
+    seqan::RecordReader<std::istream, seqan::SinglePass<> > reader(data);
+
+    StringSet<CharString> nameStore;
+    NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
+    GffIOContext<StringSet<CharString> > gffIOContext(nameStore, nameStoreCache);
+
+    seqan::GffRecord record;
+    seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
+    SEQAN_ASSERT_EQ(record.source, "");
+    SEQAN_ASSERT_EQ(record.type, "mRNA");
+    SEQAN_ASSERT_EQ(record.beginPos, 1299u);
+    SEQAN_ASSERT_EQ(record.endPos, 9000u);
+    SEQAN_ASSERT_NEQ(record.score, record.score);
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagName[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "");
+    SEQAN_ASSERT_EQ(length(nameStore), 1u);
+
+    seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
+    SEQAN_ASSERT_EQ(record.source, "");
+    SEQAN_ASSERT_EQ(record.type, "exon");
+    SEQAN_ASSERT_EQ(record.beginPos, 1299u);
+    SEQAN_ASSERT_EQ(record.endPos, 1500u);
+    SEQAN_ASSERT_NEQ(record.score, record.score);
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "exon00001");
+    SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
+    SEQAN_ASSERT_EQ(length(nameStore), 1u);
+
+    SEQAN_ASSERT(atEnd(reader));
+}
+
 SEQAN_DEFINE_TEST(test_store_io_write_record_gff)
 {
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();

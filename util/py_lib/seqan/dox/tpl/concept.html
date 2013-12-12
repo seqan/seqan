@@ -7,11 +7,7 @@
   <a href="page_LanguageEntities.html#concept">Concept</a> <span>{{ concept.title|e }}<div>{{ sections.brief(concept) }}</div></span>
 </h1>
 
-<div class="overview">
-	{{ sections.top_box(concept) }}
-
-	{{ sections.signatures(concept) }}
-</div>
+{{ sections.top_box(concept) }}
 
 {% if concept.internals or concept.deprecation_msgs or concept.warnings or concept.notes or concept.akas or not concept.body.empty %}
 <h2>Detailed Description</h2>

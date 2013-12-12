@@ -412,9 +412,10 @@
 				});
 				console.log('developer mode: ' + (active ? 'on' : 'off'));
 				if(active && $('#devModeWindow').length == 0) {
-					$('<div id="devModeWindow"><strong>Developer Mode is active</strong><br>Press <code>Ctrl + Shift</code> to deactivate</div>')
-						.appendTo('body')
-						.click(function() { $.devMode(false); });
+					$('<div id="devModeWindow"><strong>Developer Mode is active</strong>\
+					   <br>Press <code>Ctrl + Shift</code> to deactivate<br></div>')
+					   	.append($('<a href="#">Show dox sources</a>').click(function() { $('#doxSources').modal({}).find('.modal-dialog').css('width', '90%'); }))
+						.appendTo('body');
 				} else {
 					$('#devModeWindow').remove();
 				}
@@ -452,7 +453,8 @@
 			var settings = $.extend({
 				maxHeight: 200,
 				moreLink: '<a class="more">More ...</a>',
-				lessLink: '<a class="less">Less ...</a>'
+				lessLink: '<a class="less">Less ...</a>',
+				tolerance: 50 // number of pixels a container's height may exceed before it becomes collapsed
 			}, options);
 			
 			function createMoreLink(box) {
@@ -460,7 +462,10 @@
 				
 				$box.height('auto');
 				var expandedHeight = $box.outerHeight();
-				if(expandedHeight <= settings.maxHeight) return;
+				if(expandedHeight <= settings.maxHeight + settings.tolerance) return;
+				
+				//var srcPath = $box.parents('[data-src-path]').data('src-path');
+				//console.log(srcPath, $('[data-src-path="' + srcPath + '.stdout"]').length);
 				
 				$box.height(settings.maxHeight).css({ overflow: 'hidden' });
 				return $(settings.moreLink).click(function() {
@@ -487,7 +492,7 @@
 	});
 
     $(document).ready(function () {
-        $('.highlight pre').codeCollapse({
+        $('[data-src-path] pre, pre[data-src-path]').codeCollapse({
         	maxHeight: 77,
         	moreLink: '<a class="more">...</a>',
         	lessLink: '<a class="less">&nbsp;</a>'
