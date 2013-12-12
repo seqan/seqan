@@ -41,13 +41,55 @@
 #include <seqan/seq_io.h>
 #include <seqan/gff_io.h>
 
-
 using namespace seqan;
+
+void failExceptionTest()
+{
+    ::seqan::ClassTest::StaticData::thisTestOk() = false;
+    ::seqan::ClassTest::StaticData::errorCount() += 1;
+    ::seqan::ClassTest::fail();
+}
+
+
+#define SEQAN_TEST_EXCEPTION(_exception_type, command, _message)                    \
+    do                                                                              \
+    {                                                                               \
+        bool caughtException = false;                                               \
+        try                                                                         \
+        {                                                                           \
+            command;                                                                \
+        }                                                                           \
+        catch(_exception_type& ex)                                                  \
+        {                                                                           \
+            if(std::string(ex.what()) != _message)                                  \
+            {                                                                       \
+                std::cerr << __FILE__ << ":" << __LINE__                            \
+                          << " Got correct exception but wrong message: '"          \
+                          << ex.what() << "' != '"                                  \
+                          << _message << "'" << std::endl;                          \
+                failExceptionTest();                                                \
+            }                                                                       \
+            caughtException = true;                                                 \
+        }                                                                           \
+        catch(...)                                                                  \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
+                      << #_exception_type << std::endl;                             \
+            failExceptionTest();                                                    \
+        }                                                                           \
+        if (!caughtException)                                                       \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
+                      << std::endl;                                                 \
+            failExceptionTest();                                                    \
+        }                                                                           \
+    } while(false)
+
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
 {
     CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/gff_io/example_gff.tsv");
+    append(gffPath, "/core/tests/gff_io/example_gff_with_errors.tsv");
 
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(gffPath));
@@ -86,6 +128,26 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
 
+    for (unsigned i = 0; i < 12; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(ParseError,
+                             seqan::readRecord(record, iter, seqan::Gff()),
+                             "Value '\n' produced an error. ");
+        skipLine(iter);
+    }
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()),
+                         "Value '\n' produced an error. Character '\t' expected.");
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()),
+                         "Value '\n' produced an error. ");
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()),
+                         "The key field of an attribute is empty!");
+    skipLine(iter);
+
     seqan::readRecord(record, iter, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
@@ -101,6 +163,12 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "");
     SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
+
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()),
+                         "The begin position of the record is larger than the end position!");
+    skipLine(iter);
+
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
