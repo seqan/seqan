@@ -359,9 +359,9 @@ inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TContainer>
-inline void write(TTarget &target, TContainer &cont)
+inline void write(TTarget &target, TContainer const &cont)
 {
-    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
+    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
     write(target, iter, length(cont));
 }
 
