@@ -31,38 +31,50 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Tests for the SeqAn module store.
+// Define SeqAn version.
 // ==========================================================================
 
-#define SEQAN_ENABLE_CHECKPOINTS 0
+#include <seqan/ucsc_io/ucsc_record.h>
+#include <seqan/ucsc_io/ucsc_io.h>
 
-#include <seqan/basic.h>
-#include "test_store_io.h"
+#ifndef SEQAN_VERSION_H_
+#define SEQAN_VERSION_H_
 
-SEQAN_BEGIN_TESTSUITE(test_store)
-{
-    // the UCSC knownGene format
-    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
-    /*
-    SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
+/**
+.Macro.SEQAN_VERSION_MAJOR
+..cat:Versioning
+..summary:Major SeqAn revision number.
+..signature:SEQAN_VERSION_MAJOR
+..example:For SeqAn version "1.3", this value is $1$, for "2.5.4", it is $2$.
+..include:seqan/version.h
 
-    // the gff format
-    SEQAN_CALL_TEST(test_store_io_read_gff);
-    SEQAN_CALL_TEST(test_store_io_write_gff);
+.Macro.SEQAN_VERSION_MINOR
+..cat:Versioning
+..summary:Minor SeqAn revision number.
+..signature:SEQAN_VERSION_MINOR
+..example:For SeqAn version "1.3", this value is $3$, for "1.5.4", it is $5$.
+..include:seqan/version.h
 
-    // the gtf format
-    SEQAN_CALL_TEST(test_store_io_read_gtf);
-    SEQAN_CALL_TEST(test_store_io_write_gtf);
+.Macro.SEQAN_VERSION_PATCH
+..cat:Versioning
+..summary:SeqAn patch revision number.
+..signature:SEQAN_VERSION_PATCH
+..example:For SeqAn version "1.3", this value is $0$, for "1.3.4", it is $4$.
+..include:seqan/version.h
 
-    // Tests for the AMOS format.
-    SEQAN_CALL_TEST(test_store_io_read_amos);
-    SEQAN_CALL_TEST(test_store_io_write_amos);
+.Macro.SEQAN_VERSION_PRE_RELEASE
+..cat:Versioning
+..summary:Flag ($0$/$1$) to indicate whether this is a pre-release (i.e. SVN version).
+..signature:SEQAN_VERSION_PRE_RELEASE
+..include:seqan/version.h
+*/
 
-    // Tests for the SAM/BAM format.
-    SEQAN_CALL_TEST(test_store_io_sam);
-#if SEQAN_HAS_ZLIB
-    SEQAN_CALL_TEST(test_store_io_read_bam);
-#endif  // #if SEQAN_HAS_ZLIB
-    */
-}
-SEQAN_END_TESTSUITE
+#define SEQAN_VERSION_MAJOR 1
+
+#define SEQAN_VERSION_MINOR 5
+
+#define SEQAN_VERSION_PATCH 0
+
+#define SEQAN_VERSION_PRE_RELEASE 1
+
+#endif  // SEQAN_VERSION_H_
