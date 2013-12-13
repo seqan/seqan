@@ -740,6 +740,14 @@ class ProcVariable(ProcCodeEntry):
         self.type = None
 
     @property
+    def local_name(self):
+        """Returns name without class prefix."""
+        if '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    @property
     def kind(self):
         if '::' in self.name:
             return 'member_variable'

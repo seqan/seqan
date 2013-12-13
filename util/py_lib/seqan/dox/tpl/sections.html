@@ -1096,7 +1096,7 @@ Render the member enum details
 -->
 
 {% macro enum_values(entry, qualifier='Member') %}
-{% if entry.subentries['variable'] -%}
+{% if entry.subentries['variable'] or entry.subentries['member_variable'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
   <h2 data-lang-entity="member_enum">Enum Values</h2>
 
@@ -1105,6 +1105,19 @@ Render the member enum details
       <th>Value</th>
       <th>Description</th>
     </tr>
+    {% for subentry in entry.subentries['member_variable'] %}
+    <tr>
+      <td><code>{{ subentry.local_name|e }}</code></td>
+      <td>
+        <div class="docstring">
+          <div class="discussion">
+            {{ subentry.brief|transtext }}
+            {{ body(subentry, start_heading=4) }}
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
     {% for subentry in entry.subentries['variable'] %}
     <tr>
       <td><code>{{ subentry.name|e }}</code></td>
@@ -1117,7 +1130,7 @@ Render the member enum details
         </div>
       </td>
     </tr>
-  {% endfor %}
+    {% endfor %}
 </div>
 {% endif %}
 {% endmacro %}
