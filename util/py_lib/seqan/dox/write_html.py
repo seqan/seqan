@@ -366,6 +366,7 @@ class HtmlWriter(object):
         self.generatePages(self.doc, self.config)
         self.generateDemoPages(self.doc)
         self.generateSearchIndex(self.doc)
+        self.generateLinkData(self.doc)
         self.generateLanguageEntities()
 
     def makedirs(self):
@@ -511,6 +512,16 @@ class HtmlWriter(object):
                        repr(entry.kind)))
         js.append('];')
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
+            f.write('\n'.join(js))
+
+    def generateLinkData(self, doc):
+        """Generate the Data for top level entry links."""
+        js = ['window.lookup = {']
+        for entry in doc.top_level_entries.itervalues():
+            js.append('    \'%(name)s\': \'%(kind)s_%(name)s\',' % { 'name': entry.name,
+                                                                     'kind': entry.kind })
+        js.append('};')
+        with open(os.path.join(self.out_dirs['js'], 'link.data.js'), 'wb') as f:
             f.write('\n'.join(js))
 
     def generateLanguageEntities(self):
