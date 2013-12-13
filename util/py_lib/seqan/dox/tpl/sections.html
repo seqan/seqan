@@ -1088,7 +1088,7 @@ Render the member enum details
 {% macro enum_values(entry, qualifier='Member') %}
 {% if entry.subentries['variable'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
-  <h2 data-lang-entity="member_enum">Enum Values Detail</h2>
+  <h2 data-lang-entity="enum">Enum Values Detail</h2>
 
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
