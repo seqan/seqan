@@ -269,7 +269,7 @@ class RawVariable(RawCodeEntry):
     def getFormatted(self, formatter):
         res = []
         if self.type:
-            res.append(formatter.formatCommand(self.command, self.name.text, self.type.text))
+            res.append(formatter.formatCommand(self.command, self.name.text + ';', self.type.text))
         else:
             res.append(formatter.formatCommand(self.command, self.name.text))
         if self.headerfiles:
