@@ -436,8 +436,12 @@
 		$.devMode($.devMode());
 	});
 	
+	var lastKeys = 0; // last time ctrl + shift was fired - used to detect double fired events (experienced on linux)
+	var lastKeysWindow = 500; // time frame within no further key combination is considered
 	$(document).bind('keyup keydown', function(e) {
-		if(e.ctrlKey && e.shiftKey) {
+		if(e.ctrlKey && e.shiftKey && lastKeys + lastKeysWindow < new Date().getTime()) {
+			lastKeys = new Date().getTime();
+			
 			if($.devMode()) $.devMode(false);
 			else $.devMode(true);
 		}
