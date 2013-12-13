@@ -75,25 +75,31 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @brief Define the type of an @link ArgParseArgument @endlink.
  *
  * @signature enum ArgParseArgument::ArgumentType;
+ *
+ * @section Examples
+ *
+ * In the following example, the types <tt>INPUTFILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
+ *
+ * @include demos/arg_parse/argument_parser.cpp
  */
 
 /*!
- * @var ArgParseArgument::ArgumentType ArgParseArgument::STRING
+ * @var ArgParseArgument::ArgumentType STRING
  * @brief Argument is a string.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER;
  * @brief Argument is a signed 32 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64;
  * @brief Argument is a signed 64 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
  * @brief Argument is an input file.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
  * @brief Argument is an output file.
  */
 

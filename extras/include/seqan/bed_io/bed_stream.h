@@ -128,13 +128,13 @@ namespace seqan {
  * @see BedStream#open
  * @see BedStream::BedStream
  * 
- * @var BedStream::Mode BedStream::READ;
+ * @var BedStream::Mode READ;
  * @brief Open in read mode.
  * 
- * @var BedStream::Mode BedStream::WRITE;
+ * @var BedStream::Mode WRITE;
  * @brief Open in write mode.
  * 
- * @var BedStream::Mode BedStream::INVALID;
+ * @var BedStream::Mode INVALID;
  * @brief Invalid open mode.
  */
 
