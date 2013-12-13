@@ -365,10 +365,13 @@ struct FragmentStoreConfig
 
 /*!
  * @enum FragmentStore::PredefinedAnnotationTypes
+ * @headerfile seqan/store.h
  * @brief The @link FragmentStore @endlink predefines some commonly used @link AnnotationStoreElement::typeId @endlink
  *        values.  They can be used to compare or set the @link AnnotationStoreElement::typeId @endlink directly as a
  *        fast alternative to @link AnnotationTreeIterator#getType @endlink and @link AnnotationTreeIterator#setType
  *        @endlink.
+ *
+ * @signature enum FragmentStore::PredefinedAnnotationTypes;
  *
  * @var FragmentStore::PredefinedAnnotationTypes ANNO_ROOT;
  * @brief The root node ("&lt;node&gt;").
