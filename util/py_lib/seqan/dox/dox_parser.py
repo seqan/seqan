@@ -770,6 +770,8 @@ class VariableState(GenericDocState):
                 normalizeWhitespaceTokens(self.name_tokens)
                 normalizeWhitespaceTokens(self.type_tokens)
                 self.entry.name = raw_doc.RawText(self.name_tokens)
+                if self.entry.name.tokens[-1].val.endswith(';'):  # remove semicolon
+                    self.entry.name.tokens[-1].val = self.entry.name.tokens[-1].val[:-1]
                 self.entry.type = raw_doc.RawText(self.type_tokens)
                 self.substate = 'body'
                 return

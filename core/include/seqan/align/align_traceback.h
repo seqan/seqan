@@ -123,12 +123,12 @@ template <> struct BitsPerValue<TraceBack>
  */
 
 /*!
- * @var TSizes AlignTraceback#sizes
+ * @var TSizes AlignTraceback::sizes
  * @brief The traceback lengths.
  */
 
 /*!
- * @var TLengths AlignTraceback#tsv
+ * @var TLengths AlignTraceback::tsv
  * @brief The traceback lengths.
  */
 
