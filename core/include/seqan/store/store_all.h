@@ -373,28 +373,28 @@ struct FragmentStoreConfig
  *
  * @signature enum FragmentStore::PredefinedAnnotationTypes;
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_ROOT;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_ROOT;
  * @brief The root node ("&lt;node&gt;").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_GENE;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_GENE;
  * @brief A gene ("gene").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_MRNA;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_MRNA;
  * @brief An mRNA sequence, aka transcript ("mRNA").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_CDS;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_CDS;
  * @brief A coding region ("CDS");
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_EXON;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_EXON;
  * @brief An exon ("exon").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_FIVE_PRIME_UTR;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_FIVE_PRIME_UTR;
  * @brief A 5' untranslated region ("five_prime_UTR").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_INTRON;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_INTRON;
  * @brief An intron ("intron").
  *
- * @var FragmentStore::PredefinedAnnotationTypes ANNO_THREE_PRIME_UTR;
+ * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_THREE_PRIME_UTR;
  * @brief A 3' untranslated region ("three_prime_UTR").
  */
 
@@ -1989,7 +1989,7 @@ calculateMateIndices(TMateIndexString &mateIndices, FragmentStore<TSpec, TConfig
  *
  * @signature struct AlignedReadLayout;
  *
- * @var TContigRows AlignedReadLayout#contigRows;
+ * @var TContigRows AlignedReadLayout::contigRows;
  * @brief 2D multi-read layout.
  *
  * Stores for a contig and row the ids of aligned reads from left to right.  <tt>contigRows[contigId][row]</tt> stores
