@@ -26,11 +26,6 @@
         	try {
         		var redirectTo = null;
         		if($.urlParam('p', window.parent.location)) {
-        			// TODO: replace by auto generated map
-        			window.lookup = {
-        				'String': 'class_String',
-        				'SequenceConcept': 'concept_SequenceConcept'
-        			};
         			var p = $.urlParam('p', window.parent.location).split('/')[0];
         			if(window.lookup.hasOwnProperty(p)) {
         				redirectTo = window.lookup[p] + '.html' + window.parent.location.hash;
