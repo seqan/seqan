@@ -25,17 +25,17 @@
         if(window != window.parent && window.name == 'list') {
         	try {
         		var redirectTo = null;
+        		var hash = $.urlHash(window.parent.location);
         		if($.urlParam('p', window.parent.location)) {
-        			var p = $.urlParam('p', window.parent.location).split('/')[0];
+        			var p = $.urlParam('p', window.parent.location).split('/')[0];        			
         			if(window.lookup.hasOwnProperty(p)) {
-        				redirectTo = window.lookup[p] + '.html' + window.parent.location.hash;
+        				redirectTo = window.lookup[p] + '.html' + hash;
         			} else {
         				$(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
         				// TODO: start search using search form for p
         			}
         		} else {
-        			var hash = window.parent.location.hash;
-        			if(typeof hash === 'string' && hash.length > 1) {
+        			if(hash.length > 1) {
         				redirectTo = hash.substr(1) + '.html';
         			}
         		}
@@ -84,6 +84,17 @@
 		urlParam: function(name, location) {
 			if(!location) location = window.location;
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+		},
+		urlHash: function(location) {
+			if(!location) location = window.location + '';
+			else location += '';
+			
+			var index = location.indexOf('#');
+            if(index >= 0) {
+            	return location.substr(index);
+            } else {
+            	return '';
+            }
 		}
 	});
 })(jQuery);
