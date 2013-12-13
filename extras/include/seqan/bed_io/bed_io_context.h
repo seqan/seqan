@@ -37,7 +37,7 @@
 #ifndef CORE_INCLUDE_SEQAN_BED_IO_BED_IO_CONTEXT_H_
 #define CORE_INCLUDE_SEQAN_BED_IO_BED_IO_CONTEXT_H_
 
-#include <seqan/store.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 namespace seqan {
 

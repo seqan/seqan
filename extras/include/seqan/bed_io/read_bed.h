@@ -107,303 +107,213 @@ When $context$ is given, the $rID$ field is filled and the context's name store 
 // overloads.  The one for Bed$N$ calls the one with Bed$N-1$.
 
 // Helper function that reads first three fields of BED record.
-
-template <typename TStream, typename TReaderSpec>
-int _readBedRecordNoData(BedRecord<Bed3> & record,
-                         RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-                         CharString & buffer)
+// NoData means the the member data (for the columns not read) is not
+// filled.
+template <typename TForwardIter>
+inline void 
+_readBedRecordNoData(BedRecord<Bed3> & record,
+                     TForwardIter & iter,
+                     CharString & buffer)
 {
-    int res = 0;
-
     // Read CHROM.
-    if ((res = readGraphs(record.ref, reader)) != 0)
-        return res;
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    if (record.ref == "track")
+    {
+        skipLine(iter);
+        return;
+    }
+    skipOne(iter);
 
     // Read START.
+    // TODO(singer): Realy __int32 for a position ???
     clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.beginPos, buffer))
-        return 1;  // Cast failed.
-    record.beginPos -= 1;  // 1-based to 0-based
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    // TODO(singer): WHy - 1???
+    // "chromStart - The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0." from UCSC
+    record.beginPos = lexicalCast<__int32>(buffer) - 1;
+    skipOne(iter);
 
     // Read END.
     clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.endPos, buffer))
-        return 1;  // Cast failed.
+    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+    record.endPos = lexicalCast<__int32>(buffer);
 
     // Go over tab if any.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
-    {
-        if ((res = skipChar(reader, '\t')) != 0)
-            return res;
-    }
-
-    return 0;
+    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+        skipOne(iter);
 }
 
 // Read first four fields without data.
 
-template <typename TStream, typename TReaderSpec>
-int _readBedRecordNoData(BedRecord<Bed4> & record,
-                         RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-                         CharString & buffer)
+template <typename TForwardIter>
+inline void 
+_readBedRecordNoData(BedRecord<Bed4> & record,
+                     TForwardIter & iter,
+                     CharString & buffer)
 {
-    int res = 0;
-
     // Read first three fields.
-    if ((res = _readBedRecordNoData(static_cast<BedRecord<Bed3> &>(record), reader, buffer)) != 0)
-        return res;
+    _readBedRecordNoData(static_cast<BedRecord<Bed3> &>(record), iter, buffer);
 
     // Read NAME.
-    if ((res = readGraphs(record.name, reader)) != 0)
-        return res;
+    readUntil(record.name, iter, OrFunctor<IsTab, IsNewline>());
 
     // Go over tab if any.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
-    {
-        if ((res = skipChar(reader, '\t')) != 0)
-            return res;
-    }
-
-    return 0;
+    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+        skipOne(iter);
 }
 
 // Read first five fields without data.
 
-template <typename TStream, typename TReaderSpec>
-int _readBedRecordNoData(BedRecord<Bed5> & record,
-                         RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-                         CharString & buffer)
+template <typename TForwardIter>
+inline void
+_readBedRecordNoData(BedRecord<Bed5> & record,
+                     TForwardIter & iter,
+                     CharString & buffer)
 {
-    int res = 0;
-
-    // Read first three fields.
-    if ((res = _readBedRecordNoData(static_cast<BedRecord<Bed4 > &>(record), reader, buffer)) != 0)
-        return res;
+    // Read first four fields.
+    _readBedRecordNoData(static_cast<BedRecord<Bed4 > &>(record), iter, buffer);
 
     // Read SCORE.
-    clear(buffer);
-    if ((res = readGraphs(record.score, reader)) != 0)
-        return res;
+    readUntil(record.score, iter, OrFunctor<IsTab, IsNewline>());
 
     // Go over tab if any.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
-    {
-        if ((res = skipChar(reader, '\t')) != 0)
-            return res;
-    }
-
-    return 0;
+    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+        skipOne(iter);
 }
 
 // Read first six fields without data.
 
-template <typename TStream, typename TReaderSpec>
-int _readBedRecordNoData(BedRecord<Bed6> & record,
-                         RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-                         CharString & buffer)
+template <typename TForwardIter>
+inline void
+_readBedRecordNoData(BedRecord<Bed6> & record,
+                     TForwardIter & iter,
+                     CharString & buffer)
 {
-    int res = 0;
-
     // Read first three fields.
-    if ((res = _readBedRecordNoData(static_cast<BedRecord<Bed5 > &>(record), reader, buffer)) != 0)
-        return res;
+    _readBedRecordNoData(static_cast<BedRecord<Bed5 > &>(record), iter, buffer);
 
     // Read STRAND.
-    clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (buffer[0] != '.' && buffer[0] != '-' && buffer[0] != '+')
-        return 1;
-    record.strand = buffer[0];
+    record.strand = value(iter);
+    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'.'>, EqualsChar<'+'> >, EqualsChar<'-'> >());
 
     // Go over tab if any.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
-    {
-        if ((res = skipChar(reader, '\t')) != 0)
-            return res;
-    }
-
-    return 0;
+    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+        skipOne(iter);
 }
 
 // Read first twelve fields without data.
 
-template <typename TStream, typename TReaderSpec>
-int _readBedRecordNoData(BedRecord<Bed12> & record,
-                         RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-                         CharString & buffer)
+template <typename TForwardIter>
+inline void
+_readBedRecordNoData(BedRecord<Bed12> & record,
+                     TForwardIter & iter,
+                     CharString & buffer)
 {
-    int res = 0;
-
+    IsNewline isNewline;
     // Read first three fields.
-    if ((res = _readBedRecordNoData(static_cast<BedRecord<Bed6 > &>(record), reader, buffer)) != 0)
-        return res;
+    _readBedRecordNoData(static_cast<BedRecord<Bed6 > &>(record), iter, buffer);
 
     // Read THICK BEGIN
     clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.thickBegin, buffer))
-        return 1;  // Cast failed.
-    record.thickBegin -= 1;  // 1-based to 0-based
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.thickBegin = lexicalCast<__int32>(buffer) - 1;
+    skipOne(iter);
 
     // Read THICK END
     clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.thickEnd, buffer))
-        return 1;  // Cast failed.
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.thickEnd = lexicalCast<__int32>(buffer);
+    skipOne(iter);
 
     // Read ITEM RGB
-    for (int i = 0; i < 3; ++i)
-    {
-        if (i != 0)  // Skip comma
-        {
-            if (atEnd(reader))
-                return EOF_BEFORE_SUCCESS;
-            if (value(reader) != ',')
-                return 1;  // Should have been comma.
-            goNext(reader);
-        }
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.itemRgb.red = lexicalCast<__int32>(buffer);
+    skipOne(iter);
 
-        clear(buffer);
-        if ((res = readDigits(buffer, reader)) != 0)
-            return res;
-        if (i == 0 && !lexicalCast2(record.itemRgb.red, buffer))
-            return 1;  // Could not cast value.
-        else if (i == 1 && !lexicalCast2(record.itemRgb.green, buffer))
-            return 1;  // Could not cast value.
-        else if (i == 2 && !lexicalCast2(record.itemRgb.blue, buffer))
-            return 1;  // Could not cast value.
-    }
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.itemRgb.green = lexicalCast<__int32>(buffer);
+    skipOne(iter);
 
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.itemRgb.blue = lexicalCast<__int32>(buffer);
+    skipOne(iter);
 
     // Read BLOCK COUNT
     clear(buffer);
-    if ((res = readGraphs(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.blockCount, buffer))
-        return 1;  // Cast failed.
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    record.blockCount = lexicalCast<__int32>(buffer);
+    skipOne(iter);
 
     // READ BLOCK SIZES
-    while (!atEnd(reader) && value(reader) != '\t')
+    for (int i = 0; i < record.blockCount - 1; ++i)
     {
-        if (!isdigit(value(reader)))
-            return 1;  // Error, must be number.
         clear(buffer);
-        if ((res = readDigits(buffer, reader)) != 0)
-            return res;
-        int tmp = 0;
-        if (!lexicalCast2(tmp, buffer))
-            return 1;  // Invalid number.
-        appendValue(record.blockSizes, tmp);
-        if (!atEnd(reader) && value(reader) == ',')
-            goNext(reader);
+        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+        appendValue(record.blockSizes, lexicalCast<int>(buffer));
+        skipOne(iter);
     }
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-
-    // Skip tab.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    appendValue(record.blockSizes, lexicalCast<int>(buffer));
+    skipOne(iter);
 
     // READ BLOCK STARTS
-    while (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n' && value(reader) != '\t')
+    for (int i = 0; i < record.blockCount - 1; ++i)
     {
-        if (!isdigit(value(reader)))
-            return 1;  // Error, must be number.
         clear(buffer);
-        if ((res = readDigits(buffer, reader)) != 0)
-            return res;
-        int tmp = 0;
-        if (!lexicalCast2(tmp, buffer))
-            return 1;  // Invalid number.
-        tmp -= 1;  // 1-based to 0-based
-        appendValue(record.blockBegins, tmp);
-        if (!atEnd(reader) && value(reader) == ',')
-            goNext(reader);
+        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+        appendValue(record.blockBegins, lexicalCast<int>(buffer) - 1);
+        skipOne(iter);
     }
-
-    // Go over tab if any.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+    appendValue(record.blockBegins, lexicalCast<int>(buffer) - 1);
+    // TODO(singer): Why can there be more columns than 12???
+    if (isNewline(value(iter)))
     {
-        if ((res = skipChar(reader, '\t')) != 0)
-            return res;
+        skipLine(iter);
+        return;
     }
-
-    return 0;
+    skipOne(iter);
 }
 
 // The front-end function automatically calls the correct overload of
 // _readBedRecordNoData through the type of record.
 
-template <typename TSpec, typename TStream, typename TReaderSpec>
-int readRecord(BedRecord<TSpec> & record,
-               RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
-               Bed const & /*tag*/)
+template <typename TSpec, typename TForwardIter>
+inline void
+readRecord(BedRecord<TSpec> & record,
+           TForwardIter & iter,
+           Bed const & /*tag*/)
 {
     CharString buffer;
     clear(record);
-    int res = 0;
 
-    if ((res =_readBedRecordNoData(record, reader, buffer)) != 0)
-        return res;
+    _readBedRecordNoData(record, iter, buffer);
 
     // Read data if any, skipping over the line.
-    if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
+    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
     {
-        res = readLine(record.data, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return res;
-        else
-            return 0;
+        readLine(record.data, iter);
+        return;
     }
 
     // If there is no data then skip over line.
-    if (!atEnd(reader))
-        return skipLine(reader);
-    else
-        return 0;
-}        
+    if (!atEnd(iter))
+        skipLine(iter);
+}
 
 // This overload uses a BedIoContext object to translate the textual chromosome name into an index.
-
-template <typename TSpec, typename TStream, typename TReaderSpec, typename TContextSpec, typename TContextSpec2>
+template <typename TSpec, typename TForwardIter, typename TContextSpec, typename TContextSpec2>
 int readRecord(BedRecord<TSpec> & record,
-               RecordReader<TStream, SinglePass<TReaderSpec> > & reader,
+               TForwardIter & iter,
                BedIOContext<TContextSpec, TContextSpec2> & context,
                Bed const & tag)
 {
-    int res = readRecord(record, reader, tag);
-    if (res != 0)
-        return res;
+    readRecord(record, iter, tag);
 
     // Translate chrom to rID using the context.  If there is no such sequence name in the context yet then we add it.
     unsigned idx = 0;
@@ -416,7 +326,6 @@ int readRecord(BedRecord<TSpec> & record,
 
     return 0;
 }
-
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BED_IO_READ_BED_H_
