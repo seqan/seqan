@@ -1096,23 +1096,41 @@ Render the member enum details
 -->
 
 {% macro enum_values(entry, qualifier='Member') %}
-{% if entry.subentries['variable'] -%}
+{% if entry.subentries['variable'] or entry.subentries['member_variable'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
-  <h2 data-lang-entity="member_enum">Enum Values Detail</h2>
+  <h2 data-lang-entity="member_enum">Enum Values</h2>
 
-  {% for subentry in entry.subentries['variable'] %}
-  <div class="enum_value_details{% if loop.first %} first{% endif %}">
-    <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
-      <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
-    </h3>
-    <div class="docstring">
-      <div class="discussion">
-        {{ subentry.brief|transtext }}
-        {{ body(subentry, start_heading=4) }}
-      </div>
-    </div>
-  </div>
-  {% endfor %}
+  <table>
+    <tr>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+    {% for subentry in entry.subentries['member_variable'] %}
+    <tr>
+      <td><code>{{ subentry.local_name|e }}</code></td>
+      <td>
+        <div class="docstring">
+          <div class="discussion">
+            {{ subentry.brief|transtext }}
+            {{ body(subentry, start_heading=4) }}
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    {% for subentry in entry.subentries['variable'] %}
+    <tr>
+      <td><code>{{ subentry.name|e }}</code></td>
+      <td>
+        <div class="docstring">
+          <div class="discussion">
+            {{ subentry.brief|transtext }}
+            {{ body(subentry, start_heading=4) }}
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
 </div>
 {% endif %}
 {% endmacro %}
