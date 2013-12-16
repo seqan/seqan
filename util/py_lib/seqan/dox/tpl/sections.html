@@ -1019,18 +1019,13 @@ Render the interface metafunctions details
   </div>
 
   {% if subentry.tparams %}
-  <div class="tags">
     <p class="tag_title">Template Parameters</p>
-
-    <ul class="param">
-      {% for param in subentry.tparams %}
-      <li>
-        <span class="name"><code>{{ param.type|e }}</code></span> &mdash;
-        <div class="inline">{{ param.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+	<dl class="overview">
+	{% for param in subentry.tparams %}
+		<dt><code>{{ param.type|e }}</code></dt>
+		<dd>{{ param.desc|transtext(False) }}</dd>
+	{% endfor %}
+	</dl>
   {% endif %}
 
   <div class="docstring">
@@ -1040,18 +1035,13 @@ Render the interface metafunctions details
   </div>
 
   {% if subentry.returns %}
-  <div class="tags">
-    <p class="tag_title">Returns:</p>
-
-    <ul class="return">
-      {% for ret in subentry.returns %}
-      <li>
-        <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
-        <div class="inline">{{ ret.desc|transtext(False) }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  	<p class="tag_title">Returns:</p>
+	<dl class="overview">
+	{% for ret in subentry.returns %}
+		<dt><code>{{ ret.type|e }}</code></dt>
+		<dd>{{ ret.desc|transtext(False) }}</dd>
+	{% endfor %}
+	</dl>
   {% endif %}
 </div>
 
@@ -1098,40 +1088,27 @@ Render the member enum details
 {% macro enum_values(entry, qualifier='Member') %}
 {% if entry.subentries['variable'] or entry.subentries['member_variable'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
-  <h2 data-lang-entity="member_enum">Enum Values</h2>
 
-  <table>
-    <tr>
-      <th>Value</th>
-      <th>Description</th>
-    </tr>
-    {% for subentry in entry.subentries['member_variable'] %}
-    <tr>
-      <td><code>{{ subentry.local_name|e }}</code></td>
-      <td>
-        <div class="docstring">
-          <div class="discussion">
-            {{ subentry.brief|transtext }}
-            {{ body(subentry, start_heading=4) }}
-          </div>
-        </div>
-      </td>
-    </tr>
+  <h2 data-lang-entity="enum">Enum Values</h2>
+
+  <dl class="overview">
+  	{% for subentry in entry.subentries['member_variable'] %}
+  	<dt><code>{{ subentry.local_name|e }}</code></dt>
+  	<dd>
+  	  {{ subentry.brief|transtext }}
+      {{ body(subentry, start_heading=3) }}
+    </dd>
     {% endfor %}
-    {% for subentry in entry.subentries['variable'] %}
-    <tr>
-      <td><code>{{ subentry.name|e }}</code></td>
-      <td>
-        <div class="docstring">
-          <div class="discussion">
-            {{ subentry.brief|transtext }}
-            {{ body(subentry, start_heading=4) }}
-          </div>
-        </div>
-      </td>
-    </tr>
+  	{% for subentry in entry.subentries['variable'] %}
+  	<dt><code>{{ subentry.name|e }}</code></dt>
+  	<dd>
+      {{ subentry.brief|transtext }}
+      {{ body(subentry, start_heading=3) }}
+    </dd>
     {% endfor %}
+  </dl>
 </div>
+
 {% endif %}
 {% endmacro %}
 
@@ -1146,20 +1123,26 @@ Render the parameter details.
 {% if entry.params %}
 <h2>Parameters</h2>
 
-<div class="tags">
-  <ul class="param">
-    {% for param in entry.params %}
-    <li>
-      <span class="name"><code>{{ param.name|e }}</code></span>
-      {% if param.in_out %}
-      ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
-      {% endif %}
-      &mdash;
-      <div class="inline">{{ param.desc|transtext(False) }}</div>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+<dl class="overview">
+{% for param in entry.params %}
+	<dt>
+	{% if param.in_out %}
+		{% if param.in_out == 'IN' %}
+			<code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
+		{% elif param.in_out == 'OUT' %}
+			<code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
+		{% elif param.in_out == 'IN_OUT' %}
+			<code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
+		{% else %}
+			<code>{{ param.name|e }}</code>
+		{% endif %}
+	{% else %}
+	<code>{{ param.name|e }}</code>
+	{% endif %}
+	</dt>
+	<dd>{{ param.desc|transtext(False) }}</dd>
+{% endfor %}
+</dl>
 
 {% endif %}
 {% endmacro %}
@@ -1176,17 +1159,13 @@ Render the template parameter details.
 <div data-lang-entity-container="template_parameter">
 <h2 data-lang-entity="template_parameter">Template Parameters</h2>
 
-<div class="tags">
-  <ul class="param">
-    {% for param in entry.tparams %}
-    <li>
-      <span class="name"><code>{{ param.type|e }}</code></span>
-      &mdash;
-      <div class="inline">{{ param.desc|transtext(False) }}</div>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+<dl class="overview">
+{% for param in entry.tparams %}
+	<dt><code>{{ param.type|e }}</code></dt>
+	<dd>{{ param.desc|transtext(False) }}</dd>
+{% endfor %}
+</dl>
+
 </div>
 {% endif %}
 {% endmacro %}
@@ -1228,16 +1207,12 @@ Render the template parameter details.
 {% if entry.returns %}
 <h2>Return Values</h2>
 
-<div class="tags">
-  <ul class="param">
-    {% for ret in entry.returns %}
-    <li class="public">
-      <span class="type"><code>{{ ret.type|e }}</code></span> &mdash;
-      {{ ret.desc|transtext(False) }}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
+<dl class="overview">
+{% for ret in entry.returns %}
+	<dt><code>{{ ret.type|e }}</code></dt>
+	<dd>{{ ret.desc|transtext(False) }}</dd>
+{% endfor %}
+</dl>
 {% endif %}
 {% endmacro %}
 
