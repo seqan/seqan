@@ -116,13 +116,13 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
  * @var ExtensionDirection EXTEND_NONE = 0;
  * @brief Perform no extension.
  *
- * @var ExtensionDirection EXTEND_LEFT = 0;
+ * @var ExtensionDirection EXTEND_LEFT = 1;
  * @brief Perform extension towards the left.
  *
- * @var ExtensionDirection EXTEND_RIGHT = 0;
+ * @var ExtensionDirection EXTEND_RIGHT = 2;
  * @brief Perform extension towards the right.
  *
- * @var ExtensionDirection EXTEND_BOTH = 0;
+ * @var ExtensionDirection EXTEND_BOTH = 3;
  * @brief Perform extension to both directions.
  */
 

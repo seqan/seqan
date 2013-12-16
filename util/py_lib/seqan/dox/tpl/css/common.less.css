@@ -1565,58 +1565,6 @@ dl.overview dt {
   font-weight: bold;
   position: relative;
 }
-dl.overview dt code[data-param-type]:before,
-dl.overview dt code[data-param-type]:after {
-  position: absolute;
-  top: .3em;
-  left: -1.5em;
-  font-size: 0.7em;
-}
-dl.overview dt code[data-param-type=in]:before {
-  font-family: 'Glyphicons Halflings';
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\e161";
-  color: #d43f3a;
-}
-dl.overview dt code[data-param-type=out]:before {
-  font-family: 'Glyphicons Halflings';
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\e163";
-  color: #4cae4c;
-}
-dl.overview dt code[data-param-type=in_out]:before,
-dl.overview dt code[data-param-type=in_out]:after {
-  left: -2.8em;
-}
-dl.overview dt code[data-param-type=in_out]:before {
-  font-family: 'Glyphicons Halflings';
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\e161";
-  color: #d43f3a;
-}
-dl.overview dt code[data-param-type=in_out]:after {
-  font-family: 'Glyphicons Halflings';
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  content: "\e163";
-  color: #4cae4c;
-  margin-left: 1.3em;
-}
 dl.overview dd {
   margin: 0 0 0 8em;
 }
@@ -1636,6 +1584,19 @@ dl.overview code {
 }
 dl.overview .glyphicon {
   font-size: .7em;
+}
+table.overview th {
+  padding-left: 2.5em;
+  padding-right: 1em;
+  min-width: 10em;
+  text-align: right;
+}
+table.overview th,
+table.overview td {
+  vertical-align: top;
+}
+table.overview tr + tr > * {
+  padding-top: .5em;
 }
 pre {
   background-color: #f5f5f5;
@@ -1817,6 +1778,67 @@ html tt {
   background: transparent;
   border: none;
   font-size: 1em;
+  position: relative;
+}
+html code[data-param-type]:before,
+html tt[data-param-type]:before,
+html code[data-param-type]:after,
+html tt[data-param-type]:after {
+  position: absolute;
+  top: .3em;
+  left: -1.5em;
+  font-size: 0.7em;
+}
+html code[data-param-type=in]:before,
+html tt[data-param-type=in]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e161";
+  color: #d43f3a;
+}
+html code[data-param-type=out]:before,
+html tt[data-param-type=out]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e163";
+  color: #4cae4c;
+}
+html code[data-param-type=in_out]:before,
+html tt[data-param-type=in_out]:before,
+html code[data-param-type=in_out]:after,
+html tt[data-param-type=in_out]:after {
+  left: -2.8em;
+}
+html code[data-param-type=in_out]:before,
+html tt[data-param-type=in_out]:before {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e161";
+  color: #d43f3a;
+}
+html code[data-param-type=in_out]:after,
+html tt[data-param-type=in_out]:after {
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\e163";
+  color: #4cae4c;
+  margin-left: 1.3em;
 }
 html .summary_signature code,
 html .overview code {
