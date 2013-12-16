@@ -956,19 +956,21 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 /*!
  * @fn alignmentEvaluation
  * @headerfile <seqan/graph_align.h>
- * @brief Given a multiple sequence alignment, this function calcualtes all kinds of alignment statistics.
+ * @brief Given a multiple sequence alignment, this function calculates different kinds of alignment statistics.
  *
  * @signature TScoreVal alignmentEvaluation(graph, scoringScheme, gapExCount, gapCount, pairCount, numPairs, len);
  *
- * @param[in] graph         The AlignmentGraph to compute statistics for.
- * @param[in] scoringScheme The @link Score @endlink to use.
- * @param[in] gapExCount    The number of gap extensions.
- * @param[in] gapCount      The number of gaps.
- * @param[in] paircount     The number of aligned pairs.
- * @param[in] numPairs      Counter for each pair.
- * @param[in] len           Alignment length.
+ * @param[in]  graph         The @link AlignmentGraph @endlink object to compute statistics for.
+ * @param[in]  scoringScheme The @link Score @endlink object to use.
+ * @param[out] gapExCount    The number of gap extensions.
+ * @param[out] gapCount      The number of gaps.
+ * @param[out] pairCount     The number of aligned pairs.
+ * @param[out] numPairs      Counter for each pair. A @link String @endlink resized to size <tt>n*n</tt>, where 
+                             <tt>n</tt> is the @link FiniteOrderedAlphabetConcept#ValueSize @endlink of the alphabet
+                             of the aligned sequences.
+ * @param[out] len           Alignment length.
  *
- * @return TScoreVal The score of the alignment.  TScoreVal is the value type of scoringScheme.
+ * @return TScoreVal The score of the alignment. TScoreVal is the value type of <tt>scoringScheme</tt>.
  */
 
 /**
@@ -992,12 +994,12 @@ alignmentEvaluation(graph, score_type, gapExCount, gapCount, pairCount, numPairs
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore, typename TSize> 
 inline typename Value<TScore>::Type
-alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
+alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
 					TScore const& score_type,
 					TSize& gapExCount,
 					TSize& gapCount,
 					TSize& pairCount,
-					String<TSize>& numPairs,
+					String<TSize> & numPairs,
 					TSize& len)
 {
 	//typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;

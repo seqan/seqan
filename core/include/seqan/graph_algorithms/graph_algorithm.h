@@ -1573,15 +1573,16 @@ _extendShortestPaths(TMatrix& local,
  * @fn allPairsShortestPath
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Finds shortest paths between all pairs of vertices in a graph.
- * @signature void allPairsShortestPath(g, weight, distance, predecessor);
+ * @signature void allPairsShortestPath(graph, weight, distance, predecessor);
  *
- * @param[out] predecessor A matrix with predecessors.  Entry (i,j) in this matrix indicates the predecessor of j on
- *                         a shortest path from vertex i to vertex j.  You can use <tt>_printAllPairsShortestPath(g,
- *                         predecessor, i, j)</tt> to print the shortest path from i to j. Types: Matrix
- * @param[out] distance    A matrix with distances.Entry (i,j) in this matrix indicates the distance from vertex i to
- *                         vertex j. Types: Matrix
- * @param[in]  weight      A weight map.A property map with edge weights.  Edge weights may be negative.
- * @param[in]  g           A directed graph. Types: Directed Graph
+ * @param[in]  graph       A @link DirectedGraph Directed Graph @endlink.
+ * @param[in]  weight      A property map with edge weights. Edge weights may be negative.
+ * @param[out] distance    A @link Matrix @endlink with distances. Entry <tt>(i,j)</tt> in this matrix indicates the
+ *                         distance from vertex <tt>i</tt> to vertex <tt>j</tt>.
+ * @param[out] predecessor A @link Matrix @endlink with predecessors. Entry <tt>(i,j)</tt> in this matrix indicates the
+ *                         predecessor of <tt>j</tt> on a shortest path from vertex <tt>i</tt> to vertex <tt>j</tt>.
+ *                         You can use <tt>_printAllPairsShortestPath(graph, predecessor, i, j)</tt> to print the
+ *                         shortest path from <tt>i</tt> to <tt>j</tt>.
  *
  * @section Example
  *
