@@ -515,7 +515,8 @@ _find(Finder2<TText, TPattern, Multiple<TSpec> > & finder,
     for (TSize needleId = 0; needleId < needlesCount; ++needleId)
     {
         clear(ctx.baseFinder);
-        find(ctx.baseFinder, needlesView[needleId], ctx);
+        ctx._patternIt = needleId;
+        find(ctx.baseFinder, needlesView[ctx._patternIt], ctx);
     }
 }
 
