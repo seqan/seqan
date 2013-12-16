@@ -169,7 +169,7 @@ struct ImplMapValue_<Nothing>
 
 /*!
  * @fn Map#mapValue
- * @brief Subscript operator <tt>[ ]</tt> of maps.
+ * @brief Subscript <tt>operator[]</tt> of maps.
  * 
  * @signature TMapValue mapValue(map, key);
  * 

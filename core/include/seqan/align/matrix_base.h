@@ -787,6 +787,18 @@ coordinate(Iter<Matrix<TValue, DIMENSION> const, PositionIterator > & me,
 	return coordinate(container(me), position(me), dimension_);
 }
 
+/*!
+ * @fn Matrix::operator+
+ * @brief Sum operator for the Matrix type.
+ *
+ * @signature TMatrix Matrix::operator+(lhs, rhs);
+ *
+ * @param[in] lhs First summand.
+ * @param[in] rhs Second summand.
+ *
+ * @return TMatrix The resulting matrix of same type as <tt>lhs</tt> and <tt>rhs</tt>.
+ */
+
 /*
 operator +
 Computes the matricial sum between two matrices
@@ -1052,7 +1064,17 @@ matricialProduct(Matrix<TValue, 2> &matrix1,
 	return result;
 }
 */
-// TODO(holtgrew): Should work as the graph-transpose.
+
+/*!
+ * @fn Matrix#transpose
+ * @brief Tranpose a 2D Matrix.
+ *
+ * @signature TMatrix transpose(matrix);
+ *
+ * @param[in] matrix The matrix to tranpose.
+ * @return TMatrix The resulting tranposed matrix.
+ */
+
 /**
 .Function.Matrix#transpose
 ..summary:Transposes matrix
