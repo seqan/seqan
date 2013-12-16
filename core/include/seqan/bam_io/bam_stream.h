@@ -192,6 +192,7 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
 
 /*!
  * @enum BamStream::OperationMode
+ * @headerfile seqan/bam_io.h
  * @brief Selects teh operation mode of a @link BamStream @endlink.
  * @see BamStream
  *
@@ -206,6 +207,7 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
 
 /*!
  * @enum BamStream::Format
+ * @headerfile seqan/bam_io.h
  * @brief Select the format to use for reading/writing.
  *
  * @signature enum BamStream::Format;
