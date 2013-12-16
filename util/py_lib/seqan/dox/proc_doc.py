@@ -1539,7 +1539,7 @@ class DocProcessor(object):
                 doc.top_level_entries[name].all_extending.add(c.name)
         # Process classes: All extended and all extending classes.
         classes = [x for x in doc.top_level_entries.values()
-                   if x.kind == 'class']
+                   if x.kind in ['class', 'specialization']]
         # Get all classes that c extends into c.all_extended.
         for c in classes:
             q = list(c.extends)  # Queue for recursion
