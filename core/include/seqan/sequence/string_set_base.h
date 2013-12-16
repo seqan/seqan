@@ -874,7 +874,12 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posPrev
+ * @defgroup PositionCalculation Position Calculation
+ * @brief Position calculation functions.
+ */
+
+/*!
+ * @fn PositionCalculation#posPrev
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is decreased by one.
  *
@@ -884,9 +889,9 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
  *
  * @return TPos The predecessor.  TPos is the type of <tt>pos</tt>.
  *
- * @see posNext
- * @see posInc
- * @see posAdd
+ * @see PositionCalculation#posNext
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -917,7 +922,7 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posInc
+ * @fn PositionCalculation#posInc
  * @headerfile <seqan/sequence.h>
  * @brief Increments the local offset of a position type.
  *
@@ -926,9 +931,9 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
  * @param[in,out] pos A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.  In both
  *                    cases, <tt>seqOfs</tt> will be incremented by one.
  *
- * @see posNext
- * @see posPrev
- * @see posAdd
+ * @see PositionCalculation#posNext
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -967,7 +972,7 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posNext
+ * @fn PositionCalculation#posNext
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is increased by one.
  *
@@ -977,9 +982,9 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by one.
  *
- * @see posInc
- * @see posPrev
- * @see posAdd
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -1011,7 +1016,8 @@ posNext(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posAdd
+ * @fn PositionCalculation#posAdd
+ * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is increased by a value <tt>delta</tt>.
  *
  * @signature TPos posAdd(pos, delta);
@@ -1021,9 +1027,9 @@ posNext(Pair<T1, T2, TPack> const & pos) {
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by <tt>delta</tt>.
  *
- * @see posInc
- * @see posPrev
- * @see posNext
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posNext
  */
 
 /**
@@ -1057,7 +1063,7 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posAddAndCheck
+ * @fn PositionCalculation#posAddAndCheck
  * @headerfile <seqan/sequence.h>
  * @brief Increases the local offset of a position by a value <tt>delta</tt> and check for overflow.
  *
@@ -1067,8 +1073,8 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
  * @param[in]     delta Increase the local offset of <tt>pos</tt> by this value.
  * @param[in]     text  The @link TextConcept text @endlink to use for checking.
  *
- * @see posAdd
- * @see posInc
+ * @see PositionCalculation#posAdd
+ * @see PositionCalculation#posInc
  */
 
 /**
@@ -1120,7 +1126,7 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posSub
+ * @fn PositionCalculation#posSub
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is decreased by a value <tt>delta</tt>.
  *
@@ -1131,9 +1137,9 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is decreased by <tt>delta</tt>.
  *
- * @see posAdd
- * @see posInc
- * @see posNext
+ * @see PositionCalculation#posAdd
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posNext
  */
 
 /**
