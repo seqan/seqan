@@ -1181,16 +1181,14 @@ Render the template parameter overview.
 
 {% if entry.tparams %}
 <div data-lang-entity-container="template_parameter">
-  <h2 data-lang-entity="template_parameter">Template Parameters</h2>
+<h2 data-lang-entity="template_parameter">Template Parameters</h2>
 
-  <ul class="summary">
-    {% for param in entry.tparams %}
-    <li class="public">
-      <span class="summary_signature"><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></span>
-      <span class="summary_desc">{{ param.desc|transtext(False) }}</span>
-    </li>
-    {% endfor %}
-  </ul>
+<dl class="overview">
+{% for param in entry.tparams %}
+	<dt><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></dt>
+	<dd>{{ param.desc|transtext(False) }}</dd>
+{% endfor %}
+</dl>
 </div>
 {% endif %}
 
