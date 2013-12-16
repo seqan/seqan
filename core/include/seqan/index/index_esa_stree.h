@@ -537,12 +537,12 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * Instead of using the class Iter directly we recommend to use the result of the metafunction 
  * Iterator&lt;TContainer, BottomUp&lt;TSpec&gt; &gt;::Type (which is Iter&lt;TContainer, VSTree&lt;BottomUp&lt;TSpec&gt; &gt; &gt;).
  * 
- * @fn Bottom Up Iterator::Iterator
+ * @fn BottomUpIterator::Iter
  * 
  * @brief Constructor
  * 
- * @signature Iterator(index)
- * @signature Iterator(iterator)
+ * @signature Iter::Iter(index);
+ * @signature Iter::Iter(iterator);
  * 
  * @param index An index object.
  * @param iterator A Bottom Up Iterator.

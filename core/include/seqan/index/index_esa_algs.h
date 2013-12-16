@@ -761,6 +761,19 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 //____________________________________________________________________________
 
+/*!
+ * @fn MaxRepeatsIterator#length
+ * @headerfile <seqan/index.h>
+ * @brief Return the number of repeats.
+ *
+ * @signature TSize length(it);
+ *
+ * @param[in] it The MaxRepeatsIterator to query.
+ *
+ * @return TSize The number of found repeats.
+ */
+
+
 ///.Function.length.param.object.type:Spec.MaxRepeats Iterator
 ///.Function.length.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, typename TSpec >

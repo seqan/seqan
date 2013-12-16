@@ -1397,10 +1397,24 @@ lengthSum(StringSet<TString, TSpec> const & me)
     return back(stringSetLimits(me));
 }
 
+// --------------------------------------------------------------------------
+// Function clear()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#clear
+ * @headerfile <seqan/sequence.h>
+ * @brief Clear the StringSet.
+ *
+ * @signature void clear(stringSet);
+ *
+ * @param[in,out] seedSet The StringSet to clear.
+ */
 
 // --------------------------------------------------------------------------
 // Function length()
 // --------------------------------------------------------------------------
+
 
 ///.Function.appendValue.param.target.type:Class.StringSet
 ///.Function.appendValue.class:Class.StringSet

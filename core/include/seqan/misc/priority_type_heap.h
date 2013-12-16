@@ -112,6 +112,19 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 }
 
 // true if priority queue is empty 
+
+/*!
+ * @fn PriorityType#empty
+ * @headerfile <seqan/misc/priority_type_heap.h>
+ * @brief Query priority queue for beging empty.
+ *
+ * @signature bool empty(pq);
+ *
+ * @param[in] pq The PriorityType to query.
+ *
+ * @return bool <tt>true</tt> if the queue is empty.
+ */
+
 ///.Function.empty.param.object.type:Class.PriorityType
 ///.Function.empty.class:Class.PriorityType
 template <typename TValue, typename TLess>
@@ -121,6 +134,18 @@ empty(PriorityType<TValue, TLess, PriorityHeap> const & me)
 SEQAN_CHECKPOINT
 	return empty(me.heap); 
 }
+
+/*!
+ * @fn PriorityType#length
+ * @headerfile <seqan/misc/priority_type_heap.h>
+ * @brief Return number of elements in priority queue.
+ *
+ * @signature TSize length(pq);
+ *
+ * @param[in] pq The PriorityType to query.
+ * @return TSize Number of elements in priority queue.
+ */
+ 
 
 // Number of elements in the priority queue
 ///.Function.length.param.object.type:Class.PriorityType

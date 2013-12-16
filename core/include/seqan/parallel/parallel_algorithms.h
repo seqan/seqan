@@ -84,9 +84,10 @@ arrayFill(TIterator begin_,
 
 /*!
  * @fn sum
+ * @headerfile <seqan/parallel.h>
  * @brief Returns the sum of all elements in a sequence.
  *
- * @signature TValue sum(seq[, parallelTag);
+ * @signature TValue sum(seq[, parallelTag]);
  *
  * @param[in] seq         The sequence to sum up, o ftype <tt>TSequence</tt>.
  * @param[in] parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt> and <tt>Parallel</tt>,
@@ -158,13 +159,13 @@ sum(TSequence const &seq)
  * @headerfile <seqan/parallel.h>
  * @brief Computes the partial sum of a sequence.
  * 
- * @signature TValue partialSum(target, source[, parallelTag])
+ * @signature TValue partialSum(target, source[, parallelTag]);
  * 
  * @param[in]  source      A sequence of elements that should be partially summed.  The sequence alphabet must support
  *                         the <tt>operator+</tt> and conversion from zero, the type is <tt>TSource</tt>.
  * @param[in]  parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt>, <tt>Parallel</tt>, default is
  *                         <tt>Serial</tt>.
- * @param[out] targ et     The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
+ * @param[out] target      The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
  *                         contains at position <tt>i</tt> the sum of elements <tt>source[0]</tt>, <tt>source[1]</tt>,
  *                         ..., <tt>source[i]</tt>.
  * 

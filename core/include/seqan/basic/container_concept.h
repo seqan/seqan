@@ -448,10 +448,21 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TReference value(seq, pos);
  *
- * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
+ * @param seq[in] The sequence to get value in.
+ * @param pos[in] Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TReference A reference to into the container with position <tt>pos</tt>.
+ */
+
+/*!
+ * @fn RandomAccessContainerConcept#assignValue
+ * @brief Assign value in RandomAccessContainer.
+ *
+ * @signature void assignValue(cont, pos, val);
+ *
+ * @param seq[in,out] The RandomAccessContainer to modify.
+ * @param pos[in]     The position to modify value at.
+ * @param val[in]     The value to assign to the given position.
  */
 
 // TODO(holtgrew): Really deprecated?
@@ -462,8 +473,8 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TGetValue getValue(seq, pos);
  *
- * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
+ * @param seq[in] The sequence to get value in.
+ * @param pos[in] Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TGetValue The get-value (type is @link ContainerConcept#GetValue @endlink of the sequence type).
  */
@@ -479,15 +490,22 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
 
 /*!
  * @fn SequenceConcept#iter
- * @brief Return iterator to given position.
+ * @headerfile <seqan/sequence.h>
+ * @brief Iterator to the item at the given position in a container.
  *
- * @signature TIter iter(seq, pos[, tag]);
+ * @signature TIterator iter(seq, pos[, tag]);
  *
- * @param seq The sequence to get an iterator into.
- * @param pos The position to generate the iterator at.
- * @param tag The tag to use for selecting the ierator type.    One of <tt>Standard</tt> and <tt>Rooted</tt>.
+ * @param[in] seq    The sequence to get the iterator for.
+ * @param[in] pos    The position to get the iterator for.
+ * @param[in] tag    The tag to pick the type of the iterator.
  *
- * @return TIter The resulting iterator.
+ * @return TIterator The resulting iterator.  If <tt>TTag</tt> is the type of <tt>tag</tt> and <tt>TSequence</tt> the
+ *                   type of <tt>seq</tt> then TIterator is of the type <tt>Iterator&lt;TSequence,
+ *                   TTag&gt;::Type</tt>.
+ *
+ * @section Remarks
+ *
+ * If <tt>pos</tt> is out of range then the iterator is invalid.
  */
 
 /*!
@@ -581,18 +599,6 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  * @signature void eraseBack(seq);
  *
  * @param seq The sequence to remove the last element from.
- */
-
-/*!
- * @fn SequenceConcept#replace
- * @brief Replace part of a sequence.
- *
- * @signature void replace(seq, posBegin, posEnd, source)
- *
- * @param seq      The sequence to replace infix of.
- * @param posBegin Begin position in the sequence of the infix to replace.
- * @param posEnd   End position in the sequence of the infix to replace.
- * @param source   A sequence with the same value type as <tt>seq</tt>.
  */
 
 /*!
