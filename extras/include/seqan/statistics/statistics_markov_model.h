@@ -84,13 +84,13 @@ namespace seqan {
  * variance: 0.267919
  * @endcode
  *
- * @var unsigned MarkovModel::order
+ * @var unsigned MarkovModel::order;
  * @brief The order of the MarkovModel.
  *
- * @var TMatrix MarkovModel::transition
+ * @var TMatrix MarkovModel::transition;
  * @brief The transition matirx.
  *
- * @var TVector MarkovModel::stationaryDistribution
+ * @var TVector MarkovModel::stationaryDistribution;
  * @brief The vector of characgter distribution (String of TFloat).
  *
  *
@@ -99,7 +99,7 @@ namespace seqan {
  *
  * @signature MarkovModel::MarkovModel(order);
  *
- * @param order The order of the model (<tt>unsigned</tt>).
+ * @param[in] order The order of the model (<tt>unsigned</tt>).
  *
  *
  * @fn MarkovModel::build
@@ -108,9 +108,9 @@ namespace seqan {
  * The character statitionary distribution and the auxiliary information that give raise to an instance of a
  * Markov Model are also computed.
  *
- * @signature void MarkovModel::build(ss);
+ * @signature void MarkovModel::build(stringSet);
  *
- * @param[ss] ss The StringSet to build the model for.
+ * @param[in] stringSet The StringSet to build the model for.
  *
  *
  * @fn MarkovModel::set
@@ -119,10 +119,10 @@ namespace seqan {
  * Given e transition matrix, sets it as transition matrix of the MarkovModel and computes (if it is not available) the
  * vector of character distributions and the auxiliary information.
  *
- * @signature void MarkovModel(iTransition[, iStationaryDistribution]);
+ * @signature void MarkovModel(transition[, stationaryDistribution]);
  *
- * @param iTransition             The transition matrix.
- * @param iStationaryDistribution The vector of character distributions.
+ * @param[in,out] transition             The transition matrix.
+ * @param[in]     stationaryDistribution The vector of character distributions.
  *
  *
  * @fn MarkovModel::emittedProbability
@@ -142,7 +142,7 @@ namespace seqan {
  *
  * @signature void MarkovModel::write(file);
  *
- * @param file The file to write the model to (type <tt>FILE *</tt>).
+ * @param[in,out] file The file to write the model to (type <tt>FILE *</tt>).
  *
  *
  * @fn MarkovModel::read
@@ -150,7 +150,7 @@ namespace seqan {
  *
  * @signature void MarkovModel::read(file);
  *
- * @param file The file to read the model from (type <tt>FILE *</tt>).
+ * @param[in,out] file The file to read the model from (type <tt>FILE *</tt>).
  */
 
 /*
