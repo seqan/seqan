@@ -652,7 +652,7 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
  * @fn Map#value
  * @brief Returns a value given a key.
  * 
- * @signature TReference find(map, key);
+ * @signature TReference value(map, key);
  * 
  * @param map A map.
  * @param key A key.
