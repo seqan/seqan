@@ -65,7 +65,7 @@ namespace seqan {
 
 /*!
  * @fn isTerminal
- * @headerfile <seqan/misc/misc_termina.h>
+ * @headerfile <seqan/misc/misc_terminal.h>
  * @brief Check whether we are printing to a terminal.
  *
  * @signature bool isTerminal();

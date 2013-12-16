@@ -171,7 +171,7 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
 */
 /*!
  * @class CompressedSA
- * 
+ * @implements ContainerConcept
  * @headerfile seqan/index.h
  * 
  * @brief A suffix array storing only a few suffix array entries and computing the remaining on demand.

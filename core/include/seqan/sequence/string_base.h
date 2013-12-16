@@ -2145,6 +2145,39 @@ operator>>(TStream & source,
     return source;
 }
 
+// ----------------------------------------------------------------------------
+// Function beginPosition()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn String#beginPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return 0 for compatibility with @link Segment @endlink.
+ * 
+ * @signature TPos beginPosition(str);
+ * 
+ * @param[in] seg The String to use.
+ * 
+ * @return TPos Always 0.
+ */
+
+
+// ----------------------------------------------------------------------------
+// Function endPosition()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn String#endPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return length of string for compatibility with @link Segment @endlink.
+ * 
+ * @signature TPos endPosition(str);
+ * 
+ * @param[in] seg The string to use.
+ * 
+ * @return TPos Length of the string.
+ */
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_

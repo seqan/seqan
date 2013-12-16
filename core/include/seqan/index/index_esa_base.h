@@ -208,7 +208,7 @@ TA
  * 
  * @section Examples
  *
- * The following example shows how the @link Bottom Up @endlink tag is used.
+ * The following example shows how the @link BottomUp @endlink tag is used.
  * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
  * @code{.txt}
  * AA

@@ -476,6 +476,16 @@ SEQAN_CHECKPOINT
         return me.in;
     }
 
+/*!
+ * @fn Pipe#length
+ * @headerfile <seqan/pipe.h>
+ * @brief Length of the pipe.
+ *
+ * @signature TSize length(pipe);
+ *
+ * @param[in] pipe The Pipe to query for its size.
+ * @return    TSize The size of the pipe.
+ */
 
 ///.Function.length.param.object.type:Class.Pipe
 ///.Function.length.class:Class.Pipe

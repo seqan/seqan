@@ -305,10 +305,19 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
+ * @fn BamHeader::clear
+ * @brief Clear BamHeader object.
+ *
+ * @signature void clear(header);
+ *
+ * @param header The record to clear.
+ */
+
+/*!
  * @fn BamHeaderRecord::clear
  * @brief Clear BamHeaderRecord object.
  *
- * @signature void(record);
+ * @signature void clear(record);
  *
  * @param record The record to clear.
  */

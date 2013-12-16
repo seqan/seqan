@@ -66,8 +66,8 @@ namespace seqan {
  * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the stringset and seqOfs identifies
  * the position within this string.
  * 
- * The global reference is of type <tt>Host&lt;TString&gt;</tt>. Only strings of type @link Journaled String @endlink or
- * <tt>Host&lt;</tt>@link Journaled String @endlink<tt>&gt;</tt> can be used for the advanced functionality supported by
+ * The global reference is of type <tt>Host&lt;TString&gt;</tt>. Only strings of type @link JournaledString @endlink or
+ * <tt>Host&lt;</tt>@link JournaledString @endlink<tt>&gt;</tt> can be used for the advanced functionality supported by
  * this string set.
  */
 

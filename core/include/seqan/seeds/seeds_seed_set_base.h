@@ -377,6 +377,16 @@ inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
 // Function clear()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn SeedSet#clear
+ * @headerfile <seqan/sequence.h>
+ * @brief Clear the SeedSet.
+ *
+ * @signature void clear(seedSet);
+ *
+ * @param[in,out] seedSet The SeedSet to clear.
+ */
+
 ///.Function.clear.param.object.type:Class.SeedSet
 template <typename TSeedSpec, typename TSeedSetSpec>
 inline void clear(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet)

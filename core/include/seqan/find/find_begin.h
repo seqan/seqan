@@ -401,7 +401,7 @@ findBegin(TFinder & finder,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn getBeginScore
+ * @fn Pattern#getBeginScore
  * @headerfile <seqan/find.h>
  * @brief Score of the last match found by @link Finder#findBegin @endlink during approximate searching.
  *

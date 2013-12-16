@@ -348,7 +348,6 @@ struct Reference<Holder<TValue *, TSpec> const>
  * <tt>empty(x)</tt> is guaranteed to be at least as fast as <tt>length(me) == 0</tt>, but can be significantly faster
  * in some cases.
  * 
- * @see length
  * @see HostedConcept#emptyHost
  */
 
@@ -378,20 +377,20 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @section Remarks
  * 
- * This function is similar to @link assign @endlink. The difference is, that
+ * This function is similar to @link AssignableConcept#assign @endlink. The difference is, that
  * <tt>assignValue</tt> just changes a value stored in <tt>object</tt> or the
- * value <tt>object</tt> points to, while @link assign @endlink changes the
+ * value <tt>object</tt> points to, while @link AssignableConcept#assign @endlink changes the
  * whole object.
  * 
  * If <tt>object</tt> is a container (that is <tt>pos</tt> is not specified),
  * the whole content of <tt>object</tt> is replaced by <tt>value</tt>.
  * 
  * If <tt>value</tt> is not used again after calling this function,     then
- * consider to use @link moveValue @endlink that could be faster in some cases
+ * consider to use @link Holder#moveValue @endlink that could be faster in some cases
  * instead.
  * 
- * @see assign
- * @see moveValue
+ * @see AssignableConcept#assign
+ * @see Holder#moveValue
  */
 
 // ----------------------------------------------------------------------------
@@ -441,6 +440,23 @@ struct Reference<Holder<TValue *, TSpec> const>
  * @param[in] holder The Holder to query for its reference.
  *
  * @return TReference The reference of the Holder's value.
+ */
+
+// ----------------------------------------------------------------------------
+// Function moveValue()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#moveValue
+ * 
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @brief Move a value of into a holder.
+ * 
+ * @signature void moveValue(holder, value);
+ * 
+ * @param[in,out] holder  The Holder to manipulate. 
+ * @param[in,out] value   The value to move into <tt>holder</tt>.
  */
 
 // ----------------------------------------------------------------------------
