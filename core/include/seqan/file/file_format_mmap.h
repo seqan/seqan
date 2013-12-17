@@ -441,8 +441,8 @@ After calling this function, the StringSet length is the number of sequence frag
  * @signature void assignSeq(sequence, seqFragment, formatTag);
  *
  * @param[out] sequence    The resulting sequence of the fragment.  Type: @link String @endlink.
- * @param[in]  seqFragment A sequence file fragment.  Type: @link String @endlink.
- * @param[in]  formatTag   A file format tag.  Type: @link AutoSeqFormat @endlink.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
+ * @param[in]  formatTag   A file format tag.  Type: @link FileFormatTag @endlink.
  *
  * @section Remarks
  *
@@ -571,13 +571,14 @@ this function can be used to extract the sequence id of every fragment in the St
  *
  * @param[out] id          The resulting cropped sequence id of the fragment (e.g. Fasta ID).  The resulting id
  *                         contains no whitespaces.  Type: @link CharString @endlink.
- * @param[out] seqFragment A sequence file fragment.  Type: @link CharString @endlink.
- * @param[in]  formatTag   A file format tag.
+ * @param[out] seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
+ * @param[in]  formatTag   A file format tag.  Type: @link FileFormatTag @endlink.
  *
  * @section Remarks
  *
- * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this function
- * can e used to extract the sequence id up to the first whitespace of every fragment in the @link StringSet @endlink.
+ * After calling @link split @endlink on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this 
+ * function can be used to extract the sequence id up to the first whitespace of every fragment in the
+ * @link StringSet @endlink.
  */
 
 /**
@@ -627,14 +628,14 @@ this function can be used to extract the sequence id up to the first whitespace 
  * @fn assignQual
  * @headerfile <seqan/file.h>
  *
- * @brief Extracts the quality values o a sequence file fragment.
+ * @brief Extracts the quality values of a sequence file fragment.
  *
  * @signature void assignQual(qualities, seqFragment, formatTag);
  *
  * @param[out] qualities   The result quality values encoded in ASCII.  The quality values are in encoded in ASCII
- *                         and must be manuall converted into zero-based values.  Type: @link CharString @endlink.
- * @param[in]  seqFragment A sequence file fragment.
- * @param[in]  formatTag   A file format tag.
+ *                         and must be manually converted into zero-based values.  Type: @link String @endlink.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
+ * @param[in]  formatTag   A file format tag.  Type: @link FileFormatTag @endlink.
  *
  * @section Remarks
  *
@@ -681,8 +682,8 @@ this function can be used to extract the sequence quality values of every fragme
  *
  * @param[out] id          The resulting quality value id of a sequence (e.g. Fastq Quality ID).  Type: @link CharString
  *                         @endlink.
- * @param[in]  seqFragment A sequence file framant.  Type: @link String @endlink.
- * @param[in]  formatTag   A file format tag.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
+ * @param[in]  formatTag   A file format tag.  Type: @link FileFormatTag @endlink.
  *
  * @section Remarks
  *
@@ -1548,20 +1549,20 @@ typedef Tag<TagRaw_> Raw; //IOREV
 /*!
  * @fn appendSeqs
  * @headerfile <seqan/file.h>
- * @brief Appends all sequences stored in files of a dirctory to a StringSet.
+ * @brief Appends all sequences stored in files of a directory to a StringSet.
  *
  * @signature void appendSeqs(seqSet, dirName, formatTag);
  *
- * @param[out] seqSet    A @link StringSet @endlink of sequences to append to.
- * @param[in]  dirName   A path to a dirctory or single file.
- * @param[in]  formatTag A file format tag.
+ * @param[out]    seqSet    A @link StringSet @endlink of sequences to append to.
+ * @param[in]     dirName   A path to a directory or single file.
+ * @param[in,out] formatTag A file format tag.
  *
  * @section Remarks
  *
  * This function scans a directory and searches for filenames corresponding to the sequence format stored in
- * <tt>formatTag</tt>, opens them and appends their contained sequences to the <tt>seqSet</tt>.  If <tt>formatTag</tt>
- * is a @link AutoSeqFormat @endlink object, the file form is set to the first known sequence format guessed from a file
- * name.
+ * <tt>formatTag</tt>, opens them and appends their contained sequences to the <tt>seqSet</tt>. If <tt>formatTag</tt>
+ * is a @link AutoSeqFormat @endlink object, the file format is set to the first known sequence format guessed from
+ * file name.
  *
  * @see assignSeq
  */
