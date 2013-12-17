@@ -447,7 +447,7 @@ struct Fibre<CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>,
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction Member                                      [SparseString View]
+// Metafunction Member                                      [CompressedSA View]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
