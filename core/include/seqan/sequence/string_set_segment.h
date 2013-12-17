@@ -389,7 +389,7 @@ appendInfix(StringSet<THost, Segment<TSpec> > & me,
 template <typename THost, typename TSpec>
 inline void clear(StringSet<THost, Segment<TSpec> > & me)
 {
-    me.data_host = NULL;
+//    me.data_host = NULL;
     resize(me.positions, 0, Exact());
     resize(me.limits, 1, Exact());
     me.limitsValid = true;
