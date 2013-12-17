@@ -273,7 +273,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
         appendValue(record.tagName, "seq");
         appendValue(record.tagValue, bp.insertionSeq);
     }
-    else if (bp.svtype == 2) // 2=deletion
+    else if (bp.svtype == 2 || bp.svtype == 7) // 2=deletion;7=breakend
     {
         appendValue(record.tagName, "size");
         appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
