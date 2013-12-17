@@ -287,11 +287,11 @@ inline void assignValue(
 
 /*!
  * @fn JournaledSet#globalReference
- * @brief Returns the global reference sequence of a @link Journaled Set @endlink.
+ * @brief Returns the global reference sequence of a @link JournaledSet @endlink.
  * 
  * @signature THost globalReference(stringSet);
  * 
- * @param stringSet The JournaledStringSet that stores the sequences. Types: Journaled Set
+ * @param stringSet The JournaledStringSet that stores the sequences. Types: @link  JournaledSet  @endlink
  * 
  * @return THost Reference to the host.
  */
@@ -323,13 +323,13 @@ globalReference(StringSet<TString, Owner<JournaledSet> > const & journalSet)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn Journaled Set#setGlobalReference
- * @brief Sets the global reference of a @link Journaled Set @endlink.
+ * @fn JournaledSet#setGlobalReference
+ * @brief Sets the global reference of a @link JournaledSet @endlink.
  * 
  * @signature void setGlobalReference(stringSet, ref);
  * 
- * @param stringSet The string set that stores the sequences. Types: JournaledSet
- * @param ref       The new reference sequence of the Journaled Set.
+ * @param stringSet The string set that stores the sequences. Types: @link JournaledSet @endlink
+ * @param ref       The new reference sequence of the @link JournaledSet  @endlink.
  * 
  * @section Remarks
  * 
