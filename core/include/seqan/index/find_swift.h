@@ -2241,7 +2241,7 @@ getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
  * 
  * @brief Returns the maximal out-of-order distance of adjacent hits.
  * 
- * @signature getMaxDeviationOfOrder(pattern)
+ * @signature TSize getMaxDeviationOfOrder(pattern)
  * 
  * @param pattern A pattern with window interface. Types: @link Swift @endlink, @link Pigeonhole @endlink
 

@@ -183,7 +183,7 @@ struct Haystack
 };
 
 /*!
- * @mfn Needle
+ * @mfn Pattern#Needle
  * @headerfile <seqan/find.h>
  * @brief Returns the needle type of a @link Pattern @endlink type.
  *

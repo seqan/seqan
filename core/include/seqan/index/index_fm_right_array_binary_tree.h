@@ -79,6 +79,27 @@ class RightArrayBinaryTree;
  * @brief The string encoding the wavelet tree structure.
  */
 
+/*!
+ * @mfn RightArrayBinaryTree#Fibre
+ * @headerfile seqan/index.h
+ *
+ * @brief Type of a specific RightArrayBinaryTree member (fibre).
+ * @signature template <typename TObject, TSpec>
+ *            Fibre<RightArrayBinaryTree, TSpec>::Type
+ * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link WaveletTreeFibres @endlink, 
+ *               @link RightArrayBinaryTreeFibres @endlink, @link SentinelRankDictionaryFibres @endlink
+ * @tparam RightArrayBinaryTree The RightArrayBinaryTree. 
+ *
+ * @return Type Fibre type.
+ *
+ * @section Naming
+ *
+ * Some containers, such as the @link Index @endlink or the @link RankDictionary @endlink, can be seen as a collection
+ * of tables. However, each table alone is just a collection of information. They only become powerful if used together.
+ * Therefore, a more appropriate label for the tables is fibre, like the fibres of a rope.
+ *
+ * In addition, sometimes a fibre can be a single value and calling it a table would be misleading.
+ */
 ///.Metafunction.Fibre.param.TContainer.type:Class.RightArrayBinaryTree
 ///.Metafunction.Fibre.param.TSpec.type:Tag.RightArrayBinaryTree Fibres
 struct FibreTreeStructureEncoding_;
@@ -190,7 +211,7 @@ public:
  * 
  * @brief Resets a right-array-binary tree.
  * 
- * @signature clear(rightArrayBinaryTree)
+ * @signature void clear(rightArrayBinaryTree)
  * 
  * @param rightArrayBinaryTree The right-array-binary tree to be cleared.
  */
@@ -216,7 +237,7 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
  * 
  * @brief Computes the right-array-binary tree of a text.
  * 
- * @signature createRightArrayBinaryTree(rightArrayBinaryTree, text)
+ * @signature void createRightArrayBinaryTree(rightArrayBinaryTree, text)
  * 
  * @param text A text. Types: @link String @endlink
  * @param rightArrayBinaryTree A wavelet tree structure.
@@ -326,13 +347,13 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * 
  * @brief Returns a specific fibre of a right-array-binary tree.
  * 
- * @signature getFibre(rightArrayBinaryTree, fibreTag)
+ * @signature TFibre getFibre(rightArrayBinaryTree, fibreTag)
  * 
  * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres @endlink.
  * @param container The container holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TFibre A reference to the @link RightArrayBinaryTree#Fibre @endlink object.
  */
 /**
 .Function.RightArrayBinaryTree#getFibre:
@@ -366,6 +387,16 @@ getFibre(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, FibreTreeStru
 // ----------------------------------------------------------------------------
 
 // This function returns the number of different entries in the wavelet tree structure.
+/*!
+ * @fn RightArrayBinaryTree#length
+ * @brief Returns the number of nodes in the right-array-binary-tree.
+ *
+ * @signature TSize length(tree);
+ *
+ * @param tree The right-array-binary-tree to query for its size.
+ *
+ * @return TSize The number of nodes in the right-array-binary-tree.
+ */
 template <typename TChar, typename TSpec>
 inline unsigned length(RightArrayBinaryTree<TChar, TSpec> const & tree)
 {
@@ -404,7 +435,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  * 
  * @brief This functions loads a @link RightArrayBinaryTree @endlink from disk.
  * 
- * @signature open(rightArrayBinaryTree, fileName [, openMode])
+ * @signature bool open(rightArrayBinaryTree, fileName [, openMode])
  * 
  * @param openMode The combination of flags defining how the file should be
  *                 opened.To open a file read-only, write-only or to read and
@@ -418,7 +449,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  *
  * @param fileName C-style character string containing the file name.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
 /**
@@ -470,7 +501,7 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  * 
  * @brief This functions saves a @link RightArrayBinaryTree @endlink to disk.
  * 
- * @signature save(rightArrayBinaryTree, fileName [, openMode])
+ * @signature bool save(rightArrayBinaryTree, fileName [, openMode])
  * 
  * @param openMode The combination of flags defining how the file should be
  *                 opened.To open a file read-only, write-only or to read and
@@ -484,7 +515,7 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  *
  * @param fileName C-style character string containing the file name.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
 /**
