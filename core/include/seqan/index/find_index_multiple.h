@@ -239,32 +239,10 @@ struct Member<Pattern<StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec
 };
 #endif
 
-#ifdef PLATFORM_CUDA
-template <typename TValue, typename TAlloc, typename TViewSpec, typename TAllocOuter, typename TSpec>
-struct Member<Pattern<thrust::device_vector<ContainerView<thrust::device_vector<TValue, TAlloc>, TViewSpec>, TAllocOuter>, Multiple<TSpec> >, Hashes_>
-{
-    typedef thrust::device_vector<TValue, TAlloc>               TNeedle_;
-    typedef ContainerView<TNeedle_, TViewSpec>                  TNeedleView_;
-    typedef thrust::device_vector<TNeedleView_, TAllocOuter>    TNeedles_;
-    typedef Pattern<TNeedles_, Multiple<TSpec> >                TPattern_;
-    typedef typename PatternShape_<TPattern_>::Type             TShape_;
-    typedef typename Value<TShape_>::Type                       THash_;
-
-    typedef thrust::device_vector<THash_>                       Type;
-};
-#endif
-
 template <typename TNeedle, typename TViewSpec, typename TSSetSpec, typename TSpec>
 struct Member<Pattern<StringSet<ContainerView<TNeedle, TViewSpec>, TSSetSpec>, Multiple<TSpec> >, Hashes_>
 {
     typedef Pattern<StringSet<TNeedle, TSSetSpec>, Multiple<TSpec> >        TPattern_;
-    typedef typename View<typename Member<TPattern_, Hashes_>::Type>::Type  Type;
-};
-
-template <typename TNeedles, typename TViewSpec, typename TSpec>
-struct Member<Pattern<ContainerView<TNeedles, TViewSpec>, Multiple<TSpec> >, Hashes_>
-{
-    typedef Pattern<TNeedles, Multiple<TSpec> >                             TPattern_;
     typedef typename View<typename Member<TPattern_, Hashes_>::Type>::Type  Type;
 };
 
@@ -290,30 +268,10 @@ struct Member<Pattern<StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec
 };
 #endif
 
-#ifdef PLATFORM_CUDA
-template <typename TValue, typename TAlloc, typename TViewSpec, typename TAllocOuter, typename TSpec>
-struct Member<Pattern<thrust::device_vector<ContainerView<thrust::device_vector<TValue, TAlloc>, TViewSpec>, TAllocOuter>, Multiple<TSpec> >, Permutation_>
-{
-    typedef thrust::device_vector<TValue, TAlloc>               TNeedle_;
-    typedef ContainerView<TNeedle_, TViewSpec>                  TNeedleView_;
-    typedef thrust::device_vector<TNeedleView_, TAllocOuter>    TNeedles_;
-    typedef typename Size<TNeedles_>::Type                      TSize_;
-
-    typedef thrust::device_vector<TSize_>                       Type;
-};
-#endif
-
 template <typename TNeedle, typename TViewSpec, typename TSSetSpec, typename TSpec>
 struct Member<Pattern<StringSet<ContainerView<TNeedle, TViewSpec>, TSSetSpec>, Multiple<TSpec> >, Permutation_>
 {
     typedef Pattern<StringSet<TNeedle, TSSetSpec>, Multiple<TSpec> >            TPattern_;
-    typedef typename View<typename Member<TPattern_, Permutation_>::Type>::Type Type;
-};
-
-template <typename TNeedles, typename TViewSpec, typename TSpec>
-struct Member<Pattern<ContainerView<TNeedles, TViewSpec>, Multiple<TSpec> >, Permutation_>
-{
-    typedef Pattern<TNeedles, Multiple<TSpec> >                                 TPattern_;
     typedef typename View<typename Member<TPattern_, Permutation_>::Type>::Type Type;
 };
 
