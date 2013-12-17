@@ -294,6 +294,7 @@ inline void assignValue(StringSet<THost, Segment<TSpec> > & /* me */,
                         TSegment const & /* seq */)
 {
     // NOTE(esiragusa): The host global position would be lost in the Segment.
+    SEQAN_FAIL("Not implemented");
 }
 
 // --------------------------------------------------------------------------
@@ -306,6 +307,7 @@ inline void appendValue(StringSet<THost, Segment<TSpec> > & /* me */,
                         Tag<TExpand> /* tag */)
 {
     // NOTE(esiragusa): The host global position would be lost in the Segment.
+    SEQAN_FAIL("Not implemented");
 }
 
 // --------------------------------------------------------------------------
@@ -317,10 +319,11 @@ inline void
 assignInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
                       TPos pos, TInfixPos infixPos, TSize length)
 {
+    SEQAN_ASSERT_LT(pos, length(me));
     assignValue(me.positions, pos, infixPos);
-    assignValue(me.limits, pos, length);
+//    if (me.limits[pos] - me.limits[pos - 1] != length) me.limitsValid = false;
     me.limitsValid = false;
-    // TODO limits[pos] should be limits[pos - 1] + length, then rebuild limits[pos+1,...]?
+    assignValue(me.limits, pos, me.limits[pos - 1] + length);
 }
 
 // --------------------------------------------------------------------------
@@ -334,6 +337,22 @@ appendInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
 {
     appendValue(me.positions, pos, tag);
     appendValue(me.limits, lengthSum(me) + length, tag);
+}
+
+// --------------------------------------------------------------------------
+// Function appendInfix()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TPos, typename TSize, typename TExpand>
+inline void
+appendInfix(StringSet<THost, Segment<TSpec> > & me,
+            TPos posBegin, TPos posEnd, Tag<TExpand> tag)
+{
+    SEQAN_ASSERT_EQ(getSeqNo(posBegin), getSeqNo(posEnd));
+    SEQAN_ASSERT_LEQ(getSeqOffset(posBegin), getSeqOffset(posEnd));
+
+    appendValue(me.positions, posBegin, tag);
+    appendValue(me.limits, lengthSum(me) + getSeqOffset(posEnd) - getSeqOffset(posBegin), tag);
 }
 
 // --------------------------------------------------------------------------
