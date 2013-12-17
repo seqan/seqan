@@ -41,41 +41,33 @@
 namespace seqan {
 
 // ============================================================================
-// Metafunctions
+// Forwards
 // ============================================================================
 
-// --------------------------------------------------------------------------
-// Metafunction StringSetPositions
-// --------------------------------------------------------------------------
+struct HostMember_;
 
 template <typename THost>
-struct StringSetPositions
-{
-    typedef typename Position<THost>::Type                  TPos;
-    typedef String<TPos>                                    Type;
-};
-
-template <typename THost, typename TSpec>
-struct StringSetPositions<StringSet<THost, TSpec> >
-{
-    typedef StringSet<THost, TSpec>                         TStringSet;
-    typedef typename StringSetPosition<TStringSet>::Type    TPos;
-    typedef String<TPos>                                    Type;
-};
+struct StringSetPositions;
 
 // ============================================================================
 // Classes
 // ============================================================================
 
+// --------------------------------------------------------------------------
+// Class StringSet<Segment>
+// --------------------------------------------------------------------------
+
 template <typename THost, typename TSpec>
 class StringSet<THost, Segment<TSpec> >
 {
 public:
+    typedef typename Member<StringSet, HostMember_>::Type   THostMember;
     typedef typename StringSetPositions<THost>::Type        TPositions;
     typedef typename StringSetLimits<StringSet>::Type       TLimits;
     typedef typename Concatenator<StringSet>::Type          TConcatenator;
 
-    THost *         data_host;
+
+    THostMember     data_host;
     TPositions      positions;
     TLimits         limits;
     bool            limitsValid;
@@ -85,14 +77,14 @@ public:
         data_host(),
         limitsValid(true)
     {
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
     }
 
     StringSet(THost & _host) :
         data_host(_toPointer(_host)),
         limitsValid(true)
     {
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
     }
 
     // ----------------------------------------------------------------------
@@ -117,8 +109,41 @@ public:
 };
 
 // ============================================================================
+// Members
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Member HostMember_
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct Member<StringSet<THost, Segment<TSpec> >, HostMember_>
+{
+    typedef typename IfView<THost, THost, THost *>::Type Type;
+};
+
+// ============================================================================
 // Metafunctions
 // ============================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction StringSetPositions
+// --------------------------------------------------------------------------
+
+template <typename THost>
+struct StringSetPositions
+{
+    typedef typename Position<THost>::Type                  TPos;
+    typedef String<TPos>                                    Type;
+};
+
+template <typename THost, typename TSpec>
+struct StringSetPositions<StringSet<THost, TSpec> >
+{
+    typedef StringSet<THost, TSpec>                         TStringSet;
+    typedef typename StringSetPosition<TStringSet>::Type    TPos;
+    typedef String<TPos>                                    Type;
+};
 
 // --------------------------------------------------------------------------
 // Metafunction Value
@@ -253,11 +278,13 @@ view(StringSet<THost, Segment<TSpec> > & me)
 {
     typename View<StringSet<THost, Segment<TSpec> > >::Type stringSetView;
 
-    setHost(stringSetView, host(me));
+    stringSetView.data_host = view(host(me));
     stringSetView.positions = view(me.positions);
     stringSetLimits(stringSetView) = view(stringSetLimits(me));
     stringSetView.limitsValid = me.limitsValid;
-    concat(stringSetView) = view(concat(me));
+
+    // TODO(esiragusa): define view of concat.
+//    concat(stringSetView) = view(concat(me));
 
     return stringSetView;
 }
