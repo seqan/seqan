@@ -139,6 +139,7 @@
 #ifdef PLATFORM_CUDA
 #include <seqan/sequence/string_set_concat_direct_device.h>
 #endif
+#include <seqan/sequence/string_set_segment.h>
 #include <seqan/sequence/string_set_dependent_tight.h>
 #include <seqan/sequence/string_set_dependent_generous.h>
 #include <seqan/sequence/string_set_owner.h>
