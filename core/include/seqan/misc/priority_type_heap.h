@@ -100,6 +100,14 @@ SEQAN_CHECKPOINT
 
 
 
+/*!
+ * @fn PriorityType#clear
+ * @brief Remove all elements from the PriorityType.
+ *
+ * @signature void clear(priority);
+ *
+ * @param priority PriorityType to clear.
+ */
 
 // Empty the priority queue
 ///.Function.clear.param.object.type:Class.PriorityType
@@ -111,6 +119,19 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 	clear(me.heap); 
 }
 
+/*!
+ * @fn PriorityType#empty
+ * @brief Returns true if there are no elements in the PriorityType and
+ * false otherwise.
+ *
+ * @signature bool empty(priority);
+ *
+ * @param priority PriorityType to check.
+ *
+ * @retrun bool Returns true if there are no elements in the PriorityType and
+ *              false otherwise.
+ 
+ */
 // true if priority queue is empty 
 ///.Function.empty.param.object.type:Class.PriorityType
 ///.Function.empty.class:Class.PriorityType
@@ -121,7 +142,16 @@ empty(PriorityType<TValue, TLess, PriorityHeap> const & me)
 SEQAN_CHECKPOINT
 	return empty(me.heap); 
 }
-
+/*!
+ * @fn PriorityType#length
+ * @brief Returns the number of elements in the priority queue.
+ *
+ * @signature TSize length(priority);
+ *
+ * @param priority The PriorityType to query for its size.
+ *
+ * @return TSize The number of elements in the priority queue.
+ */
 // Number of elements in the priority queue
 ///.Function.length.param.object.type:Class.PriorityType
 ///.Function.length.class:Class.PriorityType

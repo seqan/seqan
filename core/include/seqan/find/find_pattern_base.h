@@ -54,12 +54,12 @@ namespace seqan {
  *            class Pattern;
  *
  * @tparam TNeedle The needle type.  Types: @link TextConcept @endlink.
- * @tparam TSpec   The specializing type; gives the online algorithm to use for the search.  Defaults to the result of
+ * @tparam TSpec   A tag that specifies the online algorithm to use for the search.  Defaults to the result of
  *                 @link DefaultPattern @endlink.
  *
  * @section Remarks
  *
- * If <tt>Needle</tt> is a StringSet then <tt>position(pattern)</tt> returns a pair with the index of the currently
+ * If <tt>Needle</tt> is a StringSet then <tt>position(pattern)</tt> returns a @link Pair @endlink with the index of the currently
  * matching needle and the position in the needle.
  */
 
@@ -149,7 +149,7 @@ struct Host< Pattern<TNeedle, TSpec> const > {
 };
 
 /*!
- * @fn Pattern#Value
+ * @mfn Pattern#Value
  * @brief Returns the value type of the underlying pattern.
  *
  * @signature Value<TPattern>::Type
@@ -165,7 +165,7 @@ struct Value< Pattern<TPattern, TSpec> > {
 };
 
 /*!
- * @fn Pattern#Position
+ * @mfn Pattern#Position
  * @brief Returns the position type of the underlying pattern.
  *
  * @signature Position<TPattern>::Type
@@ -181,7 +181,7 @@ struct Position< Pattern<TPattern, TSpec> > {
 };
 
 /*!
- * @fn Pattern#Difference
+ * @mfn Pattern#Difference
  * @brief Returns the difference type of the underlying pattern.
  *
  * @signature Difference<TPattern>::Type
@@ -197,7 +197,7 @@ struct Difference< Pattern<TPattern, TSpec> > {
 };
 
 /*!
- * @fn Pattern#Size
+ * @mfn Pattern#Size
  * @brief Returns the size type of the underlying pattern.
  *
  * @signature Size<TPattern>::Type
@@ -216,7 +216,7 @@ struct Size< Pattern<TPattern, TSpec> > {
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn Pattern#ScoringScheme
+ * @mfn Pattern#ScoringScheme
  * @brief Returns the scoring scheme type of an approximate search algorithm.
  *
  * @signature ScoringScheme<TPattern>::Type;
@@ -381,17 +381,17 @@ SEQAN_CHECKPOINT
 
 /*!
  * @fn Pattern#needle
- * @brief Returns the needle of a Pattern object (not implemented for some online-algorithms).
+ * @brief Returns the needle of a @link Pattern @endlink object (not implemented for some online-algorithms).
  *
  * @signature TNeedle needle(pattern);
  *
  * @param[in] pattern The Pattern to query for its needle.
  *
- * @return TNeedle Reference ot the needle object.
+ * @return TNeedle Reference of the needle object.
  *
  * @section Remarks
  *
- * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function Pattern#host.
+ * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function @link Pattern#host @endlink.
  */
 
 /**
