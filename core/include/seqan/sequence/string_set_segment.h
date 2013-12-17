@@ -137,6 +137,12 @@ struct StringSetPositions
     typedef String<TPos>                                    Type;
 };
 
+template <typename THost>
+struct StringSetPositions<THost const>
+{
+    typedef typename StringSetPositions<THost>::Type const  Type;
+};
+
 template <typename THost, typename TSpec>
 struct StringSetPositions<StringSet<THost, TSpec> >
 {
