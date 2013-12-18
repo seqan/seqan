@@ -583,6 +583,7 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue co
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
     typedef typename Value<TFibreBlocks>::Type                              TFibreBlocksValue;
     typedef typename Value<TFibreSuperBlocks>::Type                         TFibreSuperBlocksValue;
+    typedef typename Size<RankSupportBitString<TSpec> >::Type               TSize;
 
     TFibreBlocksValue _bitsPerBlock = BitsPerValue<TFibreBitsValue>::VALUE;
     TFibreSuperBlocksValue _numberOfBlocks = (_length + _bitsPerBlock - 1) / _bitsPerBlock;
@@ -595,7 +596,7 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue co
 
     if (_value != 0 && currentLength < _length)
     {
-        for (unsigned i = currentLength; i < (typename MakeUnsigned<TLength const>::Type)_length; ++i)
+        for (TSize i = currentLength; i < (typename MakeUnsigned<TLength const>::Type)_length; ++i)
             setBit(bitString, i);
         _updateRanks(bitString, currentLength);
     }

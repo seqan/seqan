@@ -436,21 +436,22 @@ inline void _createBwTable(TBwt & bwt, TSentinelPosition & sentinelPos, StringSe
 template <typename TPrefixSumTable, typename TChar>
 inline void _determineSentinelSubstitute(TPrefixSumTable const & pst, TChar & sub)
 {
-    typedef typename RemoveConst<TPrefixSumTable>::Type TNonConstPrefixSumTable;
-	typedef typename Value<TNonConstPrefixSumTable>::Type TValue;
+    typedef typename RemoveConst<TPrefixSumTable>::Type     TNonConstPrefixSumTable;
+    typedef typename Value<TNonConstPrefixSumTable>::Type   TValue;
+    typedef typename Size<TPrefixSumTable>::Type            TSize;
 
-	TValue min = getPrefixSum(pst, length(pst) - 1);
-	unsigned pos = length(pst) - 1;
-	for (unsigned i = 0; i < length(pst) - 1; ++i)
-	{
-		unsigned diff = pst[i + 1] - pst[i];
-		if (diff != 0 && diff < min)
-		{
-			min = diff;
-			pos = i;
-		}
-	}
-	sub = getCharacter(pst, pos);
+    TValue min = getPrefixSum(pst, length(pst) - 1);
+    TSize pos = length(pst) - 1;
+    for (TSize i = 0; i < length(pst) - 1; ++i)
+    {
+        TSize diff = pst[i + 1] - pst[i];
+        if (diff != 0 && diff < min)
+        {
+            min = diff;
+            pos = i;
+        }
+    }
+    sub = getCharacter(pst, pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -609,8 +610,9 @@ inline void _getFrequencies(TFreq & freq,
 template <typename TText, typename TIndexSpec, typename TSpec, typename TSA>
 inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TSA & fullSa, TText const & text)
 {
-	typedef Index<TText, FMIndex<TIndexSpec, TSpec> > TIndex;
-	typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
+	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >   TIndex;
+	typedef typename Fibre<TIndex, FibreSA>::Type       TCompressedSA;
+	typedef typename Size<TIndex>::Type                 TSize;
 
     // TODO(singer): If there is a lfTable we do not need the Skew7
 	// create the fulle sa
@@ -619,7 +621,7 @@ inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TS
 	TCompressedSA & compressedSA = getFibre(index, FibreSA());
     setLfTable(compressedSA, getFibre(index, FibreLfTable()));
 
-    unsigned numSentinel = countSequences(text);
+    TSize numSentinel = countSequences(text);
     createCompressedSa(compressedSA, fullSa, index.compressionFactor, numSentinel); 
 
 	return true;

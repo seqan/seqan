@@ -287,13 +287,14 @@ inline void clear(PrefixSumTable<TChar, TSpec> & prefixSumTable)
 template <typename TChar, typename TSpec, typename TText>
 inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, TText const & text)
 {
-    typedef PrefixSumTable<TChar, TSpec> TPrefixSumTable;
-    typedef typename Value<typename Fibre<TPrefixSumTable, FibreEntries>::Type>::Type TPrefixSumValue;
+    typedef PrefixSumTable<TChar, TSpec>                                                TPrefixSumTable;
+    typedef typename Value<typename Fibre<TPrefixSumTable, FibreEntries>::Type>::Type   TPrefixSumValue;
+    typedef typename Size<TText>::Type                                                  TSize;
 
     TPrefixSumTable freq;
     _getFrequencies(freq, text);
 
-    unsigned alpSize = length(freq);
+    TSize alpSize = length(freq);
     resize(prefixSumTable, alpSize + 1, 0, Exact());
 
 
@@ -323,7 +324,8 @@ inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, 
 */
 
 template <typename TChar, typename TSpec>
-unsigned getAlphabetSize(PrefixSumTable<TChar, TSpec> const & pst)
+typename Size<PrefixSumTable<TChar, TSpec> >::Type
+getAlphabetSize(PrefixSumTable<TChar, TSpec> const & pst)
 {
     return length(pst.entries) - 1;
 }
@@ -386,14 +388,17 @@ getCharacter(PrefixSumTable<TChar, TSpec> const & /*tag*/, TPos const pos)
 // This function returns the position of the character which ensures that the sum of occurrences of the characters from
 // beginPos to the computed pos and the sum of occurrences from the computed pos to endPos are about the same.
 template <typename TChar, typename TSpec, typename TBeginPos, typename TEndPos>
-unsigned _getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos beginPos, TEndPos endPos)
+typename  Size<PrefixSumTable<TChar, TSpec> const>::Type
+_getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos beginPos, TEndPos endPos)
 {
+    typedef typename Size<PrefixSumTable<TChar, TSpec> const>::Type TSize;
+
     TBeginPos realBeginPos = beginPos + 1;
     TEndPos realEndPos = endPos + 1;
-    unsigned lengthRange = realEndPos - realBeginPos + 1;
-    unsigned pivotPos = realBeginPos + lengthRange / 2 - 1;
+    TSize lengthRange = realEndPos - realBeginPos + 1;
+    TSize pivotPos = realBeginPos + lengthRange / 2 - 1;
 
-    unsigned tooSmallValues = pst[beginPos];
+    TSize tooSmallValues = pst[beginPos];
     long currentMin = pst[realEndPos] + 1;
 
     if (pst[pivotPos] - tooSmallValues >= pst[realEndPos] - pst[pivotPos])
@@ -511,7 +516,9 @@ getFibre(PrefixSumTable<TChar, TSpec> & pst, FibreEntries const /*tag*/)
 template <typename TChar, typename TSpec, typename TNumSentinel>
 void _insertSentinel(PrefixSumTable<TChar, TSpec> & pst, TNumSentinel const numSentinel)
 {
-    for (unsigned i = 0; i < length(pst); ++i)
+    typedef typename Size<PrefixSumTable<TChar, TSpec> >::Type TSize;
+
+    for (TSize i = 0; i < length(pst); ++i)
         prefixSum(pst, i) = getPrefixSum(pst, i) + numSentinel;
 }
 
