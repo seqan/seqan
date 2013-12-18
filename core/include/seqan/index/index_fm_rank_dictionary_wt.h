@@ -319,8 +319,9 @@ getValue(RankDictionary<WaveletTree<TValue> > & dictionary,
     typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                 TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type                                       TWaveletTreeStructureEntry;
     typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                                     TChar;
+    typedef typename Size<RankDictionary<WaveletTree<TValue> > >::Type                              TSize;
 
-    unsigned treePos = 0;
+    TSize treePos = 0;
     typename Iterator<TWaveletTreeStructure, TopDown<> >::Type iter(dictionary.waveletTreeStructure, treePos);
     
     // initialize the return value with the smallest possible value
@@ -424,7 +425,8 @@ getFibre(RankDictionary<WaveletTree<TValue> > const & dictionary, const FibreTre
 */
 
 template < typename TValue, typename TCharIn, typename TPos>
-inline unsigned countOccurrences(RankDictionary<WaveletTree<TValue> > const & tree, TCharIn const character,
+inline typename Size<RankDictionary<WaveletTree<TValue> > const>::Type
+countOccurrences(RankDictionary<WaveletTree<TValue> > const & tree, TCharIn const character,
                                    TPos const pos)
 {
     typedef typename Fibre<RankDictionary<WaveletTree<TValue> >, FibreTreeStructure>::Type TWaveletTreeStructure;

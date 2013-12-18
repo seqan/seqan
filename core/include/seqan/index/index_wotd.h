@@ -2055,6 +2055,11 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		_wotdCreateFirstLevel(index);
 		return true;
 	}
+	
+    template <typename TText, typename TSpec, typename TFibre>
+    inline bool indexCreate(Index<TText, IndexWotd<TSpec> > &index, Tag<TFibre> const fibre) {
+            return indexCreate(index, fibre, typename DefaultIndexCreator<Index<TText, TSpec>, Tag<TFibre> const>::Type());
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 // clear

@@ -396,9 +396,10 @@ template <typename TRankDictionary>
 inline String<typename Size<SentinelRankDictionary<TRankDictionary, Sentinel> >::Type > 
 _getSentinelPosition(SentinelRankDictionary<TRankDictionary, Sentinels> const & dictionary)
 {
-    String<unsigned long> sentinelPositions;
+    typedef typename Size<SentinelRankDictionary<TRankDictionary, Sentinels> const>::Type TSize;
+    String<TSize> sentinelPositions;
 
-    for (unsigned i = 0; i < length(dictionary.sentinelPosition); ++i)
+    for (TSize i = 0; i < length(dictionary.sentinelPosition); ++i)
         if (isBitSet(dictionary.sentinelPosition, i))
             appendValue(sentinelPositions, i);
     return sentinelPositions;
@@ -474,22 +475,28 @@ std::cout << countOccurrences(dictionary, 'a', 4) << std::endl; // 2
 */
 
 template <typename TRankDictionary, typename TChar, typename TPos>
-inline unsigned countOccurrences(SentinelRankDictionary<TRankDictionary, Sentinel> const & dictionary,
+inline typename Size<SentinelRankDictionary<TRankDictionary, Sentinels> const>::Type
+countOccurrences(SentinelRankDictionary<TRankDictionary, Sentinel> const & dictionary,
                                TChar const character,
                                TPos const pos)
 {
-    unsigned occ = countOccurrences(getFibre(dictionary, FibreRankDictionary()), character, pos);
+    typedef typename Size<SentinelRankDictionary<TRankDictionary, Sentinels> const>::Type TSize;
+
+    TSize occ = countOccurrences(getFibre(dictionary, FibreRankDictionary()), character, pos);
     if (ordEqual(getSentinelSubstitute(dictionary), character) && pos >= dictionary.sentinelPosition)
          --occ;
     return occ;
 }
 
 template <typename TRankDictionary, typename TChar, typename TPos>
-inline unsigned countOccurrences(SentinelRankDictionary<TRankDictionary, Sentinels> const & dictionary,
+inline typename Size<SentinelRankDictionary<TRankDictionary, Sentinels> const>::Type
+countOccurrences(SentinelRankDictionary<TRankDictionary, Sentinels> const & dictionary,
                                 TChar const character,
                                 TPos const pos)
 {
-    unsigned occ = countOccurrences(getFibre(dictionary, FibreRankDictionary()), character, pos);
+    typedef typename Size<SentinelRankDictionary<TRankDictionary, Sentinels> const>::Type TSize;
+
+    TSize occ = countOccurrences(getFibre(dictionary, FibreRankDictionary()), character, pos);
     if (ordEqual(getSentinelSubstitute(dictionary), character))
         return occ - getRank(getFibre(dictionary, FibreSentinelPosition()), pos);
 

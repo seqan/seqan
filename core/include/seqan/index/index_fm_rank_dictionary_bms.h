@@ -225,9 +225,10 @@ inline TValue
 getValue(RankDictionary<SequenceBitMask<TValue> > const & dictionary, TPos pos)
 {
     typedef typename Fibre<RankDictionary<SequenceBitMask<TValue> > const, FibreBitStrings>::Type TBitStrings;
+    typedef typename Size<RankDictionary<SequenceBitMask<TValue> > const>::Type TSize;
 
     TBitStrings & bitStrings = getFibre(dictionary, FibreBitStrings());
-    for (unsigned i = 0; i < ValueSize<TValue>::VALUE - 1; ++i)
+    for (TSize i = 0; i < ValueSize<TValue>::VALUE - 1; ++i)
         if (isBitSet(bitStrings[i], pos))
             return i;
 
@@ -293,17 +294,18 @@ template <typename TValue, typename TText>
 inline void createRankDictionary(RankDictionary<SequenceBitMask<TValue> > & dictionary, TText const & text)
 { 
     typedef typename Fibre<RankDictionary<SequenceBitMask<TValue> >, FibreBitStrings>::Type TBitStrings;
+    typedef typename Size<RankDictionary<SequenceBitMask<TValue> > const>::Type TSize;
 
     TBitStrings & bitStrings = getFibre(dictionary, FibreBitStrings());
     resize(bitStrings, ValueSize<TValue>::VALUE, Exact());
 
-    for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+    for (TSize i = 0; i < ValueSize<TValue>::VALUE; ++i)
         resize(bitStrings[i], length(text), 0, Exact());
     
-    for (unsigned i = 0; i < length(text); ++i)
+    for (TSize i = 0; i < length(text); ++i)
         setBitTo(bitStrings[ordValue(text[i])], i, 1);
 
-    for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+    for (TSize i = 0; i < ValueSize<TValue>::VALUE; ++i)
         _updateRanks(bitStrings[i]);
 }
 

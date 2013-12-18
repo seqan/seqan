@@ -234,12 +234,14 @@ template <typename TChar, typename TSpec, typename TIterSpec, typename TPrefixSu
 inline void createRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
                                         TPrefixSumTable & pst)
 {
-    typedef RightArrayBinaryTree<TChar, TSpec> TRightArrayBinaryTree;
+    typedef RightArrayBinaryTree<TChar, TSpec>                          TRightArrayBinaryTree;
+    typedef typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type    TSize;
+
     TRightArrayBinaryTree & waveletTreeStructure = container(it);
 
-    unsigned alpSize = getAlphabetSize(pst);
-    String<Pair<unsigned> > borderString;
-    appendValue(borderString, Pair<unsigned>(0, alpSize - 1));
+    TSize alpSize = getAlphabetSize(pst);
+    String<Pair<TSize> > borderString;
+    appendValue(borderString, Pair<TSize>(0, alpSize - 1));
     _resize(waveletTreeStructure, 1, Exact());
     createRightArrayBinaryTree(it, borderString, pst);
 }
@@ -307,7 +309,8 @@ getFibre(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, FibreTreeStru
 // ==========================================================================
 // This function returns the number of different entries in the wavelet tree structure.
 template <typename TChar, typename TSpec>
-inline unsigned _length(RightArrayBinaryTree<TChar, TSpec> const & tree)
+inline typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type
+_length(RightArrayBinaryTree<TChar, TSpec> const & tree)
 {
     return length(tree.treeVertices);
 }

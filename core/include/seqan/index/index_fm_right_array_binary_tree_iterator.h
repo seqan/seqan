@@ -211,7 +211,8 @@ getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > con
 ..include:seqan/index.h
 */
 template <typename TTree, typename TIterSpec>
-inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
+inline typename Size<TTree>::Type
+getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
 {
     if (iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2 > 1)
     {
@@ -229,10 +230,13 @@ inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<Top
 ..include:seqan/index.h
 */
 template <typename TTree, typename TIterSpec>
-inline unsigned getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
+inline typename Size<TTree>::Type
+getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
 {
+    typedef typename Size<TTree>::Type TSize;
+
     Iter<TTree, RightArrayBinaryTreeIterator<TopDown<> > > _it(container(it));
-    unsigned originalPos = getPosition(it);
+    TSize originalPos = getPosition(it);
     goToPosition(_it, originalPos);
     while (goRightChild(_it) || goLeftChild(_it))
         continue;
@@ -249,7 +253,8 @@ inline unsigned getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<
 ..include:seqan/index.h
 */
 template <typename TTree, typename TIterSpec>
-inline unsigned int getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
+inline typename Size<TTree>::Type
+getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
 {
     return it.position;
 }
@@ -263,7 +268,8 @@ inline unsigned int getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 ..include:seqan/index.h
 */
 template <typename TTree, typename TIterSpec>
-inline unsigned int getRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
+inline typename Size<TTree>::Type
+getRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
 {
     if (it.waveletTreeStructure->treeVertices[getPosition(it)].i2 > 2)
     {
@@ -327,10 +333,12 @@ goLeftChild(it); // go to left child of root node
 template <typename TTree, typename TIterSpec>
 inline bool goLeftChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
-    unsigned leftChildPos = getLeftChildPos(it);
+    typedef typename Size<TTree>::Type TSize;
+
+    TSize leftChildPos = getLeftChildPos(it);
     if (leftChildPos == 0)
         return false;
-    
+
     if (!goToPosition(it, leftChildPos))
         return false;
 
@@ -355,7 +363,9 @@ goRight(it); // go to right child of root node
 template <typename TTree, typename TIterSpec>
 inline bool goRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
-    unsigned pos = getPosition(it);
+    typedef typename Size<TTree>::Type TSize;
+
+    TSize pos = getPosition(it);
     if (goUp(it))
     {
         if (goRightChild(it))
@@ -391,7 +401,9 @@ goRightChild(it); // go to right child of root node
 template <typename TTree, typename TIterSpec>
 inline bool goRightChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
-    unsigned rightChildPos = getRightChildPos(it);
+    typedef typename Size<TTree>::Type TSize;
+
+    TSize rightChildPos = getRightChildPos(it);
     if (rightChildPos == 0)
         return false;
 
@@ -459,20 +471,15 @@ goUp(it); // go to root node
 template <typename TTree, typename TIterSpec>
 inline bool goUp(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<ParentLinks<TIterSpec> > > > & it)
 {
-    unsigned treeLevel = length(it.history);
+    typedef typename Size<TTree>::Type TSize;
+
+    TSize treeLevel = length(it.history);
 
     if (isRoot(it))
         return false;
 
-//     for (unsigned i = 0; i < length(it.history); ++i)
-//         std::cerr << (int)it.history[i] << " ";
-//     std::cerr << std::endl;
     resize(it.history, treeLevel - 1);
-//     for (unsigned i = 0; i < length(it.history); ++i)
-//         std::cerr << (int)it.history[i] << " ";
-//     std::cerr << std::endl;
     goToPosition(it, back(it.history));
-//     std::cerr << "done" << std::endl;
 
     return true;
 }
@@ -574,9 +581,11 @@ void _setChildVertices(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpe
                         PrefixSumTable<TCharPST, TSpecPST> & pst)
 {
     typedef typename Value<TBorderString>::Type TBorderStringValue;
-    unsigned leftBorder = back(borderString).i1;
-    unsigned rightBorder = back(borderString).i2;
-    unsigned pivotPosition = _getPivotPosition(pst, leftBorder, rightBorder);
+    typedef typename Size<TTree>::Type TSize;
+
+    TSize leftBorder = back(borderString).i1;
+    TSize rightBorder = back(borderString).i2;
+    TSize pivotPosition = _getPivotPosition(pst, leftBorder, rightBorder);
 
     setCharacter(it, getCharacter(pst, pivotPosition));
 
