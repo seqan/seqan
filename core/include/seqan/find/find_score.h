@@ -295,7 +295,7 @@ SEQAN_CHECKPOINT
 /*!
  * @fn DPSearchPattern#setSoreLimit
  * @headerfile <seqan/find.h>
- * @brief Set the minimal score a match must reach in approximate serach..
+ * @brief Set the minimal score a match must reach in approximate serach.
  *
  * @signature void setScoreLimit(pattern, limit);
  *

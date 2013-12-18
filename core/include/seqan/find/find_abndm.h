@@ -267,6 +267,19 @@ host(Pattern<TNeedle, AbndmAlgo> const & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn AbndmAlgoPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A abndmAlgo pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
+ *                     is undefined.
+ */
+
 
 ///.Function.getScore.param.pattern.type:Spec.AbndmAlgo
 
@@ -590,6 +603,17 @@ inline bool _findAbndmLargeNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn AbndmAlgoPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The AbndmAlgoPattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 ///.Function.scoreLimit.param.pattern.type:Spec.AbndmAlgo
 ///.Function.scoreLimit.class:Spec.AbndmAlgo
 
@@ -603,6 +627,19 @@ scoreLimit(Pattern<TNeedle, AbndmAlgo > const & me)
 
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn AbndmAlgoPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach.
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The AbndmAlgoPattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
+
 ///.Function.setScoreLimit.param.pattern.type:Spec.AbndmAlgo
 ///.Function.setScoreLimit.class:Spec.AbndmAlgo
 
