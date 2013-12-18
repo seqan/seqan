@@ -191,7 +191,7 @@ writeRecord(TStream & stream,
             res = streamWriteChar(stream, (char)*it);
             if (res)
                 return res;
-            if (++l == lineLength)
+            if (++l == lineLength && (it + 1 != it_end))
             {
                 res = streamWriteChar(stream, '\n');
                 l = 0;
@@ -201,7 +201,8 @@ writeRecord(TStream & stream,
         }
         if (res)
             return res;
-    } else
+    }
+    else
     {
         for (typename Iterator<TSeqString const, Rooted>::Type it = begin(seq, Rooted()); !atEnd(it); ++it)
             res = streamWriteChar(stream, (char)*it);
