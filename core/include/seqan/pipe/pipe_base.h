@@ -407,9 +407,6 @@ namespace seqan {
         typedef TSize Type;
     };
 
-
-
-    
     template < typename TInput, typename TSpec >
     struct Value< Pipe<TInput, TSpec> > {
         typedef typename Value<TInput>::Type Type;
@@ -585,9 +582,9 @@ SEQAN_CHECKPOINT
  * @headerfile <seqan/pipe.h>
  * @brief Pops the first element of the remaining stream.
  * 
- * @signature void pop(object[, ref]);
+ * @signature void pop(pipe[, ref]);
  * 
- * @param[in,out] object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in,out] pipe A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
  * 
@@ -627,6 +624,16 @@ SEQAN_CHECKPOINT
         ++me;
     }
 
+/*!
+ * @fn Pipe#atEnd
+ * @brief Check whether the @link Pipe @endlink object is at end.
+ *
+ * @signature bool atEnd(pipe);
+ *
+ * @param[in] pipe The @link Pipe @endlink object to query.
+ *
+ * @return bool true in case of the pipe being at the end, false otherwise.
+ */
 ///.Function.atEnd.param.iterator.type:Class.Pipe
 ///.Function.atEnd.class:Class.Pipe
 
@@ -677,7 +684,7 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool beginRead(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
  * 
@@ -719,9 +726,9 @@ SEQAN_CHECKPOINT
  * @headerfile <seqan/pipe.h>
  * @brief Terminates a read process.
  * 
- * @signature bool beginRead(object);
+ * @signature bool endRead(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
  * 
@@ -782,7 +789,18 @@ SEQAN_CHECKPOINT
 				control(me.in4, command) &&
 				control(me.in5, command);
     }
-
+/*!
+ * @fn Pipe#assign
+ * @headerfile <seqan/pipe.h>
+ * @brief Assigns one object to another object.
+ *
+ * @signature void assign(target, source);
+ *
+ * @param[out] target Reference to assign to.
+ * @param[in]  source Value to assign.
+ *
+ * Assign value of source to target.
+ */
 ///.Function.assign.param.source.type:Class.Pipe
 ///.Function.assign.class:Class.Pipe
 

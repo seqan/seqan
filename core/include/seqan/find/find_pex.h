@@ -71,7 +71,7 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
  * @tparam TMultiFinder The specification for the multiple exact string matching algorithm that should be used
  *                      with the Pex algorithm. 
  *
- * @returns Type Pattern type of the multiple exact string matching algorithm for the specified Pattern.
+ * @return Type Pattern type of the multiple exact string matching algorithm for the specified Pattern.
  *
  * @section Remarks
  *
@@ -117,6 +117,7 @@ struct PexRange_{
 
 /*!
  * @class PexPattern
+ * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief Provides a fast approximate string matching filter that splits the needle into several pieces that are
  *        searched with a multiple exact string matching algorithm and later verified.
@@ -124,10 +125,10 @@ struct PexRange_{
  * @signature template <typename TNeedle, typename TVerification, typename TMultiFinder>
  *            class Pattern<TNeedle, Pex<TVerification, TMultiFinder> >;
  *
- * @tparam TNeedle       The needle type.
+ * @tparam TNeedle       The needle type. Type: @link SequenceConcept @endlink
  * @tparam TVerification Determines if the hierarchical verification proposed by Navarro and Beaza-Yates is used or
  *                       not.
- * @tparam TMultiFinder  Specifies the algorithm for th emultiple exact string matching algorithm.  Type: AhoCorasick.
+ * @tparam TMultiFinder  Specifies the algorithm for the multiple exact string matching algorithm.  Type: AhoCorasick.
  *
  * @section Remarks
  *
@@ -161,7 +162,7 @@ struct PexRange_{
  * @signature template <typename TNeedle, typename TMultiFinder>
  *            class Pattern<TNeedle, Pex<Hierarchical, TMultiFinder> >;
  *
- * @tparam TNeedle      The needle type.
+ * @tparam TNeedle      The needle type. Type: @link SequenceConcept @endlink
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
 
@@ -187,7 +188,7 @@ struct PexRange_{
  * @signature template <typename TNeedle, typename TMultiFinder>
  *            class Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder> >;
  *
- * @tparam TNeedle      The needle type.
+ * @tparam TNeedle      The needle type. Type: @link SequenceConcept @endlink
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
 
@@ -318,6 +319,18 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn PexPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A pex pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
+ *                     is undefined.
+ */
 ///.Function.getScore.param.pattern.type:Spec.Pex
 ///.Function.getScore.class:Spec.Pex
 
@@ -329,6 +342,17 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn PexPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The pattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 ///.Function.scoreLimit.param.pattern.type:Spec.Pex
 ///.Function.scoreLimit.class:Spec.Pex
 
@@ -342,6 +366,20 @@ SEQAN_CHECKPOINT
 
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn PexPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach.
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The pattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
+
+
 ///.Function.setScoreLimit.param.pattern.type:Spec.Pex
 ///.Function.setScoreLimit.class:Spec.Pex
 

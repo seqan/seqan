@@ -798,6 +798,17 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The pattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.scoreLimit.param.pattern.type:Spec.Myers
 ///.Function.scoreLimit.class:Spec.Myers
@@ -820,6 +831,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach.
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The pattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.setScoreLimit.param.pattern.type:Spec.Myers
 ///.Function.setScoreLimit.class.type:Spec.Myers
@@ -848,6 +871,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A myers pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
+ *                     is undefined.
+ */
 
 ///.Function.getScore.param.pattern.type:Spec.Myers
 ///.Function.getScore.class:Spec.Myers
