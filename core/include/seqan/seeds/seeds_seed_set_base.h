@@ -62,12 +62,13 @@ typedef Tag<Unordered_> Unordered;
  * @headerfile <seqan/seeds.h>
  * @implements ContainerConcept
  * @brief Handles a set of seeds with local chaining on adding seeds.
+ * @note At the moment only <tt>Unordered SeedSets</tt> are supported.
  *
  * @signature template <typename TSeedSpec[, typename TSpec]>
  *            class SeedSet;
  *
- * @tparam TSeedSpec Tag for specialization of contained Seed objects.
- * @tparam TSpec     Optional tag for seed set specialization.  Defaults to <tt>Unordered</tt>.
+ * @tparam TSeedSpec Specialization tag of contained @link Seed @endlink objects.
+ * @tparam TSpec     Optional tag for seed set specialization. Defaults to <tt>Unordered</tt>.
  */
 
 /**
