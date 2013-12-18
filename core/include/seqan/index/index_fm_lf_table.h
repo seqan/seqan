@@ -649,17 +649,18 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
 // Function createLF()
 // ----------------------------------------------------------------------------
 /*!
- * @fn createLF
+ * @fn LF#createLF
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Creates the LF table
  * 
- * @signature createLF(lfTable, text, sa)
+ * @signature void createLF(lfTable, text, sa);
  * 
- * @param lfTable The LF table to be constructed.
- * @param text The underlying text Types: @link String @endlink.
- * @param sa The suffix array of the LF table underlying text. Types: @link String @endlink, @link StringSet @endlink.
+ * @param[out] lfTable The LF table to be constructed.
+ * @param[in]  text    The underlying text Types: @link String @endlink.
+ * @param[in]  sa      The suffix array of the LF table underlying text. Types: @link String @endlink,
+ *                     @link StringSet @endlink.
  * 
  * @return TReturn Returns a <tt>bool</tt> which is <tt>true</tt> on successes and <tt>false</tt> otherwise.
  */

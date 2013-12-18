@@ -1124,16 +1124,18 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         return me.size();
     }
+
 /*!
  * @fn Pool#length
- * @brief Returns the size of the pool.
+ * @headerfile <seqan/pipe.h>
+ * @brief Length of the pool.
  *
  * @signature TSize length(pool);
  *
- * @param pool The pool to query for its size.
- *
- * @return TSize The number of elements in the pool.
+ * @param[in] pool  The Pool to query for its size.
+ * @return    TSize The number of elements in the pool.
  */
+
 ///.Function.length.param.object.type:Class.Pool
 ///.Function.length.class:Class.Pool
 

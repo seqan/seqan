@@ -79,6 +79,16 @@ struct Skiplist;
 template <typename TElement, typename TSpec = Skiplist<> >
 class Map;
 
+/*!
+ * @fn Map#length
+ * @headerfile <seqan/map.h>
+ * @brief Return number of elements in map.
+ *
+ * @signature TSize length(map);
+ *
+ * @param[in] map The Map to query for its size.
+ * @return TSize The number of elements in the map.
+ */
 
 //////////////////////////////////////////////////////////////////////////////
 // In SeqAn sets and maps store elements as pairs of (key,cargo) 
