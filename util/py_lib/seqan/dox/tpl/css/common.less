@@ -234,47 +234,7 @@ dl {
 			text-align: right;
 			font-weight: bold;
 			
-			position: relative;
-			
-			code {
-				@iconSpacing: .5em;
-				@inColor: #d43f3a;
-				@outColor: #4cae4c;
-				
-				&[data-param-type]:before,
-				&[data-param-type]:after {
-					position: absolute;
-					top: .3em;
-					left: -(@iconSpacing)-1em;
-					font-size: 0.7em;
-				}
-			
-				&[data-param-type=in]:before {
-					.glyphicon("\e161");
-					color: @inColor;
-				}
-			
-				&[data-param-type=out]:before {
-					.glyphicon("\e163");
-					color: @outColor;
-				}
-			
-				&[data-param-type=in_out]:before,
-				&[data-param-type=in_out]:after {
-					left: -(@iconSpacing)-2em-.3em;
-				}
-				
-				&[data-param-type=in_out]:before {
-					.glyphicon("\e161");
-					color: @inColor;
-				}
-				
-				&[data-param-type=in_out]:after {
-					.glyphicon("\e163");
-					color: @outColor;
-					margin-left: 1em + .3em;
-				}
-			}			
+			position: relative;			
 		}
 
 		dd {
@@ -300,6 +260,23 @@ dl {
 		.glyphicon {
 			font-size: .7em;
 		}
+	}
+}
+
+table.overview {
+	th {
+		padding-left: 2.5em;
+		padding-right: 1em;
+		min-width: 10em;
+		text-align: right;
+	}
+	
+	th, td {
+		vertical-align: top;
+	}
+	
+	tr + tr > * {
+		padding-top: .5em;
 	}
 }
 
@@ -375,6 +352,46 @@ html tt {
     background: transparent;
     border: none;
     font-size: 1em;
+    
+	@iconSpacing: .5em;
+	@inColor: #d43f3a;
+	@outColor: #4cae4c;
+	
+	position: relative;
+	
+	&[data-param-type]:before,
+	&[data-param-type]:after {
+		position: absolute;
+		top: .3em;
+		left: -(@iconSpacing)-1em;
+		font-size: 0.7em;
+	}
+
+	&[data-param-type=in]:before {
+		.glyphicon("\e161");
+		color: @inColor;
+	}
+
+	&[data-param-type=out]:before {
+		.glyphicon("\e163");
+		color: @outColor;
+	}
+
+	&[data-param-type=in_out]:before,
+	&[data-param-type=in_out]:after {
+		left: -(@iconSpacing)-2em-.3em;
+	}
+	
+	&[data-param-type=in_out]:before {
+		.glyphicon("\e161");
+		color: @inColor;
+	}
+	
+	&[data-param-type=in_out]:after {
+		.glyphicon("\e163");
+		color: @outColor;
+		margin-left: 1em + .3em;
+	}
 }
 
 html .summary_signature code,
