@@ -203,6 +203,32 @@ Infix: CGCG
 ..include:seqan/sequence.h
 */
 
+/*!
+ * @fn Segment#beginPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return segment's begin position.
+ *
+ * @signature TPos beginPosition(seg);
+ *
+ * @param[in] seg The Segment to query for its begin position.
+ *
+ * @return TPos The begin position of the segment.  TPos is the position type of the Segment as returned by
+ *              @link ContainerConcept#Position Position @endlink.
+ */
+
+/*!
+ * @fn Segment#endPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return segment's end position.
+ *
+ * @signature TPos endPosition(seg);
+ *
+ * @param[in] seg The Segment to query for its end position.
+ *
+ * @return TPos The end position of the segment.  TPos is the position type of the Segment as returned by
+ *              @link ContainerConcept#Position Position @endlink.
+ */
+
 struct InfixSegment {};
 
 template <typename THost, typename TSpec = InfixSegment>

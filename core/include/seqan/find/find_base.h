@@ -852,6 +852,16 @@ SEQAN_CHECKPOINT
 	return me._needReinit;
 }
 
+/*!
+ * @fn Finder#clear
+ * @headerfile <seqan/find.h>
+ * @brief Clear the Finder.
+ *
+ * @signature void clear(finder);
+ *
+ * @param[in,out] finder The Finder to clear.
+ */
+
 template <typename THaystack, typename TSpec>
 inline void
 clear(Finder<THaystack, TSpec> & me)

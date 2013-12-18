@@ -94,8 +94,7 @@ Hit at position: 17
  * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of Shape is the ValueSize of TValue which is the
  * alphabet size.
  * 
- * To get the span or the weight of a shape call @link length @endlink or @link
- * Shape#weight @endlink.
+ * To get the span or the weight of a shape call @link Shape#length @endlink or @link Shape#weight @endlink.
  */
 	template <typename TValue = Dna, typename TSpec = SimpleShape>
 	class Shape;
@@ -186,7 +185,7 @@ Hit at position: 17
  * @section Remarks
  * 
  * A SimpleShape must be resized first to a valid length. To do so, call @link
- * resize @endlink.
+ * Shape#resize @endlink.
  * 
  * @see UngappedShape
  */
@@ -332,6 +331,17 @@ Hit at position: 17
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Shape#value
+ * @headerfile <seqan/index.h>
+ * @brief Returns the current hash value of the Shape.
+ *
+ * @signature TValue value(shape);
+ *
+ * @param[in] shape The Shape to query for its value.
+ * @return TValue The hash value of the shape.
+ */
+
 ///.Function.value.param.object.type:Class.Shape
 ///.Function.value.class:Class.Shape
 	template <typename TValue, typename TSpec>
@@ -416,7 +426,7 @@ For gapped shapes this is the number of '1's.
 ///.Function.resize.param.object.type:Spec.SimpleShape
 ///.Function.resize.class:Spec.SimpleShape
 /*!
- * @fn SimpleShape#resize
+ * @fn Shape#resize
  * 
  * @brief Resize a shape to a specified span.
  * 
@@ -425,7 +435,7 @@ For gapped shapes this is the number of '1's.
  * @param shape Shape object for which the number of relevant positions is determined
  * @param length The new length (span) of the shape. 
  * 
- * @return TReturn The new span of type <tt> Size< Shape<TValue, SimpleShape> >::Type </tt>
+ * @return TReturn The new span of type <tt>Size&lt; Shape&lt;TValue, SimpleShape&gt; &gt;::Type</tt>
  */
 	template <typename TValue, typename TSize>
 	inline typename Size< Shape<TValue, SimpleShape> >::Type
