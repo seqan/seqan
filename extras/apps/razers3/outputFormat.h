@@ -329,43 +329,6 @@ writeMismatchFile(
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Dump an alignment
-template <typename TFile, typename TSource, typename TSpec>
-inline void
-dumpAlignment(TFile & target, Align<TSource, TSpec> const & source)
-{
-    typedef Align<TSource, TSpec> const TAlign;
-    typedef typename Row<TAlign>::Type TRow;
-    typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
-    typedef typename Position<TAlign>::Type TPosition;
-
-    TRowsPosition row_count = length(rows(source));
-    TPosition begin_ = beginPosition(cols(source));
-    TPosition end_ = endPosition(cols(source));
-
-    // Print sequences
-    for (TRowsPosition i = 0; i < row_count; ++i)
-    {
-        if (i == 0)
-            _streamWrite(target, "#Read:   ");
-        else
-            _streamWrite(target, "#Genome: ");
-        TRow & row_ = row(source, i);
-        typedef typename Iterator<typename Row<TAlign>::Type const>::Type TIter;
-        TIter begin1_ = iter(row_, begin_);
-        TIter end1_ = iter(row_, end_);
-        for (; begin1_ != end1_; ++begin1_)
-        {
-            if (isGap(begin1_))
-                _streamPut(target, gapValue<char>());
-            else
-                _streamPut(target, *begin1_);
-        }
-        _streamPut(target, '\n');
-    }
-}
-
 template <typename TFSSpec, typename TFSConfig, typename TCounts, typename TOptions>
 void
 countCoocurrences(
@@ -849,8 +812,11 @@ int dumpMatches(
                         reverseComplement(source(row(align, 1)));
                     }
                     globalAlignment(align, scoreType);
+                    SEQAN_ASSERT_EQ(length(row(align,0)), length(row(align,1)));
                     std::ostringstream strstrm;
-                    dumpAlignment(strstrm, align);
+                    strstrm << "#Read:   " << row(align, 0) << std::endl;
+                    strstrm << "#Genome: " << row(align, 1) << std::endl;
+
                     append(line, strstrm.str());
                 }
 
