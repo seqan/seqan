@@ -537,7 +537,7 @@ struct MatchVerifier
     {
         genomeLength = 0;
         rightClip = 0;
-        sinkPos = MaxValue<TContigPos>::VALUE;
+        sinkPos = MaxValue<TContigPos>::VALUE >> 1;
         onReverseComplement = false;
         oneMatchPerBucket = false;
         compactionTime = 0;
