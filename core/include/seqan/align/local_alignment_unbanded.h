@@ -41,7 +41,7 @@ namespace seqan {
 
 // ============================================================================
 // Forwards
-    // ============================================================================
+// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -80,7 +80,7 @@ namespace seqan {
  *              one. Types: Align
  * @param fragmentString String of @link Fragment @endlink objects. The sequence
  *                       with id <tt>0</tt> is the horizontal one, the sequence
-        *                       with id <tt>1</tt> is the vertical one.
+ *                       with id <tt>1</tt> is the vertical one.
  * @param scoringScheme The scoring scheme to use for the alignment. Types:
  *                      Score
  * 
