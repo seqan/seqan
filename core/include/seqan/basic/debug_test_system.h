@@ -67,6 +67,8 @@
 #include <signal.h>
 #endif  // #ifdef PLATFORM_WINDOWS
 
+#include <assert.h>
+
 /*!
  * @defgroup AssertMacros Assertion and Check Macros
  * @brief The assertion and check macros provided by SeqAn.
@@ -481,6 +483,7 @@ void printStackTrace(TSize /*maxFrames*/)
 #else
 
 // print a demangled stack backtrace of the caller function
+// TODO(esiragusa): use Demangler.
 template <typename TSize>
 void printStackTrace(TSize maxFrames)
 {

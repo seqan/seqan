@@ -55,6 +55,7 @@ namespace seqan {
  * @class SequenceOutputOptions
  * @headerfile <seqan/seq_io.h>
  * @brief Configuration for writing sequence (FASTA/FASTQ) files.
+ * @signature struct SequenceOutputOptions;
  * 
  * This struct is used for the configuration of writing out FASTA and FASTQ files.
  * 
@@ -191,7 +192,7 @@ writeRecord(TStream & stream,
             res = streamWriteChar(stream, (char)*it);
             if (res)
                 return res;
-            if (++l == lineLength)
+            if (++l == lineLength && (it + 1 != it_end))
             {
                 res = streamWriteChar(stream, '\n');
                 l = 0;
@@ -201,7 +202,8 @@ writeRecord(TStream & stream,
         }
         if (res)
             return res;
-    } else
+    }
+    else
     {
         for (typename Iterator<TSeqString const, Rooted>::Type it = begin(seq, Rooted()); !atEnd(it); ++it)
             res = streamWriteChar(stream, (char)*it);

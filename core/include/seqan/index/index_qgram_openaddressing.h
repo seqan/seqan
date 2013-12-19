@@ -79,7 +79,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 ..class:Spec.OpenAddressing
 */	
 /*!
- * @class OpenAddressing
+ * @class OpenAddressingQGramIndex
  * 
  * @extends IndexQGram
  * 
@@ -87,7 +87,8 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
  * 
  * @brief An index based on an array of sorted q-grams.
  * 
- * @signature Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >
+ * @signature template <typename TIndex, typename TShapeSpec>
+ *            class Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >;
  * 
  * @tparam TText The text type. Types: @link String @endlink
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
@@ -101,7 +102,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
  * same q-gram, but in contrast to the @link IndexQGram @endlink index, buckets
  * are in random order due to the hashing.
  * 
- * @var VariableType OpenAddressing::alpha
+ * @var VariableType OpenAddressingQGramIndex::alpha
  * 
  * @brief Load factor. Controls space/time-tradeoff and must be greater 1.
  *        Default value is 1.6.
@@ -118,6 +119,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
     private:
         static const double defaultAlpha;
 	public:
+        typedef typename Member<Index, QGramText>::Type     TTextMember;
 		typedef typename Fibre<Index, QGramText>::Type		TText;
 		typedef typename Fibre<Index, QGramSA>::Type		TSA;
 		typedef typename Fibre<Index, QGramDir>::Type		TDir;
@@ -128,7 +130,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		typedef typename Cargo<Index>::Type					TCargo;
 		typedef typename Size<Index>::Type					TSize;
 
-		Holder<TText>	text;		// underlying text
+		TTextMember     text;		// underlying text
 		TSA				sa;			// suffix array sorted by the first q chars
 		TDir			dir;		// bucket directory
 		TCounts			counts;		// counts each q-gram per sequence

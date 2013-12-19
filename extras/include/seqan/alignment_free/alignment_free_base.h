@@ -76,7 +76,7 @@ struct AFScore;
  * @brief D2 computes the inner product of the kmer count vectors.
  * 
  * @signature template <>
- *            struct AFScore;
+ *            struct AFScore<D2>;
  * 
  * @section Remarks
  * 

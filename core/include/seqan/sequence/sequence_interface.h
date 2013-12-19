@@ -71,17 +71,20 @@ namespace seqan {
  * @headerfile <seqan/sequence.h> 
  * @brief Limit the contents to current capacity.
  * 
- * @typedef Tag<TagLimit_> Limit;
+ * @signature typedef Tag<TagLimit_> Limit;
  *
  * @section Remarks
  * 
  * All entries that exceed the capacity are lost.
  * @headerfile <seqan/sequence.h> 
+ *
  * @tag OverflowStrategyTags#Generous
+ * @signature struct TagGenerous_;
+ * @signature typedef Tag<TagGenerous_> Generous;
  * 
  * @brief Expand if needed, get precautionary extra space.
  * 
- * @typedef Tag<TagGenerous_> Generous;
+ * @signature typedef Tag<TagGenerous_> Generous;
  *
  * @section Remarks
  * 
@@ -97,7 +100,7 @@ namespace seqan {
  * @headerfile <seqan/sequence.h> 
  * @brief Expand as far as needed.
  * 
- * @typedef Tag<TagExact_> Exact;
+ * @signature typedef Tag<TagExact_> Exact;
  *
  * @section Remarks
  * 
@@ -111,7 +114,7 @@ namespace seqan {
  * @headerfile <seqan/sequence.h> 
  * @brief No capacity check.
  *
- * @typedef Tag<TagInsist_> Insist;
+ * @signature typedef Tag<TagInsist_> Insist;
  * 
  * @section Remarks
  * 
@@ -1115,6 +1118,20 @@ back(T & me)
     return value(me, length(me) - 1);
 }
 
+template <typename T>
+SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
+backPrev(T const & me)
+{
+    return value(me, length(me) - 2);
+}
+
+template <typename T>
+SEQAN_HOST_DEVICE inline typename Reference<T>::Type
+backPrev(T & me)
+{
+    return value(me, length(me) - 2);
+}
+
 // --------------------------------------------------------------------------
 // Function iter()
 // --------------------------------------------------------------------------
@@ -2012,8 +2029,6 @@ _capacityReturned(T &,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn reserve
- * @headerfile <seqan/sequence.h>
  * @fn String#reserve
  * @brief Increases the capacity.
  * 

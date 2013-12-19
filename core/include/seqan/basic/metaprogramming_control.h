@@ -212,6 +212,7 @@ struct Switch<TAG, NilCase>
 /*!
  * @fn Loop
  * @headerfile <seqan/basic.h>
+ * @brief Helper for loops.
  *
  * @signature void Loop<TWorker, COUNT>::run(args);
  *
@@ -301,6 +302,8 @@ public:
 
 /*!
  * @fn LoopReverse
+ * @brief Helper for reverse loops.
+ *
  * @headerfile <seqan/basic.h>
  *
  * @signature void LoopReverse<TWorker, COUNT>::run(args);

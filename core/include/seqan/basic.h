@@ -94,4 +94,11 @@
 // Remaining code with cyclic dependencies.
 #include <seqan/basic/basic_tangle.h>
 
+// Basic views functions and metafunctions.
+#include <seqan/basic/basic_view.h>
+
+// Basic device metafunctions.
+#include <seqan/basic/basic_device.h>
+
+
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_

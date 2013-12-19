@@ -121,10 +121,10 @@ i += 1;
 
 SEQAN_HOST_DEVICE inline unsigned getThreadId()
 {
-#ifdef _OPENMP
-    return omp_get_thread_num();
-#elif __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     return blockIdx.x * blockDim.x + threadIdx.x;
+#elif _OPENMP
+    return omp_get_thread_num();
 #else
     return 0;
 #endif

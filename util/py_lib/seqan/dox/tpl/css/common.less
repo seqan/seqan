@@ -35,8 +35,7 @@ h1 {
 	a { color: #000 }
 }
 
-h2,
-h3#Examples {  // DIRTY! Just make it h2!
+h2 {
 	//border-bottom: 1px solid #999;
 	   
     margin-top: 2.1em;
@@ -93,6 +92,15 @@ h3 {
             > a:first-child { font-weight: 500; margin: 0 0 -1px 0; display: none; }
             > pre { border-top-left-radius: 0; margin-top: -1px; }
         }
+        
+        code {
+        	box-shadow: none;
+        	white-space: pre;
+    		-ms-word-break: break-all;
+			word-break: break-all;
+			word-break: break-word;
+        	padding-left: 0;
+        }
     }
 }
 
@@ -101,7 +109,7 @@ h4 {
     margin-bottom: .3em;
 }
 
-a:not([href]) {
+a[name]:not([href]) {
 	color: inherit;
 	text-decoration: none;
 	
@@ -112,6 +120,15 @@ a:not([href]) {
 	&[title] {
     	display: inline-block;
     	border-bottom: @dotted;
+	}
+	
+	&.error {
+		background-color: #f00 !important;
+		color: #fff !important;
+		
+		&:before {
+			content: "invalid link: ";
+		}
 	}
 }
 
@@ -132,7 +149,8 @@ a:active {
 }
 
 a[target=_top][href],
-a[target=_parent][href] {
+a[target=_parent][href],
+a[target=_blank][href] {
     &:after {
         display: inline-block;
         margin-left: 0.4em;
@@ -172,7 +190,7 @@ dl {
 	margin: 0;
 	padding: 0;
 	
-	:not(.overview) > & {
+	&:not(.overview) {
 		dt {
 			font-size: 1.1em;
 			font-weight: bold;
@@ -202,7 +220,7 @@ dl {
 		}
 	}
 	
-	.overview > & {
+	&.overview {
 		max-width: 100%;
 		
 		dt, dd {
@@ -215,10 +233,8 @@ dl {
 			width: 7em;
 			text-align: right;
 			font-weight: bold;
-    
-			&:after {
-				content: ":";
-			}
+			
+			position: relative;			
 		}
 
 		dd {
@@ -227,30 +243,58 @@ dl {
 			[data-lang-entity] > :first-child {
 				display: none;
 			}
-		}		
+		}
+		
+		code {
+			position: relative;
+			top: .15em;
+			line-height: 1.428571429em; // constant copied from bootstrap
+			white-space: pre;
+			padding-left: 0;
+			padding-right: 0;
+    		-ms-word-break: break-all;
+			word-break: break-all;
+			word-break: break-word;
+		}
+		
+		.glyphicon {
+			font-size: .7em;
+		}
 	}
 }
 
-html pre,
-html code {
-    .bg-gradient(#f5f5f5, 0%);
-    .border-radius(4px);
-    .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
-    border: 1px solid rgba(0,0,0,.2);
+table.overview {
+	th {
+		padding-left: 2.5em;
+		padding-right: 1em;
+		min-width: 10em;
+		text-align: right;
+	}
+	
+	th, td {
+		vertical-align: top;
+	}
+	
+	tr + tr > * {
+		padding-top: .5em;
+	}
 }
 
-pre {   
+pre {
+    .bg-gradient(#f5f5f5, 0%);
+    .border-radius(4px);
+    .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1));
+    border: 1px solid rgba(0,0,0,.2);
+
     font-size: .92em;
     line-height: 1.5em;
-    
-    .highlight & {
-    	margin-bottom: 0;
-    }
     
     &.console {
         .bg-gradient(#000, 7%);
         color: #fff;
     }
+    
+    margin: 0;
     
     // bootstrap reset
     .overview > dl &,
@@ -258,7 +302,6 @@ pre {
     h3 &,
     h3 &.highlight {
 		padding: 0;
-		margin: 0;
 		color: inherit;
 		background-color: transparent;
 		background-image: none;
@@ -270,14 +313,96 @@ pre {
     .overview > dl &,
     .summary_signature &,
     & code {
-        background: transparent;
-        border: none;
         box-shadow: none;
     }
 }
 
-html code {
+pre + :not(.more):not(.less) {
+	margin-top: 1.5em;
+}
+
+pre + .more,
+pre + .less {
+	position: relative;
+	display: block;
+	margin: -1.33em 1px 1px 1px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	background-color: rgba(255,255,255,.7);
+	cursor: pointer;
+	
+	&:hover { background-color: fadeout(#3276b1, 40%); color: #fff; }
+}
+
+pre + .more {
+	.more-link();
+	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1));
+}
+
+pre + .less {
+	.less-link();
+	background-color: transparent;
+}
+
+
+
+html code,
+html tt {
     color: #333;
+    background: transparent;
+    border: none;
+    font-size: 1em;
+    
+	@iconSpacing: .5em;
+	@inColor: #d43f3a;
+	@outColor: #4cae4c;
+	
+	position: relative;
+	
+	&[data-param-type]:before,
+	&[data-param-type]:after {
+		position: absolute;
+		top: .3em;
+		left: -(@iconSpacing)-1em;
+		font-size: 0.7em;
+	}
+
+	&[data-param-type=in]:before {
+		.glyphicon("\e161");
+		color: @inColor;
+	}
+
+	&[data-param-type=out]:before {
+		.glyphicon("\e163");
+		color: @outColor;
+	}
+
+	&[data-param-type=in_out]:before,
+	&[data-param-type=in_out]:after {
+		left: -(@iconSpacing)-2em-.3em;
+	}
+	
+	&[data-param-type=in_out]:before {
+		.glyphicon("\e161");
+		color: @inColor;
+	}
+	
+	&[data-param-type=in_out]:after {
+		.glyphicon("\e163");
+		color: @outColor;
+		margin-left: 1em + .3em;
+	}
+}
+
+html .summary_signature code,
+html .overview code {
+	box-shadow: none;
+	font-size: 1em;
+}
+
+html .highlight {
+	margin-bottom: 1em;
+	background-color: transparent;
 }
 
 .path_label {
@@ -290,7 +415,8 @@ html code {
 	.label { font-size: 1em; color: #000; }
 	
 	.highlight + & {
-		margin-bottom: 2em;
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
 	}
 }
 
@@ -333,16 +459,13 @@ html.list {
 		form#search {
 			.pre-action {			
 				margin: 10px;
-				padding: 0;
 				
-				h1 {
-					&:before {
-						position: relative;
-						top: 0;
-						left: 0;
-						margin-left: auto;
-						margin-right: auto;
+				h1 {			
+					a {
+						padding: 58px 0 0 0;
+						background-position: center top;
 					}
+					
 					font-size: 1.2em;
 					text-align: center;
 				}
@@ -433,26 +556,49 @@ html.list {
 			}
 		}
 		
-		li.active a {
+		li.active a:not(.home) {
 			color: #000;
 			font-weight: 700 !important;
 			text-shadow: none;
 		}
 		
-		li.top a {
-			text-align: center;
-			.bullet-icon("\e079", after, 1em, 1em, auto, auto);
-			&:before { margin-left: 3em; }
-			&:after { margin-right: 3em; }
+		li.active a.top i.fa-chevron-circle-up {
+			&:before { content: "\f192"; }
+		}
+		
+		li.meta {
+			a {
+				width: 50%;
+				display: inline-block;
+				text-align: center;
+				padding-left: 0;
+				padding-right: 0;
+				&:before { display: none }
+				
+				border-left: 1px solid lighten(@primary, 45%);
+			}
+			
+			a:first-child {
+				border-left: none;
+			}
+			
 			border-bottom: 1px solid lighten(@primary, 45%);
+		}
+		
+		li.home {
+			color: #000;background-color: #d9edf7;
+			//&:hover { background-color: #3a87ad; color: #fff; }
+		
+			a {
+				text-align: center;
+				padding-left: .5em;
+				&:before { display: none }
+				border-bottom: 1px solid lighten(@primary, 45%);
+			}
 		}
 		
 		li:last-child a {
     		border-bottom: none; // if only top link
-		}
-		
-		li.top:not(.active) a {
-			&:before, &:after { content: "\e113"; }
 		}
 	}
 }
@@ -584,36 +730,9 @@ ul.summary {
 }
 
 .tags {
-    .tag_title { font-size: 1em; margin-bottom: 0; font-weight: bold; }
-    ul {
-        margin-top: 5px;
-        padding-left: 30px;
-        list-style: none;
-        
-        li {
-            margin-bottom: 3px;
-            position: relative;
-            
-            &:before {
-                position: absolute;
-                left: -20px;
-                top: -1px;
-        		font-family: 'Glyphicons Halflings';
-        		-webkit-font-smoothing: antialiased;
-        		font-style: normal;
-        		font-weight: normal;
-        		line-height: 1;
-        		display: block;
-        		margin: 5px auto 10px;
-        		font-size: .8em;
-        		content: "\e080";
-            }
-        }
-        .name { font-family: monospace; font-weight: bold; }
-        .note { padding: 3px 6px; }
+    li:before {
+    	display: none;
     }
-    
-    margin-bottom: 12px;
     
     .examples .tag_title { margin-bottom: 10px; font-weight: bold; }
     .examples .inline p { padding: 0; margin: 0; margin-left: 15px; font-weight: bold; font-size: 0.9em; }
@@ -636,6 +755,18 @@ ul.params {
 }
 
 
+/*
+ * Developer Mode Window
+ */
+#devModeWindow {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	border-top-left-radius: 4px;
+	padding: 0.5em 0.5em 0.5em .8em;
+	background-color: #ccc;
+	opacity: 0.8;
+}
 
 
 
@@ -693,53 +824,80 @@ ul.params {
 }
 
 /*
+ * Permalinks
+ */
+.permalink {
+	cursor: pointer;
+	.border-radius(4px);
+	@color: fadeout(#428bca, 0%);
+	.box-shadow(0 1px 2px @color);
+	
+	@color1: lighten(@color, 30%);
+	@color2: lighten(@color1, 5%);
+	
+	background-color: @color1;
+	background-image: linear-gradient(45deg, @color2 25%, transparent 25%, transparent 75%, @color2 75%, @color2), 
+	linear-gradient(45deg, @color2 25%, transparent 25%, transparent 75%, @color2 75%, @color2);
+	background-size: 6px 6px;
+	background-position:0 0, 3px 3px;
+	
+	position: relative;
+}
+
+#permalinkModal {
+	th, td {
+		vertical-align: top;
+		padding-bottom: .5em;
+	}
+	
+	td {
+		padding-left: .5em;
+		white-space: normal;
+		-ms-word-break: break-all;
+		word-break: break-all;
+		word-break: break-word;
+	}
+}
+
+/*
  * Search
  */
 #search {
 	margin: 10px 10px 20px 10px;
 	
-	.pre-action {
-		.replace {
-			display: none;
-		}
-		
+	.pre-action {	
 		margin-top: -10px;
 		margin-bottom: 5px;
-		
-		padding: 36px 0px 30px 100px;
-		
+				
 		h1 {
 			position: relative;
 			padding: 0;
 			margin: 0;
-			font-size: 23px;
+			font-size: 22px;
 			
-			&:before {
-				position: absolute;
+			a {
 				display: block;
-				content: "";
-				left: -100px;
-				top: -20px;
-				width: 90px;
-				height: 60px;
+				padding: 35px 0px 29px 94px;
 				background-image: url(../img/seqan_logo.png);
-				background-size: 90px 60px;
+				background-size: 80px 53px;
 				background-repeat: no-repeat;
+				background-position: center left;
+				
+				@media @highres { 
+					background-image: url(../img/seqan_logo.highres.png);
+				}
 			}
 		}
 	}
 	
 	[type=search] {
 		width: 100%;
+		
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpldj0iaHR0cDovL3d3dy53My5vcmcvMjAwMS94bWwtZXZlbnRzIj4KPGc%2BCgk8cG9seWdvbiBmaWxsPSIjNjY2IiBwb2ludHM9IjkuMjA3LDYuMTI2IDcuNzkzLDcuNTQxIDExLjc5MywxMS41NDEgMTMuMjA3LDEwLjEyNiIgLz4KCTxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik01LjkxNywyYzEuNjA4LDAsMi45MTcsMS4zMDgsMi45MTcsMi45MTdTNy41MjUsNy44MzMsNS45MTcsNy44MzNTMyw2LjUyNSwzLDQuOTE3UzQuMzA4LDIsNS45MTcsMgoJCSBNNS45MTcsMEMzLjIwMSwwLDEsMi4yMDEsMSw0LjkxN3MyLjIwMSw0LjkxNyw0LjkxNyw0LjkxN3M0LjkxNy0yLjIwMSw0LjkxNy00LjkxN0MxMC44MzMsMi4yMDEsOC42MzIsMCw1LjkxNywwTDUuOTE3LDB6IiAvPgo8L2c%2BCjwvc3ZnPgo%3D');
 		background-position: -24px 10px;
 		
-		&:before {
-			display: block;
-			content: "dddd";
-			position: absolute;
-			top: 1px;
-			left: 1px;
+		&.not-empty:focus {
+			background-image: none;
 		}
 	}
 	
@@ -808,24 +966,8 @@ ul.params {
 		li.more:not(.result) {
 			padding-left: 0;
 			a {
-			    font-size: 1.5em;
-			    line-height: .65em;
-			    padding: 0 0 0.75em 0;
-			    
-			    text-align: center;
-                .bullet-icon("\e114", after, 1em, 1em, auto, auto);
-                &:before { margin-left: 5em; content: "\e114"; }
-                &:after { margin-right: 5em; }
-			    &:before, &:after {
-			        margin-top: .8em;
-			        opacity: 0;			        
-			        font-size: 0.3em;
-			        .transition(opacity .5s);
-                }
-                
-                &:hover {
-                    &:before, &:after { opacity: 1; .animation(animation2 .3s linear 0s infinite alternate); }
-                }
+			    .more-link();
+			    padding-bottom: 0.75em;
             }
 		}
 
@@ -1029,8 +1171,6 @@ form .multiselect-container {
     	  	}
     	}
 	}
-	
-	[data-lang-entity-container] h2& > :first-child { display: none }
 }
 
 .data-lang-entity-example > :first-child { background: @rblue; border-color: darken(@rblue, 20%); }
@@ -1068,9 +1208,21 @@ html.page_languageentities {
            	    color: #fff;
                	background-color: @color;
            	}
+           	
+           	// elements in a typed container with the same type are not annotated
+           	html:not(.list) [data-lang-entity-container=@{langEntity}] & {
+           		display: none;
+           	}
+           	
+           	// exceptions are the direct headings 
+           	html:not(.list) [data-lang-entity-container=@{langEntity}] > h2& {
+           		display: inline-block;
+           	}
         }
 	}
 	
+	/*
+	// annotates h3
 	h3[data-lang-entity=@{langEntity}] {
 	    display: table;
 	    font-size: 1.1em;
@@ -1099,9 +1251,10 @@ html.page_languageentities {
             padding-left: 1.9rem;
         }
 	}
+	/**/
 	
 		
-	// Language Entities page
+	// Language Entity Type - Variants on the Language Entities page
 	html.page_languageentities [data-lang-entity-container=@{langEntity}] {
 		dt {
 		    padding: 0;
@@ -1110,10 +1263,7 @@ html.page_languageentities {
 		    font-size: 1.0em;
         }
 	}
-	
-	// headings and definitions on the language entity types page are colored and annotated
-   	html.page_languageentities h2,
-   	html.page_languageentities dt {
+	html.page_languageentities dt {
         &[data-lang-entity=@{langEntity}] {
             padding-left: 0;
             
@@ -1124,12 +1274,18 @@ html.page_languageentities {
         		color: #fff;
         		&:hover { background-color: color; }
             }
+            
+            &:after { content: "" }
         }
 	}
 	
-   	html.page_languageentities h2 {
+	
+	// headings and definitions on the language entity types page are colored and annotated
+   	html:not(.list) h2 {
         &[data-lang-entity=@{langEntity}] {
             padding-left: 0;
+            
+            &:before { display: none }
             
             &:after {
                 background-color: @color;
@@ -1137,19 +1293,15 @@ html.page_languageentities {
             }
             
             > :first-child {
-           		margin-left: 0;
+           		background-color: @color;
+        		color: #fff;
+        		&:hover { background-color: color; }
+        		
+        		margin-left: 0;
         		margin-right: 1.5em;
         		top: -.35em;
         		font-size: .54em;
             }
-        }
-	}
-	
-	html.page_languageentities dt {
-        &[data-lang-entity=@{langEntity}] {
-            padding-left: 0;
-            
-            &:after { content: "" }
         }
 	}
 	
@@ -1205,6 +1357,7 @@ html.page_languageentities {
 
 .langEntityRules(concept, lighten(@red, -20%));
 .langEntityRules(class, @red);
+.langEntityRules(specialization, @red);
 .langEntityRules(enum, lighten(@red, 20%));
 
 .langEntityRules(metafunction, @rblue);
@@ -1217,6 +1370,7 @@ html.page_languageentities {
 .langEntityRules(member_function, @lblue);
 
 .langEntityRules(tag, @purple);
+.langEntityRules(grouped_tag, @purple);
 
 .langEntityRules(variable, @lgreen);
 .langEntityRules(global_variable, @lgreen);
@@ -1226,18 +1380,20 @@ html.page_languageentities {
 .langEntityRules(adaption, lighten(@orange, -10%));
 .langEntityRules(macro, lighten(@orange, 10%));
 
-.langEntityRules(generic, #999);
+.langEntityRules(template_parameter, #999);
 
 .langEntityRules(page, lighten(@pink, -10%), hide);
 .langEntityRules(group, lighten(@pink, 10%), hide);
 .langEntityRules(tutorial, #000);
 
+.langEntityRules(unknown, #f00);
+
 
 // Exceptions
-// .. Generic
-html [data-lang-entity=generic] > *:first-child,
-html .popover[data-lang-entity-container=generic] .popover-title,
-html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
+// .. Template Parameter
+html [data-lang-entity=template_parameter] > *:first-child,
+html .popover[data-lang-entity-container=template_parameter] .popover-title,
+html.page_languageentities [data-lang-entity-container=template_parameter] [data-lang-entity-ideogram]:before {
 /* RAINBOW
 	background: -moz-linear-gradient(-45deg, rgba(217,63,63,1) 0%, rgba(217,178,63,1) 14%, rgba(140,217,63,1) 29%, rgba(63,217,102,1) 43%, rgba(63,217,217,1) 57%, rgba(63,102,217,1) 71%, rgba(140,63,217,1) 86%, rgba(217,63,178,1) 100%);
 	background: -webkit-linear-gradient(transparent, transparent),-webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(217,63,63,1)), color-stop(14%,rgba(217,178,63,1)), color-stop(29%,rgba(140,217,63,1)), color-stop(43%,rgba(63,217,102,1)), color-stop(57%,rgba(63,217,217,1)), color-stop(71%,rgba(63,102,217,1)), color-stop(86%,rgba(140,63,217,1)), color-stop(100%,rgba(217,63,178,1)));
@@ -1414,6 +1570,17 @@ pre {
     word-break: keep-all;
     word-break: normal;
 }
+
+// modal dialog's backgrop does erroneously get opacity 1 making the whole background black
+.modal-backdrop.in {
+	opacity: 0.5 !important;
+}
+
+html { body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom {
+	margin-right: auto;
+} }
+
+.modal h4 { font-size: 18px; }
 
 
 

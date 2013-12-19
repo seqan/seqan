@@ -109,22 +109,25 @@ void Test_StringSet_Concat()
 
 	appendValue(set, s1);
 	appendValue(set, "schlauer ");
+	appendValue(set, "");
 	appendValue(set, "Hamster!");
 
-	SEQAN_ASSERT_EQ(length(set), 3u);
+	SEQAN_ASSERT_EQ(length(set), 4u);
 
 	CharString all = concat(set);
 
 	SEQAN_ASSERT_EQ(concat(set)[10], 'a');
 	SEQAN_ASSERT(isEqual(set[0], "Hallo "));
 	SEQAN_ASSERT(isEqual(set[1], "schlauer "));
-	SEQAN_ASSERT(isEqual(set[2], "Hamster!"));
+	SEQAN_ASSERT(isEqual(set[2], ""));
+	SEQAN_ASSERT(isEqual(set[3], "Hamster!"));
 	SEQAN_ASSERT(isEqual(all, "Hallo schlauer Hamster!"));
 
 	SEQAN_ASSERT_EQ(stringSetLimits(set)[0], 0u);
 	SEQAN_ASSERT_EQ(stringSetLimits(set)[1], 6u);
 	SEQAN_ASSERT_EQ(stringSetLimits(set)[2], 15u);
-	SEQAN_ASSERT_EQ(stringSetLimits(set)[3], 23u);
+	SEQAN_ASSERT_EQ(stringSetLimits(set)[3], 15u);
+	SEQAN_ASSERT_EQ(stringSetLimits(set)[4], 23u);
 
 	StringSet<CharString, TSpec> const &cset = set;
 	

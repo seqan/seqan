@@ -3,13 +3,11 @@
 {% block title %}{{ function.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="function" data-pimped="true"><a href="page_LanguageEntities.html#function">fn()</a> <span>{{ function.title|e }}<div>{{ sections.brief(function) }}</div></span></h1>
+<h1 data-lang-entity="function" data-pimped="true">
+  <a href="page_LanguageEntities.html#function">fn()</a> <span>{{ function.title|e }}<div>{{ sections.brief(function) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(function) }}
-
-	{{ sections.signatures(function) }}
-</div>
+{{ sections.top_box(function) }}
 
 <!-- @param -->
 {{ sections.params(function) }}
@@ -26,6 +24,7 @@
  =============================================================================
 -->
 
+{% if function.internals or function.deprecation_msgs or function.warnings or function.notes or function.akas or not function.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -74,6 +73,7 @@
     {{ sections.body(function) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(function) }}

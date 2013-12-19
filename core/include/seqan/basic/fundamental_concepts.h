@@ -673,7 +673,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
  * 
  * @tparam T Type that is tested.
  * 
- * @return TReturn 
+ * @return Type Either True or False.
  * 
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  * 
@@ -703,7 +703,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
  * 
  * @tparam T Type that is tested.
  * 
- * @return TReturn 
+ * @return Type Either True or False.
  * 
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  */

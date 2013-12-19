@@ -188,15 +188,14 @@ struct StringSetLimits<StringSet<TString, TSpec> >
  * @mfn StringSet#StringSetPosition
  * @brief Returns position type in string set.
  *
- * @signature StringSetPosition<T>::Type
+ * @signature StringSetPosition<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The @link StringSet @endlink to query for its position type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The position type of TStringSet.
  */
 
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
 struct StringSetPosition
@@ -219,14 +218,14 @@ struct StringSetPosition<StringSet<TString, TSpec> >
  * @mfn StringSet#LengthSum
  * @brief Length sum type type in string set.
  *
- * @signature LengthSum<T>::Type
+ * @signature LengthSum<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The @link StringSet @endlink to query for its length sum type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The resulting length sum type.
  */
+
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 
 template <typename TString>
 struct LengthSum
@@ -254,15 +253,14 @@ struct LengthSum<T const> :
  * @mfn StringSet#GetSequenceByNo
  * @brief Type for getting sequence by number.
  *
- * @signature GetSequenceByNo<T>::Type
+ * @signature GetSequenceByNo<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The StringSet to query for its sequence-by-number type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The given sequence-by-number type.
  */
 
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
 struct GetSequenceByNo

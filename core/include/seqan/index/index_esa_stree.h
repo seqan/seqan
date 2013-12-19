@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -83,11 +84,12 @@ ttobe
  * 
  * @brief Abstract iterator for string trees, where string trees are trees constructed from a string.
  * 
- * @signature Iter<TContainer, VSTree<TSpec> >
+ * @signature template <typename TContainer, typename TSpec>
+ *            class Iter<TContainer, VSTree<TSpec> >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TContainer Type of the container that can be iterated. Types:
- *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMindex @endlink
+ *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMIndex @endlink
  * 
  * @section Remarks
  * 
@@ -158,6 +160,17 @@ ttobe
 		typedef typename Position<TIndex>::Type Type;
 	};
 
+/*!
+ * @mfn VSTreeIterator#EdgeLabel
+ * @headerfile seqan/index.h
+ *
+ * @brief Type of a string representing the characters of edges.
+ * @signature template <typename TSpec>
+ *            EdgeLabel<TSpec>::Type
+ * @tparam TSpec Tag to specify the object of which the type of the edge labels is requested.
+ *
+ * @return Type of a string representing the characters of edges.
+ */
     template < typename TSpec >
     struct EdgeLabel {};
 
@@ -205,7 +218,7 @@ The iterator starts in the root node by default.
  * @brief Iterator for virtual trees/tries that can go down and right beginning from the root.
  * 
  * @signature template <typename TIndex, typename TSpec>
- *            Iter<TContainer, VSTree< TopDown<TSpec> > >
+ *            class Iter<TContainer, VSTree< TopDown<TSpec> > >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
@@ -257,21 +270,25 @@ The iterator starts in the root node by default.
 
 //____________________________________________________________________________
 
+        SEQAN_HOST_DEVICE
         Iter() : index() {}
-        
+
+        SEQAN_HOST_DEVICE
 		Iter(TIndex &_index):
 			index(&_index)
 		{
 			_indexRequireTopDownIteration(_index);
 			goRoot(*this);
 		}
-
+        
+        SEQAN_HOST_DEVICE
 		Iter(TIndex &_index, MinimalCtor):
 			index(&_index),
 			vDesc(MinimalCtor()),
             _parentDesc(MinimalCtor()) {}
 
         // NOTE(esiragusa): _parentDesc is unitialized
+        SEQAN_HOST_DEVICE
 		Iter(TIndex &_index, TVertexDesc const &_vDesc):
 			index(&_index),
 			vDesc(_vDesc)
@@ -280,6 +297,7 @@ The iterator starts in the root node by default.
 		}
 
         template <typename TSpec2>
+        SEQAN_HOST_DEVICE
 		Iter(Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin):
 			index(&container(_origin)),
 			vDesc(value(_origin)),
@@ -288,7 +306,7 @@ The iterator starts in the root node by default.
 //____________________________________________________________________________
 
         template <typename TSpec2>
-		inline Iter const &
+		SEQAN_HOST_DEVICE inline Iter const &
 		operator = (Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin)
 		{
 			index = &container(_origin);
@@ -344,9 +362,9 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  *        first search.
  * 
  * @signature template <typename TIndex, typename TSpec> 
- *            Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
+ *            class Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >;
  * 
- * @tparam TSpec Specifies the depth-first search mode.  Types: @link DFS Order @endlink
+ * @tparam TSpec Specifies the depth-first search mode.  Types: @link DfsOrder @endlink
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
  *                @link IndexWotd @endlink, @link FMIndex @endlink, @link IndexSa @endlink
  *
@@ -388,8 +406,12 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 	struct HistoryStackEsa_
 	{
 		Pair<TSize> range;		// current SA interval of hits
+
+        SEQAN_HOST_DEVICE inline
 		HistoryStackEsa_() {}
+
 		template <typename TSize_>
+        SEQAN_HOST_DEVICE inline
 		HistoryStackEsa_(Pair<TSize_> const &_range): range(_range) {}
 	};
 
@@ -399,6 +421,18 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 		typedef HistoryStackEsa_<typename Size<TIndex>::Type>	Type;
 	};
 
+	template <typename TVSTreeIter>
+	struct HistoryStack_;
+
+	template <typename TIndex, typename TSpec>
+	struct HistoryStack_<Iter<TIndex, VSTree<TSpec> > >
+	{
+        typedef Iter<TIndex, VSTree<TSpec> >                        TIter_;
+		typedef String<typename HistoryStackEntry_<TIter_>::Type>   Type;
+
+//		typedef String<typename HistoryStackEntry_<TIter_>::Type, Block<> > Type;
+	};
+
 	template < typename TIndex, class TSpec >
 	class Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > >:
 		public Iter< TIndex, VSTree< TopDown<> > >
@@ -406,31 +440,35 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 	public:
 
 		typedef Iter< TIndex, VSTree< TopDown<> > >		TBase;
-		typedef	typename HistoryStackEntry_<Iter>::Type	TStackEntry;
-		typedef String<TStackEntry, Block<> >			TStack;
+		typedef	typename HistoryStack_<Iter>::Type      TStack;
 		typedef Iter									iterator;
 
 		TStack			history;	// contains all previously visited intervals (allows to go up)
 
 //____________________________________________________________________________
 
+        SEQAN_HOST_DEVICE
         Iter() :
             TBase()
         {}
 
+        SEQAN_HOST_DEVICE
 		Iter(TIndex &_index):
 			TBase(_index) {}
 
+        SEQAN_HOST_DEVICE
 		Iter(TIndex &_index, MinimalCtor):
 			TBase(_index, MinimalCtor()) {}
 
+        SEQAN_HOST_DEVICE
 		Iter(Iter const &_origin):
 			TBase((TBase const &)_origin),
 			history(_origin.history) {}
 
 //____________________________________________________________________________
 
-		inline Iter const &
+        SEQAN_HOST_DEVICE inline
+		Iter const &
 		operator = (Iter const &_origin)
 		{
 			*(TBase*)(this) = _origin;
@@ -489,7 +527,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @brief Iterator for an efficient postorder depth-first search in a virtual string tree.
  * 
  * @signature template <typename TIndex, typename TSpec>
- *            Iter<TContainer, VSTree< BottomUp<TSpec> > >
+ *            class Iter<TContainer, VSTree< BottomUp<TSpec> > >;
  * 
  * @tparam TSpec The specialization type.
  * @tparam TIndex Type of the container that can be iterated.
@@ -528,8 +566,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 
 		typedef typename VertexDescriptor<TIndex>::Type	TVertexDesc;
 		typedef typename Size<TIndex>::Type				TSize;
-		typedef	typename HistoryStackEntry_<Iter>::Type	TStackEntry;
-		typedef String<TStackEntry, Block<> >			TStack;
+        typedef	typename HistoryStack_<Iter>::Type      TStack;
 		typedef Iter									iterator;
 
 		TIndex	const	*index;			// container of all necessary tables
@@ -635,7 +672,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 	inline void _dfsOnPop(Iter<TIndex, VSTree< BottomUp<TSpec> > > &it, TSize const) {
         _dfsRange(it).i1 = back(it.history).range.i1;
 		_dfsLcp(it) = back(it.history).range.i2;
-		pop(it.history);
+		eraseBack(it.history);
 	}
 
 	template < typename TIndex, typename TSpec, typename TElement >
@@ -657,6 +694,10 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 		Iter<TIndex, VSTree< BottomUp<TSpec> > > &it, 
 		VSTreeIteratorTraits<Postorder_, THideEmptyEdges> const) 
 	{
+        typedef Iter<TIndex, VSTree< BottomUp<TSpec> > >    TIter;
+        typedef typename Size<TIndex>::Type                 TSize;
+        typedef typename HistoryStackEntry_<TIter>::Type    TStackEntry;
+
 		TIndex const &index = container(it);
 		do {
 			// postorder dfs via lcp-table
@@ -667,8 +708,6 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 			
 			if (_dfsRange(it).i2)
 			{
-				typedef typename Size<TIndex>::Type TSize;
-				typedef typename Iter<TIndex, VSTree< BottomUp<TSpec> > >::TStackEntry TStackEntry;
 				TStackEntry	_top_ = back(it.history);
 				TSize		lcp_i = lcpAt(_dfsRange(it).i2 - 1, index);
 
@@ -763,7 +802,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 
 	template < typename TIndex, typename TSize >
-	inline typename Size<TIndex>::Type
+	SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
 	repLength(TIndex const &index, VertexEsa<TSize> const &vDesc) 
 	{
 		if (_isLeaf(vDesc)) return suffixLength(saAt(vDesc.range.i1, index), index);
@@ -779,7 +818,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 	template < typename TIndex, typename TSpec >
-	inline typename Size<TIndex>::Type
+	SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
 	repLength(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it) 
 	{
 		return repLength(container(it), value(it));
@@ -851,7 +890,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  */
 
 	template < typename TIndex, typename TSpec >
-	inline typename Size<TIndex>::Type
+	SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
 	parentRepLength(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it) 
 	{
 		return repLength(container(it), nodeUp(it));
@@ -887,7 +926,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  */
 
 	template < typename TIndex, typename TSpec >
-	inline bool
+	SEQAN_HOST_DEVICE inline bool
 	emptyParentEdge(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it) 
 	{
 		// the following is more efficient than 
@@ -967,8 +1006,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 		_lca.history = prefix(a.history, i0);
 
 		// pop current intervals
-		pop(a.history);
-		pop(b.history);
+		eraseBack(a.history);
+		eraseBack(b.history);
 		goUp(_lca);
 
 		return i0;
@@ -1040,8 +1079,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 		TSize _lcp = (i0 > 0)? repLength(container(a), TDesc(a.history[i0 - 1], 0)): 0;
 
 		// pop current intervals
-		pop(a.history);
-		pop(b.history);
+		eraseBack(a.history);
+		eraseBack(b.history);
 
 		return _lcp;
 	}
@@ -1050,13 +1089,13 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 ///.Function.container.param.iterator.type:Spec.VSTree Iterator
 
 	template < typename TIndex, class TSpec >
-	inline TIndex const & 
+	SEQAN_HOST_DEVICE inline TIndex const & 
 	container(Iter< TIndex, VSTree<TSpec> > const &it) { 
 		return *it.index; 
 	}
 
 	template < typename TIndex, class TSpec >
-	inline TIndex & 
+	SEQAN_HOST_DEVICE inline TIndex & 
 	container(Iter< TIndex, VSTree<TSpec> > &it) { 
 		return *const_cast<TIndex*>(it.index); 
 	}
@@ -1066,13 +1105,13 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 ///.Function.value.param.object.type:Spec.VSTree Iterator
 
 	template < typename TIndex, class TSpec >
-	inline typename VertexDescriptor<TIndex>::Type & 
+	SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type & 
 	value(Iter< TIndex, VSTree<TSpec> > &it) { 
 		return it.vDesc;
 	}
 
 	template < typename TIndex, class TSpec >
-	inline typename VertexDescriptor<TIndex>::Type const & 
+	SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type const & 
 	value(Iter< TIndex, VSTree<TSpec> > const &it) { 
 		return it.vDesc;
 	}
@@ -1088,7 +1127,6 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 ...type:Spec.IndexEsa
 ..include:seqan/index.h
 */
-//TODO (singer): Ask Manuel what to do with resizeEdgeMap and ExternalPropertyMap
 /*!
  * @fn Index#resizeVertexMap
  * 
@@ -1099,9 +1137,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @signature void resizeVertexMap(index, pm)
  * 
  * @param index An index with a suffix tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
- * @param pm An External Property Map. Types: @link ExternalPropertyMap @endlink
- * 
- * @see ExternalPropertyMap#resizeEdgeMap
+ * @param pm An External Property Map.  * 
  */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
@@ -1173,7 +1209,7 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
  */
 
 	template < typename TIndex, class TSpec >
-	inline typename SAValue<TIndex>::Type 
+	SEQAN_HOST_DEVICE inline typename SAValue<TIndex>::Type 
 	getOccurrence(Iter< TIndex, VSTree<TSpec> > const &it)
 	{
 		return saAt(value(it).range.i1, container(it));
@@ -1223,7 +1259,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
  */
 
 	template < typename TIndex, class TSpec >
-	inline typename Size<TIndex>::Type 
+	SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type 
 	countOccurrences(Iter< TIndex, VSTree<TSpec> > const &it) 
 	{
 		if (_isSizeInval(value(it).range.i2))
@@ -1275,7 +1311,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  */
 	template < typename TText, typename TSpec, typename TDesc >
-	inline Pair<typename Size<Index<TText, TSpec> >::Type>
+	SEQAN_HOST_DEVICE inline Pair<typename Size<Index<TText, TSpec> >::Type>
 	range(Index<TText, TSpec> const &index, TDesc const &desc)
 	{
 		if (_isSizeInval(desc.range.i2))
@@ -1285,7 +1321,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 	template < typename TIndex, typename TSpec >
-	inline Pair<typename Size<TIndex>::Type>
+	SEQAN_HOST_DEVICE inline Pair<typename Size<TIndex>::Type>
 	range(Iter<TIndex, VSTree<TSpec> > const &it)
 	{
 		if (_isSizeInval(value(it).range.i2))
@@ -1319,7 +1355,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param iterator An iterator of a string tree.
  * 
  * @return Infix&lt;TSA&gt; All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
- *                    Type @link SequenceConcept#Infix @endlink&lt;@link Index#Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
+ *                    Type @link SequenceConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
  * 
  * @section Remarks
  * 
@@ -1339,7 +1375,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  */
 
 	template < typename TIndex, class TSpec >
-	inline typename Infix< typename Fibre<TIndex, FibreSA>::Type const >::Type 
+	SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<TIndex, FibreSA>::Type const >::Type 
 	getOccurrences(Iter< TIndex, VSTree<TSpec> > const &it) 
 	{
 		if (_isSizeInval(value(it).range.i2))
@@ -1532,7 +1568,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  */
 
 	template < typename TIndex, class TSpec >
-	inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type 
+	SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type 
 	representative(Iter< TIndex, VSTree<TSpec> > const &it) 
 	{
 		return infixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
@@ -1679,7 +1715,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
     
 	// get the interval of SA of the subtree under the edge beginning with character c
 	template < typename TText, class TIndexSpec, class TSpec, typename TValue >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool
 	_getNodeByChar(
 		Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree<TSpec> > const &it, 
 		TValue c, 
@@ -1798,7 +1834,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  */
 
 	template < typename TIndex, class TSpec >
-	inline bool
+	SEQAN_HOST_DEVICE inline bool
 	nodeHullPredicate(Iter<TIndex, TSpec> &)
 	{
 		return true;
@@ -1834,7 +1870,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  */
 
 	template < typename TText, typename TIndexSpec, class TSpec >
-	inline void goRoot(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it) 
+	SEQAN_HOST_DEVICE inline void goRoot(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it) 
 	{
 		_historyClear(it);
 		clear(it);							// start in root node with range (0,infty)
@@ -1955,8 +1991,6 @@ TA
  * @section Remarks
  * 
  * This function is equivalent to <tt>iterator = begin(container)</tt>.
- * 
- * @see DemoIteratorBasics
  * 
  * @see Index#begin
  */
@@ -2136,19 +2170,19 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	// unified history stack access for goDown(..)
 
 	template < typename TIndex, class TSpec >
-	inline void 
+	SEQAN_HOST_DEVICE inline void
 	_historyClear(Iter< TIndex, VSTree<TSpec> > &) {}
 
 
     template < typename TIndex, class TSpec >
-    inline void
+    SEQAN_HOST_DEVICE inline void
     _historyClear(Iter< TIndex, VSTree< TopDown<TSpec> > > &it)
     {
         it._parentDesc = value(it);
     }
 
     template < typename TIndex, class TSpec >
-    inline void
+    SEQAN_HOST_DEVICE inline void
     _historyClear(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         clear(it.history);
@@ -2161,14 +2195,14 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 		value(it).parentRight = value(it).range.i2;
 	}
 */	template < typename TText, class TIndexSpec, class TSpec >
-	inline void 
+	SEQAN_HOST_DEVICE inline void 
 	_historyPush(Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it) 
 	{
 		it._parentDesc = value(it);
 		value(it).parentRight = value(it).range.i2;
 	}
 	template < typename TText, class TIndexSpec, class TSpec >
-	inline void 
+	SEQAN_HOST_DEVICE inline void 
 	_historyPush(Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
 	{
 		typedef Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > TIter;
@@ -2182,13 +2216,13 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 	// standard down/right/up handlers of top-down-traversal
 	template < typename TIndex, typename TSpec >
-	inline void _onGoDown(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
+	SEQAN_HOST_DEVICE inline void _onGoDown(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
 
 	template < typename TIndex, typename TSpec >
-	inline void _onGoRight(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
+	SEQAN_HOST_DEVICE inline void _onGoRight(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
 
 	template < typename TIndex, typename TSpec >
-	inline void _onGoUp(Iter<TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &) {}
+	SEQAN_HOST_DEVICE inline void _onGoUp(Iter<TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &) {}
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -2196,7 +2230,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 	// go down the leftmost edge (including empty $-edges)
 	template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder >
-	inline bool _goDown(
+	SEQAN_HOST_DEVICE inline bool _goDown(
 		Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
 		VSTreeIteratorTraits<TDfsOrder, False> const)
 	{
@@ -2222,7 +2256,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
     
     template <typename TIndex, typename TSpec, typename TVertexDesc>
-    inline void
+    SEQAN_HOST_DEVICE inline void
     _setParentNodeDescriptor(Iter<TIndex, VSTree< TopDown<TSpec> > > &it,
                              TVertexDesc const &desc)
     {
@@ -2238,7 +2272,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
     
 	// go down the leftmost edge (skip empty $-edges)
 	template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder >
-	inline bool _goDown(
+	SEQAN_HOST_DEVICE inline bool _goDown(
 		Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
 		VSTreeIteratorTraits<TDfsOrder, True> const)
 	{
@@ -2292,7 +2326,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 	// go down the leftmost edge
 	template < typename TIndex, class TSpec >
-	inline bool goDown(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
+	SEQAN_HOST_DEVICE inline bool goDown(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
 		if (_goDown(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree< TopDown<TSpec> > > >::Type())) {
 			_onGoDown(it);
 			return true;
@@ -2306,7 +2340,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 	// go down the edge beginning with c (returns false iff this edge doesn't exists)
 	template < typename TIndex, class TSpec, typename TValue >
-	inline bool _goDownChar(Iter< TIndex, VSTree< TopDown<TSpec> > > &it, TValue c) 
+	SEQAN_HOST_DEVICE inline bool _goDownChar(Iter< TIndex, VSTree< TopDown<TSpec> > > &it, TValue c) 
 	{
 		typename VertexDescriptor<TIndex>::Type nodeDesc;
 		if (_getNodeByChar(it, c, nodeDesc)) {
@@ -2320,7 +2354,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	// go down the path corresponding to pattern
 	// lcp is the longest prefix of pattern and path
 	template < typename TIndex, typename TSpec, typename TString, typename TSize >
-	inline bool
+	SEQAN_HOST_DEVICE inline bool
 	_goDownString(
 		Iter< TIndex, VSTree< TopDown<TSpec> > > &node,
 		TString const &pattern, 
@@ -2370,7 +2404,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 	template < typename TIndex, typename TSpec, typename TObject >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool 
 	_goDownObject(
 		Iter< TIndex, VSTree< TopDown<TSpec> > > &it, 
 		TObject const &obj,
@@ -2380,7 +2414,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 	template < typename TIndex, typename TSpec, typename TObject >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool 
 	_goDownObject(
 		Iter< TIndex, VSTree< TopDown<TSpec> > > &it, 
 		TObject const &obj,
@@ -2393,7 +2427,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 	// public interface for goDown(it, ...)
 	template < typename TIndex, typename TSpec, typename TObject >
-	inline bool
+	SEQAN_HOST_DEVICE inline bool
 	goDown(
 		Iter< TIndex, VSTree< TopDown<TSpec> > > &it, 
 		TObject const &obj) 
@@ -2402,7 +2436,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 	template < typename TIndex, typename TSpec, typename TString, typename TSize >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool 
 	goDown(
 		Iter< TIndex, VSTree< TopDown<TSpec> > > &it, 
 		TString const &pattern,
@@ -2481,7 +2515,7 @@ ttobe
 	// go up one edge (returns false if in root node)
 	// can be used at most once, as no history stack is available
 	template < typename TIndex, class TSpec >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool 
 	_goUp(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) 
 	{
 		if (!isRoot(it)) {
@@ -2493,12 +2527,12 @@ ttobe
 
 	// go up one edge (returns false if in root node)
 	template < typename TIndex, class TSpec >
-	inline bool 
+	SEQAN_HOST_DEVICE inline bool 
 	_goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
 	{
 		if (!empty(it.history)) {
 			value(it).range = back(it.history).range;
-			pop(it.history);
+			eraseBack(it.history);
 			if (!empty(it.history))
 				value(it).parentRight = back(it.history).range.i2;	// copy right boundary of parent's range
 			return true;
@@ -2508,7 +2542,7 @@ ttobe
 
 	// go up one edge
 	template < typename TIndex, class TSpec >
-	inline bool goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it) {
+	SEQAN_HOST_DEVICE inline bool goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it) {
 		if (_goUp(it)) {
 			_onGoUp(it);
 			return true;
@@ -2546,14 +2580,14 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 
 	// return vertex descriptor of parent's node
 	template < typename TIndex, class TSpec >
-	inline typename VertexDescriptor<TIndex>::Type
+	SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type
 	nodeUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > const &it) 
 	{
 		if (!empty(it.history))
         {
 			typename Size<TIndex>::Type parentRight = 0;
 			if (length(it.history) >= 2)
-				parentRight = topPrev(it.history).range.i2;
+				parentRight = backPrev(it.history).range.i2;
 			return typename VertexDescriptor<TIndex>::Type(back(it.history).range, parentRight);
 		} else
 			return value(it);
@@ -2562,7 +2596,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 	// nodeUp adaption for non-history iterators
 	// ATTENTION: Do not call nodeUp after a goDown that returned false (or after _goUp)!
 	template < typename TIndex, class TSpec >
-	inline typename VertexDescriptor<TIndex>::Type const &
+	SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type const &
 	nodeUp(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it) 
 	{
 		return it._parentDesc;
@@ -2595,7 +2629,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
  */
 	// go right to the lexic. next sibling
 	template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder, typename THideEmptyEdges >
-	inline bool _goRight(
+	SEQAN_HOST_DEVICE inline bool _goRight(
 		Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it, 
 		VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const) 
 	{
@@ -2625,7 +2659,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 
 	// go down the leftmost edge
 	template < typename TIndex, class TSpec >
-	inline bool goRight(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
+	SEQAN_HOST_DEVICE inline bool goRight(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
 		if (_goRight(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree< TopDown<TSpec> > > >::Type())) {
 			_onGoRight(it);
 			return true;
@@ -2659,7 +2693,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
  *               the metafunction @link Size @endlink of the underlying index.
  */
 	template < typename TIndex, class TSpec >
-	inline typename Size< TIndex >::Type
+	SEQAN_HOST_DEVICE inline typename Size< TIndex >::Type
 	parentEdgeLength(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it) 
 	{
 		return repLength(it) - parentRepLength(it);
@@ -2689,11 +2723,11 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param iterator An iterator of a string tree/trie.
  * 
  * @return TEdgeLabel Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
- *                    and its type is the result of the metafunction @link TopDownIterator#EdgeLabel @endlink of the iterator.
+ *                    and its type is the result of the metafunction @link VSTreeIterator#EdgeLabel @endlink of the iterator.
  */
 
 	template < typename TIndex, class TSpec >
-    inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
+    SEQAN_HOST_DEVICE inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
 	parentEdgeLabel(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
 	{
 		return infixWithLength(
@@ -2740,13 +2774,13 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 	}
 
     template < typename TIndex, class TSpec >
-	inline void _clear(Iter<TIndex, VSTree<TSpec> > &it) 
+    SEQAN_HOST_DEVICE inline void _clear(Iter<TIndex, VSTree<TSpec> > &it)
 	{
 		value(it) = typename VertexDescriptor<TIndex>::Type(MinimalCtor());
     }
 
 	template < typename TIndex, class TSpec >
-	inline void clear(Iter<TIndex, VSTree<TSpec> > &it) 
+	SEQAN_HOST_DEVICE inline void clear(Iter<TIndex, VSTree<TSpec> > &it)
 	{
 		_clear(it);
     }
@@ -3023,19 +3057,19 @@ TA
  * @endcode
  */
 	template < typename TIndex, class TSpec >
-	inline bool isRoot(Iter<TIndex, VSTree< BottomUp<TSpec> > > const &it) 
+	SEQAN_HOST_DEVICE inline bool isRoot(Iter<TIndex, VSTree< BottomUp<TSpec> > > const &it)
 	{
 		return empty(it.history);
 	}
 
 	template < typename TIndex, class TSpec >
-	inline bool isRoot(Iter<TIndex, VSTree<TSpec> > const &it) 
+	SEQAN_HOST_DEVICE inline bool isRoot(Iter<TIndex, VSTree<TSpec> > const &it)
 	{
 		return _isRoot(value(it));
 	}
 
 	template < typename TSize >
-	inline bool _isRoot(VertexEsa<TSize> const &value) 
+	SEQAN_HOST_DEVICE inline bool _isRoot(VertexEsa<TSize> const &value)
 	{
 //IOREV _notio_
 		return _isSizeInval(value.range.i2);
@@ -3439,7 +3473,7 @@ Hit in sequence 0 at position 2
  * @link DemoIndexCountChildren @endlink
  */
 	template < typename TSize >
-	inline bool _isLeaf(VertexEsa<TSize> const &vDesc)
+	SEQAN_HOST_DEVICE inline bool _isLeaf(VertexEsa<TSize> const &vDesc)
 	{
 //IOREV _notio_
 		// is this a leaf?
@@ -3448,7 +3482,7 @@ Hit in sequence 0 at position 2
 
 	// is this a leaf? (including empty $-edges)
 	template < typename TIndex, class TSpec, typename TDfsOrder >
-	inline bool _isLeaf(
+	SEQAN_HOST_DEVICE inline bool _isLeaf(
 		Iter<TIndex, VSTree<TSpec> > const &it,
 		VSTreeIteratorTraits<TDfsOrder, False> const)
 	{
@@ -3457,14 +3491,14 @@ Hit in sequence 0 at position 2
 
 
     template <typename TIndex, typename TSpec>
-    inline typename SAValue<TIndex>::Type
+    SEQAN_HOST_DEVICE inline typename SAValue<TIndex>::Type
     _lastOccurrence(Iter<TIndex, VSTree<TSpec> > const &it)
     {
 		return back(getOccurrences(it));
     }
 
     template <typename TText, typename TIndexSpec, typename TSpec>
-    inline typename SAValue<Index<TText, IndexEsa<TIndexSpec> > >::Type
+    SEQAN_HOST_DEVICE inline typename SAValue<Index<TText, IndexEsa<TIndexSpec> > >::Type
     _lastOccurrence(Iter<Index<TText, IndexEsa<TIndexSpec> >, VSTree<TSpec> > const &it)
     {
         if (_isSizeInval(value(it).range.i2))
@@ -3475,7 +3509,7 @@ Hit in sequence 0 at position 2
 
 	// is this a leaf? (hide empty $-edges)
 	template < typename TIndex, class TSpec, typename TDfsOrder >
-	inline bool _isLeaf(Iter<TIndex, VSTree<TSpec> > const &it, VSTreeIteratorTraits<TDfsOrder, True> const)
+	SEQAN_HOST_DEVICE inline bool _isLeaf(Iter<TIndex, VSTree<TSpec> > const &it, VSTreeIteratorTraits<TDfsOrder, True> const)
 	{
         typedef typename SAValue<TIndex>::Type  TOcc;
 
@@ -3493,7 +3527,7 @@ Hit in sequence 0 at position 2
 	}
 
 	template < typename TIndex, class TSpec >
-	inline bool isLeaf(Iter<TIndex, VSTree<TSpec> > const &it)
+	SEQAN_HOST_DEVICE inline bool isLeaf(Iter<TIndex, VSTree<TSpec> > const &it)
 	{
 		return _isLeaf(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree<TSpec> > >::Type());
 	}
@@ -3502,7 +3536,7 @@ Hit in sequence 0 at position 2
 	// (more or less) internal functions for accessing the childtab
 
 	template < typename TSize, typename TIndex >
-	inline bool _isNextl(TSize i, TIndex const &index) 
+	SEQAN_HOST_DEVICE inline bool _isNextl(TSize i, TIndex const &index)
 	{
 //IOREV _notio_
 		if (i >= length(index)) return false;
@@ -3511,7 +3545,7 @@ Hit in sequence 0 at position 2
 	}
 
 	template < typename TSize, typename TIndex >
-	inline bool _isUp(TSize i, TIndex const &index) 
+	SEQAN_HOST_DEVICE inline bool _isUp(TSize i, TIndex const &index) 
 	{
 //IOREV _notio_
 		if (i >= length(index)) return false;
@@ -3520,13 +3554,13 @@ Hit in sequence 0 at position 2
 	}
 
 	template < typename TSize, typename TIndex >
-	inline TSize _getNextl(TSize i, TIndex const &index) 
+	SEQAN_HOST_DEVICE inline TSize _getNextl(TSize i, TIndex const &index) 
 	{
 		return childAt(i, index);
 	}
 
 	template < typename TSize, typename TIndex >
-	inline TSize _getUp(TSize i, TIndex const &index) 
+	SEQAN_HOST_DEVICE inline TSize _getUp(TSize i, TIndex const &index) 
 	{
 		if (!_isSizeInval(i))
 			return childAt(i - 1, index);
@@ -3535,7 +3569,7 @@ Hit in sequence 0 at position 2
 	}
 
 	template < typename TSize, typename TIndex >
-	inline TSize _getDown(TSize i, TIndex const &index) 
+	SEQAN_HOST_DEVICE inline TSize _getDown(TSize i, TIndex const &index) 
 	{
 		return childAt(i, index);
 	}

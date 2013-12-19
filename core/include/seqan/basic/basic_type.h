@@ -41,6 +41,8 @@
 #ifndef SEQAN_BASIC_BASIC_TYPE_H_
 #define SEQAN_BASIC_BASIC_TYPE_H_
 
+#include <cstddef>
+
 namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -506,10 +508,10 @@ struct ConstParameter_<T const [I]>
  *
  * @section Remarks
  *
- * This metafunction is used to control the type of a member of a given object. It works analogously to @link Index#Fibre @endlink.
+ * This metafunction is used to control the type of a member of a given object. It works analogously to @link Fibre @endlink.
  * For instance, it is used to change the relationship between two objects from aggregation to composition and vice versa.
  *
- * @see Index#Fibre
+ * @see Fibre
  */
  
 template <typename TObject, typename TSpec>

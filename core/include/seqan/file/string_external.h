@@ -1959,7 +1959,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 /*!
  * @fn ExternalString#openTemp
- * @signature Open an ExternalString using an temporary file.
+ * @brief Open an ExternalString using an temporary file.
  *
  * @signature bool openTemp(str);
  *
@@ -2181,63 +2181,6 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		back(me) = Val_;
 	}
 
-//____________________________________________________________________________
-// stack interface
-
-    template < typename TValue, typename TConfig >
-    inline void
-    push(String<TValue, External<TConfig> > &me, TValue const &Val_)
-    {
-//IOREV
-		appendValue(me, Val_);
-    }
-
-    template < typename TValue, typename TConfig >
-    inline void
-    push_back(String<TValue, External<TConfig> > &me, TValue const &Val_)
-    {
-//IOREV _nodoc_
-		appendValue(me, Val_);
-    }
-
-    template < typename TValue, typename TConfig >
-	inline void pop_back(String<TValue, External<TConfig> > &me)
-    {
-//IOREV _nodoc_
-		resize(me, me.data_size - 1);
-	}
-
-    template < typename TValue, typename TConfig >
-	inline TValue &
-	front(String<TValue, External<TConfig> > &me)
-    {
-//IOREV
-		return me[0];
-	}
-
-    template < typename TValue, typename TConfig >
-	inline TValue const &
-	front(String<TValue, External<TConfig> > const &me)
-    {
-//IOREV
-		return me[0];
-	}
-
-    template < typename TValue, typename TConfig >
-	inline TValue &
-	back(String<TValue, External<TConfig> > &me)
-    {
-//IOREV
-		return me[me.data_size - 1];
-	}
-
-    template < typename TValue, typename TConfig >
-	inline TValue const &
-	back(String<TValue, External<TConfig> > const &me)
-    {
-//IOREV
-		return me[me.data_size - 1];
-	}
 //____________________________________________________________________________
 
 	template < typename TValue, typename TConfig, typename TSource, typename TExpand >

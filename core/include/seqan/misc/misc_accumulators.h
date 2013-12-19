@@ -355,7 +355,7 @@ push(Accumulator<TValue, Average> & acc, TValue2 value)
  * @fn AverageAccumulator#average
  * @brief Return the average of the included values.
  *
- * @signtature TResult average(acc);
+ * @signature TResult average(acc);
  *
  * @param[in] acc The Accumulator to compute the average for.
  *
@@ -392,7 +392,7 @@ average(Accumulator<TValue, Average> const & acc)
  * @fn AverageAccumulator#sum
  * @brief Return the sum of the included values.
  *
- * @signtature TResult sum(acc);
+ * @signature TResult sum(acc);
  *
  * @param[in] acc The Accumulator to compute the sum for.
  *
@@ -426,7 +426,7 @@ sum(Accumulator<TValue, Average> const & acc)
  * @fn AverageAccumulator#count
  * @brief Return the number of included values.
  *
- * @signtature TResult count(acc);
+ * @signature TResult count(acc);
  *
  * @param[in] count The number of values pushed to the accumulator.
  *

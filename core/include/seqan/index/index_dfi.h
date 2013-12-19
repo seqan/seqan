@@ -95,7 +95,8 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
  * @brief The Deferred Frequency Index (see Weese and Schulz, "Efficient string
  *        mining under constraints via the deferred frequency index").
  * 
- * @signature Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >
+ * @signature template <typename TText, typename TPredHull, typename TPred>
+ *            class Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >;
  * 
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
  * @tparam TPred An arbitrary frequency predicate

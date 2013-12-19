@@ -77,11 +77,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre @endlink of an @link IndexWotd @endlink.
+ * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
  * 
  * TODO(holtgrew): Ask David.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexWotd
  * 
@@ -160,13 +160,14 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient
  *        implementation of lazy suffix trees").
  * 
- * @signature Index<TText, IndexWotd<> >
+ * @signature template <typename TText>
+ *            class Index<TText, IndexWotd<> >;
  * 
  * @tparam TText The text type. Types: @link SequenceConcept @endlink
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
  * are a partially sorted suffix array (see @link WOTDIndexFibres#WotdSA
  * @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
  * 
@@ -894,7 +895,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).node = entry.node;
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
-			pop(it.history);
+			eraseBack(it.history);
 			return true;
 		}
 		return false;
@@ -913,7 +914,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
 			value(it).range = entry.range;
-			pop(it.history);
+			eraseBack(it.history);
 			if (!empty(it.history))
 				value(it).parentRight = back(it.history).range.i2;	// copy right boundary of parent's range
 			return true;

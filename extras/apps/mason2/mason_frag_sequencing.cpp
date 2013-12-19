@@ -63,8 +63,7 @@ parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const 
     seqan::ArgumentParser parser("mason_frag_sequencing");
     // Set short description, version, and date.
     setShortDescription(parser, "Fragment Sequencing Simulation");
-    setVersion(parser, "2.1");
-    setDate(parser, "March 2013");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.

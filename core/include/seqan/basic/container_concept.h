@@ -470,6 +470,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
 
 /*!
  * @concept SequenceConcept
+ * @brief Sequences are dense linear containers that have positions.
  * @extends RandomAccessContainerConcept
  * @headerfile <seqan/basic.h>
  *

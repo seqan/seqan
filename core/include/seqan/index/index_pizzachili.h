@@ -58,7 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN {
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        PizzaChiliIndex @endlink index.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see PizzaChiliIndex
  * 
@@ -109,7 +109,8 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
  * 
  * @brief An adapter for the Pizza &amp; Chili index API.
  * 
- * @signature Index<TText, PizzaChili<TSpec> >
+ * @signature template <typename TText, typename TSpec>
+ *            class Index<TText, PizzaChili<TSpec> >;
  * 
  * @tparam TSpec Tag specifying the Pizza &amp; Chili index library to use. Types:
  *               @link PizzaChiliIndexTags @endlink

@@ -203,13 +203,14 @@ public:
 
 /*!
  * @class AlignmentGraph
+ * @extends Graph
  * @headerfile <seqan/graph_align.h>
  * @brief Alignment graph type.
  *
  * <img src="alignmentGraph.png" tite="An alignment graph with 3 sequences." />
  *
  * @signature template <typename TStringSet[, typename TCargo[, typename TSpec]]>
- *            class Alignment;
+ *            class Graph<Alignment<TStringSet, TCargo, TSpec> >;
  *
  * @tparam TStringSet The type of the @link StringSet @endlink containing the sequence information.  <b>Must be a
  *                    @link DependentStringSet @endlink.</b>
@@ -1692,7 +1693,7 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*
+/*!
  * @fn AlignmentGraph#convertAlignment
  * @brief Converts an alignment graph into an alignment matrix.
  * 

@@ -75,25 +75,31 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @brief Define the type of an @link ArgParseArgument @endlink.
  *
  * @signature enum ArgParseArgument::ArgumentType;
+ *
+ * @section Examples
+ *
+ * In the following example, the types <tt>INPUTFILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
+ *
+ * @include demos/arg_parse/argument_parser.cpp
  */
 
 /*!
- * @var ArgParseArgument::ArgumentType ArgParseArgument::STRING
+ * @var ArgParseArgument::ArgumentType STRING
  * @brief Argument is a string.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER;
  * @brief Argument is a signed 32 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64;
  * @brief Argument is a signed 64 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
  * @brief Argument is an input file.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE
+ * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
  * @brief Argument is an output file.
  */
 
@@ -151,12 +157,14 @@ public:
     enum ArgumentType
     {
         // argument is
-        STRING,     // .. a string
-        INTEGER,    // .. an integer
-        INT64,      // .. a 64 bit integer
-        DOUBLE,     // .. a float
-        INPUTFILE,  // .. an inputfile (implicitly also a string)
-        OUTPUTFILE  // .. an outputfile (implicitly also a string)
+        STRING,      // .. a string
+        INTEGER,     // .. an integer
+        INT64,       // .. a 64 bit integer
+        DOUBLE,      // .. a float
+        INPUTFILE,   // .. an inputfile (implicitly also a string)
+        OUTPUTFILE,  // .. an outputfile (implicitly also a string)
+        INPUTPREFIX, // .. an inputprefix (implicitly also a string)
+        OUTPUTPREFIX // .. an outoutprefix (implicitly also a string)
     };
 
 
@@ -256,6 +264,14 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "outputfile";
         break;
 
+    case ArgParseArgument::INPUTPREFIX:
+        typeName = "inputprefix";
+        break;
+
+    case ArgParseArgument::OUTPUTPREFIX:
+        typeName = "outputprefix";
+        break;
+
     default:
         typeName = "unknown";
         break;
@@ -333,7 +349,9 @@ inline bool isStringArgument(ArgParseArgument const & me)
 {
     return (me._argumentType == ArgParseArgument::STRING) ||
            (me._argumentType == ArgParseArgument::INPUTFILE) ||
-           (me._argumentType == ArgParseArgument::OUTPUTFILE);
+           (me._argumentType == ArgParseArgument::OUTPUTFILE) ||
+           (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
+           (me._argumentType == ArgParseArgument::OUTPUTPREFIX) ;
 }
 
 // ----------------------------------------------------------------------------
@@ -425,7 +443,7 @@ inline bool isInt64Argument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is a double.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isDoubleArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ..returns:$true$ if the argument argument is a double argument.
@@ -445,7 +463,7 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 /*!
  * @fn ArgParseArgument#isInputFileArgument
  * @headerfile <seqan/arg_parse.h>
- * @brief Returns whether the argument is a input file integer.
+ * @brief Returns whether the argument is a input file.
  *
  * @signature bool isInputFileArgument(arg);
  *
@@ -459,7 +477,7 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is an input file.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isOutputFileArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ..returns:$true$ if the argument argument is an input file argument.
@@ -479,7 +497,7 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 /*!
  * @fn ArgParseArgument#isOutputFileArgument
  * @headerfile <seqan/arg_parse.h>
- * @brief Returns whether the argument is a output file integer.
+ * @brief Returns whether the argument is a output file.
  *
  * @signature bool isOutputFileArgument(arg);
  *
@@ -493,7 +511,7 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is an output file.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isOutputFileArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ...type:Class.ArgParseOption
@@ -507,6 +525,76 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
     return me._argumentType == ArgParseArgument::OUTPUTFILE;
 }
 
+// ----------------------------------------------------------------------------
+// Function isOutputPrefixArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isOutputPrefixArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is an output prefix.
+ *
+ * @signature bool isOutputPrefixArgument(arg);
+ *
+ * @param arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is an output prefix argument, <tt>false</tt> otherwise.
+ */
+
+/**
+ .Function.isOutputPrefixArgument
+ ..class:Class.ArgParseArgument
+ ..summary:Returns whether the argument is an output file.
+ ..cat:Miscellaneous
+ ..signature:isOutputPrefixArgument(argument)
+ ..param.argument:The @Class.ArgParseArgument@ object.
+ ...type:Class.ArgParseArgument
+ ...type:Class.ArgParseOption
+ ..returns:$true$ if the argument argument is an output file argument.
+ ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
+ ..include:seqan/arg_parse.h
+ */
+
+inline bool isOutputPrefixArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::OUTPUTPREFIX;
+}
+
+// ----------------------------------------------------------------------------
+// Function isOutputFileArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isInputPrefixArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is an input prefix argument.
+ *
+ * @signature bool isInputPrefixArgument(arg);
+ *
+ * @param arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is an input prefix argument, <tt>false</tt> otherwise.
+ */
+
+/**
+ .Function.isInputPrefixArgument
+ ..class:Class.ArgParseArgument
+ ..summary:Returns whether the argument is an output file.
+ ..cat:Miscellaneous
+ ..signature:isInputPrefixArgument(argument)
+ ..param.argument:The @Class.ArgParseArgument@ object.
+ ...type:Class.ArgParseArgument
+ ...type:Class.ArgParseOption
+ ..returns:$true$ if the argument argument is an input prefix argument.
+ ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
+ ..include:seqan/arg_parse.h
+ */
+
+inline bool isInputPrefixArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::INPUTPREFIX;
+}
+    
 // ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
@@ -548,6 +636,8 @@ inline std::string const getArgumentLabel(ArgParseArgument const & me)
         std::string baseLabel = "";
         if (isInputFileArgument(me) || isOutputFileArgument(me))
             baseLabel = "FILE";
+        else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
+            baseLabel = "PREFIX";
         else if (isStringArgument(me))
             baseLabel = "STR";
         else if (isIntegerArgument(me) || isDoubleArgument(me))
@@ -893,7 +983,8 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string va
 {
     typedef std::vector<std::string>::const_iterator TVectorIterator;
 
-    if (!empty(me.validValues))
+    // we only check valid values for files and string arguments, but not for prefix arguments
+    if (!empty(me.validValues) && !(isInputPrefixArgument(me) || isOutputPrefixArgument(me)))
     {
         bool isContained = false;
         for (TVectorIterator validValue = me.validValues.begin();

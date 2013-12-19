@@ -153,8 +153,8 @@ enum FileMappingAdvise {
  * @headerfile <seqan/file.h>
  * @brief A structure to memory-map a file.
  *
- * @signature template <typename TSpec>
- *            stuct FileMapping;
+ * @signature template <[typename TSpec]>
+ *            struct FileMapping;
  *
  * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
  *

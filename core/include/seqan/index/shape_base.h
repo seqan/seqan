@@ -81,7 +81,8 @@ Hit at position: 17
  * 
  * @brief Stores hash value and shape for an ungapped or gapped q-gram.
  * 
- * @signature Shape<TValue, TSpec>
+ * @signature template <typename TValue, typename TSpec>
+ *            class Shape;
  * 
  * @tparam TSpec The specializing type. Default: @link SimpleShape @endlink, for
  *               ungapped q-grams.
@@ -176,7 +177,8 @@ Hit at position: 17
  * 
  * @brief A variable length ungapped shape (also called q-gram or k-mer).
  * 
- * @signature Shape<TValue, SimpleShape>
+ * @signature template <typename TValue>
+ *            class Shape<TValue, SimpleShape>;
  * 
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
@@ -292,7 +294,8 @@ Hit at position: 17
  * 
  * @brief A fixed length ungapped shape (also called q-gram or k-mer).
  * 
- * @signature Shape<TValue, UngappedShape<q> >
+ * @signature template <typename TValue, unsigned Q>
+ *            class Shape<TValue, UngappedShape<Q> >;
  * 
  * @tparam q The length of the shape.
  * @tparam TValue The @link Value @endlink type of the sequence the shape is
@@ -317,7 +320,9 @@ Hit at position: 17
 		THashValue	XValue;		// Sum_{i=0..q-1} (x_i + 1)
 		TValue		leftChar;	// leftmost character
 //____________________________________________________________________________
-		Shape():
+
+        SEQAN_HOST_DEVICE
+        Shape():
 			hValue(0),
 			XValue(0),
             leftChar(0) {}
@@ -360,7 +365,8 @@ Hit at position: 17
 ///.Function.length.param.object.type:Class.Shape
 ///.Function.length.class:Class.Shape
 	template <typename TValue, typename TSpec>
-	inline typename Size< Shape<TValue, TSpec> >::Type
+	inline SEQAN_HOST_DEVICE
+	typename Size< Shape<TValue, TSpec> >::Type
 	length(Shape<TValue, TSpec> const &me)
 	{
 	SEQAN_CHECKPOINT
@@ -397,7 +403,8 @@ For gapped shapes this is the number of '1's.
  * @endlink function. For gapped shapes this is the number of '1's.
  */
 	template <typename TValue, typename TSpec>
-	inline typename Size< Shape<TValue, TSpec> >::Type
+	inline SEQAN_HOST_DEVICE
+    typename Size< Shape<TValue, TSpec> >::Type
 	weight(Shape<TValue, TSpec> const &me)
 	{
 	SEQAN_CHECKPOINT
@@ -544,13 +551,13 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 
 	// loop unrolling ...
 	template <typename THValue, typename TValue, typename TIter>
-	inline THValue
+	SEQAN_HOST_DEVICE inline THValue
 	_hashFixedShape(THValue hash, TIter &, TValue const, UngappedShape<1> const) {
 		return hash;
 	}
 
 	template <typename THValue, typename TValue, typename TIter, unsigned q>
-	inline THValue
+	SEQAN_HOST_DEVICE inline THValue
 	_hashFixedShape(THValue hash, TIter &it, TValue const, UngappedShape<q> const) {
 		++it;
 		return _hashFixedShape(
@@ -560,7 +567,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 
 	// ... for fixed ungapped shapes
 	template <typename TValue, unsigned q, typename TIter>
-	inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
+	SEQAN_HOST_DEVICE inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
 	{
 		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;

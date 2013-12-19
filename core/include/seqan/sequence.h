@@ -62,6 +62,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 
 // ----------------------------------------------------------------------------
 // Thrust prerequisites.
@@ -108,16 +109,11 @@
 #include <seqan/sequence/sequence_shortcuts.h>
 
 // ===========================================================================
-// StringSets.
+// Lightweight Containers.
 // ===========================================================================
 
-#include <seqan/sequence/iter_concat_virtual.h>
-#include <seqan/sequence/sequence_concatenator.h>
-#include <seqan/sequence/string_set_base.h>
-#include <seqan/sequence/string_set_concat_direct.h>
-#include <seqan/sequence/string_set_dependent_tight.h>
-#include <seqan/sequence/string_set_dependent_generous.h>
-#include <seqan/sequence/string_set_owner.h>
+#include <seqan/sequence/iterator_range.h>
+#include <seqan/sequence/container_view.h>
 
 // ===========================================================================
 // Adaptions.
@@ -127,6 +123,25 @@
 #include <seqan/sequence/adapt_std_string.h>
 #include <seqan/sequence/adapt_std_vector.h>
 #include <seqan/sequence/adapt_array_pointer.h>
+#ifdef PLATFORM_CUDA
+#include <seqan/sequence/adapt_thrust_vector.h>
+#endif
+
+// ===========================================================================
+// StringSets.
+// ===========================================================================
+
+#include <seqan/sequence/iter_concat_virtual.h>
+#include <seqan/sequence/sequence_concatenator.h>
+#include <seqan/sequence/string_set_base.h>
+#include <seqan/sequence/string_set_concat_direct.h>
+#include <seqan/sequence/string_set_concat_direct_view.h>
+#ifdef PLATFORM_CUDA
+#include <seqan/sequence/string_set_concat_direct_device.h>
+#endif
+#include <seqan/sequence/string_set_dependent_tight.h>
+#include <seqan/sequence/string_set_dependent_generous.h>
+#include <seqan/sequence/string_set_owner.h>
 
 // ===========================================================================
 // Utilities.

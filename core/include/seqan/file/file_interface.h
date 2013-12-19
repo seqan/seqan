@@ -99,7 +99,7 @@ namespace seqan {
  * @brief Represents a file.
  *
  * @signature template <[typename TSpec]>
- *            class File;
+ *            class File<TSpec>;
  *
  * @tparam TSpec Specializing type.  Default: <tt>Async&lt;&gt;</tt>.
  */
@@ -259,6 +259,35 @@ if (openMode & OPEN_MASK == OPEN_READ)
 //IOREV _stub_ this seems not to be implemented at all, most functions are commented
         typedef AsyncDummyRequest Type;
     };
+
+
+// ============================================================================
+// Exceptions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Exception IOError
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class IOError
+ * @headerfile <seqan/basic.h>
+ * @brief Input/Output error exception.
+ *
+ * @signature typedef std::ios_base::failure IOError;
+ *
+ *
+ * @fn IOError::IOError
+ * @brief Constructor
+ *
+ * @signature IOError::IOError(msg, errorCode);
+ *
+ * @param[in] msg       Message as <tt>std::string</tt>.
+ * @param[in] errorCode The error code as an <tt>int</tt>.
+ */
+
+typedef std::ios_base::failure  IOError;
+
 }  // namespace seqan;
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_

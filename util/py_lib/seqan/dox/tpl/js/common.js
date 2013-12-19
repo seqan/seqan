@@ -4,12 +4,6 @@
 (function ($) {
 
 	$(document).ready(function () {
-	
-	    // only keep top-level nav items
-	    // exceptions: examples and mainpage
-	    $('html:not(.page_mainpage) #toc ol ol').filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; }).remove();
-		$('html.page_languageentities #toc ol ol').remove();
-
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
@@ -20,14 +14,89 @@
             id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
         });
         
+        // shows 'open in frameset' link if opened separately
+		if(window == window.parent && window.name != 'list') {
+        	$('#content').prepend('<div class="open-in-frame alert alert-info"><a href="index.html?p=' + $('html').attr('data-page') + window.location.hash + '"><strong>Looking for a different entry?</strong> Unhide the navigation bar and start your search.</a></div>'); 
+        }
+        
+        // if loaded in a frame, checks the URI's p parameter and uses it to load the
+        // specified page in the right frame
+        // (e.g. docs.seqan.de/index.html?p=String#Example will open the example section of the class String in the main frame) 
+        if(window != window.parent && window.name == 'list') {
+        	try {
+        		var redirectTo = null;
+        		var hash = $.urlHash(window.parent.location);
+        		if($.urlParam('p', window.parent.location)) {
+        			var p = $.urlParam('p', window.parent.location).split('/')[0];        			
+        			if(window.lookup.hasOwnProperty(p)) {
+        				redirectTo = window.lookup[p] + '.html' + hash;
+        			} else {
+        				$(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
+        				// TODO: start search using search form for p
+        			}
+        		} else {
+        			if(hash.length > 1) {
+        				redirectTo = hash.substr(1) + '.html';
+        			}
+        		}
+        		
+        		if(redirectTo) {
+        			window.parent['main'].location = redirectTo;
+        		}
+    		} catch(e) {
+    		    // some browsers like Chrome don't allow this cross-frame access if using file://
+    		}
+        }
+        
+        // adds a close link to the search/list frame
+		if(window != window.parent && window.name == 'list') {
+			try {
+        		$('<button class="close" style="position: absolute; top: 5px; right: 5px; line-height: .7em;">&times;</button>').prependTo('body').click(function() {
+        			window.parent.location = window.parent['main'].location;
+        		});
+    		} catch(e) {
+    		    // some browsers like Chrome don't allow this cross-frame access if using file://
+    		}
+        }
+ 
         // tooltips
         $('[title]:not([href])').tooltip({ container: 'body' });
 
         // smooth scrolling
-        $('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
-
+        //$('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
+        
+        // autofocus search field
+        if($('html').hasClass('list')) {
+        	window.setTimeout(function() {
+        		$('input[type=search]').focus();
+        	}, 50);
+		}
+		
     });
 
+})(jQuery);
+
+/**
+ * Get URL parameter functionality
+ */
+(function ($) {
+	$.extend({
+		urlParam: function(name, location) {
+			if(!location) location = window.location;
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+		},
+		urlHash: function(location) {
+			if(!location) location = window.location + '';
+			else location += '';
+			
+			var index = location.indexOf('#');
+            if(index >= 0) {
+            	return location.substr(index);
+            } else {
+            	return '';
+            }
+		}
+	});
 })(jQuery);
 
 /**
@@ -76,6 +145,7 @@
 					$this.pimpLangEntityLabel(langEntity);				
 				});
 			}).each(function() {
+			/*
 			    $(this).find('[data-lang-entity-container]').each(function () {
     			    // only use one headline level
     			    var headlineHandled = false;
@@ -96,6 +166,7 @@
         			    }
     			    }
     			 });
+    			 */
 			});
 		}
 	});
@@ -196,6 +267,255 @@
 
 
 /**
+ * Permalink Modal
+ */
+(function ($) {
+    $.fn.extend({
+		permalinkModal: function(options) {
+		
+			var settings = $.extend({
+				modalId: 'permalinkModal',
+				modalTemplate: '<div class="modal fade" id="permalinkModal" tabindex="-1" role="dialog" aria-hidden="true">\
+									<div class="modal-dialog">\
+										<div class="modal-content">\
+											<div class="modal-header">\
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\
+												<h4 class="modal-title">Permalink</h4>\
+											</div>\
+											<div class="modal-body">\
+												<p>The permalinks for <strong></strong> are:</p>\
+												<table>\
+													<tr><th>Frame-based</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+													<tr><th>Frame-less</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+													<tr><th>Dox</th><td></td><td><button type="button" class="btn btn-xs btn-primary" data-link="true">Copy</button></td></tr>\
+												</table>\
+											</div>\
+											<div class="modal-footer">\
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
+											</div>\
+										</div>\
+									</div>\
+								</div>',
+				elementSelector: '.modal-body strong',
+				linkSelectors: ['.modal-body tr:nth-child(1) td:nth-child(2)', '.modal-body tr:nth-child(2) td:nth-child(2)', '.modal-body tr:nth-child(3) td:nth-child(2)'],
+				element: 'myElement',
+				links: ['#', '#', '#']
+			}, options);
+					
+			function createModal(parent) {
+				if($('#' + settings.modalId).length == 0) {
+					var $modal = $(settings.modalTemplate)
+						.attr('id', settings.modalId)
+						.attr('aria-labelledby', settings.modalId + 'Label');
+					$modal
+						.find('h4')
+						.first()
+						.attr('id', settings.modalId + 'Label');
+					$modal.appendTo(parent);
+					
+					$modal.find('[data-link]').each(function() {
+						var clip = new ZeroClipboard(this, {
+							moviePath: "lib/ZeroClipboard/ZeroClipboard.swf"
+						});
+					
+						clip.on("load", function(client) {
+							client.on( "complete", function(client, args) {
+								$modal.modal('hide');
+							});
+						});
+					});
+				}
+			}
+			
+			function changeElement(element) {
+				$('#' + settings.modalId + ' ' + settings.elementSelector).html(element);
+			}
+			
+			function changeLinks(links) {
+				for(var i=0; i<settings.linkSelectors.length; i++) {
+					var html = (links[i].substring(0,1) != '@')
+						? '<a href="' + links[i] + '" target="_blank">' + links[i] + '</a>'
+						: links[i];
+					$('#' + settings.modalId + ' ' + settings.linkSelectors[i]).html(html);
+					$($('#' + settings.modalId + ' [data-link]')[i]).attr('data-clipboard-text', links[i]);
+				}			
+			}
+		
+			return this.each(function() {
+				createModal(this);
+				changeElement(settings.element);
+				changeLinks(settings.links);
+				$('#' + settings.modalId).modal({});
+			});
+			
+		}
+	});
+
+    $(document).ready(function () {
+    	if($('html').hasClass('list')) return;
+    	
+    	function handleClick() {
+    		var href = window.location.href;
+			var fragmentName = $(this).attr('id') || $(this).attr('name') || null;
+			var fragment = fragmentName ? '#' + encodeURIComponent(fragmentName) : '';
+			$('body').permalinkModal({
+				element: fragmentName ? 'fragment ' + fragmentName : 'this page',
+				links: [
+					href.substring(0, href.lastIndexOf('/')+1) + '?p=' + $('html').data('page') + fragment,
+					href.split('#')[0] + fragment,
+					'@link ' + $('html').data('page') + fragment + ' @endlink'
+				]
+			});
+    	}
+    	
+		function permalinks(activate) {
+			if(activate) {				
+				$('h1,[id],[name]')
+					.filter(function() {
+						if($.inArray($(this).attr('id'), ['content', 'toc', 'filecontents', 'devModeWindow']) != -1) return false;
+						if($(this).hasClass('global-zeroclipboard-container')) return false;
+						if($(this).hasClass('modal')) return false;
+						if($(this).parents('.modal').length > 0) return false;
+						return true; })
+					.addClass('permalink')
+					.bind('click', handleClick);
+				permalinksVisible = true;
+			} else {
+				$('.permalink').unbind('click', handleClick);
+				$('.permalink').removeClass('permalink');
+				permalinksVisible = false;
+			}
+		}
+		
+		permalinks($.devMode());
+		$(document).bind('devMode', function(e) {
+			permalinks(e.active);
+		});
+    });
+
+})(jQuery);
+
+
+
+
+/**
+ * Developer Mode
+ * Activated / deactivated by pressing Ctrl + Shift at the same time
+ */
+(function ($) {
+	if($('html').hasClass('list')) return;
+	
+    $.extend({
+		devMode: function() {
+			var args = Array.prototype.slice.call(arguments);
+			if(args.length == 1) {
+				var active = args[0] ? true : false;
+				localStorage.setItem('devMode', active ? 'true' : 'false');
+				$.event.trigger({
+					type: 'devMode',
+					active: active,
+					time: new Date()
+				});
+				console.log('developer mode: ' + (active ? 'on' : 'off'));
+				if(active && $('#devModeWindow').length == 0) {
+					$('<div id="devModeWindow"><strong>Developer Mode is active</strong>\
+					   <br>Press <code>Ctrl + Shift</code> to deactivate<br></div>')
+					   	.append($('<a href="#">Show dox sources</a>').click(function() { $('#doxSources').modal({}).find('.modal-dialog').css('width', '90%'); }))
+						.appendTo('body');
+				} else {
+					$('#devModeWindow').remove();
+				}
+			} else {
+				return localStorage.getItem('devMode') == 'true' ? true : false;
+			}
+		}
+	});
+	
+	$(document).ready(function () {
+		// trigger devMode event at load
+		$.devMode($.devMode());
+	});
+	
+	var lastKeys = 0; // last time ctrl + shift was fired - used to detect double fired events (experienced on linux)
+	var lastKeysWindow = 500; // time frame within no further key combination is considered
+	$(document).bind('keyup keydown', function(e) {
+		if(e.ctrlKey && e.shiftKey && lastKeys + lastKeysWindow < new Date().getTime()) {
+			lastKeys = new Date().getTime();
+			
+			if($.devMode()) $.devMode(false);
+			else $.devMode(true);
+		}
+	});
+})(jQuery);
+		
+
+
+
+
+
+/**
+ * Code Collapse
+ */
+(function ($) {
+    $.fn.extend({
+		codeCollapse: function(options) {
+		
+			var settings = $.extend({
+				maxHeight: 200,
+				moreLink: '<a class="more">More ...</a>',
+				lessLink: '<a class="less">Less ...</a>',
+				tolerance: 50 // number of pixels a container's height may exceed before it becomes collapsed
+			}, options);
+			
+			function createMoreLink(box) {
+				var $box = $(box);
+				
+				$box.height('auto');
+				var expandedHeight = $box.outerHeight();
+				if(expandedHeight <= settings.maxHeight + settings.tolerance) return;
+				
+				//var srcPath = $box.parents('[data-src-path]').data('src-path');
+				//console.log(srcPath, $('[data-src-path="' + srcPath + '.stdout"]').length);
+				
+				$box.height(settings.maxHeight).css({ overflow: 'hidden' });
+				return $(settings.moreLink).click(function() {
+					var $link = $(this);
+					$box.animate({'height': expandedHeight }, 400);
+					$link.fadeOut(400, function() { $link.replaceWith(createLessLink(box)); });
+				});
+			}
+			
+			function createLessLink(box) {
+				var $box = $(box);
+				
+				return $(settings.lessLink).click(function() {
+					var $link = $(this);
+					$box.animate({'height': settings.maxHeight }, 400);
+					$link.fadeOut(400, function() { $link.replaceWith(createMoreLink(box)); });
+				});
+			}
+		
+			return this.each(function() {
+				$(createMoreLink(this)).insertAfter(this);
+			});
+		}
+	});
+
+    $(document).ready(function () {
+        $('[data-src-path] pre, pre[data-src-path]').codeCollapse({
+        	maxHeight: 77,
+        	moreLink: '<a class="more">...</a>',
+        	lessLink: '<a class="less">&nbsp;</a>'
+        });
+    });
+
+})(jQuery);
+
+
+
+
+
+/**
  * Search Bar
  */
 (function ($) {
@@ -272,21 +592,17 @@
             highlightEveryTerm: true,
             output: $("#results"),
             data: window.searchData,
-            stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
+            stopWords: [], // filtered out of query
             replaceWords: [ // words replaced in the query
-                ["test_A", "test_B"]
+                []
             ],
             stemWords: [ // silently adds the stem if the corresponding word was found in the query
                 ["javascript", "script"]
             ],
-            langEntityGroups: [
+            langEntityGroups: [ // TODO create from window[langEntities] (try console.log(window[langEntities])
                 ["grouped_typedef", "typedef"],
                 ["global_typedef", "typedef"],
                 ["member_typedef", "typedef"],
-                ["interface_meta_function", "meta_function"],
-                ["global_function", "function"],
-                ["interface_function", "function"],
-                ["member_function", "function"],
                 ["grouped_tag", "tag"],
                 ["global_variable", "variable"],
                 ["local_variable", "variable"],

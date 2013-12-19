@@ -386,8 +386,7 @@ parseCommandLine(MasonSplicingOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("mason_splicing");
     // Set short description, version, and date.
     setShortDescription(parser, "Generating Transcripts");
-    setVersion(parser, "2.0");
-    setDate(parser, "July 2012");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.
