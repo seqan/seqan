@@ -350,13 +350,12 @@ inline void appendValue(StringSet<THost, Segment<TSpec> > & /* me */,
 template <typename THost, typename TSpec, typename TPos, typename TInfixPos, typename TSize>
 inline void
 assignInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
-                      TPos pos, TInfixPos infixPos, TSize length)
+                      TPos pos, TInfixPos infixPos, TSize len)
 {
     SEQAN_ASSERT_LT(pos, length(me));
     assignValue(me.positions, pos, infixPos);
-//    if (me.limits[pos] - me.limits[pos - 1] != length) me.limitsValid = false;
     me.limitsValid = false;
-    assignValue(me.limits, pos, me.limits[pos - 1] + length);
+    assignValue(me.limits, pos + 1, me.limits[pos] + len);
 }
 
 // --------------------------------------------------------------------------
