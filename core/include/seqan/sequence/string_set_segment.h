@@ -246,6 +246,17 @@ struct Infix<StringSet<THost, Segment<TSpec> > const >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function _refreshStringSetLimits()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+void _refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
+{
+    std::partial_sum(begin(me.limits, Standard()), end(me.limits, Standard()), begin(me.limits, Standard()));
+    me.limitsValid = true;
+}
+
+// ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
 
