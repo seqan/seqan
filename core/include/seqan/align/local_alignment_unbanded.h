@@ -69,9 +69,10 @@ namespace seqan {
  * @signature TScoreVal localAlignment(fragmentString, scoringScheme, [lowerDiag, upperDiag]);
  * 
  * @param lowerDiag Optional lower diagonal (<tt>int</tt>).
- * @param lowerDiag Optional upper diagonal (<tt>int</tt>).
+ * @param upperDiag Optional upper diagonal (<tt>int</tt>).
  *
- * @param gapsH Horizontal gapped sequence in alignment matrix. Types: Gaps
+ * @param gapsH Horizontal gapped sequence in alignment matrix. Types: @link Gaps @endlink 
+ * @param gapsV Vertical gapped sequence in alignment matrix. Types: @link Gaps @endlink 
  * @param align An @link Align @endlink object that stores the alignment. The
  *              number of rows must be 2 and the sequences must have already
  *              been set. <tt>align[0]</tt> is the horizontal one in the
@@ -80,13 +81,11 @@ namespace seqan {
  * @param fragmentString String of @link Fragment @endlink objects. The sequence
  *                       with id <tt>0</tt> is the horizontal one, the sequence
  *                       with id <tt>1</tt> is the vertical one.
- * @param gapsV Vertical gapped sequence in alignment matrix. Types: Gaps
- * @param scoringScheme The scoring scheme to use for the alignment. Note that
- *                      the user is responsible for ensuring that the scoring
- *                      scheme is compatible with <tt>algorithmTag</tt>. Types:
+ * @param scoringScheme The scoring scheme to use for the alignment. Types:
  *                      Score
  * 
- * @return TScoreVal The score value of the alignmetn.
+ * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value&lt;TScore&gt;::Type</tt> where
+ *                   <tt>TScore</tt> is the type of <tt>scoringScheme</tt>.
  * 
  * @section Remarks
  * 
