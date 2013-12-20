@@ -56,14 +56,15 @@ namespace seqan {
  *
  * @signature template <typename TString>
  *            class StringSet<TString, Owner<JournaledSet> >;
+ * @tparam TString The string type. Types: @link String @endlink, @link JournaledString @endlink
  *
- * @brief A StringSet storing the strings as members.  It can store a global reference sequence to which all members can
+ * @brief A @link StringSet @endlink storing the strings as members.  It can store a global reference sequence to which all members can
  * be journaled if they are of type @link JournaledString @endlink.
  *
  * @section Remarks
  * 
  * The strings are internally stored in a <tt>String&lt;TString&gt;</tt> object and the character position type is a @link
- * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the stringset and seqOfs identifies
+ * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the string set and seqOfs identifies
  * the position within this string.
  * 
  * The global reference is of type <tt>Host&lt;TString&gt;</tt>. Only strings of type @link JournaledString @endlink or
@@ -155,7 +156,9 @@ typedef Tag<JournaledCompact_> JournaledCompact;
 // ----------------------------------------------------------------------------
 
 /*!
- * @class GlobalAlign
+ * @class GlobalAlign 
+ * @extends JoinConfig
+ *
  * @headerfile <seqan/journaled_set.h>
  * @brief Selects a global alignment method to join a @link JournaledString @endlink to a global reference sequence.
  *
@@ -195,6 +198,8 @@ struct GlobalAlign{};
 
 /*!
  * @class GlobalChain
+ * @extends JoinConfig
+ *
  * @headerfile <seqan/journaled_set.h>
  * @brief Selects an anchor-based method to join a @link JournaledString @endlink to a global reference sequence.
  *
@@ -240,7 +245,7 @@ struct GlobalChain{};
  * @signature template <[typename TMethod]>
  *            struct JoinConfig;
  *
- * @tparam TMethod The method type.
+ * @tparam TMethod The method type. Types: @link GlobalAlign @endlink, @link GlobalChain @endlink
  *
  * @section Remarks
  *

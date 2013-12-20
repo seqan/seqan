@@ -59,9 +59,10 @@ namespace seqan {
  * @headerfile <seqan/sequence_journaled.h>
  * @brief Journaled versions of arbitrary underlying strings.
  *
- * @signature <typename THostSpec[, typename TJournalSpec[, typename TBufferSpec]]>
- *            class String<Journaled<THostSpec, TJournalSpec, TBufferSpec> >;
+ * @signature template <typename TValue, typename THostSpec[, typename TJournalSpec[, typename TBufferSpec]]>
+ *            class String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >;
  *
+ * @tparam TValue       The element type of the string.
  * @tparam THostSpec    Specialization type for the host string.
  * @tparam TJournalSpec Specialization type for the journal.  Default: <tt>SortedArray</tt>.
  * @tparam TBufferSpec  Specialization type for the buffer string.  Default: <tt>Alloc&lt;&gt;</tt>.
@@ -973,7 +974,7 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  * @fn JournaledString#hostToVirtualPosition
  * @brief Translates host position to virtual position.
  *
- * @signature TPos virtualToHostPosition(js, pos);
+ * @signature TPos hostToVirtualPosition(js, pos);
  *
  * @param js  The JournaledString to translate the position for.
  * @param pos The host position to translate.
@@ -1145,6 +1146,16 @@ getObjectId(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 // --------------------------------------------------------------------------
 // Function isFlat()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledString#isFlat
+ * @brief Returns whether a JournaledString has modifications.
+ * @signature bool isFlat(js);
+ *
+ * @param js The JournaledString to query.
+ *
+ * @return bool Indicates whether the string has been modified.
+ */
 
 /**
 .Function.Journaled String#isFlat
