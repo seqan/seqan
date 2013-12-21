@@ -121,29 +121,14 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 
 /*!
  * @fn PriorityType#empty
- * @brief Returns true if there are no elements in the PriorityType and
- * false otherwise.
- *
- * @signature bool empty(priority);
- *
- * @param priority PriorityType to check.
- *
- * @retrun bool Returns true if there are no elements in the PriorityType and
- *              false otherwise.
- 
- */
-// true if priority queue is empty 
-
-/*!
- * @fn PriorityType#empty
  * @headerfile <seqan/misc/priority_type_heap.h>
  * @brief Query priority queue for beging empty.
  *
  * @signature bool empty(pq);
  *
- * @param[in] pq The PriorityType to query.
+ * @param[in] pq The @link PriorityType @endlink to query.
  *
- * @return bool <tt>true</tt> if the queue is empty.
+ * @return bool <tt>true</tt> if <tt>pq</tt> queue is empty.
  */
 
 ///.Function.empty.param.object.type:Class.PriorityType
