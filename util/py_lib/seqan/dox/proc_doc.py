@@ -127,9 +127,11 @@ class ProcDoc(object):
                 'old_name': old.name,
                 'old_file' : x.location[0],
                 'old_line' : x.location[1]}
-            raise DocumentationBuildException(token=x.raw_entry.name.tokens[0], msg=tpl % vals)
-        self.entries[name] = x
-        x.doc = self
+            self.doc_processor.msg_printer.printTokenError(x.raw_entry.name.tokens[0],
+                                                           tpl % vals, 'error')
+        else:
+          self.entries[name] = x
+          x.doc = self
 
     def runTextVisitor(self, v):
         """Run visitor v on all Text members of all entries and sub entries.
