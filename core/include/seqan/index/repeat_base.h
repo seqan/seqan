@@ -74,7 +74,7 @@ namespace seqan {
  * @brief Store information about a repeat.
  * 
  * @signature template <typename TPos, typename TPeriod>
- *            Repeat<TPos, TPeriod>;
+ *            struct Repeat<TPos, TPeriod>;
  * 
  * @tparam TPeriod Type to use for storing the repeat period. Default: 1
  * @tparam TPos Type to use for storing positions.
