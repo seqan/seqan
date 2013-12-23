@@ -320,6 +320,7 @@ class IntervalTreeNode;
 
 /*!
  * @class StoreIntervalsIntervalTreeNode
+ * @extends IntervalTreeNode
  * @headerfile <seqan/misc/misc_interval_tree.h>
  * @brief An IntervalTreeNode that stores intervals explicitely in each node.
  *
@@ -327,6 +328,17 @@ class IntervalTreeNode;
  *            class IntervalTreeNode<TInterval, StoreIntervals>;
  *
  * @tparam TInterval The Interval type to use.
+ */
+
+/*!
+ * @var TValue StoreIntervalsIntervalTreeNode::center;
+ * @brief Center of the interval tree node.
+ *
+ * @var TString StoreIntervalsIntervalTreeNode::list1;
+ * @brief @link AllocString @endlink of intervals sorted by begin point.
+ *
+ * @var String StoreIntervalsIntervalTreeNode::list;
+ * @brief @link AllocString @endlink of intervals sorted by end point.
  */
 
 /**
@@ -353,6 +365,7 @@ public:
 
 /*!
  * @class StorePointsOnlyIntervalTreeNode
+ * @extends IntervalTreeNode
  * @headerfile <seqan/misc/misc_interval_tree.h>
  * @brief An IntervalTreeNode that stores only the relevant points in each node.
  *
@@ -364,6 +377,17 @@ public:
  *
  * @tparam TInterval The Interval type to use.
  */
+
+/*!
+ * @var TValue StorePointsOnlyIntervalTreeNode::center;
+ * @brief Center of the interval.
+ *
+ * @var TString StorePointsOnlyIntervalTreeNode::list1;
+ * @brief Points with cargo sorted by the begin points.
+ *
+ * @var TString StorePointsOnlyIntervalTreeNode::list2;
+ * @brief Points with cargo sorted by the end points.
+ */ 
 
 /**
 .Spec.Points Only Tree Node
