@@ -290,7 +290,7 @@ private:
  *
  * This function can be used to test for functions returning bools, e.g. less operators.
  *
- * @see SEQAN_CONCEPT_USAGE
+ * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
 /**
