@@ -53,6 +53,11 @@ namespace seqan {
  * @headerfile <seqan/file.h>
  * @brief Flags to determine the mapping mode of mapFileSegment.
  *
+ * @signature enum FileMappingMode;
+ *
+ * The mapping mode must be compatible to the open mode of a @link FileMapping @endlink, e.g. <tt>MAP_RDWR</tt> is not
+ * allowed if the file mapping was opened with <tt>OPEN_RDONLY</tt>.
+ *
  * @var FileMappingMode MAP_RDONLY = 1;
  * @brief Map the segment in read-only mode.
  *
@@ -64,11 +69,6 @@ namespace seqan {
  *
  * @var FileMappingMode MAP_COPYONWRITE = 4;
  * @brief Write accesses are not written back to file and not shared among different mappings.
- *
- * @section Remarks
- *
- * The mapping mode must be compatible to the open mode of a @link FileMapping @endlink, e.g. <tt>MAP_RDWR</tt> is not
- * allowed if the file mapping was opened with <tt>OPEN_RDONLY</tt>.
  */
 
 /**
@@ -96,6 +96,8 @@ enum FileMappingMode {
  * @enum FileMappingAdvise
  * @headerfile <seqan/file.h>
  * @brief Enum with MMAP advise values.
+ *
+ * @signature enum FileMappingAdvise;
  *
  * @var FileMappingAdvise MAP_NORMAL;
  * @brief There is no advise on the given address range.
