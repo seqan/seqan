@@ -129,25 +129,20 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 */
 /*!
  * @fn createSuffixArray
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief Creates a suffix array from a given text.
  * 
- * @signature void createSuffixArray(suffixArray, text[, algo_tag]);
+ * @signature void createSuffixArray(suffixArray, text[, algoTag]);
  * 
- * @param text A given text. Types: @link SequenceConcept @endlink
- * @param algo_tag A tag that identifies the algorithm which is used for
- *                 creation.
- * @param suffixArray The resulting suffix array.
+ * @param[out] suffix  Array The resulting suffix array.
+ * @param[in]  text    A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  algoTag A tag that identifies the algorithm which is used for creation.
  *
- * @section Remarks
- * 
- * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link Index#indexRequire @endlink. The size of <tt>suffixArray</tt>
+ * This function should not be called directly.  Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink.  The size of <tt>suffixArray</tt>
  * must be at least <tt>length(text)</tt> before calling this function.
  * 
- * @link DemoSuffixArray @endlink
+ * @see DemoSuffixArray
  */
     template < typename TSA,
                typename TText,
@@ -313,23 +308,18 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
 */
 /*!
  * @fn createLcpTable
+ * @headerfile <seqan/index.h>
+ * @brief Creates a LCP table from a given text and suffix array.
  * 
- * @headerfile seqan/index.h
+ * @signature void createLcpTable(lcp, text, suffixArray[, algoTag]);
  * 
- * @brief Creates a lcp table from a given text and suffix array.
+ * @param[out] lcp         The resulting lcp table.
+ * @param[in]  text        A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  suffixArray The suffix array of <tt>text</tt>.
+ * @param[in]  algoTag     A tag that identifies the algorithm which is used for creation.
  * 
- * @signature void createLcpTable(lcp, text, suffixArray[, algo_tag]);
- * 
- * @param text A given text. Types: @link SequenceConcept @endlink
- * @param algo_tag A tag that identifies the algorithm which is used for
- *                 creation.
- * @param suffixArray The suffix array of <tt>text</tt>.
- * @param lcp The resulting lcp table.
- * 
- * @section Remarks
- * 
- * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link Index#indexRequire @endlink. The size of <tt>lcp</tt> must be at
+ * This function should not be called directly.  Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink.  The size of <tt>lcp</tt> must be at
  * least <tt>length(text)</tt> before calling this function.
  */
 
@@ -532,23 +522,18 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 */
 /*!
  * @fn createBWTable
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
  * 
- * @signature void createBWTable(bwt, text, suffixArray[, algo_tag]);
+ * @signature void createBWTable(bwt, text, suffixArray[, algoTag]);
  * 
- * @param bwt The resulting Burrows-Wheeler table.
- * @param algo_tag A tag that identifies the algorithm which is used for
- *                 creation.
- * @param suffixArray The suffix array of <tt>text</tt>.
- * @param text A given text. Types: @link SequenceConcept @endlink
+ * @param[out] bwt     The resulting Burrows-Wheeler table.
+ * @param[in]  suffix  Array The suffix array of <tt>text</tt>.
+ * @param[in]  text    A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  algoTag A tag that identifies the algorithm which is used for creation.
  *
- * @section Remarks
- * 
- * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link Index#indexRequire @endlink. The size of <tt>bwt</tt> must be at
+ * This function should not be called directly.  Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink.  The size of <tt>bwt</tt> must be at
  * least <tt>length(text)</tt> before calling this function.
  */
 	// default
@@ -606,22 +591,18 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 */
 /*!
  * @fn orderOccurrences
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief Sorts a string of occurrences.
  * 
  * @signature void orderOccurrences(occString);
  * 
- * @param occString String of occurrences.
+ * @param[in,out] occString String of occurrences.
  *
- * @section Remarks
- * 
  * The occurrences are sorted by increasing positions.
  * 
- * @link DemoMummy @endlink
- * @link DemoSupermaximalRepeats @endlink
- * @link DemoMaximalUniqueMatches @endlink
+ * @see DemoMummy
+ * @see DemoSupermaximalRepeats
+ * @see DemoMaximalUniqueMatches
  * 
  * @see VSTreeIterator#getOccurrences
  * @see IndexQGram#getOccurrences
