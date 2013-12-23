@@ -108,7 +108,7 @@ struct AlignTextBanded; // search query in a parallelogram
 
 /*!
  * @typedef MyersUkkonen
- * 
+ * @headerfile <seqan/find.h>
  * @brief Semi-global (query-global, text-local) pattern matching without
  *        findBegin() support.
  * 
@@ -134,7 +134,7 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
 
 /*!
  * @typedef MyersUkkonenGlobal
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
@@ -157,7 +157,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-local) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
@@ -179,7 +179,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenGlobalBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
