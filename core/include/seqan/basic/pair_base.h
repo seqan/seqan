@@ -51,7 +51,7 @@ namespace seqan {
 
 /*!
  * @class Pair
- * @extends ComparableConcept
+ * @implements ComparableConcept
  * @headerfile <seqan/basic.h>
  * @brief Store two arbitrary objects.
  *
