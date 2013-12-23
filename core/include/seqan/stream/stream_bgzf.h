@@ -783,6 +783,8 @@ attachToFile(Stream<Bgzf> & stream, int fileHandle, int mode)
  * @param[in]     fileName The path to the file to open.  Type: <tt>char const *</tt>.
  * @param[in]     mode     The mode for opening.
  *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
  * @section Remarks
  *
  * You can append <tt>0-9</tt> or <tt>u</tt> or <tt>w</tt> in <tt>mode</tt>. for setting the compression level to 0-9 or
