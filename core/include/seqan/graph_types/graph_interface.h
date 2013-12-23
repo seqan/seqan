@@ -33,6 +33,8 @@
 #ifndef SEQAN_HEADER_GRAPH_INTERFACE_H
 #define SEQAN_HEADER_GRAPH_INTERFACE_H
 
+// TODO(holtgrew): The documentation needs some improvements, possibly together with a refactoring of the module.
+
 namespace SEQAN_NAMESPACE_MAIN
 {
 
@@ -396,7 +398,9 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  *
  * @signature bool empty(g);
  *
- * @param[in] g true if g is empty and valse if not.
+ * @param[in] g The Graph to query.
+ *
+ * @return bool <tt>true</tt> if g is empty and <tt>false</tt> if not.
  */
 
 /*!
@@ -479,8 +483,8 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @fn Graph#addEdge
  * @brief Adds a new edge to a graph, either with or without cargo.
  *
- * @signatures TEdgeDescriptor addEdge(g, source, target, label[, cargo]);
- * @signatures TEdgeDescriptor addEdge(g, source, target, cargo);
+ * @signature TEdgeDescriptor addEdge(g, source, target, label[, cargo]);
+ * @signature TEdgeDescriptor addEdge(g, source, target, cargo);
  *
  * @param[in,out] g      The Graph to add the edge to.
  * @param[in]     source Descriptor of the source vertex.
@@ -571,7 +575,9 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @signature void getAdjacencyMatrix(g, matrix);
  *
  * @param[in]  g      The Graph to compute ajacency matrix for.
- * @param[out] matrix The Matrix to fill with the adjacency matrix values.
+ * @param[out] matrix A @link String @endlink filled with <tt>n * n</tt> elements of @link IntegerConcept @endlink
+ *                    where <tt>matrix[i + n * j]</tt> gives the edge count between vertices <tt>i</tt> and
+ *                    <tt>j</tt>.
  */
 
 /*!

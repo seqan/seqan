@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * remove edges, to assign cargo to an edge or to get the end points of an edge.  It is also used to attache properties
  * to edges via property maps.
  *
- * @examples
+ * @section Examples
  *
  * @code{.cpp}
  * EdgeDescriptor<Graph<> >::Type ed;  // eD is an edge descriptor
