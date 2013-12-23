@@ -66,29 +66,29 @@ namespace seqan {
  * @signature TValue bandedChainAlignment(frags, strings, seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
  * @signature TValue bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
  * 
- * @param align[in,out]  An @link Align @endlink object that stores the alignment. The number of rows must be 2 and the
- *                       sequences must have already been set.  <tt>row(align, 0)</tt> is the horizontal sequence in the
- *                       alignment matrix, <tt>row(align, 1)</tt> is the vertical sequence.
- * @param gapsH[in,out]  Horizontal gapped sequence in alignment matrix. Type: @link Gaps @endlink.
- * @param gapsV[in,out]  Vertical gapped sequence in alignment matrix. Type: @link Gaps @endlink.
- * @param frags[out]     String of @link Fragment @endlink objects.  The sequence with id <tt>0</tt> is the horizontal
- *                       one, the sequence with id <tt>1</tt> is the vertical one.
- * @param strings[in]    A @link StringSet @endlink containing two sequences.
- * @param alignmentGraph[in,out]
+ * @param[in,out] align   An @link Align @endlink object that stores the alignment. The number of rows must be 2 and the
+ *                        sequences must have already been set.  <tt>row(align, 0)</tt> is the horizontal sequence in the
+ *                        alignment matrix, <tt>row(align, 1)</tt> is the vertical sequence.
+ * @param[in,out] gapsH   Horizontal gapped sequence in alignment matrix. Type: @link Gaps @endlink.
+ * @param[in,out] gapsV   Vertical gapped sequence in alignment matrix. Type: @link Gaps @endlink.
+ * @param[out]    frags   @link String @endlink of @link Fragment @endlink objects.  The sequence with id <tt>0</tt>
+ *                        is the horizontal one, the sequence with id <tt>1</tt> is the vertical one.
+ * @param[in]     strings A @link StringSet @endlink containing two sequences.
+ * @param[in,out] alignmentGraph
  *                       @link AlignmentGraph @endlink object to store the alignment in.  The underlying @link
  *                       StringSet @endlink must be an @link DependentStringSet @endlink. Types: AlignmentGraph.
- * @param seedChain[in]  The container holding the @link Seed seeds @endlink.  Note that the @link Seed seeds @endlink
+ * @param[in] seedChain  The container holding the @link Seed seeds @endlink.  Note that the @link Seed seeds @endlink
  *                       have to be in montonic non-decreasing order and the container has to implement a forward-iterator.
  *                       Type: @link SeedSet @endlink.
- * @param scoringScheme1[in]
+ * @param[in] scoringScheme1
  *                       The scoring scheme used for the alignment. If <tt>scoringScheme2</tt> is specified, then
  *                       <tt>scoringScheme1</tt> is used for the regions around the seeds and <tt>scoringScheme2</tt>
  *                       for the gap regions between two consecutive seeds.  Types: Score
- * @param scoringScheme2[in]
+ * @param[in] scoringScheme2
  *                       The optional scoring scheme for the gap regions between two anchors. Types: Score
- * @param k[in]          Optional extension of the band around the seeds.  At the moment only band extensions greater
+ * @param[in] k          Optional extension of the band around the seeds.  At the moment only band extensions greater
  *                       or equal <tt>1</tt> are allowed. Type: nolink:<tt>int</tt>. Default: 15.
- * @param alignConfig[in]
+ * @param[in] alignConfig
  *                       The @link AlignConfig @endlink to use for the alignment.
  * 
  * @return TValue An integer with the alignment score, as given by the @link Score#Value @endlink metafunction of the

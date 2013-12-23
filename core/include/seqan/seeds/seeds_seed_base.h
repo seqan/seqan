@@ -54,8 +54,6 @@ namespace seqan {
  *
  * @signature struct DefaultSeedConfig.
  *
- * @section Remarks
- *
  * The default definition is as follows.  You use this as a blueprint for your own TConfig struct for a Seed or SeedSet
  * class.
  *
@@ -68,6 +66,24 @@ namespace seqan {
  *     typedef int TScoreValue;
  * };
  * @endcode
+ *
+ * @see Seed
+ *
+ * @typedef DefaultSeedConfig::TPosition
+ * @brief Position type to use in the seed.
+ * @signature size_t DefaultSeedConfig::TPosition;
+ *
+ * @typedef DefaultSeedConfig::TSize
+ * @brief Size type to use in the seed.
+ * @signature size_t DefaultSeedConfig::TSize;
+ *
+ * @typedef DefaultSeedConfig::TDiagonal
+ * @brief Type to use for diagonals (signed version of TSize).
+ * @signature (...) DefaultSeedConfig::TDiagonal;
+ *
+ * @typedef DefaultSeedConfig::TScoreValue
+ * @brief Type to use for storing score values.
+ * @signature int DefaultSeedConfig::TScoreValue;
  */
 
 // Default configuration for seeds without score.
@@ -565,8 +581,8 @@ lowerDiagonal(Seed<TSpec, TConfig> const & seed)
  *
  * @signature void setLowerDigonal(seed, diag);
  *
- * @param seed[in,out] The Seed to set the diagonal value for.
- * @param diag[in]     The value to set for the diagonal.
+ * @param[in,out] seed The Seed to set the diagonal value for.
+ * @param[in]     diag The value to set for the diagonal.
  */
 
 /**
@@ -632,8 +648,8 @@ upperDiagonal(Seed<TSpec, TConfig> const & seed)
  *
  * @signature void setUpperDigonal(seed, diag);
  *
- * @param seed[in,out] The Seed to set the diagonal value for.
- * @param diag[in]     The value to set for the diagonal.
+ * @param[in,out] seed The Seed to set the diagonal value for.
+ * @param[in]     diag The value to set for the diagonal.
  */
 
 /**
