@@ -77,12 +77,25 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 /*!
  * @class ArrayGaps
  * @headerfile <seqan/align.h>
+ * @extends Gaps
  * @brief Stores length of gap- and non-gap runs in an array.
  *
  * @signature template <typename TSequence>
  *            class Gaps<TSequence, ArrayGaps>
  *
  * @tparam TSequence The type of the underling sequence.
+ */
+
+/*!
+ * @fn ArrayGaps::Gaps
+ * @headerfile <seqan/align.h>
+ * @brief Constructor.
+ *
+ * @signature Gaps::Gaps([other]);
+ * @signature Gaps::Gaps(seq);
+ *
+ * @param[in] other Other Gaps object to copy from.
+ * @param[in] seq   Sequence concept to construct the gaps for.
  */
 
 /**
