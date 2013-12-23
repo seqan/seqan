@@ -76,8 +76,8 @@ namespace seqan {
  *
  * @signature void setBitTo(word, index, value);
  *
- * @param[in,out] word  The machine word (number) to set bits of.
- * @param[in]     index The index of the bit in the word to set, integer.
+ * @param[in,out] word  The machine word (number) to set bits of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit in the word to set (@link IntegerConcept @endlink).
  * @param[in]     value The value to set to, <tt>bool</tt>.
  */
 
@@ -118,8 +118,8 @@ setBitTo(TWord & word, TPos index, bool value)
  *
  * @signature void setBit(word, index);
  *
- * @param[in,out] word  The word to set the bit of.
- * @param[in]     index The index of the bit to set.
+ * @param[in,out] word  The word to set the bit of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit to set (@link IntegerConcept @endlink).
  */
 
 /**
@@ -156,8 +156,8 @@ setBit(TWord & word, TPos index)
  *
  * @signature void clearBit(word, index);
  *
- * @param[in,out] word  The machine word to set the bit of.
- * @param[in]     index The index of the bit to set to 0.
+ * @param[in,out] word  The machine word to set the bit of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit to set to 0 (@link IntegerConcept @endlink).
  */
 
 /**
@@ -194,7 +194,7 @@ clearBit(TWord & word, TPos index)
  *
  * @signature void clearAllBits(word);
  *
- * @param[in,out] word The word to clear all bits of.
+ * @param[in,out] word The word to clear all bits of (@link IntegerConcept @endlink).
  */
 
 /**
@@ -229,8 +229,10 @@ clearBits(TWord & word)
  *
  * @signature bool isBitSet(word, index);
  *
- * @param[in] word  The word to check.
- * @param[in] index The index of the bit to check.
+ * @param[in] word  The word to check (@link IntegerConcept @endlink).
+ * @param[in] index The index of the bit to check (@link IntegerConcept @endlink).
+ *
+ * @return bool Whether the bit with the given index is set in <tt>word</tt>.
  */
 
 /**
@@ -280,7 +282,7 @@ hiBits(TWord word, TPos index)
  *
  * @signature unsigned popCount(words);
  *
- * @param[in] word The word to count the number of set bits of.
+ * @param[in] word The word to count the number of set bits of (@link IntegerConcept @endlink).
  *
  * @return unsigned The number of set bits in <tt>word</tt>.
  */
