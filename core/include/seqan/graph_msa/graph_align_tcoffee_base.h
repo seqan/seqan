@@ -364,9 +364,7 @@ struct LessMsaEdgeCargo_ :
  * @param[in]     minMembers Minimum number of sequences per group.  If a guide tree and a minimum number of members
  *                           if given then the triplet extension is limited to groups of sequences.
  *
- * @section Remarks
- *
- * The running time is quadratic in the number of pairwise edes.
+ * The running time is quadratic in the number of pairwise edges.
  */
 
 /**
@@ -832,9 +830,8 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
  * @param[in] graph         An @link AlignmentGraph @endlink to use for the evaluation.
  * @param[in] ScoringScheme The @link Score @endlink to use.
  * 
- * @return TReturn void
- * 
- * @section Remarks
+ * @return TScoreValue The SOP score of the MSA  (Metafunction: @link Score#Value @endlink of the type of
+ *                     <tt>scoringScheme</tt>).
  * 
  * This function does NOT assume independent columns.  That is, gap openings are properly scored.  If you want the fast
  * version assuming independ columns use sumOfPairsScoreInd.
@@ -911,6 +908,8 @@ sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	return totalScore;
 }
 
+// TODO(holtgrew): Document sumOfPairsScoreInd.
+
 //////////////////////////////////////////////////////////////////////////////
 // This version is insensitive to gap openings, assumes independent columns
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
@@ -955,7 +954,7 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 /*!
  * @fn alignmentEvaluation
- * @headerfile <seqan/graph_align.h>
+ * @headerfile <seqan/graph_msa.h>
  * @brief Given a multiple sequence alignment, this function calculates different kinds of alignment statistics.
  *
  * @signature TScoreVal alignmentEvaluation(graph, scoringScheme, gapExCount, gapCount, pairCount, numPairs, len);
@@ -970,7 +969,7 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                              of the aligned sequences.
  * @param[out] len           Alignment length.
  *
- * @return TScoreVal The score of the alignment. TScoreVal is the value type of <tt>scoringScheme</tt>.
+ * @return TScoreVal The score of the alignment  (Metafunction: @link Score#Value @endlink).
  */
 
 /**

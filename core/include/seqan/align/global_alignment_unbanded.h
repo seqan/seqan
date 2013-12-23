@@ -75,9 +75,7 @@ class Fragment;
 
 /*!
  * @fn globalAlignment
- * 
- * @headerfile seqan/align.h
- * 
+ * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment.
  * 
  * @signature TScoreVal globalAlignment(align,          scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
@@ -98,8 +96,8 @@ class Fragment;
  * @param upperDiag    Optional upper diagonal (<tt>int</tt>).
  * @param algorithmTag Tag to select the alignment algorithm (see @link AlignmentAlgorithmTags @endlink).
  *
- * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value&lt;TScore&gt;::Type</tt> where
- *                   <tt>TScore</tt> is the type of <tt>scoringScheme</tt>.
+ * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
+ *                     the type of <tt>scoringScheme</tt>).
  * 
  * There exist multiple overloads for this function with four configuration dimensions.
  * 
@@ -535,6 +533,7 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 
 /*!
  * @fn globalAlignmentScore
+ * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment score.
  * 
  * @signature TScoreVal globalAlignmentScore(seqH, seqV, scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
@@ -553,10 +552,8 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * @param[in] algorithmTag  The Tag for picking the alignment algorithm. Types: @link PairwiseLocalAlignmentAlgorithms
  *                          @endlink.
  * 
- * @return TScoreValue The score value with the alignment score, as given by the @link Score#Value @endlink metafunction
- *                     of the <tt>scoringScheme</tt> type.
- * 
- * @section Remarks
+ * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
+ *                     the type of <tt>scoringScheme</tt>).
  * 
  * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
  * step.  Note that Myers' bit-vector algorithm does not compute an alignment (only in the Myers-Hirschberg variant) but

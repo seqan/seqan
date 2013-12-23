@@ -60,26 +60,23 @@ namespace seqan {
 
 /*!
  * @enum TranslationOptions
+ * @headerfile seqan/translation.h
  * @brief Enum with options for @link translate @endlink()
  *
- * @signature enum TranslationOptions { ... };
+ * @signature enum TranslationOptions;
  *
- * @headerfile seqan/translation.h
+ * @var TranslationOptions SINGLE_FRAME = 0;
+ * @brief Translate the sequence(s) "as is", n input sequences result in n output sequences.
  *
- * @var TranslationOptions SINGLE_FRAME
- * @brief translate the sequence(s) "as is", n input sequences result in n
- * output sequences
+ * @var TranslationOptions WITH_REV_COMP = 1;
+ * @brief Translate the sequence(s) as well as their reverse complements (n -> * 2n).
  *
- * @var TranslationOptions WITH_REV_COMP
- * @brief translate the sequence(s) as well as their reverse complements (n ->
- * 2n)
+ * @var TranslationOptions WITH_FRAME_SHIFT = 2;
+ * @brief Translate the sequence(s) as well as their shifted frames (n -> 3n).
  *
- * @var TranslationOptions WITH_FRAME_SHIFT
- * @brief translate the sequence(s) as well as their shifted frames (n -> 3n)
- *
- * @var TranslationOptions SIX_FRAME
- * @brief equals (WITH_REV_COMP | WITH_FRAME_SHIFT); shifted frames of original
- * and reverse complement are translated (n -> 6n)
+ * @var TranslationOptions SIX_FRAME = 3;
+ * @brief Equals (WITH_REV_COMP | WITH_FRAME_SHIFT); shifted frames of original and reverse complement are
+ *        translated (n -> 6n).
  */
 
 enum TranslationOptions
@@ -454,22 +451,20 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
 
 /*!
  * @fn translate
+ * @headerfile seqan/translation.h
  * @brief translate sequences of Dna or Rna into amino acid alphabet, optionally with frames
  * @signature int translate(target, source[, options][, codeSpec])
  *
- * @param[out]      target      the amino acid sequence(s)
- * [StringSet&lt;String&lt;AminoAcid&gt;, *&gt; or String&lt;AminoAcid*gt; iff source is a single
- * string and options == SINGLE_FRAME]
- * @param[in]       source      source sequences [String<Dna|Dna5|Rna|Rna5> or
- * StringSet thereof, other input will be converted to Dna5]
- * @param[in]       options     the @link TranslationOptions @endlink, defaults to SINGLE_FRAME
- * @param[in]       codeSpec    the @link GeneticCode @endlink to use, defaults to canonical
+ * @param[out]      target      The amino acid sequence(s).  @link StringSet @endlink of @link AminoAcid @endlink
+ *                              or @link String @endlink of @link AminoAcid @endlink if source is a single string
+ *                              and options is <tt>SINGLE_FRAME</tt>.
+ * @param[in]       source      Source sequences @link String @endlink or @link StringSet @endlink.
+ *                              If the value type is not Dna, Dna5, Rna, Rna5 then it is converted
+ *                              to Dna5.
+ * @param[in]       options     The @link TranslationOptions @endlink, defaults to SINGLE_FRAME.
+ * @param[in]       codeSpec    The @link GeneticCode @endlink to use, defaults to canonical.
  *
- * @return 0 on success, and -1 on incompatible parameters (e.g. multiple frames
- * but target type not StringSet)
- *
- * @headerfile seqan/translation.h
- * @section Remarks
+ * @return int 0 on success, and -1 on incompatible parameters (e.g. multiple frames but target type not StringSet).
  *
  * This call uses OpenMP internally, if supported by platform. If you want to
  * disable this, #define SEQAN_TRANSLATION_NO_PARALLEL.

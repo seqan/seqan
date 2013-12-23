@@ -53,10 +53,7 @@ namespace seqan {
  * @signature View<TObject>::Type;
  *
  * @tparam TObject The type to be converted into a view type.
- *
  * @return Type The resulting view type.
- *
- * @section Remarks
  *
  * This metafunction is used to convert device containers into views of device containers.
  * Subsequently, the view of a device container can be safely passed to and used in device space.
@@ -90,10 +87,9 @@ struct View<TObject const>
  * @brief Converts a given view type into its original type.
  *
  * @signature RemoveView<TObject>::Type;
+ *
  * @tparam TObject The view type to be converted into its original type.
  * @return Type The resulting original type.
- *
- * @section Remarks
  *
  * @link View @endlink is the inverse of this metafunction.
  *
@@ -122,6 +118,7 @@ struct RemoveView<TObject const>
  * @brief Tests if a given type is a view type.
  *
  * @signature IsView<TObject>::Type;
+ *
  * @tparam TObject The type to be tested for being a view type.
  * @return Type @link True @endlink or @link False @endlink.
  *
@@ -154,13 +151,14 @@ struct IfView
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn view
+ * @fn TView view
  * @headerfile <seqan/basic.h>
  * @brief Returns the view of a given object.
  * 
- * @signature view(object)
- * @param object A generic object.
- * @return TReturn The @link View @endlink type of the given object.
+ * @signature TView view(object);
+ *
+ * @param[in] object A generic object.
+ * @return TView The @link View @endlink type of the given object.
  *
  * @see View
  * @see IsView

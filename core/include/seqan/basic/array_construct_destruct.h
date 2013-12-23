@@ -249,12 +249,10 @@ getValue(T * me)
  * 
  * @signature void valueConstruct(iterator [, param [, move_tag]]);
  * 
- * @param iterator Pointer or iterator to position where the object should be constructed.
- * @param param    Parameter that is forwarded to constructor.
- * @param moveTag  Instance of the move tag.  If the tag is specified, it is forwarded to the constructor, so the
- *                 constructed object must support move construction.
- * 
- * @section Remarks
+ * @param[in,out] iterator Pointer or iterator to position where the object should be constructed.
+ * @param[in]     param    Parameter that is forwarded to constructor.
+ * @param[in]     moveTag  Instance of the move tag.  If the tag is specified, it is forwarded to the constructor,
+ *                         so the constructed object must support move construction.
  * 
  * The type of the destructed object is the value type of <tt>iterator</tt>.
  */
@@ -420,13 +418,11 @@ struct ValueDestructorProxy_
 /*!
  * @fn valueDestruct
  * @headerfile <seqan/basic.h>
- * @brief Destoys an object at specified position.
+ * @brief Destroys an object at specified position.
  * 
  * @signature void valueDestruct(iterator);
  * 
- * @param iterator Pointer or iterator to position where the object should be destructed.
- * 
- * @section Remarks
+ * @param[in,out] iterator Pointer or iterator to position where the object should be destructed.
  * 
  * The type of the constructed object is the value type of <tt>iterator</tt>.
  */
@@ -472,12 +468,10 @@ valueDestruct(TIterator it)
  * 
  * @signature void arrayConstruct(begin, end[, value]);
  * 
- * @param begin Iterator to the begin of the range that is to be constructed.
- * @param end   Iterator behind the end of the range.
- * @param value Argument that is forwarded to the constructor.  An appropriate constructor is required.  If
- *              <tt>value</tt> is not specified, the default constructor is used.
- * 
- * @section Remarks
+ * @param[in] begin Iterator to the begin of the range that is to be constructed.
+ * @param[in] end   Iterator behind the end of the range.
+ * @param[in] value Argument that is forwarded to the constructor.  An appropriate constructor is required.  If
+ *                 <tt>value</tt> is not specified, the default constructor is used.
  * 
  * The type of the constructed Objects is the value type of <tt>begin</tt> and <tt>end</tt>.
  */
@@ -561,14 +555,14 @@ arrayConstruct(TIterator1 begin_,
  * 
  * @signature void arrayConstructCopy(sourceBegin, sourceEnd, target);
  * 
- * @param sourceBegin Iterator to the first element of the source range.
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
- *                    type as <tt>sourceBegin</tt>.
- * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
- *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
- *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
- *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate (copy-) constructor that
- *                    constructs an target objects given a source object is required.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                        type as <tt>sourceBegin</tt>.
+ * @param[in] target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                        specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                        the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                        store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate (copy-) constructor that
+ *                        constructs an target objects given a source object is required.
  */
 
 /**
@@ -629,14 +623,14 @@ arrayConstructCopy(TSource1 source_begin,
  * 
  * @signature void arrayConstructMove(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
- *                    type as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source range.
- * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
- *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
- *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
- *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
- *                    constructs an target objects given a source object is required.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                        type as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                        specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                        the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                        store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
+ *                        constructs an target objects given a source object is required.
  */
 
 /**
@@ -700,10 +694,8 @@ arrayConstructMove(TSource1 source_begin,
  * 
  * @signature void arrayDestruct(begin, end);
  * 
- * @param begin Iterator to the begin of the range that is to be destructed.
- * @param end   Iterator behind the end of the range.
- * 
- * @section Remarks
+ * @param[in] begin Iterator to the begin of the range that is to be destructed.
+ * @param[in] end   Iterator behind the end of the range.
  * 
  * This function does not deallocates the memory.
  */
@@ -756,12 +748,10 @@ arrayDestruct(TIterator1 begin_,
  * 
  * @signature void arrayFill(begin, end, value[, parallelTag]);
  * 
- * @param begin       Iterator to the begin of the range that is to be filled.
- * @param end         Iterator behind the end of the range.
- * @param value       Argument that is assigned to all <tt>count</tt> objects in <tt>array</tt>.
- * @param parallelTag Tag to enable/disable parallelism. Types: Serial, Parallel
- * 
- * @section Remarks
+ * @param[in] begin       Iterator to the begin of the range that is to be filled.
+ * @param[in] end         Iterator behind the end of the range.
+ * @param[in] value       Argument that is assigned to all <tt>count</tt> objects in <tt>array</tt>.
+ * @param[in] parallelTag Tag to enable/disable parallelism. Types: Serial, Parallel
  * 
  * All objects <tt>target_begin[0]</tt> to <tt>target_begin[count-1]</tt> are set to <tt>value</tt>.
  */
@@ -813,13 +803,11 @@ arrayFill(TIterator begin_,
  * 
  * @signature void arrayCopyForward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * Be careful if source and target range overlap, because in this case some source elements could be accidently
  * overwritten before they are copied.
@@ -876,13 +864,11 @@ arrayCopyForward(TSource1 source_begin,
  * 
  * @signature void arrayCopyBackward(source_begin, source_end, target);
  * 
- * @param sourceBegin Iterator to the first element of the source array.
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>source_begin</tt>.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>source_begin</tt>.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * Be careful if source and target range overlap, because in this case some source elements could be accidently
  * overwritten before they are moved.
@@ -951,13 +937,11 @@ arrayCopyBackward(TSource1 source_begin,
  * 
  * @signature void arrayCopy(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source range.
- * @param target      Iterator to the first element of the target range.The target capacity should be at least as long
- *                    as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] target      Iterator to the first element of the target range.The target capacity should be at least as long
+ *                        as the source range.
  * 
  * If source and target range do not overlap, consider to use arrayCopyForward instead to improve performance.
  * 
@@ -1010,13 +994,11 @@ inline void arrayCopy(TSource1 source_begin,
  * 
  * @signature void arrayMoveForward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopyForward instead.
@@ -1080,13 +1062,11 @@ arrayMoveForward(TSource1 source_begin,
  * 
  * @signature void arrayMoveBackward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.The target capacity should be at least as long
- *                    as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.The target capacity should be at least as long
+ *                        as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopyBackward instead.
@@ -1159,13 +1139,11 @@ arrayMoveBackward(TSource1 source_begin,
  *
  * @signature void arrayMove(sourceBegin, sourceEnd, target);
  * 
- * @param sourceBegin Iterator to the first element of the source range.
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param target      Iterator to the first element of the target range.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] target      Iterator to the first element of the target range.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopy instead.
@@ -1224,12 +1202,10 @@ arrayMove(TSource1 source_begin,
  * 
  * @signature void arrayClearSpace(arrBegin, arrLength, keepFrom, moveTo);
  * 
- * @param arrBegin  Pointer to the first element of the array.
- * @param keepFrom  Offset of the first object that will be kept.
- * @param arrLength Length of the array.
- * @param moveTo    Offset the first kept object will get at the end of the function.
- * 
- * @section Remarks
+ * @param[in] arrBegin  Pointer to the first element of the array.
+ * @param[in] keepFrom  Offset of the first object that will be kept.
+ * @param[in] arrLength Length of the array.
+ * @param[in] moveTo    Offset the first kept object will get at the end of the function.
  * 
  * The objects <tt>arr[keep_from]</tt> to <tt>arr[arr_length-1]</tt> are moved to the area beginning at positions
  * <tt>move_to</tt>. All objects in <tt>arr[0]</tt> to <tt>arr[keep_from-1]</tt> are destroyed. After this function, the

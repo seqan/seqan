@@ -51,8 +51,6 @@ namespace seqan {
 
  * @return bool <tt>true</tt> if cast was successful, <tt>false</tt> otherwise.
  * 
- * @section Remarks
- * 
  * Uses istringstream internally, so right now "123foobar" will be succesfully cast to an int of 123.
  * 
  * @section Examples
@@ -124,16 +122,13 @@ lexicalCast2(TTarget & target, TSource const & source)
  * @headerfile <seqan/stream.h>
  * @brief Cast from a String-type to a numerical type
  * 
- * @signature template <typename TTarget>
- *            TTarget lexicalCast<TTarget>(source);
+ * @signature TTarget lexicalCast<TTarget>(source);
  * 
  * @tparam TTarget Target type to cast to.
  *
  * @param[in] source The string to be read from.  Type: @link SequenceConcept @endlink.
  * 
  * @return TTarget Value of Type TTarget with cast contents of source.
- * 
- * @section Remarks
  * 
  * Return value undefined if casting fails, see @link lexicalCast2 @endlink for a more robust variant.
  * 
