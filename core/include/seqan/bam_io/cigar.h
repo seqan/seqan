@@ -54,7 +54,7 @@ namespace seqan {
  * @headerfile <seqan/bam_io.h>
  * @brief One entry of a CIGAR string.
  *
- * @signature template <typename TOperation = char, typename TCount = unsigned>
+ * @signature template <[typename TOperation[, typename TCount]]>
  *            class CigarElement;
  *
  * @tparam TOperation Type to use for storing operations, defaults to <tt>char</tt>.
@@ -78,13 +78,13 @@ namespace seqan {
  */
 
 /*!
- * @var TCount CigarElement::count
+ * @var TCount CigarElement::count;
  *
  * @brief The number of operations.
  */
 
 /*!
- * @var TOperation CigarElement::operation
+ * @var TOperation CigarElement::operation;
  *
  * @brief The described operation.
  */
