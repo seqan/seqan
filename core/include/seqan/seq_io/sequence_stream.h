@@ -67,9 +67,7 @@ namespace seqan {
  * 
  * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/SimpleSeqIO">Simple Sequence I/O Tutorial</a>.
  *
- * @section Remarks
- * 
- * @subsection Operation Mode
+ * @section Operation Mode
  * 
  * When reading, there are two operation modes: Normal reading and reading of "persistent" records.  When reading in
  * "persistent" mode, @link SequenceStream @endlink will scan over each record twice: once for determining its size and
@@ -77,7 +75,7 @@ namespace seqan {
  * This can save memory up to a factor of two, at the cost of scanning each record twice.  Note that this is only
  * possible for reading uncompressed files.
  * 
- * @subsection File Format and File Type
+ * @section File Format and File Type
  * 
  * The file type determines whether a file is stored as raw text or whether it is compressed.  Examples for file types
  * are text files or <tt>gzip</tt> compressed files (<tt>FILE.gz</tt>).  The file format considers the contents of the
@@ -106,6 +104,12 @@ namespace seqan {
  *
  * @include demos/seq_io/sequence_stream_write.cpp
  *
+ * @see SequenceStream::FileType
+ * @see SequenceStream::FileFormat
+ * @see SequenceStream::OperationMode
+ */
+
+/*!
  * @fn SequenceStream::SequenceStream
  * @brief Constructor
  * 
@@ -127,6 +131,8 @@ namespace seqan {
  * @brief Select the operation mode of a @link SequenceStream @endlink.
  *
  * @signature enum OperationMode;
+ *
+ * @see SequenceStream
  * 
  * @var SequenceStream::OperationMode SequenceStream::READ;
  * @brief Open stream for reading.
@@ -147,6 +153,8 @@ namespace seqan {
  * @signature enum FileType;
  * 
  * The file type is the type of the file itself, i.e. plain text or compressed.
+ * 
+ * @see SequenceStream
  * 
  * @var SequenceStream::FileType SequenceStream::AUTO_TYPE;
  * 
@@ -171,6 +179,8 @@ namespace seqan {
  * @signature enum FileFormat;
  * 
  * The file format is the format of the possibly compressed content.
+ * 
+ * @see SequenceStream
  * 
  * @var SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
  * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
@@ -461,7 +471,7 @@ inline void open(SequenceStream & seqIO,
  * @fn SequenceStream#close
  * @brief Close a SequenceStream.
  *
- * @signature close(seqStream);
+ * @signature void close(seqStream);
  *
  * @param[in,out] seqStream The SequenceStream to close.
  */
@@ -489,7 +499,7 @@ inline void close(SequenceStream & seqIO)
  * @fn SequenceStream#flush
  * @brief Write all remaining data from a SequenceStream to disk.
  *
- * @signature flush(seqStream);
+ * @signature void flush(seqStream);
  *
  * @param[in,out] seqStream The SequenceStream to flush.
  */
@@ -519,7 +529,7 @@ inline void flush(SequenceStream & seqIO)
  * 
  * @signature bool isGood(seqStream);
  * 
- * @param seqStream The SequenceStream object to read from. Type: SequenceStream
+ * @param[in] seqStream The SequenceStream object to read from. Type: SequenceStream
  * 
  * @return bool true if the SequenceStream is at the end of the file and false otherwise.
  * 
@@ -589,8 +599,7 @@ inline bool isGood(SequenceStream const & seqIO)
  * @fn SequenceStream#readRecord
  * @brief Read the next sequence record from @link SequenceStream @endlink.
  * 
- * @signature int readRecord(id, seq, seqStream);
- * @signature int readRecord(id, seq, quals, seqStream);
+ * @signature int readRecord(id, seq[, quals], seqStream);
  * 
  * @param[out]    id    The identifier of the sequence is written here.  Types: CharString
  * @param[out]    seq   The sequence of the record is written here. Types: String
@@ -713,8 +722,7 @@ int readRecord(TId & id, TSequence & seq, SequenceStream & seqIO)
  * @fn SequenceStream#readBatch
  * @brief Read a given number of sequence records from SequenceStream.
  * 
- * @signature int readBatch(ids, seqs, seqStream, num);
- * @signature int readBatch(ids, seqs, quals, seqStream, num);
+ * @signature int readBatch(ids, seqs[, quals], seqStream, num);
  * 
  * @param[out]    ids   The identifiers of the sequence are written here.  Type: @link StringSet @endlink of @link
  *                      CharString @endlink.
@@ -835,8 +843,7 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
  * @fn SequenceStream#readAll
  * @brief Read all sequence records from a @link SequenceStream @endlink object.
  * 
- * @signature int readAll(ids, seqs, seqStream);
- * @signature int readAll(ids, seqs, quals, seqStream);
+ * @signature int readAll(ids, seqs[, quals], seqStream);
  * 
  * @param[out] ids       The identifiers of the sequence are written here. Types: @link StringSet @endlink of @link
  *                       CharString @endlink.
@@ -957,7 +964,7 @@ int readAll(StringSet<TId, TIdSpec> & ids,
  * @brief Write one sequence record from to a @link SequenceStream @endlink object.
  * 
  * @signature int writeRecord(seqStream, id, seq[, options]);
- * @signature int writeRecord(seqStream id, seq, quals[, options]);
+ * @signature int writeRecord(seqStream, id, seq, quals[, options]);
  * 
  * @param[in,out] seqStream The @link SequenceStream @endlink object to write to.  Type: SequenceStream
  * @param[in] quals         The qualities to write out.
