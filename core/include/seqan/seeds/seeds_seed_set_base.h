@@ -316,7 +316,7 @@ minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
  * @param[in,out] seedSet    The SeedSet for which the threshold is to be set.
  * @param[in]     scoreValue The new threshold to set.  If the score of a seed is higher than the given threshold, then
  *                           it is virtually put into a container storing the high-scoring seeds which can be iterated
- *                           separately.
+ *                           separately  (@link IntegerConcept @endlink).
  * 
  * @see SeedSet#minScore
  */

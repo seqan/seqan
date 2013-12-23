@@ -50,12 +50,13 @@ namespace seqan {
 /*!
  * @class SimpleSeed
  * @headerfile <seqan/seeds.h>
+ * @extends Seed
  * @brief Describes a seed with start and end position and diagonal upper and lower bounds.
  *
  * @signature template <[typename TConfig]>
  *            class Seed<Simple, TConfig>;
  *
- * @tparam TConfig The configuration to use.  Defaults to DefaultSeedConfig.
+ * @tparam TConfig The configuration to use.  Defaults to @link DefaultSeedConfig @endlink.
  */
 
 /*!
