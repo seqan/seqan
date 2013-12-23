@@ -69,7 +69,7 @@ namespace seqan {
  * 
  * @param[in]     record  The BedRecord to write.
  * @param[in,out] stream  @link StreamConcept Stream @endlink object to write to.
- * @param[in,out] context The optional BedIOContext to use.
+ * @param[in,out] context The optional @link BedIOContext @endlink to use.
  * 
  * @return int Status code, 0 on success, other values on errors.
  * 

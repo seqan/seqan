@@ -72,7 +72,7 @@ typedef Tag<Bed12_> Bed12;
  * @signature template <typename TSpec>
  *            class BedRecord;
  * 
- * @tparam TSpec The specialization to use. Default: <tt>Bed12</tt>
+ * @tparam TSpec The specialization to use.  Default: <tt>Bed12</tt>.
  * 
  * BED files allow the easy representation of intervals on the genome.  Originally, they were designed for tracks in the
  * UCSC genome browser. The original format has 12 columns but often variants using fewer columns with interpreted data
@@ -90,27 +90,27 @@ typedef Tag<Bed12_> Bed12;
  * 
  * Note that while the BED file format is 1-based, the coordinates in the BedRecord are 0-based.
  *
- * @var CharString BedRecord::ref
+ * @var CharString BedRecord::ref;
  * @brief Name of the interval's reference name.
  * 
- * @var __int32 BedRecord::beginPosition
+ * @var __int32 BedRecord::beginPosition;
  * @brief Begin position on the reference.
  * 
- * @var __int32 BedRecord::rID
+ * @var __int32 BedRecord::rID;
  * @brief Numeric id of the interval's reference (<tt>__int32</tt>, defaults to <tt>INVALID_REFID</tt>).
  * 
- * @var __int32 BedRecord::INVALID_REFID
+ * @var __int32 BedRecord::INVALID_REFID;
  * @brief Constant for invalid references.
  * @signature static const __int32 BedRecord::INVALID_REFID = -1;
  * 
- * @var __int32 BedRecord::endPosition
+ * @var __int32 BedRecord::endPosition;
  * @brief End position on the reference.
  * 
- * @var __int32 BedRecord::INVALID_POS
+ * @var __int32 BedRecord::INVALID_POS;
  * @brief Constant for invalid positions.
  * @signature static const __int32 BedRecord::INVALID_POS = -1;
  * 
- * @var CharString BedRecord::data
+ * @var CharString BedRecord::data;
  * @brief Any data after the last position.
  */
 
@@ -265,7 +265,7 @@ public:
  * 
  * This BedRecord specialization stores the first four fields (ref, beginPos, endPos, name) of a BED file.
  * 
- * @var CharString Bed4Record::name
+ * @var CharString Bed4Record::name;
  * @brief The name of the interval (@link CharString @endlink).
  */
 
@@ -317,7 +317,7 @@ public:
  * 
  * This BedRecord specialization stores the first five fields (ref, beginPos, endPos, name, score) of a BED file.
  * 
- * @var CharString Bed5Record::score
+ * @var CharString Bed5Record::score;
  * @brief The score of the interval (stored as @link CharString @endlink to allow more flexible annotation).
  * 
  * @section Remarks
@@ -374,7 +374,7 @@ public:
  * 
  * This BedRecord specialization stores the first six fields (ref, beginPos, endPos, name, score, strand) of a BED file.
  * 
- * @var char Bed6Record::strand
+ * @var char Bed6Record::strand;
  * @brief The strand of the interval (stored as <tt>char</tt>, one of <tt>.</tt>, '-', and <tt>+</tt>).
  * 
  * Defaults to '.'.
@@ -424,13 +424,13 @@ public:
  * 
  * @signature class BedRgb;
  * 
- * @var __int32 BedRgb::red
+ * @var __int32 BedRgb::red;
  * @brief Red value of RGB color (default is <tt>0</tt>).
  * 
- * @var __int32 BedRgb::green
+ * @var __int32 BedRgb::green;
  * @brief Green value of RGB color (default is <tt>0</tt>).
  * 
- * @var __int32 BedRgb::blue
+ * @var __int32 BedRgb::blue;
  * @brief Blue value of RGB color (default is <tt>0</tt>).
  */
 
@@ -441,9 +441,9 @@ public:
  * @signature BedRgb::BedRgb();
  * @signature BedRgb::BedRgb(red, green, blue);
  * 
- * @param blue  __int32 blue value <tt>0-255</tt>.
- * @param green __int32 green value <tt>0-255</tt>.
- * @param red   __int32 red value <tt>0-255</tt>.
+ * @param blue  __int32 blue value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param green __int32 green value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param red   __int32 red value <tt>0-255</tt> (defaults to <tt>0</tt>).
  */
 
 /**
@@ -511,22 +511,22 @@ public:
  *
  * This @link BedRecord @endlink specialization stores all fields of a BED file.
  *
- * @var __int32 Bed12Record::itemRgb
+ * @var __int32 Bed12Record::itemRgb;
  * @brief RGB color of item (@link BedRgb @endlink).
  * 
- * @var __int32 Bed12Record::blockCount
+ * @var __int32 Bed12Record::blockCount;
  * @brief The number of blocks.
  * 
- * @var TIntString Bed12Record::blockBegins
+ * @var TIntString Bed12Record::blockBegins;
  * @brief The begin positions of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  * 
- * @var TIntString Bed12Record::blockSizes
+ * @var TIntString Bed12Record::blockSizes;
  * @brief The sizes of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  * 
- * @var __int32 Bed12Record::thickBegin
+ * @var __int32 Bed12Record::thickBegin;
  * @brief The begin position of thick drawing.
  * 
- * @var __int32 Bed12Record::thickEnd
+ * @var __int32 Bed12Record::thickEnd;
  * @brief The end position of thick drawing.
  */
 
