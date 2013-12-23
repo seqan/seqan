@@ -65,7 +65,7 @@
  * @headerfile <seqan/platform.h>
  * @brief Defined when compiling in 32 bit mode.
  *
- * @signature @define SEQAN_IS_32_BIT
+ * @signature #define SEQAN_IS_32_BIT
  */
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
