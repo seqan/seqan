@@ -82,7 +82,7 @@ namespace seqan {
  * @headerfile <seqan/vcf_io.h>
  * @brief Open mode for the class @link VcfStream @endlink.
  *
- * @signature enum Mode;
+ * @signature enum VcfStream::Mode;
  *
  * @var VcfStream::Mode VcfStream::INVALID;
  * @brief Invalid open mode.
