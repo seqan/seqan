@@ -158,6 +158,8 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 // Function bamRecordToAlignment()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Should rather be a global function?
+
 /*!
  * @fn BamAlignmentRecord#bamRecordToAlignment
  * @headerfile <seqan/bam_io.h>

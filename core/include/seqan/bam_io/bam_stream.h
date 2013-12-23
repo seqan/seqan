@@ -78,6 +78,9 @@ namespace seqan {
  * The output is as follows:
  *
  * @include demos/bam_io/bam_stream.cpp.stdout
+ *
+ * @see BamStream::Format
+ * @see BamStream::OperationMode
  */
 
 /*!
@@ -211,6 +214,8 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
  * @brief Select the format to use for reading/writing.
  *
  * @signature enum BamStream::Format;
+ *
+ * @see BamStream
  *
  * @var BamStream::Format BamStream::AUTO;
  * @brief Auto-detect the format from file content on reading and from the file name on writing.  If auto-detection
@@ -618,7 +623,7 @@ inline bool atEnd(BamStream & bamIO)
  *
  * @signature bool isGood(stream);
  *
- * @param stream The @link BamStream @endlink object to query.
+ * @param[in] stream The @link BamStream @endlink object to query.
  *
  * @return bool true if the stream is not in an error state and false otherwise.
  */
@@ -792,8 +797,8 @@ inline __int64 positionInFile(BamStream const & bamIO)
  * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
  *                              alignments.
  * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
- * @param[in]     pos           The begin of the region to jump to.
- * @param[in]     posEnd        The end of the region to jump to.
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
  * @return bool true if seeking was successful, false if not.
