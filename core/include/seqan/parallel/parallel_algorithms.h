@@ -95,8 +95,6 @@ arrayFill(TIterator begin_,
  *
  * @return TValue The sum of the elements in <tt>seq</tt>, of type <tt>Value&lt;TSequence&gt;::Type</tt>.
  *
- * @section Remarks
- *
  * The sequence alphabet must support the <tt>operator+</tt> and conversion from zero.
  *
  * @see partialSum

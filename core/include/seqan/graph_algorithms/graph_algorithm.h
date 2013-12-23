@@ -86,8 +86,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[out] predecessor A property map.  The predecessor map stores implicitly the breadth-first tree.
  * @param[out] distance    A property map.  The distance map indicates at what depth a vertex was discovered.
  * 
- * @section Remarks
- * 
  * Breadth-first search computes the distance from source to all reachable vertices.  It also produces a breath-first
  * tree where each node has a predecessor/parent.
  *
@@ -222,8 +220,6 @@ _dfsVisit(Graph<TSpec> const& g,
  * @param[out] discovery   A property map.The discovery time of a vertex v.
  * @param[out] finish      A property map.The time when v's adjacency list has been fully explored.
  * 
- * @section Remarks
- * 
  * In contrast to a breadth-first search the depth-first search is repeated from multiple sources if the graph is not
  * connected.  Hence, depth-first search produces a depth-first forest.  To ensure each vertex ends up in exactly one
  * tree we need not just a distance but a discovery and finishing time.
@@ -312,8 +308,6 @@ depthFirstSearch(Graph<TSpec> const& g,
  * 
  * @param[in]  g       A directed acyclic graph. Types: Directed Graph
  * @param[out] topSort A topological ordering of the vertices. Types: String.
- * 
- * @section Remarks
  * 
  * A topological sort is a linear ordering of all its vertices such that if the graph contains an edge (u,v) then u
  * appears before v in the ordering.
@@ -889,16 +883,15 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Compute weakly connected components of a directed graph.
  * 
- * @signature TSize weaklyConnectedComponents(g, components)
+ * @signature TSize weaklyConnectedComponents(g, components);
  * 
- * @param[in]  g A directed graph. Types: Directed Graph
+ * @param[in]  g A @link DirectedGraph @endlink to use for the input.
  * @param[out] components
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id they
  *               are in the same component.
  * 
- * @return TSize The number of weakly connected components.  TSize is <tt>Size&lt;TGraph&gt;::Type</tt>.
- * 
- * @section Remarks
+ * @return TSize The number of weakly connected components  (Metafunction: @link Graph#Size @endlink of the type
+ *               of <tt>g</tt>).
  * 
  * The running time is <tt>O(n a(n, n))</tt> where <tt>a</tt> is the inverse Ackermann function and thus almost linear.
  * The union find data structure is used since the graph implementations do not allow the efficient iteration of
@@ -1201,8 +1194,6 @@ dagShortestPath(Graph<TSpec> const& g,
  * @param[out] distance    A property map.Indicates for each vertex the distance from the source.
  *
  * @return bool true if the graph has no negative weight cycles, false otherwise.
- *
- * @section Remarks
  *
  * Edge weights may be negative in the Bellman-Ford algorithm.  The out parameters are only valid if the algorithm
  * returns true.
@@ -1657,8 +1648,6 @@ allPairsShortestPath(Graph<TSpec> const& g,
  *                         to vertex j.  Types: Matrix
  * @param[in]  weight      A weight map.  A property map with edge weights.  Edge weights may be negative.
  * @param[in]  g           A directed graph.  Types: Directed Graph
- *
- * @section Remarks
  *
  * The graph must be free of negative-weight cycles.
  *

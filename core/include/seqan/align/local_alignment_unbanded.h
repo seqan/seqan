@@ -68,26 +68,24 @@ namespace seqan {
  * @signature TScoreVal localAlignment(gapsH, gapsV,   scoringScheme, [lowerDiag, upperDiag]);
  * @signature TScoreVal localAlignment(fragmentString, scoringScheme, [lowerDiag, upperDiag]);
  * 
- * @param lowerDiag Optional lower diagonal (<tt>int</tt>).
- * @param upperDiag Optional upper diagonal (<tt>int</tt>).
+ * @param[in,out] gapsH Horizontal gapped sequence in alignment matrix. Types: @link Gaps @endlink 
+ * @param[in,out] gapsV Vertical gapped sequence in alignment matrix. Types: @link Gaps @endlink 
+ * @param[in,out] align An @link Align @endlink object that stores the alignment. The
+ *                      number of rows must be 2 and the sequences must have already
+ *                      been set. <tt>align[0]</tt> is the horizontal one in the
+ *                      alignment matrix alignment, <tt>align[1]</tt> is the vertical
+ *                      one. 
+ * @param[in,out] fragmentString
+ *                      String of @link Fragment @endlink objects. The sequence
+ *                      with id <tt>0</tt> is the horizontal one, the sequence
+ *                      with id <tt>1</tt> is the vertical one.
+ * @param[in] scoringScheme
+ *                      The @link Score scoring scheme @endlink to use for the alignment.
+ * @param[in] lowerDiag Optional lower diagonal (<tt>int</tt>).
+ * @param[in] upperDiag Optional upper diagonal (<tt>int</tt>).
  *
- * @param gapsH Horizontal gapped sequence in alignment matrix. Types: @link Gaps @endlink 
- * @param gapsV Vertical gapped sequence in alignment matrix. Types: @link Gaps @endlink 
- * @param align An @link Align @endlink object that stores the alignment. The
- *              number of rows must be 2 and the sequences must have already
- *              been set. <tt>align[0]</tt> is the horizontal one in the
- *              alignment matrix alignment, <tt>align[1]</tt> is the vertical
- *              one. Types: Align
- * @param fragmentString String of @link Fragment @endlink objects. The sequence
- *                       with id <tt>0</tt> is the horizontal one, the sequence
- *                       with id <tt>1</tt> is the vertical one.
- * @param scoringScheme The scoring scheme to use for the alignment. Types:
- *                      Score
- * 
- * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value&lt;TScore&gt;::Type</tt> where
- *                   <tt>TScore</tt> is the type of <tt>scoringScheme</tt>.
- * 
- * @section Remarks
+ * @return TScoreVal Score value of the resulting alignment  (Metafunction @link Score#Value @endlink of the type of
+ *                   <tt>scoringScheme</tt>).
  * 
  * The Waterman-Eggert algorithm (local alignment with declumping) is available through the @link
  * LocalAlignmentEnumerator @endlink class.

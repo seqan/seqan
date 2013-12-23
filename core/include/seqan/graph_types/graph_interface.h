@@ -108,6 +108,17 @@ Distance from 0 to 4: 7
 template<typename TSpec = Directed<> >
 class Graph;
 
+/*!
+ * @mfn Graph#Size
+ * @brief Size type of the Graph.
+ *
+ * @signature Size<TGraph>::Type;
+ *
+ * @tparam TGraph The graph type to query for its size type.
+ *
+ * @return Type The size type.
+ */
+
 //////////////////////////////////////////////////////////////////////////////
 // General Graph Metafunction
 //////////////////////////////////////////////////////////////////////////////

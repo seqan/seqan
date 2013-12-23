@@ -73,12 +73,10 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * @param[out] bgFrequencies @link String @endlink of background frequencies (<tt>double</tt>) representing the model.
  * @param[out] bgModel       @link MarkovModel @endlink to use.
  * @param[in]  sequence      @link String @endlink (sequence) where k-mers are counted.
- * @param[in]  k             k-mer length.
+ * @param[in]  k             k-mer length (<tt>unsigned</tt>).
  * 
- * @section Remarks
- * 
- * k-mers overlapping masked letters are not counted in case of Dna5Strings.  A Bernoulli or Markov Model can be choosen
- * as a background model.
+ * k-mers overlapping masked (aka 'N') letters are not counted in case of Dna5Strings.  A Bernoulli or Markov Model
+ * can be choosen as a background model.
  * 
  * @section Examples
  * 
@@ -1082,11 +1080,13 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * @signature void stringToStringSet(stringSet, string);
  * @signature void stringToStringSet(dnaStringSet, dna5String);
  * 
- * @param[out] stringSet    StringSet containing string Types: StringSet
- * @param[in]  string       String Types: String
- * @param[out] dnaStringSet StringSet&lt;DnaString&gt; created from dna5String by cutting out all Ns from dna5String.
- * @param[in]  dna5String   DNA5 String where all Ns should be removed, the remaining sequences will be stored in dnaStringSet.
- * 
+ * @param[out] stringSet    @link StringSet @endlink to create with one sequence.
+ * @param[in]  string       @link String @endlink to create the string set of.
+ * @param[out] dnaStringSet @link StringSet @endlink of @link String Strings @endlink over the alphabet @link Dna @endlink.
+ * @param[in]  dna5String   @link String @endlink over the alphabet @link Dna5 @endlink to convert.
+ *
+ * @note The second variant removes all N characters from the @link Dna5String @endlink. 
+ *
  * @section Examples
  * 
  * Transform a masked DNA sequence into a set of sequences with all masked parts removed.
@@ -1209,8 +1209,6 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
  * 
  * @param[out] sequenceCut Dna5String similar to sequence with all Ns cut out.
  * @param[in]  sequence    Masked DNA sequence.
- * 
- * @section Remarks
  * 
  * This function concatenates the nonmasked parts of the sequence, thereby changing the word content. If you want to
  * remove the masked parts of a sequence without concatenation, use stringToStringSet.

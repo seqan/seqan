@@ -571,10 +571,8 @@ this function can be used to extract the sequence id of every fragment in the St
  *
  * @param[out] id          The resulting cropped sequence id of the fragment (e.g. Fasta ID).  The resulting id
  *                         contains no whitespaces.  Type: @link CharString @endlink.
- * @param[out] seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link SequenceConcept @endlink.
  * @param[in]  formatTag   A file format tag.  Type: @link FileFormatTag @endlink.
- *
- * @section Remarks
  *
  * After calling @link split @endlink on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this 
  * function can be used to extract the sequence id up to the first whitespace of every fragment in the
@@ -1553,9 +1551,9 @@ typedef Tag<TagRaw_> Raw; //IOREV
  *
  * @signature void appendSeqs(seqSet, dirName, formatTag);
  *
- * @param[out]    seqSet    A @link StringSet @endlink of sequences to append to.
- * @param[in]     dirName   A path to a directory or single file.
- * @param[in,out] formatTag A file format tag.
+ * @param[out] seqSet    A @link StringSet @endlink of sequences to append to.
+ * @param[in]  dirName   A path to a directory or single file.
+ * @param[in]  formatTag A file format tag.
  *
  * @section Remarks
  *

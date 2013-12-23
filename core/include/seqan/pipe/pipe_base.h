@@ -53,8 +53,6 @@ namespace seqan {
  * @tparam TInput The type of the pipeline module this module reads from.  Use Bundle2, Bundle3, etc. to read
  *                from more than one module.
  * 
- * @section Remarks
- * 
  * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
  * default).
  * 
@@ -111,16 +109,14 @@ namespace seqan {
  * @tparam TInput1 The type of the first object.
  * @tparam TInput2 The type of the second object.
  * 
- * @section Remarks
- * 
  * Primarily used as an adaptor for pipes with two sources.
  * 
  * @see bundle2
  * 
- * @var VariableType Bundle2::in1
+ * @var TInput1 Bundle2::in1;
  * @brief TInput1 reference
  * 
- * @var TInput1 Bundle2::in2
+ * @var TInput2 Bundle2::in2;
  * @brief TInput2 reference
  */
 
@@ -157,8 +153,8 @@ namespace seqan {
  * 
  * @signature TBundle bundle2(in1, in2);
  * 
- * @param in1 First object.
- * @param in2 Second object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
  * 
  * @return TBundle A Bundle2 with references to <tt>in1</tt> and <tt>in2</tt>.
  * 
@@ -188,7 +184,7 @@ namespace seqan {
  * @brief Stores references to three arbitrary objects.
  * 
  * @signature template <typename TInput1, typename TInput2, typename TInput3>
- *            struct Bundle3<TInput1, TInput2, TInput3>;
+ *            struct Bundle3;
  * 
  * @tparam TInput3 The type of the third object.
  * @tparam TInput2 The type of the second object.
@@ -200,13 +196,13 @@ namespace seqan {
  * 
  * @see bundle3
  * 
- * @var TInput1 Bundle3::in1
+ * @var TInput1 Bundle3::in1;
  * @brief TInput1 reference
  * 
- * @var TInput2 Bundle3::in2
+ * @var TInput2 Bundle3::in2;
  * @brief TInput2 reference
  * 
- * @var TInput3 Bundle3::in3
+ * @var TInput3 Bundle3::in3;
  * @brief TInput3 reference
  */
 
@@ -249,9 +245,9 @@ namespace seqan {
  * 
  * @signature TBundle bundle3(in1, in2, in3);
  * 
- * @param in1 First object.
- * @param in2 Second object.
- * @param in3 Third object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
+ * @param[in] in3 Third object.
  * 
  * @return TBundle A Bundle3 with references to <tt>in1</tt>, <tt>in2</tt>, and <tt>in3</tt>.
  * 
@@ -291,25 +287,23 @@ namespace seqan {
  * @tparam TInput4 The type of the fourth object.
  * @tparam TInput5 The type of the fifth object.
  * 
- * @section Remarks
- * 
  * Primarily used as an adaptor for pipes with five sources.
  * 
  * @see bundle5
  * 
- * @var TInput1 Bundle5::in1
+ * @var TInput1 Bundle5::in1;
  * @brief TInput1 reference
  * 
- * @var TInput2 Bundle5::in2
+ * @var TInput2 Bundle5::in2;
  * @brief TInput2 reference
  * 
- * @var TInput3 Bundle5::in3
+ * @var TInput3 Bundle5::in3;
  * @brief TInput3 reference
  * 
- * @var TInput4 Bundle5::in4
+ * @var TInput4 Bundle5::in4;
  * @brief TInput4 reference
  * 
- * @var TInput5 Bundle5::in5
+ * @var TInput5 Bundle5::in5;
  * @brief TInput5 reference
  */
 
@@ -361,11 +355,11 @@ namespace seqan {
  * 
  * @signature TBundle bundle5(in1, in2, in3, in4, in5);
  * 
- * @param in1 First object.
- * @param in2 Second object.
- * @param in3 Third object.
- * @param in4 Fourth object.
- * @param in5 Fifth object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
+ * @param[in] in3 Third object.
+ * @param[in] in4 Fourth object.
+ * @param[in] in5 Fifth object.
  * 
  * @return TBundle A Bundle5 with references to <tt>in1</tt>, <tt>in2</tt>, <tt>in3</tt>, <tt>in4</tt>,
  *                 and <tt>in5</tt>.
@@ -480,7 +474,7 @@ SEQAN_CHECKPOINT
  *
  * @signature TSize length(pipe);
  *
- * @param[in] pipe The Pipe to query for its size.
+ * @param[in] pipe  The Pipe to query for its size.
  * @return    TSize The size of the pipe.
  */
 

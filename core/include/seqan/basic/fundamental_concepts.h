@@ -280,7 +280,7 @@ private:
 // For now we just test for convertible to bool.
 
 /*!
- * @fn requireBooleanExpr
+ * @fn ConceptChecking#requireBooleanExpr
  * @headerfile <seqan/basic.h>
  * @brief Tests for a boolean expression.
  *

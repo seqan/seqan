@@ -337,8 +337,8 @@ struct usage_requirements
  *
  * This macro should be used to introduce a block (enclosed with curly braces) of valid expressions within a newly
  * defined concept.  Valid expressions should test for available functions, operators and the correctness of return
- * types.  Use helper functions, e.g. @link ignoreUnusedVariableWarning @endlink, @link requireBooleanExpr @endlink and
- * @link sameType @endlink.
+ * types.  Use helper functions, e.g. @link ignoreUnusedVariableWarning @endlink,
+ * @link ConceptChecking#requireBooleanExpr @endlink and @link ConceptChecking#sameType @endlink.
  *
  * @section Examples
  *
@@ -355,7 +355,7 @@ struct usage_requirements
  * };
  * @endcode
  *
- * @see requireBooleanExpr
+ * @see ConceptChecking#requireBooleanExpr
  * @see ConceptChecking#SEQAN_CONCEPT
  * @see ConceptChecking#SEQAN_CONCEPT_REFINE
  */
@@ -549,7 +549,7 @@ inline void functionRequires(Model* = 0)
 
 /*!
  * @fn ignoreUnusedVariableWarning
- * @headefile <seqan/basic.h>
+ * @headerfile <seqan/basic.h>
  * @brief Removes unused variable warning.
  *
  * @signature void ignoreUnusedVariableWarning(x);
@@ -857,7 +857,7 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
 // ============================================================================
 
 /*!
- * @fn sameType
+ * @fn ConceptChecking#sameType
  * @brief Tests for equality of types.
  *
  * @signature void sameType(x, y);

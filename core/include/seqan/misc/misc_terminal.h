@@ -119,7 +119,7 @@ inline bool isTerminal()
  *
  * @signature bool isAnsiColorTerminal();
  *
- * @return bool true if we are in a terminal and the terminal interprets ANSI color code.s
+ * @return bool true if we are in a terminal and the terminal interprets ANSI color code.
  *
  * @section Remarks
  *

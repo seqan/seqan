@@ -96,8 +96,6 @@ namespace seqan {
  *                smallest value of the score type @endlink is used to return the minimal value of the selected score
  *                type and no alignment is computed.
  * 
- * @section Remarks
- * 
  * There exist multiple overloads for this function with four configuration dimensions.
  * 
  * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
