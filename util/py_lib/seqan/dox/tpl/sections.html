@@ -286,7 +286,7 @@ Render the member functions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
@@ -352,7 +352,7 @@ Render the member typedefs overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_typedef'] %}
 <h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
@@ -416,7 +416,7 @@ Render the interface functions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
@@ -541,7 +541,7 @@ Render the interface metafunctions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_metafunction'] %}
 <h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
@@ -597,7 +597,7 @@ Render the member variables overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_variable'] %}
 <h3 data-toc="hidden">{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
