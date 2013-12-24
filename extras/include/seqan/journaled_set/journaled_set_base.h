@@ -165,9 +165,8 @@ typedef Tag<JournaledCompact_> JournaledCompact;
  * @signature template <[typename TStrategy]>
  *            struct GlobalAlign;
  *
- * @tparam TStrategy The strategy to use to compute the journal.
- *
- * @section Remarks
+ * @tparam TStrategy The strategy to use to compute the journal, defaults to
+ *                   @link JoinStrategiesTags#JournaledManhattan @endlink.
  *
  * If @link JoinStrategiesTags#JournaledManhattan @endlink is selected, then the resulting @link JournaledString
  * @endlink consists of one insertion node covering the complete joined sequence.
@@ -206,9 +205,8 @@ struct GlobalAlign{};
  * @signature template <[typename TStrategy]>
  *            struct GlobalChain;
  *
- * @tparam TStrategy The strategy used to compute the journal.
- *
- * @section Remarks
+ * @tparam TStrategy The strategy used to compute the journal (defaults to @link
+ *                   JoinStrategiesTags#JournaledManhattan @endlink).
  *
  * The JournaledManhattan strategy fills the gaps between the anchors with a single insertion node whil the
  * corresponding part of the reference sequence is deleted.

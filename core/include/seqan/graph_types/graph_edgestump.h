@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class EdgeStump;
  *
  * @tparam TCargo       The cargo type of an edge.  The cargo can be used to store arbitrary information with an
- *                      edge or be <tt>void</tt.>.  Default: <tt>void</tt>.
+ *                      edge or be <tt>void</tt>.  Default: <tt>void</tt>.
  * @tparam IS_LIST      A bool value that indicates whether it is a list or not.  Default: <tt>true</tt>.
  * @tparam STORE_SOURCE A bool value that indicates whether the source is stored in the EdgeStump or not.
  *                      Default: <tt>false</tt>.

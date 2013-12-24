@@ -1129,15 +1129,13 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn Index#resizeVertexMap
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Initializes a vertex map.
  * 
- * @signature void resizeVertexMap(index, pm)
+ * @signature void resizeVertexMap(index, pm);
  * 
- * @param index An index with a suffix tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
- * @param pm An External Property Map.  * 
+ * @param[in]     index An index with a suffix tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
+ * @param[in,out] pm    An External Property Map.
  */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
@@ -1917,24 +1915,27 @@ TA
 //TODO(singer): The summary is not entirely true!!!
 /*!
  * @fn Index#begin
- * 
  * @brief Returns an iterator pointing to the root not of the virtual string tree of the index.
+ * @signature TIterator begin(index, tag);
  * 
- * @signature TIterator begin(index, tag)
- * 
- * @param index The index to be traversed. Types: @link IndexEsa @endlink, @link IndexDfi @endlink, @link IndexWotd
- *              @endlink, @link FMIndex @endlink
- * @param tag The specialisation of the iterator to be returned by the function.
- *            Types: @link VSTreeIterator @endlink
+ * @param[in] index The index to be traversed.  Types: @link IndexEsa @endlink, @link IndexDfi @endlink,
+ *                  @link IndexWotd @endlink, @link FMIndex @endlink.
+ * @param[in] tag   The specialisation of the iterator to be returned by the function.
+ *                  Types: @link VSTreeIterator @endlink
  * 
  * @return TIterator Returns an iterator pointing to the root not of the virtual string tree of the index. The type is
- * the result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type
- * @section Example
+ *                   the result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type
+ *
+ * @section Examples
  * 
  * The following example shows the usage of the @Function.begin@ function. Note that in the first case @link Index#begin @endlink
  * returns an iterator pointing to the root node, while in the second case @link Index#begin @endlink returns a pointer to the
  * left most node.
+ *
  * @include demos/index/index_begin_atEnd_representative.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_begin_atEnd_representative.cpp.stdout
  */
 	template < typename TText, typename TIndexSpec, class TSpec >

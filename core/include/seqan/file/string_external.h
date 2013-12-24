@@ -68,11 +68,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
  *
- * @section Remarks
+ * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>.  Thus, with this configuration at
+ * most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
  *
- * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>.  Thus, with this configuration at most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
+ * For a larger size type use @link ExternalConfigLarge @endlink.
  *
- * For a larger size type use ExternalConfigLarge.
+ * @see ExternalConfigLarge
  */
 
 /*!
@@ -88,6 +89,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *                   calculations.  Default: 2<sup>20</sup>.
  * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ *
+ * @see ExternalConfig
  *
  * @section Remarks
  *
@@ -116,6 +119,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class ExternalString External String
+ * @extends String
  * @headerfile <seqan/file.h>
  * @brief String that is stored in external memory.
  *
@@ -125,8 +129,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TValue  The type that is used for the items/characters stored in the string.
  * @tparam TConfig A structure to confgure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
  *                 ExternalConfig, ExternalConfigLarge, and ExternalConfigSize.
- *
- * @section Remarks
  *
  * The External String enables to access sequences larger than the available internal memory (RAM) by using external
  * memory (e.g. Hard disk, Network storage, ...) via a File object.  Sequences of nearly arbitrary size can be accessed

@@ -56,8 +56,10 @@ namespace seqan {
  * 
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
  * 
- * @signature template <typename TSpec = void>
+ * @signature template <[typename TSpec]>
  *            struct FMIndexConfig;
+ *
+ * @tparam TSpec The specializating type, defaults to <tt>void</tt>.
  *
  * @var unsigned FMIndexConfig::SAMPLING
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the @link
