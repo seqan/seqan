@@ -2086,7 +2086,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_EQ(expression1, expression2);
  * @signature SEQAN_ASSERT_EQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2109,10 +2114,15 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are not equal, as defined by the matching call to the <tt>operator!=(,)</tt>.
  * 
- * @signature SEQAN_ASSERT_NEQ(expression);
- * @signature SEQAN_ASSERT_NEQ_MSG(expression, message[, parameters]);
+ * @signature SEQAN_ASSERT_NEQ(expression1, expression2);
+ * @signature SEQAN_ASSERT_NEQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2139,7 +2149,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_LT(expression1, expression2);
  * @signature SEQAN_ASSERT_LT(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2165,9 +2180,14 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_LEQ(expression1, expression2)
  * @signature SEQAN_ASSERT_LEQ_MSG(expression1, expression2, comment[,
  *            parameters])
- * 
- * @section Remarks
- * 
+ *
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
+ *
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2195,7 +2215,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_GT(expression1, expression2);
  * @signature SEQAN_ASSERT_GT_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
@@ -2224,7 +2249,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_GEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_GEQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2244,12 +2274,18 @@ SEQAN_DEFINE_TEST(test_skipped)
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_IN_DELTA
  * 
- * @brief Test that the given expression can be coerced to <tt>true</tt>.
+ * @brief Test that a value <tt>y</tt> lies within an <tt>delta</tt> environment of a value <tt>x</tt>.
  * 
  * @signature SEQAN_ASSERT_IN_DELTA(x, y, delta);
  * @signature SEQAN_ASSERT_IN_DELTA_MSG(x, y, delta, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] x           The value to center the environment in.
+ * @param[in] y           The value to check whether it falls within the environment.
+ * @param[in] delta       The environment size.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2972,18 +3008,15 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * 
  * This only works when using the SeqAn SVN checkout!
  * 
- * @section Remarks
- * 
  * The pointed to string is initialized on program startup by the code generated by SEQAN_BEGIN_TESTSUITE.
  * 
  * @section Examples
  * 
  * @code{.cpp}
- * const char *p = SEQAN_PATH_TO_ROOT);
- * char buffer[1000];
- * strcpy(buffer, p);
- * strcat(buffer, "/tests/files/example.txt");
- * FILE *f = fopen(buffer, "w");
+ * CharString buffer = SEQAN_PATH_TO_ROOT();
+ * append(buffer, "/core/tests/files/example.txt");
+ *
+ * FILE *f = fopen(toCString(buffer), "w");
  * fprintf(f, "Test Data");
  * fclose(f);
  * @endcode

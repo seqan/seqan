@@ -54,33 +54,36 @@
 // ============================================================================
 
 /*!
- * @macro SEQAN_EXCEPTIONS
+ * @defgroup ExceptionHandling SeqAn Exception Handling
+ * @brief Macros supporting exception handling on various platforms.
+ */
+
+/*!
+ * @macro ExceptionHandling#SEQAN_EXCEPTIONS
  * @headerfile <seqan/basic.h>
  * @brief Determines whether exceptions are enabled or not.
  * 
- * @signature SEQAN_EXCEPTIONS
+ * @signature #define SEQAN_EXCEPTIONS
  *
- * @see SEQAN_TRY
- * @see SEQAN_CATCH
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_CATCH
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  */
 
 #define SEQAN_EXCEPTIONS    __EXCEPTIONS
 
 /*!
- * @macro SEQAN_TRY
+ * @macro ExceptionHandling#SEQAN_TRY
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ try keyword.
  * 
  * @signature SEQAN_TRY {} SEQAN_CATCH() {}
- *
- * @section Remarks
  * 
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the try block is always executed".
+ * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the try block is always executed.
  * 
- * @see SEQAN_CATCH
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_CATCH
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  *
  * @section Examples
@@ -100,44 +103,40 @@
  */
 
 /*!
- * @macro SEQAN_CATCH
+ * @macro ExceptionHandling#SEQAN_CATCH
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ catch keyword.
  *
  * @signature SEQAN_TRY {} SEQAN_CATCH() {}
  *
- * @section Remarks
+ * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the catch block is never executed.
  *
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the catch block is never executed".
- *
- * @see SEQAN_TRY
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  *
  * @section Examples
  *
- * See @link SEQAN_TRY @endlink for a full example.
+ * See @link ExceptionHandling#SEQAN_TRY @endlink for a full example.
  */
 
 /*!
- * @macro SEQAN_THROW
+ * @macro ExceptionHandling#SEQAN_THROW
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ throw keyword.
  *
  * @signature SEQAN_THROW(Exception);
  *
- * @section Remarks
+ * When exceptions are disabled, i.e. AssertMacros#SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL.
  *
- * When exceptions are disabled, i.e. AssertMacros#SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL".
- *
- * @see SEQAN_TRY
- * @see SEQAN_CATCH
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_CATCH
  * @see AssertMacros#SEQAN_FAIL
  * @see Exception
  *
  * @section Examples
  *
- * See @link SEQAN_TRY @endlink for a full example.
+ * See @link ExceptionHandling#SEQAN_TRY @endlink for a full example.
  */
 
 #ifdef SEQAN_EXCEPTIONS

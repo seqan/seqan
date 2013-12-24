@@ -85,31 +85,35 @@ for @Class.Index@ based substring searches.
 /*!
  * @defgroup IndexFindAlgorithm Index Find Algorithm
  * @brief Tag to specify the index search algorithm.
- * @section Remarks
+ *
  * These tags can be used to specify the @link Finder#find @endlink algorithm for @link
  * Index @endlink based substring searches.
+ *
  * @see Finder
+ *
  * @tag IndexFindAlgorithm#FinderSTree
  * @brief Suffix tree search.
- * @section Remarks
+ *
  * Exact string matching using a suffix tree.
+ *
  * @tag IndexFindAlgorithm#PizzaChiliFinder
- * @brief Finds an occurrence in a @link Pizza & Chili Index @endlink index.
- * @section Remarks
+ * @brief Finds an occurrence in a @link PizzaChiliIndex @endlink index.
+ *
  * The actual algorithm used for searching depends on the @link PizzaChiliIndexTags @endlink used.
+ *
  * @tag IndexFindAlgorithm#QGramFindLookup
- * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index
- *        using the hash table.
+ * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index using the hash table.
+ *
  * @tag IndexFindAlgorithm#EsaFindLcpe
  * @brief Binary search using lcp values.
- * @section Remarks
- * Exact string matching using a suffix array binary search and a lcp-interval
- * tree.
+ *
+ *
+ * Exact string matching using a suffix array binary search and a lcp-interval tree.
+ *
  * @tag IndexFindAlgorithm#EsaFindMlr
  * @brief Binary search with mlr-heuristic.
- * @section Remarks
- * Exact string matching using a suffix array binary search with the mlr-
- * heuristic.
+ *
+ * Exact string matching using a suffix array binary search with the mlr-heuristic.
  */
 	// finder tags
     struct FinderMlr_;     // simple Suffix Array finder with mlr-heuristic

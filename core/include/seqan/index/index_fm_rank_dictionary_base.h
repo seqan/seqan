@@ -48,12 +48,12 @@ namespace seqan {
 /*!
  * @defgroup RankDictionaryFibres RankDictionary Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
- *
- * @tag RankDictionaryFibres#FibreRanks
- * @brief The string set containing a bit string for each character.
  * 
  * @see RankDictionary#Fibre
  * @see RankDictionary#getFibre
+ *
+ * @tag RankDictionaryFibres#FibreRanks
+ * @brief The string set containing a bit string for each character.
  */
 
 

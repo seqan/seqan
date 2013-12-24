@@ -161,9 +161,7 @@ typedef uint8_t __uint8;   // nolint
  *
  * @signature #define SEQAN_CXX_STANDARD
  *
- * @section Remarks
- *
- * Note that this auto-detection is not perfect and support differs.
+ * @note This this auto-detection is not perfect and support differs.
  */
 
 // detect gcc C++11 support

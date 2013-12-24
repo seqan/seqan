@@ -263,8 +263,6 @@ struct concept_check_<void(*)(Model)>
  * 
  * @param concept Concept specialized with a the type that should be checked.
  * 
- * @section Remarks
- * 
  * This macro is a compile-time assertion and requires the concept specialized
  * with the tested types to compile. The check neither consumes memory nor
  * running time. The macro can be used at the beginning of a function or within
@@ -598,8 +596,6 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  * 
- * @section Remarks
- * 
  * A concept is implemented as a template struct with name <tt>name</tt> and
  * arguments <tt>params</tt>. The concept checking should be part of the struct
  * definition. Associated types should be checked via @link ConceptChecking#SEQAN_CONCEPT_ASSERT
@@ -713,8 +709,6 @@ private:
  *                        sequence of the Boost Preprocessor Library, read
  *                        <a href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>
  * 
- * @section Remarks
- * 
  * A concept is implemented as a template struct with name <tt>name</tt> and
  * arguments <tt>params</tt>. The struct inherits all refined concept structs.
  * The concept checking should be part of the struct definition. For more
@@ -782,7 +776,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
         SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_REFINE_superclass,params,refinedConcepts)
 
 /*!
- * @macro SEQAN_CONCEPT_IMPL
+ * @macro ConceptChecking#SEQAN_CONCEPT_IMPL
  * @brief Defines which concepts a model fulfills.
  * @headerfile seqan/basic.h
  * 
@@ -795,8 +789,6 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *                            href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Model type, i.e. an identifier or an identifier with template
  *             arguments.
- * 
- * @section Remarks
  * 
  * The metafunction @link Is @endlink can be used to determine whether a class
  * models (fulfills) a concepts. A model of a concept must pass the concept
@@ -905,8 +897,6 @@ void sameType(T, T) { }
  * @return Type @link Logical Values.tag.True @endlink/<tt>true</tt> if
  *              <tt>TConcept</tt> is a fulfilled concept, otherwise @link
  *              Logical Values.tag.False @endlink/<tt>false</tt>.
- * 
- * @section Remarks
  * 
  * The @link Is @endlink-metafunction can be used to test types for fulfilling a concept without causing compilation
  * errors.  If <tt>True</tt> or <tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept test via @link

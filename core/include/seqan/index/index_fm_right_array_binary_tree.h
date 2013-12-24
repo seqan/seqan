@@ -63,11 +63,8 @@ class RightArrayBinaryTree;
 */
 /*!
  * @defgroup RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        RightArrayBinaryTree @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
  * 

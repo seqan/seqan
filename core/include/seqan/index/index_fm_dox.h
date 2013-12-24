@@ -106,7 +106,6 @@
  * @see Index#getFibre
  * 
  * @tag PrefixSumTableFibres#FibreEntries
- * 
  * @brief The entries in the prefix sum table.
  */
 
@@ -376,22 +375,13 @@
 /*!
  * @defgroup SequenceBitMaskFibres SequenceBitMask Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
- *
- * @tag SequenceBitMaskFibres#FibreBitStrings
- * @brief The string set containing a bit string for each character.
  * 
  * @see Fibre
  * @see Index#getFibre
+ *
+ * @tag SequenceBitMaskFibres#FibreBitStrings
+ * @brief The string set containing a bit string for each character.
  */
-
-
-
-
-
-
-
-
-
 
 
 /*!
@@ -449,8 +439,6 @@
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        RankSupportBitString @endlink.
  * 
- * @section Remarks
- * 
  * These tags can be used to get @link Fibre Fibres @endlink of a rank support
  * bit string.
  * 
@@ -458,15 +446,12 @@
  * @see Index#getFibre
  * 
  * @tag RankSupportBitStringFibres#FibreSuperBlocks
- * 
  * @brief The super block string.
  * 
  * @tag RankSupportBitStringFibres#FibreBits
- * 
  * @brief The bit string.
  * 
  * @tag RankSupportBitStringFibres#FibreBlocks
- * 
  * @brief The block string.
  */
 
@@ -737,11 +722,9 @@
  * @see Index#getFibre
  * 
  * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
- * 
  * @brief The bit string encoding the position of the sentinel sign.
  * 
  * @tag SentinelRankDictionaryFibres#FibreRankDictionary
- * 
  * @brief The rank dictionary.
  */
 

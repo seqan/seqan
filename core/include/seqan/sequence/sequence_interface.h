@@ -53,10 +53,8 @@ namespace seqan {
 // ============================================================================
 
 /*!
- * @defgroup OverflowStrategyTags
+ * @defgroup OverflowStrategyTags Overflow Strategy Tags
  * @brief The strategy for resizing containers.
- * 
- * @section Remarks
  * 
  * Changing the capacity of a container can invalidate the iterators of this container.
  * 

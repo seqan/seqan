@@ -291,14 +291,6 @@ typedef Tag<GoEnd_> GoEnd;
 // Tag Serial
 // ----------------------------------------------------------------------------
 
-/*!
- * @tag Serial
- * @headerfile <seqan/basic.h>
- * @brief Tag to select a non-parallel implementation of an algorithm.
- *
- * @signature typedef<Serial_> Serial;
- */
-
 /**
 .Tag.Serial:
 ..cat:Parallelism

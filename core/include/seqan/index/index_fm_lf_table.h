@@ -70,10 +70,7 @@ struct LF;
 
 /*!
  * @defgroup LFTableFibres LF Table Fibres
- * 
  * @brief Tag to select a specific fibre of a @link LF @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a @link LF @endlink.
  * 
@@ -81,17 +78,13 @@ struct LF;
  * @see Index#getFibre
  * 
  * @tag LFTableFibres#FibrePrefixSums
- * 
  * @brief The prefix sum table of the lf table.
  * 
  * @tag LFTableFibres#FibreBwt
- * 
  * @brief The occurrence table of the lf table.
  *
  * @tag LFTableFibres#FibreSentinels
- * 
  * @brief The type of the senitnels.
-
  */
 
 struct FibrePrefixSums_;

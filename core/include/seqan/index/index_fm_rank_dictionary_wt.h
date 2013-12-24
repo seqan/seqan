@@ -69,23 +69,18 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 */
 /*!
  * @defgroup WaveletTreeFibres WaveletTree Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
  * 
- * @section Remarks
- * 
  * These tags can be used to get @link Fibre Fibres @endlink of a @link WaveletTree @endlink.
- * 
- * @tag WaveletTreeFibres#FibreTreeStructure
- * 
- * @brief The wavelet tree structure of the wavelet tree.
- * 
- * @tag WaveletTreeFibres#FibreRanks
- * 
- * @brief A string set containing a rank support bit string for each node in the tree.
  *
  * @see Fibre
  * @see Index#getFibre
+ * 
+ * @tag WaveletTreeFibres#FibreTreeStructure
+ * @brief The wavelet tree structure of the wavelet tree.
+ * 
+ * @tag WaveletTreeFibres#FibreRanks
+ * @brief A string set containing a rank support bit string for each node in the tree.
  * 
  */
 

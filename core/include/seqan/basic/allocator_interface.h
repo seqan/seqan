@@ -55,7 +55,7 @@ template <typename TValue, typename TSpec> struct Holder;
 // ============================================================================
 
 /*!
- * @defgroup AllocatorUsageTags Allocator Usage
+ * @defgroup AllocatorUsageTags Allocator Usage Tags
  * @brief The purpose of an allocated memory block.
  * 
  * @tag AllocatorUsageTags#TagAllocateUnspecified
