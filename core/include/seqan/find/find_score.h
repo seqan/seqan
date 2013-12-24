@@ -58,8 +58,6 @@ struct DPSearch {};
  * @tparam TScore  The scoring function. Types: Score
  * @tparam TNeedle The needle type. Types: String
  * 
- * @section Remarks
- * 
  * The algorithm is based on the Sellers/Needleman-Wunsch dynamic progamming algorithm. The <tt>Pattern</tt> object only
  * contains the right-most column of the dynamic programming matrix.
  */

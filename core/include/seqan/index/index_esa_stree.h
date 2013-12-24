@@ -91,8 +91,6 @@ ttobe
  * @tparam TContainer Type of the container that can be iterated. Types:
  *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMIndex @endlink
  * 
- * @section Remarks
- * 
  * This iterator is a pointer to a node in the string tree of a given text. Depending on the index this can either be a
  * suffix or prefix tree/trie.  Every node can uniquely be mapped to an interval of suffices or prefixes.
  *
@@ -126,7 +124,8 @@ ttobe
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
  *
  * @include demos/index/index_iterator.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * 
  * be
  * beornottobe
@@ -165,8 +164,8 @@ ttobe
  * @headerfile seqan/index.h
  *
  * @brief Type of a string representing the characters of edges.
- * @signature template <typename TSpec>
- *            EdgeLabel<TSpec>::Type
+ * @signature EdgeLabel<TSpec>::Type;
+ *
  * @tparam TSpec Tag to specify the object of which the type of the edge labels is requested.
  *
  * @return Type of a string representing the characters of edges.
@@ -224,8 +223,6 @@ The iterator starts in the root node by default.
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
  *                @link IndexWotd @endlink, @link FMIndex @endlink, @link IndexSa @endlink
  * 
- * @section Remarks
- * 
  * If not copy-constructed the @link TopDownIterator @endlink starts in the root node of the virtual tree/trie.
  * 
  * @section Note 
@@ -238,16 +235,14 @@ The iterator starts in the root node by default.
  * 
  * @brief Constructor
  * 
- * @signature Iterator(index[, vertexDesc])
- * @signature Iterator(iterator)
+ * @signature Iter::Iter(index[, vertexDesc]);
+ * @signature Iter::Iter(iterator);
  * 
- * @param index An index object.
- * @param iterator Another TopDown iterator. (copy constructor) Types: TopDown
- *                 Iterator, TopDownHistory Iterator
- * @param vertexDesc The vertex descriptor of a node the iterator should start
- *                   in. The iterator starts in the root node by default.
- * 
- * @section Remarks
+ * @param[in] index An index object.
+ * @param[in] iterator Another TopDown iterator. (copy constructor) Types: TopDown
+ *                    Iterator, TopDownHistory Iterator
+ * @param[in] vertexDesc The vertex descriptor of a node the iterator should start
+ *                       in. The iterator starts in the root node by default.
  * 
  * If not copy-constructed the @link TopDownIterator @endlink starts in the
  * root node of the virtual tree.
@@ -368,15 +363,14 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
  *                @link IndexWotd @endlink, @link FMIndex @endlink, @link IndexSa @endlink
  *
- * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator&lt;TContainer, TopDown&lt;ParentLinks&lt;TSpec&gt; &gt; &gt;::Type (which is Iter&lt;TContainer, VSTree&lt;ParentLinks&lt;TopDown&lt;TSpec&gt; &gt; &gt; &gt;).
- *
- * 
- * @section Remarks
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *       Iterator&lt;TContainer, TopDown&lt;ParentLinks&lt;TSpec&gt; &gt; &gt;::Type (which is Iter&lt;TContainer,
+ *       VSTree&lt;ParentLinks&lt;TopDown&lt;TSpec&gt; &gt; &gt; &gt;).
  * 
  * If not copy-constructed the @link TopDownHistoryIterator @endlink starts in the root node of the string tree.
  * Depending on the depth-first search mode the root is not the first DFS node. To go to the first DFS node use @link
  * VSTreeIterator#goBegin @endlink.
+ *
  * @section Example
  *
  * @link DemoConstraintIterator @endlink
@@ -386,14 +380,12 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * 
  * @brief Constructor
  * 
- * @signature Iterator(index)
- * @signature Iterator(iterator)
+ * @signature Iter::Iter(index);
+ * @signature Iter::Iter(iterator);
  * 
- * @param index An index object.
- * @param iterator Another TopDownHistory iterator. (copy constructor) Types:
- *                 TopDownHistory Iterator
- * 
- * @section Remarks
+ * @param[in] index   An index object.
+ * @param[in] iterator Another TopDownHistory iterator. (copy constructor) Types:
+ *                     TopDownHistory Iterator
  * 
  * If not copy-constructed the @link TopDownHistoryIterator @endlink starts in
  * the root node of the string tree.
@@ -544,10 +536,8 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @signature Iter::Iter(index);
  * @signature Iter::Iter(iterator);
  * 
- * @param index An index object.
- * @param iterator A Bottom Up Iterator.
- * 
- * @section Remarks
+ * @param[in] index    An index object.
+ * @param[in] iterator A Bottom Up Iterator.
  * 
  * If not copy-constructed the @link BottomUpIterator @endlink starts in the first DFS node, which is the left-most leaf
  * of the virtual string tree.
@@ -777,9 +767,9 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Returns the length of the substring representing the path from root to <tt>iterator</tt> node.
  * 
- * @signature TSize repLength(iterator)
+ * @signature TSize repLength(iterator);
  * 
- * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * @param[in] iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
  * 
  * @return TSize The length of the sequence returned by @link VSTreeIterator#representative
  *               @endlink The return type is the result of the metafunction @link Size @endlink of the underlying 
@@ -845,9 +835,9 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Returns the zero-based node depth of the <tt>iterator</tt> node.
  * 
- * @signature TSize nodeDepth(iterator)
+ * @signature TSize nodeDepth(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TSize The length of the path from root to <tt>iterator</tt> node,
  *               e.g. 0 is returned for the root node. The type of the result
@@ -881,9 +871,9 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Returns the length of the substring representing the path from root to <tt>iterator</tt>'s parent node.
  * 
- * @signature TSize parentRepLength(iterator)
+ * @signature TSize parentRepLength(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TReturn The length of the sequence returned by @link VSTreeIterator#representative @endlink of the parent node. The result
  *                 type is the resultof the metafunction @link Size @endlink of the underlying index.
@@ -918,11 +908,11 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @brief Returns <tt>true</tt> iff the edge label from the <tt>iterator</tt>
  *        node to its parent is empty.
  * 
- * @signature bool emptyParentEdge(iterator)
+ * @signature bool emptyParentEdge(iterator);
  * 
- * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
+ * @param[in] iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
  * 
- * @return TReturn <tt>true</tt> if @link TopDownIterator#parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
+ * @return bool <tt>true</tt> if @link TopDownIterator#parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
  */
 
 	template < typename TIndex, typename TSpec >
@@ -961,11 +951,11 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Returns the last common ancestor of two tree nodes.
  * 
- * @signature bool lca(a, b, result)
+ * @signature bool lca(a, b, result);
  * 
- * @param a The first node. Types: @link TopDownHistoryIterator @endlink
- * @param b The second node. Types: @link TopDownHistoryIterator @endlink
- * @param result A reference to the resulting lca node. Types: @link TopDownHistoryIterator @endlink 
+ * @param[in]  a      The first node. Types: @link TopDownHistoryIterator @endlink
+ * @param[in]  b      The second node. Types: @link TopDownHistoryIterator @endlink
+ * @param[out] result A reference to the resulting lca node. Types: @link TopDownHistoryIterator @endlink 
  * 
  * @return TReturn <tt>false</tt> if the lca of <tt>a</tt> and <tt>b</tt> is the root node, otherwise <tt>true</tt>.
  */
@@ -1035,10 +1025,10 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @brief Returns the length of the longest-common-prefix of two suffix tree
  *        nodes.
  * 
- * @signature TSize lcp(a, b)
+ * @signature TSize lcp(a, b);
  * 
- * @param a The first node. Types: @link TopDownHistoryIterator @endlink
- * @param b The second node. Types: @link TopDownHistoryIterator @endlink
+ * @param[in] a The first node. Types: @link TopDownHistoryIterator @endlink
+ * @param[in] b The second node. Types: @link TopDownHistoryIterator @endlink
  * 
  * @return TSize The lcp-length of <tt>a</tt> and <tt>b</tt>. The type of the result is the result of the metafunction
  *               @link Size @endlink of the @link Index @endlink of the iterator
@@ -1198,9 +1188,9 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
  * 
  * @brief Returns an occurrence of the @link VSTreeIterator#representative @endlink substring in the index text.
  *
- * @signature TSAValue getOccurrence(iterator)
+ * @signature TSAValue getOccurrence(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TSAValue A position where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text. The
  * return type is the result of the metafunction @link SAValue @endlink of the index type of the iterator.
@@ -1235,16 +1225,14 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
  * @brief Returns the number of occurrences of @link VSTreeIterator#representative @endlink
  *        substring in the index text.
  *
- * @signature TSize countOccurrences(iterator)
+ * @signature TSize countOccurrences(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TSize The number of positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the
  *               text. The return type is the result of the metafunction @link Size @endlink of the index type of the
  *               iterator.
 
- * @section Remarks
- * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 
  * @section Examples
@@ -1295,17 +1283,15 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @brief Returns the suffix array interval borders of occurrences of @link VSTreeIterator#representative @endlink substring in the
  *        index text.
  * 
- * @signature Pair<TSize> range(iterator)
+ * @signature TPair range(iterator);
  * 
- * @param iterator An iterator of a string tree/trie.
+ * @param[in] iterator An iterator of a string tree/trie.
  * 
- * @return TReturn All positions where a substring occurs in the text are stored in a contiguous range of the suffix
- *                 array. <tt>range</tt> returns begin and end position of this range for occurrences of @link 
- *                 VSTreeIterator#representative @endlink. The type is @link Pair @endlink<@link Size @endlink< <tt>TIndex<tt> > >
- *                 with TIndex being the index type of the iterator.
+ * @return TPair All positions where a substring occurs in the text are stored in a contiguous range of the suffix
+ *               array. <tt>range</tt> returns begin and end position of this range for occurrences of @link 
+ *               VSTreeIterator#representative @endlink. The type is @link Pair @endlink<@link Size @endlink< <tt>TIndex<tt> > >
+ *               with TIndex being the index type of the iterator.
  *
- * @section Remarks
- * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  */
 	template < typename TText, typename TSpec, typename TDesc >
@@ -1348,14 +1334,12 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @brief Returns all occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
  * 
- * @signature Infix<TSA> getOccurrences(iterator)
+ * @signature TInfix getOccurrences(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
- * @return Infix&lt;TSA&gt; All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
- *                    Type @link SequenceConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
- * 
- * @section Remarks
+ * @return TInfix All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
+ *                Type @link SequenceConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
  * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 
@@ -1402,13 +1386,11 @@ otherwise the seed returned is one many.
  *
  * @deprecated Internal
  *
- * @signature Align alignment(iterator)
+ * @signature TAlign alignment(iterator);
  *
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
- * @return Align A local alignment corresponding to the seed of the <tt>iterator<tt>.
- *
- * @section Remark 
+ * @return TAlign A local alignment corresponding to the seed of the <tt>iterator<tt>.
  *
  * The function @link VSTreeIterator#representative @endlink must uniquely occur in every sequence (e.g. in Mums), 
  * otherwise the seed returned is one many. The return type is a @link Align @endlink object.
@@ -1504,9 +1486,9 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @brief Returns the characters left beside all occurrence of the @link
  *        VSTreeIterator#representative @endlink substring in the index text.
  * 
- * @signature getOccurrencesBwt(iterator)
+ * @signature TReturn getOccurrencesBwt(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
  * @return TReturn All positions where the @link VSTreeIterator#representative @endlink of
  *                 <tt>iterator</tt> occurs in the text.
@@ -1550,11 +1532,11 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Returns a substring representing the path from root to <tt>iterator</tt> node.
  * 
- * @signature Infix<TSting> representative(iterator)
+ * @signature TInfix representative(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
- * @return Infix&lt;TSting&gt; An @link InfixSegment @endlink of the text of an index. The type is <tt>Infix&lt;Fibre&lt;TIndex, FibreText&gt;::Type&gt;::Type</tt>.
+ * @return TInfix Infix&lt;TSting&gt; An @link InfixSegment @endlink of the text of an index. The type is <tt>Infix&lt;Fibre&lt;TIndex, FibreText&gt;::Type&gt;::Type</tt>.
  * 
  * @section Examples
  *
@@ -1613,9 +1595,9 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  * 
  * @brief Count the number of children of a tree node.
  * 
- * @signature TSize countChildren(iterator)
+ * @signature TSize countChildren(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TSize The number of children of a tree node. The type is the result of @link Size @endlink of the index type
  *               of the iterator.
@@ -1641,6 +1623,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  *      ++tdIterator;
  *  }
  * @endcode
+ *
  * @link DemoIndexCountChildren @endlink
  */
 	template < typename TIndex, typename TSpec >
@@ -1787,9 +1770,9 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  * 
  * @brief If <tt>false</tt> this node will be skipped during the bottom-up traversal.
  * 
- * @signature bool nodePredicate(iterator)
+ * @signature bool nodePredicate(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return bool Returns whether or not the node will be skipped. 
  * 
@@ -1822,9 +1805,9 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  * 
  * @brief If <tt>false</tt> this node and its subtree is concealed.
  * 
- * @signature bool nodeHullPredicate(iterator)
+ * @signature bool nodeHullPredicate(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return bool Returns whether or not a subtree is concealed.
  * 
@@ -1862,9 +1845,9 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Move iterator to the root node.
  * 
- * @signature void goRoot(iterator)
+ * @signature void goRoot(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in,out] iterator An iterator of a suffix tree.
  */
 
 	template < typename TText, typename TIndexSpec, class TSpec >
@@ -1916,6 +1899,7 @@ TA
 /*!
  * @fn Index#begin
  * @brief Returns an iterator pointing to the root not of the virtual string tree of the index.
+ *
  * @signature TIterator begin(index, tag);
  * 
  * @param[in] index The index to be traversed.  Types: @link IndexEsa @endlink, @link IndexDfi @endlink,
@@ -1967,11 +1951,9 @@ TA
  * 
  * @brief Iterates to the first position of a container.
  * 
- * @signature goBegin(iterator)
+ * @signature void goBegin(iterator);
  * 
- * @param iterator Object that iterates through
- * 
- * @section Remarks
+ * @param[in,out] iterator Object that iterates through
  * 
  * This function is equivalent to <tt>iterator = begin(container)</tt>.
  * 
@@ -1985,11 +1967,9 @@ TA
  * 
  * @brief Iterates to the first position of a container.
  * 
- * @signature goBegin(iterator)
+ * @signature void goBegin(iterator);
  * 
- * @param iterator Object that iterates through
- * 
- * @section Remarks
+ * @param[in,out] iterator Object that iterates through.
  * 
  * This function is equivalent to <tt>iterator = begin(container)</tt>.
  * 
@@ -2141,19 +2121,20 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @brief Iterates down one edge or a path in a tree.
  * 
- * @signature bool goDown(iterator)
- * @signature bool goDown(iterator, char)
- * @signature bool goDown(iterator, text[, lcp])
+ * @signature bool goDown(iterator);
+ * @signature bool goDown(iterator, char);
+ * @signature bool goDown(iterator, text[, lcp]);
  * 
- * @param char <tt>iterator</tt> goes down the edge beginning with <tt>char</tt>.
- * @param text <tt>iterator</tt> goes down the path representing <tt>text</tt>.  If <tt>text</tt> ends within an edge,
- *             <tt>iterator</tt> will point to the child-end of this edge.
- * @param lcp A reference of a size type. When <tt>goDown</tt> returns, <tt>lcp</tt> contains the length of the
- *            longest-common-prefix of <tt>text</tt> and a path beginning at the <tt>iterator</tt> node.  Types: @link String @endlink, @link Segment @endlink
- * @param iterator An iterator of a tree.
- * @return TReturn <tt>true</tt> if the edge or path to go down exists, otherwise <tt>false</tt>.
- * 
- * @section Remarks
+ * @param[in] char <tt>iterator</tt> goes down the edge beginning with <tt>char</tt>.
+ * @param[in] text <tt>iterator</tt> goes down the path representing <tt>text</tt>.  If <tt>text</tt> ends within
+ *                 an edge, <tt>iterator</tt> will point to the child-end of this edge.
+ * @param[in] lcp  A reference of a size type. When <tt>goDown</tt> returns, <tt>lcp</tt> contains the length of the
+ *                 longest-common-prefix of <tt>text</tt> and a path beginning at the <tt>iterator</tt> node.
+ *                 Types: @link String @endlink, @link Segment @endlink
+ * @param[in] iterator
+ *                 An iterator of a tree.
+ *
+ * @return bool <tt>true</tt> if the edge or path to go down exists, otherwise <tt>false</tt>.
  * 
  * <tt>goDown(iterator)</tt> goes down the leftmost edge in the tree, i.e. the edge beginning with the lexicographically
  * smallest character.
@@ -2161,8 +2142,10 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @section Example
  *
  * The following code shows a simple example how the function @link TopDownIterator#goDown @endlink is used.
+ *
  * @include demos/index/index_begin_range_goDown_representative_repLength.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @endcode
@@ -2484,17 +2467,19 @@ ttobe
  * 
  * @brief Iterates up one edge to the parent in a tree/trie.
  * 
- * @signature bool goUp(iterator)
+ * @signature bool goUp(iterator);
  * 
- * @param iterator An iterator of a string tree/trie.
+ * @param[in,out] iterator An iterator of a string tree/trie.
  * 
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  *
  * @section Example
  *
  * The following code shows how the function @link TopDownHistoryIterator#goUp @endlink is used.
+ *
  * @include demos/index/index_iterator.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * be
  * beornottobe
  * e
@@ -2571,12 +2556,12 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
  * 
  * @brief Returns the vertex descriptor of the parent node.
  * 
- * @signature TVertexDiscriptor nodeUp(iterator)
+ * @signature TVertexDiscriptor nodeUp(iterator);
  * 
- * @param iterator An iterator of a string tree/trie.
+ * @param[in,out] iterator An iterator of a string tree/trie.
  * 
- * @return TReturn The vertex descriptor of the parent node. The type is @link VertexDescriptor @endlink of TIndex. If
- *                 <tt>iterator</tt> points at the root node, the vertex descriptor of it is returned.
+ * @return TVertexDescriptor The vertex descriptor of the parent node. The type is @link VertexDescriptor @endlink of TIndex. If
+ *                           <tt>iterator</tt> points at the root node, the vertex descriptor of it is returned.
  */
 
 	// return vertex descriptor of parent's node
@@ -2622,9 +2607,9 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
  * 
  * @brief Iterates to the next sibling in a tree.
  * 
- * @signature bool goRight(iterator)
+ * @signature bool goRight(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in,out] iterator An iterator of a string tree.
  * 
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
@@ -2686,9 +2671,9 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
  * 
  * @brief Returns the length of the edge from the <tt>iterator</tt> node to its parent.
  * 
- * @signature TSize parentEdgeLength(iterator)
+ * @signature TSize parentEdgeLength(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in,out] iterator An iterator of a string tree.
  * 
  * @return TSize The returned value is equal to <tt>length(parentEdgeLabel(iterator))</tt> and its type is the result of
  *               the metafunction @link Size @endlink of the underlying index.
@@ -2719,9 +2704,9 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @brief Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
  * 
- * @signature TEdgeLabel parentEdgeLabel(iterator)
+ * @signature TEdgeLabel parentEdgeLabel(iterator);
  * 
- * @param iterator An iterator of a string tree/trie.
+ * @param[in] iterator An iterator of a string tree/trie.
  * 
  * @return TEdgeLabel Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
  *                    and its type is the result of the metafunction @link VSTreeIterator#EdgeLabel @endlink of the iterator.
@@ -2756,9 +2741,9 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @brief Returns the first character of the edge from an <tt>iterator</tt> node to its parent.
  * 
- * @signature TValue parentEdgeFirstChar(iterator)
+ * @signature TValue parentEdgeFirstChar(iterator);
  * 
- * @param iterator An iterator of a string tree.
+ * @param[in] iterator An iterator of a string tree.
  * 
  * @return TValue A single character of type <tt>Value&lt;TIndex&gt;::Type</tt> which is identical to
  *                 <tt>Value&lt;Fibre&lt;TIndex, EsaRawText&gt;::Type&gt;::Type</tt>.
@@ -2931,18 +2916,20 @@ TA
  * 
  * @brief Determines whether an virtual string tree iterator is at the end position.
  * 
- * @signature bool atEnd(iterator)
+ * @signature bool atEnd(iterator);
  * 
- * @param iterator An iterator.
+ * @param[in] iterator An iterator.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points behind the last item of the container, otherwise
- *                 <tt>false</tt>.
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points behind the last item of the container, otherwise
+ *              <tt>false</tt>.
  * 
  * @section Examples
  * 
  * The following example shows the usage of the @link VSTreeIterator#atEnd @endlink function.
+ *
  * @include demos/index/index_begin_atEnd_representative.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * A 
  * AA
  * ATAA
@@ -2966,18 +2953,20 @@ TA
  * 
  * @brief Determines whether an virtual string tree iterator is at the end position.
  * 
- * @signature bool atEnd(iterator)
+ * @signature bool atEnd(iterator);
  * 
- * @param iterator An iterator.
+ * @param[in] iterator An iterator.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points behind the last item of the container, otherwise
- *                 <tt>false</tt>.
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points behind the last item of the container, otherwise
+ *              <tt>false</tt>.
  * 
  * @section Examples
  * 
  * The following example shows the usage of the @link BottomUp#atEnd @endlink function.
+ *
  * @include demos/index/index_begin_atEnd_representative.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * A 
  * AA
  * ATAA
@@ -3039,16 +3028,19 @@ TA
  * 
  * @brief Test whether a tree iterator points to the root node.
  * 
- * @signature bool isRoot(iterator)
+ * @signature bool isRoot(iterator);
  * 
- * @param iterator An iterator of a tree.
+ * @param[in] iterator An iterator of a tree.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the root of the tree, otherwise <tt>false</tt>.
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points to the root of the tree, otherwise <tt>false</tt>.
+ *
  * @section Example
  *
  * The following example shows the usage of the @Function.isRoot@ function. 
+ *
  * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
- * code{.txt}
+ *
+ * code{.output}
  * output:AA
  * ATAA
  * A
@@ -3097,14 +3089,12 @@ TA
  * 
  * @brief Test whether iterator points to a suffix.
  * 
- * @signature bool isRightTerminal(iterator)
+ * @signature bool isRightTerminal(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the node representing a suffix, otherwise
- *                 <tt>false</tt>. Types: <tt>bool<tt>
- * 
- * @section Remarks
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points to the node representing a suffix, otherwise
+ *              <tt>false</tt>.
  * 
  * Every leaf is also a right terminal (see @link VSTreeIterator#isLeaf @endlink), but not vice versa.
  */
@@ -3142,12 +3132,12 @@ TA
  * @brief Test whether the occurrences of an iterator's @link VSTreeIterator#representative @endlink mutually differ in the character
  *        left of the hits.
  * 
- * @signature bool isLeftMaximal(iterator)
+ * @signature bool isLeftMaximal(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
- * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
- *                 <tt>false</tt>. Types: <tt>bool<tt>
+ * @return bool <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
+ *              <tt>false</tt>.
  * 
  * @see VSTreeIterator#getOccurrences
  */
@@ -3208,12 +3198,12 @@ TA
  * 
  * @brief Test whether the characters left of the two occurrences of @link VSTreeIterator#representative @endlink are equal.
  * 
- * @signature bool isPartiallyLeftExtensible(iterator)
+ * @signature bool isPartiallyLeftExtensible(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
- * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
- *                 <tt>false</tt>.
+ * @return bool <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
+ *              <tt>false</tt>.
  * 
  * @see VSTreeIterator#getOccurrences
  */
@@ -3278,12 +3268,12 @@ TA
  * 
  * @brief Test whether the @link VSTreeIterator#representative @endlink occurs only once in every sequence.
  * 
- * @signature bool isUnique(iterator)
+ * @signature bool isUnique(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
- * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
- *                 <tt>false</tt>. Types: <tt> bool <tt>
+ * @return bool <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
+ *              <tt>false</tt>.
  * 
  * @see VSTreeIterator#getOccurrences
  */
@@ -3352,18 +3342,20 @@ Hit in sequence 0 at position 2
  * @brief Returns the number of sequences, which contain the @link
  *        VSTreeIterator#representative @endlink as a substring.
  * 
- * @signature int getFrequency(iterator)
+ * @signature int getFrequency(iterator);
  * 
- * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * @param[in] iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
  * 
- * @return TReturn The number of different sequences containing the @link
- *                 VSTreeIterator#representative @endlink.
+ * @return int The number of different sequences containing the @link VSTreeIterator#representative @endlink.
+ *
  * @section Example
  *
  * The following code how @link VSTreeIterator#getFrequency @endlink is used. Note that the result of alternative 1 and 2 is the same,
  * however alternative one copies a string which requires more memory.
+ *
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * SSI occurs in 2 sequences.
  * Hit in sequence 0 at position 5
  * Hit in sequence 1 at position 4
@@ -3433,12 +3425,12 @@ Hit in sequence 0 at position 2
  * 
  * @brief Test whether iterator points to a node with only leaf-children.
  * 
- * @signature bool childrenAreLeaves(iterator)
+ * @signature bool childrenAreLeaves(iterator);
  * 
- * @param iterator An iterator of a suffix tree.
+ * @param[in] iterator An iterator of a suffix tree.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to an inner node of the tree, whose children are leaves.
- *                 Otherwise it is <tt>false</tt>.
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points to an inner node of the tree, whose children are leaves.
+ *              Otherwise it is <tt>false</tt>.
  */
 	template < typename TIndex, class TSpec >
 	inline bool childrenAreLeaves(Iter<TIndex, VSTree<TSpec> > const &it) 
@@ -3465,11 +3457,11 @@ Hit in sequence 0 at position 2
  * 
  * @brief Test whether a tree iterator points to a leaf.
  * 
- * @signature bool isLeaf(iterator)
+ * @signature bool isLeaf(iterator);
  * 
- * @param iterator An iterator of a tree.
+ * @param[in] iterator An iterator of a tree.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to a leaf of the tree, otherwise <tt>false</tt>.
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points to a leaf of the tree, otherwise <tt>false</tt>.
  * 
  * @link DemoIndexCountChildren @endlink
  */

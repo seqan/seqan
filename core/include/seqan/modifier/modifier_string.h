@@ -67,9 +67,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * @tparam THost The host sequence.
  * @tparam TSpec The specialization tag, defaults to <tt>void</tt>.
  *
- * @section Remarks
- *
- * THost can also be a modified string, so you can create nest modified strings to create custom combinations.
+ * <tt>THost</tt> can also be a modified string, so you can create nest modified strings to create custom combinations.
  *
  * @section Examples
  *

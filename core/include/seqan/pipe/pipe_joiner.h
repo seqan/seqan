@@ -75,8 +75,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TInput2 The type of the second pipeline module this module reads from.
  * @tparam TInput3 The type of the third pipeline module this module reads from.
  * 
- * @section Remarks
- * 
  * The output type is a packed @link  Pair  @endlink or @link Triple @endlink of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
  */
 

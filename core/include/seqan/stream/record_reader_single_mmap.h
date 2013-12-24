@@ -60,8 +60,6 @@ namespace seqan {
  *
  * @tparam TMMapString The @link String @endlink to read from.
  *
- * @section Remarks
- *
  * This RecordReader does not have any buffers but uses the string directly.  You can use @link MMapString @endlink to
  * read from memory mapped files.
  *

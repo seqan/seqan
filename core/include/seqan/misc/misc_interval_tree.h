@@ -339,7 +339,7 @@ class IntervalTreeNode;
  * @var TString StoreIntervalsIntervalTreeNode::list1;
  * @brief @link AllocString @endlink of intervals sorted by begin point.
  *
- * @var String StoreIntervalsIntervalTreeNode::list;
+ * @var TString StoreIntervalsIntervalTreeNode::list;
  * @brief @link AllocString @endlink of intervals sorted by end point.
  */
 
@@ -1235,12 +1235,12 @@ struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
  * @signature void createIntervalTree(g, pm, intervals[, tag]);
  * @signature void createIntervalTree(g, pm, intervals, center[, tag]]);
  * 
- * @param intervalTree An interval tree Types: IntervalTree
- * @param intervals    Container of intervals.  A string of <tt>IntervalAndCargo&lt;TValue, TCargo&gt;</tt> objects, see
- *                     @link IntervalAndCargo @endlink. Types: AllocString
- * @param g            DirectedGraph to create interval tree in. Types: Graph
- * @param pm           Property map to use for the created interval tree.
- * @param tag          Tag for tree construction method;
+ * @param[in,out] intervalTree An interval tree Types: IntervalTree
+ * @param[in,out] g            DirectedGraph to create interval tree in. Types: @link Graph @endlink.
+ * @param[in,out] pm           Property map to use for the created interval tree.
+ * @param[in]     tag          Tag for tree construction method;
+ * @param[in]     intervals    Container of intervals.  A string of <tt>IntervalAndCargo&lt;TValue, TCargo&gt;</tt>
+ *                             objects, see @link IntervalAndCargo @endlink. Types: @link AllocString @endlink.
  */
 
 /**
@@ -1622,13 +1622,13 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
  * @signature void addInterval(intervalTree, begin, end[, cargo]);
  * @signature void addInterval(graph, propertyMap, interval);
  * 
- * @param cargo        Cargo to attach to the interval. Types: IntervalAndCargo
- * @param begin        Begin position of interval of type TValue.
- * @param end          End position of interval of type TValue.
- * @param graph        The directed graph that contains the topography of the interval tree.
- * @param interval     The interval to be added to the interval tree.
- * @param propertyMap  The property map containing the node properties of the interval tree.
- * @param intervalTree The interval tree to add the interval to. Types: IntervalTree
+ * @param[in,out] intervalTree The interval tree to add the interval to. Types: @link IntervalTree @endlink.
+ * @param[in]     interval     The interval to be added to the interval tree.
+ * @param[in]     begin        Begin position of interval of type TValue.
+ * @param[in]     end          End position of interval of type TValue.
+ * @param[in]     cargo        Cargo to attach to the interval. Types: @link IntervalAndCargo @endlink.
+ * @param[in,out] graph        The directed graph that contains the topography of the interval tree.
+ * @param[in,out] propertyMap  The property map containing the node properties of the interval tree.
  */
 
 
@@ -1796,11 +1796,13 @@ SEQAN_CHECKPOINT
  * @signature void findIntervals(intervalTree, queryBegin, queryEnd, result);
  * @signature void findIntervals(graph, propertyMap, query, result);
  * 
- * @param intervalTree An interval tree Types: IntervalTree
- * @param query        A query point.
- * @param queryBegin   The begin position of the query interval.
- * @param queryEnd     The end position of the query interval.
- * @param result       A reference to the result string of <tt>TCargo</tt> objects. Types: String
+ * @param[in]  intervalTree An IntervalTree.
+ * @param[in]  graph        The directed @link Graph graph @endlink that contains the topography of the interval tree.
+ * @param[in]  propertyMap  The property map containing the node properties of the interval tree.
+ * @param[in]  query        A query point.
+ * @param[in]  queryBegin   The begin position of the query interval.
+ * @param[in]  queryEnd     The end position of the query interval.
+ * @param[out] result       A reference to the result string of <tt>TCargo</tt> objects. Types: @link String @endlink.
  */
 
 /**
@@ -2040,12 +2042,12 @@ SEQAN_CHECKPOINT
  * @signature void findIntervalsExcludeTouching(intervalTree, query, result);
  * @signature void findIntervalsExcludeTouching(graph, propertyMap, query, result);
  * 
- * @param graph        The directed graph that contains the topography of the interval tree.
- * @param query        The TValue to query here.
- * @param propertyMap  The property map containing the node properties of the interval tree
- * @param result       The resulting string of cargos/ids of the intervals that contain the query point.  Should
- *                     be a string of TCargo. Types: String
- * @param intervalTree An interval tree Types: IntervalTree
+ * @param[in] intervalTree An interval tree Types: IntervalTree
+ * @param[in] graph        The directed graph that contains the topography of the interval tree.
+ * @param[in] query        The TValue to query here.
+ * @param[in] propertyMap  The property map containing the node properties of the interval tree
+ * @param[out] result      The resulting string of cargos/ids of the intervals that contain the query point.  Should
+ *                         be a string of TCargo. Types: String
  */
 
 /**
@@ -2163,10 +2165,10 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool removeInterval(intervalTree, iBegin, iEnd, iId);
  * 
- * @param intervalTree An interval tree Types: IntervalTree
- * @param iBegin       The begin position of the interval to be removed.
- * @param iEnd         The end position of the interval to be removed.
- * @param iId          The ID of the interval to be removed.
+ * @param[in,out] intervalTree An interval tree Types: IntervalTree
+ * @param[in]     iBegin       The begin position of the interval to be removed.
+ * @param[in]     iEnd         The end position of the interval to be removed.
+ * @param[in]     iId          The ID of the interval to be removed.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */

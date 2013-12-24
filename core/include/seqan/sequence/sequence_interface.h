@@ -1831,10 +1831,10 @@ _capacityReturned(T &,
  * @fn String#reserve
  * @brief Increases the capacity.
  * 
- * @signature TSize reserve(object, new_capacity[, tag]);
+ * @signature TSize reserve(str, new_capacity[, tag]);
  * 
- * @param[in,out] object      A container.
- * @param[in]     newCapacity The new capacity <tt>object</tt> will get.
+ * @param[in,out] str         The String to reserve space in.
+ * @param[in]     newCapacity The new capacity <tt>str</tt> will get.
  * @param[in]     tag         Specifies the strategy that is applied for changing the capacity.
  * 
  * @return TSize The amount of the requested capacity that was available.  That is the function returns the minimum of
@@ -1845,12 +1845,6 @@ _capacityReturned(T &,
  * Use @link SequenceConcept#resize @endlink if you want to change the size of a container.
  * 
  * @section Remarks
- * 
- * For std::basic_string STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
- * <tt>Insist</tt> and <tt>Generous</tt>.
- * 
- * For std::vector STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
- * <tt>Insist</tt> and <tt>Generous</tt>.
  * 
  * At the end of the operation, <tt>capacity(me)</tt> can be larger than <tt>new_capacity</tt>.  If
  * <tt>new_capacity</tt> is smaller than <tt>capacity(me)</tt> at the beginning of the operation, the operation need not
@@ -1961,9 +1955,9 @@ resize(T & me,
  * @headerfile <seqan/sequence.h>
  * @brief Makes free space in container
  * 
- * @signature TSize resizeSpace(object, size, posBegin, posEnd [, limit][, resizeTag]);
+ * @signature TSize resizeSpace(str, size, posBegin, posEnd [, limit][, resizeTag]);
  * 
- * @param[in,out] object    The container. Types: String
+ * @param[in,out] str       The String to modify.
  * @param[in]     size      Number of characters that should be freed.
  * @param[in]     posEnd    Position behind the last item in <tt>object</tt> that is to be destroyed.  If
  *                          <tt>posEnd == posBegin</tt>, no item in <tt>object</tt> will be destroyed.

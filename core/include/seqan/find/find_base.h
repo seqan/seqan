@@ -251,8 +251,6 @@ struct Needle<Segment<THost, TSpec> const>
  *
  * @return bool <tt>true</tt> if an occurence was found and <tt>false</tt> if not.
  *
- * @section Remarks
- *
  * Repeated calls of this function iterate through all occurences of <tt>pattern</tt>.
  *
  * @section Examples
@@ -361,8 +359,6 @@ Hit at position: 16
  *               Pigeonhole, Swift, Backtracking Default: The result of @link
  *               DefaultFinder @endlink
  * @tparam THaystack The haystack type. Types: String, Index
- * 
- * @section Remarks
  * 
  * <tt>position(finder)</tt> returns the position of the current hit in the haystack.  If <tt>THaystack</tt> is a set of
  * strings or an index of a set of strings, then <tt>position(finder)</tt> returns a @link Pair @endlink <tt>(hayNo,
@@ -744,8 +740,6 @@ SEQAN_CHECKPOINT
  * @param[in] finder The Finder to query.
  *
  * @return TInfix The @link SegmentableConcept#Infix @endlink of the match in the haystack.
- *
- * @section Remarks
  *
  * This function works only correct if the begin position of the match was already found, see @link Finder#findBegin @endlink
  *

@@ -354,8 +354,6 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
  *
  * @return bool <tt>true</tt> indicates a match, <tt>false</tt> indicates no match.
  *
- * @section Remarks
- *
  * The function <tt>find</tT> successfully called be called - that is an end position was found - before calling
  * findBegin to find a begin position.
  */

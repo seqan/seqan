@@ -529,8 +529,8 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
  *
  * @signature void setHost(js, str);
  *
- * @param js  The JournaledString to set the host for.
- * @param str The string to set as the host.
+ * @param[in,out] js  The JournaledString to set the host for.
+ * @param[in]     str The string to set as the host.
  */
 
 /**
@@ -935,8 +935,8 @@ getValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const 
  *
  * @signature TPos virtualToHostPosition(js, pos);
  *
- * @param js  The JournaledString to translate the position for.
- * @param pos The virtual position to translate.
+ * @param[in] js  The JournaledString to translate the position for.
+ * @param[in] pos The virtual position to translate.
  *
  * @return TPos Position in the host.
  */
@@ -976,8 +976,8 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  *
  * @signature TPos hostToVirtualPosition(js, pos);
  *
- * @param js  The JournaledString to translate the position for.
- * @param pos The host position to translate.
+ * @param[in] js  The JournaledString to translate the position for.
+ * @param[in] pos The host position to translate.
  *
  * @return TPos The virtual view position.
  */
@@ -1152,7 +1152,7 @@ getObjectId(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
  * @brief Returns whether a JournaledString has modifications.
  * @signature bool isFlat(js);
  *
- * @param js The JournaledString to query.
+ * @param[in] js The JournaledString to query.
  *
  * @return bool Indicates whether the string has been modified.
  */

@@ -83,16 +83,16 @@ typedef Tag<Equidistant_> Equidistant;
  * @signature Splitter::Splitter(beginPos, endPos[, subintervalCount]);
  * @signature Splitter::Splitter(beginPos, endPos, parallelTag);
  *
- * @param beginPos         Left interval boundary.
- * @param endPos           Right interval boundary.
- * @param subintervalCount Number of subintervals.  @link Splitter#length @endlink and @link Splitter#resize @endlink
- *                         can be used to retrieve or change the number of subintervals later.  Default: The minimum of
- *                         interval size and the number of available threads (returned by
- *                         <tt>omp_get_max_threads()</tt>).
- * @param parallelTag      Tag to generically enable/disable parallelism.  If its type is <tt>Parallel</tt>, the
- *                         default number of subintervals is used.  If it is <tt>Serial</tt>, only one subinterval
- *                         is used.  This tag should be used to write generic parallel algorithms and to switch
- *                         between parallel and serial variants.
+ * @param[in] beginPos         Left interval boundary.
+ * @param[in] endPos           Right interval boundary.
+ * @param[in] subintervalCount Number of subintervals.  @link Splitter#length @endlink and @link Splitter#resize
+ *                             @endlink can be used to retrieve or change the number of subintervals later.
+ *                             Default: The minimum of interval size and the number of available threads (returned by
+ *                             <tt>omp_get_max_threads()</tt>).
+ * @param[in] parallelTag      Tag to generically enable/disable parallelism.  If its type is <tt>Parallel</tt>, the
+ *                             default number of subintervals is used.  If it is <tt>Serial</tt>, only one subinterval
+ *                             is used.  This tag should be used to write generic parallel algorithms and to switch
+ *                             between parallel and serial variants.
  */
 
 /**

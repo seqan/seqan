@@ -126,7 +126,7 @@ struct Alloc {};
  *
  * @signature TStringSetLimits stringSetLimits(text);
  *
- * @param text The text to query for its string set limits.
+ * @param[in] text The text to query for its string set limits.
  *
  * @return TStringSetLimits The string set limits (of type @link TextConcept#StringSetLimits @endlink).
  */
@@ -137,9 +137,9 @@ struct Alloc {};
  *
  * @signature void posLocalToX(dst, localPos, limits);
  *
- * @param dst      The local or global position (pair or integer value) is written here.
- * @param localPos The local position.
- * @param limits   The string limits as returned by @link TextConcept#stringSetLimits @endlink.
+ * @param[in] dst      The local or global position (pair or integer value) is written here.
+ * @param[in] localPos The local position.
+ * @param[in] limits   The string limits as returned by @link TextConcept#stringSetLimits @endlink.
  */
 
 /*!
@@ -197,8 +197,8 @@ struct Alloc {};
  * @signature String::String()
  * @signature String::String(other)
  *
- * @param other The source for the copy constructor.  Can be of any @link SequenceConcept sequence @endlink type
- *              as long as <tt>other</tt>'s elements are convertible to the value type of this string.
+ * @param[in] other The source for the copy constructor.  Can be of any @link SequenceConcept sequence @endlink type
+ *                  as long as <tt>other</tt>'s elements are convertible to the value type of this string.
  *
  * Default and copy constructor are implemented.
  */
@@ -209,9 +209,9 @@ struct Alloc {};
  *
  * @signature TString String::operator=(other)
  *
- * @param other The other string.  Must be a sequence whose elements are convertible into this String's type.
+ * @param[in] other The other string.  Must be a sequence whose elements are convertible into this String's type.
  *
- * @returns TString Reference to the String objecta after assignment.
+ * @return TString Reference to the String objecta after assignment.
  */
 
 // TODO(holtgrew): The conversion functions rather belong into their own group than to the concept. The original documentation was a bit misleading and needs to be updated.
@@ -223,10 +223,10 @@ struct Alloc {};
  * 
  * @signature void posLocalize(result, pos, limits)
  * 
- * @param pos    A local or global position (pair or integer value).
- * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
- * @param result Reference to the resulting corresponding local position of
- *               <tt>pos</tt>.
+ * @param[in] pos    A local or global position (pair or integer value).
+ * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
+ * @param[in] result Reference to the resulting corresponding local position of
+ *                   <tt>pos</tt>.
  */
 
 /*!
@@ -236,8 +236,8 @@ struct Alloc {};
  * 
  * @signature TPos posGlobalize(pos, limits)
  * 
- * @param pos A local or global position (pair or integer value). Types: Pair
- * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
+ * @param[in] pos A local or global position (pair or integer value). Types: Pair
+ * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
  * @return TPos The corresponding global position of <tt>pos</tt>. If
  *                 <tt>pos</tt> is an integral type <tt>pos</tt> is returned. If
@@ -252,8 +252,8 @@ struct Alloc {};
  * 
  * @signature TSeqNo getSeqNo(pos[, limits]);
  * 
- * @param pos A position. Types: Pair
- * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
+ * @param[in] pos A position. Types: Pair
+ * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
  * @return TSeqNo A single integer value that identifies the string within the stringset <tt>pos</tt> points at. If
  *                <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns 0.If <tt>pos</tt> is a
@@ -269,8 +269,8 @@ struct Alloc {};
  * 
  * @signature TOffset getSeqOffset(pos[, limits]);
  * 
- * @param pos A position. Types: Pair
- * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
+ * @param[in] pos A position. Types: Pair
+ * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
  * @return TOffset A single integer value that identifies the position within the string <tt>pos</tt> points at.If
  *                 <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns <tt>pos</tt>.  If

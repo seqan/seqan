@@ -53,7 +53,7 @@ namespace seqan {
  * @tparam TInput The type of the pipeline module this module reads from.  Use Bundle2, Bundle3, etc. to read
  *                from more than one module.
  * 
- * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
+ * Use @link Pipe#Value @endlink to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
  * default).
  * 
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
@@ -189,8 +189,6 @@ namespace seqan {
  * @tparam TInput3 The type of the third object.
  * @tparam TInput2 The type of the second object.
  * @tparam TInput1 The type of the first object.
- * 
- * @section Remarks
  * 
  * Primarily used as an adaptor for pipes with three sources.
  * 
@@ -391,10 +389,32 @@ namespace seqan {
     template < typename TValue, typename TSize >
     struct AbstractSource {};
 
+/*!
+ * @mfn Pipe#Value
+ * @brief Return value type of the Pipe specialization.
+ *
+ * @signature Value<TPipe>::Type;
+ *
+ * @tparam TPipe The Pipe specialization to query.
+ *
+ * @return Type The resulting value type.
+ */
+
     template < typename TValue, typename TSize >
     struct Value< Pipe<void, AbstractSource<TValue, TSize> > > {
         typedef TValue Type;
     };
+
+/*!
+ * @mfn Pipe#Size
+ * @brief Return size type of the Pipe specialization.
+ *
+ * @signature Size<TPipe>::Type;
+ *
+ * @tparam TPipe The Pipe specialization to query.
+ *
+ * @return Type The resulting size type.
+ */
 
     template < typename TValue, typename TSize >
     struct Size< Pipe<void, AbstractSource<TValue, TSize> > > {
@@ -475,6 +495,7 @@ SEQAN_CHECKPOINT
  * @signature TSize length(pipe);
  *
  * @param[in] pipe  The Pipe to query for its size.
+ *
  * @return    TSize The size of the pipe.
  */
 
@@ -547,12 +568,10 @@ SEQAN_CHECKPOINT
  * 
  * @signature TValue front(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in] object A pop-passive pipeline module.
  * 
  * @return TValue The first element of the remaining input stream.  Return type is <tt>Value&lt;TObject&gt;::Type</tt>
  *                for <tt>object</tt> type <tt>TObject</tt>.
- * 
- * @section Remarks
  * 
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  * 
@@ -591,8 +610,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] pipe A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
- * 
- * @section Remarks
  * 
  * In contrast to Pipe#front this function also steps one element further.
  * 
@@ -688,11 +705,9 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool beginRead(object);
  * 
- * @param object A pop-passive pipeline module.
+ * @param[in,out] object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>beginRead</tt> rewinds the output stream, prepares <tt>object</tt> for succeeding reads, and typically calls
  * <tt>beginRead</tt> of the input pipeline modules.
@@ -732,11 +747,9 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool endRead(object);
  * 
- * @param object A pop-passive pipeline module.
+ * @param[in,out] object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>endRead</tt> closes the output stream, frees resources possibly allocated by beginRead, and typically calls
  * <tt>endRead</tt> of the input pipeline modules.

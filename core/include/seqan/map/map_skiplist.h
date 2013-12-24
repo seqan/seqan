@@ -48,12 +48,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief General purpose map container.
  * 
  * @signature template <typename TValue, typename TSpec>
- *            class Map;
+ *            class Map<TValue, Skiplist<TSpec> >;
  * 
  * @tparam TSpec  The specializing type.
  * @tparam TValue The type of value stored in the map.
- * 
- * @section Remarks
  * 
  * The skiplist takes in average an oberhead of only two pointers per value stored in the map.
  */
@@ -660,9 +658,7 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
  * @return TReference The first value in <tt>map</tt> of the given key, if there is any.  Otherwise, a new value
  *                    that is inserted to <tt>map</tt>.
  * 
- * @section Remarks
- * 
- * Do not change the key of a value in the map.
+ * @note Do not change the key of a value in the map.
  */
 
 /**
@@ -769,8 +765,6 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
  * @param key A key.
  * @param map A map.
  * 
- * @section Remarks
- * 
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.  If there is already a
  * value of that key in <tt>map</tt>, the value of this element is changed to <tt>cargo</tt>.
  * 
@@ -834,8 +828,6 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
  * @param value A value that is added to <tt>map</tt>.
  * @param key A key.
  * @param map A map. Types: Skiplist
- * 
- * @section Remarks
  * 
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.
  */
@@ -918,8 +910,6 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
  * @param key      The key of a value in <tt>map</tt>.
  * @param iterator An iterator to a value in <tt>map</tt>.
  * 
- * @section Remarks
- * 
  * Removes the first value in <tt>map</tt> of the given key, if there is any.
  * 
  * Use @link Map#eraseAll @endlink to remove all values of the given key in a multi map.
@@ -978,8 +968,6 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @param map A map. Types: Skiplist
  * @param key The key of a value in <tt>map</tt>.
- * 
- * @section Remarks
  * 
  * Removes all values in <tt>map</tt> of the given key, if there is any.
  */

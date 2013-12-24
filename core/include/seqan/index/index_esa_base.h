@@ -475,8 +475,6 @@ information of the suffix tree) are provided.
  * @tparam TText The text type. Types: @link SequenceConcept @endlink, @link StringSet @endlink
  * @tparam TSpec The specialization which is <tt>void</tt> by default.
  * 
- * @section Remarks
- * 
  * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
  * 
@@ -555,9 +553,11 @@ information of the suffix tree) are provided.
 /*!
  * @fn Index#clear
  * @brief Resets all fibres of an index.
+ *
  * @signature void clear(index);
- * @param index The index to be cleared.
-*/
+ *
+ * @param[in,out] index The index to be cleared.
+ */
 
 	template <typename TText, typename TSpec>
 	inline void clear(Index<TText, IndexEsa<TSpec> > &index) {

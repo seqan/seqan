@@ -111,9 +111,7 @@
 
 /*!
  * @class PrefixSumTable
- * 
  * @headerfile seqan/Index.h
- * 
  * @brief The prefix-sum table is a data structure which stores for each
  *        character the number of smaller lexicographic smaller characters in a
  *        given text.
@@ -121,222 +119,206 @@
  * @signature template <typename TChar, typename TSpec>
  *            class PrefixSumTable;
  * 
- * @tparam TSpec A specialisation tag. Default: void
+ * @tparam TSpec A specialisation tag, defaults to <tt>void</tt>.
  * @tparam TChar The character type
  */
 
 /*!
  * @fn PrefixSumTable#clear
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Resets the prefix sum table.
  * 
- * @signature clear(prefixSumTable)
- * @param prefixSumTable The prefix sum table to be cleared.
+ * @signature void clear(prefixSumTable);
+ *
+ * @param[in,out] prefixSumTable The prefix sum table to be cleared.
  */
 
 /*!
  * @fn PrefixSumTable#createPrefixSumTable
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Creates the prefix sum table
  * 
- * @signature createPrefixSumTable(prefixSumTable, text)
+ * @signature void createPrefixSumTable(prefixSumTable, text);
  * 
- * @param text The underlying text. Types: @link String @endlink, @link StringSet @endlink
- * @param prefixSumTable The prefix sum table to be constructed.
+ * @param[in,out] prefixSumTable The prefix sum table to be constructed.
+ * @param[in,out] text           The underlying text. Types: @link String @endlink, @link StringSet @endlink
  */
 
 /*!
  * @fn PrefixSumTable#getAlphabetSize
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the number of different characters in the prefix sum table.
  * 
- * @signature getAlphabetSize(prefixSumTable)
+ * @signature TSize getAlphabetSize(prefixSumTable);
  * 
- * @param prefixSumTable A prefix sum table.
+ * @param[in] prefixSumTable A prefix sum table.
+ *
+ * @return TSize The alphabet size.
  */
 
 /*!
  * @fn PrefixSumTable#getCharacterPosition
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the position of a given character within the prefix sum table.
  * 
- * @signature getCharacterPosition(prefixSumTable, character)
+ * @signature TPos getCharacterPosition(prefixSumTable, character);
  * 
- * @param character A character.
- * @param prefixSumTable A prefix sum table.
+ * @param[in] character      A character.
+ * @param[in] prefixSumTable A prefix sum table.
+ *
+ * @return TPos The position to return.
  */
 
 /*!
  * @fn PrefixSumTable#getCharacter
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the character of a given position within the prefix sum table.
  * 
- * @signature getCharacter(prefixSumTable, pos)
+ * @signature TChar getCharacter(prefixSumTable, pos);
  * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
+ * @param[in] prefixSumTable A prefix sum table.
+ * @param[in] pos            A position. Types: @link UnsignedIntegerConcept @endlink
  */
 
 /*!
  * @fn PrefixSumTable#getPrefixSum
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the prefix sum of a given position.
  * 
- * @signature getPrefixSum(prefixSumTable, pos)
+ * @signature TLength getPrefixSum(prefixSumTable, pos);
  * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
+ * @param[in] prefixSumTable A prefix sum table.
+ * @param[in] pos            A position. Types: @link UnsignedIntegerConcept @endlink.
+ *
+ * @return TLength The prefix sum of a given position.
  */
 
 /*!
  * @fn PrefixSumTable#getValue
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the prefix sum of a given position.
  * 
- * @signature getValue(prefixSumTable, pos)
+ * @signature TValue getValue(prefixSumTable, pos);
  * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
+ * @param[in] prefixSumTable A prefix sum table.
+ * @param[in] pos            A position. Types: @link UnsignedIntegerConcept @endlink
+ *
+ * @return TValue The retrieved value.
  */
 
 /*!
  * @fn PrefixSumTable#getFibre
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns a specific fibre of a prefix-sum table.
  * 
- * @signature getFibre(prefixSumTable, fibreTag)
+ * @signature TFibre getFibre(prefixSumTable, fibreTag);
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link PrefixSumTableFibres PrefixSumTanble Fibres @endlink.
- * @param prefixSumTable The prefix sum table.
+ * @param[in] fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ *                     @link PrefixSumTableFibres PrefixSumTanble Fibres @endlink.
+ * @param[in] prefixSumTable The prefix sum table.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
 /*!
  * @fn PrefixSumTable#length
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the number of different characters in the prefix-sum table.
  * 
- * @signature length(lfTable)
+ * @signature TSize length(lfTable);
  * 
- * @param lfTable The prefix-sum table.
+ * @param[in] lfTable The prefix-sum table.
  * 
- * @return TReturn Returns the number of different characters in the prefix-sum
- *                 table.If the type of the characters of the prefix-sum table
+ * @return TSSize Returns the number of different characters in the prefix-sum
+ *                 table.  If the type of the characters of the prefix-sum table
  *                 consists of more than 8 bit only the characters actually
  *                 occurring in the original text are accounted for when calling
- *                 length. Types: @link Size @endlink of the prefix-sum table.
+ *                 length.  Types: @link Size @endlink of the prefix-sum table.
  */
 
 /*!
  * @fn PrefixSumTable#prefixSum
- * 
  * @headerfile seqan/index.h
  * 
  * @brief Returns a reference to the entry of the prefix sum table of a given
  *        position.
  * 
- * @signature prefixSum(prefixSumTable, pos)
+ * @signature TSize prefixSum(prefixSumTable, pos);
  * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink.
- * @param prefixSumTable A prefix sum table.
+ * @param[in] pos            A position. Types: @link UnsignedIntegerConcept @endlink.
+ * @param[in] prefixSumTable A prefix sum table.
  */
 
 /*!
  * @fn PrefixSumTable#resize
- * 
  * @headerfile seqan/index.h
  * 
  * @brief Resize the prefix-sum table to be able to store more or less
  *        characters.
  * 
- * @signature resize(prefixSumTable, size [,value, resizeTag])
+ * @signature void resize(prefixSumTable, size[, value, resizeTag]);
  * 
- * @param resizeTag Specifies the strategy that is applied if the capacity of
- *                  <tt>object</tt> is less than <tt>newLength</tt>. (optional)
- *                  Types: @link OverflowStrategyTags @endlink Default: Specified by @link
- *                  DefaultOverflowExplicit @endlink.
- * @param prefixSumTable A prefix sum table. Types: PrefixSumTable
- * @param value The value to be used to initialize the new storage.
- * @param size The new size. Types: @link UnsignedIntegerConcept @endlink
+ * @param[in,out] prefixSumTable A prefix sum table. Types: PrefixSumTable
+ * @param[in]     size           The new size. Types: @link UnsignedIntegerConcept @endlink
+ * @param[in]     value          The value to be used to initialize the new storage.
+ * @param[in] resizeTag         Specifies the strategy that is applied if the capacity of
+ *                              <tt>object</tt> is less than <tt>newLength</tt>. (optional)
+ *                              Types: @link OverflowStrategyTags @endlink Default: Specified by @link
+ *                              DefaultOverflowExplicit @endlink.
  */
 
+// TODO(holtgrew): The following seems wrong.
 /*!
  * @fn PrefixSumTable#setPrefixSum
- * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns a reference to the entry of the prefix-sum table of a given
- *        position.
+ * @brief Returns a reference to the entry of the prefix-sum table of a given position.
  * 
- * @signature setPrefixSum(prefixSumTable, value, pos)
+ * @signature void setPrefixSum(prefixSumTable, value, pos);
  * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param value A specified value to be inserted.
- * @param prefixSumTable A prefix sum table.
+ * @param[in,out] prefixSumTable A prefix sum table.
+ * @param[in]     value          A specified value to be inserted.
+ * @param[in]     pos            A position. Types: @link UnsignedIntegerConcept @endlink
  */
 
 /*!
  * @fn PrefixSumTable#open
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions loads a prefix-sum table from disk.
  * 
- * @signature bool open(prefixSumTable, fileName [, openMode]);
+ * @signature bool open(prefixSumTable, fileName[, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param prefixSumTable The prefix-sum table.
- * @param fileName C-style character string containing the file name.
+ * @param[in,out] prefixSumTable The prefix-sum table.
+ * @param[in]     fileName       C-style character string containing the file name.
+ * @param[in]     openMode       The combination of flags defining how the file should be
+ *                               opened.  To open a file read-only, write-only or to read and
+ *                               write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                               <tt>OPEN_RDWR</tt>.  To create or overwrite a file add
+ *                               <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                               <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                               opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                               OPEN_APPEND</tt>.
  * 
  * @return bool <tt>true</tt> on success.
  */
 
 /*!
  * @fn PrefixSumTable#save
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions saves a prefix-sum table to disk.
  * 
  * @signature bool save(prefixSumTable, fileName [, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param prefixSumTable The prefix-sum table.
- * @param fileName C-style character string containing the file name.
+ * @param[in] prefixSumTable The prefix-sum table.
+ * @param[in] fileName       C-style character string containing the file name.
+ * @param[in] openMode       The combination of flags defining how the file should be
+ *                           opened.  To open a file read-only, write-only or to read and
+ *                           write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                           <tt>OPEN_RDWR</tt>.  To create or overwrite a file add
+ *                           <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                           <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                           opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                           OPEN_APPEND</tt>.
  * 
  * @return bool <tt>true</tt> on success.
  */

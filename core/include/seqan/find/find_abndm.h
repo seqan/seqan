@@ -80,16 +80,14 @@ inline void _printMask(String <unsigned> const &  mask,unsigned start, unsigned 
  * @headerfile <seqan/find.h>
  * @brief Approximate Backward Nondeterministic Dawg Matching algorithm.
  *
- * Approximate string matchin gusing bit parallelism.
+ * Approximate string matching using bit parallelism.
  *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, AbndmAlgo>;
  *
  * @tparam TNeedle The needle type.  Type @link SequenceConcept @endlink.
  *
- * @section Remarks
- *
- * The types of the needle and the haystack have to match.
+ * @note The types of the needle and the haystack have to match.
  */
 
 /**

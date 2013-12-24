@@ -60,8 +60,6 @@ namespace seqan {
  *
  * @brief A @link StringSet @endlink storing the strings as members.  It can store a global reference sequence to which all members can
  * be journaled if they are of type @link JournaledString @endlink.
- *
- * @section Remarks
  * 
  * The strings are internally stored in a <tt>String&lt;TString&gt;</tt> object and the character position type is a @link
  * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the string set and seqOfs identifies
@@ -244,8 +242,6 @@ struct GlobalChain{};
  *            struct JoinConfig;
  *
  * @tparam TMethod The method type. Types: @link GlobalAlign @endlink, @link GlobalChain @endlink
- *
- * @section Remarks
  *
  * SeqAn offers two general methods to compute the journal.  The first one uses a @link globalAlignment @endlink
  * function and the second one uses an anchor based approach.

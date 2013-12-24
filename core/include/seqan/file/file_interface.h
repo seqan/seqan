@@ -41,6 +41,7 @@ namespace seqan {
 
 /*!
  * @class SyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting synchronous input/output access.
  *
@@ -48,8 +49,6 @@ namespace seqan {
  *            class File<Sync<TSpec> >;
  *
  * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
- *
- * @section Remarks
  *
  * This class supports pseudo-asynchronous access methods, i.e. the method to initiate an I/O request blocks until the
  * request completion.

@@ -85,8 +85,6 @@ struct StdContainerIterator;
  *
  * @tparam TContainer The container to iterate over.
  *
- * @section Remarks
- *
  * This type is a wrapper around STL iterators that has a conversion operator back to the underlying iterator.
  */
 
