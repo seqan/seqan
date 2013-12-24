@@ -64,8 +64,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *               searching. Default: @link DefaultFindBeginPatternSpec @endlink
  * @tparam TNeedle The needle type. Types: String
  * 
- * @section Remarks
- * 
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
 

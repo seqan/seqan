@@ -108,9 +108,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 */
 /*!
  * @class WaveletTree
- *
  * @extends RankDictionary
- * 
  * @headerfile seqan/index.h
  * 
  * @brief A wavelet tree is a tree like binary encoding of a text.
@@ -120,8 +118,6 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * 
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>
- * 
- * @section Remarks
  * 
  * The nodes of a wavelet tree consist of a bit string as well as a character c.
  * In each level of the tree, characters smaller than c are represented as a 0

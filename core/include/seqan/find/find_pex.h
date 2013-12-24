@@ -73,8 +73,6 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
  *
  * @return Type Pattern type of the multiple exact string matching algorithm for the specified Pattern.
  *
- * @section Remarks
- *
  * For a description of Pattern usage, see @link Pattern @endlink.
  * 
  * Overload this metafunction if you want to use something else for verification then
@@ -129,8 +127,6 @@ struct PexRange_{
  * @tparam TVerification Determines if the hierarchical verification proposed by Navarro and Beaza-Yates is used or
  *                       not.
  * @tparam TMultiFinder  Specifies the algorithm for the multiple exact string matching algorithm.  Type: AhoCorasick.
- *
- * @section Remarks
  *
  * There are two defaults available: <tt>PexHierarchical</tt> and <tt>PexNonHiearchical</tt> (e.g.
  * <tt>Pattern&lt;CharString&gt;, PexHierarchical&gt;</tt> that both use the @link AhoCorasickPattern Aho-Corasick

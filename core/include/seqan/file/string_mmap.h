@@ -67,6 +67,15 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TFile The file type to use for the memory mapped string.  Defaults to <tt>File&lt;&gt;</tt>
  * @tparam TSize The size type to use.  Defaults to <tt>size_t</tt>.
+ *
+ *
+ * @typedef MMapConfig::TFile;
+ * @signature typedef (..) MMapConfig::TFile;
+ * @brief The type to use for files.
+ *
+ * @typedef MMapConfig::TSize;
+ * @signature typedef (..) MMapConfig::TSize;
+ * @brief The type to use for sizes.
  */
 
     template < typename TFile_ = File<>,				// default file type
@@ -97,8 +106,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TValue  The value type to use for the items/characters.
  * @tparam TConfig The configuration to use for the underlying file.  Default: @link MMapConfig @endlink.
- *
- * @section Remarks
  *
  * The MMap String enables to access sequences larger than the available physical memory (RAM) by using external memory
  * (e.g. Hard disk, Network storage, ...) mapped into memory.  The size of the string is limited by external memory and

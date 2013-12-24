@@ -71,6 +71,16 @@ namespace seqan {
  *        FASTQ only). Default is <tt>false</tt>.
  */
 
+/*!
+ * @fn SequenceOutputOptions::SequenceOutputOptions
+ * @brief Constructor
+ *
+ * @signature explicit SequenceOutputOptions::SequenceOutputOptions([lineLength[, qualMeta]]);
+ *
+ * @param[in] lineLengths <tt>int</tt> with the line length, defauls to <tt>-1</tt>.
+ * @param[in] qualMeta    <tt>bool</tt> flag whether to write out the meta text after the <tt>+</tt> in FASTQ.
+ */
+
 /**
 .Class.SequenceOutputOptions
 ..cat:Input/Output

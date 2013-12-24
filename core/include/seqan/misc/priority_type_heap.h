@@ -45,7 +45,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Stores the priority data on a heap.
  *
  * @signature template <[typename TValue[, typename TLess]]>
- *            class PriorityType;
+ *            class PriorityType<TValue, TLess, PriorityHeap>;
  *
  * @tparam TValue The value type.  Default: <tt>int</tt>.
  * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
@@ -104,9 +104,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#clear
  * @brief Remove all elements from the PriorityType.
  *
- * @signature void clear(priority);
+ * @signature void clear(pq);
  *
- * @param priority PriorityType to clear.
+ * @param[in,out] pq PriorityType to clear.
  */
 
 // Empty the priority queue
@@ -174,9 +174,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#top
  * @brief Reference to the item with the highest priority.
  *
- * @signature TReference top(priorityType);
+ * @signature TReference top(pq);
  *
- * @param priorityType The PriorityType to query.
+ * @param[in] pq The PriorityType to query.
  *
  * @return TReference The result, reference to Value type.
  */
@@ -235,7 +235,10 @@ SEQAN_CHECKPOINT
 /*!
  * @fn PriorityType#adjustTop
  * @brief Adjusts the priority of the first item.
- * @signature void adjustTop(pQueue);
+ *
+ * @signature void adjustTop(pq);
+ *
+ * @param[in,out] pq The PriorityType to adjust.
  */
 
 /**
@@ -268,9 +271,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#push
  * @brief Inserts a new item and adjusts the priority queue if necessary.
  *
- * @signature void push(pt, element);
+ * @signature void push(pq, element);
  *
- * @param[in,out] pt      The PriorityType to push to.
+ * @param[in,out] pq      The PriorityType to push to.
  * @param[in]     element The element to push.
  */
 
@@ -334,9 +337,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#pop
  * @brief Deletes item with the highest priority and adjusts the priority queue.
  *
- * @signature void push(pt);
+ * @signature void push(pq);
  *
- * @param[in,out] pt      The PriorityType to pop from.
+ * @param[in,out] pq      The PriorityType to pop from.
  */
 
 /**

@@ -84,8 +84,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
  * 
- * @section Remarks
- * 
  * Using this configuration spec., the Pool's size type is <tt>Size&lt;TFile&gt;::Type</tt>.  To use a custom size type
  * PoolConfigSize should be used.
  * 
@@ -124,8 +122,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                 Types: PoolConfig, PoolConfigSize
  * @tparam TValue  The value type, that is the type of the stream elements.
  * 
- * @section Remarks
- * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
@@ -158,8 +154,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TSpec  The specializing type. Default: PoolSpec&lt;&gt;, see PoolSpec.
  * @tparam TValue The value type, that is the type of the stream elements.
- * 
- * @section Remarks
  * 
  * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by default).
  * 
@@ -1106,7 +1100,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature void clear(pool);
  *
- * @param pool Pool to clear.
+ * @param[in,out] pool Pool to clear.
  */
 ///.Function.clear.param.object.type:Class.Pool
 ///.Function.clear.class:Class.Pool
@@ -1133,6 +1127,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature TSize length(pool);
  *
  * @param[in] pool  The Pool to query for its size.
+ *
  * @return    TSize The number of elements in the pool.
  */
 
@@ -1152,8 +1147,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature void resize(pool, len);
  *
- * @param pool Pool to resize.
- * @param len Length to resize <tt>pool</tt> to.
+ * @param[in,out] pool Pool to resize.
+ * @param[in]     len  Length to resize <tt>pool</tt> to.
  */
 
 ///.Function.resize.param.object.type:Class.Pool
@@ -1172,7 +1167,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature TReference front(pool);
  *
- * @param pool The pool to get the first element of.
+ * @param[in] pool The pool to get the first element of.
  *
  * @return TReference A reference to the first element of <tt>seq</tt>.
  */
@@ -1194,8 +1189,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in,out] pool A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
- * 
- * @section Remarks
  * 
  * In contrast to Pool#front this function also steps one element further.
  * 
@@ -1222,8 +1215,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @param[in,out] pool A pool module.
  * @param[in]     val    Item to be pushed.
- * 
- * @section Remarks
  * 
  * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
  */
@@ -1306,11 +1297,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @signature bool beginWrite(pool);
  * 
- * @param pool A pool module.
+ * @param[in,out] pool A pool module.
  * 
  * @return bool <tt>true</tt> on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>beginWrite</tt> prepares a pool for succeeding writes.
  * 
@@ -1346,11 +1335,9 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool endWrite(pool);
  * 
- * @param pool A push-passive pipeline module.
+ * @param[in,out] pool A push-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite 
  * 
@@ -1402,7 +1389,7 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool beginRead(pool);
  * 
- * @param pool A pool module.
+ * @param[in,out] pool A pool module.
  * 
  * @return bool true on success, false on failure.
  * 
@@ -1422,7 +1409,7 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool endRead(pool);
  * 
- * @param pool A pool module.
+ * @param[in,out] pool A pool module.
  * 
  * @return bool true on success, false on failure.
  * 

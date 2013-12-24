@@ -102,8 +102,6 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
  * @tparam TPred An arbitrary frequency predicate
  * @tparam TPredHull A monotonic hull of <tt>TPred</tt>
  * 
- * @section Remarks
- * 
  * This index is based on a lazy suffix tree (see @link IndexWotd @endlink). All
  * <tt>TPredHull</tt> sufficing nodes can be iterated using a @link TopDownIterator @endlink. To iterate the exact solution set of <tt>TPred</tt>, use a
  * <tt>Spec.TopDownHistory Iterator</tt> of this index.

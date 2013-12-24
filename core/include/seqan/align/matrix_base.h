@@ -77,12 +77,12 @@ struct Host<Matrix<TValue, DIMENSION> >
  * @headerfile <seqan/align.h>
  * @brief A simple n-dimensional matrix type.
  *
- * @signature template <typename TValue, unsigned DIMENSION = 0>
+ * @signature template <typename TValue[, unsigned DIMENSION]>
  *            class Matrix;
  *
  * @tparam TValue    Type of matrix entries.
  * @tparam DIMENSION Dimension of the matrix.  Use 0 for n-dimensional, values &gt; 0 for a matrix with
- *                   <tt>DIMENSION</tt> dimensions.
+ *                   <tt>DIMENSION</tt> dimensions.  Defaults to 0.
  */
 
 /**

@@ -291,7 +291,7 @@ inline void assignValue(
  * 
  * @signature THost globalReference(stringSet);
  * 
- * @param stringSet The JournaledStringSet that stores the sequences. Types: @link  JournaledSet  @endlink
+ * @param[in] stringSet The JournaledStringSet that stores the sequences. Types: @link  JournaledSet  @endlink
  * 
  * @return THost Reference to the host.
  */

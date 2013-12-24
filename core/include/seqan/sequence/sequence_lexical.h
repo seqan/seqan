@@ -123,8 +123,6 @@ struct DefaultPrefixOrder
  *
  * @tparam TSpec The specializing size type, defaults to <tt>size_t</tt>.
  *
- * @section Remarks
- * 
  * This class implement comparator objects that perform (lexical) comparisons between two sequences.  The result of the
  * comparison is stored in the data members of the instance and can be accessed by some functions, for example @link
  * Lexical#isLess @endlink or @link Lexical#isEqual @endlink.

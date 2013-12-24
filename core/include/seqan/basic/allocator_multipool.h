@@ -51,6 +51,7 @@ namespace seqan {
 
 /*!
  * @class MultiPoolAllocator
+ * @extends Allocator
  * @headerfile <seqan/basic.h>
  * @brief Allocator that pools memory blocks.
  *

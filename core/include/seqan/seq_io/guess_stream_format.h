@@ -83,8 +83,6 @@ typedef TagList<Fastq, TagList<Fasta> > SeqStreamFormats;
  * 
  * @signature typedef TagSelector<SeqStreamFormats> AutoSeqStreamFormat;
  * 
- * @section Remarks
- * 
  * Variables of this type an be passed to @link guessStreamFormat @endlink and will offer the index of the detected
  * FileFormat in its member <tt>tagId</tt>.  The values of its member <tt>tagId</tt> can be as follows:
  *
@@ -140,10 +138,8 @@ typedef TagSelector<SeqStreamFormats> AutoSeqStreamFormat;
  * @signature template <typename TStream, typename TSpec>
  *            class LimitRecordReaderInScope;
  * 
- * @tparam TSpec   The specialization of the @link RecordReader @endlink. Types: RecordReader
- * @tparam TStream The @link StreamConcept @endlink of the @link RecordReader @endlink. Types: StreamConcept
- * 
- * @section Remarks
+ * @tparam TSpec   The specialization of the @link RecordReader @endlink.
+ * @tparam TStream The @link StreamConcept @endlink of the @link RecordReader @endlink.
  * 
  * This class is intended for situations, where you do not wish the RecordReader to rebuffer and where you wish to
  * return to the original reading position after reading, e.g. when detecting the file format of the stream.

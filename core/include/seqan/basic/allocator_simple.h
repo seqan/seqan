@@ -51,6 +51,7 @@ namespace seqan {
 
 /*!
  * @class SimpleAllocator
+ * @extends Allocator
  * @headerfile <seqan/basic.h>
  * @brief General purpose allocator.
  *
@@ -58,8 +59,6 @@ namespace seqan {
  *            class Allocator<SimpleAlloc<TParentAllocator> >;
  *
  * @tparam TParentAllocator An allocator that is used by the simple allocator to allocate memory.
- *
- * @section Remarks
  *
  * The tag Default used as TparentAllocator means that the default implementations of <tt>allocate</tt> and
  * <tt>deallocate</tt> are used.
