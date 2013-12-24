@@ -257,10 +257,12 @@ SEQAN_CHECKPOINT
  *
  * @tag IntervalTreeNodeTypeTags#StorePointsOnly
  * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @signature struct StorePointsOnly {};
  * @brief The tree nodes store points.
  *
  * @tag IntervalTreeNodeTypeTags#StoreIntervals
  * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @signature struct StoreIntervals {};
  * @brief The tree nodes store intervals.
  */
 

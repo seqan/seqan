@@ -49,14 +49,23 @@ namespace seqan {
 // TODO(holtgrew): Define as Tag<FindInfix_>?
 
 /*!
- * @tag FindInfix
+ * @defgroup ApproximateFinderSearchTypeTags Approximate Finder Search Type Tags
+ * @brief Tags for specifying the @link Finder @endlink search type (prefix or infix).
+ *
+ * There are two interesting kinds of search for approximate string search algorithms: (1) search for a matching
+ * substring anywhere in the text, infix search, and (2) search for a matching prefix, prefix search.  The tags
+ * in this group can be used to select this search for approximate string search algorithms.
+ */
+
+/*!
+ * @tag ApproximateFinderSearchTypeTags#FindInfix
  * @headerfile <seqan/find.h>
  *
- * @brief Find needle as a substring of the hasystack (infix search).
+ * @brief Find needle as a substring of the haystack (infix search).
  *
  * @signature struct FindInfix;
  *
- * @see FindPrefix
+ * @see ApproximateFinderSearchTypeTags#FindPrefix
  */
 
 /**
@@ -71,14 +80,14 @@ namespace seqan {
 struct FindInfix;
 
 /*!
- * @tag FindPrefix
+ * @tag ApproximateFinderSearchTypeTags#FindPrefix
  * @headerfile <seqan/find.h>
  *
- * @brief Find needle as a substring of the hasystack (prefix search).
+ * @brief Find needle as a substring of the haystack (prefix search).
  *
  * @signature struct FindPrefix;
  *
- * @see FindInfix
+ * @see ApproximateFinderSearchTypeTags#FindInfix
  */
 
 /**
@@ -154,7 +163,7 @@ struct DefaultPattern
  * @headerfile <seqan/file.h>
  * @brief Returns the haystack type of a @link Finder @endlink type.
  *
- * @signature Hasytack<TFinder>::Type;
+ * @signature Haystack<TFinder>::Type;
  *
  * @tparam TFinder The finder to query.
  *

@@ -58,7 +58,7 @@ typedef Tag<FibreLF_> const     FibreLF;
 // Tags
 // ============================================================================
 /*!
- * @defgroup CompressedSAFibres  CompressedSA Fibres
+ * @defgroup CompressedSAFibres CompressedSA Fibres
  * 
  * @brief Tag to select a specific fibre of a @link CompressedSA @endlink.
  * 

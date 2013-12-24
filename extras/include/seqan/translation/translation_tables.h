@@ -313,7 +313,7 @@ typedef Tag<Gracilibacteria_> Gracilibacteria;
 /*!
  * @tag GeneticCode
  * @headerfile seqan/translation.h
- * @brief Dna to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpecs @endlink
+ * @brief Dna to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpecs @endlink.
  * @signature GeneticCode<GeneticCodeSpec>
  *
  * @see translate

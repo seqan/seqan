@@ -71,11 +71,8 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*! 
  * @defgroup WOTDIndexFibres WOTD Index Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexWotd @endlink index.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
  * 
@@ -86,42 +83,27 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see IndexWotd
  * 
  * @tag WOTDIndexFibres#WotdDir
- * 
  * @brief The child table.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawSA
- * 
  * @brief The raw suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdText
- * 
  * @brief The original text the index should be based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawText
- * 
  * @brief The raw text the index is really based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdSA
- * 
  * @brief The suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  */

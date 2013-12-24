@@ -54,8 +54,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle[, typename TSpec[, typename TFindBeginPatternSpec]]>
  *            class Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >;
  * 
- * @tparam TSpec   Specialization tag.  This could be @link FindInfix @endlink for infix search or <tt>FindPrefix</tt>
- *                 for prefix search. Default: Tag.FindInfix
+ * @tparam TSpec   Specialization tag.  This is @link ApproximateFinderSearchTypeTags#FindInfix @endlink for
+ *                 infix search or @link ApproximateFinderSearchTypeTags#FindPrefix @endlink for prefix search.
+ *                 Defaults to @linkApproximateFinderSearchTypeTags#FindInfix @endlink.
  * @tparam TFindBeginPatternSpec 
  *               Specialization of @link Pattern @endlink used to find the begin of matches.This must be a finder for
  *               prefix search, e.g. @link DPSearchPattern <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
