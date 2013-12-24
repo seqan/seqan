@@ -65,6 +65,8 @@ namespace seqan {
  *
  * Used in the DP alignment algorithms to configure the begin/end gap free-nes.
  *
+ * @see globalAlignment
+ *
  * @section Specialization List
  *
  * The following gives an (incomplete) list of useful AlignConfig specializations.

@@ -71,6 +71,7 @@ namespace seqan {
 
 /*!
  * @class AsyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting asynchronous input/output access.
  *
@@ -235,8 +236,6 @@ if (openMode & OPEN_MASK == OPEN_READ)
  *            struct AsyncRequest;
  *
  * @tparam TFile The file type.
- *
- * @section Remarks
  *
  * This structure is used to identify asynchronous requests after their initiation.
  */

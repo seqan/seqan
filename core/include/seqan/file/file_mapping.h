@@ -160,8 +160,6 @@ enum FileMappingAdvise {
  *
  * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
  *
- * @section Remarks
- *
  * This structure represents both a file and its memory mapping.
  */
 
@@ -223,6 +221,17 @@ struct FileMapping
     }
 //____________________________________________________________________________
 };
+
+/*!
+ * @mfn FileMapping#Size
+ * @brief Return the size type of the FileMapping.
+ *
+ * @signature Size<TFileMapping>::Type;
+ *
+ * @tparam TFileMapping FileMapping to query.
+ *
+ * @return Type The size type of the FileMapping.
+ */
 
 template <typename TSpec>
 struct Size<FileMapping<TSpec> >:
@@ -321,7 +330,7 @@ _unmapFile(FileMapping<TSpec> &mapping)
  * @param[in]     openMode    The mode to open the file in, flags from @link FileOpenMode @endlink to combine
  *                            using OR.  Write-only mode is not supported, use <tt>OPEN_RDWR</tt> if you need
  *                            write access.  If you omit the <tt>OPEN_APPEND</tt> flag in write mode, the file
- *                            will be cleared when opened.  Default: <tt>OPEN_RDWR | OPEN_CREATe | OPEN_APPEND</tt>.
+ *                            will be cleared when opened.  Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>.
  *
  * @return bool <tt>true</tt> if the opening was successful, <tt>false</tt> otherwise.
  */
@@ -414,9 +423,9 @@ openTemp(FileMapping<TSpec> &mapping)
  * @fn FileMapping#close
  * @brief Close a file and its memory mapping.
  * 
- * @signature bool close(mapping);
+ * @signature bool close(fileMapping);
  *
- * @param[in,out] mapping The FileMapping to close
+ * @param[in,out] fileMapping The FileMapping to close
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
@@ -448,9 +457,9 @@ close(FileMapping<TSpec> &mapping)
  * @fn FileMapping#closeAndResize
  * @brief Close a memory mapping and resize and close the underlying file.
  *
- * @signature bool closeAndResize(mapping, newFileSize);
+ * @signature bool closeAndResize(fileMapping, newFileSize);
  *
- * @param[in,out] mapping     The FileMapping to close.
+ * @param[in,out] fileMapping The FileMapping to close.
  * @param[in]     newFileSize The size the file should have after closing.
  *
  * @return bool <tt>true</tt> indicating success, <tt>false</tt> failure.
@@ -486,11 +495,11 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
  * @fn FileMapping#length
  * @brief Return the file size of a memory mapping.
  * 
- * @signature TSize length(mapping);
+ * @signature TSize length(fileMapping);
  *
- * @param[in] mapping The FileMapping to return the length for.
+ * @param[in] fileMapping The FileMapping to return the length for.
  *
- * @return TSize The file size.  TSize is the size type of the file, as returned by the Size metafunction.
+ * @return TSize The file size  (Metafunction: @link FileMapping#Size @endlink).
  */
 
 /**
@@ -523,9 +532,9 @@ length(FileMapping<TSpec> const &mapping)
  * @fn FileMapping#resize
  * @brief Resize the underlying file.
  *
- * @signature bool resize(mapping, newFileSize);
+ * @signature bool resize(fileMapping, newFileSize);
  *
- * @param[in,out] mapping     The FileMapping to resize.
+ * @param[in,out] fileMapping The FileMapping to resize.
  * @param[in]     newFileSize The new file size to set.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
@@ -628,7 +637,7 @@ flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
  * @param[in]     beginPos    the absolute start address of the segment in bytes.
  * @param[in]     size        The segment length in bytes.
  *
- * @returns bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
 /**

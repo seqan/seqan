@@ -314,16 +314,14 @@ allocate(T &,
  * 
  * @signature void deallocate(object, data, count[, usageTag])
  * 
- * @param count    Number of items that could be stored in the allocated memory.
- * @param usageTag A tag the specifies the purpose for the allocated memory.
- *                 Values: @link AllocatorUsageTags @endlink.
- * @param object   Allocator object.<tt>object</tt> is conceptually the "owner" of the allocated memory.  Objects of
- *                 all types can be used as allocators.  If no special behavior is implemented,  default
- *                 functions allocation/deallocation are applied that uses standard  <tt>new</tt> and <tt>delete</tt>
- *                 operators. Types: Allocator
- * @param data     Pointer to allocated memory that was allocated by <tt>allocate</tt>.
- * 
- * @section Remarks
+ * @param[in,out] object Allocator object.<tt>object</tt> is conceptually the "owner" of the allocated memory.
+ *                       Objects of all types can be used as allocators.  If no special behavior is implemented,
+ *                       default functions allocation/deallocation are applied that uses standard  <tt>new</tt>
+ *                       and <tt>delete</tt> operators.  Types: Allocator
+ * @param[out]     data  Pointer to allocated memory that was allocated by <tt>allocate</tt>.
+ * @param[in]     count    Number of items that could be stored in the allocated memory.
+ * @param[in]     usageTag A tag the specifies the purpose for the allocated memory.
+ *                         Values: @link AllocatorUsageTags @endlink.
  * 
  * The values for <tt>object</tt>, <tt>count</tt> and <tt>usageTag</tt> should be the same that was used when
  * <tt>allocate</tt> was called. The value of <tt>data</tt> should be the same that was returned by <tt>allocate</tt>.

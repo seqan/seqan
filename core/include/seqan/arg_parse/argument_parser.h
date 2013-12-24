@@ -637,7 +637,7 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
  * @param[in] parser The ArgumentParser to query.
  * @param[in] pos    The position of the argument to return (<tt>unsigned</tt>, starting at 0).
  *
- * @return TArgument Reference to the argument with the given position.
+ * @return TArgument Reference to the @link ArgParseArgument @endlink with the given position.
  */
 
 /**
@@ -838,13 +838,25 @@ inline bool getOptionValue(TValue & val,
  *
  * @signature std::string getOptionFileExtension(parser, name[, pos]);
  *
- * Can be overridden by <tt>--${name}-file-ext</tt>.
- *
  * @param[in] parser The ArgumentParser to get the value from.
  * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
  * @param[in] pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
  *
  * @return std::string The extension of the option. Empty if not set or no extension.
+ *
+ * @see ArgumentParser#getArgumentFileExtension
+ *
+ * @section Overriding File Extension on the Command Line
+ *
+ * For each option with type <tt>INPUTFILE</tt> and <tt>OUTPUTFILE</tt>, an option with the name
+ * <tt>${name}-file-ext</tt> is automatically added to the ArgumentParser (where <tt>${name}</tt> is the name
+ * of the original option).  The extension can be overridden by specifying the argument.  Thus, the user of
+ * the program could give the value "file.ext" to the parameter "fname" and override the extension on the
+ * command line to "ext2" as follows:
+ *
+ * @code{.console}
+ * # program_name --fname file.ext --fname-file-ext ext2
+ * @endcode
  */
 
 /**
@@ -883,6 +895,8 @@ inline std::string getOptionFileExtension(ArgumentParser const & me,
  *
  * @param[in] parser The ArgumentParser to query.
  * @param[in] name   The short or long name of the option (<tt>string</tt>).
+ *
+ * @return unsigned The number of values for the option with the given name.
  */
 
 /**
@@ -917,6 +931,8 @@ inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const
  *
  * @param[in] parser The ArgumentParser to query.
  * @param[in] name   The position of the argument (<tt>unsigned</tt>, 0-based).
+ *
+ * @return unsigned The number of values for the argument with the given position.
  */
 
 /**
@@ -1008,13 +1024,25 @@ inline bool getArgumentValue(TValue & value,
  *
  * @signature std::string argumentFileExtension(parser, pos[, argNo]);
  *
- * Can be overridden by <tt>--arg-${pos}-file-ext</tt>.
- *
  * @param[in] parser The ArgumentParser to get the value from.
  * @param[in] pos    The position of the argument to query (<tt>unsigned</tt>).
  * @param[in] argNo  Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
  *
  * @return std::string The extension of the argument if any.
+ *
+ * @see ArgumentParser#getOptionFileExtension
+ *
+ * @section Overriding File Extensions on the Command Line
+ *
+ * For each argument with type <tt>INPUTFILE</tt> and <tt>OUTPUTFILE</tt>, an option with the index
+ * <tt>arg-${idx}-file-ext</tt> is automatically added to the ArgumentParser (where <tt>${idx}</tt> is the index
+ * of the original option).  The extension can be overridden by specifying the argument.  Thus, the user of
+ * the program could give the value "file.ext" to the parameter "0" and override the extension on the
+ * command line to "ext2" as follows:
+ *
+ * @code{.console}
+ * # program_name file.ext --arg-0-file-ext ext2
+ * @endcode
  */
 
 /**
