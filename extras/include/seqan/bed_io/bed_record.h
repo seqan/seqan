@@ -441,9 +441,9 @@ public:
  * @signature BedRgb::BedRgb();
  * @signature BedRgb::BedRgb(red, green, blue);
  * 
- * @param blue  __int32 blue value <tt>0-255</tt> (defaults to <tt>0</tt>).
- * @param green __int32 green value <tt>0-255</tt> (defaults to <tt>0</tt>).
- * @param red   __int32 red value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] blue  __int32 blue value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] green __int32 green value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] red   __int32 red value <tt>0-255</tt> (defaults to <tt>0</tt>).
  */
 
 /**

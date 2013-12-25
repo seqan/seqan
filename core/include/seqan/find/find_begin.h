@@ -347,9 +347,9 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
  *
  * @signature bool findBegin(finder, pattern[, limit]);
  *
- * @param finder[in,out]  The Finder object to search through.
- * @param pattern[in,out] The Pattern object to search for.  This must be a pattern for approximate string matching.
- * @param limit[in]       The score limit.  The default is the limit used during the last <tt>find</tt> call, see
+ * @param[in,out] finder  The Finder object to search through.
+ * @param[in,out] pattern The Pattern object to search for.  This must be a pattern for approximate string matching.
+ * @param[in]     limit   The score limit.  The default is the limit used during the last <tt>find</tt> call, see
  *                        <tt>getScore</tt>.  All occurences that score at least <tt>limit</tt> are reported.
  *
  * @return bool <tt>true</tt> indicates a match, <tt>false</tt> indicates no match.

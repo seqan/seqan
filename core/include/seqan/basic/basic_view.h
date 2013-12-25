@@ -120,7 +120,7 @@ struct RemoveView<TObject const>
  * @signature IsView<TObject>::Type;
  *
  * @tparam TObject The type to be tested for being a view type.
- * @return Type @link True @endlink or @link False @endlink.
+ * @return Type @link LogicalValuesTags#True @endlink or @link LogicalValuesTags#False @endlink.
  *
  * @see View
  * @see RemoveView

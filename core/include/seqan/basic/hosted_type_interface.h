@@ -111,7 +111,7 @@ struct Host;
  * 
  * @signature bool emptyHost(object);
  * 
- * @param object The object query state of host of.
+ * @param[in] object The object query state of host of.
  * 
  * @return bool <tt>true</tt> if the host is empty, <tt>false</tt> otherwise.
  */
@@ -146,7 +146,7 @@ emptyHost(T const & me)
  * 
  * @signature void clearHost(object);
  * 
- * @param object The object query state of host of.
+ * @param[in] object The object query state of host of.
  * 
  * @return bool <tt>true</tt> if the host is dependent, <tt>false</tt> otherwise.
  */
@@ -213,8 +213,8 @@ clearHost(T & me)
  * 
  * @signature void createHost(object[, host]);
  * 
- * @param object The object to copy construct the host of.
- * @param host   The object to copy in host creation.
+ * @param[in,out] object The object to copy construct the host of.
+ * @param[in]     host   The object to copy in host creation.
  * 
  * @section Remarks
  * 
@@ -262,7 +262,7 @@ createHost(T & me,
  * 
  * @signature THostRef host(object);
  * 
- * @param object An object.
+ * @param[in] object An object.
  *
  * @return THostRef Reference to the host object.
  */
@@ -298,8 +298,8 @@ host(T const & me)
  * 
  * @signature void setHost(object, host);
  * 
- * @param host   The new host. Types: String
- * @param object The object that will get a new host.
+ * @param[in,out] host   The new host. Types: String
+ * @param[in]     object The object that will get a new host.
  * 
  * @section Remarks
  * 
@@ -342,8 +342,8 @@ setHost(T & me,
  * 
  * @signature void assignHost(object, host);
  * 
- * @param host   The object to assign as host.
- * @param object The object to assign the host of.
+ * @param[in,out] host   The object to assign as host.
+ * @param[in]     object The object to assign the host of.
  */
 
 /**
@@ -374,12 +374,12 @@ assignHost(T & me,
 
 /*!
  * @fn HostedConcept#moveHost
- * @brief Assign to the host of a given value.
+ * @brief Move to the host of a given value.
  * 
  * @signature void moveHost(object, host);
  * 
- * @param host The object to move-assign as host.
- * @param object The object to move-assign the host of.
+ * @param[in,out] host   The object to move-assign as host.
+ * @param[in,out] object The object to move-assign the host of.
  */
 
 /**

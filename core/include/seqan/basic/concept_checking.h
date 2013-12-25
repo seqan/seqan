@@ -894,9 +894,9 @@ void sameType(T, T) { }
  * @tparam TConcept A concept that is specialized with type(s) that should be
  *                  tested for fulfilling the concept.
  * 
- * @return Type @link Logical Values.tag.True @endlink/<tt>true</tt> if
+ * @return Type @link LogicalValuesTags#True @endlink/<tt>true</tt> if
  *              <tt>TConcept</tt> is a fulfilled concept, otherwise @link
- *              Logical Values.tag.False @endlink/<tt>false</tt>.
+ *              LogicalValuesTags#False @endlink/<tt>false</tt>.
  * 
  * The @link Is @endlink-metafunction can be used to test types for fulfilling a concept without causing compilation
  * errors.  If <tt>True</tt> or <tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept test via @link

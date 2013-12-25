@@ -183,8 +183,8 @@ struct ImplMapValue_<Nothing>
  * 
  * @signature TMapValue mapValue(map, key);
  * 
- * @param map A map. Types: Map
- * @param key A key.
+ * @param[in,out] map A map. Types: Map
+ * @param[in]     key A key.
  * 
  * @return TMapValue If <tt>map</tt> is a set: The same as Map#hasKey.  If <tt>map</tt> is a dictionary: The same as
  *                   Map#value.

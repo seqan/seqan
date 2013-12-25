@@ -75,8 +75,6 @@ namespace seqan {
  * 
  * @return Type Either True or False, depending on T being a "POD" type.
  * 
- * @section Remarks
- * 
  * A simple type is a type that does not need constructors to be created, a destructor to be destroyed, and copy
  * assignment operators or copy constructors to be copied.  All POD ("plain old data") types are simple, but some
  * non-POD types could be simple too, e.g. some specializations of SimpleType.

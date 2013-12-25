@@ -151,7 +151,7 @@ struct RankDictionaryFibreSpec
  *
  * @signature Fibre<RankDictionary, FibreSpec>::Type
  *
- * @tparam FibreSpec The Fibre of interest. Types: @linkFibreRanks @endlink.
+ * @tparam FibreSpec The Fibre of interest. Types: @link RankDictionaryFibres#FibreRanks @endlink.
  *
  */
 

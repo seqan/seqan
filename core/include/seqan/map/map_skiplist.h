@@ -652,8 +652,8 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @signature TReference value(map, key);
  * 
- * @param map A map.
- * @param key A key.
+ * @param[in] map A map.
+ * @param[in] key A key.
  * 
  * @return TReference The first value in <tt>map</tt> of the given key, if there is any.  Otherwise, a new value
  *                    that is inserted to <tt>map</tt>.
@@ -717,8 +717,8 @@ value(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @signature TCargo find(map, key);
  * 
- * @param map A map.
- * @param key A key.
+ * @param[in,out] map A map.
+ * @param[in]     key A key.
  * 
  * @return TReturn The cargo of the first value in <tt>map</tt> of the given key, if there is any.  Otherwise, the
  *                 cargo of a new value that is inserted to <tt>map</tt>.
@@ -760,10 +760,10 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
  * @signature void insert(map, value);
  * @signature void insert(map, key, cargo);
  * 
- * @param cargo A cargo.
- * @param value A value that is added to <tt>map</tt>.
- * @param key A key.
- * @param map A map.
+ * @param[in,out] map   A map.
+ * @param[in]     value A value that is added to <tt>map</tt>.
+ * @param[in]     key   A key.
+ * @param[in]     cargo A cargo.
  * 
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.  If there is already a
  * value of that key in <tt>map</tt>, the value of this element is changed to <tt>cargo</tt>.
@@ -824,10 +824,10 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
  * @signature void add(map, value);
  * @signature void add(map, key, cargo);
  * 
- * @param cargo A cargo.
- * @param value A value that is added to <tt>map</tt>.
- * @param key A key.
- * @param map A map. Types: Skiplist
+ * @param[in,out] map   A map. Types: Skiplist
+ * @param[in]     value A value that is added to <tt>map</tt>.
+ * @param[in]     cargo A cargo.
+ * @param[in]     key   A key.
  * 
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.
  */
@@ -906,9 +906,9 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
  * @signature void erase(map, key);
  * @signature void erase(map, iterator);
  * 
- * @param map      A map. Types: Map
- * @param key      The key of a value in <tt>map</tt>.
- * @param iterator An iterator to a value in <tt>map</tt>.
+ * @param[in] map      A map. Types: Map
+ * @param[in] key      The key of a value in <tt>map</tt>.
+ * @param[in] iterator An iterator to a value in <tt>map</tt>.
  * 
  * Removes the first value in <tt>map</tt> of the given key, if there is any.
  * 
@@ -966,8 +966,8 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @signature void eraseAll(map, key);
  * 
- * @param map A map. Types: Skiplist
- * @param key The key of a value in <tt>map</tt>.
+ * @param[in,out] map A map. Types: Skiplist
+ * @param[in]     key The key of a value in <tt>map</tt>.
  * 
  * Removes all values in <tt>map</tt> of the given key, if there is any.
  */
@@ -1124,8 +1124,8 @@ mapValue(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @signature bool hasKey(map, key);
  * 
- * @param map A map. Types: Map
- * @param key A key.
+ * @param[in] map A map. Types: Map
+ * @param[in] key A key.
  * 
  * @return bool <tt>true</tt>, if there is a value in <tt>map</tt> of that key, <tt>false</tt> otherwise.
  */

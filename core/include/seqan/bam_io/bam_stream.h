@@ -470,7 +470,7 @@ inline int open(BamStream & bamIO,
  *
  * @signature void reset(stream);
  *
- * @param stream The @link BamStream @endlink object to reset.
+ * @param[in,out] stream The @link BamStream @endlink object to reset.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
  */
@@ -501,7 +501,7 @@ inline int reset(BamStream & bamIO)
  *
  * @signature int flush(stream);
  *
- * @param stream The @link BamStream @endlink object to flush.
+ * @param[in,out] stream The @link BamStream @endlink object to flush.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on errors.
  *
@@ -542,7 +542,7 @@ inline int flush(BamStream & bamIO)
  *
  * @signature int close(stream);
  *
- * @param stream[in,out] The @link BamStream @endlink object to close.
+ * @param[in,out] stream The @link BamStream @endlink object to close.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
  */

@@ -716,13 +716,13 @@ class ProcMetafunction(ProcCodeEntry):
         else:
             return self.name
 
-    def visitTextNode(self, visitor):
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
-        ProcCodeEntry.visitTextNode(self, visitor)
+        ProcCodeEntry.visitTextNodes(self, visitor)
         for p in self.tparams:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.returns:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         
     def addTParam(self, t):
         self.tparams.append(t)

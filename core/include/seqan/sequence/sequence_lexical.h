@@ -290,8 +290,6 @@ SEQAN_CHECKPOINT
  * 
  * @return Type the comparator type.
  * 
- * @section Remarks
- * 
  * Comparators are objects that can be used to compare other objects and store the result of comparisons.
  */
 
@@ -911,8 +909,6 @@ SEQAN_CHECKPOINT
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
  *
- * @section Remarks
- *
  * By definition, a sequence is a prefix of itself: <tt>isPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
@@ -968,8 +964,6 @@ SEQAN_CHECKPOINT
  * @param[in] comparator A comparator. Types: Lexical
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
- *
- * @section Remarks
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
@@ -1027,8 +1021,6 @@ SEQAN_CHECKPOINT
  * 
  * @return TSize The length of the longest common prefix of <tt>left</tt> and <tt>right</tt>.  TSize is the Size type of
  *               the left size type.
- *
- * @section Remarks
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */

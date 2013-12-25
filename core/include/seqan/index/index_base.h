@@ -452,7 +452,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @signature DefaultIndexCreator<TIndex, TFibre>::Type;
  *
  * @tparam TIndex An @link Index @endlink Type.
- * @tparam TFibre A tag specifying the fibre (e.g. @link ESAIndexFibres.EsaSA
+ * @tparam TFibre A tag specifying the fibre (e.g. @link IndexEsaFibres#EsaSA
  *                @endlink).
  *
  * @return Type A tag specifying the default algorithm to create the fibre with.
@@ -611,8 +611,9 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
  * @return TReturn A type to store a position.If <tt>TObject</tt> is a @link String @endlink, it is a single integer
  *                 value. By default this is the @link Size @endlink type of <tt>TObject</tt>.If <tt>TObject</tt> is a
  *                 @link StringSet @endlink, it could be a single integer too (called global position, see @link
- *                 ConcatDirect @endlink) or a @link Pair @endlink (called local position, see @link Owner @endlink).
- *                 Currently SeqAn defaults to a local position for @link StringSet @endlink classes (index_base.h).
+ *                 ConcatDirectStringSet @endlink) or a @link Pair @endlink (called local position, see
+ *                 @link OwnerStringSet @endlink).  Currently SeqAn defaults to a local position for @link StringSet
+ *                 @endlink classes (index_base.h).
  *
  * SAValue is the return type of various functions, e.g. @link Finder#position @endlink for the Index @link Finder @endlink
  * class, @link VSTreeIterator#getOccurrence @endlink, @link VSTreeIterator#getOccurrences @endlink, @link IndexQGram#getOccurrences

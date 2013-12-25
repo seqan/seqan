@@ -67,9 +67,9 @@ namespace seqan {
  * @signature SeedDiagonal::SeedDiagonal();
  * @signature SeedDiagonal::SeedDiagonal(beginPosH, beginPosV, length);
  *
- * @param beginPosH[in] The begin position in the horizontal orientation.
- * @param beginPosV[in] The begin position in the vertical orientation.
- * @param length[in]    The length of the seed diagonal.
+ * @param[in] beginPosH The begin position in the horizontal orientation.
+ * @param[in] beginPosV The begin position in the vertical orientation.
+ * @param[in] length    The length of the seed diagonal.
  */
 
 /*!
