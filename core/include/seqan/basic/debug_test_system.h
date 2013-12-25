@@ -1974,7 +1974,7 @@ SEQAN_CALL_TEST(test_name);
     } while (false)
 
 /*!
- * @mfn SEQAN_SKIP_TEST
+ * @macro TestSystemMacros#SEQAN_SKIP_TEST
  * @headerfile <seqan/basic.h>
  * @brief Force the test to return without failing and mark it as skipped.
  *

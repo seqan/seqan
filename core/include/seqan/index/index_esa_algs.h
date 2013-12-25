@@ -351,40 +351,34 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*!
  * @class MaxRepeatsIterator Max Repeats Iterator
- * 
  * @extends BottomUpIterator
- * 
  * @headerfile seqan/index.h
  * 
  * @brief Iterator to search for all maximal repeats.
  * 
+ * @signature Iterator<TContainer, MaxRepeats>::Type;
  * @signature template <typename TContainer>
- 8            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength]);
- * @signature template <typename TContainer>
- *            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator);
+ *            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >;
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: IndexEsa
  * 
- * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator&lt;TContainer, MaxRepeats&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats&gt; &gt; &gt;).
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *       Iterator&lt;TContainer, MaxRepeats&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats&gt; &gt; &gt;).
  * 
- * Demo: Demo.Maximal Repeats
+ * @see DemoMaximalRepeats
  */
 
 /*!
- * @fn MaxRepeatsIterator::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
- *
+ * @fn MaxRepeatsIterator::Iter
  * @brief The constructor
  *
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
+ * @signature Iter::Iter(index[, minLength]);
+ * @signature Iter::Iter(iterator);
  *
- * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
- *
- * @param minLength Minimum length of the supermaximal repeats, default value is 1.
- *
- * @param iterator Another MaxRepeats iterator. Types: @link MaxRepeatsIterator @endlink
+ * @param[in] index     The index to be used for the iteration. Types: @link IndexEsa @endlink
+ * @param[in] minLength Minimum length of the supermaximal repeats, default value is 1.
+ * @param[in] iterator  Another MaxRepeats iterator. Types: @link MaxRepeatsIterator @endlink
  */
 
 	//////////////////////////////////////////////////////////////////////////////
