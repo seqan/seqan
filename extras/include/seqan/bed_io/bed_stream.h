@@ -507,7 +507,7 @@ inline bool isGood(BedStream const & stream)
  * 
  * @signature bool atEnd(bedStream);
  * 
- * @param bedStream The @link BedStream @endlink to query.
+ * @param[in] bedStream The @link BedStream @endlink to query.
  * 
  * @return bool <tt>true</tt> if stream is at the end, <tt>false</tt> otherwise.
  */

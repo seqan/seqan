@@ -651,7 +651,7 @@ public:
  *
  * @signature TMatrix _computeInverseMatrix(matrix);
  *
- * @param matrix The matrix in the input (2-dimensional Matrix).
+ * @param[in] matrix The matrix in the input (2-dimensional Matrix).
  *
  * @return TMatrix The inverse matrix, the same type as matrix.
  */

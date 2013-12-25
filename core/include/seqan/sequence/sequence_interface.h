@@ -71,8 +71,6 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagLimit_> Limit;
  *
- * @section Remarks
- * 
  * All entries that exceed the capacity are lost.
  * @headerfile <seqan/sequence.h> 
  *
@@ -84,8 +82,6 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagGenerous_> Generous;
  *
- * @section Remarks
- * 
  * Whenever the capacity has to be increased, the new capacity is choosen somewhat large than actually needed.  This
  * strategy limits the number of capacity changes, so that resizing takes armotized constant time.  Use this strategy if
  * the total amount of storage is unkown at first.
@@ -100,8 +96,6 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagExact_> Exact;
  *
- * @section Remarks
- * 
  * The capacity is only changed if the current capacity is not large enough.  If the capacity can only be expanded up to
  * a certain ammount, it will be increased as far as possible  and the contents are limited to the new capacity.
  * 
@@ -114,9 +108,7 @@ namespace seqan {
  *
  * @signature typedef Tag<TagInsist_> Insist;
  * 
- * @section Remarks
- * 
- * The user has to ensure that the container's capacity is large enough.
+ * @note The user has to ensure that the container's capacity is large enough.
  */
 
 /**
@@ -178,10 +170,9 @@ typedef Tag<TagExact_> Exact;
  *
  * @return Type The default overflow tag.  The default implementation returns <tt>Generous</tt>.
  *
- * @section Remarks
- *
- * This function is used for functions that cause an implicit change of a container's size, like e.g. assign, append,
- * and replace.
+ * This function is used for functions that cause an implicit change of a container's size, like e.g. through
+ * @link AssignableConcept#assign @endlink, @link ContainerConcept#append @endlink and
+ * @link SequenceConcept#replace @endlink.
  */
 
 /**
@@ -219,9 +210,8 @@ struct DefaultOverflowImplicit
  *
  * @return Type The resulting expantion tag for <tt>T</tt>.
  *
- * @section Remarks
- *
- * This function is used for functions that change a container's size explicit, like e.g. resize.
+ * This function is used for functions that change a container's size explicitly, like e.g.
+ * @link SequenceConcept#resize @endlink.
  */
 
 /**
@@ -260,8 +250,6 @@ struct DefaultOverflowExplicit
  *
  * @return Type  Either <tt>True</tt> or <tt>False</tt>, depending on whether <tt>T</tt> is stored contiguously.
  * @return VALUE Either <tt>true</tt> or <tt>false</tt>, depending on whether <tt>T</tt> is stored contiguously.
- *
- * @section Remarks
  *
  * A sequence container is "contiguous", if its elements are stored in a single contiguous array.  Examples for
  * contiguous sequences are AllocString or char arrays.
@@ -314,8 +302,6 @@ struct IsContiguous<T const>
  * @return Type  <tt>True</tt> if <tt>T</tt> is a sequence and <tt>False</tt> otherwise.
  * @return VALUE <tt>true</tt> if <tt>T</tt> is a sequence and <tt>false</tt> otherwise.
  *
- * @section Remarks
- *
  * For example, String and Segment as <tt>T</tt> return true.
  */
 
@@ -356,8 +342,6 @@ struct IsSequence<T const>
  *
  * @return Type  <tt>True</tt> if <tt>T</tt> allows for fast random access and <tt>False</tt> otherwise.
  * @return VALUE <tt>true</tt> if <tt>T</tt> allows for fast random access and <tt>false</tt> otherwise.
- *
- * @section Remarks
  *
  * For example, String and std::vector allow for fast random access, while std::list does not.
  */
@@ -401,8 +385,6 @@ struct AllowsFastRandomAccess<T const>
  * @param[in] cont The object for which to determine the id.
  *
  * @return TVoidPtr a <tt>void const *</tt> value identying the object.
- *
- * @section Remarks
  *
  * Two sequences should have the same id, if they share the same resource, e.g. the same memory buffer.
  *
@@ -1186,8 +1168,6 @@ length(T const & /*me*/)
  *
  * @return TSize Returns the capacity of the sequence.  <tt>TSize</tt> is the result of
  *               <tt>Size&lt;TSequence&gt;::type</tt> where <tt>TSequence</tt> is the type of <tt>seq</tt>.
- *
- * @section Remarks
  *
  * The size of a sequence can never exceed its capacity but some container support resizing of the capacity.  Some
  * functions do that implicitely if they are called with a suitable @link OverflowStrategyTags tag @endlink.  The

@@ -248,7 +248,7 @@ TA
  * 
  * @tparam TIterator A @link VSTreeIterator @endlink.
  * 
- * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
+ * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrder#Preorder @endlink
  *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */

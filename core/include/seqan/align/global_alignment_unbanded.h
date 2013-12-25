@@ -83,18 +83,18 @@ class Fragment;
  * @signature TScoreVal globalAlignment(frags, strings, scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(alignGraph,     scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * 
- * @param align        The @link Align @endlink object to use for storing the pairwise alignment.
- * @param gapsH        The @link Gaps @endlink object for the first row (horizontal in the DP matrix).
- * @param gapsV        The @link Gaps @endlink object for the second row (vertical in the DP matrix).
- * @param frags        String of @link Fragment @endlink objects to store alignment in.
- * @param strings      StringSet of length two with the strings to align.
- * @param alignGraph   Alignment Graph for the resulting alignment.  Must be initialized with two strings.
- * @param scoringScheme The @link Score scoring scheme @endlink to use for the alignment.  Note that
- *                      the user is responsible for ensuring that the scoring scheme is compatible with <tt>algorithmTag</tt>.
- * @param alignConfig  @link AlignConfig @endlink instance to use for the alignment configuration.
- * @param lowerDiag    Optional lower diagonal (<tt>int</tt>).
- * @param upperDiag    Optional upper diagonal (<tt>int</tt>).
- * @param algorithmTag Tag to select the alignment algorithm (see @link AlignmentAlgorithmTags @endlink).
+ * @param[in,out] align        The @link Align @endlink object to use for storing the pairwise alignment.
+ * @param[in,out] gapsH        The @link Gaps @endlink object for the first row (horizontal in the DP matrix).
+ * @param[in,out] gapsV        The @link Gaps @endlink object for the second row (vertical in the DP matrix).
+ * @param[in,out] frags        String of @link Fragment @endlink objects to store alignment in.
+ * @param[in]     strings      StringSet of length two with the strings to align.
+ * @param[in,out] alignGraph   Alignment Graph for the resulting alignment.  Must be initialized with two strings.
+ * @param[in]     scoringScheme The @link Score scoring scheme @endlink to use for the alignment.  Note that
+ *                              the user is responsible for ensuring that the scoring scheme is compatible with <tt>algorithmTag</tt>.
+ * @param[in]     alignConfig  @link AlignConfig @endlink instance to use for the alignment configuration.
+ * @param[in]     lowerDiag    Optional lower diagonal (<tt>int</tt>).
+ * @param[in]     upperDiag    Optional upper diagonal (<tt>int</tt>).
+ * @param[in]     algorithmTag Tag to select the alignment algorithm (see @link AlignmentAlgorithmTags @endlink).
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
  *                     the type of <tt>scoringScheme</tt>).
