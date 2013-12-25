@@ -1055,12 +1055,6 @@ Render the interface metafunctions details
 	</table>
   {% endif %}
 
-  <div class="docstring">
-    <div class="discussion">
-      {{ body(subentry, start_heading=4) }}
-    </div>
-  </div>
-
   {% if subentry.returns %}
   <h4>Returns</h4>
 	<table class="overview">
@@ -1072,6 +1066,12 @@ Render the interface metafunctions details
 	{% endfor %}
 	</table>
   {% endif %}
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
+  </div>
 </div>
 
 {% endfor %}
