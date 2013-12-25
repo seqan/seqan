@@ -48,7 +48,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature EdgeDescriptor<T>::Type;
  *
- * @tparam The @link Graph @endlink type to query.
+ * @tparam T The @link Graph @endlink type to query.
  *
  * @return Type The resulting edge descriptor type.
  *
