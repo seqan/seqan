@@ -757,8 +757,6 @@ Render the grouped macros details
     {% for h in subentry.headerfiles|sort -%}
     {{ h|e }}{% if not loop.last %}, {% endif %}
     {% endfor %}
-    {% else %}
-    &nbsp;
   </dd>
 </dl>
 {% endif %}
