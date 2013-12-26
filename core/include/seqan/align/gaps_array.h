@@ -645,7 +645,7 @@ removeGaps(Gaps<TSequence, ArrayGaps> & gaps, TPosition clippedViewPos, TCount c
     if (gaps._array[i] == TArrayValue(0))
     {
         // No merging for leading and trailing gap.
-        if (i == TArrayPos(0) || i == TArrayPos(length(gaps._array) - 1))
+        if (i != TArrayPos(0) && i != TArrayPos(length(gaps._array) - 1))
         {
             gaps._array[i - 1] += gaps._array[i + 1];
             erase(gaps._array, i, i + 2);
