@@ -49,7 +49,7 @@ def md5ForFile(f, block_size=2**20):
 
 
 # Valgrind flags, taken from CMake output, ideally given to test script by CMake?
-SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..', '..', 'seqan.supp')
+SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..', '..', '..', 'misc', 'seqan.supp')
 VALGRIND_FLAGS = [SUPPRESSIONS] + '--error-exitcode=1 -q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50 --'.split()
 VALGRIND_PATH = '/usr/bin/valgrind'
 
@@ -90,6 +90,14 @@ class TestConf(object):
         fmt = 'TestConf(%s, %s, %s, %s, %s, %s)'
         return fmt % (repr(self.program), self.args, self.to_diff, self.name,
                       self.redir_stdout, self.redir_stderr)
+
+    def commandLineArgs(self):
+        """Returns the command line."""
+        args = [x for x in self.args if x != '']
+        args = [self.program] + args
+        if self.valgrind:
+            args = [VALGRIND_PATH] + VALGRIND_FLAGS + args
+        return args
 
 
 class TestPathHelper(object):
@@ -211,12 +219,7 @@ def runTest(test_conf):
     """
     # Execute the program.
     logging.debug('runTest(%s)', test_conf)
-    args = [x for x in test_conf.args if x != '']
-    args = [test_conf.program] + args
-    if test_conf.valgrind:
-        # Call through valgrind.
-        args = [VALGRIND_PATH] + VALGRIND_FLAGS
-    logging.debug('Executing "%s"', ' '.join(args))
+    logging.debug('Executing "%s"', ' '.join(test_conf.commandLineArgs()))
     stdout_file = subprocess.PIPE
     if test_conf.redir_stdout:
         logging.debug('  Redirecting stdout to "%s".' % test_conf.redir_stdout)
@@ -226,7 +229,7 @@ def runTest(test_conf):
         logging.debug('  Redirecting stderr to "%s".' % test_conf.redir_stderr)
         stderr_file = open(test_conf.redir_stderr, 'w+')
     try:
-        process = subprocess.Popen(args, stdout=stdout_file,
+        process = subprocess.Popen(test_conf.commandLineArgs(), stdout=stdout_file,
                                    stderr=stderr_file)
         retcode = process.wait()
         logging.debug('  return code is %d', retcode)
@@ -253,7 +256,7 @@ def runTest(test_conf):
         fmt = 'ERROR (when executing "%s"): %s'
         if stdout_file is not subprocess.PIPE:
             stdout_file.close()
-        print >>sys.stderr, fmt % (' '.join(args), e)
+        print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), e)
         return False
     # Handle error of program, indicated by return code != 0.
     if retcode != 0:
