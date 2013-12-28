@@ -1,5 +1,32 @@
 # Source: http://svn.python.org/projects/python/trunk/Misc/valgrind-python.supp
 
+# Suppressing all warnings in the python2.7 binary.
+{
+    Suppress all Addr4 in Python.
+    Memcheck:Addr4
+    obj:*python*
+}
+{
+    Suppress all Addr8 in Python.
+    Memcheck:Addr8
+    obj:*python*
+}
+{
+    Suppress all Value4 in Python.
+    Memcheck:Value4
+    obj:*python*
+}
+{
+    Suppress all Value8 in Python.
+    Memcheck:Value8
+    obj:*python*
+}
+{
+    Suppress all Cond in Python.
+    Memcheck:Cond
+    obj:*python*
+}
+
 #
 # This is a valgrind suppression file that should be used when using valgrind.
 #
