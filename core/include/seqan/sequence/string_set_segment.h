@@ -366,7 +366,9 @@ assignInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
     SEQAN_ASSERT_LT(pos, length(me));
     assignValue(me.positions, pos, infixPos);
     me.limitsValid = false;
-    assignValue(me.limits, pos + 1, me.limits[pos] + len);
+    // NOTE(esiragusa): this breaks the invariant on limits.
+    assignValue(me.limits, pos + 1, len);
+//    assignValue(me.limits, pos + 1, me.limits[pos] + len);
 }
 
 // --------------------------------------------------------------------------
