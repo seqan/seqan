@@ -49,7 +49,7 @@ namespace seqan {
  * @defgroup RankDictionaryFibres RankDictionary Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
  * 
- * @see RankDictionary#Fibre
+ * @see Fibre
  * @see RankDictionary#getFibre
  *
  * @tag RankDictionaryFibres#FibreRanks
@@ -142,16 +142,6 @@ struct RankDictionaryFibreSpec
 // ----------------------------------------------------------------------------
 // Function getFibre()
 // ----------------------------------------------------------------------------
-/*!
- * @mfn RankDictionary#Fibre
- * @brief Returns the type of a specified fibre of a @link RankDictionary @endlink.
- *
- * @signature Fibre<RankDictionary, FibreSpec>::Type
- *
- * @tparam FibreSpec The Fibre of interest. Types: @link RankDictionaryFibres#FibreRanks @endlink.
- *
- * @return Type The fibre type.
- */
 
 /*!
  * @fn RankDictionary#getFibre
@@ -226,6 +216,16 @@ SEQAN_HOST_DEVICE inline bool empty(RankDictionary<TValue, TSpec> const & dict)
 // ----------------------------------------------------------------------------
 // Function createRankDictionary()
 // ----------------------------------------------------------------------------
+/*!
+ * @fn RankDictionary#createRankDictionary
+ * @headerfile seqan/index.h
+ * @brief This functions creates the dictionary.
+ * 
+ * @signature void createRankDictionary(dictionary, text);
+ * 
+ * @param[in]  text       A text to be transfered into a rank dictionary. Types: @link SequenceConcept @endlink
+ * @param[out] dictionary The dictionary.
+ */
 
 template <typename TValue, typename TSpec, typename TText>
 inline void
@@ -245,6 +245,135 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     // Update all ranks.
     updateRanks(dict);
 }
+
+// ----------------------------------------------------------------------------
+// Function getRank()
+// ----------------------------------------------------------------------------
+/*!
+ * @fn RankDictionary#getRank
+ * @headerfile seqan/index.h
+ * @brief Returns the rank of a specified character up to a specified position.
+ * 
+ * @signature TSize countOccurrences(dictionary, pos[, character]);
+ * 
+ * @param[in] dictionary The dictionary. 
+ * @param[in] pos The position (which is also included in the rank computation).
+ * @param[in] character The character of interest. Default: <tt>true</tt>
+ *
+ * @return TSize The rank of a specified character up to a specified position. The result of the metafunction Size&lt;RankDictionary&gt;::Type
+ */
+
+
+// ----------------------------------------------------------------------------
+// Function getValue()
+// ----------------------------------------------------------------------------
+/*!
+ * @fn RankDictionary#getValue
+ * @headerfile seqan/index.h
+ * @brief Returns the character of a specified position.
+ * 
+ * @signature TValue getValue(dictionary, pos);
+ * 
+ * @param[in] dictionary The dictionary.
+ * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
+ *
+ * @return TValue Returns the character of a specified position. The result is of type
+ * Value&lt;RankDictionary&gt;::Type;
+ */
+
+// ----------------------------------------------------------------------------
+// Function setValue()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn RankDictionary#setValue
+ * @headerfile seqan/index.h
+ * @brief Sets the character at a specified position.
+ * 
+ * @signature void setValue(dictionary, pos, character);
+ * 
+ * @param[in] dictionary The dictionary.
+ * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
+ * @param[in] character  The character to be set.
+ */
+
+// ----------------------------------------------------------------------------
+// Function updateRanks()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn RankDictionary#updateRanks
+ *
+ * @brief Updates the rank information.
+ *
+ * @signature void updateRanks(dict)
+ *
+ * @param dict The @link RankDictionary @endlink.
+ */
+
+// ----------------------------------------------------------------------------
+// Function length()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn RankDictionary#length
+ *
+ * @brief Retruns the number of element in the rank dictionary.
+ *
+ * @signature TSize length(dict)
+ *
+ * @param dict The @link RankDictionary @endlink.
+ *
+ * @return TSize The number of element in the rank dictionary. The result of the metafunction 
+ * Size&lt;RankDictionary&gt;::Type
+ */
+
+
+// ----------------------------------------------------------------------------
+// Function reserve()
+// ----------------------------------------------------------------------------
+/*!
+ * @fn RankDictionary#reserve
+ *
+ * @brief Reserves memory for a specified number of elements in the rank dictionary
+ *
+ * @signature TSize reserve(dict, newCapacity, tag)
+ *
+ * @param dict The @link RankDictionary @endlink.
+ * @param newCapacity The number of elements one wants to reserve memory for.
+ * @param tag The tag that specifies the memory allocation strategy. Types: @link OverflowStrategyTags @endlink.
+ *
+ * @section Remarks
+ *
+ * This operation does not changes the content of object.
+ *
+ * This operation may invalidate iterators of object.
+ *
+ * @return TSize Retruns the number of element that could be reserved. The result of the metafunction
+ * Size&lt;RankDictionary&gt;::Type
+ */
+
+// ----------------------------------------------------------------------------
+// Function resize()
+// ----------------------------------------------------------------------------
+/*!
+ * @fn RankDictionary#resize
+ *
+ * @brief Increases the length of a rank dictionary to a specified value.
+ *
+ * @signature TSize resize(dict, newLength, tag)
+ *
+ * @param dict The @link RankDictionary @endlink.
+ * @param newLength The number of elements the rank dictionaru contains after resizing.
+ * @param tag The tag that specifies the memory allocation strategy. Types: @link OverflowStrategyTags @endlink.
+ *
+ * @section Remarks
+ *
+ * This operation may invalidate iterators of object.
+ *
+ * @return TSize Retruns the number of element that could be reserved. The result of the metafunction
+ * Size&lt;RankDictionary&gt;::Type
+ */
 
 // ----------------------------------------------------------------------------
 // Function open()

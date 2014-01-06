@@ -76,27 +76,6 @@ class RightArrayBinaryTree;
  * @brief The string encoding the wavelet tree structure.
  */
 
-/*!
- * @mfn RightArrayBinaryTree#Fibre
- * @headerfile seqan/index.h
- *
- * @brief Type of a specific RightArrayBinaryTree member (fibre).
- * @signature template <typename TObject, TSpec>
- *            Fibre<RightArrayBinaryTree, TSpec>::Type
- * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link WaveletTreeFibres @endlink, 
- *               @link RightArrayBinaryTreeFibres @endlink, @link SentinelRankDictionaryFibres @endlink
- * @tparam RightArrayBinaryTree The RightArrayBinaryTree. 
- *
- * @return Type Fibre type.
- *
- * @section Naming
- *
- * Some containers, such as the @link Index @endlink or the @link RankDictionary @endlink, can be seen as a collection
- * of tables. However, each table alone is just a collection of information. They only become powerful if used together.
- * Therefore, a more appropriate label for the tables is fibre, like the fibres of a rope.
- *
- * In addition, sometimes a fibre can be a single value and calling it a table would be misleading.
- */
 ///.Metafunction.Fibre.param.TContainer.type:Class.RightArrayBinaryTree
 ///.Metafunction.Fibre.param.TSpec.type:Tag.RightArrayBinaryTree Fibres
 struct FibreTreeStructureEncoding_;
@@ -339,7 +318,7 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * @param[in] fibreTag  A tag that identifies the @link Fibre @endlink.  Types: @link RightArrayBinaryTreeFibres
  *                      RightArrayBinaryTree Fibres @endlink.
  * 
- * @return TFibre A reference to the @link RightArrayBinaryTree#Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  */
 /**
 .Function.RightArrayBinaryTree#getFibre:

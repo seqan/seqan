@@ -716,7 +716,6 @@ _getValuesRanks(RankDictionary<bool, TwoLevels<TSpec> > const & dict, TPos pos)
 // ----------------------------------------------------------------------------
 // Function getRank()
 // ----------------------------------------------------------------------------
-
 template <typename TValue, typename TSpec, typename TPos, typename TChar>
 SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > const>::Type
 getRank(RankDictionary<TValue, TwoLevels<TSpec> > const & dict, TPos pos, TChar c)
@@ -755,7 +754,6 @@ getRank(RankDictionary<bool, TwoLevels<TSpec> > const & dict, TPos pos)
 // ----------------------------------------------------------------------------
 // Function getValue()
 // ----------------------------------------------------------------------------
-
 template <typename TValue, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename Value<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 getValue(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TPos pos)
