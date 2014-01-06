@@ -871,6 +871,22 @@ Render the interface functions details
   </div></div>
   {% endif %}
 
+  {% if subentry.warnings %}
+  <div class="note warnings">Warning. <div class='inline'>
+      {% for msg in subentry.warnings %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
+  {% if subentry.notes %}
+  <div class="note note">Note. <div class='inline'>
+      {% for msg in subentry.notes %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
@@ -1030,6 +1046,22 @@ Render the interface metafunctions details
   {% if subentry.deprecation_msgs %}
   <div class="note deprecated">Deprecated. <div class='inline'>
       {% for msg in subentry.deprecation_msgs %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
+  {% if subentry.warnings %}
+  <div class="note warnings">Warning. <div class='inline'>
+      {% for msg in subentry.warnings %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
+  {% if subentry.notes %}
+  <div class="note note">Note. <div class='inline'>
+      {% for msg in subentry.notes %}
       <p>{{ msg|transtext(False) }}</p>
       {% endfor %}
   </div></div>

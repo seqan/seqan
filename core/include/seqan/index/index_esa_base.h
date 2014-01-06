@@ -462,18 +462,15 @@ information of the suffix tree) are provided.
 */
 /*!
  * @class IndexEsa
- * 
  * @extends Index
- * 
  * @headerfile seqan/index.h
- * 
  * @brief An index based on an enhanced suffix array.
  * 
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, IndexEsa<TSpec> >;
  * 
- * @tparam TText The text type. Types: @link SequenceConcept @endlink, @link StringSet @endlink
- * @tparam TSpec The specialization which is <tt>void</tt> by default.
+ * @tparam TText The @link TextConcept text type @endlink.
+ * @tparam TSpec The specialization, defaults to <tt>void</tt>.
  * 
  * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.

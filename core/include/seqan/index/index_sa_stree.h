@@ -82,7 +82,8 @@ struct IndexSa {};
  * @brief An index based on a suffix array.
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, IndexSa<TSpec> >;
- * @tparam TText The type of the underlying text: Types @link String @endlink, @link StringSet @endlink
+ *
+ * @tparam TText The type of the underlying @link TextConcept text @endlink.
  * @tparam TSpec A tag for specialization purposes.
  */
 
