@@ -112,8 +112,6 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
  *               @link PizzaChiliIndexTags @endlink
  * @tparam TText The text type. Types: @link String @endlink
  * 
- * @section Remarks
- * 
  * @see PizzaChiliString
  * @see PizzaChiliIndexFibres
  * @see IndexFindAlgorithm

@@ -85,16 +85,14 @@ sequence.
 */
 /*!
  * @class RankDictionary
- * 
  * @headerfile seqan/index.h
- * 
- * @brief A rank dictionary is a data structure storing the rank of an element
- *        in a sequence at every position of the sequence.
+ * @brief A rank dictionary is a data structure storing the rank of an element in a sequence at every position of
+ *        the sequence.
  * 
  * @signature template <typename TValue, typename TSpec>
  *            struct RankDictionary;
  * 
- * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevelRankDictionary @endlink
+ * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevelRankDictionary @endlink.
  */
 template <typename TValue, typename TSpec>
 struct RankDictionary;
@@ -146,29 +144,26 @@ struct RankDictionaryFibreSpec
 // ----------------------------------------------------------------------------
 /*!
  * @mfn RankDictionary#Fibre
- *
  * @brief Returns the type of a specified fibre of a @link RankDictionary @endlink.
  *
  * @signature Fibre<RankDictionary, FibreSpec>::Type
  *
  * @tparam FibreSpec The Fibre of interest. Types: @link RankDictionaryFibres#FibreRanks @endlink.
  *
+ * @return Type The fibre type.
  */
 
 /*!
  * @fn RankDictionary#getFibre
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns a specific fibre of a dictionary.
  * 
- * @signature getFibre(dictionary, fibreTag)
+ * @signature TFibre getFibre(dictionary, fibreTag);
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link RankDictionaryFibres @endlink
- * @param dictionary The dictionary holding the fibre.
+ * @param[in] dictionary The dictionary holding the fibre.
+ * @param[in] fibreTag   A tag that identifies the @link Fibre @endlink. Types: @link RankDictionaryFibres @endlink.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
 
@@ -189,17 +184,17 @@ getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn RankDictionary#clear
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Resets the rank dictionary.
  * 
  * @signature void clear(dictionary);
  * 
- * @param dictionary The rank dictionary to be cleared.
+ * @param[in,out] dictionary The rank dictionary to be cleared.
  */
+
 template <typename TValue, typename TSpec>
 inline void clear(RankDictionary<TValue, TSpec> & dict)
 {
@@ -209,19 +204,17 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
 // ----------------------------------------------------------------------------
 // Function empty()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn RankDictionary#empty
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns whether or not the rank dictionary is empty.
  * 
- * @signature empty(dictionary)
+ * @signature bool empty(dictionary);
  * 
- * @param dictionary The rank dictionary to be checked.
+ * @param[in] dictionary The rank dictionary to be checked.
  * 
- * @return TReturn <tt>true</tt> if the dictionary is empty,
- * <tt>false</tt> otherwise.
+ * @return bool <tt>true</tt> if the dictionary is empty, <tt>false</tt> otherwise.
  */
 
 template <typename TValue, typename TSpec>
@@ -256,28 +249,25 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn RankDictionary#open
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions loads a rank dictionary from disk.
  * 
- * @signature open(dictionary, fileName [, openMode])
+ * @signature bool open(dictionary, fileName[, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param dictionary The dictionary.
- * @param fileName C-style character string containing the file name.
+ * @param[in,out] dictionary The dictionary.
+ * @param[in]     fileName   C-style character string containing the file name.
+ * @param[in]     openMode   The combination of flags defining how the file should be opened.To open a file read-only,
+ *                           write-only or to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                           <tt>OPEN_RDWR</tt>.To create or overwrite a file add <tt>OPEN_CREATE</tt>.To append a file
+ *                           if existing add <tt>OPEN_APPEND</tt>.To circumvent problems, files are always opened in
+ *                           binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool <tt>true</tt> on success.
  */
+
 template <typename TValue, typename TSpec>
 inline bool open(RankDictionary<TValue, TSpec> & dict, const char * fileName, int openMode)
 {
@@ -295,23 +285,18 @@ inline bool open(RankDictionary<TValue, TSpec> & dict, const char * fileName)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RankDictionary#save
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions saves a dictionary to disk.
  * 
- * @signature save(dictionary, fileName [, openMode])
+ * @signature bool save(dictionary, fileName[, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param dictionary The dictionary.
- * @param fileName C-style character string containing the file name.
+ * @param[in] dictionary The dictionary.
+ * @param[in] fileName   C-style character string containing the file name.
+ * @param[in] openMode   The combination of flags defining how the file should be opened.To open a file read-only,
+ *                       write-only or to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                       <tt>OPEN_RDWR</tt>.To create or overwrite a file add <tt>OPEN_CREATE</tt>.To append a file
+ *                       if existing add <tt>OPEN_APPEND</tt>.To circumvent problems, files are always opened in
+ *                       binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
  * 
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
  */

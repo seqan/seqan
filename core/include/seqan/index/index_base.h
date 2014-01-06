@@ -446,7 +446,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 /*!
  * @mfn Index#DefaultIndexCreator
  * @headerfile seqan/index.h
- * @deprecated advanced
+ * @note Advanced functionality, not commonly used.
  * @brief Default algorithm to create a demanded and not yet existing @link Fibre @endlink.
  *
  * @signature DefaultIndexCreator<TIndex, TFibre>::Type;
@@ -686,6 +686,18 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 			typename Fibre< Index<TText, TSpec>, FibreRawText>::Type 
 		>::Type Type;
     };
+
+/*!
+ * @mfn Index#Size
+ * @headerfile <seqan/index.h>
+ * @brief Returns the size type of an Index.
+ *
+ * @signature Size<TIndex>::Type;
+ *
+ * @tparam TIndex The Index specialization.
+ *
+ * @return Type The resulting size type of the index.
+ */
 
 	template < typename TText, typename TSpec >
     struct Size< Index<TText, TSpec> > {
@@ -1385,7 +1397,7 @@ I	ISSISSIPPI*/
 /*!
  * @fn IndexEsa#saAt
  * @headerfile seqan/index.h
- * @deprecated advanced
+ * @note Advanced functionality, not commonly used.
  * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
  *
  * @signature TValue saAt(position, index);
@@ -1444,7 +1456,7 @@ I	ISSISSIPPI*/
 /*!
  * @fn IndexEsa#rawsaAt
  * @headerfile seqan/index.h
- * @deprecated advanced
+ * @note Advanced functionality, not commonly used.
  * @brief Shortcut for <tt>value(indexRawSA(..), ..)</tt>.
  *
  * @signature TValue rawsaAt(position, index);
@@ -2029,7 +2041,7 @@ I	ISSISSIPPI*/
  *
  * @section Examples
  *
- * The following code shows how the function @Function.open@ is used with indices.
+ * The following code shows how the function @link Index#open @endlink is used with indices.
  *
  * @include demos/index/index_open_save.cpp
  *
@@ -2061,7 +2073,7 @@ I	ISSISSIPPI*/
  *
  * @section Examples
  *
- * The following code shows how the function @Function.save@ is used with indices.
+ * The following code shows how the function @link Index#save @endlink is used with indices.
  *
  * @include demos/index/index_open_save.cpp
  *
