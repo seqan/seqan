@@ -89,19 +89,15 @@ struct Spec<Iter<RightArrayBinaryTree<TChar, TSpec> const, RightArrayBinaryTreeI
 // ============================================================================
 /*!
  * @class RightArrayBinaryTreeIterator RightArrayBinaryTree Iterator
- * 
  * @extends Iter
- * 
  * @headerfile seqan/index.h
- * 
  * @brief An iterator for @link RightArrayBinaryTree @endlink.
  * 
  * @signature template <typename TSpec>
- *            class Iter<RightArrayBinaryTree, TSpec >;
+ *            class Iter<TRightArrayBinaryTree, TSpec >;
  * 
- * @tparam TSpec Specialisation Tag. Types: TopDownIterator
- * @tparam RightArrayBinaryTree The @link RightArrayBinaryTree @endlink. Types:
- *                              @link RightArrayBinaryTree @endlink
+ * @tparam TSpec                 Specialisation Tag. Types: TopDownIterator
+ * @tparam TRightArrayBinaryTree The @link RightArrayBinaryTree @endlink.
  */
 /**
 .Spec.RightArrayBinaryTree Iterator:
@@ -173,19 +169,15 @@ public:
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#begin
- * 
  * @headerfile seqan/index.h
- * 
  * @brief The begin (root) of a @link RightArrayBinaryTree @endlink.
  * 
- * @signature Iterator begin(rightArrayBinaryTree, iterSpec)
+ * @signature TIterator begin(rightArrayBinaryTree, iterSpec);
  * 
- * @param rightArrayBinaryTree The right-array-binary tree.
- *
- * @param iterSpec A specialisation tag. Types: TopDown<>, TopDown<ParentLinks<> >
+ * @param[in] rightArrayBinaryTree The right-array-binary tree.
+ * @param[in] iterSpec             A specialisation tag. Types: TopDown&lt;&gt;, TopDown&lt;ParentLinks&lt;&gt; &gt;.
  * 
- * @return TReturn An iterator to the first item in <tt>object</tt>.
- *                 Metafunctions: Metafunction.Iterator
+ * @return TIterator An iterator to the first item in <tt>object</tt>. Metafunctions: Metafunction.Iterator
  */
 ///.Function.begin.param.object.type:Class.RightArrayBinaryTree
 template <typename TChar, typename TSpec, typename TIterSpec>
@@ -207,16 +199,13 @@ begin(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#container
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Container of an iterator.
+ * @signature TContainer container(iterator)
  * 
- * @signature Container container(iterator)
+ * @param[in] iterator An iterator.
  * 
- * @param iterator An iterator.
- * 
- * @return TReturn The container that <tt>iterator</tt> traverses.
+ * @return TContainer The container that <tt>iterator</tt> traverses.
  */
 ///.Function.container.param.iterator.type:Class.RightArrayBinaryTree
 template <typename TTree, typename TIterSpec>
@@ -238,19 +227,15 @@ container(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const 
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#end
- * 
  * @headerfile seqan/index.h
+ * @brief The end (rigthmost leaf) of a @link RightArrayBinaryTree @endlink.
  * 
- * @brief The end (rigthmost laef) of a @link RightArrayBinaryTree @endlink.
+ * @signature TIterator end(rightArrayBinaryTree, iterSpec);
  * 
- * @signature Iterator end(rightArrayBinaryTree, iterSpec)
+ * @param[in] rightArrayBinaryTree The right-array-binary tree.
+ * @param[in] iterSpec             A specialisation tag. Types: TopDown&lt;&gt;, TopDown&lt;ParentLinks&lt;&gt; &gt;.
  * 
- * @param rightArrayBinaryTree The right-array-binary tree.
- *
- * @param iterSpec A specialisation tag. Types: TopDown<>, TopDown<ParentLinks<> >
- * 
- * @return TReturn An iterator to the first item in <tt>object</tt>.
- *                 Metafunctions: Metafunction.Iterator
+ * @return TIterator An iterator to the first item in <tt>object</tt>.  Metafunctions: Metafunction.Iterator
  */
 ///.Function.end.param.object.type:Class.RightArrayBinaryTree
 template <typename TChar, typename TSpec, typename TIterSpec>
@@ -272,15 +257,14 @@ end(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const &
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#getCharacter
- * 
  * @headerfile seqan/index.h
+ * @brief This function returns the pivot character of the node the iterator currently points to.
  * 
- * @brief This function returns the pivot character of the node the iterator
- *        currently points to.
+ * @signature TChar getCharacter(iterator);
  * 
- * @signature getCharacter(iterator)
- * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
+ *
+ * @return TChar The resulting character.
  */
 /**
 .Function.getCharacter
@@ -302,15 +286,14 @@ getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > con
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#getLeftChildPos
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the position in @link RightArrayBinaryTree @endlink of the left child node.
  * 
- * @brief Returns the position in @link RightArrayBinaryTree @endlink of the
- *        left child node.
+ * @signature unsigned getLeftChildPos(iterator);
  * 
- * @signature getLeftChildPos(iterator)
- * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
+ *
+ * @return unsigned The left child position.
  */
 /**
 .Function.getLeftChildPos
@@ -335,15 +318,15 @@ inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<Top
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#getSubTreeSize
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the number of vertices in the subtree starting at the position
  *        an iterator points to.
  * 
- * @signature getSubTreeSize(iterator)
+ * @signature unsigned getSubTreeSize(iterator);
  * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
+ *
+ * @return unsigned The subtree size.
  */
 /**
 .Function.getSubTreeSize
@@ -370,14 +353,14 @@ inline unsigned getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#getPosition
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the position of the iterator in the host.
  * 
- * @signature getPosition(iterator)
+ * @signature unsigned getPosition(iterator);
  * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
+ *
+ * @return unsigned The position.
  */
 /**
 .Function.getPosition
@@ -398,15 +381,14 @@ inline unsigned int getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#getRightChildPos
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the position in @link RightArrayBinaryTree @endlink of the right child node.
  * 
- * @brief Returns the position in @link RightArrayBinaryTree @endlink of the
- *        right child node.
+ * @signature unsigned getLeftChildPos(iterator);
  * 
- * @signature getLeftChildPos(iterator)
- * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
+ *
+ * @return unsigned The left child position.
  */
 /**
 .Function.getRightChildPos
@@ -449,17 +431,14 @@ inline void _historyPush(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<Parent
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#goDown
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Iterates down the leftmost edge in a @link RightArrayBinaryTree @endlink.
  * 
- * @signature bool goDown(iterator)
+ * @signature bool goDown(iterator);
  *
- * @param iterator The iterator
+ * @param[in] iterator The iterator
  * 
- * @return TReturn <tt>true</tt> if an edge to go down exists,
- *                 otherwise <tt>false</tt>. Types: bool
+ * @return bool <tt>true</tt> if an edge to go down exists, otherwise <tt>false</tt>.
  */
 ///.Function.goDown.param.iterator.type:Spec.RightArrayBinaryTree Iterator
 template <typename TTree, typename TIterSpec>
@@ -491,19 +470,15 @@ inline bool _goDownConstruction(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 
 /*!
  * @fn RightArrayBinaryTreeIterator#goLeftChild
- * 
  * @headerfile seqan/index.h
+ * @brief Sets the iterator to the left child of the current node if it exists and returns true, otherwise the
+ *        iterator does not change position and the function returns false.
  * 
- * @brief Sets the iterator to the left child of the current node if it exists
- *        and returns true, otherwise the iterator does not change position and
- *        the function returns false.
+ * @signature bool goLeftChild(iterator);
  * 
- * @signature bool goLeftChild(iterator)
+ * @param[in] iterator The iterator
  * 
- * @param iterator The iterator
- * 
- * @return TReturn <tt>true</tt> if the edge to go down exists,
- *                 otherwise <tt>false</tt>.
+ * @return bool <tt>true</tt> if the edge to go down exists, otherwise <tt>false</tt>.
  */
 /**
 .Function.goLeftChild
@@ -542,17 +517,14 @@ inline bool goLeftChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSp
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#goRight
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Iterates to the next sibling in a @link RightArrayBinaryTree @endlink.
  * 
- * @signature goRight(iterator)
+ * @signature bool goRight(iterator);
  * 
- * @param iterator The iterator
+ * @param[in] iterator The iterator
  * 
- * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
- *                 <tt>false</tt>. Types: nolink:bool
+ * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
 /**
 .Function.goRight
@@ -591,19 +563,15 @@ inline bool goRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> 
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#goRightChild
- * 
  * @headerfile seqan/index.h
+ * @brief Sets the iterator to the right child of the current node if it exists and returns true, otherwise the
+ *        iterator does not change position and the function returns false.
  * 
- * @brief Sets the iterator to the right child of the current node if it exists
- *        and returns true, otherwise the iterator does not change position and
- *        the function returns false.
+ * @signature bool goRightChild(iterator);
  * 
- * @signature bool goRightChild(iterator)
+ * @param[in] iterator The iterator.
  * 
- * @param iterator The iterator.
- * 
- * @return TReturn <tt>true</tt> if the edge to go down exists,
- *                 otherwise <tt>false</tt>.
+ * @return bool <tt>true</tt> if the edge to go down exists, otherwise <tt>false</tt>.
  */
 /**
 .Function.goRightChild
@@ -684,17 +652,14 @@ inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#goUp
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Iterates up one edge to the parent in a @link RightArrayBinaryTree @endlink.
  * 
- * @signature goUp(iterator)
+ * @signature bool goUp(iterator);
  * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
  * 
- * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
- *                 <tt>false</tt>. Types: nolink:bool
+ * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
 /**
 .Function.goUp.param.iterator.type:Spec.TopDownHistory Iterator
@@ -755,16 +720,14 @@ inline bool _goUpStructureConstruction(Iter<TTree, RightArrayBinaryTreeIterator<
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#isLeaf
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Tests whether a given node is a leaf or not.
  * 
- * @signature isLeaf(iterator)
+ * @signature bool isLeaf(iterator);
  * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
  * 
- * @return TReturn True if the node is a leaf.
+ * @return bool <tt>true</tt> if the node is a leaf.
  */
 /**
 .Function.isLeaf
@@ -826,16 +789,13 @@ inline bool _setAndGoRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIte
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#setCharacter
- * 
  * @headerfile seqan/index.h
+ * @brief The function sets the character of the node the iterator points to to character.
  * 
- * @brief The function sets the character of the
- *        node the iterator points to to character.
+ * @signature void setCharacter(iterator, character);
  * 
- * @signature void setCharacter(iterator, character)
- * 
- * @param character The character to be assigned to a node.
- * @param iterator The iterator.
+ * @param[in,out] iterator  The iterator.
+ * @param[in]     character The character to be assigned to a node.
  */
 /**
 .Function.setCharacter
@@ -987,17 +947,14 @@ inline bool _setRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<T
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTreeIterator#isRoot
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Test whether a iterator points to the root node.
  * 
- * @signature bool isRoot(iterator)
+ * @signature bool isRoot(iterator);
  * 
- * @param iterator The iterator.
+ * @param[in] iterator The iterator.
  * 
- * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the root of the
- *                 tree, otherwise <tt>false</tt>. Types: nolink:bool
+ * @return bool <tt>true</tt> if <tt>iterator</tt> points to the root of the tree, otherwise <tt>false</tt>.
  */
 /**
 .Function.isRoot

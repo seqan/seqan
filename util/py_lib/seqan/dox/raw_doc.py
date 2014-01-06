@@ -230,9 +230,13 @@ class RawCodeEntry(RawEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -280,9 +284,13 @@ class RawVariable(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -331,9 +339,13 @@ class RawTag(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -386,9 +398,13 @@ class RawConcept(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -488,9 +504,13 @@ class RawClass(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -561,9 +581,13 @@ class RawFunction(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -636,9 +660,13 @@ class RawMacro(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -708,9 +736,13 @@ class RawMetafunction(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
