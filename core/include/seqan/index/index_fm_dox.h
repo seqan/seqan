@@ -60,20 +60,17 @@
 
 /*!
  * @fn FMIndex#begin
+ * @headerfile seqan/index.h
+ * @brief Returns an iterator pointing to the root node of the virtual prefix trie of the reversed text of the index.
  * 
- * @brief Returns an iterator pointing to the root node of the virtual prefix
- *        trie of the reversed text of the index.
+ * @signature TIterator begin(index, tag);
  * 
- * @signature Iterator begin(index, tag)
+ * @param[in] index The index to be traversed.
+ * @param[in] tag   The specialisation of the iterator to be returned by the function. Types: VSTree Iterator
  * 
- * @param index The index to be traversed.
- * @param tag The specialisation of the iterator to be returned by the function.
- *            Types: VSTree Iterator
- * 
- * @return TReturn Returns an iterator pointing to the root node of the virtual
- *                 prefix trie of the reversed text of the the index. Types:
- *                 nolink:<tt>The result of Iterator<Index<TText, TIndexSpec>,
- *                 TSpec >::Type</tt>
+ * @return TIterator Returns an iterator pointing to the root node of the virtual prefix trie of the reversed text
+ *                   of the the index.  Types: <tt>The result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;,
+ *                   TSpec&gt;::Type</tt>
  */
 
 /*!
@@ -345,9 +342,7 @@
  * @signature template <typename TValue>
  *            class RankDictionary<SequenceBitMask<TValue> >;
  * 
- * @tparam TValue The value type of the .
- * 
- * @section Remarks
+ * @tparam TValue The value type of the text.
  * 
  * This data structure is optimized for very small alphabets, such as @link Dna @endlink
  * or  @link Dna5 @endlink.  Consider using a @link WaveletTree @endlink if
@@ -366,49 +361,42 @@
  */
 
 
+// TODO(holtgrew): Missing return type.
 /*!
  * @fn RankDictionary#getValue
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the character of a specified position.
  * 
- * @signature getValue(dictionary, pos)
+ * @signature TChar getValue(dictionary, pos);
  * 
- * @param pos The position. Types: @link UnsignedIntegerConcept @endlink.
- * @param dictionary The dictionary.
+ * @param[in] dictionary The dictionary.
+ * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
  */
 
 
 /*!
  * @fn RankDictionary#countOccurrences
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the rank (number of occurrences) of a specified character up to a specified position.
  * 
- * @brief Returns the rank (number of occurrences) of a specified character up
- *        to a specified position.
+ * @signature unsigned countOccurrences(dictionary, character, pos);
  * 
- * @signature countOccurrences(dictionary, character, pos)
- * 
- * @param character The character of interest.
- * @param pos The position (which is also included in the rank computation).
- * @param dictionary The dictionary. 
+ * @param[in] dictionary The dictionary. 
+ * @param[in] character The character of interest.
+ * @param[in] pos The position (which is also included in the rank computation).
  *
- * @return TReturn The rank (number of occurrences) of a specified character up
- *                 to a specified position. Types: <tt>unsigned</tt>
+ * @return unsigned The rank (number of occurrences) of a specified character up to a specified position.
  */
 
 /*!
  * @fn RankDictionary#createRankDictionary
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions creates the dictionary.
  * 
- * @signature createRankDictionary(dictionary, text)
+ * @signature void createRankDictionary(dictionary, text);
  * 
- * @param text A text to be transfered into a wavelet tree. Types: @link String @endlink
- * @param dictionary The dictionary.
+ * @param[in]  text       A text to be transfered into a wavelet tree. Types: @link String @endlink
+ * @param[out] dictionary The dictionary.
  */
 
 
@@ -439,21 +427,17 @@
 
 /*!
  * @class RankSupportBitString
- * 
  * @headerfile seqan/index.h
- * 
  * @brief A bit string supporting rank queries in constant time.
  * 
  * @signature template <typename TSpec>
  *            class RankSupportBitString;
  * 
- * @tparam TSpec Specialisation tag. Default: void
- * 
- * @section Remarks
+ * @tparam TSpec Specialisation tag.  Default: void
  * 
  * The constant rank query time is achieved by evaluating precomputed
- * subsolutions. In order to do so, the bit string is divided into blocks of
- * length l. A super block string stores for each block of l blocks the number
+ * subsolutions.  In order to do so, the bit string is divided into blocks of
+ * length l.  A super block string stores for each block of l blocks the number
  * of bits set from the beginning. In addition a block string stores the number
  * of bits set in each block from the start of the last super block block.
  * Therefore it is possible to compute the result of a rank query in constant
@@ -792,17 +776,16 @@
 
 /*!
  * @fn SentinelRankDictionary#countOccurrences
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the number of occurrences of a specified character from the start to a specified position.
  * 
- * @brief Returns the number of occurrences of a specified character from the
- *        start to a specified position.
+ * @signature TSize countOccurrences(dictionary, character, pos);
  * 
- * @signature countOccurrences(dictionary, character, pos)
- * 
- * @param character The character.
- * @param pos The position (which is included in the counting).
- * @param dictionary The dictionary.
+ * @param[in] dictionary The dictionary.
+ * @param[in] character  The character.
+ * @param[in] pos        The position (which is included in the counting).
+ *
+ * @return TSize The number of occurences  (Metafunction: @link Index#Size @endlink).
  */
 
 /*!
