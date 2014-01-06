@@ -191,8 +191,6 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @return T A value <tt>inf</tt> that holds: <tt>inf &gt;= i</tt> for all values <tt>i</tt>.
  * 
- * @section Remarks
- * 
  * This function implements OrderedAlphabetConcept#maxValue.  It is recommended to use OrderedAlphabetConcept#maxValue
  * rather than <tt>supremumValueImpl</tt>.
  * 
@@ -207,14 +205,11 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @fn OrderedAlphabetConcept#maxValue
  * @brief Supremum for a given type.
  * 
- * @signature template <typename T>
- *            T maxValue<T>();
+ * @signature T maxValue<T>();
  * 
  * @tparam T The type to get the max value of.
  *
  * @return T A value <tt>inf</tt> that holds: <tt>inf >= i</tt> for all values <tt>i</tt> of type <tt>T</tt>.
- * 
- * @section Remarks
  * 
  * The function is implemented in supremumValueImpl.  Do not specialize <tt>maxValue</tt>, specialize supremumValueImpl
  * instead!
@@ -239,8 +234,6 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @return T A value <tt>inf</tt> that holds: <tt>inf &lt;= i</tt> for all values <tt>i</tt>.
  * 
- * @section Remarks
- * 
  * This function implements minValue.  It is recommended to use minValue rather than <tt>infimumValueImpl</tt>.
  *
  * @section Status
@@ -254,14 +247,11 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @fn OrderedAlphabetConcept#minValue
  * @brief Infimum for a given type.
  * 
- * @signature template <typename T>
- *            T minValue<T>();
+ * @signature T minValue<T>();
  * 
  * @tparam T An ordered type.
  * 
  * @return T A value <tt>inf</tt> that holds: <tt>inf &lt;= i</tt> for all values <tt>i</tt> of type <tt>T</tt>.
- * 
- * @section Remarks
  * 
  * The function is implemented in infimumValueImpl.  Do not specialize <tt>minValue</tt>, specialize infimumValueImpl
  * instead!
@@ -425,8 +415,6 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * 
  * @return VALUE The number of different values the value can have.
  * 
- * @section Remarks
- * 
  * This function is only defined for integral types like <tt>unsigned</tt>, <tt>int</tt>, or Dna.  For floating point
  * numbers and the 64 bit types <tt>__int64</tt> and <tt>__uint64</tt>, it returns 0 since there is no standard
  * compliant way to return the number of values for these types.
@@ -453,11 +441,9 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * 
  * @signature T ordValue(value);
  * 
- * @param value Arbitrary character value. Types: SimpleType
+ * @param[in] value Arbitrary character value. Types: SimpleType
  * 
  * @return T An unsigned value (result of Size<tt>&lt;typeof(value)&gt;</tt> between 0 and ValueSize of the type of value.
- * 
- * @section Remarks
  * 
  * This function first converts value to its unsigned value type and after that to an <tt>unsigned int</tt>. You can't
  * use <tt>(unsigned int)c</tt> for a character <tt>c</tt> as on some systems <tt>char</tt> is signed and a <tt>-1</tt>
@@ -468,8 +454,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @fn FiniteOrderedAlphabetConcept#valueSize
  * @brief Returns size of an alphabet.
  * 
- * @signature template <typename T>
- *            T valueSize<T>();
+ * @signature T valueSize<T>();
  * 
  * @tparam T Type to query for value size.
  * 
@@ -586,12 +571,10 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * 
  * @signature T gapValueImpl(valuePointerTag);
  * 
- * @param valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to point
- *                        to a valid object, so it is possible to use a null pointer here.
+ * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to
+ *                            point to a valid object, so it is possible to use a null pointer here.
  * 
  * @return T A gap character.
- * 
- * @section Remarks
  * 
  * This function implements gapValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
  * 
@@ -602,14 +585,11 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * @fn AlphabetWithGapsConcept#gapValue
  * @brief Return the "gap" value from an alphabet.
  * 
- * @signature template <typename T>
- *            T gapValue<T>();
+ * @signature T gapValue<T>();
  * 
  * @tparam T The alphabet type to query the gap value from.
  * 
  * @return T The gap character.
- * 
- * @section Remarks
  * 
  * The function is implemented in gapValueImpl.  Do not specialize <tt>gapValue</tt>, specialize link gapValueImpl
  * instead!
@@ -684,8 +664,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * 
  * @brief Return the "unknown" value from an alphabet.
  * 
- * @signature template <typename T>
- *            T unknownValue<T>();
+ * @signature T unknownValue<T>();
  * 
  * @tparam T The alphabet type to query the unknown value from.
  * 
@@ -700,12 +679,10 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * 
  * @signature T gapValueImpl(valuePointerTag)
  * 
- * @param valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to point
- *                        to a valid object, so it is possible to use a null pointer here.
+ * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to
+ *                            point to a valid object, so it is possible to use a null pointer here.
  * 
  * @return TReturn A "unknown" character.
- * 
- * @section Remarks
  * 
  * This function implements unknownValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
  * 
@@ -828,8 +805,6 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @param[out] c Target character to assign quality to.
  * @param[in] q  Quality to assign to the character.  The quality value is an integral value between 0 and 62
  *               (inclusive).
- * 
- * @section Remarks
  * 
  * If <tt>q</tt> is a <tt>char</tt> then <tt>'!'</tt> is subtracted from <tt>q</tt>.  This is useful for ASCII encoded
  * PHRED scores.

@@ -67,12 +67,11 @@ namespace seqan {
  * @brief Write a record to a SAM/BAM file.
  *
  * @signature int writeRecord(stream, record, context, tag);
- * @signature int writeRecord(stream, header, context, tag);
  *
  * @param[in,out] stream  The @link StreamConcept Stream @endlink to write to.
  * @param[out]    record  The @link BamAlignmentRecord @endlink object to write out.
  * @param[out]    header  The @link BamHeader @endlink object to write out.
- * @param[in,out] context The BamIOContext object to use.
+ * @param[in,out] context The @link BamIOContext @endlink object to use.
  * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
  *
  * @return int A status code, 0 on success, != 0 on failure.

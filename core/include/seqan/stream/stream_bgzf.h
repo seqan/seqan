@@ -727,7 +727,7 @@ _bgzfDeflateBlock(Stream<Bgzf> & stream, int blockLength)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BGZF Stream#attachToFile
+ * @fn BgzfStream#attachToFile
  * @brief Attach to already open input/output POSIX file.
  *
  * @signature void attachToFile(stream, fileHandle, mode);
@@ -782,6 +782,8 @@ attachToFile(Stream<Bgzf> & stream, int fileHandle, int mode)
  * @param[in,out] stream   The stream to open.
  * @param[in]     fileName The path to the file to open.  Type: <tt>char const *</tt>.
  * @param[in]     mode     The mode for opening.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  *
  * @section Remarks
  *

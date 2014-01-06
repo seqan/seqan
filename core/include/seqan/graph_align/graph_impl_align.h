@@ -55,23 +55,23 @@ namespace seqan {
 
 /*!
  * @defgroup AlignmentGraphFormatTags Alignment Graph Formats
- * @brief File formats to write an alignment graph.
+ * @brief File formats to write an @link AlignmentGraph @endlink.
  *
  * @tag AlignmentGraphFormatTags#MsfFormat
  * @headerfile <seqan/graph_align.h>
- * @brief MSF Format to write an alignment graph.
+ * @brief MSF Format to write an @link AlignmentGraph @endlink.
  *
  * @signature typedef Tag<MsfFormat_> const MsfFormat;
  *
  * @tag AlignmentGraphFormatTags#FastaFormat
  * @headerfile <seqan/graph_align.h>
- * @brief Fasta Format to write an alignment graph.
+ * @brief Fasta Format to write an @link AlignmentGraph @endlink.
  *
  * @signature typedef Tag<FastaFormat_> const FastaFormat;
  *
  * @tag AlignmentGraphFormatTags#CgVizFormat
  * @headerfile <seqan/graph_align.h>
- * @brief CgViz Format to write an alignment graph.
+ * @brief CgViz Format to write an @link AlignmentGraph @endlink.
  *
  * @signature typedef Tag<CgVizFormat_> const CgVizFormat;
  */

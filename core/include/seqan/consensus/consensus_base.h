@@ -443,7 +443,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
 //////////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn consensusAligment
+ * @fn consensusAlignment
  * @headerfile <seqan/consensus.h>
  * @brief Compute consensus alignment.
  * 

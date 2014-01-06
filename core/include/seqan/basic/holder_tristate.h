@@ -70,8 +70,6 @@ template <typename TValue> inline size_t length(TValue * me);
  * 
  * @tparam TValue Type of the managed object.
  * 
- * @section Remarks
- * 
  * A tristate holder <tt>A</tt> that holds an object <tt>B</tt> has one of the following states:
  *
  * <ul>

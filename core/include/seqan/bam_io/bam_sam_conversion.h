@@ -308,8 +308,8 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
  *
  * @signature void assignTagsBamToSam(bamTags, samTags);
  *
- * @param bamTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target BAM tags.
- * @param samTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source SAM tags.
+ * @param[out] bamTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target BAM tags.
+ * @param[in]  samTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source SAM tags.
  *
  * @see assignTagsBamToSam
  */
@@ -635,8 +635,8 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
  *
  * @signature void assignTagsBamToSam(samTags, bamTags);
  *
- * @param samTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target SAM tags.
- * @param bamTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source BAM tags.
+ * @param[out] samTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target SAM tags.
+ * @param[in]  bamTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source BAM tags.
  *
  * @see assignTagsSamToBam
  */

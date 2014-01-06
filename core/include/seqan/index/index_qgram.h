@@ -101,7 +101,6 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
 */
 /*!
  * @defgroup QGramIndexFibres Index QGram Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        IndexQGram @endlink.
  * 
@@ -110,10 +109,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @see IndexQGram
  * 
  * @tag QGramIndexFibres#QGramDir
- * 
  * @brief The directory/hash table.
- * 
- * @section Remarks
  * 
  * The directory contains for every possible q-gram hash value the start index
  * of the q-gram bucket. A q-gram bucket is a contiguous interval in the suffix
@@ -124,7 +120,6 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * size type.
  * 
  * @tag QGramIndexFibres#QGramBucketMap
- * 
  * @brief Maps q-gram hashes to buckets. This fibre is used by the @link
  *        OpenAddressingQGramIndex @endlink index and stores all parameters of the open
  *        addressing hash function and hash value occupancy in the QGramDir
@@ -133,10 +128,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  *        buckets. For that index the fibre is of type @link Nothing @endlink.
  * 
  * @tag QGramIndexFibres#QGramCountsDir
- * 
  * @brief The counts directory.
- * 
- * @section Remarks
  * 
  * The counts directory contains for every possible q-gram hash value the start
  * index of the q-gram count bucket. A q-gram count bucket is a contiguous
@@ -147,14 +139,10 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * size type.
  * 
  * @tag QGramIndexFibres#QGramText
- * 
  * @brief The original text the index should be based on.
  * 
  * @tag QGramIndexFibres#QGramShape
- * 
  * @brief The shape the index is based on.
- * 
- * @section Remarks
  * 
  * The q-gram index needs an underlying @link Shape @endlink. This shape can be
  * gapped or ungapped. The number of '1's (relevant positions) in the shape
@@ -164,30 +152,21 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * must be initialized before the index can be used.
  * 
  * @tag QGramIndexFibres#QGramSADir
- * 
  * @brief The union of suffix array and directory.
- * 
- * @section Remarks
  * 
  * In most applications a q-gram index consisting of both of these table is
  * required. To efficiently create them at once use this tag for @link
  * Index#indexRequire @endlink or @link Index#indexCreate @endlink.
  * 
  * @tag QGramIndexFibres#QGram_RawText
- * 
  * @brief The concatenation of all text sequences.
- * 
- * @section Remarks
  * 
  * <tt>QGramText</tt> and <tt>QGram_RawText</tt> fibres are equal by default.
  * They differ if the index text is a set of strings. Then, raw text is the
  * concatenation of all strings in this set.
  * 
  * @tag QGramIndexFibres#QGramCounts
- * 
  * @brief The counts array.
- * 
- * @section Remarks
  * 
  * Contains the numbers of occurrences per sequence of each q-gram, s.t. the
  * numbers of the same q-gram are stored in a contiguous block (q-gram count
@@ -200,10 +179,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag QGramIndexFibres#QGramSA
- * 
  * @brief The suffix array.
- * 
- * @section Remarks
  * 
  * Contains all occurrences of q-grams, s.t. the occurrences of a single q-gram
  * are stored in a contiguous block (q-gram bucket). q-grams exceeding the end

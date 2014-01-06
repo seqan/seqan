@@ -53,17 +53,15 @@ namespace seqan {
 // ============================================================================
 
 /*!
- * @defgroup OverflowStrategyTags
+ * @defgroup OverflowStrategyTags Overflow Strategy Tags
  * @brief The strategy for resizing containers.
- * 
- * @section Remarks
  * 
  * Changing the capacity of a container can invalidate the iterators of this container.
  * 
  * If no overflow tag is specified, most operations use the default overflow strategy given by @link
  * DefaultOverflowImplicit @endlink or @link DefaultOverflowExplicit @endlink, depending on the kind of operation.
  * 
- * @see computeGenerousCapacity
+ * @see SequenceConcept#computeGenerousCapacity
  * @see DefaultOverflowImplicit
  * @see DefaultOverflowExplicit
  * 
@@ -73,8 +71,6 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagLimit_> Limit;
  *
- * @section Remarks
- * 
  * All entries that exceed the capacity are lost.
  * @headerfile <seqan/sequence.h> 
  *
@@ -86,15 +82,13 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagGenerous_> Generous;
  *
- * @section Remarks
- * 
  * Whenever the capacity has to be increased, the new capacity is choosen somewhat large than actually needed.  This
  * strategy limits the number of capacity changes, so that resizing takes armotized constant time.  Use this strategy if
  * the total amount of storage is unkown at first.
  * 
- * The new capacity is computed by @link computeGenerousCapacity @endlink. By default, it is guaranteed not to exceed
- * about  tree halfs of the space that is used to store the data.  The user can overload @link computeGenerousCapacity
- * @endlink in order to change this behavior.
+ * The new capacity is computed by @link SequenceConcept#computeGenerousCapacity @endlink. By default, it is
+ * guaranteed not to exceed about three halfs of the space that is used to store the data.  The user can overload
+ * @link SequenceConcept#computeGenerousCapacity @endlink in order to change this behavior.
  * 
  * @tag OverflowStrategyTags#Exact
  * @headerfile <seqan/sequence.h> 
@@ -102,8 +96,6 @@ namespace seqan {
  * 
  * @signature typedef Tag<TagExact_> Exact;
  *
- * @section Remarks
- * 
  * The capacity is only changed if the current capacity is not large enough.  If the capacity can only be expanded up to
  * a certain ammount, it will be increased as far as possible  and the contents are limited to the new capacity.
  * 
@@ -116,9 +108,7 @@ namespace seqan {
  *
  * @signature typedef Tag<TagInsist_> Insist;
  * 
- * @section Remarks
- * 
- * The user has to ensure that the container's capacity is large enough.
+ * @note The user has to ensure that the container's capacity is large enough.
  */
 
 /**
@@ -180,10 +170,9 @@ typedef Tag<TagExact_> Exact;
  *
  * @return Type The default overflow tag.  The default implementation returns <tt>Generous</tt>.
  *
- * @section Remarks
- *
- * This function is used for functions that cause an implicit change of a container's size, like e.g. assign, append,
- * and replace.
+ * This function is used for functions that cause an implicit change of a container's size, like e.g. through
+ * @link AssignableConcept#assign @endlink, @link ContainerConcept#append @endlink and
+ * @link SequenceConcept#replace @endlink.
  */
 
 /**
@@ -221,9 +210,8 @@ struct DefaultOverflowImplicit
  *
  * @return Type The resulting expantion tag for <tt>T</tt>.
  *
- * @section Remarks
- *
- * This function is used for functions that change a container's size explicit, like e.g. resize.
+ * This function is used for functions that change a container's size explicitly, like e.g.
+ * @link SequenceConcept#resize @endlink.
  */
 
 /**
@@ -262,8 +250,6 @@ struct DefaultOverflowExplicit
  *
  * @return Type  Either <tt>True</tt> or <tt>False</tt>, depending on whether <tt>T</tt> is stored contiguously.
  * @return VALUE Either <tt>true</tt> or <tt>false</tt>, depending on whether <tt>T</tt> is stored contiguously.
- *
- * @section Remarks
  *
  * A sequence container is "contiguous", if its elements are stored in a single contiguous array.  Examples for
  * contiguous sequences are AllocString or char arrays.
@@ -316,8 +302,6 @@ struct IsContiguous<T const>
  * @return Type  <tt>True</tt> if <tt>T</tt> is a sequence and <tt>False</tt> otherwise.
  * @return VALUE <tt>true</tt> if <tt>T</tt> is a sequence and <tt>false</tt> otherwise.
  *
- * @section Remarks
- *
  * For example, String and Segment as <tt>T</tt> return true.
  */
 
@@ -359,8 +343,6 @@ struct IsSequence<T const>
  * @return Type  <tt>True</tt> if <tt>T</tt> allows for fast random access and <tt>False</tt> otherwise.
  * @return VALUE <tt>true</tt> if <tt>T</tt> allows for fast random access and <tt>false</tt> otherwise.
  *
- * @section Remarks
- *
  * For example, String and std::vector allow for fast random access, while std::list does not.
  */
 
@@ -394,17 +376,15 @@ struct AllowsFastRandomAccess<T const>
 // --------------------------------------------------------------------------
 
 /*!
- * @fn getObjectId
- * @header <seqan/sequence.h>
+ * @fn ContainerConcept#getObjectId
+ * @headerfile <seqan/sequence.h>
  * @brief A value that identifies the underlying sequence.
  *
- * @signature TVoidPtr getObjectId(object);
+ * @signature TVoidPtr getObjectId(cont);
  *
- * @param object The object for which to determine the id.
+ * @param[in] cont The object for which to determine the id.
  *
  * @return TVoidPtr a <tt>void const *</tt> value identying the object.
- *
- * @section Remarks
  *
  * Two sequences should have the same id, if they share the same resource, e.g. the same memory buffer.
  *
@@ -548,25 +528,6 @@ _beginDefault(T const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn begin
- * @headerfile <seqan/sequences.h>
- * @brief Returns the begin iterator of a container.
- *
- * @signature TIterator begin(object[, tag]);
- *
- * @param[in] object The container to get the begin iterator for.
- * @param[in] tag    The tag to use for picking the resulting type.
- *
- * @return TIterator An iterator to the first item in <tt>object</tt>. The type is the result of
- *                   <tt>Iterator<TContainer, TTag>::Type</tt> where <tt>TContainer</tt> is the type of
- *                   <tt>object</tt> and <tt>TTag</tt> is the type of <tt>tag</tt>.
- *
- * @section Remarks
- *
- * If the container is empty, the resulting iterator does not point to a valid element in the container.
- */
-
 /**
 .Function.begin:
 ..cat:Iteration
@@ -673,32 +634,6 @@ begin(TValue const * me,
 // Function beginPosition()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn beginPosition
- * @headerfile <seqan/sequence.h>
- * @brief Begin position of an object in a host.
- *
- * @signature TPosition beginPosition(object);
- *
- * @param[in] object An object.
- *
- * @return TPosition The position of the first item in <tt>host(object)</tt> that belongs to <tt>object</tt>.
- *                   The type TPosition is the position type of <tt>object</tt>.
- *
- * @section Remarks
- *
- * For most classes, this function returns 0.  Exceptions are Segments.
- *
- * @section Examples
- * CharString str = "ABCDEF";
- * std::cout &lt;&lt; beginPosition(str) &lt;&lt; std::endl;
- * 
- * Infix&lt;CharString&gt;::Type myInfix = infix(str, 1, 5);
- * std::cout &lt;&lt; beginPosition(myInfix) &lt;&lt; std::endl;
- * @code{.cpp}
- * @endcode
- */
-
 /**
 .Function.beginPosition:
 ..cat:Containers
@@ -784,21 +719,6 @@ _endDefault(T const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn end
- * @headerfile <seqan/sequence.h>
- * @brief Return iterator to the end of a container.
- *
- * @signature TIterator end(object[, tag]);
- *
- * @param[in] object The container to get the end iterator for.
- * @param[in] tag    The tag to use for picking the resulting type.
- *
- * @return TIterator An iterator to the first item in <tt>object</tt>. The type is the result of
- *                   <tt>Iterator<TContainer, TTag>::Type</tt> where <tt>TContainer</tt> is the type of
- *                   <tt>object</tt> and <tt>TTag</tt> is the type of <tt>tag</tt>.
- */
-
 /**
 .Function.end:
 ..cat:Iteration
@@ -857,18 +777,6 @@ end(T const & me,
 // Function endPosition()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn endPosition
- * @headerfile <seqan/sequence.h>
- * @brief End position of an object in its host.
- *
- * @signature TPosition endPosition(object);
- *
- * @param[in] object The object to query for its end position.
- *
- * @return TPosition The position behind the last item in <tt>host(object)</tt> that belongs to <tt>object</tt>.
- */
-
 /**
 .Function.endPosition:
 ..cat:Containers
@@ -904,19 +812,6 @@ endPosition(T const & me)
 // --------------------------------------------------------------------------
 // Function value()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn value
- * @headerfile <seqan/sequence.h>
- * @brief Reference to the value.
- *
- * @signature TReference value(container, position);
- *
- * @param[in] container A container of values.
- * @param[in] position  The position to query the value for.
- *
- * @return TReference A reference or proxy to the value.
- */
 
 /**
 .Function.value:
@@ -954,26 +849,6 @@ value(T const & me,
 // --------------------------------------------------------------------------
 // Function getValue()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn getValue
- * @headerfile <seqan/sequence.h>
- * @brief Access a value.
- *
- * @signature TGetValue getValue(container, pos);
- *
- * @param[in] container The container to query for a value.
- * @param[in] pos       The position to query the value at.
- *
- * @return TGetValue The get-value in <tt>container</tt> at position <tt>pos</tt>.
- *
- * @section Remarks
- *
- * The get value is always convertible into the Value type of the container.  It can either be a temporary copy of the
- * given item or a const reference into the container.
- *
- * If <tt>pos</tt> is outside of <tt>container</tt> then the behaviour of the function is undefined.
- */
 
 /**
 .Function.getValue:
@@ -1018,22 +893,6 @@ getValue(T const & me,
 // Function front()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn front
- * @headerfile <seqan/sequence.h>
- * @brief Return the first item of a container.
- *
- * @signature TReference front(container);
- *
- * @param[in] container The container to query.
- *
- * @return TReference Reference to the first item in <tt>container</tt>.
- * 
- * @section Remarks
- *
- * This function is equivaeltn to <tt>value(container, 0)</tt>.
- */
-
 /**
 .Function.front:
 ..cat:Containers
@@ -1068,22 +927,6 @@ front(T const & me)
 // --------------------------------------------------------------------------
 // Function back()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn back
- * @headerfile <seqan/sequence.h>
- * @brief Return the last item of a container.
- *
- * @signature TReference back(container);
- *
- * @param[in] container The container to query.
- *
- * @return TReference Reference to the last item in <tt>container</tt>.
- * 
- * @section Remarks
- *
- * This function is equivaeltn to <tt>value(container, length(container) - 1)</tt>.
- */
 
 /**
 .Function.back:
@@ -1135,26 +978,6 @@ backPrev(T & me)
 // --------------------------------------------------------------------------
 // Function iter()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn iter
- * @headerfile <seqan/sequence.h>
- * @brief Iterator to the item at the given position in a container.
- *
- * @signature TIterator iter(object, pos[, tag]);
- *
- * @param[in] object The container to get the iterator for.
- * @param[in] pos    The position to get the iterator for.
- * @param[in] tag    The tag to pick the type of the iterator.
- *
- * @return TIterator The resulting iterator.  If <tt>TTag</tt> is the type of <tt>tag</tt> and <tt>TContainer</tt> the
- *                   type of <tt>object</tt> then TIterator is of the type <tt>Iterator&lt;TContainer,
- *                   TTag&gt;::Type</tt>.
- *
- * @section Remarks
- *
- * If <tt>pos</tt> is out of range then the iterator is invalid.
- */
 
 /**
 .Function.iter:
@@ -1221,18 +1044,6 @@ iter(T const & me,
 // Function assignValue()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn assignValue
- * @headerfile <seqan/sequence.h>
- * @brief Assign a value of a container at a given position.
- *
- * @signature void assignValue(container, pos, value);
- *
- * @param[in,out] container The container to manipulate.
- * @param[in]     pos       The position of the item in the container to manipulate.
- * @param[in]     value     The value to assign to <tt>container[pos]</tt>.
- */
-
 /**
 .Function.assignValue:
 ..cat:Content Manipulation
@@ -1264,11 +1075,11 @@ assignValue(T & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn moveValue
+ * @fn ContainerConcept#moveValue
  * @headerfile <seqan/sequence.h>
- * @brief Move a value of a container to a given position.
+ * @brief Move a value into a container at a given position.
  *
- * @signature void assignValue(container, pos, value);
+ * @signature void moveValue(container, pos, value);
  *
  * @param[in,out] container The container to manipulate.
  * @param[in]     pos       The position of the item in the container to manipulate.
@@ -1317,24 +1128,6 @@ moveValue(T const & me,
 // Function length()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn length
- * @headerfile <seqan/sequence.h>
- * @brief Return the number of items in a container.
- *
- * @signature TSize length(object);
- *
- * @param[in] object The container to query.
- *
- * @return TSize The resulting size of the container.
- *
- * @section Remarks
- *
- * The length of a sequence can never exceed its capacity.
- *
- * @see capacity
- */
-
 /**
 .Function.length:
 ..cat:Containers
@@ -1365,17 +1158,16 @@ length(T const & /*me*/)
 // --------------------------------------------------------------------------
 
 /*!
- * @fn capacity
+ * @fn SequenceConcept#capacity
  * @headerfile <seqan/sequence.h>
- * @brief Return the capacity of a container.
+ * @brief Return the capacity of a sequence.
  *
- * @signature TSize capacity(object);
+ * @signature TSize capacity(seq);
  *
- * @param[in] object The container to query for its capacity.
+ * @param[in] seq The sequence to query for its capacity.
  *
- * @return TSize Returns the size of the container.
- *
- * @section Remarks
+ * @return TSize Returns the capacity of the sequence.  <tt>TSize</tt> is the result of
+ *               <tt>Size&lt;TSequence&gt;::type</tt> where <tt>TSequence</tt> is the type of <tt>seq</tt>.
  *
  * The size of a sequence can never exceed its capacity but some container support resizing of the capacity.  Some
  * functions do that implicitely if they are called with a suitable @link OverflowStrategyTags tag @endlink.  The
@@ -1409,18 +1201,6 @@ capacity(T const & me)
 // --------------------------------------------------------------------------
 // Function empty()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn empty
- * @headerfile <seqan/sequence.h>
- * @brief Test a container for being empty.
- *
- * @signature bool empty(object);
- *
- * @param[in] object The container to query for being empty.
- *
- * @return bool <tt>true</tt> or <tt>false</tt>, depending on whether <tt>object</tt> is empty or not.
- */
 
 /**
 .Function.empty:
@@ -1471,20 +1251,19 @@ _computeSizeForCapacity(T const & /*me*/,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn computeGenerousCapacity
+ * @fn SequenceConcept#computeGenerousCapacity
  * @headerfile <seqan/sequence.h>
  * @brief Capacity for generous expansion.
  *
- * @signature TSize computeGenerousCapacity(container, capacity);
+ * @signature TSize computeGenerousCapacity(seq, capacity);
  *
- * @param[in,out] container The container to compute the generous capacity for.
- * @param[in      capacity  The minimal required capacity.
+ * @param[in,out] seq       The sequence to compute the generous capacity for.
+ * @param[in]     capacity  The minimal required capacity.
  *
  * @return TSize A value larger than <tt>capacity</tt> that should be used as the new capacity for <tt>container</tt>
  *               when it is expanded using the <tt>Generous</tt> overflow strategy.
  */
 
-// TODO(holtgrew): This is a helper and should conceptually not be in the "interface" header.
 /**
 .Function.computeGenerousCapacity:
 ..hidefromindex
@@ -1586,14 +1365,14 @@ assign(TTarget const & target,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn append
+ * @fn ContainerConcept#append
  * @headerfile <seqan/sequence.h>
  * @brief Concatenate a container to another.
  *
  * @signature void append(target, source);
  *
- * @param[in,out] target The container to append <tt>source</tt> to.
- * @param[in]     source This container will be appended to <tt>source</tt>.
+ * @param[in,out] target The @link ContainerConcept container @endlink to append <tt>source</tt> to.
+ * @param[in]     source This @link ContainerConcept container @endlink will be appended to <tt>source</tt>.
  */
 
 /**
@@ -1697,7 +1476,7 @@ append(TTarget const & target,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn appendValue
+ * @fn ContainerConcept#appendValue
  * @headerfile <seqan/sequence.h>
  * @brief Append a value to a container.
  *
@@ -1749,16 +1528,16 @@ appendValue(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn insert
+ * @fn SequenceConcept#insert
  * @headerfile <seqan/sequence.h>
- * @brief Inserts a sequence into a container.
+ * @brief Inserts a sequence into another sequence.
  *
- * @signature void insert(target, pos, insertSeq[, tag]);
+ * @signature void insert(seq, pos, src[, tag]);
  *
- * @param[in,out] target    The container to insert elements into.
- * @param[in]     pos       The position to start inserting at.
- * @param[in]     insertSeq The sequence to insert at start.
- * @param[[in]    tag       The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
+ * @param[in,out] seq The sequence to insert element sinto.
+ * @param[in]     pos The position to start inserting at.
+ * @param[in]     src The sequence to insert at pos.
+ * @param[in]     tag The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
 /**
@@ -1824,16 +1603,16 @@ insert(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn insertValue
+ * @fn SequenceConcept#insertValue
  * @headerfile <seqan/sequence.h>
- * @brief Inserts an element into a container.
+ * @brief Inserts an element into a sequence.
  *
- * @signature void insertValue(target, pos, val[, tag]);
+ * @signature void insertValue(seq, pos, val[, tag]);
  *
- * @param[in,out] target    The container to insert element into.
- * @param[in]     pos       The position to insert at.
- * @param[in]     val       The value to insert at start.
- * @param[[in]    tag       The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
+ * @param[in,out] seq  The @link SequenceConcept sequence @endlink to insert element into.
+ * @param[in]     pos  The position to insert at.
+ * @param[in]     val  The value to insert at <tt>pos</tt> into <tt>seq<tt/>.
+ * @param[in]     tag  The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
 /**
@@ -1877,13 +1656,13 @@ insertValue(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn replace
+ * @fn SequenceConcept#replace
  * @headerfile <seqan/sequence.h>
- * @brief Replaces a part of a container with another container.
+ * @brief Replaces a part of a sequence with another sequence.
  *
  * @signature void replace(target, posBegin, posEnd, source[, limit][, resizeTag]);
  *
- * @param[in,out] target    The container to modify.
+ * @param[in,out] target    The sequence to modify.
  * @param[in]     posBegin  The begin position of the range to replace.
  * @param[in]     posEnd    The end position of the range to replace.
  * @param[in]     source    The source sequence to replace <tt>[posBegin, posEnd)</tt> with.
@@ -2032,10 +1811,10 @@ _capacityReturned(T &,
  * @fn String#reserve
  * @brief Increases the capacity.
  * 
- * @signature TSize reserve(object, new_capacity[, tag]);
+ * @signature TSize reserve(str, new_capacity[, tag]);
  * 
- * @param[in,out] object      A container.
- * @param[in]     newCapacity The new capacity <tt>object</tt> will get.
+ * @param[in,out] str         The String to reserve space in.
+ * @param[in]     newCapacity The new capacity <tt>str</tt> will get.
  * @param[in]     tag         Specifies the strategy that is applied for changing the capacity.
  * 
  * @return TSize The amount of the requested capacity that was available.  That is the function returns the minimum of
@@ -2043,15 +1822,9 @@ _capacityReturned(T &,
  * 
  * This function allows to increase the capacity but not the length of a container.
  * 
- * Use @link resize @endlink if you want to change the size of a container.
+ * Use @link SequenceConcept#resize @endlink if you want to change the size of a container.
  * 
  * @section Remarks
- * 
- * For std::basic_string STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
- * <tt>Insist</tt> and <tt>Generous</tt>.
- * 
- * For std::vector STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
- * <tt>Insist</tt> and <tt>Generous</tt>.
  * 
  * At the end of the operation, <tt>capacity(me)</tt> can be larger than <tt>new_capacity</tt>.  If
  * <tt>new_capacity</tt> is smaller than <tt>capacity(me)</tt> at the beginning of the operation, the operation need not
@@ -2110,23 +1883,6 @@ reserve(T & me,
 // Function resize()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn resize
- * @headerfile <seqan/sequence.h>
- * @brief Resizes a container.
- *
- * If the new length exceeds the old length then the new elements are filled with copies of <tt>x</tt>.
- *
- * @signature TSize resize(object, newLength[, x[, tag]]);
- *
- * @param[in,out] object  The container to resize.
- * @param[in]     newSize The new container size.
- * @param[in]     x       The value to use as the prototype when increasing the size.
- * @param[in]     tag     The strategy to apply if the capacity of <tt>object</tt> is less than <tt>newLength</tt..
- *
- * @return TSize The new length <tt>length(object)</tt>.
- */
-
 /**
 .Function.resize:
 ..cat:Containers
@@ -2179,9 +1935,9 @@ resize(T & me,
  * @headerfile <seqan/sequence.h>
  * @brief Makes free space in container
  * 
- * @signature TSize resizeSpace(object, size, posBegin, posEnd [, limit][, resizeTag]);
+ * @signature TSize resizeSpace(str, size, posBegin, posEnd [, limit][, resizeTag]);
  * 
- * @param[in,out] object    The container. Types: String
+ * @param[in,out] str       The String to modify.
  * @param[in]     size      Number of characters that should be freed.
  * @param[in]     posEnd    Position behind the last item in <tt>object</tt> that is to be destroyed.  If
  *                          <tt>posEnd == posBegin</tt>, no item in <tt>object</tt> will be destroyed.
@@ -2243,18 +1999,6 @@ resizeSpace(T & me,
 // Function erase()
 // --------------------------------------------------------------------------
 
-/*!
- * @fn erase
- * @headerfile <seqan/sequence.h>
- * @brief Erases a part of a container.
- *
- * @signature void erase(object, pos[, posEnd]);
- *
- * @param[in,out] object The container to erase elements of.
- * @param[in]     pos    The first position to erase.
- * @param[in]     posEnd The last position to erase, defaults to <tt>pos + 1</tt>.
- */
-
 /**
 .Function.erase:
 ..summary:Erases a part of a container
@@ -2315,21 +2059,6 @@ erase(T const & me,
 // --------------------------------------------------------------------------
 // Function eraseBack()
 // --------------------------------------------------------------------------
-
-/*!
- * @fn eraseBack
- * @headerfile <seqan/sequence.h>
- * @brief Deletes the last item of a container and reduces its size by 1.  The container must have a size greater than
- *        or equal to 1.
- *
- * @signature void eraseBack(object);
- *
- * @param[in,out] object The container to modify.
- *
- * @section Remarks
- *
- * This is equivalent to <tt>erase(object, length(object) - 1)</tt>.
- */
 
 /**
 .Function.eraseBack:

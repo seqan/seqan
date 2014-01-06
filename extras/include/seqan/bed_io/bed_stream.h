@@ -78,7 +78,7 @@ namespace seqan {
  */
 
 /*!
- * @var TCharStringSet BedStream::sequenceNames
+ * @var TCharStringSet BedStream::sequenceNames;
  * @brief The names of the sequences (@link StringSet @endlink of @link CharString @endlink)
  *
  * The string set is updated when new sequences are seen in BED file.
@@ -253,8 +253,7 @@ public:
  * @param[in]     fileName  The path to the file to open, <tt>char const 8</tt>
  * @param[in]     mode      The open mode, type is @link BedStream::Mode @endlink.
  * 
- * @return TReturn <tt>true</tt> on success, <tt>false</tt> on failure.
- *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  * 
  * @see BedStream#isGood
  * @see BedStream::Mode
@@ -508,7 +507,7 @@ inline bool isGood(BedStream const & stream)
  * 
  * @signature bool atEnd(bedStream);
  * 
- * @param bedStream The @link BedStream @endlink to query.
+ * @param[in] bedStream The @link BedStream @endlink to query.
  * 
  * @return bool <tt>true</tt> if stream is at the end, <tt>false</tt> otherwise.
  */

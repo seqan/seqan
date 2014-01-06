@@ -41,6 +41,7 @@ namespace seqan {
 
 /*!
  * @class SyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting synchronous input/output access.
  *
@@ -48,8 +49,6 @@ namespace seqan {
  *            class File<Sync<TSpec> >;
  *
  * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
- *
- * @section Remarks
  *
  * This class supports pseudo-asynchronous access methods, i.e. the method to initiate an I/O request blocks until the
  * request completion.
@@ -71,6 +70,7 @@ namespace seqan {
 
 /*!
  * @class AsyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting asynchronous input/output access.
  *
@@ -123,12 +123,19 @@ namespace seqan {
  * @headerfile <seqan/file.h>
  * @brief Flags to select th eopen mode of a @link File @endlink or external string.
  *
- * @section Remarks
- *
- * These flags can be comined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
+ * These flags can be combined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
  * OPEN_CREATE | OPEN_APPEND</tt>.
  *
  * If you omit the <tt>OPEN_APPEND</tt> flag in write mode, the file will be truncated to size 0 when opened.
+ *
+ * @section Examples
+ *
+ * Code example to test for read-only mode:
+ *
+ * @code{.cpp}
+ * if (openMode & OPEN_MASK == OPEN_READ)
+ *     // do something if opened in read-only mode
+ * @endlink
  *
  * @var FileOpenMode OPEN_RDONLY
  * @brief Open in read-only mode.
@@ -150,15 +157,6 @@ namespace seqan {
  *
  * @var FileOpenMode OPEN_MASK
  * @brief (Internal) Bitmask to extract the read/write open mode.
- *
- * @section Examples
- *
- * Code example to test for read-only mode:
- *
- * @code{.cpp}
- * if (openMode & OPEN_MASK == OPEN_READ)
- *     // do something if opened in read-only mode
- * @endlink
  *
  * @var FileOpenMode OPEN_ASYNC
  * @brief (Internal) Open the file for asynchronous file access.  For asynchronous file access, use the @link AsyncFile
@@ -237,8 +235,6 @@ if (openMode & OPEN_MASK == OPEN_READ)
  *            struct AsyncRequest;
  *
  * @tparam TFile The file type.
- *
- * @section Remarks
  *
  * This structure is used to identify asynchronous requests after their initiation.
  */

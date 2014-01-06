@@ -45,7 +45,7 @@ Concepts are currently still a proposal for a future C++ language release and th
 
 @htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly
 
-You can expect the globally implemented interface functions @link appendValue @endlink, @link append @endlink, @link assignValue @endlink and many others to work with @link String @endlink because they are part of @link SequenceConcept @endlink which is implemented by @link String @endlink.
+You can expect the globally implemented interface functions @link ContainerConcept#appendValue @endlink, @link ContainerConcept#append @endlink, @link RandomAccessContainerConcept#assignValue @endlink and many others to work with @link String @endlink because they are part of @link SequenceConcept @endlink which is implemented by @link String @endlink.
 
 @htmlonly <h3 data-toc="hidden">External Resources</h3> @endhtmlonly
 

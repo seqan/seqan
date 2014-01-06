@@ -289,6 +289,8 @@ inline std::string _getManual(ArgumentParser const & me)
 // Function writeCTD()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Change argument order.
+
 /*!
  * @fn ArgumentParser#writeCTD
  * @headerfile <seqan/arg_parse.h>\
@@ -296,9 +298,9 @@ inline std::string _getManual(ArgumentParser const & me)
  *
  * @signature bool writeCTD(parser[, stream]);
  *
- * @param parser The ArgumentParser to write the CTD file for.
- * @param stream A <tt>std::ostream</tt> to write to.  If omitted an output file with the name form the "write-ctd"
- *               parameter of the parser is used.
+ * @param[in]  parser The ArgumentParser to write the CTD file for.
+ * @param[out] stream A <tt>std::ostream</tt> to write to.  If omitted an output file with the name form the
+ *                    "write-ctd" parameter of the parser is used.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */

@@ -52,25 +52,19 @@ struct SparseString;
 // Tags
 // ==========================================================================
 /*!
- * @defgroup SparseStringFibres FM Index Fibres
- * 
+ * @defgroup SparseStringFibres Sparse String Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
  * 
+ * @see Fibre
+ * @see SparseString#getFibre
  * 
  * @tag SparseStringFibres#FibreValueString
- * 
  * @brief The String containing the stored values.
  * 
  * @tag SparseStringFibres#FibreIndicatorString
- * 
  * @brief The string storing for each position if a value different from a default value is stored.
- *
- * @see Fibre
- * @see SparseString#getFibre
  */
 // ----------------------------------------------------------------------------
 // Tag FibreValues
