@@ -55,6 +55,7 @@ namespace seqan {
  * @class SequenceOutputOptions
  * @headerfile <seqan/seq_io.h>
  * @brief Configuration for writing sequence (FASTA/FASTQ) files.
+ *
  * @signature struct SequenceOutputOptions;
  * 
  * This struct is used for the configuration of writing out FASTA and FASTQ files.
@@ -68,6 +69,16 @@ namespace seqan {
  * @var bool SequenceOutputOptions::qualMeta;
  * @brief Whether or not to write the meta information into the <tt>"+"</tt> line before the qualities (interpreted for
  *        FASTQ only). Default is <tt>false</tt>.
+ */
+
+/*!
+ * @fn SequenceOutputOptions::SequenceOutputOptions
+ * @brief Constructor
+ *
+ * @signature explicit SequenceOutputOptions::SequenceOutputOptions([lineLength[, qualMeta]]);
+ *
+ * @param[in] lineLengths <tt>int</tt> with the line length, defauls to <tt>-1</tt>.
+ * @param[in] qualMeta    <tt>bool</tt> flag whether to write out the meta text after the <tt>+</tt> in FASTQ.
  */
 
 /**
@@ -128,15 +139,14 @@ public:
  * @headerfile <seqan/seq_io.h>
  * @brief Write one FASTA or FASTQ record.
  * 
- * @signature int writeRecord(stream, id, seq, tag[, options]);
- * @signature int writeRecord(stream, id, seq, quals, tag[, options]);
+ * @signature int writeRecord(stream, id, seq[, quals], tag[, options]);
  * 
- * @param[in,out] stream  The stream to write to.  Type: StreamConcept
- * @param[in]     id      ID/Meta information line to write out. Types: SequenceConcept
- * @param[in]     seq     Sequence to write out.  Type: SequenceConcept
- * @param[in]     quals   ASCII quality characters to write out.  Types: SequenceConcept
- * @param[in]     tag     The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
- * @param[in]     options if not supplied, defaults are chosen.  Types: SequenceOutputOptions
+ * @param[in,out] stream  The stream to write to.  Type: @link StreamConcept @endlink
+ * @param[in]     id      ID/Meta information line to write out. Types: @link SequenceConcept @endlink
+ * @param[in]     seq     Sequence to write out.  Type: @link SequenceConcept @endlink
+ * @param[in]     quals   ASCII quality characters to write out.  Types: @link SequenceConcept @endlink
+ * @param[in]     tag     The format selector. Types: <tt>Fasta</tt>, <tt>Fastq</tt>
+ * @param[in]     options if not supplied, defaults are chosen.  Types: @link SequenceOutputOptions @endlink
  *
  * @return int 0 on success, non-0 value on errors.
  */
@@ -450,15 +460,14 @@ writeRecord(TStream & stream,
  * @headerfile <seqan/seq_io.h>
  * @brief Write FASTA or FASTQ records.
  * 
- * @signature int write2(stream, ids, seqs, tag[, options]);
- * @signature int write2(stream, ids, seqs, quals, tag[, options]);
+ * @signature int write2(stream, ids, seqs[, quals], tag[, options]);
  * 
- * @param[in,out] stream  The stream to write to. Types: StreamConcept
- * @param[in]     ids     IDs/Metainformation strings to write out.  Type: StringSet
- * @param[in]     seqs    Sequences to write out.  Type: StringSet
- * @param[in]     quals   ASCII quality characters to write out.  Type: StringSet
+ * @param[in,out] stream  The stream to write to. Types: @link StreamConcept @endlink
+ * @param[in]     ids     IDs/Metainformation strings to write out.  Type: @link StringSet @endlink
+ * @param[in]     seqs    Sequences to write out.  Type: @link StringSet @endlink
+ * @param[in]     quals   ASCII quality characters to write out.  Type: @link StringSet @endlink
  * @param[in]     tag     The format selector.  Types: <tt>Fasta</tt>, <tt>Fastq</tt>
- * @param[in]     options if not supplied defaults are chosen.  Type: SequenceOutputOptions
+ * @param[in]     options if not supplied defaults are chosen.  Type: @link SequenceOutputOptions @endlink
  *
  * @return int 0 on success, non-0 value on errors.
  */

@@ -73,12 +73,10 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * @param[out] bgFrequencies @link String @endlink of background frequencies (<tt>double</tt>) representing the model.
  * @param[out] bgModel       @link MarkovModel @endlink to use.
  * @param[in]  sequence      @link String @endlink (sequence) where k-mers are counted.
- * @param[in]  k             k-mer length.
+ * @param[in]  k             k-mer length (<tt>unsigned</tt>).
  * 
- * @section Remarks
- * 
- * k-mers overlapping masked letters are not counted in case of Dna5Strings.  A Bernoulli or Markov Model can be choosen
- * as a background model.
+ * k-mers overlapping masked (aka 'N') letters are not counted in case of Dna5Strings.  A Bernoulli or Markov Model
+ * can be choosen as a background model.
  * 
  * @section Examples
  * 
@@ -481,22 +479,22 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
  * @param[out] variance     Variance of the number of occurrences of the word in a sequence of length n given the
  *                          model; <tt>double</tt>.
  * @param[in] word          @link String @endlink, usually of Dna to compute variance for.
- * @param[in] bgFrequencies String of bg frequencies representing the model.
+ * @param[in] bgFrequencies @link String @endlink of bg frequencies representing the model.
  * @param[in] bgModel       @link MarkovModel @endlink to use.
  * @param[in] n             Length of the sequence where the occurrences of word are counted, <tt>int</tt>.
  * 
- * @section Remarks
- * 
  * Calculates the variance for the number of word occurrences of a word in a sequence of length n given a background
- * model (Markov model or Bernoulli model). The formula is obtained from
+ * model (Markov model or Bernoulli model). The formula is obtained from (Robin et al., 2005).
+ *
+ * @section References
  *
  * Robin, S., Rodolphe, F., and Schbath, S.  (2005). DNA, Words and Models. Cambridge University Press. See Jonathan
  * Goeke et al (to appear) for details on the implementation.
  * 
  * @section Examples
  * 
- * Calculate the variance for the number of occurrences of CAAGTC in a sequence of length 10000bp with p(A)=p(T)=0.3 and
- * p(C)=p(G)=0.2.
+ * Calculate the variance for the number of occurrences of CAAGTC in a sequence of length 10000bp with
+ * <i>p(A) = p(T) = 0.3</i> and <i>p(C) = p(G) = 0.2</i>.
  * 
  * @code{.cpp}
  * using namespace seqan;
@@ -661,11 +659,12 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * @param[in] bgModel        @link MarkovModel @endlink to use.
  * @param[in] n              Length of the sequence where the occurrences of word are counted, <tt>int</tt>.
  * 
- * @section Remarks
- * 
  * Calculates the covariance for the number of word occurrences for two words in a sequence of length n given a
  * background model (Markov model or Bernoulli model). The covariance is influenced by the property of words to overlap,
  * for example, the words ATAT and TATA have a high covariance since they are likely to overlap. The formula is based on
+ * (Robin et al., 2005).
+ *
+ * @section References
  *
  * Robin, S., Rodolphe, F., and Schbath, S.  (2005). DNA, Words and Models. Cambridge University Press. See Jonathan
  * Goeke et al (to appear) for details on the implementation.
@@ -673,7 +672,7 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * @section Examples
  * 
  * Calculate the covariance for the number of occurrences of ATATAT and TATATA in a sequence of length 10000bp with
- * p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
+ * <i>p(A) = p(T) = 0.3</i> and <i>p(C) = p(G) = 0.2</i>.
  * 
  * @code{.cpp}
  * using namespace seqan;
@@ -877,11 +876,10 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
  * 
  * @signature void calculatePeriodicity(periodicity, word1, word2);
  * 
- * @param[out] periodicity String of <tt>int</tt> values giving the periodicity (overlap indicator) of word1 and word2.
+ * @param[out] periodicity String of <tt>int</tt> values giving the periodicity (overlap indicator) of
+ *                         <tt>word1</tt> and <tt>word2</tt>.
  * @param[int] word1       String, usually of Dna characters.
  * @param[int] word2       String, usually of Dna characters.
- * 
- * @section Remarks
  * 
  * Calculate word periodicity (indicator for overlaps) for two words.
  * 
@@ -978,17 +976,18 @@ void calculatePeriodicity(String<int> & periodicity, TString const & word1, TStr
 /*!
  * @fn calculateOverlapIndicator
  * @headerfile <seqan/alignment_free.h>
- * @brief Calculate word overlaps: epsilon(word1,word2)= 1 where word2[j]=word1[j+p] for all j=1...(k-p).
+ * @brief Calculate word overlaps: <tt>epsilon(word1, word2) = 1</tt> where <tt>word2[j] = word1[j+p] for
+ *        all j = 1..(k-p)</tt>.
  * 
  * @signature void calculateOverlapIndicator(epsilon, word1, word2);
  * 
  * @param[out] epsilon String of int giving the periodicity (overlap indicator) of word1 and word2.
- * @param[int] word1   String (for example a DNA sequence).
- * @param[int] word2   String (for example a DNA sequence).
+ * @param[in]  word1   String (for example a DNA sequence).
+ * @param[in]  word2   String (for example a DNA sequence).
  * 
- * @section Remarks
- * 
- * Calculate the indicator for overlaps of two words. The formula is based on
+ * Calculate the indicator for overlaps of two words. The formula is based on (Robin et al., 2005)
+ *
+ * @section References
  *
  * Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models.  Cambridge University Press. See Jonathan
  * Goeke et al (to appear) for details on the implementation.
@@ -1081,11 +1080,13 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * @signature void stringToStringSet(stringSet, string);
  * @signature void stringToStringSet(dnaStringSet, dna5String);
  * 
- * @param[out] stringSet    StringSet containing string Types: StringSet
- * @param[in]  string       String Types: String
- * @param[out] dnaStringSet StringSet&lt;DnaString&gt; created from dna5String by cutting out all Ns from dna5String.
- * @param[in]  dna5String   DNA5 String where all Ns should be removed, the remaining sequences will be stored in dnaStringSet.
- * 
+ * @param[out] stringSet    @link StringSet @endlink to create with one sequence.
+ * @param[in]  string       @link String @endlink to create the string set of.
+ * @param[out] dnaStringSet @link StringSet @endlink of @link String Strings @endlink over the alphabet @link Dna @endlink.
+ * @param[in]  dna5String   @link String @endlink over the alphabet @link Dna5 @endlink to convert.
+ *
+ * @note The second variant removes all N characters from the @link Dna5String @endlink. 
+ *
  * @section Examples
  * 
  * Transform a masked DNA sequence into a set of sequences with all masked parts removed.
@@ -1208,8 +1209,6 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
  * 
  * @param[out] sequenceCut Dna5String similar to sequence with all Ns cut out.
  * @param[in]  sequence    Masked DNA sequence.
- * 
- * @section Remarks
  * 
  * This function concatenates the nonmasked parts of the sequence, thereby changing the word content. If you want to
  * remove the masked parts of a sequence without concatenation, use stringToStringSet.

@@ -67,7 +67,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Joins two or three input streams.
  * 
  * @signature template <typename TInput1, typename TInput2>
- *            class Pipe<Bundle3<TInput1, TInput2>, Joiner>;
+ *            class Pipe<Bundle2<TInput1, TInput2>, Joiner>;
  * @signature template <typename TInput1, typename TInput2, typename TInput3>
  *            class Pipe<Bundle3<TInput1, TInput2, TInput3>, Joiner>;
  * 
@@ -75,9 +75,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TInput2 The type of the second pipeline module this module reads from.
  * @tparam TInput3 The type of the third pipeline module this module reads from.
  * 
- * @section Remarks
- * 
- * The output type is a packed Pair or Triple of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
+ * The output type is a packed @link  Pair  @endlink or @link Triple @endlink of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
  */
 
 /**

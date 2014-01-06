@@ -50,13 +50,13 @@ namespace seqan {
  * @headerfile <seqan/arg_parse.h>
  * @brief Parse command line parameters.
  *
- * @signature TResult parse(parser, argc, argv[, outStream, errStream]]);
+ * @signature TResult parse(parser, argc, argv[, outStream[, errStream]]);
  *
- * @param parser    The ArgumentParser to use for parsing and for storing parse results.
- * @param argc      The number of arguments (<tt>int</tt>).
- * @param argv      The arguments (<tt>const char * argv[]</tt>).
- * @param outStream The <tt>std::ostream</tt> to use for output.
- * @param errStream The <tt>std::ostream</tt> to use for error output.
+ * @param[in,out] parser    The ArgumentParser to use for parsing and for storing parse results.
+ * @param[in]     argc      The number of arguments (<tt>int</tt>).
+ * @param[in]     argv      The arguments (<tt>const char * argv[]</tt>).
+ * @param[in,out] outStream The <tt>std::ostream</tt> to use for output.
+ * @param[in,out] errStream The <tt>std::ostream</tt> to use for error output.
  *
  * @return TResult The parse result, of type @link ArgumentParser::ParseResult @endlink.
  *

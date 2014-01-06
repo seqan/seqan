@@ -64,7 +64,6 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 */
 /*!
  * @defgroup DfsOrder DFS Order
- * 
  * @brief Pre/postorder selection for depth-first search.
  * 
  * These tags are given to @link InputIteratorConcept#goNext @endlink and trigger post-order or pre-
@@ -72,19 +71,15 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
  * <tt>PostorderEmptyEdges</tt>, the empty edges are also traversed.
  * 
  * @tag DfsOrder#Preorder
- * 
  * @brief Visit the node before its children.
  * 
  * @tag DfsOrder#PostorderEmptyEdges
- * 
  * @brief Visit the node after its children, visit empty edges.
  * 
  * @tag DfsOrder#PreorderEmptyEdges
- * 
  * @brief Visit the node before its children, visit empty edges.
  * 
  * @tag DfsOrder#Postorder
- * 
  * @brief Visit the node after its children.
  */
 	// predefined iterator traits
@@ -135,8 +130,7 @@ TA
 
 */
 /*!
- * @defgroup TopDown
- * 
+ * @defgroup TopDown Top-Down Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the virtual string tree from the root towards
  *        the leafs.
  * 
@@ -146,7 +140,7 @@ TA
  * 
  * @include demos/index/index_begin_atEnd_representative.cpp
  * 
- * @code{.txt}
+ * @code{.output}
  * A
  * AA
  * ATAA
@@ -160,19 +154,15 @@ TA
  * TAA
  * TATAA
  * TA
- * 
  * @endcode
  *
  * @tag TopDown#ParentLinks
- * 
  * @brief A top down iterator with the possibility to go back up again.
  * 
  * @tag TopDown#Preorder
- * 
  * @brief Pre-order traversal of the virtual string tree.
  * 
  * @tag TopDown#Postorder
- * 
  * @brief Post-order traversal of the virtual string tree.
  */
 
@@ -201,15 +191,16 @@ TATAA
 TA
 */
 /*!
- * @defgroup BottomUp Bottom Up
- * 
+ * @defgroup BottomUp Bottom-Up Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the
  *        virtual string tree from the root towards the leafs.
  * 
  * @section Examples
  *
- * The following example shows how the @link Bottom Up @endlink tag is used.
+ * The following example shows how the @link BottomUp @endlink tag is used.
+ *
  * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
+ *
  * @code{.txt}
  * AA
  * ATAA
@@ -220,7 +211,6 @@ TA
  * @endcode
  *
  * @tag BottomUp#Postorder
- * 
  * @brief Post-order traversal of the virtual string tree.
  */
 		// bottom up traversal iterators
@@ -258,7 +248,7 @@ TA
  * 
  * @tparam TIterator A @link VSTreeIterator @endlink.
  * 
- * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
+ * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrder#Preorder @endlink
  *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */
@@ -371,11 +361,8 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 
 /*!
  * @defgroup IndexEsaFibres Index Esa Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexEsa @endlink index.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of an Enhanced
  * Suffix Array based @link IndexEsa @endlink.
@@ -385,12 +372,8 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * @see IndexEsa
  * 
  * @tag IndexEsaFibres#EsaSA
- * 
  * @headerfile seqan/index.h
- *
  * @brief The suffix array.
- * 
- * @section Remarks
  * 
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
  * in lexicographical order.
@@ -399,12 +382,8 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag IndexEsaFibres#EsaChildtab
- * 
  * @headerfile seqan/index.h
- *
  * @brief The child table.
- * 
- * @section Remarks
  * 
  * The child table contains structural information of the suffix tree (see
  * Abhouelda et al.).
@@ -413,30 +392,20 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * size type.
  * 
  * @tag IndexEsaFibres#EsaRawText
- * 
  * @headerfile seqan/index.h
- *
  * @brief The raw text the index is really based on.
- * 
- * @section Remarks
  * 
  * <tt>EsaText</tt> and <tt>EsaRawText</tt> fibres are equal by default. They
  * differ if the index text is a set of strings. Then, raw text is the
  * concatenation of all strings in this set.
  * 
  * @tag IndexEsaFibres#EsaText
- * 
  * @headerfile seqan/index.h
- *
  * @brief The original text the index should be based on.
  * 
  * @tag IndexEsaFibres#EsaBwt
- * 
  * @headerfile seqan/index.h
- *
  * @brief The Burrows-Wheeler table.
- * 
- * @section Remarks
  * 
  * The Burrows-Wheeler table contains the Burrows-Wheeler transformation of
  * <tt>EsaRawText</tt>. The entries are the characters left of the corresponding
@@ -446,12 +415,8 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * <tt>EsaBwt</tt>.
  * 
  * @tag IndexEsaFibres#EsaLcp
- * 
  * @headerfile seqan/index.h
- *
  * @brief The lcp table.
- * 
- * @section Remarks
  * 
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
  * array <tt>EsaSA</tt>.
@@ -460,9 +425,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * size type.
  *
  * @tag IndexEsaFibres#EsaLcpe
- * 
  * @headerfile seqan/index.h
- *
  * @brief The lcpe table.
  */
 
@@ -511,8 +474,6 @@ information of the suffix tree) are provided.
  * 
  * @tparam TText The text type. Types: @link SequenceConcept @endlink, @link StringSet @endlink
  * @tparam TSpec The specialization which is <tt>void</tt> by default.
- * 
- * @section Remarks
  * 
  * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
@@ -592,9 +553,11 @@ information of the suffix tree) are provided.
 /*!
  * @fn Index#clear
  * @brief Resets all fibres of an index.
+ *
  * @signature void clear(index);
- * @param index The index to be cleared.
-*/
+ *
+ * @param[in,out] index The index to be cleared.
+ */
 
 	template <typename TText, typename TSpec>
 	inline void clear(Index<TText, IndexEsa<TSpec> > &index) {

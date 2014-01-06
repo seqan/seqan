@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements the Viterbi algorithm for Hidden Markov Models.
  * 
- * @signature TProbability viterbiAlgorithm(hmm, seq, path);
+ * @signature TCargo viterbiAlgorithm(hmm, seq, path);
  * 
  * @param[in]  hmm  The @link HmmGraph @endlink to use.
  * @param[in]  seq  Input sequence.
@@ -356,7 +356,7 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  * @brief Given a Hidden Markov Model <tt>hmm</tt>, the forward algorithm computes the probability of the sequence
  *        <tt>seq</tt>.
  *
- * @signature TProbability forwardAlgorithm(hmm, seq);
+ * @signature TCargo forwardAlgorithm(hmm, seq);
  *
  * @param[in] hmm The @link HmmGraph @endlink with the HMM to use.
  * @param[in] seq Input sequence to use in the forward algorithm.
@@ -543,15 +543,13 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  * @brief Given a Hidden Markov Model <tt>hmm</tt>, the backward algorithm computes the probability of the sequence
  *        <tt>seq</tt>.
  *
- * @signature TProbability backwardAlgorithm(hmm, seq);
+ * @signature TCargo backwardAlgorithm(hmm, seq);
  *
  * @param[in] hmm The @link HmmGraph @endlink with the HMM to use.
  * @param[in] seq Input sequence to use in the backward algorithm.
  *
- * @return TProbability The probability of the sequence <tt>seq</tt>.  <tt>TProbability</tt> is the type parameter
- *                      <tt>TCargo</tt> of the type of <tt>hmm</tt>.
- *
- * @section Remarks
+ * @return TCargo The probability of the sequence <tt>seq</tt>.  <tt>TProbability</tt> is the type parameter
+ *                <tt>TCargo</tt> of the type of <tt>hmm</tt>.
  *
  * See the <a href="http://en.wikipedia.org/wiki/Forward-backward_algorithm">Wikipedia article on the Forward-backward
  * algorithm</a> for an introduction to the algorithm itself.

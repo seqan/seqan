@@ -96,7 +96,7 @@ struct BaiBamIndexBinData_
 /*!
  * @class BaiBamIndex
  * @extends BamIndex
- * @brief Access to BAI (samtools-style)
+ * @brief Access to BAI (samtools-style).
  *
  * @signature template <>
  *            class BamIndex<Bai>;

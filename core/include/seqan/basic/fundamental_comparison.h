@@ -69,9 +69,7 @@ template <typename TValue> SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::
  * 
  * @return Type The resulting type to convert other type to.
  * 
- * @section Remarks
- * 
- * Comparisons are for example operators like <tt>==</tt> or <tt><</tt>.
+ * Comparisons are for example operators like <tt>==</tt> or <tt>&lt;</tt>.
  * 
  * Do not implement, implement CompareTypeImpl instead.
  * 

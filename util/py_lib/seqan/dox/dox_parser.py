@@ -291,16 +291,16 @@ class ParamState(GenericSimpleClauseState):
         self.entry_class = raw_doc.RawParam
         # Parameters need more than one token list.
         self.in_out = None
-        self.name = None
+        self.name = []
 
     def handle(self, token):
         # Special handling of the in/out token and the name, if any.
         #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
         if token.type == 'PARAM_IN_OUT':
             self.in_out = token
-        elif self.name is None:
+        elif not self.name:
             if token.type != 'SPACE':
-                self.name = token
+                self.name.append(token)
             # Skipping whitespace.
         else:
             GenericSimpleClauseState.handle(self, token)
@@ -308,7 +308,7 @@ class ParamState(GenericSimpleClauseState):
     def getEntry(self):
         """Returns the Entry for the parameter."""
         normalizeWhitespaceTokens(self.tokens)
-        return self.entry_class(self.first_token, raw_doc.RawText([self.name]),
+        return self.entry_class(self.first_token, raw_doc.RawText(self.name),
                                 raw_doc.RawText(self.tokens), self.in_out)
 
 
@@ -328,6 +328,18 @@ class ReturnState(ParamState):
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawReturn
+        self.type_read = False
+
+    def handle(self, token):
+        # Special handling of the in/out token and the name, if any.
+        #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
+        if self.type_read:
+            GenericSimpleClauseState.handle(self, token)
+        else:
+            if self.name and token.type in dox_tokens.WHITESPACE:
+                self.type_read = True
+            else:
+                self.name.append(token)
 
 
 class SectionState(object):

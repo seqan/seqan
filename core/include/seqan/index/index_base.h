@@ -85,31 +85,35 @@ for @Class.Index@ based substring searches.
 /*!
  * @defgroup IndexFindAlgorithm Index Find Algorithm
  * @brief Tag to specify the index search algorithm.
- * @section Remarks
+ *
  * These tags can be used to specify the @link Finder#find @endlink algorithm for @link
  * Index @endlink based substring searches.
+ *
  * @see Finder
+ *
  * @tag IndexFindAlgorithm#FinderSTree
  * @brief Suffix tree search.
- * @section Remarks
+ *
  * Exact string matching using a suffix tree.
+ *
  * @tag IndexFindAlgorithm#PizzaChiliFinder
- * @brief Finds an occurrence in a @link Pizza & Chili Index @endlink index.
- * @section Remarks
+ * @brief Finds an occurrence in a @link PizzaChiliIndex @endlink index.
+ *
  * The actual algorithm used for searching depends on the @link PizzaChiliIndexTags @endlink used.
+ *
  * @tag IndexFindAlgorithm#QGramFindLookup
- * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index
- *        using the hash table.
+ * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index using the hash table.
+ *
  * @tag IndexFindAlgorithm#EsaFindLcpe
  * @brief Binary search using lcp values.
- * @section Remarks
- * Exact string matching using a suffix array binary search and a lcp-interval
- * tree.
+ *
+ *
+ * Exact string matching using a suffix array binary search and a lcp-interval tree.
+ *
  * @tag IndexFindAlgorithm#EsaFindMlr
  * @brief Binary search with mlr-heuristic.
- * @section Remarks
- * Exact string matching using a suffix array binary search with the mlr-
- * heuristic.
+ *
+ * Exact string matching using a suffix array binary search with the mlr-heuristic.
  */
 	// finder tags
     struct FinderMlr_;     // simple Suffix Array finder with mlr-heuristic
@@ -142,12 +146,18 @@ for @Class.Index@ based substring searches.
  * @mfn Index#DefaultIndexSpec
  * @headerfile seqan/index.h
  * @brief Default @link Index @endlink specialization type.
- * @signature template <typename TText>
- *            DefaultIndexSpec<TText>::Type
+ *
+ * @signature DefaultIndexSpec<TText>::Type;
+ *
  * @tparam TText The given text type.
+ *
  * @return TReturn Currently the return type is @link IndexEsa @endlink.
- * @section Example The following will define <tt>TIndex</tt> to be of type @link IndexEsa @endlink, because the
- *          default index type for @link String @endlink or @link StringSet @endlink is @link IndexEsa @endlink.
+ *
+ * @section Examples
+ *
+ * The following will define <tt>TIndex</tt> to be of type @link IndexEsa @endlink, because the
+ * default index type for @link String @endlink or @link StringSet @endlink is @link IndexEsa @endlink.
+ *
  * @code{.cpp}
  * typedef DefaultIndexSpec<String<Dna> >::Type TIndex;
  * @endcode
@@ -179,12 +189,15 @@ for @Class.Index@ based substring searches.
  * @headerfile seqan/index.h
  * @brief Default @link String @endlink specialization type of the @link Fibre
  *        @endlink of an @link Index @endlink.
- * @signature template <typename TIndex>
- *            DefaultIndexStringSpec<TIndex>::Type
+ *
+ * @signature DefaultIndexStringSpec<TIndex>::Type;
+ *
  * @tparam TIndex An @link Index @endlink Type.
+ *
  * @return TReturn If the underlying text is a @link String @endlink or a set of
  *                 Strings (see @link StringSet @endlink) the String's spec.
  *                 type is returned.
+ *
  * @section Remarks
  *
  * Most of the @link Index @endlink fibres are strings. The @link String
@@ -287,29 +300,35 @@ template <
 
 /*!
  * @class Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Indices are data structures which contain preprocessing data of a fixed text (or set of texts). In combination
  *        with a @link Finder @endlink or an @link VSTreeIterator @endlink it allows fast dictionary look-up and advanced computations.
- * @signature template <typename TText, typename TSpec>
- *            class Index<TText[, TSpec]>;
+ *
+ * @signature class Index<TText[, TSpec]>;
  *
  * @tparam TSpec The index type. 
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
- * @section Remarks
+ *
  *
  * An index contains various arrays or objects, also called fibres (see @link Fibre @endlink).
  * These fibres are created on demand depending on the requirements of an algorithm. To force the fibre creation you can
  * use the function @link Index#indexCreate @endlink.
  * The list of fibres is available in @link Fibre @endlink
- * @section Example
+ *
+ * @section Examples
  *
  * The following code shows how to search for exact matches between the reference "tobeornottobe" and the
  * pattern "to" with the means of a Finder.
+ *
  * @include demos/index/index_finder.cpp
+ *
+ * The result is as follows
+ *
  * @include demos/index/index_finder.cpp.stdout
- 
+ *
  * This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
+ *
  * @include demos/index/index_iterator.cpp
  *
  * The result is as follows
@@ -317,10 +336,13 @@ template <
  * @include demos/index/index_iterator.cpp.stdout
  *
  * Note that you can also use specialized iterators such as:
+ *
  * @code{.cpp} 
  * Iterator<TIndex, TopDown<ParentLinks<PreOrder> > >::Type
  * @endcode
+ *
  * or
+ *
  * @code{.cpp}
  * Iterator<TIndex, TopDown<ParentLinks<PostOrder> > >::Type
  * @endcode
@@ -328,6 +350,9 @@ template <
  * You can achieve a post-order traversal like this:
  *
  * @snippet demos/index/index_iterator_short.cpp iteration
+ *
+ * The result is as follows
+ *
  * @include demos/index/index_iterator_short.cpp.stdout
  */
 
@@ -359,21 +384,22 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 /*!
  * @mfn Fibre
  * @headerfile seqan/index.h
- *
  * @brief Type of a specific container member (fibre).
- * @signature template <typename TObject, TSpec>
- *            Fibre<TObject, TSpec>::Type
+ *
+ * @signature Fibre<TObject, TSpec>::Type;
+ *
  * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link WaveletTreeFibres @endlink, 
  *               @link RightArrayBinaryTreeFibres @endlink, @link SentinelRankDictionaryFibres @endlink
  * @tparam TObject The container type. Types: @link Index @endlink, @link RankDictionary @endlink, @link SparseString
  *                 @endlink, @link CompressedSA @endlink
+ *
  * @return Type Fibre type.
  *
  * @section Naming
  *
  * Some containers, such as the @link Index @endlink or the @link RankDictionary @endlink, can be seen as a collection
- * of tables. However, each table alone is just a collection of information. They only become powerful if used together.
- * Therefore, a more appropriate label for the tables is fibre, like the fibres of a rope.
+ * of tables.  However, each table alone is just a collection of information.  They only become powerful if used
+ * together.  Therefore, a more appropriate label for the tables is fibre, like the fibres of a rope.
  *
  * In addition, sometimes a fibre can be a single value and calling it a table would be misleading.
  */
@@ -422,13 +448,14 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @headerfile seqan/index.h
  * @deprecated advanced
  * @brief Default algorithm to create a demanded and not yet existing @link Fibre @endlink.
- * @signature template <typename TIndex>
- *            DefaultIndexCreator<TIndex, TFibre>::Type
+ *
+ * @signature DefaultIndexCreator<TIndex, TFibre>::Type;
+ *
  * @tparam TIndex An @link Index @endlink Type.
- * @tparam TFibre A tag specifying the fibre (e.g. @link ESAIndexFibres.EsaSA
+ * @tparam TFibre A tag specifying the fibre (e.g. @link IndexEsaFibres#EsaSA
  *                @endlink).
- * @return TReturn A tag specifying the default algorithm to create the fibre
- *                 with.    // standard algorithm for indices creation
+ *
+ * @return Type A tag specifying the default algorithm to create the fibre with.
  */
 
     template < typename TIndex, typename TFibre >
@@ -576,17 +603,17 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
  * @headerfile seqan/index.h
  * @brief The default alphabet type of a suffix array, i.e. the type to store a
  *        position of a string or string set.
- * @signature template <typename TObject>
- *            SAValue<TObject>::Type
+ *
+ * @signature SAValue<TObject>::Type;
+ *
  * @tparam TObject A string, string set, or index type. Types: @link String @endlink, @link StringSet @endlink,
  *                 @link Index @endlink
  * @return TReturn A type to store a position.If <tt>TObject</tt> is a @link String @endlink, it is a single integer
  *                 value. By default this is the @link Size @endlink type of <tt>TObject</tt>.If <tt>TObject</tt> is a
  *                 @link StringSet @endlink, it could be a single integer too (called global position, see @link
- *                 ConcatDirect @endlink) or a @link Pair @endlink (called local position, see @link Owner @endlink).
- *                 Currently SeqAn defaults to a local position for @link StringSet @endlink classes (index_base.h).
- *
- * @section Remark
+ *                 ConcatDirectStringSet @endlink) or a @link Pair @endlink (called local position, see
+ *                 @link OwnerStringSet @endlink).  Currently SeqAn defaults to a local position for @link StringSet
+ *                 @endlink classes (index_base.h).
  *
  * SAValue is the return type of various functions, e.g. @link Finder#position @endlink for the Index @link Finder @endlink
  * class, @link VSTreeIterator#getOccurrence @endlink, @link VSTreeIterator#getOccurrences @endlink, @link IndexQGram#getOccurrences
@@ -594,10 +621,8 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
  * algorithms for both variants (local and global positions) you should use the functions @link TextConcept#posLocalize @endlink,
  * @link TextConcept#posGlobalize @endlink, @link TextConcept#getSeqNo @endlink and @link TextConcept#getSeqOffset @endlink.
  *
- * @section Note
- *
- * If <tt>TObject</tt> is an @link Index @endlink, @link Position @endlink returns the same value as <tt>SAValue</tt>.
- * You can change the position type of an index by overloading <tt>SAValue</tt>, not @link Position @endlink.
+ * @note If <tt>TObject</tt> is an @link Index @endlink, @link Position @endlink returns the same value as <tt>SAValue</tt>.
+ *       You can change the position type of an index by overloading <tt>SAValue</tt>, not @link Position @endlink.
  *
  * @section Examples
  *
@@ -866,20 +891,26 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @fn Index#getFibre
  * @headerfile seqan/index.h
  * @brief Returns a specific fibre of a container.
- * @signature TFibre getFibre(index, fibreTag)
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types: @link IndexEsaFibres Index Esa Fibres
- *        @endlink, @link FMIndexFibres FM Index Fibres @endlink, @link WOTDIndexFibres Index Wotd Fibres @endlink,
- *        and @link QGramIndexFibres Index QGram Fibres @endlink.
  *
- * @param index The container holding the fibre.
+ * @signature TFibre getFibre(index, fibreTag);
+ *
+ * @param[in] index    The container holding the fibre.
+ * @param[in] fibreTag A tag that identifies the @link Fibre @endlink. Types: @link IndexEsaFibres Index Esa Fibres
+ *                     @endlink, @link FMIndexFibres FM Index Fibres @endlink, @link WOTDIndexFibres Index Wotd Fibres @endlink,
+ *                     and @link QGramIndexFibres Index QGram Fibres @endlink.
  *
  * @return TFibre A reference to the @link Fibre @endlink object.
  *
- * @section Example 
+ * @section Examples
  *
  * The following example shows how to search for a pattern in a string.
+ *
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp.stdout
+ *
  * @see Fibre
  */
 
@@ -1043,16 +1074,24 @@ Hit at position: < 0 , 0 >
  * @fn Index#length
  * @headerfile seqan/index.h
  * @brief Returns the number of characters in the underlying text of the index.
- * @signature TSize length(index)
- * @param index An index of a text.
+ *
+ * @signature TSize length(index);
+ *
+ * @param[in] index An index of a text.
+ *
  * @return TSize Returns the number of characters in the raw underlying text of the
- *        index with TSize being the result of the @link Size @endlink meta-function
- *        of @link Index @endlink.
- * @section Example
+ *               index with TSize being the result of the @link Size @endlink meta-function
+ *               of @link Index @endlink.
+ *
+ * @section Examples
  *
  * The following example shows how to count characters of an index, determine the number of sequences involved and how
  * to search for a pattern.
+ *
  * @include demos/index/index_length_countSequences.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_length_countSequences.cpp.stdout
  */
 
@@ -1086,16 +1125,23 @@ Hit at position: < 0 , 0 >
  * @fn Index#countSequences
  * @headerfile seqan/index.h
  * @brief Return the number of sequences in an index' underlying text.
- * @signature TSize countSequences(index)
- * @param index The index to return the number of sequences of.
+ *
+ * @signature TSize countSequences(index);
+ *
+ * @param[in] index The index to return the number of sequences of.
+ *
  * @return TSize The number of sequences in the index' underlying text with TSize being the result @link Size @endlink.
- * @section Example 
+ *
+ * @section Examples
  *
  * The following example shows how to count characters of an index, determine the number of sequences involved and how
  * to search for a pattern.
  *
  * @include demos/index/index_length_countSequences.cpp
- * @code{.txt}
+ *
+ * The output is as follows:
+ *
+ * @code{.output}
  * The text has 25 characters and consists of 2 sequences.
  * Hit at position: < 1 , 2 >
  * Hit at position: < 0 , 0 >
@@ -1196,20 +1242,26 @@ I	ISSISSIPPI*/
  * @fn Index#textAt
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>value(indexText(..), ..)</tt>.
- * @signature TValue textAt(position, index)
- * @param index The @link Index @endlink object. Types: @link Index @endlink
- * @param position A position in the array on which the value should be accessed.
+ *
+ * @signature TValue textAt(position, index);
+ *
+ * @param[in] index    The @link Index @endlink object. Types: @link Index @endlink
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
  * @return TValue A reference or proxy to the value. The type is the result if the meta-function @link Reference
  *                @endlink.
  *
- * @section Note 
+ * @note The result of this function when used on an <tt>Index&lt;TText, FMIndex&lt;TOccSpec, Compress&gt; &gt;</tt>
+ *       is not defined.
  *
- * The result of this function when used on an Index<TText, FMIndex<TOccSpec, Compress> > is not defined.
- *
- * @section Example 
+ * @section Examples
  *
  * The following code shows how the BWT of a text can be computed.
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
@@ -1281,17 +1333,17 @@ I	ISSISSIPPI*/
  * @fn Index#rawtextAt
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>value(indexRawText(..), ..)</tt>.
- * @signature TValue rawtextAt(position, index)
- * @param index The @link Index @endlink object. Types: @link Index @endlink
  *
- * @param position A position in the array on which the value should be
- *                 accessed.
+ * @signature TValue rawtextAt(position, index);
+ *
+ * @param[in] index    The @link Index @endlink object. Types: @link Index @endlink
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
  * @return TValue A reference or proxy to the value. The type is the result if the meta-function @link Reference
  *                @endlink.
  *
- * @section Note 
- *
- * The result of this function when used on an Index<TText, FMIndex<TOccSpec, Compress> > is not defined.
+ * @note The result of this function when used on an Index&lt;TText, FMIndex&lt;TOccSpec, Compress&gt; &gt; is not
+ *       defined.
  */
 
 	template <typename TPos, typename TIndex>
@@ -1333,20 +1385,24 @@ I	ISSISSIPPI*/
 /*!
  * @fn IndexEsa#saAt
  * @headerfile seqan/index.h
+ * @deprecated advanced
  * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
  *
- * @deprecated advanced
- * @signature TValue saAt(position, index)
- * @param index The @link Index @endlink object holding the fibre.
- * @param position A position in the array on which the value should be accessed.
- * @return TValue A reference or proxy to the value in the suffix array. To be more precise, a reference to a poistion
- * containing a value of type @link SAValue @endlink is returned (or a proxy).
- * SAValue
- * @section Example
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the suffix array. To be more precise, a reference to a
+ *                position containing a value of type @link SAValue @endlink is returned (or a proxy). SAValue
+ *
+ * @section Examples
  *
  * The following code shows how the BWT of a text can be computed.
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- * @code{.txt}
+ *
+ * @code{.output}
  * BWT	Suffices
  * P	PI
  * S	SIPPI
@@ -1360,7 +1416,6 @@ I	ISSISSIPPI*/
  * I	ISSIPPI
  * I	ISSISSIPPI
  * @endcode
-
  */
 
 	template <typename TPos, typename TIndex>
@@ -1389,14 +1444,15 @@ I	ISSISSIPPI*/
 /*!
  * @fn IndexEsa#rawsaAt
  * @headerfile seqan/index.h
+ * @deprecated advanced
  * @brief Shortcut for <tt>value(indexRawSA(..), ..)</tt>.
- * @deprecated. advanced
  *
- * @signature TValue rawsaAt(position, index)
- * @param index The @link Index @endlink object holding the fibre.
- * @param position A position in the array on which the value should be
- *                 accessed.
- * @return TValue A reference or proxy to the value. To be more precise, a reference to a poistion
+ * @signature TValue rawsaAt(position, index);
+ *
+ * @param[in] index    The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value.  To be more precise, a reference to a position
  *                containing a value of type @link SAValue @endlink is returned (or a proxy).
  */
 
@@ -1423,9 +1479,12 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#lcpAt
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>value(indexLcp(..), ..)</tt>.
- * @signature TValue lcpAt(position, index)
- * @param index The @link Index @endlink object holding the fibre.
- * @param position A position in the array on which the value should be accessed.
+ *
+ * @signature TValue lcpAt(position, index);
+ *
+ * @param[in] index    The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
  * @return TValue A reference or proxy to the value.
  */
 
@@ -1455,9 +1514,12 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#lcpeAt
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>value(indexLcpe(..), ..)</tt>.
- * @signature TValue lcpeAt(position, index)
- * @param index The @link Index @endlink object holding the fibre.
- * @param position A position in the array on which the value should be accessed.
+ *
+ * @signature TValue lcpeAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
  * @return TValue A reference or proxy to the value.
  */
 
@@ -1485,15 +1547,14 @@ I	ISSISSIPPI*/
 */
 /*!
  * @fn IndexEsa#childAt
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Shortcut for <tt>value(indexChildtab(..), ..)</tt>.
  * 
- * @signature TValue childAt(position, index)
+ * @signature TValue childAt(position, index);
  * 
- * @param index The @link IndexEsa @endlink object holding the fibre.
- * @param position A position in the array on which the value should be accessed.
+ * @param[in] position A position in the array on which the value should be accessed.
+ * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
+ *
  * @return TValue A reference or proxy to the value.
  */
 
@@ -1521,17 +1582,15 @@ I	ISSISSIPPI*/
 */
 /*!
  * @fn IndexEsa#bwtAt
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Shortcut for <tt>value(indexBwt(..), ..)</tt>.
  * 
- * @signature TVlaue bwtAt(position, index)
+ * @signature TReference bwtAt(position, index);
  * 
- * @param index The @link IndexEsa @endlink object holding the fibre.
- * @param position A position in the array on which the value should be accessed.
+ * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
  * 
- * @return TReturn A reference or proxy to the value.
+ * @return TReference A reference or proxy to the value.
  */
 
 	template <typename TPos, typename TIndex>
@@ -1599,18 +1658,24 @@ I	ISSISSIPPI
  * @fn Index#indexText
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaText)</tt>.
- * @signature TValue indexText(index)
- * @param index The @link Index @endlink object holding the fibre.
- * @return TValue A reference to the text of the index.
  *
- * @section Note 
+ * @signature TFibre indexText(index);
  *
- * The result of this function when used on an Index<TText, FMIndex<TOccSpec, CompressText> > is not defined.
+ * @param[in] index The @link Index @endlink object holding the fibre.
  *
- * @section Example 
+ * @return TFibre A reference to the text of the index.
+ *
+ * @note The result of this function when used on an <tt>Index&lt;TText, FMIndex&lt;TOccSpec, CompressText&gt; &gt;
+ *       is not defined.
+ *
+ * @section Examples
  *
  * The following code shows how the BWT of a text can be computed.
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
@@ -1674,10 +1739,13 @@ I	ISSISSIPPI
  * @fn IndexEsa#indexRawText
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>$getFibre(.., EsaRawText)</tt>.
- * @signature TVlaue rawtextAt(position, index)
- * @param index The @link Index @endlink object.
- * @param position A position in the array on which the value should be accessed.
- * @return TValue A reference or proxy to the value.
+ *
+ * @signature TFibre indexRawText(position, index);
+ *
+ * @param[in] position A position in the array on which the value should be accessed.
+ * @param[in] index The @link Index @endlink object.
+ *
+ * @return TFibre A reference or proxy to the value.
  */
 
 	template <typename TText, typename TSpec>
@@ -1727,16 +1795,22 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#indexSA
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaSA)</tt>.
- * @signature TSa indexSA(index)
- * @param index The @link Index @endlink object holding the fibre.
- * @return TReturn A reference to the @link IndexEsaFibres#EsaSA @endlink
- *                 fibre (suffix array).
+ *
+ * @signature TSa indexSA(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
  * @return TSa A reference to the suffix array fibre.
- * @section Example 
+ *
+ * @section Examples
  *
  * The following code shows how the BWT of a text can be computed.
+ *
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- * @code{.txt}
+ *
+ * The output is as follows:
+ *
+ * @code{.output}
  * BWT	Suffices
  * P	PI
  * S	SIPPI
@@ -1775,8 +1849,11 @@ I	ISSISSIPPI*/
  * @fn Index#indexRawSA
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaRawSA)</tt>.
- * @signature TSa & indexRawSA(index)
- * @param index The @link Index @endlink object holding the fibre.
+ *
+ * @signature TSa indexRawSA(index);
+ * 
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
  * @return TSa A reference to the @link IndexEsaFibres#EsaRawSA @endlink fibre (suffix array).
  */
 
@@ -1807,10 +1884,12 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#indexLcp
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaLcp)</tt>.
- * @signature TLcp indexLcp(index)
- * @param index The @link Index @endlink object holding the fibre.
- * @return TLcp A reference to the @link IndexEsaFibres#EsaLcp @endlink
- *                 fibre (lcp table).
+ *
+ * @signature TLcp indexLcp(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
+ * @return TLcp A reference to the @link IndexEsaFibres#EsaLcp @endlink fibre (lcp table).
  */
 
 	template <typename TText, typename TSpec>
@@ -1834,8 +1913,11 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#indexLcpe
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaLcpe)</tt>.
- * @signature TLcpe indexLcpe(index)
- * @param index The @link Index @endlink object holding the fibre.
+ *
+ * @signature TLcpe indexLcpe(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
  * @return TLcpe A reference to the @link IndexEsaFibres#EsaLcpe @endlink fibre (enhanced lcp table).
  */
 
@@ -1860,8 +1942,11 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#indexBwt
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaBwt)</tt>.
- * @signature TBwt indexBwt(index)
- * @param index The @link IndexEsa @endlink object holding the fibre.
+ *
+ * @signature TBwt indexBwt(index);
+ *
+ * @param[in] index The @link IndexEsa @endlink object holding the fibre.
+ *
  * @return TBwt A reference to the @link IndexEsaFibres.EsaBwt @endlink fibre (Burrows-Wheeler table).
  */
 
@@ -1886,8 +1971,11 @@ I	ISSISSIPPI*/
  * @fn IndexEsa#indexChildtab
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaChildtab)</tt>.
- * @signature TchildTab indexChildtab(index)
- * @param index The @link Index @endlink object holding the fibre.
+ *
+ * @signature TChildTab indexChildtab(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
  * @return TChildTab A reference to the @link IndexEsaFibres#EsaChildtab @endlink fibre (child table).
  */
 
@@ -1926,21 +2014,27 @@ I	ISSISSIPPI*/
  * @fn Index#open
  * @headerfile seqan/index.h
  * @brief This functions opens an index from disk.
- * @signature bool open(index, fileName [, mode])
- * @param mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
- *             to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
- *             overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
- *             circumvent problems, files are always opened in binary mode. 
- *             Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
  *
- * @param index The index to be opened.
+ * @signature bool open(index, fileName[, mode]);
  *
- * @param fileName C-style character string containing the file name.
+ * @param[in,out]  index The index to be opened.
+ * @param[in]      fileName C-style character string containing the file name.
+ * @param[in] mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
+ *                 to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
+ *                 overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
+ *                 circumvent problems, files are always opened in binary mode. 
+ *                 Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>.
+ *
  * @return bool <tt>true</tt> on success and <tt>false</tt> otherwise.
- * @section Example 
+ *
+ * @section Examples
  *
  * The following code shows how the function @Function.open@ is used with indices.
+ *
  * @include demos/index/index_open_save.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_open_save.cpp.stdout
  */
 
@@ -1952,21 +2046,27 @@ I	ISSISSIPPI*/
  * @fn Index#save
  * @headerfile seqan/index.h
  * @brief This functions saves an index to disk.
- * @signature bool save(index, fileName [, mode])
- * @param mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
- *             to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
- *             overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
- *             circumvent problems, files are always opened in binary mode. 
- *             Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
  *
- * @param index The index to be saved to disk.
+ * @signature bool save(index, fileName[, mode]);
  *
- * @param fileName C-style character string containing the file name.
+ * @param[in,out]  index The index to be opened.
+ * @param[in]      fileName C-style character string containing the file name.
+ * @param[in] mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
+ *                 to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
+ *                 overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
+ *                 circumvent problems, files are always opened in binary mode. 
+ *                 Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>.
+ *
  * @return bool <tt>true</tt> on success and <tt>false</tt> otherwise.
- * @section Example 
+ *
+ * @section Examples
  *
  * The following code shows how the function @Function.save@ is used with indices.
+ *
  * @include demos/index/index_open_save.cpp
+ *
+ * The output is as follows:
+ *
  * @include demos/index/index_open_save.cpp.stdout
  */
 /**

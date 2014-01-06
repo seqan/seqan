@@ -1616,8 +1616,8 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
  * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found.The return type
  *                 is <tt>Pair&lt;typename SAValue&ltTHost&g;::Type&gt;</tt> if <tt>THost</tt> is the type of haystack or needle.
  * 
- * @see beginPosition
- * @see endPosition
+ * @see Finder#beginPosition
+ * @see Finder#endPosition
  * @see Finder#positionRangeNoClip
  */
 
@@ -2241,7 +2241,7 @@ getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
  * 
  * @brief Returns the maximal out-of-order distance of adjacent hits.
  * 
- * @signature getMaxDeviationOfOrder(pattern)
+ * @signature TSize getMaxDeviationOfOrder(pattern)
  * 
  * @param pattern A pattern with window interface. Types: @link Swift @endlink, @link Pigeonhole @endlink
 

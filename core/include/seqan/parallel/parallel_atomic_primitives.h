@@ -199,13 +199,14 @@ namespace seqan {
  * 
  * The pseudo code for this is as follows:
  * 
- * @code
+ * @code{.cpp}
  * atomic {
  *     T val = *(&x);
  *     if (val == cmp)
  *         *(&x) = y;
  *     return val;
  * }
+ * @endcode
  * 
  * On Windows, atomic CAS is only available for 16, 32, and 64 bit integers, 64 bit is only available on 64 bit Windows.
  * 

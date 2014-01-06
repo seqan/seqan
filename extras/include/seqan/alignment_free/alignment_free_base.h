@@ -78,15 +78,20 @@ struct AFScore;
  * @signature template <>
  *            struct AFScore<D2>;
  * 
- * @section Remarks
- * 
- * D2 can be used for alignment-free sequence comparison
- * 
+ * To be used for alignment free comparison.
+ *
+ * @section References
+ *
  * Lippert RA, et al. Distributional regimes for the number of k-word matches between two random sequences. Proc. Natl
  * Acad. Sci. USA 2002.
  *
- * @var VariableType D2AFScore::kmerSize
- * @brief Size of the kmers
+ * @see alignmentFreeComparison
+ *
+ * @var unsigned D2AFScore::kmerSize;
+ * @brief Size of the kmers.
+ * 
+ * @var bool D2AFScore::verbose;
+ * @brief <tt>true</tt> to enable verbose debug output.
  * 
  * @fn D2AFScore::AFScore
  * 
@@ -149,13 +154,15 @@ struct AFScore<D2>
  * @signature template <>
  *            struct AFScore<D2Star>;
  * 
- * @section Remarks
- * 
  * D2Star can be used for alignment-free sequence comparison, this version calculates the background model on the
  * concatenation of both sequences
- * 
+ *
+ * @section References
+ *
  * Reinert, G.; Chew, D.; Sun, F.,  Waterman, M. S. Alignment-Free Sequence Comparison (I): Statistics and Power. J
  * Comput Biol, 2009.
+ *
+ * @see alignmentFreeComparison
  * 
  * @fn D2StarAFScore::AFScore
  * @brief Constructor
@@ -164,8 +171,6 @@ struct AFScore<D2>
  * @param[in] kmerSize      Size of kmer, <tt>unsigned</tt>.
  * @param[in] bgModelOrder Order of the background Markov model, <tt>unsigned</tt>.
  * @param[in] verbose      This option will report progress to standard output, <tt>bool</tt>.
- * 
- * @see alignmentFreeComparison
  * 
  * @var unsigned D2StarAFScore::kmerSize
  * @brief Size of the kmers.
@@ -241,9 +246,9 @@ struct AFScore<D2Star>
  * @signature template <>
  *            struct AFScore<N2>;
  * 
- * @section Remarks
- * 
  * N2 can be used for alignment-free sequence comparison.
+ *
+ * @section References
  *
  * Jonathan Goeke, Marcel H. Schulz, Julia Lasserre, and Martin Vingron.
  Estimation of Pairwise Sequence Similarity of Mammalian Enhancers with Word Neighbourhood Counts. Bioinformatics
@@ -255,7 +260,7 @@ struct AFScore<D2Star>
  * 
  * @signature AFScore::AFScore(kmerSize, bgModelOrder, outputFile, verbose);
  * @signature AFScore::AFScore(kmerSize, bgModelOrder, revCom, outputFile, verbose);
- * @signature AFScore::AFScore(kmerSize, bgModelOrder, revCom, mismatch, mismatchWeight, outputFile, verbose);
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder, revCom, mismatches, mismatchWeight, outputFile, verbose);
  * 
  * @param[in] kmerSize       Size of kmer, <tt>unsigned</tt>.
  * @param[in] bgModelOrder   Order of the background Markov model, <tt>unsigned</tt>.
@@ -263,29 +268,33 @@ struct AFScore<D2Star>
  *                           to this file for every sequence, @link CharString @endlink.
  * @param[in] revCom         Scoring of reverse complements words [''/'max'/'min'/'mean'/'both_strands'/],
  *                           @link CharString @endlink.
- * @param[in] verbose        This option will report progress to standard output, bool, default is false.
- * @param[in] mismatch       Includes words with one mismatch into the word neighbourhood, unsigned, 0 or 1.
+ * @param[in] verbose        This option will report progress to standard output, <tt>bool</tt>, defaults to
+ *                           <tt>false</tt>.
+ * @param[in] mismatches     Includes words with one mismatch into the word neighbourhood, <tt>unsigned</tt>, 0 or 1.
  * @param[in] mismatchWeight Weight of word counts with one mismatch, double.
  * 
  * @see alignmentFreeComparison
  * 
- * @var VariableType N2AFScore::kmerSize
- * @brief Size of the kmers
+ * @var unsigned N2AFScore::kmerSize;
+ * @brief Size of the kmers.
  * 
- * @var VariableType N2AFScore::mismatchWeight
+ * @var double N2AFScore::mismatchWeight;
  * @brief Weight for approximate word matches
  * 
- * @var VariableType N2AFScore::revCom
- * @brief Scoring of reverse complements words [''/'max'/'min'/'mean'/'both_strands'/]
+ * @var CharString N2AFScore::revCom;
+ * @brief Scoring of reverse complements words, @link CharString @endlink [''/'max'/'min'/'mean'/'both_strands'/].
  * 
- * @var VariableType N2AFScore::outputFile
+ * @var CharString N2AFScore::outputFile;
  * @brief When specified, all kmerWeights for every sequence will be written to this file.
  * 
- * @var VariableType N2AFScore::bgModelOrder
+ * @var unsigned N2AFScore::bgModelOrder;
  * @brief Order of the background model
  * 
- * @var VariableType N2AFScore::mismatches
+ * @var unsigned N2AFScore::mismatches;
  * @brief Approximate word matches [0(exact)/1(one mismatch)]
+ *
+ * @var bool N2AFScore::verbose;
+ * @brief <tt>true</tt> to enable verbose debug output.
  */
 
 /**
@@ -420,10 +429,10 @@ struct AFScore<N2>
  * @signature template <>
  *            struct AFScore<D2z>;
  * 
- * @section Remarks
+ * D2z can be used for alignment-free sequence comparison. The algorithm differs from the original implementation by
+ * the way masked sequences are handled
  * 
- * D2z can be used for alignment-free sequence comparison. The algorithm differs from the original implementation by the
- * way masked sequences are handled
+ * @section References
  * 
  * Kantorovitz, M. R.; Robinson, G. E., Sinha, S. A statistical method for alignment-free comparison of regulatory
  * sequences. Bioinformatics, 2007.
@@ -434,16 +443,20 @@ struct AFScore<N2>
  * 
  * @signature AFScore::AFScore(kmerSize, bgModelOrder[, verbose]);
  * 
- * @param[in] kmerSize     Size of kmer, unsigned.
- * @param[in] bgModelOrder Order of the background Markov model, unsigned.
- * @param[in] verbose      This option will report progress to standard output, bool, default is false.
+ * @param[in] kmerSize     Size of kmer, <tt>unsigned</tt>.
+ * @param[in] bgModelOrder Order of the background Markov model, <tt>unsigned</tt>.
+ * @param[in] verbose      This option will report progress to standard output; <tt>bool</tt>, defaults to
+ *                         <tt>false</tt>.
  * 
- * @var unsigned D2zAFScore::bgModelOrder
+ * @var unsigned D2zAFScore::bgModelOrder;
  * @brief Order of the background model
  * 
- * @var unsigned D2zAFScore::kmerSize
+ * @var unsigned D2zAFScore::kmerSize;
  * @brief Size of the kmers
- */ 
+ *
+ * @var bool D2zAFScore::verbose;
+ * @brief <tt>true</tt> to enable verbose debug output.
+] */ 
 
 /**
 .Spec.D2z AFScore
