@@ -453,9 +453,8 @@ getTagKey(BamTagsDict & tags, __int32 idx)
     return infix(host(tags), tags._positions[idx], tags._positions[idx] + 2);
 }
 
-template <typename TPos>
 inline Infix<Host<BamTagsDict const>::Type>::Type
-getTagKey(BamTagsDict const & tags, TPos idx)
+getTagKey(BamTagsDict const & tags, __int32 idx)
 {
     return getTagKey(const_cast<BamTagsDict &>(tags), idx);
 }
@@ -552,14 +551,14 @@ getTagValue(BamTagsDict & tags, __int32 idx)
 
     // TODO(holtgrew): Can't we use positions to speed this up?
 
-    typedef typename Position<CharString>::Type TPos;
+    typedef Position<CharString>::Type TPos;
     TPos beginPos = tags._positions[idx] + 2;
     TPos endPos = beginPos + 1;
 
     char theType = getTagType(tags, idx);
     if (theType == 'Z' || theType == 'H')
     {
-        typedef typename Iterator<CharString, Rooted>::Type TIterator;
+        typedef Iterator<CharString, Rooted>::Type TIterator;
         TIterator it = begin(host(tags), Rooted()) + beginPos + 1;
         for (; !atEnd(it) && *it != '\0'; goNext(it))
             endPos += 1;
@@ -582,11 +581,10 @@ getTagValue(BamTagsDict & tags, __int32 idx)
     return infix(host(tags), beginPos, endPos);
 }
 
-template <typename TPos>
 inline CharString //Infix<Host<BamTagsDict const>::Type>::Type
-getTagValue(BamTagsDict const & tags, TPos idx)
+getTagValue(BamTagsDict const & tags, __int32 idx)
 {
-    return getValue(const_cast<BamTagsDict &>(tags), idx);
+    return getTagValue(const_cast<BamTagsDict &>(tags), idx);
 }
 
 // ----------------------------------------------------------------------------
@@ -632,6 +630,7 @@ getTagValue(BamTagsDict const & tags, TPos idx)
 ..include:seqan/bam_io.h
 */
 
+template <typename TDest>
 inline bool
 extractTagValue(TDest & dest, BamTagsDict & tags, __int32 idx)
 {
