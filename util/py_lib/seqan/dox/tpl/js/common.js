@@ -23,26 +23,33 @@
         // specified page in the right frame
         // (e.g. docs.seqan.de/index.html?p=String#Example will open the example section of the class String in the main frame) 
         if(window != window.parent && window.name == 'list') {
-        	try {
-        		var redirectTo = null;
-        		var hash = $.urlHash(window.parent.location);
-        		if($.urlParam('p', window.parent.location)) {
-        			var p = $.urlParam('p', window.parent.location).split('/')[0];        			
-        			if(window.lookup.hasOwnProperty(p)) {
-        				redirectTo = window.lookup[p] + '.html' + hash;
-        			} else {
-        				$(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
-        				// TODO: start search using search form for p
-        			}
-        		} else {
-        			if(hash.length > 1) {
-        				redirectTo = hash.substr(1) + '.html';
-        			}
-        		}
-        		
-        		if(redirectTo) {
-        			window.parent['main'].location = redirectTo;
-        		}
+            try {
+                var redirectTo = null;
+                var hash = $.urlHash(window.parent.location);
+                if($.urlParam('p', window.parent.location)) {
+                    var p = $.urlParam('p', window.parent.location).split('/')[0];
+                    if (p.indexOf('::') != -1)
+                    {
+                        var tmp = p;
+                        p = tmp.split('::')[0];
+                        hash = '::' + tmp.split('::')[1];
+                        console.log('p == ' + p + ' -- hash = ' + hash);
+                    }
+                    if(window.lookup.hasOwnProperty(p)) {
+                        redirectTo = window.lookup[p] + '.html#' + encodeURIComponent(p + hash);
+                    } else {
+                        $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
+                        // TODO: start search using search form for p
+                    }
+                } else {
+                    if(hash.length > 1) {
+                        redirectTo = hash.substr(1) + '.html';
+                    }
+                }
+
+                if(redirectTo) {
+                    window.parent['main'].location = redirectTo;
+                }
     		} catch(e) {
     		    // some browsers like Chrome don't allow this cross-frame access if using file://
     		}

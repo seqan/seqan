@@ -382,7 +382,7 @@ and based on the Tipue Search, http://www.tipue.com
                     	
                     	if($.inArray(this.langEntity, langEntitiesKeys) < 0) this.langEntity = 'unknown';
                     	
-                        var akas = this.akas.split("");
+                        var akas = this.akas.split(",");
                         var subentriesTmp = this.subentries.split(",");
                         var subentries = [];
                         for (var i = 0; i < subentriesTmp.length; ++i)
