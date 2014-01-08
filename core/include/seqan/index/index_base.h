@@ -389,8 +389,9 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @signature Fibre<TObject, TSpec>::Type;
  *
  * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link FMIndexFibres @endlink, @link
- *         QGramIndexFibres @endlink, @link WOTDIndexFibres @endlink, @link WaveletTreeFibres @endlink, @link
- *         RightArrayBinaryTreeFibres @endlink, @link RankDictionaryFibres @endlink, @link SentinelRankDictionaryFibres @endlink
+ *               QGramIndexFibres @endlink, @link WOTDIndexFibres @endlink, @link WaveletTreeFibres @endlink, @link
+ *               RightArrayBinaryTreeFibres @endlink, @link RankDictionaryFibres @endlink, @link 
+ *               SentinelRankDictionaryFibres @endlink
  * @tparam TObject The container type. Types: @link Index @endlink, @link RankDictionary @endlink, @link SparseString
  *                 @endlink, @link CompressedSA @endlink
  *

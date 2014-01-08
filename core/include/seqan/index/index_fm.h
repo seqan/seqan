@@ -249,6 +249,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
  *                 <tt>FMIndexConfig&lt;TSpec&gt;</tt>.
  *
  * @section Structure
+ *
  * The FM index consists of various @link Fibre @endlink of which the most important ones are the compressed
  * suffix array and the LF table, which provides all necessary information for the LF mapping.
  */
