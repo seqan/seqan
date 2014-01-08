@@ -260,7 +260,8 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @param[in] pos The position (which is also included in the rank computation).
  * @param[in] character The character of interest. Default: <tt>true</tt>
  *
- * @return TSize The rank of a specified character up to a specified position. The result of the metafunction Size&lt;RankDictionary&gt;::Type
+ * @return TSize The rank of a specified character up to a specified position.
+ *               The result of the metafunction Size&lt;RankDictionary&gt;::Type
  */
 
 
@@ -278,7 +279,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
  *
  * @return TValue Returns the character of a specified position. The result is of type
- * Value&lt;RankDictionary&gt;::Type;
+ *                Value&lt;RankDictionary&gt;::Type;
  */
 
 // ----------------------------------------------------------------------------
@@ -325,7 +326,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @param dict The @link RankDictionary @endlink.
  *
  * @return TSize The number of element in the rank dictionary. The result of the metafunction 
- * Size&lt;RankDictionary&gt;::Type
+ *               Size&lt;RankDictionary&gt;::Type
  */
 
 
@@ -350,7 +351,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * This operation may invalidate iterators of object.
  *
  * @return TSize Retruns the number of element that could be reserved. The result of the metafunction
- * Size&lt;RankDictionary&gt;::Type
+ *               Size&lt;RankDictionary&gt;::Type
  */
 
 // ----------------------------------------------------------------------------
@@ -372,7 +373,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * This operation may invalidate iterators of object.
  *
  * @return TSize Retruns the number of element that could be reserved. The result of the metafunction
- * Size&lt;RankDictionary&gt;::Type
+ *               Size&lt;RankDictionary&gt;::Type
  */
 
 // ----------------------------------------------------------------------------
