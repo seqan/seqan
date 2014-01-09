@@ -247,6 +247,11 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
  * @tparam TSpec   FM index specialisation, defaults to <tt>void</tt>.
  * @tparam TConfig A config object which determines the data types of the different fibres, defaults to
  *                 <tt>FMIndexConfig&lt;TSpec&gt;</tt>.
+ *
+ * @section Structure
+ *
+ * The FM index consists of various @link Fibre @endlink of which the most important ones are the compressed
+ * suffix array and the LF table, which provides all necessary information for the LF mapping.
  */
 
 template <typename TText, typename TSpec, typename TConfig>
