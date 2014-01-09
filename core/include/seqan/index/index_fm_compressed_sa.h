@@ -179,7 +179,7 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
  * @signature template <typename TText, typename TSpec, typename TConfig>
  *            class CompressedSA;
  * 
- * @tparam TSpec Possibility to specialise a compressed suffix array. Default: void.
+ * @tparam TSpec Possibility to specialize a compressed suffix array. Default: void.
  * @tparam TText The type of the text the compressed suffix array is created from. Types: @link String @endlink, @link
  *               StringSet @endlink
  * @tparam TConfig A configuration object that can be used to change the types of the fibres easily. This possibility is
@@ -295,7 +295,7 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
 /*!
  * @fn CompressedSA#createCompressedSa
  * @headerfile seqan/index.h
- * @brief This functions creates a compressed suffix array with a specified compression factor.
+ * @brief This function creates a compressed suffix array with a specified compression factor.
  * 
  * @signature void createCompressedSa(compressedSA, completeSA, compressionFactor[, offset]);
  * 
@@ -437,6 +437,19 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 ...type:Class.LF
 ..include:seqan/index.h
 */
+/*!
+ * @fn CompressedSA#setFibre
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Set the LF of the compressed suffix array. * 
+ * @signature void setFibre(compressedSa, lf, fibreLF);
+ * 
+ * @param[in] compressesSa The compressed suffix array.
+ * @param[in] lf The LF table to be used by the compressed suffix array.
+ * @param[in] fibreLF A tag to specify the LF table Fibre
+ */
+
 template <typename TText, typename TSpec, typename TConfig, typename TLF>
 void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, FibreLF)
 {
