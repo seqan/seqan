@@ -457,7 +457,7 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @fn Graph#addVertex
  * @brief Add a vertex to a graph.
  *
- * @signature TVertextDescriptor addVertex(g);
+ * @signature TVertexDescriptor addVertex(g);
  *
  * @param[in,out] g The Graph to add a vertex to.
  *
