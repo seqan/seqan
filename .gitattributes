@@ -1,0 +1,23 @@
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+
+# Forcing line endings to CRLF for window files.
+[attr]windows_text eol=crlf
+*.sln
+*.bat
+
+# Text data file types that are used in the tests.  We force the line endings
+# to LF (Unix) so we can use the same assumptions on Unix and Window.
+[attr]unix_text eol=lf
+*.ctd unix_text
+*.fa unix_text
+*.fasta unix_text
+*.fq unix_text
+*.fastq unix_text
+*.fai unix_text
+*.gff unix_text
+*.gtf unix_text
+*.amos unix_text
+*.ctd unix_text
+*.tsv unix_text
+*.sam unix_text
