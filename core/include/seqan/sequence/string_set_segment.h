@@ -250,7 +250,8 @@ struct Infix<StringSet<THost, Segment<TSpec> > const >
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-void _refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
+SEQAN_HOST_DEVICE void
+_refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
 {
     std::partial_sum(begin(me.limits, Standard()), end(me.limits, Standard()), begin(me.limits, Standard()));
     me.limitsValid = true;
@@ -359,7 +360,7 @@ inline void appendValue(StringSet<THost, Segment<TSpec> > & /* me */,
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos, typename TInfixPos, typename TSize>
-inline void
+SEQAN_HOST_DEVICE inline void
 assignInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
                       TPos pos, TInfixPos infixPos, TSize len)
 {
@@ -376,7 +377,7 @@ assignInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos, typename TSize, typename TExpand>
-inline void
+SEQAN_HOST_DEVICE inline void
 appendInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
                       TPos pos, TSize length, Tag<TExpand> tag)
 {
@@ -389,7 +390,7 @@ appendInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos, typename TSize, typename TExpand>
-inline void
+SEQAN_HOST_DEVICE inline void
 appendInfix(StringSet<THost, Segment<TSpec> > & me,
             TPos posBegin, TPos posEnd, Tag<TExpand> tag)
 {
