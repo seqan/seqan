@@ -43,6 +43,9 @@ namespace seqan {
 // Tags, Classes
 // ============================================================================
 
+struct CommonSegmentIterator_;
+typedef Tag<CommonSegmentIterator_> CommonSegmentIterator;
+
 template <typename TJournaledStringSpec>
 struct JournaledStringIterSpec;
 
@@ -172,6 +175,22 @@ struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction Iterator                      [Standard, CommonSegmentIterator]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, Standard>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, Standard>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Iterator                                               [Rooted]
 // ----------------------------------------------------------------------------
 
@@ -185,6 +204,22 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>
 {
     typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, JournaledStringIterSpec<TJournalSpec> > Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Iterator                        [Rooted, CommonSegmentIterator]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, JournaledStringIterSpec<CommonSegmentIterator> > Type;
 };
 
 // ----------------------------------------------------------------------------

@@ -61,6 +61,7 @@
 #include <seqan/sequence_journaled/journal_entries_sorted_array.h>
 #include <seqan/sequence_journaled/sequence_journaled.h>
 #include <seqan/sequence_journaled/sequence_journaled_iterator.h>
+#include <seqan/sequence_journaled/sequence_journaled_iterator_fast.h>
 
 // ============================================================================
 // Incremental Indices.

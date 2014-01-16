@@ -40,8 +40,8 @@
 #include "test_sequence_journaled.h"
 #include "test_sequence_journaled_iterator.h"
 
-
 SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
+
     // Call tests of the sequence journal with unbalanced tree journal.
     SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_assign);
     SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_set);
