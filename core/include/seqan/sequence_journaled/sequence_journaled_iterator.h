@@ -629,13 +629,10 @@ valueDestruct(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 // TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
-entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+_localEntryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator)) {
-        return length(*iterator._journalStringPtr);
-    }
-
-    switch (value(iterator._journalEntriesIterator).segmentSource) {
+    switch (value(iterator._journalEntriesIterator).segmentSource)
+    {
         case SOURCE_ORIGINAL:
             return iterator._currentHostIt - iterator._hostSegmentBegin;
             break;
@@ -649,28 +646,77 @@ entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 }
 
 // ----------------------------------------------------------------------------
-// Function position()
+// Function _physicalPosition()
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
-position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+_physicalPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
     if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
         return length(*iterator._journalStringPtr);
 
-    switch (value(iterator._journalEntriesIterator).segmentSource) {
-        case SOURCE_ORIGINAL:
-            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentHostIt - iterator._hostSegmentBegin;
+    return value(iterator._journalEntriesIterator).physicalPosition + _localEntryPosition(iterator);
+}
+
+// ----------------------------------------------------------------------------
+// Function _physicalOriginPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_physicalOriginPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const TJournalIter;
+    typedef typename TJournalIter::TJournalEntriesIterator TEntriesIt;
+
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
+        return length(*iterator._journalStringPtr);
+
+    if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
+        return value(iterator._journalEntriesIterator).physicalOriginPosition + _localEntryPosition(iterator);
+
+    SEQAN_ASSERT_EQ(value(iterator._journalEntriesIterator).segmentSource, SOURCE_PATCH);
+
+    TEntriesIt tmp = iterator._journalEntriesIterator;
+    while (value(tmp).segmentSource == SOURCE_PATCH)
+    {
+        if (tmp == begin(_journalEntries(*iterator._journalStringPtr), Standard()))
+        {
+            if (value(tmp).segmentSource == SOURCE_PATCH)
+                return 0;
             break;
-        case SOURCE_PATCH:
-            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentInsertionBufferIt - iterator._insertionBufferSegmentBegin;
-            break;
-        default:
-            SEQAN_ASSERT_FAIL("Invalid segment source!");
-            return 0;
+        }
+        --tmp;
     }
+    SEQAN_ASSERT_EQ(tmp->segmentSource, SOURCE_ORIGINAL);
+    return value(tmp).physicalOriginPosition + value(tmp).length;
+
+}
+
+// ----------------------------------------------------------------------------
+// Function _virtualPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_virtualPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
+        return length(*iterator._journalStringPtr);
+
+    return value(iterator._journalEntriesIterator).virtualPosition + _localEntryPosition(iterator);
+}
+
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    return _virtualPosition(iterator);
 }
 
 // ----------------------------------------------------------------------------

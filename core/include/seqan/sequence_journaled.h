@@ -55,18 +55,9 @@
 // ============================================================================
 
 #include <seqan/sequence_journaled/journal_entry.h>
-#include <seqan/sequence_journaled/journal_entries_unbalanced_tree_node.h>
-#include <seqan/sequence_journaled/journal_entries_unbalanced_tree.h>
-#include <seqan/sequence_journaled/journal_entries_unbalanced_tree_iterator.h>
 #include <seqan/sequence_journaled/journal_entries_sorted_array.h>
 #include <seqan/sequence_journaled/sequence_journaled.h>
 #include <seqan/sequence_journaled/sequence_journaled_iterator.h>
 #include <seqan/sequence_journaled/sequence_journaled_iterator_fast.h>
-
-// ============================================================================
-// Incremental Indices.
-// ============================================================================
-
-// TODO(holtgrew): Port back the incremental index stuff to the new code.
 
 #endif  // SEQAN_HEADER_SEQUENCE_JOURNALED_H
