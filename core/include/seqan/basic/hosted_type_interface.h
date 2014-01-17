@@ -280,6 +280,7 @@ host(T & me)
 }
 
 // TODO(holtgrew): Is this function unnecessary? Should be since the above one is catch-all.
+// (weese:) No, the above wouldn't catch const refs.
 template <typename T>
 inline typename Host<T const>::Type &
 host(T const & me)
