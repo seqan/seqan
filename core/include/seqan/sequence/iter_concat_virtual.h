@@ -149,26 +149,9 @@ public:
 
     Iter(TStringSet &_host, unsigned _objNo, difference_type _offset):
         host(&_host),
-        objNo(_objNo)
+        objNo(0)
     {
-        if (objNo < length(_host))
-        {
-            _begin = _cur = begin(_host[objNo]);
-            _end = end(_host[objNo]);
-            goFurther(_cur, _offset);
-            _testEnd();
-        }
-        else
-        {
-            if (objNo == 0)
-            {
-                _begin = _cur = _end = obj_iterator();
-                return;
-            }
-            --objNo;
-            _begin = begin(_host[objNo]);
-            _cur = _end = end(_host[objNo]);
-        }
+        _setPosition(_objNo, _offset);
     }
 
     // ----------------------------------------------------------------------
@@ -199,6 +182,21 @@ public:
             _begin = _cur = begin((*host)[objNo]);
             _end = end((*host)[objNo]);
         };
+    }
+
+    inline void _setPosition(unsigned _objNo, difference_type _offset)
+    {
+        if (_objNo < length(*host)) {
+            objNo = _objNo;
+            _begin = _cur = begin((*host)[objNo]);
+            _end = end((*host)[objNo]);
+            goFurther(_cur, _offset);
+            _testEnd();
+        } else {
+            objNo = length(*host) - 1;
+            _begin = begin((*host)[objNo]);
+            _cur = _end = end((*host)[objNo]);
+        }
     }
 };
 
@@ -385,6 +383,20 @@ operator+(Iter<TStringSet, ConcatVirtual<TSpec> > const & me, Pair<T1, T2, TPack
 }
 
 // --------------------------------------------------------------------------
+// Function operator+=()
+// --------------------------------------------------------------------------
+
+template <typename TStringSet, typename TSpec, typename TDelta>
+inline Iter<TStringSet, ConcatVirtual<TSpec> >
+operator+=(Iter<TStringSet, ConcatVirtual<TSpec> > & me, TDelta delta)
+{
+    Pair<unsigned, typename Size<typename Value<TStringSet>::Type>::Type> pos;
+    posLocalize(pos, _tell(me) + delta, stringSetLimits(*me.host));
+    me._setPosition(getValueI1(pos), getValueI2(pos));
+    return me;
+}
+
+// --------------------------------------------------------------------------
 // Function operator-()
 // --------------------------------------------------------------------------
 
@@ -404,6 +416,20 @@ operator-(Iter<TStringSet, ConcatVirtual<TSpec> > const & me, TDelta delta)
     Pair<unsigned, typename Size<typename Value<TStringSet>::Type>::Type> pos;
     posLocalize(pos, _tell(me) - delta, stringSetLimits(*me.host));
     return Iter<TStringSet, ConcatVirtual<TSpec> > (*me.host, getValueI1(pos), getValueI2(pos));
+}
+
+// --------------------------------------------------------------------------
+// Function operator-=()
+// --------------------------------------------------------------------------
+
+template <typename TStringSet, typename TSpec, typename TDelta>
+inline Iter<TStringSet, ConcatVirtual<TSpec> >
+operator-=(Iter<TStringSet, ConcatVirtual<TSpec> > & me, TDelta delta)
+{
+    Pair<unsigned, typename Size<typename Value<TStringSet>::Type>::Type> pos;
+    posLocalize(pos, _tell(me) - delta, stringSetLimits(*me.host));
+    me._setPosition(getValueI1(pos), getValueI2(pos));
+    return me;
 }
 
 // --------------------------------------------------------------------------
@@ -459,14 +485,14 @@ operator > (
 // --------------------------------------------------------------------------
 
 template <typename TSSet, typename TSpec>
-inline typename Concatenator<TSSet>::Type
+inline typename Concatenator<TSSet>::Type &
 container(Iter<TSSet, ConcatVirtual<TSpec> > & me)
 {
     return concat(*me.host);
 }
 
 template <typename TSSet, typename TSpec>
-inline typename Concatenator<TSSet>::Type
+inline typename Concatenator<TSSet>::Type &
 container(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 {
     return concat(*me.host);
