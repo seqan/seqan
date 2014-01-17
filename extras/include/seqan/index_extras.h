@@ -65,6 +65,11 @@
 #include <seqan/index/find_backtracking_exp.h>
 //#include <seqan/index/find_suffixfilter.h>
 
+SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
+{
+    SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
+    SEQAN_ASSERT(find(this->finder, (const char*)"A"));
+}
 
 #include <seqan/index/find_backtracking.h>
 
