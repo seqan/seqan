@@ -131,6 +131,20 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function _initJournaledStringIteratorEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString>
+inline
+void
+_initJournaledStringIteratorEnd(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator)
+{
+    iterator._journalEntriesIterator = end(iterator._journalStringPtr->_journalEntries, Standard()) - 1;
+    _updateSegmentIteratorsLeft(iterator);
+    ++iterator._currentSegmentIt;
+}
+
+// ----------------------------------------------------------------------------
 // Function _updateSegmentIterators()
 // ----------------------------------------------------------------------------
 
@@ -141,7 +155,10 @@ void
 _updateSegmentIterators(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator)
 {
     if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
+    {
+        _initJournaledStringIteratorEnd(iterator);
         return;
+    }
 
     if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
         iterator._segmentBegin = begin(host(*iterator._journalStringPtr), Standard()) + value(iterator._journalEntriesIterator).physicalPosition;
@@ -161,6 +178,12 @@ inline
 void
 _updateSegmentIteratorsLeft(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator)
 {
+    if (iterator._journalEntriesIterator + 1 == begin(_journalEntries(container(iterator)), Standard()))
+    {
+        goBegin(iterator);
+        return;
+    }
+
     if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
         iterator._segmentBegin = begin(host(*iterator._journalStringPtr), Standard()) + value(iterator._journalEntriesIterator).physicalPosition;
     else
@@ -253,35 +276,28 @@ Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > &
 operator+=(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator,
            TLen len_)
 {
-
     typedef Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > TIterator;
 
     // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
-    size_t len = len_;
-
-    // Handle bad case of len_ pointing at/behind end.
-    if (position(iterator) + len_ >= length(*iterator._journalStringPtr)) {
-        iterator = TIterator(end(*iterator._journalStringPtr));
-        return iterator;
-    }
 
     // Handle other case.
     typedef typename Size<TJournaledString>::Type TSize;
-    while (len > 0)
+    TLen remaining = iterator._segmentEnd - iterator._currentSegmentIt;
+    while (len_ > 0  && remaining != 0)
     {
-        TSize remaining = iterator._segmentEnd - iterator._currentSegmentIt;
-        SEQAN_ASSERT_GT(remaining, 0u);
-        if (len >= remaining)
+        SEQAN_ASSERT_GT(remaining, static_cast<TLen>(0));
+        if (len_ >= remaining)
         {
-            len -= remaining;
+            len_ -= remaining;
             ++iterator._journalEntriesIterator;
             _updateSegmentIterators(iterator);
+            remaining = iterator._segmentEnd - iterator._currentSegmentIt;
         }
         else
         {
-            iterator._currentSegmentIt += len;
-            len = 0;
+            iterator._currentSegmentIt += len_;
+            len_ = 0;
         }
     }
     return iterator;
@@ -296,13 +312,6 @@ inline
 Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > &
 operator--(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
-    {
-        --iterator._journalEntriesIterator;
-        _updateSegmentIteratorsLeft(iterator);
-        return iterator;
-    }
-
     if (iterator._currentSegmentIt == iterator._segmentBegin)
     {
         --iterator._journalEntriesIterator;
@@ -331,23 +340,10 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator>
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
     size_t len = len_;
 
-    // Handle bad case of len_ pointing before begin.
-    if (position(iterator) <= static_cast<TPosition>(len_)) {
-        iterator = TIterator(begin(*iterator._journalStringPtr));
-        return iterator;
-    }
-
-    // Handle case when iterator is at end
-    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
-    {
-        --iterator._journalEntriesIterator;
-        _updateSegmentIteratorsLeft(iterator);
-        --len;
-    }
-
     // Handle other case.
     typedef typename Size<TJournaledString>::Type TSize;
-    while (len > 0) {
+    while (len > 0 )
+    {
         TSize relNodePos = _localEntryPosition(iterator);
         if (len > relNodePos)
         {
@@ -408,8 +404,6 @@ operator==(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator>
            Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & b)
 {
     SEQAN_CHECKPOINT;
-    if (atEnd(a._journalEntriesIterator, _journalEntries(container(a))) && atEnd(b._journalEntriesIterator, _journalEntries(container(b))))
-        return true;
     if (a._journalEntriesIterator != b._journalEntriesIterator)
         return false;
     if (a._currentSegmentIt != b._currentSegmentIt)
