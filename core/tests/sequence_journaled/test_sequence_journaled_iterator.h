@@ -134,6 +134,16 @@ void testJournaledStringIteratorSum(THostSpec const &, TStringJournalSpec const 
         it2 += 2;
         SEQAN_ASSERT(it == it2);
     }
+
+    // Case 3: Go over end of journal string.
+    {
+        TIterator it = begin(journaledString, Standard());
+        it += 5;
+        TIterator itEnd = end(journaledString, Standard());
+        SEQAN_ASSERT(it == itEnd);
+        it += 10;
+        SEQAN_ASSERT(it == itEnd);
+    }
 }
 
 // Test relation operators on iterators.
