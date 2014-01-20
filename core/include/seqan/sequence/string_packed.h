@@ -1161,43 +1161,43 @@ FINISH:
 */
 };
 
-template<typename TValue, typename THostspec, typename TExpand>
+template<typename TValue, typename THostspec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type 
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-        Tag<TExpand>)
+            TSize size,
+            Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
-template<typename TValue, typename THostspec, typename TExpand>
-inline typename Size< String<TValue, Packed<THostspec> > >::Type 
+template<typename TValue, typename THostspec, typename TSize, typename TCapacity, typename TExpand>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type limit, 
-        Tag<TExpand>)
+            TSize size,
+            TCapacity limit,
+            Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
-template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
+template<typename TValue, typename THostspec, typename TSize, typename TPosition, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type 
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-            TPosition pos_begin, 
+            TSize size,
+            TPosition pos_begin,
             TPosition pos_end, 
             Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
-template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
-inline typename Size< String<TValue, Packed<THostspec> > >::Type 
+template<typename TValue, typename THostspec, typename TSize, typename TPosition, typename TCapacity, typename TExpand>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-            TPosition pos_begin, 
+            TSize size,
+            TPosition pos_begin,
             TPosition pos_end, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type limit, 
+            TCapacity limit,
             Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
