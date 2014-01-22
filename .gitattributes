@@ -2,13 +2,13 @@
 * text=auto
 
 # Forcing line endings to CRLF for window files.
-[attr]windows_text eol=crlf
+[attr]windows_text text eol=crlf
 *.sln
 *.bat
 
 # Text data file types that are used in the tests.  We force the line endings
 # to LF (Unix) so we can use the same assumptions on Unix and Window.
-[attr]unix_text eol=lf
+[attr]unix_text text eol=lf
 *.ctd unix_text
 *.fa unix_text
 *.fasta unix_text
