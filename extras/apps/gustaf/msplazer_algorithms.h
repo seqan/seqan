@@ -62,19 +62,29 @@ inline bool _checkMatchSim(TPos const & m1Begin,
                            TPos const & m2End,
                            MSplazerOptions const & msplazerOptions)
 {
-    TPos overlapPartLength = m1End - m2Begin;
+    // TPos overlapPartLength = m1End - m2Begin;
+    double overlapPartLength = static_cast<double>(m1End - m2Begin);
     // Catch special case of required overlap=0
     if (msplazerOptions.simThresh == static_cast<double>(0.0))
         return overlapPartLength == static_cast<double>(0.0);
 
-    TPos match1Length = m1End - m1Begin;
-    TPos match2Length = m2End - m2Begin;
+    // TPos match1Length = m1End - m1Begin;
+    // TPos match2Length = m2End - m2Begin;
+    double match1Length = static_cast<double>(m1End - m1Begin);
+    double match2Length = static_cast<double>(m2End - m2Begin);
     // Check if overlapping percent of each match is lower than the allowed percent threshold
     double const EPSILON = 0.00001;
+
+    double thresh = msplazerOptions.simThresh + EPSILON;
+    double m1OverlapPerc = overlapPartLength / match1Length;
+    double m2OverlapPerc = overlapPartLength / match2Length;
+
+    std::cout << "thresh: " << thresh << " m1OverlapPerc: " << m1OverlapPerc << " m2OverlapPerc: " << m2OverlapPerc << std::endl;
+
     if (((1.0 * overlapPartLength / match1Length) < (msplazerOptions.simThresh + EPSILON))
        && ((1.0 * overlapPartLength / match2Length) < (msplazerOptions.simThresh + EPSILON)))
         return true;
-
+    std::cout << "overlap false" << std::endl;
     return false;
 }
 
@@ -258,6 +268,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
                 assignProperty(chain.breakpoints, edge);
             else
             {
+                // TODO(ktrappe): needs trimming of x-drop/sloppy end
                 TBreakpoint bp(queryMatches.matches[i].id,
                                queryMatches.matches[i].id,
                                queryMatches.matches[i].orientation,
@@ -321,7 +332,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 
     // Output values for compatibility check: do breakpoint evaluation, insert edge into graph,
     // found gap --> stop iterating if gap is too big (overlap in read)
-    bool doBP, insertEdge = false;
+    bool doBP, insertEdge, artificialBP = false;
     // Penalties
     int diffDBPen, diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Terminating condition for taking the next snd match for comparison:
@@ -392,6 +403,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 // Compute breakpoint
                 TPos startSeqPos, endSeqPos, readStartPos, readEndPos;
                 TPos startSeqPos_test, endSeqPos_test, readStartPos_test, readEndPos_test;
+                // if match1 and match2 are from different mates and in right distance, doBP=false
                 if (doBP)
                 {
                     // Create alignments from Stellar rows as input for breakpoint function
@@ -542,10 +554,15 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 // Insert breakpoint
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
                 resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
+                // if match1 and match2 are from different mates and BP is indel check for artificial bp
+                // if (bp.svtype == TBreakpoint::DELETION || bp.svtype == TBreakpoint::INSERTION)
+                // _checkMateMatch(stMatch1, stMatch2, artificialBP);
+                // if (artificialBP)
                 assignProperty(queryBreakpoints, edge, bp);
             }
             doBP = false;
             insertEdge = false;
+            artificialBP = false;
         }
     }
 }
@@ -808,6 +825,14 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     // Returns 0 if edge does not exist
                     if (edge != 0)
                     {
+                        // Check for tandem deletion or insertion
+                        // TBreakpoint & oldBp = property(queryBreakpoints, edge);
+                        // if (bp.svtype == TBreakpoint::INSERTION && oldBP.svtype == TBreakpoint::DELETION)
+                        // {
+                        //      // insertion but (m2.e1 - m1.b1) > (m2.e2 - m1.b1) (equivalent to
+                        //      // deletion but (m2.e1 - m1.b1) < (m2.e2 - m1.b1) ) keep deletion bp, prob. DEL:ME?
+                        //      if ( ((*stMatch2).end1 - (*stMatch1).begin1)) > ((*stMatch2).end2 - (*stMatch1).begin2) )
+                        // }
                         // Replace cargo and bp
                         if (cargo < getCargo(edge))
                         {
@@ -868,7 +893,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
             // Graph init
             // std::cout << "read " << i+1 << std::endl;
             if (msplazerOptions.pairedEndMode)
-                _initialiseGraphMatePairs(stellarMatches[i], chain, msplazerOptions);
+                _initialiseGraphMatePairs(stellarMatches[i], queryIds[i], chain, msplazerOptions);
             else
                 //_initialiseGraphNoBreakend(stellarMatches[i], chain, msplazerOptions);
                 _initialiseGraph(stellarMatches[i], queryIds[i], chain, msplazerOptions);
@@ -952,10 +977,13 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
                 appendSupportId(tempBP, bp.supportIds);
                 return false;
             }
-            appendSupportId(tempBP, bp.supportIds);
-            appendSupportId(bp, tempBP.supportIds);
-            appendValue(countedBP, bp);
-            return false;
+            else
+            {
+                appendSupportId(tempBP, bp.supportIds);
+                appendSupportId(bp, tempBP.supportIds);
+                appendValue(countedBP, bp);
+                return false;
+            }
         }
         else if (bp.svtype == TBreakpoint::DELETION)
         {
