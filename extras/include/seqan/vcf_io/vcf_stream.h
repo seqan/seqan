@@ -64,6 +64,9 @@ namespace seqan {
  * The output is as follows:
  *
  * @include demos/vcf_io/vcf_stream_read.cpp.stdout
+ *
+ * @var VcfHeader VcfStream::header
+ * @brief Member to store header information.
  */
 
 /*!
