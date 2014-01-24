@@ -118,15 +118,15 @@ struct RankDictionaryBitMask_<__uint64, TSpec>
 // Metafunction RankDictionaryWordSize_
 // ----------------------------------------------------------------------------
 
-//#ifdef CUDA_DISABLED
-//template <typename TValue, typename TSpec>
-//struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
-//    BitsPerValue<unsigned long> {};
-//#else
+#ifdef CUDA_DISABLED
+template <typename TValue, typename TSpec>
+struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
+    BitsPerValue<__uint64> {};
+#else
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
     BitsPerValue<__uint32> {};
-//#endif
+#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBitsPerBlock_
@@ -137,11 +137,11 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBitsPerBlock_<TValue, TwoLevels<TSpec> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type> {};
 
-//#ifdef CUDA_DISABLED
-//template <typename TSpec>
-//struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
-//    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
-//#endif
+#ifdef CUDA_DISABLED
+template <typename TSpec>
+struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
+    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
+#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlock_
