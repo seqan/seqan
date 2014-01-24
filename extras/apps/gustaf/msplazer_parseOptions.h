@@ -77,6 +77,7 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.initGapThresh, parser, "ith");
     getOptionValue(msplazerOptions.breakendThresh, parser, "bth");
     getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
+    getOptionValue(msplazerOptions.breakpointPosRange, parser, "pth");
     getOptionValue(msplazerOptions.support, parser, "st");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
     getOptionValue(msplazerOptions.libError, parser, "le");
@@ -191,6 +192,9 @@ void _setupArgumentParser(ArgumentParser & parser)
                   "tth", "tandemThresh", "Minimal length of (small) insertion/duplication with double overlap to be considered tandem repeat",
                   ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "tth", "50");
+    addOption(parser, ArgParseOption(
+                  "pth", "breakpoint-pos-range", "Allowed difference in breakpoint position", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "pth", "5");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));
