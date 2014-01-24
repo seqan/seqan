@@ -107,7 +107,7 @@ struct MSplazerOptions
         initGapThresh(15),
         breakendThresh(30),
         tandemThresh(50),
-        breakpointPosRange(6),
+        breakpointPosRange(5),
         support(2),
         mateSupport(1),
         libSize(0),
@@ -728,11 +728,29 @@ inline void setInsertionSeq(TBreakpoint & bp, TSequence & inSeq)
  */
 
 template <typename TPos, typename TPosR>
-inline bool posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
+inline bool _posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
 {
     return (__int64)abs(pos2 - pos1) < (__int64)range;
 }
 
+// Breakends are distinguishable by there one reference Id (startId=endId) and position
+// (start and end position are the same), strand doesn't matter
+template <typename TId, typename TPos, typename TPosR>
+inline bool _similarBreakends(Breakpoint<TId, TPos> & be1, Breakpoint<TId, TPos> & be2, TPosR const & range)
+{
+    if (be1.startSeqId != be2.startSeqId)
+        return false;
+    return _posInSameRange(be1.startSeqPos, be2.startSeqPos, range);
+}
+
+template <typename TId, typename TPos, typename TPosR>
+inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> & bp, TPosR const & range)
+{
+    if (be.startSeqId != bp.startSeqId && be.startSeqId != bp.endSeqId)
+        return false;
+    return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
+            _posInSameRange(be.startSeqPos, bp.endSeqPos, range) );
+}
 /**
 .Function.similarBreakpoints:
 ..summary:Tests two breakpoints for similarity, i.e. if they have the same sequence Ids and lie within a specified range.

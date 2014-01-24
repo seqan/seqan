@@ -951,7 +951,7 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
 
 // Function deletionSupport
 template <typename TBreakpoint>
-bool _deletionSupport(TBreakpoint & bp, TBreakpoint & tempBP)
+bool _deletionSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & bpPosRange)
 {
     // tempBP is a translocation, check now if bp is a deletion supporting tempBP
     if (_similarBreakpoints(tempBP, bp))
@@ -963,31 +963,50 @@ bool _deletionSupport(TBreakpoint & bp, TBreakpoint & tempBP)
 // has been inserted or false if breakpoint was already in the set (and just has been counted).
 // For insertions, also the insertion length has to be the same
 template <typename TBreakpoint>
-bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
+bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange)
 {
     typedef typename TBreakpoint::TId TId;
     // Breakpoint bp is compared to each breakpoint in the list (tempBP)
     for (unsigned i = 0; i < length(countedBP); ++i)
     {
         TBreakpoint & tempBP = countedBP[i];
-        /*
         // Breakpoint comparison
-        if (_similarBreakpoints(bp, tempBP))
+        // Special case: old breakpoint is only breakend
+        if (tempBP.svtype == TBreakpoint::BREAKEND)
         {
-            if (bp == tempBP)
+            // If both are breakends and similar, add supportId to the old (temp) bp
+            if (bp.svtype == TBreakpoint::BREAKEND && _similarBreakends(bp, tempBP, bpPosRange))
             {
-                // add new supporting Ids, automatically sets new support value
                 appendSupportId(tempBP, bp.supportIds);
                 return false;
             }
-            else
+            // If the old bp is only a breakend but the new is a proper breakpoint, check if the breakend is supporting
+            // the new breakpoint, if so, then replace the breakend and add its Ids as support to the new bp
+            if (_breakendSupport(tempBP, bp, bpPosRange))
+            {
+                appendSupportId(bp, tempBP.supportIds);
+                tempBP = bp;
+                return false; // return true since its basically a new bp in the set?
+            }
+        }
+        // Special case: new breakpoint is only breakend
+        else if (bp.svtype == TBreakpoint::BREAKEND)
+        {
+            if (_breakendSupport(bp, tempBP, bpPosRange))
             {
                 appendSupportId(tempBP, bp.supportIds);
-                appendSupportId(bp, tempBP.supportIds);
-                appendValue(countedBP, bp);
                 return false;
             }
         }
+        else if (bp == tempBP)
+        {
+            appendSupportId(tempBP, bp.supportIds);
+            return false;
+        }
+        // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
+        // can either be part of the duplication and should not be in the output list or it can distinguish the dup
+        // from a translocation in which case the svtype is updated from duplication to translocation
+        /*
         else if (bp.svtype == TBreakpoint::DELETION)
         {
             // tempBP is also deletion, are both part of a transl? extract and save as transl
@@ -1003,11 +1022,6 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
             }
         }
         */
-        if (bp == tempBP)
-        {
-            appendSupportId(tempBP, bp.supportIds);
-            return false;
-        }
     }
     // Append breakpoint if new
     appendValue(countedBP, bp);
@@ -1015,10 +1029,10 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
 }
 
 template <typename TBreakpoint>
-void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & newBP)
+void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & newBP, MSplazerOptions const & options)
 {
     for (unsigned i = 0; i < length(newBP); ++i)
-        _insertBreakpoint(countedBP, newBP[i]);
+        _insertBreakpoint(countedBP, newBP[i], options.breakpointPosRange);
 }
 
 //TODO(ktrappe): Trimming functionality is disabled atm and needs adaption to new alignment properties and moduls
@@ -1193,9 +1207,9 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
                         StringSet<TQueryMatches> & queryMatches,
                         // StringSet<TSequence> & queries,
                         // StringSet<TId> const & queryIds,
-                        String<TBreakpoint> & globalBreakpoints
+                        String<TBreakpoint> & globalBreakpoints,
                         // String<TBreakpoint> & globalStellarIndels,
-                        // MSplazerOptions const & msplazerOptions
+                        MSplazerOptions const & msplazerOptions
                         )
 {
     /*
@@ -1212,7 +1226,7 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
         if (_findBestChain(queryChains[i], queryMatches[i].matches, tmpGlobalBreakpoints, // msplazerOptions,
                            brokenChainCount))
         {
-            _insertBreakpoints(globalBreakpoints, tmpGlobalBreakpoints);
+            _insertBreakpoints(globalBreakpoints, tmpGlobalBreakpoints, msplazerOptions);
             // get small indels from matches
             // _getChainIndels(queryChains[i].bestChains, globalStellarIndels, queryIds[i], queries[i]);
             /*
