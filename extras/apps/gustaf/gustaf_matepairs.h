@@ -280,17 +280,28 @@ _checkMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches, TM
     return _checkLeftMateMatches(sMatch, queryMatches, gustafChain, options);
 }
 
-/*
-// Check for two matches, each from a different mate, if they both apply to the libSize+sd
+
+// Check for two matches, each from a different mate, if they both apply to the libSize+sd, i.e. the BP is artificial
+// Assumptions: sMatch1 < sMatch2, valid order and valid gap between matches regarding read sequence
 template <typename TMatch, typename TMSplazerChain>
 inline bool
-_checkMateMatches(TMatch const & sMatch1, TMatch const & sMatch2, MSplazerOptions const & options)
+_artificialBP(TMatch const & sMatch1, TMatch const & sMatch2, TMSplazerChain const & gustafChain, MSplazerOptions const & options)
 {
-    if (_isLeftMate(sMatch, gustafChain.mateJoinPosition))
-            return _checkRightMateMatches(sMatch, queryMatches, gustafChain, options);
-    return _checkLeftMateMatches(sMatch, queryMatches, gustafChain, options);
+    // Check if both matches are from different mates
+    if (_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && _isLeftMate(sMatch2, gustafChain.mateJoinPosition))
+        return false;
+    if (!_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && !_isLeftMate(sMatch2, gustafChain.mateJoinPosition))
+        return false;
+    // Check the distance between inner match position on the reference
+    typedef typename TMatch::TPos TPos;
+    TPos dist = sMatch2.begin1 - sMatch1.end1;
+    if (dist < (options.libSize - options.libError))
+        return false;
+    if (dist > (options.libSize + options.libError))
+        return false;
+    return true;
 }
-*/
+
 
 // Intitialisation of graph structure for combinable StellarMatches of a read
 template <typename TSequence, typename TId, typename TMSplazerChain>

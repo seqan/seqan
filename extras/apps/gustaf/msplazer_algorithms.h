@@ -332,7 +332,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 
     // Output values for compatibility check: do breakpoint evaluation, insert edge into graph,
     // found gap --> stop iterating if gap is too big (overlap in read)
-    bool doBP, insertEdge, artificialBP = false;
+    bool doBP, insertEdge = false;
     // Penalties
     int diffDBPen, diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Terminating condition for taking the next snd match for comparison:
@@ -555,14 +555,13 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
                 resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
                 // if match1 and match2 are from different mates and BP is indel check for artificial bp
-                // if (bp.svtype == TBreakpoint::DELETION || bp.svtype == TBreakpoint::INSERTION)
-                // _checkMateMatch(stMatch1, stMatch2, artificialBP);
-                // if (artificialBP)
-                assignProperty(queryBreakpoints, edge, bp);
+                if (bp.svtype == TBreakpoint::DELETION && _artificialBP(stMatch1, stMatch2, chain, msplazerOptions))
+                    assignProperty(queryBreakpoints, edge);
+                else
+                    assignProperty(queryBreakpoints, edge, bp);
             }
             doBP = false;
             insertEdge = false;
-            artificialBP = false;
         }
     }
 }
@@ -825,21 +824,24 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     // Returns 0 if edge does not exist
                     if (edge != 0)
                     {
-                        // Check for tandem deletion or insertion
-                        // TBreakpoint & oldBp = property(queryBreakpoints, edge);
-                        // if (bp.svtype == TBreakpoint::INSERTION && oldBP.svtype == TBreakpoint::DELETION)
-                        // {
-                        //      // insertion but (m2.e1 - m1.b1) > (m2.e2 - m1.b1) (equivalent to
-                        //      // deletion but (m2.e1 - m1.b1) < (m2.e2 - m1.b1) ) keep deletion bp, prob. DEL:ME?
-                        //      if ( ((*stMatch2).end1 - (*stMatch1).begin1)) > ((*stMatch2).end2 - (*stMatch1).begin2) )
-                        // }
-                        // Replace cargo and bp
+                        TBreakpoint & oldBp = property(queryBreakpoints, edge);
                         if (cargo < getCargo(edge))
                         {
-                            assignCargo(edge, cargo);
-                            TBreakpoint & oldBp = property(queryBreakpoints, edge);
-                            std::cout << "Taking insertion breakpoint instead of old one " << bp << oldBp << std::endl;
-                            oldBp = bp;
+                            // Check for tandem deletion or insertion
+                            // if olBP is deletion and new bp is insertion, and
+                            // insertion but (m2.e1 - m1.b1) > (m2.e2 - m1.b1) (equivalent to
+                            // deletion but (m2.e1 - m1.b1) < (m2.e2 - m1.b1) ) keep deletion bp, prob. DEL:ME?
+                            if (! ( (bp.svtype == 1 && oldBp.svtype == 2) &&
+                                    ((*stMatch2).end1 - (*stMatch1).begin1) > ((*stMatch2).end2 - (*stMatch1).begin2)
+                                  )
+                               ) // 1=Insertion, 2=Deletion, if both condictions true then tandem del
+                            {
+                                // Replace cargo and bp
+                                assignCargo(edge, cargo);
+                                // TBreakpoint & oldBp = property(queryBreakpoints, edge);
+                                std::cout << "Taking insertion breakpoint instead of old one " << bp << oldBp << std::endl;
+                                oldBp = bp;
+                            }
                         }
                     }
                     else
@@ -968,6 +970,7 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
     for (unsigned i = 0; i < length(countedBP); ++i)
     {
         TBreakpoint & tempBP = countedBP[i];
+        /*
         // Breakpoint comparison
         if (_similarBreakpoints(bp, tempBP))
         {
@@ -998,6 +1001,12 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
             if (_deletionSupport(bp, tempBP))
             {
             }
+        }
+        */
+        if (bp == tempBP)
+        {
+            appendSupportId(tempBP, bp.supportIds);
+            return false;
         }
     }
     // Append breakpoint if new
