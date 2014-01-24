@@ -67,8 +67,9 @@ int write2(TStream & stream,
 {
     char const * headerTypes[] = {"@HD", "@SQ", "@RG", "@PG", "@CO"};
     streamPut(stream, headerTypes[header.type]);
-    if (header.type == BAM_HEADER_COMMENT)
+    if (header.type == BAM_HEADER_COMMENT && !empty(header.tags))
     {
+        streamPut(stream, '\t');
         streamPut(stream, header.tags[0].i2);
     }
     else
