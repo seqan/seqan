@@ -126,15 +126,15 @@ struct Breakpoint
 {
     enum SVType
     {
-        INVALID,
-        INSERTION,
-        DELETION,
-        INVERSION,
-        TANDEM,
-        DISPDUPLICATION,
-        INTRATRANSLOCATION,
-        TRANSLOCATION,
-        BREAKEND
+        INVALID,            // 0
+        INSERTION,          // 1
+        DELETION,           // 2
+        INVERSION,          // 3
+        TANDEM,             // 4
+        DISPDUPLICATION,    // 5
+        INTRATRANSLOCATION, // 6
+        TRANSLOCATION,      // 7
+        BREAKEND            // 8
     };
 
     typedef TSequence_                          TSequence;
@@ -736,7 +736,7 @@ inline bool posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & r
 /**
 .Function.similarBreakpoints:
 ..summary:Tests two breakpoints for similarity, i.e. if they have the same sequence Ids and lie within a specified range.
-..signature:similarBreakpoints(bp1, bp2i)
+..signature:similarBreakpoints(bp1, bp2)
 ..param.bp1:First breakpoint to be compared.
 ...type:Class.Breakpoint
 ..param.bp2:Snd breakpoint to be compared.
@@ -749,8 +749,9 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
 {
     typedef Breakpoint<TId, TPos> TBP;
     unsigned const range = 5;
+    bool sameOrient = true;
     bool sameSeqs = (bp1.startSeqId == bp2.startSeqId) && (bp1.endSeqId == bp2.endSeqId);
-    bool sameOrient = (bp1.startSeqStrand == bp2.startSeqStrand) && (bp1.endSeqStrand == bp2.endSeqStrand);
+    // bool sameOrient = (bp1.startSeqStrand == bp2.startSeqStrand) && (bp1.endSeqStrand == bp2.endSeqStrand);
     bool samePosRange = 0;
     if (bp1.svtype == TBP::BREAKEND || bp2.svtype == TBP::BREAKEND)
         samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)

@@ -255,7 +255,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     _setGffRecordType(record, bp);
 //    record.type = bp.svtype;
     record.beginPos = bp.startSeqPos;
-    if (bp.svtype == 2 || bp.svtype == 3 || bp.svtype == 7) // 2=deletion;3=inversion;7=breakend
+    if (bp.svtype == 2 || bp.svtype == 3 || bp.svtype == 7) // 2=deletion;3=inversion;7=translocation
         record.endPos = bp.endSeqPos;
     else
         record.endPos = bp.startSeqPos + 1;
@@ -273,7 +273,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
         appendValue(record.tagName, "seq");
         appendValue(record.tagValue, bp.insertionSeq);
     }
-    else if (bp.svtype == 2 || bp.svtype == 7) // 2=deletion;7=breakend
+    else if (bp.svtype == 2 || bp.svtype == 8) // 2=deletion;8=breakend
     {
         appendValue(record.tagName, "size");
         appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
