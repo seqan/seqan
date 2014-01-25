@@ -137,11 +137,11 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBitsPerBlock_<TValue, TwoLevels<TSpec> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type> {};
 
-#ifdef CUDA_DISABLED
-template <typename TSpec>
-struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
-    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
-#endif
+//#ifdef CUDA_DISABLED
+//template <typename TSpec>
+//struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
+//    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
+//#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlock_
