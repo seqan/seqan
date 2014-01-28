@@ -617,22 +617,17 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
     
     template <typename TObject>
 	struct SAValue:
-		Size<TObject> {};
-	
+		Position<TObject> {};
+
 	template <typename TObject>
 	struct SAValue<TObject const>:
 		SAValue<TObject> {};
-	
+
 	// to speed up sequence number computation
 	// we use a pair of seqNo and localPosition
-	template < typename TString, typename TSpec >
-	struct SAValue< StringSet<TString, TSpec> > {
-		typedef Pair<
-			typename Size< StringSet<TString, TSpec> >::Type,
-			typename SAValue<TString>::Type,
-			Pack
-		> Type;
-	};
+	template <typename TString, typename TSpec>
+	struct SAValue<StringSet<TString, TSpec> > :
+        StringSetPosition<StringSet<TString, TSpec> > {};
 
 /*
 	template < typename TString, typename TSpec >
