@@ -206,8 +206,9 @@ struct StringSetPosition
 template <typename TString, typename TSpec>
 struct StringSetPosition<StringSet<TString, TSpec> >
 {
-    typedef typename Size<TString>::Type TSize_;
-    typedef Pair<TSize_> Type;
+    typedef Pair<typename Size<StringSet<TString, TSpec> >::Type,
+                 typename Size<TString>::Type,
+                 Pack> Type;
 };
 
 // --------------------------------------------------------------------------
