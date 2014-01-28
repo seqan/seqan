@@ -97,11 +97,15 @@ struct Finder2<Index<TText, TIndexSpec>, TPattern, Multiple<TSpec> >
     typedef Index<TText, TIndexSpec>            TIndex;
 
     typename Member<Finder2, Factory_>::Type    _factory;
+    typename Score_<TSpec>::Type                _scoreThreshold;
 
-    Finder2() {}
+    Finder2() :
+        _scoreThreshold()
+    {}
 
     Finder2(TIndex & index) :
-        _factory(index)
+        _factory(index),
+        _scoreThreshold()
     {}
 };
 
@@ -178,6 +182,16 @@ struct FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate>
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Score_; Multiple
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct Score_<Multiple<TSpec> >
+{
+    typedef typename Score_<TSpec>::Type    Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Host                                                  [Pattern]
@@ -349,6 +363,8 @@ _findKernel(Finder2<TText, TPattern, Multiple<TSpec> > finder, TPattern pattern,
     ctx._patternIt = pattern._permutation[threadId];
 
     // Find a single needle.
+    clear(ctx.baseFinder);
+    setScoreThreshold(ctx.baseFinder, getScoreThreshold(finder));
     find(ctx.baseFinder, pattern.data_host[ctx._patternIt], ctx);
 }
 #endif
@@ -473,6 +489,7 @@ _find(Finder2<TText, TPattern, Multiple<TSpec> > & finder,
     for (TSize needleId = 0; needleId < needlesCount; ++needleId)
     {
         clear(ctx.baseFinder);
+        setScoreThreshold(ctx.baseFinder, getScoreThreshold(finder));
         ctx._patternIt = needleId;
         find(ctx.baseFinder, needlesView[ctx._patternIt], ctx);
     }
@@ -522,6 +539,8 @@ inline void
 find(Finder2<TText, TPattern, Multiple<TSpec> > & finder, TPattern & pattern, TDelegate & delegate)
 {
     typedef Finder2<TText, TPattern,  Multiple<TSpec> > TFinder;
+
+    if (empty(needle(pattern))) return;
 
     _find(finder, pattern, delegate, typename ExecSpace<TFinder>::Type());
 }
@@ -574,6 +593,17 @@ inline SEQAN_HOST_DEVICE typename TextIterator_<TText, TPattern, Multiple<TSpec>
 textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ctx)
 {
     return textIterator(ctx.baseFinder);
+}
+
+// ----------------------------------------------------------------------------
+// Function getScore()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
+SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
+getScore(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ctx)
+{
+    return getScore(ctx.baseFinder);
 }
 
 }

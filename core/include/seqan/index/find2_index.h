@@ -85,26 +85,6 @@ struct TextIterator_<Index<TText, TIndexSpec>, TPattern, Backtracking<TDistance,
     typedef typename Iterator<Index<TText, TIndexSpec>, TopDown<ParentLinks<> > >::Type  Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction Score_                                           [STree Finder]
-// ----------------------------------------------------------------------------
-
-template <>
-struct Score_<FinderSTree>
-{
-    typedef Nothing Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Score_                                    [Backtracking Finder]
-// ----------------------------------------------------------------------------
-
-template <typename TDistance, typename TSpec>
-struct Score_<Backtracking<TDistance, TSpec> >
-{
-    typedef unsigned char   Type;
-};
-
 // ============================================================================
 // Classes
 // ============================================================================
@@ -229,9 +209,6 @@ find(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, T
 
     TTextIterator & textIt = textIterator(finder);
     TPatternIterator & patternIt = patternIterator(finder);
-
-    finder._score = 0;
-    finder._scoreThreshold = 1;
 
     do
     {
