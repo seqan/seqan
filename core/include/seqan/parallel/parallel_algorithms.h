@@ -241,35 +241,200 @@ partialSum(TTarget &target, TSource const &source)
 }
 
 // ============================================================================
-// Wrappers
+// STL Wrappers
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function forEach
+// Function forEach()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TFunctor>
-inline void forEach(TContainer const & c, TFunctor & f)
+template <typename TContainer, typename TFunctor, typename TParallelTag>
+inline TFunctor
+forEach(TContainer const & c, TFunctor f, Tag<TParallelTag> const & /* tag */)
 {
-    return forEach(c, f, Serial());
+    return std::for_each(begin(c, Standard()), end(c, Standard()), f);
 }
 
-template <typename TContainer, typename TFunctor, typename TParallelTag>
-inline void forEach(TContainer const & c, TFunctor & f, Tag<TParallelTag> const & /* tag */)
+// ----------------------------------------------------------------------------
+// Function count()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue, typename TParallelTag>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v, Tag<TParallelTag> const & /* tag */)
 {
-    std::for_each(begin(c, Standard()), end(c, Standard()), f);
+    return std::count(begin(c, Standard()), end(c, Standard()), v);
 }
+
+// ----------------------------------------------------------------------------
+// Function countIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::count_if(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function sort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
+inline void
+sort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
+inline void
+stableSort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::stable_sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function transform()
+// ----------------------------------------------------------------------------
+
+//template <typename TContainer, typename TUnaryOperator, typename TParallelTag>
+//inline void
+//transform(TContainer & c, TUnaryOperator o, Tag<TParallelTag> const & /* tag */)
+//{
+//    std::transform(begin(c, Standard()),
+//                   end(c, Standard()),
+//                   begin(c, Standard()),
+//                   o);
+//}
+
+// ============================================================================
+// MCSTL Wrappers
+// ============================================================================
 
 // use MCSTL which is part of the GCC since version 4.3
 #if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 
+// ----------------------------------------------------------------------------
+// Function forEach(Parallel)
+// ----------------------------------------------------------------------------
+
 template <typename TContainer, typename TFunctor>
-inline void forEach(TContainer const & c, TFunctor & f, Parallel)
+inline TFunctor
+forEach(TContainer const & c, TFunctor f, Parallel)
 {
-    __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
+    return __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+// ----------------------------------------------------------------------------
+// Function count(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v, Parallel)
+{
+    return __gnu_parallel::count(begin(c, Standard()), end(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function countIf(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p, Parallel)
+{
+    return __gnu_parallel::count_if(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function sort(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void
+sort(TContainer & c, TBinaryPredicate p, Parallel)
+{
+    return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void
+stableSort(TContainer & c, TBinaryPredicate p, Parallel)
+{
+    return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()), p);
 }
 
 #endif  // #ifdef PLATFORM_GCC
+
+// ============================================================================
+// Shortcuts to default serial implementations
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function forEach()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline TFunctor
+forEach(TContainer const & c, TFunctor f)
+{
+    return forEach(c, f, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function count()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v)
+{
+    return count(c, v, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function countIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p)
+{
+    return countIf(c, p, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function sort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void
+sort(TContainer & c, TBinaryPredicate p)
+{
+    sort(c, p, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void
+stableSort(TContainer & c, TBinaryPredicate p)
+{
+    stableSort(c, p, Serial());
+}
 
 }  // namespace seqan
 
