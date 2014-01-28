@@ -134,14 +134,15 @@
 #include <seqan/sequence/iter_concat_virtual.h>
 #include <seqan/sequence/sequence_concatenator.h>
 #include <seqan/sequence/string_set_base.h>
-#include <seqan/sequence/string_set_concat_direct.h>
-#include <seqan/sequence/string_set_concat_direct_view.h>
+#include <seqan/sequence/string_set_view.h>
 #ifdef PLATFORM_CUDA
-#include <seqan/sequence/string_set_concat_direct_device.h>
+#include <seqan/sequence/string_set_device.h>
 #endif
+#include <seqan/sequence/string_set_concat_direct.h>
 #include <seqan/sequence/string_set_dependent_tight.h>
 #include <seqan/sequence/string_set_dependent_generous.h>
 #include <seqan/sequence/string_set_owner.h>
+#include <seqan/sequence/string_set_segment.h>
 
 // ===========================================================================
 // Utilities.
