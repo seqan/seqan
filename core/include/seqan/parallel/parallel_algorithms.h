@@ -40,14 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
@@ -247,6 +239,37 @@ partialSum(TTarget &target, TSource const &source)
 {
     return partialSum(target, source, Serial());
 }
+
+// ============================================================================
+// Wrappers
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function forEach
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void forEach(TContainer const & c, TFunctor & f)
+{
+    return forEach(c, f, Serial());
+}
+
+template <typename TContainer, typename TFunctor, typename TParallelTag>
+inline void forEach(TContainer const & c, TFunctor & f, Tag<TParallelTag> const & /* tag */)
+{
+    std::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+// use MCSTL which is part of the GCC since version 4.3
+#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+
+template <typename TContainer, typename TFunctor>
+inline void forEach(TContainer const & c, TFunctor & f, Parallel)
+{
+    __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+#endif  // #ifdef PLATFORM_GCC
 
 }  // namespace seqan
 
