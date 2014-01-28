@@ -240,6 +240,52 @@ partialSum(TTarget &target, TSource const &source)
     return partialSum(target, source, Serial());
 }
 
+// ----------------------------------------------------------------------------
+// Function iterate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor, typename TIteratorSpec, typename TParallelTag>
+inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & iterTag, Tag<TParallelTag> /* tag */)
+{
+    typedef typename Iterator<TContainer, TIteratorSpec>::Type  TIter;
+
+    for (TIter it = begin(c, iterTag); !atEnd(it, c); ++it)
+        f(*it);
+}
+
+// ----------------------------------------------------------------------------
+// Function iterate(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor, typename TIteratorSpec>
+inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & iterTag, Parallel const & parallelTag)
+{
+    typedef typename Position<TContainer>::Type                 TPos;
+    typedef typename Iterator<TContainer, TIteratorSpec>::Type  TIter;
+
+    Splitter<TPos> splitter(0, length(c), parallelTag);
+
+    SEQAN_OMP_PRAGMA(parallel for firstprivate(f))
+    for (TPos i = 0; i < length(splitter); ++i)
+    {
+       TIter it = begin(c, iterTag) + splitter[i];
+       TIter itEnd = begin(c, iterTag) + splitter[i + 1];
+
+       for (; it != itEnd; ++it)
+            f(*it);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function iterate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void iterate(TContainer const & c, TFunctor & f)
+{
+    iterate(c, f, typename DefaultIteratorSpec<TContainer>::Type(), Serial());
+}
+
 // ============================================================================
 // STL Wrappers
 // ============================================================================
@@ -378,7 +424,7 @@ stableSort(TContainer & c, TBinaryPredicate p, Parallel)
 #endif  // #ifdef PLATFORM_GCC
 
 // ============================================================================
-// Shortcuts to default serial implementations
+// Shortcuts for default serial implementations
 // ============================================================================
 
 // ----------------------------------------------------------------------------
