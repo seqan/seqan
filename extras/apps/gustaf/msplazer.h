@@ -153,10 +153,13 @@ struct Breakpoint
     // TODO (ktrappe) isn't it first position in start seq and last in end seq of SV now?
     TPos startSeqPos;
     TPos endSeqPos;
-    TPos dupTargetPos;
-    TPos dupMiddlePos; // TPos dupMidPos;
+    TPos dupTargetPos; // Should be equal to either startSeqPos or endSeqPos
+    TPos dupMiddlePos; // TPos dupMidPos; Middle position of duplication or translocation
     TPos readStartPos;
     TPos readEndPos;
+    TPos cipos;       // Confidence after startSeqPos for imprecise breakpoint
+    TPos ciend;       // Confidence after endSeqPos for imprecise breakpoint
+    TPos cimiddle;    // Confidence after dupMiddlePos for imprecise breakpoint
     // Counter of occurrences (read support)
     unsigned support;
     // Query Sequence Ids (queries/reads that support the breakpoint)
@@ -165,8 +168,10 @@ struct Breakpoint
     SVType svtype;
     TSequence insertionSeq;
     bool revStrandDel;
-    // bool pseudoIndel = false;
-    // bool translSuppDel = false;
+    // If both of these flags are true, then we have seen two (pseudo)deletions supporting both start and end position
+    // of a translocation.
+    bool translSuppStartPos;
+    bool translSuppEndPos;
     // bool imprecise = false;
     // Storing on which site the breakend is: 
     // 0: left breakend, i.e. sequence continues right of position
@@ -185,10 +190,15 @@ struct Breakpoint
         dupMiddlePos(maxValue<unsigned>()),
         readStartPos(0),
         readEndPos(0),
+        cipos(maxValue<unsigned>()),
+        ciend(maxValue<unsigned>()),
+        cimiddle(maxValue<unsigned>()),
         support(1),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
+        translSuppStartPos(false),
+        translSuppEndPos(false),
         breakend(false)
     {}
 
@@ -211,10 +221,15 @@ struct Breakpoint
         dupMiddlePos(maxValue<unsigned>()),
         readStartPos(rsPos),
         readEndPos(rePos),
+        cipos(maxValue<unsigned>()),
+        ciend(maxValue<unsigned>()),
+        cimiddle(maxValue<unsigned>()),
         support(1),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
+        translSuppStartPos(false),
+        translSuppEndPos(false),
         breakend(false)
     {}
 
@@ -238,10 +253,15 @@ struct Breakpoint
         dupMiddlePos(maxValue<unsigned>()),
         readStartPos(rsPos),
         readEndPos(rePos),
+        cipos(maxValue<unsigned>()),
+        ciend(maxValue<unsigned>()),
+        cimiddle(maxValue<unsigned>()),
         support(1),
         svtype(INVALID),
         insertionSeq("NNNN"),
-        revStrandDel(false)
+        revStrandDel(false),
+        translSuppStartPos(false),
+        translSuppEndPos(false)
     {appendValue(supportIds, spId); }
     /*
     Breakpoint(TId const & sId,
@@ -730,7 +750,7 @@ inline void setInsertionSeq(TBreakpoint & bp, TSequence & inSeq)
 template <typename TPos, typename TPosR>
 inline bool _posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
 {
-    return (__int64)abs(pos2 - pos1) < (__int64)range;
+    return (__int64)abs(pos2 - pos1) < (__int64)(range + 1);
 }
 
 // Breakends are distinguishable by there one reference Id (startId=endId) and position

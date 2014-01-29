@@ -950,13 +950,116 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
 }
 
 // Function deletionSupport
+// tempBP is also deletion, are both part of a transl? extract and save as transl
+// if (del1.endSeqPos == del2.startSeqPos) // add position variance of at least 3bp
+//      transl(del1.startSeqPos, del2.endSeqPos); transl.dupMidPos = del1.endSeqPos;
+// if (del2.endSeqPos == del1.startSeqPos) // add position variance of at least 3bp
+//      transl(del2.startSeqPos, del1.endSeqPos); transl.dupMidPos = del2.endSeqPos;
+// tempBP is insertion, are both part of a transl/dup? (Only possible when regarding more than 1 chain per
+// read
+// tempBP is translocation
 template <typename TBreakpoint>
-bool _deletionSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & bpPosRange)
+bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & bpPosRange)
 {
-    // tempBP is a translocation, check now if bp is a deletion supporting tempBP
-    if (_similarBreakpoints(tempBP, bp))
-        std::cout << "Similar translocation and deletion?" << std::endl;
-    return true;
+    if (bp.startSeqId != tempBP.startSeqId)
+        return false;
+    // Note: If there is a deletion supporting a duplication, the position that is equal in both deletion and duplication
+    // determines the target position of a duplication.
+    // If the deletion is the one that distinguishes the translocation from a duplication, then the deletion does not
+    // cover the target position, but we assume that in this case we observe both deletions and if not, it is more likely
+    // to observe the deletion that covers the target position.
+    if (bp.svtype == TBreakpoint::DELETION 
+            && (tempBP.svtype == TBreakpoint::DISPDUPLICATION || tempBP.svtype == TBreakpoint::TRANSLOCATION) )
+    {
+        if (_posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange))
+        {
+            appendSupportId(tempBP, bp.supportIds);
+            tempBP.dupTargetPos = tempBP.startSeqPos;
+            tempBP.dupMiddlePos = bp.endSeqPos;
+            tempBP.translSuppStartPos = true;
+            return true;
+        }
+        if (_posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange))
+        {
+            appendSupportId(tempBP, bp.supportIds);
+            tempBP.dupTargetPos = tempBP.endSeqPos;
+            tempBP.dupMiddlePos = bp.startSeqPos;
+            tempBP.translSuppEndPos = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    if ( (bp.svtype == TBreakpoint::DISPDUPLICATION || bp.svtype == TBreakpoint::TRANSLOCATION)
+            && tempBP.svtype == TBreakpoint::DELETION)
+    {
+        if (_posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange))
+        {
+            appendSupportId(bp, tempBP.supportIds);
+            bp.dupTargetPos = bp.startSeqPos;
+            bp.dupMiddlePos = tempBP.endSeqPos;
+            bp.translSuppStartPos = true;
+            tempBP = bp;
+            return true;
+        }
+        if (_posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange))
+        {
+            appendSupportId(bp, tempBP.supportIds);
+            bp.dupTargetPos = bp.endSeqPos;
+            bp.dupMiddlePos = tempBP.startSeqPos;
+            bp.translSuppEndPos = true;
+            tempBP = bp;
+            return true;
+        }
+        return false;
+    }
+
+    if (bp.svtype == TBreakpoint::DELETION && tempBP.svtype == TBreakpoint::DELETION)
+    {
+        if (_posInSameRange(bp.startSeqPos, tempBP.endSeqPos, bpPosRange))
+        {
+            TBreakpoint translBP(tempBP.startSeqId,
+                               bp.endSeqId,
+                               tempBP.startSeqStrand,
+                               bp.endSeqStrand,
+                               tempBP.startSeqPos,
+                               bp.endSeqPos,
+                               tempBP.readStartPos,
+                               bp.readEndPos
+                              );
+            translBP.svtype = TBreakpoint::TRANSLOCATION;
+            translBP.dupMiddlePos = bp.startSeqPos;
+            translBP.translSuppStartPos = true;
+            translBP.translSuppEndPos = true;
+            appendSupportId(translBP, bp.supportIds);
+            appendSupportId(translBP, tempBP.supportIds);
+            tempBP = translBP;
+            return true;
+        }
+        if (_posInSameRange(bp.endSeqPos, tempBP.startSeqPos, bpPosRange))
+        {
+            TBreakpoint translBP(bp.startSeqId,
+                               tempBP.endSeqId,
+                               bp.startSeqStrand,
+                               tempBP.endSeqStrand,
+                               bp.startSeqPos,
+                               tempBP.endSeqPos,
+                               bp.readStartPos,
+                               tempBP.readEndPos
+                              );
+            translBP.svtype = TBreakpoint::TRANSLOCATION;
+            translBP.dupMiddlePos = tempBP.startSeqPos;
+            translBP.translSuppStartPos = true;
+            translBP.translSuppEndPos = true;
+            appendSupportId(translBP, bp.supportIds);
+            appendSupportId(translBP, tempBP.supportIds);
+            tempBP = translBP;
+            return true;
+        }
+        return false;
+    }
+    return false;
 }
 
 // Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
@@ -978,6 +1081,7 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsign
             if (bp.svtype == TBreakpoint::BREAKEND && _similarBreakends(bp, tempBP, bpPosRange))
             {
                 appendSupportId(tempBP, bp.supportIds);
+                // TODO set tempBP.startendSeqPos to left most position and set cistartend
                 return false;
             }
             // If the old bp is only a breakend but the new is a proper breakpoint, check if the breakend is supporting
@@ -1006,22 +1110,14 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsign
         // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
         // can either be part of the duplication and should not be in the output list or it can distinguish the dup
         // from a translocation in which case the svtype is updated from duplication to translocation
-        /*
-        else if (bp.svtype == TBreakpoint::DELETION)
-        {
-            // tempBP is also deletion, are both part of a transl? extract and save as transl
-            // if (del1.endSeqPos == del2.startSeqPos) // add position variance of at least 3bp
-            //      transl(del1.startSeqPos, del2.endSeqPos); transl.dupMidPos = del1.endSeqPos;
-            // if (del2.endSeqPos == del1.startSeqPos) // add position variance of at least 3bp
-            //      transl(del2.startSeqPos, del1.endSeqPos); transl.dupMidPos = del2.endSeqPos;
-            // tempBP is insertion, are both part of a transl/dup? (Only possible when regarding more than 1 chain per
-            // read
-            // tempBP is translocation
-            if (_deletionSupport(bp, tempBP))
-            {
-            }
-        }
-        */
+        // Note: both deletions cannot be distinguished for which it is, so only if both have been witnessed we can
+        // update from duplication to translocation
+        // Note: if both are oberserved at the same time without a duplication/translocation, we infer the presence of
+        // a translocation and insert a new translocation breakpoint instead of both deletions
+
+        else if (_translDelSupport(bp, tempBP, bpPosRange))
+            return false;
+
     }
     // Append breakpoint if new
     appendValue(countedBP, bp);

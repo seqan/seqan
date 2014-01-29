@@ -309,7 +309,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 
 // Breakpoint writing call
 template <typename TBreakpoint>
-bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
+bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
                              MSplazerOptions const & msplazerOptions, Gff /*tag*/)
 {
     // Creating GFF record and writing to gff file
@@ -327,10 +327,15 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     GffRecord gff_record;
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
-        if (globalBreakpoints[i].svtype != 0 && globalBreakpoints[i].support >= msplazerOptions.support) // 0=invalid
+        TBreakpoint & tempBP = globalBreakpoints[i];
+        // if (globalBreakpoints[i].svtype != 0 && globalBreakpoints[i].support >= msplazerOptions.support) // 0=invalid
+        if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
         {
+            if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
+                tempBP.svtype = TBreakpoint::TRANSLOCATION;
             // Fill record
-            _fillGffRecord(gff_record, globalBreakpoints[i], i);
+            _fillGffRecord(gff_record, tempBP, i);
+            // _fillGffRecord(gff_record, globalBreakpoints[i], i);
             // Write record
             if (writeRecord(gffOut, gff_record) != 0)
                 std::cerr << "Error while writing breakpoint gff record!" << std::endl;
@@ -464,18 +469,45 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     appendValue(record.genotypeInfos, "1");
 }
 
+template <typename TBreakpoint, typename TPos>
+inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & end, TPos & target)
+{
+    if (bp.dupMiddlePos != maxValue<unsigned>())
+    {
+        if (bp.dupTargetPos == bp.startSeqPos)
+        {
+            begin = bp.dupMiddlePos;
+            end = bp.endSeqPos;
+            target = bp.startSeqPos;
+            return true;
+        }
+        begin = bp.startSeqPos;
+        end = bp.dupMiddlePos;
+        target = bp.endSeqPos;
+        return true;
+    }
+    begin = bp.startSeqPos;
+    end = bp.endSeqPos;
+    return false;
+}
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = id;
-    record.beginPos = bp.startSeqPos;
-    record.filter = "PASS";
+    typedef typename TBreakpoint::TPos TPos;
+    TPos begin, end, target = maxValue<unsigned>();
     std::stringstream ss;
+    if (!_setVcfRecordDuplicationPos(bp, begin, end, target))
+        ss << "IMPRECISE";
+
+    record.rID = id;
+    record.beginPos = begin;
+    record.filter = "PASS";
     ss << "SVTYPE=DUP";
-    ss << ";END=" << bp.endSeqPos;
+    ss << ";END=" << end;
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Duplication end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
-//    ss << ";TARGETPOS=" << bp.dupTargetPos;
+    if (target != maxValue<unsigned>())
+        ss << ";TARGETPOS=" << target;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
@@ -828,6 +860,8 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
     for (unsigned i = 0; i < length(msplOpt.queryFile); ++i)
         appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile[i]));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=IMPRECISE,Number=0,Type=Flag,Description=\"Imprecise structural variation\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
             "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">"));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
             "INFO", "<ID=SVLEN,Number=.,Type=Integer,Description=\"Difference in length between REF and ALT alleles\">"));
@@ -879,7 +913,7 @@ __int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
 
 // Breakpoint writing call
 template <typename TBreakpoint, typename TSequence, typename TId>
-bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
+bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
                              StringSet<TSequence> & databases,
                              StringSet<TId> & databaseIDs,
                              MSplazerOptions const & msplazerOptions,
@@ -902,9 +936,12 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     __int32 id = maxValue<int>();
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
-        TBreakpoint bp = globalBreakpoints[i];
+        TBreakpoint & bp = globalBreakpoints[i];
         if (bp.svtype != 0 && bp.support >= msplazerOptions.support) // 0=invalid
         {
+
+            if (bp.svtype == TBreakpoint::DISPDUPLICATION && bp.translSuppStartPos && bp.translSuppEndPos)
+                bp.svtype = TBreakpoint::TRANSLOCATION;
             id = _getrID(databaseIDs, bp.startSeqId);
             if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation
             {
