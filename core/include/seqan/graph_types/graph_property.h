@@ -40,6 +40,17 @@ namespace SEQAN_NAMESPACE_MAIN
 //	Graph - External property map
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ExternalPropertyMap External Property Map
+ * @brief An external property map.
+ * @signature template <typename TValue, typename TSpec>
+ *            class String<TValue, TSpec>
+ * @tparam TValue The alphabet type of the property map.
+ * @tparam TSpec The string specialization.
+ *
+ * @section Remark
+ */
+
 /**
 .Class.External Property Map
 ..cat:Graph
@@ -63,6 +74,14 @@ It is indexed via VertexDescriptors or EdgeDescriptors.
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Graph#resizeVertexMap
+ * @brief Initializes a vertex map.
+ * @signature void resizeVertexMap(g, pm [, prototype])
+ * @param[in]      g         A Graph.
+ * @param[in, out] pm        An External Property Map. Types: @link ExternalPropertyMap @endlink
+ * @param[in]      prototype An optional prototype that is used for initializing the property map.
+ */
 /**
 .Function.resizeVertexMap
 ..class:Class.Graph
@@ -100,7 +119,15 @@ resizeVertexMap(Graph<TSpec> const & g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
+/*!
+ * @fn Graph#resizeEdgeMap
+ * @brief Initializes an edge map.
+ * @signature void resizeVertexMap(g, pm [, prototype])
+ * @param[in]      g         A Graph.
+ * @param[in, out] pm        An External or Internal Property Map. Types: @link ExternalPropertyMap @endlink, @link InternalMap
+ *                           @endlink, @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @param[in]      prototype An optional prototype that is used for initializing the property map.
+ */
 /**
 .Function.resizeEdgeMap:
 ..cat:Graph
@@ -140,6 +167,15 @@ resizeEdgeMap(Graph<TSpec> const & g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn Graph#assignProperty
+ * @brief Assigns a property to an item in the property map.
+ * @signature void assignProperty(pm, d, val)
+ * @param[in, out] pm  An External or Internal Property Map.  Types: @link ExternalPropertyMap @endlink, @link InternalMap
+ *                     @endlink, @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @param[in]      d   A vertex or edge descriptor. Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
+ * @param[in]      val The new value. Type of the new value must match the value type of the property map.
+*/
 
 /**
 .Function.assignProperty:
@@ -179,6 +215,16 @@ assignProperty(TPropertyMap& pm,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn Graph#property
+ * @brief Accesses the property of an item in the property map.
+ * @signature TReference property(pm, d)
+ * @param[in] pm  An External or Internal Property Map.  Types: @link ExternalPropertyMap @endlink, @link InternalMap
+ *                @endlink, @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @param[in] d   A vertex or edge descriptor, that Identifies the item in the property map. Types: @link VertexDescriptor
+ *                @endlink, @link Graph#EdgeDescriptor @endlink
+ * @return TReference Reference to the item in the property map.
+*/
 
 /**
 .Function.property
@@ -225,6 +271,16 @@ property(TPropertyMap const& pm,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn Graph#getProperty
+ * @brief Get method for an item's property.
+ * @signature TGetValue getProperty(pm, d)
+ * @param[in] pm An External or Internal Property Map.  Types: @link ExternalPropertyMap @endlink, @link InternalMap
+ *               @endlink, @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @param[in] d  Identifies the item in the property map. Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor
+ *               @endlink
+ * @return TGetValue Value of the item in the property map.
+*/
 
 /**
 .Function.getProperty
@@ -267,6 +323,18 @@ getProperty(TPropertyMap const& pm,
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Internal Property Manager using member ids (only for edges!!!)
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @class InternalMap 
+ * @brief An internal property map using member ids.
+ * @signature template<typename TContainer, unsigned int const MemberId>
+ *            class InternalMap<TPropmap, Instance>
+ * @tparam TContainer The cargo type
+ * @tparam MemberId   Specifies the position of the member in the cargo. Note: If zero it is assumed that the cargo is a
+ *                    simple type (e.g., <tt>int</tt>).
+ * @section Remarks
+ *
+ * Internal property maps are used to access internal edge cargos.
+*/
 
 /**
 .Class.InternalMap:
@@ -557,6 +625,17 @@ getProperty(InternalMap<T, 0>&,
 // Graph - Internal Property Manager using pointer to members (only for edges!!!)
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class InternalPointerMap 
+ * @brief An internal property map using pointer to members.
+ * @signature template<typename TPropmap, TPromap const Instance>
+ *            class InternalPointerMap<TPropmap, Instance>
+ * @tparam TPropmap A pointer to member type.
+ * @tparam Instance A pointer to a member of type TPropmap.
+ * @section Remarks
+ *
+ * Internal property maps are used to access internal edge cargos.
+*/
 /**
 .Class.InternalPointerMap:
 ..cat:Graph
@@ -683,7 +762,14 @@ getProperty(InternalPointerMap<TValue TClass::*, TPMember>&,
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Internal Property Manager using raw pointer to member (only for edges!!!)
 //////////////////////////////////////////////////////////////////////////////
-
+/*!
+ * @class InternalRawMap
+ * @brief An internal property map using raw pointer to members.
+ * @signature class InternalRawMap
+ * @section Remarks
+ *
+ * Internal property maps are used to access internal edge cargos.
+*/
 /**
 .Class.InternalRawMap:
 ..cat:Graph
@@ -784,7 +870,18 @@ getProperty(TValue TClass:: * const ptr_to_member,
 
 
 //////////////////////////////////////////////////////////////////////////////
-
+/*!
+ * @fn Graph#assignVertexMap
+ * @brief Initializes a vertex map with values of an array.
+ * @signature void assignVertexMap(g, pm, prop)
+ * @tparam[in]      g    A Graph.
+ * @tparam[in, out] pm   An External Property Map. Types: @link ExternalPropertyMap @endlink, @link InternalMap @endlink, @link
+ *                       InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @tparam[in]      prop An array with properties that are to be assigned to the items in the property map.
+ * @section Remarks
+ *
+ * For every vertex descriptor there must be an entry in the array.
+*/
 /**
 .Function.assignVertexMap
 ..class:Class.External Property Map
@@ -821,7 +918,18 @@ assignVertexMap(Graph<TSpec> const & g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
+/*!
+ * @fn Graph#assignEdgeMap
+ * @brief Initializes a vertex map with values of an array.
+ * @signature void assignEdgeMap(g, pm, prop)
+ * @tparam[in]     g    A Graph.
+ * @tparam[in,out] pm   An External or Internal Property Map. Types: @link ExternalPropertyMap @endlink, @link InternalMap
+ *                      @endlink, @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ * @tparam[in]     prop An array with properties that are to be assigned to the items in the property map.
+ * @section Remarks
+ *
+ * For every edge id there must be an entry in the array.
+ */
 /**
 .Function.assignEdgeMap
 ..class:Class.External Property Map
