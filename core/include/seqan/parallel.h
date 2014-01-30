@@ -37,15 +37,30 @@
 #ifndef SEQAN_PARALLEL_H_
 #define SEQAN_PARALLEL_H_
 
-//____________________________________________________________________________
+// ============================================================================
 // Prerequisites
+// ============================================================================
 
 #include <seqan/platform.h>
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-//____________________________________________________________________________
+// ----------------------------------------------------------------------------
+// STL
+// ----------------------------------------------------------------------------
+// Use MCSTL which is part of the GCC since version 4.3
+
+#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+#include <parallel/algorithm>
+#include <parallel/numeric>
+#else
+#include <algorithm>
+#include <numeric>
+#endif // PLATFORM_GCC
+
+// ============================================================================
 // Module Headers
+// ============================================================================
 
 // Misc.
 #include <seqan/parallel/parallel_tags.h>
@@ -61,6 +76,5 @@
 // Parallel variants of basic algorithms
 #include <seqan/parallel/parallel_algorithms.h>
 
-//____________________________________________________________________________
 
 #endif  // SEQAN_PARALLEL_H_
