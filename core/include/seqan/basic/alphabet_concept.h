@@ -413,7 +413,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * 
  * @tparam T A class.
  * 
- * @return VALUE The number of different values the value can have.
+ * @return TSize The number of different values a value of type T can have. The type is the result of Size&lt;T&gt;
  * 
  * This function is only defined for integral types like <tt>unsigned</tt>, <tt>int</tt>, or Dna.  For floating point
  * numbers and the 64 bit types <tt>__int64</tt> and <tt>__uint64</tt>, it returns 0 since there is no standard
@@ -454,11 +454,11 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @fn FiniteOrderedAlphabetConcept#valueSize
  * @brief Returns size of an alphabet.
  * 
- * @signature T valueSize<T>();
+ * @signature T1 valueSize<T2>();
  * 
- * @tparam T Type to query for value size.
+ * @tparam T2 Type to query for value size.
  * 
- * @return T Number of values in type <tt>T</tt>.
+ * @return T1 Number of values in type <tt>T2</tt>.
  * 
  * @see FiniteOrderedAlphabetConcept#ValueSize
  */

@@ -655,7 +655,7 @@ unknownValueImpl(Iupac *)
  * 
  * The ValueSize of <tt>AminoAcid</tt> is 24.
  * 
- * The amino acids are enumerated from 0 to 15 in this order:
+ * The amino acids are enumerated from 0 to 19 in this order:
  * 
  * 'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
  * 
