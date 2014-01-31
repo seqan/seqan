@@ -460,6 +460,12 @@ inline T atomicSwap(T volatile & x, T y)
     return __sync_lock_test_and_set(x, y);
 }
 
+template <typename T>
+inline T * atomicInc(T * volatile & x)
+{
+    return (T *) __sync_add_and_fetch((size_t volatile *)&x, sizeof(T));
+}
+
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 
 
