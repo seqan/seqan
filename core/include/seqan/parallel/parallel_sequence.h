@@ -29,54 +29,42 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// Umbrella header for the parallel module.
-// ==========================================================================
-
-#ifndef SEQAN_PARALLEL_H_
-#define SEQAN_PARALLEL_H_
-
-// ============================================================================
-// Prerequisites
-// ============================================================================
-
-#include <seqan/platform.h>
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-
-// ----------------------------------------------------------------------------
-// STL
-// ----------------------------------------------------------------------------
-// Use MCSTL which is part of the GCC since version 4.3
-
-#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
-#include <parallel/algorithm>
-#include <parallel/numeric>
-#else
-#include <algorithm>
-#include <numeric>
-#endif // PLATFORM_GCC
-
-// ============================================================================
-// Module Headers
-// ============================================================================
-
-// Misc.
-#include <seqan/parallel/parallel_tags.h>
-#include <seqan/parallel/parallel_macros.h>
-
-// Atomic operations.
-#include <seqan/parallel/parallel_atomic_primitives.h>
-#include <seqan/parallel/parallel_atomic_misc.h>
-
-// Splitting.
-#include <seqan/parallel/parallel_splitting.h>
-
-// Parallel variants of basic algorithms
-#include <seqan/parallel/parallel_algorithms.h>
-
 // Thread-safe / lock-free sequence operations.
-#include <seqan/parallel/parallel_sequence.h>
+// ==========================================================================
 
-#endif  // SEQAN_PARALLEL_H_
+#ifndef SEQAN_PARALLEL_SEQUENCE_H_
+#define SEQAN_PARALLEL_SEQUENCE_H_
+
+namespace seqan {
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _incLength()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TParallel>
+inline typename Size<String<TValue, Alloc<TSpec> > >::Type
+_incLength(String<TValue, Alloc<TSpec> > & me, Tag<TParallel> const & tag)
+{
+    return atomicInc(me.data_end, tag) - begin(me, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function appendValue(Insist, Parallel); Atomic
+// ----------------------------------------------------------------------------
+
+template <typename TTargetValue, typename TTargetSpec, typename TValue>
+inline void
+appendValue(String<TTargetValue, TTargetSpec> & me, TValue const & _value, Insist, Parallel)
+{
+    valueConstruct(begin(me, Standard()) + _incLength(me, Parallel()) - 1, _value);
+}
+
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_PARALLEL_SEQUENCE_H_
