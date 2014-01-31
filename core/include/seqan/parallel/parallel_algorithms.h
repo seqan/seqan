@@ -244,26 +244,28 @@ partialSum(TTarget &target, TSource const &source)
 // Function iterate()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TFunctor, typename TIteratorSpec, typename TParallelTag>
-inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & iterTag, Tag<TParallelTag> /* tag */)
+template <typename TContainer, typename TFunctor, typename TIterTag, typename TParallelTag>
+inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
 {
-    typedef typename Iterator<TContainer, TIteratorSpec>::Type  TIter;
+    typedef Tag<TIterTag> const                                     TIterSpec;
+    typedef typename Iterator<TContainer const, TIterSpec>::Type    TIter;
 
     for (TIter it = begin(c, iterTag); !atEnd(it, c); ++it)
-        f(*it);
+        f(it);
 }
 
 // ----------------------------------------------------------------------------
 // Function iterate(Parallel)
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TFunctor, typename TIteratorSpec>
-inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & iterTag, Parallel const & parallelTag)
+template <typename TContainer, typename TFunctor, typename TIterTag>
+inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & iterTag, Parallel)
 {
-    typedef typename Position<TContainer>::Type                 TPos;
-    typedef typename Iterator<TContainer, TIteratorSpec>::Type  TIter;
+    typedef Tag<TIterTag> const                                     TIterSpec;
+    typedef typename Position<TContainer const>::Type               TPos;
+    typedef typename Iterator<TContainer const, TIterSpec>::Type    TIter;
 
-    Splitter<TPos> splitter(0, length(c), parallelTag);
+    Splitter<TPos> splitter(0, length(c), Parallel());
 
     SEQAN_OMP_PRAGMA(parallel for firstprivate(f))
     for (TPos i = 0; i < length(splitter); ++i)
@@ -272,7 +274,7 @@ inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & it
        TIter itEnd = begin(c, iterTag) + splitter[i + 1];
 
        for (; it != itEnd; ++it)
-            f(*it);
+            f(it);
     }
 }
 
@@ -283,7 +285,7 @@ inline void iterate(TContainer const & c, TFunctor & f, TIteratorSpec const & it
 template <typename TContainer, typename TFunctor>
 inline void iterate(TContainer const & c, TFunctor & f)
 {
-    iterate(c, f, typename DefaultIteratorSpec<TContainer>::Type(), Serial());
+    iterate(c, f, typename DefaultIteratorSpec<TContainer const>::Type(), Serial());
 }
 
 // ============================================================================
