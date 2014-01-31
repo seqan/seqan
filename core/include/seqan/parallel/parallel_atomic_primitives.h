@@ -477,7 +477,7 @@ template <typename T>   inline T atomicInc(T          & x,             Serial)  
 template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
 template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
 template <typename T>   inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
-template <typename T>   inline T atomicAdd(T          & x, T y,        Serial)      { return x = x + y;              }
+template <typename T1, typename T2>   inline T1 atomicAdd(T1          & x, T2 y,       Serial)      { return x = x + y;              }
 template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
 template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
 template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
@@ -486,7 +486,7 @@ template <typename T>   inline T atomicInc(T volatile & x,             Parallel)
 template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
 template <typename T>   inline T atomicDec(T volatile & x,             Parallel)    { return atomicDec(x);           }
 template <typename T>   inline T atomicPostDec(T volatile & x,         Parallel)    { return atomicPostDec(x);       }
-template <typename T>   inline T atomicAdd(T volatile & x, T y,        Parallel)    { return atomicAdd(x, y);        }
+template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y,       Parallel)    { return atomicAdd(x, y);        }
 template <typename T>   inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
 template <typename T>   inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
 template <typename T>   inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
