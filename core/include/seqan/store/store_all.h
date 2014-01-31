@@ -2298,7 +2298,7 @@ void printAlignment(
  * 
  * @param[in,out] store The fragment store. Types: FragmentStore
  * @param[in]     score A score object used by @link globalAlignment @endlink in this function.
- * @param[i]      shrinkMatches States whether the matches should be shrinked. Types: True, False
+ * @param[in]      shrinkMatches States whether the matches should be shrinked. Types: True, False
  * 
  * @section Remarks
  * 
