@@ -403,6 +403,14 @@ bool jumpToOrphans(Stream<Bgzf> & stream,
 // Function getUnalignedCount()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamIndex#getUnalignedCount 
+ * @brief Query index for number of unaligned reads.
+ * @signature getUnalignedCount(index)
+ * @param index Index to query.
+ * @return __uint64  The number of unaligned reads.
+ */
+
 /**
 .Function.BamIndex#getUnalignedCount
 ..class:Class.BamIndex
@@ -424,6 +432,15 @@ getUnalignedCount(BamIndex<Bai> const & index)
 // ----------------------------------------------------------------------------
 // Function read()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamIndex#read
+ * @brief Load a BAM index from a given file name.
+ * @signature:read(index, filename)
+ * @param index    Target data structure.
+ * @param filename Path to file to load. Types: char const *
+ * @return int The status code, <tt>0<\tt> indicating success.
+ */
 
 /**
 .Function.BamIndex#read
