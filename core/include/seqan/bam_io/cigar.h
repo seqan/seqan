@@ -150,21 +150,21 @@ template <typename TOperation, typename TCount>
 inline bool operator>(CigarElement<TOperation, TCount> const & lhs,
                       CigarElement<TOperation, TCount> const & rhs)
 {
-    return lhs.operation > rhs.operation || (lhs.operation == rhs.operation && lhs.count > rhs.count);
+    return lhs.operation > rhs.operation || (lhs.operation == rhs.operation && (lhs.count) > (rhs.count));
 }
 
 template <typename TOperation, typename TCount>
 inline bool operator<(CigarElement<TOperation, TCount> const & lhs,
                       CigarElement<TOperation, TCount> const & rhs)
 {
-    return lhs.operation < rhs.operation || (lhs.operation == rhs.operation && lhs.count < rhs.count);
+    return lhs.operation < rhs.operation || (lhs.operation == rhs.operation && (lhs.count) < (rhs.count));
 }
 
 template <typename TOperation, typename TCount>
 inline bool operator==(CigarElement<TOperation, TCount> const & lhs,
                        CigarElement<TOperation, TCount> const & rhs)
 {
-    return lhs.operation == rhs.operation && lhs.count == rhs.count;
+    return lhs.operation == rhs.operation && (lhs.count) == (rhs.count);
 }
 
 // ----------------------------------------------------------------------------
