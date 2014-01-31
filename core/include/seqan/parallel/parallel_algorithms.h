@@ -245,7 +245,7 @@ partialSum(TTarget &target, TSource const &source)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor, typename TIterTag, typename TParallelTag>
-inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
+inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
     typedef typename Iterator<TContainer const, TIterSpec>::Type    TIter;
@@ -259,7 +259,7 @@ inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & it
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor, typename TIterTag>
-inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & iterTag, Parallel)
+inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iterTag, Parallel)
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
     typedef typename Position<TContainer const>::Type               TPos;
@@ -283,7 +283,7 @@ inline void iterate(TContainer const & c, TFunctor & f, Tag<TIterTag> const & it
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor>
-inline void iterate(TContainer const & c, TFunctor & f)
+inline void iterate(TContainer const & c, TFunctor f)
 {
     iterate(c, f, typename DefaultIteratorSpec<TContainer const>::Type(), Serial());
 }
@@ -330,10 +330,15 @@ countIf(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* ta
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
-inline void
-sort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+inline void sort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
     return std::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer, typename TParallelTag>
+inline void sort(TContainer & c, Tag<TParallelTag> const & /* tag */)
+{
+    return std::sort(begin(c, Standard()), end(c, Standard()));
 }
 
 // ----------------------------------------------------------------------------
@@ -341,10 +346,15 @@ sort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
-inline void
-stableSort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+inline void stableSort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
     return std::stable_sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer, typename TParallelTag>
+inline void stableSort(TContainer & c, Tag<TParallelTag> const & /* tag */)
+{
+    return std::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
 
 // ----------------------------------------------------------------------------
@@ -373,8 +383,7 @@ stableSort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag 
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor>
-inline TFunctor
-forEach(TContainer const & c, TFunctor f, Parallel)
+inline TFunctor forEach(TContainer const & c, TFunctor f, Parallel)
 {
     return __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
 }
@@ -406,10 +415,15 @@ countIf(TContainer const & c, TUnaryPredicate p, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void
-sort(TContainer & c, TBinaryPredicate p, Parallel)
+inline void sort(TContainer & c, TBinaryPredicate p, Parallel)
 {
     return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer>
+inline void sort(TContainer & c, Parallel)
+{
+    return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()));
 }
 
 // ----------------------------------------------------------------------------
@@ -417,16 +431,21 @@ sort(TContainer & c, TBinaryPredicate p, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void
-stableSort(TContainer & c, TBinaryPredicate p, Parallel)
+inline void stableSort(TContainer & c, TBinaryPredicate p, Parallel)
 {
     return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer>
+inline void stableSort(TContainer & c, Parallel)
+{
+    return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
 
 #endif  // #ifdef PLATFORM_GCC
 
 // ============================================================================
-// Shortcuts for default serial implementations
+// Shortcuts for STL Wrappers
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -434,8 +453,7 @@ stableSort(TContainer & c, TBinaryPredicate p, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor>
-inline TFunctor
-forEach(TContainer const & c, TFunctor f)
+inline TFunctor forEach(TContainer const & c, TFunctor f)
 {
     return forEach(c, f, Serial());
 }
@@ -467,10 +485,15 @@ countIf(TContainer const & c, TUnaryPredicate p)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void
-sort(TContainer & c, TBinaryPredicate p)
+inline void sort(TContainer & c, TBinaryPredicate p)
 {
     sort(c, p, Serial());
+}
+
+template <typename TContainer>
+inline void sort(TContainer & c)
+{
+    sort(c, Serial());
 }
 
 // ----------------------------------------------------------------------------
@@ -478,10 +501,15 @@ sort(TContainer & c, TBinaryPredicate p)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void
-stableSort(TContainer & c, TBinaryPredicate p)
+inline void stableSort(TContainer & c, TBinaryPredicate p)
 {
     stableSort(c, p, Serial());
+}
+
+template <typename TContainer>
+inline void stableSort(TContainer & c)
+{
+    stableSort(c, Serial());
 }
 
 }  // namespace seqan
