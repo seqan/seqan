@@ -1,0 +1,15 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+cache: apt
+notifications:
+  recipients:
+    david.weese@fu-berlin.de
+  email:
+    on_success: change
+    on_failure: always
+before_script:
+   ./util/travis/linux-cibuild.before.sh
+script:
+  ./util/travis/linux-cibuild.sh
