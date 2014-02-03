@@ -200,10 +200,13 @@ template <
 inline void
 getMDString(
     TMDString &md,
-    TGaps1 &gaps1,
-    TGaps2 &gaps2)
+    TGaps1 &gaps1,  // typically reference
+    TGaps2 &gaps2)  // typically read
 {
     typedef typename Value<TMDString>::Type TMDChar;
+    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
+    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
+
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
 	char op, lastOp = ' ';
@@ -212,13 +215,21 @@ getMDString(
     clear(md);
     for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
     {
-        if (isGap(it1)) continue;
+        if (isGap(it1))
+        {
+            continue;       // insertion to the reference (gaps1)
+//            op = 'I';     // ignore insertions completely
+        }
         if (isGap(it2))
         {
-            op = 'D';
+//            if (op == 'I')  // ignore paddings
+//                continue;
+            op = 'D';       // deletion from the reference (gaps1)
         }
         else
-            op = (*it1 == *it2)? 'M': 'R';
+        {
+            op = ((TVal1)*it1 == (TVal2)*it2)? 'M': 'R';
+        }
 
         // append match run
         if (lastOp != op)
@@ -230,21 +241,21 @@ getMDString(
                 append(md, num.str());
             }
             numOps = 0;
-            lastOp = op;
         }
 
         // append deleted/replaced reference character
         if (op != 'M')
         {
-            // add ^ from non-deletion to deletion
+            // add ^ for deleted reference bases (from non-deletion to deletion)
             if (op == 'D' && lastOp != 'D')
                 appendValue(md, '^');
-            // add 0 from deletion to replacement
-            if (op == 'R' && lastOp == 'D')
+            // add 0 for each replaced base that doesn't follow a match (for samtools/BWA compatibility)
+            else if (op == 'R' && lastOp != 'M')
                 appendValue(md, '0');
             appendValue(md, convert<TMDChar>(*it1));
         }
 
+        lastOp = op;
         ++numOps;
     }
     SEQAN_ASSERT_EQ(atEnd(it1), atEnd(it2));
@@ -268,12 +279,15 @@ template <
 inline void
 getCigarString(
     TCigar &cigar,
-    TGaps1 &gaps1,
-    TGaps2 &gaps2,
+    TGaps1 &gaps1,  // typically reference
+    TGaps2 &gaps2,  // typically read
     TThresh splicedGapThresh)
 {
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
+    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
+    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
+
 	clear(cigar);
 	char op, lastOp = ' ';
 	unsigned numOps = 0;
@@ -301,8 +315,9 @@ getCigarString(
 				op = 'D';
 			else if (isClipped(it2))
 				op = 'S';
-			else
-				op = 'M';
+            else
+                op = 'M';
+//                op = ((TVal1)*it1 == (TVal2)*it2)? '=': 'X';
 		}
 
         // append CIGAR operation
@@ -343,8 +358,8 @@ template <
 inline void
 getCigarString(
     TCigar &cigar,
-    TGaps1 &gaps1,
-    TGaps2 &gaps2)
+    TGaps1 &gaps1,  // typically reference
+    TGaps2 &gaps2)  // typically read
 {
     return getCigarString(cigar, gaps1, gaps2, 20);
 }
@@ -365,6 +380,9 @@ getCigarString(
 {
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
+    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
+    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
+
 	clear(cigar);
 	char op = '?', lastOp = ' ';
 	unsigned numOps = 0;
@@ -393,6 +411,7 @@ getCigarString(
             else if (isClipped(it2))
                 op = 'S';
             else
+//                op = ((TVal1)*it1 == (TVal2)*it2)? '=': 'X';
                 op = 'M';
         }
         if (lastOp != op)
@@ -419,38 +438,124 @@ getCigarString(
 
 template <
     typename TCigar, typename TMDString, typename TContig, typename TReadSeq,
+    typename TAlignedRead, typename TErrors >
+inline void
+alignAndGetCigarString(
+    TCigar &cigar, TMDString &md, TContig &, TReadSeq &,
+    TAlignedRead &, TErrors &, Nothing const &)
+{
+    cigar = "*";
+    clear(md);
+}
+
+struct BamAlignFunctorEditDistance
+{
+    typedef String<GapAnchor<int> > TGapAnchors;
+
+    TGapAnchors contigAnchors, readAnchors;
+
+    template <typename TGaps1, typename TGaps2, typename TErrors>
+    inline int
+    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors errors)
+    {
+        return -globalAlignment(
+            gaps1, gaps2,
+            Score<short, EditDistance>(),
+            -(int)errors, (int)errors
+        );
+    }
+};
+
+struct BamAlignFunctorSemiGlobalGotoh
+{
+    typedef String<GapAnchor<int> > TGapAnchors;
+
+    Score<int> score;
+    TGapAnchors contigAnchors, readAnchors;
+
+    BamAlignFunctorSemiGlobalGotoh(Score<int> score_) :
+        score(score_)
+    {}
+    
+    template <typename TGaps1, typename TGaps2, typename TErrors>
+    inline int
+    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors errors)
+    {
+        return globalAlignment(
+            gaps1, gaps2, score,
+            AlignConfig<true, false, false, true>(),
+            -(int)errors, (int)errors,
+            Gotoh()
+        ) / scoreMismatch(score);
+    }
+};
+
+struct BamAlignFunctorDefault
+{
+};
+
+template <
+    typename TCigar, typename TMDString, typename TContigInfix, typename TReadSeq,
+    typename TAlignedRead, typename TErrors, typename TAlignFunctor>
+inline void
+_alignAndGetCigarString(
+    TCigar &cigar, TMDString &md, TContigInfix const &contigInfix, TReadSeq const &fwdReadSeq,
+    TAlignedRead &, TErrors &errors, TAlignFunctor &functor)
+{
+    typedef Gaps<TContigInfix, AnchorGaps<typename TAlignFunctor::TGapAnchors> >    TContigGaps;
+    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignFunctor::TGapAnchors> >        TReadGaps;
+
+    clear(functor.contigAnchors);
+    clear(functor.readAnchors);
+    
+    TContigGaps contigGaps(contigInfix, functor.contigAnchors);
+    TReadGaps readGaps(fwdReadSeq, functor.readAnchors);
+
+    if (!(errors == 0 || (errors == 1 && length(contigInfix) == length(fwdReadSeq))))
+        errors = functor.align(contigGaps, readGaps, errors);
+
+    getCigarString(cigar, contigGaps, readGaps);
+    getMDString(md, contigGaps, readGaps);
+}
+
+template <
+    typename TCigar, typename TMDString, typename TContig, typename TReadSeq,
     typename TAlignedRead, typename TErrors, typename TAlignFunctor>
 inline void
 alignAndGetCigarString(
-    TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &readSeq,
-    TAlignedRead &alignedRead, TErrors &errors, TAlignFunctor const & functor)
+    TCigar &cigar, TMDString &md, TContig const &contig, TReadSeq const &readSeq,
+    TAlignedRead &alignedRead, TErrors &errors, TAlignFunctor &functor)
 {
-    typedef Align<TReadSeq, ArrayGaps> TAlign;
+    typedef typename TContig::TContigSeq            TContigSeq;
+    typedef typename Infix<TContigSeq const>::Type  TContigInfix;
 
-    TAlign align;
-    resize(rows(align), 2);
-
+    TContigInfix contigInfix;
+    
     if (alignedRead.beginPos <= alignedRead.endPos)
-        assignSource(row(align, 0), infix(contig.seq, alignedRead.beginPos, alignedRead.endPos));
+    {
+        contigInfix = infix(contig.seq, alignedRead.beginPos, alignedRead.endPos);
+        _alignAndGetCigarString(cigar, md, contigInfix, readSeq, alignedRead, errors, functor);
+    }
     else
-        assignSource(row(align, 0), infix(contig.seq, alignedRead.endPos, alignedRead.beginPos));
-
-    assignSource(row(align, 1), readSeq);
-
-    if (!(errors == 0 || (errors == 1 && length(readSeq) == length(source(row(align, 0))))))
-        errors = functor.align(align);
-
-    getCigarString(cigar, row(align, 0), row(align, 1));
-    getMDString(md, row(align, 0), row(align, 1));
+    {
+        contigInfix = infix(contig.seq, alignedRead.endPos, alignedRead.beginPos);
+        _alignAndGetCigarString(cigar, md, contigInfix, reverseComplementString(readSeq), alignedRead, errors, functor);
+    }
 }
 
-template <typename TCigar, typename TMDString, typename TContig, typename TReadSeq, typename TErrors, typename TAlignedRead>
+template <
+    typename TCigar, typename TMDString, typename TContig, typename TReadSeq,
+    typename TAlignedRead, typename TErrors>
 inline void
-alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &readSeq, TAlignedRead &alignedRead, TErrors &, Nothing const &)
+alignAndGetCigarString(
+    TCigar &cigar, TMDString &md, TContig const &contig, TReadSeq const &readSeq,
+    TAlignedRead &alignedRead, TErrors &, BamAlignFunctorDefault &)
 {
-    typedef typename TContig::TContigSeq                                    TContigSeq;
-    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
-    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
+    typedef typename TContig::TContigSeq                                            TContigSeq;
+    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >            TContigGaps;
+    typedef typename ReverseComplementString<TReadSeq const>::Type                  TRefCompReadSeq;
+    typedef Gaps<TReadSeq const, AnchorGaps<typename TAlignedRead::TGapAnchors> >   TReadGaps;
+    typedef Gaps<TRefCompReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >  TRCReadGaps;
 
     TContigGaps contigGaps(contig.seq, contig.gaps);
 
@@ -458,21 +563,22 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     {
         setClippedBeginPosition(contigGaps, alignedRead.beginPos);
         setClippedEndPosition(contigGaps, alignedRead.endPos);
-    } else
+
+        TReadGaps readGaps(readSeq, alignedRead.gaps);
+
+        getCigarString(cigar, contigGaps, readGaps);
+        getMDString(md, contigGaps, readGaps);
+    }
+    else
     {
         setClippedBeginPosition(contigGaps, alignedRead.endPos);
         setClippedEndPosition(contigGaps, alignedRead.beginPos);
+
+        TRCReadGaps readGaps(reverseComplementString(readSeq), alignedRead.gaps);
+
+        getCigarString(cigar, contigGaps, readGaps);
+        getMDString(md, contigGaps, readGaps);
     }
-
-    TReadGaps readGaps(readSeq, alignedRead.gaps);
-    // TContigGaps  contigGaps2(contig.seq, contig.gaps);
-    // if (i == 4)
-    //     printf("It's it!\n");
-    // std::cerr << "read gaps:  " << readGaps << std::endl;
-    // std::cerr << "contig gaps:" << contigGaps << std::endl;
-
-    getCigarString(cigar, contigGaps, readGaps);
-    getMDString(md, contigGaps, readGaps);
 }
 
 // ----------------------------------------------------------------------------
