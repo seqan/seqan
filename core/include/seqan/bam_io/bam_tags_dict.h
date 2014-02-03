@@ -890,12 +890,79 @@ setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point num
 
 // Convert "atomic" value to BAM tag.  Return whether val was atomic.
 template <typename T>
-bool _toBamTagValue(CharString & result, T const & val, char const typeC)
+SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<T> >, bool)
+_toBamTagValue(CharString & result, T const & val, char const typeC)
 {
     appendValue(result, typeC);
 
     if (typeC == 'A' || typeC == 'c' || typeC == 'C')
     {
+        appendValue(result, (char)val);
+    }
+    else if (typeC == 's' || typeC == 'S')
+    {
+        union TRawShort {
+            char raw[2];
+            short i;
+        } tmp;
+
+        tmp.i = val;
+
+        appendValue(result, tmp.raw[0]);
+        appendValue(result, tmp.raw[1]);
+    }
+    else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
+    {
+        union TRawShort {
+            char raw[4];
+            int i;
+            float f;
+        } tmp;
+
+        if (typeC == 'f')
+            tmp.f = val;
+        else
+            tmp.i = val;
+            
+        appendValue(result, tmp.raw[0]);
+        appendValue(result, tmp.raw[1]);
+        appendValue(result, tmp.raw[2]);
+        appendValue(result, tmp.raw[3]);
+    }
+    else // non-string and variable sized type or invald
+    {
+        resize(result, length(result) - 1);
+        return false;
+    }
+    return true;
+}
+
+template <typename T>
+SEQAN_FUNC_ENABLE_IF(IsSequence<T>, bool)
+_toBamTagValue(CharString & result, T const & val, char const typeC)
+{
+    if (typeC != 'Z')
+        return false;
+    
+    appendValue(result, typeC);
+    append(result, val);
+    appendValue(result, '\0');
+    return true;
+}
+
+/*
+template <typename T>
+bool _toBamTagValue(CharString & result, T const & val, char const typeC)
+{
+    appendValue(result, typeC);
+
+// TODO(weese:)
+// These memcpy calls assume val to be a POD or array-like string
+// They should be replaced by something less dangerous, e.g.
+// different _toBamTagValue overloads specialized for the different types T
+    if (typeC == 'A' || typeC == 'c' || typeC == 'C')
+    {
+//        appendValue(result, (char)val);
         resize(result, length(result) + 1);
         char * dst = reinterpret_cast<char *>(&result[0]) + length(result) - 1;
         char const * src = reinterpret_cast<char const *>(&val);
@@ -910,6 +977,11 @@ bool _toBamTagValue(CharString & result, T const & val, char const typeC)
     }
     else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
     {
+// TODO(weese:) Use this union to first convert val into an int
+//        typedef union { char raw[4]; int i; } TRawInt;
+//        TRawInt x;// = { i = val };
+//        x.i = val;
+//        append(result, x.raw);
         resize(result, length(result) + 4);
         char * dst = reinterpret_cast<char *>(&result[0]) + length(result) - 4;
         char const * src = reinterpret_cast<char const *>(&val);
@@ -917,6 +989,8 @@ bool _toBamTagValue(CharString & result, T const & val, char const typeC)
     }
     else if (typeC == 'Z')
     {
+//        append(result, val);
+//        appendValue(result, '\0');
         unsigned oldSize = length(result);
         unsigned valLen = length(val) + 1;
         resize(result, length(result) + valLen);
@@ -931,6 +1005,7 @@ bool _toBamTagValue(CharString & result, T const & val, char const typeC)
     }
     return true;
 }
+*/
 
 // Sets an atomic value in a BamTagsDict.
 // Returns true successful, can fail if val not atomic or key is not a valid tag id (2 chars).
@@ -975,6 +1050,26 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val)
 {
     return setTagValue(tags, key, val, getBamTypeChar<T>());
 }
+
+template <typename T>
+inline bool
+appendTagValue(CharString & tags, CharString const & key, T const & val, char const typeC)
+{
+    // Build value to insert/append.
+    if (length(key) != 2u)
+        return false;
+
+    append(tags, key);
+    return _toBamTagValue(tags, val, typeC);
+}
+
+template <typename T>
+inline bool
+appendTagValue(CharString & tags, CharString const & key, T const & val)
+{
+    return appendTagValue(tags, key, val, getBamTypeChar<T>());
+}
+
 
 // ----------------------------------------------------------------------------
 // Function eraseTag()
