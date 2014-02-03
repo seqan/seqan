@@ -1,4 +1,7 @@
-# define build name&co for easier identification on cdassh
+# This project name is used for the CDash submission.
+SET (CTEST_PROJECT_NAME "SeqAn")
+
+# define build name&co for easier identification on CDash
 set(CTEST_BUILD_NAME "travis-ci-$ENV{TRAVIS_BRANCH}-$ENV{BUILD_NAME}-$ENV{CXX}")
 set(CTEST_SITE "travis-ci-build-server")
 set(CTEST_SOURCE_DIRECTORY "$ENV{SOURCE_DIRECTORY}")
