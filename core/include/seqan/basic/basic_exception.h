@@ -324,7 +324,7 @@ inline char const * toCString(Demangler<T> const & me)
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
-#ifdef SEQAN_EXCEPTIONS
+#if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
 // Declare global exception handler.
 static void globalExceptionHandler();
 
@@ -344,8 +344,12 @@ static void globalExceptionHandler()
     {
         SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
     }
+    SEQAN_CATCH(...)
+    {
+        SEQAN_FAIL("Uncaught exception of unknown type.\n");
+    }
 }
-#endif
+#endif  // #if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
 
 }  // namespace seqan
 
