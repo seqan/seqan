@@ -50,7 +50,7 @@
 // ----------------------------------------------------------------------------
 // Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+#if defined(_OPENMP) && defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
