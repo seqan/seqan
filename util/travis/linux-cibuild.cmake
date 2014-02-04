@@ -2,7 +2,7 @@
 SET (CTEST_PROJECT_NAME "SeqAn")
 
 # define build name&co for easier identification on CDash
-set(CTEST_BUILD_NAME "travis-ci-$ENV{TRAVIS_BRANCH}-$ENV{BUILD_NAME}-$ENV{CXX}")
+set(CTEST_BUILD_NAME "travis-ci-$ENV{TRAVIS_REPO_SLUG}-$ENV{TRAVIS_BRANCH}-$ENV{BUILD_NAME}-$ENV{CXX}")
 set(CTEST_SITE "travis-ci-build-server")
 set(CTEST_SOURCE_DIRECTORY "$ENV{SOURCE_DIRECTORY}")
 set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/_build")
