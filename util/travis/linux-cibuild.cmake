@@ -25,16 +25,16 @@ set(CTEST_BUILD_FLAGS -j4)
 # we want makefiles
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
 
-# run the classical ctest suite without update
-# travis-ci handles this for us
-ctest_start     (Continuous)
-
 # Copying the CTestConfig.cmake here is not optimal.  You might have to call
 # ctest twice to get an actual build since ctest expects it to be present
 # at the first time and will fail.
 CONFIGURE_FILE (${CTEST_SOURCE_DIRECTORY}/util/cmake/CTestConfig.cmake
-                ${CTEST_SOURCE_ROOT_DIRECTORY}/CTestConfig.cmake
+                ${CTEST_SOURCE_DIRECTORY}/CTestConfig.cmake
                 COPYONLY)
+
+# run the classical ctest suite without update
+# travis-ci handles this for us
+ctest_start     (Continuous)
 
 ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE _configure_ret)
 ctest_build     (BUILD "${CTEST_BINARY_DIRECTORY}" NUMBER_ERRORS _build_errors)
