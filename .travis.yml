@@ -2,13 +2,10 @@ language: cpp
 compiler:
   - gcc
   - clang
-cache: apt
-notifications:
-  recipients:
-    david.weese@fu-berlin.de
-  email:
-    on_success: change
-    on_failure: always
+cache:
+  apt: true
+  directories:
+  - _build
 before_script:
   sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev
 script:
