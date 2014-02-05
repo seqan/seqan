@@ -350,21 +350,21 @@ namespace SEQAN_NAMESPACE_MAIN
         std::sort(it,  itEnd,  AlignedMateLess_<TFragmentStore>(fragStore));
         std::sort(mit, mitEnd, MatchMateInfoLess_());
 
-        {
-        TIter it = begin(fragStore.alignedReadStore, Standard());
-        for (; it != itEnd; ++it)
-        {
-            unsigned long p = std::min(it->beginPos, it->endPos);
-            if (p == 36 || p == 35)
-                std::cout << "LEFT  " << (it-begin(fragStore.alignedReadStore, Standard())) << "  \t" << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
-        }
-        }
-
-        for (unsigned i=0;i<length(matchMateInfos);++i)
-        {
-            if ((matchMateInfos[i].beginPos == 36 || matchMateInfos[i].beginPos == 35) )
-                std::cout << "RIGHT " << i << "  \t"<< matchMateInfos[i].beginPos << '\t' << matchMateInfos[i].readId << '\t' << matchMateInfos[i].contigId << '\t' << matchMateInfos[i].reversed << '\t' << matchMateInfos[i].pairMatchId<<std::endl;
-        }
+//        {
+//        TIter it = begin(fragStore.alignedReadStore, Standard());
+//        for (; it != itEnd; ++it)
+//        {
+//            unsigned long p = std::min(it->beginPos, it->endPos);
+//            if (p == 36 || p == 35)
+//                std::cout << "LEFT  " << (it-begin(fragStore.alignedReadStore, Standard())) << "  \t" << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
+//        }
+//        }
+//
+//        for (unsigned i=0;i<length(matchMateInfos);++i)
+//        {
+//            if ((matchMateInfos[i].beginPos == 36 || matchMateInfos[i].beginPos == 35) )
+//                std::cout << "RIGHT " << i << "  \t"<< matchMateInfos[i].beginPos << '\t' << matchMateInfos[i].readId << '\t' << matchMateInfos[i].contigId << '\t' << matchMateInfos[i].reversed << '\t' << matchMateInfos[i].pairMatchId<<std::endl;
+//        }
 
         while (true)
         {
@@ -375,27 +375,31 @@ namespace SEQAN_NAMESPACE_MAIN
 //            if (mit->beginPos == 36 || mit->beginPos == 35)
 //                std::cout << "ok" <<std::endl;
 //
-            unsigned long p = std::min(it->beginPos, it->endPos);
-            if (p == 36 || p == 35)
-                std::cout << "ok1 " << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
+//            unsigned long p = std::min(it->beginPos, it->endPos);
+//            if (p == 36 || p == 35)
+//                std::cout << "ok1 " << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
 
             int cmp = _compareAlignedReadAndMateInfo(*it, *mit, fragStore);
 
-            if ((mit->beginPos == 36 || mit->beginPos == 35) && cmp == 0)
-                std::cout << "ok2 " << mit->beginPos << '\t' << mit->readId << '\t'<< mit->contigId << '\t'<< mit->reversed << '\t'<< mit->pairMatchId << std::endl;
+//            if ((mit->beginPos == 36 || mit->beginPos == 35) && cmp == 0)
+//                std::cout << "ok2 " << mit->beginPos << '\t' << mit->readId << '\t'<< mit->contigId << '\t'<< mit->reversed << '\t'<< mit->pairMatchId << std::endl;
 
             if (cmp == 0)   // both are equal -> link them
-                (*it).pairMatchId = (*mit).pairMatchId;
+            {
+                // avoid id swap and instead decide for the smaller of both ids
+                if (it->pairMatchId > mit->pairMatchId)
+                    it->pairMatchId = mit->pairMatchId;
+            }
 
             if (cmp >= 0)   // MateInfo is less or equal
             {
-                std::cout << "mateInfo:   contigId="<<mit->contigId<<"  beginPos="<<mit->beginPos<<"  reversed="<<mit->reversed<<"  matePairId="<<mit->matePairId<<std::endl;
+//                std::cout << "mateInfo:   contigId="<<mit->contigId<<"  beginPos="<<mit->beginPos<<"  reversed="<<mit->reversed<<"  matePairId="<<mit->matePairId<<std::endl;
                 if (++mit == mitEnd) return;
             }
 
             if (cmp <= 0)   // AlignedRead is less or equal
             {
-                std::cout << "alignedR:   contigId="<<it->contigId<<"  beginPos="<<_min(it->beginPos,it->endPos)<<"  reversed="<<(it->beginPos > it->endPos)<<"  matePairId="<<fragStore.readStore[it->readId].matePairId<<std::endl;
+//                std::cout << "alignedR:   contigId="<<it->contigId<<"  beginPos="<<_min(it->beginPos,it->endPos)<<"  reversed="<<(it->beginPos > it->endPos)<<"  matePairId="<<fragStore.readStore[it->readId].matePairId<<std::endl;
                 if (++it == itEnd) return;
             }
         }

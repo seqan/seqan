@@ -491,13 +491,13 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
     std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     loadContigs(store, toCString(fastaFileName));
 
-    appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
+    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a1.sam"), Sam());
     writeStore(store, "/tmp/out1.txt");
-    appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
+    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a2.sam"), Sam());
     writeStore(store, "/tmp/out2.txt");
-    appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
+    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a3.sam"), Sam());
     writeStore(store, "/tmp/out3.txt");
-    appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
+    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_b.sam"), Sam());
     writeStore(store, "/tmp/out4.txt");
 
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME();
