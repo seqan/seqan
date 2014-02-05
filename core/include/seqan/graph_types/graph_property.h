@@ -1034,9 +1034,6 @@ assignVertexMap(Graph<TSpec> const & g,
 ..include:seqan/graph_types.h
 */
 
- @link ExternalPropertyMap @endlink, @link InternalMap @endlink, 
- *           @link InternalPointerMap @endlink, @link InternalRawMap @endlink
-
 template<typename TSpec, typename TPropertyMap, typename TProperties>
 inline void
 assignEdgeMap(Graph<TSpec> const & g,
