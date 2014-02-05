@@ -1500,6 +1500,20 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
     AppendValueToString_<Tag<TExpand> >::appendValue_(me, _value);
 }
 
+// ----------------------------------------------------------------------------
+// Function appendValue(Serial)
+// ----------------------------------------------------------------------------
+
+template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
+inline void
+appendValue(String<TTargetValue, TTargetSpec> & me,
+            TValue const & _value,
+            Tag<TExpand> const & expandTag,
+            Serial)
+{
+    appendValue(me, _value, expandTag);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // insertValue
 //////////////////////////////////////////////////////////////////////////////
