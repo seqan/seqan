@@ -209,6 +209,9 @@ _compareTextFilesAlt(const char * file1, const char * file2)
 
         if (line1 != line2)
         {
+            std::cerr << "The following files are different:" << std::endl;
+            std::cerr << '\t' << file1 << std::endl;
+            std::cerr << '\t' << file2 << std::endl;
             std::cerr << "Line " << lineNo << " of the text files differ:" << std::endl;
             std::cerr << line1 << std::endl;
             std::cerr << line2 << std::endl;
