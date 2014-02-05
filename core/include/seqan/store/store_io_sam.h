@@ -823,12 +823,12 @@ namespace SEQAN_NAMESPACE_MAIN
                 // insert match mate info for the mate record
                 TMatchMateInfo matchMateInfo =
                 {
-                    .readId = contextSAM.readId,
-                    .contigId = mcontigId,
-                    .pairMatchId = pairMatchId,
-                    .matePairId = fragStore.readStore[contextSAM.readId].matePairId,
-                    .beginPos = record.pNext,
-                    .reversed = hasFlagNextRC(record)
+                    /* .readId      = */  contextSAM.readId,
+                    /* .contigId    = */  mcontigId,
+                    /* .pairMatchId = */  pairMatchId,
+                    /* .matePairId  = */  fragStore.readStore[contextSAM.readId].matePairId,
+                    /* .beginPos    = */  record.pNext,
+                    /* .reversed    = */  hasFlagNextRC(record)
                 };
                 appendValue(matchMateInfos, matchMateInfo);
                 back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
