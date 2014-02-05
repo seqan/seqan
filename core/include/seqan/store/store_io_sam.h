@@ -265,8 +265,8 @@ namespace SEQAN_NAMESPACE_MAIN
             if (posA < posB) return true;
             if (posA > posB) return false;
             
-            bool reversedA = (a.beginPos > a.endPos);
-            bool reversedB = (b.beginPos > b.endPos);
+            bool reversedA = (a.endPos < a.beginPos);
+            bool reversedB = (b.endPos < b.beginPos);
             if (reversedA != reversedB) return reversedB;
 
             typedef typename TFragStore::TMatePairStore     TMatePairStore;
@@ -311,9 +311,9 @@ namespace SEQAN_NAMESPACE_MAIN
         if (posA < b.beginPos) return -1;
         if (posA > b.beginPos) return 1;
         
-        bool reversedA = (a.beginPos > a.endPos);
-        if (!reversedA && b.reversed) return -1;
-        if (reversedA && !b.reversed) return 1;
+        bool reversedA = (a.endPos < a.beginPos);
+        if (!reversedA &&  b.reversed) return -1;
+        if ( reversedA && !b.reversed) return 1;
 
         typedef typename TFragStore::TMatePairStore     TMatePairStore;
         typedef typename Value<TMatePairStore>::Type    TMatePair;
@@ -350,38 +350,53 @@ namespace SEQAN_NAMESPACE_MAIN
         std::sort(it,  itEnd,  AlignedMateLess_<TFragmentStore>(fragStore));
         std::sort(mit, mitEnd, MatchMateInfoLess_());
 
+        {
+        TIter it = begin(fragStore.alignedReadStore, Standard());
+        for (; it != itEnd; ++it)
+        {
+            unsigned long p = std::min(it->beginPos, it->endPos);
+            if (p == 36 || p == 35)
+                std::cout << "LEFT  " << (it-begin(fragStore.alignedReadStore, Standard())) << "  \t" << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
+        }
+        }
+
+        for (unsigned i=0;i<length(matchMateInfos);++i)
+        {
+            if ((matchMateInfos[i].beginPos == 36 || matchMateInfos[i].beginPos == 35) )
+                std::cout << "RIGHT " << i << "  \t"<< matchMateInfos[i].beginPos << '\t' << matchMateInfos[i].readId << '\t' << matchMateInfos[i].contigId << '\t' << matchMateInfos[i].reversed << '\t' << matchMateInfos[i].pairMatchId<<std::endl;
+        }
+
         while (true)
         {
             // skip already aligned reads
-            while (it->pairMatchId != TAlignedRead::INVALID_ID)
-                if (++it == itEnd) return;
+//            while (it->pairMatchId != TAlignedRead::INVALID_ID)
+//                if (++it == itEnd) return;
 
 //            if (mit->beginPos == 36 || mit->beginPos == 35)
 //                std::cout << "ok" <<std::endl;
 //
-            if (it->beginPos == 36 || it->beginPos == 35)
-                std::cout << "ok  " << mit->beginPos << std::endl;
+            unsigned long p = std::min(it->beginPos, it->endPos);
+            if (p == 36 || p == 35)
+                std::cout << "ok1 " << p << '\t' << it->readId << '\t'<< it->contigId << '\t'<< (it->endPos < it->beginPos) << '\t'<< it->pairMatchId << std::endl;
 
             int cmp = _compareAlignedReadAndMateInfo(*it, *mit, fragStore);
 
             if ((mit->beginPos == 36 || mit->beginPos == 35) && cmp == 0)
-                std::cout << "ok " <<mit->pairMatchId<<std::endl;
+                std::cout << "ok2 " << mit->beginPos << '\t' << mit->readId << '\t'<< mit->contigId << '\t'<< mit->reversed << '\t'<< mit->pairMatchId << std::endl;
 
             if (cmp == 0)   // both are equal -> link them
                 (*it).pairMatchId = (*mit).pairMatchId;
 
             if (cmp >= 0)   // MateInfo is less or equal
             {
+                std::cout << "mateInfo:   contigId="<<mit->contigId<<"  beginPos="<<mit->beginPos<<"  reversed="<<mit->reversed<<"  matePairId="<<mit->matePairId<<std::endl;
                 if (++mit == mitEnd) return;
-//                if (cmp>0)
-//                    std::cout << "mateInfo:   contigId="<<mit->contigId<<"  beginPos="<<mit->beginPos<<"  reversed="<<mit->reversed<<"  matePairId="<<mit->matePairId<<std::endl;
             }
 
             if (cmp <= 0)   // AlignedRead is less or equal
             {
+                std::cout << "alignedR:   contigId="<<it->contigId<<"  beginPos="<<_min(it->beginPos,it->endPos)<<"  reversed="<<(it->beginPos > it->endPos)<<"  matePairId="<<fragStore.readStore[it->readId].matePairId<<std::endl;
                 if (++it == itEnd) return;
-//                if (cmp<0)
-//                    std::cout << "alignedR:   contigId="<<it->contigId<<"  beginPos="<<_min(it->beginPos,it->endPos)<<"  reversed="<<(it->beginPos > it->endPos)<<"  matePairId="<<fragStore.readStore[it->readId].matePairId<<std::endl;
             }
         }
     }    
@@ -843,20 +858,33 @@ namespace SEQAN_NAMESPACE_MAIN
                     matePairId = fragStore.readStore[contextSAM.readId].matePairId;
 
                 // insert match mate info for the current record
-                {
-                    TMatchMateInfo matchMateInfo = {contextSAM.readId, contextSAM.contigId, pairMatchId, matePairId,
-                                                    record.beginPos, hasFlagRC(record)};
-//                    std::cout<<"1\t"<<contextSAM.contigId<<'\t'<<record.beginPos<<std::endl;
-                    appendValue(matchMateInfos, matchMateInfo);
-                    back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
-                }
+//                {
+//                    TMatchMateInfo matchMateInfo = {
+//                        .readId = contextSAM.readId,
+//                        .contigId = contextSAM.contigId,
+//                        .pairMatchId = pairMatchId,
+//                        .matePairId = matePairId,
+//                        .beginPos = record.beginPos,
+//                        .reversed = hasFlagRC(record)
+//                    };
+////                    std::cout<<"1\t"<<contextSAM.contigId<<'\t'<<record.beginPos<<std::endl;
+//                    appendValue(matchMateInfos, matchMateInfo);
+//                    back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
+//                }
 
                 // ... and for the mate record
                 {
                     if (record.pNext==35)
                         std::cout<<"2\t"<<mcontigId<<'\t'<<record.pNext<<std::endl;
-                    TMatchMateInfo matchMateInfo = {contextSAM.readId, mcontigId, pairMatchId, matePairId,
-                                                    record.pNext, hasFlagNextRC(record)};
+
+                    TMatchMateInfo matchMateInfo = {
+                        .readId = contextSAM.readId,
+                        .contigId = mcontigId,
+                        .pairMatchId = pairMatchId,
+                        .matePairId = matePairId,
+                        .beginPos = record.pNext,
+                        .reversed = hasFlagNextRC(record)
+                    };
                     appendValue(matchMateInfos, matchMateInfo);
                     back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
                 }
