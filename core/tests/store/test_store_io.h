@@ -457,7 +457,7 @@ SEQAN_DEFINE_TEST(test_store_io_sam2)
 }
 
 template <typename TFragStore, typename TFormat>
-void appendReadAlignments(TFragStore &store, char const *fileName, TFormat format)
+void _appendReadAlignments(TFragStore &store, char const *fileName, TFormat format)
 {
     using namespace seqan;
 
@@ -472,7 +472,7 @@ void appendReadAlignments(TFragStore &store, char const *fileName, TFormat forma
   }
   
 template <typename TFragStore>
-void writeStore(TFragStore &store, char const *fname)
+void _writeStore(TFragStore &store, char const *fname)
 {
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
@@ -491,14 +491,14 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
     std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     loadContigs(store, toCString(fastaFileName));
 
-    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a1.sam"), Sam());
-    writeStore(store, "/tmp/out1.txt");
-    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a2.sam"), Sam());
-    writeStore(store, "/tmp/out2.txt");
-    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_a3.sam"), Sam());
-    writeStore(store, "/tmp/out3.txt");
-    appendReadAlignments(store, toCString((std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1_b.sam"), Sam());
-    writeStore(store, "/tmp/out4.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
+    _writeStore(store, "/tmp/out1.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
+    _writeStore(store, "/tmp/out2.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
+    _writeStore(store, "/tmp/out3.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
+    _writeStore(store, "/tmp/out4.txt");
 
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME();
     std::ofstream outFile(outPathSam.c_str());
