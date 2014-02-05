@@ -250,9 +250,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_gff)
     seqan::FragmentStore<> store;
     read(fin, store, seqan::Gff());
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".tsv");
-    std::cerr << outPath << std::endl;
     std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
     write(fout, store, seqan::Gff());
     fout.close();
@@ -396,9 +395,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_gtf)
     seqan::FragmentStore<> store;
     read(fin, store, seqan::Gtf());
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".tsv");
-    std::cerr << outPath << std::endl;
     std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
     write(fout, store, seqan::Gtf());
     fout.close();
@@ -472,13 +470,19 @@ void _appendReadAlignments(TFragStore &store, char const *fileName, TFormat form
   }
   
 template <typename TFragStore>
-void _writeStore(TFragStore &store, char const *fname)
+void _writeStore(TFragStore &store, std::string const &outPath, char const *suffix)
 {
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    std::ofstream file(fname);
+
+    std::string outPathTxt = outPath + suffix;
+    std::ofstream file(toCString(outPathTxt));
     printAlignment(file, Raw(), layout, store, 0, 0, 1030, 0, 36);
     printAlignment(file, Raw(), layout, store, 1, 0, 1030, 0, 36);
+    file.close();
+
+    std::string goldPathTxt = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge" + suffix;
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathTxt), toCString(goldPathTxt)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_split_sam)
@@ -491,20 +495,23 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
     std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     loadContigs(store, toCString(fastaFileName));
 
-    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
-    _writeStore(store, "/tmp/out1.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
-    _writeStore(store, "/tmp/out2.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
-    _writeStore(store, "/tmp/out3.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
-    _writeStore(store, "/tmp/out4.txt");
+    std::string outPath = (std::string)SEQAN_TEMP_FILENAME();
 
-    std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME();
+    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
+    _writeStore(store, outPath, ".1.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
+    _writeStore(store, outPath, ".2.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
+    _writeStore(store, outPath, ".3.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
+    _writeStore(store, outPath, ".4.txt");
+
+    std::string outPathSam = outPath + ".sam";
     std::ofstream outFile(outPathSam.c_str());
     write2(outFile, store, Sam());
+    outFile.close();
 
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge.sam";
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
 }
 
