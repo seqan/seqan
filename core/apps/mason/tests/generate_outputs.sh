@@ -3,7 +3,7 @@
 # Expected output generation for mason.
 
 # We use version 13383 for building the test data.
-MASON?=../../../../../seqan-align-build/release/bin/mason
+MASON=${MASON:-../../../../../seqan-align-build/release/bin/mason}
 
 # ============================================================
 # Simulate 454 Reads, Single-End
