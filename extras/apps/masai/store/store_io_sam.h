@@ -171,53 +171,6 @@ buildCigarString(TCigar & cigar, TContigGaps & contigGaps, TReadGaps & readGaps)
 }
 
 // --------------------------------------------------------------------------
-// Function _alignRead()
-// --------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig, typename TAlign>
-inline void
-_alignRead(FragmentStore<TSpec, TConfig> & store,
-           TAlign & align,
-           typename Value<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type & alignedRead,
-           typename Value<typename FragmentStore<TSpec, TConfig>::TAlignQualityStore>::Type & alignQuality)
-{
-    typedef FragmentStore<TSpec, TConfig>                   TFragmentStore;
-    typedef typename TFragmentStore::TReadSeq               TReadSeq;
-
-    resize(rows(align), 2);
-
-    // TODO(esiragusa):Pass read as argument, already revComplemented
-    TReadSeq readSeq = store.readSeqStore[alignedRead.readId];
-
-    if (alignedRead.beginPos > alignedRead.endPos)
-    {
-        reverseComplement(readSeq);
-        assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.endPos, alignedRead.beginPos));
-    }
-    else
-    {
-        assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.beginPos, alignedRead.endPos));
-    }
-
-    assignSource(row(align, 1), readSeq);
-
-    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
-    {
-        StringSet<TReadSeq> sequences;
-        appendValue(sequences, row(align, 0));
-        appendValue(sequences, row(align, 1));
-
-        globalAlignment(align, Score<short, EditDistance>(),
-                        (short)-alignQuality.errors, (short)alignQuality.errors,
-                        NeedlemanWunsch());
-    }
-    else
-    {
-        globalAlignment(align, Score<short, EditDistance>());
-    }
-}
-
-// --------------------------------------------------------------------------
 // Function _fillHeader()
 // --------------------------------------------------------------------------
 
