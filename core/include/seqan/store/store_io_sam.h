@@ -1569,6 +1569,16 @@ inline void _writeAlignedReads2(
 #endif  // #if 0
     }
 
+    template<typename TFile, typename TSpec, typename TConfig, typename TAlignFunctor>
+    inline void _writeAlignments(TFile & target,
+                                 FragmentStore<TSpec, TConfig> & store,
+                                 Sam,
+                                 TAlignFunctor const & _alignFunctor)
+    {
+         TAlignFunctor alignFunctor = _alignFunctor;
+        _writeAlignments(target, store, Sam(), alignFunctor);
+    }
+
     template<typename TFile, typename TSpec, typename TConfig>
     inline void _writeAlignments(TFile & target,
                                  FragmentStore<TSpec, TConfig> & store,
