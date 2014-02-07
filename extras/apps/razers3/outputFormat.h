@@ -1195,9 +1195,15 @@ int dumpMatches(
 
             // 2. write aligments
             if (options.dontShrinkAlignments)
-                _writeAlignments(file, store, Sam(), BamAlignFunctorEditDistance());
+            {
+                BamAlignFunctorEditDistance func;
+                _writeAlignedReads(file, store, context, func, Sam());
+            }
             else
-                _writeAlignments(file, store, Sam(), BamAlignFunctorSemiGlobalGotoh(scoreType));
+            {
+                BamAlignFunctorSemiGlobalGotoh func(scoreType);
+                _writeAlignedReads(file, store, context, func, Sam());
+            }
         }
         break;
 
