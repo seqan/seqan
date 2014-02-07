@@ -448,7 +448,7 @@ SEQAN_DEFINE_TEST(test_store_io_sam2)
     std::string testPathSam = SEQAN_TEMP_FILENAME();
     std::ofstream outFile(toCString(testPathSam));
     SEQAN_ASSERT(outFile.good());
-    write2(outFile, store, Sam());
+    write(outFile, store, Sam());
     outFile.close();
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(goldPathSam), toCString(testPathSam)));
@@ -508,7 +508,7 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
 
     std::string outPathSam = outPath + ".sam";
     std::ofstream outFile(outPathSam.c_str());
-    write2(outFile, store, Sam());
+    write(outFile, store, Sam());
     outFile.close();
 
     std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge.sam";

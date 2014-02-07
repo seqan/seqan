@@ -511,6 +511,8 @@ _alignAndGetCigarString(
     TContigGaps contigGaps(contigInfix, functor.contigAnchors);
     TReadGaps readGaps(fwdReadSeq, functor.readAnchors);
 
+    // if there is already an alignment between contigInfix and fwdReadSeq with 0 or 1 error then
+    // we don't to realign as it contains no gaps
     if (!(errors == 0 || (errors == 1 && length(contigInfix) == length(fwdReadSeq))))
         errors = functor.align(contigGaps, readGaps, errors);
 

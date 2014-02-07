@@ -908,8 +908,7 @@ _toBamTagValue(CharString & result, T const & val, char const typeC)
 
         tmp.i = val;
 
-        appendValue(result, tmp.raw[0]);
-        appendValue(result, tmp.raw[1]);
+        append(result, toRange(&tmp.raw[0], &tmp.raw[2]));
     }
     else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
     {
@@ -924,10 +923,7 @@ _toBamTagValue(CharString & result, T const & val, char const typeC)
         else
             tmp.i = val;
             
-        appendValue(result, tmp.raw[0]);
-        appendValue(result, tmp.raw[1]);
-        appendValue(result, tmp.raw[2]);
-        appendValue(result, tmp.raw[3]);
+        append(result, toRange(&tmp.raw[0], &tmp.raw[4]));
     }
     else // non-string and variable sized type or invald
     {

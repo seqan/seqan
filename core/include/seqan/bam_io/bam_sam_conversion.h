@@ -332,7 +332,7 @@ void assignTagsSamToBam(TTarget & target, TSource & source)
 {
     // Handle case of empty source sequence.
     if (empty(source))
-        clear(target);
+        return;
 
     typedef typename Iterator<TSource, Standard>::Type TSourceIter;
     TSourceIter it = begin(source, Standard());
