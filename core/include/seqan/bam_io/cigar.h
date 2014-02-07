@@ -197,7 +197,7 @@ template <
     typename TMDString,
     typename TGaps1,
     typename TGaps2>
-inline void
+inline unsigned
 getMDString(
     TMDString &md,
     TGaps1 &gaps1,  // typically reference
@@ -211,24 +211,36 @@ getMDString(
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
 	char op, lastOp = ' ';
 	unsigned numOps = 0;
+    unsigned errors = 0;
 
     clear(md);
     for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
     {
         if (isGap(it1))
         {
+            if (!isGap(it2))
+                ++errors;
             continue;       // insertion to the reference (gaps1)
 //            op = 'I';     // ignore insertions completely
         }
         if (isGap(it2))
         {
+            ++errors;
 //            if (op == 'I')  // ignore paddings
 //                continue;
             op = 'D';       // deletion from the reference (gaps1)
         }
         else
         {
-            op = ((TVal1)*it1 == (TVal2)*it2)? 'M': 'R';
+            if ((TVal1)*it1 == (TVal2)*it2)
+            {
+                op = 'M';
+            }
+            else
+            {
+                op = 'R';
+                ++errors;
+            }
         }
 
         // append match run
@@ -265,6 +277,7 @@ getMDString(
         num << numOps;
         append(md, num.str());
     }
+    return errors;
 }
 
 // ----------------------------------------------------------------------------
@@ -551,7 +564,7 @@ template <
 inline void
 alignAndGetCigarString(
     TCigar &cigar, TMDString &md, TContig const &contig, TReadSeq const &readSeq,
-    TAlignedRead &alignedRead, TErrors &, BamAlignFunctorDefault &)
+    TAlignedRead &alignedRead, TErrors &errors, BamAlignFunctorDefault &)
 {
     typedef typename TContig::TContigSeq                                            TContigSeq;
     typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >            TContigGaps;
@@ -569,7 +582,7 @@ alignAndGetCigarString(
         TReadGaps readGaps(readSeq, alignedRead.gaps);
 
         getCigarString(cigar, contigGaps, readGaps);
-        getMDString(md, contigGaps, readGaps);
+        errors = getMDString(md, contigGaps, readGaps);
     }
     else
     {
@@ -579,7 +592,7 @@ alignAndGetCigarString(
         TRCReadGaps readGaps(reverseComplementString(readSeq), alignedRead.gaps);
 
         getCigarString(cigar, contigGaps, readGaps);
-        getMDString(md, contigGaps, readGaps);
+        errors = getMDString(md, contigGaps, readGaps);
     }
 }
 
