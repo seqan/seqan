@@ -290,6 +290,8 @@ public:
         for (unsigned i = 0; i < length(variationSizeRecords); ++i)
         {
             VariationSizeRecord const & record = variationSizeRecords[i];
+            if (variationToContig[i] != rId)
+                continue;  // This variation does not belong here.
             int const MAX_TRIES = 1000;
             int tries = 0;
             for (; tries < MAX_TRIES; ++tries)
