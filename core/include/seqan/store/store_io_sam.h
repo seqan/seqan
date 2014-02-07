@@ -976,12 +976,8 @@ _fillRecord(BamAlignmentRecord & record,
     clear(record.qName);
     TCharStringIterator it = begin(store.readNameStore[alignedRead.readId], Standard());
     TCharStringIterator itEnd = end(store.readNameStore[alignedRead.readId], Standard());
-    for (; it != itEnd; ++it)
-    {
-        if (isblank(*it))
-            break;
+    for (; it != itEnd && !isblank(*it); ++it)
         appendValue(record.qName, *it);
-    }
 
     // Fill FLAG.
     register unsigned short flag = 0;
@@ -1066,23 +1062,32 @@ _fillRecord(BamAlignmentRecord & record,
 //    append(record.tags, alignTags);
 
     // Fill RNEXT by providing mate contig id.
-    if (alignedMate.contigId != TContig::INVALID_ID)
-        record.rNextId = alignedMate.contigId;
-    else
-        record.rNextId = BamAlignmentRecord::INVALID_REFID;
-
-    // Fill PNEXT with mate start position
-    // Fill TLEN with outer distance of the read alignments
-    if (alignedRead.contigId == alignedMate.contigId)
+    if (&alignedRead != &alignedMate)
     {
-        record.pNext = positionGapToSeq(contigGaps, std::min(alignedMate.beginPos, alignedMate.endPos));
-        if (alignedRead.beginPos < alignedMate.beginPos)
-            record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
+        if (alignedMate.contigId != TContig::INVALID_ID)
+            record.rNextId = alignedMate.contigId;
         else
-            record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
+            record.rNextId = BamAlignmentRecord::INVALID_REFID;
+
+        // Fill PNEXT with mate start position
+        // Fill TLEN with outer distance of the read alignments
+        if (alignedRead.contigId == alignedMate.contigId)
+        {
+            record.pNext = positionGapToSeq(contigGaps, std::min(alignedMate.beginPos, alignedMate.endPos));
+            if (alignedRead.beginPos < alignedMate.beginPos)
+                record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
+            else
+                record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
+        }
+        else
+        {
+            record.pNext = BamAlignmentRecord::INVALID_POS;
+            record.tLen = BamAlignmentRecord::INVALID_LEN;
+        }
     }
     else
     {
+        record.rNextId = BamAlignmentRecord::INVALID_REFID;
         record.pNext = BamAlignmentRecord::INVALID_POS;
         record.tLen = BamAlignmentRecord::INVALID_LEN;
     }
