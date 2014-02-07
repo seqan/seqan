@@ -932,9 +932,9 @@ _fillBamSeqAndQual(TSeq &bamSeq, TQual &bamQual, TRead const &read)
     bamSeq = read;
 
     resize(bamQual, length(read));
-    typename Iterator<TQual, Standard>::Type tIt    = begin(bamQual, Standard());
-    typename Iterator<TRead, Standard>::Type sIt    = begin(read, Standard());
-    typename Iterator<TRead, Standard>::Type sItEnd = end(read, Standard());
+    typename Iterator<TQual, Standard>::Type       tIt    = begin(bamQual, Standard());
+    typename Iterator<TRead const, Standard>::Type sIt    = begin(read, Standard());
+    typename Iterator<TRead const, Standard>::Type sItEnd = end(read, Standard());
 
     for (; sIt != sItEnd; ++sIt, ++tIt)
         *tIt = (char)(getQualityValue(*sIt) + '!');
