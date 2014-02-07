@@ -949,7 +949,6 @@ inline void
 _fillRecord(BamAlignmentRecord & record,
             FragmentStore<TSpec, TConfig> & store,
             TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
-            TAlignedRead const & alignedMate,       // alignment of the mate
             TAlignQuality const & alignQuality,     // read alignment quality
             TAlignTags const & alignTags,           // read alignment quality
             TAlignFunctor & alignFunctor,           // functor that extracts/computes alignment for cigar/md strings
@@ -1005,25 +1004,11 @@ _fillRecord(BamAlignmentRecord & record,
     //  2) alignedMate has an invalid contigId (== INVALID_ID)
     //  3) alignedRead and alignedMate have valid readIds
 
-    if (&alignedRead != &alignedMate)
-    {
-        flag |= BAM_FLAG_MULTIPLE;      // there is a mate
-        if (alignedMate.contigId != TReadStoreElement::INVALID_ID)
-        {
-            // case 3)
-            flag |= BAM_FLAG_ALL_PROPER;    // mate is mapped properly
-            
-            if (alignedMate.beginPos > alignedMate.endPos)
-                flag |= BAM_FLAG_NEXT_RC;   // mate is mapped on reverse strand
-        }
-        else
-        {
-            // case 2)
-            flag |= BAM_FLAG_NEXT_UNMAPPED; // mate is unmapped
-        }
-    }
-    // else
-    //  case 1)                         // there is no mate
+    if (mateNo >= 0)
+        flag |=   BAM_FLAG_MULTIPLE | BAM_FLAG_NEXT_UNMAPPED;   // there is a mate
+    else
+        flag &= ~(BAM_FLAG_MULTIPLE | BAM_FLAG_NEXT_UNMAPPED);  // there is no mate
+
     record.flag = flag;
 
     // Fill RNAME by providing contig id.
@@ -1061,36 +1046,9 @@ _fillRecord(BamAlignmentRecord & record,
     assignTagsSamToBam(record.tags, alignTags);
 //    append(record.tags, alignTags);
 
-    // Fill RNEXT by providing mate contig id.
-    if (&alignedRead != &alignedMate)
-    {
-        if (alignedMate.contigId != TContig::INVALID_ID)
-            record.rNextId = alignedMate.contigId;
-        else
-            record.rNextId = BamAlignmentRecord::INVALID_REFID;
-
-        // Fill PNEXT with mate start position
-        // Fill TLEN with outer distance of the read alignments
-        if (alignedRead.contigId == alignedMate.contigId)
-        {
-            record.pNext = positionGapToSeq(contigGaps, std::min(alignedMate.beginPos, alignedMate.endPos));
-            if (alignedRead.beginPos < alignedMate.beginPos)
-                record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
-            else
-                record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
-        }
-        else
-        {
-            record.pNext = BamAlignmentRecord::INVALID_POS;
-            record.tLen = BamAlignmentRecord::INVALID_LEN;
-        }
-    }
-    else
-    {
-        record.rNextId = BamAlignmentRecord::INVALID_REFID;
-        record.pNext = BamAlignmentRecord::INVALID_POS;
-        record.tLen = BamAlignmentRecord::INVALID_LEN;
-    }
+    record.rNextId = BamAlignmentRecord::INVALID_REFID;
+    record.pNext = BamAlignmentRecord::INVALID_POS;
+    record.tLen = BamAlignmentRecord::INVALID_LEN;
 
     if (!secondaryAlignment)
     {
@@ -1104,6 +1062,73 @@ _fillRecord(BamAlignmentRecord & record,
     {
         clear(record.seq);
         clear(record.qual);
+    }
+}
+
+template <typename TSpec, typename TConfig, typename TAlignedRead>
+inline void
+_setMateMatch(BamAlignmentRecord & record,
+             FragmentStore<TSpec, TConfig> & store,
+             TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+             TAlignedRead const & alignedMate)       // alignment of the mate
+{
+    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+
+    typedef typename TFragmentStore::TContigStore                   TContigStore;
+    typedef typename Value<TContigStore>::Type                      TContig;
+    typedef typename TFragmentStore::TContigSeq                     TContigSeq;
+    typedef typename TContig::TGapAnchors                           TContigGapAnchors;
+
+    typedef typename TFragmentStore::TReadStore                     TReadStore;
+    typedef typename Value<TReadStore>::Type                        TReadStoreElement;
+
+    typedef typename TFragmentStore::TReadSeq                       TReadSeq;
+    typedef typename Iterator<TReadSeq, Standard>::Type             TReadSeqIterator;
+
+    typedef Iterator<CharString, Standard>::Type                    TCharStringIterator;
+
+    typedef Gaps<Nothing, AnchorGaps<TContigGapAnchors> >           TContigGaps;
+
+
+    if (alignedMate.contigId != TReadStoreElement::INVALID_ID)
+    {
+        record.flag |= BAM_FLAG_ALL_PROPER;    // mate is mapped properly
+        
+        if (alignedMate.beginPos > alignedMate.endPos)
+            record.flag |= BAM_FLAG_NEXT_RC;   // mate is mapped on reverse strand
+
+        record.flag &= ~BAM_FLAG_NEXT_UNMAPPED;
+    }
+    else
+    {
+        record.flag |= BAM_FLAG_NEXT_UNMAPPED; // mate is unmapped
+    }
+
+    record.rNextId = (alignedMate.contigId != TContig::INVALID_ID)? alignedMate.contigId : BamAlignmentRecord::INVALID_REFID;
+
+    // Fill PNEXT with mate start position
+    // Fill TLEN with outer distance of the read alignments
+    if (alignedMate.contigId < length(store.contigStore))
+    {
+        TContigGaps contigGaps(store.contigStore[alignedMate.contigId].gaps);
+        record.pNext = positionGapToSeq(contigGaps, std::min(alignedMate.beginPos, alignedMate.endPos));
+
+        if (alignedMate.contigId == alignedRead.contigId)
+        {
+            if (alignedRead.beginPos < alignedMate.beginPos)
+                record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
+            else
+                record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
+        }
+        else
+        {
+            record.tLen = BamAlignmentRecord::INVALID_LEN;
+        }
+    }
+    else
+    {
+        record.pNext = BamAlignmentRecord::INVALID_POS;
+        record.tLen = BamAlignmentRecord::INVALID_LEN;
     }
 }
 
@@ -1224,7 +1249,15 @@ inline void _writeAlignedReads(
         readAligned[alignedRead.readId] = true;
 
         // Fill record.
-        _fillRecord(record, store, alignedRead, *alignedMatePtr, *alignQualityPtr, _toParameter(alignTagsPtr), alignFunctor, secondary);
+        clear(record);
+        _fillRecord(record, store, alignedRead, *alignQualityPtr, _toParameter(alignTagsPtr), alignFunctor, secondary);
+
+        if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
+        {
+            TAlignedReadStoreElementId mateIndex = mateIndices[2 * alignedRead.pairMatchId + getMateNo(store, alignedRead.readId)];
+            if (mateIndex < length(store.alignedReadStore))
+                _setMateMatch(record, store, alignedRead, store.alignedReadStore[mateIndex]);
+        }
 
         // Write record to target.
         write2(target, record, context, Sam());
