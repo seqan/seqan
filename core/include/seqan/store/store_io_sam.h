@@ -1043,6 +1043,10 @@ _fillRecord(BamAlignmentRecord & record,
 //        if (errors > (int)alignQuality.errors)
 //            std::cerr << "WARNING: More errors in the alignment (" << errors << ") than given in NM tag / alignQuality ("
 //                      << (int)alignQuality.errors << ") for read " << record.qName << std::endl;
+
+        // To output the same NM value if a SAM file is loaded and saved, we overwrite error with the original value
+        // TODO(weese): This can be changed if desired (uncomment the following line) but now even the ex1.sam example
+        //              of the SAMtools have NM values that are inconsistent to their CIGAR/MD strings
         errors = alignQuality.errors;
     }
 
@@ -1183,11 +1187,9 @@ inline void _writeAlignedReads(
     resize(readAligned, length(store.readStore), false);
 
     // Dummy store elements to cope with missing information.
-    TAlignedReadStoreElement        noAlignedMate;
     TAlignQualityStoreElement       noAlignQuality;
     TAlignedReadTagStoreElement     noAlignTags;
 
-    TAlignedReadStoreElementPtr     alignedMatePtr;
     TAlignQualityStoreElementPtr    alignQualityPtr;
     TAlignedReadTagStoreElementPtr  alignTagsPtr;
 
@@ -1218,49 +1220,20 @@ inline void _writeAlignedReads(
         //  1) We have no mate (single-end read)
         //  2) We might have a mate, but it wasn't aligned properly
         //  3) We have a mate which was aligned properly
-        //
-        // wich are encoded as follows:
-        //  1) alignedRead and alignedMate have the same address in _fillRecord
-        //  2) alignedMate has an invalid contigId (== INVALID_ID)
-        //  3) alignedRead and alignedMate have valid readIds
-        alignedMatePtr = &alignedRead;
-        if (alignedRead.readId < length(store.readStore))
-        {
-            TReadStoreElement &read = store.readStore[alignedRead.readId];
-            if (read.matePairId != TReadStoreElement::INVALID_ID)
-            {
-                // Try to get corresponding mate alignment.
-                alignedMatePtr = &noAlignedMate;
-                if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
-                {
-                    TAlignedReadStoreElementId mateIndex = mateIndices[2 * alignedRead.pairMatchId + getMateNo(store, alignedRead.readId)];
-                    if (mateIndex < length(store.alignedReadStore))
-                    {
-                        // case 3)
-                        alignedMatePtr = &store.alignedReadStore[mateIndex];
-                    }
-                    // else
-                    //  case 2)
-                }
-                // else
-                //  case 2)
-            }
-            // else
-            //  case 1)
-        }
-        // else
-        //  case 1)
 
         // Test for secondary alignment and mark read as seen.
-        bool secondary = readAligned[alignedRead.readId];
-        readAligned[alignedRead.readId] = true;
+        bool secondary = getValue(readAligned, alignedRead.readId);
+        assignValue(readAligned, alignedRead.readId, true);
 
         // Fill record.
         clear(record);
+
+        // case 1 or 2 is handled here
         _fillRecord(record, store, alignedRead, *alignQualityPtr, _toParameter(alignTagsPtr), alignFunctor, secondary);
 
         if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
         {
+            // case 3
             TAlignedReadStoreElementId mateIndex = mateIndices[2 * alignedRead.pairMatchId + getMateNo(store, alignedRead.readId)];
             if (mateIndex < length(store.alignedReadStore))
                 _setMateMatch(record, store, alignedRead, store.alignedReadStore[mateIndex]);
