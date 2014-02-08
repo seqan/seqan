@@ -469,12 +469,12 @@ struct BamAlignFunctorEditDistance
 
     template <typename TGaps1, typename TGaps2, typename TErrors>
     inline int
-    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors errors)
+    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors maxErrors)
     {
         return -globalAlignment(
             gaps1, gaps2,
             Score<short, EditDistance>(),
-            -(int)errors, (int)errors
+            -(int)maxErrors, (int)maxErrors
         );
     }
 };
@@ -492,12 +492,12 @@ struct BamAlignFunctorSemiGlobalGotoh
     
     template <typename TGaps1, typename TGaps2, typename TErrors>
     inline int
-    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors errors)
+    align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors maxErrors)
     {
         return globalAlignment(
             gaps1, gaps2, score,
             AlignConfig<true, false, false, true>(),
-            -(int)errors, (int)errors,
+            -(int)maxErrors, (int)maxErrors,
             Gotoh()
         ) / scoreMismatch(score);
     }
@@ -530,7 +530,9 @@ _alignAndGetCigarString(
         errors = functor.align(contigGaps, readGaps, errors);
 
     getCigarString(cigar, contigGaps, readGaps);
-    getMDString(md, contigGaps, readGaps);
+    TErrors mdErrors = getMDString(md, contigGaps, readGaps);
+    
+    SEQAN_ASSERT_EQ(errors, mdErrors);
 }
 
 template <
