@@ -944,15 +944,14 @@ _fillBamSeqAndQual(TSeq &bamSeq, TQual &bamQual, TRead const &read)
 // Function _fillRecord()
 // --------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TAlignedRead, typename TAlignQuality, typename TAlignTags, typename TAlignFunctor>
+template <typename TSpec, typename TConfig, typename TAlignedRead, typename TAlignQuality, typename TAlignFunctor>
 inline void
-_fillRecord(BamAlignmentRecord & record,
-            FragmentStore<TSpec, TConfig> & store,
-            TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
-            TAlignQuality const & alignQuality,     // read alignment quality
-            TAlignTags const & alignTags,           // read alignment quality
-            TAlignFunctor & alignFunctor,           // functor that extracts/computes alignment for cigar/md strings
-            bool secondaryAlignment)                // is this a secondary alignment?
+setPrimaryMatch(BamAlignmentRecord & record,
+                FragmentStore<TSpec, TConfig> & store,
+                TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+                TAlignQuality const & alignQuality,     // read alignment quality
+                TAlignFunctor & alignFunctor,           // functor that extracts/computes alignment for cigar/md strings
+                bool secondaryAlignment)                // is this a secondary alignment?
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
@@ -1056,7 +1055,6 @@ _fillRecord(BamAlignmentRecord & record,
         appendTagValue(record.tags, "NM", errors);
     if (!empty(record.tags))
         appendTagValue(record.tags, "MD", record.qual, 'Z');
-    assignTagsSamToBam(record.tags, alignTags);
 
     record.rNextId = BamAlignmentRecord::INVALID_REFID;
     record.pNext = BamAlignmentRecord::INVALID_POS;
@@ -1079,10 +1077,10 @@ _fillRecord(BamAlignmentRecord & record,
 
 template <typename TSpec, typename TConfig, typename TAlignedRead>
 inline void
-_setMateMatch(BamAlignmentRecord & record,
-             FragmentStore<TSpec, TConfig> & store,
-             TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
-             TAlignedRead const & alignedMate)       // alignment of the mate
+setMateMatch(BamAlignmentRecord & record,
+            FragmentStore<TSpec, TConfig> & store,
+            TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+            TAlignedRead const & alignedMate)       // alignment of the mate
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
@@ -1171,12 +1169,8 @@ inline void _writeAlignedReads(
     typedef typename TFragmentStore::TAlignQualityStore             TAlignQualityStore;
     typedef typename Value<TAlignQualityStore>::Type                TAlignQualityStoreElement;
 
-    typedef typename TFragmentStore::TAlignedReadTagStore           TAlignedReadTagStore;
-    typedef typename Value<TAlignedReadTagStore>::Type              TAlignedReadTagStoreElement;
-
     typedef TAlignedReadStoreElement *                              TAlignedReadStoreElementPtr;
     typedef TAlignQualityStoreElement *                             TAlignQualityStoreElementPtr;
-    typedef typename Pointer_<TAlignedReadTagStoreElement>::Type    TAlignedReadTagStoreElementPtr;
 
     // Store outer library size for each pair match (indexed by pairMatchId)
     String<TAlignedReadStoreElementId> mateIndices;
@@ -1188,10 +1182,7 @@ inline void _writeAlignedReads(
 
     // Dummy store elements to cope with missing information.
     TAlignQualityStoreElement       noAlignQuality;
-    TAlignedReadTagStoreElement     noAlignTags;
-
     TAlignQualityStoreElementPtr    alignQualityPtr;
-    TAlignedReadTagStoreElementPtr  alignTagsPtr;
 
     TAlignedReadStoreIterator it    = begin(store.alignedReadStore, Standard());
     TAlignedReadStoreIterator itEnd = end(store.alignedReadStore, Standard());
@@ -1208,12 +1199,6 @@ inline void _writeAlignedReads(
         else
             alignQualityPtr = &noAlignQuality;
 
-        // Try to get tags.
-        if (alignedRead.id < length(store.alignedReadTagStore))
-            alignTagsPtr = _toPointer(store.alignedReadTagStore[alignedRead.id]);   // could be an infix (= returned as temp object)
-        else
-            alignTagsPtr = _toPointer(noAlignTags);
-            
         // Try to get a mate.
 
         // We disinguish 3 cases:
@@ -1229,15 +1214,20 @@ inline void _writeAlignedReads(
         clear(record);
 
         // case 1 or 2 is handled here
-        _fillRecord(record, store, alignedRead, *alignQualityPtr, _toParameter(alignTagsPtr), alignFunctor, secondary);
+        setPrimaryMatch(record, store, alignedRead, *alignQualityPtr, alignFunctor, secondary);
 
         if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
         {
             // case 3
             TAlignedReadStoreElementId mateIndex = mateIndices[2 * alignedRead.pairMatchId + getMateNo(store, alignedRead.readId)];
             if (mateIndex < length(store.alignedReadStore))
-                _setMateMatch(record, store, alignedRead, store.alignedReadStore[mateIndex]);
+                setMateMatch(record, store, alignedRead, store.alignedReadStore[mateIndex]);
         }
+
+        // Append additional tags.
+        if (alignedRead.id < length(store.alignedReadTagStore))
+            assignTagsSamToBam(record.tags, store.alignedReadTagStore[alignedRead.id]);
+
 
         // Write record to target.
         write2(target, record, context, Sam());
