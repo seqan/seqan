@@ -531,7 +531,8 @@ _alignAndGetCigarString(
 
     getCigarString(cigar, contigGaps, readGaps);
     TErrors mdErrors = getMDString(md, contigGaps, readGaps);
-    
+
+    ignoreUnusedVariableWarning(mdErrors);
     SEQAN_ASSERT_EQ(errors, mdErrors);
 }
 
