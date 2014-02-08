@@ -1036,15 +1036,23 @@ _fillRecord(BamAlignmentRecord & record,
 
     // Use record.qual as a temporary for the md string.
     alignAndGetCigarString(record.cigar, record.qual, store.contigStore[alignedRead.contigId],
-                           store.readSeqStore[alignedRead.readId], alignedRead, errors, alignFunctor);
+            store.readSeqStore[alignedRead.readId], alignedRead, errors, alignFunctor);
+
+    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
+    {
+//        if (errors > (int)alignQuality.errors)
+//            std::cerr << "WARNING: More errors in the alignment (" << errors << ") than given in NM tag / alignQuality ("
+//                      << (int)alignQuality.errors << ") for read " << record.qName << std::endl;
+        errors = alignQuality.errors;
+    }
 
     // Fill tags here to release record.qual 
     clear(record.tags);
     if (errors != -1)
         appendTagValue(record.tags, "NM", errors);
-    appendTagValue(record.tags, "MD", record.qual, 'Z');
+    if (!empty(record.tags))
+        appendTagValue(record.tags, "MD", record.qual, 'Z');
     assignTagsSamToBam(record.tags, alignTags);
-//    append(record.tags, alignTags);
 
     record.rNextId = BamAlignmentRecord::INVALID_REFID;
     record.pNext = BamAlignmentRecord::INVALID_POS;
@@ -1090,14 +1098,13 @@ _setMateMatch(BamAlignmentRecord & record,
     typedef Gaps<Nothing, AnchorGaps<TContigGapAnchors> >           TContigGaps;
 
 
+    record.flag &= ~(BAM_FLAG_ALL_PROPER | BAM_FLAG_NEXT_RC | BAM_FLAG_NEXT_UNMAPPED);
     if (alignedMate.contigId != TReadStoreElement::INVALID_ID)
     {
         record.flag |= BAM_FLAG_ALL_PROPER;    // mate is mapped properly
         
         if (alignedMate.beginPos > alignedMate.endPos)
             record.flag |= BAM_FLAG_NEXT_RC;   // mate is mapped on reverse strand
-
-        record.flag &= ~BAM_FLAG_NEXT_UNMAPPED;
     }
     else
     {
