@@ -328,13 +328,13 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsSamToBam(TTarget & target, TSource & source)
+void assignTagsSamToBam(TTarget & target, TSource const & source)
 {
     // Handle case of empty source sequence.
     if (empty(source))
         return;
 
-    typedef typename Iterator<TSource, Standard>::Type TSourceIter;
+    typedef typename Iterator<TSource const, Standard>::Type TSourceIter;
     TSourceIter it = begin(source, Standard());
     TSourceIter itEnd = end(source, Standard());
 
