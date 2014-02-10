@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                 join_mates
+//                                 gustaf_mate_joining
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -45,29 +45,17 @@
 #include <seqan/stream.h>
 #include <seqan/arg_parse.h>
 
-// using namespace seqan;
-
-// ==========================================================================
-// Classes
-// ==========================================================================
-
-// --------------------------------------------------------------------------
-// Class AppOptions
-// --------------------------------------------------------------------------
-
 // This struct stores the options from the command line.
-
 struct JoinMatesOptions
 {
     // Verbosity level.  0 -- quiet, 1 -- normal, 2 -- verbose, 3 -- very verbose.
     int verbosity;
 
     // Path to Fasta/Fastq input files
-    seqan::CharString inPath1;
-    seqan::CharString inPath2;
+    seqan::String<seqan::CharString> inPaths;
 
     // Path to Fasta output file
-    seqan::CharString outPath;
+    seqan::String<seqan::CharString> outPaths;
     // CharString outPathPos;
 
     // Whether or not to rev-compl the second input file
@@ -91,7 +79,7 @@ seqan::ArgumentParser::ParseResult
 parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("join_mates");
+    seqan::ArgumentParser parser("gustaf_mate_joining");
     // Set short description, version, and date.
     setShortDescription(parser, "Joining paired-end files.");
     setVersion(parser, "0.1");
@@ -99,28 +87,40 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIMATES1 FASTA/FASTQ FILE\\fP\" \"\\fIMATES2 FASTA/FASTQ FILE\\fP\"");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIMATES FASTA/FASTQ FILE\\fP\" \"\\fI-o MATES1 FASTA/FASTQ FILE\\fP\" \"\\fI-o MATES2 FASTA/FASTQ FILE\\fP\"");
     addDescription(parser, "Joining two paired-end files into one file with joined (single-end) reads. Automatically reverse-complements reads of the second input file.");
+    addDescription(parser, "This simple program takes as input two mate pair or paired-end files and outputs a file "
+                            "where both mate sequences have been joined together. The FASTA file with joined mates "
+                            "is an required input file for the paired-end mode of Gustaf. "
+                            "The tool assumes the mates in the second file to be reverse complemented compared to the "
+                            "first file. This behaviour can be turned off using the command line argument \"-rc\".");
+
+    addDescription(parser, "Given only one input file and two output files, the program will split the reads from "
+                            "the input files at half length, and write the first half of each sequence as mates1 into "
+                            "the first output file and the reversed complemented second half of each sequence as "
+                            "mates2 into the second output file. Reverse complementing the sequences can again be "
+                            "turned off using \"-rc\".");
+
+    addDescription(parser, "To prepare the joined mate file for the Gustaf paired-end example above, call \n "
+
+    "./gustaf_mate_joining adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa "
+        "-rc -o adeno_modified_reads_joinedMates.fa");
 
     // We require two arguments.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE 1"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE(S)", true));
     setValidValues(parser, 0, "fa fasta fq fastq");
+    /*
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE 2"));
     setValidValues(parser, 1, "fasta fa fastq fq");
+    */
 
-    addOption(parser, seqan::ArgParseOption("o", "outPath", "Set name of output FASTA file.", seqan::ArgParseOption::OUTPUTFILE, "FASTA"));
-    setValidValues(parser, "o", "fasta fa");
+    addOption(parser, seqan::ArgParseOption("o", "outPath", "Set name of output FASTA/FASTQ file(s).", seqan::ArgParseOption::OUTPUTFILE, "FASTA/FASTQ", true));
+    setValidValues(parser, "o", "fasta fa fq fastq");
     addOption(parser, seqan::ArgParseOption("rc", "revcompl", "Disable reverse complementing second input file."));
 
     addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
     addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
     addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
-
-    /*
-    // Add Examples Section.
-    addTextSection(parser, "Examples");
-    addListItem(parser, "\\fBjoin_mates\\fP \\fB-v\\fP \\fItext\\fP",
-                "Call with \\fITEXT\\fP set to \"text\" with verbose output.");
-    */
 
     // Parse command line.
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
@@ -129,11 +129,20 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res;
 
+    resize(options.inPaths, getArgumentValueCount(parser, 0), seqan::Exact());
+    for (unsigned i = 0; i < length(options.inPaths); ++i)
+        getArgumentValue(options.inPaths[i], parser, 0, i);
+    /*
     getArgumentValue(options.inPath1, parser, 0);
     getArgumentValue(options.inPath2, parser, 1);
+    */
 
-    getOptionValue(options.outPath, parser, "o");
-    options.revCompl = !isSet(parser, "rc");
+    resize(options.outPaths, getOptionValueCount(parser, "o"), seqan::Exact());
+    for (unsigned i = 0; i < length(options.outPaths); ++i)
+        getOptionValue(options.outPaths[i], parser, "o", i);
+    //getOptionValue(options.outPath, parser, "o");
+    if (isSet(parser, "rc"))
+        options.revCompl = false;
 
     // Extract option values.
     if (isSet(parser, "quiet"))
@@ -143,6 +152,8 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
     if (isSet(parser, "very-verbose"))
         options.verbosity = 3;
 
+    if (length(options.inPaths) == 1 && length(options.outPaths) == 1)
+        return seqan::ArgumentParser::PARSE_ERROR;
     return seqan::ArgumentParser::PARSE_OK;
 }
 
@@ -196,57 +207,56 @@ template <typename TSequence, typename TId>
 inline bool
 _importSequences(seqan::CharString const & fileNameL,
                  seqan::CharString const & fileNameR,
+                 bool revCompl,
                  seqan::StringSet<TSequence> & seqs,
                  seqan::StringSet<TId> & ids,
                  seqan::StringSet<TId> & sIds,
+                 seqan::StringSet<seqan::CharString> & quals,
                  seqan::String<unsigned> & readJoinPositions
                  )
 {
-    seqan::MultiSeqFile leftMates;
-    seqan::MultiSeqFile rightMates;
-
-    if (!open(leftMates.concat, toCString(fileNameL), seqan::OPEN_RDONLY))
+    seqan::SequenceStream l(toCString(fileNameL));
+    seqan::SequenceStream r(toCString(fileNameR));
+    if (!isGood(l) || !isGood(r))
     {
-        std::cerr << "Failed to open " << fileNameL << " file." << std::endl;
+        std::cerr << "Failed to open file." << std::endl;
         return false;
     }
-    if (!open(rightMates.concat, toCString(fileNameR), seqan::OPEN_RDONLY))
-    {
-        std::cerr << "Failed to open " << fileNameR << " file." << std::endl;
-        return false;
-    }
-
-    seqan::AutoSeqFormat formatL;
-    guessFormat(leftMates.concat, formatL);
-    split(leftMates, formatL);
-
-    seqan::AutoSeqFormat formatR;
-    guessFormat(rightMates.concat, formatR);
-    split(rightMates, formatR);
-
-    unsigned seqCount = length(leftMates);
-
-    resize(readJoinPositions, seqCount);
-    reserve(seqs, seqCount, seqan::Exact());
-    reserve(ids, seqCount, seqan::Exact());
-    reserve(sIds, seqCount, seqan::Exact());
 
     TSequence seq;
     TSequence seqL;
     TSequence seqR;
     TId id;
     TId sId;
+    seqan::CharString qual;
+    seqan::CharString qualL;
+    seqan::CharString qualR;
     unsigned counter = 0;
-    for (unsigned i = 0; i < seqCount; ++i)
+    while (!atEnd(l) || !atEnd(r))
     {
-        assignSeq(seqL, leftMates[i], formatL);
-        assignSeq(seqR, rightMates[i], formatR);
-        reverseComplement(seqR);
-        readJoinPositions[i] = length(seq);
+        if (readRecord(id, seqL, qualL, l) != 0)
+        {
+            std::cerr << "Problem reading from first input file." << std::endl;
+            return false;
+        }
+        if (readRecord(id, seqR, qualR, r) != 0)
+        {
+            std::cerr << "Problem reading from first input file." << std::endl;
+            return false;
+        }
+
+        appendValue(readJoinPositions, length(seqL));
+        if (revCompl)
+        {
+            reverseComplement(seqR);
+            reverse(qualR);
+        }
         append(seq, seqL);
         append(seq, seqR);
-        assignSeqId(id, leftMates[i], formatL);
+        append(qual, qualL);
+        append(qual, qualR);
         appendValue(seqs, seq, seqan::Generous());
+        appendValue(quals, qual, seqan::Generous());
         appendValue(ids, id, seqan::Generous());
 
         _getShortId(sId, id);
@@ -254,12 +264,72 @@ _importSequences(seqan::CharString const & fileNameL,
             ++counter;
         appendValue(sIds, sId);
         clear(seq);
+        clear(qual);
+    }
+    return true;
+}
+
+// Imports mate pairs from one file, separates them, and stores the sequences in the StringSets seqs and and mateSeqs
+// and their identifiers in the StringSet ids
+// Note: Assumes equally long mates, i.e. splits in the middle of the read
+template <typename TSequence, typename TId>
+inline bool
+_importSequences(seqan::CharString const & fileName,
+                 seqan::StringSet<TSequence> & seqs,
+                 seqan::StringSet<TSequence> & mateSeqs,
+                 seqan::StringSet<TId> & ids,
+                 seqan::StringSet<TId> & sIds,
+                 seqan::StringSet<seqan::CharString> & quals,
+                 seqan::StringSet<seqan::CharString> & mateQuals
+                 )
+{
+    typedef typename seqan::Position<TSequence>::Type TPos;
+    seqan::SequenceStream f(toCString(fileName));
+    if (!isGood(f))
+    {
+        std::cerr << "Failed to open file." << std::endl;
+        return false;
     }
 
-    std::cout << "Loaded " << seqCount << " mate pair sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
-    if (counter > 0)
-        std::cout << "Found " << counter << " nonunique sequence IDs" << std::endl;
+    TSequence seq;
+    TSequence seqL;
+    TSequence seqR;
+    TId id;
+    TId sId;
+    seqan::CharString qual;
+    seqan::CharString qualL;
+    seqan::CharString qualR;
+    unsigned counter = 0;
+    TPos splitPos;
+    while (!atEnd(f))
+    {
+        if (readRecord(id, seq, qual, f) != 0)
+        {
+            std::cerr << "Problem reading from first input file." << std::endl;
+            return false;
+        }
 
+        splitPos = static_cast<TPos>(length(seq)/2);
+        append(seqL, prefix(seq, splitPos));
+        append(seqR, suffix(seq, splitPos));
+        appendValue(seqs, seqL, seqan::Generous());
+        appendValue(mateSeqs, seqR, seqan::Generous());
+        append(qualL, prefix(qual, splitPos));
+        append(qualR, suffix(qual, splitPos));
+        appendValue(quals, qualL, seqan::Generous());
+        appendValue(mateQuals, qualR, seqan::Generous());
+        appendValue(ids, id, seqan::Generous());
+
+
+        _getShortId(sId, id);
+        if (!_checkUniqueId(sId, id, ids, sIds))
+            ++counter;
+        appendValue(sIds, sId);
+        clear(seqL);
+        clear(seqR);
+        clear(qualL);
+        clear(qualR);
+    }
     return true;
 }
 
@@ -268,34 +338,55 @@ _importSequences(seqan::CharString const & fileNameL,
 // --------------------------------------------------------------------------
 
 // Writes out sequences and ids in FASTA format
-
-
 template <typename TSequence>
 int _writeSequences(seqan::CharString & outPath,
                 seqan::StringSet<TSequence> const & seqs,
-                seqan::StringSet<seqan::CharString> const & sIds)
+                seqan::StringSet<seqan::CharString> const & sIds,
+                seqan::StringSet<seqan::CharString> const & quals)
 {
-    std::ofstream f(toCString(outPath));
+    seqan::SequenceStream seqStream(toCString(outPath), seqan::SequenceStream::WRITE);
+    if (!isGood(seqStream))
+    {
+        std::cerr << "Error: Could not open output file!" << std::endl;
+        return 1;
+    }
+    if (writeAll(seqStream, sIds, seqs, quals) != 0)
+    {
+        std::cerr << "Error: Could not write to file!" << std::endl;
+        return 1;
+    }
+    return 0;
+}
+
+// Writes out sequences and ids in FASTA format
+template <typename TSequence>
+int _writeSequences(seqan::CharString & outPath1,
+                seqan::CharString & outPath2,
+                seqan::StringSet<TSequence> const & seqs,
+                seqan::StringSet<TSequence> const & mateSeqs,
+                seqan::StringSet<seqan::CharString> const & sIds,
+                seqan::StringSet<seqan::CharString> const & quals,
+                seqan::StringSet<seqan::CharString> const & mateQuals
+                )
+{
+    seqan::SequenceStream f1(toCString(outPath1), seqan::SequenceStream::WRITE);
+    seqan::SequenceStream f2(toCString(outPath2), seqan::SequenceStream::WRITE);
     // seqan::SequenceStream outStream(toCString(outPath), seqan::SequenceStream::WRITE);
-    if (!f.good())
+    if (!isGood(f1) || !isGood(f2))
     {
         std::cerr << "Error: Could not open output file!" << std::endl;
         return 1;
     }
     for (unsigned i = 0; i < length(seqs); ++i)
     {
-        if (writeRecord(f, sIds[i], seqs[i], seqan::Fasta()) != 0)
+        if (writeRecord(f1, sIds[i], seqs[i], quals[i]) != 0 || writeRecord(f2, sIds[i], mateSeqs[i], mateQuals[i]) != 0)
         {
             std::cerr << "Error: Could not write to file!" << std::endl;
             return 1;
         }
-
     }
     return 0;
-
 }
-
-
 
 // --------------------------------------------------------------------------
 // Function main()
@@ -322,23 +413,36 @@ int main(int argc, char const ** argv)
         std::cout << "__OPTIONS____________________________________________________________________\n"
                   << '\n'
                   << "VERBOSITY\t" << options.verbosity << '\n'
-                  << "INPUT FILE 1     \t" << options.inPath1 << '\n'
-                  << "INPUT FILE 2     \t" << options.inPath2 << '\n'
-                  << "OUTPUT FILE     \t" << options.outPath << '\n'
-                  << "OPTION REV COMPL     \t" << options.revCompl << "\n\n";
+                  << "INPUT FILE 1     \t" << options.inPaths[0] << '\n';
+                  if (length(options.inPaths) > 1)
+                      std::cout << "INPUT FILE 2     \t" << options.inPaths[1] << '\n';
+                  std::cout << "OUTPUT FILE     \t" << options.outPaths[0] << '\n';
+                  if (length(options.outPaths) > 1)
+                      std::cout << "OUTPUT FILE 2     \t" << options.outPaths[1] << '\n';
+                  std::cout << "OPTION REV COMPL     \t" << options.revCompl << "\n\n";
     }
 
     typedef seqan::String<seqan::Dna5> TSequence;
     seqan::StringSet<TSequence> seqs;
+    seqan::StringSet<TSequence> mateSeqs;
     seqan::StringSet<seqan::CharString> ids;
     seqan::StringSet<seqan::CharString> sIds;
+    seqan::StringSet<seqan::CharString> quals;
+    seqan::StringSet<seqan::CharString> mateQuals;
     seqan::String<unsigned> joinPos;
-    // Read in paired-end reads
-    _importSequences(options.inPath1, options.inPath2, seqs, ids, sIds, joinPos);
-
-    // Write out one file with joined sequences in FASTA format
-    _writeSequences(options.outPath, seqs, sIds);
-
+    if (length(options.inPaths) > 1)
+    {
+        // Read in paired-end reads
+        _importSequences(options.inPaths[0], options.inPaths[1], options.revCompl, seqs, ids, sIds, quals, joinPos);
+        // Write out one file with joined sequences in FASTA format
+        _writeSequences(options.outPaths[0], seqs, sIds, quals);
+    } else
+    {
+        // Read in joined reads and output two FASTA files
+        _importSequences(options.inPaths[0], seqs, mateSeqs, ids, sIds, quals, mateQuals);
+        // Write out one file with joined sequences in FASTA format
+        _writeSequences(options.outPaths[0], options.outPaths[1], seqs, mateSeqs, sIds, quals, mateQuals);
+    }
 
     return 0;
 }

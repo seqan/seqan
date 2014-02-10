@@ -38,6 +38,10 @@ def main(source_base, binary_base):
     path_to_program = app_tests.autolocateBinary(
       binary_base, 'bin', 'gustaf')
 
+    path_to_snd_program = app_tests.autolocateBinary(
+      binary_base, 'bin', 'gustaf_mate_joining')
+
+
     # ============================================================
     # Built TestConf list.
     # ============================================================
@@ -62,6 +66,31 @@ def main(source_base, binary_base):
     # ============================================================
     # Adeno Tests
     # ============================================================
+
+    # ============================================================
+    # Simple gustaf_mate_joining app test
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('adeno_modified_reads_mates1.fa'),
+              ph.inFile('adeno_modified_reads_mates2.fa'),
+              '-o', ph.outFile('adeno_modified_reads_joinedMates.fa'),
+              '-rc',
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('adeno_modified_reads_joinedMates.fa'),
+                  ph.outFile('adeno_modified_reads_joinedMates.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    # -o adeno_modified_reads_joinedMates.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
     # ============================================================
     # Sanity check with default values and empty output file
     # ============================================================

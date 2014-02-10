@@ -4,7 +4,17 @@
 
 # We use the current trunk version (r13805) for building the reference.
 GUSTAF="../../../../../build/debug/bin/gustaf"
+JOINMATES="../../../../../build/debug/bin/gustaf_mate_joining"
 STELLAR="../../../../../build/debug/bin/stellar"
+
+# ============================================================
+# Creating Stellar input files for paired-end mode using gustaf_mate_joining
+# ============================================================
+
+    ${JOINMATES} adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    -o adeno_modified_reads_joinedMates.fa -rc \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
 
 # ============================================================
 # Creating Stellar output files
