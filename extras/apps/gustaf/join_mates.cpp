@@ -101,7 +101,7 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
                             "mates2 into the second output file. Reverse complementing the sequences can again be "
                             "turned off using \"-rc\".");
 
-    addDescription(parser, "To prepare the joined mate file for the Gustaf paired-end example above, call \n "
+    addDescription(parser, "To prepare the joined mate file for the Gustaf paired-end example, call \n "
 
     "./gustaf_mate_joining adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa "
         "-rc -o adeno_modified_reads_joinedMates.fa");
