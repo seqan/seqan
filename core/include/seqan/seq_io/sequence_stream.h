@@ -117,11 +117,11 @@ namespace seqan {
  * @signature SequenceStream::SequenceStream(fileName[, operationMode[, format[, fileType]]]);
  * 
  * @param[in] fileName      Path to the file to open.  Type: <tt>char const *</tt>
- * @param[in] operationMode Mode to open the file in.  Optional.  Type: SequenceStream::OperationMode.
+ * @param[in] operationMode Mode to open the file in.  Optional.  Type: @link SequenceStream::OperationMode @endlink.
  *                          Default: <tt>READ</tt>
- * @param[in] format        Mode to open the file in.  Optional.  Type: SequenceStream::FileFormat.
+ * @param[in] format        Mode to open the file in.  Optional.  Type: @link SequenceStream::FileFormat @endlink.
  *                          Default: <tt>AUTO_FORMAT</tt>.
- * @param[in] fileType      Mode to open the file in.  Optional.  Type: SequenceStream::FileType.
+ * @param[in] fileType      Mode to open the file in.  Optional.  Type: @link SequenceStream::FileType @endlink.
  *                          Default: <tt>AUTO_TYPE</tt>.
  */
 
@@ -141,7 +141,7 @@ namespace seqan {
  * @brief Open stream for writing.
  * 
  * @var SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
- * @brief Open stream for reading, mark as "persisent reading".  See @link SequenceStream @endlink for more information
+ * @brief Open stream for reading, mark as "persistent reading".  See @link SequenceStream @endlink for more information
  *        on the difference between normal and persistent reading.
  */
 
