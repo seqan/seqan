@@ -2313,10 +2313,11 @@ void printAlignment(
  * @fn FragmentStore#convertMatchesToGlobalAlignment
  * @brief Converts all matches to a multiple global alignment in gap-space.
  * 
- * @signature void convertMatchesToGlobalAlignment(store, score);
+ * @signature void convertMatchesToGlobalAlignment(store, score, shrinkMatches);
  * 
  * @param[in,out] store The fragment store. Types: FragmentStore
  * @param[in]     score A score object used by @link globalAlignment @endlink in this function.
+ * @param[in]     shrinkMatches States whether the matches should be shrinked. Types: True, False
  * 
  * @section Remarks
  * 
