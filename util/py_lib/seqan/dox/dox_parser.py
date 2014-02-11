@@ -69,6 +69,12 @@ class MessagePrinter(object):
     def printStats(self):
         print >>sys.stderr, 'Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning'])
 
+    def numWarnings(self):
+        return self.counts['warning']
+
+    def numErrors(self):
+        return self.counts['error']
+
 
 class ParserError(Exception):
     """Raised when there is a parser error."""
