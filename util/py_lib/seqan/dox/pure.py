@@ -160,7 +160,7 @@ def doMain(args):
     html_writer.generateFor()
 
     msg_printer.printStats()
-    return 0
+    return (msg_printer.numWarnings() + msg_printer.numErrors() > 0)
 
 
 def main():
