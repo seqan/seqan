@@ -7,6 +7,6 @@ cache:
   directories:
   - _build
 before_script:
-  sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev
+  sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev python-jinja2
 script:
   ./util/travis/linux-cibuild.sh
