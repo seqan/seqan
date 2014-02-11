@@ -43,6 +43,9 @@ namespace seqan {
 // Tags, Classes
 // ============================================================================
 
+struct CommonSegmentIterator_;
+typedef Tag<CommonSegmentIterator_> CommonSegmentIterator;
+
 template <typename TJournaledStringSpec>
 struct JournaledStringIterSpec;
 
@@ -172,6 +175,22 @@ struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction Iterator                      [Standard, CommonSegmentIterator]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, Standard>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, Standard>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Iterator                                               [Rooted]
 // ----------------------------------------------------------------------------
 
@@ -185,6 +204,22 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>
 {
     typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, JournaledStringIterSpec<TJournalSpec> > Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Iterator                        [Rooted, CommonSegmentIterator]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> >, JournaledStringIterSpec<CommonSegmentIterator> > Type;
+};
+
+template <typename TValue, typename THostSpec, typename TJournalSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, THostSpec> > const, JournaledStringIterSpec<CommonSegmentIterator> > Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -320,7 +355,8 @@ end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & jou
 {
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Standard>::Type TResult;
     TResult result;
-    _initJournaledStringIteratorEnd(result, journalString);
+    result._journalStringPtr = &journalString;
+    _initJournaledStringIteratorEnd(result);
     return result;
 }
 
@@ -331,7 +367,8 @@ end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journalSt
 {
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Standard>::Type TResult;
     TResult result;
-    _initJournaledStringIteratorEnd(result, journalString);
+    result._journalStringPtr = &journalString;
+    _initJournaledStringIteratorEnd(result);
     return result;
 }
 
@@ -346,7 +383,8 @@ end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & jou
 {
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>::Type TResult;
     TResult result;
-    _initJournaledStringIteratorEnd(result, journalString);
+    result._journalStringPtr = &journalString;
+    _initJournaledStringIteratorEnd(result);
     return result;
 }
 
@@ -357,10 +395,14 @@ end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journalSt
 {
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>::Type TResult;
     TResult result;
-    _initJournaledStringIteratorEnd(result, journalString);
+    result._journalStringPtr = &journalString;
+    _initJournaledStringIteratorEnd(result);
     return result;
 }
 
+// ----------------------------------------------------------------------------
+// Function _initJournaledStringIterator()
+// ----------------------------------------------------------------------------
 
 // For Iter<TJournaledString, JournaledStringIterSpec>
 
@@ -377,15 +419,22 @@ _initJournaledStringIterator(Iter<TJournaledString, JournaledStringIterSpec<TJou
     _updateSegmentIterators(iterator);
 }
 
+// ----------------------------------------------------------------------------
+// Function _initJournaledStringIteratorEnd()
+// ----------------------------------------------------------------------------
+
 template <typename TJournaledString, typename TJournalSpec>
 inline
 void
-_initJournaledStringIteratorEnd(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator,
-                              TJournaledString & journalString)
+_initJournaledStringIteratorEnd(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
 {
     SEQAN_CHECKPOINT;
-    iterator._journalStringPtr = &journalString;
-    iterator._journalEntriesIterator = end(journalString._journalEntries);
+    iterator._journalEntriesIterator = end(iterator._journalStringPtr->_journalEntries, Standard()) - 1;
+    _updateSegmentIteratorsLeft(iterator);
+    if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_PATCH)
+        ++iterator._currentInsertionBufferIt;
+    else
+        ++iterator._currentHostIt;
 }
 
 // TODO(rmaerker): Rename to _updateSegmentIteratorsRight().
@@ -396,7 +445,10 @@ _updateSegmentIterators(Iter<TJournaledString, JournaledStringIterSpec<TJournalS
 {
     SEQAN_CHECKPOINT;
     if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
+    {
+        _initJournaledStringIteratorEnd(iterator);
         return;
+    }
     switch (value(iterator._journalEntriesIterator).segmentSource) {
         case SOURCE_ORIGINAL:
             iterator._hostSegmentBegin = begin(host(*iterator._journalStringPtr), Standard()) + value(iterator._journalEntriesIterator).physicalPosition;
@@ -438,6 +490,10 @@ _updateSegmentIteratorsLeft(Iter<TJournaledString, JournaledStringIterSpec<TJour
             SEQAN_ASSERT_FAIL("Invalid segment source!");
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function value()
+// ----------------------------------------------------------------------------
 
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > >::Type
@@ -588,19 +644,16 @@ valueDestruct(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 }
 
 // ----------------------------------------------------------------------------
-// Function entryPosition
+// Function _localEntryPosition
 // ----------------------------------------------------------------------------
 
 // TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
-entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+_localEntryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator)) {
-        return length(*iterator._journalStringPtr);
-    }
-
-    switch (value(iterator._journalEntriesIterator).segmentSource) {
+    switch (value(iterator._journalEntriesIterator).segmentSource)
+    {
         case SOURCE_ORIGINAL:
             return iterator._currentHostIt - iterator._hostSegmentBegin;
             break;
@@ -614,28 +667,68 @@ entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 }
 
 // ----------------------------------------------------------------------------
+// Function _physicalPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_physicalPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    return value(iterator._journalEntriesIterator).physicalPosition + _localEntryPosition(iterator);
+}
+
+// ----------------------------------------------------------------------------
+// Function _physicalOriginPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_physicalOriginPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const TJournalIter;
+    typedef typename TJournalIter::TJournalEntriesIterator TEntriesIt;
+
+    if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
+        return value(iterator._journalEntriesIterator).physicalOriginPosition + _localEntryPosition(iterator);
+
+    SEQAN_ASSERT_EQ(value(iterator._journalEntriesIterator).segmentSource, SOURCE_PATCH);
+
+    TEntriesIt tmp = iterator._journalEntriesIterator;
+    while (value(tmp).segmentSource == SOURCE_PATCH)
+    {
+        if (tmp == begin(_journalEntries(*iterator._journalStringPtr), Standard()))
+        {
+            if (value(tmp).segmentSource == SOURCE_PATCH)
+                return 0;
+            break;
+        }
+        --tmp;
+    }
+    SEQAN_ASSERT_EQ(tmp->segmentSource, SOURCE_ORIGINAL);
+    return value(tmp).physicalOriginPosition + value(tmp).length;
+
+}
+
+// ----------------------------------------------------------------------------
+// Function _virtualPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_virtualPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    return value(iterator._journalEntriesIterator).virtualPosition + _localEntryPosition(iterator);
+}
+
+// ----------------------------------------------------------------------------
 // Function position()
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
 position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
-        return length(*iterator._journalStringPtr);
-
-    switch (value(iterator._journalEntriesIterator).segmentSource) {
-        case SOURCE_ORIGINAL:
-            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentHostIt - iterator._hostSegmentBegin;
-            break;
-        case SOURCE_PATCH:
-            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentInsertionBufferIt - iterator._insertionBufferSegmentBegin;
-            break;
-        default:
-            SEQAN_ASSERT_FAIL("Invalid segment source!");
-            return 0;
-    }
+    return _virtualPosition(iterator);
 }
 
 // ----------------------------------------------------------------------------
@@ -783,13 +876,6 @@ inline
 Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > &
 operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
-    {
-        --iterator._journalEntriesIterator;
-        _updateSegmentIteratorsLeft(iterator);
-    }
-    else
-    {
         switch (value(iterator._journalEntriesIterator).segmentSource) {
             case SOURCE_ORIGINAL:
                 if (iterator._currentHostIt == iterator._hostSegmentBegin) {
@@ -812,7 +898,6 @@ operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
                 SEQAN_ASSERT_FAIL("Invalid segment source!");
             }
         }
-    }
     return iterator;
 }
 
@@ -861,45 +946,33 @@ operator+=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
 
     // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
-    size_t len = len_;
-
-    // Handle bad case of len_ pointing at/behind end.
-    if (position(iterator) + len_ >= length(*iterator._journalStringPtr)) {
-        iterator = TIterator(end(*iterator._journalStringPtr));
-        return iterator;
-    }
 
     // Handle other case.
     typedef typename Size<TJournaledString>::Type TSize;
-    while (len > 0) {
-        TSize remaining;
-        switch (value(iterator._journalEntriesIterator).segmentSource) {
-            case SOURCE_ORIGINAL:
+    TLen remaining;
+    if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
+        remaining = iterator._hostSegmentEnd - iterator._currentHostIt;
+    else
+        remaining = iterator._insertionBufferSegmentEnd - iterator._currentInsertionBufferIt;
+    while (len_ > 0 && remaining != 0)
+    {
+        SEQAN_ASSERT_GT(remaining, static_cast<TLen>(0));
+        if (len_ >= remaining) {
+            len_ -= remaining;
+            ++iterator._journalEntriesIterator;
+            _updateSegmentIterators(iterator);
+            if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
                 remaining = iterator._hostSegmentEnd - iterator._currentHostIt;
-                SEQAN_ASSERT_GT(remaining, 0u);
-                if (len >= remaining) {
-                    len -= remaining;
-                    ++iterator._journalEntriesIterator;
-                    _updateSegmentIterators(iterator);
-                } else {
-                    iterator._currentHostIt += len;
-                    len = 0;
-                }
-                break;
-            case SOURCE_PATCH:
+            else
                 remaining = iterator._insertionBufferSegmentEnd - iterator._currentInsertionBufferIt;
-                SEQAN_ASSERT_GT(remaining, 0u);
-                if (len >= remaining) {
-                    len -= remaining;
-                    ++iterator._journalEntriesIterator;
-                    _updateSegmentIterators(iterator);
-                } else {
-                    iterator._currentInsertionBufferIt += len;
-                    len = 0;
-                }
-                break;
-            default:
-                SEQAN_ASSERT_FAIL("Invalid segment source!");
+        }
+        else
+        {
+            if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
+                iterator._currentHostIt += len_;
+            else
+                iterator._currentInsertionBufferIt += len_;
+            len_ = 0;
         }
     }
     return iterator;
@@ -938,14 +1011,6 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
     if (position(iterator) <= static_cast<TPosition>(len_)) {
         iterator = TIterator(begin(*iterator._journalStringPtr));
         return iterator;
-    }
-
-    // Handle case when iterator is at positon at end
-    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
-    {
-        --iterator._journalEntriesIterator;
-        _updateSegmentIteratorsLeft(iterator);
-        --len;
     }
 
     // Handle other case.
@@ -1079,9 +1144,6 @@ bool
 operator==(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & a,
            Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & b)
 {
-    SEQAN_CHECKPOINT;
-    if (atEnd(a._journalEntriesIterator, _journalEntries(container(a))) && atEnd(b._journalEntriesIterator, _journalEntries(container(b))))
-        return true;
     if (a._journalEntriesIterator != b._journalEntriesIterator)
         return false;
     if (value(a._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL) {
