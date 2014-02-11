@@ -658,7 +658,6 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
 ..include:seqan/sequence_journaled.h
  */
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
-// TODO(rmaerker): Only supported by SortedArray, since there is a bug in the UnbalancedTree iterator. Is not fixed since UT is deprecated.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
 flatten(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString)
