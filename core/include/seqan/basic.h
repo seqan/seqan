@@ -64,6 +64,9 @@
 // SeqAn Concept Checking Library (ported from Boost).
 #include <seqan/basic/basic_concept.h>
 
+// Generic functions for basic bit manipulations.
+#include <seqan/basic/basic_bit_manipulations.h>
+
 // Alphabet concept and biological implementations.
 #include <seqan/basic/basic_alphabet.h>
 

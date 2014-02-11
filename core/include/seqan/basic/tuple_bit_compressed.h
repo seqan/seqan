@@ -336,6 +336,113 @@ inline void shiftRight(Tuple<TValue, SIZE, BitPacked<> > & me)
     me >>= 1;
 }
 
+// ----------------------------------------------------------------------------
+// Function bitwiseAnd()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void bitwiseAnd(Tuple<TValue, SIZE, BitPacked<> > & res,
+                       Tuple<TValue, SIZE, BitPacked<> > const & lhs,
+                       Tuple<TValue, SIZE, BitPacked<> > const & rhs)
+{
+    bitwiseAnd(res.i, lhs.i, rhs.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitwiseAndNot()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void bitwiseAndNot(Tuple<TValue, SIZE, BitPacked<> > & res,
+                          Tuple<TValue, SIZE, BitPacked<> > const & lhs,
+                          Tuple<TValue, SIZE, BitPacked<> > const & rhs)
+{
+    bitwiseAndNot(res.i, lhs.i, rhs.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitwiseOr()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void bitwiseOr(Tuple<TValue, SIZE, BitPacked<> > & res,
+                      Tuple<TValue, SIZE, BitPacked<> > const & lhs,
+                      Tuple<TValue, SIZE, BitPacked<> > const & rhs)
+{
+    bitwiseOr(res.i, lhs.i, rhs.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitwiseNot()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void bitwiseNot(Tuple<TValue, SIZE, BitPacked<> > & res,
+                       Tuple<TValue, SIZE, BitPacked<> > const & src)
+{
+    bitwiseNot(res.i, src.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllZeros()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline bool testAllZeros(Tuple<TValue, SIZE, BitPacked<> > const & val)
+{
+    return testAllZeros(val.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function setAllZeros()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void setAllZeros(Tuple<TValue, SIZE, BitPacked<> > & val)
+{
+    return setAllZeros(val.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllOnes()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline bool testAllOnes(Tuple<TValue, SIZE, BitPacked<> > const & val)
+{
+    return testAllOnes(val.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function setAllOnes()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline void setAllOnes(Tuple<TValue, SIZE, BitPacked<> > & val)
+{
+    return setAllOnes(val.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanForward()
+// ----------------------------------------------------------------------------
+
+template <typename TPosition, typename TValue, unsigned SIZE>
+inline void bitScanForward(TPosition & index, Tuple<TValue, SIZE, BitPacked<> > const & val)
+{
+    bitScanForward(index, val.i);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanReverse()
+// ----------------------------------------------------------------------------
+
+template <typename TPosition, typename TValue, unsigned SIZE>
+inline void bitScanReverse(TPosition & index, Tuple<TValue, SIZE, BitPacked<> > const & val)
+{
+    bitScanReverse(index, val.i);
+}
+
 // -----------------------------------------------------------------------
 // Function clear()
 // -----------------------------------------------------------------------
