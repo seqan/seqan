@@ -22,8 +22,8 @@ BEGIN {
 
 # For each non-comment record, extend the command for samtools.
 /^[^#]/ {
-    from = ($2 > context) ? ($2 - context) : 0
-    cmd = cmd sprintf(" \"%s:%d-%d\" ", $1, from, $2 + context)
+    from = ($3 > context) ? ($3 - context) : 0
+    cmd = cmd sprintf(" \"%s:%d-%d\" ", $1, from, $3 + context)
 }
 
 # After parsing the file, execute samtools faidx.
