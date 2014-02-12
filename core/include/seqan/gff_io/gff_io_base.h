@@ -67,7 +67,6 @@ namespace seqan {
 ..include:seqan/gff_io.h
 */
 
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGff_;
 typedef Tag<TagGff_> Gff;
 
@@ -88,7 +87,6 @@ typedef Tag<TagGff_> Gff;
 ..include:seqan/gff_io.h
 */
 
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
 
@@ -307,10 +305,11 @@ inline void
 _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & iter)
 {
     IsWhitespace isWhitespace;
+    IsNewline isNewline;
 
     //TODO(singer): AssertList functor would be need
     char c = value(iter);
-    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
+    if (isWhitespace(c) || c == '=')
     {
         throw std::runtime_error("The key field of an attribute is empty!");
         return;  // Key cannot be empty.
@@ -319,8 +318,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     for (; !atEnd(iter); goNext(iter))
     {
         c = value(iter);
-        //if (IsWhitespace(c) || c == '=' || c == ';')
-        if (c == '\n' || c == '\r' || c == ' ' || c == '=' || c == ';')
+        if (isNewline(c) || c == ' ' || c == '=' || c == ';')
             break;
         appendValue(key, c);
     }
@@ -336,9 +334,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     skipUntil(iter, NotFunctor<IsWhitespace>());
 
     if (value(iter) == '=')
-    {
         skipOne(iter);
-    }
 
     if (value(iter) == '"')
     {
@@ -349,7 +345,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 
         // Go over the trailing semicolon and any trailing space.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            goNext(iter);
+            skipOne(iter);
     }
     else
     {
@@ -358,7 +354,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 
         // Skip semicolon and spaces if any.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            goNext(iter);
+            skipOne(iter);
     }
     return;
 }
@@ -430,8 +426,6 @@ inline void clear(GffRecord & record)
 ..include:seqan/gff_io.h
 */
 
-//TODO(singer): no checking if record is complete
-//TODO(singer): no checking whether lexicalCast is working
 template <typename TFwdIterator>
 inline void
 _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
