@@ -242,6 +242,13 @@ public:
 // Functions
 // ==========================================================================
 
+void failExceptionTest()
+{
+    ::seqan::ClassTest::StaticData::thisTestOk() = false;
+    ::seqan::ClassTest::StaticData::errorCount() += 1;
+    ::seqan::ClassTest::fail();
+}
+
 // ==========================================================================
 // Macros
 // ==========================================================================
@@ -348,6 +355,45 @@ public:
                                                                         \
     template <typename SEQAN_TParam>                                    \
     void SEQAN_TEST_NAME_(testCaseName, testName)<SEQAN_TParam>::runTest()
+
+// --------------------------------------------------------------------------
+// Macro SEQAN_TEST_EXCEPTION()
+// --------------------------------------------------------------------------
+
+#define SEQAN_TEST_EXCEPTION(_exception_type, command, _message)                    \
+    do                                                                              \
+    {                                                                               \
+        bool caughtException = false;                                               \
+        try                                                                         \
+        {                                                                           \
+            command;                                                                \
+        }                                                                           \
+        catch(_exception_type& ex)                                                  \
+        {                                                                           \
+            if(std::string(ex.what()) != _message)                                  \
+            {                                                                       \
+                std::cerr << __FILE__ << ":" << __LINE__                            \
+                          << " Got correct exception but wrong message: '"          \
+                          << ex.what() << "' != '"                                  \
+                          << _message << "'" << std::endl;                          \
+                failExceptionTest();                                                \
+            }                                                                       \
+            caughtException = true;                                                 \
+        }                                                                           \
+        catch(...)                                                                  \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
+                      << #_exception_type << std::endl;                             \
+            failExceptionTest();                                                    \
+        }                                                                           \
+        if (!caughtException)                                                       \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
+                      << std::endl;                                                 \
+            failExceptionTest();                                                    \
+        }                                                                           \
+    } while(false)
+
 
 }  // namespace seqan
 
