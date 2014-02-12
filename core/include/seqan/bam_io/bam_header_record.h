@@ -55,19 +55,19 @@ namespace seqan {
  *
  * @signature enum BamHeaderRecordType;
  *
- * @var BamHeaderRecordType BAM_HEADER_FIRST = 0;
+ * @val BamHeaderRecordType BAM_HEADER_FIRST = 0;
  * @brief Is the first header (HD).
  *
- * @var BamHeaderRecordType BAM_HEADER_REFERENCE = 1;
+ * @val BamHeaderRecordType BAM_HEADER_REFERENCE = 1;
  * @brief Is a reference (SQ) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_READ_GROUP = 2;
+ * @val BamHeaderRecordType BAM_HEADER_READ_GROUP = 2;
  * @brief Is a read group (RG) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_PROGRAM = 3;
+ * @val BamHeaderRecordType BAM_HEADER_PROGRAM = 3;
  * @brief Is a program (PG) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_COMMENT = 4;
+ * @val BamHeaderRecordType BAM_HEADER_COMMENT = 4;
  * @brief Is a comment (CO) header.
  */
 
@@ -100,16 +100,16 @@ enum BamHeaderRecordType
  *
  * @signature enum BamSortOrder;
  *
- * @var BamSortOrder BAM_SORT_UNKNOWN = 0;
+ * @val BamSortOrder BAM_SORT_UNKNOWN = 0;
  * @brief BAM file sort order is unknown.
  *
- * @var BamSortOrder BAM_SORT_UNSORTED = 1;
+ * @val BamSortOrder BAM_SORT_UNSORTED = 1;
  * @brief BAM file is unsorted.
  *
- * @var BamSortOrder BAM_SORT_QUERYNAME = 2;
+ * @val BamSortOrder BAM_SORT_QUERYNAME = 2;
  * @brief BAM file is sorted by query name;
  *
- * @var BamSortOrder BAM_SORT_COORDINATE = 3;
+ * @val BamSortOrder BAM_SORT_COORDINATE = 3;
  * @brief BAM file is sorted by coordinate.
  */
 

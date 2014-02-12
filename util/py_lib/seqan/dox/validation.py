@@ -22,7 +22,7 @@ class MissingSignatureValidator(ProcDocValidator):
     def validate(self, proc_entry):
         IGNORED = ['variable', 'member_variable', 'tag', 'grouped_tag', 'typedef',
                    'grouped_typedef', 'signature', 'concept', 'member_typedef',
-                   'enum', 'grouped_enum']
+                   'enum', 'grouped_enum', 'enum_value']
         if not hasattr(proc_entry, 'signatures') or proc_entry.kind in IGNORED:
             return  # Skip if type has no signatures.
         if not proc_entry.signatures:

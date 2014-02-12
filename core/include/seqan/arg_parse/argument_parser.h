@@ -123,22 +123,22 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  *
  * @signature enum ArgumentParser::ParseResult;
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_OK;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_OK;
  * @brief Parsing the program's arguments was successful and no builtin command was triggered.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_ERROR;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_ERROR;
  * @brief There were errors parsing the arguments.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
  * @brief Parsing was successful, built-in <tt>--help</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
  * @brief Parsing was successful, built-in <tt>--version</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
  * @brief Parsing was successful, built-in <tt>--write-ctd</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_EXPORT_HELP;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_EXPORT_HELP;
  * @brief Parsing was successful, built-in <tt>--export-help</tt> option was used.
  */
 

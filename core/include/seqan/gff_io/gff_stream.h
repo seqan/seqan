@@ -155,10 +155,10 @@ For writing, only GFF 3 and GTF are supported.
  * 
  * @see GffStream
  * 
- * @var GffStream::FileFormat GffStream::GFF
+ * @val GffStream::FileFormat GffStream::GFF
  * @brief GFF file format.
  * 
- * @var GffStream::FileFormat GffStream::GTF
+ * @val GffStream::FileFormat GffStream::GTF
  * @brief GTF file format.
  */
 
@@ -172,13 +172,13 @@ For writing, only GFF 3 and GTF are supported.
  * @see GffStream#open
  * @see GffStream::GffStream
  * 
- * @var GffStream::Mode GffStream::READ
+ * @val GffStream::Mode GffStream::READ
  * @brief Open in read mode.
  * 
- * @var GffStream::Mode GffStream::WRITE
+ * @val GffStream::Mode GffStream::WRITE
  * @brief Open in write mode.
  * 
- * @var GffStream::Mode GffStream::INVALID
+ * @val GffStream::Mode GffStream::INVALID
  * @brief Invalid open mode.
  */
 
