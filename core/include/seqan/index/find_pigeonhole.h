@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// This filter uses the pigeonhole principle to search k-error matches 
+// This filter uses the pigeonhole principle to search k-error matches
 // between strings in a stringset and a text.
 // The pigeonhole principle states:
 // If a string is split into k+1 pieces then in every k-error match of the
@@ -42,7 +42,7 @@
 #ifndef CORE_INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
 #define CORE_INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
 
-namespace seqan 
+namespace seqan
 {
 
 // ==========================================================================
@@ -67,7 +67,7 @@ namespace seqan
         enum { ONE_PER_DIAGONAL = 1 };	// 1..record last seed diagonal and ignore seeds on the same diag. (heuristic)
         enum { HAMMING_ONLY = 1 };		// 0..no indels; 1..allow indels
     };
-	
+
 //////////////////////////////////////////////////////////////////////////////
 
 
@@ -75,31 +75,67 @@ namespace seqan
 
 
 	template <typename TSpec, typename THstkPos>
-	struct PigeonholeHit_ 
+	struct PigeonholeHit_
 	{
-		THstkPos	hstkPos;			// seed diagonal begin in haystack 
+		THstkPos	hstkPos;			// seed diagonal begin in haystack
 		unsigned	ndlSeqNo;			// needle sequence number
 	};
-    
+
     template <typename THaystack, typename TPattern, typename TPigeonholeSpec>
     struct FindResult<Finder<THaystack, Pigeonhole<TPigeonholeSpec> >, TPattern>
     {
         typedef SwiftHitSemiGlobal_<__int64> Type;
     };
-        
-    struct PigeonholeParameters {
+
+/*!
+ * @class PigeonholeParameters
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ * @brief Parameters for the pigeonhole filter algorithm.
+ *
+ * @signature struct PigeonholeParameters;
+ *
+ * @see PigeonholePattern
+ *
+ *
+ * @fn PigeonholeParameters::PigeonholeParameters
+ * @brief Default constructor.
+ *
+ * @signature PigeonholeParameters::PigeonholeParameters();
+ *
+ * Initializes all member variables, default values are given in the variable documentation.
+ *
+ *
+ * @var unsigned PigeonholeParameters::overlap;
+ * @brief Overlap length of adjacent q-grams, default is to use non-overlappling q-grams (<tt>= 0</tt>).
+ *
+ * @var unsigned PigeonholeParameters::delta;
+ * @brief Delta length, becomes index step site; defaults to <tt>0</tt>.
+ *
+ * A value of <tt>0</tt> means that the delta will be auto-detected.
+ *
+ * @var bool PigeonholeParameters::printDots;
+ * @brief Whether to print dots for the scanning progress, defaults to <tt>false</tt>.
+ *
+ * @var bool PigeonholeParameters::debug;
+ * @brief Whether to print debug information, defaults to <tt>false</tt>.
+ */
+
+
+    struct PigeonholeParameters
+    {
         unsigned overlap;           // overlap length of adjacent q-grams, default is to use non-overlapping q-grams (=0)
         unsigned delta;             // delta length (0 = automatic detection), becomes index stepSize
         bool printDots;             // the q-gram will have length q=delta+overlap
         bool debug;
-        
-        PigeonholeParameters():
+
+        PigeonholeParameters() :
             overlap(0),
             delta(0),
             printDots(false),		// print a . for every 100kbps mapped genome
-            debug(false) {}
+            debug(false)
+        {}
     };
-    
+
 
 //____________________________________________________________________________
 
@@ -115,7 +151,7 @@ namespace seqan
 ..param.THaystack:The type of the sequence that should be searched.
 ..param.TIndex: A q-gram index of needle(s) that should be searched for.
 ...type:Spec.IndexQGram
-..param.TSpec: Specifies the type of Swift filter.
+..param.TSpec: Specifies the type of pigeonhole filter.
 ..include:seqan/index.h
 ..remarks:
  The @Class.Pattern@ must be a q-gram index over multiple patterns. The tolerated error rate must be given when @Function.find@ or @Function.windowFindBegin@ is called.
@@ -124,32 +160,57 @@ namespace seqan
 */
 
 /*!
- * @class Pigeonhole
- * 
- * @extends Pattern
+ * @class PigeonholeFinder
  * @extends Finder
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors
- *        in the text, every partition into k+1 parts contains one part that matches without error.
- * 
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ *
+ * @brief Pigeonhole-based finder.  Must be used together with @link PigeonholePattern @endlink.
+ *
  * @signature template <typename THaystack, typename TSpec>
  *            class Finder<THaystack, Pigeonhole<TSpec> >;
+ *
+ * @tparam TSpec Specifies the type of pigeonhole filter.
+ * @tparam THaystack The type of the sequence that should be searched.
+ *                   Types: @link SequenceConcept @endlink
+ *
+ * Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors in the text,
+ * every partition into k+1 parts contains one part that matches without error.
+ *
+ * The @link Pattern @endlink must be a q-gram index over multiple patterns.  The tolerated error rate must be given
+ * when @link Finder#find @endlink or @link PigeonholeFinder#windowFindBegin @endlink is called.  In these functions the
+ * length of the index @link Shape @endlink is set automatically thus it must be modifiable at runtime, e.g. @link
+ * OneGappedShape @endlink.
+ *
+ * @see PigeonholePattern
+ *
+ * @var PigeonholeParameters PigeonholePattern::parameters;
+ * @brief The pigeonhole parameters to use for configuration.
+ */
+
+/*!
+ * @class PigeonholePattern
+ * @extends Pattern
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ *
+ * @brief Pigeonhole-based pattern.  Must be used together with @link PigeonholeFinder @endlink.
+ *
+ * See @link PigeonholeFinder @endlink for more information on the algorithm.
+ *
  * @signature template <typename THaystack, typename TSpec>
  *            class Pattern<TIndex, Pigeonhole<TSpec> >;
- * 
- * @tparam TSpec Specifies the type of Swift filter.
+ *
+ * @tparam TSpec Specifies the type of pigeonhole filter.
  * @tparam TIndex A q-gram index of needle(s) that should be searched for.
  *                Types: @link IndexQGram @endlink
- * @tparam THaystack The type of the sequence that should be searched. 
- *                   Types: @link SequenceConcept @endlink
- * 
- * @section Remarks
- * 
- * The @link Pattern @endlink must be a q-gram index over multiple patterns. The tolerated error rate must be given when
- * @link Finder#find @endlink or @link Pigeonhole#windowFindBegin @endlink is called.  In these functions the length of the index @link
- * Shape @endlink is set automatically thus it must be modifiable at runtime, e.g. @link OneGappedShape @endlink.
+ *
+ * @see PigeonholeFinder
+ */
+
+/*!
+ * @typedef PigeonholeFinder::THitString
+ * @brief The type to use for the hit string returned in @link PigeonholeFinder#getWindowFindHits @endlink.
+ *
+ * @signature typedef (...) PigeonholeFinder::THitString;
  */
 
 // docu is now in find_pattern_base.h
@@ -193,7 +254,7 @@ namespace seqan
 		template <typename TRepeatSize, typename TPeriodSize>
 		Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod):
 			data_iterator(begin(haystack, Rooted())),
-			_needReinit(true) 
+			_needReinit(true)
 		{
 			findRepeats(data_repeats, haystack, minRepeatLen, maxPeriod);
 		}
@@ -225,15 +286,15 @@ namespace seqan
 			endRepeat = end(data_repeats, Standard());
 		}
 
-		inline typename Reference<TIterator>::Type 
+		inline typename Reference<TIterator>::Type
 		operator* () { return value(hostIterator(*this)); }
 
-		inline typename Reference<TIterator const>::Type 
+		inline typename Reference<TIterator const>::Type
 		operator* () const { return value(hostIterator(*this)); }
 
 		operator TIterator () const	{ return data_iterator;	}
-        
-        Finder & operator = (Finder const &orig) 
+
+        Finder & operator = (Finder const &orig)
         {
             data_iterator = orig.data_iterator;
             haystackEnd = orig.haystackEnd;
@@ -256,7 +317,7 @@ namespace seqan
 
 //____________________________________________________________________________
 
-	
+
 	template <typename THaystack, typename TSpec>
 	inline bool
 	atEnd(Finder<THaystack, Pigeonhole<TSpec> > & me)
@@ -284,7 +345,7 @@ namespace seqan
 		typedef typename Fibre<TIndex, Tag<FibreSA_> const >::Type		TSA;
 		typedef typename Fibre<TIndex, Tag<Fibre_Shape_> const >::Type	TShape;
 		typedef typename Iterator<TSA const, Standard>::Type			TIterator;
-				
+
 		TShape					shape;
         __int64                 curBeginPos, curEndPos;
 		__int64					finderLength;
@@ -299,11 +360,11 @@ namespace seqan
 
 		Holder<TIndex>	data_host;
 
-		Pattern() 
+		Pattern()
 		{
 			clear(*this);
 		}
-		Pattern(TIndex &_index): data_host(_index) 
+		Pattern(TIndex &_index): data_host(_index)
 		{
 			clear(*this);
 		}
@@ -312,7 +373,7 @@ namespace seqan
 			clear(*this);
 		}
 	};
-	
+
 //____________________________________________________________________________
 
 
@@ -337,9 +398,9 @@ _pigeonholeUpdateShapeLength(Shape<TValue, SimpleShape> &shape, TSize newLength)
 {
     TSize weight = _pigeonholeMaxShapeWeight(shape);
 
-    if (weight > newLength) 
+    if (weight > newLength)
 		weight = newLength;
-		
+
     if (weight == length(shape))
         return false;
 
@@ -353,7 +414,7 @@ _pigeonholeUpdateShapeLength(Shape<TValue, OneGappedShape> &shape, TSize newLeng
 {
     if (length(shape) == newLength)
         return false;
-    
+
     TSize weight = _pigeonholeMaxShapeWeight(shape);
 
     if (weight > newLength)
@@ -373,12 +434,12 @@ _pigeonholeUpdateShapeLength(Shape<TValue, GenericShape> &shape, TSize newLength
 {
     if (length(shape) == newLength)
         return false;
-    
+
     TSize weight = _pigeonholeMaxShapeWeight(shape);
-    
+
     if (weight >= newLength)
         weight = newLength;
-    
+
     CharString str;
     resize(str, weight / 2, '1');
     resize(str, newLength - (weight + 1) / 2, '0');
@@ -388,12 +449,27 @@ _pigeonholeUpdateShapeLength(Shape<TValue, GenericShape> &shape, TSize newLength
     return true;
 }
 
+/*!
+ * @fn PigeonholePattern#maskPatternSequence
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ * @brief Mask and unmask pattern sequence.
+ *
+ * @note Disabling sequences in the pigeonhole filter requires the <tt>ONE_PER_DIAGONAL</tt> heuristic.
+ *
+ * @signature void maskPatternSequence(pattern, seqNo, enable);
+ *
+ * @param[in,out] pattern The PigeonholePattern to update.
+ * @param[in]     seqNo   Index of the sequence to disable/enable.
+ * @param[in]     enable  A <tt>bool</tt> that indicates whether hits are to be generated for the given sequence.
+ */
+
 template <typename TIndex, typename TSpec, typename TSeqNo>
 inline void
-maskPatternSequence(Pattern<TIndex, Pigeonhole<TSpec> > & pattern, TSeqNo seqNo, bool enable) 
+maskPatternSequence(Pattern<TIndex, Pigeonhole<TSpec> > & pattern, TSeqNo seqNo, bool enable)
 {
-    SEQAN_ASSERT_NEQ_MSG((int)Pigeonhole<TSpec>::ONE_PER_DIAGONAL, 0, "Disabling sequences in the pigeonhole filter requires the ONE_PER_DIAGONAL heuristic.");
-	
+    SEQAN_ASSERT_NEQ_MSG((int)Pigeonhole<TSpec>::ONE_PER_DIAGONAL, 0,
+                         "Disabling sequences in the pigeonhole filter requires the ONE_PER_DIAGONAL heuristic.");
+
 	if (enable)
 		pattern.lastSeedDiag[seqNo] = -(__int64)pattern.maxSeqLen;
 	else
@@ -401,7 +477,7 @@ maskPatternSequence(Pattern<TIndex, Pigeonhole<TSpec> > & pattern, TSeqNo seqNo,
 }
 
 template <typename TIndex, typename TFloat, typename TSpec>
-inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat errorRate) 
+inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat errorRate)
 {
 	typedef typename Size<TIndex>::Type TSize;
 
@@ -411,27 +487,27 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
 	if (pattern._currentErrorRate != _newErrorRate)
 	{
 		// settings have been changed -> initialize bucket parameters
-	
+
 		pattern._currentErrorRate = _newErrorRate;
 
         TSize minDelta = MaxValue<TSize>::VALUE;
         TSize maxDelta = 3;
         TSize maxSeqLen = 0;
-        for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo) 
+        for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
         {
             // get pattern length and max. allowed errors
             TSize length = sequenceLength(seqNo, host(pattern));
             if (maxSeqLen < length) maxSeqLen = length;
-			
+
 			// sequence must have sufficient length
 			if (length <= pattern.params.overlap) continue;
-			
+
 			// cut overlap many characters from the end
             TSize errors = (TSize) floor(errorRate * length);
 			length -= pattern.params.overlap;
             TSize delta = length / (errors + 1);
-			
-			
+
+
 			// ignore too short q-grams
 			if (delta < 3) continue;
             if (minDelta > delta) minDelta = delta;
@@ -439,11 +515,11 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
         }
         pattern.maxSeqLen = maxSeqLen;
         if (minDelta < 3) minDelta = maxDelta;
-		
+
         TIndex &index = host(pattern);
 		pattern.finderPosOffset = 0;
 		pattern.finderPosNextOffset = pattern.maxSeqLen + pattern.finderLength;
-		
+
         if (pattern.params.delta != 0)
 		{
 			// use user-defined delta
@@ -455,7 +531,7 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
 			// disable index
 			minDelta = pattern.maxSeqLen + 1;
 		}
-        		
+
         if (_pigeonholeUpdateShapeLength(pattern.shape, minDelta + pattern.params.overlap) || getStepSize(index) != minDelta)
         {
             clear(index);
@@ -484,12 +560,12 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
 
 template <
 	typename TFinder,
-	typename TIndex, 
+	typename TIndex,
 	typename TSpec,
 	typename THValue
 >
 inline bool _pigeonholeProcessQGram(
-	TFinder &finder, 
+	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
 	THValue hash)
 {
@@ -499,12 +575,12 @@ inline bool _pigeonholeProcessQGram(
     typedef typename Fibre<TIndex, QGramSA>::Type const TSA;
     typedef typename Iterator<TSA, Standard>::Type      TSAIter;
     typedef typename TFinder::TPigeonholeHit            THit;
-    
-	TIndex const &index = host(pattern);	
-    
+
+	TIndex const &index = host(pattern);
+
 	// all previous matches reported -> search new ones
 	clear(finder.hits);
-    
+
     TSAIter saBegin = begin(indexSA(index), Standard());
     Pair<unsigned> ndlPos;
     THit hit;
@@ -512,8 +588,8 @@ inline bool _pigeonholeProcessQGram(
     register unsigned bktNo = getBucket(index.bucketMap, hash);
     register TSAIter occ = saBegin + indexDir(index)[bktNo];
     register TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
-    
-    for(; occ != occEnd; ++occ) 
+
+    for(; occ != occEnd; ++occ)
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index));
         hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);		// bucket begin in haystack
@@ -548,15 +624,15 @@ inline bool _pigeonholeProcessQGram(
 
 
 template <typename TIndex, typename TSpec>
-inline bool 
-empty(Pattern<TIndex, Pigeonhole<TSpec> > & me) 
+inline bool
+empty(Pattern<TIndex, Pigeonhole<TSpec> > & me)
 {
 	return me._currentErrorRate == -1;
 }
 
 template <typename TIndex, typename TSpec>
-inline void 
-clear(Pattern<TIndex, Pigeonhole<TSpec> > & me) 
+inline void
+clear(Pattern<TIndex, Pigeonhole<TSpec> > & me)
 {
 	me.finderPosOffset = 0;
 	me.finderPosNextOffset = 0;
@@ -821,10 +897,10 @@ infix(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 //____________________________________________________________________________
 
 template <typename THaystack, typename TSpec>
-inline void 
+inline void
 _printDots(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-	while (finder.curPos >= finder.dotPos) 
+	while (finder.curPos >= finder.dotPos)
 	{
 		finder.dotPos += 100000;
 		if (finder.dotPos >= finder.dotPos2)
@@ -837,7 +913,7 @@ _printDots(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 _nextNonRepeatRange(
 	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
@@ -847,10 +923,10 @@ _nextNonRepeatRange(
 
 	if (finder.curRepeat == finder.endRepeat) return false;
 
-	do 
+	do
 	{
 		finder.startPos = (*finder.curRepeat).endPosition;
-		if (++finder.curRepeat == finder.endRepeat) 
+		if (++finder.curRepeat == finder.endRepeat)
 		{
 			finder.endPos = length(host(finder));
 			if (finder.startPos + length(pattern.shape) > finder.endPos)
@@ -873,7 +949,7 @@ _nextNonRepeatRange(
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 _firstNonRepeatRange(
 	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
@@ -903,7 +979,7 @@ _firstNonRepeatRange(
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline void 
+inline void
 _copyPigeonholeHit(
 	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
@@ -914,13 +990,13 @@ _copyPigeonholeHit(
 }
 
 template <typename THaystack, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 find(
 	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern, 
+	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
 	double errorRate)
 {
-	if (empty(finder)) 
+	if (empty(finder))
 	{
 		pattern.finderLength = length(container(finder));
 		_patternInit(pattern, errorRate);
@@ -934,10 +1010,10 @@ find(
 			_copyPigeonholeHit(finder, pattern);
 			return true;
 		}
-	} 
+	}
 	else
 	{
-		if (++finder.curHit < finder.endHit) 
+		if (++finder.curHit < finder.endHit)
 		{
 			_copyPigeonholeHit(finder, pattern);
 			return true;
@@ -948,18 +1024,18 @@ find(
 	clear(finder.hits);
 
 	// are we at the end of the text?
-	if (atEnd(finder) && finder.curRepeat == finder.endRepeat) 
+	if (atEnd(finder) && finder.curRepeat == finder.endRepeat)
 	{
 		finder.curHit = finder.endHit;
 		return false;
 	}
 
-	do 
+	do
 	{
 		if (pattern.params.printDots) _printDots(finder);
-		if (atEnd(++finder)) 
+		if (atEnd(++finder))
 		{
-			if (!_nextNonRepeatRange(finder, pattern)) 
+			if (!_nextNonRepeatRange(finder, pattern))
                 return false;
 			hash(pattern.shape, hostIterator(hostIterator(finder)));
 		}
@@ -968,7 +1044,7 @@ find(
 			++finder.curPos;
 			hashNext(pattern.shape, hostIterator(hostIterator(finder)));
 		}
-		
+
 		if (_pigeonholeProcessQGram(finder, pattern, value(pattern.shape)))
 		{
 			_copyPigeonholeHit(finder, pattern);
@@ -986,33 +1062,32 @@ find(
 */
 
 /*!
- * @fn Pigeonhole#windowFindBegin
- * 
- * @headerfile seqan/index.h
- * 
+ * @fn PigeonholeFinder#windowFindBegin
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ *
  * @brief Initializes the pattern. Sets the finder on the begin position.  Gets the first non-repeat range and sets it
- * in the finder.  Used together with @link Pigeonhole#windowFindEnd @endlink.
- * 
+ * in the finder.  Used together with @link PigeonholeFinder#windowFindEnd @endlink.
+ *
  * @signature windowFindBegin(finder, pattern, errorRate)
- * 
- * @param pattern A pattern with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * @param errorRate Error rate that is allowed between reads and reference. Should be the same in as in @link
- *                  Swift#windowFindNext @endlink.  Types: <tt>double</tt>
- * @param finder A finder with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * 
- * @see Pigeonhole#windowFindNext
- * @see Pigeonhole#windowFindEnd
+ *
+ * @param[in,out] finder    The PigeonholeFinder to use.
+ * @param[in,out] pattern   The PigeonholePattern to use.
+ * @param[in]     errorRate Error rate that is allowed between reads and reference.  Should be the same in as in @link
+ *                          PigeonholeFinder#windowFindNext @endlink.  Types: <tt>double</tt>
+ *
+ * @see PigeonholeFinder#windowFindNext
+ * @see PigeonholeFinder#windowFindEnd
  */
 
 template <typename THaystack, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 windowFindBegin(
 	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern, 
+	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
 	double errorRate)
 {
 	SEQAN_CHECKPOINT
-	
+
 	pattern.finderLength = pattern.maxSeqLen + length(container(finder));
 	_patternInit(pattern, errorRate);
 	_finderSetNonEmpty(finder);
@@ -1021,7 +1096,7 @@ windowFindBegin(
     finder.windowStart = 0;
 
 	if (!_firstNonRepeatRange(finder, pattern)) return false;
-    
+
     return true;
 }
 
@@ -1034,81 +1109,78 @@ windowFindBegin(
 */
 
 /*!
- * @fn Pigeonhole#windowFindNext
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Searches over the next window with the finder. The found hits can be retrieved with @link 
- *        Swift#getWindowFindHits @endlink  Used together with @link Pigeonhole#windowFindBegin @endlink and @link
- *        Pigeonhole#windowFindEnd @endlink.
- * 
- * @signature windowFindNext(finder, pattern, finderWindowLength)
- * 
- * @param pattern A pattern with window interface. Types: Pigeonhole, Swift
- * @param finderWindowLength Number of bases that are scanned beginning from the position the finder is at.  Including
- * bases that are marked as repeats and that are skipped. Types: nolink:unsigned int
- * @param finder A finder with window interface. Types: Pigeonhole
- * 
- * @return TReturn true, if there are bases that can be scanned. false,
- *                 otherwise
- * 
- * @see Pigeonhole#windowFindBegin
- * @see Pigeonhole#windowFindEnd
- * @see Pigeonhole#getWindowFindHits
+ * @fn PigeonholeFinder#windowFindNext
+ * @headerfile <seqan/index/find_pigeonhol.h>
+ * @brief Searches over the next window with the finder.  The found hits can be retrieved with @link
+ *        PigeonholeFinder#getWindowFindHits @endlink Used together with @link PigeonholeFinder#windowFindBegin @endlink
+ *        and @link PigeonholeFinder#windowFindEnd @endlink.
+ *
+ * @signature bool windowFindNext(finder, pattern, finderWindowLength)
+ *
+ * @param[in,out] finder             The PigeonholeFinder to use.
+ * @param[in,out] pattern            The PigeonholePattern to use.
+ * @param[in]     finderWindowLength Number of bases that are scanned beginning from the position the finder is at.
+ *                                   Including bases that are marked as repeats and that are skipped. Types: <tt>unsigned</tt>.
+ *
+ * @return bool <tt>true</tt>, if there are bases that can be scanned, <tt>false</tt> otherwise.
+ *
+ * @see PigeonholeFinder#windowFindBegin
+ * @see PigeonholeFinder#windowFindEnd
+ * @see PigeonholeFinder#getWindowFindHits
  */
 
 
 
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
-inline bool 
+inline bool
 windowFindNext(
 	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern, 
+	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
 	TSize finderWindowLength)
 {
 	SEQAN_CHECKPOINT
-	
+
 	typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
 	typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
 	typedef typename TFinder::THstkPos                      THstkPos;
-    
+
     typedef typename Fibre<TIndex, QGramSA>::Type           TSA;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
     typedef typename TFinder::TPigeonholeHit                THit;
 
-    TIndex const &index = host(pattern);	
+    TIndex const &index = host(pattern);
 
 	// all previous matches reported -> search new ones
 	clear(finder.hits);
-    
+
 	THstkPos windowEnd = finder.windowStart + finderWindowLength;
     TSAIter saBegin = begin(indexSA(index), Standard());
     Pair<unsigned> ndlPos;
     THit hit;
 	double errorRate = pattern._currentErrorRate;
 	__int64 seqDisabled = pattern.seqDisabled;
-        
+
     // iterate over all non-repeat regions within the window
     for (; finder.curPos < windowEnd; )
     {
         THstkPos nonRepeatEnd = finder.endPos - length(pattern.shape) + 1;
         THstkPos localEnd = _min(windowEnd, nonRepeatEnd);
-        
+
         // filter a non-repeat region within the window
         if (finder.curPos < localEnd)
         {
             TShape &shape = pattern.shape;
-            
+
             hashInit(shape, hostIterator(hostIterator(finder)));
             for (; finder.curPos < localEnd; ++finder.curPos, ++finder)
             {
                 hashNext(shape, hostIterator(hostIterator(finder)));
-                
+
                 register unsigned bktNo = getBucket(index.bucketMap, value(shape));
                 register TSAIter occ = saBegin + indexDir(index)[bktNo];
                 register TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
 
-				for(; occ != occEnd; ++occ) 
+				for(; occ != occEnd; ++occ)
 				{
 					posLocalize(ndlPos, *occ, stringSetLimits(index));
 					hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);	// bucket begin in haystack
@@ -1118,7 +1190,7 @@ windowFindNext(
 					{
 						register __int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
 						if (lastDiag == seqDisabled) continue;
-						
+
 						register __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
 						if (lastDiag == diag)
 						{
@@ -1143,9 +1215,9 @@ windowFindNext(
 				}
             }
         }
-        
+
         if (pattern.params.printDots) _printDots(finder);
-        
+
         if (finder.curPos >= nonRepeatEnd)
             if (!_nextNonRepeatRange(finder, pattern))
             {
@@ -1166,25 +1238,23 @@ windowFindNext(
 
 
 /*!
- * @fn Pigeonhole#windowFindEnd
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Flushes the pattern. Used together with @link Pigeonhole#windowFindBegin @endlink
- *        and @link Pigeonhole#windowFindNext @endlink.
- * 
- * @signature windowFindEnd(finder, pattern)
- * 
- * @param pattern A pattern with window interface. Types: @link Swift @endlink
- * @param finder A finder with window interface. Types: @link Pigeonhole @endlink
- * 
- * @see Pigeonhole#windowFindBegin
- * @see Pigeonhole#windowFindNext
+ * @fn PigeonholeFinder#windowFindEnd
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ * @brief Flushes the pattern.  Used together with @link PigeonholeFinder#windowFindBegin @endlink and @link
+ *        PigeonholeFinder#windowFindNext @endlink.
+ *
+ * @signature void windowFindEnd(finder, pattern);
+ *
+ * @param[in,out] pattern A pattern with window interface.
+ * @param[in,out] finder  A finder with window interface. Types: @link PigeonholeFinder @endlink
+ *
+ * @see PigeonholeFinder#windowFindBegin
+ * @see PigeonholeFinder#windowFindNext
  */
 
 
 template <typename THaystack, typename TIndex, typename TSpec>
-inline void 
+inline void
 windowFindEnd(
 	Finder<THaystack, Pigeonhole<TSpec> > &,
 	Pattern<TIndex, Pigeonhole<TSpec> > &)
@@ -1192,20 +1262,18 @@ windowFindEnd(
 }
 
 ///.Function.getWindowFindHits.param.finder.type:Spec.Pigeonhole
+
 /*!
- * @fn Pigeonhole#getWindowFindHits
- * 
- * @headerfile seqan/index.h
- * 
+ * @fn PigeonholeFinder#getWindowFindHits
+ * @headerfile <seqan/index/find_pigeonhole.h>
  * @brief Returns the string of hits from the finder.
- * 
- * @signature getWindowFindHits(finder)
- * 
- * @param finder A finder with window interface. Types: @link Swift @endlink
- * 
- * @return TReturn @link String @endlink of Hits (use Finder<...>::THitString as Type).
- * 
- * @see Pigeonhole#windowFindNext
+ *
+ * @signature THitString getWindowFindHits(finder);
+ *
+ * @param[in] finder     A PigeonFinder.
+ * @return    THitString @link String @endlink of Hits, see @link PigeonholeFinder::THitString @endlink.
+ *
+ * @see PigeonholeFinder#windowFindNext
  */
 
 
@@ -1215,18 +1283,30 @@ inline typename Finder<THaystack, Pigeonhole<TSpec> >::THitString &
 getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
 	SEQAN_CHECKPOINT
-	
+
 	return finder.hits;
 }
 
 ///.Function.getMaxDeviationOfOrder.param.pattern.type:Spec.Pigeonhole
+
+/*!
+ * @fn PigeonholePattern#getMaxDeviationOfOrder
+ * @headerfile <seqan/index/find_pigeonhole.h>
+ * @brief Returns the maximal out-of-order distance of adjacent hits.
+ *
+ * @signature TSize getMaxDeviationOfOrder(pattern);
+ *
+ * @param[in] pattern A PigeonholeFinder.
+ * @return    TSize   Returns the maximal distance two adjacent hits can have which are not in increasing order.
+ *                    <tt>TSize</tt> is the size type of the underlying index.
+ */
 
 template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
 	SEQAN_CHECKPOINT;
-   
+
 	return (pattern.maxSeqLen <= length(indexShape(host(pattern))))? 0: pattern.maxSeqLen - length(indexShape(host(pattern)));
 }
 
