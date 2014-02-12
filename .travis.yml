@@ -1,0 +1,12 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+cache:
+  apt: true
+  directories:
+  - _build
+before_script:
+  sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev
+script:
+  ./util/travis/linux-cibuild.sh
