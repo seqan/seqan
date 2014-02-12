@@ -2011,13 +2011,13 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
         typedef typename Value<TIndex>::Type    TValue;
         typedef typename Size<TIndex>::Type     TSize;
 
-		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1);
-		resize(index.tempBound, ValueSize<TValue>::VALUE + 1);
+		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1, Exact());
+		resize(index.tempBound, ValueSize<TValue>::VALUE + 1, Exact());
 
 		TSize size;
 		if (empty(indexSA(index)))
 		{
-			resize(indexSA(index), length(indexRawText(index)));
+			resize(indexSA(index), length(indexRawText(index)), Exact());
 			size = _sortFirstWotdBucket(index);
 		} else
 		{
