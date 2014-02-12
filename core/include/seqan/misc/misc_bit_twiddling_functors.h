@@ -34,8 +34,8 @@
 // Implements basic functors.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BASIC_BASIC_FUNCTOR_H_
-#define CORE_INCLUDE_SEQAN_BASIC_BASIC_FUNCTOR_H_
+#ifndef CORE_INCLUDE_SEQAN_MISC_MISC_BIT_TWIDDLING_FUNCTORS_H_
+#define CORE_INCLUDE_SEQAN_MISC_MISC_BIT_TWIDDLING_FUNCTORS_H_
 
 namespace seqan
 {
@@ -101,7 +101,7 @@ struct FunctorBitwiseNot
 };
 
 // ----------------------------------------------------------------------------
-// Functor FunctorNesed
+// Functor FunctorNested
 // ----------------------------------------------------------------------------
 
 template <typename TBinaryFunctor, typename TUnaryFunctor1, typename TUnaryFunctor2>
@@ -124,4 +124,4 @@ struct FunctorNested
 
 }
 
-#endif // CORE_INCLUDE_SEQAN_BASIC_BASIC_FUNCTOR_H_
+#endif // CORE_INCLUDE_SEQAN_MISC_MISC_BIT_TWIDDLING_FUNCTORS_H_
