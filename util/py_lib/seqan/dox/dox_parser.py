@@ -482,6 +482,7 @@ class TopLevelState(object):
                          'COMMAND_MAINPAGE':     'mainpage',
                          'COMMAND_DEFGROUP':     'group',
                          'COMMAND_VARIABLE':     'var',
+                         'COMMAND_VALUE':        'val',
                          'COMMAND_TAG':          'tag',
                          'COMMAND_TYPEDEF':      'typedef',
                          'COMMAND_ADAPTION':     'adaption',
@@ -756,8 +757,8 @@ class GroupState(GenericDocState):
 class VariableState(GenericDocState):
     """State for a variable."""
         
-    def __init__(self, parser):
-        GenericDocState.__init__(self, parser, raw_doc.RawVariable, 'var')
+    def __init__(self, parser, entry_class=raw_doc.RawVariable, state_name='var'):
+        GenericDocState.__init__(self, parser, entry_class, state_name)
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
@@ -808,6 +809,14 @@ class VariableState(GenericDocState):
                     self.type_tokens.append(token)
         else:
             GenericDocState.handle(self, token)
+
+
+
+class EnumValueState(VariableState):
+    """State for an enum value."""
+
+    def __init__(self, parser):
+        VariableState.__init__(self, parser, raw_doc.RawEnumValue, 'val')
 
 
 
@@ -881,6 +890,7 @@ class Parser(object):
             'mainpage':     MainPageState(self),
             'group':        GroupState(self),
             'var':          VariableState(self),
+            'val':          EnumValueState(self),
             'tag':          TagState(self),
             'enum':         EnumState(self),
             'adaption':     AdaptionState(self),

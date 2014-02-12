@@ -58,16 +58,16 @@ namespace seqan {
  * The mapping mode must be compatible to the open mode of a @link FileMapping @endlink, e.g. <tt>MAP_RDWR</tt> is not
  * allowed if the file mapping was opened with <tt>OPEN_RDONLY</tt>.
  *
- * @var FileMappingMode MAP_RDONLY = 1;
+ * @val FileMappingMode MAP_RDONLY = 1;
  * @brief Map the segment in read-only mode.
  *
- * @var FileMappingMode MAP_WRONLY = 2;
+ * @val FileMappingMode MAP_WRONLY = 2;
  * @brief Map the segment in write-only mode.
  *
- * @var FileMappingMode MAP_RDWR = 3;
+ * @val FileMappingMode MAP_RDWR = 3;
  * @brief Map the segment for reading and writing.
  *
- * @var FileMappingMode MAP_COPYONWRITE = 4;
+ * @val FileMappingMode MAP_COPYONWRITE = 4;
  * @brief Write accesses are not written back to file and not shared among different mappings.
  */
 
@@ -99,19 +99,19 @@ enum FileMappingMode {
  *
  * @signature enum FileMappingAdvise;
  *
- * @var FileMappingAdvise MAP_NORMAL;
+ * @val FileMappingAdvise MAP_NORMAL;
  * @brief There is no advise on the given address range.
  *
- * @var FileMappingAdvise MAP_RANDOM;
+ * @val FileMappingAdvise MAP_RANDOM;
  * @brief The address range will be accessed with random access memory pattern.
  *
- * @var FileMappingAdvise MAP_SEQUENTIAL;
+ * @val FileMappingAdvise MAP_SEQUENTIAL;
  * @brief The address range will be accessed sequentially.
  *
- * @var FileMappingAdvise MAP_WILLNEED;
+ * @val FileMappingAdvise MAP_WILLNEED;
  * @brief The address range in the advise will be needed in the future.
  *
- * @var FileMappingAdvise MAP_DONTNEED;
+ * @val FileMappingAdvise MAP_DONTNEED;
  * @brief The address range in the advise will not be needed any more.
  */
 

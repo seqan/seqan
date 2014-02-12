@@ -134,13 +134,13 @@ namespace seqan {
  *
  * @see SequenceStream
  * 
- * @var SequenceStream::OperationMode SequenceStream::READ;
+ * @val SequenceStream::OperationMode SequenceStream::READ;
  * @brief Open stream for reading.
  * 
- * @var SequenceStream::OperationMode SequenceStream::WRITE;
+ * @val SequenceStream::OperationMode SequenceStream::WRITE;
  * @brief Open stream for writing.
  * 
- * @var SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
+ * @val SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
  * @brief Open stream for reading, mark as "persistent reading".  See @link SequenceStream @endlink for more information
  *        on the difference between normal and persistent reading.
  */
@@ -156,18 +156,18 @@ namespace seqan {
  * 
  * @see SequenceStream
  * 
- * @var SequenceStream::FileType SequenceStream::AUTO_TYPE;
+ * @val SequenceStream::FileType SequenceStream::AUTO_TYPE;
  * 
  * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
  *        <tt>PLAIN_TEXT</tt> is used.
  * 
- * @var SequenceStream::FileType SequenceStream::PLAIN_TEXT;
+ * @val SequenceStream::FileType SequenceStream::PLAIN_TEXT;
  * @brief Force reading/writing of plain text.
  * 
- * @var SequenceStream::FileType SequenceStream::BZ2;
+ * @val SequenceStream::FileType SequenceStream::BZ2;
  * @brief Force reading/writing with bzip compression.
  * 
- * @var SequenceStream::FileType SequenceStream::GZ;
+ * @val SequenceStream::FileType SequenceStream::GZ;
  * @brief Force reading/writing with gzip compression.
  */
 
@@ -182,14 +182,14 @@ namespace seqan {
  * 
  * @see SequenceStream
  * 
- * @var SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
+ * @val SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
  * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
  *        FASTA is used.
  * 
- * @var SequenceStream::FileFormat SequenceStream::FASTA;
+ * @val SequenceStream::FileFormat SequenceStream::FASTA;
  * @brief Force reading/writing of FASTA.
  * 
- * @var SequenceStream::FileFormat SequenceStream::FASTQ;
+ * @val SequenceStream::FileFormat SequenceStream::FASTQ;
  * @brief Force reading/writing of FASTQ.
  */
 

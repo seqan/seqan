@@ -123,18 +123,20 @@ namespace seqan {
  * @enum BedStream::Mode
  * @headerfile <seqan/bed_io.h>
  * @brief Open mode for the @link BedStream @endlink class.
+ *
+ * @signature enum BedStream::Mode;
  * 
  * @see BedStream
  * @see BedStream#open
  * @see BedStream::BedStream
  * 
- * @var BedStream::Mode READ;
+ * @val BedStream::Mode READ;
  * @brief Open in read mode.
  * 
- * @var BedStream::Mode WRITE;
+ * @val BedStream::Mode WRITE;
  * @brief Open in write mode.
  * 
- * @var BedStream::Mode INVALID;
+ * @val BedStream::Mode INVALID;
  * @brief Invalid open mode.
  */
 
