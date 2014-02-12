@@ -477,16 +477,12 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     skipOne(iter, IsTab());
 
     // read column 7: strand
-    //TODO(singer): readUntil taking a char would be good!
-    //TODO(singer): readOne
-    record.strand = value(iter);
-    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
+    readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
     skipOne(iter, IsTab());
 
     // read column 8: phase
-    record.phase = value(iter);
-    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
-
+    readOne(record.phase, iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
+    
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
     {
@@ -597,7 +593,7 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
     for (TIter it = begin(source, Standard()); it != itEnd; ++it)
     {
         // we have a problem if the string contains a '"' or a line break
-        if (*it == '\n' || *it == '"')
+        if (value(it) =='\n' || value(it) == '"')
             throw std::runtime_error("Attribute contains illegal character!");
 
         if (func(*it))
@@ -743,13 +739,9 @@ _writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref,
 
     // write column 2: source
     if (empty(record.source))
-    {
         writeValue(target, '.');
-    }
     else
-    {
         write(target, record.source);
-    }
     writeValue(target, '\t');
 
     // write column 3: type
