@@ -54,9 +54,6 @@
 // C++ Metaprogramming Support Code, generally independent of SeqAn.
 #include <seqan/basic/basic_metaprogramming.h>
 
-// Basic functors.
-#include <seqan/basic/basic_functor.h>
-
 // Fundamental meta and global functions.  This is what makes SeqAn SeqAn.
 #include <seqan/basic/basic_fundamental.h>
 
