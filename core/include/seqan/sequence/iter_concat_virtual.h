@@ -214,21 +214,6 @@ public:
             _begin = _cur = _end = obj_iterator();
         }
     }
-
-    inline void _setPosition(unsigned _objNo, difference_type _offset)
-    {
-        if (_objNo < length(*host)) {
-            objNo = _objNo;
-            _begin = _cur = begin((*host)[objNo]);
-            _end = end((*host)[objNo]);
-            goFurther(_cur, _offset);
-            _testEnd();
-        } else {
-            objNo = length(*host) - 1;
-            _begin = begin((*host)[objNo]);
-            _cur = _end = end((*host)[objNo]);
-        }
-    }
 };
 
 // ============================================================================
