@@ -62,7 +62,8 @@ void testStringPackedExtensionBitwiseAnd()
     str2[63] = true;
     str2[119] = true;
 
-    bitwiseAnd(res, str1, str2);
+    transform(res, str1, str2, FunctorBitwiseAnd());
+
     SEQAN_ASSERT_EQ(res[0], false);
     SEQAN_ASSERT_EQ(res[10], true);
     SEQAN_ASSERT_EQ(res[63], false);
@@ -90,7 +91,8 @@ void testStringPackedExtensionBitwiseOr()
     str2[63] = true;
     str2[119] = true;
 
-    bitwiseOr(res, str1, str2);
+    transform(res, str1, str2, FunctorBitwiseOr());
+
     SEQAN_ASSERT_EQ(res[0], true);
     SEQAN_ASSERT_EQ(res[10], true);
     SEQAN_ASSERT_EQ(res[63], true);
@@ -118,7 +120,8 @@ void testStringPackedExtensionBitwiseAndNot()
     str2[63] = false;
     str2[119] = false;
 
-    bitwiseAndNot(res, str1, str2);
+    transform(res, str1, str2, FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+
     SEQAN_ASSERT_EQ(res[0], false);
     SEQAN_ASSERT_EQ(res[10], true);
     SEQAN_ASSERT_EQ(res[63], false);
@@ -139,7 +142,8 @@ void testStringPackedExtensionBitwiseNot()
     str[64] = false;
     str[119] = false;
 
-    bitwiseNot(res, str);
+    transform(res, str, FunctorBitwiseNot());
+
     SEQAN_ASSERT_EQ(res[0], true);
     SEQAN_ASSERT_EQ(res[1], false);
     SEQAN_ASSERT_EQ(res[9], false);
@@ -175,17 +179,6 @@ void testStringPackedExtensionTestAllZeros()
     SEQAN_ASSERT_EQ(testAllZeros(str), true);
 }
 
-void testStringPackedExtensionSetAllZeros()
-{
-    typedef String<bool, Packed<> > TBitString;
-    TBitString str;
-
-    resize(str, 120, true, Exact());
-    SEQAN_ASSERT_EQ(testAllZeros(str), false);
-    setAllZeros(str);
-    SEQAN_ASSERT_EQ(testAllZeros(str), true);
-}
-
 void testStringPackedExtensionTestAllOnes()
 {
     typedef String<bool, Packed<> > TBitString;
@@ -209,17 +202,6 @@ void testStringPackedExtensionTestAllOnes()
     SEQAN_ASSERT_EQ(testAllOnes(str), true);
 }
 
-void testStringPackedExtensionSetAllOnes()
-{
-    typedef String<bool, Packed<> > TBitString;
-    TBitString str;
-
-    resize(str, 120, false, Exact());
-    SEQAN_ASSERT_EQ(testAllOnes(str), false);
-    setAllOnes(str);
-    SEQAN_ASSERT_EQ(testAllOnes(str), true);
-}
-
 void testStringPackedExtensionBitScanForward()
 {
     typedef String<bool, Packed<> > TBitString;
@@ -233,21 +215,15 @@ void testStringPackedExtensionBitScanForward()
     str[64] = true;
     str[119] = true;
 
-    unsigned index;
-    bitScanForward(index, str);
-    SEQAN_ASSERT_EQ(index, 0u);
+    SEQAN_ASSERT_EQ(bitScanForward(str), 0u);
     str[0] = false;
-    bitScanForward(index, str);
-    SEQAN_ASSERT_EQ(index, 10u);
+    SEQAN_ASSERT_EQ(bitScanForward(str), 10u);
     str[10] = false;
-    bitScanForward(index, str);
-    SEQAN_ASSERT_EQ(index, 63u);
+    SEQAN_ASSERT_EQ(bitScanForward(str), 63u);
     str[63] = false;
-    bitScanForward(index, str);
-    SEQAN_ASSERT_EQ(index, 64u);
+    SEQAN_ASSERT_EQ(bitScanForward(str), 64u);
     str[64] = false;
-    bitScanForward(index, str);
-    SEQAN_ASSERT_EQ(index, 119u);
+    SEQAN_ASSERT_EQ(bitScanForward(str), 119u);
 }
 
 void testStringPackedExtensionBitScanReverse()
@@ -263,21 +239,15 @@ void testStringPackedExtensionBitScanReverse()
     str[64] = true;
     str[119] = true;
 
-    unsigned index;
-    bitScanReverse(index, str);
-    SEQAN_ASSERT_EQ(index, 119u);
+    SEQAN_ASSERT_EQ(bitScanReverse(str), 119u);
     str[119] = false;
-    bitScanReverse(index, str);
-    SEQAN_ASSERT_EQ(index, 64u);
+    SEQAN_ASSERT_EQ(bitScanReverse(str), 64u);
     str[64] = false;
-    bitScanReverse(index, str);
-    SEQAN_ASSERT_EQ(index, 63u);
+    SEQAN_ASSERT_EQ(bitScanReverse(str), 63u);
     str[63] = false;
-    bitScanReverse(index, str);
-    SEQAN_ASSERT_EQ(index, 10u);
+    SEQAN_ASSERT_EQ(bitScanReverse(str), 10u);
     str[10] = false;
-    bitScanReverse(index, str);
-    SEQAN_ASSERT_EQ(index, 0u);
+    SEQAN_ASSERT_EQ(bitScanReverse(str), 0u);
 }
 
 
@@ -287,9 +257,7 @@ SEQAN_DEFINE_TEST(String_Packed_Extension)
     testStringPackedExtensionBitwiseAndNot();
     testStringPackedExtensionBitwiseOr();
     testStringPackedExtensionTestAllZeros();
-    testStringPackedExtensionSetAllZeros();
     testStringPackedExtensionTestAllOnes();
-    testStringPackedExtensionSetAllOnes();
     testStringPackedExtensionBitScanForward();
     testStringPackedExtensionBitScanReverse();
 }

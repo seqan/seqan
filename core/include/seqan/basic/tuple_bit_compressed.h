@@ -43,6 +43,12 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TValue>
+inline bool testAllZeros(TValue const & val);
+
+template <typename TValue>
+inline bool testAllOnes(TValue const & val);
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -337,70 +343,13 @@ inline void shiftRight(Tuple<TValue, SIZE, BitPacked<> > & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function bitwiseAnd()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void bitwiseAnd(Tuple<TValue, SIZE, BitPacked<> > & res,
-                       Tuple<TValue, SIZE, BitPacked<> > const & lhs,
-                       Tuple<TValue, SIZE, BitPacked<> > const & rhs)
-{
-    bitwiseAnd(res.i, lhs.i, rhs.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function bitwiseAndNot()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void bitwiseAndNot(Tuple<TValue, SIZE, BitPacked<> > & res,
-                          Tuple<TValue, SIZE, BitPacked<> > const & lhs,
-                          Tuple<TValue, SIZE, BitPacked<> > const & rhs)
-{
-    bitwiseAndNot(res.i, lhs.i, rhs.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function bitwiseOr()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void bitwiseOr(Tuple<TValue, SIZE, BitPacked<> > & res,
-                      Tuple<TValue, SIZE, BitPacked<> > const & lhs,
-                      Tuple<TValue, SIZE, BitPacked<> > const & rhs)
-{
-    bitwiseOr(res.i, lhs.i, rhs.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function bitwiseNot()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void bitwiseNot(Tuple<TValue, SIZE, BitPacked<> > & res,
-                       Tuple<TValue, SIZE, BitPacked<> > const & src)
-{
-    bitwiseNot(res.i, src.i);
-}
-
-// ----------------------------------------------------------------------------
 // Function testAllZeros()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, unsigned SIZE>
-inline bool testAllZeros(Tuple<TValue, SIZE, BitPacked<> > const & val)
+inline bool testAllZeros(Tuple<TValue, SIZE, BitPacked<> > const & me)
 {
-    return testAllZeros(val.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function setAllZeros()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void setAllZeros(Tuple<TValue, SIZE, BitPacked<> > & val)
-{
-    return setAllZeros(val.i);
+    return testAllZeros(me.i);
 }
 
 // ----------------------------------------------------------------------------
@@ -408,39 +357,9 @@ inline void setAllZeros(Tuple<TValue, SIZE, BitPacked<> > & val)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, unsigned SIZE>
-inline bool testAllOnes(Tuple<TValue, SIZE, BitPacked<> > const & val)
+inline bool testAllOnes(Tuple<TValue, SIZE, BitPacked<> > const & me)
 {
-    return testAllOnes(val.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function setAllOnes()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, unsigned SIZE>
-inline void setAllOnes(Tuple<TValue, SIZE, BitPacked<> > & val)
-{
-    return setAllOnes(val.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function bitScanForward()
-// ----------------------------------------------------------------------------
-
-template <typename TPosition, typename TValue, unsigned SIZE>
-inline void bitScanForward(TPosition & index, Tuple<TValue, SIZE, BitPacked<> > const & val)
-{
-    bitScanForward(index, val.i);
-}
-
-// ----------------------------------------------------------------------------
-// Function bitScanReverse()
-// ----------------------------------------------------------------------------
-
-template <typename TPosition, typename TValue, unsigned SIZE>
-inline void bitScanReverse(TPosition & index, Tuple<TValue, SIZE, BitPacked<> > const & val)
-{
-    bitScanReverse(index, val.i);
+    return testAllOnes(me.i);
 }
 
 // -----------------------------------------------------------------------
@@ -451,6 +370,68 @@ template <typename TValue, unsigned SIZE>
 inline void clear(Tuple<TValue, SIZE, BitPacked<> > & me)
 {
     me.i = 0; 
+}
+
+// ----------------------------------------------------------------------------
+// Function operator&()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline Tuple<TValue, SIZE, BitPacked<> >
+operator&(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          Tuple<TValue, SIZE, BitPacked<> > const & right)
+{
+    Tuple<TValue, SIZE, BitPacked<> > tmp;
+    tmp.i = left.i & right.i;
+    return tmp;
+}
+
+template <typename TValue, unsigned SIZE, typename T>
+inline typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector
+operator&(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          T const & right)
+{
+    typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector tmp;
+    tmp = left.i & right;
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator|()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline Tuple<TValue, SIZE, BitPacked<> >
+operator|(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          Tuple<TValue, SIZE, BitPacked<> > const & right)
+{
+    Tuple<TValue, SIZE, BitPacked<> > tmp;
+    tmp.i = left.i | right.i;
+    return tmp;
+}
+
+template <typename TValue, unsigned SIZE, typename T>
+inline typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector
+operator|(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          T const & right)
+{
+    typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector tmp;
+    tmp = left.i | right;
+    return tmp;
+}
+
+
+// ----------------------------------------------------------------------------
+// Function operator~()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline Tuple<TValue, SIZE, BitPacked<> >
+operator~(Tuple<TValue, SIZE, BitPacked<> > const & val)
+{
+    Tuple<TValue, SIZE, BitPacked<> > tmp;
+    tmp.i = ~val.i;
+    return tmp;
 }
 
 // -----------------------------------------------------------------------
