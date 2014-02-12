@@ -375,28 +375,28 @@ struct FragmentStoreConfig
  *
  * @signature enum FragmentStore::PredefinedAnnotationTypes;
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_ROOT;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_ROOT;
  * @brief The root node ("&lt;node&gt;").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_GENE;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_GENE;
  * @brief A gene ("gene").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_MRNA;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_MRNA;
  * @brief An mRNA sequence, aka transcript ("mRNA").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_CDS;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_CDS;
  * @brief A coding region ("CDS");
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_EXON;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_EXON;
  * @brief An exon ("exon").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_FIVE_PRIME_UTR;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_FIVE_PRIME_UTR;
  * @brief A 5' untranslated region ("five_prime_UTR").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_INTRON;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_INTRON;
  * @brief An intron ("intron").
  *
- * @var FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_THREE_PRIME_UTR;
+ * @val FragmentStore::PredefinedAnnotationTypes FragmentStore::ANNO_THREE_PRIME_UTR;
  * @brief A 3' untranslated region ("three_prime_UTR").
  */
 
