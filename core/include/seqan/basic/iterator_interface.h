@@ -560,9 +560,15 @@ atBegin(T & it, TContainer const & cont)
 
 template <typename T>
 inline SEQAN_HOST_DEVICE bool
+atBegin(T & it)
+{
+    return atBegin(it, container(it));
+}
+
+template <typename T>
+inline SEQAN_HOST_DEVICE bool
 atBegin(T const & it)
 {
-    SEQAN_CHECKPOINT;
     return atBegin(it, container(it));
 }
 
