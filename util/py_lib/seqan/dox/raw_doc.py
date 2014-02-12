@@ -142,7 +142,7 @@ class RawEntry(object):
     def entryTypes(cls):
         """RawReturns iterable with all entry types."""
         res = ('concept', 'class', 'function', 'metafunction', 'page', 'enum', 'var',
-               'tag', 'defgroup', 'macro')
+               'tag', 'defgroup', 'macro', 'enum_value')
         return res
 
     def addParagraph(self, p):
@@ -254,7 +254,7 @@ class RawCodeEntry(RawEntry):
 
 
 class RawVariable(RawCodeEntry):
-    """RawDoc for one variable or enum constant.
+    """RawDoc for one variable constant.
 
     @ivar type: The type of the variable as a RawText or None.
     """
@@ -305,6 +305,20 @@ class RawVariable(RawCodeEntry):
             res.append(x.getFormatted(formatter))
         res.append('\n')
         return ''.join(res)
+
+
+class RawEnumValue(RawVariable):
+    """RawDoc for one enum value.
+
+    @ivar type: The type of the variable as a RawText or None.
+    """
+
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='val')
+        self.type = None
+
+    def getType(self):
+        return 'enum_value'
 
 
 class RawTag(RawCodeEntry):

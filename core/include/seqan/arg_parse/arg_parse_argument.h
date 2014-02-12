@@ -84,22 +84,22 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  */
 
 /*!
- * @var ArgParseArgument::ArgumentType STRING
+ * @val ArgParseArgument::ArgumentType STRING
  * @brief Argument is a string.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INTEGER;
  * @brief Argument is a signed 32 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INT64;
  * @brief Argument is a signed 64 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
  * @brief Argument is an input file.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
  * @brief Argument is an output file.
  */
 

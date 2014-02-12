@@ -57,37 +57,37 @@ inline void clear(BamAlignmentRecord & record);
  *
  * @signature enum BamFlags;
  *
- * @var BamFlags BAM_FLAG_MULTIPLE = 0x0001;
+ * @val BamFlags BAM_FLAG_MULTIPLE = 0x0001;
  * @brief Template has multiple fragments in sequencing.
  *
- * @var BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
+ * @val BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
  * @brief All fragments in the template are properly mapped.
  *
- * @var BamFlags BAM_FLAG_UNMAPPED = 0x0004;
+ * @val BamFlags BAM_FLAG_UNMAPPED = 0x0004;
  * @brief This fragment is unmapped.
  *
- * @var BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
+ * @val BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
  * @brief Next fragment in template is unmapped.
  *
- * @var BamFlags BAM_FLAG_RC = 0x0010;
+ * @val BamFlags BAM_FLAG_RC = 0x0010;
  * @brief Fragment is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_NEXT_RC = 0x0020;
+ * @val BamFlags BAM_FLAG_NEXT_RC = 0x0020;
  * @brief Next fragment in template is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_FIRST = 0x0040;
+ * @val BamFlags BAM_FLAG_FIRST = 0x0040;
  * @brief This fragment is the first one in its template.
  *
- * @var BamFlags BAM_FLAG_LAST = 0x0080;
+ * @val BamFlags BAM_FLAG_LAST = 0x0080;
  * @brief This fragment is the last one in its template (second in case of paired sequencing).
  *
- * @var BamFlags BAM_FLAG_SECONDARY = 0x0100;
+ * @val BamFlags BAM_FLAG_SECONDARY = 0x0100;
  * @brief Secondary alignment.
  *
- * @var BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
+ * @val BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
  * @brief Does not pass quality controls.
  *
- * @var BamFlags BAM_FLAG_DUPLICATE = 0x0400;
+ * @val BamFlags BAM_FLAG_DUPLICATE = 0x0400;
  * @brief PCR or optical duplicate.
  */
 

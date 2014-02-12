@@ -137,32 +137,32 @@ namespace seqan {
  *     // do something if opened in read-only mode
  * @endlink
  *
- * @var FileOpenMode OPEN_RDONLY
+ * @val FileOpenMode OPEN_RDONLY
  * @brief Open in read-only mode.
  *
- * @var FileOpenMode OPEN_WRONLY
+ * @val FileOpenMode OPEN_WRONLY
  * @brief Open in write-only mode.
  *
- * @var FileOpenMode OPEN_RDWR
+ * @val FileOpenMode OPEN_RDWR
  * @brief Open for reading and writing.
  *
- * @var FileOpenMode OPEN_CREATE
+ * @val FileOpenMode OPEN_CREATE
  * @brief Create the file if it does not yet exists.
  *
- * @var FileOpenMode OPEN_APPEND
+ * @val FileOpenMode OPEN_APPEND
  * @brief Keep the existing data.  If this flag is not given then the file is cleared in write mode.
  *
- * @var FileOpenMode OPEN_QUIET
+ * @val FileOpenMode OPEN_QUIET
  * @brief Don't print any warning message if the file could not be opened.
  *
- * @var FileOpenMode OPEN_MASK
+ * @val FileOpenMode OPEN_MASK
  * @brief (Internal) Bitmask to extract the read/write open mode.
  *
- * @var FileOpenMode OPEN_ASYNC
+ * @val FileOpenMode OPEN_ASYNC
  * @brief (Internal) Open the file for asynchronous file access.  For asynchronous file access, use the @link AsyncFile
  *                   @endlink.
  *
- * @var FileOpenMode OPEN_TEMPORARY
+ * @val FileOpenMode OPEN_TEMPORARY
  * @brief (Internal) Open automatically delete the file after close.  Use the <tt>openTemp</tt> methods to open
  *        temporary files.
  */
