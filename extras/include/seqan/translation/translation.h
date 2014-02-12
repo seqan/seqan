@@ -65,16 +65,16 @@ namespace seqan {
  *
  * @signature enum TranslationOptions;
  *
- * @var TranslationOptions SINGLE_FRAME = 0;
+ * @val TranslationOptions SINGLE_FRAME = 0;
  * @brief Translate the sequence(s) "as is", n input sequences result in n output sequences.
  *
- * @var TranslationOptions WITH_REV_COMP = 1;
+ * @val TranslationOptions WITH_REV_COMP = 1;
  * @brief Translate the sequence(s) as well as their reverse complements (n -> * 2n).
  *
- * @var TranslationOptions WITH_FRAME_SHIFT = 2;
+ * @val TranslationOptions WITH_FRAME_SHIFT = 2;
  * @brief Translate the sequence(s) as well as their shifted frames (n -> 3n).
  *
- * @var TranslationOptions SIX_FRAME = 3;
+ * @val TranslationOptions SIX_FRAME = 3;
  * @brief Equals (WITH_REV_COMP | WITH_FRAME_SHIFT); shifted frames of original and reverse complement are
  *        translated (n -> 6n).
  */
