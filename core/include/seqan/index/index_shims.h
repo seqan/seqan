@@ -700,10 +700,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
     template <typename TText, typename TSpec, typename TFibre>
     inline bool indexCreate(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
     SEQAN_CHECKPOINT
-        if (!empty(indexText(index)))
-            return indexCreate(index, fibre, typename DefaultIndexCreator<Index<TText, TSpec>, Tag<TFibre> const>::Type());
-        else
-            return false;
+        return indexCreate(index, fibre, typename DefaultIndexCreator<Index<TText, TSpec>, Tag<TFibre> const>::Type());
     }
 
 
