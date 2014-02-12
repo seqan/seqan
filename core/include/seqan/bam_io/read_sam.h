@@ -82,90 +82,63 @@ typedef Tag<SamAlignment_> SamAlignment;
 // Function nextIs()                                                  SamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TPass>
-inline bool nextIs(RecordReader<TStream, TPass> & reader, SamHeader const & /*tag*/)
+template <typename TForwardIter>
+inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
 {
-    if (atEnd(reader))
+    if (atEnd(iter))
         return false;
-    return value(reader) == '@';
-}
-
-// ----------------------------------------------------------------------------
-// Function nextIs()                                               SamAlignment
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TPass>
-inline bool nextIs(RecordReader<TStream, TPass> & reader, SamAlignment const & /*tag*/)
-{
-    if (atEnd(reader))
-        return false;
-    return value(reader) != '@';
+    return value(iter) == '@';
 }
 
 // ----------------------------------------------------------------------------
 // Function skipRecord()                                              SamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TPass>
-inline int skipRecord(RecordReader<TStream, TPass> & reader,
+template <typename TForwardIter, typename TPass>
+inline int skipRecord(TForwardIter & iter,
                       SamHeader const & tag)
 {
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
+    if (!nextIs(iter, tag))
         return SAM_INVALID_RECORD;
-    int res = skipLine(reader);
-    if (res == 0 || res == EOF_BEFORE_SUCCESS)
-        return 0;
-    else
-        return res;
+    skipLine(iter);
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
 // Function skipRecord()                                           SamAlignment
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TPass>
-inline int skipRecord(RecordReader<TStream, TPass> & reader,
+template <typename TForwardIter, typename TPass>
+inline int skipRecord(TForwardIter & iter,
                       SamAlignment const & tag)
 {
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
+    if (!nextIs(iter, tag))
         return SAM_INVALID_RECORD;
-    int res = skipLine(reader);
-    if (res == 0 || res == EOF_BEFORE_SUCCESS)
-        return 0;
-    else
-        return res;
+    skipLine(iter);
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord()                                        BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec, typename TNameStore, typename TNameStoreCache>
-int readRecord(BamHeaderRecord & record,
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+void readRecord(BamHeaderRecord & record,
                BamIOContext<TNameStore, TNameStoreCache> & context,
-               RecordReader<TStream, SinglePass<TSpec> > & reader,
+               TForwardIter & iter,
                Sam const & /*tag*/)
 {
     clear(record);
 
     // Make sure the first character is '@'.
-    char c = value(reader);
-    if (c != '@')
-        return SAM_INVALID_RECORD;
-    if (goNext(reader))
-        return SAM_INVALID_RECORD;
+    skipOne(iter, EqualsChar<'@'>());
 
     // Read the header tag.
-    char c1 = value(reader);
-    if (goNext(reader))
-        return SAM_INVALID_RECORD;
-    char c2 = value(reader);
-    if (goNext(reader))
-        return SAM_INVALID_RECORD;
+    char c1;
+    readOne(c1, iter);
+    char c2;
+    readOne(c2, iter);
+
     // Determine header type.
     if (c1 == 'H' && c2 == 'D')
         record.type = BAM_HEADER_FIRST;
@@ -178,50 +151,47 @@ int readRecord(BamHeaderRecord & record,
     else if (c1 == 'C' && c2 == 'O')
         record.type = BAM_HEADER_COMMENT;
     else
-        return SAM_INVALID_RECORD;
+    {
+        throw std::runtime_error("Invalid Record!");
+        return;
+    }
 
     if (record.type == BAM_HEADER_COMMENT)
     {
-        int res = skipChar(reader, '\t');
-        if (res != 0)
-            return res;
+        skipOne(iter, IsTab());
         CharString &buffer = context.buffer;
-        res = readLine(buffer, reader);
-        if (res != 0)
-            return res;
+        readLine(buffer, iter);
         appendValue(record.tags, Pair<CharString>(CharString(), buffer));
     }
     else
     {
         // Read the rest of the line into the tag field of record.
-        int res = 0;
         CharString key, val;
-        while (!atEnd(reader) && value(reader) == '\t')
+        while (!atEnd(iter) && value(iter) == '\t')
         {
             clear(key);
             clear(val);
 
-            res = skipChar(reader, '\t');
-            if (res != 0)
-                return res;
-            res = readUntilChar(key, reader, ':');
-            if (res != 0)
-                return res;
-            if (goNext(reader))
-                return SAM_INVALID_RECORD;
-            res = readUntilOneOf(val, reader, '\t', '\r', '\n');
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return res;
+            skipOne(iter, IsTab());
+            readUntil(key, iter, EqualsChar<':'>());
+            skipOne(iter);
+            readUntil(val, iter, OrFunctor<IsTab, IsNewline>());
 
             appendValue(record.tags, Pair<CharString>(key, val));
         }
     }
 
+<<<<<<< HEAD
     // Skip remaining line break.
     int res = skipLine(reader);
     if (res != 0 && res != EOF_BEFORE_SUCCESS)
         return res;
     return 0;
+=======
+    // Skip remaining line break, in case of comment, we already skipped over it.
+    if (record.type != BAM_HEADER_COMMENT)
+        skipLine(iter);
+>>>>>>> ffe8366... [FIX, FEATURE] Adjusted parts of the sam/bam module to the new seq_io module.
 }
 
 // ----------------------------------------------------------------------------
@@ -236,19 +206,17 @@ int readRecord(BamHeaderRecord & record,
 ...remarks:Use for SAM.
 */
 
-template <typename TStream, typename TSpec, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
 int readRecord(BamHeader & header,
                BamIOContext<TNameStore, TNameStoreCache> & context,
-               RecordReader<TStream, SinglePass<TSpec> > & reader,
+               TForwardIter & iter,
                Sam const & tag)
 {
     BamHeaderRecord record;
-    while (nextIs(reader, SamHeader()))
+    while (nextIs(iter, SamHeader()))
     {
         clear(record);
-        int res = readRecord(record, context, reader, tag);
-        if (res != 0)
-            return res;
+        readRecord(record, context, iter, tag);
         appendValue(header.records, record);
 
         // Get sequence information from @SQ header.
@@ -264,7 +232,7 @@ int readRecord(BamHeader & header,
                 }
                 else if (record.tags[i].i1 == "LN")
                 {
-                    if (!lexicalCast2<unsigned>(ln, record.tags[i].i2))
+                    if (!lexicalCast<unsigned>(ln, record.tags[i].i2))
                         ln = 0;
                 }
             }
@@ -291,46 +259,29 @@ int readRecord(BamHeader & header,
 ..signature:readRecord(alignmentRecord, context, recordReader, tag)
 */
 
-template <typename TStream, typename TSpec, typename TNameStore, typename TNameStoreCache>
-int readRecord(BamAlignmentRecord & record,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
-               RecordReader<TStream, SinglePass<TSpec> > & reader,
-               Sam const & /*tag*/)
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+inline void readRecord(BamAlignmentRecord & record,
+            BamIOContext<TNameStore, TNameStoreCache> & context,
+            TForwardIter & iter,
+            Sam const & /*tag*/)
 {
     clear(record);
     CharString &buffer = context.buffer;
 
-#define SEQAN_SKIP_TAB                              \
-    do                                              \
-    {                                               \
-        res = skipChar(reader, '\t');               \
-        if (res != 0)                               \
-            return res;                             \
-    }                                               \
-    while (false)
-
-    int res = 0;
-
     // QNAME
-    res = readUntilTabOrLineBreak(record.qName, reader);
-    if (res != 0)
-        return res;
-    SEQAN_SKIP_TAB;
+    readUntil(record.qName, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    skipOne(iter, IsTab());
 
     // FLAG
     // TODO(holtgrew): Interpret hex and char as c-samtools -X does?
     clear(buffer);
-    res = readDigits(buffer, reader);
-    if (res != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
     record.flag = lexicalCast<__uint16>(buffer);
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // RNAME
     clear(buffer);
-    res = readUntilTabOrLineBreak(buffer, reader);
-    if (res != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
@@ -344,67 +295,54 @@ int readRecord(BamAlignmentRecord & record,
         record.rID = length(nameStore(context));
         appendName(nameStore(context), buffer, nameStoreCache(context));
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // POS
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else if (buffer == "0")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else
         record.beginPos = lexicalCast<__uint32>(buffer) - 1;
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // MAPQ
     clear(buffer);
-    if (value(reader) == '*')
+    if (value(iter) == '*')
     {
         record.mapQ = 255;
-        goNext(reader);
+        skipOne(iter);
     }
     else
     {
-        res = readDigits(buffer, reader);
-        if (res != 0)
-            return res;
+        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
         record.mapQ = lexicalCast<__uint16>(buffer);
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // CIGAR
     CigarElement<> element;
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (value(reader) == '*')
-    {
-        goNext(reader);
-    }
+    if (value(iter) == '*')
+        skipOne(iter);
     else
     {
         do
         {
             clear(buffer);
-            res = readDigits(buffer, reader);
-            if (res != 0)
-                return res;
+            readUntil(buffer, iter, OrFunctor<IsAlpha, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
             element.count = lexicalCast<__uint32>(buffer);
-            element.operation = value(reader);
-            if (goNext(reader))
-                return EOF_BEFORE_SUCCESS;
+            element.operation = value(iter);
+            skipOne(iter);
             appendValue(record.cigar, element);
-        } while (value(reader) != '\t');
+        } while (value(iter) != '\t');
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // RNEXT
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
+    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
     {
         record.rNextId = BamAlignmentRecord::INVALID_REFID;
@@ -418,94 +356,74 @@ int readRecord(BamAlignmentRecord & record,
         record.rNextId = length(nameStore(context));
         appendName(nameStore(context), buffer, nameStoreCache(context));
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // PNEXT
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (value(reader) == '*')
+    if (value(iter) == '*')
     {
         record.pNext = BamAlignmentRecord::INVALID_POS;
-        goNext(reader);
+        skipOne(iter);
     }
     else
     {
         clear(buffer);
-        res = readDigits(buffer, reader);
-        if (res != 0)
-            return res;
+        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
         if (buffer == "0")
             record.pNext = BamAlignmentRecord::INVALID_POS;
         else
             record.pNext = lexicalCast<__uint32>(buffer) - 1;
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // TLEN
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (value(reader) == '*')
+    if (value(iter) == '*')
     {
         record.tLen = MaxValue<__int32>::VALUE;
-        goNext(reader);
+        skipOne(iter);
     }
     else
     {
         clear(buffer);
-        if (value(reader) == '-')
-        {
-            appendValue(buffer, value(reader));
-            if (goNext(reader))
-                return SAM_INVALID_RECORD;
-        }
-        res = readDigits(buffer, reader);
-        if (res != 0)
-            return res;
+        if (value(iter) == '-')
+            readOne(buffer, iter);
+
+        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
         record.tLen = lexicalCast<__int32>(buffer);
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // SEQ
-    res = readUntilTabOrLineBreak(record.seq, reader);
-    if (res != 0)
-        return res;
+    readUntil(record.seq, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
     // Handle case of missing sequence:  Clear seq string as documented.
     if (record.seq == "*")
         clear(record.seq);
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // QUAL
-    res = readUntilTabOrLineBreak(record.qual, reader);
-    if (res == EOF_BEFORE_SUCCESS)  // The record ends on EOF.
-        return 0;
-    if (res != 0)
-        return res;
+    IsNewline isNewline;
+    readUntil(record.qual, iter, OrFunctor<IsTab, IsNewline>());
+   
     // Handle case of missing quality:  Clear qual string as documented.
     if (record.qual == "*")
         clear(record.qual);
 
     // The following list of tags is optional.  A line break or EOF could also follow.
-    if (atEnd(reader))
-        return 0;
-    if (value(reader) != '\t')
+    if (atEnd(iter))
+        return;
+    if (value(iter) != '\t')
     {
-        res = skipLine(reader);
-        return res;
+        skipLine(iter);
+        return;
     }
-    SEQAN_SKIP_TAB;
+    skipOne(iter, IsTab());
 
     // TAGS
     clear(buffer);
-    res = readLine(buffer, reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
+    readLine(buffer, iter);
     assignTagsSamToBam(record.tags, buffer);
-
-    return 0;
-
-#undef SEQAN_SKIP_TAB
 }
 
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
+

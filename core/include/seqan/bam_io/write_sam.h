@@ -59,33 +59,38 @@ namespace seqan {
 // Function write2()                                            BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int write2(TStream & stream,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+int write2(TTarget & target,
            BamHeaderRecord const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Sam const & /*tag*/)
 {
     char const * headerTypes[] = {"@HD", "@SQ", "@RG", "@PG", "@CO"};
+<<<<<<< HEAD
     streamPut(stream, headerTypes[header.type]);
     if (header.type == BAM_HEADER_COMMENT)
     {
         streamPut(stream, header.tags[0].i2);
+=======
+    write(target, headerTypes[header.type]);
+    if (header.type == BAM_HEADER_COMMENT && !empty(header.tags))
+    {
+        writeValue(target, '\t');
+        write(target, header.tags[0].i2);
+>>>>>>> ffe8366... [FIX, FEATURE] Adjusted parts of the sam/bam module to the new seq_io module.
     }
     else
     {
         for (unsigned i = 0; i < length(header.tags); ++i)
         {
-            streamPut(stream, '\t');
-            streamPut(stream, header.tags[i].i1);
-            streamPut(stream, ':');
-            streamPut(stream, header.tags[i].i2);
+            writeValue(target, '\t');
+            write(target, header.tags[i].i1);
+            writeValue(target, ':');
+            write(target, header.tags[i].i2);
         }
     }
 
-    int res = streamPut(stream, '\n');
-    if (res != 0)
-        return res;
-
+    writeValue(target, '\n');
     return 0;
 }
 
@@ -93,8 +98,8 @@ int write2(TStream & stream,
 // Function write2()                                                  BamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int write2(TStream & stream,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+int write2(TTarget & target,
            BamHeader const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & tag)
@@ -116,7 +121,7 @@ int write2(TStream & stream,
             }
         }
 
-        int res = write2(stream, record, context, tag);
+        int res = write2(target, record, context, tag);
         if (res != 0)
             return res;
     }
@@ -126,25 +131,12 @@ int write2(TStream & stream,
     {
         if (writtenSeqInfos.find(header.sequenceInfos[i].i1) != writtenSeqInfos.end())
             continue;
-        int res = streamPut(stream, "@SQ\tSN:");
-        if (res != 0)
-            return res;
-
-        res = streamPut(stream, header.sequenceInfos[i].i1);
-        if (res != 0)
-            return res;
-
-        res = streamPut(stream, "\tLN:");
-        if (res != 0)
-            return res;
-
-        res = streamPut(stream, header.sequenceInfos[i].i2);
-        if (res != 0)
-            return res;
-
-        res = streamPut(stream, '\n');
-        if (res != 0)
-            return res;
+        write(target, "@SQ\tSN:");
+        write(target, header.sequenceInfos[i].i1);
+        write(target, "\tLN:");
+        appendNumber(target, header.sequenceInfos[i].i2);
+        writeValue(target, '\n');
+        return 0;
     }
 
     return 0;
@@ -154,135 +146,93 @@ int write2(TStream & stream,
 // Function write2()                                         BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int write2(TStream & stream,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+int write2(TTarget & target,
            BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & /*tag*/)
 {
-    int res = 0;
+    write(target, record.qName);
+    writeValue(target, '\t');
 
-#define SEQAN_PUT_TAB                           \
-    do {                                        \
-        res = streamPut(stream, '\t');      \
-        if (res != 0)                       \
-            return res;                     \
-    } \
-    while (false)
-
-    res = streamPut(stream, record.qName);
-    if (res != 0)
-        return res;
-
-    SEQAN_PUT_TAB;
-
-    res = streamPut(stream, record.flag);
-    if (res != 0)
-        return res;
-
-    SEQAN_PUT_TAB;
+    appendNumber(target, record.flag);
+    writeValue(target, '\t');
 
     if (record.rID == BamAlignmentRecord::INVALID_REFID)
-        res = streamPut(stream, '*');
+        writeValue(target, '*');
     else
-        res = streamPut(stream, nameStore(context)[record.rID]);
-    if (res != 0)
-        return res;
-
-    SEQAN_PUT_TAB;
+        write(target, nameStore(context)[record.rID]);
+    
+    writeValue(target, '\t');
 
     if (record.rID == BamAlignmentRecord::INVALID_REFID)
-        res = streamPut(stream, '*');
+        writeValue(target, '*');
     else
-        res = streamPut(stream, record.beginPos + 1);
-    if (res != 0)
-        return res;
+        appendNumber(target, record.beginPos + 1);
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
-    res = streamPut(stream, static_cast<__uint16>(record.mapQ));
-    if (res != 0)
-        return res;
-
-    SEQAN_PUT_TAB;
+    appendNumber(target, static_cast<__uint16>(record.mapQ));
+    writeValue(target, '\t');
 
     if (empty(record.cigar))
-    {
-        res = streamPut(stream, '*');
-        if (res != 0)
-            return res;
-    }
+        writeValue(target, '*');
     else
-    {
         for (unsigned i = 0; i < length(record.cigar); ++i)
         {
-            res = streamPut(stream, record.cigar[i].count);
-            if (res != 0)
-                return res;
-
-            res = streamPut(stream, record.cigar[i].operation);
-            if (res != 0)
-                return res;
+            appendNumber(target, record.cigar[i].count);
+            writeValue(target, record.cigar[i].operation);
         }
-    }
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
     if (record.rNextId == BamAlignmentRecord::INVALID_REFID)
-        res = streamPut(stream, '*');
+        writeValue(target, '*');
     else if (record.rID == record.rNextId)
-        res = streamPut(stream, '=');
+        writeValue(target, '=');
     else
-        res = streamPut(stream, nameStore(context)[record.rNextId]);
-    if (res != 0)
-        return res;
+        write(target, nameStore(context)[record.rNextId]);
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
     if (record.pNext == BamAlignmentRecord::INVALID_POS)
-        res = streamPut(stream, '0');
+        writeValue(target, '0');
     else
-        res = streamPut(stream, record.pNext + 1);
-    if (res != 0)
-        return res;
+        appendNumber(target, record.pNext + 1);
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
     if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        res = streamPut(stream, '0');
+        writeValue(target, '0');
     else
-        res = streamPut(stream, record.tLen);
-    if (res != 0)
-        return res;
+        appendNumber(target, record.tLen);
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
     if (empty(record.seq))
-        res = streamPut(stream, '*');  // Case of empty seq string / "*".
+        writeValue(target, '*');  // Case of empty seq string / "*".
     else
-        res = streamPut(stream, record.seq);
-    if (res != 0)
-        return res;
+        write(target, record.seq);
 
-    SEQAN_PUT_TAB;
+    writeValue(target, '\t');
 
 
     if (empty(record.qual))  // Case of empty quality string / "*".
-        res = streamPut(stream, '*');
+        writeValue(target, '*');
     else
-        res = streamPut(stream, record.qual);
-    if (res != 0)
-        return res;
+        write(target, record.qual);
 
     if (!empty(record.tags))
     {
-        SEQAN_PUT_TAB;
+        writeValue(target, '\t');
         CharString buffer;
         assignTagsBamToSam(buffer, record.tags);
-        streamPut(stream, buffer);
+        write(target, buffer);
     }
 
-    return streamPut(stream, '\n');
+    writeValue(target, '\n');
+
+    return 0;
 
 #undef SEQAN_PUT_TAB
 }

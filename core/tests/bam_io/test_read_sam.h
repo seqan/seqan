@@ -49,17 +49,14 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     // -----------------------------------------------------------------------
 
     // Define input stream and file reader for SAM.
-    char const * FILE_CONTENTS =
+    CharString input = 
             "@HD\tVN:1.3\tSO:coordinate\n"
             "@SQ\tSN:REFERENCE\tLN:10000\n"
             "READ0\t2\tREFERENCE\t1\t8\t5M1I4M\tREFERENCE\t31\t40\tAAAAAAAAAA\t!!!!!!!!!!\n"
             "READ0\t1\tREFERENCE\t2\t8\t5M1I4M\tREFERENCE\t31\t40\tAAAAAAAAAA\t!!!!!!!!!!\n"
             "READ0\t3\tREFERENCE\t3\t8\t5M1I4M\t*\t*\t*\tAAAAAAAAAA\t!!!!!!!!!!\n";
 
-    typedef Stream<CharArray<char const *> >     TStream;
-    typedef RecordReader<TStream, SinglePass<> > TRecordReader;
-    TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
-    TRecordReader reader(stream);
+    Iterator<CharString, Rooted>::Type iter = begin(input);
 
     // -----------------------------------------------------------------------
     // Call Code Under Test.
@@ -70,7 +67,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
     
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, reader, Sam()), 0);
+    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, iter, Sam()), 0);
 
     // -----------------------------------------------------------------------
     // Check Results.
@@ -109,17 +106,14 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
     // -----------------------------------------------------------------------
 
     // Define input stream and file reader for SAM.
-    char const * FILE_CONTENTS =
+    CharString input =
             "@HD\tVN:1.3\tSO:coordinate\n"
             "@SQ\tSN:REFERENCE\tLN:10000\n"
             "READ0\t2\tREFERENCE\t1\t8\t5M1I4M\tREFERENCE\t31\t40\tAAAAAAAAAA\t!!!!!!!!!!\n"
             "READ0\t1\tREFERENCE\t2\t8\t5M1I4M\tREFERENCE\t31\t40\tAAAAAAAAAA\t!!!!!!!!!!\n"
             "READ0\t3\tREFERENCE\t3\t8\t5M1I4M\t*\t*\t*\tAAAAAAAAAA\t!!!!!!!!!!\n";
 
-    typedef Stream<CharArray<char const *> >     TStream;
-    typedef RecordReader<TStream, SinglePass<> > TRecordReader;
-    TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
-    TRecordReader reader(stream);
+    Iterator<CharString, Rooted>::Type iter = begin(input);
 
     // -----------------------------------------------------------------------
     // Call Code Under Test.
@@ -130,13 +124,13 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
     
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, reader, Sam()), 0);
+    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, iter, Sam()), 0);
 
     String<BamAlignmentRecord> alignments;
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
         resize(alignments, length(alignments) + 1);
-        SEQAN_ASSERT_EQ(readRecord(back(alignments), bamIOContext, reader, Sam()), 0);
+        readRecord(back(alignments), bamIOContext, iter, Sam());
     }
 
     // -----------------------------------------------------------------------
