@@ -49,8 +49,10 @@
 // Prerequisites
 // ============================================================================
 
+
 #include <seqan/basic.h>
 #include <seqan/modifier.h>  // ModifiedAlphabet<>.
+#include <seqan/align/align_metafunctions.h>
 #include <seqan/graph_align.h>  // TODO(holtgrew): We should not have to depend on this.
 
 // TODO(holtgrew): Why not use priority queue from STL?
@@ -84,7 +86,6 @@
 // Alignment Data Structures and Columns
 // ============================================================================
 
-#include <seqan/align/align_metafunctions.h>
 #include <seqan/align/align_cols.h>
 #include <seqan/align/align_base.h>
 

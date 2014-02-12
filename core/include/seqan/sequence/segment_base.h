@@ -847,7 +847,7 @@ operator << (TStream & target,
              Segment<THost, TSpec> const & source)
 {
 SEQAN_CHECKPOINT
-    write(target, source);
+    //write(target, source);
     return target;
 }
 

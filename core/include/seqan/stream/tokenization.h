@@ -142,6 +142,8 @@ const std::string ExceptionMessage<EqualsChar<CHAR>, TContext>::VALUE = std::str
 // ----------------------------------------------------------------------------
 // Don't use isblank() or isspace() as it they seem to be slower than our functors (due to inlining)
 
+typedef EqualsChar<'\t'>                                        IsTab;
+typedef EqualsChar<' '>                                         IsSpace;
 typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
 typedef OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >          IsNewline;
 typedef OrFunctor<IsBlank, IsNewline>                           IsWhitespace;
@@ -348,6 +350,35 @@ template <typename TTarget, typename TFwdIterator, typename TStopFunctor>
 inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor)
 {
     readUntil(target, iter, stopFunctor, False());
+}
+
+// ----------------------------------------------------------------------------
+// Function readOne()
+// ----------------------------------------------------------------------------
+
+//TODO(singer): implement a chunked version!
+
+template <typename TTarget, typename TFwdIterator, typename TFunctor>
+inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor const &functor)
+{
+    if (atEnd(iter))
+        throw UnexpectedEnd();
+
+    Asserter<TFunctor, ParseError> asserter(functor);
+
+    asserter(*iter);
+    target = *iter;
+    ++iter;
+}
+
+template <typename TTarget, typename TFwdIterator>
+inline void readOne(TTarget & target, TFwdIterator &iter)
+{
+    if (atEnd(iter))
+        throw UnexpectedEnd();
+
+    target = *iter;
+    ++iter;
 }
 
 // ----------------------------------------------------------------------------

@@ -334,8 +334,10 @@ write(TTarget &target, TValue *ptr, TSize n)
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
+//TODO(singer): Enable this!
 template <typename TTarget, typename TFwdIterator, typename TSize>
-inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+//inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+inline void
 write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
@@ -348,6 +350,7 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 // Function write(TContainer)
 // ----------------------------------------------------------------------------
 
+//TODO(singer): Enable this!
 template <typename TTarget, typename TContainer>
 //inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TTarget> >, void)
 inline void

@@ -46,7 +46,9 @@
 #include <fstream>
 #include <sstream>
 
-#include <../../extras/include/seqan/sequence/iterator_range.h>
+
+//TODO: can this be removed?
+//#include <../../extras/include/seqan/sequence/iterator_range.h>
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -76,7 +78,9 @@
 
 #include <seqan/stream/adapt_ios.h>
 #include <seqan/stream/file_stream.h>
-#include <seqan/stream/virtual_stream.h>
+
+//TODO: can this be removed?
+//#include <seqan/stream/virtual_stream.h>
 
 // TODO(esiragusa): This file is deprecated - remove it.
 #include <seqan/stream/mmap_stream_deprecated.h>
