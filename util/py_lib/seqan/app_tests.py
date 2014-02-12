@@ -236,7 +236,7 @@ def runTest(test_conf):
         if retcode != 0:
             fmt = 'Return code of command "%s" was %d.'
             print >>sys.stderr, '--- stdout begin --'
-            print >>sys.stderr, fmt % (' '.join(args), retcode)
+            print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), retcode)
             print >>sys.stderr, stdout_file.read()
             print >>sys.stderr, '--- stdout end --'
             stdout_file.close()
@@ -260,7 +260,7 @@ def runTest(test_conf):
         return False
     # Handle error of program, indicated by return code != 0.
     if retcode != 0:
-        print >>sys.stderr, 'Error when executing "%s".' % ' '.join(args)
+        print >>sys.stderr, 'Error when executing "%s".' % ' '.join(test_conf.commandLineArgs())
         print >>sys.stderr, 'Return code is %d' % retcode
         if stdout_file is not subprocess.PIPE:
             stdout_file.seek(0)
