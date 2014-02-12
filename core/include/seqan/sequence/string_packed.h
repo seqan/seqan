@@ -267,7 +267,7 @@ struct FunctorTestAllOnes<String<bool, Packed<THostSpec> > >
     template <typename TValue>
     inline bool operator()(TValue const & val, True const & /*tag*/) const
     {
-        TBitVector maskWastedBits = 0 | (1 << _wastedBits) - 1;  // We only need the mask if we are in the last value.
+        TBitVector maskWastedBits = (1 << _wastedBits) - 1;  // We only need the mask if we are in the last value.
         return testAllOnes(val | maskWastedBits);
     }
 };
@@ -1701,27 +1701,27 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     typedef String<bool, Packed<THostSpec> > TPackedString;
     typedef typename Position<TPackedString>::Type TPosition;
     typedef typename Host<TPackedString>::Type TPackedHost;
-    typedef typename Iterator<TPackedHost const, Rooted>::Type TConstPackedHostIterator;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
     typedef PackedTraits_<TPackedString> TTraits;
     typedef typename TTraits::THostValue THostValue;  // Is a tuple.
     typedef typename THostValue::TBitVector TBitVector;
 
-    TConstPackedHostIterator it = end(host(obj), Rooted()) - 1;
-    TConstPackedHostIterator itBegin = begin(host(obj), Rooted());
+    TConstPackedHostIterator it = end(host(obj), Standard()) - 1;
+    TConstPackedHostIterator itBegin = begin(host(obj), Standard());
 
     // We need to treat the last value differently, because it's possible not all bits are in use.
     TBitVector tmp = it->i & (~static_cast<TBitVector>(0) <<
                               (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
 
     if (!testAllZeros(tmp))
-        return ((position(it) - 1) * BitsPerValue<TBitVector>::VALUE) +
+        return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
                (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(tmp);
     --it;
     for(;it != itBegin && testAllZeros(*it); --it)
     {}
 
     if (it != itBegin)
-        return ((position(it) - 1) * BitsPerValue<TBitVector>::VALUE) +
+        return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
                (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(it->i);
     return MaxValue<TPosition>::VALUE;
 }
@@ -1737,20 +1737,22 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
     typedef String<bool, Packed<THostSpec> >  TPackedString;
     typedef typename Position<TPackedString>::Type TPosition;
     typedef typename Host<TPackedString>::Type TPackedHost;
-    typedef typename Iterator<TPackedHost const, Rooted>::Type TConstPackedHostIterator;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
     typedef PackedTraits_<TPackedString> TTraits;
     typedef typename TTraits::THostValue THostValue;
     typedef typename THostValue::TBitVector TBitVector;
 
-    TConstPackedHostIterator it = begin(host(obj), Rooted()) + 1;
-    TConstPackedHostIterator itEnd = end(host(obj), Rooted()) - 1;
+    TConstPackedHostIterator itBegin = begin(host(obj), Standard()) + 1;
+    TConstPackedHostIterator it = itBegin;
+    TConstPackedHostIterator itEnd = end(host(obj), Standard()) - 1;
 
     for (; it != itEnd && testAllZeros(*it); ++it)
     {}
     // If last element is not 0, we return the last position. Note, that we do not check for the returned index to be
     // bigger than the length of the string. The caller has to do this.
     if (it->i != 0)
-        return ((position(it) - 1) * BitsPerValue<TBitVector>::VALUE) + (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(it->i);
+        return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) +
+               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(it->i);
 
     // Otherwise we return max value.
     return MaxValue<TPosition>::VALUE;
@@ -1810,18 +1812,19 @@ inline void transform(String<bool, Packed<THostSpec> > & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function _test()
+// Function _packedStringTestAll()
 // ----------------------------------------------------------------------------
 
 template <typename THostSpec, typename TTester>
 inline bool
-_test(String<bool, Packed<THostSpec> > const & obj, TTester const & tester)
+_packedStringTestAll(String<bool, Packed<THostSpec> > const & obj, TTester const & tester)
 {
     typedef String<bool, Packed<THostSpec> > TPackedString;
     typedef typename Host<TPackedString>::Type TPackedHost;
     typedef typename Iterator<TPackedHost const>::Type TConstIterator;
 
-    SEQAN_ASSERT_NOT(empty(obj));
+    if (empty(obj))
+        return true;
 
     TConstIterator itFirst = begin(host(obj), Standard()) + 1;
     TConstIterator itLast = end(host(obj), Standard()) - 1;
@@ -1832,7 +1835,7 @@ _test(String<bool, Packed<THostSpec> > const & obj, TTester const & tester)
     if (itFirst != itLast)
         return false;
 
-    return tester(*(itFirst), True());  // Test last case
+    return tester(*(itFirst), True());  // Test last case.
 }
 
 // ----------------------------------------------------------------------------
@@ -1846,8 +1849,8 @@ testAllZeros(String<bool, Packed<THostSpec> > const & obj)
     typedef String<bool, Packed<THostSpec> > TPackedString;
     typedef PackedTraits_<TPackedString> TPackedTraits;
 
-    return _test(obj, FunctorTestAllZeros<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE - (length(obj) %
-                                                          TPackedTraits::VALUES_PER_HOST_VALUE))));
+    return _packedStringTestAll(obj, FunctorTestAllZeros<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE -
+                                     (length(obj) % TPackedTraits::VALUES_PER_HOST_VALUE))));
 }
 
 // ----------------------------------------------------------------------------
@@ -1861,8 +1864,8 @@ testAllOnes(String<bool, Packed<THostSpec> > const & obj)
     typedef String<bool, Packed<THostSpec> > TPackedString;
     typedef PackedTraits_<TPackedString> TPackedTraits;
 
-    return _test(obj, FunctorTestAllOnes<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE - (length(obj) %
-                                                         TPackedTraits::VALUES_PER_HOST_VALUE))));
+    return _packedStringTestAll(obj, FunctorTestAllOnes<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE -
+                                     (length(obj) % TPackedTraits::VALUES_PER_HOST_VALUE))));
 }
 
 }  // namespace seqan
