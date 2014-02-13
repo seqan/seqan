@@ -376,13 +376,13 @@ void failExceptionTest()
         {                                                                           \
             std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
                       << #_exception_type << std::endl;                             \
-            failExceptionTest();                                                    \
+            seqan::failExceptionTest();                                             \
         }                                                                           \
         if (!caughtException)                                                       \
         {                                                                           \
             std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
                       << std::endl;                                                 \
-            failExceptionTest();                                                    \
+            seqan::failExceptionTest();                                             \
         }                                                                           \
     } while(false)
 
@@ -402,7 +402,7 @@ void failExceptionTest()
                           << " Got correct exception but wrong message: '"          \
                           << ex.what() << "' != '"                                  \
                           << _message << "'" << std::endl;                          \
-                failExceptionTest();                                                \
+                seqan::failExceptionTest();                                         \
             }                                                                       \
             caughtException = true;                                                 \
         }                                                                           \
@@ -410,13 +410,13 @@ void failExceptionTest()
         {                                                                           \
             std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
                       << #_exception_type << std::endl;                             \
-            failExceptionTest();                                                    \
+            seqan::failExceptionTest();                                             \
         }                                                                           \
         if (!caughtException)                                                       \
         {                                                                           \
             std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
                       << std::endl;                                                 \
-            failExceptionTest();                                                    \
+            seqan::failExceptionTest();                                             \
         }                                                                           \
     } while(false)
 

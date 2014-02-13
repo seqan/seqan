@@ -37,8 +37,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
-#include <seqan/seq_io.h>
 #include <seqan/gff_io.h>
 
 using namespace seqan;
