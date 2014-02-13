@@ -137,14 +137,16 @@ public:
         host(&_host),
         objNo(0)
     {
-        if (empty(_host))
+        if (!empty(_host))
+        {
+            _begin = _cur = begin(_host[0]);
+            _end = end(_host[0]);
+            _testEnd();
+        }
+        else
         {
             _begin = _cur = _end = obj_iterator();
-            return;
         }
-        _begin = _cur = begin(_host[objNo]);
-        _end = end(_host[objNo]);
-        _testEnd();
     }
 
     Iter(TStringSet &_host, unsigned _objNo, difference_type _offset):
@@ -176,26 +178,40 @@ public:
     // non-public function is allowed.
     inline void _testEnd()
     {
-        while (_cur == _end && objNo + 1 < length(*host))
+        if (objNo >= length(*host))
         {
-            ++objNo;
+            SEQAN_ASSERT_EQ(_begin, obj_iterator());
+            SEQAN_ASSERT_EQ(_cur, obj_iterator());
+            SEQAN_ASSERT_EQ(_end, obj_iterator());
+            return;
+        }
+
+        while (true)
+        {
+            if (_cur != _end)
+                return;
+            if (++objNo == length(*host))
+                break;
             _begin = _cur = begin((*host)[objNo]);
             _end = end((*host)[objNo]);
-        };
+        }
+
+        _begin = _cur = _end = obj_iterator();
     }
 
     inline void _setPosition(unsigned _objNo, difference_type _offset)
     {
-        if (_objNo < length(*host)) {
-            objNo = _objNo;
+        objNo = _objNo;
+        if (_objNo < length(*host))
+        {
             _begin = _cur = begin((*host)[objNo]);
             _end = end((*host)[objNo]);
             goFurther(_cur, _offset);
             _testEnd();
-        } else {
-            objNo = length(*host) - 1;
-            _begin = begin((*host)[objNo]);
-            _cur = _end = end((*host)[objNo]);
+        }
+        else
+        {
+            _begin = _cur = _end = obj_iterator();
         }
     }
 };
@@ -322,7 +338,8 @@ template <typename TStringSet, typename TSpec>
 inline void
 goPrevious(Iter<TStringSet, ConcatVirtual<TSpec> > & me)
 {
-    while (me._cur == me._begin && me.objNo > 0) {
+    while (me._cur == me._begin && me.objNo > 0)
+    {
         --me.objNo;
         me._begin = begin((*me.host)[me.objNo]);
         me._end = me._cur = end((*me.host)[me.objNo]);
@@ -524,14 +541,14 @@ template <typename TSSet, typename TSpec>
 inline bool
 atEnd(Iter<TSSet, ConcatVirtual<TSpec> > & me)
 {
-    return me._cur == me._end && me.objNo + 1 >= length(*me.host);
+    return me._cur == me._end;
 }
 
 template <typename TSSet, typename TSpec>
 inline bool
 atEnd(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 {
-    return me._cur == me._end && me.objNo + 1 >= length(*me.host);
+    return me._cur == me._end;
 }
 
 // --------------------------------------------------------------------------
@@ -564,11 +581,7 @@ template <typename TSSet, typename TSpec>
 inline bool
 atEndOfSequence(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 {
-    if (me._cur == me._begin && me.objNo > 0)
-        return true;
-    if (me._cur == me._end)
-        return true;
-    return false;
+    return me._cur == me._begin && me.objNo > 0;
 }
 
 template <typename TIterator>
