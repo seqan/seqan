@@ -54,8 +54,6 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
 
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
-    //seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
-
     seqan::GffRecord record;
     seqan::readRecord(record, iter, seqan::Gff());
 
@@ -89,21 +87,17 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     for (unsigned i = 0; i < 12; ++i)
     {
         SEQAN_TEST_EXCEPTION(ParseError,
-                             seqan::readRecord(record, iter, seqan::Gff()),
-                             "Value '\n' produced an error. ");
+                             seqan::readRecord(record, iter, seqan::Gff()));
         skipLine(iter);
     }
     SEQAN_TEST_EXCEPTION(ParseError,
-                         seqan::readRecord(record, iter, seqan::Gff()),
-                         "Value '\n' produced an error. Character '\t' expected.");
+                         seqan::readRecord(record, iter, seqan::Gff()));
     skipLine(iter);
     SEQAN_TEST_EXCEPTION(ParseError,
-                         seqan::readRecord(record, iter, seqan::Gff()),
-                         "Value '\n' produced an error. ");
+                         seqan::readRecord(record, iter, seqan::Gff()));
     skipLine(iter);
     SEQAN_TEST_EXCEPTION(RuntimeError,
-                         seqan::readRecord(record, iter, seqan::Gff()),
-                         "The key field of an attribute is empty!");
+                         seqan::readRecord(record, iter, seqan::Gff()));
     skipLine(iter);
 
     seqan::readRecord(record, iter, seqan::Gff());
@@ -123,8 +117,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
 
     SEQAN_TEST_EXCEPTION(RuntimeError,
-                         seqan::readRecord(record, iter, seqan::Gff()),
-                         "The begin position of the record is larger than the end position!");
+                         seqan::readRecord(record, iter, seqan::Gff()));
     skipLine(iter);
 
 }
