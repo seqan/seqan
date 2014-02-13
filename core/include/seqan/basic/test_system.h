@@ -360,7 +360,33 @@ void failExceptionTest()
 // Macro SEQAN_TEST_EXCEPTION()
 // --------------------------------------------------------------------------
 
-#define SEQAN_TEST_EXCEPTION(_exception_type, command, _message)                    \
+#define SEQAN_TEST_EXCEPTION(_exception_type, command)                              \
+    do                                                                              \
+    {                                                                               \
+        bool caughtException = false;                                               \
+        try                                                                         \
+        {                                                                           \
+            command;                                                                \
+        }                                                                           \
+        catch(_exception_type& ex)                                                  \
+        {                                                                           \
+            caughtException = true;                                                 \
+        }                                                                           \
+        catch(...)                                                                  \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
+                      << #_exception_type << std::endl;                             \
+            failExceptionTest();                                                    \
+        }                                                                           \
+        if (!caughtException)                                                       \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
+                      << std::endl;                                                 \
+            failExceptionTest();                                                    \
+        }                                                                           \
+    } while(false)
+
+#define SEQAN_TEST_EXCEPTION_WITH_MESSAGE(_exception_type, command, _message)       \
     do                                                                              \
     {                                                                               \
         bool caughtException = false;                                               \
