@@ -5,12 +5,17 @@ export SOURCE_DIRECTORY=`pwd`
 mkdir _build
 
 # define the build name
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  export BUILD_NAME=$TRAVIS_PULL_REQUEST
-elif [[ -n "$TRAVIS_COMMIT_RANGE" ]]; then
-  export BUILD_NAME=$TRAVIS_COMMIT_RANGE
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+  export BUILD_NAME=${TRAVIS_PULL_REQUEST}
+elif [[ -n "${TRAVIS_COMMIT_RANGE}" ]]; then
+  export BUILD_NAME=${TRAVIS_COMMIT_RANGE}
 else
-  export BUILD_NAME=$TRAVIS_COMMIT
+  export BUILD_NAME=${TRAVIS_COMMIT}
+fi
+
+# disable OpenMP warnings for clang
+if [ "${CXX}" == "clang++" ]; then
+  export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
 ctest -V -S util/travis/linux-cibuild.cmake
@@ -22,7 +27,7 @@ fi
 
 FAILED_TEST=$(find _build -name "Test.xml" -type f | xargs grep "<Test Status=\"failed\">" -c)
 
-if [ "$FAILED_TEST" -gt "0" ]; then
+if [ "${FAILED_TEST}" -gt "0" ]; then
     exit -1
 fi
 
