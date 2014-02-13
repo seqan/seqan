@@ -418,12 +418,12 @@ public:
  * @signature void open(seqStream, fileName[, operationMode[, format[, fileType]]]);
  * 
  * @param[in,out] seqStream     The SequenceStream object to open. Types: SequenceStream.
- * @param[in]     fileType      Mode to open the file in. Optional. Types: SequenceStream::FileType  Default:
- *                              AUTO_TYPE.
- * @param[in]     format        Mode to open the file in. Optional.  Types: SequenceStream::FileFormat.
- *                              Default: AUTO_FORMAT.
- * @param[in]     operationMode Mode to open the file in.  Optional. Types: SequenceStream::OperationMode.
- *                              Default: READ.
+ * @param[in]     fileType      Mode to open the file in. Optional. Types: @link SequenceStream::FileType @endlink.
+ *                              Default: <tt>AUTO_TYPE</tt>.
+ * @param[in]     format        Mode to open the file in. Optional.  Types: @link SequenceStream::FileFormat @endlink.
+ *                              Default: <tt>AUTO_FORMAT</tt>.
+ * @param[in]     operationMode Mode to open the file in.  Optional. Types: @link SequenceStream::OperationMode
+ *                              @endlink. Default: <tt>READ</tt>.
  * @param[in]     fileName      Path to the file to open. Types: <tt>char const *</tt>
  */
 
