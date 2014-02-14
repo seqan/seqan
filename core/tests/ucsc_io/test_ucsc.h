@@ -93,6 +93,14 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_ucsc_known_genes)
     SEQAN_ASSERT_EQ(record.proteinName, "P00441");
     SEQAN_ASSERT_EQ(record.annotationBeginPos, 33031934u);
     SEQAN_ASSERT_EQ(record.annotationEndPos, 33041243u);
+
+    for (unsigned i = 0; i < 20; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(ParseError,
+                             seqan::readRecord(record, iter, ucscContext));
+        skipLine(iter);
+    }
+
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
@@ -100,7 +108,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     // The file contains 13 annotations in total which will be checked line
     // after line.
     String<char> ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/ucsc_io/example_known_genes.tsv");
 
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(ucscPath));
