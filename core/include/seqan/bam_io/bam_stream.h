@@ -201,10 +201,10 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
  *
  * @signature enum BamStream::OperationMode;
  *
- * @var BamStream::OperationMode BamStream::READ;
+ * @val BamStream::OperationMode BamStream::READ;
  * @brief Enum value for reading.
  *
- * @var BamStream::OperationMode BamStream::WRITE;
+ * @val BamStream::OperationMode BamStream::WRITE;
  * @brief Enum value for writing.
  */
 
@@ -217,14 +217,14 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
  *
  * @see BamStream
  *
- * @var BamStream::Format BamStream::AUTO;
+ * @val BamStream::Format BamStream::AUTO;
  * @brief Auto-detect the format from file content on reading and from the file name on writing.  If auto-detection
  *        fails, SAM is used.
  *
- * @var BamStream::Format BamStream::SAM;
+ * @val BamStream::Format BamStream::SAM;
  * @brief Force reading/writing of SAM.
  *
- * @var BamStream::Format BamStream::BAM;
+ * @val BamStream::Format BamStream::BAM;
  * @brief Force reading/writing of BAM.
  */
 
