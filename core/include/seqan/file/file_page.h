@@ -395,12 +395,10 @@ struct MMap;
 
 		Buffer():
             begin(NULL),
-            end(NULL),
-			status(READY),
-			dataStatus(UNINITIALIZED),
-            priority(NORMAL_LEVEL),
-            pageNo(-1),
-            dirty(false) {}
+            end(NULL)
+        {
+            clear(*this);
+        }
 
         template <typename TPos>
 		inline TValue &
@@ -416,6 +414,20 @@ struct MMap;
             return begin[i];
         }
 	};
+
+    template < typename TValue,
+               typename TFile,
+               size_t PAGESIZE_ >
+	inline void
+    clear(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > &me)
+    {
+        typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > TPageFrame;
+        me.status = READY;
+        me.dataStatus = TPageFrame::UNINITIALIZED;
+        me.priority = TPageFrame::NORMAL_LEVEL;
+        me.pageNo = -1;
+        me.dirty = false;
+    }
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -1263,7 +1275,7 @@ struct MMap;
 				};
             }
 			#ifdef SEQAN_VVERBOSE
-				::std::cerr << "ALL PAGES DIRTY Or IN USE (try to use const iterators) :-(" << ::std::endl;
+				::std::cerr << "ALL PAGES DIRTY OR IN USE (try to use const iterators) :-(" << ::std::endl;
 			#endif
 			return -1;
 		}
