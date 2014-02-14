@@ -176,6 +176,7 @@ See the @Memfunc.External String#String@ constructor for more details.
 			resize(*this, size);
         }
 
+        // associate a file
 		explicit
         String(TFile &_file):
 			data_begin(NULL),
@@ -185,6 +186,7 @@ See the @Memfunc.External String#String@ constructor for more details.
 			open(*this, _file);
         }
 
+        // associate a file given filename [and open mode]
 		explicit
         String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
 			data_begin(NULL),
@@ -194,16 +196,31 @@ See the @Memfunc.External String#String@ constructor for more details.
 			open(*this, fileName, openMode);
         }
 
-		template <typename TSource>
+        // copy the contents from another string
+		String(String const & source):
+			data_begin(NULL),
+			data_end(NULL),
+			advise(MAP_NORMAL)
+		{
+			assign(*this, source);
+		}
+        template <typename TSource>
+		String(TSource const & source):
+			data_begin(NULL),
+			data_end(NULL),
+			advise(MAP_NORMAL)
+		{
+			assign(*this, source);
+		}
+
+        template <typename TSource>
 		String & operator =(TSource const & source)
 		{
-	SEQAN_CHECKPOINT
 			assign(*this, source);
 			return *this;
 		}
 		String & operator =(String const & source)
 		{
-	SEQAN_CHECKPOINT
 			assign(*this, source);
 			return *this;
 		}
@@ -219,7 +236,6 @@ See the @Memfunc.External String#String@ constructor for more details.
 		inline typename Reference<String>::Type
 		operator [] (TPos pos)
 		{
-	SEQAN_CHECKPOINT
 			return value(*this, pos);
 		}
 
@@ -227,7 +243,6 @@ See the @Memfunc.External String#String@ constructor for more details.
 		inline typename Reference<String const>::Type 
 		operator [] (TPos pos) const
 		{
-	SEQAN_CHECKPOINT
 			return value(*this, pos);
 		}
 
