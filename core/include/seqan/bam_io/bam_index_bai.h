@@ -95,6 +95,7 @@ struct BaiBamIndexBinData_
 
 /*!
  * @class BaiBamIndex
+ * @headerfile <seqan/bam_io.h>
  * @extends BamIndex
  * @brief Access to BAI (samtools-style).
  *
@@ -403,6 +404,16 @@ bool jumpToOrphans(Stream<Bgzf> & stream,
 // Function getUnalignedCount()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamIndex#getUnalignedCount 
+ * @brief Query index for number of unaligned reads.
+ *
+ * @signature __uint64 getUnalignedCount(index);
+ *
+ * @param[in] index     Index to query.
+ * @return    __uint64  The number of unaligned reads.
+ */
+
 /**
 .Function.BamIndex#getUnalignedCount
 ..class:Class.BamIndex
@@ -424,6 +435,17 @@ getUnalignedCount(BamIndex<Bai> const & index)
 // ----------------------------------------------------------------------------
 // Function read()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamIndex#read
+ * @brief Load a BAM index from a given file name.
+ * @signature int read(index, filename);
+
+ * @param[in,out] index    Target data structure.
+ * @param[in]     filename Path to file to load. Types: char const *
+ *
+ * @return        int      The status code, <tt>0</tt> indicating success.
+ */
 
 /**
 .Function.BamIndex#read

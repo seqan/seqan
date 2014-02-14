@@ -349,7 +349,7 @@ struct AlignQualityStoreElement
 	AlignQualityStoreElement():
 		pairScore(0),
 		score(0),
-		errors(0) {}
+		errors(MaxValue<unsigned char>::VALUE) {}
 
 	AlignQualityStoreElement(TScore _pairScore, TScore _score, unsigned char _errors):
 		pairScore(_pairScore),
