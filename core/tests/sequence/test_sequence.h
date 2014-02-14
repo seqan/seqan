@@ -117,23 +117,30 @@ unsigned CountingChar::numConstruct = 0;
 unsigned CountingChar::numDeconstruct = 0;
 
 template <typename TValue, typename TSpec>
-void testConstructDeconstruct(String<TValue, TSpec> const &)
+void testConstructDeconstruct(String<TValue, TSpec> const &, unsigned)
 {}
 template <typename TSpec>
-void testConstructDeconstruct(String<CountingChar, TSpec> const &)
+void testConstructDeconstruct(String<CountingChar, TSpec> const &, unsigned minConstructions)
 {
     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
+    SEQAN_ASSERT_GEQ(CountingChar::numConstruct, minConstructions);
 }
-void testConstructDeconstruct(String<CountingChar, External<> > const &)
+void testConstructDeconstruct(String<CountingChar, External<> > const &, unsigned)
 {}
-void testConstructDeconstruct(String<CountingChar, MMap<> > const &)
-{}
-template <size_t COUNT>
-void testConstructDeconstruct(String<CountingChar, Array<COUNT> > const &)
+void testConstructDeconstruct(String<CountingChar, MMap<> > const &, unsigned)
 {}
 template <size_t COUNT>
-void testConstructDeconstruct(String<CountingChar, Block<COUNT> > const &)
+void testConstructDeconstruct(String<CountingChar, Array<COUNT> > const &, unsigned)
 {}
+template <size_t COUNT>
+void testConstructDeconstruct(String<CountingChar, Block<COUNT> > const &, unsigned)
+{}
+
+template <typename TValue, typename TSpec>
+void testConstructDeconstruct(String<TValue, TSpec> const &str)
+{
+    testConstructDeconstruct(str, 1u);
+}
 
 
 template <typename TAlphabetSpecPair_>
@@ -248,7 +255,7 @@ SEQAN_TYPED_TEST(StringTestCommon, DefaultConstructible)
     typename TestFixture::TString const constStr;
     testSequenceDefaultConstructible(constStr);
 
-    testConstructDeconstruct(str);
+    testConstructDeconstruct(str, 0);
 }
 
 // --------------------------------------------------------------------------
@@ -1575,7 +1582,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Reserve)
     typename TestFixture::TString str;
     testSequenceReserve(str);
    
-    testConstructDeconstruct(str);
+    testConstructDeconstruct(str, 0);
 }
 
 // Test of resize().
