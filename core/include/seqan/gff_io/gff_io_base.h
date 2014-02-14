@@ -67,7 +67,6 @@ namespace seqan {
 ..include:seqan/gff_io.h
 */
 
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGff_;
 typedef Tag<TagGff_> Gff;
 
@@ -88,7 +87,6 @@ typedef Tag<TagGff_> Gff;
 ..include:seqan/gff_io.h
 */
 
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
 
@@ -307,10 +305,11 @@ inline void
 _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & iter)
 {
     IsWhitespace isWhitespace;
+    IsNewline isNewline;
 
     //TODO(singer): AssertList functor would be need
     char c = value(iter);
-    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
+    if (isWhitespace(c) || c == '=')
     {
         throw std::runtime_error("The key field of an attribute is empty!");
         return;  // Key cannot be empty.
@@ -319,8 +318,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     for (; !atEnd(iter); goNext(iter))
     {
         c = value(iter);
-        //if (IsWhitespace(c) || c == '=' || c == ';')
-        if (c == '\n' || c == '\r' || c == ' ' || c == '=' || c == ';')
+        if (isNewline(c) || c == ' ' || c == '=' || c == ';')
             break;
         appendValue(key, c);
     }
@@ -336,9 +334,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     skipUntil(iter, NotFunctor<IsWhitespace>());
 
     if (value(iter) == '=')
-    {
         skipOne(iter);
-    }
 
     if (value(iter) == '"')
     {
@@ -349,7 +345,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 
         // Go over the trailing semicolon and any trailing space.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            goNext(iter);
+            skipOne(iter);
     }
     else
     {
@@ -358,7 +354,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 
         // Skip semicolon and spaces if any.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            goNext(iter);
+            skipOne(iter);
     }
     return;
 }
@@ -430,8 +426,6 @@ inline void clear(GffRecord & record)
 ..include:seqan/gff_io.h
 */
 
-//TODO(singer): no checking if record is complete
-//TODO(singer): no checking whether lexicalCast is working
 template <typename TFwdIterator>
 inline void
 _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
@@ -483,16 +477,12 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     skipOne(iter, IsTab());
 
     // read column 7: strand
-    //TODO(singer): readUntil taking a char would be good!
-    //TODO(singer): readOne
-    record.strand = value(iter);
-    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
+    readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
     skipOne(iter, IsTab());
 
     // read column 8: phase
-    record.phase = value(iter);
-    skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
-
+    readOne(record.phase, iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
+    
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
     {
@@ -603,7 +593,7 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
     for (TIter it = begin(source, Standard()); it != itEnd; ++it)
     {
         // we have a problem if the string contains a '"' or a line break
-        if (*it == '\n' || *it == '"')
+        if (value(it) =='\n' || value(it) == '"')
             throw std::runtime_error("Attribute contains illegal character!");
 
         if (func(*it))
@@ -749,13 +739,9 @@ _writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref,
 
     // write column 2: source
     if (empty(record.source))
-    {
         writeValue(target, '.');
-    }
     else
-    {
         write(target, record.source);
-    }
     writeValue(target, '\t');
 
     // write column 3: type
