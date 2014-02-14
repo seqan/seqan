@@ -347,21 +347,21 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_literal)
         SEQAN_ASSERT_EQ(modStr, "CGAT");
     }
     // Reverse a literal.
-//    {
-//        typedef seqan::ModifiedString<char[5], seqan::ModReverse> TModifiedString;
-//        
-//        char str[] = "CGAT";
-//        TModifiedString modStr(str);
-//        SEQAN_ASSERT_EQ(modStr, "TAGC");
-//    }
-//    // Lowercase a literal.
-//    {
-//        typedef seqan::ModifiedString<char[5], seqan::ModView<LowerFunctor> > TModifiedString;
-//        
-//        char str[] = "CGAT";
-//        TModifiedString modStr(str);
-//        SEQAN_ASSERT_EQ(modStr, "cgat");
-//    }
+    {
+        typedef seqan::ModifiedString<char[5], seqan::ModReverse> TModifiedString;
+        
+        char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "TAGC");
+    }
+    // Lowercase a literal.
+    {
+        typedef seqan::ModifiedString<char[5], seqan::ModView<LowerFunctor> > TModifiedString;
+        
+        char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "cgat");
+    }
 }
 
 SEQAN_DEFINE_TEST(test_modifier_modified_string_const_literal)
