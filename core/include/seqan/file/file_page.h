@@ -401,7 +401,7 @@ struct MMap;
         }
 
         template <typename TPos>
-		inline TValue &
+        inline TValue &
         operator[] (TPos i)
         {
             return begin[i];
@@ -418,7 +418,7 @@ struct MMap;
     template < typename TValue,
                typename TFile,
                size_t PAGESIZE_ >
-	inline void
+    inline void
     clear(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > &me)
     {
         typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > TPageFrame;

@@ -1277,37 +1277,37 @@ Instead of giving $file$ or $fileName$ to the constructor, you could also use th
 or @Function.openTemp@ afterwards to reach the same behaviour.
 */
         explicit
-		String(TFile &_file)
+        String(TFile &_file)
         {
-			open(*this, _file);
+            open(*this, _file);
         }
 
         explicit
-		String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
-			file(NULL)
+        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
+            file(NULL)
         {
-			open(*this, fileName, openMode);
+            open(*this, fileName, openMode);
         }
 
         // copy the contents from another string
-		String(String const & source):
+        String(String const & source):
             file(NULL),
-			data_size(0)
+            data_size(0)
 		{
-			assign(*this, source);
+            assign(*this, source);
 		}
         template <typename TSource>
-		String(TSource const & source):
+        String(TSource const & source):
             file(NULL),
-			data_size(0)
-		{
-			assign(*this, source);
-		}
+            data_size(0)
+        {
+            assign(*this, source);
+        }
 
         ~String()
-		{
-			close(*this);
-		}
+        {
+            close(*this);
+        }
 
 		inline TValue & operator[] (TSize offset) {
 			TPageFrame &pf = getPage(offset / PAGESIZE);
