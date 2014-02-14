@@ -418,6 +418,8 @@ template <typename THost, typename TPos>
 inline typename Reference<ModifiedString<THost, ModReverse> const>::Type 
 value(ModifiedString<THost, ModReverse> const & me, TPos pos)
 {
+//    auto r=value(host(me), (length(host(me)) - 1) - pos);
+//    static_cast<void*>(host(me));
     return value(host(me), (length(host(me)) - 1) - pos);
 }
 

@@ -112,6 +112,8 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
     SEQAN_CALL_TEST(test_modifier_modified_string_mod_view);
     SEQAN_CALL_TEST(test_modifier_modified_string_mod_view_segment);
 
+//    SEQAN_CALL_TEST(test_modifier_modified_string_literal);
+    SEQAN_CALL_TEST(test_modifier_modified_string_const_literal);
     SEQAN_CALL_TEST(test_modifier_modified_string_reverse_segment);
 
     SEQAN_CALL_TEST(test_modifier_minimal);
