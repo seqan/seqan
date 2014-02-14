@@ -363,8 +363,10 @@ readRecord(VcfRecord & record,
 
     // INFO
     readUntil(record.info, iter, IsWhitespace());
-    if (value(iter) == '\n')
+    if (IsNewline()(value(iter)))
     {
+        if (empty(record.info))
+            throw ParseError("Unexpected end of record.");
         skipOne(iter);
         return;
     }
@@ -385,11 +387,11 @@ readRecord(VcfRecord & record,
         if (atEnd(iter))
         {
             if ((i + 1) != length(*context.sampleNames))
-                throw std::runtime_error("Not enough fields");
+                throw ParseError("Not enough fields");
             else
                 break;  // Done
         }
-        if (value(iter) == '\r' || value(iter) == '\n')
+        if (IsNewline()(value(iter)))
         {
             skipOne(iter);
             return;
@@ -399,7 +401,7 @@ readRecord(VcfRecord & record,
     }
 
     // Skip empty lines, necessary for getting to EOF if there is an empty line at the ned of the file.
-    while (!atEnd(iter) && (value(iter) == '\r' || value(iter) == '\n'))
+    while (!atEnd(iter) && IsNewline()(value(iter)))
         skipOne(iter);
 }
 

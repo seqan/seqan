@@ -159,7 +159,7 @@ writeRecord(TTarget & target,
     appendNumber(target, record.beginPos + 1);
     writeValue(target, '\t');
     if (empty(record.id))
-        write(target, ".", 1);
+        writeValue(target, '.');
     else
         write(target, record.id);
     writeValue(target, '\t');

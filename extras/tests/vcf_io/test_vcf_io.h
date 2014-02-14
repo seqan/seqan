@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example_records.vcf");
+    append(vcfPath, "/extras/tests/vcf_io/example_records_with_errors.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     open(mmapString, toCString(vcfPath));
@@ -118,9 +118,9 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
     seqan::String<seqan::VcfRecord> records;
-    while (!atEnd(iter))
+    seqan::VcfRecord record;
+    for (unsigned i = 0; i < 3; ++i)
     {
-        seqan::VcfRecord record;
         readRecord(record, iter, vcfIOContext, seqan::Vcf());
         appendValue(records, record);
     }
@@ -159,6 +159,13 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
+
+    for (unsigned i = 0; i < 15; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(seqan::ParseError,
+                             seqan::readRecord(record, iter, vcfIOContext, seqan::Vcf()));
+        seqan::skipLine(iter);
+    }
 }
 
 /*
