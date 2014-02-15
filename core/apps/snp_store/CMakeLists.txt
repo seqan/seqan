@@ -20,9 +20,10 @@ find_package (SeqAn REQUIRED)
 
 # Search BOOST, snp_store is not built if Boost is not found.
 find_package (Boost)
+find_package(CXX11 REQUIRED)
 
-if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-    message (STATUS "  Boost or zlib not found: Not building snp_store.")
+if (NOT Boost_FOUND OR NOT ZLIB_FOUND OR NOT CXX11_FOUND)
+    message (STATUS "  Boost, zlib or C++11 not found: Not building snp_store.")
     return ()
 endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
 
@@ -44,7 +45,7 @@ add_executable (snp_store snp_store.cpp snp_store.h)
 target_link_libraries (snp_store ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation
