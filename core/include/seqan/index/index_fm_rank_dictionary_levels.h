@@ -111,7 +111,7 @@ struct RankDictionaryBitMask_<__uint32, TSpec>
 template <typename TSpec>
 struct RankDictionaryBitMask_<__uint64, TSpec>
 {
-    static const __uint64 VALUE = 0x5555555555555555;
+    static const __uint64 VALUE = 0x5555555555555555ull;
 };
 
 // ----------------------------------------------------------------------------
