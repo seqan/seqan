@@ -26,7 +26,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <math.h>
 #include <cmath>
 
 #include <seqan/misc/misc_svg.h>
@@ -1921,7 +1920,11 @@ logSum(TValue x, TValue y) {
         return x;
     double diff = x - y;
     double retVal;
+#ifdef PLATFORM_WINDOWS
     if (!finite((double)exp(diff))) // difference is too large
+#else
+    if (!isfinite((double)exp(diff))) // difference is too large
+#endif
         return (x > y ? x : y);
     // otherwise return the sum.
     retVal = (double)(y + log((double)(1.0) + exp(diff)));
