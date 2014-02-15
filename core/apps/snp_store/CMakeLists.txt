@@ -25,7 +25,7 @@ find_package(CXX11 REQUIRED)
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND OR NOT CXX11_FOUND)
     message (STATUS "  Boost, zlib or C++11 not found: Not building snp_store.")
     return ()
-endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+endif (NOT Boost_FOUND OR NOT ZLIB_FOUND OR NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
 # Build Setup
