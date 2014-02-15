@@ -14,7 +14,7 @@ before_script:
       sudo apt-get update -qq;
       sudo apt-get install -qq gcc-4.8 g++-4.8;
       export CXX="g++-4.8" CC="gcc-4.8";
-      gcc-4.8 --version
+      gcc-4.8 --version;
     fi
 script:
   ./util/travis/linux-cibuild.sh
