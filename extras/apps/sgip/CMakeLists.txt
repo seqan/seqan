@@ -44,7 +44,7 @@ add_executable (sgip sgip.cpp sgip.h sgip_base.h sgip_output.h)
 target_link_libraries (sgip ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation
