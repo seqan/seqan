@@ -1908,6 +1908,12 @@ inline bool my_isnan(TValue value)
 }
 
 
+#ifndef SEQAN_CXX11_STANDARD
+#define isFinite std::isfinite
+#else
+#define isFinite finite
+#endif
+
 
 // function taken from keith b. hall, computation of probs in log-space
 template<typename TValue>
@@ -1920,11 +1926,7 @@ logSum(TValue x, TValue y) {
         return x;
     double diff = x - y;
     double retVal;
-#ifdef PLATFORM_WINDOWS
-    if (!finite((double)exp(diff))) // difference is too large
-#else
-    if (!isfinite((double)exp(diff))) // difference is too large
-#endif
+    if (!isFinite((double)exp(diff))) // difference is too large
         return (x > y ? x : y);
     // otherwise return the sum.
     retVal = (double)(y + log((double)(1.0) + exp(diff)));
