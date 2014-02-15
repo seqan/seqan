@@ -150,11 +150,11 @@ struct Breakpoint
     bool endSeqStrand;
     bool midPosStrand;
     // Last position in start sequence and first position in end sequence
-    // TODO (ktrappe) isn't it first position in start seq and last in end seq of SV now?
-    TPos startSeqPos;
-    TPos endSeqPos;
-    TPos dupTargetPos; // Should be equal to either startSeqPos or endSeqPos
+    TPos startSeqPos;  // Position before split in reference, i.e. before the variant
+    TPos endSeqPos;    // Position after split in reference, i.e. after the variant
+    TPos dupTargetPos; // Should be equal to either startSeqPos or endSeqPos-1 (position before event)
     TPos dupMiddlePos; // TPos dupMidPos; Middle position of duplication or translocation
+                       // per default position before event, has to be adjustet depending on dupTargetPos
     TPos readStartPos;
     TPos readEndPos;
     TPos cipos;       // Confidence after startSeqPos for imprecise breakpoint
@@ -691,7 +691,11 @@ inline bool setSVType(TBreakpoint & bp)
     if (bp.startSeqStrand != bp.endSeqStrand)
     {
         if (bp.startSeqPos > bp.endSeqPos)
+        {
             std::swap(bp.startSeqPos, bp.endSeqPos);
+            bp.startSeqPos = bp.startSeqPos - 1;
+            bp.endSeqPos = bp.endSeqPos + 1;
+        }
         setSVType(bp, TBreakpoint::INVERSION);
         return false;
     }
@@ -703,6 +707,8 @@ inline bool setSVType(TBreakpoint & bp)
     if (bp.startSeqPos > bp.endSeqPos)
     {
         std::swap(bp.startSeqPos, bp.endSeqPos);
+        bp.startSeqPos = bp.startSeqPos - 1;
+        bp.endSeqPos = bp.endSeqPos + 1;
         if (bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::DISPDUPLICATION);
@@ -766,8 +772,15 @@ inline bool _similarBreakends(Breakpoint<TId, TPos> & be1, Breakpoint<TId, TPos>
 template <typename TId, typename TPos, typename TPosR>
 inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> & bp, TPosR const & range)
 {
+    typedef Breakpoint<TId, TPos> TBreakpoint;
     if (be.startSeqId != bp.startSeqId && be.startSeqId != bp.endSeqId)
         return false;
+    // If bp is duplication or translocation, also check targetpos
+    if ((bp.svtype == TBreakpoint::DISPDUPLICATION || bp.svtype == TBreakpoint::TRANSLOCATION) && bp.dupMiddlePos != maxValue<unsigned>())
+        return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
+                _posInSameRange(be.startSeqPos, bp.endSeqPos, range)   ||
+                _posInSameRange(be.startSeqPos, bp.dupMiddlePos, range) );
+
     return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
             _posInSameRange(be.startSeqPos, bp.endSeqPos, range) );
 }
@@ -875,6 +888,8 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
     out << value.startSeqId << " ( " << value.startSeqStrand << " ) " << " --> " << value.endSeqId << " ( " <<
     value.endSeqStrand << " ) " << std::endl;
     out << " ( " << value.startSeqPos + 1 << " ) --> ( " << value.endSeqPos + 1 << " ) " << std::endl;
+    if (value.dupMiddlePos != maxValue<unsigned>())
+        out << "target pos " << value.dupTargetPos << std::endl;
     out << " ( " << value.readStartPos + 1 << " ) --> ( " << value.readEndPos + 1 << " ) " << std::endl;
     switch (value.svtype)
     {

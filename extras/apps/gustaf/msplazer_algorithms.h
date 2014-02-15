@@ -457,9 +457,9 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     endSeqPos = toSourcePosition(stMatch2.row1, toViewPosition(stMatch2.row2, splitPos));
 
                     // Matches are beeing trimmed during splitAlignment computation --> directly take these positions
-                    startSeqPos_test = endPosition(row(match1, 1)) + stMatch1.begin1;
+                    startSeqPos_test = endPosition(row(match1, 1)) - 1 + stMatch1.begin1;
                     endSeqPos_test = beginPosition(row(match2, 1)) + stMatch2.begin1;
-                    readStartPos_test = endPosition(row(match1, 0)) + stMatch1.begin2;
+                    readStartPos_test = endPosition(row(match1, 0)) - 1 + stMatch1.begin2;
                     readEndPos_test = beginPosition(row(match2, 0)) + stMatch1.begin2;
 
                     std::cout << "BP positions:" << std::endl;
@@ -485,9 +485,9 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     readStartPos = stMatch1.end2;
                     readEndPos = stMatch2.begin2;
 
-                    startSeqPos_test = stMatch1.end1;
+                    startSeqPos_test = stMatch1.end1 - 1;
                     endSeqPos_test = stMatch2.begin1;
-                    readStartPos_test = stMatch1.end2;
+                    readStartPos_test = stMatch1.end2 - 1;
                     readEndPos_test = stMatch2.begin2;
                     std::cout << stMatch1 << std::endl;
                     std::cout << stMatch2 << std::endl;
@@ -497,11 +497,11 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 // Adjust bp position if they arise from matches on the reverse strand
                 if (!stMatch1.orientation) {
                     startSeqPos = stMatch1.end1 - startSeqPos + stMatch1.begin1;
-                    startSeqPos_test = stMatch1.end1 - startSeqPos_test + stMatch1.begin1;
+                    startSeqPos_test = stMatch1.end1 - 1 - startSeqPos_test + stMatch1.begin1;
                 }
                 if (!stMatch2.orientation) {
                     endSeqPos = stMatch2.end1 - endSeqPos + stMatch2.begin1;
-                    endSeqPos_test = stMatch2.end1 - endSeqPos_test + stMatch2.begin1;
+                    endSeqPos_test = stMatch2.end1 - 1 - endSeqPos_test + stMatch2.begin1;
                 }
 
                     std::cout << "BP positions after orientation adjustment:" << std::endl;
@@ -514,16 +514,20 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                                stMatch2.id,
                                stMatch1.orientation,
                                stMatch2.orientation,
+                               /*
                                startSeqPos,
                                endSeqPos,
                                readStartPos,
                                readEndPos,
-                               /*
                                startSeqPos_test,
                                endSeqPos_test,
                                readStartPos_test,
                                readEndPos_test,
                                */
+                               startSeqPos_test,
+                               endSeqPos_test,
+                               readStartPos,
+                               readEndPos,
                                queryId);
 
                 // Imprecise breakpoint?
@@ -719,9 +723,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             readStartPos = toSourcePosition((*stMatch1).row2, toViewPosition((*stMatch1).row1, splitPos)); // endPosition(row(match1, 1));
                             readEndPos = toSourcePosition((*stMatch2).row2, toViewPosition((*stMatch2).row1, splitPos)); // beginPosition(row(match2, 1));
 
-                            startSeqPos_test = endPosition(row(match1, 0)) + (*stMatch1).begin1;
+                            startSeqPos_test = endPosition(row(match1, 0))  - 1 + (*stMatch1).begin1;
                             endSeqPos_test = beginPosition(row(match2, 0)) + (*stMatch1).begin1;
-                            readStartPos_test = endPosition(row(match1, 1)) + (*stMatch1).begin2;
+                            readStartPos_test = endPosition(row(match1, 1)) - 1 + (*stMatch1).begin2;
                             readEndPos_test = beginPosition(row(match2, 1)) + (*stMatch2).begin2;
                         }
                         else
@@ -731,13 +735,15 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             readStartPos = toSourcePosition((*stMatch2).row2, toViewPosition((*stMatch2).row1, splitPos)); // beginPosition(row(match2, 1));
                             readEndPos = toSourcePosition((*stMatch1).row2, toViewPosition((*stMatch1).row1, splitPos)); // endPosition(row(match1, 1));
 
-                            startSeqPos_test = endPosition(row(match2, 0)) + (*stMatch1).begin1;
+                            startSeqPos_test = endPosition(row(match2, 0)) - 1 + (*stMatch1).begin1;
                             endSeqPos_test = beginPosition(row(match1, 0)) + (*stMatch1).begin1;
-                            readStartPos_test = endPosition(row(match2, 1)) + (*stMatch2).begin2;
+                            readStartPos_test = endPosition(row(match2, 1)) - 1 + (*stMatch2).begin2;
                             readEndPos_test = beginPosition(row(match1, 1)) + (*stMatch1).begin2;
                         }
                         startSeqPos = splitPos;
                         endSeqPos = splitPos;
+                        startSeqPos_test = splitPos;
+                        endSeqPos_test = splitPos;
 
                         // Reverse complement sequence content bach again
                         if (!(*stMatch1).orientation)
@@ -757,9 +763,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             readStartPos = (*stMatch1).end2;
                             readEndPos = (*stMatch2).begin2;
 
-                            startSeqPos_test = (*stMatch1).end1;         // m1End
+                            startSeqPos_test = (*stMatch1).end1 - 1;         // m1End
                             endSeqPos_test = (*stMatch2).begin1;
-                            readStartPos_test = (*stMatch1).end2;
+                            readStartPos_test = (*stMatch1).end2 - 1;
                             readEndPos_test = (*stMatch2).begin2;
                         }
                         else
@@ -769,9 +775,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             readStartPos = (*stMatch2).end2;
                             readEndPos = (*stMatch1).begin2;
 
-                            startSeqPos_test = (*stMatch2).end1;         // m1End
+                            startSeqPos_test = (*stMatch2).end1 - 1;         // m1End
                             endSeqPos_test = (*stMatch1).begin1;
-                            readStartPos_test = (*stMatch2).end2;
+                            readStartPos_test = (*stMatch2).end2 - 1;
                             readEndPos_test = (*stMatch1).begin2;
                         }
 
@@ -788,16 +794,16 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                                    (*stMatch2).id,
                                    (*stMatch1).orientation,
                                    (*stMatch2).orientation,
+                                   /*
                                    startSeqPos,
                                    endSeqPos,
                                    readStartPos,
                                    readEndPos,
-                                   /*
+                                   */
                                    startSeqPos_test,
                                    endSeqPos_test,
                                    readStartPos_test,
                                    readEndPos_test,
-                                   */
                                    queryId);
 
                     // Imprecise breakpoint?
@@ -958,8 +964,9 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
 // tempBP is insertion, are both part of a transl/dup? (Only possible when regarding more than 1 chain per
 // read
 // tempBP is translocation
+// Returns true if tempBP is obsolete and will then be erased
 template <typename TBreakpoint>
-bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & bpPosRange)
+bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP, unsigned const & bpPosRange)
 {
     if (bp.startSeqId != tempBP.startSeqId)
         return false;
@@ -968,24 +975,39 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & 
     // If the deletion is the one that distinguishes the translocation from a duplication, then the deletion does not
     // cover the target position, but we assume that in this case we observe both deletions and if not, it is more likely
     // to observe the deletion that covers the target position.
-    if (bp.svtype == TBreakpoint::DELETION 
+    // Function returns true if the old bp (tempBP) can be deleted from the old set bc it became obsolete.
+
+    std::cout << "new bp (bp)" << std::endl;
+    std::cout << bp << std::endl;
+    std::cout << "old bp (tempBP)" << std::endl;
+    std::cout << tempBP << std::endl;
+    // Case 1: new bp is deletion, old bp (tempBP) is duplication or translocation
+    if (bp.svtype == TBreakpoint::DELETION
             && (tempBP.svtype == TBreakpoint::DISPDUPLICATION || tempBP.svtype == TBreakpoint::TRANSLOCATION) )
     {
+        // deletion start position equals duplication start position
         if (_posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange))
         {
             appendSupportId(tempBP, bp.supportIds);
             tempBP.dupTargetPos = tempBP.startSeqPos;
-            tempBP.dupMiddlePos = bp.endSeqPos;
+            tempBP.dupMiddlePos = bp.endSeqPos - 1;
             tempBP.translSuppStartPos = true;
-            return true;
+            std::cout << "del start (bp) equ dup start" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = false;
+            return false;
         }
+        // deletion end position equals duplication end position
         if (_posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange))
         {
             appendSupportId(tempBP, bp.supportIds);
-            tempBP.dupTargetPos = tempBP.endSeqPos;
+            tempBP.dupTargetPos = tempBP.endSeqPos - 1;
             tempBP.dupMiddlePos = bp.startSeqPos;
             tempBP.translSuppEndPos = true;
-            return true;
+            std::cout << "del end (bp) equ dup end" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = false;
+            return false;
         }
 
         return false;
@@ -998,23 +1020,30 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & 
         {
             appendSupportId(bp, tempBP.supportIds);
             bp.dupTargetPos = bp.startSeqPos;
-            bp.dupMiddlePos = tempBP.endSeqPos;
+            bp.dupMiddlePos = tempBP.endSeqPos - 1;
             bp.translSuppStartPos = true;
-            tempBP = bp;
+            // tempBP = bp;
+            std::cout << "del start (tempBP) equ dup start" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = true;
             return true;
         }
         if (_posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange))
         {
             appendSupportId(bp, tempBP.supportIds);
-            bp.dupTargetPos = bp.endSeqPos;
+            bp.dupTargetPos = bp.endSeqPos - 1;
             bp.dupMiddlePos = tempBP.startSeqPos;
             bp.translSuppEndPos = true;
-            tempBP = bp;
+            // tempBP = bp;
+            std::cout << "del end (tempBP) equ dup end" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = true;
             return true;
         }
         return false;
     }
 
+    // Case 3: Two possible pseudodeletions of a translocation events
     if (bp.svtype == TBreakpoint::DELETION && tempBP.svtype == TBreakpoint::DELETION)
     {
         if (_posInSameRange(bp.startSeqPos, tempBP.endSeqPos, bpPosRange))
@@ -1029,12 +1058,15 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & 
                                bp.readEndPos
                               );
             translBP.svtype = TBreakpoint::TRANSLOCATION;
-            translBP.dupMiddlePos = bp.startSeqPos;
+            translBP.dupMiddlePos = bp.startSeqPos - 1;
             translBP.translSuppStartPos = true;
             translBP.translSuppEndPos = true;
             appendSupportId(translBP, bp.supportIds);
             appendSupportId(translBP, tempBP.supportIds);
-            tempBP = translBP;
+            bp = translBP;
+            std::cout << "del start (bp) equ del end (tempBP)" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = true;
             return true;
         }
         if (_posInSameRange(bp.endSeqPos, tempBP.startSeqPos, bpPosRange))
@@ -1054,7 +1086,10 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, unsigned const & 
             translBP.translSuppEndPos = true;
             appendSupportId(translBP, bp.supportIds);
             appendSupportId(translBP, tempBP.supportIds);
-            tempBP = translBP;
+            bp = translBP;
+            std::cout << "del end (bp) equ del start (tempBP)" << std::endl;
+            std::cout << tempBP << std::endl;
+            foundNewBP = true;
             return true;
         }
         return false;
@@ -1069,10 +1104,17 @@ template <typename TBreakpoint>
 bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange)
 {
     typedef typename TBreakpoint::TId TId;
+    bool foundNewBP = true;
+    String<unsigned> toBeErased;
     // Breakpoint bp is compared to each breakpoint in the list (tempBP)
+        std::cout << "bp" << std::endl;
+        std::cout << bp << std::endl;
     for (unsigned i = 0; i < length(countedBP); ++i)
     {
+        std::cout << "#################################################################################################" << std::endl;
         TBreakpoint & tempBP = countedBP[i];
+        std::cout << "tempBP" << std::endl;
+        std::cout << tempBP << std::endl;
         // Breakpoint comparison
         // Special case: old breakpoint is only breakend
         if (tempBP.svtype == TBreakpoint::BREAKEND)
@@ -1082,15 +1124,29 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsign
             {
                 appendSupportId(tempBP, bp.supportIds);
                 // TODO set tempBP.startendSeqPos to left most position and set cistartend
+                // if (bp.startSeqPos < tempBP.startSeqPos)
+                // {
+                //      tempBP.startSeqPos = bp.startSeqPos;
+                //      tempBP.endSeqPos = tempBP.startSeqPos;
+                //      // more adjustments?
+                // }
+                std::cout << "similar breakend support" << std::endl;
+                foundNewBP = false;
+                // No other support possible, most have been detected before and be must have been replaced
                 return false;
             }
             // If the old bp is only a breakend but the new is a proper breakpoint, check if the breakend is supporting
             // the new breakpoint, if so, then replace the breakend and add its Ids as support to the new bp
-            if (_breakendSupport(tempBP, bp, bpPosRange))
+            else if (_breakendSupport(tempBP, bp, bpPosRange))
             {
+                // Append support Ids of old bp (tempBP) to new bp
                 appendSupportId(bp, tempBP.supportIds);
-                tempBP = bp;
-                return false; // return true since its basically a new bp in the set?
+                // tempBP = bp;
+                std::cout << "tempBP breakend support" << std::endl;
+                foundNewBP = true;
+                appendValue(toBeErased, i);
+                // no return statement bc there can be more than one supporting BP, be is beeing erased in the end
+                // return false; // return true since its basically a new bp in the set?
             }
         }
         // Special case: new breakpoint is only breakend
@@ -1099,12 +1155,17 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsign
             if (_breakendSupport(bp, tempBP, bpPosRange))
             {
                 appendSupportId(tempBP, bp.supportIds);
+                std::cout << "bp breakend support" << std::endl;
+                foundNewBP = false;
+                // No other support should be possible, most have been detected before and be must have been replaced
                 return false;
             }
         }
         else if (bp == tempBP)
         {
             appendSupportId(tempBP, bp.supportIds);
+                std::cout << "equ bps" << std::endl;
+            // Very special case, should be no other support likely
             return false;
         }
         // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
@@ -1115,13 +1176,28 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsign
         // Note: if both are oberserved at the same time without a duplication/translocation, we infer the presence of
         // a translocation and insert a new translocation breakpoint instead of both deletions
 
-        else if (_translDelSupport(bp, tempBP, bpPosRange))
-            return false;
+        if (_translDelSupport(bp, tempBP, foundNewBP, bpPosRange))
+            appendValue(toBeErased, i);
+            // foundNewBP = true;
+            // return false;
+        std::cout << "#################################################################################################" << std::endl;
 
     }
+    // toBeErased should be sorted in ascending order since countedBP was examined sequentially
+    // Erase obsolete bps in descending order
+    for (unsigned i = 0; i < length(toBeErased); ++i)
+    {
+        unsigned index = length(toBeErased) - 1 - i;
+        erase(countedBP, toBeErased[index]);
+    }
+
     // Append breakpoint if new
-    appendValue(countedBP, bp);
-    return true;
+    if (foundNewBP)
+    {
+        appendValue(countedBP, bp);
+        return true;
+    }
+    return false;
 }
 
 template <typename TBreakpoint>
