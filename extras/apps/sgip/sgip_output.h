@@ -25,15 +25,11 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#ifdef PLATFORM_WINDOWS_VS
-#include <unordered_map>
-#else
-#include <tr1/unordered_map>
-#endif
 
 // ============================================================================
 // Forward
@@ -207,10 +203,10 @@ void outputMap(TMap & map, GeneralMap const &)
 }
 
 template <typename TKey, typename TValue>
-void outputMap(std::tr1::unordered_map<TKey, TValue> & map, ParityMap const &)
+void outputMap(std::unordered_map<TKey, TValue> & map, ParityMap const &)
 {
     using namespace seqan;
-    typedef typename std::tr1::unordered_map<TKey, TValue>::iterator TIterator;
+    typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
     TIterator itEnd = map.end();
@@ -230,10 +226,10 @@ void outputMap(std::tr1::unordered_map<TKey, TValue> & map, ParityMap const &)
 }
 
 template <typename TKey, typename TValue>
-void outputMap(std::tr1::unordered_map<TKey, TValue> & map, CheckMap const &)
+void outputMap(std::unordered_map<TKey, TValue> & map, CheckMap const &)
 {
     using namespace seqan;
-    typedef typename std::tr1::unordered_map<TKey, TValue>::iterator TIterator;
+    typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
     TIterator itEnd = map.end();
@@ -243,10 +239,10 @@ void outputMap(std::tr1::unordered_map<TKey, TValue> & map, CheckMap const &)
 }
 
 template <typename TKey, typename TValue>
-void outputMap(std::tr1::unordered_map<TKey, TValue> & map, DegreeMap const &)
+void outputMap(std::unordered_map<TKey, TValue> & map, DegreeMap const &)
 {
     using namespace seqan;
-    typedef typename std::tr1::unordered_map<TKey, TValue>::iterator TIterator;
+    typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
     TIterator itEnd = map.end();
