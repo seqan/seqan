@@ -7,8 +7,13 @@ cache:
   directories:
   - _build
 before_script:
-  sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev python-jinja2
-  if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev python-jinja2
+  - if [ "$CXX" = "g++" ];
+    then
+      sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+      sudo apt-get update;
+      sudo apt-get install -qq gcc-4.8 g++-4.8;
+      export CXX="g++-4.8" CC="gcc-4.8";
+    fi
 script:
   ./util/travis/linux-cibuild.sh
