@@ -49,6 +49,8 @@
 // ===========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/misc/misc_bit_twiddling_functors.h>
+#include <seqan/misc/misc_bit_twiddling.h>
 
 // ----------------------------------------------------------------------------
 // STL prerequisites.
