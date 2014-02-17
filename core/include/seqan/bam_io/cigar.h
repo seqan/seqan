@@ -298,8 +298,8 @@ getCigarString(
 {
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
-    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
-    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
+//    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
+//    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
 
 	clear(cigar);
 	char op, lastOp = ' ';
@@ -393,8 +393,8 @@ getCigarString(
 {
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
-    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
-    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
+//    typedef typename Value<typename Host<TGaps1>::Type>::Type TVal1;
+//    typedef typename Value<typename Host<TGaps2>::Type>::Type TVal2;
 
 	clear(cigar);
 	char op = '?', lastOp = ' ';

@@ -1185,26 +1185,26 @@ assign(String<TTargetValue, TTargetSpec> & target,
     AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
-// TODO(holtgrew): Still required with dropped VC++ 2003 support?
-//this variant is a workaround for the "const array"-bug of VC++
-
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-assign(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue const * source,
-       Tag<TExpand>)
-{
-    AssignString_<Tag<TExpand> >::assign_(target, source);
-}
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSize, typename TExpand>
-inline void
-assign(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue const * source,
-       TSize limit,
-       Tag<TExpand>)
-{
-    AssignString_<Tag<TExpand> >::assign_(target, source, limit);
-}
+//// TODO(holtgrew): Still required with dropped VC++ 2003 support?
+////this variant is a workaround for the "const array"-bug of VC++
+//
+//template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+//inline void
+//assign(String<TTargetValue, TTargetSpec> & target,
+//       TSourceValue const * source,
+//       Tag<TExpand>)
+//{
+//    AssignString_<Tag<TExpand> >::assign_(target, source);
+//}
+//template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSize, typename TExpand>
+//inline void
+//assign(String<TTargetValue, TTargetSpec> & target,
+//       TSourceValue const * source,
+//       TSize limit,
+//       Tag<TExpand>)
+//{
+//    AssignString_<Tag<TExpand> >::assign_(target, source, limit);
+//}
 
 // ----------------------------------------------------------------------------
 // Function move()
