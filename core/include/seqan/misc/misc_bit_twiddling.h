@@ -495,6 +495,113 @@ popCount(TWord word)
 //    return stream;
 //}
 
+// ----------------------------------------------------------------------------
+// Function testAllZeros()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn testAllZeros
+ * @headerfile <seqan/misc.h>
+ * @brief Tests whether all bits of the given value are set to <b>0</b>.
+ *
+ * @signature bool testAllZeros(val)
+ *
+ * @param[in]  val The value to check the bits for. Must be of type @link IntegerConcept @endlink.
+ *
+ * @return bool  <tt>true</tt> if all bits are set to <b>0</b>, <tt>false</tt> otherwise.
+ *
+ * @see testAllOnes
+ */
+
+template <typename TValue>
+inline bool testAllZeros(TValue const & val)
+{
+    return val == 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllOnes()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn testAllOnes
+ * @headerfile <seqan/misc.h>
+ * @brief Tests whether all bits of the given value are set to <b>1</b>.
+ *
+ * @signature bool testAllOnes(val)
+ *
+ * @param[in]  val The value to check the bits for. Must be of type @link IntegerConcept @endlink.
+ *
+ * @return bool <tt>true</tt> if all bits are set to <b>1</b>, <tt>false</tt> otherwise.
+ *
+ * @see testAllZeros
+ */
+
+template <typename TValue>
+inline bool testAllOnes(TValue const & val)
+{
+    return val == ~static_cast<TValue>(0);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanReverse()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn bitScanReverse
+ * @headerfile <seqan/misc.h>
+ * @brief Returns the index of the last set bit in the binary representation of the given value.
+ * @note The function returns 0, if no bit or the least significant bit is set. Hence the result can be ambiguous.
+ *
+ * @signature TValue bitScanReverse(val)
+ *
+ * @param[in]  val The value to scan. Has to be non-zero.
+ *
+ * @return TValue The index of the last set bit in <tt>val</tt>, where <tt>TValue</tt> is the value of <tt>val</tt>.
+ *
+ * @see bitScanForward
+ */
+
+template <typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, TValue)
+bitScanReverse(TValue const & in)
+{
+   SEQAN_ASSERT_NEQ(in, static_cast<TValue>(0));
+   TValue tmp;
+   __asm__ ("bsr %1,%0" : "=r"(tmp) : "r"(in));   // Form: %0-> output; first param, %1 -> input; second param
+   return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanForward()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn bitScanForward
+ * @headerfile <seqan/misc.h>
+ * @brief Returns the index of the first set bit in the binary representation of the given value.
+ * @note The function returns 0, if no bit or the least significant bit is set. Hence the result can be ambiguous.
+ *
+ * @signature TValue bitScanForward(val)
+ *
+ * @param[in]  val The value to scan. Has to be non-zero.
+ *
+ * @return TValue The index of the first set bit in <tt>val</tt>, where <tt>TValue</tt> is the value of <tt>val</tt>.
+ *
+ * @see bitScanReverse
+ */
+
+template <typename TValue>
+inline SEQAN_FUNC_ENABLE_IF( Is<IntegerConcept<TValue> >, TValue)
+bitScanForward(TValue const & in)
+{
+   SEQAN_ASSERT_NEQ(in, static_cast<TValue>(0));
+
+   TValue tmp;
+   __asm__ ("bsf %1,%0" : "=r"(tmp) : "r"(in));   // Form: %0-> output; first param, %1 -> input; second param
+   return tmp;
+}
+
 }  // namespace seqan
 
 #endif // #ifndef SEQAN_MISC_MISC_BIT_TWIDDLING_H_
