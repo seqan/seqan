@@ -314,8 +314,16 @@ _importSequences(seqan::CharString const & fileName,
         append(seqR, suffix(seq, splitPos));
         appendValue(seqs, seqL, seqan::Generous());
         appendValue(mateSeqs, seqR, seqan::Generous());
-        append(qualL, prefix(qual, splitPos));
-        append(qualR, suffix(qual, splitPos));
+        if (length(qual) > splitPos)
+        {
+            append(qualL, prefix(qual, splitPos));
+            append(qualR, suffix(qual, splitPos));
+        }
+        else
+        {
+            append(qualL, qual);
+            append(qualR, qual);
+        }
         appendValue(quals, qualL, seqan::Generous());
         appendValue(mateQuals, qualR, seqan::Generous());
         appendValue(ids, id, seqan::Generous());
@@ -362,6 +370,7 @@ int _writeSequences(seqan::CharString & outPath,
 template <typename TSequence>
 int _writeSequences(seqan::CharString & outPath1,
                 seqan::CharString & outPath2,
+                bool revCompl,
                 seqan::StringSet<TSequence> const & seqs,
                 seqan::StringSet<TSequence> const & mateSeqs,
                 seqan::StringSet<seqan::CharString> const & sIds,
@@ -379,7 +388,14 @@ int _writeSequences(seqan::CharString & outPath1,
     }
     for (unsigned i = 0; i < length(seqs); ++i)
     {
-        if (writeRecord(f1, sIds[i], seqs[i], quals[i]) != 0 || writeRecord(f2, sIds[i], mateSeqs[i], mateQuals[i]) != 0)
+        TSequence mateSeq = mateSeqs[i];
+        seqan::CharString mateQual = mateQuals[i];
+        if (revCompl)
+        {
+            reverseComplement(mateSeq);
+            reverse(mateQual);
+        }
+        if (writeRecord(f1, sIds[i], seqs[i], quals[i]) != 0 || writeRecord(f2, sIds[i], mateSeq, mateQual) != 0)
         {
             std::cerr << "Error: Could not write to file!" << std::endl;
             return 1;
@@ -405,14 +421,17 @@ int main(int argc, char const ** argv)
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
     if (res != seqan::ArgumentParser::PARSE_OK)
+    {
+        std::cout << "Error parsing command line, please check correct number and values of input parameters!" << std::endl;
         return res == seqan::ArgumentParser::PARSE_ERROR;
+    }
 
     // Print the command line arguments back to the user.
     if (options.verbosity > 0)
     {
         std::cout << "__OPTIONS____________________________________________________________________\n"
                   << '\n'
-                  << "VERBOSITY\t" << options.verbosity << '\n'
+                  << "VERBOSITY     \t" << options.verbosity << '\n'
                   << "INPUT FILE 1     \t" << options.inPaths[0] << '\n';
                   if (length(options.inPaths) > 1)
                       std::cout << "INPUT FILE 2     \t" << options.inPaths[1] << '\n';
@@ -441,7 +460,7 @@ int main(int argc, char const ** argv)
         // Read in joined reads and output two FASTA files
         _importSequences(options.inPaths[0], seqs, mateSeqs, ids, sIds, quals, mateQuals);
         // Write out one file with joined sequences in FASTA format
-        _writeSequences(options.outPaths[0], options.outPaths[1], seqs, mateSeqs, sIds, quals, mateQuals);
+        _writeSequences(options.outPaths[0], options.outPaths[1], options.revCompl, seqs, mateSeqs, sIds, quals, mateQuals);
     }
 
     return 0;
