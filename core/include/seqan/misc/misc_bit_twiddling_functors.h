@@ -88,6 +88,19 @@ struct FunctorBitwiseOr
 };
 
 // ----------------------------------------------------------------------------
+// Functor FunctorBitwiseXor
+// ----------------------------------------------------------------------------
+
+struct FunctorBitwiseXor
+{
+    template <typename TValue>
+    inline TValue operator()(TValue const & valLhs, TValue const & valRhs) const
+    {
+        return valLhs ^ valRhs;
+    }
+};
+
+// ----------------------------------------------------------------------------
 // Functor FunctorBitwiseNot
 // ----------------------------------------------------------------------------
 
