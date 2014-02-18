@@ -513,8 +513,8 @@ popCount(TWord word)
  * @see testAllOnes
  */
 
-template <typename TValue>
-inline bool testAllZeros(TValue const & val)
+template <typename TWord>
+inline bool testAllZeros(TWord const & val)
 {
     return val == 0;
 }
@@ -537,10 +537,74 @@ inline bool testAllZeros(TValue const & val)
  * @see testAllZeros
  */
 
-template <typename TValue>
-inline bool testAllOnes(TValue const & val)
+template <typename TWord>
+inline bool testAllOnes(TWord const & val)
 {
-    return val == ~static_cast<TValue>(0);
+    return val == ~static_cast<TWord>(0);
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanReverse()
+// ----------------------------------------------------------------------------
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    return 63 - __builtin_clzll(static_cast<__uint64>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<32>)
+{
+  return 31 - __builtin_clz(static_cast<unsigned int>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<16>)
+{
+  return _bitScanReverse(static_cast<__uint32>(word), WordSize_<32>());
+}
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<8>)
+{
+    return _bitScanReverse(static_cast<__uint32>(word), WordSize_<32>());
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanForward()
+// ----------------------------------------------------------------------------
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<64>)
+{
+  return __builtin_ctzll(static_cast<unsigned long long>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<32>)
+{
+  return __builtin_ctz(static_cast<unsigned int>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<16>)
+{
+  return _bitScanForward(static_cast<__uint32>(word), WordSize_<32>());
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<8>)
+{
+    return _bitScanForward(static_cast<__uint32>(word), WordSize_<32>());
 }
 
 // ----------------------------------------------------------------------------
@@ -551,25 +615,24 @@ inline bool testAllOnes(TValue const & val)
  * @fn bitScanReverse
  * @headerfile <seqan/misc.h>
  * @brief Returns the index of the last set bit in the binary representation of the given value.
- * @note The function returns 0, if no bit or the least significant bit is set. Hence the result can be ambiguous.
+ * @note If <tt>val</tt> is 0 the return value is undefined.
  *
- * @signature TValue bitScanReverse(val)
+ * @signature TWord bitScanReverse(val)
  *
  * @param[in]  val The value to scan. Has to be non-zero.
  *
- * @return TValue The index of the last set bit in <tt>val</tt>, where <tt>TValue</tt> is the value of <tt>val</tt>.
+ * @return TWord The index of the last set bit in <tt>val</tt>, where <tt>TWord</tt> is the value of <tt>val</tt>.
  *
  * @see bitScanForward
  */
 
-template <typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, TValue)
-bitScanReverse(TValue const & in)
+template <typename TWord>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TWord> >, TWord)
+bitScanReverse(TWord word)
 {
-   SEQAN_ASSERT_NEQ(in, static_cast<TValue>(0));
-   TValue tmp;
-   __asm__ ("bsr %1,%0" : "=r"(tmp) : "r"(in));   // Form: %0-> output; first param, %1 -> input; second param
-   return tmp;
+   SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
+
+   return _bitScanReverse(word, WordSize_<BitsPerValue<TWord>::VALUE>());
 }
 
 // ----------------------------------------------------------------------------
@@ -580,26 +643,23 @@ bitScanReverse(TValue const & in)
  * @fn bitScanForward
  * @headerfile <seqan/misc.h>
  * @brief Returns the index of the first set bit in the binary representation of the given value.
- * @note The function returns 0, if no bit or the least significant bit is set. Hence the result can be ambiguous.
+ * @note If <tt>val</tt> is 0 the return value is undefined.
  *
- * @signature TValue bitScanForward(val)
+ * @signature TWord bitScanForward(val)
  *
  * @param[in]  val The value to scan. Has to be non-zero.
  *
- * @return TValue The index of the first set bit in <tt>val</tt>, where <tt>TValue</tt> is the value of <tt>val</tt>.
+ * @return TWord The index of the first set bit in <tt>val</tt>, where <tt>TWord</tt> is the value of <tt>val</tt>.
  *
  * @see bitScanReverse
  */
 
-template <typename TValue>
-inline SEQAN_FUNC_ENABLE_IF( Is<IntegerConcept<TValue> >, TValue)
-bitScanForward(TValue const & in)
+template <typename TWord>
+inline SEQAN_FUNC_ENABLE_IF( Is<IntegerConcept<TWord> >, TWord)
+bitScanForward(TWord word)
 {
-   SEQAN_ASSERT_NEQ(in, static_cast<TValue>(0));
-
-   TValue tmp;
-   __asm__ ("bsf %1,%0" : "=r"(tmp) : "r"(in));   // Form: %0-> output; first param, %1 -> input; second param
-   return tmp;
+   SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
+   return _bitScanForward(word, WordSize_<BitsPerValue<TWord>::VALUE>());
 }
 
 }  // namespace seqan
