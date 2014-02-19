@@ -1713,12 +1713,12 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     TConstPackedHostIterator itBegin = begin(host(obj), Standard());
 
     // We need to treat the last value differently, because it's possible not all bits are in use.
-    TBitVector tmp = it->i & (~static_cast<TBitVector>(0) <<
-                              (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+    TBitVector lastVal = it->i & (~static_cast<TBitVector>(0) <<
+                                  (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
 
-    if (!testAllZeros(tmp))
+    if (!testAllZeros(lastVal))
         return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
-               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(tmp);
+               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(lastVal);
     --it;
     for(;it != itBegin && testAllZeros(*it); --it)
     {}
@@ -1726,7 +1726,7 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     if (it != itBegin)
         return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
                (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(it->i);
-    return MaxValue<TPosition>::VALUE;
+    return length(obj);
 }
 
 // ----------------------------------------------------------------------------
@@ -1754,14 +1754,15 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
 
     for (; it != itEnd && testAllZeros(*it); ++it)
     {}
+
     // If last element is not 0, we return the last position. Note, that we do not check for the returned index to be
     // bigger than the length of the string. The caller has to do this.
-    if (it->i != 0)
-        return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) +
-               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(it->i);
-
-    // Otherwise we return max value.
-    return MaxValue<TPosition>::VALUE;
+    TBitVector lastVal = (it != itEnd) ? it->i :
+             it->i & (~static_cast<TBitVector>(0) << (BitsPerValue<TBitVector>::VALUE -
+                                                      (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+    if (testAllZeros(lastVal))
+        return length(obj);
+    return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) + (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(lastVal);
 }
 
 // ----------------------------------------------------------------------------

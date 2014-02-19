@@ -57,6 +57,41 @@ namespace seqan {
 // Classes, Structs, Enums, Tags
 // ============================================================================
 
+// DeBruijn sequence for 64 bit bitScanReverse.
+const int DeBruijnMultiplyLookupBSR64[64] =
+{
+    0, 47,  1, 56, 48, 27,  2, 60,
+   57, 49, 41, 37, 28, 16,  3, 61,
+   54, 58, 35, 52, 50, 42, 21, 44,
+   38, 32, 29, 23, 17, 11,  4, 62,
+   46, 55, 26, 59, 40, 36, 15, 53,
+   34, 51, 20, 43, 31, 22, 10, 45,
+   25, 39, 14, 33, 19, 30,  9, 24,
+   13, 18,  8, 12,  7,  6,  5, 63
+};
+
+// DeBruijn sequence for 64 bit bitScanForward.
+static const int DeBruijnMultiplyLookupBSF64[64] =
+{
+    0,  1, 48,  2, 57, 49, 28,  3,
+   61, 58, 50, 42, 38, 29, 17,  4,
+   62, 55, 59, 36, 53, 51, 43, 22,
+   45, 39, 33, 30, 24, 18, 12,  5,
+   63, 47, 56, 27, 60, 41, 37, 16,
+   54, 35, 52, 21, 44, 32, 23, 11,
+   46, 26, 40, 15, 34, 20, 31, 10,
+   25, 14, 19,  9, 13,  8,  7,  6
+};
+
+// DeBruijn sequence for 32 bit bitScanForward and bitScanReverse.
+static const int DeBruijnMultiplyLookup[32] =
+{
+  0,   1, 28,  2, 29, 14, 24, 3,
+  30, 22, 20, 15, 25, 17,  4, 8,
+  31, 27, 13, 23, 21, 19, 16, 7,
+  26, 12, 18,  6, 11,  5, 10, 9
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -544,8 +579,49 @@ inline bool testAllOnes(TWord const & val)
 }
 
 // ----------------------------------------------------------------------------
-// Function _bitScanReverse()
+// Function _bitScanReverseGeneric()                     [Platform independent]
 // ----------------------------------------------------------------------------
+
+// bitScanReverse for 32 bit integers using DeBruijn sequence by Eric Cole, January 8, 2006.
+template <typename TWord>
+inline TWord
+_bitScanReverseGeneric(TWord word, WordSize_<32>)
+{
+    return DeBruijnMultiplyLookup[static_cast<__uint32>(word * 0x077CB531U) >> 27];
+}
+
+// bitScanReverse for 64 bit integers using DeBruijn sequence by Kim Walisch and Mark Dickinson.
+template <typename TWord>
+inline TWord
+_bitScanReverseGeneric(TWord word, WordSize_<64>)
+{
+    word |= word >> 1; word |= word >> 2; word |= word >> 4; word |= word >> 8; word |= word >> 16; word |= word >> 32;
+    return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89) >> 58];
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanForwardGeneric()                     [Platform independent]
+// ----------------------------------------------------------------------------
+
+// bitScanForward implementations for 64 and 32 bit values using DeBruijn sequence by Martin LŠuter, Charles E. Leiserson,
+// Harald Prokop and Keith H. Randall; "Using de Bruijn Sequences to Index a 1 in a Computer Word"; (1997)
+
+// Note, the cast of word to a signed integer is necessary to fix compiler warning C4146 on Windows Platform.
+template <typename TWord>
+inline TWord
+_bitScanForwardGeneric(TWord word, WordSize_<32>)
+{
+    return DeBruijnMultiplyLookup[static_cast<__uint32>(((word & -static_cast<__int32>(word)) * 0x077CB531U)) >> 27];
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForwardGeneric(TWord word, WordSize_<64>)
+{
+    return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89) >> 58];
+}
+
+#ifdef PLATFORM_GCC
 
 template <typename TWord>
 inline TWord
@@ -558,54 +634,110 @@ template <typename TWord>
 inline TWord
 _bitScanReverse(TWord word, WordSize_<32>)
 {
-  return 31 - __builtin_clz(static_cast<unsigned int>(word));
+    return 31 - __builtin_clz(static_cast<unsigned int>(word));
 }
 
-template <typename TWord>
-inline TWord
-_bitScanReverse(TWord word, WordSize_<16>)
-{
-  return _bitScanReverse(static_cast<__uint32>(word), WordSize_<32>());
-}
-
-template <typename TWord>
-inline TWord
-_bitScanReverse(TWord word, WordSize_<8>)
-{
-    return _bitScanReverse(static_cast<__uint32>(word), WordSize_<32>());
-}
-
-// ----------------------------------------------------------------------------
-// Function _bitScanForward()
-// ----------------------------------------------------------------------------
 
 template <typename TWord>
 inline TWord
 _bitScanForward(TWord word, WordSize_<64>)
 {
-  return __builtin_ctzll(static_cast<unsigned long long>(word));
+    return __builtin_ctzll(static_cast<unsigned long long>(word));
 }
 
 template <typename TWord>
 inline TWord
 _bitScanForward(TWord word, WordSize_<32>)
 {
-  return __builtin_ctz(static_cast<unsigned int>(word));
+    return __builtin_ctz(static_cast<unsigned int>(word));
+}
+#else  // #ifdef PLATFORM_GCC
+#ifdef PLATFORM_WINDOWS
+#if (SEQAN_IS_64_BIT)
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    unsigned long index;
+    _BitScanReverse64(&index, static_cast<unsigned __int64>(word));
+    return index;
 }
 
 template <typename TWord>
 inline TWord
-_bitScanForward(TWord word, WordSize_<16>)
+_bitScanForward(TWord word, WordSize_<64>)
 {
-  return _bitScanForward(static_cast<__uint32>(word), WordSize_<32>());
+    unsigned long index;
+    _BitScanForward64(&index, static_cast<unsigned __int64>(word));
+    return index;
+}
+#else  // if (SEQAN_IS_64_BIT)
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+
+    return _bitScanReverseGeneric(word, WordSize_<64>());
 }
 
 template <typename TWord>
 inline TWord
-_bitScanForward(TWord word, WordSize_<8>)
+_bitScanForward(TWord word, WordSize_<64>)
 {
-    return _bitScanForward(static_cast<__uint32>(word), WordSize_<32>());
+    return _bitScanForwardGeneric(word, WordSize_<64>());
 }
+#endif  // endif (SEQAN_IS_64_BIT)
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<32>)
+{
+    unsigned long index;
+    _BitScanReverse(&index, static_cast<unsigned long>(word));
+    return index;
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<32>)
+{
+    unsigned long index;
+    _BitScanForward(&index, static_cast<unsigned long>(word));
+    return index;
+}
+#else  // ifdef PLATFORM_WINDOWS
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<32>)
+{
+    return _bitScanReverseGeneric(word, WordSize_<32>());
+}
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    return _bitScanReverseGeneric(word, WordSize_<64>());
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<32>)
+{
+    return _bitScanForwardGeneric(word, WordSize_<32>());
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<64>)
+{
+    return _bitScanForwardGeneric(word, WordSize_<64>());
+}
+#endif  // ifdef PLATFORM_WINDOWS
+#endif  // ifdef PLATFORM_GCC
 
 // ----------------------------------------------------------------------------
 // Function bitScanReverse()
@@ -632,7 +764,7 @@ bitScanReverse(TWord word)
 {
    SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
 
-   return _bitScanReverse(word, WordSize_<BitsPerValue<TWord>::VALUE>());
+   return _bitScanReverse(word, WordSize_<(BitsPerValue<TWord>::VALUE <= 32) ? 32 : BitsPerValue<TWord>::VALUE>());
 }
 
 // ----------------------------------------------------------------------------
@@ -659,7 +791,7 @@ inline SEQAN_FUNC_ENABLE_IF( Is<IntegerConcept<TWord> >, TWord)
 bitScanForward(TWord word)
 {
    SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
-   return _bitScanForward(word, WordSize_<BitsPerValue<TWord>::VALUE>());
+   return _bitScanForward(word, WordSize_<(BitsPerValue<TWord>::VALUE <= 32) ? 32 : BitsPerValue<TWord>::VALUE>());
 }
 
 }  // namespace seqan
