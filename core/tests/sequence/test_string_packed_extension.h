@@ -623,7 +623,7 @@ void testStringPackedExtensionBitScanForward()
         str[64] = false;
         SEQAN_ASSERT_EQ(bitScanForward(str), 119u);
         str[119] = false;
-        SEQAN_ASSERT_EQ(bitScanForward(str), MaxValue<TPosition>::VALUE);
+        SEQAN_ASSERT_EQ(bitScanForward(str), 120u);
     }
 
     {
@@ -657,7 +657,7 @@ void testStringPackedExtensionBitScanReverse()
         str[10] = false;
         SEQAN_ASSERT_EQ(bitScanReverse(str), 0u);
         str[0] = false;
-        SEQAN_ASSERT_EQ(bitScanReverse(str), MaxValue<TPosition>::VALUE);
+        SEQAN_ASSERT_EQ(bitScanReverse(str), 120u);
     }
 
     {
