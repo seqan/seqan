@@ -113,7 +113,7 @@ class BamTagsDict
 {
 public:
     Holder<CharString> _host;
-    String<unsigned> _positions;
+    mutable String<unsigned> _positions;
 
     BamTagsDict() {}
 
@@ -286,17 +286,17 @@ getBamTypeSize(char c)
 */
 
 inline void
-buildIndex(BamTagsDict & bamTags)
+buildIndex(BamTagsDict const & bamTags)
 {
     typedef Host<BamTagsDict>::Type TCharString;
-    typedef Iterator<TCharString, Rooted>::Type TCharStringIter;
+    typedef Iterator<TCharString const, Standard>::Type TCharStringIter;
 
     clear(bamTags._positions);
     if (empty(value(bamTags._host)))
         return;  // Done.
 
     appendValue(bamTags._positions, 0);
-    for (TCharStringIter it = begin(host(bamTags)); !atEnd(it);)
+    for (TCharStringIter it = begin(host(bamTags), Standard()); it != end(host(bamTags), Standard()); )
     {
         it += 2;
         char c = *it;
@@ -407,8 +407,9 @@ length(BamTagsDict const & tags)
 ..include:seqan/bam_io.h
 */
 
+template <typename TId>
 inline char
-getTagType(BamTagsDict & tags, __int32 idx)
+getTagType(BamTagsDict const & tags, TId idx)
 {
     if (!hasIndex(tags))
         buildIndex(tags);
@@ -543,8 +544,9 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 ..include:seqan/bam_io.h
 */
 
-inline CharString
-getTagValue(BamTagsDict & tags, __int32 idx)
+template <typename TId>
+inline Infix<Host<BamTagsDict const>::Type>::Type
+getTagValue(BamTagsDict const & tags, TId idx)
 {
     if (!hasIndex(tags))
         buildIndex(tags);
@@ -558,7 +560,7 @@ getTagValue(BamTagsDict & tags, __int32 idx)
     char theType = getTagType(tags, idx);
     if (theType == 'Z' || theType == 'H')
     {
-        typedef Iterator<CharString, Rooted>::Type TIterator;
+        typedef Iterator<CharString const, Rooted>::Type TIterator;
         TIterator it = begin(host(tags), Rooted()) + beginPos + 1;
         for (; !atEnd(it) && *it != '\0'; goNext(it))
             endPos += 1;
@@ -579,12 +581,6 @@ getTagValue(BamTagsDict & tags, __int32 idx)
     }
 
     return infix(host(tags), beginPos, endPos);
-}
-
-inline CharString //Infix<Host<BamTagsDict const>::Type>::Type
-getTagValue(BamTagsDict const & tags, __int32 idx)
-{
-    return getTagValue(const_cast<BamTagsDict &>(tags), idx);
 }
 
 // ----------------------------------------------------------------------------
@@ -1006,9 +1002,9 @@ bool _toBamTagValue(CharString & result, T const & val, char const typeC)
 // Sets an atomic value in a BamTagsDict.
 // Returns true successful, can fail if val not atomic or key is not a valid tag id (2 chars).
 
-template <typename T>
+template <typename TKey, typename TValue>
 inline bool
-setTagValue(BamTagsDict & tags, CharString const & key, T const & val, char const typeC)
+setTagValue(BamTagsDict & tags, TKey const & key, TValue const & val, char typeC)
 {
     if (!hasIndex(tags))
         buildIndex(tags);
@@ -1024,9 +1020,7 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val, char cons
     unsigned idx = 0;
     if (findTagKey(idx, tags, key))
     {
-        // TODO(holtgrew): Speed this up with positions?
-        CharString tmp;
-        tmp = getTagValue(tags, idx);
+        Infix<Host<BamTagsDict>::Type>::Type tmp = getTagValue(tags, idx);
         replace(host(tags), tags._positions[idx] + 2, tags._positions[idx] + 2 + length(tmp), bamTagVal);
     }
     else
@@ -1047,9 +1041,9 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val)
     return setTagValue(tags, key, val, getBamTypeChar<T>());
 }
 
-template <typename T>
+template <typename TKey, typename TValue>
 inline bool
-appendTagValue(CharString & tags, CharString const & key, T const & val, char const typeC)
+appendTagValue(CharString & tags, TKey const & key, TValue const & val, char const typeC)
 {
     // Build value to insert/append.
     if (length(key) != 2u)
@@ -1107,14 +1101,7 @@ eraseTag(BamTagsDict & tags, CharString const & key)
     if (!findTagKey(idx, tags, key))
         return false;
 
-    // TODO(holtgrew): Speed this up with positions?
-    CharString tmp;
-    tmp = getTagValue(tags, idx);
     erase(host(tags), tags._positions[idx], tags._positions[idx + 1]);
-
-    // TODO(weese): is this really working and tested? Should _positions be updated as well?
-    // Why is tmp not used?
-
     return true;
 }
 

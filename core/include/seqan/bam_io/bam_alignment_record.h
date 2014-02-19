@@ -324,6 +324,7 @@ public:
     CharString seq;
     CharString qual;
     CharString tags;  // raw tags in BAM format
+    CharString _buffer; // reusable internal buffer (used for I/O)
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
