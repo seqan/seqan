@@ -627,7 +627,7 @@ template <typename TWord>
 inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
-    return 63 - __builtin_clzll(static_cast<__uint64>(word));
+    return 63 - __builtin_clzll(static_cast<unsigned long long>(word));
 }
 
 template <typename TWord>
@@ -678,7 +678,6 @@ template <typename TWord>
 inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
-
     return _bitScanReverseGeneric(word, WordSize_<64>());
 }
 
