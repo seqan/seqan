@@ -259,10 +259,10 @@ partialSum(TTarget & target)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor, typename TIterTag, typename TParallelTag>
-inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
+inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
-    typedef typename Iterator<TContainer const, TIterSpec>::Type    TIter;
+    typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
 
     for (TIter it = begin(c, iterTag); !atEnd(it, c); ++it)
         f(it);
@@ -273,11 +273,11 @@ inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iter
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor, typename TIterTag>
-inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iterTag, Parallel)
+inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, Parallel)
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
-    typedef typename Position<TContainer const>::Type               TPos;
-    typedef typename Iterator<TContainer const, TIterSpec>::Type    TIter;
+    typedef typename Position<TContainer>::Type                     TPos;
+    typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
 
     Splitter<TPos> splitter(0, length(c), Parallel());
 
@@ -297,9 +297,9 @@ inline void iterate(TContainer const & c, TFunctor f, Tag<TIterTag> const & iter
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TFunctor>
-inline void iterate(TContainer const & c, TFunctor f)
+inline void iterate(TContainer & c, TFunctor f)
 {
-    iterate(c, f, typename DefaultIteratorSpec<TContainer const>::Type(), Serial());
+    iterate(c, f, typename DefaultIteratorSpec<TContainer>::Type(), Serial());
 }
 
 // ============================================================================
