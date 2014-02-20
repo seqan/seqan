@@ -1069,6 +1069,27 @@ assign(Holder<TValue, Tristate> & target_,
     }
 }
 
+template <typename TValue>
+inline void
+assign(Holder<TValue const, Tristate> & target_,
+       Holder<TValue const, Tristate> const & source_)
+{
+    SEQAN_CHECKPOINT;
+    switch(source_.data_state) {
+        case Holder<TValue, Tristate>::EMPTY:
+            clear(target_);
+            break;
+
+        case Holder<TValue, Tristate>::OWNER:
+            create(target_, value(source_));
+            break;
+
+        default:  // case Holder<TValue, Tristate>::DEPENDENT
+            setValue(target_, value(source_));
+            break;
+    }
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_BASIC_HOLDER_TRISTATE_H_
