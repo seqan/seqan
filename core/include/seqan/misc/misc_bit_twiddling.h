@@ -606,7 +606,7 @@ _bitScanReverseGeneric(TWord word, WordSize_<64>)
 // bitScanForward implementations for 64 and 32 bit values using DeBruijn sequence by Martin LŠuter, Charles E. Leiserson,
 // Harald Prokop and Keith H. Randall; "Using de Bruijn Sequences to Index a 1 in a Computer Word"; (1997)
 
-// Note, the cast of word to a signed integer is necessary to fix compiler warning C4146 on Windows Platform.
+// Note, the cast of word to a signed integer is necessary to fix compiler warning C4146 on Windows platforms.
 template <typename TWord>
 inline TWord
 _bitScanForwardGeneric(TWord word, WordSize_<32>)
@@ -651,7 +651,7 @@ _bitScanForward(TWord word, WordSize_<32>)
 {
     return __builtin_ctz(static_cast<unsigned int>(word));
 }
-#else  // #ifdef PLATFORM_GCC
+#else
 #ifdef PLATFORM_WINDOWS
 #if (SEQAN_IS_64_BIT)
 
@@ -672,7 +672,7 @@ _bitScanForward(TWord word, WordSize_<64>)
     _BitScanForward64(&index, static_cast<unsigned __int64>(word));
     return index;
 }
-#else  // if (SEQAN_IS_64_BIT)
+#else
 
 template <typename TWord>
 inline TWord
@@ -687,7 +687,7 @@ _bitScanForward(TWord word, WordSize_<64>)
 {
     return _bitScanForwardGeneric(word, WordSize_<64>());
 }
-#endif  // endif (SEQAN_IS_64_BIT)
+#endif  // if (SEQAN_IS_64_BIT)
 
 template <typename TWord>
 inline TWord
@@ -706,7 +706,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#else  // ifdef PLATFORM_WINDOWS
+#else
 
 template <typename TWord>
 inline TWord
