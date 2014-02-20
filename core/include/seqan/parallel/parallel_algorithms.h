@@ -233,11 +233,25 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
     return back(localSums);
 }
 
+template <typename TTarget, typename TParallelTag>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & target, Tag<TParallelTag> parallelTag)
+{
+    return partialSum(target, target, parallelTag);
+}
+
 template <typename TTarget, typename TSource>
 inline typename Value<TSource>::Type
-partialSum(TTarget &target, TSource const &source)
+partialSum(TTarget & target, TSource const & source)
 {
     return partialSum(target, source, Serial());
+}
+
+template <typename TTarget>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & target)
+{
+    return partialSum(target, target);
 }
 
 // ----------------------------------------------------------------------------
