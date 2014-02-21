@@ -13,8 +13,8 @@ int main()
 	std::cout << length(tags) << std::endl;  // #=> "3"
 	for (unsigned i = 0; i < length(tags); ++i)
 	{
-	    std::cout << getTagKey(tags, i) << " -> " << getTagValue(tags, i) << std::endl;
-	    if (getTagValue(tags, i)[0] == 'i')  // is 32 bit integer
+	    std::cout << getTagKey(tags, i) << " -> " << tags[i] << std::endl;
+	    if (tags[i][0] == 'i')  // is 32 bit integer
 	    {
 	        __int32 x = 0;
 	        bool res = extractTagValue(x, tags, i);
