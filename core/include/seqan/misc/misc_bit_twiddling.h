@@ -58,7 +58,7 @@ namespace seqan {
 // ============================================================================
 
 // DeBruijn sequence for 64 bit bitScanReverse.
-const int DeBruijnMultiplyLookupBSR64[64] =
+static const int DeBruijnMultiplyLookupBSR64[64] =
 {
     0, 47,  1, 56, 48, 27,  2, 60,
    57, 49, 41, 37, 28, 16,  3, 61,
@@ -599,6 +599,13 @@ _bitScanReverseGeneric(TWord word, WordSize_<64>)
     return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89) >> 58];
 }
 
+template <typename TWord, unsigned NUM_BITS>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<NUM_BITS>)
+{
+    return _bitScanReverseGeneric(word, WordSize_<NUM_BITS>());
+}
+
 // ----------------------------------------------------------------------------
 // Function _bitScanForwardGeneric()                     [Platform independent]
 // ----------------------------------------------------------------------------
@@ -619,6 +626,13 @@ inline TWord
 _bitScanForwardGeneric(TWord word, WordSize_<64>)
 {
     return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89) >> 58];
+}
+
+template <typename TWord, unsigned int NUM_BITS>
+inline TWord
+_bitScanForward(TWord word, WordSize_<NUM_BITS>)
+{
+    return _bitScanForwardGeneric(word, WordSize_<NUM_BITS>());
 }
 
 #ifdef PLATFORM_GCC
@@ -678,14 +692,30 @@ template <typename TWord>
 inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
-    return _bitScanReverseGeneric(word, WordSize_<64>());
+    unsigned long index;
+    register unsigned long hi = word >> 32;
+    if (hi == 0u)
+    {
+        _BitScanReverse(&index, word);
+        return index;
+    }
+    _BitScanReverse(&index, hi);
+    return index + 32;
 }
 
 template <typename TWord>
 inline TWord
 _bitScanForward(TWord word, WordSize_<64>)
 {
-    return _bitScanForwardGeneric(word, WordSize_<64>());
+    unsigned long index;
+    register unsigned long lo = word & ~static_cast<unsigned long>(0);
+    if (lo == 0u)
+    {
+        _BitScanForward(&index, word >> 32);
+        return index + 32;
+    }
+    _BitScanForward(&index, lo);
+    return index;
 }
 #endif  // endif (SEQAN_IS_64_BIT)
 
@@ -706,35 +736,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#else  // ifdef PLATFORM_WINDOWS
 
-template <typename TWord>
-inline TWord
-_bitScanReverse(TWord word, WordSize_<32>)
-{
-    return _bitScanReverseGeneric(word, WordSize_<32>());
-}
-
-template <typename TWord>
-inline TWord
-_bitScanReverse(TWord word, WordSize_<64>)
-{
-    return _bitScanReverseGeneric(word, WordSize_<64>());
-}
-
-template <typename TWord>
-inline TWord
-_bitScanForward(TWord word, WordSize_<32>)
-{
-    return _bitScanForwardGeneric(word, WordSize_<32>());
-}
-
-template <typename TWord>
-inline TWord
-_bitScanForward(TWord word, WordSize_<64>)
-{
-    return _bitScanForwardGeneric(word, WordSize_<64>());
-}
 #endif  // ifdef PLATFORM_WINDOWS
 #endif  // ifdef PLATFORM_GCC
 
