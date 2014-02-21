@@ -68,6 +68,19 @@ struct Host<BamTagsDict const>
     typedef CharString const Type;
 };
 
+template <>
+struct Size<BamTagsDict>
+{
+    typedef unsigned Type;
+};
+
+template <>
+struct Position<BamTagsDict>
+{
+    typedef unsigned Type;
+};
+
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -365,16 +378,18 @@ _dataHost(BamTagsDict const & bamTags)
 // Function setHost()
 // ----------------------------------------------------------------------------
 
+template <typename THost>
 inline void
-setHost(BamTagsDict & me, CharString & host_)
+setHost(BamTagsDict & me, THost & host_)
 {
     SEQAN_CHECKPOINT;
 	setValue(_dataHost(me), host_);
     clear(me._positions);
 }
 
+template <typename THost>
 inline void
-setHost(BamTagsDict & me, CharString const & host_)
+setHost(BamTagsDict & me, THost const & host_)
 {
     SEQAN_CHECKPOINT;
 	setValue(_dataHost(me), host_);
@@ -398,7 +413,7 @@ setHost(BamTagsDict & me, CharString const & host_)
 
 ///.Function.length.param.object.type:Class.BamTagsDict
 
-inline unsigned
+inline Size<BamTagsDict>::Type
 length(BamTagsDict const & tags)
 {
     if (empty(value(tags._host)))
@@ -416,29 +431,29 @@ length(BamTagsDict const & tags)
  * @fn BamTagsDict#getTagType
  * @brief Returns the tag type char for an entry of a BamTagsDict.
  *
- * @signature char getTagType(tags, idx);
+ * @signature char getTagType(tags, id);
  *
  * @param[in] tags The BamTagsDict to query.
- * @param[in] idx  The position for which to retrieve the type <tt>__int32</tt>.
+ * @param[in] id   The position for which to retrieve the type <tt>__int32</tt>.
  */
 
 /**
 .Function.BamTagsDict#getTagType
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
-..signature:getTagType(tagsDict, idx)
+..signature:getTagType(tagsDict, id)
 ..summary:Get key of a tag by index.
 ..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
-..param.idx:Index of the tag whose key to retrieve.
+..param.id:Index of the tag whose key to retrieve.
 ..returns:$char$, the SAM/BAM identifier of the type.
 ..include:seqan/bam_io.h
 */
 
 template <typename TId>
 inline char
-getTagType(BamTagsDict const & tags, TId idx)
+getTagType(BamTagsDict const & tags, TId id)
 {
-    return tags[idx][2];
+    return tags[id][2];
 }
 
 // ----------------------------------------------------------------------------
@@ -449,10 +464,10 @@ getTagType(BamTagsDict const & tags, TId idx)
  * @fn BamTagsDict#getTagKey
  * @brief Return key of a tag by index.
  *
- * @signature TKey getTagKey(tagsDict, idx);
+ * @signature TKey getTagKey(tagsDict, id);
  *
  * @param[in] tagsDict The BamTagsDict to query.
- * @param[in] idx      The index of the dict entry (<tt>__int32</tt>).
+ * @param[in] id       The index of the dict entry (<tt>__int32</tt>).
  *
  * @return TKey An infix of a @link CharString @endlink.  Will be a two-character char sequence.
  */
@@ -461,11 +476,11 @@ getTagType(BamTagsDict const & tags, TId idx)
 .Function.BamTagsDict#getTagKey
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
-..signature:getTagKey(tagsDict, idx)
+..signature:getTagKey(tagsDict, id)
 ..summary:Return key of a tag by index.
 ..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
 ...type:Class.BamTagsDict
-..param.idx:Index of the tag whose key to retrieve.
+..param.id:Index of the tag whose key to retrieve.
 ..returns:Infix of the underlying string.
 ..remarks:See @Class.BamTagsDict@ for an example.
 ..include:seqan/bam_io.h
@@ -473,9 +488,9 @@ getTagType(BamTagsDict const & tags, TId idx)
 
 template <typename TId>
 inline Infix<Host<BamTagsDict const>::Type>::Type
-getTagKey(BamTagsDict const & tags, TId idx)
+getTagKey(BamTagsDict const & tags, TId id)
 {
-    return prefix(tags[idx], 2);
+    return prefix(tags[id], 2);
 }
 
 // ----------------------------------------------------------------------------
@@ -486,11 +501,11 @@ getTagKey(BamTagsDict const & tags, TId idx)
  * @fn BamTagsDict#findTagKey
  * @brief Find a tag by its key for a @link BamTagsDict @endlink object.
  *
- * @signature bool findTagKey(idx, tagsDict, name);
+ * @signature bool findTagKey(id, tagsDict, key);
  *
- * @param[out] idx      The index of the tag is stored here (<tt>unsigned</tt>).
+ * @param[out] id       The index of the tag is stored here (<tt>unsigned</tt>).
  * @param[in]  tagsDict The BamTagsDict to query.
- * @param[in]  name     The key to query for: @link CharString @endlink.
+ * @param[in]  key      The key to query for: @link CharString @endlink.
  *
  * @return bool true if the key could be found and false otherwise.
  */
@@ -499,21 +514,22 @@ getTagKey(BamTagsDict const & tags, TId idx)
 .Function.BamTagsDict#findTagKey
 ..summary:Find a tag by its key for a @Class.BamTagsDict@ object.
 ..class:Class.BamTagsDict
-..signature:findTagKey(idx, tagsDict, name)
-..param.idx:Index of the tag with the given key.
+..signature:findTagKey(id, tagsDict, key)
+..param.id:Index of the tag with the given key.
 ...type:nolink:$unsigned$
 ..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
-..param.name:Name of the key to find.
+..param.key:Name of the key to find.
 ...type:Shortcut.CharString
 ..returns:$bool$, indicating whether such a key could be found.
 ..include:seqan/bam_io.h
 */
 
+template <typename TId, typename TKey>
 inline bool
-findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
+findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
 {
-    for (idx = 0; idx < length(tags); ++idx)
-        if (getTagKey(tags, idx) == name)
+    for (id = 0; id < (TId)length(tags); ++id)
+        if (getTagKey(tags, id) == key)
             return true;
     return false;
 }
@@ -524,15 +540,15 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 
 /*!
  * @fn BamTagsDict#extractTagValuej
- * @brief Extract and cast "atomic" value from tags string with index <tt>idx</tt>.
+ * @brief Extract and cast "atomic" value from tags string with index <tt>id</tt>.
  *
- * @signature bool extractTagValue(dest, tags, idx)
+ * @signature bool extractTagValue(dest, tags, id)
  *
  * @param[out] dest The variable to write the value to.The value is first copied in a variable of the type indicated in
  *                  the BAM file. Then it is cast into the type of <tt>dest</tt>.
  *
  * @param[in] tags The BamTagsDict object to query.
- * @param[in] idx  The integer index in the dict to use (<tt>__int32</tt>).
+ * @param[in] id   The integer index in the dict to use (<tt>__int32</tt>).
  *
  * @return bool true if the value could be extracted.
  *
@@ -547,13 +563,13 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 .Function.BamTagsDict#extractTagValue
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
-..signature:extractTagValue(dest, tags, idx)
-..summary:Extract and cast "atomic" value from tags string with index $idx$.
+..signature:extractTagValue(dest, tags, id)
+..summary:Extract and cast "atomic" value from tags string with index $id$.
 ..param.dest:The variable to write the value to.
 ...remarks:The value is first copied in a variable of the type indicated in the BAM file. Then it is cast into the type of $dest$.
 ..param.tags:@Class.BamTagsDict@ object.
 ...type:Class.BamTagsDict
-..params.idx:Index of the tag in the tag list.
+..params.id:Index of the tag in the tag list.
 ..returns:$bool$, indicating the success.
 ..remarks:The function only works for atomic types such as $int$, not for $char*$ or arrays.
 ..remarks:See @Class.BamTagsDict@ for an example.
@@ -561,69 +577,53 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 ..include:seqan/bam_io.h
 */
 
-template <typename TDest>
-inline bool
-extractTagValue(TDest & dest, BamTagsDict & tags, __int32 idx)
+template <typename TResultValue, typename TId>
+SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TResultValue> >, bool)
+extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 {
-    if (!hasIndex(tags))
-        buildIndex(tags);
+    typedef Infix<Host<BamTagsDict const>::Type>::Type TInfix;
+    typedef Iterator<TInfix, Standard>::Type TIter;
 
-    char typeC = host(tags)[tags._positions[idx] + 2];
-    if (typeC == 'A')
+    TInfix inf = tags[id];
+    if (length(inf) < 4)
+        return false;
+
+    TIter it = begin(inf, Standard()) + 2;
+    char typeC = getValue(it++);
+
+    if (typeC == 'A' || typeC == 'c' || typeC == 'C')
     {
-        char x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 1);
-        dest = static_cast<TDest>(x);
+        val = getValue(it);
     }
-    else if (typeC == 'c')
+    else if (typeC == 's' || typeC == 'S')
     {
-        __int8 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 1);
-        dest = static_cast<TDest>(x);
+        if (length(inf) < 5)
+            return false;
+
+        union {
+            char raw[2];
+            short i;
+        } tmp;
+
+        arrayCopyForward(it, it + 2, tmp.raw);
+        val = tmp.i;
     }
-    else if (typeC == 'C')
+    else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
     {
-        __uint8 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 1);
-        dest = static_cast<TDest>(x);
-    }
-    else if (typeC == 's')
-    {
-        __int16 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 2);
-        dest = static_cast<TDest>(x);
-    }
-    else if (typeC == 'S')
-    {
-        __uint16 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 2);
-        dest = static_cast<TDest>(x);
-    }
-    else if (typeC == 'i')
-    {
-        __int32 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 4);
-        dest = static_cast<TDest>(x);
-    }
-    else if (typeC == 'I')
-    {
-        __uint32 x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 4);
-        dest = static_cast<TDest>(x);
-    }
-    else if (typeC == 'f')
-    {
-        float x = 0;
-        char * ptr = reinterpret_cast<char *>(&x);
-        memcpy(ptr, &host(tags)[tags._positions[idx] + 3], 4);
-        dest = static_cast<TDest>(x);
+        if (length(inf) < 7)
+            return false;
+
+        union {
+            char raw[4];
+            int i;
+            float f;
+        } tmp;
+
+        arrayCopyForward(it, it + 4, tmp.raw);
+        if (typeC == 'f')
+            val = tmp.f;
+        else
+            val = tmp.i;
     }
     else // variable sized type or invald
     {
@@ -632,6 +632,19 @@ extractTagValue(TDest & dest, BamTagsDict & tags, __int32 idx)
     return true;
 }
 
+template <typename TResultValue, typename TId>
+SEQAN_FUNC_ENABLE_IF(Is<IsSequence<TResultValue> >, bool)
+extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
+{
+    typedef Infix<Host<BamTagsDict const>::Type>::Type TInfix;
+
+    TInfix inf = tags[id];
+    if (length(inf) < 4 || inf[2] != 'Z')
+        return false;
+
+    val = infix(inf, 3, length(inf) - 1);
+    return true;
+}
 
 // ----------------------------------------------------------------------------
 // Function getBamTypeChar()
@@ -828,9 +841,9 @@ setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point num
 */
 
 // Convert "atomic" value to BAM tag.  Return whether val was atomic.
-template <typename T>
-SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<T> >, bool)
-_toBamTagValue(CharString & result, T const & val, char typeC)
+template <typename TBamValueSequence, typename TValue>
+SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, bool)
+_toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
     appendValue(result, typeC);
 
@@ -872,9 +885,9 @@ _toBamTagValue(CharString & result, T const & val, char typeC)
     return true;
 }
 
-template <typename T>
-SEQAN_FUNC_ENABLE_IF(IsSequence<T>, bool)
-_toBamTagValue(CharString & result, T const & val, char typeC)
+template <typename TBamValueSequence, typename TValue>
+SEQAN_FUNC_ENABLE_IF(IsSequence<TValue>, bool)
+_toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
     if (typeC != 'Z')
         return false;
@@ -900,20 +913,24 @@ setTagValue(BamTagsDict & tags, TKey const & key, TValue const & val, char typeC
     if (length(key) != 2u)
         return false;
 
-    CharString bamTagVal;
-    if (!_toBamTagValue(bamTagVal, val, typeC))
-        return false;
-
-    unsigned idx = 0;
-    if (findTagKey(idx, tags, key))
+    Position<BamTagsDict>::Type id = 0;
+    if (findTagKey(id, tags, key))
     {
-        replace(host(tags), tags._positions[idx] + 2, tags._positions[idx + 1], bamTagVal);
+        CharString bamTagVal;
+        if (!_toBamTagValue(bamTagVal, val, typeC))
+            return false;
+
+        replace(host(tags), tags._positions[id] + 2, tags._positions[id + 1], bamTagVal);
         clear(tags._positions);
     }
     else
     {
         append(host(tags), key);
-        append(host(tags), bamTagVal);
+        if (!_toBamTagValue(host(tags), val, typeC))
+        {
+            resize(host(tags), length(host(tags)) - length(key));
+            return false;
+        }
         appendValue(tags._positions, length(host(tags)));
     }
 
@@ -992,17 +1009,18 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
 ..include:seqan/bam_io.h
  */
 
+template <typename TKey>
 inline bool
-eraseTag(BamTagsDict & tags, CharString const & key)
+eraseTag(BamTagsDict & tags, TKey const & key)
 {
     if (!hasIndex(tags))
         buildIndex(tags);
 
-    unsigned idx = 0;
-    if (!findTagKey(idx, tags, key))
+    Position<BamTagsDict>::Type id = 0;
+    if (!findTagKey(id, tags, key))
         return false;
 
-    erase(host(tags), tags._positions[idx], tags._positions[idx + 1]);
+    erase(host(tags), tags._positions[id], tags._positions[id + 1]);
     clear(tags._positions);
     return true;
 }
