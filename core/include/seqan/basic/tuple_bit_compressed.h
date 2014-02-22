@@ -391,9 +391,7 @@ inline typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector
 operator&(Tuple<TValue, SIZE, BitPacked<> > const & left,
           T const & right)
 {
-    typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector tmp;
-    tmp = left.i & right;
-    return tmp;
+    return left.i & right;
 }
 
 // ----------------------------------------------------------------------------
@@ -415,11 +413,30 @@ inline typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector
 operator|(Tuple<TValue, SIZE, BitPacked<> > const & left,
           T const & right)
 {
-    typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector tmp;
-    tmp = left.i | right;
+    return left.i | right;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator^()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE>
+inline Tuple<TValue, SIZE, BitPacked<> >
+operator^(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          Tuple<TValue, SIZE, BitPacked<> > const & right)
+{
+    Tuple<TValue, SIZE, BitPacked<> > tmp;
+    tmp.i = left.i ^ right.i;
     return tmp;
 }
 
+template <typename TValue, unsigned SIZE, typename T>
+inline typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector
+operator^(Tuple<TValue, SIZE, BitPacked<> > const & left,
+          T const & right)
+{
+    return left.i ^ right;
+}
 
 // ----------------------------------------------------------------------------
 // Function operator~()
