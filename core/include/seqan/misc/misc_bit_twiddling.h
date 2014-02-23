@@ -596,7 +596,7 @@ inline TWord
 _bitScanReverseGeneric(TWord word, WordSize_<64>)
 {
     word |= word >> 1; word |= word >> 2; word |= word >> 4; word |= word >> 8; word |= word >> 16; word |= word >> 32;
-    return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89) >> 58];
+    return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89ULL) >> 58];
 }
 
 // ----------------------------------------------------------------------------
@@ -629,7 +629,7 @@ template <typename TWord>
 inline TWord
 _bitScanForwardGeneric(TWord word, WordSize_<64>)
 {
-    return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89) >> 58];
+    return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89ULL) >> 58];
 }
 
 // ----------------------------------------------------------------------------
