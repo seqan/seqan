@@ -593,7 +593,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 
     if (typeC == 'A' || typeC == 'c' || typeC == 'C')
     {
-        val = getValue(it);
+        val = static_cast<TResultValue>(getValue(it));
     }
     else if (typeC == 's' || typeC == 'S')
     {
@@ -606,7 +606,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
         } tmp;
 
         arrayCopyForward(it, it + 2, tmp.raw);
-        val = tmp.i;
+        val = static_cast<TResultValue>(tmp.i);
     }
     else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
     {
@@ -621,9 +621,9 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 
         arrayCopyForward(it, it + 4, tmp.raw);
         if (typeC == 'f')
-            val = tmp.f;
+            val = static_cast<TResultValue>(tmp.f);
         else
-            val = tmp.i;
+            val = static_cast<TResultValue>(tmp.i);
     }
     else // variable sized type or invald
     {
@@ -849,7 +849,7 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 
     if (typeC == 'A' || typeC == 'c' || typeC == 'C')
     {
-        appendValue(result, (char)val);
+        appendValue(result, static_cast<char>(val));
     }
     else if (typeC == 's' || typeC == 'S')
     {
@@ -858,7 +858,7 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
             short i;
         } tmp;
 
-        tmp.i = val;
+        tmp.i = static_cast<short>(val);
 
         append(result, toRange(&tmp.raw[0], &tmp.raw[2]));
     }
@@ -871,9 +871,9 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
         } tmp;
 
         if (typeC == 'f')
-            tmp.f = val;
+            tmp.f = static_cast<float>(val);
         else
-            tmp.i = val;
+            tmp.i = static_cast<int>(val);
             
         append(result, toRange(&tmp.raw[0], &tmp.raw[4]));
     }
