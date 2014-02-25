@@ -881,7 +881,7 @@ resize(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newLength, Tag<TE
 
     dict._length = newLength;
     return resize(dict.ranks, std::ceil(newLength /
-                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), TRankDictionaryEntry_(), tag);
+                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
 }
 
 }
