@@ -491,6 +491,42 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_set_tag_value)
     }
 }
 
+SEQAN_DEFINE_TEST(test_bam_tags_dict_append_tag_value)
+{
+    using namespace seqan;
+
+    // No tag.
+    {
+        CharString bamTags;
+        CharString samTags = "";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XX", 'o', 'A');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:o"), CharString(samTags));
+    }
+    // 2 tags.
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:A:y";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XZ", 'o', 'A');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:o"), CharString(samTags));
+    }
+    // String value (append).
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:A:y\tXZ:A:z";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XA", "Example string", 'Z');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:z\tXA:Z:Example string"), CharString(samTags));
+    }
+}
+
 SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
 {
     using namespace seqan;

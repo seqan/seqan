@@ -202,7 +202,7 @@ host(BamTagsDict const & bamTags)
  *
  * @param[in] dict The @link BamTagsDict @endlink to query.
  *
- * @return bool true if <tt>dict</tt> has an index and false otherwise.
+ * @return bool <tt>true</tt> if <tt>dict</tt> has an index and <tt>false</tt> otherwise.
  */
 
 /**
@@ -432,7 +432,7 @@ length(BamTagsDict const & tags)
  * @signature char getTagType(tags, id);
  *
  * @param[in] tags The BamTagsDict to query.
- * @param[in] id   The id of the tag for which to retrieve the type.
+ * @param[in] id   The id of the tag for which to determine the type. See @link BamTagsDict#findTagKey @endlink.
  *
  * @return char A <tt>char</tt> that identifies the tag type.
  */
@@ -503,11 +503,11 @@ getTagKey(BamTagsDict const & tags, TId id)
  *
  * @signature bool findTagKey(id, tagsDict, key);
  *
- * @param[out] id       The index of the tag is stored here (<tt>unsigned</tt>).
+ * @param[out] id       The id of the found tag.
  * @param[in]  tagsDict The BamTagsDict to query.
  * @param[in]  key      The key to query for: @link CharString @endlink.
  *
- * @return bool true if the key could be found and false otherwise.
+ * @return bool <tt>true</tt> if the key could be found and <tt>false</tt> otherwise.
  */
 
 /**
@@ -539,7 +539,7 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamTagsDict#extractTagValuej
+ * @fn BamTagsDict#extractTagValue
  * @brief Extract and cast "atomic" value from tags string with index <tt>id</tt>.
  *
  * @signature bool extractTagValue(dest, tags, id)
@@ -548,9 +548,9 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
  *                  the BAM file. Then it is cast into the type of <tt>dest</tt>.
  *
  * @param[in] tags The BamTagsDict object to query.
- * @param[in] id   The integer index in the dict to use (<tt>__int32</tt>).
+ * @param[in] id   The id of the tag to extract the value from. See @link BamTagsDict#findTagKey @endlink.
  *
- * @return bool true if the value could be extracted.
+ * @return bool <tt>true</tt> if the value could be extracted.
  *
  * @section Remarks
  *
@@ -633,7 +633,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 }
 
 template <typename TResultValue, typename TId>
-SEQAN_FUNC_ENABLE_IF(Is<IsSequence<TResultValue> >, bool)
+SEQAN_FUNC_ENABLE_IF(IsSequence<TResultValue>, bool)
 extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 {
     typedef Infix<Host<BamTagsDict const>::Type>::Type TInfix;
@@ -743,7 +743,7 @@ inline char getBamTypeChar(T const &)
  *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
  *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
  *
- * @return bool true on success, false on failure.  This function can fail if the key is not a valid tag id (e.g. does
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.  This function can fail if the key is not a valid tag id (e.g. does
  *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
  *              <tt>char *</tt>, <tt>char const *</tt>, a character, integer or float type is invalid).
  *
@@ -896,7 +896,7 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 
 
 // Sets an atomic value in a BamTagsDict.
-// Returns true successful, can fail if val not atomic or key is not a valid tag id (2 chars).
+// Returns <tt>true</tt> successful, can fail if val not atomic or key is not a valid tag id (2 chars).
 
 template <typename TKey, typename TValue>
 inline bool
@@ -956,14 +956,14 @@ setTagValue(BamTagsDict & tags, TKey const & key, TValue const & val)
  *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
  *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
  *
- * @return bool true on success, false on failure.  This function can fail if the key is not a valid tag id (e.g. does
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.  This function can fail if the key is not a valid tag id (e.g. does
  *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
  *              <tt>char *</tt>, <tt>char const *</tt>, a character, integer or float type is invalid).
  *
  * @section Remarks
  *
- * @link setTagValue @endlink behaves like appendTagValue if key was not part of tags before. However in this case,
- * the faster appendTagValue function should be preferred.
+ * @link BamTagsDict#setTagValue @endlink behaves like <tt>appendTagValue</tt> if <tt>key</tt> was not part of <tt>tags</tt>
+ * before. However, in this case <tt>appendTagValue</tt> is faster.
  */
 
 template <typename TSequence, typename TKey, typename TValue>
@@ -1012,7 +1012,7 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
  * @param[in,out] tagsDict The BamTagsDict to erase the tag from.
  * @param[in]     key      The key of the tag to erase.
  *
- * @return bool true if the tag was present for erasing, false if not.
+ * @return bool <tt>true</tt> if the tag could be erased, <tt>false</tt> if the key wasn't present.
  */
 
 /**
