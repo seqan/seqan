@@ -877,9 +877,11 @@ template <typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 resize(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newLength, Tag<TExpand> const tag)
 {
+    typedef RankDictionaryEntry_<TValue, TwoLevels<TSpec> > TRankDictionaryEntry_;
+
     dict._length = newLength;
     return resize(dict.ranks, std::ceil(newLength /
-                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
+                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), TRankDictionaryEntry_(), tag);
 }
 
 }
