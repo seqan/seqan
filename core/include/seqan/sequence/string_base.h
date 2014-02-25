@@ -375,13 +375,7 @@ struct Spec<String<TValue, TSpec> const>:
 ///.Metafunction.IsSequence.class:Class.String
 
 template <typename TValue, typename TSpec>
-struct IsSequence<String<TValue, TSpec> > {
-    typedef True Type;
-    enum { VALUE = true };
-};
-
-template <typename TValue, typename TSpec>
-struct IsSequence<String<TValue, TSpec> const> : IsSequence<String<TValue, TSpec> > {};
+struct IsSequence<String<TValue, TSpec> > : True {};
 
 // ----------------------------------------------------------------------------
 // Internal Metafunction TempCopy_
