@@ -60,18 +60,18 @@ namespace seqan {
  * @fn VcfHeader::VcfHeader
  * @brief Constructor.
  * 
- * @signature VcfHeader::VcfHeader()
+ * @signature VcfHeader::VcfHeader();
  *
  * 
- * @var TRecords VcfHeader::headerRecords
+ * @var TRecords VcfHeader::headerRecords;
  * 
- * @brief The meta information records (String of VcfHeaderRecord).
+ * @brief The meta information records (@link AllocString @endlink of @link VcfHeaderRecord @endlink).
  * 
- * @var TNames VcfHeader::sequenceNames
- * @brief Names of the sequences (StringSet of CharString).
+ * @var TNames VcfHeader::sequenceNames;
+ * @brief Names of the sequences (@link StringSet @endlink of @link CharString @endlink).
  * 
- * @var TNames VcfHeader::sampleNames
- * @brief Names of the samples (StringSet of CharString).
+ * @var TNames VcfHeader::sampleNames;
+ * @brief Names of the samples (@link StringSet @endlink of @link CharString @endlink).
  */
 
 /**

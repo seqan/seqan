@@ -54,16 +54,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle[, typename TSpec[, typename TFindBeginPatternSpec]]>
  *            class Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >;
  * 
- * @tparam TSpec   Specialization tag.  This could be @link FindInfix @endlink for infix search or <tt>FindPrefix</tt>
- *                 for prefix search. Default: Tag.FindInfix
+ * @tparam TSpec   Specialization tag.  This is @link ApproximateFinderSearchTypeTags#FindInfix @endlink for
+ *                 infix search or @link ApproximateFinderSearchTypeTags#FindPrefix @endlink for prefix search.
+ *                 Defaults to @linkApproximateFinderSearchTypeTags#FindInfix @endlink.
  * @tparam TFindBeginPatternSpec 
  *               Specialization of @link Pattern @endlink used to find the begin of matches.This must be a finder for
  *               prefix search, e.g. @link DPSearchPattern <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
  *               MyersPattern <tt>Myers&lt;FindPrefix&gt;</tt> @endlink. Specify <tt>void</tt> to suppress prefix
  *               searching. Default: @link DefaultFindBeginPatternSpec @endlink
  * @tparam TNeedle The needle type. Types: String
- * 
- * @section Remarks
  * 
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
@@ -108,7 +107,7 @@ struct AlignTextBanded; // search query in a parallelogram
 
 /*!
  * @typedef MyersUkkonen
- * 
+ * @headerfile <seqan/find.h>
  * @brief Semi-global (query-global, text-local) pattern matching without
  *        findBegin() support.
  * 
@@ -134,7 +133,7 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
 
 /*!
  * @typedef MyersUkkonenGlobal
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
@@ -157,7 +156,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-local) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
@@ -179,7 +178,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenGlobalBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
@@ -798,6 +797,17 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The pattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.scoreLimit.param.pattern.type:Spec.Myers
 ///.Function.scoreLimit.class:Spec.Myers
@@ -820,6 +830,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach.
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The pattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.setScoreLimit.param.pattern.type:Spec.Myers
 ///.Function.setScoreLimit.class.type:Spec.Myers
@@ -848,6 +870,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A myers pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
+ *                     is undefined.
+ */
 
 ///.Function.getScore.param.pattern.type:Spec.Myers
 ///.Function.getScore.class:Spec.Myers

@@ -915,7 +915,7 @@ isLeaf(Graph<Tree<TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn Graph#numTreeEdges
+ * @fn Tree#numTreeEdges
  * @brief Number of tree edges.
  *
  * @signature TSize numTreeEdges(g);

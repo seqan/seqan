@@ -70,6 +70,7 @@ SEQAN_TYPED_TEST_CASE(IndexFinderTest, IndexTypes);
 SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
 {
     SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
+    SEQAN_ASSERT(find(this->finder, (const char*)"A"));
 }
 
 // ==========================================================================

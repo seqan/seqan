@@ -132,11 +132,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TInput    The type of the pipeline module this module reads from.
  * @tparam TUPLE_LEN The tuple length.The tuples contain elements <tt>in[i]in[i+1]...in[i+(SIZE-1)]</tt>.
- * @tparam OMIT_LAST Omit half filled tuples.If <tt>true</tt>, the output stream is <tt>SIZE-1</tt> elements
+ * @tparam OMIT_LAST Omit half filled tuples.  If <tt>true</tt>, the output stream is <tt>SIZE-1</tt> elements
  *                   shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the last tuples
  *                   are filled with blanks (default constructed elements) for undefined entries.
- * 
- * @section Remarks
  * 
  * The output type is a @link Tuple @endlink of input elements and length
  * <tt>SIZE</tt> (i.e. <tt>Tuple&lt;Value&lt;TInput&gt;::Type, TUPLE_LEN&gt;</tt>).
@@ -441,7 +439,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Pipe< TInput, Tupler<SIZE, omitLast, TPack> > >::Type
     length(Pipe< TInput, Tupler<SIZE, omitLast, TPack> > const &me) 
 	{
-		typedef Pipe< TInput, Tupler<SIZE, omitLast, TPack> >	TPipe;
 		if (length(me.in) > (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE))
 			return length(me.in) - (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE);
 		else

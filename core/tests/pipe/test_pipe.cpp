@@ -581,7 +581,7 @@ void testPipeMultiTupler()
 
     typedef Multi<
         Tupler<4, omitLast, BitPacked<> >,
-        Pair<unsigned>,
+        Pair<unsigned, unsigned, Pack>,
         TLimits>                                            TTuplerSpec2;
 
     typedef Pipe<TConcat, Source<> >                        TSource;

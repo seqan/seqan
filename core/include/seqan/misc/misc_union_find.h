@@ -59,8 +59,6 @@ namespace seqan {
  *
  * @tparam T The integer type the data structure operates on.
  *
- * @section Remarks
- *
  * The data structure uses union by rank and path compresison to achieve almost linear running time.
  *
  * Note that internally T is used as signed, so not the whole range is available if T is unsigned.
@@ -131,7 +129,7 @@ struct Value<UnionFind<TValue> const>
  * @mfn UnionFind#GetValue
  * @brief Returns the get-value type for the given UnionFind specialization.
  *
- * @signature Value<TUnionFind>::Type
+ * @signature GetValue<TUnionFind>::Type
  *
  * @tparam TUnionFind The UnionFind specialization to query for its get-value type.
  */
@@ -227,7 +225,7 @@ clear(UnionFind<TValue> & unionFind)
  *
  * @param[in] uf The Union-Find object to query.
  *
- * @return TSize The length of the Union-Find object.  TSize is the size type of uf.
+ * @return TSize The length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
 
 ///.Function.length.param.object.type:Class.UnionFind
@@ -251,7 +249,7 @@ length(UnionFind<TValue> const & unionFind)
  * @fn UnionFind#reverse
  * @brief Reserve memory for the Union-Find object.
  *
- * @signature TSize reserve(uf, size, tag);
+ * @signature void reserve(uf, size, tag);
  *
  * @param[in,out] uf    The Union-Find object to reserve memory in.
  * @param[in]     size  The number of elements to reserve.
@@ -287,6 +285,8 @@ reserve(UnionFind<TValue> & unionFind,
  * @param[in,out] uf    The Union-Find object to resize.
  * @param[in]     size  The number of elements to reserve.
  * @param[in]     tag   The tag to use for reserving (defaults to <tt>Generous()</tt>).
+ *
+ * @return TSize The new length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
 
 ///.Function.resize.param.object.type:Class.UnionFind
@@ -317,6 +317,8 @@ resize(UnionFind<TValue> & unionFind,
  *
  * @param[in]     g  The graph to use for getting the vertex number.
  * @param[in,out] uf The Union-Find object to resize.
+ *
+ * @return TSize New size of the vertex map  (Metafunction: @link UnionFind#Size @endlink).
  */
 
 ///.Function.resizeVertexMap.param.pm.type:Class.UnionFind
@@ -345,6 +347,8 @@ resizeVertexMap(Graph<TSpec> const & g,
  *
  * @param[in] uf  The Union-Find object to query.
  * @param[in] q   The value to get the set identifier for.
+ *
+ * @return TValue Identifier of the set that <tt>q</tt> is in  (Metafunction: @link UnionFind#Value @endlink).
  *
  * @see UnionFind#joinSets
  */
@@ -400,8 +404,6 @@ findSet(UnionFind<TValue> & unionFind,
  * @param[in,out] uf    The type the data structure operates on.
  * @param[in]     left  Representant of the left set to union.
  * @param[in]     right Representant of the right set to union.
- *
- * @section Remarks
  *
  * This function is called <tt>join</tt> and not <tt>union</tt> since <tt>union</tt> is a reserved keyword in the
  * C and C++ programming languages.

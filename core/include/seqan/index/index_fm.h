@@ -51,28 +51,28 @@ namespace seqan {
 
 /*!
  * @class FMIndexConfig
- * 
  * @headerfile seqan/index.h
- * 
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
  * 
- * @signature template <typename TSpec = void>
+ * @signature template <[typename TSpec]>
  *            struct FMIndexConfig;
  *
- * @var unsigned FMIndexConfig::SAMPLING
- * @brief The sampling rate determines how many suffix array entries are represented with one entry in the @link
- * CompressedSA @endlink.
+ * @tparam TSpec The specializating type, defaults to <tt>void</tt>.
+ *
+ * @var unsigned FMIndexConfig::SAMPLING;
+ * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
+ *        @link CompressedSA @endlink.
  *
  * @typedef FMIndexConfig::TValuesSpec
  * @signature typedef WaveletTree<TSpec> TValuesSpec;
  * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
- * @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
+ *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
  *
  * @typedef FMIndexConfig::TSentinelsSpec
  * @signature typedef TwoLevels<TSpec> TSentinelsSpec;
- * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
- * default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level @link RankDictionary
- * @endlink.
+ * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
+ *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
+ *        @link RankDictionary @endlink.
  */
 template <typename TSpec = void>
 struct FMIndexConfig
@@ -153,10 +153,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 
 /*!
  * @defgroup FMIndexFibres FM Index Fibres
- * 
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
  * 
@@ -164,15 +161,12 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @see Index#getFibre
  * 
  * @tag FMIndexFibres#FibreText
- * 
  * @brief The original text of the index.
  * 
  * @tagFMIndexFibres#FibreSA
- * 
  * @brief The compressed suffix array of the text.
  * 
  * @tag FMIndexFibres#FibreLF
- * 
  * @brief The lf table.
  */
 
@@ -242,21 +236,22 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 
 /*!
  * @class FMIndex
- * 
  * @extends Index
- * 
  * @headerfile seqan/index.h
- * 
  * @brief An index based on the Burrows-Wheeler transform.
  * 
- * @signature template <typename TText, typename TSpec, typename TConfig>
+ * @signature template <typename TText[, typename TSpec[, typename TConfig]]>
  *            class Index<TText, FMIndex<TSpec, TConfig> >;
  * 
- * @tparam TSpec FM index specialisation. 
- * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
- * @tparam TConfig A config object which determines the data types of the different fibres.
+ * @tparam TText   The text type. Types: @link String @endlink, @link StringSet @endlink
+ * @tparam TSpec   FM index specialisation, defaults to <tt>void</tt>.
+ * @tparam TConfig A config object which determines the data types of the different fibres, defaults to
+ *                 <tt>FMIndexConfig&lt;TSpec&gt;</tt>.
  *
+ * @section Structure
  *
+ * The FM index consists of various @link Fibre @endlink of which the most important ones are the compressed
+ * suffix array and the LF table, which provides all necessary information for the LF mapping.
  */
 
 template <typename TText, typename TSpec, typename TConfig>
@@ -341,16 +336,14 @@ getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
 // ----------------------------------------------------------------------------
 /*!
  * @fn FMIndex#indexLF
- * 
  * @headerfile seqan/index.h
- * 
- * @brief A shortcut for <tt>getFibre(index, FibreLF())</tt>
- * * 
- * @signature indexLF(index)
- * 
- * @param index The FM index.
+ * @brief A shortcut for <tt>getFibre(index, FibreLF())</tt>.
  *
- * @return Returns a reference to the @link FMIndexFibres#FibreLF @endlink.
+ * @signature TFibre indexLF(index);
+ * 
+ * @param[in] index The FM index.
+ *
+ * @return TFibre A reference to the @link FMIndexFibres#FibreLF @endlink.
  */
 
 template <typename TText, typename TSpec, typename TConfig>
@@ -370,27 +363,25 @@ indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 // ----------------------------------------------------------------------------
 // Function toSuffixPosition()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn FMIndex#toSuffixPosition
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This function computes the position of a specified position in the compressed suffix array (additionally 
  *        containing entries for the sentinels). The returned position corresponds to the suffix array of the original
  *        text without sentinels.
  * 
- * @signature toSuffixPosition(fmIndex, pos, offset)
+ * @signature TSAValue toSuffixPosition(index, pos, offset);
  * 
- * @param pos The position in the suffix array of the fm index (with sentinels).
- *            Types: @link UnsignedIntegerConcept @endlink
- * @param fmIndex The FM index.
- * @param offset The number of sequences in the original text. Types:
- *               @link UnsignedIntegerConcept @endlink
+ * @param[in] index  The FM index.
+ * @param[in] pos    The position in the suffix array of the FM index (with sentinels).
+ *                   Types: @link UnsignedIntegerConcept @endlink
+ * @param[in] offset The number of sequences in the original text.  Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TSAValue The function function computes the position of a specified position in the compressed suffix array
- *         (additionally containing entries for the sentinels). The returned position corresponds to the suffix array
- *         of the original text without sentinels. The return type is @link SAValue @endlink&lt;@link Index
- *         @endlink&lt;TText, FMIndex&lt;TSpec, TConfig&gt; &gt; &gt;::Type
+ *                  (additionally containing entries for the sentinels).  The returned position corresponds to the
+ *                  suffix array of the original text without sentinels.  The return type is @link SAValue
+ *                  @endlink&lt;@link Index @endlink&lt;TText, FMIndex&lt;TSpec, TConfig&gt; &gt; &gt;::Type
  */
 
 /**
@@ -424,6 +415,35 @@ toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > const & index, TPos i, T
     SEQAN_ASSERT_GEQ(suffixLength(i, index), offset);
     setSeqOffset(i, suffixLength(i, index) - offset);
     return i;
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TSpecFinder, typename TPattern>
+inline void 
+_findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & finder,
+                TPattern const & pattern,
+                FinderSTree const)
+{
+    typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
+    typedef typename Iterator<TSA const, Standard>::Type    TIterator;
+
+    TIndex & index = haystack(finder);
+    TIterator saIt = begin(indexSA(index), Standard());
+    typename Iterator<TIndex, TopDown<EmptyEdges> >::Type it(index);
+
+    ModifiedString<TPattern const, ModReverse> revPattern(pattern);
+
+    if (goDown(it, revPattern))
+    {
+        Pair<typename Size<TIndex>::Type> rng = range(it);
+        finder.range.i1 = saIt + rng.i1;
+        finder.range.i2 = saIt + rng.i2;
+    }
+    else
+    {
+        finder.range.i1 = saIt;
+        finder.range.i2 = saIt;
+    }
 }
 
 // ----------------------------------------------------------------------------
