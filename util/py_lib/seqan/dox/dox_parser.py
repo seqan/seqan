@@ -69,6 +69,12 @@ class MessagePrinter(object):
     def printStats(self):
         print >>sys.stderr, 'Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning'])
 
+    def numWarnings(self):
+        return self.counts['warning']
+
+    def numErrors(self):
+        return self.counts['error']
+
 
 class ParserError(Exception):
     """Raised when there is a parser error."""
@@ -291,16 +297,16 @@ class ParamState(GenericSimpleClauseState):
         self.entry_class = raw_doc.RawParam
         # Parameters need more than one token list.
         self.in_out = None
-        self.name = None
+        self.name = []
 
     def handle(self, token):
         # Special handling of the in/out token and the name, if any.
         #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
         if token.type == 'PARAM_IN_OUT':
             self.in_out = token
-        elif self.name is None:
+        elif not self.name:
             if token.type != 'SPACE':
-                self.name = token
+                self.name.append(token)
             # Skipping whitespace.
         else:
             GenericSimpleClauseState.handle(self, token)
@@ -308,7 +314,7 @@ class ParamState(GenericSimpleClauseState):
     def getEntry(self):
         """Returns the Entry for the parameter."""
         normalizeWhitespaceTokens(self.tokens)
-        return self.entry_class(self.first_token, raw_doc.RawText([self.name]),
+        return self.entry_class(self.first_token, raw_doc.RawText(self.name),
                                 raw_doc.RawText(self.tokens), self.in_out)
 
 
@@ -328,6 +334,18 @@ class ReturnState(ParamState):
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawReturn
+        self.type_read = False
+
+    def handle(self, token):
+        # Special handling of the in/out token and the name, if any.
+        #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
+        if self.type_read:
+            GenericSimpleClauseState.handle(self, token)
+        else:
+            if self.name and token.type in dox_tokens.WHITESPACE:
+                self.type_read = True
+            else:
+                self.name.append(token)
 
 
 class SectionState(object):
@@ -464,6 +482,7 @@ class TopLevelState(object):
                          'COMMAND_MAINPAGE':     'mainpage',
                          'COMMAND_DEFGROUP':     'group',
                          'COMMAND_VARIABLE':     'var',
+                         'COMMAND_VALUE':        'val',
                          'COMMAND_TAG':          'tag',
                          'COMMAND_TYPEDEF':      'typedef',
                          'COMMAND_ADAPTION':     'adaption',
@@ -738,8 +757,8 @@ class GroupState(GenericDocState):
 class VariableState(GenericDocState):
     """State for a variable."""
         
-    def __init__(self, parser):
-        GenericDocState.__init__(self, parser, raw_doc.RawVariable, 'var')
+    def __init__(self, parser, entry_class=raw_doc.RawVariable, state_name='var'):
+        GenericDocState.__init__(self, parser, entry_class, state_name)
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
@@ -790,6 +809,14 @@ class VariableState(GenericDocState):
                     self.type_tokens.append(token)
         else:
             GenericDocState.handle(self, token)
+
+
+
+class EnumValueState(VariableState):
+    """State for an enum value."""
+
+    def __init__(self, parser):
+        VariableState.__init__(self, parser, raw_doc.RawEnumValue, 'val')
 
 
 
@@ -863,6 +890,7 @@ class Parser(object):
             'mainpage':     MainPageState(self),
             'group':        GroupState(self),
             'var':          VariableState(self),
+            'val':          EnumValueState(self),
             'tag':          TagState(self),
             'enum':         EnumState(self),
             'adaption':     AdaptionState(self),

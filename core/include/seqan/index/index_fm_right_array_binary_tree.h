@@ -63,11 +63,8 @@ class RightArrayBinaryTree;
 */
 /*!
  * @defgroup RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        RightArrayBinaryTree @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
  * 
@@ -130,19 +127,15 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
 // ----------------------------------------------------------------------------
 /*!
  * @class RightArrayBinaryTree
- * 
  * @headerfile seqan/index.h
- * 
- * @brief A special format to encode the structure of a wavelet tree. The
- *        structure is very space efficient because only one position is stored
- *        which encodes where the left and right subtree of a given node exist.
+ * @brief A special format to encode the structure of a wavelet tree.  The structure is very space efficient because
+ *        only one position is stored which encodes where the left and right subtree of a given node exist.
  * 
  * @signature template <typename TChar, typename TSpec>
  *            class RightArrayBinaryTree;
  * 
- * @tparam TValue The value type - type of the stored characters.
- *
- * @tparam TSpec The wavelet tree structure specialisation. Default: void.
+ * @tparam TValue The type of the stored characters.
+ * @tparam TSpec  The wavelet tree structure specialisation. Default: void.
  */
 
 /**
@@ -185,14 +178,12 @@ public:
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#clear
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Resets a right-array-binary tree.
  * 
- * @signature clear(rightArrayBinaryTree)
+ * @signature void clear(rightArrayBinaryTree);
  * 
- * @param rightArrayBinaryTree The right-array-binary tree to be cleared.
+ * @param[in,out] rightArrayBinaryTree The RightArrayBinaryTree to be cleared.
  */
 
 /**
@@ -211,15 +202,13 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#createRightArrayBinaryTree
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Computes the right-array-binary tree of a text.
  * 
- * @signature createRightArrayBinaryTree(rightArrayBinaryTree, text)
+ * @signature void createRightArrayBinaryTree(rightArrayBinaryTree, text);
  * 
- * @param text A text. Types: @link String @endlink
- * @param rightArrayBinaryTree A wavelet tree structure.
+ * @param[in] rightArrayBinaryTree A wavelet tree structure.
+ * @param[in] text                 A @link TextConcept text @endlink.
  */
 
 /**
@@ -295,16 +284,14 @@ createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStruc
 
 /*!
  * @fn RightArrayBinaryTree#empty
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Checks whether or not a right-array-binary tree contains any elements.
  * 
- * @signature bool empty(rightArrayBinaryTree)
+ * @signature bool empty(rightArrayBinaryTree);
  * 
- * @param rightArrayBinaryTree The right-array-binary tree to be checked.
+ * @param[in] rightArrayBinaryTree The right-array-binary tree to be queried.
  *
- * @return bool Returns true if the rank-support-bit string is empty and false otherwise.
+ * @return bool Returns <tt>true</tt> if the rank-support-bit string is empty and <tt>false</tt> otherwise.
  */
 
 /**
@@ -323,18 +310,17 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#getFibre
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns a specific fibre of a right-array-binary tree.
  * 
- * @signature getFibre(rightArrayBinaryTree, fibreTag)
+ * @signature TFibre getFibre(rightArrayBinaryTree, fibreTag);
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres @endlink.
- * @param container The container holding the fibre.
+ * @param[in] rightArrayBinaryTree
+ *                      The container holding the fibre.
+ * @param[in] fibreTag  A tag that identifies the @link Fibre @endlink.  Types: @link RightArrayBinaryTreeFibres
+ *                      RightArrayBinaryTree Fibres @endlink.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  */
 /**
 .Function.RightArrayBinaryTree#getFibre:
@@ -368,6 +354,16 @@ getFibre(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, FibreTreeStru
 // ----------------------------------------------------------------------------
 
 // This function returns the number of different entries in the wavelet tree structure.
+/*!
+ * @fn RightArrayBinaryTree#length
+ * @brief Returns the number of nodes in the right-array-binary-tree.
+ *
+ * @signature TSize length(rightArrayBinaryTree);
+ *
+ * @param[in] tree The right-array-binary-tree to query for its size.
+ *
+ * @return TSize The number of nodes in the right-array-binary-tree.
+ */
 template <typename TChar, typename TSpec>
 inline typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type
 length(RightArrayBinaryTree<TChar, TSpec> const & tree)
@@ -407,21 +403,21 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  * 
  * @brief This functions loads a @link RightArrayBinaryTree @endlink from disk.
  * 
- * @signature open(rightArrayBinaryTree, fileName [, openMode])
- * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param rightArrayBinaryTree The rightArrayBinaryTree. 
+ * @signature bool open(rightArrayBinaryTree, fileName [, openMode])
  *
- * @param fileName C-style character string containing the file name.
+ * @param[in,out] rightArrayBinaryTree
+ *                               The RightArrayBinaryTree. 
+ * @param[in]     fileName       C-style character string containing the file name.
+ * @param[in]     openMode       The combination of flags defining how the file should be
+ *                               opened.  To open a file read-only, write-only or to read and
+ *                               write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                               <tt>OPEN_RDWR</tt>.  To create or overwrite a file add
+ *                               <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                               <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                               opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                               OPEN_APPEND</tt>.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
 /**
@@ -473,21 +469,21 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  * 
  * @brief This functions saves a @link RightArrayBinaryTree @endlink to disk.
  * 
- * @signature save(rightArrayBinaryTree, fileName [, openMode])
+ * @signature bool save(rightArrayBinaryTree, fileName [, openMode])
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param rightArrayBinaryTree The rightArrayBinaryTree. 
- *
- * @param fileName C-style character string containing the file name.
+ * @param[in,out] rightArrayBinaryTree
+ *                               The RightArrayBinaryTree. 
+ * @param[in]     fileName       C-style character string containing the file name.
+ * @param[in]     openMode       The combination of flags defining how the file should be
+ *                               opened.  To open a file read-only, write-only or to read and
+ *                               write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                               <tt>OPEN_RDWR</tt>.  To create or overwrite a file add
+ *                               <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                               <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                               opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                               OPEN_APPEND</tt>.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
 /**

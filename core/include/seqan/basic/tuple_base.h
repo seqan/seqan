@@ -89,6 +89,15 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
 ..include:seqan/basic.h
 */
 
+/*!
+ * @fn Tuple::i
+ * @brief Array of tuple value.
+ *
+ * @signature TValue Tuple::i[SIZE];
+ *
+ * The array of the tuple's values.
+ */
+
 template <typename TValue, unsigned SIZE, typename TSpec = void>
 struct Tuple
 {

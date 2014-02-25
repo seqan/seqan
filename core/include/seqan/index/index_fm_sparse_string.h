@@ -52,25 +52,19 @@ struct SparseString;
 // Tags
 // ==========================================================================
 /*!
- * @defgroup SparseStringFibres FM Index Fibres
- * 
+ * @defgroup SparseStringFibres Sparse String Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
  * 
+ * @see Fibre
+ * @see SparseString#getFibre
  * 
  * @tag SparseStringFibres#FibreValueString
- * 
  * @brief The String containing the stored values.
  * 
  * @tag SparseStringFibres#FibreIndicatorString
- * 
  * @brief The string storing for each position if a value different from a default value is stored.
- *
- * @see Fibre
- * @see SparseString#getFibre
  */
 // ----------------------------------------------------------------------------
 // Tag FibreValues
@@ -206,16 +200,14 @@ struct Iterator<SparseString<TFibreValues, TSpec> const, Rooted>:
 
 /*!
  * @class SparseString
- * 
  * @headerfile seqan/index.h
- * 
  * @brief A string storing only a fraction of the values of the original string.
  * 
  * @signature template <typename TValueString, typename TSpec>
  *            class SparseString;
  * 
- * @tparam TSpec The specialisation tag. Default: void.
- * @tparam TValueString The type of the string containing the values. Types: @link String @endlink
+ * @tparam TSpec        The specialisation tag. Default: void.
+ * @tparam TValueString The type of the @link String string @endlink containing the values.
  */
 
 template <typename TValueString, typename TSpec = void>
@@ -252,16 +244,15 @@ inline void _assignValueInValueString(SparseString<TFibreValues, TSpec> & string
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn SparseString#clear
- *
  * @headerfile seqan/index.h
- * 
  * @brief Resets the @link SparseString @endlink.
  * 
  * @signature void clear(sparseString);
  * 
- * @param sparseString The @link SparseString @endlink to be cleared.
+ * @param[in,out] sparseString The @link SparseString @endlink to be cleared.
  */
 
 ///.Function.clear.param.object.type:Class.SparseString
@@ -278,16 +269,14 @@ inline void clear(SparseString<TFibreValues, TSpec> & string)
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#empty
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns whether or not the @link SparseString @endlink is empty.
  * 
- * @signature empty(sparseString)
+ * @signature bool empty(sparseString);
  * 
- * @param sparseString The @link SparseString @endlink to be checked. 
+ * @param[in] sparseString The SparseString to be checked. 
  *
- * @return bool Returns <tt>true</tt> if there are no elements in the sparse string and <tt>false</tt> otherwise.
+ * @return bool <tt>true</tt> if there are no elements in the sparse string and <tt>false</tt> otherwise.
  */
 
 ///.Function.empty.param.object.type:Class.SparseString
@@ -324,16 +313,14 @@ assignValue(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#getValue
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the value of a SparseString.
  * 
- * @brief Returns the value of a @link SparseString @endlink.
+ * @signature TValue getValue(sparseString, pos);
  * 
- * @signature getValue(sparseString, pos)
- * 
- * @param sparseString The @link SparseString @endlink. 
- * @param pos The position at which a value should be assign to the sparse string. 
- *        Types: @link UnsignedIntegerConcept @endlink
+ * @param[in] sparseString The @link SparseString @endlink. 
+ * @param[in] pos          The position at which a value should be assign to the sparse string. 
+ *                         Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TValue The type @link GetValue @endlink of @link SparseString @endlink is returned.
  */
@@ -364,18 +351,16 @@ getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#value
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the value of a @link SparseString @endlink.
  * 
- * @signature value(sparseString, pos)
+ * @signature TReference value(sparseString, pos);
  * 
- * @param sparseString The @link SparseString @endlink. 
- * @param pos The position at which a value should be assign to the sparse string. 
- *        Types: @link UnsignedIntegerConcept @endlink
+ * @param[in] sparseString The @link SparseString @endlink. 
+ * @param[in] pos          The position at which a value should be assign to the sparse string. 
+ *                         Types: @link UnsignedIntegerConcept @endlink
  *
- * @return TValue The type @link Reference @endlink of @link SparseString @endlink is returned.
+ * @return TReference The type @link Reference @endlink of @link SparseString @endlink is returned.
  */
 
 ///.Function.value.param.container.type:Class.SparseString
@@ -398,18 +383,16 @@ value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#getFibre
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns a specific fibre of a @link SparseString @endlink.
  * 
- * @signature getFibre(sparseString, fibreTag)
+ * @signature TFibre getFibre(sparseString, fibreTag);
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link SparseStringFibres SparseString Fibres @endlink
- * @param sparseString The sparseString holding the fibre.
+ * @param[in] sparseString The sparseString holding the fibre.
+ * @param[in] fibreTag     A tag that identifies the @link Fibre @endlink. Types:
+ *                         @link SparseStringFibres SparseString Fibres @endlink
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
 ///.Function.getFibre.param.container.type:Class.CompressedSA
@@ -444,16 +427,15 @@ getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
+
 /*!
  * @fn SparseString#length
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Returns the number of elements in the @link SparseString @endlink.
  * 
- * @signature TSize length(sparseString)
+ * @signature TSize length(sparseString);
  * 
- * @param sparseString The sparse string suffix array.
+ * @param[in] sparseString The sparse string suffix array.
  *
  * @return TSize The number of elements in the sparse string array. Types: The result of @link Size @endlink of the
  *               sparse string.
@@ -495,22 +477,20 @@ length(SparseString<TFibreValues, TSpec> const & string)
 
 /*!
  * @fn SparseString#resize
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Resets the number of elements in the compressed suffix array.
  * 
- * @signature TSize resize(sparseString, newLenght)
+ * @signature TSize resize(sparseString, newLength);
  * 
- * @param sparseString The sparse string.
- * @param newLength The number of elements which should be stored in the  sparse string. Types: @link
- * UnsignedIntegerConcept @endlink.
+ * @param[in,out] sparseString The sparse string.
+ * @param[in]     newLength    The number of elements which should be stored in the  sparse string.  Types:
+ *                             @link UnsignedIntegerConcept @endlink.
  *
  * @return TSize The number of elements in the  sparse string. Types: The result of @link Size @endlink of the
  *               sparse string.
  *
- * @section Note If the new length is smaller than the actual one then the last <tt>x<tt> items of the compressed suffix array
- *               are deleted with x = oldLength - newLength.
+ * @note If the new length is smaller than the actual one then the last <tt>x<tt> items of the compressed suffix array
+ *       are deleted with <tt>x = oldLength - newLength</tt>.
  */
 
 template <typename TFibreValues, typename TSpec, typename TSize, typename TExpand>
@@ -528,25 +508,23 @@ resize(SparseString<TFibreValues, TSpec> & string, TSize size, Tag<TExpand> tag)
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#open
- * 
  * @headerfile seqan/index.h
- * 
  * @brief This functions open a sparse string from disk.
  * 
- * @signature open(string, fileName [, openMode])
+ * @signature bool open(string, fileName[, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param string The string to be saved. Types: SparseString
- * @param fileName C-style character string containing the file name.
+ * @param[in] string   The string to be opened. Types: SparseString
+ * @param[in] fileName C-style character string containing the file name.
+ * @param[in] openMode The combination of flags defining how the file should be
+ *                     opened.  To open a file read-only, write-only or to read and
+ *                     write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                     <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                     <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                     <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                     opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                     OPEN_APPEND</tt>
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool <tt>true</tt> on success.
  */
 
 /**
@@ -593,20 +571,20 @@ inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * 
  * 
  * @brief This functions saves a sparse string to disk.
  * 
- * @signature open(string, fileName [, openMode])
+ * @signature bool save(string, fileName[, openMode]);
  * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param string The string to be saved. Types: SparseString
- * @param fileName C-style character string containing the file name.
+ * @param[in] string   The string to be saved.  Types: SparseString
+ * @param[in] fileName C-style character string containing the file name.
+ * @param[in] openMode The combination of flags defining how the file should be
+ *                     opened.  To open a file read-only, write-only or to read and
+ *                     write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                     <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                     <tt>OPEN_CREATE</tt>.  To append a file if existing add
+ *                     <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
+ *                     opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                     OPEN_APPEND</tt>
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool <tt>true</tt> on success.
  */
 /**
 .Function.SparseString#save

@@ -68,7 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...default:$Default$, see @Tag.Default@.
 ..include:seqan/graph_types.h
 */
-template<typename TIdType, typename TSpec>
+template <typename TIdType, typename TSpec>
 class IdManager 
 {
 	public:

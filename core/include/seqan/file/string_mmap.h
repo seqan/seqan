@@ -59,14 +59,23 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class MMapConfig
- * @headerfile <seqan/file>
- * @brief Configuration for MMapStrings.
+ * @headerfile <seqan/file.h>
+ * @brief Configuration for @link MMapString MMapStrings @endlink.
  *
  * @signature template <[typename TFile, [typename TSize]]>
  *            class MMapConfig;
  *
  * @tparam TFile The file type to use for the memory mapped string.  Defaults to <tt>File&lt;&gt;</tt>
  * @tparam TSize The size type to use.  Defaults to <tt>size_t</tt>.
+ *
+ *
+ * @typedef MMapConfig::TFile;
+ * @signature typedef (..) MMapConfig::TFile;
+ * @brief The type to use for files.
+ *
+ * @typedef MMapConfig::TSize;
+ * @signature typedef (..) MMapConfig::TSize;
+ * @brief The type to use for sizes.
  */
 
     template < typename TFile_ = File<>,				// default file type
@@ -87,17 +96,16 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @class MMapString
+ * @class MMapString MMap String
  * @headerfile <seqan/file.h>
+ * @extends String
  * @brief String that is stored in external memory using direct memory mapping.
  *
  * @signature template <typename TValue[, typename TConfig]>
  *            class String<TValue, MMap<TConfig> >;
  *
  * @tparam TValue  The value type to use for the items/characters.
- * @tparam TConfig The configuration to use for the underlying file.  Default: MMapConfig.
- *
- * @section Remarks
+ * @tparam TConfig The configuration to use for the underlying file.  Default: @link MMapConfig @endlink.
  *
  * The MMap String enables to access sequences larger than the available physical memory (RAM) by using external memory
  * (e.g. Hard disk, Network storage, ...) mapped into memory.  The size of the string is limited by external memory and
@@ -114,11 +122,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature String::String(file);
  * @signature String::String(fileName[, openMode]);
  *
- * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ * @param[in,out] file     The @link File @endlink to use for reading and writing.  You must ensture that
  *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
  *                         on the file.
- * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
- * @param[in,out] openMode The open mode.
+ * @param[in]     fileName The path to open.  Type: <tt>char const *</tt>
+ * @param[in]     openMode The open mode.
  */
 
 /**
@@ -168,6 +176,7 @@ See the @Memfunc.External String#String@ constructor for more details.
 			resize(*this, size);
         }
 
+        // associate a file
 		explicit
         String(TFile &_file):
 			data_begin(NULL),
@@ -177,6 +186,7 @@ See the @Memfunc.External String#String@ constructor for more details.
 			open(*this, _file);
         }
 
+        // associate a file given filename [and open mode]
 		explicit
         String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
 			data_begin(NULL),
@@ -186,16 +196,31 @@ See the @Memfunc.External String#String@ constructor for more details.
 			open(*this, fileName, openMode);
         }
 
-		template <typename TSource>
+        // copy the contents from another string
+		String(String const & source):
+			data_begin(NULL),
+			data_end(NULL),
+			advise(MAP_NORMAL)
+		{
+			assign(*this, source);
+		}
+        template <typename TSource>
+		String(TSource const & source):
+			data_begin(NULL),
+			data_end(NULL),
+			advise(MAP_NORMAL)
+		{
+			assign(*this, source);
+		}
+
+        template <typename TSource>
 		String & operator =(TSource const & source)
 		{
-	SEQAN_CHECKPOINT
 			assign(*this, source);
 			return *this;
 		}
 		String & operator =(String const & source)
 		{
-	SEQAN_CHECKPOINT
 			assign(*this, source);
 			return *this;
 		}
@@ -211,7 +236,6 @@ See the @Memfunc.External String#String@ constructor for more details.
 		inline typename Reference<String>::Type
 		operator [] (TPos pos)
 		{
-	SEQAN_CHECKPOINT
 			return value(*this, pos);
 		}
 
@@ -219,7 +243,6 @@ See the @Memfunc.External String#String@ constructor for more details.
 		inline typename Reference<String const>::Type 
 		operator [] (TPos pos) const
 		{
-	SEQAN_CHECKPOINT
 			return value(*this, pos);
 		}
 
@@ -378,12 +401,12 @@ SEQAN_CHECKPOINT
  * @fn MMapString#mmapAdvise
  * @brief Call advise function for memory mapped files.
  *
- * @signature bool mmapAdvise(mmapString, scheme[, beginPos, size]);
+ * @signature bool mmapAdvise(str, scheme[, beginPos, size]);
  *
- * @param mmapString The MMapString to call advise in.
- * @param scheme     The memory access scheme to use.  Type: FileMappingAdvise.
- * @param beginPos   Begin position in the string for the advise call.
- * @param size       Size of the range used for the advise call.
+ * @param[in,out] str        The MMapString to call advise in.
+ * @param[in]     scheme     The memory access scheme to use.  Type: FileMappingAdvise.
+ * @param[in]     beginPos   Begin position in the string for the advise call.
+ * @param[in]     size       Size of the range used for the advise call.
  *
  * @return bool <tt>true</tt> if the advise was successful, <tt>false</tt> otherwise.
  */

@@ -79,8 +79,6 @@ template <typename T> struct BaseAlphabet;
  * 
  * @signature typedef SimpleType<unsigned char, Dna_> Dna;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Dna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
  * 
@@ -138,8 +136,6 @@ struct BitsPerValue< Dna >
  * @brief Alphabet for DNA including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Dna5_> Dna5;
- * 
- * @section Remarks
  * 
  * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this
  * way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
@@ -206,8 +202,6 @@ unknownValueImpl(Dna5 *)
  * @brief Alphabet for DNA plus PHRED quality.
  * 
  * @signature typedef SimpleType<unsigned char, DnaQ_> DnaQ;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>DnaQ</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
@@ -325,8 +319,6 @@ void assignQualityValue(char & q, DnaQ c)
  * @brief Alphabet for DNA plus PHRED quality including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Dna5Q_> Dna5Q;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>Dna5Q</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>. The 'N' character ("unknown nucleotide") is encoded by 4.
@@ -474,8 +466,6 @@ void assignQualityValue(char & q, Dna5Q c)
  * 
  * @signature typedef SimpleType<unsigned char, Rna_> Rna;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Rna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.
  * 
@@ -535,8 +525,6 @@ struct BitsPerValue<Rna>
  * @brief Alphabet for RNA including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Rna5_> Rna5;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>Rna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
@@ -604,8 +592,6 @@ unknownValueImpl(Rna5 *)
  * 
  * @signature typedef SimpleType<unsigned char, Iupac_> Iupac;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 19 in this order: 'U'=0, 'T', 'A',
  * 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15.
  * 
@@ -667,11 +653,9 @@ unknownValueImpl(Iupac *)
  * @brief IUPAC code for amino acids.
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>AminoAcid</tt> is 24.
  * 
- * The amino acids are enumerated from 0 to 15 in this order:
+ * The amino acids are enumerated from 0 to 19 in this order:
  * 
  * 'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
  * 

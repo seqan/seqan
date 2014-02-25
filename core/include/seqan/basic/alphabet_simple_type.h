@@ -80,6 +80,13 @@ namespace seqan {
  * @see IsSimple
  */
 
+/*!
+ * @fn SimpleType::SimpleType
+ * @brief The constructor.
+ *
+ * @signature SimpleType::SimpleType()
+ */
+
 /**
 .Class.SimpleType:
 ..cat:Basic
