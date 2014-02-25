@@ -266,7 +266,7 @@ template <typename TChar, typename TSpec, typename TIterSpec, typename TPrefixSu
 inline void _createRightArrayBinaryTreeImpl(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
                                             TPrefixSums const & sums)
 {
-    typedef RightArrayBinaryTree<TChar, TSpec>              TRightArrayBinaryTree;
+    typedef RightArrayBinaryTree<TChar, TSpec>                       TRightArrayBinaryTree;
     typedef typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type TSize;
 
     TRightArrayBinaryTree & waveletTreeStructure = container(it);
