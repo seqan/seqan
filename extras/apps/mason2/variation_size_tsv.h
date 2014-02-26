@@ -57,11 +57,11 @@ class VariationSizeRecord
 public:
     enum Kind
     {
-        INVALID,
-        INDEL,
-        INVERSION,
-        TRANSLOCATION,
-        DUPLICATION
+        INVALID = 0,
+        INDEL = 1,
+        INVERSION = 2,
+        TRANSLOCATION = 3,
+        DUPLICATION = 4
     };
 
     // Kind of the operation.
