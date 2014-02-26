@@ -170,61 +170,34 @@ class StringTestCommon : public StringTest<T>
 
 typedef
     seqan::TagList<String<Dna5, External<> >, 
-//     seqan::TagList<char,        seqan::TagList<seqan::External<> > >, seqan::TagList<
+    seqan::TagList<String<char, External<> >,
     seqan::TagList<String< int, External<> >, 
     seqan::TagList<String<CountingChar, External<> >, 
     seqan::TagList<String<Dna5, MMap<> >, 
-//     seqan::TagList<char,        seqan::TagList<seqan::MMap<> > >, seqan::TagList<
+    seqan::TagList<String<char, MMap<> >,
     seqan::TagList<String<int, MMap<> >,
     seqan::TagList<String<CountingChar, MMap<> >, 
     seqan::TagList<String<Dna, Packed<> >,
     seqan::TagList<String<Dna5, Packed<> >,
     seqan::TagList<String<char, Packed<> >,
-    //     seqan::TagList<char,        seqan::TagList<seqan::Packed<> > >, seqan::TagList<
+    seqan::TagList<String<char, Packed<> >,
     seqan::TagList<String<int, Packed<> >,
     seqan::TagList<String<Dna5, Array<100> >, 
-//     seqan::TagList<char,        seqan::TagList<seqan::Array<100> > >, seqan::TagList<
+    seqan::TagList<String<char, Array<100> >,
     seqan::TagList<String<int, Array<100> >, 
     seqan::TagList<String<CountingChar,Array<100> >,
     seqan::TagList<String<seqan::Dna5, Block<> >, 
-    //     seqan::TagList<char,        seqan::TagList<seqan::Block<> > >, seqan::TagList<
+    seqan::TagList<String<char, Block<> >,
     seqan::TagList<String<int, Block<> >, 
     seqan::TagList<String<CountingChar,Block<> >,
     seqan::TagList<String<seqan::Dna5, Alloc<> >, 
-//     seqan::TagList<char,        seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
+    seqan::TagList<String<char, Alloc<> >,
     seqan::TagList<String<int, Alloc<> >, 
-    seqan::TagList<String<CountingChar, Alloc<> >//, seqan::TagList<
-//     seqan::TagList<char,        seqan::TagList<seqan::CStyle> >
-    > > > > > > > > > > > > > > > > > > > // > > > > > > >
+    seqan::TagList<String<CountingChar, Alloc<> >//,
+    //seqan::TagList<String<char, CStyle>
+    > > > > > > > > > > > > > > > > > > > > > > > > > //>
     StringTestCommonTypes;
-// typedef seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::External<> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::External<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::External<> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::External<> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Block<> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::Block<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::Block<> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::Block<> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::Alloc<> > >//, seqan::TagList<
-// //     seqan::TagList<char,        seqan::TagList<seqan::CStyle> >
-//     > > > > > > > > > > > > > > > > > // > > > > > > >
-//     StringTestCommonTypes;
-// 
+
 SEQAN_TYPED_TEST_CASE(StringTestCommon, StringTestCommonTypes);
 
 // ========================================================================== 
@@ -742,10 +715,6 @@ void testSequenceOperatorAssign(TString & /*Tag*/)
         SEQAN_ASSERT(string1 != string2);
     }
 }
- 
-// TODO(singer): error: no viable conversion from
-// template <typename TValue>
-// void testSequenceOperatorAssign(String<TValue, Block<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, OperatorAssign)
 {
@@ -819,7 +788,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Swap)
 
     typename TestFixture::TString str;
     testSequenceSwap(str);
-   
+
     testConstructDeconstruct(str);
 }
 
