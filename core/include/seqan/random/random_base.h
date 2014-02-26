@@ -54,7 +54,7 @@ struct MersenneTwister;
  * @signature template <[typename TSpec]>
  *                     class Rng;
  *
- * @tparam TSpec Tag for selecting the specialization.  Defaults to MersenneTwister.
+ * @tparam TSpec Tag for selecting the specialization.  Defaults to @link MersenneTwisterRng @endlink.
  *
  * @section Examples
  *
@@ -103,6 +103,27 @@ shuffle("Hello World!") ==  o!reWlloHld
 template <typename TSpec = MersenneTwister>
 class Rng;
 
+
+// ===========================================================================
+// Classes
+// ===========================================================================
+
+/*!
+ * @fn Rng::operator()
+ * @brief Function all operator.
+ *
+ * @signature TValue Rng::operator();
+ *
+ * @return TValue Random number, TValue can be retrieved with Rng#Value.
+ */
+
+/**
+.Memfunc.Rng#operator()
+..class:Class.Rng
+..summary:Function call operator.
+..signature:operator()
+*/
+
 /*!
  * @class Pdf
  * @headerfile <seqan/random.h>
@@ -113,7 +134,8 @@ class Rng;
  *
  * @tparam TSpec Tag for selecting the specialization.
  *
- * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a>.
+ * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the 
+ * <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a> for more details.
  */
 
 /**
@@ -129,25 +151,6 @@ class Rng;
 template <typename TSpec>
 class Pdf;
 
-// ===========================================================================
-// Classes
-// ===========================================================================
-
-/*!
- * @fn Rng::operator()
- * @brief Function all operator.
- *
- * @signature TValue Rng::operator()();
- *
- * @return TValue Random number, TValue can be retrieved with Rng#Value.
- */
-
-/**
-.Memfunc.Rng#operator()
-..class:Class.Rng
-..summary:Function call operator.
-..signature:operator()
-*/
 
 // ===========================================================================
 // Metafunctions

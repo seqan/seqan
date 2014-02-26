@@ -55,8 +55,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TNeedle The needle type, a string of keywords.
  *
- * @section Remarks
- *
  * The types of the keywords in the needle container and the haystack have to match.
  * 
  * Matching positions do not come in order because we report beginning positions of matches.

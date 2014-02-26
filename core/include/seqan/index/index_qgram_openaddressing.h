@@ -80,32 +80,24 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 */	
 /*!
  * @class OpenAddressingQGramIndex
- * 
  * @extends IndexQGram
- * 
  * @headerfile seqan/index.h
- * 
- * @brief An index based on an array of sorted q-grams.
+ * @brief A <i>q</i>-gram that uses open addressing hashing instead of an array.
  * 
  * @signature template <typename TIndex, typename TShapeSpec>
  *            class Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >;
  * 
- * @tparam TText The text type. Types: @link String @endlink
+ * @tparam TText      The @link TextConcept text type @endlink.
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
  * 
- * @section Remarks
+ * This index uses a non-trivial hashing for mapping q-gram hash values to buckets.  This reduces the sizes of bucket
+ * directories (QGramDir, QGramCountsDir fibres) from &Sigma;<i><sup>q</sup></i> to min(<i>&alpha; &middot; n</i>,
+ * \Sigma<i><sup>q</sup></i>), for a load factor <i>&alpha; &gt; 1</i>.  A bucket still stores occurrences (or counts)
+ * of the same <i>q</i>-gram, but in contrast to the @link IndexQGram @endlink index, buckets are in random order due to
+ * the hashing.
  * 
- * This index uses a non-trivial hashing for mapping q-gram hash values to
- * buckets. This reduces the sizes of bucket directories (QGramDir,
- * QGramCountsDir fibres) from |\Sigma|^q to min(\alpha*n,|\Sigma|^q), for a
- * load factor \alpha>1. A bucket still stores occurrences (or counts) of the
- * same q-gram, but in contrast to the @link IndexQGram @endlink index, buckets
- * are in random order due to the hashing.
- * 
- * @var VariableType OpenAddressingQGramIndex::alpha
- * 
- * @brief Load factor. Controls space/time-tradeoff and must be greater 1.
- *        Default value is 1.6.
+ * @var double OpenAddressingQGramIndex::alpha
+ * @brief Load factor.  Controls space/time-tradeoff and must be greater 1.  Default value is 1.6.
  */
 #ifdef PLATFORM_WINDOWS_VS
 #pragma warning( push )

@@ -209,11 +209,17 @@ endmacro (seqan_build_system_init)
 # Python interpreter could be found.
 
 macro (seqan_add_app_test APP_NAME)
+    if (MODEL MATCHES ".*MemCheck.*")
+        set (_VALGRIND_FLAG --valgrind)
+    else ()
+        set (_VALGRIND_FLAG)
+    endif ()
     find_package (PythonInterp)
     if (PYTHONINTERP_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
                 COMMAND ${PYTHON_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests${ARGV1}.py
+                        ${_VALGRIND_FLAG}
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
     endif (PYTHONINTERP_FOUND)
 endmacro (seqan_add_app_test APP_NAME)

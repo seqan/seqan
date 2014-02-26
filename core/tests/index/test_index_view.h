@@ -60,10 +60,10 @@ void compareTreeIterators(TIndex &index, TIndexView & /*indexView */)
 
     TFactory factory(index, 1u, length(index));
     TTFactoryView factoryView = view(factory);
-    TIterView it2 = getObject(factoryView, 1u);
+    TIterView it2 = getObject(factoryView, 0u);
 	TIter it1(index);
 
-	while (!atEnd(it1) && !atEnd(it2)) 
+	while (!atEnd(it1) && !atEnd(it2))
 	{
 		SEQAN_ASSERT_EQ(representative(it1), representative(it2));
 		SEQAN_ASSERT_EQ(parentEdgeLabel(it1), parentEdgeLabel(it2));

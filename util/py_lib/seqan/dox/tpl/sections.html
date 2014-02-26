@@ -68,23 +68,23 @@ Render the inheritance information of the given entr.
 
   {% if entry.extends %}
   <tr>
-	<th>Extends</th>
-	<td>
-	  {% for e in entry.extends|sort -%}
-		{{ e|translink }}{% if not loop.last %}, {% endif %}
-	  {% endfor %}
-	</td>
+    <th>Extends</th>
+    <td>
+      {% for e in entry.extends|sort -%}
+        {{ e|translink }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    </td>
   </tr>
   {% endif %}
 
   {% if entry.implements %}
   <tr>
-  	<th>Implements</dt>
-  	<td>
+    <th>Implements</dt>
+    <td>
     {% for e in entry.implements|sort -%}
       {{ e|translink }}{% if not loop.last %}, {% endif %}
     {% endfor %}
-  	</td>
+    </td>
   </tr>
   {% endif %}
 
@@ -157,45 +157,45 @@ Render the inheritance information of the given class.
 <table class="overview">
   {% if concept.extends %}
   <tr>
-		<th>Extends</th>
-		<td>
-		{% for e in concept.extends|sort -%}
-			{{ e|translink }}{% if not loop.last %}, {% endif %}
-		{% endfor %}
-		</td>
+        <th>Extends</th>
+        <td>
+        {% for e in concept.extends|sort -%}
+            {{ e|translink }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </td>
   </tr>
   {% endif %}
 
   {% if concept.all_extended %}
   <tr>
-		<th>All Extended Concepts</th>
-		<td>
-		{% for e in concept.all_extended|sort -%}
-			{{ e|translink }}{% if not loop.last %}, {% endif %}
-		{% endfor %}
-		</td>
+        <th>All Extended Concepts</th>
+        <td>
+        {% for e in concept.all_extended|sort -%}
+            {{ e|translink }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </td>
   </tr>
   {% endif %}
 
   {% if concept.all_extending %}
   <tr>
-		<th>All Known Refinements</th>
-		<td>
-		{% for e in concept.all_extending|sort -%}
-			{{ e|translink }}{% if not loop.last %}, {% endif %}
-		{% endfor %}
-		</td>
+        <th>All Known Refinements</th>
+        <td>
+        {% for e in concept.all_extending|sort -%}
+            {{ e|translink }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </td>
   </tr>
   {% endif %}
 
   {% if concept.all_implementing %}
   <tr>
-		<th>All Implementing Classes</th>
-		<td>
-		{% for e in concept.all_implementing|sort -%}
-			{{ e|translink }}{% if not loop.last %}, {% endif %}
-		{% endfor %}
-		</td>
+        <th>All Implementing Classes</th>
+        <td>
+        {% for e in concept.all_implementing|sort -%}
+            {{ e|translink }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        </td>
   </tr>
   {% endif %}
 </table>
@@ -286,7 +286,7 @@ Render the member functions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
@@ -352,7 +352,7 @@ Render the member typedefs overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_typedef'] %}
 <h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
@@ -416,7 +416,7 @@ Render the interface functions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
@@ -541,7 +541,7 @@ Render the interface metafunctions overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['interface_metafunction'] %}
 <h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
@@ -597,7 +597,7 @@ Render the member variables overview
 {% endif %}
 {% endfor %}
 
-{% if entry.kind == 'class' %}
+{% if entry.kind == 'class' or entry.kind == 'specialization' %}
 {% for co in entry.all_implemented %}
 {% if doc.top_level_entries[co].subentries['member_variable'] %}
 <h3 data-toc="hidden">{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
@@ -622,14 +622,14 @@ Macro enum_values_ov(entry, doc)
 Render the member variables overview
 -->
 {% macro enum_values_ov(entry, doc) %}
-{% if entry.hasSubEntry('variables', doc) %}
+{% if entry.hasSubEntry('enum_value', doc) %}
 
 <div data-lang-entity-container="enum">
 <h2 data-lang-entity="enum">Enum Values Overview</h2>
 
-{% if entry.subentries['variable'] -%}
+{% if entry.subentries['enum_value'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['variable'] %}
+  {% for entry in entry.subentries['enum_value'] %}
   <li class="public">
     <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
@@ -642,7 +642,7 @@ Render the member variables overview
 
 </div>
 
-{% endif %}  {#{% if entry.hasSubEntry('variables', doc) %}#}
+{% endif %}  {#{% if entry.hasSubEntry('enum_value', doc) %}#}
 {% endmacro %}
 
 <!--
@@ -757,8 +757,6 @@ Render the grouped macros details
     {% for h in subentry.headerfiles|sort -%}
     {{ h|e }}{% if not loop.last %}, {% endif %}
     {% endfor %}
-    {% else %}
-    &nbsp;
   </dd>
 </dl>
 {% endif %}
@@ -873,6 +871,22 @@ Render the interface functions details
   </div></div>
   {% endif %}
 
+  {% if subentry.warnings %}
+  <div class="note warnings">Warning. <div class='inline'>
+      {% for msg in subentry.warnings %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
+  {% if subentry.notes %}
+  <div class="note note">Note. <div class='inline'>
+      {% for msg in subentry.notes %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
@@ -882,10 +896,10 @@ Render the interface functions details
   {% if subentry.tparams %}
   <h4>Template Parameters</h4>
   <table class="overview">
-  	{% for param in subentry.tparams %}
-  	<tr>
-  		<th><code>{{ param.type|e }}</code>&nbsp;</th>
-  		<td>{{ param.desc|transtext(False) }}</td>
+    {% for param in subentry.tparams %}
+    <tr>
+        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <td>{{ param.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -894,25 +908,25 @@ Render the interface functions details
   {% if subentry.params %}
   <h4>Parameters</h4>
   <table class="overview">
-  	{% for param in subentry.params %}
-  	<tr>
-  	  <th>
-		{% if param.in_out %}
-			{% if param.in_out == 'IN' %}
-				<code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
-			{% elif param.in_out == 'OUT' %}
-				<code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
-			{% elif param.in_out == 'IN_OUT' %}
-				<code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
-			{% else %}
-				<code>{{ param.name|e }}</code>
-			{% endif %}
-		{% else %}
-			<code>{{ param.name|e }}</code>
-		{% endif %}
-  	  </th>
-  	  <td>{{ param.desc|transtext(False) }}</td>
-  	</tr>
+    {% for param in subentry.params %}
+    <tr>
+      <th>
+        {% if param.in_out %}
+            {% if param.in_out == 'IN' %}
+                <code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
+            {% elif param.in_out == 'OUT' %}
+                <code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
+            {% elif param.in_out == 'IN_OUT' %}
+                <code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
+            {% else %}
+                <code>{{ param.name|e }}</code>
+            {% endif %}
+        {% else %}
+            <code>{{ param.name|e }}</code>
+        {% endif %}
+      </th>
+      <td>{{ param.desc|transtext(False) }}</td>
+    </tr>
     {% endfor %}
   </table>
   {% endif %}
@@ -920,10 +934,10 @@ Render the interface functions details
   {% if subentry.returns %}
   <h4>Returns</h4>
   <table class="overview">
-  	{% for ret in subentry.returns %}
-  	<tr>
-  		<th><code>{{ ret.type|e }}</code>&nbsp;</th>
-  		<td>{{ ret.desc|transtext(False) }}</td>
+    {% for ret in subentry.returns %}
+    <tr>
+        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <td>{{ ret.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -940,7 +954,7 @@ Render the interface functions details
   <ul>
     {% for link in subentry.sees %}
     <li>{{ link|transtext(False)|translink }}</li>
-	{% endfor %}
+    {% endfor %}
   </ul>
   {% endif %}
   {% endfor %}
@@ -961,32 +975,32 @@ Render the member typedef details
   <h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
-	  <div class="method_details{% if loop.first %} first{% endif %}">
-		<h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
-		  <code>
-			  {%- for s in subentry.signatures: -%}
-			  {{ s|transtext(False) }}{% if not loop.last %}
-	{% endif -%}{%- endfor -%}
-		  </code>
-		</h3>
-	  </div>
-	  <div class="docstring">
-		<div class="discussion">
-		  {{ subentry.brief|transtext }}
-		  {{ body(subentry, start_heading=4) }}
-		</div>
-	  </div>
+      <div class="method_details{% if loop.first %} first{% endif %}">
+        <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
+          <code>
+              {%- for s in subentry.signatures: -%}
+              {{ s|transtext(False) }}{% if not loop.last %}
+    {% endif -%}{%- endfor -%}
+          </code>
+        </h3>
+      </div>
+      <div class="docstring">
+        <div class="discussion">
+          {{ subentry.brief|transtext }}
+          {{ body(subentry, start_heading=4) }}
+        </div>
+      </div>
 
-	  {% if subentry.sees %}
-	  <div class="tags">
-		<h4>See Also</h4>
-		<ul class="see">
-		  {% for link in subentry.sees %}
-		  	<li>{{ link|transtext(False)|translink }}</li>
-		  {% endfor %}
-		</ul>
-	  </div>
-	  {% endif %}
+      {% if subentry.sees %}
+      <div class="tags">
+        <h4>See Also</h4>
+        <ul class="see">
+          {% for link in subentry.sees %}
+            <li>{{ link|transtext(False)|translink }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
   {% endfor %}
   
 </div>
@@ -1037,6 +1051,22 @@ Render the interface metafunctions details
   </div></div>
   {% endif %}
 
+  {% if subentry.warnings %}
+  <div class="note warnings">Warning. <div class='inline'>
+      {% for msg in subentry.warnings %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
+  {% if subentry.notes %}
+  <div class="note note">Note. <div class='inline'>
+      {% for msg in subentry.notes %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
@@ -1045,14 +1075,26 @@ Render the interface metafunctions details
 
   {% if subentry.tparams %}
   <h4>Template Parameters</h4>
-	<table class="overview">
-	{% for param in subentry.tparams %}
-		<tr>
-			<th><code>{{ param.type|e }}</code>&nbsp;</th>
-			<td>{{ param.desc|transtext(False) }}</td>
-		</tr>
-	{% endfor %}
-	</table>
+    <table class="overview">
+    {% for param in subentry.tparams %}
+        <tr>
+            <th><code>{{ param.type|e }}</code>&nbsp;</th>
+            <td>{{ param.desc|transtext(False) }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+  {% endif %}
+
+  {% if subentry.returns %}
+  <h4>Returns</h4>
+    <table class="overview">
+    {% for ret in subentry.returns %}
+        <tr>
+            <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+            <td>{{ ret.desc|transtext(False) }}</td>
+        </tr>
+    {% endfor %}
+    </table>
   {% endif %}
 
   <div class="docstring">
@@ -1060,18 +1102,6 @@ Render the interface metafunctions details
       {{ body(subentry, start_heading=4) }}
     </div>
   </div>
-
-  {% if subentry.returns %}
-  <h4>Returns</h4>
-	<table class="overview">
-	{% for ret in subentry.returns %}
-		<tr>
-			<th><code>{{ ret.type|e }}</code>&nbsp;</th>
-			<td>{{ ret.desc|transtext(False) }}</td>
-		</tr>
-	{% endfor %}
-	</table>
-  {% endif %}
 </div>
 
 {% endfor %}
@@ -1115,29 +1145,20 @@ Render the member enum details
 -->
 
 {% macro enum_values(entry, qualifier='Member') %}
-{% if entry.subentries['variable'] or entry.subentries['member_variable'] -%}
+{% if entry.subentries['enum_value'] -%}
 <div class="enum_value_details" data-lang-entity-container="enum">
 
   <h2 data-lang-entity="enum">Enum Values</h2>
 
   <table class="overview">
-  	{% for subentry in entry.subentries['member_variable'] %}
-		<tr>
-			<th><code>{{ subentry.local_name|e }}</code>&nbsp;</th>
-			<td>
-				{{ subentry.brief|transtext }}
-				{{ body(subentry, start_heading=3) }}
-			</td>
-		</tr>
-    {% endfor %}
-  	{% for subentry in entry.subentries['variable'] %}
-  	<tr>
-			<th><code>{{ subentry.name|e }}</code>&nbsp;</th>
-			<td>
-				{{ subentry.brief|transtext }}
-				{{ body(subentry, start_heading=3) }}
-			</td>
-		</tr>
+    {% for subentry in entry.subentries['enum_value'] %}
+         <tr>
+            <th><code>{{ subentry.local_name|e }}</code>&nbsp;</th>
+            <td>
+                {{ subentry.brief|transtext }}
+                {{ body(subentry, start_heading=3) }}
+            </td>
+        </tr>
     {% endfor %}
   </table>
 </div>
@@ -1158,24 +1179,24 @@ Render the parameter details.
 
 <table class="overview">
 {% for param in entry.params %}
-	<tr>
-		<th>
-		{% if param.in_out %}
-			{% if param.in_out == 'IN' %}
-				<code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
-			{% elif param.in_out == 'OUT' %}
-				<code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
-			{% elif param.in_out == 'IN_OUT' %}
-				<code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
-			{% else %}
-				<code>{{ param.name|e }}</code>
-			{% endif %}
-		{% else %}
-		<code>{{ param.name|e }}</code>
-		{% endif %}
-		&nbsp;</th>
-		<td>{{ param.desc|transtext(False) }}</td>
-	</tr>
+    <tr>
+        <th>
+        {% if param.in_out %}
+            {% if param.in_out == 'IN' %}
+                <code data-param-type="in" title="IN parameters are only read and not modified">{{ param.name|e }}</code>
+            {% elif param.in_out == 'OUT' %}
+                <code data-param-type="out" title="OUT parameters are modified and used as a means to return values">{{ param.name|e }}</code>
+            {% elif param.in_out == 'IN_OUT' %}
+                <code data-param-type="in_out" title="IN/OUT parameters are read and also modified by the called function">{{ param.name|e }}</code>
+            {% else %}
+                <code>{{ param.name|e }}</code>
+            {% endif %}
+        {% else %}
+        <code>{{ param.name|e }}</code>
+        {% endif %}
+        &nbsp;</th>
+        <td>{{ param.desc|transtext(False) }}</td>
+    </tr>
 {% endfor %}
 </table>
 
@@ -1196,10 +1217,10 @@ Render the template parameter details.
 
 <table class="overview">
 {% for param in entry.tparams %}
-	<tr>
-		<th><code>{{ param.type|e }}</code>&nbsp;</th>
-		<td>{{ param.desc|transtext(False) }}</td>
-	</tr>
+    <tr>
+        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <td>{{ param.desc|transtext(False) }}</td>
+    </tr>
 {% endfor %}
 </table>
 
@@ -1222,10 +1243,10 @@ Render the template parameter overview.
 
 <table class="overview">
 {% for param in entry.tparams %}
-	<tr>
-		<th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code>&nbsp;</th>
-		<td>{{ param.desc|transtext(False) }}</td>
-	</tr>
+    <tr>
+        <th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code>&nbsp;</th>
+        <td>{{ param.desc|transtext(False) }}</td>
+    </tr>
 {% endfor %}
 </table>
 </div>
@@ -1246,10 +1267,10 @@ Render the template parameter details.
 
 <table class="overview">
 {% for ret in entry.returns %}
-	<tr>
-		<th><code>{{ ret.type|e }}</code>&nbsp;</th>
-		<td>{{ ret.desc|transtext(False) }}</td>
-	</tr>
+    <tr>
+        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <td>{{ ret.desc|transtext(False) }}</td>
+    </tr>
 {% endfor %}
 </table>
 {% endif %}

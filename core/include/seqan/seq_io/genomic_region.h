@@ -268,9 +268,9 @@ inline void clear(GenomicRegion & region)
  * 
  * @signature bool parse(genomicRegion, regionString);
  * 
- * @param regionString The region string to prse. Types: CharString
- * @param genomicRegion The @link GenomicRegion @endlink object to write the
- *                      results to. Types: GenomicRegion
+ * @param[in]  regionString  The region string to prse.  Types: @link CharString @endlink.
+ * @param[out] genomicRegion The @link GenomicRegion @endlink object to write the results to.
+ *                           Types: GenomicRegion
  * 
  * @return bool true indicates successful parsing.
  */

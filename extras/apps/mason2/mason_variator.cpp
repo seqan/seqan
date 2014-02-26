@@ -282,9 +282,16 @@ public:
         // chromosome with a warning.  This leads to a quadratic running time but should be OK since we only need to
         // read hundreds of SV records from TSV at most.
 
+        // Since the records are reordered later, we need to restore the old
+        unsigned oldSize = length(variants.svRecords);
+        int oldNextIndelNo = nextIndelNo, oldNextInvNo = nextInvNo, oldNextTransNo = nextTransNo,
+                oldNextDupNo = nextDupNo;
+
         for (unsigned i = 0; i < length(variationSizeRecords); ++i)
         {
             VariationSizeRecord const & record = variationSizeRecords[i];
+            if (variationToContig[i] != rId)
+                continue;  // This variation does not belong here.
             int const MAX_TRIES = 1000;
             int tries = 0;
             for (; tries < MAX_TRIES; ++tries)
@@ -330,19 +337,44 @@ public:
                         break;
                     }
                 if (!variantFits)
+                {
+                    eraseBack(variants.svIDs);
                     eraseBack(variants.svRecords);
+                }
                 else
+                {
                     break;
+                }
             }
             if (tries == MAX_TRIES)
             {
                 std::cerr << "WARNING: Could not place variant " << i << " for contig " << rId << " giving up for this contig.\n";
+                // Remove any records and identifiers added for this contig.
+                resize(variants.svRecords, oldSize);
+                resize(variants.svIDs, oldSize);
+                nextIndelNo = oldNextIndelNo;
+                nextInvNo = oldNextInvNo;
+                nextTransNo = oldNextTransNo;
+                nextDupNo = oldNextDupNo;
                 return;
             }
         }
 
         // Sort simulated variants.
         std::sort(begin(variants.svRecords, seqan::Standard()), end(variants.svRecords, seqan::Standard()));
+
+        // Rebuild variant names.
+        if (options.genVarIDs)
+        {
+            char const * NAMES[] = { "INVALID", "sim_sv_indel_", "sim_sv_inv_", "sim_sv_trans_", "sim_sv_dup_" };
+            int nextNo[] = { 0, oldNextIndelNo, oldNextInvNo, oldNextTransNo, oldNextDupNo };
+            for (unsigned i = oldSize; i < length(variants.svRecords); ++i)
+            {
+                std::stringstream ss;
+                ss << NAMES[variants.svRecords[i].kind] << nextNo[variants.svRecords[i].kind]++;
+                variants.svIDs[i] = ss.str();
+            }
+        }
     }
 
     // Simulate the variants given per-position error rates.

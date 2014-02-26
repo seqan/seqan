@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class EdgeStump;
  *
  * @tparam TCargo       The cargo type of an edge.  The cargo can be used to store arbitrary information with an
- *                      edge or be <tt>void</tt.>.  Default: <tt>void</tt>.
+ *                      edge or be <tt>void</tt>.  Default: <tt>void</tt>.
  * @tparam IS_LIST      A bool value that indicates whether it is a list or not.  Default: <tt>true</tt>.
  * @tparam STORE_SOURCE A bool value that indicates whether the source is stored in the EdgeStump or not.
  *                      Default: <tt>false</tt>.
@@ -97,11 +97,14 @@ Edge ids are used to append additional properties to edges with the help of exte
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, false, false, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TCargo data_cargo;
-		EdgeStump* data_nextT;
+public:
+    EdgeStump() : data_target(), data_cargo(), data_nextT()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TCargo data_cargo;
+    EdgeStump* data_nextT;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -109,13 +112,16 @@ class EdgeStump<TCargo, true, false, false, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, false, true, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TId_ data_id;
-		TCargo data_cargo;
-		EdgeStump* data_nextT;
+public:
+    EdgeStump() : data_target(), data_id(), data_cargo(), data_nextT()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TId_ data_id;
+    TCargo data_cargo;
+    EdgeStump* data_nextT;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -123,13 +129,16 @@ class EdgeStump<TCargo, true, false, true, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, true, false, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TCargo data_cargo;
-		EdgeStump* data_nextT;
-		EdgeStump* data_nextS;
+public:
+    EdgeStump() : data_target(), data_source(), data_cargo(), data_nextT(), data_nextS()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TCargo data_cargo;
+    EdgeStump* data_nextT;
+    EdgeStump* data_nextS;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -138,15 +147,18 @@ class EdgeStump<TCargo, true, true, false, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, true, true, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TId_ data_id;
-		TCargo data_cargo;
-		EdgeStump* data_nextT;
-		EdgeStump* data_nextS;
+public:
+    EdgeStump() : data_target(), data_source(), data_id(), data_cargo(), data_nextT(), data_nextS()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TId_ data_id;
+    TCargo data_cargo;
+    EdgeStump* data_nextT;
+    EdgeStump* data_nextS;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -154,10 +166,13 @@ class EdgeStump<TCargo, true, true, true, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, false, false, false, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TCargo data_cargo;
+public:
+    EdgeStump() : data_target(), data_cargo()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TCargo data_cargo;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -165,12 +180,15 @@ class EdgeStump<TCargo, false, false, false, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, false, false, true, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TId_ data_id;
-		TCargo data_cargo;
+public:
+    EdgeStump() : data_target(), data_id(), data_cargo()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TId_ data_id;
+    TCargo data_cargo;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -178,11 +196,14 @@ class EdgeStump<TCargo, false, false, true, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, false, true, false, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TCargo data_cargo;
+public:
+    EdgeStump() : data_target(), data_source(), data_cargo()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TCargo data_cargo;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -190,17 +211,20 @@ class EdgeStump<TCargo, false, true, false, TSpec>
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, false, true, true, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TId_ data_id;
-		TCargo data_cargo;
+public:
+    EdgeStump() : data_target(), data_source(), data_id(), data_cargo()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TId_ data_id;
+    TCargo data_cargo;
 };
 
 //////////////////////////////////////////////////////////////////////////////
-//	Graph - Cargoless EdgeStump
+//    Graph - Cargoless EdgeStump
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
@@ -208,10 +232,13 @@ class EdgeStump<TCargo, false, true, true, TSpec>
 template<typename TSpec>
 class EdgeStump<void, true, false, false, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		EdgeStump* data_nextT;
+public:
+    EdgeStump() : data_target(), data_nextT()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    EdgeStump* data_nextT;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -219,12 +246,15 @@ class EdgeStump<void, true, false, false, TSpec>
 template<typename TSpec>
 class EdgeStump<void, true, false, true, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TId_ data_id;
-		EdgeStump* data_nextT;
+public:
+    EdgeStump() : data_target(), data_id(), data_nextT()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TId_ data_id;
+    EdgeStump* data_nextT;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -232,12 +262,15 @@ class EdgeStump<void, true, false, true, TSpec>
 template<typename TSpec>
 class EdgeStump<void, true, true, false, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		EdgeStump* data_nextT;
-		EdgeStump* data_nextS;
+public:
+    EdgeStump() : data_target(), data_source(), data_nextT(), data_nextS()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    EdgeStump* data_nextT;
+    EdgeStump* data_nextS;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -246,14 +279,17 @@ class EdgeStump<void, true, true, false, TSpec>
 template<typename TSpec>
 class EdgeStump<void, true, true, true, TSpec> 
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TId_ data_id;
-		EdgeStump* data_nextT;
-		EdgeStump* data_nextS;
+public:
+    EdgeStump() : data_target(), data_source(), data_id(), data_nextT(), data_nextS()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TId_ data_id;
+    EdgeStump* data_nextT;
+    EdgeStump* data_nextS;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -261,9 +297,12 @@ class EdgeStump<void, true, true, true, TSpec>
 template<typename TSpec>
 class EdgeStump<void, false, false, false, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
+public:
+    EdgeStump() : data_target()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -271,11 +310,14 @@ class EdgeStump<void, false, false, false, TSpec>
 template<typename TSpec>
 class EdgeStump<void, false, false, true, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TId_ data_id;
+public:
+    EdgeStump() : data_target(), data_id()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TId_ data_id;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -283,10 +325,13 @@ class EdgeStump<void, false, false, true, TSpec>
 template<typename TSpec>
 class EdgeStump<void, false, true, false, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
+public:
+    EdgeStump() : data_target(), data_source()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -294,12 +339,15 @@ class EdgeStump<void, false, true, false, TSpec>
 template<typename TSpec>
 class EdgeStump<void, false, true, true, TSpec>
 {
-	public:
-		typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
-		typedef typename Id<EdgeStump>::Type TId_;
-		TVertexDescriptor_ data_target;
-		TVertexDescriptor_ data_source;
-		TId_ data_id;
+public:
+    EdgeStump() : data_target(), data_source(), data_id()
+    {}
+
+    typedef typename VertexDescriptor<EdgeStump>::Type TVertexDescriptor_;
+    typedef typename Id<EdgeStump>::Type TId_;
+    TVertexDescriptor_ data_target;
+    TVertexDescriptor_ data_source;
+    TId_ data_id;
 };
 
 //////////////////////////////////////////////////////////////////////////////

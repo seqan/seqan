@@ -68,30 +68,44 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 */
 
 /*!
- * @class Swift
- * 
+ * @class SwiftPattern
  * @extends Pattern
+ * @headerfile <seqan/index.h>
+ * @brief Pattern for SWIFT search, must be used together with @link SwiftFinder @endlink.
+ *
+ * @signature template <typename TIndex, typename TSpec>
+ *            class Pattern<TIndex, Swift<TSpec> >;
+ *
+ * @tparam TSpec  Specifies the type of Swift filter.
+ * @tparam TIndex A q-gram index of needle(s).  Types: @link IndexQGram @endlink
+ *
+ * The @link Pattern @endlink must be a @link IndexQGram @endlink over multiple patterns.  The allowed error rate must
+ * be given when @link Finder#find @endlink or @link SwiftFinder#windowFindBegin @endlink is called.
+ *
+ * Provides a fast filter alogrithm that guarantees to find all regions overlapping with potential &epsilon;-matches.
+ * An &epsilon;-match is a matching region of minimal length and an error rate of at most &epsilon;.
+ *
+ * @see SwiftFinder
+ *
+ * @var SwiftParameters SwiftPattern::parameters;
+ * @brief The SWIFT parameters to use for configuration.
+ */
+
+/*!
+ * @class SwiftFinder
  * @extends Finder
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Provides a fast filter alogrithm that guarantees to find all regions overlapping with potential
- *        \epsilon-matches. An \epsilon-match is a matching region of minimal length and an error rate of at most
- *        \epsilon.
- * 
+ * @headerfile <seqan/index.h>
+ * @brief Finder for SWIFT search, must be used together with @link SwiftPattern @endlink.
+ *
  * @signature template <typename THaystack, typename TSpec>
  *            class Finder<THaystack, Swift<TSpec> >;
- * @signature template <typename TIndex, typename TSpec>
- *            class Pattern<TIndex, Swift<TSpec> >
- * 
- * @tparam TSpec Specifies the type of Swift filter. Types: @link SwiftLocal @endlink, @link SwiftSemiGlobal @endlink
- * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
- * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
- * 
- * @section Remarks
- * 
- * The @link Pattern @endlink must be a @link IndexQGram @endlink over multiple patterns. The allowed error rate must
- * be given when @link Finder#find @endlink or @link Swift#windowFindBegin @endlink is called.
+ *
+ * @tparam TSpec     Specifies the type of Swift filter.
+ * @tparam THaystack A haystack type.  Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink.
+ *
+ * See @link SwiftPattern @endlink for an overview of the SWIFT algorithm.
+ *
+ * @see SwiftPattern
  */
 
 ///.Class.Pattern.param.TSpec.type:Spec.Swift
@@ -114,21 +128,28 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 */
 
 /*!
- * @class SwiftLocal
- * 
- * @extends Swift
- * 
- * @headerfile seqan/index.h
- * 
- * @brief The specialization for the general swift filter that finds epsilon matches between haystack and needle.
- * 
+ * @class SwiftLocalPattern
+ * @extends SwiftPattern
+ * @headerfile <seqan/index.h>
+ *
+ * @brief The specialization for the general SWIFT filter that finds &epsilon;-matches between haystack and needle.
+ *
  * @signature template <typename THaystack>
  *            class Finder<THaystack, Swift<SwiftLocal> >;
- * @signature template <typenam eTIndex>
- *            class Pattern<TIndex, Swift<SwiftLocal> >;
- * 
- * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
- * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
+ *
+ * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink.
+ */
+
+/*!
+ * @class SwiftLocalFinder
+ * @extends SwiftFinder
+ * @headerfile <seqan/index.h>
+ * @brief The specialization for the general SWIFT filter that finds &epsilon;-matches between haystack and needle.
+ *
+ * @signature template <typename THaystack>
+ *            class Finder<THaystack, Swift<SwiftLocal> >;
+ *
+ * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink.
  */
 
 ///.Spec.Swift.param.TSpec.type:Spec.SwiftLocal
@@ -150,22 +171,28 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 */
 
 /*!
- * @class SwiftSemiGlobal
- * 
- * @extends Swift
- * 
- * @headerfile seqan/index.h
- * 
- * @brief The specialization for the semi-global swift filter that finds regions
- *        of the haystack where a needle matches with an error rate less than
- *        \epsilon.
- * 
- * @signature template <typename THaystack>
- *            class Finder<THaystack, Swift<SwiftSemiGlobal> >;
+ * @class SwiftSemiGlobalPattern
+ * @extends SwiftPattern
+ * @headerfile <seqan/index.h>
+ * @brief The specialization for the semi-global swift filter that finds regions of the haystack where a needle matches
+ *        with an error rate less than \epsilon.
+ *
  * @signature template <typename TIndex>
  *            class Pattern<TIndex, Swift<SwiftSemiGlobal> >;
- * 
- * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
+ *
+ * @tparam TIndex A @link IndexQGram q-gram index @endlink of needle(s).
+ */
+
+/*!
+ * @class SwiftSemiGlobalFinder
+ * @extends SwiftFinder
+ * @headerfile <seqan/index.h>
+ * @brief The specialization for the semi-global swift filter that finds regions of the haystack where a needle matches
+ *        with an error rate less than \epsilon.
+ *
+ * @signature template <typename THaystack>
+ *            class Finder<THaystack, Swift<SwiftSemiGlobal> >;
+ *
  * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
  */
 
@@ -215,25 +242,61 @@ struct Swift<SwiftLocal> {
     enum { PARAMS_BY_LENGTH = 0 };  // params are determined by seq.no.
 };
 
-struct SwiftParameters {
+/*!
+ * @class SwiftParameters
+ * @headerfile <seqan/index.h>
+ * @brief Parameters for the SWIFT algorithm.
+ *
+ * @signature struct SwiftParameters;
+ *
+ * @see SwiftPattern
+ *
+ *
+ * @fn SwiftParameters::SwiftParameters
+ * @brief Default constructor.
+ *
+ * @signature SwiftParameters::SwiftParameters();
+ *
+ * Initializes all member variables, default values are given in the variable documentation.
+ *
+ *
+ * @var int SwiftParameters::minThreshold;
+ * @brief Minimal threshold to use initially, defaults to <tt>1</tt>.
+ *
+ * @var int SwiftParameters::minLog2Delta;
+ * @brief Minimal delta to use, defaults to <tt>16</tt>.
+ *
+ * @var int SwiftParameters::tabooLength;
+ * @brief Taboo length to use, defaults to <tt>1</tt>.
+ *
+ * @var bool SwiftParameters::printDots;
+ * @brief Whether to print dots for the scanning progress, defaults to <tt>false</tt>.
+ *
+ * @var bool SwiftParameters::debug;
+ * @brief Whether to print debug information, defaults to <tt>false</tt>.
+ */
+
+struct SwiftParameters
+{
     int minThreshold;
     int minLog2Delta;
     int tabooLength;
     bool printDots;
     bool debug;
 
-    SwiftParameters():
+    SwiftParameters() :
         minThreshold(1),        // set minimal threshold to 1
         minLog2Delta(4),        // set minimal delta to 16
         tabooLength(1),         // minimal genomic distance between q-gram hits
         printDots(false),       // print a . for every 100kbps mapped genome
-        debug(false) {}
+        debug(false)
+    {}
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
     template <typename TSpec, typename TSize_, typename TShortSize_ = unsigned short>
-    struct SwiftBucket_ 
+    struct SwiftBucket_
     {
         typedef TSize_          TSize;
         typedef TShortSize_ TShortSize;
@@ -263,7 +326,7 @@ struct SwiftParameters {
     };
 
     template <typename TSpec, typename TSize_, typename TShortSize_ = unsigned short>
-    struct SwiftBucketParams_ 
+    struct SwiftBucketParams_
     {
         typedef TSize_          TSize;
         typedef TShortSize_     TShortSize;
@@ -297,9 +360,9 @@ struct SwiftParameters {
 
 
     template <typename THstkPos>
-    struct SwiftHit_ 
+    struct SwiftHit_
     {
-        THstkPos    hstkPos;            // parallelogram begin in haystack 
+        THstkPos    hstkPos;            // parallelogram begin in haystack
         unsigned    ndlSeqNo;           // needle sequence number
         THstkPos    ndlPos;             // begin position of hit in needle
         unsigned    bucketWidth;        // (non-diagonal) bucket width (hitLengthNeedle + delta + overlap (for diagonals))
@@ -309,11 +372,11 @@ struct SwiftParameters {
     template <typename THstkPos>
     struct SwiftHitSemiGlobal_
     {
-        THstkPos    hstkPos;            // parallelogram begin in haystack 
+        THstkPos    hstkPos;            // parallelogram begin in haystack
         unsigned    ndlSeqNo;           // needle sequence number
         unsigned    bucketWidth;        // (non-diagonal) bucket width (bktHeight + delta + overlap (for diagonals))
     };
-    
+
 
     template <typename TFinder, typename TPattern = void>
     struct FindResult
@@ -325,23 +388,30 @@ struct SwiftParameters {
         typedef String<typename FindResult<TFinder, TPattern>::Type> Type;
     };
 
-    
-    
+
+
     template <typename THaystack, typename TPattern, typename TSwiftSpec>
     struct FindResult<Finder<THaystack, Swift<TSwiftSpec> >, TPattern>
     {
         typedef SwiftHit_<__int64> Type;
     };
-    
+
     template <typename THaystack, typename TPattern, typename TSpec>
     struct FindResult<Finder<THaystack, Swift<Tag<SwiftSemiGlobal_<TSpec> > > >, TPattern>
     {
         typedef SwiftHitSemiGlobal_<__int64> Type;
     };
-    
+
 
 //____________________________________________________________________________
 
+
+/*!
+ * @typedef SwiftFinder::THitString
+ * @brief The type to use for the hit string returned in @link SwiftFinder#getWindowFindHits @endlink.
+ *
+ * @signature typedef (...) SwiftFinder::THitString;
+ */
 
     template <typename THaystack, typename TSpec>
     class Finder<THaystack, Swift<TSpec> >
@@ -379,7 +449,7 @@ struct SwiftParameters {
         template <typename TRepeatSize, typename TPeriodSize>
         Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod):
             data_iterator(begin(haystack, Rooted())),
-            _needReinit(true) 
+            _needReinit(true)
         {
             findRepeats(data_repeats, haystack, minRepeatLen, maxPeriod);
         }
@@ -411,15 +481,15 @@ struct SwiftParameters {
             endRepeat = end(data_repeats, Standard());
         }
 
-        inline typename Reference<TIterator>::Type 
+        inline typename Reference<TIterator>::Type
         operator* () { return value(hostIterator(*this)); }
 
-        inline typename Reference<TIterator const>::Type 
+        inline typename Reference<TIterator const>::Type
         operator* () const { return value(hostIterator(*this)); }
 
         operator TIterator () const { return data_iterator; }
-        
-        Finder & operator = (Finder const &orig) 
+
+        Finder & operator = (Finder const &orig)
         {
             data_iterator = orig.data_iterator;
             haystackEnd = orig.haystackEnd;
@@ -470,7 +540,7 @@ struct SwiftParameters {
         Finder(Finder const &orig):
             in(orig.in),
             hits(orig.hits),
-            _needReinit(orig._needReinit) 
+            _needReinit(orig._needReinit)
         {
             curHit = begin(hits, Standard()) + (orig.curHit - begin(orig.hits, Standard()));
             endHit = end(hits, Standard());
@@ -480,7 +550,7 @@ struct SwiftParameters {
 
 //____________________________________________________________________________
 
-    
+
     template <typename THaystack, typename TSpec>
     inline bool
     atEnd(Finder<THaystack, Swift<TSpec> > & me)
@@ -508,13 +578,13 @@ struct SwiftParameters {
         typedef typename Fibre<TIndex, Tag<FibreSA_> const >::Type      TSA;
         typedef typename Fibre<TIndex, Tag<Fibre_Shape_> const >::Type  TShape;
         typedef typename Iterator<TSA const, Standard>::Type            TIterator;
-        
+
         typedef SwiftBucket_<TSpec, TSize, TShortSize>                  TBucket;
         typedef String<TBucket>                                         TBucketString;
         typedef SwiftBucketParams_<TSpec, TSize, TShortSize>            TBucketParams;
         typedef String<TBucketParams>                                   TBucketParamsString;
         typedef String<Pair<unsigned> >                                 TVerifyList;
-        
+
         TShape                  shape;
         TBucketString           buckets;
         TBucketParamsString     bucketParams;
@@ -526,17 +596,17 @@ struct SwiftParameters {
         TSize                   finderPosNextOffset;                    // type TSize of TBucket
         __int64                 finderLength;
         __int64                 maxPatternLength;
-        
+
         double                  _currentErrorRate;
         int                     _currentMinLengthForAll;
 
         Holder<TIndex>  data_host;
 
-        Pattern() 
+        Pattern()
         {
             clear(*this);
         }
-        Pattern(TIndex &_index): data_host(_index) 
+        Pattern(TIndex &_index): data_host(_index)
         {
             clear(*this);
         }
@@ -545,7 +615,7 @@ struct SwiftParameters {
             clear(*this);
         }
     };
-    
+
 //____________________________________________________________________________
 
 
@@ -580,7 +650,7 @@ inline void _printSwiftBuckets(Pattern< TIndex, Swift<TSpec> > &p)
     unsigned j = 0;
     TParams *bucketParams = &_swiftBucketParams(p, 0);
 
-    for(unsigned i=0; i<length(p.buckets) && i<10; ++i) 
+    for(unsigned i=0; i<length(p.buckets) && i<10; ++i)
     {
         if ((i & bucketParams->reuseMask) == 0)
         {
@@ -598,7 +668,7 @@ inline void _printSwiftBuckets(Pattern< TIndex, Swift<TSpec> > &p)
 
 template <typename TIndex, typename TSpec, typename TSize>
 inline typename Pattern<TIndex, Swift<TSpec> >::TBucketParams &
-_swiftBucketParams(Pattern<TIndex, Swift<TSpec> > & pattern, TSize seqNo) 
+_swiftBucketParams(Pattern<TIndex, Swift<TSpec> > & pattern, TSize seqNo)
 {
     if (Swift<TSpec>::PARAMS_BY_LENGTH)
         return pattern.bucketParams[sequenceLength(seqNo, host(pattern))];
@@ -608,7 +678,7 @@ _swiftBucketParams(Pattern<TIndex, Swift<TSpec> > & pattern, TSize seqNo)
 
 template <typename TIndex, typename TSpec, typename TParams, typename TSize>
 inline unsigned
-_swiftBucketNo(Pattern<TIndex, Swift<TSpec> > const &, TParams &bucketParams, TSize seqNo) 
+_swiftBucketNo(Pattern<TIndex, Swift<TSpec> > const &, TParams &bucketParams, TSize seqNo)
 {
     if (Swift<TSpec>::PARAMS_BY_LENGTH)
         return (bucketParams.reuseMask + 1) * seqNo;    // assumes the same reuseMask for all reads
@@ -625,9 +695,24 @@ _qgramLemma(Pattern<TIndex, Swift<TSpec> > const & pattern, TSeqNo seqNo, int er
     return qgramThreshold(indexShape(host(pattern)), sequenceLength(seqNo, host(pattern)), errors, EditDistance(), ThreshQGramLemma());
 }
 
+/*!
+ * @fn SwiftPattern#setMinThreshold
+ * @headerfile <seqan/index.h>
+ * @brief Set minimal threshold (<i>t</i>) for a given needle.
+ *
+ * This function can be used to make the filter allow less errors for a given needle.
+ *
+ * @signature void setMinThreshold(pattern, seqNo, thresh);
+ *
+ * @param[in,out] pattern The SwiftPattern to modify.
+ * @param[in]     seqNo   The number to set the threshold for.
+ * @param[in]     tresh   The threshold to use.
+ */
+
+
 template <typename TIndex, typename TSpec, typename TSeqNo, typename TThreshold>
 inline void
-setMinThreshold(Pattern<TIndex, Swift<TSpec> > & pattern, TSeqNo seqNo, TThreshold thresh) 
+setMinThreshold(Pattern<TIndex, Swift<TSpec> > & pattern, TSeqNo seqNo, TThreshold thresh)
 {
     typedef Pattern<TIndex, Swift<TSpec> >                      TPattern;
     typedef typename TPattern::TBucketParams                    TBucketParams;
@@ -640,7 +725,7 @@ setMinThreshold(Pattern<TIndex, Swift<TSpec> > & pattern, TSeqNo seqNo, TThresho
 
     for (; it != itEnd; ++it)
     {
-        
+
         // increase the threshold if it is less than the minimal threshold
         if ((*it).threshold < thresh)
         {
@@ -691,7 +776,7 @@ _resetBucket(SwiftBucket_<SwiftSemiGlobal_<TSpec_>, TSize, TShortSize> & bkt, TP
 }
 
 template <typename TIndex, typename TFloat, typename TSize_, typename TSpec>
-inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRate, TSize_ minLengthForAll) 
+inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRate, TSize_ minLengthForAll)
 {
     typedef Pattern<TIndex, Swift<TSpec> >                      TPattern;
     typedef typename Size<TIndex>::Type                         TSize;
@@ -707,11 +792,11 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
     TSize seqCount = countSequences(host(pattern));
 
     clear(pattern.verifyList);
-    
+
     if (pattern._currentErrorRate != _newErrorRate || pattern._currentMinLengthForAll != minLengthForAll)
     {
         // settings have been changed -> initialize bucket parameters
-    
+
         pattern._currentErrorRate = _newErrorRate;
         pattern._currentMinLengthForAll = minLengthForAll;
 
@@ -722,7 +807,7 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
         TSize count = 0;
         TSize bucketsPerCol2Max = 0;
         TSize maxLength = 0;
-        
+
         if (Swift<TSpec>::PARAMS_BY_LENGTH) {
             for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo) {
                 TSize length = sequenceLength(seqNo, host(pattern));
@@ -736,12 +821,12 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
         pattern.maxPatternLength = maxLength;
         pattern.finderPosOffset = 0;
         pattern.finderPosNextOffset = pattern.finderLength + pattern.maxPatternLength;
-        
-        if (Swift<TSpec>::SEMIGLOBAL == 0) 
+
+        if (Swift<TSpec>::SEMIGLOBAL == 0)
         {
             // global matches
             TSize minLength = minLengthForAll;
-            for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo) 
+            for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
             {
                 // swift q-gram lemma
                 TBucketParams &bucketParams = _swiftBucketParams(pattern, seqNo);
@@ -759,8 +844,8 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 
                 SEQAN_ASSERT_GT_MSG((1 / errorRate), span, "SWIFT only works if span < 1 / error rate!");
                 TSize errors = (TSize) floor((2 * bucketParams.threshold + span - 3) / (1 / errorRate - span));
-            
-            
+
+
                 // a bucket has distanceCut different positions of q-grams
                 // if a q-gram is this far or further away it can't belong to the
                 // same bucket
@@ -768,17 +853,17 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 
                 // from now, errors is the maximal number of indels
                 if (Swift<TSpec>::HAMMING_ONLY != 0)
-                    errors = 0;         
+                    errors = 0;
 
                 TSize bucketsPerCol2;
-                if(Swift<TSpec>::DIAGONAL == 1) 
+                if(Swift<TSpec>::DIAGONAL == 1)
                 {
                     // Use overlapping parallelograms
                     bucketParams.overlap = errors;
-    
+
                     // delta must be a power of 2 and greater than errors
                     bucketParams.logDelta = (TSize) ceil(log((double)errors + 1) / log(2.0));
-                    if (bucketParams.logDelta < pattern.params.minLog2Delta) 
+                    if (bucketParams.logDelta < pattern.params.minLog2Delta)
                         bucketParams.logDelta = pattern.params.minLog2Delta;
                     bucketParams.delta = 1 << bucketParams.logDelta;
                     bucketParams.tabooLength = pattern.params.tabooLength;
@@ -795,28 +880,28 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 
                     // delta must be a power of 2 greater than seq.length + errors (define a minimal delta of 32)
                     //bucketParams.logDelta = ;
-                    //if (bucketParams.logDelta < pattern.params.minLog2Delta) 
+                    //if (bucketParams.logDelta < pattern.params.minLog2Delta)
                     //  bucketParams.logDelta = pattern.params.minLog2Delta;
                     //bucketParams.delta = 1 << bucketParams.logDelta;
                     bucketsPerCol2 = 1;
                 }
-            
+
                 bucketParams.firstBucket = count; // firstBucket is only used if Swift<TSpec>::PARAMS_BY_LENGTH == 0
                 bucketParams.reuseMask = bucketsPerCol2 - 1;
                 bucketParams.tabooLength = pattern.params.tabooLength;
-            
+
                 if (Swift<TSpec>::PARAMS_BY_LENGTH) {
                     ++count;
                     if (bucketsPerCol2Max < bucketsPerCol2)
                         bucketsPerCol2Max = bucketsPerCol2;
                 } else
                     count += bucketsPerCol2;
-        
+
                 /*if (seqNo<3)
                     _printSwiftParams(bucketParams);*/
             }
         } else
-            for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo) 
+            for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
             {
                 // get pattern length and max. allowed errors
                 TBucketParams &bucketParams = _swiftBucketParams(pattern, seqNo);
@@ -835,10 +920,10 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
                     bucketParams.threshold = threshold;
                 else
                     bucketParams.threshold = pattern.params.minThreshold;
-                
+
                 // from now, errors is the maximal number of indels
                 if (Swift<TSpec>::HAMMING_ONLY != 0)
-                    errors = 0;         
+                    errors = 0;
 
                 // a bucket has distanceCut different positions of q-grams
                 // if a q-gram is this far or farer away it can't belong to the
@@ -848,12 +933,12 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
                 TSize bucketsPerCol2;
                 if (Swift<TSpec>::DIAGONAL == 1)
                 {
-                    // Use overlapping parallelograms               
+                    // Use overlapping parallelograms
                     bucketParams.overlap = errors;
-                    
+
                     // delta must be a power of 2 greater then errors (define a minimal delta of 8)
                     bucketParams.logDelta = (TSize) ceil(log((double)(errors + 1)) / log(2.0));
-                    if (bucketParams.logDelta < pattern.params.minLog2Delta) 
+                    if (bucketParams.logDelta < pattern.params.minLog2Delta)
                         bucketParams.logDelta = pattern.params.minLog2Delta;
                     bucketParams.delta = 1 << bucketParams.logDelta;
 
@@ -870,7 +955,7 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 
                     // delta must be a power of 2 greater then seq.length + errors (define a minimal delta of 32)
                     bucketParams.logDelta = (TSize) ceil(log((double)(length - span + 1 + errors)) / log(2.0));
-                    if (bucketParams.logDelta < pattern.params.minLog2Delta) 
+                    if (bucketParams.logDelta < pattern.params.minLog2Delta)
                         bucketParams.logDelta = pattern.params.minLog2Delta;
                     bucketParams.delta = 1 << bucketParams.logDelta;
 
@@ -882,14 +967,14 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
                 bucketParams.firstBucket = count;
                 bucketParams.reuseMask = bucketsPerCol2 - 1;
                 bucketParams.tabooLength = pattern.params.tabooLength;
-                
+
                 if (Swift<TSpec>::PARAMS_BY_LENGTH) {
                     ++count;
                     if (bucketsPerCol2Max < bucketsPerCol2)
                         bucketsPerCol2Max = bucketsPerCol2;
                 } else
                     count += bucketsPerCol2;
-                
+
 /*              if (seqNo<3)
                     _printSwiftParams(bucketParams);
 */          }
@@ -906,7 +991,7 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
         {
             TBucketParams &bucketParams = _swiftBucketParams(pattern, seqNo);
             TBucketSize lastIncrement = (TBucketSize)0 - (TBucketSize)bucketParams.tabooLength;
-            for(bktEnd = bkt + bucketParams.reuseMask + 1; bkt != bktEnd; ++bkt) 
+            for(bktEnd = bkt + bucketParams.reuseMask + 1; bkt != bktEnd; ++bkt)
             {
                 _resetBucket(*bkt, lastIncrement, bucketParams.threshold);
             }
@@ -920,16 +1005,16 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
         __int64 clearance = pattern.finderLength + pattern.maxPatternLength;
         pattern.finderPosOffset = pattern.finderPosNextOffset;
         pattern.finderPosNextOffset += clearance;
-        
+
         // reset buckets only if an overflow of the finder position would occur
         // we would not detect an overflow if clearance is larger than the largest TBucketSize value
         if (pattern.finderPosNextOffset <= pattern.finderPosOffset || (__int64)(TBucketSize)clearance < (__int64)clearance)
         {
             pattern.finderPosOffset = 0;
             pattern.finderPosNextOffset = pattern.finderLength + pattern.maxPatternLength;
-            
+
             TBucketIterator bktEnd, bkt = begin(pattern.buckets, Standard());
-            for (TSize ndlSeqNo = 0; ndlSeqNo < seqCount; ++ndlSeqNo) 
+            for (TSize ndlSeqNo = 0; ndlSeqNo < seqCount; ++ndlSeqNo)
             {
                 TBucketParams &bucketParams = _swiftBucketParams(pattern, ndlSeqNo);
                 TBucketSize lastIncrement = (TBucketSize)0 - (TBucketSize)bucketParams.tabooLength;
@@ -971,9 +1056,9 @@ inline void _createHit(
     __int64 lastInc = (__int64)bkt.lastIncrement - pattern.finderPosOffset;
     __int64 firstInc = (__int64)bkt.firstIncrement - pattern.finderPosOffset;
 
-    if(diag > lastInc) 
+    if(diag > lastInc)
     {
-        // bucket is reused since last increment 
+        // bucket is reused since last increment
         TSize reusePos = (bucketParams.reuseMask + 1) << bucketParams.logDelta;
         diag -= (__int64)ceil((diag-lastInc)/(double)reusePos) * reusePos;
     }
@@ -989,7 +1074,7 @@ inline void _createHit(
         ndlSeqNo,               // needle seq. number           *   *
         ndlBegin,               // bucket begin in needle       *     *
         width,                  // bucket width (non-diagonal)    *   *
-        height                  // bucket height                    * * 
+        height                  // bucket height                    * *
     };                          //                                    *
 
     // append the hit to the finders hit list
@@ -1059,10 +1144,10 @@ inline bool _swiftMultiProcessQGram(
         unsigned bktNo = (diag >> bucketParams.logDelta) & bucketParams.reuseMask; // bucket no of diagonal
         unsigned bktOfs = diag & (bucketParams.delta - 1); // offset of diagonal to bucket begin
         __int64  bktBeginHstk = diag & ~(__int64)(bucketParams.delta - 1); // haystack position of bucket begin diagonal
-        
+
         // global (over all pattern sequences) number of current bucket
         TBucketIter bkt = bktBegin + (_swiftBucketNo(pattern, bucketParams, getSeqNo(ndlPos)) + bktNo);
-        
+
         TShortSize hitCount;
 
         do {
@@ -1071,7 +1156,7 @@ inline bool _swiftMultiProcessQGram(
             {
                 // last increment was before the beginning of the current bucket => bucket is reused
                 // Or last increment was in the same bucket but lies more than distanceCut away
-                
+
                 if ((*bkt).counter >= (*bkt).threshold)
                 {
                     // create a new hit and append it to the finders hit list
@@ -1139,12 +1224,12 @@ checkOverlap:
 // Returns true if the hit-list of the finder is not empty after this call.
 template <
     typename TFinder,
-    typename TIndex, 
+    typename TIndex,
     typename TSpec_,
     typename THValue
 >
 inline bool _swiftMultiProcessQGram(
-    TFinder &finder, 
+    TFinder &finder,
     Pattern<TIndex, Swift<Tag<SwiftSemiGlobal_<TSpec_> > > > &pattern,
     THValue hash)
 {
@@ -1159,29 +1244,29 @@ inline bool _swiftMultiProcessQGram(
     typedef typename TBucket::TShortSize                        TShortSize;
     typedef typename TPattern::TBucketParams                    TBucketParams;
     typedef typename FindResult<TFinder, TPattern>::Type        THit;
-    
-    TIndex const & index = host(pattern);    
-    
+
+    TIndex const & index = host(pattern);
+
     // create an iterator over the positions of the q-gram occurrences in pattern
     TSAIter saBegin = begin(indexSA(index), Standard());
     TSAIter occ = saBegin + indexDir(index)[getBucket(index.bucketMap, hash)];
     TSAIter occEnd = saBegin + indexDir(index)[getBucket(index.bucketMap, hash) + 1];
     TBucketIter bktBegin = begin(pattern.buckets, Standard());
     Pair<unsigned> ndlPos;
-    
+
 /*  std::cerr<<"\t["<<(occEnd-occ)<<"]"<< std::flush;
-    
+
     if ((occEnd-occ)>100)
     {
         std::cerr<<" ";
         for(int i=0;i<length(indexShape(host(pattern)));++i)
             std::cerr<<*(hostIterator(hostIterator(finder))+i);
     }
-*/  
+*/
     // iterate over all q-gram occurrences and do the processing
     __int64 curPos = finder.curPos + pattern.finderPosOffset;
 //    bool dbg=pattern.params.debug && (finder.curPos > 496 && finder.curPos < 591);
-    for(; occ != occEnd; ++occ) 
+    for(; occ != occEnd; ++occ)
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index));
         TBucketParams &bucketParams = _swiftBucketParams(pattern, getSeqNo(ndlPos));
@@ -1193,13 +1278,13 @@ inline bool _swiftMultiProcessQGram(
         unsigned bktOfs = diag & (bucketParams.delta - 1);
         __int64  bktBeginHstk = diag & ~(__int64)(bucketParams.delta - 1);
 
-        TBucketIter bkt = bktBegin + (_swiftBucketNo(pattern, bucketParams, getSeqNo(ndlPos)) + bktNo);     
+        TBucketIter bkt = bktBegin + (_swiftBucketNo(pattern, bucketParams, getSeqNo(ndlPos)) + bktNo);
         TShortSize hitCount;
 
 //        if (dbg && (*occ).i1==15)
 //            std::cout << finder.curPos << '\t' << *occ << '\t' << (*bkt).counter<<std::endl;
-//      
-        do 
+//
+        do
         {
             if ((__int64)(*bkt).lastIncrement < bktBeginHstk + (__int64)pattern.finderPosOffset)
             {
@@ -1210,7 +1295,7 @@ inline bool _swiftMultiProcessQGram(
             else
             {
                 if ((__int64)((*bkt).lastIncrement + bucketParams.tabooLength) > curPos)
-                    goto checkOverlap;  // increment only once per sequence         
+                    goto checkOverlap;  // increment only once per sequence
                 hitCount = (*bkt).counter + 1;
             }
 
@@ -1232,7 +1317,7 @@ inline bool _swiftMultiProcessQGram(
                 __int64 upperBktNo = ((*bkt).lastIncrement - pattern.finderPosOffset) >> bucketParams.logDelta;
 
                 // we must decrement bucket no. until (no. mod reuse == bktNo)
-                __int64 _bktBeginHstk = 
+                __int64 _bktBeginHstk =
                      (upperBktNo - ((upperBktNo - bktNo) & bucketParams.reuseMask)) << bucketParams.logDelta;
 
                 if ((*bkt)._lastIncDiag - _bktBeginHstk >= bucketParams.delta + bucketParams.overlap || (*bkt)._lastIncDiag < _bktBeginHstk) {
@@ -1240,7 +1325,7 @@ inline bool _swiftMultiProcessQGram(
                     ::std::cerr << ", delta:" << bucketParams.delta << ", overlap:" << bucketParams.overlap << ")" << ::std::endl;
                 }
 #endif
-//              if (bktBeginHstk >= 0) 
+//              if (bktBeginHstk >= 0)
 //              {
                     THit hit = {
                         bktBeginHstk,                                       // bucket begin in haystack
@@ -1287,7 +1372,7 @@ inline bool _swiftMultiProcessQGram(
 // resets counter and lastIncrement of all buckets listed in patterns verify list
 template <
     typename TFinder,
-    typename TIndex, 
+    typename TIndex,
     typename TSpec
 >
 inline bool _swiftMultiFlushBuckets(
@@ -1346,11 +1431,11 @@ inline bool _swiftMultiFlushBuckets(
 // no resetting is needed for the semiglobal version
 template <
     typename TFinder,
-    typename TIndex, 
+    typename TIndex,
     typename TSpec_
 >
 inline bool _swiftMultiFlushBuckets(
-    TFinder &, 
+    TFinder &,
     Pattern<TIndex, Swift<Tag<SwiftSemiGlobal_<TSpec_> > > > &)
 {
     // there is nothing to be done here as we dump matches immediately after reaching the threshold
@@ -1358,15 +1443,15 @@ inline bool _swiftMultiFlushBuckets(
 }
 
 template <typename TIndex, typename TSpec>
-inline bool 
-empty(Pattern<TIndex, Swift<TSpec> > & me) 
+inline bool
+empty(Pattern<TIndex, Swift<TSpec> > & me)
 {
     return empty(me.bucketParams);
 }
 
 template <typename TIndex, typename TSpec>
-inline void 
-clear(Pattern<TIndex, Swift<TSpec> > & me) 
+inline void
+clear(Pattern<TIndex, Swift<TSpec> > & me)
 {
     me.finderPosOffset = 0;
     me.finderPosNextOffset = 0;
@@ -1445,13 +1530,24 @@ beginPosition(Finder<THaystack, Swift<TSpec> > & finder)
 
 //____________________________________________________________________________
 
+/*!
+ * @fn SwiftPattern#beginPosition
+ * @headerfile <seqan/index.h>
+ * @brief Returns the begin position of the local match in the pattern.
+ *
+ * @signature TPosition beginPosition(pattern);
+ *
+ * @param[in] pattern   The SwiftPattern to query.
+ * @return    TPosition The @link TextConcept#SAValue SA value @endlink of the pattern text.
+ */
+
 template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex>::Type
 beginPosition(Pattern<TIndex, Swift<TSpec> > const & pattern)
 {
     __int64 hitBegin = pattern.curBeginPos;
     if (hitBegin < 0) hitBegin = 0;
-    
+
     typename SAValue<TIndex >::Type pos;
     posLocalToX(pos, Pair<unsigned, __int64>(pattern.curSeqNo, hitBegin), stringSetLimits(host(pattern)));
     return pos;
@@ -1474,6 +1570,17 @@ beginPosition(Pattern<TIndex, Swift<TSpec> > & pattern)
 }
 
 //____________________________________________________________________________
+
+/*!
+ * @fn SwiftPattern#endPosition
+ * @headerfile <seqan/index.h>
+ * @brief Returns the end position of the local match in the pattern.
+ *
+ * @signature TPosition endPosition(pattern);
+ *
+ * @param[in] pattern   The SwiftPattern to query.
+ * @return    TPosition The @link TextConcept#SAValue SA value @endlink of the pattern text.
+ */
 
 template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, Swift<TSpec> > >::Type
@@ -1542,25 +1649,39 @@ be negative or beyond the end of $finder$ or $pattern$ when using filter algorit
 */
 
 /*!
- * @fn Finder#positionRangeNoClip
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns a pair of the begin and end position in or beyond the haystack
- *        or needle for the last hit found.
- * 
- * @signature positionRangeNoClip(finder)
- * @signature positionRangeNoClip(pattern)
- * 
- * @param pattern A @link Pattern @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * @param finder A @link Finder @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * 
- * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found. These
- *                 positions could be negative or beyond the end of <tt>finder</tt> or <tt>pattern</tt> when using 
- *                 filter algorithms. The return type is <tt>Pair&lt;typename SAValue&lt;THost&gt;::Type&gt;</tt> if <tt>THost</tt>
- *                 is the type of haystack or needle.
- * 
- * @see Finder#positionRange
+ * @fn SwiftFinder#positionRangeNoClip
+ * @headerfile <seqan/index.h>
+ * @brief Returns a pair of the begin and end position in or beyond the haystack or needle for the last hit found.
+ *
+ * @signature TPair positionRangeNoClip(finder);
+ *
+ * @param[in] finder A SwiftFinder object to query.
+ *
+ * @return TPair A pair of the begin and end position in the haystack or needle for the last hit found.  These positions
+ *               could be negative or beyond the end of <tt>finder</tt> or <tt>pattern</tt> when using filter
+ *               algorithms.  The return type is <tt>Pair&lt;typename SAValue&lt;THost&gt;::Type&gt;</tt> if
+ *               <tt>THost</tt> is the type of haystack or needle.
+ *
+ * @see SwiftFinder#positionRange
+ * @see SwiftPattern#positionRangeNoClip
+ */
+
+/*!
+ * @fn SwiftPattern#positionRangeNoClip
+ * @headerfile <seqan/index.h>
+ * @brief Returns a pair of the begin and end position in or beyond the haystack or needle for the last hit found.
+ *
+ * @signature TPair positionRangeNoClip(pattern)
+ *
+ * @param[in] pattern SwiftPattern object to query.
+ *
+ * @return TPair A pair of the begin and end position in the haystack or needle for the last hit found.  These positions
+ *               could be negative or beyond the end of <tt>finder</tt> or <tt>pattern</tt> when using filter
+ *               algorithms.  The return type is <tt>Pair&lt;typename SAValue&lt;THost&gt;::Type&gt;</tt> if
+ *               <tt>THost</tt> is the type of haystack or needle.
+ *
+ * @see SwiftPattern#positionRange
+ * @see SwiftFinder#positionRangeNoClip
  */
 
 template <typename THaystack, typename TSpec>
@@ -1600,25 +1721,37 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
 */
 
 /*!
- * @fn Finder#positionRange
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns a pair of the begin and end position in the haystack or needle
- *        for the last hit found.
- * 
- * @signature positionRange(finder)
- * @signature positionRange(pattern)
- * 
- * @param pattern A @link Pattern @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * @param finder A @link Finder @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * 
- * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found.The return type
- *                 is <tt>Pair&lt;typename SAValue&ltTHost&g;::Type&gt;</tt> if <tt>THost</tt> is the type of haystack or needle.
- * 
- * @see beginPosition
- * @see endPosition
- * @see Finder#positionRangeNoClip
+ * @fn SwiftFinder#positionRange
+ * @headerfile <seqan/index.h>
+ * @brief Returns a pair of the begin and end position in the haystack or needle for the last hit found.
+ *
+ * @signature TPair positionRange(finder);
+ *
+ * @param[in] finder A @link Finder @endlink object.
+ *
+ * @return TPair A @link Pair @endlink of the begin and end position in the haystack or needle for the last
+ *               hit found.  The return type is <tt>Pair&lt;typename SAValue&ltTHost&g;::Type&gt;</tt> if
+ *               <tt>THost</tt> is the type of haystack or needle.
+ *
+ * @see Finder#beginPosition
+ * @see Finder#endPosition
+ * @see SwiftFinder#positionRangeNoClip
+ */
+
+/*!
+ * @fn SwiftPattern#positionRange
+ * @headerfile <seqan/index.h>
+ * @brief Returns a pair of the begin and end position in the haystack or needle for the last hit found.
+ *
+ * @signature TPair positionRange(pattern);
+ *
+ * @param[in] pattern A @link Pattern @endlink object.
+ *
+ * @return TPair A @link Pair @endlink of the begin and end position in the haystack or needle for the last
+ *               hit found.  The return type is <tt>Pair&lt;typename SAValue&ltTHost&g;::Type&gt;</tt> if
+ *               <tt>THost</tt> is the type of haystack or needle.
+ *
+ * @see SwiftPattern#positionRangeNoClip
  */
 
 template <typename THaystack, typename TSpec>
@@ -1655,6 +1788,8 @@ positionRange(Pattern<TIndex, Swift<TSpec> > & pattern)
 }
 
 //____________________________________________________________________________
+
+// TODO(holtgrew): Document this properly.
 
 template <typename TSwiftHit, typename TText>
 inline typename Infix<TText>::Type
@@ -1754,10 +1889,10 @@ infix(Pattern<TIndex, Swift<TSpec> > & pattern)
 //____________________________________________________________________________
 
 template <typename THaystack, typename TSpec>
-inline void 
+inline void
 _printDots(Finder<THaystack, Swift<TSpec> > &finder)
 {
-    while (finder.curPos >= finder.dotPos) 
+    while (finder.curPos >= finder.dotPos)
     {
         finder.dotPos += 100000;
         if (finder.dotPos >= finder.dotPos2)
@@ -1846,7 +1981,7 @@ _copySwiftHit(
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline void 
+inline void
 _copySwiftHit(
     TFinder &finder,
     Pattern<TIndex, Swift<Tag<SwiftSemiGlobal_<TSpec> > > > &pattern)
@@ -1857,26 +1992,26 @@ _copySwiftHit(
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 find(
     TFinder &finder,
-    Pattern<TIndex, Swift<Tag<SwiftSemiGlobal_<TSpec> > > > &pattern, 
+    Pattern<TIndex, Swift<Tag<SwiftSemiGlobal_<TSpec> > > > &pattern,
     double errorRate)
 {
     return find(finder, pattern, errorRate, 0);
 }
 
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
-inline bool 
+inline bool
 find(
     Finder<THaystack, Swift<TSpec> > &finder,
-    Pattern<TIndex, Swift<TSpec> > &pattern, 
+    Pattern<TIndex, Swift<TSpec> > &pattern,
     double errorRate,
     TSize minLength)
 {
     //typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
 
-    if (empty(finder)) 
+    if (empty(finder))
     {
         pattern.finderLength = pattern.params.tabooLength + length(container(finder));
         _patternInit(pattern, errorRate, minLength);
@@ -1890,10 +2025,10 @@ find(
             _copySwiftHit(finder, pattern);
             return true;
         }
-    } 
+    }
     else
     {
-        if (++finder.curHit < finder.endHit) 
+        if (++finder.curHit < finder.endHit)
         {
             _copySwiftHit(finder, pattern);
             return true;
@@ -1904,18 +2039,18 @@ find(
     clear(finder.hits);
 
     // are we at the end of the text?
-    if (atEnd(finder) && finder.curRepeat == finder.endRepeat) 
+    if (atEnd(finder) && finder.curRepeat == finder.endRepeat)
     {
         finder.curHit = finder.endHit;
         return false;
     }
 
-    do 
+    do
     {
         if (pattern.params.printDots) _printDots(finder);
-        if (atEnd(++finder)) 
+        if (atEnd(++finder))
         {
-            if (!_nextNonRepeatRange(finder, pattern)) 
+            if (!_nextNonRepeatRange(finder, pattern))
             {
                 if(_swiftMultiFlushBuckets(finder, pattern))
                 {
@@ -1932,7 +2067,7 @@ find(
             ++finder.curPos;
             hashNext(pattern.shape, hostIterator(hostIterator(finder)));
         }
-        
+
         if (_swiftMultiProcessQGram(finder, pattern, value(pattern.shape)))
         {
             _copySwiftHit(finder, pattern);
@@ -1943,13 +2078,13 @@ find(
 }
 
 template <typename THashes, typename TPipeSpec, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 find(
     Finder<Pipe<THashes, TPipeSpec>, Swift<TSpec> > &finder,
-    Pattern<TIndex, Swift<TSpec> > &pattern, 
+    Pattern<TIndex, Swift<TSpec> > &pattern,
     double errorRate)
 {
-    if (empty(finder)) 
+    if (empty(finder))
     {
         pattern.finderLength = 0;
         _patternInit(pattern, errorRate, 0);
@@ -1958,7 +2093,7 @@ find(
         finder.dotPos2 = 10 * finder.dotPos;
 
         beginRead(finder.in);
-        if (eof(finder.in)) 
+        if (eof(finder.in))
         {
             endRead(finder.in);
             return false;
@@ -1970,7 +2105,7 @@ find(
             return true;
         }
     } else
-        if (++finder.curHit != finder.endHit) 
+        if (++finder.curHit != finder.endHit)
         {
             _copySwiftHit(finder, pattern);
             return true;
@@ -1979,10 +2114,10 @@ find(
     clear(finder.hits);
     if (eof(finder.in)) return false;
 
-    do 
+    do
     {
         ++finder.in;
-        if (eof(finder.in)) 
+        if (eof(finder.in))
         {
             endRead(finder.in);
 #ifdef SEQAN_DEBUG_SWIFT
@@ -1993,7 +2128,7 @@ find(
                 _copySwiftHit(finder, pattern);
                 return true;
             }
-            else 
+            else
                 return false;
         }
         finder.curPos = (*finder.in).i1;
@@ -2024,32 +2159,32 @@ find(
 */
 
 /*!
- * @fn Swift#windowFindBegin
- * 
- * @headerfile seqan/index.h
- * 
+ * @fn SwiftFinder#windowFindBegin
+ * @headerfile <seqan/index.h>
  * @brief Initializes the pattern. Sets the finder on the begin position.  Gets the first non-repeat range and sets it
- * in the finder.  Used together with @link Swift#windowFindEnd @endlink.
- * 
- * @signature windowFindBegin(finder, pattern, errorRate)
- * 
- * @param pattern A pattern with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * @param errorRate Error rate that is allowed between reads and reference. Should be the same in as in @link
- *                  Swift#windowFindNext @endlink.  Types: <tt>double</tt>
- * @param finder A finder with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
- * 
- * @see Swift#windowFindNext
- * @see Swift#windowFindEnd
+ *        in the finder.  Used together with @link SwiftFinder#windowFindEnd @endlink.
+ *
+ * @signature bool windowFindBegin(finder, pattern, errorRate);
+ *
+ * @param[in,out] finder    A finder with window interface.
+ * @param[in,out] pattern   A pattern with window interface. Types: @link SwiftPattern @endlink.
+ * @param[in]     errorRate Error rate that is allowed between reads and reference.  Should be the same in as in
+ *                          @link SwiftFinder#windowFindNext @endlink.  Types: <tt>double</tt>
+ *
+ * @return bool <tt>true</tt> if there were bases to be scanned and <tt>false</tt> otherwise.
+ *
+ * @see SwiftFinder#windowFindNext
+ * @see SwiftFinder#windowFindEnd
  */
 template <typename THaystack, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 windowFindBegin(
     Finder<THaystack, Swift<TSpec> > &finder,
-    Pattern<TIndex, Swift<TSpec> > &pattern, 
+    Pattern<TIndex, Swift<TSpec> > &pattern,
     double errorRate)
 {
     SEQAN_CHECKPOINT
-    
+
     pattern.finderLength = pattern.params.tabooLength + length(container(finder));
     _patternInit(pattern, errorRate, 0);
     _finderSetNonEmpty(finder);
@@ -2058,7 +2193,7 @@ windowFindBegin(
     finder.windowStart = 0;
 
     if (!_firstNonRepeatRange(finder, pattern)) return false;
-    
+
     return true;
 }
 
@@ -2085,27 +2220,25 @@ windowFindBegin(
 */
 
 /*!
- * @fn Swift#windowFindNext
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Searches over the next window with the finder. The found hits can be retrieved with @link 
- *        Swift#getWindowFindHits @endlink  Used together with @link Swift#windowFindBegin @endlink and @link
- *        Swift#windowFindEnd @endlink.
- * 
- * @signature windowFindNext(finder, pattern, finderWindowLength)
- * 
- * @param pattern A pattern with window interface. Types: Pigeonhole, Swift
- * @param finderWindowLength Number of bases that are scanned beginning from the position the finder is at.  Including
- * bases that are marked as repeats and that are skipped. Types: nolink:unsigned int
- * @param finder A finder with window interface. Types: Pigeonhole
- * 
- * @return TReturn true, if there are bases that can be scanned. false,
- *                 otherwise
- * 
- * @see Swift#windowFindBegin
- * @see Swift#windowFindEnd
- * @see Swift#getWindowFindHits
+ * @fn SwiftFinder#windowFindNext
+ * @headerfile <seqan/index.h>
+ * @brief Searches over the next window with the finder. The found hits can be retrieved with @link
+ *        SwiftFinder#getWindowFindHits @endlink.  Used together with @link SwiftFinder#windowFindBegin @endlink and
+ *        @link SwiftFinder#windowFindEnd @endlink.
+ *
+ * @signature bool windowFindNext(finder, pattern, finderWindowLength)
+ *
+ * @param[in,out] finder             A SwiftFinder.
+ * @param[in,out] pattern            A SwiftPattern.
+ * @param[in] finderWindowLength     Number of bases that are scanned beginning from the position the finder is at.
+ *                                   Including bases that are marked as repeats and that are skipped. Types:
+ *                                   nolink:unsigned int
+ *
+ * @return bool <tt>true</tt>, if there are bases that can be scanned, <tt>false</tt> otherwise.
+ *
+ * @see SwiftFinder#windowFindBegin
+ * @see SwiftFinder#windowFindEnd
+ * @see SwiftFinder#getWindowFindHits
  */
 
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
@@ -2159,20 +2292,18 @@ windowFindNext(
 }
 
 /*!
- * @fn Swift#windowFindEnd
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Flushes the pattern. Used together with @link Swift#windowFindBegin @endlink
- *        and @link Swift#windowFindNext @endlink.
- * 
- * @signature windowFindEnd(finder, pattern)
- * 
- * @param pattern A pattern with window interface. Types: @link Swift @endlink
- * @param finder A finder with window interface. Types: @link Pigeonhole @endlink
- * 
- * @see Swift#windowFindBegin
- * @see Swift#windowFindNext
+ * @fn SwiftFinder#windowFindEnd
+ * @headerfile <seqan/index.h>
+ * @brief Flushes the finder.  Used together with @link SwiftFinder#windowFindBegin @endlink and @link
+ *        SwiftFinder#windowFindNext @endlink.
+ *
+ * @signature void windowFindEnd(finder, pattern);
+ *
+ * @param[in,out] finder  A finder with window interface.
+ * @param[in,out] pattern A pattern with window interface. Types: @link SwiftPattern @endlink
+ *
+ * @see SwiftFinder#windowFindBegin
+ * @see SwiftFinder#windowFindNext
  */
 
 /**
@@ -2189,7 +2320,7 @@ windowFindNext(
 ..include:seqan/index.h
 */
 template <typename THaystack, typename TIndex, typename TSpec>
-inline void 
+inline void
 windowFindEnd(
     Finder<THaystack, Swift<TSpec> > & finder,
     Pattern<TIndex, Swift<TSpec> > &pattern)
@@ -2199,19 +2330,16 @@ windowFindEnd(
 }
 
 /*!
- * @fn Swift#getWindowFindHits
- * 
- * @headerfile seqan/index.h
- * 
+ * @fn SwiftFinder#getWindowFindHits
+ * @headerfile <seqan/index.h>
  * @brief Returns the string of hits from the finder.
- * 
- * @signature getWindowFindHits(finder)
- * 
- * @param finder A finder with window interface. Types: @link Swift @endlink
- * 
- * @return TReturn @link String @endlink of Hits (use Finder<...>::THitString as Type).
- * 
- * @see Swift#windowFindNext
+ *
+ * @signature THitString getWindowFindHits(finder);
+
+ * @param[in] finder     A finder with window interface.
+ * @return    THitString @link String @endlink of hits, see @link SwiftFinder::THitString @endlink.
+ *
+ * @see SwiftFinder#windowFindNext
  */
 
 /**
@@ -2230,23 +2358,20 @@ inline typename WindowFindResult<Finder<THaystack, Swift<TSpec> >, void>::Type &
 getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
 {
     SEQAN_CHECKPOINT
-    
+
     return finder.hits;
 }
 
 /*!
- * @fn Pattern#getMaxDeviationOfOrder
- * 
- * @headerfile seqan/index.h
- * 
+ * @fn SwiftPattern#getMaxDeviationOfOrder
+ * @headerfile <seqan/index.h>
  * @brief Returns the maximal out-of-order distance of adjacent hits.
- * 
- * @signature getMaxDeviationOfOrder(pattern)
- * 
- * @param pattern A pattern with window interface. Types: @link Swift @endlink, @link Pigeonhole @endlink
-
- * 
- * @return TReturn Returns the maximal distance two adjacent hits can have which are not in increasing order.
+ *
+ * @signature TSize getMaxDeviationOfOrder(pattern);
+ *
+ * @param[in] pattern A SwiftPattern.
+ * @return    TSize   Returns the maximal distance two adjacent hits can have which are not in increasing order.
+ *                    <tt>TSize</tt> is the size type of the underlying index.
  */
 
 /**
@@ -2264,8 +2389,7 @@ template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Swift<TSpec> > &pattern)
 {
-    SEQAN_CHECKPOINT
-    
+    // TODO(holtgrew): Can pattern be made const?
     return back(pattern.bucketParams).delta + back(pattern.bucketParams).overlap + length(pattern.bucketParams) - 2;
 }
 

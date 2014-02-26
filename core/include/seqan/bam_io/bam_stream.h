@@ -78,6 +78,9 @@ namespace seqan {
  * The output is as follows:
  *
  * @include demos/bam_io/bam_stream.cpp.stdout
+ *
+ * @see BamStream::Format
+ * @see BamStream::OperationMode
  */
 
 /*!
@@ -198,10 +201,10 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
  *
  * @signature enum BamStream::OperationMode;
  *
- * @var BamStream::OperationMode BamStream::READ;
+ * @val BamStream::OperationMode BamStream::READ;
  * @brief Enum value for reading.
  *
- * @var BamStream::OperationMode BamStream::WRITE;
+ * @val BamStream::OperationMode BamStream::WRITE;
  * @brief Enum value for writing.
  */
 
@@ -212,14 +215,16 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
  *
  * @signature enum BamStream::Format;
  *
- * @var BamStream::Format BamStream::AUTO;
+ * @see BamStream
+ *
+ * @val BamStream::Format BamStream::AUTO;
  * @brief Auto-detect the format from file content on reading and from the file name on writing.  If auto-detection
  *        fails, SAM is used.
  *
- * @var BamStream::Format BamStream::SAM;
+ * @val BamStream::Format BamStream::SAM;
  * @brief Force reading/writing of SAM.
  *
- * @var BamStream::Format BamStream::BAM;
+ * @val BamStream::Format BamStream::BAM;
  * @brief Force reading/writing of BAM.
  */
 
@@ -465,7 +470,7 @@ inline int open(BamStream & bamIO,
  *
  * @signature void reset(stream);
  *
- * @param stream The @link BamStream @endlink object to reset.
+ * @param[in,out] stream The @link BamStream @endlink object to reset.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
  */
@@ -496,7 +501,7 @@ inline int reset(BamStream & bamIO)
  *
  * @signature int flush(stream);
  *
- * @param stream The @link BamStream @endlink object to flush.
+ * @param[in,out] stream The @link BamStream @endlink object to flush.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on errors.
  *
@@ -537,7 +542,7 @@ inline int flush(BamStream & bamIO)
  *
  * @signature int close(stream);
  *
- * @param stream[in,out] The @link BamStream @endlink object to close.
+ * @param[in,out] stream The @link BamStream @endlink object to close.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
  */
@@ -618,7 +623,7 @@ inline bool atEnd(BamStream & bamIO)
  *
  * @signature bool isGood(stream);
  *
- * @param stream The @link BamStream @endlink object to query.
+ * @param[in] stream The @link BamStream @endlink object to query.
  *
  * @return bool true if the stream is not in an error state and false otherwise.
  */
@@ -792,8 +797,8 @@ inline __int64 positionInFile(BamStream const & bamIO)
  * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
  *                              alignments.
  * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
- * @param[in]     pos           The begin of the region to jump to.
- * @param[in]     posEnd        The end of the region to jump to.
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
  * @return bool true if seeking was successful, false if not.

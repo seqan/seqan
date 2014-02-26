@@ -142,7 +142,10 @@ struct PatternIterator_
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-struct Score_;
+struct Score_
+{
+    typedef unsigned char   Type;
+};
 
 // ============================================================================
 // Classes
@@ -214,6 +217,17 @@ SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
 getScore(Finder2<TText, TPattern, TSpec> const & finder)
 {
     return finder._score;
+}
+
+// ----------------------------------------------------------------------------
+// Function getScoreThreshold()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TPattern, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
+getScoreThreshold(Finder2<TText, TPattern, TSpec> const & finder)
+{
+    return finder._scoreThreshold;
 }
 
 // ----------------------------------------------------------------------------

@@ -59,14 +59,12 @@ namespace seqan {
 // TODO(holtgrew): Mark as internal with underscore?
 
 /*!
- * @tag TraceBack
+ * @typedef TraceBack
  * @headerfile <seqan/align.h>
  * @brief Traceback value.
  *
  * @signature struct TraceBack_;
  * @signature typedef SimpleType<unsigned char, TraceBack_> TraceBack.
- *
- * @section Remarks
  *
  * The ValueSize of <tt>TraceBack</tt> is 3.  The values are defined in the following way:
  *

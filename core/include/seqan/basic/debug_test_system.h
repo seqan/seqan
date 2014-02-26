@@ -166,7 +166,7 @@ bool foo(MyEnum x) {
     } while (false)
 
 /*!
- * @macro SEQAN_CHECK
+ * @macro AssertMacros#SEQAN_CHECK
  * @headerfile <seqan/basic.h>
  * @brief Force abortion of program if a condition is not met, regardless of debugging settings.
  * 
@@ -277,11 +277,11 @@ bool foo(MyEnum x) {
 // You can print the current level using the function seqan::printDebugLevel().
 
 /*!
- * @macro SEQAN_ENABLE_TESTING
+ * @macro TestSystemMacros#SEQAN_ENABLE_TESTING
  * @headerfile <seqan/basic.h>
  * @brief Indicates whether testing is enabled.
  *
- * @signature SEQAN_ENABLE_DEBUG
+ * @signature SEQAN_ENABLE_TESTING
  *
  * When set to 1, testing is enabled.  If it is undefined or set to 0, testing is disabled.  This means the macros for
  * the tests (SEQAN_BEGIN_TESTSUITE, SEQAN_DEFINE_TEST, SEQAN_CALL_TEST, and SEQAN_END_TESTSUITE) will be enabled.  This
@@ -291,9 +291,9 @@ bool foo(MyEnum x) {
  *
  * If you want to change this value in your C++ program code you have to define this value before including any SeqAn header!
  *
- * If set to 1 then SEQAN_ENABLE_DEBUG is forced to 1 as well.
+ * If set to 1 then @link TestSystemMacros#SEQAN_ENABLE_DEBUG @endlink is forced to 1 as well.
  *
- * @see SEQAN_ENABLE_DEBUG
+ * @see TestSystemMacros#SEQAN_ENABLE_DEBUG
  */
 
 /**
@@ -317,7 +317,7 @@ bool foo(MyEnum x) {
 #endif  // #ifndef SEQAN_ENABLE_TESTING
 
 /*!
- * @macro SEQAN_ENABLE_DEBUG
+ * @macro TestSystemMacros#SEQAN_ENABLE_DEBUG
  * @headerfile <seqan/basic.h>
  * @brief Indicates whether debugging is enabled.
  *
@@ -332,7 +332,7 @@ bool foo(MyEnum x) {
  *
  * Force-enabled if SEQAN_ENABLE_TESTING is set to 1.
  *
- * @see SEQAN_ENABLE_TESTING
+ * @see TestSystemMacros#SEQAN_ENABLE_TESTING
  */
 
 /**
@@ -396,7 +396,7 @@ int main(int argc, char const ** argv)
 #endif  // #ifndef SEQAN_ENABLE_CHECKPOINTS
 
 /*!
- * @macro SEQAN_TYPEDEF_FOR_DEBUG
+ * @macro TestSystemMacros#SEQAN_TYPEDEF_FOR_DEBUG
  * @headerfile <seqan/basic.h>
  * @brief When using typedefs that are only used in debug mode then they have to be marked with macro.
  *
@@ -1781,7 +1781,7 @@ inline void fail()
 }  // namespace ClassTest
 
 /*!
- * @macro SEQAN_DEFINE_TEST
+ * @macro TestSystemMacros#SEQAN_DEFINE_TEST
  * @headerfile <seqan/basic.h>
  * @brief Expand to test definition.
  *
@@ -1823,7 +1823,12 @@ SEQAN_DEFINE_TEST(test_name)
     void SEQAN_TEST_ ## test_name()
 
 /*!
- * @macro SEQAN_BEGIN_TESTSUITE
+ * @defgroup TestSystemMacros Test System Macros
+ * @brief Macros for the test system.
+ */
+
+/*!
+ * @macro TestSystemMacros#SEQAN_BEGIN_TESTSUITE
  * @headerfile <seqan/basic.h>
  * @brief Expand to a test suite beginning.
  *
@@ -1875,7 +1880,7 @@ SEQAN_END_TESTSUITE
         ::seqan::ClassTest::beginTestSuite(# suite_name, argv[0]);
 
 /*!
- * @macro SEQAN_END_TESTSUITE
+ * @macro TestSystemMacros#SEQAN_END_TESTSUITE
  * @headerfile <seqan/basic.h>
  * @brief Expand to test suite ending.
  *
@@ -1922,7 +1927,7 @@ SEQAN_END_TESTSUITE
     }
 
 /*!
- * @macro SEQAN_CALL_TESTS
+ * @macro TestSystemMacros#SEQAN_CALL_TESTS
  * @headerfile <seqan/basic.h>
  * @brief Expand to calling a test.
  *
@@ -1969,7 +1974,7 @@ SEQAN_CALL_TEST(test_name);
     } while (false)
 
 /*!
- * @mfn SEQAN_SKIP_TEST
+ * @macro TestSystemMacros#SEQAN_SKIP_TEST
  * @headerfile <seqan/basic.h>
  * @brief Force the test to return without failing and mark it as skipped.
  *
@@ -2045,7 +2050,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_NOT
+ * @macro AssertMacros#SEQAN_ASSERT_NOT
  * @headerfile <seqan/basic.h>
  * @brief Test that the given expression can be coerced to <tt>false</tt>.
  * 
@@ -2074,14 +2079,19 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_EQ
+ * @macro AssertMacros#SEQAN_ASSERT_EQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are equal, as defined by the matching call to the <tt>operator=(,)</tt>.
  
  * @signature SEQAN_ASSERT_EQ(expression1, expression2);
  * @signature SEQAN_ASSERT_EQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2100,14 +2110,19 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_NEQ
+ * @macro AssertMacros#SEQAN_ASSERT_NEQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are not equal, as defined by the matching call to the <tt>operator!=(,)</tt>.
  * 
- * @signature SEQAN_ASSERT_NEQ(expression);
- * @signature SEQAN_ASSERT_NEQ_MSG(expression, message[, parameters]);
+ * @signature SEQAN_ASSERT_NEQ(expression1, expression2);
+ * @signature SEQAN_ASSERT_NEQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2126,7 +2141,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_LT
+ * @macro AssertMacros#SEQAN_ASSERT_LT
  * @headerfile <seqan/basic.h>
  * @brief Test that the two given expressions are in the less-than relation as defined by the matching call to
  *        operator<(,).
@@ -2134,7 +2149,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_LT(expression1, expression2);
  * @signature SEQAN_ASSERT_LT(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2152,7 +2172,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_LEQ
+ * @macro AssertMacros#SEQAN_ASSERT_LEQ
  * 
  * @brief Test that the two given expressions are in the less-than-or-equal
  *        relation as defined by the matching call to operator<=(,).
@@ -2160,9 +2180,14 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_LEQ(expression1, expression2)
  * @signature SEQAN_ASSERT_LEQ_MSG(expression1, expression2, comment[,
  *            parameters])
- * 
- * @section Remarks
- * 
+ *
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
+ *
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2182,7 +2207,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_GT
+ * @macro AssertMacros#SEQAN_ASSERT_GT
  * 
  * @brief Test that the two given expressions are in the greather-than relation
  *        as defined by the matching call to operator>(,).
@@ -2190,7 +2215,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_GT(expression1, expression2);
  * @signature SEQAN_ASSERT_GT_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
@@ -2211,7 +2241,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_GEQ
+ * @macro AssertMacros#SEQAN_ASSERT_GEQ
  * 
  * @brief Test that the two given expressions are in the greater-than-or-equal
  *        relation as defined by the matching call to operator>=(,).
@@ -2219,7 +2249,12 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @signature SEQAN_ASSERT_GEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_GEQ_MSG(expression1, expression2, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] expression1 The first expression.
+ * @param[in] expression2 The second expression.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2237,14 +2272,20 @@ SEQAN_DEFINE_TEST(test_skipped)
  */
 
 /*!
- * @macro SEQAN_ASSERT_IN_DELTA
+ * @macro AssertMacros#SEQAN_ASSERT_IN_DELTA
  * 
- * @brief Test that the given expression can be coerced to <tt>true</tt>.
+ * @brief Test that a value <tt>y</tt> lies within an <tt>delta</tt> environment of a value <tt>x</tt>.
  * 
  * @signature SEQAN_ASSERT_IN_DELTA(x, y, delta);
  * @signature SEQAN_ASSERT_IN_DELTA_MSG(x, y, delta, comment[, parameters]);
  * 
- * @section Remarks
+ * @param[in] x           The value to center the environment in.
+ * @param[in] y           The value to check whether it falls within the environment.
+ * @param[in] delta       The environment size.
+ * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
+ *                        on failure.
+ * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
+ *                        <tt>comment</tt>.
  * 
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
@@ -2967,18 +3008,15 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * 
  * This only works when using the SeqAn SVN checkout!
  * 
- * @section Remarks
- * 
  * The pointed to string is initialized on program startup by the code generated by SEQAN_BEGIN_TESTSUITE.
  * 
  * @section Examples
  * 
  * @code{.cpp}
- * const char *p = SEQAN_PATH_TO_ROOT);
- * char buffer[1000];
- * strcpy(buffer, p);
- * strcat(buffer, "/tests/files/example.txt");
- * FILE *f = fopen(buffer, "w");
+ * CharString buffer = SEQAN_PATH_TO_ROOT();
+ * append(buffer, "/core/tests/files/example.txt");
+ *
+ * FILE *f = fopen(toCString(buffer), "w");
  * fprintf(f, "Test Data");
  * fclose(f);
  * @endcode

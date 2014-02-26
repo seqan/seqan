@@ -60,20 +60,17 @@
 
 /*!
  * @fn FMIndex#begin
+ * @headerfile seqan/index.h
+ * @brief Returns an iterator pointing to the root node of the virtual prefix trie of the reversed text of the index.
  * 
- * @brief Returns an iterator pointing to the root node of the virtual prefix
- *        trie of the reversed text of the index.
+ * @signature TIterator begin(index, tag);
  * 
- * @signature Iterator begin(index, tag)
+ * @param[in] index The index to be traversed.
+ * @param[in] tag   The specialisation of the iterator to be returned by the function. Types: VSTree Iterator
  * 
- * @param index The index to be traversed.
- * @param tag The specialisation of the iterator to be returned by the function.
- *            Types: VSTree Iterator
- * 
- * @return TReturn Returns an iterator pointing to the root node of the virtual
- *                 prefix trie of the reversed text of the the index. Types:
- *                 nolink:<tt>The result of Iterator<Index<TText, TIndexSpec>,
- *                 TSpec >::Type</tt>
+ * @return TIterator Returns an iterator pointing to the root node of the virtual prefix trie of the reversed text
+ *                   of the the index.  Types: <tt>The result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;,
+ *                   TSpec&gt;::Type</tt>
  */
 
 /*!
@@ -96,360 +93,11 @@
  *                 position is of the same type as pos. Types: The type of the position.
  */
 
-
-/*!
- * @defgroup PrefixSumTableFibres PrefixSumTable Fibres
- * 
- * @brief Tag to select a specific fibre of a @link PrefixSumTableFibres @endlink.
- * 
- * @see Fibre
- * @see Index#getFibre
- * 
- * @tag PrefixSumTableFibres#FibreEntries
- * 
- * @brief The entries in the prefix sum table.
- */
-
-/*!
- * @class PrefixSumTable
- * 
- * @headerfile seqan/Index.h
- * 
- * @brief The prefix-sum table is a data structure which stores for each
- *        character the number of smaller lexicographic smaller characters in a
- *        given text.
- * 
- * @signature template <typename TChar, typename TSpec>
- *            class PrefixSumTable;
- * 
- * @tparam TSpec A specialisation tag. Default: void
- * @tparam TChar The character type
- */
-
-/*!
- * @fn PrefixSumTable#clear
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Resets the prefix sum table.
- * 
- * @signature clear(prefixSumTable)
- * @param prefixSumTable The prefix sum table to be cleared.
- */
-
-/*!
- * @fn PrefixSumTable#createPrefixSumTable
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Creates the prefix sum table
- * 
- * @signature createPrefixSumTable(prefixSumTable, text)
- * 
- * @param text The underlying text. Types: @link String @endlink, @link StringSet @endlink
- * @param prefixSumTable The prefix sum table to be constructed.
- */
-
-/*!
- * @fn PrefixSumTable#getAlphabetSize
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the number of different characters in the prefix sum table.
- * 
- * @signature getAlphabetSize(prefixSumTable)
- * 
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#getCharacterPosition
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the position of a given character within the prefix sum table.
- * 
- * @signature getCharacterPosition(prefixSumTable, character)
- * 
- * @param character A character.
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#getCharacter
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the character of a given position within the prefix sum table.
- * 
- * @signature getCharacter(prefixSumTable, pos)
- * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#getPrefixSum
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the prefix sum of a given position.
- * 
- * @signature getPrefixSum(prefixSumTable, pos)
- * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#getValue
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the prefix sum of a given position.
- * 
- * @signature getValue(prefixSumTable, pos)
- * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#getFibre
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns a specific fibre of a prefix-sum table.
- * 
- * @signature getFibre(prefixSumTable, fibreTag)
- * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link PrefixSumTableFibres PrefixSumTanble Fibres @endlink.
- * @param prefixSumTable The prefix sum table.
- * 
- * @return TReturn A reference to the @link Fibre @endlink object.
- */
-
-/*!
- * @fn PrefixSumTable#length
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the number of different characters in the prefix-sum table.
- * 
- * @signature length(lfTable)
- * 
- * @param lfTable The prefix-sum table.
- * 
- * @return TReturn Returns the number of different characters in the prefix-sum
- *                 table.If the type of the characters of the prefix-sum table
- *                 consists of more than 8 bit only the characters actually
- *                 occurring in the original text are accounted for when calling
- *                 length. Types: @link Size @endlink of the prefix-sum table.
- */
-
-/*!
- * @fn PrefixSumTable#prefixSum
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns a reference to the entry of the prefix sum table of a given
- *        position.
- * 
- * @signature prefixSum(prefixSumTable, pos)
- * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink.
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#resize
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Resize the prefix-sum table to be able to store more or less
- *        characters.
- * 
- * @signature resize(prefixSumTable, size [,value, resizeTag])
- * 
- * @param resizeTag Specifies the strategy that is applied if the capacity of
- *                  <tt>object</tt> is less than <tt>newLength</tt>. (optional)
- *                  Types: @link OverflowStrategyTags @endlink Default: Specified by @link
- *                  DefaultOverflowExplicit @endlink.
- * @param prefixSumTable A prefix sum table. Types: PrefixSumTable
- * @param value The value to be used to initialize the new storage.
- * @param size The new size. Types: @link UnsignedIntegerConcept @endlink
- */
-
-/*!
- * @fn PrefixSumTable#setPrefixSum
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns a reference to the entry of the prefix-sum table of a given
- *        position.
- * 
- * @signature setPrefixSum(prefixSumTable, value, pos)
- * 
- * @param pos A position. Types: @link UnsignedIntegerConcept @endlink
- * @param value A specified value to be inserted.
- * @param prefixSumTable A prefix sum table.
- */
-
-/*!
- * @fn PrefixSumTable#open
- * 
- * @headerfile seqan/index.h
- * 
- * @brief This functions loads a prefix-sum table from disk.
- * 
- * @signature bool open(prefixSumTable, fileName [, openMode]);
- * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param prefixSumTable The prefix-sum table.
- * @param fileName C-style character string containing the file name.
- * 
- * @return bool <tt>true</tt> on success.
- */
-
-/*!
- * @fn PrefixSumTable#save
- * 
- * @headerfile seqan/index.h
- * 
- * @brief This functions saves a prefix-sum table to disk.
- * 
- * @signature bool save(prefixSumTable, fileName [, openMode]);
- * 
- * @param openMode The combination of flags defining how the file should be
- *                 opened.To open a file read-only, write-only or to read and
- *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
- *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
- *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
- *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
- *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
- *                 OPEN_APPEND</tt>
- * @param prefixSumTable The prefix-sum table.
- * @param fileName C-style character string containing the file name.
- * 
- * @return bool <tt>true</tt> on success.
- */
-
-
-
-
-
-
-
-
-
-/*!
- * @class SequenceBitMask
- *
- * @extends RankDictionary
- * 
- * @headerfile seqan/index.h
- * 
- * @brief The string set bit string dictionary is a string set of rank support
- *        bit strings for constant time acces of the rank of a specified
- *        character at a specified position.
- * 
- * @signature template <typename TValue>
- *            class RankDictionary<SequenceBitMask<TValue> >;
- * 
- * @tparam TValue The value type of the .
- * 
- * @section Remarks
- * 
- * This data structure is optimized for very small alphabets, such as @link Dna @endlink
- * or  @link Dna5 @endlink.  Consider using a @link WaveletTree @endlink if
- * your alphabet size is larger.
- */
-
-/*!
- * @defgroup SequenceBitMaskFibres SequenceBitMask Fibres
- * @brief Tag to select a specific fibre of a SequenceBitMask.
- *
- * @tag SequenceBitMaskFibres#FibreBitStrings
- * @brief The string set containing a bit string for each character.
- * 
- * @see Fibre
- * @see Index#getFibre
- */
-
-
-
-
-
-
-
-
-
-
-
-/*!
- * @fn RankDictionary#getValue
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the character of a specified position.
- * 
- * @signature getValue(dictionary, pos)
- * 
- * @param pos The position. Types: @link UnsignedIntegerConcept @endlink.
- * @param dictionary The dictionary.
- */
-
-
-/*!
- * @fn RankDictionary#countOccurrences
- * 
- * @headerfile seqan/index.h
- * 
- * @brief Returns the rank (number of occurrences) of a specified character up
- *        to a specified position.
- * 
- * @signature countOccurrences(dictionary, character, pos)
- * 
- * @param character The character of interest.
- * @param pos The position (which is also included in the rank computation).
- * @param dictionary The dictionary. 
- *
- * @return TReturn The rank (number of occurrences) of a specified character up
- *                 to a specified position. Types: <tt>unsigned</tt>
- */
-
-/*!
- * @fn RankDictionary#createRankDictionary
- * 
- * @headerfile seqan/index.h
- * 
- * @brief This functions creates the dictionary.
- * 
- * @signature createRankDictionary(dictionary, text)
- * 
- * @param text A text to be transfered into a wavelet tree. Types: @link String @endlink
- * @param dictionary The dictionary.
- */
-
-
-
-
-
 /*!
  * @defgroup RankSupportBitStringFibres RankSupportBitString Fibres
  * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        RankSupportBitString @endlink.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre Fibres @endlink of a rank support
  * bit string.
@@ -458,35 +106,28 @@
  * @see Index#getFibre
  * 
  * @tag RankSupportBitStringFibres#FibreSuperBlocks
- * 
  * @brief The super block string.
  * 
  * @tag RankSupportBitStringFibres#FibreBits
- * 
  * @brief The bit string.
  * 
  * @tag RankSupportBitStringFibres#FibreBlocks
- * 
  * @brief The block string.
  */
 
 /*!
  * @class RankSupportBitString
- * 
  * @headerfile seqan/index.h
- * 
  * @brief A bit string supporting rank queries in constant time.
  * 
  * @signature template <typename TSpec>
  *            class RankSupportBitString;
  * 
- * @tparam TSpec Specialisation tag. Default: void
- * 
- * @section Remarks
+ * @tparam TSpec Specialisation tag.  Default: void
  * 
  * The constant rank query time is achieved by evaluating precomputed
- * subsolutions. In order to do so, the bit string is divided into blocks of
- * length l. A super block string stores for each block of l blocks the number
+ * subsolutions.  In order to do so, the bit string is divided into blocks of
+ * length l.  A super block string stores for each block of l blocks the number
  * of bits set from the beginning. In addition a block string stores the number
  * of bits set in each block from the start of the last super block block.
  * Therefore it is possible to compute the result of a rank query in constant
@@ -737,11 +378,9 @@
  * @see Index#getFibre
  * 
  * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
- * 
  * @brief The bit string encoding the position of the sentinel sign.
  * 
  * @tag SentinelRankDictionaryFibres#FibreRankDictionary
- * 
  * @brief The rank dictionary.
  */
 
@@ -827,17 +466,16 @@
 
 /*!
  * @fn SentinelRankDictionary#countOccurrences
- * 
  * @headerfile seqan/index.h
+ * @brief Returns the number of occurrences of a specified character from the start to a specified position.
  * 
- * @brief Returns the number of occurrences of a specified character from the
- *        start to a specified position.
+ * @signature TSize countOccurrences(dictionary, character, pos);
  * 
- * @signature countOccurrences(dictionary, character, pos)
- * 
- * @param character The character.
- * @param pos The position (which is included in the counting).
- * @param dictionary The dictionary.
+ * @param[in] dictionary The dictionary.
+ * @param[in] character  The character.
+ * @param[in] pos        The position (which is included in the counting).
+ *
+ * @return TSize The number of occurences  (Metafunction: @link Index#Size @endlink).
  */
 
 /*!

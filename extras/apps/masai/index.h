@@ -301,7 +301,6 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
     typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
     typedef typename Value<TIndex>::Type                        TAlphabet;
-    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
 
     TIndex const & index = container(it);
     TLF const & lf = indexLF(index);

@@ -40,46 +40,7 @@
 #include "test_sequence_journaled.h"
 #include "test_sequence_journaled_iterator.h"
 
-
 SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
-    // Call tests of the sequence journal with unbalanced tree journal.
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_assign);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_set);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_host);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_clear);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_erase_position);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_erase_begin_end);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_insert);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_insert_value);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_assign_value);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_subscript_operator);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_assign_infix);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_length);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_virtual_to_host_position);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_host_to_virtual_position);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_copy_constructor);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_begin_end_iterator);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_begin_end_const_iterator);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_subscript_operator_randomized);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_fuzzying);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_segments_read_only);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_segments_read_write);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_reset);
-
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_sum);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_difference);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_relations);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_set_position);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_position);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_begin);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_end);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_begin);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_end);
-    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_container);
-
-    // TODO(rmaerker): Problems with implementation of end in unbalanced trees, however, unbalanced trees ought be deprecated right now.
-
 
     // Call tests of the sequence journal with sorted array journals.
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_assign);
@@ -117,6 +78,5 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_begin);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_end);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_container);
-
 }
 SEQAN_END_TESTSUITE

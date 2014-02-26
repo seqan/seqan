@@ -22,7 +22,7 @@ class MissingSignatureValidator(ProcDocValidator):
     def validate(self, proc_entry):
         IGNORED = ['variable', 'member_variable', 'tag', 'grouped_tag', 'typedef',
                    'grouped_typedef', 'signature', 'concept', 'member_typedef',
-                   'enum', 'grouped_enum']
+                   'enum', 'grouped_enum', 'enum_value']
         if not hasattr(proc_entry, 'signatures') or proc_entry.kind in IGNORED:
             return  # Skip if type has no signatures.
         if not proc_entry.signatures:
@@ -114,10 +114,26 @@ class EmptyBriefValidator(ProcDocValidator):
             msg = 'Missing non-empty @brief clause.'
             self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
 
+
+class ClassCannotExtendConceptValidator(ProcDocValidator):
+    """Warns a class extends a concept."""
+
+    def validate(self, proc_entry):
+        if proc_entry.kind not in ['class', 'specialization']:
+            return  # Skip.
+        for ext in proc_entry.extends:
+            if not ext in proc_entry.doc.top_level_entries:
+                continue
+            if proc_entry.doc.top_level_entries[ext].kind not in ['class', 'specialization']:
+                msg = 'Class %s tries to inherit from non-class %s' % (proc_entry.name, ext)
+                self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'error')
+
+
 # Array with the validator classes to use.
 VALIDATORS = [MissingSignatureValidator,
               MissingParameterDescriptionValidator,
               MissingSignatureKeywordsValidator,
               #OnlyRemarksInBodyValidator,
               ReturnVoidValidator,
-              EmptyBriefValidator]
+              EmptyBriefValidator,
+              ClassCannotExtendConceptValidator]

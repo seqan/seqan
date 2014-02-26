@@ -325,11 +325,11 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  * @fn Gaps#iter
  * @brief Return an iterator to a specific position in the current clipping.
  *
- * @signature TIterator iter(gaps, viewPos[, tag);
+ * @signature TIterator iter(gaps, viewPos[, tag]);
  *
- * @param gaps    The Gaps object to get an iterator into.
- * @param viewPos View position to get an iterator to.
- * @param tag     An optional tag for selecting the iterator type.
+ * @param[in] gaps    The Gaps object to get an iterator into.
+ * @param[in] viewPos View position to get an iterator to (Metafunction: @link ContainerConcept#Position @endlink).
+ * @param[in] tag     An optional tag for selecting the iterator type.
  *
  * @return TIterator The resulting iterator.  The type is <tt>Iterator<TGaps, TTag>::Type</tt> where <tt>TTag</tt> is
  *                   the type of <tt>tag</tt>.
@@ -358,7 +358,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature void clearClipping(gaps);
  *
- * @param gaps Object to clear clipping from.
+ * @param[in,out] gaps Object to clear clipping from.
  */
 
 /**
@@ -384,7 +384,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature void clearGaps(gaps);
  *
- * @param gaps Object to clear gaps from.
+ * @param[in,out] gaps Object to clear gaps from.
  */
 
 /**
@@ -412,9 +412,10 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature TSize length(gaps);
  *
- * @param gaps The @link Gaps @endlink object to query for its length.
+ * @param[in] gaps The @link Gaps @endlink object to query for its length.
  *
- * @return TSize The number of gaps and characters between the beginning and the end of the clipping.
+ * @return TSize The number of gaps and characters between the beginning and the end of the clipping (Metafunction:
+ *               @link ContainerConcept#Size @endlink).
  */
 
 /**
@@ -440,9 +441,9 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature TSize unclippedLength(gaps);
  *
- * @param gaps The Gaps object to query.
+ * @param[in] gaps The Gaps object to query.
  *
- * @return TSize The result.
+ * @return TSize The result (Metafunction: @link ContainerConcept#Size @endlink).
  */
 
 /**
@@ -468,10 +469,10 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature TPos toViewPosition(gaps, sourcePos);
  *
- * @param gaps      The gaps object to use for translation.
- * @param sourcePos The source position (in the underlying sequence) to translate.
+ * @param[in] gaps      The gaps object to use for translation.
+ * @param[in] sourcePos The source position (in the underlying sequence) to translate.
  *
- * @return TPos The resulting position in the view.
+ * @return TPos The resulting position in the view (Metafunction: @link ContainerConcept#Position @endlink).
  */
 
 /**
@@ -499,10 +500,11 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature TPos toSourcePosition(gaps, viewPos);
  *
- * @param gaps      The gaps object to use for translation.
- * @param sourcePos The view position (including gaps and clipping) to translate.
+ * @param[in] gaps      The gaps object to use for translation.
+ * @param[in] sourcePos The view position (including gaps and clipping) to translate.
  *
- * @return TPos The resulting position in the underlying sequence.
+ * @return TPos The resulting position in the underlying sequence (Metafunction: @link ContainerConcept#Position
+ *              @endlink).
  */
 
 /**
@@ -530,8 +532,8 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature bool isGap(gaps, viewPos);
  *
- * @param gaps    The Gaps object to query.
- * @param viewPos The view position (including clipping and gaps).
+ * @param[in] gaps    The Gaps object to query.
+ * @param[in] viewPos The view position (including clipping and gaps).
  *
  * @return bool The query result.
  */
@@ -564,9 +566,9 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature void insertGaps(gaps, viewPos, count);
  *
- * @param gaps    The Gaps object to insert gaps into.
- * @param viewPos The view position (including clipping and gaps) to insert gaps at.
- * @param count   The number of gaps to insert.
+ * @param[in,out] gaps    The Gaps object to insert gaps into.
+ * @param[in]     viewPos The view position (including clipping and gaps) to insert gaps at.
+ * @param[in]     count   The number of gaps to insert.
  */
 
 /**
@@ -598,8 +600,8 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @signature void insertGap(gaps, viewPos);
  *
- * @param gaps    The Gaps object to insert gap into.
- * @param viewPos The view position (including clipping and gaps) to insert the gap at.
+ * @param[in,out] gaps    The Gaps object to insert gap into.
+ * @param[in]     viewPos The view position (including clipping and gaps) to insert the gap at.
  */
 
 /**
@@ -638,11 +640,11 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature TSize removeGaps(gaps, viewPos, count);
  *
- * @param gaps    The gaps object to remove gap characters from.
- * @param viewPos The view positions to remove gap characters from.
- * @param count   The number of gap characters to remove.
+ * @param[in,out] gaps    The gaps object to remove gap characters from.
+ * @param[in]     viewPos The view positions to remove gap characters from.
+ * @param[in]     count   The number of gap characters to remove.
  *
- * @return TSize The number of gap characters removed.
+ * @return TSize The number of gap characters removed (Metafunction: @link ContainerConcept#Size @endlink).
  */
 
 /**
@@ -675,10 +677,10 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature TSize removeGap(gaps, viewPos);
  *
- * @param gaps    The gaps object to remove one gap character from.
- * @param viewPos The view positions to remove one gap character from.
+ * @param[in,out] gaps    The gaps object to remove one gap character from.
+ * @param[in]     viewPos The view positions to remove one gap character from.
  *
- * @return TSize The number of gap characters removed.
+ * @return TSize The number of gap characters removed (Metafunction: @link ContainerConcept#Size @endlink).
  */
 
 /**
@@ -718,10 +720,11 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature TSize countGaps(gaps, viewPos);
  *
- * @param gaps    The Gaps object to query.
- * @param viewPos View position (including clipping and gaps) to query at.
+ * @param[in] gaps    The Gaps object to query.
+ * @param[in] viewPos View position (including clipping and gaps) to query at.
  *
- * @return TSize The number of gap characters at <tt>viewPos</tt>.
+ * @return TSize The number of gap characters at <tt>viewPos</tt>  (Metafunction: @link ContainerConcept#Size
+ *               @endlink).
  */
 
 /**
@@ -747,10 +750,11 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature TSize countCharacters(gaps, viewPos);
  *
- * @param gaps    The Gaps object to query.
- * @param viewPos View position (including clipping and gaps) to query at.
+ * @param[in] gaps    The Gaps object to query.
+ * @param[in] viewPos View position (including clipping and gaps) to query at.
  *
- * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt>.
+ * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt> (Metafunction: @link
+ *               ContainerConcept#Size @endlink).
  */
 
 // ----------------------------------------------------------------------------
@@ -763,8 +767,8 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature void setClippedBeginPosition(gaps, unclippedViewPos);
  *
- * @param gaps             The Gaps object to set the clipping begin position of.
- * @param unclippedViewPos View position (including gaps but excluding clipping) to set the clipping begin to.
+ * @param[in,out] gaps             The Gaps object to set the clipping begin position of.
+ * @param[in]     unclippedViewPos View position (including gaps but excluding clipping) to set the clipping begin to.
  */
 
 /**
@@ -798,8 +802,8 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature void setClippedEndPosition(gaps, unclippedViewPos);
  *
- * @param gaps             The Gaps object to set the clipping end position of.
- * @param unclippedViewPos View position (including gaps but excluding clipping) to set the clipping end to.
+ * @param[in,out] gaps             The Gaps object to set the clipping end position of.
+ * @param[in]     unclippedViewPos View position (including gaps but excluding clipping) to set the clipping end to.
  */
 
 /**
@@ -833,15 +837,15 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @signature TPos clippedBeginPosition(gaps);
  *
- * @param gaps             The Gaps object to query.
+ * @param[in] gaps             The Gaps object to query.
  *
- * @return TPos The begin position of the unclipped view.
+ * @return TPos The begin position of the unclipped view  (Metafunction: @link ContainerConcept#Position @endlink).
  *
  * @section Example
  *
  * In the following gaps configuration, the result of <tt>clippedBeginPosition(gaps)</tt> is 1.
  *
- * @code
+ * @code{.txt}
  * clipping                   [     )
  *   (half-open interval)           
  * 
@@ -893,15 +897,15 @@ clipped view position:     0123456
  *
  * @signature TPos clippedEndPosition(gaps);
  *
- * @param gaps             The Gaps object to query.
+ * @param[in] gaps             The Gaps object to query.
  *
- * @return TPos The end position of the unclipped view.
+ * @return TPos The end position of the unclipped view  (Metafunction: @link ContainerConcept#Position @endlink).
  *
  * @section Example
  *
  * In the following gaps configuration, the result of <tt>clippedEndPosition(gaps)</tt> is 7.
  *
- * @code
+ * @code{.txt}
  * clipping                   [     )
  *   (half-open interval)           
  * 
@@ -953,8 +957,8 @@ clipped view position:     0123456
  *
  * @signature void setBeginPosition(gaps, sourcePos);
  *
- * @param gaps      The Gaps object to set the begin position in.
- * @param sourcePos Position in the underlying sequence to set clipping to.
+ * @param[in,out] gaps      The Gaps object to set the begin position in.
+ * @param[in]     sourcePos Position in the underlying sequence to set clipping to.
  */
 
 /**
@@ -987,8 +991,8 @@ clipped view position:     0123456
  *
  * @signature void setEndPosition(gaps, sourcePos);
  *
- * @param gaps      The Gaps object to set the end position in.
- * @param sourcePos Position in the underlying sequence to set clipping to.
+ * @param[in,out] gaps      The Gaps object to set the end position in.
+ * @param[in]     sourcePos Position in the underlying sequence to set clipping to.
  */
 
 /**
@@ -1019,18 +1023,18 @@ clipped view position:     0123456
  * @fn Gaps#beginPosition
  * @brief Return the clipping begin position as a source position.
  *
- * @signature TPosition beginPosition(gaps);
+ * @signature TPos beginPosition(gaps);
  *
- * @param gaps The Gaps object to query.
+ * @param[in] gaps The Gaps object to query.
  *
- * @return TPosition The clipping begin position in the source.
+ * @return TPos The clipping begin position in the source (Metafunction: @link ContainerConcept#Position @endlink).
  *
  * @section Example
  *
  * In the following gaps configuration, the result of <tt>beginPosition(gaps)</tt> is $1$.  The clipping starts in a
  * gap and the source position of the first non-gap character right of the clipping begin has source position 1.
  *
- * @code
+ * @code{.txt}
  * clipping                   [     )
  *   (half-open interval)           
  * 
@@ -1081,17 +1085,17 @@ clipped view position:     0123456
  * @fn Gaps#endPosition
  * @brief Return the clipping end position as a source position.
  *
- * @signature TPosition endPosition(gaps);
+ * @signature TPos endPosition(gaps);
  *
- * @param gaps The Gaps object to query for the end position as a source position.
+ * @param[in] gaps The Gaps object to query for the end position as a source position.
  *
- * @return TPosition The end position as a source position.
+ * @return TPos The end position as a source position (Metafunction: @link ContainerConcept#Position @endlink).
  *
  * @section Example
  *
  * In the following gaps configuration, the result of <tt>endPositioN(gaps)</tt> is 4.
  *
- * @code
+ * @code{.txt}
  * clipping                   [     )
  *   (half-open interval)           
  * 
@@ -1236,7 +1240,7 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 // Function source()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): source concept in dox?
+// TODO(holtgrew): Document TSource via metafunctio.
 
 /**
 .Function.source
@@ -1256,7 +1260,7 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
  *
  * @signature TSource source(gaps);
  *
- * @param gaps The Gaps object to return the underling sequence for.
+ * @param[in] gaps The Gaps object to return the underling sequence for.
  * 
  * @return TSource Reference to the source of the Gaps.
  */
@@ -1313,8 +1317,8 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
  *
  * @signature void assignSource(gaps, seq);
  *
- * @param gaps The Gaps object to assign the source of.
- * @param seq  The @link SequenceConcept sequence @endlink to assign to the underlying string.:w
+ * @param[in,out] gaps The Gaps object to assign the source of.
+ * @param[in]     seq  The @link SequenceConcept sequence @endlink to assign to the underlying string.
  */
 
 /**
@@ -1376,8 +1380,8 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
  *
  * @signature void copyGaps(dest, source);
  *
- * @param[out] dest   The destination Gaps object (appropriate clipping, no gaps).
- * @param[in]  source The source Gaps object.
+ * @param[in,out] dest   The destination Gaps object (appropriate clipping, no gaps).
+ * @param[in]     source The source Gaps object.
  */
 
 template <typename TDestSource, typename TDestSpec, typename TSourceSource, typename TSourceSpec>
@@ -1419,8 +1423,8 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
  *
  * @signature void copyClipping(dest, source);
  *
- * @param[out] dest   The destination Gaps object.
- * @param[in]  source The source Gaps object.
+ * @param[in,out] dest   The destination Gaps object.
+ * @param[in]     source The source Gaps object.
  */
 
 template <typename TDestSource, typename TDestSpec, typename TSourceSource, typename TSourceSpec>

@@ -60,7 +60,19 @@ namespace seqan {
  * @tparam TPosition The type to use for positions.
  */
 
-/*
+/*!
+ * @fn SeedDiagonal::SeedDiagonal
+ * @brief Constructor
+ *
+ * @signature SeedDiagonal::SeedDiagonal();
+ * @signature SeedDiagonal::SeedDiagonal(beginPosH, beginPosV, length);
+ *
+ * @param[in] beginPosH The begin position in the horizontal orientation.
+ * @param[in] beginPosV The begin position in the vertical orientation.
+ * @param[in] length    The length of the seed diagonal.
+ */
+
+/*!
  * @var TPosition SeedDiagonal::beginPositionH
  * @brief The position in the database sequence (horizontal).
  * 
@@ -120,11 +132,11 @@ public:
  * @mfn SeedDiagonal#Position
  * @brief The position type of a @link SeedDiagonal @endlink.
  * 
- * @signature Position<TSeed>::Type;
+ * @signature Position<TDiagonal>::Type;
  * 
- * @tparam TSeed The seed diagonal to query for its position type. Types: Seed
+ * @tparam TDiagonal A @link SeedDiagonal @endlink.
  *
- * @return Type The position type of <tt>TSeed</tt>.
+ * @return Type The position type of <tt>TDiagonal</tt>.
  */
 
 /**
@@ -154,13 +166,13 @@ struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TP
 
 /*!
  * @mfn SeedDiagonal#Size
- * @brief The position type of a @link SeedDiagonal @endlink.
+ * @brief The size type of a @link SeedDiagonal @endlink.
  * 
- * @signature Size<TSeed>::Type
+ * @signature Size<TDiagonal>::Type;
+ *
+ * @tparam TDiagonal A @link SeedDiagonal @endlink.
  * 
- * @tparam TSeed The seed diagonal to query for its position type. Types: Seed
- * 
- * @return Type The size type of <tt>TSeed</tt>.
+ * @return Type The size type of <tt>TDiagonal</tt>.
  */
 
 /**
