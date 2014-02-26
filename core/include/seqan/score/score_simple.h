@@ -133,7 +133,7 @@ public:
 };
 
 /*!
- * @typedef SimpleScoreShortcut
+ * @typedef SimpleScoreTypedef SimpleScore
  * @headerfile <seqan/score.h>
  * @brief Simple scoring scheme.
  *

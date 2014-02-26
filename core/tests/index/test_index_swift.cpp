@@ -31,6 +31,6 @@ SEQAN_DEFINE_TEST(test_index_swift_find_empty_pattern)
 
 SEQAN_BEGIN_TESTSUITE(test_index_swift)
 {
-	SEQAN_CALL_TEST(test_index_swift_bug_creation);
+	SEQAN_CALL_TEST(test_index_swift_find_empty_pattern);
 }
 SEQAN_END_TESTSUITE

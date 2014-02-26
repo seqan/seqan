@@ -212,9 +212,9 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @signature TIterator begin(c[, tag]);
  *
- * @param c   The container to get the begin iterator for (type <tt>TContainer</tt>).
- * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
- *            When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
+ * @param[in] c   The container to get the begin iterator for (type <tt>TContainer</tt>).
+ * @param[in] tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
+ *                When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
  * @return TIterator Iterator to the beginning of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.
@@ -228,9 +228,9 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @signature TIterator end(c[, tag]);
  *
- * @param c   The container to get the end iterator for (type <tt>TContainer</tt>).
- * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
- *            When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
+ * @param[in] c   The container to get the end iterator for (type <tt>TContainer</tt>).
+ * @param[in] tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
+ *                When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
  * @return TIterator Iterator to the end of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.
@@ -242,9 +242,9 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @fn ContainerConcept#length
  * @brief Returns the size of the container.
  *
- * @signature TSize size(c);
+ * @signature TSize length(c);
  *
- * @param c The container to query for its size.
+ * @param[in] c The container to query for its size.
  *
  * @return TSize The number of elements in the container.
  */
@@ -255,7 +255,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @signature bool empty(c);
  *
- * @param c The container to query.
+ * @param[in] c The container to query.
  *
  * @return bool Whether or not the container is empty.
  */
@@ -266,8 +266,8 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @signature void swap(c1, c2);
  *
- * @param c1 The first container.
- * @param c2 The second container.
+ * @param[in,out] c1 The first container.
+ * @param[in,out] c2 The second container.
  *
  * Swaps the contents of <tt>c1</tt> and <tt>c2</tt>.  The <tt>swap</tt> function must be defined in the same
  * namespace as the container for Koenig lookup to work.  In the heart of sorting algorithms, for example,
@@ -433,9 +433,9 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  * @fn RandomAccessContainerConcept::operator[]
  * @brief Returns a reference to an arbitrary element in the sequence.
  *
- * @signature TReference SequenceConcept::operator[](pos);
+ * @signature TReference T::operator[](pos);
  *
- * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
+ * @param[in] pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TReference A reference to into the container with position <tt>pos</tt>.
  */
@@ -448,10 +448,21 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TReference value(seq, pos);
  *
- * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
+ * @param[in] seq The sequence to get value in.
+ * @param[in] pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TReference A reference to into the container with position <tt>pos</tt>.
+ */
+
+/*!
+ * @fn RandomAccessContainerConcept#assignValue
+ * @brief Assign value in RandomAccessContainer.
+ *
+ * @signature void assignValue(cont, pos, val);
+ *
+ * @param[in,out] seq The RandomAccessContainer to modify.
+ * @param[in]     pos The position to modify value at.
+ * @param[in]     val The value to assign to the given position.
  */
 
 // TODO(holtgrew): Really deprecated?
@@ -462,8 +473,8 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TGetValue getValue(seq, pos);
  *
- * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
+ * @param[in] seq The sequence to get value in.
+ * @param[in] pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TGetValue The get-value (type is @link ContainerConcept#GetValue @endlink of the sequence type).
  */
@@ -479,15 +490,22 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
 
 /*!
  * @fn SequenceConcept#iter
- * @brief Return iterator to given position.
+ * @headerfile <seqan/sequence.h>
+ * @brief Iterator to the item at the given position in a container.
  *
- * @signature TIter iter(seq, pos[, tag]);
+ * @signature TIterator iter(seq, pos[, tag]);
  *
- * @param seq The sequence to get an iterator into.
- * @param pos The position to generate the iterator at.
- * @param tag The tag to use for selecting the ierator type.    One of <tt>Standard</tt> and <tt>Rooted</tt>.
+ * @param[in] seq    The sequence to get the iterator for.
+ * @param[in] pos    The position to get the iterator for.
+ * @param[in] tag    The tag to pick the type of the iterator.
  *
- * @return TIter The resulting iterator.
+ * @return TIterator The resulting iterator.  If <tt>TTag</tt> is the type of <tt>tag</tt> and <tt>TSequence</tt> the
+ *                   type of <tt>seq</tt> then TIterator is of the type <tt>Iterator&lt;TSequence,
+ *                   TTag&gt;::Type</tt>.
+ *
+ * @section Remarks
+ *
+ * If <tt>pos</tt> is out of range then the iterator is invalid.
  */
 
 /*!
@@ -496,8 +514,8 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void append(seq, other);
  *
- * @param seq   The sequence to append the other sequence to.
- * @param other The other sequence to append to <tt>seq</tt>.  Of same type as <tt>seq</tt>.
+ * @param[in,out] seq   The sequence to append the other sequence to.
+ * @param[in]     other The other sequence to append to <tt>seq</tt>.  Of same type as <tt>seq</tt>.
  */
 
 /*!
@@ -506,8 +524,8 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void appendValue(seq, val);
  *
- * @param seq The sequence to append a value to (type <tt>TSequence</tt>).
- * @param val A value to append to the sequence.  Convertible to <tt>Value&lt;TSequence&gt;::Type</tt>.
+ * @param[in,out] seq The sequence to append a value to (type <tt>TSequence</tt>).
+ * @param[in]     val A value to append to the sequence.  Convertible to <tt>Value&lt;TSequence&gt;::Type</tt>.
  */
 
 /*!
@@ -516,7 +534,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TReference front(seq);
  *
- * @param seq The sequence to get the first element of.
+ * @param[in] seq The sequence to get the first element of.
  *
  * @return TReference A reference to the first element of <tt>seq</tt>.
  */
@@ -527,7 +545,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TReference back(seq);
  *
- * @param seq The sequence to get the last element of.
+ * @param[in] seq The sequence to get the last element of.
  *
  * @return TReference A reference to the last element of <tt>seq</tt>.
  */
@@ -538,11 +556,11 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void resize(seq, len[, val]);
  *
- * @param seq Sequence to resize.
- * @param len Length to resize <tt>seq</tt> to.
- * @param val When increasing the size, <tt>val</tt> is used to fill new entries.  When omitted,
- *            <tt>TValue()</tt> is used where <tt>TValue</tt> is the @link ContainerConcept#Value @endlink
- *            type of the sequence.
+ * @param[in,out] seq Sequence to resize.
+ * @param[in]     len Length to resize <tt>seq</tt> to.
+ * @param[in]     val When increasing the size, <tt>val</tt> is used to fill new entries.  When omitted,
+ *                    <tt>TValue()</tt> is used where <tt>TValue</tt> is the @link ContainerConcept#Value @endlink
+ *                    type of the sequence.
  */
 
 /*!
@@ -551,7 +569,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void clear(seq);
  *
- * @param seq Sequence to clear.
+ * @param[in,out] seq Sequence to clear.
  */
 
 /*!
@@ -560,9 +578,9 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void erase(seq, pos[, posEnd)
  *
- * @param seq    Sequence to remove range from.
- * @param pos    Begin position of the range to remove.
- * @param posEnd Optional end position of the range to remove.  If omitted, <tt>pos + 1</tt> is used.
+ * @param[in,out] seq    Sequence to remove range from.
+ * @param[in]     pos    Begin position of the range to remove.
+ * @param[in]     posEnd Optional end position of the range to remove.  If omitted, <tt>pos + 1</tt> is used.
  */
 
 /*!
@@ -571,7 +589,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void eraseFront(seq);
  *
- * @param seq The sequence to remove the first element from.
+ * @param[in,out] seq The sequence to remove the first element from.
  */
 
 /*!
@@ -580,19 +598,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature void eraseBack(seq);
  *
- * @param seq The sequence to remove the last element from.
- */
-
-/*!
- * @fn SequenceConcept#replace
- * @brief Replace part of a sequence.
- *
- * @signature void replace(seq, posBegin, posEnd, source)
- *
- * @param seq      The sequence to replace infix of.
- * @param posBegin Begin position in the sequence of the infix to replace.
- * @param posEnd   End position in the sequence of the infix to replace.
- * @param source   A sequence with the same value type as <tt>seq</tt>.
+ * @param[in,out] seq The sequence to remove the last element from.
  */
 
 /*!

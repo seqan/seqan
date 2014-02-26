@@ -70,8 +70,6 @@ template <typename TValue> inline size_t length(TValue * me);
  * 
  * @tparam TValue Type of the managed object.
  * 
- * @section Remarks
- * 
  * A tristate holder <tt>A</tt> that holds an object <tt>B</tt> has one of the following states:
  *
  * <ul>
@@ -1063,6 +1061,27 @@ assign(Holder<TValue, Tristate> & target_,
             
         case Holder<TValue, Tristate>::OWNER:
             assignValue(target_, value(source_));
+            break;
+
+        default:  // case Holder<TValue, Tristate>::DEPENDENT
+            setValue(target_, value(source_));
+            break;
+    }
+}
+
+template <typename TValue>
+inline void
+assign(Holder<TValue const, Tristate> & target_,
+       Holder<TValue const, Tristate> const & source_)
+{
+    SEQAN_CHECKPOINT;
+    switch(source_.data_state) {
+        case Holder<TValue, Tristate>::EMPTY:
+            clear(target_);
+            break;
+
+        case Holder<TValue, Tristate>::OWNER:
+            create(target_, value(source_));
             break;
 
         default:  // case Holder<TValue, Tristate>::DEPENDENT

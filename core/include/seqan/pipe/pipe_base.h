@@ -53,9 +53,7 @@ namespace seqan {
  * @tparam TInput The type of the pipeline module this module reads from.  Use Bundle2, Bundle3, etc. to read
  *                from more than one module.
  * 
- * @section Remarks
- * 
- * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
+ * Use @link Pipe#Value @endlink to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
  * default).
  * 
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
@@ -111,16 +109,14 @@ namespace seqan {
  * @tparam TInput1 The type of the first object.
  * @tparam TInput2 The type of the second object.
  * 
- * @section Remarks
- * 
  * Primarily used as an adaptor for pipes with two sources.
  * 
  * @see bundle2
  * 
- * @var VariableType Bundle2::in1
+ * @var TInput1 Bundle2::in1;
  * @brief TInput1 reference
  * 
- * @var TInput1 Bundle2::in2
+ * @var TInput2 Bundle2::in2;
  * @brief TInput2 reference
  */
 
@@ -157,8 +153,8 @@ namespace seqan {
  * 
  * @signature TBundle bundle2(in1, in2);
  * 
- * @param in1 First object.
- * @param in2 Second object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
  * 
  * @return TBundle A Bundle2 with references to <tt>in1</tt> and <tt>in2</tt>.
  * 
@@ -188,25 +184,23 @@ namespace seqan {
  * @brief Stores references to three arbitrary objects.
  * 
  * @signature template <typename TInput1, typename TInput2, typename TInput3>
- *            struct Bundle3<TInput1, TInput2, TInput3>;
+ *            struct Bundle3;
  * 
  * @tparam TInput3 The type of the third object.
  * @tparam TInput2 The type of the second object.
  * @tparam TInput1 The type of the first object.
  * 
- * @section Remarks
- * 
  * Primarily used as an adaptor for pipes with three sources.
  * 
  * @see bundle3
  * 
- * @var TInput1 Bundle3::in1
+ * @var TInput1 Bundle3::in1;
  * @brief TInput1 reference
  * 
- * @var TInput2 Bundle3::in2
+ * @var TInput2 Bundle3::in2;
  * @brief TInput2 reference
  * 
- * @var TInput3 Bundle3::in3
+ * @var TInput3 Bundle3::in3;
  * @brief TInput3 reference
  */
 
@@ -249,9 +243,9 @@ namespace seqan {
  * 
  * @signature TBundle bundle3(in1, in2, in3);
  * 
- * @param in1 First object.
- * @param in2 Second object.
- * @param in3 Third object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
+ * @param[in] in3 Third object.
  * 
  * @return TBundle A Bundle3 with references to <tt>in1</tt>, <tt>in2</tt>, and <tt>in3</tt>.
  * 
@@ -291,25 +285,23 @@ namespace seqan {
  * @tparam TInput4 The type of the fourth object.
  * @tparam TInput5 The type of the fifth object.
  * 
- * @section Remarks
- * 
  * Primarily used as an adaptor for pipes with five sources.
  * 
  * @see bundle5
  * 
- * @var TInput1 Bundle5::in1
+ * @var TInput1 Bundle5::in1;
  * @brief TInput1 reference
  * 
- * @var TInput2 Bundle5::in2
+ * @var TInput2 Bundle5::in2;
  * @brief TInput2 reference
  * 
- * @var TInput3 Bundle5::in3
+ * @var TInput3 Bundle5::in3;
  * @brief TInput3 reference
  * 
- * @var TInput4 Bundle5::in4
+ * @var TInput4 Bundle5::in4;
  * @brief TInput4 reference
  * 
- * @var TInput5 Bundle5::in5
+ * @var TInput5 Bundle5::in5;
  * @brief TInput5 reference
  */
 
@@ -361,11 +353,11 @@ namespace seqan {
  * 
  * @signature TBundle bundle5(in1, in2, in3, in4, in5);
  * 
- * @param in1 First object.
- * @param in2 Second object.
- * @param in3 Third object.
- * @param in4 Fourth object.
- * @param in5 Fifth object.
+ * @param[in] in1 First object.
+ * @param[in] in2 Second object.
+ * @param[in] in3 Third object.
+ * @param[in] in4 Fourth object.
+ * @param[in] in5 Fifth object.
  * 
  * @return TBundle A Bundle5 with references to <tt>in1</tt>, <tt>in2</tt>, <tt>in3</tt>, <tt>in4</tt>,
  *                 and <tt>in5</tt>.
@@ -397,19 +389,38 @@ namespace seqan {
     template < typename TValue, typename TSize >
     struct AbstractSource {};
 
+/*!
+ * @mfn Pipe#Value
+ * @brief Return value type of the Pipe specialization.
+ *
+ * @signature Value<TPipe>::Type;
+ *
+ * @tparam TPipe The Pipe specialization to query.
+ *
+ * @return Type The resulting value type.
+ */
+
     template < typename TValue, typename TSize >
     struct Value< Pipe<void, AbstractSource<TValue, TSize> > > {
         typedef TValue Type;
     };
+
+/*!
+ * @mfn Pipe#Size
+ * @brief Return size type of the Pipe specialization.
+ *
+ * @signature Size<TPipe>::Type;
+ *
+ * @tparam TPipe The Pipe specialization to query.
+ *
+ * @return Type The resulting size type.
+ */
 
     template < typename TValue, typename TSize >
     struct Size< Pipe<void, AbstractSource<TValue, TSize> > > {
         typedef TSize Type;
     };
 
-
-
-    
     template < typename TInput, typename TSpec >
     struct Value< Pipe<TInput, TSpec> > {
         typedef typename Value<TInput>::Type Type;
@@ -476,6 +487,17 @@ SEQAN_CHECKPOINT
         return me.in;
     }
 
+/*!
+ * @fn Pipe#length
+ * @headerfile <seqan/pipe.h>
+ * @brief Length of the pipe.
+ *
+ * @signature TSize length(pipe);
+ *
+ * @param[in] pipe  The Pipe to query for its size.
+ *
+ * @return    TSize The size of the pipe.
+ */
 
 ///.Function.length.param.object.type:Class.Pipe
 ///.Function.length.class:Class.Pipe
@@ -546,12 +568,10 @@ SEQAN_CHECKPOINT
  * 
  * @signature TValue front(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in] object A pop-passive pipeline module.
  * 
  * @return TValue The first element of the remaining input stream.  Return type is <tt>Value&lt;TObject&gt;::Type</tt>
  *                for <tt>object</tt> type <tt>TObject</tt>.
- * 
- * @section Remarks
  * 
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  * 
@@ -585,13 +605,11 @@ SEQAN_CHECKPOINT
  * @headerfile <seqan/pipe.h>
  * @brief Pops the first element of the remaining stream.
  * 
- * @signature void pop(object[, ref]);
+ * @signature void pop(pipe[, ref]);
  * 
- * @param[in,out] object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in,out] pipe A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
- * 
- * @section Remarks
  * 
  * In contrast to Pipe#front this function also steps one element further.
  * 
@@ -627,6 +645,16 @@ SEQAN_CHECKPOINT
         ++me;
     }
 
+/*!
+ * @fn Pipe#atEnd
+ * @brief Check whether the @link Pipe @endlink object is at end.
+ *
+ * @signature bool atEnd(pipe);
+ *
+ * @param[in] pipe The @link Pipe @endlink object to query.
+ *
+ * @return bool true in case of the pipe being at the end, false otherwise.
+ */
 ///.Function.atEnd.param.iterator.type:Class.Pipe
 ///.Function.atEnd.class:Class.Pipe
 
@@ -677,11 +705,9 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool beginRead(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in,out] object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>beginRead</tt> rewinds the output stream, prepares <tt>object</tt> for succeeding reads, and typically calls
  * <tt>beginRead</tt> of the input pipeline modules.
@@ -719,13 +745,11 @@ SEQAN_CHECKPOINT
  * @headerfile <seqan/pipe.h>
  * @brief Terminates a read process.
  * 
- * @signature bool beginRead(object);
+ * @signature bool endRead(object);
  * 
- * @param object A pop-passive pipeline module. Types: Pipe, Pool
+ * @param[in,out] object A pop-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>endRead</tt> closes the output stream, frees resources possibly allocated by beginRead, and typically calls
  * <tt>endRead</tt> of the input pipeline modules.
@@ -782,7 +806,18 @@ SEQAN_CHECKPOINT
 				control(me.in4, command) &&
 				control(me.in5, command);
     }
-
+/*!
+ * @fn Pipe#assign
+ * @headerfile <seqan/pipe.h>
+ * @brief Assigns one object to another object.
+ *
+ * @signature void assign(target, source);
+ *
+ * @param[out] target Reference to assign to.
+ * @param[in]  source Value to assign.
+ *
+ * Assign value of source to target.
+ */
 ///.Function.assign.param.source.type:Class.Pipe
 ///.Function.assign.class:Class.Pipe
 
