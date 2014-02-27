@@ -354,7 +354,7 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     record.rID = id;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1; // In VCF position before event
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=INS";
@@ -366,7 +366,7 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     if (bp.startSeqPos != 0)
-        appendValue(record.ref, ref[bp.startSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
+        appendValue(record.ref, ref[bp.startSeqPos - 1]); // position/base before SV except for position 1, then it is the base AFTER the event!
     else
         appendValue(record.ref, ref[length(bp.insertionSeq)]); // position/base before SV except for position 1, then it is the base AFTER the event!
 
@@ -386,26 +386,26 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     record.rID = id;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=DEL";
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Deletion end position smaller than begin position!");
-    ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos - 1; // -1 bc positions are flanking the variant region
+    ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     if (bp.startSeqPos != 0)
-        appendValue(record.ref, ref[bp.startSeqPos]);// position/base before SV except for position 1, then it is the base AFTER the event!
+        appendValue(record.ref, ref[bp.startSeqPos - 1]);// position/base before SV except for position 1, then it is the base AFTER the event!
     else
         appendValue(record.ref, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
 
 
     // Compute ALT columns and a map to the ALT.
-    if ((bp.endSeqPos - bp.startSeqPos) < 20)
+    if ((bp.endSeqPos - bp.startSeqPos) < 21)
     {
         appendValue(record.alt, record.ref[0]); // std::max(0,
         append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
@@ -421,20 +421,20 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     record.rID = id;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=INV";
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Inversion end position smaller than begin position!");
-    ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos - 1; // -1 bc positions are flanking the variant region
+    ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     if (bp.startSeqPos != 0)
-        appendValue(record.ref, ref[bp.startSeqPos]);
+        appendValue(record.ref, ref[bp.startSeqPos - 1]);
     else
         appendValue(record.ref, ref[bp.endSeqPos]);
 
@@ -449,7 +449,7 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     record.rID = id;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=DUP";
@@ -462,7 +462,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     if (bp.startSeqPos != 0)
-        appendValue(record.ref, ref[bp.startSeqPos]);
+        appendValue(record.ref, ref[bp.startSeqPos - 1]);
     else
         appendValue(record.ref, ref[bp.endSeqPos]);
 
@@ -484,17 +484,17 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
         if (bp.dupTargetPos == bp.startSeqPos)
         {
             begin = bp.dupMiddlePos;
-            end = bp.endSeqPos - 1; // -1 bc endPos is behind last variant position
+            end = bp.endSeqPos;
             target = bp.startSeqPos;
             return true;
         }
         begin = bp.startSeqPos;
         end = bp.dupMiddlePos;
-        target = bp.endSeqPos - 1; // -1 bc endPos is behind last variant position
+        target = bp.endSeqPos;
         return true;
     }
     begin = bp.startSeqPos;
-    end = bp.endSeqPos - 1; // -1 bc endPos is behind last variant position
+    end = bp.endSeqPos;
     return false;
 }
 template <typename TBreakpoint, typename TSequence>
@@ -507,23 +507,23 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
         ss << "IMPRECISE;";
 
     record.rID = id;
-    record.beginPos = begin;
+    record.beginPos = begin - 1; // Position before event
     record.filter = "PASS";
     ss << "SVTYPE=DUP";
-    ss << ";END=" << end + 1; // +1 in _setVcfRecordDuplicationPos
+    ss << ";END=" << end - 1 + 1; // -1 to set end as last position of variant, +1 for 1-base adjustment
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Duplication end position smaller than begin position!");
-    ss << ";SVLEN=" << end-begin;
     if (target != maxValue<unsigned>())
-        ss << ";TARGETPOS=" << target + 1; // +1 in _setVcfRecordDuplicationPos
+        ss << ";SVLEN=" << end-begin;
+        ss << ";TARGETPOS=" << target - 1 + 1; // -1 to set target as position before insertion, +1 for 1-base adjustment
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     if (bp.startSeqPos != 0)
-        appendValue(record.ref, ref[bp.startSeqPos]);
+        appendValue(record.ref, ref[begin-1]);
     else
-        appendValue(record.ref, ref[bp.endSeqPos]);
+        appendValue(record.ref, ref[end]);
 
     // Compute ALT columns and a map to the ALT.
     append(record.alt, "<DUP>");
@@ -536,7 +536,7 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     record.rID = id;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
     // ss << "IMPRECISE;";
@@ -548,7 +548,7 @@ inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequen
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     // Breakend unlikely to be at position 0, and start equals end anyway...
-    appendValue(record.ref, ref[bp.startSeqPos]);
+    appendValue(record.ref, ref[bp.startSeqPos - 1]);
 
     // Compute ALT columns and a map to the ALT.
     // Storing if breakend is left of (0) or right of (1) breakpoint position
@@ -607,12 +607,12 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Translocation is encoded with 6 breakend entries (or 4 in the case where the "middle" position
     // of the translocation is not known)
     // The six entries mark new adjacencies induced by the translocation event:
-    // 1st entry: position before first split (equals startSeqPosition of breakpoint) ALT: dupMiddlePos + 1
-    // 2nd: pos. after first split (startSeqPos + 1) ALT: endSeqPos - 1
-    // 3rd: pos. before second split (dupMiddlePos) ALT: endSeqPos
-    // 4th: pos. after second split (dupMiddlePos + 1) ALT: startSeqPos
-    // 5th: pos. before third split (endSeqPos - 1) ALT: startSeqPos + 1
-    // 6th: pos. after third split (endSeqPos) ALT: dupMiddlePos
+    // 1st entry: position before first split (equals startSeqPosition - 1 of breakpoint) ALT: dupMiddlePos
+    // 2nd: pos. after first split (startSeqPos) ALT: endSeqPos - 1
+    // 3rd: pos. before second split (dupMiddlePos - 1) ALT: endSeqPos
+    // 4th: pos. after second split (dupMiddlePos) ALT: startSeqPos - 1
+    // 5th: pos. before third split (endSeqPos - 1) ALT: startSeqPos
+    // 6th: pos. after third split (endSeqPos) ALT: dupMiddlePos - 1
     // Note that the positions have to be adjusted for 0-1 base change, only the record.beginPos is beeing adjusted
     // automatically
     typedef typename TBreakpoint::TId TId;
@@ -633,15 +633,15 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     record.id = "BND_" + toString(bp_id) + "_1";
     // No +1 adjustment
     // record.beginPos = (bp.startSeqPos > 0) ? bp.startSeqPos : 0;
-    record.beginPos = bp.startSeqPos;
+    record.beginPos = bp.startSeqPos - 1;
 
     // Positions encoded in REF and ALT coloumn have to be already 1-based
     // whereas record.beginPos remains 0-based and is adjusted within writeVcfRecord() function
     // Compute base for REF and ALT columns
     if (bp.startSeqPos != 0)
     {
-        appendValue(record.ref, ref[bp.startSeqPos]);
-        appendValue(record.alt, ref[bp.startSeqPos]);
+        appendValue(record.ref, ref[bp.startSeqPos - 1]);
+        appendValue(record.alt, ref[bp.startSeqPos - 1]);
     } else
     {
         appendValue(record.ref, 'N');
@@ -656,7 +656,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         alt1 << "[";
         alt1 << sId; // alt1 << bp.midPosId;
         alt1 << ':';
-        alt1 << bp.dupMiddlePos + 1 + 1; // 1-based adjustment
+        alt1 << bp.dupMiddlePos + 1; // 1-based adjustment
         alt1 << "[";
         append(record.alt, alt1.str());
     } else
@@ -672,12 +672,13 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     clear(record.alt);
 
     // 2nd entry
+    // 2nd: pos. after first split (startSeqPos) ALT: endSeqPos - 1
     record.id = "BND_" + toString(bp_id) + "_2";
     // No 1-base adjustment
-    record.beginPos = bp.startSeqPos + 1;
+    record.beginPos = bp.startSeqPos;
 
     // Compute base for REF and ALT columns
-    appendValue(record.ref, ref[bp.startSeqPos + 1]);
+    appendValue(record.ref, ref[bp.startSeqPos]);
 
     // Compute ALT columns
     if (bp.startSeqStrand != bp.endSeqStrand)
@@ -715,13 +716,14 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     if (bp.dupMiddlePos != maxValue<unsigned>())
     {
         // 3rd entry
+        // 3rd: pos. before second split (dupMiddlePos - 1) ALT: endSeqPos
         record.id = "BND_" + toString(bp_id) + "_3";
         // No 1-base adjustment
-        record.beginPos = bp.dupMiddlePos;
+        record.beginPos = bp.dupMiddlePos - 1;
 
         // Compute base for REF and ALT columns
-        appendValue(record.ref, ref[bp.dupMiddlePos]);
-        appendValue(record.alt, ref[bp.dupMiddlePos]);
+        appendValue(record.ref, ref[bp.dupMiddlePos - 1]);
+        appendValue(record.alt, ref[bp.dupMiddlePos - 1]);
 
         // Compute ALT columns
         if (bp.startSeqStrand != bp.endSeqStrand)
@@ -754,8 +756,9 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         clear(record.alt);
 
         // 4th entry
+        // 4th: pos. after second split (dupMiddlePos) ALT: startSeqPos - 1
         record.id = "BND_" + toString(bp_id) + "_4";
-        record.beginPos = bp.dupMiddlePos + 1;
+        record.beginPos = bp.dupMiddlePos;
 
         // Compute ALT columns
         std::stringstream alt4;
@@ -763,15 +766,15 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         alt4 << sId; // alt1 << bp.midPosId;
         alt4 << ':';
         if (bp.startSeqPos > 0)
-            alt4 << bp.startSeqPos + 1; // 1-based adjustment
+            alt4 << bp.startSeqPos - 1 + 1; // 1-based adjustment
         else 
             alt4 << 0; // NO(!) 1-based adjustment
         alt4 << "]";
         append(record.alt, alt4.str());
 
         // Compute base for REF and ALT columns
-        appendValue(record.ref, ref[bp.dupMiddlePos+1]);
-        appendValue(record.alt, ref[bp.dupMiddlePos+1]);
+        appendValue(record.ref, ref[bp.dupMiddlePos]);
+        appendValue(record.alt, ref[bp.dupMiddlePos]);
 
         // Write record and clear REF and ALT values
         if (writeRecord(vcfOut, record) != 0)
@@ -786,6 +789,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
 
     record.rID = id2;
     // 5th entry
+    // 5th: pos. before third split (endSeqPos - 1) ALT: startSeqPos
     record.id = "BND_" + toString(bp_id) + "_5";
     record.beginPos = bp.endSeqPos - 1;
 
@@ -800,7 +804,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         alt1 << "]";
         alt1 << bp.startSeqId;
         alt1 << ':';
-        alt1 << bp.startSeqPos + 1 + 1; // 1-based adjustment
+        alt1 << bp.startSeqPos + 1; // 1-based adjustment
         alt1 << "]";
         append(record.alt, alt1.str());
     } else
@@ -809,7 +813,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         alt1 << "[";
         alt1 << bp.startSeqId;
         alt1 << ':';
-        alt1 << bp.startSeqPos + 1 + 1; // 1-based adjustment
+        alt1 << bp.startSeqPos + 1; // 1-based adjustment
         alt1 << "[";
         append(record.alt, alt1.str());
     }
@@ -824,6 +828,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     clear(record.alt);
 
     // 6th entry
+    // 6th: pos. after third split (endSeqPos) ALT: dupMiddlePos - 1
     record.id = "BND_" + toString(bp_id) + "_6";
     record.beginPos = bp.endSeqPos;
 
@@ -837,7 +842,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
             alt1 << "]";
         alt1 << sId; // alt1 << bp.midPosId;
         alt1 << ':';
-        alt1 << bp.dupMiddlePos + 1; // 1-based adjustment
+        alt1 << bp.dupMiddlePos - 1 + 1; // 1-based adjustment
         if (bp.endSeqStrand != bp.midPosStrand)
             alt1 << "[";
         else

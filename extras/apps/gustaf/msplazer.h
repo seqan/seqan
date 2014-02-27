@@ -150,9 +150,9 @@ struct Breakpoint
     bool endSeqStrand;
     bool midPosStrand;
     // Last position in start sequence and first position in end sequence
-    TPos startSeqPos;  // Position before split in reference, i.e. before the variant
-    TPos endSeqPos;    // Position after split in reference, i.e. after the variant
-    TPos dupTargetPos; // Should be equal to either startSeqPos or endSeqPos-1 (position before event)
+    TPos startSeqPos;  // End position of split alignment, i.e. first position of variant
+    TPos endSeqPos;    // Begin position of split alignment, i.e. position after split in reference, i.e. after the variant
+    TPos dupTargetPos; // Pos. before inserted, duplicated seq (should be equal to either startSeqPos or endSeqPos)
     TPos dupMiddlePos; // TPos dupMidPos; Middle position of duplication or translocation
                        // per default position before event, has to be adjustet depending on dupTargetPos
     TPos readStartPos;
@@ -693,8 +693,8 @@ inline bool setSVType(TBreakpoint & bp)
         if (bp.startSeqPos > bp.endSeqPos)
         {
             std::swap(bp.startSeqPos, bp.endSeqPos);
-            bp.startSeqPos = bp.startSeqPos - 1;
-            bp.endSeqPos = bp.endSeqPos + 1;
+            // bp.startSeqPos = bp.startSeqPos - 1;
+            // bp.endSeqPos = bp.endSeqPos + 1;
         }
         setSVType(bp, TBreakpoint::INVERSION);
         return false;
@@ -707,8 +707,8 @@ inline bool setSVType(TBreakpoint & bp)
     if (bp.startSeqPos > bp.endSeqPos)
     {
         std::swap(bp.startSeqPos, bp.endSeqPos);
-        bp.startSeqPos = bp.startSeqPos - 1;
-        bp.endSeqPos = bp.endSeqPos + 1;
+        // bp.startSeqPos = bp.startSeqPos - 1;
+        // bp.endSeqPos = bp.endSeqPos + 1;
         if (bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::DISPDUPLICATION);
