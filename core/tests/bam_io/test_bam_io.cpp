@@ -43,11 +43,11 @@
 #include "test_bam_tags_dict.h"
 #include "test_read_sam.h"
 #include "test_write_sam.h"
-#if SEQAN_HAS_ZLIB
-//#include "test_read_bam.h"
+//#if SEQAN_HAS_ZLIB
+#include "test_read_bam.h"
 //#include "test_write_bam.h"
 //#include "test_bam_index.h"
-#endif  // #if SEQAN_HAS_ZLIB
+//#endif  // #if SEQAN_HAS_ZLIB
 //TODO(singer): #include "test_bam_stream.h"
 
 SEQAN_BEGIN_TESTSUITE(test_bam_io)
@@ -146,17 +146,17 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_sam_read_alignment);
     SEQAN_CALL_TEST(test_bam_io_sam_write_header);
     SEQAN_CALL_TEST(test_bam_io_sam_write_alignment);
-    
+
     // Test BAM I/O.
-#if SEQAN_HAS_ZLIB
-    //SEQAN_CALL_TEST(test_bam_io_bam_read_header);
+//#if SEQAN_HAS_ZLIB
+    SEQAN_CALL_TEST(test_bam_io_bam_read_header);
     //SEQAN_CALL_TEST(test_bam_io_bam_read_alignment);
     //SEQAN_CALL_TEST(test_bam_io_bam_write_header);
     //SEQAN_CALL_TEST(test_bam_io_bam_write_alignment);
-    
+
     // Test BAM indices.
     //SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
-#endif  // #if SEQAN_HAS_ZLIB
+//#endif  // #if SEQAN_HAS_ZLIB
 /*
     // Test BamStream class.
     SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_file_size);

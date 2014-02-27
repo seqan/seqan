@@ -103,6 +103,8 @@ int write2(TStream & stream,
 
     // Write text header.
     __int32 lText = length(headerBuffer);
+    appendRawNumber(target, (__uint32)length(m));
+    appendRawNumber<__uint32>(target, length(m));
     res = streamWriteBlock(stream, reinterpret_cast<char const *>(&lText), 4);
     if (res != 4)
         return 1;  // Error writing l_text.

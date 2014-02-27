@@ -118,41 +118,54 @@ typedef Tag<Bam_> Bam;
 ..include:seqan/bam_io.h
 */
 
-//TODO(singer): Remove #if FALSE and #endif
-#if FALSE
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int readRecord(BamHeader & header,
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+void readRecord(BamHeader & header,
                BamIOContext<TNameStore, TNameStoreCache> & context,
-               TStream & stream,
+               TForwardIter & iter,
                Bam const & /*tag*/)
 {
-    int res = 0;
-
     // Read BAM magic string.
-    char magic[5] = "\0\0\0\0";
+    // char magic[5] = "\0\0\0\0";
+    /*
     res = streamReadBlock(&magic[0], stream, 4);
     if (res != 4)
         return 1;  // EOF or error while reading.
-    if (strcmp(magic, "BAM\1") != 0)
-        return 1;  // Magic was wrong.
+    */
+    String<char> magic;// = "0000";
+    clear(magic);
+    readUntil(magic, iter, CountDownFunctor<>(4));
+    std::cerr << toCString(magic) << " " << length(magic) << std::endl;
+    if (magic != "BAM\1")
+        throw std::runtime_error("No correct BAM format.");
+        //return 1;  // Magic was wrong.
 
     // Read header text, including null padding.
     __int32 lText;
-    res = streamReadBlock(reinterpret_cast<char *>(&lText), stream, 4);
+    std::cerr << lText << std::endl;
+    readRawByte(lText, iter, CountDownFunctor<>(4));
+    std::cerr << lText << std::endl;
+    
+    /*res = streamReadBlock(reinterpret_cast<char *>(&lText), stream, 4);
     if (res != 4)
         return 1;  // Error reading the length of the header text.
+    */
     CharString samHeader;
-    resize(samHeader, lText);
-    res = streamReadBlock(&front(samHeader), stream, lText);
+    //Iterator<CharString, Rooted>::Type samIter = begin(samHeader);
+    readUntil(samHeader, iter, CountDownFunctor<>(lText));
+    //resize(samHeader, lText);
+    //res = streamReadBlock(&front(samHeader), stream, lText);
+    std::cerr << toCString(samHeader) << std::endl;
+
     // Truncate to first position of '\0'.
-    typedef Iterator<CharString, Standard>::Type TIter;
-    TIter it = begin(samHeader, Standard());
+    Iterator<CharString, Rooted>::Type it = begin(samHeader);
     for (; it != end(samHeader); ++it)
         if (*it == '\0')
             break;
-    resize(samHeader, it - begin(samHeader, Standard()));
+    resize(samHeader, static_cast<__uint32>(it - begin(samHeader))); 
 
-    // Parse out header records.
+    it = begin(samHeader);
+    /*
+    Parse out header records.
     typedef Stream<CharArray<char *> > THeaderStream;
     THeaderStream headerStream(&samHeader[0], &samHeader[0] + length(samHeader));
     RecordReader<THeaderStream, SinglePass<> > headerReader(headerStream);
@@ -165,12 +178,29 @@ int readRecord(BamHeader & header,
             return 1;  // Error reading embedded SAM header.
         appendValue(header.records, headerRecord);
     }
+    */
+    // Parse out header records.
+    BamHeaderRecord headerRecord;
+    it = begin(samHeader);
+    while (!atEnd(it))
+    {
+        clear(headerRecord);
+        /*res = readRecord(headerRecord, context, it, Sam());
+        if (res != 0)
+            return 1;  // Error reading embedded SAM header.
+        */
+        readRecord(headerRecord, context, it, Sam());
+        appendValue(header.records, headerRecord);
+    }
 
     // Read # reference sequences.
     __int32 nRef;
+    readRawByte(nRef, iter, CountDownFunctor<>(4));
+    /*
     res = streamReadBlock(reinterpret_cast<char *>(&nRef), stream, 4);
     if (res != 4)
         return 1;  // Error reading the number of sequences.
+    */
     CharString name;
 
     clear(context.translateFile2GlobalRefId);
@@ -180,20 +210,31 @@ int readRecord(BamHeader & header,
     {
         // Read length of the reference name.
         __int32 nName;
+        readRawByte(nName, iter, CountDownFunctor<>(4));
+        /*
         res = streamReadBlock(reinterpret_cast<char *>(&nName), stream, 4);
         if (res != 4)
             return 1;  // Error reading the number of sequences.
+        */
         // Read name of the reference sequence;
-        resize(name, nName);
+        clear(name);
+        readUntil(name, iter, CountDownFunctor<>(nName));
+        std::cout << toCString(name) << " " << length(name) << std::endl;
+        /*
         res = streamReadBlock(&front(name), stream, nName);
         if (res != nName)
             return 1;  // Error reading the number of sequences.
+        */
         resize(name, nName - 1);
+        std::cout << toCString(name) << " " << length(name) << std::endl;
         // Read length of the reference sequence.
         __int32 lRef;
+        readRawByte(lRef, iter, CountDownFunctor<>(4));
+        /*
         res = streamReadBlock(reinterpret_cast<char *>(&lRef), stream, 4);
         if (res != 4)
             return 1;  // Error reading the number of sequences.
+        */
 
         // Store sequence info.
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
@@ -207,8 +248,6 @@ int readRecord(BamHeader & header,
         }
         context.translateFile2GlobalRefId[i] = globalRId;
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -222,7 +261,7 @@ int readRecord(BamHeader & header,
 */
 
 template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int readRecord(BamAlignmentRecord & record,
+void readRecord(BamAlignmentRecord & record,
                BamIOContext<TNameStore, TNameStoreCache> & context,
                TStream & stream,
                Bam const & /*tag*/)
@@ -230,6 +269,7 @@ int readRecord(BamAlignmentRecord & record,
     int res = 0;
     (void)context;  // Only used for assertions.
 
+    /*
     // Read size of the remaining block.
     __int32 remainingBytes = 0;
     res = streamReadBlock(reinterpret_cast<char *>(&remainingBytes), stream, 4);
@@ -391,9 +431,8 @@ int readRecord(BamAlignmentRecord & record,
     }
 
     return 0;
+    */
 }
-#endif // #if FALSE
-
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_BAM_H_
