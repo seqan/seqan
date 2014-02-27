@@ -98,15 +98,22 @@ void _assignTagsToBamOneTagHelper(TTarget & target,
 template <typename TTarget, typename TForwardIter>
 void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString & buffer)
 {
-    resize(buffer, 2u);
-    readOne(buffer[0], iter);
-    readOne(buffer[1], iter);
+    clear(buffer);
+    //resize(buffer, 2u);
+    readUntil(buffer, iter, CountDownFunctor<>(2));
+    //readOne(buffer[0], iter);
+    //readOne(buffer[1], iter);
+    
+    std::cerr << toCString(buffer) << "" << length(buffer) << std::endl;
+    
     append(target, buffer);
     
-    resize(buffer, 3);
-    readOne(buffer[0], iter);
-    readOne(buffer[1], iter);
-    readOne(buffer[2], iter);
+    clear(buffer);
+    //resize(buffer, 3);
+    readUntil(buffer, iter, CountDownFunctor<>(3));
+    //readOne(buffer[0], iter);
+    //readOne(buffer[1], iter);
+    //readOne(buffer[2], iter);
     SEQAN_ASSERT_EQ(buffer[0], ':');
     SEQAN_ASSERT_EQ(buffer[2], ':');
     char t = buffer[1];
