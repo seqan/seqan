@@ -88,10 +88,6 @@ template <typename TPos>
 inline bool _checkMatchDist(TPos const & begin, TPos const & end, MSplazerOptions const & msplazerOptions)
 {
     // Check if distance between matches is smaller than the distance threshold, assumes that begin > end
-    std::cout << "_checkMatchDist" << std::endl;
-    std::cout << "begin " << begin << " end " << end << std::endl;
-    int diff = begin - end;
-    std::cout << "diff " << diff << std::endl;
     if ((int) (begin - end) < (msplazerOptions.gapThresh + 1))
         return true;
 
@@ -347,7 +343,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
     // Breakpoint score
     int score = 0;
 
-    std::cout << "Query Id: " << queryId << std::endl;
+    // std::cout << "Query Id: " << queryId << std::endl;
 
     // loop over all query matches
     // std::cerr << "In chainQueryMatches length(queryMatches.matches): " << length(queryMatches.matches) << std::endl;
@@ -365,7 +361,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
             StellarMatch<TSequence, TId> & stMatch2 = queryMatches.matches[m2];
             TPos m2Begin = stMatch2.begin2;
             TPos m2End = stMatch2.end2;
-            std::cout << "chain matches " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
+            // std::cout << "chain matches " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
             // Returns false, if next match is def. not compatible anymore
             takeNextMatch = _checkMatchComp(m1Begin, m1End, m2Begin, m2End, doBP, insertEdge, msplazerOptions);
 
@@ -491,7 +487,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 {
                     // Double overlap check (not handled jet)
                     // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
-                    std::cout << "Translocation double overlap" << std::endl;
+                    // std::cout << "Translocation double overlap" << std::endl;
                     bp.svtype = TBreakpoint::TANDEM;
                 }
 
@@ -578,7 +574,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 
                 TPos m2Begin = (*stMatch2).begin1;
                 TPos m2End = (*stMatch2).end1;
-                std::cout << "chain matches ref " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
+                // std::cout << "chain matches ref " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
                 _checkMatchComp(m1Begin, m1End, m2Begin, m2End, doBP, insertEdge, msplazerOptions);
 
                 if (insertEdge)
@@ -723,12 +719,14 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         TBreakpoint & oldBp = property(queryBreakpoints, edge);
                         if (cargo < getCargo(edge) && oldBp.svtype != TBreakpoint::DISPDUPLICATION)
                         {
+                            /*
                             std::cout << "********************************" << std::endl;
                             std::cout << getCargo(edge) << " : " << oldBp << std::endl;
                             std::cout << cargo << " : " << bp << std::endl;
                             std::cout << *stMatch1 <<std::endl;
                             std::cout << *stMatch2 <<std::endl;
                             std::cout << "********************************" << std::endl;
+                            */
                             // Check for tandem deletion or insertion
                             // if olBP is deletion and new bp is insertion, and
                             // insertion but (m2.e1 - m1.b1) > (m2.e2 - m1.b1) (equivalent to
@@ -870,10 +868,12 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
     // to observe the deletion that covers the target position.
     // Function returns true if the old bp (tempBP) can be deleted from the old set bc it became obsolete.
 
+    /*
     std::cout << "new bp (bp)" << std::endl;
     std::cout << bp << std::endl;
     std::cout << "old bp (tempBP)" << std::endl;
     std::cout << tempBP << std::endl;
+    */
     // Case 1: new bp is deletion, old bp (tempBP) is duplication or translocation
     if (bp.svtype == TBreakpoint::DELETION
             && (tempBP.svtype == TBreakpoint::DISPDUPLICATION || tempBP.svtype == TBreakpoint::TRANSLOCATION) )
@@ -891,8 +891,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             tempBP.translSuppStartPos = true;
             if (tempBP.translSuppEndPos)
                 tempBP.svtype = TBreakpoint::TRANSLOCATION;
-            std::cout << "del start (bp) equ dup start" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del start (bp) equ dup start" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = false;
             return false;
         }
@@ -909,8 +909,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             tempBP.translSuppEndPos = true;
             if (tempBP.translSuppStartPos)
                 tempBP.svtype = TBreakpoint::TRANSLOCATION;
-            std::cout << "del end (bp) equ dup end" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del end (bp) equ dup end" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = false;
             return false;
         }
@@ -931,8 +931,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             bp.dupMiddlePos = tempBP.endSeqPos;
             bp.translSuppStartPos = true;
             // tempBP = bp;
-            std::cout << "del start (tempBP) equ dup start" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del start (tempBP) equ dup start" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = true;
             return true;
         }
@@ -945,8 +945,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             bp.dupMiddlePos = tempBP.startSeqPos;
             bp.translSuppEndPos = true;
             // tempBP = bp;
-            std::cout << "del end (tempBP) equ dup end" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del end (tempBP) equ dup end" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = true;
             return true;
         }
@@ -976,8 +976,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             appendSupportId(translBP, bp.supportIds);
             appendSupportId(translBP, tempBP.supportIds);
             bp = translBP;
-            std::cout << "del start (bp) equ del end (tempBP)" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del start (bp) equ del end (tempBP)" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = true;
             return true;
         }
@@ -1001,8 +1001,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             appendSupportId(translBP, bp.supportIds);
             appendSupportId(translBP, tempBP.supportIds);
             bp = translBP;
-            std::cout << "del end (bp) equ del start (tempBP)" << std::endl;
-            std::cout << tempBP << std::endl;
+            //std::cout << "del end (bp) equ del start (tempBP)" << std::endl;
+            //std::cout << tempBP << std::endl;
             foundNewBP = true;
             return true;
         }
@@ -1033,7 +1033,6 @@ inline bool _insertBreakend(String<TBreakpoint> & countedBE, TBreakpoint & be, u
 template <typename TBreakpoint>
 inline bool _addBeSupport(String<TBreakpoint> & countedBP, TBreakpoint & be, unsigned const & bpPosRange)
 {
-    std::cout << "????????????? Add BE support" <<std::endl;
     bool newBE = true;
     // Compare new breakend to breakpoints already in the set and add supportIDs if similar
     for (unsigned i = 0; i < length(countedBP); ++i)
@@ -1053,7 +1052,7 @@ inline bool _addBeSupport(String<TBreakpoint> & countedBP, TBreakpoint & be, uns
 template <typename TBreakpoint>
 inline void _getBeSupport(String<TBreakpoint> & countedBE, TBreakpoint & bp, unsigned const & bpPosRange)
 {
-    std::cout << "############# Get BE support" << std::endl;
+    //std::cout << "############# Get BE support" << std::endl;
     String<unsigned> toBeErased;
     // Compare new breakpoint to breakends in the set, add supportIDs and erase breakend if similar
     for (unsigned i = 0; i < length(countedBE); ++i)
@@ -1064,14 +1063,14 @@ inline void _getBeSupport(String<TBreakpoint> & countedBE, TBreakpoint & bp, uns
             // Append support Ids of old bp (tempBP) to new bp
             appendSupportId(bp, tempBE.supportIds);
             appendValue(toBeErased, i);
-            std::cout << "Breakend support" << tempBE << std::endl;
+            //std::cout << "Breakend support" << tempBE << std::endl;
         }
     }
     for (unsigned i = 0; i < length(toBeErased); ++i)
     {
         unsigned index = length(toBeErased) - 1 - i;
-        std::cout << "Erasing breakend " << std::endl;
-        std::cout << countedBE[ toBeErased[index] ] << std::endl;
+        //std::cout << "Erasing breakend " << std::endl;
+        //std::cout << countedBE[ toBeErased[index] ] << std::endl;
         erase(countedBE, toBeErased[index]);
     }
 }
@@ -1089,7 +1088,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         if (bp == tempBP)
         {
             appendSupportId(tempBP, bp.supportIds);
-                std::cout << "equ bps" << std::endl;
+                //std::cout << "equ bps" << std::endl;
             // Very special case, should be no other support likely
             newBP = false;
         }
@@ -1222,30 +1221,30 @@ void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & c
 {
     for (unsigned i = 0; i < length(newBP); ++i)
     {
-        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+        //std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
         TBreakpoint & bp = newBP[i];
-        std::cout << bp << std::endl;
+        //std::cout << bp << std::endl;
         // If new bp is a breakend, see if it is supporting any breakpoint already in the set and if not, insert into set of
         // breakends
         // If new bp is a breakpoint, see if there is a supporting breakend in the breakend set and insert into set of
         // breakpoints
         if (bp.svtype == TBreakpoint::BREAKEND)
         {
-            std::cout << "breakend" << std::endl;
+            //std::cout << "breakend" << std::endl;
             // If breakend is not supporting any real breakpoint, insert into breakend set
             if (_addBeSupport(countedBP, bp, options.breakpointPosRange))
             {
                 _insertBreakend(countedBE, bp, options.breakpointPosRange);
-                std::cout << "No breakpoint for support, insertet be into set" << std::endl;
+                //std::cout << "No breakpoint for support, insertet be into set" << std::endl;
             }
         }
         else
         {
-            std::cout << "breakpoint" << std::endl;
+            //std::cout << "breakpoint" << std::endl;
             _getBeSupport(countedBE, bp, options.breakpointPosRange);
             _insertBreakpoint(countedBP, bp, options.breakpointPosRange);
         }
-        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+        //std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
     }
 }
 
