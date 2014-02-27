@@ -244,6 +244,16 @@ getValueById(StringSet<TString, Owner<TSpec> >& me,
     return tmp;
 }
 
+template <typename TString, typename TSpec, typename TId>
+inline typename Reference<StringSet<TString, Owner<TSpec> > const>::Type
+getValueById(StringSet<TString, Owner<TSpec> > const & me,
+            TId const id)
+{
+    if (id < (TId) length(me)) return value(me, id);
+    static TString tmp = "";
+    return tmp;
+}
+
 // --------------------------------------------------------------------------
 // Function assignValueById()
 // --------------------------------------------------------------------------
