@@ -42,7 +42,7 @@ out="st1_l30_m"
 # ============================================================
 
 out="st1_l30_ith5"
-    ${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+    ${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -bth 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
 # ============================================================
 # -st 1 -l 30 -gth 3
