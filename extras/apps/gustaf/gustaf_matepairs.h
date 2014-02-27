@@ -81,6 +81,7 @@ _importSequences(CharString const & fileNameL,
             std::cerr << "Problem reading from first input file." << std::endl;
             return false;
         }
+        // Note: overwrites id with ID of right mate, which is done also by gustaf_join_mates
         if (readRecord(id, seqR, qualR, r) != 0)
         {
             std::cerr << "Problem reading from first input file." << std::endl;
@@ -173,10 +174,10 @@ _importSequences(CharString const & fileNameL,
         if (revCompl)
             reverseComplement(seqR);
         readJoinPositions[i] = length(seqL);
-        // std::cout << "Read " << i+1 << " has joining position " << readJoinPositions[i] << std::endl;
         append(seq, seqL);
         append(seq, seqR);
-        assignSeqId(id, leftMates[i], formatL);
+        // Note: saving ID of right(!) mate per default
+        assignSeqId(id, rightMates[i], formatR);
         appendValue(seqs, seq, Generous());
         appendValue(ids, id, Generous());
 
