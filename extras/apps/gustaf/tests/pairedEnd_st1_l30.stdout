@@ -21,10 +21,169 @@ done
  Getting STELLAR matches from file, not calling STELLAR
 Importing STELLAR matches from file stellar_joinedMates_l30.gff
 done
-TIME importing stellar matches 0.000292537s
+TIME importing stellar matches 0.000297836s
 Getting match distance...
-Constructing graphs... done
+Constructing graphs... Query Id: deletion 1:N:0
+chain matches 0 47 35 80
+chain matches 0 47 74 220
+_checkMatchDist
+begin 74 end 47
+diff 27
+chain matches 35 80 74 220
+chain matches 35 80 105 174
+_checkMatchDist
+begin 105 end 80
+diff 25
+chain matches 74 220 105 174
+chain matches 74 220 123 171
+chain matches 74 220 123 220
+chain matches 105 174 123 171
+chain matches 105 174 123 220
+chain matches 123 171 123 220
+chain matches ref 3531 3578 3705 3751
+_checkMatchDist
+begin 3705 end 3578
+diff 127
+chain matches ref 3531 3578 4545 4690
+_checkMatchDist
+begin 4545 end 3578
+diff 967
+chain matches ref 74 143 3531 3578
+_checkMatchDist
+begin 3531 end 143
+diff 3388
+chain matches ref 3531 3578 4670 4718
+_checkMatchDist
+begin 4670 end 3578
+diff 1092
+chain matches ref 0 97 3531 3578
+_checkMatchDist
+begin 3531 end 97
+diff 3434
+chain matches ref 3705 3751 4545 4690
+_checkMatchDist
+begin 4545 end 3751
+diff 794
+chain matches ref 74 143 3705 3751
+_checkMatchDist
+begin 3705 end 143
+diff 3562
+chain matches ref 3705 3751 4670 4718
+_checkMatchDist
+begin 4670 end 3751
+diff 919
+chain matches ref 0 97 3705 3751
+_checkMatchDist
+begin 3705 end 97
+diff 3608
+chain matches ref 74 143 4545 4690
+_checkMatchDist
+begin 4545 end 143
+diff 4402
+chain matches ref 4545 4690 4670 4718
+chain matches ref 0 97 4545 4690
+_checkMatchDist
+begin 4545 end 97
+diff 4448
+chain matches ref 74 143 4670 4718
+_checkMatchDist
+begin 4670 end 143
+diff 4527
+chain matches ref 0 97 74 143
+chain matches ref 0 97 4670 4718
+_checkMatchDist
+begin 4670 end 97
+diff 4573
+Query Id: deletion_2 1:N:0
+chain matches 0 79 60 140
+chain matches ref 3500 3581 3699 3780
+_checkMatchDist
+begin 3699 end 3581
+diff 118
+done
 Analyzing graphs... done
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3752 ) --> ( 4551 ) 
+ ( 81 ) --> ( 81 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion 1:N:0, 
+
+breakpoint
+############# Get BE support
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 39 ) --> ( 39 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion 1:N:0, 
+
+breakpoint
+############# Get BE support
+new bp (bp)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 39 ) --> ( 39 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion 1:N:0, 
+
+old bp (tempBP)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3752 ) --> ( 4551 ) 
+ ( 81 ) --> ( 81 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion 1:N:0, 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 70 ) --> ( 70 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion_2 1:N:0, 
+
+breakpoint
+############# Get BE support
+new bp (bp)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 70 ) --> ( 70 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion_2 1:N:0, 
+
+old bp (tempBP)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3752 ) --> ( 4551 ) 
+ ( 81 ) --> ( 81 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion 1:N:0, 
+
+equ bps
+new bp (bp)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 70 ) --> ( 70 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: deletion_2 1:N:0, 
+
+old bp (tempBP)
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 3570 ) --> ( 3710 ) 
+ ( 39 ) --> ( 39 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 2 Ids: deletion 1:N:0, deletion_2 1:N:0, 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
  completed gff writing pairedEnd_st1_l30.gff
  completed vcf writing pairedEnd_st1_l30.vcf
-TIME all 0.0519077s
+TIME all 0.0558595s
