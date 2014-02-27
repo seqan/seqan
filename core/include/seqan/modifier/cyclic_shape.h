@@ -101,6 +101,30 @@ template<unsigned L, typename THardWiredShape, unsigned R>
 struct FixedShape;
 
 // --------------------------------------------------------------------------
+// Metafunction Size
+// --------------------------------------------------------------------------
+
+/*!
+ * @mfn CyclicShape#Size
+ * @headerfile seqan/modifier.h
+ *
+ * @brief Size type for parameters used in CyclicShape.
+ *
+ * @signature Size<CyclicShape<TSpec> >::Type;
+ *
+ * @tparam TSpec The CyclicShape specialization.
+ *
+ * @return TReturn Currently the return type <tt>unsigned char</tt>.
+ *
+ * @section Remarks
+ */
+template<typename TSpec>
+struct Size<CyclicShape<TSpec> >
+{
+    typedef unsigned char Type;
+};
+
+// --------------------------------------------------------------------------
 // Class GenericCyclicShape
 // --------------------------------------------------------------------------
 
@@ -359,33 +383,8 @@ template<unsigned L, typename THardwiredShape, unsigned R>
 struct WEIGHT<CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > >
 {
     enum {VALUE = WEIGHT<THardwiredShape>::VALUE};
-    typedef CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > TCyclicShape;
-    typedef typename Size<TCyclicShape>::Type Type;
 };
 
-// --------------------------------------------------------------------------
-// Metafunction Size
-// --------------------------------------------------------------------------
-
-/*!
-* @mfn CyclicShape#Size
-* @headerfile seqan/modifier.h
-*
-* @brief Size type for parameters used in CyclicShape.
-*
-* @signature Size<CyclicShape<TSpec> >::Type;
-*
-* @tparam TSpec The CyclicShape specialization.
-*
-* @return TReturn Currently the return type <tt>unsigned char</tt>.
-*
-* @section Remarks
-*/
-template<typename TSpec>
-struct Size<CyclicShape<TSpec> >
-{
-    typedef unsigned char Type;
-};
 
 // ==========================================================================
 // Functions
