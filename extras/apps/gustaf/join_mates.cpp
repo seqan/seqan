@@ -116,6 +116,7 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("o", "outPath", "Set name of output FASTA/FASTQ file(s).", seqan::ArgParseOption::OUTPUTFILE, "FASTA/FASTQ", true));
     setValidValues(parser, "o", "fasta fa fq fastq");
+    setDefaultValue(parser, "o", "joined_mates.fa");
     addOption(parser, seqan::ArgParseOption("rc", "revcompl", "Disable reverse complementing second input file."));
 
     addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
