@@ -87,12 +87,9 @@ class ProcDoc(object):
             self.top_level_entries[first].registerSubentry(x)
         
     def addVariable(self, x):
-        """Add a second-level entry."""
+        """Add a variable entry."""
         self.registerEntry(x)
-        if self.top_level_entries.get(x.type):
-            self.second_level_entries[x.name] = x
-            self.top_level_entries[x.type].registerSubentry(x)
-        elif '::' in x.name:
+        if '::' in x.name:
             self.second_level_entries[x.name] = x
             first, second = splitSecondLevelEntry(x.name)
             if not first in self.top_level_entries:
@@ -103,10 +100,26 @@ class ProcDoc(object):
                 self.top_level_entries[first].registerSubentry(x)
         else:
             self.top_level_entries[x.name] = x
+
+    def addEnumValue(self, x):
+        """Add an enum value entry."""
+        self.registerEntry(x)
+        if not x.type in self.top_level_entries:
+            token = x.raw_entry.name.tokens[0]
+            self.doc_processor.msg_printer.printTokenError(
+                token, 'Unknown top level entry %s' % x.type, 'error')
+        else:
+            self.top_level_entries[x.type].registerSubentry(x)
         
     def registerEntry(self, x):
         """Register an entry."""
         name = x.name
+        if name == '':
+            msg = 'Entry must not have an empty name.'
+            raise DocumentationBuildException(token=x.raw_entry.first_token,
+                                              msg=msg)
+        if x.kind == 'variable' and self.top_level_entries.get(x.type) and self.top_level_entries[x.type].kind == 'enum':
+            name = x.type + '::' + name
         if name.endswith(';'):
             name = name[:-1]
         if name in self.entries:
@@ -123,9 +136,11 @@ class ProcDoc(object):
                 'old_name': old.name,
                 'old_file' : x.location[0],
                 'old_line' : x.location[1]}
-            raise DocumentationBuildException(token=x.raw_entry.name.tokens[0], msg=tpl % vals)
-        self.entries[name] = x
-        x.doc = self
+            self.doc_processor.msg_printer.printTokenError(x.raw_entry.name.tokens[0],
+                                                           tpl % vals, 'error')
+        else:
+          self.entries[name] = x
+          x.doc = self
 
     def runTextVisitor(self, v):
         """Run visitor v on all Text members of all entries and sub entries.
@@ -484,8 +499,15 @@ class ProcClass(ProcCodeEntry):
         self.typedefs.append(t)
 
     @property
-    def isSubclass(self):
+    def isSpecialization(self):
         return not not self.extends
+
+    @property
+    def kind(self):
+        if self.isSpecialization:
+            return 'specialization'
+        else:
+            return 'class'
 
 
 class ProcTag(ProcCodeEntry):
@@ -498,6 +520,14 @@ class ProcTag(ProcCodeEntry):
 
     def addTParam(self, t):
         self.tparams.append(t)
+
+    @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -592,6 +622,16 @@ class ProcFunction(ProcCodeEntry):
         else:
             return 'global_function'
 
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         ProcCodeEntry.visitTextNodes(self, visitor)
@@ -624,6 +664,14 @@ class ProcMacro(ProcCodeEntry):
         ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.returns = []
+
+    @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -667,13 +715,23 @@ class ProcMetafunction(ProcCodeEntry):
         else:
             return 'global_metafunction'
 
-    def visitTextNode(self, visitor):
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
-        ProcCodeEntry.visitTextNode(self, visitor)
+        ProcCodeEntry.visitTextNodes(self, visitor)
         for p in self.tparams:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.returns:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         
     def addTParam(self, t):
         self.tparams.append(t)
@@ -683,7 +741,7 @@ class ProcMetafunction(ProcCodeEntry):
 
 
 class ProcVariable(ProcCodeEntry):
-    """A processed function documentation.
+    """A processed variable documentation.
 
     @ivar type: A string with the name of a type.
     """
@@ -693,11 +751,38 @@ class ProcVariable(ProcCodeEntry):
         self.type = None
 
     @property
+    def local_name(self):
+        """Returns name without class prefix."""
+        if '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    @property
     def kind(self):
         if '::' in self.name:
             return 'member_variable'
         else:
             return 'variable'
+
+
+class ProcEnumValue(ProcVariable):
+    """A processed enum value documentation."""
+
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcVariable.__init__(self, raw, name, brief, body, sees)
+
+    @property
+    def local_name(self):
+        """Returns name without class prefix."""
+        if '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    @property
+    def kind(self):
+        return 'enum_value'
 
 
 class ProcPage(ProcEntry):
@@ -1245,12 +1330,24 @@ class VariableConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcVariable
-    
+
     def process(self, raw_entry):
         variable = CodeEntryConverter.process(self, raw_entry)
         if raw_entry.type:
             variable.type = raw_entry.type.text
         return variable
+
+
+class EnumValueConverter(CodeEntryConverter):
+    def __init__(self, doc_proc):
+        CodeEntryConverter.__init__(self, doc_proc)
+        self.entry_class = ProcEnumValue
+    
+    def process(self, raw_entry):
+        enum_value = CodeEntryConverter.process(self, raw_entry)
+        if raw_entry.type:
+            enum_value.type = raw_entry.type.text
+        return enum_value
 
 
 class TagStack(object):
@@ -1360,6 +1457,7 @@ class DocProcessor(object):
             'macro' : MacroConverter(self),
             'member_function': FunctionConverter(self),
             'member_variable': VariableConverter(self),
+            'enum_value': EnumValueConverter(self),
             'page': PageConverter(self),
             'tag': TagConverter(self),
             'grouped_tag': TagConverter(self),
@@ -1425,7 +1523,7 @@ class DocProcessor(object):
             res.addSecondLevelEntry(proc_entry)
 
     def convertVariables(self, doc, res):
-        self.log('  3) Converting Variable entries.')
+        self.log('  3) Converting variable and enum value entries.')
         var_types = ['member_variable', 'grouped_variable', 'variable']
         for raw_entry in [e for e in doc.entries if e.getType() in var_types]:
             kind = raw_entry.getType()
@@ -1438,6 +1536,16 @@ class DocProcessor(object):
             # Store object in ProcDoc.
             #self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
             res.addVariable(proc_entry)
+        for raw_entry in [e for e in doc.entries if e.getType() == 'enum_value']:
+            converter = self.converters.get(raw_entry.getType())
+            if not converter:
+                self.logWarning('Could not find converter for kind "%s".', kind)
+                continue  # Skip if no converter could be found.
+            # Perform conversion.
+            proc_entry = converter.process(raw_entry)
+            # Store object in ProcDoc.
+            #self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
+            res.addEnumValue(proc_entry)
 
     def checkLinks(self, doc, res):
         """Check <link> items of text nodes and references.
@@ -1459,7 +1567,7 @@ class DocProcessor(object):
         known extending concepts, (c) all known implementing classes.
 
         For classes, this is the list of (a) all implemented concepts, (b) all
-        direct known subclasses, (c) all extended classes.
+        direct known specializations, (c) all extended classes.
 
         @param doc: The ProcDoc object with the classes and concept.
 
@@ -1484,7 +1592,7 @@ class DocProcessor(object):
                 doc.top_level_entries[name].all_extending.add(c.name)
         # Process classes: All extended and all extending classes.
         classes = [x for x in doc.top_level_entries.values()
-                   if x.kind == 'class']
+                   if x.kind in ['class', 'specialization']]
         # Get all classes that c extends into c.all_extended.
         for c in classes:
             q = list(c.extends)  # Queue for recursion

@@ -33,7 +33,7 @@ public:
 template <typename TMatches>
 struct SingleVerificationResult
 {
-    tr1::shared_ptr<TMatches> matches;
+    std::shared_ptr<TMatches> matches;
     unsigned hitGroupId;
     unsigned windowNo;
 
@@ -41,7 +41,7 @@ struct SingleVerificationResult
         hitGroupId(0), windowNo(0)
     {}
 
-    SingleVerificationResult(tr1::shared_ptr<TMatches> & matches_, unsigned hitGroupId_, unsigned windowNo_) :
+    SingleVerificationResult(std::shared_ptr<TMatches> & matches_, unsigned hitGroupId_, unsigned windowNo_) :
         matches(matches_), hitGroupId(hitGroupId_), windowNo(windowNo_)
     {}
 };
@@ -166,7 +166,7 @@ public:
     SingleVerificationResults<TMatches> verificationResults;
 
     typedef MatchFilter<typename Spec<TOptions>::Type, typename TFragmentStore::TReadSeqStore, ThreadLocalStorage> TMatchFilter;
-    tr1::shared_ptr<TMatchFilter> matchFilter;
+    std::shared_ptr<TMatchFilter> matchFilter;
 
     String<unsigned> splitters;
 
@@ -200,7 +200,7 @@ public:
     TFragmentStore * globalStore;
     unsigned contigId;
     unsigned windowNo;
-    tr1::shared_ptr<THitString> hitsPtr;
+    std::shared_ptr<THitString> hitsPtr;
     unsigned hitGroupId;
     unsigned hitBegin;
     unsigned hitEnd;
@@ -209,7 +209,7 @@ public:
 
     Job() {}
 
-    Job(int threadId_, TVerificationResults & verificationResults_, TFragmentStore & globalStore_, unsigned contigId_, unsigned windowNo_, tr1::shared_ptr<THitString> & hitsPtr_, unsigned hitGroupId_, unsigned hitBegin_, unsigned hitEnd_, TOptions & options_, TFilterPattern & filterPattern_) :
+    Job(int threadId_, TVerificationResults & verificationResults_, TFragmentStore & globalStore_, unsigned contigId_, unsigned windowNo_, std::shared_ptr<THitString> & hitsPtr_, unsigned hitGroupId_, unsigned hitBegin_, unsigned hitEnd_, TOptions & options_, TFilterPattern & filterPattern_) :
         threadId(threadId_), verificationResults(&verificationResults_), globalStore(&globalStore_), contigId(contigId_), windowNo(windowNo_), hitsPtr(hitsPtr_), hitGroupId(hitGroupId_), hitBegin(hitBegin_), hitEnd(hitEnd_), options(&options_), filterPattern(&filterPattern_)
     {}
 };
@@ -276,7 +276,7 @@ void workVerification(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore
     __int64 contigLength = length(contigSeq);
 #endif
 
-    tr1::shared_ptr<TMatches> localMatches(new TMatches());
+    std::shared_ptr<TMatches> localMatches(new TMatches());
     resize(*localMatches, 1);
     clear(*localMatches);
 
@@ -698,7 +698,7 @@ void _mapSingleReadsParallelToContig(
             windowsDone += 1;  // Local windows done count.
             atomicMax(leaderWindowsDone, windowsDone);
 
-            tr1::shared_ptr<THitString> hitsPtr(new THitString()); //TODO (weese:) Could we reuse memory here?
+            std::shared_ptr<THitString> hitsPtr(new THitString()); //TODO (weese:) Could we reuse memory here?
             resize(*hitsPtr, 1);
             clear(*hitsPtr);
             using std::swap;

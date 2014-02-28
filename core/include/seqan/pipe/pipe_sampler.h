@@ -82,8 +82,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam m      The tuple size.
  * @tparam TPack  Specifies the packing method of the tuples (<tt>void</tt> = no packing), default is <tt>Pack</tt>.
  * 
- * @section Remarks
- * 
  * The output type is a Pair of size type and Tuple of input elements and length m (i.e. <tt>Pair&lt;Size&lt;TInput&gt;::Type,
  * Tuple&lt;Value&lt;TInput&gt;::Type, m, TPack&gt; &gt;</tt>).
  * 

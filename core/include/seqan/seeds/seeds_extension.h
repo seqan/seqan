@@ -62,6 +62,8 @@ namespace seqan {
  * @defgroup SeedExtensionTags
  * @brief Tags for selecting seed extension algorithm.
  *
+ * @see Seed#extendSeed
+ *
  * @tag SeedExtensionTags#MatchExtend
  * @headerfile <seqan/seeds.h>
  * @brief Extends a seed until a mismatch occurs.
@@ -113,16 +115,18 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
  *
  * @signature enum ExtensionDirection;
  *
- * @var ExtensionDirection EXTEND_NONE = 0;
+ * @see Seed#extendSeed
+ *
+ * @val ExtensionDirection EXTEND_NONE = 0;
  * @brief Perform no extension.
  *
- * @var ExtensionDirection EXTEND_LEFT = 0;
+ * @val ExtensionDirection EXTEND_LEFT = 1;
  * @brief Perform extension towards the left.
  *
- * @var ExtensionDirection EXTEND_RIGHT = 0;
+ * @val ExtensionDirection EXTEND_RIGHT = 2;
  * @brief Perform extension towards the right.
  *
- * @var ExtensionDirection EXTEND_BOTH = 0;
+ * @val ExtensionDirection EXTEND_BOTH = 3;
  * @brief Perform extension to both directions.
  */
 
@@ -166,16 +170,15 @@ enum ExtensionDirection
  * @signature void extendSeed(seed, database, query, direction, MatchExtend);
  * @signature void extendSeed(seed, database, query, direction, scoringScheme, scoreDropOff, xDropTag);
  *
- * @param seed[in,out]      The seed to extend.
- * @param database[in]      The database (horizontal) sequence.
- * @param query[in]         The query (vertical) sequence.
- * @param direction[in]     The extension direction.  Type: @link ExtensionDirection @endlink.
- * @param scoringScheme[in] The @link Score @endlink object to use for scoring alignments and gaps.
- * @param scoreDropOff[in]  The score drop after which the extension should stop.  The extension stops if this value is
- *                          exceeded.  Only given for when using an x-drop algorithm.
- * @param xDropTag[in]      Tag for selecting x-drop method, one of <tt>UnGappedXDrop</tt> and <tt>GappedXDrop</tt>.
- * 
- * @section Remarks
+ * @param[in,out] seed          The Seed to extend.
+ * @param[in]     database      The database (horizontal) @link SequenceConcept sequence @endlink.
+ * @param[in]     query         The query (vertical) @link SequenceConcept sequence @endlink.
+ * @param[in]     direction     The extension direction.  Type: @link ExtensionDirection @endlink.
+ * @param[in]     scoringScheme The @link Score @endlink object to use for scoring alignments and gaps.
+ * @param[in]     scoreDropOff  The score drop after which the extension should stop.  The extension stops if this
+ *                              value is exceeded.  Only given for when using an x-drop algorithm.
+ * @param[in]     xDropTag      Tag for selecting x-drop method, one of <tt>UnGappedXDrop</tt> and
+ *                              <tt>GappedXDrop</tt>.
  * 
  * You can use the tags, <tt>MatchExtend</tt>, <tt>UnGappedXDrop</tt>, and <tt>GappedXDrop</tt>.
  * 
@@ -689,7 +692,7 @@ _extendSeedGappedXDropOneDirection(
 
 	// Indices on anti-diagonals include gap column/gap row:
 	//   - decrease indices by 1 for position in query/database segment
-	//   - first calculated entry is on anti-diagonal n° 2
+	//   - first calculated entry is on anti-diagonal n\B0 2
 
     TSize minCol = 1;
     TSize maxCol = 2;

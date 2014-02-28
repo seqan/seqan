@@ -83,7 +83,7 @@ public:
  *
  * @signature Rng::Rng([seed]);
  *
- * @param seed The <tt>unsigned</tt> value to use for seeding, defaults to 0.
+ * @param[in] seed The <tt>unsigned</tt> value to use for seeding, defaults to 0.
  */
 
 /**
@@ -138,7 +138,7 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
  * @fn MersenneTwisterRng#reSeed
  * @brief Reset and re-seed Mersenne Twister Rng.
  *
- * @signature reSeed(mt[, seed]);
+ * @signature void reSeed(mt[, seed]);
  *
  * @param[in,out] mt   The MersenneTwisterRng to re-seed.
  * @param[in]     seed The <tt>unsigned</tt> to use for re-seeding, defaults to 0.

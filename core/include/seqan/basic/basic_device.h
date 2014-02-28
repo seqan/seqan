@@ -68,8 +68,6 @@ typedef Tag<ExecDevice_> ExecDevice;
  * @tparam TObject The type to be converted into a device type.
  * @return Type The resulting device type.
  *
- * @section Remarks
- *
  * This metafunction is used to convert host containers into device containers.
  *
  * @see View
@@ -98,7 +96,7 @@ struct Device<TObject const>
  *
  * @signature IsDevice<TObject>::Type;
  * @tparam TObject The type to be tested for being a device type.
- * @return Type @link True @endlink or @link False @endlink.
+ * @return Type @link LogicalValuesTags#True @endlink or @link LogicalValuesTags#False @endlink.
  *
  * @see Device
  */

@@ -141,8 +141,9 @@ inline void appendValue(
     TString2 const & obj,
     Tag<TExpand> tag)
 {
-    if (_validStringSetLimits(me))
-        appendValue(me.limits, lengthSum(me) + length(obj), tag);
+//    if (_validStringSetLimits(me))
+//        appendValue(me.limits, lengthSum(me) + length(obj), tag);
+    me.limitsValid = false;
     appendValue(me.strings, obj, tag);
 }
 
@@ -238,6 +239,16 @@ getValueById(StringSet<TString, Owner<TSpec> >& me,
             TId const id)
 {
     SEQAN_CHECKPOINT;
+    if (id < (TId) length(me)) return value(me, id);
+    static TString tmp = "";
+    return tmp;
+}
+
+template <typename TString, typename TSpec, typename TId>
+inline typename Reference<StringSet<TString, Owner<TSpec> > const>::Type
+getValueById(StringSet<TString, Owner<TSpec> > const & me,
+            TId const id)
+{
     if (id < (TId) length(me)) return value(me, id);
     static TString tmp = "";
     return tmp;

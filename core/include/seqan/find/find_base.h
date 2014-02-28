@@ -49,14 +49,23 @@ namespace seqan {
 // TODO(holtgrew): Define as Tag<FindInfix_>?
 
 /*!
- * @tag FindInfix
+ * @defgroup ApproximateFinderSearchTypeTags Approximate Finder Search Type Tags
+ * @brief Tags for specifying the @link Finder @endlink search type (prefix or infix).
+ *
+ * There are two interesting kinds of search for approximate string search algorithms: (1) search for a matching
+ * substring anywhere in the text, infix search, and (2) search for a matching prefix, prefix search.  The tags
+ * in this group can be used to select this search for approximate string search algorithms.
+ */
+
+/*!
+ * @tag ApproximateFinderSearchTypeTags#FindInfix
  * @headerfile <seqan/find.h>
  *
- * @brief Find needle as a substring of the hasystack (infix search).
+ * @brief Find needle as a substring of the haystack (infix search).
  *
  * @signature struct FindInfix;
  *
- * @see FindPrefix
+ * @see ApproximateFinderSearchTypeTags#FindPrefix
  */
 
 /**
@@ -71,14 +80,14 @@ namespace seqan {
 struct FindInfix;
 
 /*!
- * @tag FindPrefix
+ * @tag ApproximateFinderSearchTypeTags#FindPrefix
  * @headerfile <seqan/find.h>
  *
- * @brief Find needle as a substring of the hasystack (prefix search).
+ * @brief Find needle as a substring of the haystack (prefix search).
  *
  * @signature struct FindPrefix;
  *
- * @see FindInfix
+ * @see ApproximateFinderSearchTypeTags#FindInfix
  */
 
 /**
@@ -154,7 +163,7 @@ struct DefaultPattern
  * @headerfile <seqan/file.h>
  * @brief Returns the haystack type of a @link Finder @endlink type.
  *
- * @signature Hasytack<TFinder>::Type;
+ * @signature Haystack<TFinder>::Type;
  *
  * @tparam TFinder The finder to query.
  *
@@ -183,7 +192,7 @@ struct Haystack
 };
 
 /*!
- * @mfn Needle
+ * @mfn Pattern#Needle
  * @headerfile <seqan/find.h>
  * @brief Returns the needle type of a @link Pattern @endlink type.
  *
@@ -241,8 +250,6 @@ struct Needle<Segment<THost, TSpec> const>
  *                        Differences are deletions, insertions, and substitutions.
  *
  * @return bool <tt>true</tt> if an occurence was found and <tt>false</tt> if not.
- *
- * @section Remarks
  *
  * Repeated calls of this function iterate through all occurences of <tt>pattern</tt>.
  *
@@ -342,7 +349,8 @@ Hit at position: 16
  * 
  * @brief Holds the haystack and a current search context.
  * 
- * @signature Finder<THaystack[, TSpec]>
+ * @signature template <typename THaystack[, typename TSpec]>
+ *            class Finder;
  * 
  * @tparam TSpec The index-algorithm to search with (Optional).Leave empty for
  *               online pattern matching (see @link Pattern @endlink).If
@@ -351,8 +359,6 @@ Hit at position: 16
  *               Pigeonhole, Swift, Backtracking Default: The result of @link
  *               DefaultFinder @endlink
  * @tparam THaystack The haystack type. Types: String, Index
- * 
- * @section Remarks
  * 
  * <tt>position(finder)</tt> returns the position of the current hit in the haystack.  If <tt>THaystack</tt> is a set of
  * strings or an index of a set of strings, then <tt>position(finder)</tt> returns a @link Pair @endlink <tt>(hayNo,
@@ -735,8 +741,6 @@ SEQAN_CHECKPOINT
  *
  * @return TInfix The @link SegmentableConcept#Infix @endlink of the match in the haystack.
  *
- * @section Remarks
- *
  * This function works only correct if the begin position of the match was already found, see @link Finder#findBegin @endlink
  *
  * For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
@@ -850,6 +854,16 @@ empty(Finder<THaystack, TSpec> const & me)
 SEQAN_CHECKPOINT
 	return me._needReinit;
 }
+
+/*!
+ * @fn Finder#clear
+ * @headerfile <seqan/find.h>
+ * @brief Clear the Finder.
+ *
+ * @signature void clear(finder);
+ *
+ * @param[in,out] finder The Finder to clear.
+ */
 
 template <typename THaystack, typename TSpec>
 inline void

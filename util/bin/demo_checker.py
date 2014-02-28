@@ -30,19 +30,19 @@ def loadExpected(args):
     """Load the expected file contents."""
     out, err = '', ''
     if args.stdout_path:
-        with open(args.stdout_path, 'r') as f:
+        with open(args.stdout_path, 'rb') as f:
             out = f.read()
     if args.stderr_path:
-        with open(args.stderr_path, 'r') as f:
+        with open(args.stderr_path, 'rb') as f:
             err = f.read()
-    return t(out), t(err)
+    return t(out).split('\n'), t(err).split('\n')
 
 
 def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
-    return t(p.stdout.read()), t(p.stderr.read()), p.returncode
+    return t(p.stdout.read()).split('\n'), t(p.stderr.read()).split('\n'), p.returncode
 
 
 def main():
@@ -78,7 +78,7 @@ def main():
         print >>sys.stderr, 'Standard output was as expected.'
 
     if expected_err != actual_err:
-        print >>sys.stderr, 'The standard errput was not as expected!'
+        print >>sys.stderr, 'The standard error was not as expected!'
         l = difflib.context_diff(expected_err, actual_err,
                                  fromfile='expected', tofile='actual')
         print >>sys.stderr, '\n'.join(l)

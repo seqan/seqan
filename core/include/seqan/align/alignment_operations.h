@@ -66,9 +66,9 @@ namespace seqan {
  *
  * @signature void integrateAlign(align1, align2[, positions]);
  *
- * @param align1    Target Alignment object into which align2 is to be integrated.
- * @param align2    Alignment object that is to be integrated into align1.
- * @param positions The integration positions in align1 for all rows (view positions), String of positions.
+ * @param[in,out] align1    Target Alignment object into which align2 is to be integrated.
+ * @param[in]     align2    Alignment object that is to be integrated into align1.
+ * @param[in]     positions The integration positions in align1 for all rows (view positions), String of positions.
  *
  * @section Examples
  *

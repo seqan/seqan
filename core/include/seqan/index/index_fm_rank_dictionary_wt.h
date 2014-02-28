@@ -69,23 +69,18 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 */
 /*!
  * @defgroup WaveletTreeFibres WaveletTree Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
  * 
- * @section Remarks
- * 
  * These tags can be used to get @link Fibre Fibres @endlink of a @link WaveletTree @endlink.
- * 
- * @tag WaveletTreeFibres#FibreTreeStructure
- * 
- * @brief The wavelet tree structure of the wavelet tree.
- * 
- * @tag WaveletTreeFibres#FibreRanks
- * 
- * @brief A string set containing a rank support bit string for each node in the tree.
  *
  * @see Fibre
  * @see Index#getFibre
+ * 
+ * @tag WaveletTreeFibres#FibreTreeStructure
+ * @brief The wavelet tree structure of the wavelet tree.
+ * 
+ * @tag WaveletTreeFibres#FibreRanks
+ * @brief A string set containing a rank support bit string for each node in the tree.
  * 
  */
 
@@ -113,20 +108,16 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 */
 /*!
  * @class WaveletTree
- *
  * @extends RankDictionary
- * 
  * @headerfile seqan/index.h
  * 
  * @brief A wavelet tree is a tree like binary encoding of a text.
  * 
  * @signature template <typename TValue, typename TSpec>
- *            RankDictionary<TValue, WaveletTree<TSpec> >
+ *            class RankDictionary<TValue, WaveletTree<TSpec> >;
  * 
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>
- * 
- * @section Remarks
  * 
  * The nodes of a wavelet tree consist of a bit string as well as a character c.
  * In each level of the tree, characters smaller than c are represented as a 0

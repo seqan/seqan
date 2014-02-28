@@ -236,8 +236,8 @@ int VariantMaterializer::_materializeSmallVariants(
                 {
                     append(levelsSmallVariants->forward, infix(levels->forward, lastPos, snpRecord.pos + 1));
                     append(levelsSmallVariants->reverse, infix(levels->reverse, lastPos, snpRecord.pos + 1));
-                    appendValue(varPoints, std::make_pair(length(seq), true));      // variation points before/after SNP
-                    appendValue(varPoints, std::make_pair(length(seq) + 1, true));
+                    appendValue(varPoints, std::make_pair((int)length(seq), true));      // variation points before/after SNP
+                    appendValue(varPoints, std::make_pair((int)length(seq) + 1, true));
                 }
 
                 SEQAN_ASSERT_GEQ(snpRecord.pos, lastPos);
@@ -277,7 +277,7 @@ int VariantMaterializer::_materializeSmallVariants(
                     {
                         append(levelsSmallVariants->forward, infix(levels->forward, lastPos, smallIndelRecord.pos));
                         append(levelsSmallVariants->reverse, infix(levels->reverse, lastPos, smallIndelRecord.pos));
-                        appendValue(varPoints, std::make_pair(length(seq), false));  // variation point before insertion
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));  // variation point before insertion
                     }
 
                     SEQAN_ASSERT_GEQ(smallIndelRecord.pos, lastPos);
@@ -289,7 +289,7 @@ int VariantMaterializer::_materializeSmallVariants(
                     {
                         append(levelsSmallVariants->forward, lvls.forward);
                         append(levelsSmallVariants->reverse, lvls.reverse);
-                        appendValue(varPoints, std::make_pair(length(seq), false));  // variation point after insertion
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));  // variation point after insertion
                     }
                     lastPos = smallIndelRecord.pos;
                     recordInsertion(journal, hostToVirtualPosition(journal, smallIndelRecord.pos),
@@ -305,7 +305,7 @@ int VariantMaterializer::_materializeSmallVariants(
                     append(seq, infix(contig, lastPos, smallIndelRecord.pos));  // interim chars
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));  // variation point at deletion
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));  // variation point at deletion
                         append(levelsSmallVariants->forward, infix(levels->forward, lastPos, smallIndelRecord.pos));
                         append(levelsSmallVariants->reverse, infix(levels->reverse, lastPos, smallIndelRecord.pos));
                     }
@@ -413,7 +413,7 @@ int VariantMaterializer::_materializeLargeVariants(
         {
             append(levelsLargeVariants->forward, infix(levels->forward, lastPos, svRecord.pos));
             append(levelsLargeVariants->reverse, infix(levels->reverse, lastPos, svRecord.pos));
-            appendValue(varPoints, std::make_pair(length(seq), false));
+            appendValue(varPoints, std::make_pair((int)length(seq), false));
         }
         if (currentPos != length(seq))
             appendValue(intervals, GenomicInterval(currentPos, length(seq), lastPos, svRecord.pos,
@@ -443,7 +443,7 @@ int VariantMaterializer::_materializeLargeVariants(
                         {
                             append(levelsLargeVariants->forward, lvls.forward);
                             append(levelsLargeVariants->reverse, lvls.reverse);
-                            appendValue(varPoints, std::make_pair(length(seq), false));  // variation point after insertion
+                            appendValue(varPoints, std::make_pair((int)length(seq), false));  // variation point after insertion
                         }
                         if (currentPos != length(seq))
                             appendValue(intervals, GenomicInterval(currentPos, length(seq), -1, -1,
@@ -475,7 +475,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     append(seq, infix(contig, svRecord.pos, svRecord.pos + svRecord.size));
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));  // variation point at deletion
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));  // variation point at deletion
                         append(levelsLargeVariants->forward, infix(levels->reverse, svRecord.pos, svRecord.pos + svRecord.size));
                         reverse(infix(levelsLargeVariants->forward, oldLen, length(levelsLargeVariants->forward)));
                         append(levelsLargeVariants->reverse, infix(levels->forward, svRecord.pos, svRecord.pos + svRecord.size));
@@ -504,7 +504,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     append(seq, infix(contig, svRecord.pos + svRecord.size, svRecord.targetPos));
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));
                         append(levelsLargeVariants->forward, infix(levels->forward, svRecord.pos + svRecord.size, svRecord.targetPos));
                         append(levelsLargeVariants->reverse, infix(levels->reverse, svRecord.pos + svRecord.size, svRecord.targetPos));
                     }
@@ -515,7 +515,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     append(seq, infix(contig, svRecord.pos, svRecord.pos + svRecord.size));
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));
                         append(levelsLargeVariants->forward, infix(levels->forward, svRecord.pos, svRecord.pos + svRecord.size));
                         append(levelsLargeVariants->reverse, infix(levels->reverse, svRecord.pos, svRecord.pos + svRecord.size));
                     }
@@ -542,7 +542,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     SEQAN_ASSERT_GEQ(svRecord.targetPos, svRecord.pos + svRecord.size);
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)  // first copy
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));
                         append(levelsLargeVariants->forward, infix(levels->forward, svRecord.pos, svRecord.pos + svRecord.size));
                         append(levelsLargeVariants->reverse, infix(levels->reverse, svRecord.pos, svRecord.pos + svRecord.size));
                     }
@@ -553,7 +553,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     append(seq, infix(contig, svRecord.pos + svRecord.size, svRecord.targetPos));
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));
                         append(levelsLargeVariants->forward, infix(levels->forward, svRecord.pos + svRecord.size, svRecord.targetPos));
                         append(levelsLargeVariants->reverse, infix(levels->reverse, svRecord.pos + svRecord.size, svRecord.targetPos));
                     }
@@ -564,7 +564,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     append(seq, infix(contig, svRecord.pos, svRecord.pos + svRecord.size));
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)  // second copy
                     {
-                        appendValue(varPoints, std::make_pair(length(seq), false));
+                        appendValue(varPoints, std::make_pair((int)length(seq), false));
                         append(levelsLargeVariants->forward, infix(levels->forward, svRecord.pos, svRecord.pos + svRecord.size));
                         append(levelsLargeVariants->reverse, infix(levels->reverse, svRecord.pos, svRecord.pos + svRecord.size));
                     }

@@ -136,7 +136,7 @@ public:
     PairedVerificationResults<TMatches> verificationResults;
 
     typedef PairedMatchFilter<typename Spec<TOptions>::Type, typename TFragmentStore::TReadSeqStore, ThreadLocalStorage> TMatchFilter;
-    tr1::shared_ptr<TMatchFilter> matchFilter;
+    std::shared_ptr<TMatchFilter> matchFilter;
 
     String<unsigned> splitters;
 
@@ -243,7 +243,7 @@ class Job<PairedVerification<TMatches, TFragmentStore, THitString_, TOptions, TF
 public:
     typedef PairedVerificationResults<TMatches> TVerificationResults;
     typedef THitString_ THitString;
-    typedef tr1::shared_ptr<THitString> THitStringPtr;
+    typedef std::shared_ptr<THitString> THitStringPtr;
 
     int threadId;
     TVerificationResults * verificationResults;
@@ -1204,9 +1204,9 @@ void _mapMatePairReadsParallel(
 #endif  // #ifdef RAZERS_PROFILE
 
         // Previous left hits will be stored here.
-        tr1::shared_ptr<THitString> previousLeftHits;
-        tr1::shared_ptr<THitString> leftHits;
-        tr1::shared_ptr<THitString> rightHits;
+        std::shared_ptr<THitString> previousLeftHits;
+        std::shared_ptr<THitString> leftHits;
+        std::shared_ptr<THitString> rightHits;
         // Declare hits splitters and initialize for left since we need it as "previous left" below.
         String<size_t> leftHitsSplitters;
         resize(leftHitsSplitters, options.maxVerificationPackageCount + 1, 0);

@@ -111,22 +111,21 @@ struct RankDictionaryBitMask_<__uint32, TSpec>
 template <typename TSpec>
 struct RankDictionaryBitMask_<__uint64, TSpec>
 {
-    static const __uint64 VALUE = 0x5555555555555555;
+    static const __uint64 VALUE = 0x5555555555555555ull;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryWordSize_
 // ----------------------------------------------------------------------------
 
-//#ifdef CUDA_DISABLED
-//template <typename TValue, typename TSpec>
-//struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
-//    BitsPerValue<unsigned long> {};
-//#else
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
-    BitsPerValue<__uint32> {};
-//#endif
+    BitsPerValue<__uint64> {};
+
+// NOTE(esiragusa): This is required on CUDA devices.
+//template <typename TValue, typename TSpec>
+//struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
+//    BitsPerValue<__uint32> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBitsPerBlock_
@@ -137,11 +136,10 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBitsPerBlock_<TValue, TwoLevels<TSpec> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type> {};
 
-//#ifdef CUDA_DISABLED
+// NOTE(esiragusa): This lets a Dna block to have the size of one word - one popcount per block.
 //template <typename TSpec>
 //struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
 //    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
-//#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlock_
@@ -220,6 +218,24 @@ struct RankDictionaryEntry_<TValue, TwoLevels<TSpec> >
 // ----------------------------------------------------------------------------
 // Class TwoLevels RankDictionary
 // ----------------------------------------------------------------------------
+/*!
+ * @class TwoLevelRankDictionary
+ * @extends RankDictionary
+ * @headerfile seqan/index.h
+ * 
+ * @brief A TwoLevelRankDictionary is a @link RankDictionary @endlink consisting of two levels.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            class RankDictionary<TValue, WaveletTree<TSpec> >;
+ * 
+ * @tparam TValue The alphabet type of the wavelet tree.
+ * @tparam TSpec  A tag for specialization purposes. Default: <tt>void</tt>
+ * 
+ * This @link RankDictionary @endlink consists of two levels of rank
+ * infromation, in which one stores information of blocks and the other
+ * information until a specified block. Combining those two informations
+ * leads to constant rank dictionary look ups.
+ */
 
 template <typename TValue, typename TSpec>
 struct RankDictionary<TValue, TwoLevels<TSpec> >
@@ -698,7 +714,6 @@ _getValuesRanks(RankDictionary<bool, TwoLevels<TSpec> > const & dict, TPos pos)
 // ----------------------------------------------------------------------------
 // Function getRank()
 // ----------------------------------------------------------------------------
-
 template <typename TValue, typename TSpec, typename TPos, typename TChar>
 SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > const>::Type
 getRank(RankDictionary<TValue, TwoLevels<TSpec> > const & dict, TPos pos, TChar c)
@@ -737,7 +752,6 @@ getRank(RankDictionary<bool, TwoLevels<TSpec> > const & dict, TPos pos)
 // ----------------------------------------------------------------------------
 // Function getValue()
 // ----------------------------------------------------------------------------
-
 template <typename TValue, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename Value<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 getValue(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TPos pos)
