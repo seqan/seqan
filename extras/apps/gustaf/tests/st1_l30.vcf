@@ -12,11 +12,11 @@
 ##ALT=<ID=INV,Description="Inversion">
 ##ALT=<ID=DUP,Description="Duplication">
 ##ALT=<ID=DUP:TANDEM,Description="Tandem Duplication">
-##contig=<ID=gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome,length=4718>
+##contig=<ID=gi|9632547|ref|NC_002077.1|,length=4718>
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	210	.	G	<INV>	.	PASS	SVTYPE=INV;END=280;SVLEN=70;DP=1	.	1
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	421	.	G	<DEL>	.	PASS	SVTYPE=DEL;END=490;SVLEN=-69;DP=1	.	1
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	909	.	A	<INS>	.	PASS	SVTYPE=INS;SVLEN=70;DP=1	.	1
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1052	.	A	<DEL>	.	PASS	SVTYPE=DEL;END=1120;SVLEN=-68;DP=1	.	1
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1193	.	C	<DEL>	.	PASS	SVTYPE=DEL;END=1263;SVLEN=-70;DP=1	.	1
-gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1820	.	G	<DUP>	.	PASS	SVTYPE=DUP;END=1888;SVLEN=68;TARGETPOS=1468;DP=2	.	1
+gi|9632547|ref|NC_002077.1|	210	.	G	<INV>	.	PASS	SVTYPE=INV;END=280;SVLEN=70;DP=1	.	1
+gi|9632547|ref|NC_002077.1|	421	.	G	<DEL>	.	PASS	SVTYPE=DEL;END=490;SVLEN=-69;DP=1	.	1
+gi|9632547|ref|NC_002077.1|	909	.	A	<INS>	.	PASS	SVTYPE=INS;SVLEN=70;DP=1	.	1
+gi|9632547|ref|NC_002077.1|	1052	.	A	<DEL>	.	PASS	SVTYPE=DEL;END=1120;SVLEN=-68;DP=1	.	1
+gi|9632547|ref|NC_002077.1|	1193	.	C	<DEL>	.	PASS	SVTYPE=DEL;END=1263;SVLEN=-70;DP=1	.	1
+gi|9632547|ref|NC_002077.1|	1820	.	G	<DUP>	.	PASS	SVTYPE=DUP;END=1888;SVLEN=68;TARGETPOS=1468;DP=2	.	1
