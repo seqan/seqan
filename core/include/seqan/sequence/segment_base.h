@@ -69,8 +69,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature TPrefix prefix(s, endPos);
  *
- * @param s      Segmentable sequence to return the prefix for (type <tt>TSeq</tt>).
- * @param endPos End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ * @param[in] s      Segmentable sequence to return the prefix for (type <tt>TSeq</tt>).
+ * @param[in] endPos End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  *
  * @return TPrefix The prefix of length <tt>endPos</tt>.  Type as returned by @link SegmentableConcept#Prefix @endlink
  *                 for TSeq.
@@ -94,9 +94,9 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature TPrefix infixWithLength(s, beginPos, len);
  *
- * @param s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
- * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
- * @param len      Length of the prefix, must be convertible to <tt>Size&lt;TSeq&gt;::Type</tt>.
+ * @param[in] s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
+ * @param[in] beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ * @param[in] len      Length of the prefix, must be convertible to <tt>Size&lt;TSeq&gt;::Type</tt>.
  *
  * Equivalent to <tt>infix(s, beginPos, beginPos + len)</tt>.
  *
@@ -109,9 +109,9 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature TPrefix infix(s, beginPos, endPos);
  *
- * @param s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
- * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
- * @param endPos   End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ * @param[in] s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
+ * @param[in] beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ * @param[in] endPos   End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  *
  * @aka substr
  */
@@ -134,8 +134,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature TPrefix suffix(s, beginPos);
  *
- * @param s        The segmentable type to get the suffix of.
- * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ * @param[in] s        The segmentable type to get the suffix of.
+ * @param[in] beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  *
  * @return TSuffix The suffix type as returned by @link SegmentableConcept#Suffix @endlink.
  */
@@ -202,6 +202,32 @@ namespace SEQAN_NAMESPACE_MAIN
 Infix: CGCG
 ..include:seqan/sequence.h
 */
+
+/*!
+ * @fn Segment#beginPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return segment's begin position.
+ *
+ * @signature TPos beginPosition(seg);
+ *
+ * @param[in] seg The Segment to query for its begin position.
+ *
+ * @return TPos The begin position of the segment.  TPos is the position type of the Segment as returned by
+ *              @link ContainerConcept#Position Position @endlink.
+ */
+
+/*!
+ * @fn Segment#endPosition
+ * @headerfile <seqan/sequence.h>
+ * @brief Return segment's end position.
+ *
+ * @signature TPos endPosition(seg);
+ *
+ * @param[in] seg The Segment to query for its end position.
+ *
+ * @return TPos The end position of the segment.  TPos is the position type of the Segment as returned by
+ *              @link ContainerConcept#Position Position @endlink.
+ */
 
 struct InfixSegment {};
 

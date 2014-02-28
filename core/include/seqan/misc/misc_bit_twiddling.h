@@ -57,6 +57,41 @@ namespace seqan {
 // Classes, Structs, Enums, Tags
 // ============================================================================
 
+// DeBruijn sequence for 64 bit bitScanReverse.
+static const int DeBruijnMultiplyLookupBSR64[64] =
+{
+    0, 47,  1, 56, 48, 27,  2, 60,
+   57, 49, 41, 37, 28, 16,  3, 61,
+   54, 58, 35, 52, 50, 42, 21, 44,
+   38, 32, 29, 23, 17, 11,  4, 62,
+   46, 55, 26, 59, 40, 36, 15, 53,
+   34, 51, 20, 43, 31, 22, 10, 45,
+   25, 39, 14, 33, 19, 30,  9, 24,
+   13, 18,  8, 12,  7,  6,  5, 63
+};
+
+// DeBruijn sequence for 64 bit bitScanForward.
+static const int DeBruijnMultiplyLookupBSF64[64] =
+{
+    0,  1, 48,  2, 57, 49, 28,  3,
+   61, 58, 50, 42, 38, 29, 17,  4,
+   62, 55, 59, 36, 53, 51, 43, 22,
+   45, 39, 33, 30, 24, 18, 12,  5,
+   63, 47, 56, 27, 60, 41, 37, 16,
+   54, 35, 52, 21, 44, 32, 23, 11,
+   46, 26, 40, 15, 34, 20, 31, 10,
+   25, 14, 19,  9, 13,  8,  7,  6
+};
+
+// DeBruijn sequence for 32 bit bitScanForward and bitScanReverse.
+static const int DeBruijnMultiplyLookup[32] =
+{
+  0,   1, 28,  2, 29, 14, 24, 3,
+  30, 22, 20, 15, 25, 17,  4, 8,
+  31, 27, 13, 23, 21, 19, 16, 7,
+  26, 12, 18,  6, 11,  5, 10, 9
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -76,8 +111,8 @@ namespace seqan {
  *
  * @signature void setBitTo(word, index, value);
  *
- * @param[in,out] word  The machine word (number) to set bits of.
- * @param[in]     index The index of the bit in the word to set, integer.
+ * @param[in,out] word  The machine word (number) to set bits of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit in the word to set (@link IntegerConcept @endlink).
  * @param[in]     value The value to set to, <tt>bool</tt>.
  */
 
@@ -118,8 +153,8 @@ setBitTo(TWord & word, TPos index, bool value)
  *
  * @signature void setBit(word, index);
  *
- * @param[in,out] word  The word to set the bit of.
- * @param[in]     index The index of the bit to set.
+ * @param[in,out] word  The word to set the bit of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit to set (@link IntegerConcept @endlink).
  */
 
 /**
@@ -156,8 +191,8 @@ setBit(TWord & word, TPos index)
  *
  * @signature void clearBit(word, index);
  *
- * @param[in,out] word  The machine word to set the bit of.
- * @param[in]     index The index of the bit to set to 0.
+ * @param[in,out] word  The machine word to set the bit of (@link IntegerConcept @endlink).
+ * @param[in]     index The index of the bit to set to 0 (@link IntegerConcept @endlink).
  */
 
 /**
@@ -194,7 +229,7 @@ clearBit(TWord & word, TPos index)
  *
  * @signature void clearAllBits(word);
  *
- * @param[in,out] word The word to clear all bits of.
+ * @param[in,out] word The word to clear all bits of (@link IntegerConcept @endlink).
  */
 
 /**
@@ -229,8 +264,10 @@ clearBits(TWord & word)
  *
  * @signature bool isBitSet(word, index);
  *
- * @param[in] word  The word to check.
- * @param[in] index The index of the bit to check.
+ * @param[in] word  The word to check (@link IntegerConcept @endlink).
+ * @param[in] index The index of the bit to check (@link IntegerConcept @endlink).
+ *
+ * @return bool Whether the bit with the given index is set in <tt>word</tt>.
  */
 
 /**
@@ -280,7 +317,7 @@ hiBits(TWord word, TPos index)
  *
  * @signature unsigned popCount(words);
  *
- * @param[in] word The word to count the number of set bits of.
+ * @param[in] word The word to count the number of set bits of (@link IntegerConcept @endlink).
  *
  * @return unsigned The number of set bits in <tt>word</tt>.
  */
@@ -492,6 +529,278 @@ popCount(TWord word)
 //    }
 //    return stream;
 //}
+
+// ----------------------------------------------------------------------------
+// Function testAllZeros()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn testAllZeros
+ * @headerfile <seqan/misc.h>
+ * @brief Tests whether all bits of the given value are set to <b>0</b>.
+ *
+ * @signature bool testAllZeros(val)
+ *
+ * @param[in]  val The value to check the bits for. Must be of type @link IntegerConcept @endlink.
+ *
+ * @return bool  <tt>true</tt> if all bits are set to <b>0</b>, <tt>false</tt> otherwise.
+ *
+ * @see testAllOnes
+ */
+
+template <typename TWord>
+inline bool testAllZeros(TWord const & val)
+{
+    return val == 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllOnes()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn testAllOnes
+ * @headerfile <seqan/misc.h>
+ * @brief Tests whether all bits of the given value are set to <b>1</b>.
+ *
+ * @signature bool testAllOnes(val)
+ *
+ * @param[in]  val The value to check the bits for. Must be of type @link IntegerConcept @endlink.
+ *
+ * @return bool <tt>true</tt> if all bits are set to <b>1</b>, <tt>false</tt> otherwise.
+ *
+ * @see testAllZeros
+ */
+
+template <typename TWord>
+inline bool testAllOnes(TWord const & val)
+{
+    return val == ~static_cast<TWord>(0);
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanReverseGeneric()                     [Platform independent]
+// ----------------------------------------------------------------------------
+
+// bitScanReverse for 32 bit integers using DeBruijn sequence by Eric Cole, January 8, 2006.
+template <typename TWord>
+inline TWord
+_bitScanReverseGeneric(TWord word, WordSize_<32>)
+{
+    return DeBruijnMultiplyLookup[static_cast<__uint32>(word * 0x077CB531U) >> 27];
+}
+
+// bitScanReverse for 64 bit integers using DeBruijn sequence by Kim Walisch and Mark Dickinson.
+template <typename TWord>
+inline TWord
+_bitScanReverseGeneric(TWord word, WordSize_<64>)
+{
+    word |= word >> 1; word |= word >> 2; word |= word >> 4; word |= word >> 8; word |= word >> 16; word |= word >> 32;
+    return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89ULL) >> 58];
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanReverse()                            [Platform independent]
+// ----------------------------------------------------------------------------
+
+template <typename TWord, unsigned int NUM_BITS>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<NUM_BITS>)
+{
+    return _bitScanReverseGeneric(word, WordSize_<NUM_BITS>());
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanForwardGeneric()                     [Platform independent]
+// ----------------------------------------------------------------------------
+
+// bitScanForward implementations for 64 and 32 bit values using DeBruijn sequence by Martin LŠuter, Charles E. Leiserson,
+// Harald Prokop and Keith H. Randall; "Using de Bruijn Sequences to Index a 1 in a Computer Word"; (1997)
+
+// Note, the cast of word to a signed integer is necessary to fix compiler warning C4146 on Windows platforms.
+template <typename TWord>
+inline TWord
+_bitScanForwardGeneric(TWord word, WordSize_<32>)
+{
+    return DeBruijnMultiplyLookup[static_cast<__uint32>(((word & -static_cast<__int32>(word)) * 0x077CB531U)) >> 27];
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForwardGeneric(TWord word, WordSize_<64>)
+{
+    return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89ULL) >> 58];
+}
+
+// ----------------------------------------------------------------------------
+// Function _bitScanForward()                            [Platform independent]
+// ----------------------------------------------------------------------------
+
+template <typename TWord, unsigned int NUM_BITS>
+inline TWord
+_bitScanForward(TWord word, WordSize_<NUM_BITS>)
+{
+    return _bitScanForwardGeneric(word, WordSize_<NUM_BITS>());
+}
+
+#ifdef PLATFORM_GCC
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    return 63 - __builtin_clzll(static_cast<unsigned long long>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<32>)
+{
+    return 31 - __builtin_clz(static_cast<unsigned int>(word));
+}
+
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<64>)
+{
+    return __builtin_ctzll(static_cast<unsigned long long>(word));
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<32>)
+{
+    return __builtin_ctz(static_cast<unsigned int>(word));
+}
+#else
+#ifdef PLATFORM_WINDOWS
+#if (SEQAN_IS_64_BIT)
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    unsigned long index;
+    _BitScanReverse64(&index, static_cast<unsigned __int64>(word));
+    return index;
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<64>)
+{
+    unsigned long index;
+    _BitScanForward64(&index, static_cast<unsigned __int64>(word));
+    return index;
+}
+#else
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<64>)
+{
+    unsigned long index;
+    register unsigned long hi = word >> 32;
+    if (hi == 0u)
+    {
+        _BitScanReverse(&index, word);
+        return index;
+    }
+    _BitScanReverse(&index, hi);
+    return index + 32;
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<64>)
+{
+    unsigned long index;
+    register unsigned long lo = word & ~static_cast<unsigned long>(0);
+    if (lo == 0u)
+    {
+        _BitScanForward(&index, word >> 32);
+        return index + 32;
+    }
+    _BitScanForward(&index, lo);
+    return index;
+}
+#endif  // if (SEQAN_IS_64_BIT)
+
+template <typename TWord>
+inline TWord
+_bitScanReverse(TWord word, WordSize_<32>)
+{
+    unsigned long index;
+    _BitScanReverse(&index, static_cast<unsigned long>(word));
+    return index;
+}
+
+template <typename TWord>
+inline TWord
+_bitScanForward(TWord word, WordSize_<32>)
+{
+    unsigned long index;
+    _BitScanForward(&index, static_cast<unsigned long>(word));
+    return index;
+}
+#endif  // ifdef PLATFORM_WINDOWS
+#endif  // ifdef PLATFORM_GCC
+
+// ----------------------------------------------------------------------------
+// Function bitScanReverse()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn bitScanReverse
+ * @headerfile <seqan/misc.h>
+ * @brief Returns the index of the last set bit in the binary representation of the given value.
+ * @note If <tt>val</tt> is 0 the return value is undefined.
+ *
+ * @signature TWord bitScanReverse(val)
+ *
+ * @param[in]  val The value to scan. Has to be non-zero.
+ *
+ * @return TWord The index of the last set bit in <tt>val</tt>, where <tt>TWord</tt> is the value of <tt>val</tt>.
+ *
+ * @see bitScanForward
+ */
+
+template <typename TWord>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TWord> >, TWord)
+bitScanReverse(TWord word)
+{
+   SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
+
+   return _bitScanReverse(word, WordSize_<(BitsPerValue<TWord>::VALUE <= 32) ? 32 : BitsPerValue<TWord>::VALUE>());
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanForward()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn bitScanForward
+ * @headerfile <seqan/misc.h>
+ * @brief Returns the index of the first set bit in the binary representation of the given value.
+ * @note If <tt>val</tt> is 0 the return value is undefined.
+ *
+ * @signature TWord bitScanForward(val)
+ *
+ * @param[in]  val The value to scan. Has to be non-zero.
+ *
+ * @return TWord The index of the first set bit in <tt>val</tt>, where <tt>TWord</tt> is the value of <tt>val</tt>.
+ *
+ * @see bitScanReverse
+ */
+
+template <typename TWord>
+inline SEQAN_FUNC_ENABLE_IF( Is<IntegerConcept<TWord> >, TWord)
+bitScanForward(TWord word)
+{
+   SEQAN_ASSERT_NEQ(word, static_cast<TWord>(0));
+   return _bitScanForward(word, WordSize_<(BitsPerValue<TWord>::VALUE <= 32) ? 32 : BitsPerValue<TWord>::VALUE>());
+}
 
 }  // namespace seqan
 

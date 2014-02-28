@@ -367,9 +367,9 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  * @param[in]      scoringScheme
  *                           The @link Score @endlink to use.
  *
- * @return          TScoreValue
- *                           The score of the new alignment.  <tt>TScoreValue</tt> is the value type of
- *                           <tt>scoringScheme</tt>.
+ * @return         TScoreValue
+ *                           The score of the new alignment  (Metafunction: @link Score#Value @endlink of
+ *                           the type of <tt>scoringScheme</tt>).
  *
  * @section Returned Alignment
  *

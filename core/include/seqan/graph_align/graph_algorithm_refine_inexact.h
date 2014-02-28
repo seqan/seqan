@@ -143,7 +143,8 @@ SEQAN_CHECKPOINT
 		else 
         {
     		act_knot =  findVertex(ali_g,seq,cut_act_pos); // have to watch out with cut_act_pos==seqLength!
-	    	SEQAN_ASSERT(cut_act_pos == fragmentBegin(ali_g,act_knot));
+	        SEQAN_ASSERT(act_knot == getNil<typename VertexDescriptor<TAliGraph>::Type>() ||
+	                     cut_act_pos == fragmentBegin(ali_g, act_knot));
         }
 	}
 }

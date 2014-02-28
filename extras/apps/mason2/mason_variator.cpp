@@ -282,9 +282,16 @@ public:
         // chromosome with a warning.  This leads to a quadratic running time but should be OK since we only need to
         // read hundreds of SV records from TSV at most.
 
+        // Since the records are reordered later, we need to restore the old
+        unsigned oldSize = length(variants.svRecords);
+        int oldNextIndelNo = nextIndelNo, oldNextInvNo = nextInvNo, oldNextTransNo = nextTransNo,
+                oldNextDupNo = nextDupNo;
+
         for (unsigned i = 0; i < length(variationSizeRecords); ++i)
         {
             VariationSizeRecord const & record = variationSizeRecords[i];
+            if (variationToContig[i] != rId)
+                continue;  // This variation does not belong here.
             int const MAX_TRIES = 1000;
             int tries = 0;
             for (; tries < MAX_TRIES; ++tries)
@@ -294,8 +301,16 @@ public:
                 switch (record.kind)
                 {
                     case VariationSizeRecord::INDEL:
-                        if (!simulateSVIndel(variants, haploCount, rId, pos, record.size))
-                            continue;
+                        if (empty(record.seq))
+                        {
+                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size))
+                                continue;
+                        }
+                        else
+                        {
+                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size, record.seq))
+                                continue;
+                        }
                         break;
                     case VariationSizeRecord::INVERSION:
                         if (!simulateInversion(variants, haploCount, rId, pos, record.size))
@@ -322,19 +337,44 @@ public:
                         break;
                     }
                 if (!variantFits)
+                {
+                    eraseBack(variants.svIDs);
                     eraseBack(variants.svRecords);
+                }
                 else
+                {
                     break;
+                }
             }
             if (tries == MAX_TRIES)
             {
                 std::cerr << "WARNING: Could not place variant " << i << " for contig " << rId << " giving up for this contig.\n";
+                // Remove any records and identifiers added for this contig.
+                resize(variants.svRecords, oldSize);
+                resize(variants.svIDs, oldSize);
+                nextIndelNo = oldNextIndelNo;
+                nextInvNo = oldNextInvNo;
+                nextTransNo = oldNextTransNo;
+                nextDupNo = oldNextDupNo;
                 return;
             }
         }
 
         // Sort simulated variants.
         std::sort(begin(variants.svRecords, seqan::Standard()), end(variants.svRecords, seqan::Standard()));
+
+        // Rebuild variant names.
+        if (options.genVarIDs)
+        {
+            char const * NAMES[] = { "INVALID", "sim_sv_indel_", "sim_sv_inv_", "sim_sv_trans_", "sim_sv_dup_" };
+            int nextNo[] = { 0, oldNextIndelNo, oldNextInvNo, oldNextTransNo, oldNextDupNo };
+            for (unsigned i = oldSize; i < length(variants.svRecords); ++i)
+            {
+                std::stringstream ss;
+                ss << NAMES[variants.svRecords[i].kind] << nextNo[variants.svRecords[i].kind]++;
+                variants.svIDs[i] = ss.str();
+            }
+        }
     }
 
     // Simulate the variants given per-position error rates.
@@ -399,23 +439,15 @@ public:
         }
     }
 
-    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size)
+    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size, seqan::CharString const & seq)
     {
-        // Indels are simulated for one haplotype only.
         if (options.verbosity >= 2)
-            std::cerr << "Simulating SV INDEL size = " << size << '\n';
+            std::cerr << "Simulating SV INDEL seq = " << seq << '\n';
+
         int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
-        seqan::CharString indelSeq;
-        reserve(indelSeq, options.maxSVSize);
-        bool deletion = (size < 0);
-        if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
-            return false;  // not enough space at the end
-        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
-        for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INDEL, hId, rId, pos, size));
-        back(variants.svRecords).seq = indelSeq;
+        back(variants.svRecords).seq = seq;
         if (options.genVarIDs)
         {
             // Add name.
@@ -425,6 +457,23 @@ public:
             SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
         }
         return true;
+    }
+
+    bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size)
+    {
+        // Indels are simulated for one haplotype only.
+        if (options.verbosity >= 2)
+            std::cerr << "Simulating SV INDEL seq for size = " << size << '\n';
+        seqan::CharString indelSeq;
+        reserve(indelSeq, options.maxSVSize);
+        bool deletion = (size < 0);
+        if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
+            return false;  // not enough space at the end
+        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
+        for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
+            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
+
+        return simulateSVIndel(variants, haploCount, rId, pos, size, indelSeq);
     }
 
     bool simulateInversion(Variants & variants, int haploCount, int rId, unsigned pos, int size)
@@ -1150,7 +1199,7 @@ public:
         resize(inTos, 4, false);
         seqan::Dna5String tos;
         resize(tos, options.numHaplotypes, from);
-        unsigned idx = snpsIdx;
+        unsigned idx = snpsIdx - 1;
         do
         {
             SEQAN_ASSERT(snpRecord.to != from);
@@ -1221,6 +1270,7 @@ public:
     {
         // Collect small indel records at the same position.
         seqan::String<SmallIndelRecord> records;
+        unsigned idx = smallIndelIdx - 1;
         do
         {
             if (options.verbosity >= 3)
@@ -1245,8 +1295,8 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
-        vcfRecord.beginPos = front(records).pos;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, smallIndelIdx));
+        vcfRecord.beginPos = front(records).pos - 1;
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, idx));
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
         // Build genotype infos.
@@ -1262,7 +1312,7 @@ public:
             else  // if (records[i].size < 0)
                 numRef = std::max(numRef, 1 - records[i].size);
         }
-        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos - 1, vcfRecord.beginPos - 1 + numRef));
+        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos, vcfRecord.beginPos + numRef));
 
         // Compute ALT columns and a map to the ALT.
         seqan::String<int> toIds;
@@ -1317,7 +1367,7 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         vcfRecord.filter = "PASS";
         std::stringstream ss;
@@ -1335,7 +1385,7 @@ public:
             numRef = 1;
         else
             numRef = 1 - svRecord.size;
-        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos - 1, vcfRecord.beginPos - 1 + numRef));
+        append(vcfRecord.ref, infix(contig, vcfRecord.beginPos, vcfRecord.beginPos + numRef));
 
         // Compute ALT columns and a map to the ALT.
         if (svRecord.size > 0)  // insertion
@@ -1503,7 +1553,7 @@ public:
         seqan::VcfRecord vcfRecord;
 
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
@@ -1545,7 +1595,7 @@ public:
         // Create VCF record.
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
-        vcfRecord.beginPos = svRecord.pos;
+        vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         vcfRecord.filter = "PASS";
         std::stringstream ss;
@@ -1792,7 +1842,9 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addText(parser,
             "Instead of simulating the SVs from per-base rates, the user can specify a TSV (tab separated values) "
             "file to load the variations from with \\fB--in-variant-tsv\\fP/\\fB-it\\fP.  The first two columns of "
-            "this TSV file are interpreted as the type of the variation and the size.");
+            "this TSV file are interpreted as the type of the variation and the size.  For insertions, you can give "
+            "the sequence that is to be inserted.  The length of the given sequence overrides the length given in "
+            "the second column.");
     addText(parser,
             "Indels smaller than 50 bp are considered small indels whereas larger indels are considered structural "
             "variants in the VCF file.");

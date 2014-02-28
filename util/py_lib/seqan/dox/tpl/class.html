@@ -3,18 +3,15 @@
 {% block title %}{{ klass.title|e }}{% endblock %}
 
 {% block content %}
-{% if klass.isSubclass %}
-<h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Subclass</a>
+{% if klass.isSpecialization %}
+<h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#specialization">Spec</a>
 {% else %}
 <h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a>
 {% endif -%}
-  <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span></h1>
+  <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(klass) }}
-
-	{{ sections.signatures(klass) }}
-</div>
+{{ sections.top_box(klass) }}
 
 <!-- Template Parameters -->
 {{ sections.tparams_ov(klass) }}
@@ -47,6 +44,7 @@
  =============================================================================
 -->
 
+{% if klass.internals or klass.deprecation_msgs or klass.warnings or klass.notes or klass.akas or not klass.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -95,6 +93,7 @@
     {{ sections.body(klass) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(klass) }}

@@ -45,10 +45,10 @@ using namespace seqan;
 // ============================================================================
 
 typedef TagList<String<char, Alloc<> >,
-        TagList<String<Dna, Alloc<> >
-//        TagList<String<Dna5, Alloc<> >,
+        TagList<String<Dna, Alloc<> >,
+        TagList<String<Dna5, Alloc<> >
 //        TagList<String<Dna, Packed<> >
-        > > //> >
+        > > > //>
         StringTypes;
 
 // TODO(esiragusa): test StringSets.

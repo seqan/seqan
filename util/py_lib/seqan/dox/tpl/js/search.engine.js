@@ -31,16 +31,6 @@ and based on the Tipue Search, http://www.tipue.com
             queryInput: $form.find('input[type=text],input[type=search]'),
             langEntitiesInput: $form.find('select'),
             langEntities: window.langEntities,
-            langEntityDefaultOrder: [
-            	'concept', 'class', 'enum',
-				'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
-				'metafunction', 'global_metafunction', 'interface_metafunction',
-				'tag', 'grouped_tag', 'generic',
-				'function', 'global_function', 'interface_function', 'member_function',
-				'variable', 'global_variable', 'member_variable',
-				'adaption', 'macro',
-				'group', 'page',
-				'unknown'],
 			maxResultsPerGroup: 5,
             button: $form.find('input[type=submit],input[type=button]'),
             output: $form.find('.results'),
@@ -174,13 +164,15 @@ and based on the Tipue Search, http://www.tipue.com
             for (var j = 0; j < query.length; j++) {
                 var pattern = new RegExp('(' + query[j] + ')', 'i');
         
-                if (!result.hiTitle && result.title.search(pattern) != -1)
+                if (result.title.search(pattern) != -1)
                 {
                     result.title = highlightString(result.title, pattern);
                     result.hiTitle = true;
                 }
         
-                if (!result.hiTitle && !result.hiAka)
+                // The following line used to be here to have less results.  Turns out that we do not need this filter
+                // since we want to find Finder#find.
+                //if (!result.hiTitle && !result.hiAka)
                     for (var i = 0; i < akas.length; i++)
                         if (akas[i].search(pattern) != -1)
                         {
@@ -188,8 +180,9 @@ and based on the Tipue Search, http://www.tipue.com
                             result.aka = highlightString(akas[i], pattern);
                             break;
                         }
-        
-                if (!result.hiTitle && !result.hiAka && result.subentries.length < 4)
+
+                // See above.
+                //if (!result.hiTitle && !result.hiAka && result.subentries.length < 4)
                     for (var i = 0; i < subentries.length; ++i)
                     {
                         var xs = subentries[i].split(' ', 2);
@@ -204,6 +197,21 @@ and based on the Tipue Search, http://www.tipue.com
             }
         
             return result;
+        }
+        
+        // Returns the n-th LI element of the search results
+        // The returned LI element is not necessarily visible 
+        function getNthResultItem(i) {
+        	return $(settings.output.find('.result')[i]);
+        }
+        
+        // Returns the focused LI element of the search results
+        function getFocusedResultItem() {
+        	return settings.output.find(':focus');
+        }
+        
+        function getFocusedResultItemIndex() {
+        	return $.inArray(getFocusedResultItem().parents('.result')[0], settings.output.find('.result'));
         }
 
         return this.each(function () {
@@ -229,7 +237,10 @@ and based on the Tipue Search, http://www.tipue.com
                 search(0, true);
             });
             settings.queryInput.keyup(function(event) {
-                if (event.keyCode == '13') {
+                if (event.keyCode == '13') { // ENTER
+                	$(getNthResultItem(3)).find('a:nth-child(2)').focus();
+                	return;
+                	
                     try {
                         $firstResult = settings.output.find('.result a:nth-child(2)').first();
                         var target = $firstResult.attr('target') || 'main';
@@ -240,6 +251,27 @@ and based on the Tipue Search, http://www.tipue.com
                     }
                 } else {
                     search(0, true);
+                }
+            });
+            $(document).keydown(function(event) {
+                if(event.keyCode == '40' || event.keyCode == '38') { // arrow down && arrow up
+                	var el = getFocusedResultItem();
+                	if(el.length == 0) {
+                		el = getNthResultItem(0);
+                	} else {
+                		var i=0;
+                		do {
+                			i+=(event.keyCode == '40') ? +1 : -1;
+                			el = getNthResultItem(getFocusedResultItemIndex()+i);			
+                		} while(el.length != 0 && !el.is(':visible'));
+                		
+                		if(el.length == 0 && i < 0) {
+                			settings.queryInput.focus();
+                			return false;
+                		}
+                	}
+                	el.find('a:nth-child(2)').focus();
+                	return false;
                 }
             });
             settings.langEntitiesInput.change(function (event) {
@@ -350,12 +382,12 @@ and based on the Tipue Search, http://www.tipue.com
                     	
                     	if($.inArray(this.langEntity, langEntitiesKeys) < 0) this.langEntity = 'unknown';
                     	
-                        var akas = this.akas.split("");
+                        var akas = this.akas.split(",");
                         var subentriesTmp = this.subentries.split(",");
                         var subentries = [];
                         for (var i = 0; i < subentriesTmp.length; ++i)
                         {
-                            var idx = subentriesTmp[i].indexOf(" ");
+                            var idx = subentriesTmp[i].indexOf(" ") + 1;
                             if (idx < 0)
                                 idx = 0;
                             subentries.push(subentriesTmp[i].substr(idx));
@@ -387,18 +419,40 @@ and based on the Tipue Search, http://www.tipue.com
                           		c_c = found.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                           		out += '<div class="results_count">' + c_c + ' results</div>';
                         	}
-                        }
+                        }                        
                         
-                        found.sort(function(r1, r2) {
-                        	var o1 = $.inArray(r1.langEntity, settings.langEntityDefaultOrder);
-                        	var o2 = $.inArray(r2.langEntity, settings.langEntityDefaultOrder);
+                        // sorts by group depending on their best match
+                        // step 1: cluster by lang entity
+                        var clusters = {};
+                        $(found).each(function() {
+                        	if(!clusters.hasOwnProperty(this.langEntity)) {
+                        		clusters[this.langEntity] = { bestScore: 1000000000, matches: [] };
+                        	}
                         	
-                        	if(o1 < 0) o1 = 9999;
-                        	if(o2 < 0) o2 = 9999;
+                        	if(this.score < clusters[this.langEntity].bestScore) {
+                        		clusters[this.langEntity].bestScore = this.score;
+                        	}
                         	
-                        	if(o1 == o2) return r1.score - r2.score;
-                        	return o1-o2;
+                        	clusters[this.langEntity].matches.push(this);
                         });
+                        
+                        // step 2: sort by contained best match
+                        var clusters_arr = [];
+                        for(var langEntity in clusters) {
+                        	clusters_arr.push(clusters[langEntity]);
+                        }
+                        clusters_arr.sort(function(c1, c2) {
+                        	return c1.bestScore - c2.bestScore;
+                        });
+                        
+                        // step 3: write sorted groups back to found (and sort the inner-group matches)
+                        found = [];
+                        for(var i=0,m=clusters_arr.length; i<m; i++) {
+                        	clusters_arr[i].matches.sort(function(r1, r2) {
+								return r1.score - r2.score;
+							});
+                        	found = found.concat(clusters_arr[i].matches);
+                        }
                         
                         var l_o = 0;
                         var entriesInGroup;

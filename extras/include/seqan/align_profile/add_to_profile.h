@@ -65,15 +65,17 @@ namespace seqan {
  * @headerfile <seqan/align_profile.h>
  * @brief Sequence-to-profile alignment with sequence integration.
  *
- * <tt>seq</tt> will be aligned to <tt>profile</tt>.  Then, it is integrated into <tt>profile</tt> by incrementing the
- * <tt>count</tt> member of the <tt>profile</tt> entries.
+ * <tt>seq</tt> will be aligned to <tt>profile</tt> using @link globalAlignment @endlink. To compute a banded alignment
+ * <tt>lDiag</tt> and <tt>uDiag</tt> have to be given.
+ * The resulting alignment will then be integrated into <tt>profile</tt> by incrementing the <tt>count</tt> values of 
+ * the <tt>profile</tt> entries that correspond to the <tt>seq</tt> row of the alignment.
  *
  * @signature void addToProfile(profile, seq[, lDiag, uDiag]);
  *
- * @param[in,out] profile The profile to add <tt>seq</tt> to.  @link AllocString @endlink of @link ProfileChar @endlink.
+ * @param[in,out] profile The profile to add <tt>seq</tt> to. A @link String @endlink over @link ProfileChar @endlink.
  * @param[in]     seq     @link String @endlink to align to <tt>profile</tt>.
- * @param[in]     lDiag   Lower diagonal for alignment, <tt>int</tt>.
- * @param[in]     uDiag   Upper diagonal for alignment, <tt>int</tt>.
+ * @param[in]     lDiag   Lower diagonal for alignment (@link SignedIntegerConcept @endlink).
+ * @param[in]     uDiag   Upper diagonal for alignment (@link SignedIntegerConcept @endlink).
  */
 
 // TODO(holtgrew): Add example?

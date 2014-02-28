@@ -59,17 +59,17 @@ namespace seqan {
  * VcfIOContext objects store the names of (and provide a cache for) reference and sample names.  StringSet of
  * CharString are used for the name stores.
  * 
- * @var TNamesPtr VcfIOContext::sequenceNames
- * @brief Names of the reference sequences, pointer to StringSet of CharString.
+ * @var TNamesPtr VcfIOContext::sequenceNames;
+ * @brief Names of the reference sequences, pointer to @link StringSet @endlink of @link CharString @endlink.
  * 
- * @var TNameStoreCache VcfIOContext::sequenceNamesCache
- * @brief Name store cache for of the reference names, NameStoreCache of CharString.
+ * @var TNameStoreCache VcfIOContext::sequenceNamesCache;
+ * @brief Name store cache for of the reference names, @link NameStoreCache @endlink of @link CharString @endlink.
  * 
- * @var TNamesPtr VcfIOContext::sampleNames
- * @brief Names of the samples, pointer to StringSet of CharString.
+ * @var TNamesPtr VcfIOContext::sampleNames;
+ * @brief Names of the samples, pointer to @link StringSet @endlink of @link CharString @endlink.
  * 
- * @var TNameStoreCache VcfIOContext::sampleNamesCache
- * @brief Name store cache for the sample names, NameStoreCache of CharString.
+ * @var TNameStoreCache VcfIOContext::sampleNamesCache;
+ * @brief Name store cache for the sample names, @link NameStoreCache @endlink of @link CharString @endlink.
  */
 
 /*!
@@ -79,8 +79,6 @@ namespace seqan {
  * @signature VcfIOContext::VcfIOContext();
  * @signature VcfIOContext::VcfIOContext(sequenceNames, sampleNames);
  *
- * @section Remarks
- * 
  * Default constructor or construction with references to sequence and sample names.
  */
 

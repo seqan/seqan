@@ -10,11 +10,13 @@ cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_razers3)
 message (STATUS "Configuring extras/apps/razers3")
 
+find_package(CXX11 REQUIRED)
+
 # Disable RazerS3 for MinGW and VS8 and earlier.
-if (MINGW OR (MSVC AND MSVC_VERSION LESS 1500))
+if (NOT CXX11_FOUND)
     message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
     return ()
-endif (MINGW OR (MSVC AND MSVC_VERSION LESS 1500))
+endif (NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -72,7 +74,7 @@ target_link_libraries (razers3_quality2prob ${SEQAN_LIBRARIES})
 #target_link_libraries (razers3_compPHSens ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation
