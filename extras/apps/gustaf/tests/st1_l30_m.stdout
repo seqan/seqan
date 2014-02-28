@@ -15,15 +15,15 @@ Loading query sequences... Loaded 6 query sequences.
 done
 Loading reference sequences... Loaded 1 database sequence.
 Loaded db seq with length: 4718
-Loaded db ID: gi|9632547|ref|NC_002077.1|
+Loaded db ID: gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome
 done
  Getting STELLAR matches from file, not calling STELLAR
 Importing STELLAR matches from file stellar.gff
 done
-TIME importing stellar matches 0.00051033s
+TIME importing stellar matches 0.00048395s
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
  completed gff writing st1_l30_m.gff
  completed vcf writing st1_l30_m.vcf
-TIME all 0.070321s
+TIME all 0.0742442s
