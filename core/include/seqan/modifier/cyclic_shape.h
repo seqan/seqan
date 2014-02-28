@@ -231,7 +231,7 @@ public:
  * the number of leading and trailing zeros.
  *
  * The notation is chosen in such a way that predefined Shapes like
- * @link PatternHunter @endlink can be plugged into a CyclicShape. Like
+ * PatternHunter can be plugged into a CyclicShape. Like
  * HardwiredShapes, Fixed CyclicShapes are limited to a weight of 21.
  *
  * See @link CyclicShape @endlink for an example on how to use a CyclicShape.
@@ -439,7 +439,6 @@ weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
  * @param[in] bitmap 0/1 string of type TString. CyclicShapes may start and end with zeros,
  *            but must contain at least one 1.
  *
- * @see Shape#stringToShape Equivalent for Shapes
  */
 template<typename TString>
 inline bool
@@ -501,7 +500,6 @@ stringToCyclicShape(CyclicShape<GenericShape> & shape, TString const & bitmap)
  *             e.g. CharString
  *
  * @see GenericCyclicShape#stringToCyclicShape
- * @see Shape#shapeToString Equivalent for Shapes
  */
 template<typename TShapeString, typename TSpec>
 inline void
@@ -548,7 +546,7 @@ cyclicShapeToString(
  * the distances between care positions, to a <tt>positions</tt> string directly
  * containing the care positions. See the example:
  *
- * @snippet demos/generic_cyclic_shape.cpp CyclicShape Care Positions
+ * @snippet demos/cyclic_shape_snippets.cpp CyclicShape Care Positions
  */
 
 template<typename TString, typename TSpec>
@@ -575,7 +573,7 @@ carePositions(TString & output, CyclicShape<TSpec> const & shape)
 /*!
  * @fn CyclicShape#cyclicShapeToSuffixLengths
  *
- * @brief Calculates the number of characters of ModCyclicShapes all Strings
+ * @brief Calculates the number of characters of modified Strings
  *        shorter than the Shape's span.
  *
  * @signature void cyclicShapeToSuffixLengths(TString suffLengths, cyclicShape);
@@ -588,7 +586,8 @@ carePositions(TString & output, CyclicShape<TSpec> const & shape)
  *
  * Given a CyclicShape, this function calculates a how many characters a String of length
  * <i>x</i> contains after the CyclicShape is applied to it. This is done for all <tt>0 <= x < span</tt>.
- * <tt>suffLengths</tt> therefore must be resized to span beforehands.
+ * <tt>suffLengths</tt> therefore must be resized to the shape's span beforehands.
+ * The resizing is not done in this function so that it can be applied to arrays, too.
  */
 
 template<typename TString,
