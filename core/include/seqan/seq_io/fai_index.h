@@ -367,10 +367,12 @@ inline __uint64 numSeqs(FaiIndex const & index)
  *
  * @param[out] str      The @link String @endlink to read the sequence into.
  * @param[in]  faiIndex The FaiIndex to read from.
- * @param[in]  refId    The id of the reference to read.  Type: unsigned.
- * @param[in]  beginPos The begin position of the region to read.  Type: unsigned.
- * @param[in]  endPos   The end position of the region to read.  Type: unsigned.
+ * @param[in]  refId    The id of the reference to read (Type: <tt>unsigned).
+ * @param[in]  beginPos The begin position of the region to read (Type: <tt>unsigned).
+ * @param[in]  endPos   The end position of the region to read  (Type: <tt>unsigned).
  * @param[in]  region   The @link GenomicRegion @endlink to read.
+ *
+ * @return int 0 on success, non-0 on errors.
  */
 
 /**
@@ -769,7 +771,7 @@ inline int write(FaiIndex & index)
  * @param[in]  faiFileName Path to the FAI file to use as the index file.  Type: <tt>char const *</tt>.
  *                         Default: <tt>"${seqFileName}.fai"</tt>.
  *
- * @return 0 on success, non-0 on errors.
+ * @return int 0 on success, non-0 on errors.
  */
 
 /**

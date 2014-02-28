@@ -10,7 +10,6 @@ import textwrap
 import dox_tokens
 import raw_doc
 
-
 class DoxFormatter(object):
     """Formatter for printing correctly indented and wrapped in Doxygen style.
     """
@@ -143,7 +142,7 @@ class RawEntry(object):
     def entryTypes(cls):
         """RawReturns iterable with all entry types."""
         res = ('concept', 'class', 'function', 'metafunction', 'page', 'enum', 'var',
-               'tag', 'defgroup', 'macro')
+               'tag', 'defgroup', 'macro', 'enum_value')
         return res
 
     def addParagraph(self, p):
@@ -231,9 +230,13 @@ class RawCodeEntry(RawEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -251,7 +254,7 @@ class RawCodeEntry(RawEntry):
 
 
 class RawVariable(RawCodeEntry):
-    """RawDoc for one variable or enum constant.
+    """RawDoc for one variable constant.
 
     @ivar type: The type of the variable as a RawText or None.
     """
@@ -269,7 +272,7 @@ class RawVariable(RawCodeEntry):
     def getFormatted(self, formatter):
         res = []
         if self.type:
-            res.append(formatter.formatCommand(self.command, self.name.text, self.type.text))
+            res.append(formatter.formatCommand(self.command, self.name.text + ';', self.type.text))
         else:
             res.append(formatter.formatCommand(self.command, self.name.text))
         if self.headerfiles:
@@ -281,9 +284,13 @@ class RawVariable(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -298,6 +305,20 @@ class RawVariable(RawCodeEntry):
             res.append(x.getFormatted(formatter))
         res.append('\n')
         return ''.join(res)
+
+
+class RawEnumValue(RawVariable):
+    """RawDoc for one enum value.
+
+    @ivar type: The type of the variable as a RawText or None.
+    """
+
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='val')
+        self.type = None
+
+    def getType(self):
+        return 'enum_value'
 
 
 class RawTag(RawCodeEntry):
@@ -332,9 +353,13 @@ class RawTag(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -387,9 +412,13 @@ class RawConcept(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -489,9 +518,13 @@ class RawClass(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -562,9 +595,13 @@ class RawFunction(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -637,9 +674,13 @@ class RawMacro(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')
@@ -709,9 +750,13 @@ class RawMetafunction(RawCodeEntry):
             res.append('\n')
         for x in self.briefs:
             res.append(x.getFormatted(formatter))
-        if self.deprecation_msgs:
+        if self.deprecation_msgs or self.warnings or self.notes:
             res.append('\n')
         for x in self.deprecation_msgs:
+            res.append(x.getFormatted(formatter))
+        for x in self.warnings:
+            res.append(x.getFormatted(formatter))
+        for x in self.notes:
             res.append(x.getFormatted(formatter))
         if self.signatures:
             res.append('\n')

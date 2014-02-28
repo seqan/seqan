@@ -908,6 +908,23 @@ create(String<TTargetValue, CStyle> & target,
 // Function toCString()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn String#toCString
+ * @brief Access sequence as c-style string.
+ * @signature TValue* toCString(seq)
+ * @param seq The sequence to be accessed. Type: @link String @endlink
+ * @return TValue* For strings that store their elements in a contiguous block (see @link IsContiguous @endlink)
+                   a pointer to first element of $object$ is returned.
+ * @section Remarks
+ *
+ * If the alphabet of $object$ is $char$ or $wchar_t$ the return value is a c-style string representing the
+ * contents of <tt>object<tt/>.
+ *
+ * Calling this function for non-contiguous containers will raise a compilation error.  To create
+ * c-style strings for non-contiguous strings or strings with different alphabets, use a @link CStyleString @endlink as an
+ * intermediate.
+ */
+
 /**
 .Function.toCString:
 ..cat:Containers

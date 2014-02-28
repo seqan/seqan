@@ -41,6 +41,8 @@
 #ifndef SEQAN_BASIC_BASIC_TYPE_H_
 #define SEQAN_BASIC_BASIC_TYPE_H_
 
+#include <cstddef>
+
 namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -156,15 +158,14 @@ struct Host
 
 /*!
  * @mfn Cargo
+ * @headerfile <seqan/basic.h>
  * @brief Type of additional data stored in an object.
  * 
- * @signature Cargo<T>::Type
+ * @signature Cargo<T>::Type;
  *
  * @tparam T Type for which the cargo tpye is queried.
  *
  * @return Type  The cargo type of <tt>T</tt>.
- *
- * @section Remarks
  *
  * The definition of Cargo allows the addition of user-specified data into existing data structures.
  */
@@ -503,8 +504,6 @@ struct ConstParameter_<T const [I]>
  * @tparam TObject The object holding the member.
  * @tparam TSpec A tag to identify the object's member.
  * @return Type The resulting object's member type.
- *
- * @section Remarks
  *
  * This metafunction is used to control the type of a member of a given object. It works analogously to @link Fibre @endlink.
  * For instance, it is used to change the relationship between two objects from aggregation to composition and vice versa.

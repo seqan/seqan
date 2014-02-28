@@ -49,17 +49,17 @@ SEQAN_DEFINE_TEST(test_basic_math_int_pow)
 
 SEQAN_DEFINE_TEST(test_basic_math_log2)
 {
-    using namespace seqan;
+    // Note that the explicit namespace is required, otherwise MSVC finds log2 from <cmath>.
 
-    SEQAN_ASSERT_EQ(log2(1), 0u);
-    SEQAN_ASSERT_EQ(log2(2), 1u);
-    SEQAN_ASSERT_EQ(log2(3), 1u);
-    SEQAN_ASSERT_EQ(log2(4), 2u);
-    SEQAN_ASSERT_EQ(log2(5), 2u);
-    SEQAN_ASSERT_EQ(log2(6), 2u);
-    SEQAN_ASSERT_EQ(log2(7), 2u);
-    SEQAN_ASSERT_EQ(log2(8), 3u);
-    SEQAN_ASSERT_EQ(log2(9), 3u);
+    SEQAN_ASSERT_EQ(seqan::log2(1), 0u);
+	SEQAN_ASSERT_EQ(seqan::log2(2), 1u);
+	SEQAN_ASSERT_EQ(seqan::log2(3), 1u);
+	SEQAN_ASSERT_EQ(seqan::log2(4), 2u);
+	SEQAN_ASSERT_EQ(seqan::log2(5), 2u);
+	SEQAN_ASSERT_EQ(seqan::log2(6), 2u);
+	SEQAN_ASSERT_EQ(seqan::log2(7), 2u);
+	SEQAN_ASSERT_EQ(seqan::log2(8), 3u);
+	SEQAN_ASSERT_EQ(seqan::log2(9), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_basic_math_min)

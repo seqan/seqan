@@ -43,6 +43,9 @@
 
 #ifdef PLATFORM_WINDOWS
 # include <io.h>            // read(..) ..
+# ifdef PLATFORM_WINDOWS_MINGW
+#  include <stdio.h>
+# endif  // #ifdef PLATFORM_WINDOWS_MINGW
 #else
 # include <cstdlib>
 # include <cerrno>
@@ -139,11 +142,16 @@ namespace SEQAN_NAMESPACE_MAIN
 
         bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE) 
 		{
-#ifdef SEQAN_DEFAULT_TMPDIR
+#ifdef PLATFORM_WINDOWS_MINGW
+            char fileNameBuffer[L_tmpnam + 1];
+            char * fileName = tmpnam(&fileNameBuffer[0]);
+#else // #ifdef PLATFORM_WINDOWS_MINGW
+# ifdef SEQAN_DEFAULT_TMPDIR
 			char *fileName = _tempnam(SEQAN_DEFAULT_TMPDIR, "SQN");
-#else
+# else  // #ifdef SEQAN_DEFAULT_TMPDIR
 			char *fileName = _tempnam(NULL, "SQN");
-#endif
+# endif  // #ifdef SEQAN_DEFAULT_TMPDIR
+#endif // #ifdef PLATFORM_WINDOWS_MINGW
 			if (!fileName) {
 				if (!(openMode & OPEN_QUIET))
 					::std::cerr << "Cannot create a unique temporary filename" << ::std::endl;

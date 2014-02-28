@@ -22,12 +22,41 @@ class MissingSignatureValidator(ProcDocValidator):
     def validate(self, proc_entry):
         IGNORED = ['variable', 'member_variable', 'tag', 'grouped_tag', 'typedef',
                    'grouped_typedef', 'signature', 'concept', 'member_typedef',
-                   'enum', 'grouped_enum']
+                   'enum', 'grouped_enum', 'enum_value']
         if not hasattr(proc_entry, 'signatures') or proc_entry.kind in IGNORED:
             return  # Skip if type has no signatures.
         if not proc_entry.signatures:
             msg = 'Missing @signature for this entry!'
             self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
+
+
+class MissingSignatureKeywordsValidator(ProcDocValidator):
+    """Validates for missing keywords in signature (e.g. "class" for @class)."""
+
+    def validate(self, proc_entry):
+        if proc_entry.kind not in ['class', 'specialization']:
+            return  # only handle those
+        for i, sig in enumerate(proc_entry.raw.signatures):
+            # TODO(holtgrew): Really allow typedef and ::Type/mfns here?
+            if 'class ' not in sig.text.text and 'struct ' not in sig.text.text \
+                    and 'typedef ' not in sig.text.text \
+                    and not sig.text.text.strip().endswith('::Type') \
+                    and not sig.text.text.strip().endswith('::Type;'):
+                msg = 'Missing keyword "class", "struct", "typedef" in signature.'
+                self.msg_printer.printTokenError(proc_entry.raw.signatures[i].text.tokens[0], msg, 'warning')
+
+
+class OnlyRemarksInBodyValidator(ProcDocValidator):
+    """Validates for the body starting with '@section Remarks'."""
+
+    def validate(self, proc_entry):
+        if not hasattr(proc_entry, 'body') or not proc_entry.body.children:
+            return  # only handle if has non-empty body
+        if proc_entry.body.children[0].type in ['h1', 'h2', 'h3', 'h4', 'h5'] and \
+                proc_entry.body.children[0].children and \
+                proc_entry.body.children[0].children[0].text == 'Remarks':
+                msg = 'Detailed descrition starts with Remarks'
+                self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
 
 
 class MissingParameterDescriptionValidator(ProcDocValidator):
@@ -85,8 +114,26 @@ class EmptyBriefValidator(ProcDocValidator):
             msg = 'Missing non-empty @brief clause.'
             self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
 
+
+class ClassCannotExtendConceptValidator(ProcDocValidator):
+    """Warns a class extends a concept."""
+
+    def validate(self, proc_entry):
+        if proc_entry.kind not in ['class', 'specialization']:
+            return  # Skip.
+        for ext in proc_entry.extends:
+            if not ext in proc_entry.doc.top_level_entries:
+                continue
+            if proc_entry.doc.top_level_entries[ext].kind not in ['class', 'specialization']:
+                msg = 'Class %s tries to inherit from non-class %s' % (proc_entry.name, ext)
+                self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'error')
+
+
 # Array with the validator classes to use.
 VALIDATORS = [MissingSignatureValidator,
               MissingParameterDescriptionValidator,
+              MissingSignatureKeywordsValidator,
+              #OnlyRemarksInBodyValidator,
               ReturnVoidValidator,
-              EmptyBriefValidator]
+              EmptyBriefValidator,
+              ClassCannotExtendConceptValidator]

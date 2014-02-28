@@ -8,6 +8,7 @@ import os.path
 import shutil
 import sys
 import xml.sax.saxutils
+import urllib
 
 import jinja2
 import proc_doc
@@ -29,6 +30,11 @@ def escapeName(name):
         else:
             xs += [escape, str(ord(c))]
     return ''.join(xs)
+
+
+def escapeAnchor(name):
+    """Escape a name such that it is safe to use for anchors."""
+    return name
 
 
 class PathManager(object):
@@ -104,9 +110,10 @@ class TextNodeToHtml(object):
         if text_node.type == '<text>':
             self.res.append(text_node.text)
         elif text_node.type == 'dox:code':
+            target_path = text_node.attrs.get('path')
             if text_node.attrs.get('type') in ['.cpp', '.h']:
-                self.res.append(self.convertCode(text_node.children[0].text))
-                target_path = text_node.attrs.get('path')
+                self.res.append('<div data-src-path="%s">%s' %
+                                (target_path, self.convertCode(text_node.children[0].text)))
                 if self.path_mgr:
                     target_path = self.path_mrg.translateDemoPath(self.path_mgr)
                 if text_node.attrs.get('source') == 'snippet':
@@ -119,10 +126,13 @@ class TextNodeToHtml(object):
                         '<div class="path_label"><span class="label">Demo:'
                         '</span> <a href="%s" target="_top">%s</a></div>' %
                         (target_path, text_node.attrs.get('path')))
+                self.res.append('</div>')
             elif text_node.attrs.get('type') in ['.console', '.stdout', '.stderr']:
-                self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
+                self.res.append('<pre class="console" data-src-path="%s">%s</pre>' %
+                                (target_path, escapeForXml(text_node.children[0].text)))
             else:
-                self.res.append('<pre class="code">' + escapeForXml(text_node.children[0].text) + '</pre>')
+                self.res.append('<pre class="code" data-src-path="%s">%s</pre>' %
+                                (target_path, escapeForXml(text_node.children[0].text)))
         else:
             self.res += self.openTag(text_node)
             for c in text_node.children:
@@ -164,10 +174,12 @@ def transTextNode(text_node, top=True, start_heading=3, path_mgr=None, **kwargs)
 
 def createTransLink(doc, path_mgr):
     link_converter = LinkConverter(doc)
-    def transLink(entity_name):
+    def transLink(entity_name, text=None):
+        if not text:
+            text = entity_name
         text_node = proc_doc.TextNode(type='a')
         text_node.attrs['href'] = 'seqan:%s' % entity_name
-        text_node.children = [proc_doc.TextNode(text=entity_name)]
+        text_node.children = [proc_doc.TextNode(text=text)]
         link_converter.visit(text_node)
         return transTextNode(text_node, path_mgr)
     return transLink
@@ -187,6 +199,8 @@ class TemplateManager(object):
         def identity(x):
             return x
         self.env.filters['escape_name'] = escapeName
+        self.env.filters['escape_anchor'] = escapeAnchor
+        self.env.filters['url_encode'] = urllib.quote
         self.env.filters['transtext'] = transTextNode
         self.env.filters['to_dox'] = toDox
         self.env.filters['translink'] = createTransLink(doc, self)
@@ -225,7 +239,7 @@ class PathConverter(object):
             first, second = proc_doc.splitSecondLevelEntry(name)
             father = self.doc.top_level_entries.get(first)
             entry = self.doc.second_level_entries.get(name)
-            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeName(name))
+            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeAnchor(name))
             return path, name, entry
         else:
             return None, None, None
@@ -352,6 +366,7 @@ class HtmlWriter(object):
         self.generatePages(self.doc, self.config)
         self.generateDemoPages(self.doc)
         self.generateSearchIndex(self.doc)
+        self.generateLinkData(self.doc)
         self.generateLanguageEntities()
 
     def makedirs(self):
@@ -432,7 +447,7 @@ class HtmlWriter(object):
             html = self.tpl_manager.render('page.html', page=entry,  **common_kwargs)
         elif entry.kind == 'concept':
             html = self.tpl_manager.render('concept.html', concept=entry,  **common_kwargs)
-        elif entry.kind == 'class':
+        elif entry.kind in ['class', 'specialization']:
             html = self.tpl_manager.render('class.html', klass=entry,  **common_kwargs)
         elif entry.kind == 'enum':
             html = self.tpl_manager.render('enum.html', enum=entry,  **common_kwargs)
@@ -497,6 +512,16 @@ class HtmlWriter(object):
                        repr(entry.kind)))
         js.append('];')
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
+            f.write('\n'.join(js))
+
+    def generateLinkData(self, doc):
+        """Generate the Data for top level entry links."""
+        js = ['window.lookup = {']
+        for entry in doc.top_level_entries.itervalues():
+            js.append('    \'%(name)s\': \'%(kind)s_%(name)s\',' % { 'name': entry.name,
+                                                                     'kind': entry.kind })
+        js.append('};')
+        with open(os.path.join(self.out_dirs['js'], 'link.data.js'), 'wb') as f:
             f.write('\n'.join(js))
 
     def generateLanguageEntities(self):

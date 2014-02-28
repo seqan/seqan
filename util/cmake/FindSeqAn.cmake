@@ -327,7 +327,11 @@ mark_as_advanced(_SEQAN_FIND_OPENMP)
 set (SEQAN_HAS_OPENMP FALSE)
 if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
   find_package(OpenMP QUIET)
-  if (OPENMP_FOUND)
+  # Note that in the following, we do not check for OPENMP_FOUND since this is
+  # only true if both C and C++ compiler support OpenMP.  This is not the case
+  # if the user has a compiler without OpenMP support by default and overrides
+  # only the C++ compiler (e.g. on winter 2013's Mac Os X).
+  if (OpenMP_CXX_FLAGS)
     set (SEQAN_HAS_OPENMP   TRUE)
     set (SEQAN_LIBRARIES    ${SEQAN_LIBRARIES}    ${OpenMP_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${OpenMP_INCLUDE_DIRS})

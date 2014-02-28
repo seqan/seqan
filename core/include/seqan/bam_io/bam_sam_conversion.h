@@ -308,8 +308,8 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
  *
  * @signature void assignTagsBamToSam(bamTags, samTags);
  *
- * @param bamTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target BAM tags.
- * @param samTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source SAM tags.
+ * @param[out] bamTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target BAM tags.
+ * @param[in]  samTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source SAM tags.
  *
  * @see assignTagsBamToSam
  */
@@ -328,13 +328,13 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsSamToBam(TTarget & target, TSource & source)
+void assignTagsSamToBam(TTarget & target, TSource const & source)
 {
     // Handle case of empty source sequence.
     if (empty(source))
-        clear(target);
+        return;
 
-    typedef typename Iterator<TSource, Standard>::Type TSourceIter;
+    typedef typename Iterator<TSource const, Standard>::Type TSourceIter;
     TSourceIter it = begin(source, Standard());
     TSourceIter itEnd = end(source, Standard());
 
@@ -635,8 +635,8 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
  *
  * @signature void assignTagsBamToSam(samTags, bamTags);
  *
- * @param samTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target SAM tags.
- * @param bamTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source BAM tags.
+ * @param[out] samTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target SAM tags.
+ * @param[in]  bamTags A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source BAM tags.
  *
  * @see assignTagsSamToBam
  */

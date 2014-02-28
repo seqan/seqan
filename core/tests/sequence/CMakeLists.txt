@@ -34,7 +34,8 @@ add_executable (test_sequence
                test_segment.h
                test_sequence_std_adaptions.h
                test_string.h
-               test_stringset.h)
+               test_stringset.h
+               test_string_packed_extension.h)
 target_link_libraries (test_sequence ${SEQAN_LIBRARIES})
 
 add_executable (test_sequence_v2 test_sequence_v2.cpp

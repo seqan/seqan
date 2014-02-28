@@ -315,7 +315,7 @@ void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, T
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
     typedef typename TMSplazerChain::TInterval TInterval;
-    typedef typename TMSplazerChain::TIntervalTree TIntervalTree;
+    //typedef typename TMSplazerChain::TIntervalTree TIntervalTree;
 
     String<TInterval> leftMateMatches;
     String<TInterval> rightMateMatches;
