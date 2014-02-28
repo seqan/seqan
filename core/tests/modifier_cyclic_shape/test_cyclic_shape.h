@@ -29,52 +29,50 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Umbrella header for the modifier module.
+// Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
-
-// --------------------------------------------------------------------------
-// Prerequisites
-// --------------------------------------------------------------------------
-
-#include <functional>
-#include <list>
-#include <utility>  // std::forward()
+#ifndef SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
+#define SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
 
 #include <seqan/basic.h>
+#include <seqan/file.h>
 #include <seqan/sequence.h>
-#include <seqan/parallel.h>
+#include <seqan/modifier.h>
 
-// --------------------------------------------------------------------------
-// Modified Alphabets
-// --------------------------------------------------------------------------
+using namespace seqan;
 
-#include <seqan/modifier/modifier_alphabet.h>
-#include <seqan/modifier/modifier_alphabet_expansion.h>
 
-// --------------------------------------------------------------------------
-// Modified Strings and Iterators Base Classes
-// --------------------------------------------------------------------------
+SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_cyclic_shape)
+{
+    CyclicShape<GenericShape> shape;
+    CharString tmp;
 
-#include <seqan/modifier/modifier_iterator.h>
-#include <seqan/modifier/modifier_string.h>
+    cyclicShapeToString(tmp, shape);
+    SEQAN_ASSERT_EQ(tmp, "1");
+    SEQAN_ASSERT_EQ(weight(shape), 1u);
+    SEQAN_ASSERT_EQ(shape.span, 1u);
 
-// --------------------------------------------------------------------------
-// Auxiliary header for special modifiers
-// --------------------------------------------------------------------------
+    unsigned DIFF[] = {1, 1, 1, 4, 1, 5};
+    typedef CyclicShape<FixedShape<1, GappedShape<HardwiredShape<1, 1, 1, 4, 1> >, 3> > TShape;
 
-#include <seqan/modifier/cyclic_shape.h>
+    TShape s;
+    cyclicShapeToString(tmp, s);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(s), 6u);
+    SEQAN_ASSERT_EQ(static_cast<unsigned>(s.span), 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(s.diffs[i]), DIFF[i]);
 
-// --------------------------------------------------------------------------
-// Applications of Base Classes
-// --------------------------------------------------------------------------
+    stringToCyclicShape(shape, tmp);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(shape), 6u);
+    SEQAN_ASSERT_EQ(shape.span, 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(shape.diffs[i]), DIFF[i]);
 
-#include <seqan/modifier/modifier_functors.h>
-#include <seqan/modifier/modifier_view.h>
-#include <seqan/modifier/modifier_reverse.h>
-#include <seqan/modifier/modifier_shortcuts.h>
-#include <seqan/modifier/modifier_cyclic_shape.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
+}
+
+
+#endif  // SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
