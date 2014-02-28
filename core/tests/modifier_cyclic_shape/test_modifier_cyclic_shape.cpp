@@ -29,52 +29,32 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Umbrella header for the modifier module.
+// Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
-
-// --------------------------------------------------------------------------
-// Prerequisites
-// --------------------------------------------------------------------------
-
-#include <functional>
-#include <list>
-#include <utility>  // std::forward()
-
 #include <seqan/basic.h>
-#include <seqan/sequence.h>
-#include <seqan/parallel.h>
+#include "test_modifier_cyclic_shape.h"
+#include "test_cyclic_shape.h"
 
-// --------------------------------------------------------------------------
-// Modified Alphabets
-// --------------------------------------------------------------------------
+SEQAN_BEGIN_TESTSUITE(test_modifier_cyclic_shape)
+{
+    // Test Cyclic Shape class
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_cyclic_shape);
 
-#include <seqan/modifier/modifier_alphabet.h>
-#include <seqan/modifier/modifier_alphabet_expansion.h>
+    // Tests for Iteration.
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_alloc_charstring);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_mod_charstring);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_generic_infix_charstring);
 
-// --------------------------------------------------------------------------
-// Modified Strings and Iterators Base Classes
-// --------------------------------------------------------------------------
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_alloc_charstring);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_mod_charstring);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_iterator_fixed_infix_charstring);
 
-#include <seqan/modifier/modifier_iterator.h>
-#include <seqan/modifier/modifier_string.h>
 
-// --------------------------------------------------------------------------
-// Auxiliary header for special modifiers
-// --------------------------------------------------------------------------
+    // Tests for other functionanlity of modifiers
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_string_construct);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_string_functions);
+    SEQAN_CALL_TEST(test_modifier_cyclic_shape_modified_iterator);
 
-#include <seqan/modifier/cyclic_shape.h>
-
-// --------------------------------------------------------------------------
-// Applications of Base Classes
-// --------------------------------------------------------------------------
-
-#include <seqan/modifier/modifier_functors.h>
-#include <seqan/modifier/modifier_view.h>
-#include <seqan/modifier/modifier_reverse.h>
-#include <seqan/modifier/modifier_shortcuts.h>
-#include <seqan/modifier/modifier_cyclic_shape.h>
-
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
+}
+SEQAN_END_TESTSUITE
