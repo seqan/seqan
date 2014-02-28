@@ -38,6 +38,10 @@ def main(source_base, binary_base):
     path_to_program = app_tests.autolocateBinary(
       binary_base, 'bin', 'gustaf')
 
+    path_to_snd_program = app_tests.autolocateBinary(
+      binary_base, 'bin', 'gustaf_mate_joining')
+
+
     # ============================================================
     # Built TestConf list.
     # ============================================================
@@ -60,8 +64,132 @@ def main(source_base, binary_base):
         ]
 
     # ============================================================
-    # Adeno Tests
+    # Gustaf_mate_joining Tests
     # ============================================================
+
+    # ============================================================
+    # Simple gustaf_mate_joining app test
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('adeno_modified_reads_mates1.fa'),
+              ph.inFile('adeno_modified_reads_mates2.fa'),
+              '-o', ph.outFile('adeno_modified_reads_joinedMates.fa'),
+              '-rc',
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('adeno_modified_reads_joinedMates.fa'),
+                  ph.outFile('adeno_modified_reads_joinedMates.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    # -o adeno_modified_reads_joinedMates.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+
+    # ============================================================
+    # Read joining, reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_mates1_gold.fa'),
+              ph.inFile('reads_simulated_mates2_gold.fa'),
+              '-o', ph.outFile('reads_simulated_joined_rc.fa'),
+              '-rc',
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('reads_simulated_joined_rc.fa'),
+                  ph.outFile('reads_simulated_joined_rc.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    # -o reads_simulated_joined_rc.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read joining, no reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_mates1_gold.fa'),
+              ph.inFile('reads_simulated_mates2_gold.fa'),
+              '-o', ph.outFile('reads_simulated_joined.fa'),
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('reads_simulated_joined.fa'),
+                  ph.outFile('reads_simulated_joined.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    # -o reads_simulated_joined.fa \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read splitting, reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_joined_gold.fa'),
+              '-o', ph.outFile('reads_simulated_mates1_rc.fa'),
+              '-o', ph.outFile('reads_simulated_mates2_rc.fa'),
+              '-rc',
+              ],
+        to_diff=[(ph.inFile('reads_simulated_mates1_rc.fa'),
+                  ph.outFile('reads_simulated_mates1_rc.fa'),
+                  transforms),
+                 (ph.inFile('reads_simulated_mates2_rc.fa'),
+                  ph.outFile('reads_simulated_mates2_rc.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_joined_gold.fa \
+    # -o reads_simulated_mates1_rc.fa -o reads_simulated_mates2_rc.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read splitting, no reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_joined_gold.fa'),
+              '-o', ph.outFile('reads_simulated_mates1.fa'),
+              '-o', ph.outFile('reads_simulated_mates2.fa'),
+              ],
+        to_diff=[(ph.inFile('reads_simulated_mates1.fa'),
+                  ph.outFile('reads_simulated_mates1.fa'),
+                  transforms),
+                 (ph.inFile('reads_simulated_mates2.fa'),
+                  ph.outFile('reads_simulated_mates2.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_joined_gold.fa \
+    # -o reads_simulated_mates1.fa -o reads_simulated_mates2.fa \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Gustaf Tests
+    # ============================================================
+
     # ============================================================
     # Sanity check with default values and empty output file
     # ============================================================
