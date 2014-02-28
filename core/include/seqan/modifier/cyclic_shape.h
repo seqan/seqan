@@ -596,7 +596,6 @@ template<typename TString,
 inline void cyclicShapeToSuffixLengths(TString & suffLengths, TShape const & shape)
 {
     typedef typename Size<TString>::Type TSize;
-    typedef typename Iterator<TString, Standard>::Type TIter;
 
     TSize w = weight(shape);
     TSize s = shape.span;
