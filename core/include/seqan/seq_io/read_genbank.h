@@ -86,11 +86,11 @@ enum GenBankErrorCodes_
  * @headerfile <seqan/seq_io.h>
  * @brief Split a GenBank header field/value.
  *
- * @signature void splitGenkBankHeader(key, value, lines);
+ * @signature void splitGenBankHeader(key, value, lines);
  *
- * @param[out] key   The 2-character header type.
- * @param[out] value The line's value.
- * @param[out] lines The lines with the header field to split.
+ * @param[out] key   A @link SequenceConcept @endlink object to write the key to.
+ * @param[out] value A @link SequenceConcept @endlink object to write the value to.
+ * @param[in]  line  A @link SequenceConcept @endlink object with the line.
  */
 
 /**

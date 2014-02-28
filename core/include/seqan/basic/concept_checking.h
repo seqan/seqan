@@ -242,15 +242,26 @@ struct concept_check_<void(*)(Model)>
 // http://www.boost.org/LICENSE_1_0.txt).
 
 /*!
- * @macro SEQAN_CONCEPT_ASSERT
+ * @defgroup ConceptChecking Concept Checking
+ * @brief Macros for the concept checking system in SeqAn.
+ *
+ * SeqAn's concept checking system is copied from Boost.  The license for the library is as follows:
+ *
+ * @code{.cpp}
+ * // Copyright David Abrahams 2006. Distributed under the Boost Software
+ * // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+ * // http://www.boost.org/LICENSE_1_0.txt).
+ * @endcode
+ */
+
+/*!
+ * @macro ConceptChecking#SEQAN_CONCEPT_ASSERT
  * @brief Perform a concept check.
  * @headerfile <seqan/basic.h>
  * 
  * @signature SEQAN_CONCEPT_ASSERT((concept))
  * 
  * @param concept Concept specialized with a the type that should be checked.
- * 
- * @section Remarks
  * 
  * This macro is a compile-time assertion and requires the concept specialized
  * with the tested types to compile. The check neither consumes memory nor
@@ -313,19 +324,19 @@ struct usage_requirements
 };
 
 /*!
- * @macro SEQAN_CONCEPT_USAGE
+ * @macro ConceptChecking#SEQAN_CONCEPT_USAGE
  * @headerfile <seqan/basic.h>
  * @brief Defines valid expressions.
  *
  * @signature SEQAN_CONCEPT_USAGE(name)
  *
- * @param[in] name Identifier of the concept defined with @link SEQAN_CONCEPT @endlink or @link SEQAN_CONCEPT_REFINE
- *                 @endlink.
+ * @param[in] name Identifier of the concept defined with @link ConceptChecking#SEQAN_CONCEPT @endlink or
+ *                 @link ConceptChecking#SEQAN_CONCEPT_REFINE @endlink.
  *
  * This macro should be used to introduce a block (enclosed with curly braces) of valid expressions within a newly
  * defined concept.  Valid expressions should test for available functions, operators and the correctness of return
- * types.  Use helper functions, e.g. @link ignoreUnusedVariableWarning @endlink, @link requireBooleanExpr @endlink and
- * @link sameType @endlink.
+ * types.  Use helper functions, e.g. @link ignoreUnusedVariableWarning @endlink,
+ * @link ConceptChecking#requireBooleanExpr @endlink and @link ConceptChecking#sameType @endlink.
  *
  * @section Examples
  *
@@ -342,9 +353,9 @@ struct usage_requirements
  * };
  * @endcode
  *
- * @see requireBooleanExpr
- * @see SEQAN_CONCEPT
- * @see SEQAN_CONCEPT_REFINE
+ * @see ConceptChecking#requireBooleanExpr
+ * @see ConceptChecking#SEQAN_CONCEPT
+ * @see ConceptChecking#SEQAN_CONCEPT_REFINE
  */
 
 /**
@@ -536,7 +547,7 @@ inline void functionRequires(Model* = 0)
 
 /*!
  * @fn ignoreUnusedVariableWarning
- * @headefile <seqan/basic.h>
+ * @headerfile <seqan/basic.h>
  * @brief Removes unused variable warning.
  *
  * @signature void ignoreUnusedVariableWarning(x);
@@ -571,7 +582,7 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
 // SEQAN_CONCEPT_REFINE added by David Weese
 
 /*!
- * @macro SEQAN_CONCEPT
+ * @macro ConceptChecking#SEQAN_CONCEPT
  * @brief Defines a new concept.
  * @headerfile seqan/basic.h
  * 
@@ -585,12 +596,10 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  * 
- * @section Remarks
- * 
  * A concept is implemented as a template struct with name <tt>name</tt> and
  * arguments <tt>params</tt>. The concept checking should be part of the struct
- * definition. Associated types should be checked via @link SEQAN_CONCEPT_ASSERT
- * @endlink and valid expressions in a function @link SEQAN_CONCEPT_USAGE
+ * definition. Associated types should be checked via @link ConceptChecking#SEQAN_CONCEPT_ASSERT
+ * @endlink and valid expressions in a function @link ConceptChecking#SEQAN_CONCEPT_USAGE
  * @endlink, see below. Variables used in valid expressions should be (private)
  * struct members instead of local variables in member functions (read <a
  * href="http://www.boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm">more</a>.
@@ -628,7 +637,7 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * };
  * @endcode
  *
- * @see SEQAN_CONCEPT_USAGE
+ * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
 /**
@@ -681,7 +690,7 @@ private:
     struct name
 
 /*!
- * @macro SEQAN_CONCEPT_REFINE
+ * @macro ConceptChecking#SEQAN_CONCEPT_REFINE
  * @brief Defines a new concept as a refinement of existing concepts.
  * @headerfile seqan/basic.h
  * 
@@ -700,12 +709,10 @@ private:
  *                        sequence of the Boost Preprocessor Library, read
  *                        <a href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>
  * 
- * @section Remarks
- * 
  * A concept is implemented as a template struct with name <tt>name</tt> and
  * arguments <tt>params</tt>. The struct inherits all refined concept structs.
  * The concept checking should be part of the struct definition. For more
- * information, see @link SEQAN_CONCEPT @endlink.
+ * information, see @link ConceptChecking#SEQAN_CONCEPT @endlink.
  * 
  * @section Examples
  * 
@@ -720,7 +727,7 @@ private:
  *     }
  * };
  * @endcode
- * @see SEQAN_CONCEPT_USAGE
+ * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
 /**
@@ -769,7 +776,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
         SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_REFINE_superclass,params,refinedConcepts)
 
 /*!
- * @macro SEQAN_CONCEPT_IMPL
+ * @macro ConceptChecking#SEQAN_CONCEPT_IMPL
  * @brief Defines which concepts a model fulfills.
  * @headerfile seqan/basic.h
  * 
@@ -783,11 +790,9 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @param name Model type, i.e. an identifier or an identifier with template
  *             arguments.
  * 
- * @section Remarks
- * 
  * The metafunction @link Is @endlink can be used to determine whether a class
  * models (fulfills) a concepts. A model of a concept must pass the concept
- * check via @link SEQAN_CONCEPT_ASSERT @endlink.
+ * check via @link ConceptChecking#SEQAN_CONCEPT_ASSERT @endlink.
  * 
  * @section Examples
  * 
@@ -844,7 +849,7 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
 // ============================================================================
 
 /*!
- * @fn sameType
+ * @fn ConceptChecking#sameType
  * @brief Tests for equality of types.
  *
  * @signature void sameType(x, y);
@@ -855,7 +860,7 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
  * This function can be used to test for the correctness of function return types or the type of an expression in
  * concept tests.
  *
- * @see SEQAN_CONCEPT_USAGE
+ * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
 /**
@@ -889,17 +894,15 @@ void sameType(T, T) { }
  * @tparam TConcept A concept that is specialized with type(s) that should be
  *                  tested for fulfilling the concept.
  * 
- * @return Type @link Logical Values.tag.True @endlink/<tt>true</tt> if
+ * @return Type @link LogicalValuesTags#True @endlink/<tt>true</tt> if
  *              <tt>TConcept</tt> is a fulfilled concept, otherwise @link
- *              Logical Values.tag.False @endlink/<tt>false</tt>.
- * 
- * @section Remarks
+ *              LogicalValuesTags#False @endlink/<tt>false</tt>.
  * 
  * The @link Is @endlink-metafunction can be used to test types for fulfilling a concept without causing compilation
  * errors.  If <tt>True</tt> or <tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept test via @link
- * SEQAN_CONCEPT_ASSERT @endlink.  It can be used to switch between different implementations depending on the concept
- * of a type, or in combination with @link EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF @endlink to make a function only
- * visible to types of certain concepts.
+ * ConceptChecking#SEQAN_CONCEPT_ASSERT @endlink.  It can be used to switch between different implementations
+ * depending on the concept of a type, or in combination with @link EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @endlink to make a function only visible to types of certain concepts.
  * 
  * @section Examples
  * 
@@ -938,7 +941,7 @@ void sameType(T, T) { }
  * @endcode
  *
  * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
- * @see SEQAN_CONCEPT_ASSERT
+ * @see ConceptChecking#SEQAN_CONCEPT_ASSERT
  */
 
 /**

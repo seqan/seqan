@@ -903,14 +903,14 @@ inline
 void setDateAndVersion(seqan::ArgumentParser & parser)
 {
 #ifdef SEQAN_REVISION
-    setVersion(parser, "2.0alpha1 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "2.0.0-beta1 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "2.0alpha1");
+    setVersion(parser, "2.0.0-beta1");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
 #else
-    setDate(parser, "November 2013");
+    setDate(parser, "February 2014");
 #endif
 }
 

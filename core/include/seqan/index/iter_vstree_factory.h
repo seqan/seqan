@@ -309,7 +309,7 @@ template <typename TIndex, typename TSpec, typename TId>
 inline SEQAN_HOST_DEVICE Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
 getObject(Factory<Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > > & factory, TId objectId)
 {
-    SEQAN_ASSERT_LEQ(objectId, factory._maxObjects);
+    SEQAN_ASSERT_LT(objectId, factory._maxObjects);
 
     Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > it(_host(factory, typename IsView<TIndex>::Type()));
 

@@ -55,9 +55,17 @@ namespace seqan {
  * @class AlignmentStats
  * @headerfile <seqan/align.h>
  * @brief Statistics about a tabular alignment.
+ *
  * @signature struct AlignmentStats;
  *
- * The default constructor initializes all members to 0.
+ * @see computeAlignmentStats
+ *
+ * @fn AlignmentStats::AlignmentStats
+ * @brief Constructor
+ *
+ * @signature AlignmentStats::AlignmentStats();
+ *
+ * All members are initialized to <tt>0</tt>.
  *
  * @var unsigned AlignmentStats::numGapOpens;
  * @brief Number of gap open events.
@@ -115,7 +123,7 @@ struct AlignmentStats
 
 /*!
  * @fn AlignmentStats#clear
- * @brief Clear AlignmentStats object.
+ * @brief Resets all members to <tt>0</tt>.
  *
  * @signature void clear(stats);
  *
@@ -148,6 +156,8 @@ void clear(AlignmentStats & stats)
  * @param[out] stats The @link AlignmentStats @endlink object to store alignment statistics in.
  * @param[in]  align The @link Align @endlink object to score.
  * @param[in]  score The @link Score @endlink object to use for the scoring scheme.
+ *
+ * @return TScoreVal The score value of the alignment, of the same type as the value type of <tt>scoringScheme</tt>
  *
  * @see AlignmentStats
  *

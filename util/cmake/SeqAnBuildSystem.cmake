@@ -209,11 +209,17 @@ endmacro (seqan_build_system_init)
 # Python interpreter could be found.
 
 macro (seqan_add_app_test APP_NAME)
+    if (MODEL MATCHES ".*MemCheck.*")
+        set (_VALGRIND_FLAG --valgrind)
+    else ()
+        set (_VALGRIND_FLAG)
+    endif ()
     find_package (PythonInterp)
     if (PYTHONINTERP_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
                 COMMAND ${PYTHON_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests${ARGV1}.py
+                        ${_VALGRIND_FLAG}
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
     endif (PYTHONINTERP_FOUND)
 endmacro (seqan_add_app_test APP_NAME)
@@ -593,6 +599,7 @@ macro (seqan_build_demos_develop PREFIX)
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
+    # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
@@ -605,7 +612,7 @@ macro (seqan_build_demos_develop PREFIX)
     seqan_setup_cuda_vars(ARCH sm_20 DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})

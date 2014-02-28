@@ -71,11 +71,8 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*! 
  * @defgroup WOTDIndexFibres WOTD Index Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexWotd @endlink index.
- * 
- * @section Remarks
  * 
  * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
  * 
@@ -86,42 +83,27 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see IndexWotd
  * 
  * @tag WOTDIndexFibres#WotdDir
- * 
  * @brief The child table.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawSA
- * 
  * @brief The raw suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdText
- * 
  * @brief The original text the index should be based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawText
- * 
  * @brief The raw text the index is really based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdSA
- * 
  * @brief The suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  */
@@ -152,23 +134,19 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 /*!
  * @class IndexWotd
- * 
  * @extends Index
- * 
  * @headerfile seqan/index.h
+ * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
+ *        trees").
  * 
- * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient
- *        implementation of lazy suffix trees").
+ * @signature template <typename TText, typename TSpec>
+ *            class Index<TText, IndexWotd<TSpec> >;
  * 
- * @signature Index<TText, IndexWotd<> >
+ * @tparam TText The @link TextConcept @endlink text type.
+ * @tparam TSpec The type for further specialization of the Index type.
  * 
- * @tparam TText The text type. Types: @link SequenceConcept @endlink
- * 
- * @section Remarks
- * 
- * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
- * are a partially sorted suffix array (see @link WOTDIndexFibres#WotdSA
- * @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a partially sorted suffix array
+ * (see @link WOTDIndexFibres#WotdSA @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
  * 
  * Demo: Demo.Constraint Iterator
  * 
@@ -1162,21 +1140,18 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 /*!
  * @fn IndexWotd#createWotdIndex
- * 
  * @headerfile seqan/index.h
+ * @brief Builds a the WOTD index.
  * 
- * @brief Builds a q-gram index on a sequence.
+ * @signature void createWotdIndex(sa, dir, text);
  * 
- * @signature createWotdIndex(sa, dir, text)
+ * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically. 
+ * @param[out] dir The resulting array that indicates at which position in index the corresponding <i>q</i>-grams
+ *                 can be found.
+ * @param[in] text The sequence. Types: @link SequenceConcept @endlink
  * 
- * @param text The sequence. Types: @link SequenceConcept @endlink
- * @param sa The resulting list in which all q-grams are sorted alphabetically. 
- * @param dir The resulting array that indicates at which position in index the
- *            corresponding q-grams can be found.
- * 
- * @return TReturn Index contains the sorted list of qgrams. For each possible
- *                 q-gram pos contains the first position in index that
- *                 corresponds to this q-gram.
+ * The resulting <tt>index</tt> contains the sorted list of qgrams.  For each possible <i>q</i>-gram pos contains
+ * the first position in index that corresponds to this <i>q</i>-gram.
  */
 
 	// single sequence
@@ -2011,13 +1986,13 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
         typedef typename Value<TIndex>::Type    TValue;
         typedef typename Size<TIndex>::Type     TSize;
 
-		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1);
-		resize(index.tempBound, ValueSize<TValue>::VALUE + 1);
+		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1, Exact());
+		resize(index.tempBound, ValueSize<TValue>::VALUE + 1, Exact());
 
 		TSize size;
 		if (empty(indexSA(index)))
 		{
-			resize(indexSA(index), length(indexRawText(index)));
+			resize(indexSA(index), length(indexRawText(index)), Exact());
 			size = _sortFirstWotdBucket(index);
 		} else
 		{

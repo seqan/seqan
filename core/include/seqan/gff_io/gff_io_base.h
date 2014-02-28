@@ -103,10 +103,10 @@ typedef Tag<TagGtf_> Gtf;
  *
  * @signature class GffRecord;
  *
- * @var __int32 GffRecord::INVALID_POS
+ * @var __int32 GffRecord::INVALID_POS;
  * @brief Static member with invalid/sentinel position value.
  *
- * @var __int32 GffRecord::INVALID_IDX
+ * @var __int32 GffRecord::INVALID_IDX;
  * @brief Static member with invalid/sentinel rID value.
  *
  * @fn GffRecord::INVALID_SCORE
@@ -114,31 +114,31 @@ typedef Tag<TagGtf_> Gtf;
  *
  * @signature float GffRecord::INVALID_SCORE();
  * 
- * @var CharString GffRecord::ref
+ * @var CharString GffRecord::ref;
  * @brief The sequence name of the record.
  *
- * @var __int32 GffRecord::rID
+ * @var __int32 GffRecord::rID;
  * @brief Integer representing ref, defaults to INVALID_IDX.
  * 
- * @var CharString GffRecord::source
+ * @var CharString GffRecord::source;
  * @brief The source of the record.
  * 
- * @var CharString GffRecord::type
+ * @var CharString GffRecord::type;
  * @brief The type of the record.
  * 
- * @var __int32 GffRecord::beginPos
+ * @var __int32 GffRecord::beginPos;
  * @brief The begin position of the record.
  * 
- * @var __int32 GffRecord::endPos
+ * @var __int32 GffRecord::endPos;
  * @brief The end position of the record.
  * 
- * @var float GffRecord::score
+ * @var float GffRecord::score;
  * @brief The score of the record.
  * 
- * @var char GffRecord::strand
+ * @var char GffRecord::strand;
  * @brief The strand the record belongs to.
  * 
- * @var char GffRecord::phase
+ * @var char GffRecord::phase;
  * @brief The phase of the record.
  * 
  * @section Remarks
@@ -147,16 +147,16 @@ typedef Tag<TagGtf_> Gtf;
  * phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of
  * this feature to reach the first base of the next codon
  * 
- * @var TCharStringSet GffRecord::tagName
+ * @var TCharStringSet GffRecord::tagName;
  * @brief The names of the attributes of the record, StringSet of CharString.
- * 
- * @var TCharStringSet GffRecord::tagValue
- * @brief The values of the attributes of the record, StringSet of CharString.
  * 
  * @section Remarks
  * 
  * For each value there is a name associated in GffRecord::tagName.
  *
+ * @var TCharStringSet GffRecord::tagValue;
+ * @brief The values of the attributes of the record, StringSet of CharString.
+ * 
  * @section Remarks
  * 
  * For each name there is a value associated in GffRecord::tagValue.
@@ -326,7 +326,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
     if (value(reader) == '=')
     {
         goNext(reader);
-        if (skipWhitespaces(reader) != 0)
+        if (skipBlanks(reader) != 0)
             return 1;
 
         if (atEnd(reader))
@@ -415,7 +415,7 @@ inline void clear(GffRecord & record)
  * @fn GffIO#readRecord
  * @brief Read one GFF/GTF record from a SinglePassRecordReader.
  *
- * @signature int readRecord(record, reader[, context, [, tag]]);
+ * @signature int readRecord(record, reader[, context[, tag]]);
  *
  * @param[out]    record  The GffRecord to write the results to.
  * @param[in,out] reader  The SinglePassRecordReader to use for reading.
@@ -713,10 +713,11 @@ _writePossiblyInQuotes(TTargetStream & target, TString & source, TMustBeQuotedFu
  * @fn GffIO#writeRecord
  * @brief Writes on GFF/GTF record to a stream.
  *
- * @signature int writeRecord(stream, record);
+ * @signature int writeRecord(stream, record[, context[, tag]]);
  *
- * @param[in,out] stream The StreamConcept to write to.
- * @param[in]     record The GffRecord to write.
+ * @param[in,out] stream  The @link StreamConcept @endlink to write to.
+ * @param[in]     record  The @link GffRecord @endlink to write.
+ * @param[in]     context Optional @link GffIOContext @endlink to use for reference ids.
  *
  * @return int A status code, 0 on success, a different value on errors.
  */

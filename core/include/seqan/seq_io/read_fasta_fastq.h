@@ -619,14 +619,13 @@ readRecord(TIdString & meta,
  * @headerfile <seqan/seq_io.h>
  * @brief Read one FASTA or FASTQ record.
  * 
- * @signature int readRecord(id, seq, stream, tag);
- * @signature int readRecord(id, seq, quals, stream, tag);
+ * @signature int readRecord(id, seq[, quals], stream, tag);
  * 
  * @param[in,out] stream  The @link StreamConcept @endlink to read from.
  * @param[in]     id      @link SequenceConcept @endlink to read identifier into.
  * @param[in]     seq     @link SequenceConcept @endlink to read sequence into.
  * @param[in]     quals   @link SequenceConcept @endlink to read qualities into.
- * @param[in]     tag     The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
+ * @param[in]     tag     The format selector. Types: <tt>Fasta</tt>, <tt>Fastq</tt>
  *
  * @return int 0 on success, non-0 value on errors.
  */
@@ -917,14 +916,13 @@ int _readFastAQ(StringSet<TIdString, TIdSpec> & sequenceIds,
  * @headerfile <seqan/seq_io.h>
  * @brief Read a whole FASTA or FASTQ file into StringSet objects.
  * 
- * @signature int read2(ids, seqs, reader, tag);
- * @signature int read2(ids, seqs, qualss, reader, tag);
+ * @signature int read2(ids, seqs[, quals], reader, tag);
  * 
  * @param[in,out] stream  The @link StreamConcept @endlink to read from.
  * @param[in]     ids     The @link StringSet @endlink to read the ids into.
  * @param[in]     seqs    The @link StringSet @endlink to read the sequences into.
  * @param[in]     quals   The @link StringSet @endlink to read the ASCII qualities into.
- * @param[in]     tags    The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
+ * @param[in]     tags    The format selector. Types: <tt>Fasta</tt>, <tt>Fastq</tt>
  *
  * @return int 0 on success, non-0 value on errors.
  */

@@ -75,8 +75,6 @@ typedef Tag<Count_> Count;
  * @tparam TSpec  The specialization tag.
  * @tparam TValue The type of the values to accumulate.
  * 
- * @section Remarks
- * 
  * Accumulators are for computing statistics on streams of values.
  * 
  * Currently, this is only meant for accumulating integers.
@@ -107,8 +105,6 @@ struct Accumulator;
  *            struct Accumulator<TValue, Average>;
  * 
  * @tparam TValue The type of the values to compute the average of.
- * 
- * @section Remarks
  * 
  * The average of an empty sequence is defined to be 0.
  * 
@@ -294,7 +290,7 @@ struct Result<Accumulator<TValue, Average> const, Sum> : Result<Accumulator<TVal
  * @signature void push(acc, x);
  *
  * @param[in,out] acc The Accumulator to push the value to.
- * @param[in]     x   The value to include in the accumulation.
+ * @param[in]     x   The value to include in the accumulation (@link IntegerConcept @endlink).
  */
 
 /**
@@ -359,7 +355,7 @@ push(Accumulator<TValue, Average> & acc, TValue2 value)
  *
  * @param[in] acc The Accumulator to compute the average for.
  *
- * @return TResult The average of the values.
+ * @return TResult The average of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
 /**
@@ -396,7 +392,7 @@ average(Accumulator<TValue, Average> const & acc)
  *
  * @param[in] acc The Accumulator to compute the sum for.
  *
- * @return TResult The sum of the values.
+ * @return TResult The sum of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
 /**
@@ -430,7 +426,7 @@ sum(Accumulator<TValue, Average> const & acc)
  *
  * @param[in] count The number of values pushed to the accumulator.
  *
- * @return TResult The number of pushed values.
+ * @return TResult The number of pushed values (Metafunction: @link Accumulator#Result @endlink).
  */
 
 /**

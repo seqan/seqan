@@ -73,10 +73,10 @@ namespace seqan {
  * @signature Triple::Triple(other)
  * @signature Triple::Triple(x1, x2, x3)
  *
- * @param other Other Triple object to copy from.
- * @param x1 First object.
- * @param x2 Second object.
- * @param x3 Third object.
+ * @param[in] other Other Triple object to copy from.
+ * @param[in] x1 First object.
+ * @param[in] x2 Second object.
+ * @param[in] x3 Third object.
  *
  * <tt>x1</tt> must be convertible to T1, <tt>x2</tt> to T2, <tt>x3</tt> to T3.  For example, a Triple of three
  * <tt>int</tt> values can be constructed with three <tt>double</tt> values.
@@ -96,7 +96,7 @@ namespace seqan {
  * signature T2 Triple::i2;
  */
 
-/*
+/*!
  * @var T3 Triple::i3
  * @brief Third value of triple.
  *
@@ -225,7 +225,7 @@ struct LENGTH<Triple<T1, T2, T3, TSpec> >
 
 /*!
  * @mfn Triple#Value
- * @brief Return i<sup>th type of the triple.
+ * @brief Return i<sup>th</sup> type of the triple.
  *
  * @signature Value<TTriple, I>::Type;
  *
@@ -305,7 +305,7 @@ std::ostream & operator<<(std::ostream & out, Triple<T1,T2,T3,TSpec> const & t)
  *
  * @signature T1 getValue(triple);
  *
- * @param triple The triple to get entry from.
+ * @param[in] triple The triple to get entry from.
  *
  * @return T1 The first entry of the Triple.
  */
@@ -323,7 +323,7 @@ getValueI1(Triple<T1, T2, T3, TSpec> const & triple)
  *
  * @signature T2 getValue(triple);
  *
- * @param triple The triple to get entry from.
+ * @param[in] triple The triple to get entry from.
  *
  * @return T2 The second entry of the Triple.
  */
@@ -341,7 +341,7 @@ getValueI2(Triple<T1, T2, T3, TSpec> const & triple)
  *
  * @signature T3 getValue(triple);
  *
- * @param triple The triple to get entry from.
+ * @param[in] triple The triple to get entry from.
  *
  * @return T3 The third entry of the Triple.
  */
@@ -363,8 +363,8 @@ getValueI3(Triple<T1, T2, T3, TSpec> const & triple)
  *
  * @signature void assignValueI1(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's first entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's first entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
@@ -379,8 +379,8 @@ inline void assignValueI1(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
  *
  * @signature void assignValueI2(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's second entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's second entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
@@ -395,8 +395,8 @@ inline void assignValueI2(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
  *
  * @signature void assignValueI3(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's third entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's third entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
@@ -415,8 +415,8 @@ inline void assignValueI3(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
  *
  * @signature void setValueI1(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's first entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's first entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
@@ -431,8 +431,8 @@ inline void setValueI1(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
  *
  * @signature void setValueI2(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's second entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's second entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
@@ -447,8 +447,8 @@ inline void setValueI2(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
  *
  * @signature void setValueI3(triple, val);
  *
- * @param triple The triple to get entry from.
- * @param val    Set the value of the Triple's third entry.
+ * @param[in] triple The triple to get entry from.
+ * @param[in] val    Set the value of the Triple's third entry.
  */
 
 template <typename T1, typename T2, typename T3, typename TSpec, typename T>
