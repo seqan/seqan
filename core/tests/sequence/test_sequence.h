@@ -792,6 +792,44 @@ SEQAN_TYPED_TEST(StringTestCommon, Swap)
     testConstructDeconstruct(str);
 }
 
+// Test of reverse().
+template <typename TString>
+void testSequenceReverse(TString & /*Tag*/)
+{
+    using namespace seqan;
+    {
+        TString string1 = "";
+        TString string2 = "";
+
+        reverse(string1);
+        SEQAN_ASSERT_EQ(string1, string2);
+    }
+    {
+        TString string1 = "ACGT";
+        TString string2 = "TGCA";
+
+        reverse(string1);
+        SEQAN_ASSERT_EQ(string1, string2);
+    }
+    {
+        TString string1 = "ACAGT";
+        TString string2 = "TGACA";
+
+        reverse(string1);
+        SEQAN_ASSERT_EQ(string1, string2);
+    }
+}
+
+SEQAN_TYPED_TEST(StringTestCommon, Reverse)
+{
+    CountingChar::clear();
+
+    typename TestFixture::TString str;
+    testSequenceReverse(str);
+   
+    testConstructDeconstruct(str);
+}
+
 
 // Test of assignValue().
 template <typename TString>
