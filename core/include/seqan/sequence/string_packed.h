@@ -461,14 +461,14 @@ struct Size<String<TValue, Packed<THostspec> > const>
 // Metafunction Iterator
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed<THostspec> >, TSpec>
+template <typename TValue, typename THostspec>
+struct Iterator<String<TValue, Packed<THostspec> >, Standard>
 {
     typedef Iter<String<TValue, Packed<THostspec> >, Packed<THostspec> > Type;
 };
 
-template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed<THostspec> > const, TSpec>
+template <typename TValue, typename THostspec>
+struct Iterator<String<TValue, Packed<THostspec> > const, Standard>
 {
     typedef Iter<String<TValue, Packed<THostspec> > const, Packed<THostspec> > Type;
 };
@@ -686,23 +686,23 @@ getObjectId(String<TValue, Packed<THostspec> > const & me)
 // Function iter()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec, typename TPos>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 iter(String<TValue, Packed<THostspec> > & me,
      TPos pos,
-     Tag<TTag> const &)
+     Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me, pos);
 }
 
-template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec, typename TPos>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 iter(String<TValue, Packed<THostspec> > const & me,
      TPos pos,
-     Tag<TTag> const &)
+     Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me, pos);
 }
 
@@ -710,21 +710,21 @@ iter(String<TValue, Packed<THostspec> > const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 begin(String<TValue, Packed<THostspec> > & me,
-      Tag<TTag> const &)
+      Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me);
 }
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 begin(String<TValue, Packed<THostspec> > const & me,
-      Tag<TTag> const &)
+      Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me);
 }
 
@@ -732,20 +732,20 @@ begin(String<TValue, Packed<THostspec> > const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 end(String<TValue, Packed<THostspec> > & me,
-    Tag<TTag> const & tag_)
+    Standard)
 {
-    return iter(me, length(me), tag_);
+    return iter(me, length(me), Standard());
 }
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 end(String<TValue, Packed<THostspec> > const & me,
-    Tag<TTag> const & tag_)
+    Standard)
 {
-    return iter(me, length(me), tag_);
+    return iter(me, length(me), Standard());
 }
 
 // --------------------------------------------------------------------------
