@@ -79,67 +79,37 @@ namespace seqan {
  */
 
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int write2(TStream & stream,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+void write(TTarget & target,
            BamHeader const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Bam const & /*tag*/)
 {
-    int res = streamWriteBlock(stream, "BAM\1", 4);
-    if (res != 4)
-        return 1;  // Could not write magic.
+    write(target, "BAM\1");
 
     // Create text of header.
     CharString headerBuffer;
     for (unsigned i = 0; i < length(header.records); ++i)
-    {
-        res = write2(headerBuffer, header.records[i], context, Sam());
-        if (res != 0)
-            return 1;  // Error writing header to buffer.
-    }
+        write(headerBuffer, header.records[i], context, Sam());
+    
     // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
     // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
     // appendValue(headerBuffer, '\0');
 
     // Write text header.
-    __int32 lText = length(headerBuffer);
-    appendRawNumber(target, (__uint32)length(m));
-    appendRawNumber<__uint32>(target, length(m));
-    res = streamWriteBlock(stream, reinterpret_cast<char const *>(&lText), 4);
-    if (res != 4)
-        return 1;  // Error writing l_text.
-
-    res = streamWriteBlock(stream, &headerBuffer[0], lText);
+    appendRawPod(target, (__int32)length(headerBuffer));
+    write(target, headerBuffer);
 
     // Write references.
-    __int32 nRef = _max(length(header.sequenceInfos), length(nameStore(context)));
-    res = streamWriteBlock(stream, reinterpret_cast<char const *>(&nRef), 4);
-    if (res != 4)
-        return 1;  // Error writing n_ref;
+    appendRawPod(target, (__int32)_max(length(header.sequenceInfos), length(nameStore(context))));
 
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
-        __int32 lName = length(header.sequenceInfos[i].i1) + 1;
-        res = streamWriteBlock(stream, reinterpret_cast<char const *>(&lName), 4);
-        if (res != 4)
-            return 1;  // Error writing l_name;
-
-        res = streamWriteBlock(stream, &header.sequenceInfos[i].i1[0], lName - 1);
-        if (res != lName - 1)
-            return 1;  // Error writing name;
-
-        char const n = '\0';
-        res = streamWriteBlock(stream, &n, 1);
-        if (res != 1)
-            return 1;  // Error writing trailing '\0'.
-
-        __int32 lRef = header.sequenceInfos[i].i2;
-        res = streamWriteBlock(stream, reinterpret_cast<char const *>(&lRef), 4);
-        if (res != 4)
-            return 1;  // Error writing l_ref;
+        appendRawPod(target, (__int32)(length(header.sequenceInfos[i].i1) + 1));
+        write(target, header.sequenceInfos[i].i1);
+        writeValue(target, '\0');
+        appendRawPod(target, (__int32)header.sequenceInfos[i].i2);
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -167,8 +137,8 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
     return 0;
 }
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int write2(TStream & stream,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+void write(TTarget & target,
            BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Bam const & /*tag*/)
@@ -178,10 +148,10 @@ int write2(TStream & stream,
     // First, write record to buffer.
 
     // refID
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.rID), 4);
+    appendRawPod(buffer, record.rID);
 
     // pos
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.beginPos), 4);
+    appendRawPod(buffer, record.beginPos);
 
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
@@ -190,33 +160,32 @@ int write2(TStream & stream,
     _getLengthInRef(record.cigar, l);
     __uint32 bin = _reg2Bin(record.beginPos, record.beginPos + l);
     __uint32 binMqNl = (bin << 16) | (record.mapQ << 8) | lReadName;
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&binMqNl), 4);
+    appendRawPod(buffer, binMqNl);
 
     // flag_nc
     __uint16 nCigarOp = length(record.cigar);
     __uint32 flagNc = (record.flag << 16) | nCigarOp;
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&flagNc), 4);
+    appendRawPod(buffer, flagNc);
 
     // l_seq
-    __int32 lSeq = length(record.seq);
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&lSeq), 4);
+    appendRawPod(buffer, (__int32)length(record.seq));
 
     // next_refID
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.rNextId), 4);
+    appendRawPod(buffer, record.rNextId);
 
     // next_pos
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.pNext), 4);
+    appendRawPod(buffer, record.pNext);
 
     // tlen
     __int32 zero = 0;
     if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&zero), 4);
+        appendRawPod(buffer, zero);
     else
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tLen), 4);
+        appendRawPod(buffer, record.tLen);
 
     // read_name
-    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.qName[0]), lReadName - 1);
-    streamWriteChar(buffer, '\0');
+    write(buffer, record.qName);
+    writeValue(buffer, '\0');
 
     // cigar
     static __uint8 const MAP[256] =
@@ -243,7 +212,7 @@ int write2(TStream & stream,
         __uint32 x = record.cigar[i].count;
         x <<= 4;
         x |= MAP[static_cast<int>(record.cigar[i].operation)];
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&x), 4);
+        appendRawPod(buffer, x);
     }
 
     // seq
@@ -267,43 +236,41 @@ int write2(TStream & stream,
         15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
     };
     __uint8 c = 0;
-    for (int i = 0; i < lSeq; ++i)
+    for (unsigned int i = 0; i < length(record.seq); ++i)
     {
         c <<= 4;
         c &= 0xf0;
         c |= MAP2[static_cast<int>(record.seq[i])];
         if (i % 2 == 1)
-            streamWriteChar(buffer, c);
+            writeValue(buffer, (char)c);
     }
-    if (lSeq % 2 == 1)
+    if (length(record.seq) % 2 == 1)
     {
         c <<= 4;
         c &= 0xf0;
-        streamWriteChar(buffer, c);
+        writeValue(buffer, (char)c);
     }
 
     // qual
     if (empty(record.qual))
     {
         for (unsigned i = 0; i < length(record.qual); ++i)
-            streamWriteChar(buffer, static_cast<unsigned char>(0xff));
+            writeValue(buffer, (unsigned char)(0xff));
     }
     else
     {
         for (unsigned i = 0; i < length(record.qual); ++i)
-            streamWriteChar(buffer, static_cast<char>(record.qual[i] - '!'));
+            writeValue(buffer, (char)(record.qual[i] - '!'));
     }
 
     // tags
     if (length(record.tags) > 0u)
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tags[0]), length(record.tags));
+        appendRawPod(buffer, record.tags);
 
     // buffer to stream
-    __uint32 blockSize = length(buffer);
-    streamWriteBlock(stream, reinterpret_cast<char const *>(&blockSize), 4);
-    return streamWriteBlock(stream, &buffer[0], blockSize) != blockSize;
+    appendRawPod(target, (__uint32)length(buffer));
+    write(target, buffer);
 }
-
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_

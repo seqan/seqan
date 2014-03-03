@@ -402,7 +402,7 @@ inline void readRecord(BamAlignmentRecord & record,
     // QUAL
     IsNewline isNewline;
     readUntil(record.qual, iter, OrFunctor<IsTab, IsNewline>());
-   
+
     // Handle case of missing quality:  Clear qual string as documented.
     if (record.qual == "*")
         clear(record.qual);

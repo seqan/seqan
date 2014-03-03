@@ -54,8 +54,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
     //append(bamFilename, "/core/tests/bam_io/small.bam");
     append(bamFilename, "/core/tests/bam_io/test_small.bam");
 
-    //Stream<Bgzf> stream;
-    //SEQAN_ASSERT(open(stream, toCString(bamFilename), "r"));
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
     typename Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(in);
@@ -76,7 +74,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
     // -----------------------------------------------------------------------
 
     SEQAN_ASSERT_EQ(length(header.sequenceInfos), 1u);
-    std::cout << toCString(header.sequenceInfos[0].i1) << " " << header.sequenceInfos[0].i1 << std::endl;
     SEQAN_ASSERT_EQ(header.sequenceInfos[0].i1, "REFERENCE");
     SEQAN_ASSERT_EQ(header.sequenceInfos[0].i2, 10000);
 
@@ -102,20 +99,20 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
 {
-    /*
     using namespace seqan;
 
     // -----------------------------------------------------------------------
     // Define constant data and input.
     // -----------------------------------------------------------------------
 
-    // File has same contents as in the SAM test.
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/core/tests/bam_io/small.bam");
-
-    Stream<Bgzf> stream;
-    SEQAN_ASSERT(open(stream, toCString(bamFilename), "r"));
+    //append(bamFilename, "/core/tests/bam_io/small.bam");
+    append(bamFilename, "/core/tests/bam_io/test_small.bam");
+    
+    String<char, MMap<> > in;
+    open(in, toCString(bamFilename));
+    typename Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(in);
 
     // -----------------------------------------------------------------------
     // Call Code Under Test.
@@ -126,13 +123,13 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
     
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, stream, Bam()), 0);
+    readRecord(header, bamIOContext, iter, Bam());
 
     String<BamAlignmentRecord> alignments;
-    while (!atEnd(stream))
+    while (!atEnd(iter))
     {
         resize(alignments, length(alignments) + 1);
-        SEQAN_ASSERT_EQ(readRecord(back(alignments), bamIOContext, stream, Bam()), 0);
+        readRecord(back(alignments), bamIOContext, iter, Bam());
     }
 
     // -----------------------------------------------------------------------
@@ -161,7 +158,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     SEQAN_ASSERT_EQ(length(alignments[0].tags), 0u);
 
     // TODO(holtgrew): Check more alignments?
-    */
 }
 
 #endif  // CORE_TESTS_BAM_IO_TEST_READ_BAM_H_

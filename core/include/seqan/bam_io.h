@@ -69,7 +69,7 @@
 // BAM I/O is only available when ZLIB is available (and thus the BGz Stream).
 #if SEQAN_HAS_ZLIB
 #include <seqan/bam_io/read_bam.h>
-//#include <seqan/bam_io/write_bam.h>
+#include <seqan/bam_io/write_bam.h>
 #endif  // #if SEQAN_HAS_ZLIB
 
 // ===========================================================================

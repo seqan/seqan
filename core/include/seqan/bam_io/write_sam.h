@@ -60,7 +60,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write2(TTarget & target,
+int write(TTarget & target,
            BamHeaderRecord const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Sam const & /*tag*/)
@@ -73,6 +73,7 @@ int write2(TTarget & target,
         streamPut(stream, header.tags[0].i2);
 =======
     write(target, headerTypes[header.type]);
+
     if (header.type == BAM_HEADER_COMMENT && !empty(header.tags))
     {
         writeValue(target, '\t');
@@ -99,7 +100,7 @@ int write2(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write2(TTarget & target,
+int write(TTarget & target,
            BamHeader const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & tag)
@@ -121,7 +122,7 @@ int write2(TTarget & target,
             }
         }
 
-        int res = write2(target, record, context, tag);
+        int res = write(target, record, context, tag);
         if (res != 0)
             return res;
     }
@@ -147,7 +148,7 @@ int write2(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write2(TTarget & target,
+int write(TTarget & target,
            BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & /*tag*/)
@@ -162,7 +163,7 @@ int write2(TTarget & target,
         writeValue(target, '*');
     else
         write(target, nameStore(context)[record.rID]);
-    
+
     writeValue(target, '\t');
 
     if (record.rID == BamAlignmentRecord::INVALID_REFID)
