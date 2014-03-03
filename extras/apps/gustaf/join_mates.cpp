@@ -432,7 +432,7 @@ int main(int argc, char const ** argv)
     {
         std::cout << "__OPTIONS____________________________________________________________________\n"
                   << '\n'
-                  << "VERBOSITY     \t" << options.verbosity << '\n'
+                  << "VERBOSITY     \t\t" << options.verbosity << '\n'
                   << "INPUT FILE 1     \t" << options.inPaths[0] << '\n';
                   if (length(options.inPaths) > 1)
                       std::cout << "INPUT FILE 2     \t" << options.inPaths[1] << '\n';
