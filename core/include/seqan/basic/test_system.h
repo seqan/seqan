@@ -386,13 +386,7 @@ public:
         catch(_exception_type& ex)                                                  \
         {                                                                           \
             if(std::string(ex.what()) != _message)                                  \
-            {                                                                       \
-                std::cerr << __FILE__ << ":" << __LINE__                            \
-                          << " Got correct exception but wrong message: '"          \
-                          << ex.what() << "' != '"                                  \
-                          << _message << "'" << std::endl;                          \
                 SEQAN_FAIL("Got correct exception but wrong message: '%s' != '%s'", ex.what(), _message); \
-            }                                                                       \
             caughtException = true;                                                 \
         }                                                                           \
         catch(...)                                                                  \
