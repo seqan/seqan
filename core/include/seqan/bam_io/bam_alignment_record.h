@@ -305,7 +305,7 @@ enum BamFlags
 class BamAlignmentRecord
 {
 public:
-    static __int32 const INVALID_POS = 2147483647;  // TODO(holtgrew): Should be MaxValue<__int32>::VALUE, but that is not a constant expression :(
+    static __int32 const INVALID_POS = -1;
     static __int32 const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
     static __int32 const INVALID_LEN = 2147483647;
     static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.

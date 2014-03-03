@@ -64,18 +64,17 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 
     BamHeaderRecord seqRecord;
     seqRecord.type = BAM_HEADER_REFERENCE;
-    appendValue(firstRecord.tags, TTag("SN", "REF"));
-    appendValue(firstRecord.tags, TTag("LN", "10000"));
+    appendValue(seqRecord.tags, TTag("SN", "REF"));
+    appendValue(seqRecord.tags, TTag("LN", "10000"));
     appendValue(header.records, seqRecord);
 
     // Call code under test.
     String<char> buffer;
-    SEQAN_ASSERT_EQ(write2(buffer, header, bamIOContext, Sam()), 0);
+    SEQAN_ASSERT_EQ(write(buffer, header, bamIOContext, Sam()), 0);
 
     // Compare results.
     char const * EXPECTED =
             "@HD\tVN:1.0\n"
-            "@SQ\n"
             "@SQ\tSN:REF\tLN:10000\n";
 
     SEQAN_ASSERT_EQ(CharString(EXPECTED), buffer);
@@ -107,7 +106,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
 
     // Call code under test.
     String<char> buffer;
-    SEQAN_ASSERT_EQ(write2(buffer, record, bamIOContext, Sam()), 0);
+    SEQAN_ASSERT_EQ(write(buffer, record, bamIOContext, Sam()), 0);
 
     // Compare results.
     char const * EXPECTED = "READNAME\t18\tREF\t31\t8\t10M\t*\t0\t0\tCGATCGATAA\tIIIIIIIIII\n";
