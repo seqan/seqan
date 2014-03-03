@@ -304,12 +304,9 @@ template <typename TForwardIter, typename TKeyString, typename TValueString>
 inline void
 _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & iter)
 {
-    IsWhitespace isWhitespace;
-    IsNewline isNewline;
-
     //TODO(singer): AssertList functor would be need
     char c = value(iter);
-    if (isWhitespace(c) || c == '=')
+    if (IsWhitespace()(c) || c == '=')
     {
         throw std::runtime_error("The key field of an attribute is empty!");
         return;  // Key cannot be empty.
@@ -318,7 +315,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     for (; !atEnd(iter); goNext(iter))
     {
         c = value(iter);
-        if (isNewline(c) || c == ' ' || c == '=' || c == ';')
+        if (IsNewline()(c) || c == ' ' || c == '=' || c == ';')
             break;
         appendValue(key, c);
     }
@@ -328,7 +325,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
         return;
     }
 
-    if(value(iter) == '\r' || value(iter) == '\n')
+    if(IsNewline()(value(iter)))
         return;
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
@@ -340,12 +337,12 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     {
         // Handle the case of a string literal.
         skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
         readUntil(outValue, iter, OrFunctor<EqualsChar<'"'>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
         skipOne(iter);
 
         // Go over the trailing semicolon and any trailing space.
-        while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            skipOne(iter);
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
     }
     else
     {
@@ -353,8 +350,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
         readUntil(outValue, iter, OrFunctor<EqualsChar<';'>, IsNewline>());
 
         // Skip semicolon and spaces if any.
-        while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
-            skipOne(iter);
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
     }
     return;
 }
