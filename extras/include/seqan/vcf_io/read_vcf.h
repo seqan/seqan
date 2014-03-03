@@ -387,7 +387,7 @@ readRecord(VcfRecord & record,
         if (atEnd(iter))
         {
             if ((i + 1) != length(*context.sampleNames))
-                throw ParseError("Not enough fields");
+                throw ParseError("No genotype information for all samples.");
             else
                 break;  // Done
         }

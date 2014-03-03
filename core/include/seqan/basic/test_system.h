@@ -242,13 +242,6 @@ public:
 // Functions
 // ==========================================================================
 
-void failExceptionTest()
-{
-    ::seqan::ClassTest::StaticData::thisTestOk() = false;
-    ::seqan::ClassTest::StaticData::errorCount() += 1;
-    ::seqan::ClassTest::fail();
-}
-
 // ==========================================================================
 // Macros
 // ==========================================================================
@@ -374,15 +367,11 @@ void failExceptionTest()
         }                                                                           \
         catch(...)                                                                  \
         {                                                                           \
-            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
-                      << #_exception_type << std::endl;                             \
-            seqan::failExceptionTest();                                             \
+           SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);              \
         }                                                                           \
         if (!caughtException)                                                       \
         {                                                                           \
-            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
-                      << std::endl;                                                 \
-            seqan::failExceptionTest();                                             \
+            SEQAN_FAIL("No exception thrown!");                                     \
         }                                                                           \
     } while(false)
 
@@ -402,21 +391,17 @@ void failExceptionTest()
                           << " Got correct exception but wrong message: '"          \
                           << ex.what() << "' != '"                                  \
                           << _message << "'" << std::endl;                          \
-                seqan::failExceptionTest();                                         \
+                SEQAN_FAIL("Got correct exception but wrong message: '%s' != '%s'", ex.what(), _message); \
             }                                                                       \
             caughtException = true;                                                 \
         }                                                                           \
         catch(...)                                                                  \
         {                                                                           \
-            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
-                      << #_exception_type << std::endl;                             \
-            seqan::failExceptionTest();                                             \
+           SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);              \
         }                                                                           \
         if (!caughtException)                                                       \
         {                                                                           \
-            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
-                      << std::endl;                                                 \
-            seqan::failExceptionTest();                                             \
+            SEQAN_FAIL("No exception thrown!");                                     \
         }                                                                           \
     } while(false)
 
