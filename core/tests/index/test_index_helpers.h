@@ -561,10 +561,12 @@ bool isEqual(TA &_a, TB &_b) {
 
 typedef
     TagList<Index<DnaString, FMIndex<> >,
+    TagList<Index<String<Dna, Packed<> >, FMIndex<> >,
+    TagList<Index<String<Dna5, Packed<> >, FMIndex<> >,
     TagList<Index<CharString, FMIndex<> >,
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
-    > > > >
+    > > > > > >
     IndexTypes;
 
 // --------------------------------------------------------------------------
