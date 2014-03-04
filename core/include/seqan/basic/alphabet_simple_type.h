@@ -364,7 +364,7 @@ struct Spec<SimpleType<TValue, TSpec> const>
 // TODO(holtgrew): Is some of the code below redundant, can we lose some copy and paste here?
 
 template <typename TValue, typename TSpec, typename TRight>
-struct CompareType<SimpleType<TValue, TSpec>, TRight>
+struct CompareTypeImpl<SimpleType<TValue, TSpec>, TRight>
 {
     typedef TRight Type;
 };

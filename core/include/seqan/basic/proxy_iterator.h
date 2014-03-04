@@ -243,6 +243,22 @@ struct Difference<Proxy<IteratorProxy<TIterator> > const>
 {
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction CompareType
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename T>
+struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator> >, T>:
+    CompareTypeRemoveProxy<typename Value<TIterator>::Type, T> {};
+
+template <typename TIterator, typename T>
+struct CompareTypeRemoveProxy<T, Proxy<IteratorProxy<TIterator> > >:
+    CompareTypeRemoveProxy<T, typename Value<TIterator>::Type> {};
+
+template <typename TIterator1, typename TIterator2>
+struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator1> >, Proxy<IteratorProxy<TIterator2> > >:
+    CompareTypeRemoveProxy<typename Value<TIterator1>::Type, typename Value<TIterator2>::Type> {};
+
 // ============================================================================
 // Functions
 // ============================================================================
