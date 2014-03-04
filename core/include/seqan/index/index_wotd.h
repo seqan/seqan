@@ -1489,11 +1489,14 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 
 		// 4. fill suffix array
 		{
+            if (empty(stringSet))
+                return requiredSize;
+
 			TSA &sa = indexSA(index);
 			TSAIterator saBeg = begin(sa, Standard());
 			TCntIterator boundBeg = begin(bound, Standard());
 
-			TTextIterator itText = TTextIterator();
+			TTextIterator itText = begin(front(stringSet), Standard());
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;
