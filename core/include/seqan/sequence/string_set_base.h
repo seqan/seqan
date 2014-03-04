@@ -1479,6 +1479,37 @@ reserve(StringSet<TString, TSpec > & me,
 }
 
 // --------------------------------------------------------------------------
+// Function assign()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TSource, typename TExpand>
+inline void
+assign(StringSet<TString, TSpec> & target,
+       TSource const source,
+       Tag<TExpand> tag)
+{
+    typedef typename Iterator<TSource const, Standard>::Type TSourceIterator;
+
+    clear(target);
+    reserve(target, length(source), tag);
+
+    // we append each source string for target being a ConcatDirect StringSet
+    TSourceIterator it = begin(source, Standard());
+    TSourceIterator itEnd = begin(source, Standard());
+    for (; it != itEnd; ++it)
+        appendValue(target, getValue(it), tag);
+}
+
+template <typename TString, typename TSpec, typename TSource>
+inline void
+assign(StringSet<TString, TSpec> & target,
+       TSource const source)
+{
+    typedef StringSet<TString, TSpec> TTarget;
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
+}
+
+// --------------------------------------------------------------------------
 // Function iter()
 // --------------------------------------------------------------------------
 
