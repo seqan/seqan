@@ -1485,7 +1485,7 @@ reserve(StringSet<TString, TSpec > & me,
 template <typename TString, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(StringSet<TString, TSpec> & target,
-       TSource const source,
+       TSource const & source,
        Tag<TExpand> tag)
 {
     typedef typename Iterator<TSource const, Standard>::Type TSourceIterator;
@@ -1495,7 +1495,7 @@ assign(StringSet<TString, TSpec> & target,
 
     // we append each source string for target being a ConcatDirect StringSet
     TSourceIterator it = begin(source, Standard());
-    TSourceIterator itEnd = begin(source, Standard());
+    TSourceIterator itEnd = end(source, Standard());
     for (; it != itEnd; ++it)
         appendValue(target, getValue(it), tag);
 }
@@ -1503,7 +1503,7 @@ assign(StringSet<TString, TSpec> & target,
 template <typename TString, typename TSpec, typename TSource>
 inline void
 assign(StringSet<TString, TSpec> & target,
-       TSource const source)
+       TSource const & source)
 {
     typedef StringSet<TString, TSpec> TTarget;
     assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
@@ -2078,6 +2078,33 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
 //SEQAN_CHECKPOINT
 //    subset(source, dest, ids, length(ids));
 //}
+
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+template <typename TLeftString, typename TLeftSpec, typename TRight >
+inline bool
+operator==(StringSet<TLeftString, TLeftSpec> const & left,
+           TRight const & right)
+{
+    typename Comparator<StringSet<TLeftString, TLeftSpec> >::Type _lex(left, right);
+    return isEqual(_lex);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
+
+template <typename TLeftString, typename TLeftSpec, typename TRight >
+inline bool
+operator!=(StringSet<TLeftString, TLeftSpec> const & left,
+           TRight const & right)
+{
+    typename Comparator<StringSet<TLeftString, TLeftSpec> >::Type _lex(left, right);
+    return isNotEqual(_lex);
+}
+
 
 }  // namespace seqan
 
