@@ -53,7 +53,6 @@ class Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> >
 {
 public:
     typedef Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > TIterator;
-    typedef typename TJournaledString::TValue TValue;
     typedef typename JournalType<TJournaledString>::Type TJournalEntries;
     // We need a rooted iterator for iterating the journal tree since we need atEnd().
     typedef typename Iterator<TJournalEntries, Standard>::Type TJournalEntriesIterator;
@@ -276,13 +275,8 @@ Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > &
 operator+=(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > & iterator,
            TLen len_)
 {
-    typedef Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > TIterator;
-
-    // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
 
-    // Handle other case.
-    typedef typename Size<TJournaledString>::Type TSize;
     TLen remaining = iterator._segmentEnd - iterator._currentSegmentIt;
     while (len_ > 0  && remaining != 0)
     {
@@ -334,14 +328,11 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator>
             TLen len_)
 {
     typedef Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > TIterator;
-    typedef typename Position<TIterator>::Type TPosition;
+    typedef typename Size<TIterator>::Type TSize;
 
-    // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
-    size_t len = len_;
+    TSize len = len_;
 
-    // Handle other case.
-    typedef typename Size<TJournaledString>::Type TSize;
     while (len > 0 )
     {
         TSize relNodePos = _localEntryPosition(iterator);
@@ -370,8 +361,6 @@ typename Difference<TJournaledString>::Type
 operator-(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & it1,
           Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & it2)
 {
-    typedef typename Difference<TJournaledString>::Type TResult;
-
     // First, handle the cases where it1 or it2 are at the end.
     bool it1AtEnd = atEnd(it1._journalEntriesIterator, _journalEntries(container(it1)));
     bool it2AtEnd = atEnd(it2._journalEntriesIterator, _journalEntries(container(it2)));

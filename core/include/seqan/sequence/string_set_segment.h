@@ -249,12 +249,19 @@ struct Infix<StringSet<THost, Segment<TSpec> > const >
 // Function _refreshStringSetLimits()
 // ----------------------------------------------------------------------------
 
+template <typename THost, typename TSpec, typename TThreading>
+SEQAN_HOST_DEVICE void
+_refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me, Tag<TThreading> const & tag)
+{
+    partialSum(me.limits, tag);
+    me.limitsValid = true;
+}
+
 template <typename THost, typename TSpec>
 SEQAN_HOST_DEVICE void
 _refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
 {
-    std::partial_sum(begin(me.limits, Standard()), end(me.limits, Standard()), begin(me.limits, Standard()));
-    me.limitsValid = true;
+    _refreshStringSetLimits(me, Serial());
 }
 
 // ----------------------------------------------------------------------------
