@@ -109,6 +109,7 @@ public:
     template <typename TStringSet>
     StringSet(TStringSet const &other)
     {
+        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
