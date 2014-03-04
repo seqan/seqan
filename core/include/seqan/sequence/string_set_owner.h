@@ -104,11 +104,19 @@ public:
         appendValue(limits, 0);
     }
 
-    template <typename TStringSet>
-    StringSet(TStringSet const &other):
+    template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, TOtherSpec> const &other):
         limitsValid(true)
     {
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
+        assign(*this, other);
+    }
+
+    template <typename TOtherSpec>
+    StringSet(String<TString, TOtherSpec> const &other):
+        limitsValid(true)
+    {
+        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
