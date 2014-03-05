@@ -34,9 +34,6 @@
 // Test the specialization Chained Seed.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_CHAINED_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_CHAINED_H_
-
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
@@ -220,4 +217,13 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_iterators)
     }
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_CHAINED_H_
+SEQAN_BEGIN_TESTSUITE(test_seeds_seed_chained)
+{
+    SEQAN_CALL_TEST(test_seeds_seed_chained_assign);
+    SEQAN_CALL_TEST(test_seeds_seed_chained_metafunctions);
+    SEQAN_CALL_TEST(test_seeds_seed_chained_append_diagonal);
+    SEQAN_CALL_TEST(test_seeds_seed_chained_truncate_diagonals);
+    SEQAN_CALL_TEST(test_seeds_seed_chained_iterators);
+    SEQAN_CALL_TEST(test_seeds_seed_chained_front_back);
+}
+SEQAN_END_TESTSUITE
