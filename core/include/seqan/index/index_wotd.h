@@ -1059,7 +1059,10 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
 
-		TTextIterator itText = TTextIterator();
+        if (empty(stringSet))
+            return 0;
+
+        TTextIterator itText = begin(front(stringSet), Standard());
 		TSAIterator itSA = begin(sa, Standard());
 		TSAIterator itSAEnd = end(sa, Standard());
 
