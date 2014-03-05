@@ -98,10 +98,26 @@ public:
     bool            limitsValid;        // is true if limits contains the cumulative sum of the sequence lengths
     TConcatenator   concat;
 
-    StringSet()
-        : limitsValid(true)
+    StringSet():
+        limitsValid(true)
     {
         appendValue(limits, 0);
+    }
+
+    template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, TOtherSpec> const &other):
+        limitsValid(true)
+    {
+        _initStringSetLimits(*this);
+        assign(*this, other);
+    }
+
+    template <typename TOtherSpec>
+    StringSet(String<TString, TOtherSpec> const &other):
+        limitsValid(true)
+    {
+        _initStringSetLimits(*this);
+        assign(*this, other);
     }
 
     // ----------------------------------------------------------------------
@@ -120,6 +136,13 @@ public:
     operator[] (TPos pos) const
     {
         return value(*this, pos);
+    }
+
+    template <typename TStringSet>
+    StringSet & operator= (TStringSet const &other)
+    {
+        assign(*this, other);
+        return *this;
     }
 };
 
@@ -141,6 +164,9 @@ inline void appendValue(
     TString2 const & obj,
     Tag<TExpand> tag)
 {
+    // we rather invalidate limits here to allow to do modify appended strings:
+    // appendValue(back(stringSet), 'A');
+
 //    if (_validStringSetLimits(me))
 //        appendValue(me.limits, lengthSum(me) + length(obj), tag);
     me.limitsValid = false;
