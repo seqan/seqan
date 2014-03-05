@@ -1966,6 +1966,26 @@ testAllOnes(String<bool, Packed<THostSpec> > const & obj)
                                      (length(obj) % TPackedTraits::VALUES_PER_HOST_VALUE))));
 }
 
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool open(String<TValue, Packed<THostspec> > & me, const char *fileName, int openMode)
+{
+    return open(host(me), fileName, openMode);
+}
+
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool save(String<TValue, Packed<THostspec> > const & me, const char *fileName, int openMode)
+{
+    return save(host(me), fileName, openMode);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_PACKED_H_
