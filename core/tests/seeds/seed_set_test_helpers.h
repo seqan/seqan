@@ -31,67 +31,27 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Test the header seeds_seed_diagonal.h containing the SeedDiagonal class.
+// Helpers for testing SetSet's
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_
-
-#include <seqan/basic.h>  // Includes testing infrastructure.
-#include <seqan/file.h>   // Required to print strings in tests.
+#ifndef SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
+#define SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
 
 #include <seqan/seeds.h>  // Include module under test.
 
-// Test constructors of the SeedDiagonal class.  This also tests that
-// all member variables are there.
-SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
+template <typename TSeedSpec>
+void testSeedsSeedBaseConstructors(TSeedSpec const &)
 {
     using namespace seqan;
 
-    typedef SeedDiagonal<int, int> TSeedDiagonal;
-
-    // Default constructor.
+    // Execute default constructor.
     {
-        TSeedDiagonal sd;
-        SEQAN_ASSERT_EQ(0, sd.beginPositionH);
-        SEQAN_ASSERT_EQ(0, sd.beginPositionV);
-        SEQAN_ASSERT_EQ(0, sd.length);
+        Seed<TSeedSpec> s;
     }
-    // Only other constructor has all properties.
+    // Execute with start position and length.
     {
-        TSeedDiagonal sd(1, 2, 3);
-        SEQAN_ASSERT_EQ(1, sd.beginPositionH);
-        SEQAN_ASSERT_EQ(2, sd.beginPositionV);
-        SEQAN_ASSERT_EQ(3, sd.length);
+        Seed<TSeedSpec> s(1, 2, 3);
     }
 }
 
-
-// Test metafunctions of the SeedDiagonal class.
-SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_metafunctions)
-{
-    using namespace seqan;
-
-    // Test the parametrization expected to be used most.
-    {
-        typedef SeedDiagonal<size_t, size_t> TSeedDiagonal;
-        typedef Position<TSeedDiagonal>::Type TPosition;
-        bool b1 = IsSameType<size_t, TPosition>::VALUE;
-        SEQAN_ASSERT(b1);
-        typedef Size<TSeedDiagonal>::Type TSize;
-        bool b2 = IsSameType<size_t, TSize>::VALUE;
-        SEQAN_ASSERT(b2);
-    }
-    // Test another parametrization.
-    {
-        typedef SeedDiagonal<double, int> TSeedDiagonal;
-        typedef Position<TSeedDiagonal>::Type TPosition;
-        bool b1 = IsSameType<double, TPosition>::VALUE;
-        SEQAN_ASSERT(b1);
-        typedef Size<TSeedDiagonal>::Type TSize;
-        bool b2 = IsSameType<int, TSize>::VALUE;
-        SEQAN_ASSERT(b2);
-    }
-}
-
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_
+#endif  // SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_

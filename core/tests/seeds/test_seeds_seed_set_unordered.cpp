@@ -31,58 +31,56 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Test the interface of the Seed class for specializations Simple Seed and
-// Chained Seed.
+// Test the specialization Unordered SeedSet.
 // ==========================================================================
-
-#ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
-#define TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
 
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
 #include <seqan/seeds.h>  // Include module under test.
 
-#include <set>
+#include "seed_set_test_helpers.h"
 
-// Test constructors of the indirect iterator.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_constructors)
+// Test container functions for specialization unordered.
+SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_FAIL("Write me!");
+    { // Construct with begin/end in both dimensions.
+        // Define Seed type and declare a variable.
+        typedef Seed<Simple> TSeed;
+        TSeed s(1, 2, 3, 5);
 
-    // Default constructor.
-    {
+        // Check values from construction.
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(3u, endPositionH(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(-2, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(-1, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(-1, beginDiagonal(s));
+        SEQAN_ASSERT_EQ(-2, endDiagonal(s));
     }
-    // Construct from wrapped iterator.
-    {
-    }
-    // Copy constructor.
-    {
+    { // Construct from ChainedSeed object.
+        typedef Seed<ChainedSeed> TSeed2;
+        TSeed2 s2(1, 2, 3);
+        typedef Seed<Simple> TSeed;
+        TSeed s(s2);
+
+        // Check values from construction.
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(4u, endPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(-1, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(-1, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(-1, beginDiagonal(s));
+        SEQAN_ASSERT_EQ(-1, endDiagonal(s));
     }
 }
 
-// Test the metafunctions.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_metafunctions)
+SEQAN_BEGIN_TESTSUITE(test_seeds_seed_set)
 {
-    using namespace seqan;
-
-    SEQAN_ASSERT_FAIL("Write me!");
-
-    // Iterator
-    {
-    }
-
-    // Const Iterator
-    {
-    }
+    SEQAN_CALL_TEST(test_seeds_seed_set_container_functions_unordered);
 }
-
-// Test the common iterator functions.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_basic_functions)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
-
-#endif  // #ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
+SEQAN_END_TESTSUITE
