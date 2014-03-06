@@ -34,8 +34,10 @@
 // Tests for the header seeds_extension.h.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_EXTENSION_H_
-#define TEST_SEEDS_TEST_SEEDS_EXTENSION_H_
+#include <seqan/basic.h>
+#include <seqan/file.h>  // for printing seqan::String<>
+
+#include <seqan/seeds.h>
 
 template <typename TSeedSpec>
 void
@@ -494,4 +496,21 @@ SEQAN_DEFINE_TEST(test_seeds_extension_gapped_xdrop_extension_chained)
     testSeedsExtensionGappedXDropExtension(ChainedSeed());
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_EXTENSION_H_
+SEQAN_BEGIN_TESTSUITE(test_seeds_extension)
+{
+    // Tests for seed extension algorithms
+    SEQAN_CALL_TEST(test_seeds_extension_match_extension_simple);
+    SEQAN_CALL_TEST(test_seeds_extension_ungapped_xdrop_extension_simple);
+    SEQAN_CALL_TEST(test_seeds_extension_gapped_xdrop_extension_simple);
+    SEQAN_CALL_TEST(test_seeds_extension_match_extension_chained);
+    SEQAN_CALL_TEST(test_seeds_extension_ungapped_xdrop_extension_chained);
+
+    // Disabled the test for now.  Extension function contains a
+    // force-failure assertion and instruction show to implement this.
+    // See http://trac.mi.fu-berlin.de/seqan/ticket/344 for details.
+    // 
+    // TODO(holtgrew): Implement this.
+    // 
+    // SEQAN_CALL_TEST(test_seeds_extension_gapped_xdrop_extension_chained);
+}
+SEQAN_END_TESTSUITE

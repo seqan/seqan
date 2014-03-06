@@ -34,9 +34,6 @@
 // Tests for the header seeds_global_chaining.h.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_GLOBAL_CHAINING_H_
-#define TEST_SEEDS_TEST_SEEDS_GLOBAL_CHAINING_H_
-
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
@@ -121,5 +118,9 @@ SEQAN_DEFINE_TEST(test_seeds_global_chaining_sparse_length)
     }
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_GLOBAL_CHAINING_H_
-
+SEQAN_BEGIN_TESTSUITE(test_seeds_global_chaining)
+{
+    // Test global chaining of seeds.
+    SEQAN_CALL_TEST(test_seeds_global_chaining_sparse_length);
+}
+SEQAN_END_TESTSUITE

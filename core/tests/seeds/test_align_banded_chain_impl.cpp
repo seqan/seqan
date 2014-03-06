@@ -35,11 +35,12 @@
 // special conditions at the beginning and the end of the global grid.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEEDS_TEST_ALIGN_BANDED_CHAIN_IMPL_H_
-#define CORE_TESTS_SEEDS_TEST_ALIGN_BANDED_CHAIN_IMPL_H_
-
 #include <sstream>
+
 #include <seqan/basic.h>
+#include <seqan/file.h>  // for printing seqan::String<>
+
+#include <seqan/seeds.h>
 
 template <typename TGapCosts>
 void testBandedChainAlignmentEmptyChain(TGapCosts const &)
@@ -1050,4 +1051,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_band_extensions_affine)
     testBandedChainAlignmentBandExtension(seqan::AffineGaps());
 }
 
-#endif  // #ifndef CORE_TESTS_SEEDS_TEST_ALIGN_BANDED_CHAIN_IMPL_H_
+SEQAN_BEGIN_TESTSUITE(test_banded_chain_impl)
+{
+    SEQAN_CALL_TEST(test_banded_chain_alignment_empty_set_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_empty_set_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_one_seed_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_one_seed_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_two_seeds_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_two_seeds_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_three_seeds_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_three_seeds_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_special_seeds_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_special_seeds_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_linear);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_affine);
+}
+SEQAN_END_TESTSUITE

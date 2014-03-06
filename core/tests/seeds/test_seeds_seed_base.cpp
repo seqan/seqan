@@ -35,28 +35,12 @@
 // Chained Seed.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_BASE_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_BASE_H_
-
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
 #include <seqan/seeds.h>  // Include module under test.
 
-template <typename TSeedSpec>
-void testSeedsSeedBaseConstructors(TSeedSpec const &)
-{
-    using namespace seqan;
-
-    // Execute default constructor.
-    {
-        Seed<TSeedSpec> s;
-    }
-    // Execute with start position and length.
-    {
-        Seed<TSeedSpec> s(1, 2, 3);
-    }
-}
+#include "seed_set_test_helpers.h"
 
 template <typename TSeedSpec>
 void testSeedsSeedBaseGettersSetters(TSeedSpec const &)
@@ -219,4 +203,17 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_assign_chained)
     testSeedsSeedBaseAssign(ChainedSeed());
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_BASE_H_
+SEQAN_BEGIN_TESTSUITE(test_seeds_seed_base)
+{
+    SEQAN_CALL_TEST(test_seeds_seed_base_constructors_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_base_metafunctions_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_base_getters_setters_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_base_basic_functions_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_base_assign_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_base_constructors_chained);
+    SEQAN_CALL_TEST(test_seeds_seed_base_metafunctions_chained);
+    SEQAN_CALL_TEST(test_seeds_seed_base_getters_setters_chained);
+    SEQAN_CALL_TEST(test_seeds_seed_base_basic_functions_chained);
+    SEQAN_CALL_TEST(test_seeds_seed_base_assign_chained);
+}
+SEQAN_END_TESTSUITE
