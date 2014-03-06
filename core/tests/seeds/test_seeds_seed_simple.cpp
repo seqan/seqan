@@ -34,9 +34,6 @@
 // Test the specialization Simple Seed.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_SIMPLE_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_SIMPLE_H_
-
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
@@ -104,4 +101,9 @@ SEQAN_DEFINE_TEST(test_seeds_seed_simple_setters)
     SEQAN_ASSERT_EQ(0, endDiagonal(s));
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_SIMPLE_H_
+SEQAN_BEGIN_TESTSUITE(test_seeds_seed_simple)
+{
+    SEQAN_CALL_TEST(test_seeds_seed_simple_constructors);
+    SEQAN_CALL_TEST(test_seeds_seed_simple_setters);
+}
+SEQAN_END_TESTSUITE

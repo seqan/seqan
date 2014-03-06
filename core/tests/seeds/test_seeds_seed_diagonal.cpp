@@ -31,56 +31,70 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Test the specialization Unordered SeedSet.
+// Test the header seeds_seed_diagonal.h containing the SeedDiagonal class.
 // ==========================================================================
-
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
 
 #include <seqan/basic.h>  // Includes testing infrastructure.
 #include <seqan/file.h>   // Required to print strings in tests.
 
 #include <seqan/seeds.h>  // Include module under test.
 
-template <typename TSeedSpec>
-void testSeedsSeedSetConstructors(TSeedSpec const &)
-
-// Test container functions for specialization unordered.
-SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
+// Test constructors of the SeedDiagonal class.  This also tests that
+// all member variables are there.
+SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
 {
     using namespace seqan;
 
-    { // Construct with begin/end in both dimensions.
-        // Define Seed type and declare a variable.
-        typedef Seed<Simple> TSeed;
-        TSeed s(1, 2, 3, 5);
+    typedef SeedDiagonal<int, int> TSeedDiagonal;
 
-        // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
-        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
-        SEQAN_ASSERT_EQ(3u, endPositionH(s));
-        SEQAN_ASSERT_EQ(5u, endPositionV(s));
-        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
-        SEQAN_ASSERT_EQ(2, upperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, startDiagonal(s));
-        SEQAN_ASSERT_EQ(2, endDiagonal(s));
+    // Default constructor.
+    {
+        TSeedDiagonal sd;
+        SEQAN_ASSERT_EQ(0, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(0, sd.beginPositionV);
+        SEQAN_ASSERT_EQ(0, sd.length);
     }
-    { // Construct from ChainedSeed object.
-        typedef Seed<ChainedSeed> TSeed2;
-        TSeed2 s2(1, 2, 3);
-        typedef Seed<Simple> TSeed;
-        TSeed s(s2);
-
-        // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
-        SEQAN_ASSERT_EQ(4u, endPositionH(s));
-        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
-        SEQAN_ASSERT_EQ(5u, endPositionV(s));
-        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
-        SEQAN_ASSERT_EQ(1, upperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, beginDiagonal(s));
-        SEQAN_ASSERT_EQ(1, endDiagonal(s));
+    // Only other constructor has all properties.
+    {
+        TSeedDiagonal sd(1, 2, 3);
+        SEQAN_ASSERT_EQ(1, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(2, sd.beginPositionV);
+        SEQAN_ASSERT_EQ(3, sd.length);
     }
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
+
+// Test metafunctions of the SeedDiagonal class.
+SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_metafunctions)
+{
+    using namespace seqan;
+
+    // Test the parametrization expected to be used most.
+    {
+        typedef SeedDiagonal<size_t, size_t> TSeedDiagonal;
+        typedef Position<TSeedDiagonal>::Type TPosition;
+        bool b1 = IsSameType<size_t, TPosition>::VALUE;
+        SEQAN_ASSERT(b1);
+        typedef Size<TSeedDiagonal>::Type TSize;
+        bool b2 = IsSameType<size_t, TSize>::VALUE;
+        SEQAN_ASSERT(b2);
+    }
+    // Test another parametrization.
+    {
+        typedef SeedDiagonal<double, int> TSeedDiagonal;
+        typedef Position<TSeedDiagonal>::Type TPosition;
+        bool b1 = IsSameType<double, TPosition>::VALUE;
+        SEQAN_ASSERT(b1);
+        typedef Size<TSeedDiagonal>::Type TSize;
+        bool b2 = IsSameType<int, TSize>::VALUE;
+        SEQAN_ASSERT(b2);
+    }
+}
+
+SEQAN_BEGIN_TESTSUITE(test_seeds_seed_diagonal)
+{
+    // Tests for seed diagonals.
+    SEQAN_CALL_TEST(test_seeds_seed_diagonal_constructors);
+    SEQAN_CALL_TEST(test_seeds_seed_diagonal_metafunctions);
+}
+SEQAN_END_TESTSUITE
