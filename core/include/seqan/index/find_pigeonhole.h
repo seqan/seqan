@@ -1188,10 +1188,10 @@ windowFindNext(
 
 					if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
 					{
-						register __int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
+						__int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
 						if (lastDiag == seqDisabled) continue;
 
-						register __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
+						__int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
 						if (lastDiag == diag)
 						{
 //							std::cout<<"double hit"<<std::endl;
