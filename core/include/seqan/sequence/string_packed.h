@@ -873,22 +873,22 @@ arrayCopyForward(Iter<TPackedString, Packed<TSpec> > source_begin,
         }
 
         // now copy whole words
-        register int leftShift = source_begin.localPos;
+        int leftShift = source_begin.localPos;
         if (leftShift != 0)
         {
             THostIter source_lastWord = hostIterator(source_end);
             if (source_end.localPos < source_begin.localPos)
                 --source_lastWord;
 
-            register typename THostValue::TBitVector prevWord = hostIterator(source_begin)->i;
-            register int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
+            typename THostValue::TBitVector prevWord = hostIterator(source_begin)->i;
+            int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
             leftShift *= TTraits::BITS_PER_VALUE;
             rightShift *= TTraits::BITS_PER_VALUE;
             for (; hostIterator(source_begin) != source_lastWord; ++hostIterator(target_begin))
             {
                 // words must be shifted and or'ed (BB|CCCC in the figure)
                 ++hostIterator(source_begin);
-                register typename THostValue::TBitVector curWord = hostIterator(source_begin)->i;
+                typename THostValue::TBitVector curWord = hostIterator(source_begin)->i;
                 hostIterator(target_begin)->i = (prevWord << leftShift) | (curWord >> rightShift);
                 prevWord = curWord;
             }
@@ -955,11 +955,11 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
         }
 
         // now copy whole words
-        register int leftShift = source_end.localPos;
+        int leftShift = source_end.localPos;
         if (leftShift != 0)
         {
-            register typename THostValue::TBitVector prevWord = hostIterator(source_end)->i;
-            register int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
+            typename THostValue::TBitVector prevWord = hostIterator(source_end)->i;
+            int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
             leftShift *= TTraits::BITS_PER_VALUE;
             rightShift *= TTraits::BITS_PER_VALUE;
             while (hostIterator(target_begin) != target_firstWord)
@@ -968,7 +968,7 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
                 --hostIterator(target_begin);
 
                 // words must be shifted and or'ed (BB|CCCC in the figure)
-                register typename THostValue::TBitVector curWord = hostIterator(source_end)->i;
+                typename THostValue::TBitVector curWord = hostIterator(source_end)->i;
                 hostIterator(target_begin)->i = (curWord << leftShift) | (prevWord >> rightShift);
                 prevWord = curWord;
             }
