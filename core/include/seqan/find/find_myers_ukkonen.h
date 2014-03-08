@@ -54,16 +54,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle[, typename TSpec[, typename TFindBeginPatternSpec]]>
  *            class Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >;
  * 
- * @tparam TSpec   Specialization tag.  This could be @link FindInfix @endlink for infix search or <tt>FindPrefix</tt>
- *                 for prefix search. Default: Tag.FindInfix
+ * @tparam TSpec   Specialization tag.  This is @link ApproximateFinderSearchTypeTags#FindInfix @endlink for
+ *                 infix search or @link ApproximateFinderSearchTypeTags#FindPrefix @endlink for prefix search.
+ *                 Defaults to @linkApproximateFinderSearchTypeTags#FindInfix @endlink.
  * @tparam TFindBeginPatternSpec 
  *               Specialization of @link Pattern @endlink used to find the begin of matches.This must be a finder for
- *               prefix search, e.g. @link DPSearch <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
+ *               prefix search, e.g. @link DPSearchPattern <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
  *               MyersPattern <tt>Myers&lt;FindPrefix&gt;</tt> @endlink. Specify <tt>void</tt> to suppress prefix
  *               searching. Default: @link DefaultFindBeginPatternSpec @endlink
  * @tparam TNeedle The needle type. Types: String
- * 
- * @section Remarks
  * 
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
@@ -108,7 +107,7 @@ struct AlignTextBanded; // search query in a parallelogram
 
 /*!
  * @typedef MyersUkkonen
- * 
+ * @headerfile <seqan/find.h>
  * @brief Semi-global (query-global, text-local) pattern matching without
  *        findBegin() support.
  * 
@@ -134,7 +133,7 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
 
 /*!
  * @typedef MyersUkkonenGlobal
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
@@ -157,7 +156,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-local) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
@@ -179,7 +178,7 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
  * @typedef MyersUkkonenGlobalBanded
- * 
+ * @headerfile <seqan/find.h>
  * @brief Global (query-global, text-global) pattern matching without findBegin() support.
  * 
  * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
@@ -798,6 +797,17 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The pattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.scoreLimit.param.pattern.type:Spec.Myers
 ///.Function.scoreLimit.class:Spec.Myers
@@ -820,6 +830,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach.
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The pattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 ///.Function.setScoreLimit.param.pattern.type:Spec.Myers
 ///.Function.setScoreLimit.class.type:Spec.Myers
@@ -848,6 +870,18 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
+/*!
+ * @fn MyersPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A myers pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
+ *                     is undefined.
+ */
 
 ///.Function.getScore.param.pattern.type:Spec.Myers
 ///.Function.getScore.class:Spec.Myers
@@ -991,7 +1025,7 @@ _myersAdjustBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderC
     if (IsSameType<TPatternCSP, NMatchesNone_>::VALUE && value == unknownValue<TValue>())
         return;
     
-    register unsigned ord = ordValue(value);
+    unsigned ord = ordValue(value);
 	register unsigned short x = shift - state.shift[ord];
 	if (x < BitsPerValue<TWord>::VALUE)
 		state.bitMasks[ord] = (state.bitMasks[ord] >> x) | ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
@@ -1012,9 +1046,9 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
     if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE && value == unknownValue<TValue>())
         return (shift < BitsPerValue<TWord>::VALUE)? -1 << shift: -1;
     
-    register unsigned ord = ordValue(value);
-    register TWord res;
-    register TShift x = shift - state.shift[ord];
+    unsigned ord = ordValue(value);
+    TWord res;
+    TShift x = shift - state.shift[ord];
 	if (x < BitsPerValue<TWord>::VALUE) 
 		res = state.bitMasks[ord] >> x;
 	else
@@ -1076,8 +1110,8 @@ _patternInitSmallStateBanded(
 	//  VP = 100...      VP = 111...
 	//
 
-    register TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): maxValue<TWord>(); // HP[0]==1 <-> global, HP[0]==0 <-> local
-    register TWord VN = 0;
+    TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): maxValue<TWord>(); // HP[0]==1 <-> global, HP[0]==0 <-> local
+    TWord VN = 0;
 	
 	// Errors are counted along the lowest diagonal and the
 	// lowest row of the band.
@@ -1093,7 +1127,7 @@ _patternInitSmallStateBanded(
 	//
 	// diagWidth = length(container(finder)) + state.leftClip + state.rightClip - length(needle)
 	
-    register unsigned errors = 0;
+    unsigned errors = 0;
 	TIter ndlIter = begin(needle, Standard());
 	TIter ndlEnd;
 	
@@ -1103,7 +1137,7 @@ _patternInitSmallStateBanded(
 	
 	
 	typename Size<TFinder>::Type const columns = length(container(finder)) + state.leftClip;
-    register unsigned cutOff = state.maxErrors;
+    unsigned cutOff = state.maxErrors;
 	if (columns > ndlLength)
 	{
 		cutOff += columns - ndlLength;		// clipping case *0
@@ -1195,16 +1229,16 @@ _patternInitSmallStateBanded(
         // DIAGONAL MYERS CORE
 		
 		// VP/VN --> D0  (original Myers)
-        register TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
-        register TWord D0 = ((VP + (X & VP)) ^ VP) | X;
+        TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
+        TWord D0 = ((VP + (X & VP)) ^ VP) | X;
 		
 		// adjust errors corresponding to rightmost bit of D0
         errors += (~D0 >> (BitsPerValue<TWord>::VALUE - 1)) & 1;
         if (errors > cutOff) return false;
 
 		// D0 --> HP/HN  (original Myers)
-        register TWord HN = VP & D0;
-        register TWord HP = VN | ~(VP | D0);
+        TWord HN = VP & D0;
+        TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
     //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP << std::endl;
@@ -1528,10 +1562,10 @@ _findMyersSmallPatternsBanded(
 	typedef typename TState::TWord TWord;
 	typedef typename Value<TNeedle>::Type TValue;
 
-    register TWord VP = state.VP0;
-    register TWord VN = state.VN0;
-    register TWord errors = state.errors;
-    register TWord const maxErrors = state.maxErrors;
+    TWord VP = state.VP0;
+    TWord VN = state.VN0;
+    TWord errors = state.errors;
+    TWord const maxErrors = state.maxErrors;
 	register unsigned short const shift = length(needle);
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR

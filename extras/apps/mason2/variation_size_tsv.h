@@ -38,6 +38,7 @@
 #ifndef EXTRAS_APPS_MASON2_VARIATION_SIZE_TSV_H_
 #define EXTRAS_APPS_MASON2_VARIATION_SIZE_TSV_H_
 
+#include <seqan/sequence.h>
 #include <seqan/stream.h>
 
 // ============================================================================
@@ -56,11 +57,11 @@ class VariationSizeRecord
 public:
     enum Kind
     {
-        INVALID,
-        INDEL,
-        INVERSION,
-        TRANSLOCATION,
-        DUPLICATION
+        INVALID = 0,
+        INDEL = 1,
+        INVERSION = 2,
+        TRANSLOCATION = 3,
+        DUPLICATION = 4
     };
 
     // Kind of the operation.
@@ -68,6 +69,9 @@ public:
 
     // Size of the operation.  Always positive, also in case of deletions.
     int size;
+
+    // The characters to insert into the genome.
+    seqan::CharString seq;
 
     VariationSizeRecord() : kind(INVALID), size(-1)
     {}
@@ -120,6 +124,19 @@ int readRecord(VariationSizeRecord & record, seqan::RecordReader<TStream, TSpec>
     // Adjust record.size to type in case of indel.
     if (buffer == "DEL")
         record.size = -record.size;
+
+    // In case of an insertion, check if we can read the sequence to be inserted.
+    if (buffer == "INS" && !atEnd(reader) && value(reader) == '\t')
+    {
+        if ((res = skipChar(reader, '\t')) != 0)  // Skip TAB char.
+            return res;
+
+        clear(buffer2);
+        if ((res = readLetters(buffer2, reader)) != 0 && res != seqan::EOF_BEFORE_SUCCESS)
+            return res;
+        record.seq = buffer2;
+        record.size = length(record.seq);
+    }
 
     // Skip rest of the line, may reach end of file.
     if ((res = skipLine(reader)) != 0 && res != seqan::EOF_BEFORE_SUCCESS)

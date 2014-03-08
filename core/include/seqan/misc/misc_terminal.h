@@ -65,7 +65,7 @@ namespace seqan {
 
 /*!
  * @fn isTerminal
- * @headerfile <seqan/misc/misc_termina.h>
+ * @headerfile <seqan/misc/misc_terminal.h>
  * @brief Check whether we are printing to a terminal.
  *
  * @signature bool isTerminal();
@@ -119,7 +119,7 @@ inline bool isTerminal()
  *
  * @signature bool isAnsiColorTerminal();
  *
- * @return bool true if we are in a terminal and the terminal interprets ANSI color code.s
+ * @return bool true if we are in a terminal and the terminal interprets ANSI color code.
  *
  * @section Remarks
  *

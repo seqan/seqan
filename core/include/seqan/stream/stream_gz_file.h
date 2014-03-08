@@ -55,8 +55,11 @@ inline void close(Stream<GZFile> & stream);
 
 /*!
  * @class GzFileStream
+ * @extends Stream
  * @headerfile <seqan/stream.h>
  * @brief Allows to open gzip-compressed files.
+ * @signature template <>
+ *            class Stream<GZFile>;
  *
  * This is only available if @link SEQAN_HAS_ZLIB @endlink is set to 1.
  *

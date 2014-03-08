@@ -40,14 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
@@ -84,17 +76,16 @@ arrayFill(TIterator begin_,
 
 /*!
  * @fn sum
+ * @headerfile <seqan/parallel.h>
  * @brief Returns the sum of all elements in a sequence.
  *
- * @signature TValue sum(seq[, parallelTag);
+ * @signature TValue sum(seq[, parallelTag]);
  *
  * @param[in] seq         The sequence to sum up, o ftype <tt>TSequence</tt>.
  * @param[in] parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt> and <tt>Parallel</tt>,
  *                        default is <tt>Serial</tt>.
  *
  * @return TValue The sum of the elements in <tt>seq</tt>, of type <tt>Value&lt;TSequence&gt;::Type</tt>.
- *
- * @section Remarks
  *
  * The sequence alphabet must support the <tt>operator+</tt> and conversion from zero.
  *
@@ -121,9 +112,9 @@ template <typename TSequence>
 inline typename Value<TSequence>::Type
 sum(TSequence const &seq, Serial)
 {
-    register typename Iterator<TSequence const>::Type it = begin(seq, Standard());
-    register typename Iterator<TSequence const>::Type itEnd = end(seq, Standard());
-    register typename Value<TSequence>::Type sum = 0;
+    typename Iterator<TSequence const>::Type it = begin(seq, Standard());
+    typename Iterator<TSequence const>::Type itEnd = end(seq, Standard());
+    typename Value<TSequence>::Type sum = 0;
     for (; it != itEnd; ++it)
         sum += *it;
     return sum;
@@ -135,7 +126,7 @@ sum(TSequence const &seq, Tag<TParallelTag> parallelTag)
 {
     Splitter<typename Size<TSequence>::Type> splitter(0, length(seq), parallelTag);
 
-    register typename Value<TSequence>::Type threadSum = 0;
+    typename Value<TSequence>::Type threadSum = 0;
     SEQAN_OMP_PRAGMA(parallel for reduction(+:threadSum))
     for (int job = 0; job < (int)length(splitter); ++job)
         threadSum += sum(infix(seq, splitter[job], splitter[job + 1]), Serial());
@@ -158,13 +149,13 @@ sum(TSequence const &seq)
  * @headerfile <seqan/parallel.h>
  * @brief Computes the partial sum of a sequence.
  * 
- * @signature TValue partialSum(target, source[, parallelTag])
+ * @signature TValue partialSum(target, source[, parallelTag]);
  * 
  * @param[in]  source      A sequence of elements that should be partially summed.  The sequence alphabet must support
  *                         the <tt>operator+</tt> and conversion from zero, the type is <tt>TSource</tt>.
  * @param[in]  parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt>, <tt>Parallel</tt>, default is
  *                         <tt>Serial</tt>.
- * @param[out] targ et     The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
+ * @param[out] target      The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
  *                         contains at position <tt>i</tt> the sum of elements <tt>source[0]</tt>, <tt>source[1]</tt>,
  *                         ..., <tt>source[i]</tt>.
  * 
@@ -227,10 +218,10 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 0; job < (int)length(splitter); ++job)
     {
-        register TConstIterator it = begin(source, Standard()) + splitter[job];
-        register TConstIterator itEnd = begin(source, Standard()) + splitter[job + 1];
-        register TIterator dstIt = begin(target, Standard()) + splitter[job];
-        register TValue sum = localSums[job];
+        TConstIterator it = begin(source, Standard()) + splitter[job];
+        TConstIterator itEnd = begin(source, Standard()) + splitter[job + 1];
+        TIterator dstIt = begin(target, Standard()) + splitter[job];
+        TValue sum = localSums[job];
         for (; it != itEnd; ++it, ++dstIt)
         {
             sum += *it;
@@ -242,11 +233,342 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
     return back(localSums);
 }
 
+template <typename TTarget, typename TParallelTag>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & target, Tag<TParallelTag> parallelTag)
+{
+    return partialSum(target, target, parallelTag);
+}
+
 template <typename TTarget, typename TSource>
 inline typename Value<TSource>::Type
-partialSum(TTarget &target, TSource const &source)
+partialSum(TTarget & target, TSource const & source)
 {
     return partialSum(target, source, Serial());
+}
+
+template <typename TTarget>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & target)
+{
+    return partialSum(target, target);
+}
+
+// ----------------------------------------------------------------------------
+// Function iterate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor, typename TIterTag, typename TParallelTag>
+inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, Tag<TParallelTag> const & /* tag */)
+{
+    typedef Tag<TIterTag> const                                     TIterSpec;
+    typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
+
+    for (TIter it = begin(c, iterTag); !atEnd(it, c); ++it)
+        f(it);
+}
+
+// ----------------------------------------------------------------------------
+// Function iterate(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor, typename TIterTag>
+inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, Parallel)
+{
+    typedef Tag<TIterTag> const                                     TIterSpec;
+    typedef typename Position<TContainer>::Type                     TPos;
+    typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
+
+    Splitter<TPos> splitter(0, length(c), Parallel());
+
+    SEQAN_OMP_PRAGMA(parallel for firstprivate(f))
+    for (TPos i = 0; i < length(splitter); ++i)
+    {
+       TIter it = begin(c, iterTag) + splitter[i];
+       TIter itEnd = begin(c, iterTag) + splitter[i + 1];
+
+       for (; it != itEnd; ++it)
+            f(it);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function iterate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void iterate(TContainer & c, TFunctor f)
+{
+    iterate(c, f, typename DefaultIteratorSpec<TContainer>::Type(), Serial());
+}
+
+// ============================================================================
+// STL Wrappers
+// ============================================================================
+
+template <typename TContainer, typename TFunctor, typename TParallelTag>
+inline TFunctor
+forEach(TContainer & c, TFunctor f, Tag<TParallelTag> const & /* tag */)
+{
+    return std::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+template <typename TContainer, typename TFunctor, typename TParallelTag>
+inline TFunctor
+forEach(TContainer const & c, TFunctor f, Tag<TParallelTag> const & /* tag */)
+{
+    return std::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+// ----------------------------------------------------------------------------
+// Function transform()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource, typename TUnaryOperator, typename TParallelTag>
+inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Tag<TParallelTag> const & /* tag */)
+{
+    resize(target, length(source), Exact());
+    std::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
+}
+
+template <typename TContainer, typename TUnaryOperator, typename TParallelTag>
+inline void transform(TContainer & c, TUnaryOperator o, Tag<TParallelTag> const & tag)
+{
+    transform(c, c, o, tag);
+}
+
+// ----------------------------------------------------------------------------
+// Function count()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue, typename TParallelTag>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v, Tag<TParallelTag> const & /* tag */)
+{
+    return std::count(begin(c, Standard()), end(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function countIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::count_if(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function sort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
+inline void sort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer, typename TParallelTag>
+inline void sort(TContainer & c, Tag<TParallelTag> const & /* tag */)
+{
+    return std::sort(begin(c, Standard()), end(c, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
+inline void stableSort(TContainer & c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    return std::stable_sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer, typename TParallelTag>
+inline void stableSort(TContainer & c, Tag<TParallelTag> const & /* tag */)
+{
+    return std::stable_sort(begin(c, Standard()), end(c, Standard()));
+}
+
+// ============================================================================
+// MCSTL Wrappers
+// ============================================================================
+
+// use MCSTL which is part of the GCC since version 4.3
+#if defined(_OPENMP) && defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+
+// ----------------------------------------------------------------------------
+// Function forEach(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline TFunctor forEach(TContainer & c, TFunctor f, Parallel)
+{
+    return __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+template <typename TContainer, typename TFunctor>
+inline TFunctor forEach(TContainer const & c, TFunctor f, Parallel)
+{
+    return __gnu_parallel::for_each(begin(c, Standard()), end(c, Standard()), f);
+}
+
+// ----------------------------------------------------------------------------
+// Function transform(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource, typename TUnaryOperator>
+inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Parallel)
+{
+    resize(target, length(source), Exact());
+    __gnu_parallel::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
+}
+
+// ----------------------------------------------------------------------------
+// Function count(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v, Parallel)
+{
+    return __gnu_parallel::count(begin(c, Standard()), end(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function countIf(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p, Parallel)
+{
+    return __gnu_parallel::count_if(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function sort(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void sort(TContainer & c, TBinaryPredicate p, Parallel)
+{
+    return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer>
+inline void sort(TContainer & c, Parallel)
+{
+    return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void stableSort(TContainer & c, TBinaryPredicate p, Parallel)
+{
+    return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()), p);
+}
+
+template <typename TContainer>
+inline void stableSort(TContainer & c, Parallel)
+{
+    return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()));
+}
+
+#endif  // #ifdef PLATFORM_GCC
+
+// ============================================================================
+// Shortcuts for STL Wrappers
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function forEach()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline TFunctor forEach(TContainer & c, TFunctor f)
+{
+    return forEach(c, f, Serial());
+}
+
+template <typename TContainer, typename TFunctor>
+inline TFunctor forEach(TContainer const & c, TFunctor f)
+{
+    return forEach(c, f, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function transform()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource, typename TUnaryOperator>
+inline void transform(TTarget & target, TSource & source, TUnaryOperator o)
+{
+    transform(target, source, o, Serial());
+}
+
+template <typename TContainer, typename TUnaryOperator>
+inline void transform(TContainer & c, TUnaryOperator o)
+{
+    transform(c, o, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function count()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Difference<TContainer>::Type
+count(TContainer const & c, TValue const & v)
+{
+    return count(c, v, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function countIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate>
+inline typename Difference<TContainer>::Type
+countIf(TContainer const & c, TUnaryPredicate p)
+{
+    return countIf(c, p, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function sort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void sort(TContainer & c, TBinaryPredicate p)
+{
+    sort(c, p, Serial());
+}
+
+template <typename TContainer>
+inline void sort(TContainer & c)
+{
+    sort(c, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function stableSort()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TBinaryPredicate>
+inline void stableSort(TContainer & c, TBinaryPredicate p)
+{
+    stableSort(c, p, Serial());
+}
+
+template <typename TContainer>
+inline void stableSort(TContainer & c)
+{
+    stableSort(c, Serial());
 }
 
 }  // namespace seqan

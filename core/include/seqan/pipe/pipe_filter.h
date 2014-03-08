@@ -91,8 +91,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                  must be <tt>VALUE&lt;TInput&gt;::Type</tt>.
  * @tparam TInput   The type of the pipeline module this module reads from.
  * 
- * @section Remarks
- * 
  * The output type of this pipe is the result type of <tt>TFunctor</tt>.
  */
 
@@ -124,7 +122,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature Pipe::Pipe(in[, func]);
  * 
  * @param[in] in   Reference to an input pipe.
- * @param[in] func A TFunctor object (copy constructor).
+ * @param[in] func A <tt>TFunctor</tt> object.
  */
         
 /**

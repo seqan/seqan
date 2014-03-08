@@ -62,12 +62,13 @@ typedef Tag<Unordered_> Unordered;
  * @headerfile <seqan/seeds.h>
  * @implements ContainerConcept
  * @brief Handles a set of seeds with local chaining on adding seeds.
+ * @note At the moment only <tt>Unordered SeedSets</tt> are supported.
  *
  * @signature template <typename TSeedSpec[, typename TSpec]>
  *            class SeedSet;
  *
- * @tparam TSeedSpec Tag for specialization of contained Seed objects.
- * @tparam TSpec     Optional tag for seed set specialization.  Defaults to <tt>Unordered</tt>.
+ * @tparam TSeedSpec Specialization tag of contained @link Seed @endlink objects.
+ * @tparam TSpec     Optional tag for seed set specialization. Defaults to <tt>Unordered</tt>.
  */
 
 /**
@@ -315,7 +316,7 @@ minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
  * @param[in,out] seedSet    The SeedSet for which the threshold is to be set.
  * @param[in]     scoreValue The new threshold to set.  If the score of a seed is higher than the given threshold, then
  *                           it is virtually put into a container storing the high-scoring seeds which can be iterated
- *                           separately.
+ *                           separately  (@link IntegerConcept @endlink).
  * 
  * @see SeedSet#minScore
  */
@@ -376,6 +377,16 @@ inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
 // ---------------------------------------------------------------------------
 // Function clear()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn SeedSet#clear
+ * @headerfile <seqan/sequence.h>
+ * @brief Clear the SeedSet.
+ *
+ * @signature void clear(seedSet);
+ *
+ * @param[in,out] seedSet The SeedSet to clear.
+ */
 
 ///.Function.clear.param.object.type:Class.SeedSet
 template <typename TSeedSpec, typename TSeedSetSpec>

@@ -335,7 +335,7 @@ public:
         // Complete flags and tLen.
         // -------------------------------------------------------------------
         //
-        // This is surprising complex.
+        // This is surprisingly complex.
         recordL.flag |= seqan::BAM_FLAG_FIRST | seqan::BAM_FLAG_MULTIPLE;
         recordR.flag |= seqan::BAM_FLAG_LAST  | seqan::BAM_FLAG_MULTIPLE;
 
@@ -1085,8 +1085,7 @@ parseCommandLine(MasonSimulatorOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("mason_simulator");
     // Set short description, version, and date.
     setShortDescription(parser, "Read Simulation");
-    setVersion(parser, "2.0");
-    setDate(parser, "July 2012");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.

@@ -134,7 +134,7 @@ int VariantMaterializer::_runImpl(
         seqan::Dna5String * resultSeq,
         PositionMap * posMap,
         MethylationLevels * resultLvls,
-        std::vector<int> & breakpoints,
+        std::vector<std::pair<int, int> > & breakpoints,
         seqan::Dna5String const * ref,
         MethylationLevels const * refLvls,
         int haplotypeId)
@@ -352,7 +352,7 @@ int VariantMaterializer::_materializeSmallVariants(
 int VariantMaterializer::_materializeLargeVariants(
         seqan::Dna5String & seq,
         MethylationLevels * levelsLargeVariants,
-        std::vector<int> & breakpoints,
+        std::vector<std::pair<int, int> > & breakpoints,
         PositionMap & positionMap,
         TJournalEntries const & journal,
         seqan::Dna5String const & contig,
@@ -454,8 +454,8 @@ int VariantMaterializer::_materializeLargeVariants(
                         SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                         // Copy out breakpoints.
-                        breakpoints.push_back(currentPos);
-                        breakpoints.push_back(length(seq));
+                        breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
+                        breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
 
                         currentPos = length(seq);
                     }
@@ -465,7 +465,7 @@ int VariantMaterializer::_materializeLargeVariants(
                         SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                         // Copy out breakpoint.
-                        breakpoints.push_back(currentPos);
+                        breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
                     }
                 }
                 break;
@@ -492,8 +492,8 @@ int VariantMaterializer::_materializeLargeVariants(
                     SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                     // Copy out breakpoints.
-                    breakpoints.push_back(currentPos);
-                    breakpoints.push_back(length(seq));
+                    breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
@@ -529,9 +529,9 @@ int VariantMaterializer::_materializeLargeVariants(
                     SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                     // Copy out breakpoints.
-                    breakpoints.push_back(currentPos);
-                    breakpoints.push_back(currentPos + svRecord.targetPos - svRecord.pos - svRecord.size);
-                    breakpoints.push_back(length(seq));
+                    breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(currentPos + svRecord.targetPos - svRecord.pos - svRecord.size, variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
@@ -579,10 +579,10 @@ int VariantMaterializer::_materializeLargeVariants(
                     SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                     // Copy out breakpoints.
-                    breakpoints.push_back(currentPos);
-                    breakpoints.push_back(currentPos + svRecord.pos + svRecord.size - svRecord.pos);
-                    breakpoints.push_back(currentPos + svRecord.pos + svRecord.size - svRecord.pos + svRecord.targetPos - (svRecord.pos + svRecord.size));
-                    breakpoints.push_back(length(seq));
+                    breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(currentPos + svRecord.pos + svRecord.size - svRecord.pos, variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(currentPos + svRecord.pos + svRecord.size - svRecord.pos + svRecord.targetPos - (svRecord.pos + svRecord.size), variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
@@ -625,13 +625,13 @@ int VariantMaterializer::_materializeLargeVariants(
 }
 
 // --------------------------------------------------------------------------
-// Function PositionMap::overlapsWithVariant()
+// Function PositionMap::overlapsWithBreakpoint()
 // --------------------------------------------------------------------------
 
 bool PositionMap::overlapsWithBreakpoint(int svBeginPos, int svEndPos) const
 {
-    std::set<int>::const_iterator it = svBreakpoints.upper_bound(svBeginPos);
-    return (it != svBreakpoints.end() && *it < svEndPos);
+    std::set<std::pair<int, int> >::const_iterator it = svBreakpoints.upper_bound(std::make_pair(svBeginPos, seqan::maxValue<int>()));
+    return (it != svBreakpoints.end() && it->first < svEndPos);
 }
 
 // --------------------------------------------------------------------------

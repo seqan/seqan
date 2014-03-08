@@ -82,9 +82,7 @@ struct PizzaChiliCodeProvider {
  * 
  * @section Remarks
  * 
- * More information for all the index libraries can be found in the @link
- * dcc.uchile.cl original documentation @endlink (or the @link di.unipi.it
- * Italian mirror @endlink).
+ * More information for all the index libraries can be found at <a href="dcc.uchile.cl">original documentation</a> (or the <a href="di.unipi.it">Italian mirror</a>).
  * 
  * @see PizzaChiliIndex
  * @see PizzaChiliString

@@ -45,38 +45,45 @@
 #include <exception>
 #include <stdexcept>
 
+#ifdef PLATFORM_GCC
+#include <cxxabi.h>
+#endif
+
 // ============================================================================
 // Macros
 // ============================================================================
 
 /*!
- * @macro SEQAN_EXCEPTIONS
+ * @defgroup ExceptionHandling SeqAn Exception Handling
+ * @brief Macros supporting exception handling on various platforms.
+ */
+
+/*!
+ * @macro ExceptionHandling#SEQAN_EXCEPTIONS
  * @headerfile <seqan/basic.h>
  * @brief Determines whether exceptions are enabled or not.
  * 
- * @signature SEQAN_EXCEPTIONS
+ * @signature #define SEQAN_EXCEPTIONS
  *
- * @see SEQAN_TRY
- * @see SEQAN_CATCH
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_CATCH
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  */
 
 #define SEQAN_EXCEPTIONS    __EXCEPTIONS
 
 /*!
- * @macro SEQAN_TRY
+ * @macro ExceptionHandling#SEQAN_TRY
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ try keyword.
  * 
  * @signature SEQAN_TRY {} SEQAN_CATCH() {}
- *
- * @section Remarks
  * 
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the try block is always executed".
+ * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the try block is always executed.
  * 
- * @see SEQAN_CATCH
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_CATCH
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  *
  * @section Examples
@@ -96,44 +103,40 @@
  */
 
 /*!
- * @macro SEQAN_CATCH
+ * @macro ExceptionHandling#SEQAN_CATCH
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ catch keyword.
  *
  * @signature SEQAN_TRY {} SEQAN_CATCH() {}
  *
- * @section Remarks
+ * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the catch block is never executed.
  *
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the code inside the catch block is never executed".
- *
- * @see SEQAN_TRY
- * @see SEQAN_THROW
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_THROW
  * @see Exception
  *
  * @section Examples
  *
- * See @link SEQAN_TRY @endlink for a full example.
+ * See @link ExceptionHandling#SEQAN_TRY @endlink for a full example.
  */
 
 /*!
- * @macro SEQAN_THROW
+ * @macro ExceptionHandling#SEQAN_THROW
  * @headerfile <seqan/basic.h>
  * @brief Replaces the C++ throw keyword.
  *
  * @signature SEQAN_THROW(Exception);
  *
- * @section Remarks
+ * When exceptions are disabled, i.e. AssertMacros#SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL.
  *
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL".
- *
- * @see SEQAN_TRY
- * @see SEQAN_CATCH
- * @see SEQAN_FAIL
+ * @see ExceptionHandling#SEQAN_TRY
+ * @see ExceptionHandling#SEQAN_CATCH
+ * @see AssertMacros#SEQAN_FAIL
  * @see Exception
  *
  * @section Examples
  *
- * See @link SEQAN_TRY @endlink for a full example.
+ * See @link ExceptionHandling#SEQAN_TRY @endlink for a full example.
  */
 
 #ifdef SEQAN_EXCEPTIONS
@@ -156,90 +159,197 @@
 namespace seqan {
 
 // ============================================================================
-// Classes
+// Exceptions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Exception
+// Basic Exception
 // ----------------------------------------------------------------------------
 
 /*!
  * @class Exception
  * @headerfile <seqan/basic.h>
  * @brief Generic SeqAn exception.
- * @signature Exception;
+ * @signature typedef std::exception RuntimeError;
+ *
+ * @fn Exception::Exception
+ * @brief Constructor.
+ *
+ * @signature Exception::Exception(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::exception          Exception;
 
 // ----------------------------------------------------------------------------
-// Class BadAlloc
+// Exception BadAlloc
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BadAlloc
  * @headerfile <seqan/basic.h>
- * @brief Bad memory allocation exception.
- * @signature BadAlloc;
+ * @brief Generic SeqAn exception.
+ * @signature typedef std::bad_alloc BadAlloc;
+ *
+ * @fn BadAlloc::BadAlloc
+ * @brief Constructor.
+ *
+ * @signature BadAlloc::BadAlloc(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::bad_alloc          BadAlloc;
 
 // ----------------------------------------------------------------------------
-// Classes Bad*
+// Exception BadCast
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BadCast
+ * @headerfile <seqan/basic.h>
+ * @brief Generic SeqAn exception.
+ * @signature typedef std::bad_cast BadCast;
+ *
+ * @fn BadCast::BadCast
+ * @brief Constructor.
+ *
+ * @signature BadCast::BadCast(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
+ */
+
+typedef std::bad_cast           BadCast;
+
+// ----------------------------------------------------------------------------
+// Exceptions Bad*
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): These exceptions can be introduced as long as we need them.
 
 //typedef std::bad_exception      BadException;
-//typedef std::bad_cast           BadCast;
 //typedef std::bad_typeid         BadTypeId;
 //typedef std::bad_function_call  BadFunctionCall;
 //typedef std::bad_weak_ptr       BadWeakPtr;
 
 // ----------------------------------------------------------------------------
-// Class RuntimeError
+// Exception RuntimeError
 // ----------------------------------------------------------------------------
 
 /*!
  * @class RuntimeError
  * @headerfile <seqan/basic.h>
  * @brief Runtime error exception.
- * @signature RuntimeError("Message");
+ * @signature typedef std::runtime_error RuntimeError;
+ *
+ *
+ * @fn RuntimeError::RuntimeError
+ * @brief Constructor.
+ *
+ * @signature RuntimeError::RuntimeError(msg);
+ * @param[in] msg The message as a <tt>std::string</tt>.
  */
 
 typedef std::runtime_error      RuntimeError;
 
 // ----------------------------------------------------------------------------
-// Class LogicError
+// Exception LogicError
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Always prefer SEQAN_ASSERT to logic error exceptions.
 
 //typedef std::logic_error        LogicError;
 
 // ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class Demangler
+// ----------------------------------------------------------------------------
+// Holds the name of a given C++ type T.
+
+template <typename T>
+struct Demangler
+{
+#ifdef PLATFORM_GCC
+    char * data_begin;
+#else
+    char const * data_begin;
+#endif //PLATFORM_GCC
+
+    Demangler()
+    {
+        T t;
+        _demangle(t);
+    }
+
+    Demangler(T & t)
+    {
+        _demangle(t);
+    }
+
+#ifdef PLATFORM_GCC
+    ~Demangler()
+    {
+        free(data_begin);
+    }
+
+    void _demangle(T & t)
+    {
+        int status;
+        data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
+        if (status != 0)
+            SEQAN_FAIL("Demangling of %s failed with error code %d\n", typeid(t).name(), status);
+    }
+#else
+    void _demangle(T & t)
+    {
+        data_begin = typeid(t).name();
+    }
+#endif //PLATFORM_GCC
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function toCString(Demangler)
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline char const * toCString(Demangler<T> const & me)
+{
+    return me.data_begin;
+}
 
 // ----------------------------------------------------------------------------
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
-#ifdef SEQAN_EXCEPTIONS
+#if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
+// Declare global exception handler.
+static void globalExceptionHandler();
+
+// Install global exception handler.
+static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+
 static void globalExceptionHandler()
 {
+    // Suppress unused variable warning.
+    (void)_globalExceptionHandler;
+
     SEQAN_TRY
     {
         SEQAN_RETHROW;
     }
     SEQAN_CATCH(Exception & e)
     {
-        SEQAN_FAIL("Uncaught exception of type %s: %s", typeid(e).name(), e.what());
+        SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
+    }
+    SEQAN_CATCH(...)
+    {
+        SEQAN_FAIL("Uncaught exception of unknown type.\n");
     }
 }
-
-// Install global exception handler.
-static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
-#endif
+#endif  // #if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
 
 }  // namespace seqan
 

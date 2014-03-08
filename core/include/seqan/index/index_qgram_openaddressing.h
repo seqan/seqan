@@ -79,32 +79,25 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 ..class:Spec.OpenAddressing
 */	
 /*!
- * @class OpenAddressing
- * 
+ * @class OpenAddressingQGramIndex
  * @extends IndexQGram
- * 
  * @headerfile seqan/index.h
+ * @brief A <i>q</i>-gram that uses open addressing hashing instead of an array.
  * 
- * @brief An index based on an array of sorted q-grams.
+ * @signature template <typename TIndex, typename TShapeSpec>
+ *            class Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >;
  * 
- * @signature Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >
- * 
- * @tparam TText The text type. Types: @link String @endlink
+ * @tparam TText      The @link TextConcept text type @endlink.
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
  * 
- * @section Remarks
+ * This index uses a non-trivial hashing for mapping q-gram hash values to buckets.  This reduces the sizes of bucket
+ * directories (QGramDir, QGramCountsDir fibres) from &Sigma;<i><sup>q</sup></i> to min(<i>&alpha; &middot; n</i>,
+ * \Sigma<i><sup>q</sup></i>), for a load factor <i>&alpha; &gt; 1</i>.  A bucket still stores occurrences (or counts)
+ * of the same <i>q</i>-gram, but in contrast to the @link IndexQGram @endlink index, buckets are in random order due to
+ * the hashing.
  * 
- * This index uses a non-trivial hashing for mapping q-gram hash values to
- * buckets. This reduces the sizes of bucket directories (QGramDir,
- * QGramCountsDir fibres) from |\Sigma|^q to min(\alpha*n,|\Sigma|^q), for a
- * load factor \alpha>1. A bucket still stores occurrences (or counts) of the
- * same q-gram, but in contrast to the @link IndexQGram @endlink index, buckets
- * are in random order due to the hashing.
- * 
- * @var VariableType OpenAddressing::alpha
- * 
- * @brief Load factor. Controls space/time-tradeoff and must be greater 1.
- *        Default value is 1.6.
+ * @var double OpenAddressingQGramIndex::alpha
+ * @brief Load factor.  Controls space/time-tradeoff and must be greater 1.  Default value is 1.6.
  */
 #ifdef PLATFORM_WINDOWS_VS
 #pragma warning( push )
@@ -118,6 +111,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
     private:
         static const double defaultAlpha;
 	public:
+        typedef typename Member<Index, QGramText>::Type     TTextMember;
 		typedef typename Fibre<Index, QGramText>::Type		TText;
 		typedef typename Fibre<Index, QGramSA>::Type		TSA;
 		typedef typename Fibre<Index, QGramDir>::Type		TDir;
@@ -128,7 +122,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		typedef typename Cargo<Index>::Type					TCargo;
 		typedef typename Size<Index>::Type					TSize;
 
-		Holder<TText>	text;		// underlying text
+		TTextMember     text;		// underlying text
 		TSA				sa;			// suffix array sorted by the first q chars
 		TDir			dir;		// bucket directory
 		TCounts			counts;		// counts each q-gram per sequence
@@ -241,7 +235,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		register TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
-        register TSize h1 = _hashFunction(bucketMap, code);
+        TSize h1 = _hashFunction(bucketMap, code);
 #ifdef SEQAN_OPENADDRESSING_COMPACT
         --hlen;
 		h1 %= hlen;
@@ -258,7 +252,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         //
         // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
-        register TSize delta = 0;
+        TSize delta = 0;
         (void)delta;
         do {
 #ifdef SEQAN_OPENADDRESSING_COMPACT
@@ -285,7 +279,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		register TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
-        register TSize h1 = _hashFunction(bucketMap, code);
+        TSize h1 = _hashFunction(bucketMap, code);
 #ifdef SEQAN_OPENADDRESSING_COMPACT
         --hlen;
         h1 %= hlen;
@@ -298,7 +292,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         //
         // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
-        register TSize delta = 0;
+        TSize delta = 0;
         (void)delta;
 		while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != TBucketMap::EMPTY)
 		{

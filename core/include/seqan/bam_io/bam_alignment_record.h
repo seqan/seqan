@@ -57,37 +57,37 @@ inline void clear(BamAlignmentRecord & record);
  *
  * @signature enum BamFlags;
  *
- * @var BamFlags BAM_FLAG_MULTIPLE = 0x0001;
+ * @val BamFlags BAM_FLAG_MULTIPLE = 0x0001;
  * @brief Template has multiple fragments in sequencing.
  *
- * @var BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
+ * @val BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
  * @brief All fragments in the template are properly mapped.
  *
- * @var BamFlags BAM_FLAG_UNMAPPED = 0x0004;
+ * @val BamFlags BAM_FLAG_UNMAPPED = 0x0004;
  * @brief This fragment is unmapped.
  *
- * @var BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
+ * @val BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
  * @brief Next fragment in template is unmapped.
  *
- * @var BamFlags BAM_FLAG_RC = 0x0010;
+ * @val BamFlags BAM_FLAG_RC = 0x0010;
  * @brief Fragment is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_NEXT_RC = 0x0020;
+ * @val BamFlags BAM_FLAG_NEXT_RC = 0x0020;
  * @brief Next fragment in template is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_FIRST = 0x0040;
+ * @val BamFlags BAM_FLAG_FIRST = 0x0040;
  * @brief This fragment is the first one in its template.
  *
- * @var BamFlags BAM_FLAG_LAST = 0x0080;
+ * @val BamFlags BAM_FLAG_LAST = 0x0080;
  * @brief This fragment is the last one in its template (second in case of paired sequencing).
  *
- * @var BamFlags BAM_FLAG_SECONDARY = 0x0100;
+ * @val BamFlags BAM_FLAG_SECONDARY = 0x0100;
  * @brief Secondary alignment.
  *
- * @var BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
+ * @val BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
  * @brief Does not pass quality controls.
  *
- * @var BamFlags BAM_FLAG_DUPLICATE = 0x0400;
+ * @val BamFlags BAM_FLAG_DUPLICATE = 0x0400;
  * @brief PCR or optical duplicate.
  */
 
@@ -147,30 +147,30 @@ enum BamFlags
  */
 
 /*!
- * @var __uint32 BamAlignmentRecord::INVALID_POS
+ * @var __uint32 BamAlignmentRecord::INVALID_POS;
  * @brief Static member with invalid sentinel/position value.
  *
- * @var __uint32 BamAlignmentRecord::INVALID_REFID
+ * @var __uint32 BamAlignmentRecord::INVALID_REFID;
  * @brief Static member with invalid sentinel/position value.
  *
- * @var __uint32 BamAlignmentRecord::INVALID_LEN
+ * @var __uint32 BamAlignmentRecord::INVALID_LEN;
  * @brief Static member with invalid/sentinel reference ids (-1 as in BAM/SAM).
  *
- * @var CharString BamAlignmentRecord::qName
+ * @var CharString BamAlignmentRecord::qName;
  * @brief The query/read name.
  *
  * Note that the reads of a template all of the same query name and are differentiated by their position
  * and the <tt>BAM_FLAG_FIRST</tt>/<tt>BAM_FLAG_LAST</tt> flag values.
  *
- * @var __uint16 BamAlignmentRecord::flag
+ * @var __uint16 BamAlignmentRecord::flag;
  * @brief The flag of this mapping.
  *
  * See @link BamFlags @endlink for flag constants and also see the <tt>hasFlag*()</tt> functions.
  *
- * @var __int32 BamAlignmentRecord::rID
+ * @var __int32 BamAlignmentRecord::rID;
  * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*').
  *
- * @var __int32 BamAlignmentRecord::beginPos
+ * @var __int32 BamAlignmentRecord::beginPos;
  * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '*').
  *
  * @var __uint8 BamAlignmentRecord::mapQ;
@@ -324,6 +324,7 @@ public:
     CharString seq;
     CharString qual;
     CharString tags;  // raw tags in BAM format
+    CharString _buffer; // reusable internal buffer (used for I/O)
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
@@ -346,7 +347,7 @@ public:
  *
  * @signature void clear(record);
  *
- * @param record The BamAlignmentRecord to clear.
+ * @param[in,out] record The BamAlignmentRecord to clear.
  *
  * Clears all strings and resets it to default initialization state.
  */
@@ -383,9 +384,11 @@ clear(BamAlignmentRecord & record)
  *
  * @signature bool hasFlagMultiple(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -427,9 +430,11 @@ hasFlagMultiple(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagAllProper(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -471,9 +476,11 @@ hasFlagAllProper(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagUnmapped(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -515,9 +522,11 @@ hasFlagUnmapped(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagNextUnmapped(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -559,9 +568,11 @@ hasFlagNextUnmapped(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagRC(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -603,9 +614,11 @@ hasFlagRC(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagNextRC(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -647,9 +660,11 @@ hasFlagNextRC(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagFirst(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -691,9 +706,11 @@ hasFlagFirst(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagLast(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -735,9 +752,11 @@ hasFlagLast(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagSecondary(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -779,9 +798,11 @@ hasFlagSecondary(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagQCNoPass(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -823,9 +844,11 @@ hasFlagQCNoPass(BamAlignmentRecord const & record)
  *
  * @signature bool hasFlagDuplicate(record);
  *
- * @param record The BamAlignmentRecord to query.
+ * @param[in] record The BamAlignmentRecord to query.
  *
  * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ *
+ * @see BamFlags
  */
 
 /**
@@ -867,9 +890,11 @@ hasFlagDuplicate(BamAlignmentRecord const & record)
  *
  * @signature unsigned getAlignmentLengthInRef(record);
  *
- * @param record The BamAlignmentRecord to compute length for.
+ * @param[in] record The BamAlignmentRecord to compute length for.
  *
  * @return unsigned The alignment length.
+ *
+ * @see BamFlags
  */
 
 /**

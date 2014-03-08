@@ -186,7 +186,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/store/example_known_genes.tsv");
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_gff)
@@ -250,9 +250,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_gff)
     seqan::FragmentStore<> store;
     read(fin, store, seqan::Gff());
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".tsv");
-    std::cerr << outPath << std::endl;
     std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
     write(fout, store, seqan::Gff());
     fout.close();
@@ -260,7 +259,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_gff)
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/store/example_gff.tsv");
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_gtf)
@@ -302,7 +301,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 5140);
     SEQAN_ASSERT_EQ(value(it), 2u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
-    SEQAN_ASSERT_EQ(getParentName(it), "1");
+    SEQAN_ASSERT_EQ(getParentName(it), "gene1");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "inter");
@@ -310,7 +309,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 5140);
     SEQAN_ASSERT_EQ(value(it), 3u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 2u);
-    SEQAN_ASSERT_EQ(getParentName(it), "2");
+    SEQAN_ASSERT_EQ(getParentName(it), "trans2");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "inter_CNS");
@@ -318,7 +317,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 8522);
     SEQAN_ASSERT_EQ(value(it), 4u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 2u);
-    SEQAN_ASSERT_EQ(getParentName(it), "2");
+    SEQAN_ASSERT_EQ(getParentName(it), "trans2");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "inter");
@@ -326,7 +325,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 9711);
     SEQAN_ASSERT_EQ(value(it), 5u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 2u);
-    SEQAN_ASSERT_EQ(getParentName(it), "2");
+    SEQAN_ASSERT_EQ(getParentName(it), "trans2");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "gene");
@@ -396,9 +395,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_gtf)
     seqan::FragmentStore<> store;
     read(fin, store, seqan::Gtf());
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".tsv");
-    std::cerr << outPath << std::endl;
     std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
     write(fout, store, seqan::Gtf());
     fout.close();
@@ -406,7 +404,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_gtf)
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/store/example_gtf.tsv");
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 // Read in SAM file, write out SAM file.
@@ -415,54 +413,106 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    CharString fastaFileName = SEQAN_PATH_TO_ROOT();
-    append(fastaFileName, "/core/tests/store/ex1.fa");
-
-    loadContigs(store, toCString(fastaFileName));
+    std::string goldPathRef = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
+    loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    CharString samFileName = SEQAN_PATH_TO_ROOT();
-    append(samFileName, "/core/tests/store/ex1.sam.copy");
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
+    std::ifstream inFile(toCString(goldPathSam));
+    read(inFile, store, Sam());
+  
+    // 3. WRITE SAM ALIGNMENTS
+    std::string testPathSam = SEQAN_TEMP_FILENAME();
+    std::ofstream outFile(toCString(testPathSam));
+    SEQAN_ASSERT(outFile.good());
+    write(outFile, store, Sam());
+    outFile.close();
+  
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(goldPathSam), toCString(testPathSam)));
+}
 
-    // Read reference Sam from file.
-    {
-        std::fstream f(toCString(samFileName), std::ios::binary | std::ios::in);
-        SEQAN_ASSERT(f.good());
-        read(f, store, Sam());
-    }
+SEQAN_DEFINE_TEST(test_store_io_sam2)
+{
+    FragmentStore<> store;
 
-    //AlignedReadLayout layout;
-    //layoutAlignment(layout, store);
-    //printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
+    // 1. LOAD CONTIGS
+    std::string goldPathRef = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
+    loadContigs(store, toCString(goldPathRef));
+
+    // 2. LOAD SAM ALIGNMENTS
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
+    std::ifstream inFile(toCString(goldPathSam));
+    read(inFile, store, Sam());
 
     // 3. WRITE SAM ALIGNMENTS
-    CharString outFileName = SEQAN_TEMP_FILENAME();
-    // Write Sam to temp file.
-    {
-        std::ofstream samFileOut(toCString(outFileName));
-        SEQAN_ASSERT(samFileOut.good());
-        write(samFileOut, store, Sam());
-    }
+    std::string testPathSam = SEQAN_TEMP_FILENAME();
+    std::ofstream outFile(toCString(testPathSam));
+    SEQAN_ASSERT(outFile.good());
+    write(outFile, store, Sam());
+    outFile.close();
 
-    // 4. COMPARE BOTH SAM FILES
-    MultiSeqFile sam1;
-    open(sam1.concat, toCString(samFileName));
-    split(sam1, Raw());
-    MultiSeqFile sam2;
-    open(sam2.concat, toCString(outFileName));
-    split(sam2, Raw());
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(goldPathSam), toCString(testPathSam)));
+}
 
-    SEQAN_ASSERT(!empty(sam1));
-    SEQAN_ASSERT(!empty(sam2));
-    for (unsigned i = 0; i < length(sam1); ++i)
-    {
-        if (sam1[i] != sam2[i])
-        {
-            std::cout << "    \t" << sam1[i] << std::endl;
-            std::cout << " != \t" << sam2[i] << std::endl;
-            SEQAN_ASSERT_FAIL("Files differ in line %d.", i);
-        }
-    }
+template <typename TFragStore, typename TFormat>
+void _appendReadAlignments(TFragStore &store, char const *fileName, TFormat format)
+{
+    using namespace seqan;
+
+    typedef typename FragmentStore<>::TNameStore TNameStore;
+    typedef NameStoreCache<TNameStore>           TNameStoreCache;
+
+    BamIOContext<TNameStore, TNameStoreCache> bamIOContext(store.contigNameStore, store.contigNameStoreCache);
+
+    std::string str = (std::string)SEQAN_PATH_TO_ROOT() + fileName;
+    std::ifstream inFile(str.c_str());
+    read(inFile, store, format);
+  }
+  
+template <typename TFragStore>
+void _writeStore(TFragStore &store, std::string const &outPath, char const *suffix)
+{
+    AlignedReadLayout layout;
+    layoutAlignment(layout, store);
+
+    std::string outPathTxt = outPath + suffix;
+    std::ofstream file(toCString(outPathTxt));
+    printAlignment(file, Raw(), layout, store, 0, 0, 1030, 0, 36);
+    printAlignment(file, Raw(), layout, store, 1, 0, 1030, 0, 36);
+    file.close();
+
+    std::string goldPathTxt = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge" + suffix;
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathTxt), toCString(goldPathTxt)));
+}
+
+SEQAN_DEFINE_TEST(test_store_io_split_sam)
+{
+    using namespace seqan;
+
+    FragmentStore<> store;
+
+    // 1. LOAD CONTIGS
+    std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
+    loadContigs(store, toCString(fastaFileName));
+
+    std::string outPath = (std::string)SEQAN_TEMP_FILENAME();
+
+    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
+    _writeStore(store, outPath, ".1.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
+    _writeStore(store, outPath, ".2.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
+    _writeStore(store, outPath, ".3.txt");
+    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
+    _writeStore(store, outPath, ".4.txt");
+
+    std::string outPathSam = outPath + ".sam";
+    std::ofstream outFile(outPathSam.c_str());
+    write(outFile, store, Sam());
+    outFile.close();
+
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge.sam";
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
 }
 
 #if SEQAN_HAS_ZLIB
@@ -562,12 +612,12 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
 
     seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
     append(goldPathSam, "/core/tests/store/amos_to_sam_result.sam");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathSam), toCString(goldPathSam)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
     seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
     append(goldPathFasta, "/core/tests/store/amos_to_sam_result.fasta");
 
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathFasta), toCString(goldPathFasta)));
 }
 
 // Read SAM and write out as AMOS.  The resulting AMOS file is compared to a gold standard file.

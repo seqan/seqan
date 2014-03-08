@@ -188,15 +188,14 @@ struct StringSetLimits<StringSet<TString, TSpec> >
  * @mfn StringSet#StringSetPosition
  * @brief Returns position type in string set.
  *
- * @signature StringSetPosition<T>::Type
+ * @signature StringSetPosition<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The @link StringSet @endlink to query for its position type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The position type of TStringSet.
  */
 
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
 struct StringSetPosition
@@ -207,8 +206,9 @@ struct StringSetPosition
 template <typename TString, typename TSpec>
 struct StringSetPosition<StringSet<TString, TSpec> >
 {
-    typedef typename Size<TString>::Type TSize_;
-    typedef Pair<TSize_> Type;
+    typedef Pair<typename Size<StringSet<TString, TSpec> >::Type,
+                 typename Size<TString>::Type,
+                 Pack> Type;
 };
 
 // --------------------------------------------------------------------------
@@ -219,14 +219,14 @@ struct StringSetPosition<StringSet<TString, TSpec> >
  * @mfn StringSet#LengthSum
  * @brief Length sum type type in string set.
  *
- * @signature LengthSum<T>::Type
+ * @signature LengthSum<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The @link StringSet @endlink to query for its length sum type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The resulting length sum type.
  */
+
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 
 template <typename TString>
 struct LengthSum
@@ -254,15 +254,14 @@ struct LengthSum<T const> :
  * @mfn StringSet#GetSequenceByNo
  * @brief Type for getting sequence by number.
  *
- * @signature GetSequenceByNo<T>::Type
+ * @signature GetSequenceByNo<TStringSet>::Type
  *
- * @tparam T
+ * @tparam TStringSet The StringSet to query for its sequence-by-number type.
  *
- * @return Type
- *
- * TODO(holtgrew): Complete documentation, part of TextConcept?
+ * @return Type The given sequence-by-number type.
  */
 
+// TODO(holtgrew): Complete documentation, part of TextConcept?
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
 struct GetSequenceByNo
@@ -876,7 +875,12 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posPrev
+ * @defgroup PositionCalculation Position Calculation
+ * @brief Position calculation functions.
+ */
+
+/*!
+ * @fn PositionCalculation#posPrev
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is decreased by one.
  *
@@ -886,9 +890,9 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
  *
  * @return TPos The predecessor.  TPos is the type of <tt>pos</tt>.
  *
- * @see posNext
- * @see posInc
- * @see posAdd
+ * @see PositionCalculation#posNext
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -919,7 +923,7 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posInc
+ * @fn PositionCalculation#posInc
  * @headerfile <seqan/sequence.h>
  * @brief Increments the local offset of a position type.
  *
@@ -928,9 +932,9 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
  * @param[in,out] pos A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.  In both
  *                    cases, <tt>seqOfs</tt> will be incremented by one.
  *
- * @see posNext
- * @see posPrev
- * @see posAdd
+ * @see PositionCalculation#posNext
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -969,7 +973,7 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posNext
+ * @fn PositionCalculation#posNext
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is increased by one.
  *
@@ -979,9 +983,9 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by one.
  *
- * @see posInc
- * @see posPrev
- * @see posAdd
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posAdd
  */
 
 /**
@@ -1013,7 +1017,8 @@ posNext(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posAdd
+ * @fn PositionCalculation#posAdd
+ * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is increased by a value <tt>delta</tt>.
  *
  * @signature TPos posAdd(pos, delta);
@@ -1023,9 +1028,9 @@ posNext(Pair<T1, T2, TPack> const & pos) {
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by <tt>delta</tt>.
  *
- * @see posInc
- * @see posPrev
- * @see posNext
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posPrev
+ * @see PositionCalculation#posNext
  */
 
 /**
@@ -1059,7 +1064,7 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posAddAndCheck
+ * @fn PositionCalculation#posAddAndCheck
  * @headerfile <seqan/sequence.h>
  * @brief Increases the local offset of a position by a value <tt>delta</tt> and check for overflow.
  *
@@ -1069,8 +1074,8 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
  * @param[in]     delta Increase the local offset of <tt>pos</tt> by this value.
  * @param[in]     text  The @link TextConcept text @endlink to use for checking.
  *
- * @see posAdd
- * @see posInc
+ * @see PositionCalculation#posAdd
+ * @see PositionCalculation#posInc
  */
 
 /**
@@ -1122,7 +1127,7 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
 // --------------------------------------------------------------------------
 
 /*!
- * @fn posSub
+ * @fn PositionCalculation#posSub
  * @headerfile <seqan/sequence.h>
  * @brief Returns a position where the local offset is decreased by a value <tt>delta</tt>.
  *
@@ -1133,9 +1138,9 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
  *
  * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is decreased by <tt>delta</tt>.
  *
- * @see posAdd
- * @see posInc
- * @see posNext
+ * @see PositionCalculation#posAdd
+ * @see PositionCalculation#posInc
+ * @see PositionCalculation#posNext
  */
 
 /**
@@ -1363,7 +1368,7 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
  *
  * @signature TSize lengthSum(s);
  *
- * @param s The string set to get length sum of.
+ * @param[in] s The string set to get length sum of.
  *
  * @return TSize The sum of the lengths of all strings in the string set.
  */
@@ -1393,10 +1398,24 @@ lengthSum(StringSet<TString, TSpec> const & me)
     return back(stringSetLimits(me));
 }
 
+// --------------------------------------------------------------------------
+// Function clear()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#clear
+ * @headerfile <seqan/sequence.h>
+ * @brief Clear the StringSet.
+ *
+ * @signature void clear(stringSet);
+ *
+ * @param[in,out] seedSet The StringSet to clear.
+ */
 
 // --------------------------------------------------------------------------
 // Function length()
 // --------------------------------------------------------------------------
+
 
 ///.Function.appendValue.param.target.type:Class.StringSet
 ///.Function.appendValue.class:Class.StringSet
@@ -1418,7 +1437,6 @@ length(StringSet<TString, TSpec > const & me)
 // Function resize()
 // --------------------------------------------------------------------------
 
-// TODO(rmaerker): This belongs to string_set_base.h. Move it!
 template <typename TString, typename TSpec, typename TSize, typename TExpand >
 inline typename Size<StringSet<TString, TSpec > >::Type
 resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> tag)
@@ -1443,11 +1461,11 @@ resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> tag)
  * @fn StringSet#reserve
  * @brief Reserve memory for string set.
  *
- * @signature TSize reserver(s, newCapacity, tag);
+ * @signature TSize reserve(s, newCapacity, tag);
  *
- * @param s           The string set to reserve memory for.
- * @param newCapacity The target capacity.
- * @param tag         A tag to select the reservation strategy.
+ * @param[in,out] s           The string set to reserve memory for.
+ * @param[in]     newCapacity The target capacity.
+ * @param[in]     tag         A tag to select the reservation strategy.
  */
 
 template <typename TString, typename TSpec, typename TSize, typename TExpand>
@@ -1563,8 +1581,8 @@ return iter(me, length(me), tag);
  *
  * @signature TString getValueById(s, id);
  *
- * @param s  The string set to get string from.
- * @param id The id of the string to get.
+ * @param[in] s  The string set to get string from.
+ * @param[in] id The id of the string to get.
  *
  * @return TString Reference to the string with the given id.
  */
@@ -1597,8 +1615,8 @@ return iter(me, length(me), tag);
  *
  * @signature TString valueById(s, id);
  *
- * @param s  The string set to get string from.
- * @param id The id of the string to get.
+ * @param[in] s  The string set to get string from.
+ * @param[in] id The id of the string to get.
  *
  * @return TString Reference to the string with the given id.
  */
@@ -1638,9 +1656,9 @@ valueById(StringSet<TString, TSpec> & me,
  *
  * @signature TId getValueById(set, s[, id]);
  *
- * @param set The string to assign value in.
- * @param s   The string set to assign.
- * @param id  The id of the string to set.  If omitted, <tt>s</tt> will be appended to <tt>set</tt>.
+ * @param[in] set The string to assign value in.
+ * @param[in] s   The string set to assign.
+ * @param[in] id  The id of the string to set.  If omitted, <tt>s</tt> will be appended to <tt>set</tt>.
  *
  * @return TId The id of the new string in the string set.
  */
@@ -1698,8 +1716,8 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  *
  * @signature void removeValueById(set, id);
  *
- * @param set The string to remove value in.
- * @param id  The id of the string to remove.
+ * @param[in,out] set The string to remove value in.
+ * @param[in]     id  The id of the string to remove.
  */
 
 /**
@@ -1729,8 +1747,8 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  *
  * @signature Id positionToId(set, pos);
  *
- * @param set The string to convert positions for.
- * @param pos The position to convert.
+ * @param[in] set The string to convert positions for.
+ * @param[in] pos The position to convert.
  *
  * @return TId The resulting id.
  */
@@ -1762,7 +1780,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  *
  * @signature TConcat concat(set);
  *
- * @param set The string set to get the concatenation sequence for.
+ * @param[in] set The string set to get the concatenation sequence for.
  *
  * @return TConcat The concatenation sequence.
  */
@@ -1825,14 +1843,12 @@ concat(StringSet<TString, TSpec> const & constMe)
  *
  * @signature void strSplit(result, sequence[, sep[, allowEmptyStrings[, maxSplit]]]);
  *
- * @param result           The resulting string set.
- * @param sequence         The sequence to split.
- * @param sep              The splitter to use (default <tt>' '</tt>).
- * @param allowEmptyString Whether or not to allow empty strings (<tt>bool</tt>, defaults to <tt>true</tt> iff
- *                         <tt>sep</tt> is given).
- * @param maxSplit         The maximal number of split operations to do if given.
- *
- * @return TConcat The concatenation sequence.
+ * @param[out] result           The resulting string set.
+ * @param[in]  sequence         The sequence to split.
+ * @param[in]  sep              The splitter to use (default <tt>' '</tt>).
+ * @param[in]  allowEmptyString Whether or not to allow empty strings (<tt>bool</tt>, defaults to <tt>true</tt> iff
+ *                              <tt>sep</tt> is given).
+ * @param[in]  maxSplit         The maximal number of split operations to do if given.
  */
 
 /**
@@ -1929,10 +1945,10 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
  *
  * @signature TPos idToPosition(set, id);
  *
- * @param set The string to convert positions for.
- * @param id  The id to convert.
+ * @param[in] set The string to convert positions for.
+ * @param[in] id  The id to convert.
  *
- * @return The resulting position.
+ * @return TPos The resulting position.
  */
 
 /**
