@@ -644,7 +644,7 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
 			TSize cur = limits[i];
 
             SEQAN_ASSERT_LEQ(prev, cur);
-			register TSize size = cur - prev;
+			TSize size = cur - prev;
 
             // sum up the number of tuples in each residue class
             // for a string of length n there are 1+(n-x)/m suffixes
