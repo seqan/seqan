@@ -36,7 +36,7 @@
 // ==========================================================================
 
 #ifndef SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_
-#define SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUSH_
+#define SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_
 
 namespace seqan {
 
@@ -285,4 +285,4 @@ idToPosition(StringSet<TString, Dependent<Generous> > const& me,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUSH_
+#endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_
