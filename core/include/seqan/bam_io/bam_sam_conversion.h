@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_SAM_TAGS_TO_BAM_TAGS_H_
+#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
 
 namespace seqan {
 
@@ -679,4 +679,4 @@ void assignTagsBamToSam(TTarget & target, TSource const & source)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_SAM_TAGS_TO_BAM_TAGS_H_
+#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
