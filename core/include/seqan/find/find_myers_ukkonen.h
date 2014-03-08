@@ -1026,7 +1026,7 @@ _myersAdjustBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderC
         return;
     
     unsigned ord = ordValue(value);
-	register unsigned short x = shift - state.shift[ord];
+	unsigned short x = shift - state.shift[ord];
 	if (x < BitsPerValue<TWord>::VALUE)
 		state.bitMasks[ord] = (state.bitMasks[ord] >> x) | ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
 	else
@@ -1149,7 +1149,7 @@ _patternInitSmallStateBanded(
 
 //    std::cerr<<std::hex<<"\t  "<<std::setw(17)<<' '<<"\tVN"<<std::setw(17)<<VN<<"\tVP"<<std::setw(17)<<VP<<std::dec<<std::endl;
 
-	register unsigned short shift = 0;
+	unsigned short shift = 0;
 	
 	if (state.leftClip != 0)
 	{
@@ -1566,7 +1566,7 @@ _findMyersSmallPatternsBanded(
     TWord VN = state.VN0;
     TWord errors = state.errors;
     TWord const maxErrors = state.maxErrors;
-	register unsigned short const shift = length(needle);
+	unsigned short const shift = length(needle);
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
     unsigned col = position(finder) + 1;
@@ -1577,10 +1577,10 @@ _findMyersSmallPatternsBanded(
 		// PART 2: go right
 
 		// normal Myers
-		register TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
-		register TWord D0 = ((VP + (X & VP)) ^ VP) | X;
-		register TWord HN = VP & D0;
-		register TWord HP = VN | ~(VP | D0);
+		TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
+		TWord D0 = ((VP + (X & VP)) ^ VP) | X;
+		TWord HN = VP & D0;
+		TWord HP = VN | ~(VP | D0);
 	//    const int PADDING = sizeof(TWord)*2 + 1;
 	//    std::cerr << std::hex;
 	//    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP<<std::endl;
