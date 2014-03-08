@@ -585,9 +585,9 @@ inline bool _pigeonholeProcessQGram(
     Pair<unsigned> ndlPos;
     THit hit;
 
-    register unsigned bktNo = getBucket(index.bucketMap, hash);
-    register TSAIter occ = saBegin + indexDir(index)[bktNo];
-    register TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
+    unsigned bktNo = getBucket(index.bucketMap, hash);
+    TSAIter occ = saBegin + indexDir(index)[bktNo];
+    TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
 
     for(; occ != occEnd; ++occ)
     {
@@ -1176,9 +1176,9 @@ windowFindNext(
             {
                 hashNext(shape, hostIterator(hostIterator(finder)));
 
-                register unsigned bktNo = getBucket(index.bucketMap, value(shape));
-                register TSAIter occ = saBegin + indexDir(index)[bktNo];
-                register TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
+                unsigned bktNo = getBucket(index.bucketMap, value(shape));
+                TSAIter occ = saBegin + indexDir(index)[bktNo];
+                TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
 
 				for(; occ != occEnd; ++occ)
 				{

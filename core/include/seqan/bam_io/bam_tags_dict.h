@@ -322,7 +322,7 @@ buildIndex(BamTagsDict const & bamTags)
         it += 2;
 
         // get tag type (e.g. 'I')
-        register char c = *(it++);
+        char c = *(it++);
         if (c == 'H' || c == 'Z')
         {
             // skip string and its end-of-string marker
