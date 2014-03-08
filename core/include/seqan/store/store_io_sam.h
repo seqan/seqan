@@ -969,7 +969,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
         appendValue(record.qName, *it);
 
     // Fill FLAG.
-    register unsigned short flag = 0;
+    unsigned short flag = 0;
 
     if (alignedRead.beginPos > alignedRead.endPos)
         flag |= BAM_FLAG_RC;

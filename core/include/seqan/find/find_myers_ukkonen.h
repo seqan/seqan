@@ -1025,8 +1025,8 @@ _myersAdjustBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderC
     if (IsSameType<TPatternCSP, NMatchesNone_>::VALUE && value == unknownValue<TValue>())
         return;
     
-    register unsigned ord = ordValue(value);
-	register unsigned short x = shift - state.shift[ord];
+    unsigned ord = ordValue(value);
+	unsigned short x = shift - state.shift[ord];
 	if (x < BitsPerValue<TWord>::VALUE)
 		state.bitMasks[ord] = (state.bitMasks[ord] >> x) | ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
 	else
@@ -1046,9 +1046,9 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
     if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE && value == unknownValue<TValue>())
         return (shift < BitsPerValue<TWord>::VALUE)? -1 << shift: -1;
     
-    register unsigned ord = ordValue(value);
-    register TWord res;
-    register TShift x = shift - state.shift[ord];
+    unsigned ord = ordValue(value);
+    TWord res;
+    TShift x = shift - state.shift[ord];
 	if (x < BitsPerValue<TWord>::VALUE) 
 		res = state.bitMasks[ord] >> x;
 	else
@@ -1110,8 +1110,8 @@ _patternInitSmallStateBanded(
 	//  VP = 100...      VP = 111...
 	//
 
-    register TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): maxValue<TWord>(); // HP[0]==1 <-> global, HP[0]==0 <-> local
-    register TWord VN = 0;
+    TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): maxValue<TWord>(); // HP[0]==1 <-> global, HP[0]==0 <-> local
+    TWord VN = 0;
 	
 	// Errors are counted along the lowest diagonal and the
 	// lowest row of the band.
@@ -1127,7 +1127,7 @@ _patternInitSmallStateBanded(
 	//
 	// diagWidth = length(container(finder)) + state.leftClip + state.rightClip - length(needle)
 	
-    register unsigned errors = 0;
+    unsigned errors = 0;
 	TIter ndlIter = begin(needle, Standard());
 	TIter ndlEnd;
 	
@@ -1137,7 +1137,7 @@ _patternInitSmallStateBanded(
 	
 	
 	typename Size<TFinder>::Type const columns = length(container(finder)) + state.leftClip;
-    register unsigned cutOff = state.maxErrors;
+    unsigned cutOff = state.maxErrors;
 	if (columns > ndlLength)
 	{
 		cutOff += columns - ndlLength;		// clipping case *0
@@ -1149,7 +1149,7 @@ _patternInitSmallStateBanded(
 
 //    std::cerr<<std::hex<<"\t  "<<std::setw(17)<<' '<<"\tVN"<<std::setw(17)<<VN<<"\tVP"<<std::setw(17)<<VP<<std::dec<<std::endl;
 
-	register unsigned short shift = 0;
+	unsigned short shift = 0;
 	
 	if (state.leftClip != 0)
 	{
@@ -1229,16 +1229,16 @@ _patternInitSmallStateBanded(
         // DIAGONAL MYERS CORE
 		
 		// VP/VN --> D0  (original Myers)
-        register TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
-        register TWord D0 = ((VP + (X & VP)) ^ VP) | X;
+        TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
+        TWord D0 = ((VP + (X & VP)) ^ VP) | X;
 		
 		// adjust errors corresponding to rightmost bit of D0
         errors += (~D0 >> (BitsPerValue<TWord>::VALUE - 1)) & 1;
         if (errors > cutOff) return false;
 
 		// D0 --> HP/HN  (original Myers)
-        register TWord HN = VP & D0;
-        register TWord HP = VN | ~(VP | D0);
+        TWord HN = VP & D0;
+        TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
     //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP << std::endl;
@@ -1562,11 +1562,11 @@ _findMyersSmallPatternsBanded(
 	typedef typename TState::TWord TWord;
 	typedef typename Value<TNeedle>::Type TValue;
 
-    register TWord VP = state.VP0;
-    register TWord VN = state.VN0;
-    register TWord errors = state.errors;
-    register TWord const maxErrors = state.maxErrors;
-	register unsigned short const shift = length(needle);
+    TWord VP = state.VP0;
+    TWord VN = state.VN0;
+    TWord errors = state.errors;
+    TWord const maxErrors = state.maxErrors;
+	unsigned short const shift = length(needle);
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
     unsigned col = position(finder) + 1;
@@ -1577,10 +1577,10 @@ _findMyersSmallPatternsBanded(
 		// PART 2: go right
 
 		// normal Myers
-		register TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
-		register TWord D0 = ((VP + (X & VP)) ^ VP) | X;
-		register TWord HN = VP & D0;
-		register TWord HP = VN | ~(VP | D0);
+		TWord X = _myersGetBitmask(state, ordValue(*finder), shift, typename MyersSmallAlphabet_<TValue>::Type()) | VN;
+		TWord D0 = ((VP + (X & VP)) ^ VP) | X;
+		TWord HN = VP & D0;
+		TWord HP = VN | ~(VP | D0);
 	//    const int PADDING = sizeof(TWord)*2 + 1;
 	//    std::cerr << std::hex;
 	//    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP<<std::endl;
