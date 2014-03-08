@@ -232,7 +232,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 
 		// check whether bucket map is disabled and
 		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramCode);
+		TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
         TSize h1 = _hashFunction(bucketMap, code);
@@ -276,7 +276,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		
 		// check whether bucket map is disabled and
 		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramCode);
+		TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
         TSize h1 = _hashFunction(bucketMap, code);
