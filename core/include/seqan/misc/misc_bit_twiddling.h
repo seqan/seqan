@@ -701,7 +701,7 @@ inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    register unsigned long hi = word >> 32;
+    unsigned long hi = word >> 32;
     if (hi == 0u)
     {
         _BitScanReverse(&index, word);
@@ -716,7 +716,7 @@ inline TWord
 _bitScanForward(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    register unsigned long lo = word & ~static_cast<unsigned long>(0);
+    unsigned long lo = word & ~static_cast<unsigned long>(0);
     if (lo == 0u)
     {
         _BitScanForward(&index, word >> 32);

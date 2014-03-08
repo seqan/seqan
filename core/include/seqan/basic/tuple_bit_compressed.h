@@ -205,7 +205,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
         SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
         SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
 
-        register unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
+        unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
         i = (i & ~(BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
         return source;
     }
@@ -265,7 +265,7 @@ assignValue(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
     SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
 
-    register unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
+    unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
     me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
     return source;
 }
