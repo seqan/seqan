@@ -110,6 +110,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFl
     navigator._ptrDataContainer = &dpMatrix;
     navigator._activeColIterator = begin(dpMatrix, Standard());
     navigator._laneLeap = 1;
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // Initializes the navigator for banded alignments.
@@ -149,6 +150,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFl
         navigator._laneLeap = lengthVertical + lastPos;
         navigator._activeColIterator = begin(dpMatrix, Standard()) + navigator._laneLeap - 1;
     }
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // ----------------------------------------------------------------------------
