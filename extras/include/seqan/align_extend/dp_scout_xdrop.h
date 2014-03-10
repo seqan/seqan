@@ -114,10 +114,61 @@ struct ScoutStateSpecForScout_<
 // ============================================================================
 // Functions
 // ============================================================================
+// ----------------------------------------------------------------------------
+// Function _scoutBestScore()                                        [DPScout_]
+// ----------------------------------------------------------------------------
+
+// NOTE: The original code here used Value<TDPCell>::Type instead of TDPCellValue but this caused ambiguous call
+// errors in MSVC.
+
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
+          typename TIsLastColumn = False>
+inline void
+_scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn const & /**/,
+                False const & /*IsLastRow*/)
+{
+    typedef typename Value<TDPCell>::Type TScoreValue;
+    typedef XDrop_<TScoreValue> TXDrop;
+    typedef DPScout_<TDPCell, Terminator_<TXDrop> > TDPScout;
+    typedef typename TDPScout::TParent TParent;
+
+    // global maximum
+    _scoutBestScore(static_cast<TParent &>( dpScout ), activeCell, navigator);
+
+    // column maximum
+    dpScout.state->columnMax = _max(dpScout.state->columnMax,
+                                    _scoreOfCell(activeCell));
+}
+
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
+          typename TIsLastColumn = False>
+inline void
+_scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn const & /**/,
+                True const & /*IsLastRow*/)
+{
+    typedef typename Value<TDPCell>::Type TScoreValue;
+
+    _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(), False());
+
+    // check termination condition
+    if (_scoreOfCell(dpScout._maxScore) - dpScout.state->columnMax
+        >= dpScout.state->terminationThreshold)
+        terminateScout(dpScout);
+    else // reset columMax at end of column
+        dpScout.state->columnMax = MinValue<TScoreValue>::VALUE;
+}
 
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
+
+
 
 // Computes the score and tracks it if enabled.
 template <typename TDPScout, typename TTraceMatrixNavigator,
@@ -153,57 +204,21 @@ _computeCell(TDPScout & scout,
                               TDPProfile()));
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
-        bool isLastColumn = IsSameType<
-            typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE;
+        typedef typename IsSameType<
+                            typename TColumnDescriptor::TColumnProperty,
+                            DPFinalColumn>::Type TIsLastColumn;
+
         // the following is the only change to the regular _computeCell:
         // for the evaluation of the termination criterium we treat
         // all lastCells as lastRows
-        bool isLastRow = IsSameType<TCellDescriptor, LastCell>::VALUE;
-        _scoutBestScore(scout, activeCell, traceMatrixNavigator, isLastColumn,
-                        isLastRow);
+        typedef typename IsSameType<TCellDescriptor, LastCell>::Type TIsLastRow;
+        _scoutBestScore(scout, activeCell, traceMatrixNavigator,
+                        TIsLastColumn(), TIsLastRow());
+
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function _scoutBestScore()                                        [DPScout_]
-// ----------------------------------------------------------------------------
 
-// NOTE: The original code here used Value<TDPCell>::Type instead of TDPCellValue but this caused ambiguous call
-// errors in MSVC.
-
-template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue>
-inline void
-_scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
-                TDPCell const & activeCell,
-                TTraceMatrixNavigator const & navigator,
-                bool const isLastColumn   = false,
-                bool const isLastRow      = false)
-{
-    typedef typename Value<TDPCell>::Type TScoreValue;
-    typedef XDrop_<TScoreValue> TXDrop;
-    typedef DPScout_<TDPCell, Terminator_<TXDrop> > TDPScout;
-    typedef typename TDPScout::TParent TParent;
-
-    (void) isLastColumn;
-
-    // global maximum
-    _scoutBestScore(static_cast<TParent &>( dpScout ), activeCell, navigator);
-
-    // column maximum
-    dpScout.state->columnMax = _max(dpScout.state->columnMax,
-                                    _scoreOfCell(activeCell));
-
-    // check termination condition
-    if (isLastRow)
-    {
-        if (_scoreOfCell(dpScout._maxScore) - dpScout.state->columnMax
-            >= dpScout.state->terminationThreshold)
-            terminateScout(dpScout);
-        else // reset columMax at end of column
-            dpScout.state->columnMax = MinValue<TScoreValue>::VALUE;
-    }
-
-}
 
 }  // namespace seqan
 
