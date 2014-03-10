@@ -93,8 +93,21 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
 
     // We do not need string ids for this variant and set them to 0u.  They are
     // only required for the Fragment String and the Alignment Graph variant.
-    TScoreValue res = _setUpAndRunAlignment(trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
-                                            alignConfig, lowerDiag, upperDiag, algoTag);
+
+    TScoreValue res;
+    if (_usesAffineGaps(scoringScheme, source(row(align, 0)), source(row(align, 1))))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        res =_setUpAndRunAlignment(dpContext, trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
+                                                alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        res =_setUpAndRunAlignment(dpContext, trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
+                                                alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+
     _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
     return res;
 }
@@ -169,8 +182,20 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
     // We do not need string ids for this variant and set them to 0u.  They are
     // only required for the Fragment String and the Alignment Graph variant.
-    TScoreValue res = _setUpAndRunAlignment(traceSegments, source(gapsH), source(gapsV), scoringScheme, alignConfig,
-                                            lowerDiag, upperDiag, algoTag);
+    TScoreValue res;
+    if (_usesAffineGaps(scoringScheme, source(gapsH), source(gapsV)))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        res =_setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV), scoringScheme,
+                                                alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        res =_setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV), scoringScheme,
+                                                alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+
     _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
     return res;
 }
@@ -249,10 +274,21 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
     String<TTraceSegment> traceSegments;
-
-    TScoreValue res = _setUpAndRunAlignment(traceSegments, value(stringSet(alignmentGraph), 0),
-                                            value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, lowerDiag,
-                                            upperDiag, algoTag);
+    TScoreValue res;
+    if (_usesAffineGaps(scoringScheme, value(stringSet(alignmentGraph), 0), value(stringSet(alignmentGraph), 1)))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        res = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
+                                    value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, lowerDiag,
+                                    upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        res = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
+                                    value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, lowerDiag,
+                                    upperDiag, algoTag);
+    }
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
                           positionToId(stringSet(alignmentGraph), 1), traceSegments);
     return res;
@@ -328,8 +364,19 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 
     String<TTraceSegment> traceSegments;
 
-    TScoreValue res = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
-                                            alignConfig, lowerDiag, upperDiag, algoTag);
+    TScoreValue res;
+    if (_usesAffineGaps(scoringScheme, value(strings, 0), value(strings, 1)))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        res = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
+                                    alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        res = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
+                                    alignConfig, lowerDiag, upperDiag, algoTag);
+    }
     _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
     return res;
 }
@@ -402,7 +449,16 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
                                  int upperDiag,
                                  TAlgoTag const & algoTag)
 {
-    return _setUpAndRunAlignment(seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    if (_usesAffineGaps(scoringScheme, seqH, seqV))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    }
 }
 
 // Interface without AlignConfig<>.
@@ -472,7 +528,16 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
                                  TAlgoTag const & algoTag)
 {
     SEQAN_ASSERT_EQ(length(strings), 2u);
-    return _setUpAndRunAlignment(strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    if (_usesAffineGaps(scoringScheme, strings[0], strings[1]))
+    {
+        DPContext<TScoreValue, AffineGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    }
+    else
+    {
+        DPContext<TScoreValue, LinearGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+    }
 }
 
 // Interface without AlignConfig<>.

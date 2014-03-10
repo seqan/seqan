@@ -108,6 +108,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, Navigat
     navigator._activeColIterator = begin(dpMatrix, Standard());
     navigator._prevColIterator = navigator._activeColIterator - _dataFactors(dpMatrix)[DPMatrixDimension_::HORIZONTAL];
     navigator._laneLeap = 1;
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // Initializes the navigator for a banded alignment.
@@ -142,6 +143,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, Navigat
     }
     // Set previous iterator to same position, one column left.
     navigator._prevColIterator = navigator._activeColIterator - _dataFactors(dpMatrix)[DPMatrixDimension_::HORIZONTAL];
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // ----------------------------------------------------------------------------
