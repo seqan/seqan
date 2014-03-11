@@ -359,6 +359,7 @@ inline void
 clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
+    record.flag = 0;
     record._qID = MaxValue<__uint32>::VALUE;
     record.rID = BamAlignmentRecord::INVALID_REFID;
     record.beginPos = BamAlignmentRecord::INVALID_POS;
