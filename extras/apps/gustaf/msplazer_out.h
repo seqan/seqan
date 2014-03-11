@@ -513,8 +513,10 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
     ss << ";END=" << end - 1 + 1; // -1 to set end as last position of variant, +1 for 1-base adjustment
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Duplication end position smaller than begin position!");
     if (target != maxValue<unsigned>())
+    {
         ss << ";SVLEN=" << end-begin;
         ss << ";TARGETPOS=" << target - 1 + 1; // -1 to set target as position before insertion, +1 for 1-base adjustment
+    }
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
