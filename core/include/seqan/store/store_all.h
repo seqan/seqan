@@ -848,7 +848,6 @@ public:
         seqan::swap(matePairNameStore, other.matePairNameStore);
         seqan::swap(libraryNameStore, other.libraryNameStore);
         seqan::swap(matePairNameStore, other.matePairNameStore);
-        seqan::swap(contigNameStore, other.contigNameStore);
         seqan::swap(annotationNameStore, other.annotationNameStore);
         seqan::swap(annotationTypeStore, other.annotationTypeStore);
         seqan::swap(annotationKeyStore, other.annotationKeyStore);
