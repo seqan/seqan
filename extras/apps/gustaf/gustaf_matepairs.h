@@ -294,12 +294,14 @@ _artificialBP(TMatch const & sMatch1, TMatch const & sMatch2, TMSplazerChain con
     if (!_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && !_isLeftMate(sMatch2, gustafChain.mateJoinPosition))
         return false;
     // Check the distance between inner match position on the reference
+    /*
     typedef typename TMatch::TPos TPos;
     TPos dist = sMatch2.begin1 - sMatch1.end1;
     if (dist < (options.libSize - options.libError))
         return false;
     if (dist > (options.libSize + options.libError))
         return false;
+        */
     return true;
 }
 
