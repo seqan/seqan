@@ -286,7 +286,7 @@ _checkMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches, TM
 // Assumptions: sMatch1 < sMatch2, valid order and valid gap between matches regarding read sequence
 template <typename TMatch, typename TMSplazerChain>
 inline bool
-_artificialBP(TMatch const & sMatch1, TMatch const & sMatch2, TMSplazerChain const & gustafChain, MSplazerOptions const & options)
+_artificialBP(TMatch const & sMatch1, TMatch const & sMatch2, TMSplazerChain const & gustafChain)//, MSplazerOptions const & options)
 {
     // Check if both matches are from different mates
     if (_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && _isLeftMate(sMatch2, gustafChain.mateJoinPosition))

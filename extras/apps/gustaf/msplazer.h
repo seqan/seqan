@@ -162,6 +162,7 @@ struct Breakpoint
     TPos cimiddle;    // Confidence after dupMiddlePos for imprecise breakpoint
     // Counter of occurrences (read support)
     unsigned support;
+    unsigned similar;
     // Query Sequence Ids (queries/reads that support the breakpoint)
     StringSet<TId> supportIds;
     // SV type
@@ -194,6 +195,7 @@ struct Breakpoint
         ciend(maxValue<unsigned>()),
         cimiddle(maxValue<unsigned>()),
         support(1),
+        similar(maxValue<unsigned>()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -225,6 +227,7 @@ struct Breakpoint
         ciend(maxValue<unsigned>()),
         cimiddle(maxValue<unsigned>()),
         support(1),
+        similar(maxValue<unsigned>()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -257,6 +260,7 @@ struct Breakpoint
         ciend(maxValue<unsigned>()),
         cimiddle(maxValue<unsigned>()),
         support(1),
+        similar(maxValue<unsigned>()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -796,21 +800,31 @@ inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> &
  */
 
 template <typename TId, typename TPos>
-inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPos> & bp2)
+inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPos> & bp2, unsigned const & range)
 {
-    typedef Breakpoint<TId, TPos> TBP;
-    unsigned const range = 5;
-    bool sameOrient = true;
-    bool sameSeqs = (bp1.startSeqId == bp2.startSeqId) && (bp1.endSeqId == bp2.endSeqId);
-    // bool sameOrient = (bp1.startSeqStrand == bp2.startSeqStrand) && (bp1.endSeqStrand == bp2.endSeqStrand);
-    bool samePosRange = 0;
-    if (bp1.svtype == TBP::BREAKEND || bp2.svtype == TBP::BREAKEND)
-        samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
-            || posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range);
-    else
-        samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
-            && posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range);
-    return sameSeqs && sameOrient && samePosRange;
+    typedef Breakpoint<TId, TPos> TBreakpoint;
+    if (bp1.svtype != bp2.svtype)
+        return false;
+    if (bp1.startSeqId != bp2.startSeqId)
+        return false;
+    if (bp1.endSeqId != bp2.endSeqId)
+        return false;
+
+    if (bp1.svtype == TBreakpoint::DELETION || TBreakpoint::INVERSION)
+        return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range) && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
+    if (bp1.svtype == TBreakpoint::INSERTION)
+        return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
+                && _posInSameRange(length(bp1.insertionSeq), length(bp2.insertionSeq), range));
+    if (bp1.svtype == TBreakpoint::DISPDUPLICATION || bp1.svtype == TBreakpoint::TRANSLOCATION)
+    {
+        if (bp2.dupMiddlePos != maxValue<unsigned>() && bp2.dupMiddlePos != maxValue<unsigned>())
+            return (_posInSameRange(bp1.dupMiddlePos, bp2.dupMiddlePos, range)
+                    && _posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
+                    && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
+        else
+            return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range) && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
+    }
+    return false;
 }
 
 /**
@@ -823,12 +837,12 @@ and can be compared according to them (in this order of priority).
 template <typename TId, typename TPos>
 inline bool operator==(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> const & bp2)
 {
+    if (bp1.svtype != bp2.svtype)
+        return false;
     if (bp1.startSeqId != bp2.startSeqId)
         return false;
-
     if (bp1.endSeqId != bp2.endSeqId)
         return false;
-
     /*
     if(bp1.startSeqStrand != bp2.startSeqStrand)
         return false;
@@ -837,13 +851,8 @@ inline bool operator==(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> 
     */
     if (bp1.startSeqPos != bp2.startSeqPos)
         return false;
-
     if (bp1.endSeqPos != bp2.endSeqPos)
         return false;
-
-    if (bp1.svtype != bp2.svtype)
-        return false;
-
     if (bp1.svtype == 1 && bp2.svtype == 1)
         return length(bp1.insertionSeq) == length(bp2.insertionSeq);
 
