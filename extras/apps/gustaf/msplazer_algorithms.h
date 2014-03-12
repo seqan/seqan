@@ -497,7 +497,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
                 // if match1 and match2 are from different mates and BP is indel check for artificial bp
                 //if (bp.svtype == TBreakpoint::DELETION && _artificialBP(stMatch1, stMatch2, chain, msplazerOptions))
-                if (_artificialBP(stMatch1, stMatch2, chain, msplazerOptions))
+                if (_artificialBP(stMatch1, stMatch2, chain))
                     assignProperty(queryBreakpoints, edge);
                 else
                     assignProperty(queryBreakpoints, edge, bp);
@@ -712,7 +712,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     }
 
                     // Put breakpoint on corresponding edge in breakpoint graph, overwrite existing bp if new one better (smaller cargo)
-                    bool artificialBP = _artificialBP(*stMatch1, *stMatch2, chain, msplazerOptions);
+                    bool artificialBP = _artificialBP(*stMatch1, *stMatch2, chain);
                     TEdgeDescriptor edge;
                     edge = findEdge(graph, m1, m2);
                     // Returns 0 if edge does not exist
@@ -1148,7 +1148,7 @@ inline void _getBeSupport(String<TBreakpoint> & countedBE, TBreakpoint & bp, uns
 }
 
 template <typename TBreakpoint>
-inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange)
+inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange, unsigned & similarBPId)
 {
     String<unsigned> toBeErased;
     bool newBP = true;
@@ -1163,6 +1163,18 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
                 //std::cout << "equ bps" << std::endl;
             // Very special case, should be no other support likely
             newBP = false;
+        }
+        else if (_similarBreakpoints(bp, tempBP, bpPosRange))
+        {
+            // Mark breakpoint to be similar via an ID
+            if (tempBP.similar != maxValue<unsigned>())
+                bp.similar = tempBP.similar;
+            else
+            {
+                tempBP.similar = similarBPId;
+                bp.similar = tempBP.similar;
+                ++similarBPId;
+            }
         }
         // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
         // can either be part of the duplication and should not be in the output list or it can distinguish the dup
@@ -1289,7 +1301,11 @@ bool _insertBreakpointOld(String<TBreakpoint> & countedBP, TBreakpoint & bp, uns
 }
 
 template <typename TBreakpoint>
-void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & countedBE, String<TBreakpoint> & newBP, MSplazerOptions const & options)
+void _insertBreakpoints(String<TBreakpoint> & countedBP,
+                        String<TBreakpoint> & countedBE,
+                        String<TBreakpoint> & newBP,
+                        MSplazerOptions const & options,
+                        unsigned & similarBPId)
 {
     for (unsigned i = 0; i < length(newBP); ++i)
     {
@@ -1314,7 +1330,7 @@ void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & c
         {
             //std::cout << "breakpoint" << std::endl;
             _getBeSupport(countedBE, bp, options.breakpointPosRange);
-            _insertBreakpoint(countedBP, bp, options.breakpointPosRange);
+            _insertBreakpoint(countedBP, bp, options.breakpointPosRange, similarBPId);
         }
         //std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
     }
@@ -1512,6 +1528,7 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
     */
     String<TBreakpoint> globalBreakends;
     unsigned brokenChainCount = 0;
+    unsigned similarBPId = 0;
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
         String<TBreakpoint> tmpGlobalBreakpoints;
@@ -1519,7 +1536,7 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
         if (_findBestChain(queryChains[i], queryMatches[i].matches, tmpGlobalBreakpoints, // msplazerOptions,
                            brokenChainCount))
         {
-            _insertBreakpoints(globalBreakpoints, globalBreakends, tmpGlobalBreakpoints, msplazerOptions);
+            _insertBreakpoints(globalBreakpoints, globalBreakends, tmpGlobalBreakpoints, msplazerOptions, similarBPId);
             // get small indels from matches
             // _getChainIndels(queryChains[i].bestChains, globalStellarIndels, queryIds[i], queries[i]);
             /*
