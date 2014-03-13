@@ -706,17 +706,13 @@ _writeRecordImplTab(TStream                    & stream,
 
     //TODO if debug, do lots of sanity checks on record
 
-//     std::cout << __FILE__ << ": " << __LINE__ << "\n" << std::flush;
     //NOOP for Tabular
     int ret = writeHeader(stream, record.qId, record.dbName, TFormat());
     if (ret)
         return ret;
-//     std::cout << __FILE__ << ": " << __LINE__ << "\n" << std::flush;
     for (auto it = record.matches.begin(); it != record.matches.end(); ++it)
     {
-//         std::cout << __FILE__ << ": " << __LINE__ << "\n" << std::flush;
         ret = writeMatch(stream, *it, TFormat());
-//         std::cout << __FILE__ << ": " << __LINE__ << "\n" << std::flush;
         if (ret)
             return ret;
     }
