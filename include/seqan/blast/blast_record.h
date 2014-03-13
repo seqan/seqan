@@ -240,16 +240,16 @@ struct BlastRecord
 
     BlastRecord() :
         dbName(TDbName()), dbTotalLength(0), dbNumberOfSeqs(0), qId(TQId()),
-        qLength(0)
+        qLength(0), matches()
     {}
 
     BlastRecord(TDbName const & _dbName) :
         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(TQId()),
-        qLength(0)
+        qLength(0), matches()
     {}
     BlastRecord(TDbName const & _dbName, TQId & _qId) :
         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(_qId),
-        qLength(0)
+        qLength(0), matches()
     {}
 
 //     BlastRecord(TDbName const & _dbName, TQId && _qId) :
