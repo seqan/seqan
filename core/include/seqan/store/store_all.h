@@ -1904,7 +1904,7 @@ calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> 
 
 template <typename TSpec, typename TConfig, typename TId>
 inline int
-getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
+getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
 {
 	typedef FragmentStore<TSpec, TConfig>			TFragmentStore;
 	typedef typename TFragmentStore::TReadStore		TReadStore;
@@ -1928,7 +1928,7 @@ getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
 
 /*!
  * @fn FragmentStore#calculateMateIndices
- * @brief Calculates a string that maps the readId of a read to the readId of its mate.
+ * @brief Calculates a string that maps the readId of a read to the index of its mate in the alignedReadStore.
  *
  * @signature void calculateMateIndices(mateIndices, store);
  *
@@ -1955,27 +1955,27 @@ getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
 // calculate index of the other mate for each pair match
 template <typename TMateIndexString, typename TSpec, typename TConfig>
 inline void
-calculateMateIndices(TMateIndexString &mateIndices, FragmentStore<TSpec, TConfig> &me)
+calculateMateIndices(TMateIndexString & mateIndices, FragmentStore<TSpec, TConfig> const & me)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
+    typedef FragmentStore<TSpec, TConfig> const                     TFragmentStore;
+    typedef typename TFragmentStore::TAlignedReadStore const        TAlignedReadStore;
 
-	TAlignedReadIter it = begin(me.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
+    typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
+    typedef typename Id<TAlignedRead>::Type                         TId;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
 
-	for (TId idx = 0; it != itEnd; ++it, ++idx)
-	{
-		TId id = (*it).pairMatchId;
-		if (id == TAlignedRead::INVALID_ID) continue;
-		if (length(mateIndices) < 2*id + 2)
-			resize(mateIndices, 2*id + 2, TAlignedRead::INVALID_ID, Generous());
-		SEQAN_ASSERT_NEQ(getMateNo(me, (*it).readId), -1);
-		mateIndices[2*id + 1 - getMateNo(me, (*it).readId)] = idx;
-	}
+    TAlignedReadIter it = begin(me.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
+
+    for (TId idx = 0; it != itEnd; ++it, ++idx)
+    {
+        TId id = (*it).pairMatchId;
+        if (id == TAlignedRead::INVALID_ID) continue;
+        if (length(mateIndices) < 2*id + 2)
+            resize(mateIndices, 2*id + 2, TAlignedRead::INVALID_ID, Generous());
+        SEQAN_ASSERT_NEQ(getMateNo(me, (*it).readId), -1);
+        mateIndices[2*id + 1 - getMateNo(me, (*it).readId)] = idx;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
