@@ -142,6 +142,12 @@ struct CigarElement
 // Metafunctions
 // ============================================================================
 
+template <typename TOperation, typename TCount>
+struct Size<CigarElement<TOperation, TCount> >
+{
+    typedef TCount Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -633,6 +639,26 @@ inline void _getLengthInRef(TCigarString const & cigar, TNum & sum)
     for (; it != itEnd; ++it)
         if (getValue(it).operation != 'S' && getValue(it).operation != 'H' && getValue(it).operation != 'I')
             sum += getValue(it).count;
+}
+
+// ----------------------------------------------------------------------------
+// _getQueryLength()
+// ----------------------------------------------------------------------------
+
+template <typename TCigarString>
+inline typename Size<typename Value<TCigarString>::Type>::Type
+_getQueryLength(TCigarString const & cigar)
+{
+    typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
+    typedef typename Size<typename Value<TCigarString>::Type>::Type TSize;
+    TCigarIter it = begin(cigar, Standard());
+    TCigarIter itEnd = end(cigar, Standard());
+
+    TSize len = 0;
+    for (; it != itEnd; ++it)
+        if (getValue(it).operation != 'D' && getValue(it).operation != 'H' && getValue(it).operation != 'N' && getValue(it).operation != 'P')
+            len += getValue(it).count;
+    return len;
 }
 
 // ----------------------------------------------------------------------------
