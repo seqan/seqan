@@ -328,7 +328,6 @@ template <typename TTarget, typename TSource, typename TUnaryOperator, typename 
 inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Tag<TParallelTag> const & /* tag */)
 {
     SEQAN_ASSERT_GEQ(length(target), length(source));
-//    resize(target, length(source), Exact());
     std::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
 }
 
@@ -422,7 +421,7 @@ inline TFunctor forEach(TContainer const & c, TFunctor f, Parallel)
 template <typename TTarget, typename TSource, typename TUnaryOperator>
 inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Parallel)
 {
-    resize(target, length(source), Exact());
+    SEQAN_ASSERT_GEQ(length(target), length(source));
     __gnu_parallel::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
 }
 
