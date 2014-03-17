@@ -103,7 +103,7 @@ struct MSplazerOptions
         diffOrderPen(0),
         noMateMatchesPen(5),
         simThresh(0.5),
-        gapThresh(10),
+        gapThresh(5), // microindel size around breakpoints
         initGapThresh(15),
         breakendThresh(30),
         tandemThresh(50),
@@ -174,7 +174,7 @@ struct Breakpoint
     bool translSuppStartPos;
     bool translSuppEndPos;
     // bool imprecise = false;
-    // Storing on which site the breakend is: 
+    // Storing on which site the breakend is:
     // 0: left breakend, i.e. sequence continues right of position
     // 1: right breakend, i.e. sequence continues left of position
     bool breakend;
