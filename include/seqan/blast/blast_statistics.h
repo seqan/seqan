@@ -732,15 +732,18 @@ _lengthAdjustment(TSize     const & dbLength,
  * @headerfile seqan/blast.h
  */
 
-template <typename TScore, typename TRow>
+template <typename TScoreValue,
+          typename TPos,
+          typename TScore,
+          typename TRow>
 inline
-void calcStatsAndScore(long              & sc,
-                       unsigned int      & ali_length,
-                       unsigned int      & identities,
-                       unsigned int      & positives,
-                       unsigned int      & mismatches,
-                       unsigned int      & gaps,
-                       unsigned int      & gap_openings,
+void calcStatsAndScore(TScoreValue       & sc,
+                       TPos              & ali_length,
+                       TPos              & identities,
+                       TPos              & positives,
+                       TPos              & mismatches,
+                       TPos              & gaps,
+                       TPos              & gap_openings,
                        TRow        const & row0,
                        TRow        const & row1,
                        TScore      const & scoringScheme)

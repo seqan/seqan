@@ -53,6 +53,8 @@ struct BlastMatch
     TQId            qId;
     TSId            sId;
 
+    long            score;
+
     TPos            qStart;
     TPos            qEnd;
     TPos            sStart;
@@ -60,12 +62,6 @@ struct BlastMatch
 
     TPos            sLength;
 
-    TAlign          align;
-
-    short           qFrameShift;
-    short           sFrameShift;
-
-    long            score;
     TPos            aliLength;
     TPos            identities;
     TPos            positives;
@@ -76,26 +72,39 @@ struct BlastMatch
     double          eVal;
     double          bitScore;
 
+    signed char     qFrameShift;
+    signed char     sFrameShift;
+
+
+    TAlign          align;
+
     BlastMatch() :
-        qId(TQId()), sId(TSId()), qStart(0), qEnd(0), sStart(0), sEnd(0),
-        sLength(0), qFrameShift(0), sFrameShift(0), score(0), aliLength(0),
-        identities(0), positives(0), mismatches(0), gaps(0), gapOpenings(0),
-        eVal(0), bitScore(0)
+        qId(TQId()), sId(TSId()), score(0), qStart(0), qEnd(0), sStart(0),
+        sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
+        mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
+        qFrameShift(0), sFrameShift(0)
     {}
 
-    BlastMatch(TQId  & _qId, TSId _sId) :
-        qId(_qId), sId(_sId), qStart(0), qEnd(0), sStart(0), sEnd(0),
-        sLength(0), qFrameShift(0), sFrameShift(0), score(0), aliLength(0),
-        identities(0), positives(0), mismatches(0), gaps(0), gapOpenings(0),
-        eVal(0), bitScore(0)
-    {}
-
-//     BlastMatch(TQId && _qId, TSId && _sId) :
-//         qId(std::move(_qId)), sId(std::move(_sId)), qStart(0), qEnd(0), sStart(0), sEnd(0),
+//     BlastMatch(TQId  _qId, TSId _sId) :
+//         qId(_qId), sId(_sId), qStart(0), qEnd(0), sStart(0), sEnd(0),
 //         sLength(0), qFrameShift(0), sFrameShift(0), score(0), aliLength(0),
 //         identities(0), positives(0), mismatches(0), gaps(0), gapOpenings(0),
 //         eVal(0), bitScore(0)
 //     {}
+
+    BlastMatch(TQId const & _qId, TSId const & _sId) :
+        qId(_qId), sId(_sId), score(0), qStart(0), qEnd(0), sStart(0),
+        sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
+        mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
+        qFrameShift(0), sFrameShift(0)
+    {}
+
+    BlastMatch(TQId && _qId, TSId && _sId) :
+        qId(std::move(_qId)), sId(std::move(_sId)), score(0), qStart(0),
+        qEnd(0), sStart(0), sEnd(0), sLength(0),  aliLength(0), identities(0),
+        positives(0), mismatches(0), gaps(0), gapOpenings(0), eVal(0),
+        bitScore(0), qFrameShift(0), sFrameShift(0)
+    {}
 
     inline bool operator==(BlastMatch const & bm2) const
     {
@@ -247,15 +256,21 @@ struct BlastRecord
         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(TQId()),
         qLength(0), matches()
     {}
-    BlastRecord(TDbName const & _dbName, TQId & _qId) :
+
+//     BlastRecord(TDbName _dbName, TQId _qId) :
+//         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(_qId),
+//         qLength(0), matches()
+//     {}
+
+    BlastRecord(TDbName const & _dbName, TQId const &_qId) :
         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(_qId),
         qLength(0), matches()
     {}
 
-//     BlastRecord(TDbName const & _dbName, TQId && _qId) :
-//         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(std::move(_qId)),
-//         qLength(0)
-//     {}
+    BlastRecord(TDbName && _dbName, TQId && _qId) :
+        dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0),
+        qId(std::move(_qId)), qLength(0)
+    {}
 
 //     BlastRecord(TDbName && _dbName, TQId && _qId) :
 //         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(_qId),
