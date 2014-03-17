@@ -325,7 +325,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
         return;
     }
 
-    if(IsNewline()(value(iter)))
+    if (IsNewline()(value(iter)))
         return;
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
