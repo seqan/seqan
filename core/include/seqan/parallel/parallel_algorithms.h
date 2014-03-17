@@ -327,7 +327,7 @@ forEach(TContainer const & c, TFunctor f, Tag<TParallelTag> const & /* tag */)
 template <typename TTarget, typename TSource, typename TUnaryOperator, typename TParallelTag>
 inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Tag<TParallelTag> const & /* tag */)
 {
-    resize(target, length(source), Exact());
+    SEQAN_ASSERT_GEQ(length(target), length(source));
     std::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
 }
 
@@ -421,7 +421,7 @@ inline TFunctor forEach(TContainer const & c, TFunctor f, Parallel)
 template <typename TTarget, typename TSource, typename TUnaryOperator>
 inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Parallel)
 {
-    resize(target, length(source), Exact());
+    SEQAN_ASSERT_GEQ(length(target), length(source));
     __gnu_parallel::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
 }
 
