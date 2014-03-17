@@ -360,7 +360,7 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
     ss << "SVTYPE=INS";
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Insertion end position smaller than begin position!");
     ss << ";SVLEN=" << length(bp.insertionSeq);
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -395,7 +395,7 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Deletion end position smaller than begin position!");
     ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos;
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -432,7 +432,7 @@ inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSeque
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Inversion end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -462,7 +462,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Tandem duplication end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos - 1; // -1 bc positions are flanking the variant region
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -525,7 +525,7 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
         ss << ";SVLEN=" << end-begin;
         ss << ";TARGETPOS=" << target - 1 + 1; // -1 to set target as position before insertion, +1 for 1-base adjustment
     }
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -554,8 +554,8 @@ inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequen
     // ss << "IMPRECISE;";
     ss << "SVTYPE=BND";
     // ss << ";CIPOS=-5,5";
-    if (bp.similar != maxValue<unsigned>())
-        ss << ";BM=" << bp.similar;
+    //if (bp.similar != maxValue<unsigned>())
+        //ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
@@ -638,7 +638,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     std::stringstream ss;
     ss << "SVTYPE=BND";
     ss << ";EVENT=Trans" << bp_id;
-    if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != maxValue<unsigned>())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();

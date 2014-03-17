@@ -723,7 +723,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         if (foundBP)
                         {
                             TBreakpoint & oldBp = property(queryBreakpoints, edge);
-                            if (cargo < getCargo(edge) && oldBp.svtype != TBreakpoint::DISPDUPLICATION)
+                            if (cargo < getCargo(edge))// && oldBp.svtype != TBreakpoint::DISPDUPLICATION)
                             {
                             /*
                             std::cout << "********************************" << std::endl;
@@ -1091,10 +1091,18 @@ inline bool _insertBreakend(String<TBreakpoint> & countedBE, TBreakpoint & be, u
     for (unsigned i = 0; i < length(countedBE); ++i)
     {
         TBreakpoint & tempBE = countedBE[i];
-        if (_similarBreakends(be, tempBE, bpPosRange))
+        // if .breakend is equal, both breakends are both either left or right breakends
+        if (_similarBreakends(be, tempBE, bpPosRange) && tempBE.breakend == be.breakend)
         {
             appendSupportId(tempBE, be.supportIds);
             newBE = false;
+            // Take leftmost (left BE,0) or rightmost (right BE,1) position
+            if ((tempBE.breakend && tempBE.startSeqPos > be.startSeqPos)
+                    || (!tempBE.breakend && tempBE.startSeqPos < be.startSeqPos))
+            {
+                tempBE.startSeqPos = be.startSeqPos;
+                tempBE.endSeqPos = be.endSeqPos;
+            }
         }
     }
     if (newBE)
@@ -1166,15 +1174,8 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         }
         else if (_similarBreakpoints(bp, tempBP, bpPosRange))
         {
+            bp.similar = tempBP.similar;
             // Mark breakpoint to be similar via an ID
-            if (tempBP.similar != maxValue<unsigned>())
-                bp.similar = tempBP.similar;
-            else
-            {
-                tempBP.similar = similarBPId;
-                bp.similar = tempBP.similar;
-                ++similarBPId;
-            }
         }
         // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
         // can either be part of the duplication and should not be in the output list or it can distinguish the dup
@@ -1195,7 +1196,14 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
     }
     // Append breakpoint if new
     if (newBP)
+    {
+        if (bp.similar == maxValue<unsigned>())
+        {
+            bp.similar = similarBPId;
+            ++similarBPId;
+        }
         appendValue(countedBP, bp);
+    }
 }
 // Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
 // has been inserted or false if breakpoint was already in the set (and just has been counted).

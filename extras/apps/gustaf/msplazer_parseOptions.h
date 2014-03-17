@@ -178,8 +178,8 @@ void _setupArgumentParser(ArgumentParser & parser)
                              "DOUBLE"));
     setDefaultValue(parser, "oth", "0.5");
     addOption(parser,
-              ArgParseOption("gth", "gapThresh", "Allowed gap length between matches", ArgParseArgument::INTEGER, "INT"));
-    setDefaultValue(parser, "gth", "10");
+              ArgParseOption("gth", "gapThresh", "Allowed gap length between matches, default value corresponse to expected size of microindels (5 bp)", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "gth", "5");
     addOption(parser, ArgParseOption(
                   "ith", "initGapThresh", "Allowed initial or ending gap length at begin and end of read with no breakpoint (e.g. due to sequencing errors at the end)",
                   ArgParseArgument::INTEGER, "INT"));
