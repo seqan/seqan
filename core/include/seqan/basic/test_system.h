@@ -367,12 +367,10 @@ public:
         }                                                                           \
         catch(...)                                                                  \
         {                                                                           \
-           SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);              \
+            SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);             \
         }                                                                           \
         if (!caughtException)                                                       \
-        {                                                                           \
             SEQAN_FAIL("No exception thrown!");                                     \
-        }                                                                           \
     } while(false)
 
 #define SEQAN_TEST_EXCEPTION_WITH_MESSAGE(_exception_type, command, _message)       \
@@ -391,12 +389,10 @@ public:
         }                                                                           \
         catch(...)                                                                  \
         {                                                                           \
-           SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);              \
+            SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);             \
         }                                                                           \
         if (!caughtException)                                                       \
-        {                                                                           \
             SEQAN_FAIL("No exception thrown!");                                     \
-        }                                                                           \
     } while(false)
 
 
