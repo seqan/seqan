@@ -149,7 +149,9 @@ struct BlastMatch
                         qEnd,
                         sStart,
                         sEnd,
-                        align,
+//                         align,
+                        qFrameShift,
+                        sFrameShift,
                         score,
                         aliLength,
                         identities,
@@ -165,7 +167,9 @@ struct BlastMatch
                         bm2.qEnd,
                         bm2.sStart,
                         bm2.sEnd,
-                        bm2.align,
+                        bm2.qFrameShift,
+                        bm2.sFrameShift,
+//                         bm2.align,
                         bm2.score,
                         bm2.aliLength,
                         bm2.identities,
@@ -178,45 +182,45 @@ struct BlastMatch
         #endif
     }
 
-    inline void operator=(BlastMatch const & bm2) const
-    {
-        #ifndef SEQAN_CXX11_STANDARD //C++98
-        //TODO
-        #else
-        std::make_tuple(qId,
-                        sId,
-                        qStart,
-                        qEnd,
-                        sStart,
-                        sEnd,
-                        align,
-                        score,
-                        aliLength,
-                        identities,
-                        positives,
-                        mismatches,
-                        gaps,
-                        gapOpenings,
-                        eVal,
-                        bitScore)
-            = std::tie(bm2.qId,
-                        bm2.sId,
-                        bm2.qStart,
-                        bm2.qEnd,
-                        bm2.sStart,
-                        bm2.sEnd,
-                        bm2.align,
-                        bm2.score,
-                        bm2.aliLength,
-                        bm2.identities,
-                        bm2.positives,
-                        bm2.mismatches,
-                        bm2.gaps,
-                        bm2.gapOpenings,
-                        bm2.eVal,
-                        bm2.bitScore);
-        #endif
-    }
+//     inline void operator=(BlastMatch const & bm2) const
+//     {
+//         #ifndef SEQAN_CXX11_STANDARD //C++98
+//         //TODO
+//         #else
+//         std::make_tuple(qId,
+//                         sId,
+//                         qStart,
+//                         qEnd,
+//                         sStart,
+//                         sEnd,
+//                         align,
+//                         score,
+//                         aliLength,
+//                         identities,
+//                         positives,
+//                         mismatches,
+//                         gaps,
+//                         gapOpenings,
+//                         eVal,
+//                         bitScore)
+//             = std::tie(bm2.qId,
+//                         bm2.sId,
+//                         bm2.qStart,
+//                         bm2.qEnd,
+//                         bm2.sStart,
+//                         bm2.sEnd,
+//                         bm2.align,
+//                         bm2.score,
+//                         bm2.aliLength,
+//                         bm2.identities,
+//                         bm2.positives,
+//                         bm2.mismatches,
+//                         bm2.gaps,
+//                         bm2.gapOpenings,
+//                         bm2.eVal,
+//                         bm2.bitScore);
+//         #endif
+//     }
 
     inline bool operator< (BlastMatch const & bm2) const
     {
