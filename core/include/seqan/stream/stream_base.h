@@ -165,10 +165,18 @@ const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::o
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Concept StreamConcept
+// --------------------------------------------------------------------------
+
+SEQAN_CONCEPT(StreamConcept, (TStream))
+{
+};
+
+// --------------------------------------------------------------------------
 // Concept InputStreamConcept
 // --------------------------------------------------------------------------
 
-SEQAN_CONCEPT(InputStreamConcept, (TStream))
+SEQAN_CONCEPT_REFINE(InputStreamConcept, (TStream), (StreamConcept))
 {
     typedef typename Value<TStream>::Type       TValue;
     typedef typename Size<TStream>::Type        TSize;
@@ -185,7 +193,7 @@ SEQAN_CONCEPT(InputStreamConcept, (TStream))
 // Concept OutputStreamConcept
 // --------------------------------------------------------------------------
 
-SEQAN_CONCEPT(OutputStreamConcept, (TStream))
+SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
 {
     typedef typename Value<TStream>::Type       TValue;
     typedef typename Size<TStream>::Type        TSize;
@@ -291,7 +299,7 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         SEQAN_ASSERT_GT(minChunkSize, 0u);
 
         reserveChunk(target, minChunkSize);
-        ochunk = getChunk(end(target, Rooted()), Output());
+        ochunk = getChunk(target, Output());
 
         typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
 

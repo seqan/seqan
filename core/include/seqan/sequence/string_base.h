@@ -2126,8 +2126,8 @@ inline TStream &
 operator<<(TStream & target,
            String<TValue, TSpec> const & source)
 {
-SEQAN_CHECKPOINT
-//    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it(target);
+    write(it, source);
     return target;
 }
 
@@ -2140,8 +2140,8 @@ inline TStream &
 operator>>(TStream & source,
            String<TValue, TSpec> & target)
 {
-    SEQAN_CHECKPOINT;
-//    read(source, target);
+    typename DirectionIterator<TStream, Input>::Type it(source);
+    read(it, target);
     return source;
 }
 

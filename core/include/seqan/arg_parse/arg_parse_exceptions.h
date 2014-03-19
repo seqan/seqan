@@ -51,13 +51,14 @@ namespace seqan {
 ..summary:General ParseError.
 */
 
-class ParseError : public RuntimeError
+/*class ParseError : public RuntimeError
 {
 public:
     ParseError(std::string const & option) :
         RuntimeError(option)
     {}
 };
+*/
 
 // ----------------------------------------------------------------------------
 // Class InvalidOption
