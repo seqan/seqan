@@ -228,8 +228,8 @@ void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
         case TBreakpoint::DISPDUPLICATION:
         record.type = "duplication";
         break;
-        case TBreakpoint::INTRATRANSLOCATION:
-        record.type = "intra-chr-translocation";
+        case TBreakpoint::INTERTRANSLOCATION:
+        record.type = "inter-chr-translocation";
         break;
         case TBreakpoint::TRANSLOCATION:
         record.type = "translocation";
@@ -601,7 +601,7 @@ inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref
         _fillVcfRecordDuplication(record, bp, ref, id);
         return 1;
         // Translocation are handled seperately bc there is more than 1 record
-        case TBreakpoint::INTRATRANSLOCATION:
+        case TBreakpoint::INTERTRANSLOCATION:
         return 1;
         case TBreakpoint::TRANSLOCATION:
         return 1;
@@ -985,7 +985,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             if (bp.svtype == TBreakpoint::DISPDUPLICATION && bp.translSuppStartPos && bp.translSuppEndPos)
                 bp.svtype = TBreakpoint::TRANSLOCATION;
             id = _getrID(databaseIDs, bp.startSeqId);
-            if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation
+            if (bp.svtype != 6 && bp.svtype != 7) // 6=inter-chr-translocation; 7=translocation
             {
                 // Fill and write record
                 if (_fillVcfRecord(vcf_record, bp, databases[id], id))
