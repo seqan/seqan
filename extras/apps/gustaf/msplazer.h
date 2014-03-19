@@ -132,7 +132,7 @@ struct Breakpoint
         INVERSION,          // 3
         TANDEM,             // 4
         DISPDUPLICATION,    // 5
-        INTRATRANSLOCATION, // 6
+        INTERTRANSLOCATION, // 6
         TRANSLOCATION,      // 7
         BREAKEND            // 8
     };
@@ -689,7 +689,7 @@ inline bool setSVType(TBreakpoint & bp)
     // if insertion return 1; else return 0;
     if (bp.startSeqId != bp.endSeqId)
     {
-        bp.svtype = TBreakpoint::INTRATRANSLOCATION;
+        bp.svtype = TBreakpoint::INTERTRANSLOCATION;
         return false;
     }
     if (bp.startSeqStrand != bp.endSeqStrand)
@@ -780,7 +780,8 @@ inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> &
     if (be.startSeqId != bp.startSeqId && be.startSeqId != bp.endSeqId)
         return false;
     // If bp is duplication or translocation, also check targetpos
-    if ((bp.svtype == TBreakpoint::DISPDUPLICATION || bp.svtype == TBreakpoint::TRANSLOCATION) && bp.dupMiddlePos != maxValue<unsigned>())
+    if ((bp.svtype == TBreakpoint::DISPDUPLICATION || bp.svtype == TBreakpoint::TRANSLOCATION || bp.svtype == TBreakpoint::INTERTRANSLOCATION)
+            && bp.dupMiddlePos != maxValue<unsigned>())
         return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
                 _posInSameRange(be.startSeqPos, bp.endSeqPos, range)   ||
                 _posInSameRange(be.startSeqPos, bp.dupMiddlePos, range) );
@@ -803,7 +804,8 @@ template <typename TId, typename TPos>
 inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPos> & bp2, unsigned const & range)
 {
     typedef Breakpoint<TId, TPos> TBreakpoint;
-    if (bp1.svtype != bp2.svtype)
+    if (bp1.svtype != bp2.svtype && bp1.svtype != TBreakpoint::TRANSLOCATION && bp1.svtype != TBreakpoint::DISPDUPLICATION
+                                 && bp2.svtype != TBreakpoint::TRANSLOCATION && bp2.svtype != TBreakpoint::DISPDUPLICATION)
         return false;
     if (bp1.startSeqId != bp2.startSeqId)
         return false;
@@ -817,7 +819,7 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
                 && _posInSameRange(length(bp1.insertionSeq), length(bp2.insertionSeq), range));
     if (bp1.svtype == TBreakpoint::DISPDUPLICATION || bp1.svtype == TBreakpoint::TRANSLOCATION)
     {
-        if (bp2.dupMiddlePos != maxValue<unsigned>() && bp2.dupMiddlePos != maxValue<unsigned>())
+        if (bp1.dupMiddlePos != maxValue<unsigned>() && bp2.dupMiddlePos != maxValue<unsigned>())
             return (_posInSameRange(bp1.dupMiddlePos, bp2.dupMiddlePos, range)
                     && _posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
                     && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
@@ -898,7 +900,7 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
     value.endSeqStrand << " ) " << std::endl;
     out << " ( " << value.startSeqPos + 1 << " ) --> ( " << value.endSeqPos + 1 << " ) " << std::endl;
     if (value.dupMiddlePos != maxValue<unsigned>())
-        out << "target pos " << value.dupTargetPos << std::endl;
+        out << "dup middle pos " << value.dupMiddlePos + 1 << std::endl;
     out << " ( " << value.readStartPos + 1 << " ) --> ( " << value.readEndPos + 1 << " ) " << std::endl;
     switch (value.svtype)
     {
@@ -920,11 +922,11 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
         case TBreakpoint::DISPDUPLICATION:
         out << "SVType: duplication";
         break;
-        case TBreakpoint::INTRATRANSLOCATION:
-        out << "SVType: intra-transl";
+        case TBreakpoint::INTERTRANSLOCATION:
+        out << "SVType: inter-transl";
         break;
         case TBreakpoint::TRANSLOCATION:
-        out << "SVType: inter-transl";
+        out << "SVType: intra-transl";
         break;
         case TBreakpoint::BREAKEND:
         out << "SVType: breakend";

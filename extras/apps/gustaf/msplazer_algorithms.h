@@ -1486,7 +1486,7 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
             // Store breakpoint pos., mind matches of different order for translocations and reverse strand deletions
             // if ((bp.svtype == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
             // TODO(ktrappe): Adjust SVType
-            if ((bp.svtype == TBreakpoint::TRANSLOCATION && bp.startSeqId == bp.endSeqId) || bp.revStrandDel)
+            if ((bp.svtype == TBreakpoint::TRANSLOCATION) || bp.revStrandDel)
             {
                 splitPos[0] = bp.endSeqPos;
                 splitPos[1] = bp.startSeqPos;
