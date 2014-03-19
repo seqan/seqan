@@ -74,6 +74,12 @@ public:
     TValue* pbase() const   { return TBase::pbase(); }
     TValue* pptr()  const   { return TBase::pptr();  }
     TValue* epptr() const   { return TBase::epptr(); }
+    
+    template <typename TOffset>
+    std::streampos seekoff(TOffset off, std::ios_base::seekdir way, std::ios_base::openmode which)
+    {
+        return TBase::seekoff(off, way, which);
+    }
 };
 
 template <typename TStream>
@@ -188,6 +194,17 @@ struct Difference<Iter<TStream, StreamIterator<TDirection> > > : Difference<TStr
 
 template <typename TStream, typename TDirection>
 struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction Iterator
+// ----------------------------------------------------------------------------
+
+template <typename TObject, typename TDirection>
+struct DirectionIterator:
+    If<Is<StreamConcept<TObject> >,
+       Iter<TObject, StreamIterator<TDirection> >,
+       typename Iterator<TObject, Rooted>::Type>
+{};
 
 // ----------------------------------------------------------------------------
 // Function value() - Input

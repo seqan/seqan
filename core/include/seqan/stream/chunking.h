@@ -108,6 +108,10 @@ inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
     setPosition(iter, pos);
 }
 
+template <typename TStream, typename TDirection, typename TSize>
+inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &, TSize)
+{}
+
 // ----------------------------------------------------------------------------
 // Function advanceChunk()
 // ----------------------------------------------------------------------------
@@ -129,6 +133,12 @@ inline void advanceChunk(Iter<TContainer, TSpec> &iter, TSize size)
     iter += size;
     if (pos > length(cont))
         _setLength(cont, pos);
+}
+
+template <typename TStream, typename TDirection, typename TSize>
+inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
+{
+    iter.streamBuf->seekoff(size, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
 // extend target string size
