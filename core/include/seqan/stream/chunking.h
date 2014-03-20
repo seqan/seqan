@@ -155,14 +155,14 @@ inline void advanceChunk(String<TValue, TSpec> &str, TSize size)
 // StreamBuffer
 template <typename TValue, typename TTraits>
 inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> const &buf, Input)
+getChunk(StreamBuffer<TValue, TTraits>  &buf, Input)
 {
     return toRange(buf.gptr(), buf.egptr());
 }
 
 template <typename TValue, typename TTraits>
 inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> const &buf, Output)
+getChunk(StreamBuffer<TValue, TTraits>  &buf, Output)
 {
     return toRange(buf.pptr(), buf.epptr());
 }
@@ -170,7 +170,7 @@ getChunk(StreamBuffer<TValue, TTraits> const &buf, Output)
 // StreamIterator
 template <typename TStream, typename TDirection>
 inline typename Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >::Type
-getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > const &iter, Tag<TDirection>)
+getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > >  &iter, Tag<TDirection>)
 {
     typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
     SEQAN_ASSERT(iter.streamBuf != NULL);
@@ -180,14 +180,14 @@ getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > const &iter, Tag<TDire
 // AdaptorIterator
 template <typename TContainer, typename TValue, typename TSpec>
 inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > const &rootedIter, Input)
+getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Input)
 {
     return toRange(hostIterator(rootedIter), end(container(rootedIter), Standard()));
 }
 
 template <typename TContainer, typename TValue, typename TSpec>
 inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > const &rootedIter, Output)
+getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Output)
 {
     TContainer &cont = container(rootedIter);
     return toRange(hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
@@ -196,7 +196,7 @@ getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > const &rootedIter, O
 // SeqAn's strings
 template <typename TValue, typename TSpec>
 inline typename Chunk<String<TValue, TSpec> >::Type
-getChunk(String<TValue, TSpec> const &cont, Output)
+getChunk(String<TValue, TSpec> &cont, Output)
 {
     return toRange(end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
 }
