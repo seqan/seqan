@@ -143,6 +143,12 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
+    # enable static linkage for seqan apps
+    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG AND NOT MINGW)
+      set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+    endif ()
+
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
