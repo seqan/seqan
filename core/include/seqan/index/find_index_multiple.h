@@ -471,7 +471,7 @@ _find(Finder2<TText, TPattern, Multiple<TSpec> > & finder,
     typedef FinderContext_<TTextView, TPatternView, Multiple<TSpec>, TDelegate> TFinderContext;
 
     // Initialize the iterator factory.
-    _initFactory(finder, length(back(needle(pattern))) + 1, omp_get_max_threads());
+    _initFactory(finder, maxLength(needle(pattern), Parallel()) + 1, omp_get_max_threads());
 
     TNeedles & needles = needle(pattern);
     TSize needlesCount = length(needles);
