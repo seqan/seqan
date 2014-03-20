@@ -1359,6 +1359,28 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
 }
 
 // --------------------------------------------------------------------------
+// Function maxLength()
+// --------------------------------------------------------------------------
+// Returns the length of the longest string in the set.
+
+template <typename TString, typename TSpec, typename TParallel>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+maxLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
+{
+    typedef StringSet<TString, TSpec>               TStringSet;
+    typedef typename Value<TStringSet const>::Type  TValue;
+
+    return length(maxElement(me, LengthLess<TValue>(), tag));
+}
+
+template <typename TString, typename TSpec>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+maxLength(StringSet<TString, TSpec> const & me)
+{
+    return maxLength(me, Serial());
+}
+
+// --------------------------------------------------------------------------
 // Function lengthSum()
 // --------------------------------------------------------------------------
 
@@ -1862,6 +1884,27 @@ concat(StringSet<TString, TSpec> const & constMe)
     StringSet<TString, TSpec> &me = const_cast<StringSet<TString, TSpec> &>(constMe);
     me.concat.set = &me;
     return me.concat;
+}
+
+// ----------------------------------------------------------------------------
+// Function prefixSums<TValue>()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TPrefixSums, typename TText>
+inline void prefixSums(TPrefixSums & sums, TText const & text)
+{
+    typedef typename Concatenator<TText const>::Type        TConcat;
+    typedef typename Iterator<TConcat, Standard>::Type      TIter;
+
+    resize(sums, ValueSize<TValue>::VALUE + 1, 0, Exact());
+
+    // Compute symbol frequencies.
+    TIter itEnd = end(concat(text), Standard());
+    for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
+        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
+
+    // Cumulate symbol frequencies.
+    partialSum(sums);
 }
 
 // --------------------------------------------------------------------------
