@@ -149,27 +149,6 @@ inline bool startsWith(TLhs const & lhs, TRhs const & rhs)
     return prefix(lhs, rhsLen) == rhs;
 }
 
-// ----------------------------------------------------------------------------
-// Function prefixSums<TValue>()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TPrefixSums, typename TText>
-inline void prefixSums(TPrefixSums & sums, TText const & text)
-{
-    typedef typename Concatenator<TText const>::Type        TConcat;
-    typedef typename Iterator<TConcat, Standard>::Type      TIter;
-
-    resize(sums, ValueSize<TValue>::VALUE + 1, 0, Exact());
-
-    // Compute symbol frequencies.
-    TIter itEnd = end(concat(text), Standard());
-    for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
-        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
-
-    // Cumulate symbol frequencies.
-    std::partial_sum(begin(sums, Standard()), end(sums, Standard()), begin(sums, Standard()));
-}
-
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
