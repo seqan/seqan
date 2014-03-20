@@ -285,7 +285,7 @@ inline void _readUntil(TTarget &target,
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, length(ichunk));
 
-        Range<TOValue*> const ochunk = getChunk(end(target, Rooted()), Output());
+        Range<TOValue*> const ochunk = getChunk(target, Output());
         SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
         register const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
