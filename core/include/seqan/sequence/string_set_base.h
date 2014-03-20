@@ -1886,6 +1886,27 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
+// ----------------------------------------------------------------------------
+// Function prefixSums<TValue>()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TPrefixSums, typename TText>
+inline void prefixSums(TPrefixSums & sums, TText const & text)
+{
+    typedef typename Concatenator<TText const>::Type        TConcat;
+    typedef typename Iterator<TConcat, Standard>::Type      TIter;
+
+    resize(sums, ValueSize<TValue>::VALUE + 1, 0, Exact());
+
+    // Compute symbol frequencies.
+    TIter itEnd = end(concat(text), Standard());
+    for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
+        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
+
+    // Cumulate symbol frequencies.
+    partialSum(sums);
+}
+
 // --------------------------------------------------------------------------
 // Function strSplit()
 // --------------------------------------------------------------------------
