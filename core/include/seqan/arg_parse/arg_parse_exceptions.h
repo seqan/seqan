@@ -45,6 +45,7 @@ namespace seqan {
 // Class ParseError
 // ----------------------------------------------------------------------------
 
+// TODO(singer): Remove this once all test are running.
 /*
 .Internal.Class.ParseError
 ..cat:Miscellaneous
