@@ -211,7 +211,6 @@ read(VcfHeader & header,
 {
     clear(header);
     CharString buffer;
-    int res = 0;
 
     while (!atEnd(iter) && value(iter) == '#')
     {

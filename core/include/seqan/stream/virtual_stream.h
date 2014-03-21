@@ -58,19 +58,19 @@ namespace seqan {
 // --------------------------------------------------------------------------
 
 typedef
-#if SEQAN_HAS_ZLIB
+//#if SEQAN_HAS_ZLIB
     TagList<GZFile,
-#endif
-#if SEQAN_HAS_BZIP2
+//#endif
+//#if SEQAN_HAS_BZIP2
     TagList<BZ2File,
-#endif
+//#endif
     TagList<Nothing>
-#if SEQAN_HAS_BZIP2
+//#if SEQAN_HAS_BZIP2
     >
-#endif
-#if SEQAN_HAS_ZLIB
+//#endif
+//#if SEQAN_HAS_ZLIB
     >
-#endif
+//#endif
     CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
 
 // ============================================================================
@@ -84,7 +84,6 @@ typedef
 template <typename TTag, typename T = void>
 struct MagicHeader;
 
-/*
 template <typename T>
 struct MagicHeader<GZFile, T>
 {
@@ -103,7 +102,6 @@ struct MagicHeader<BZ2File, T>
 
 template <typename T>
 unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
-*/
 
 template <typename T>
 struct MagicHeader<Nothing, T>
@@ -141,7 +139,7 @@ unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first
 // --------------------------------------------------------------------------
 
 // TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
-/*
+#if SEQAN_HAS_ZLIB
 template <typename T>
 struct FileFormatExtensions<GZFile, T>
 {
@@ -153,12 +151,12 @@ char const * FileFormatExtensions<GZFile, T>::VALUE[3] = {
     ".gz",      // default output extension
     ".Z",
     ".zip" };
-*/
+#endif
 
 template <typename TTag, typename T>
 struct FileFormatExtensions;
 
-/*
+#if SEQAN_HAS_BZIP2
 template <typename T>
 struct FileFormatExtensions<BZ2File, T>
 {
@@ -169,7 +167,7 @@ template <typename T>
 char const * FileFormatExtensions<BZ2File, T>::VALUE[2] = {
     ".bz2",      // default output extension
     ".bz" };
-*/
+#endif
 
 template <typename T>
 struct FileFormatExtensions<Nothing, T>
@@ -190,7 +188,8 @@ struct VirtualStreamSwitch_
 {
     typedef Nothing Type;
 };
-/*
+
+#if SEQAN_HAS_ZLIB
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, GZFile>
 {
@@ -202,6 +201,9 @@ struct VirtualStreamSwitch_<TValue, Output, GZFile>
 {
     typedef zlib_stream::basic_zip_ostream<TValue> Type;
 };
+#endif
+
+#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BZ2File>
@@ -213,7 +215,8 @@ template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Output, BZ2File>
 {
     typedef bzip2_stream::basic_bzip2_ostream<TValue> Type;
-};*/
+};
+#endif
 
 // ==========================================================================
 // Classes
@@ -474,7 +477,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 // --------------------------------------------------------------------------
 // Function flush()
 // --------------------------------------------------------------------------
-/*
+#if SEQAN_HAS_ZlIB
 template<
 	typename Elem, 
 	typename Tr,
@@ -496,7 +499,9 @@ flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
+#endif
 
+#if SEQAN_HAS_BZIP2
 template<
 	typename Elem, 
 	typename Tr,
@@ -518,7 +523,7 @@ flush(bzip2_stream::basic_bzip2_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
-*/
+#endif
 // --------------------------------------------------------------------------
 // Function guessFormat()
 // --------------------------------------------------------------------------
