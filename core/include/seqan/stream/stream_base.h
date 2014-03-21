@@ -80,15 +80,15 @@ namespace seqan {
 ..remarks:This flag is normally set from the outside by your build system using compiler flags.
  */
 
-#if SEQAN_HAS_ZLIB
+//#if SEQAN_HAS_ZLIB
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
-#endif
+//#endif
 
-#if SEQAN_HAS_BZIP2
+//#if SEQAN_HAS_BZIP2
 struct BZ2File_;
 typedef Tag<BZ2File_> BZ2File;
-#endif
+//#endif
 
 // --------------------------------------------------------------------------
 // Direction Tags
