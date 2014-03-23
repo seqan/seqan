@@ -99,8 +99,11 @@ template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>
 {
     // TODO(esiragusa): Change SparseString spec to be SparseString<TValue, TSpec, TConfig>.
+    typedef CompressedSA<TText, TSpec, TConfig>         TCSA;
     typedef typename SAValue<TText>::Type               TSAValue_;
-    typedef SparseString<String<TSAValue_>, TSpec>      Type;
+    typedef typename DefaultIndexStringSpec<TCSA>::Type TSASpec_;
+    typedef String<TSAValue_, TSASpec_>                 TSA_;
+    typedef SparseString<TSA_, TSpec>                   Type;
 };
 
 template <typename TText, typename TSpec, typename TConfig>
