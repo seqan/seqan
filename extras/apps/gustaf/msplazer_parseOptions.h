@@ -79,6 +79,7 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
     getOptionValue(msplazerOptions.breakpointPosRange, parser, "pth");
     getOptionValue(msplazerOptions.support, parser, "st");
+    getOptionValue(msplazerOptions.mateSupport, parser, "mst");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
     getOptionValue(msplazerOptions.libError, parser, "le");
     if (isSet(parser, "rc"))
@@ -197,6 +198,8 @@ void _setupArgumentParser(ArgumentParser & parser)
     setDefaultValue(parser, "pth", "5");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
+    addOption(parser, ArgParseOption("mst", "mate-support", "Number of supporting concordant mates", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "mst", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "ll", "220");
     addOption(parser, ArgParseOption("le", "library-error", "Library error (sd) of paired-end reads", ArgParseArgument::INTEGER, "INT"));
