@@ -49,19 +49,22 @@ namespace seqan {
 
 template <typename TPos, typename TGapAnchor, typename TSpec, typename TGapPos>
 inline bool  // true if removed gap that is not leading/trailing gap
-removeGap2(AlignedReadStoreElement<TPos, TGapAnchor, TSpec>& alignedRead,
-          TGapPos const gapPos)
+removeGap2(AlignedReadStoreElement<TPos, TGapAnchor, TSpec> & alignedRead,
+           TGapPos const gapPos)
 {
     typedef String<TGapAnchor> TGaps;
     typedef typename Iterator<TGaps, Standard>::Type TGapIter;
-    if (gapPos < (TGapPos) alignedRead.beginPos) {
+    if (gapPos < (TGapPos) alignedRead.beginPos)
+    {
         --alignedRead.beginPos; --alignedRead.endPos;
-    } else if (gapPos < (TGapPos) alignedRead.endPos) {
+    }
+    else if (gapPos < (TGapPos) alignedRead.endPos)
+    {
         --alignedRead.endPos;
-        TGapIter gapIt = upperBoundGapAnchor(alignedRead.gaps, gapPos - alignedRead.beginPos, SortGapPos() );
+        TGapIter gapIt = upperBoundGapAnchor(alignedRead.gaps, gapPos - alignedRead.beginPos, SortGapPos());
         TGapIter gapItEnd = end(alignedRead.gaps, Standard());
         // Note: We might create empty gaps here
-        for(;gapIt != gapItEnd; ++gapIt)
+        for(; gapIt != gapItEnd; ++gapIt)
             --(gapIt->gapPos);
         return true;
     }
@@ -563,25 +566,30 @@ public:
         // Subtract read alignment from profile, yielding profileStr2.
         int removeLeft = 0, removeRight = 0;  // number of bases removed left and right of read
         unsigned pos = info.aliBeginPos;   // position in profileStr
-        unsigned posA = el.beginPos + windowInfo.readAliBeginPos;  // position in current multi-read aligment, including removeGap()s.
+        unsigned posA = el.beginPos + windowInfo.readAliBeginPos;  // position in current multi-read aligment, including
+                                                                   // removeGap()s.
         int gapsRemoved = 0;
         unsigned dbgCounter = 0;
         (void)dbgCounter;
         for (; itR != itREnd; ++itR, ++itP, ++pos)
         {
-            SEQAN_ASSERT_MSG(itP != end(profileStr, Standard()), "Profile part includes read alignment (debug counter = %u).", dbgCounter);
+            SEQAN_ASSERT_MSG(itP != end(profileStr, Standard()),
+                             "Profile part includes read alignment (debug counter = %u).", dbgCounter);
 
             unsigned idx = isGap(itR) ? valueSize<TAlphabet>() : ordValue(*itR);
 #if SEQAN_ENABLE_DEBUG
             int posP = itP - begin(profileStr, Standard());
             int posR = itR - begin(readGaps, Standard());
 #endif  // #if SEQAN_ENABLE_DEBUG
-            // std::cerr << "idx == " << idx << "\tpos == " << pos << "\tidx == " << idx << "\tposP == " << posP << "\tposR == " << posR << "\t" << "posA == " << posA << "\t"
+            // std::cerr << "idx == " << idx << "\tpos == " << pos << "\tidx == " << idx << "\tposP == " << posP
+            //           << "\tposR == " << posR << "\t" << "posA == " << posA << "\t"
             //           << "itP->count[0] == " << itP->count[0] << "\t" << "itP->count[1] == " << itP->count[1] << "\t"
             //           << "itP->count[2] == " << itP->count[2] << "\t" << "itP->count[3] == " << itP->count[3] << "\t"
             //           << "itP->count[4] == " << itP->count[4] << "\t" << "itP->count[5] == " << itP->count[5] << "\t"
             //           << "*itR == " << (isGap(itR) ? '-' : convert<char>(TAlphabet(*itR))) << "\n";
-            SEQAN_ASSERT_GT_MSG(itP->count[idx], 0u, "Must have count for alignment char (pos = %u, idx = %u, posP = %d, posR = %d).", pos, idx, posP, posR);
+            SEQAN_ASSERT_GT_MSG(itP->count[idx], 0u,
+                                "Must have count for alignment char (pos = %u, idx = %u, posP = %d, posR = %d).",
+                                pos, idx, posP, posR);
             itP->count[idx] -= 1;
 
             // Append to profile2 unless there is an all-gaps column and there is a gap in the read gaps.
@@ -611,7 +619,8 @@ public:
                     // std::cerr << "\n";
                 }
                 removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos, Standard()));
-                gapsRemoved += 1;  // WAS: (removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos, Standard())) > 0);
+                gapsRemoved += 1;  // WAS: (removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos,
+                                   //                 Standard())) > 0);
                 if (pos < info.aliBeginPos)
                     removeLeft += 1;  // TODO(holtgrew): cannot be reached!
                 if (pos >= info.aliEndPos)
@@ -791,9 +800,11 @@ void _readToProfileAlignment(TProfileGaps & profileGaps, TReadGaps & readGaps, T
     else
     {
         if (linear)
-            _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, NeedlemanWunsch());
+            _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
+                                    NeedlemanWunsch());
         else
-            _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, Gotoh());
+            _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
+                                    Gotoh());
     }
 }
 
@@ -1110,7 +1121,8 @@ void _fixBandSize(int & lDiag,
 {
     // typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef typename If<typename IsSameType<TAlgoTag, Gotoh>::Type, AffineGaps, LinearGaps>::Type TGapsType;
-    typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, TGapsType, TracebackConfig_<SingleTrace, GapsLeft> >::Type TDPProfile;
+    typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, TGapsType,
+                                            TracebackConfig_<SingleTrace, GapsLeft> >::Type TDPProfile;
 
     if (uDiag < -(int)length(seqV))
         uDiag = -(int)length(seqV);
@@ -1144,7 +1156,8 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
     if (length(contigAlignedReads) == 1u)  // only one alignment
     {
         if (((windowBegin == 0) && (windowBegin == windowEnd)) ||  // no window
-            (windowBegin <= contigAlignedReads[0].beginPos && windowEnd >= contigAlignedReads[0].endPos))  // spans only alignment
+            (windowBegin <= contigAlignedReads[0].beginPos && windowEnd >= contigAlignedReads[0].endPos))  // spans only
+                                                                                                           // alignment
         {
             contigAlignedReads[0].beginPos = 0;
             contigAlignedReads[0].endPos = length(store.readSeqStore[contigAlignedReads[0].readId]);
@@ -1269,7 +1282,8 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         }
 
         // Subtract the read alignment from the profile.
-        _subtractReadAlignment(windowBegin, windowEnd, profilePart, info, *it, it - begin(contigAlignedReads, Standard()),
+        _subtractReadAlignment(windowBegin, windowEnd, profilePart, info, *it, it - begin(contigAlignedReads,
+                                                                                          Standard()),
                                windowInfo);
         SEQAN_ASSERT_LEQ(windowBegin, windowEnd);
         times.realignExtractProfile += sysTime() - beginExtractProfile;
@@ -1353,21 +1367,24 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             else if (windowInfo.clipRight)
             {
                 if (options.debug)
-                    std::cerr << "Clipped right. (lowerBand == " << lowerBand << ", upperBand == " << upperBand << ")\n";
+                    std::cerr << "Clipped right. (lowerBand == " << lowerBand << ", upperBand == "
+                              << upperBand << ")\n";
                 AlignConfig<true, false, false, false> alignConfig;
                 _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, linear);
             }
             else if (windowInfo.clipBoth())
             {
                 if (options.debug)
-                    std::cerr << "Clipped both. (lowerBand == " << lowerBand << ", upperBand == " << upperBand << ")\n";
+                    std::cerr << "Clipped both. (lowerBand == " << lowerBand << ", upperBand == "
+                              << upperBand << ")\n";
                 AlignConfig<false, false, false, false> alignConfig;
                 _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, linear);
             }
             else // clipNone
             {
                 if (options.debug)
-                    std::cerr << "NOT case of left (lowerBand == " << lowerBand << ", upperBand == " << upperBand << ")\n";
+                    std::cerr << "NOT case of left (lowerBand == " << lowerBand << ", upperBand == "
+                              << upperBand << ")\n";
                 AlignConfig<true, false, false, true> alignConfig;
                 _readToProfileAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, linear);
             }
@@ -1377,11 +1394,13 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         {
             AlignConfig<false, true, false, true> alignConfig;
             if (options.debug)
-                std::cerr << "CASE OF LEFT (lowerBand == " << lowerBand << ", upperBand == " << upperBand << ", bandDelta == " << bandDelta << ")\n";
+                std::cerr << "CASE OF LEFT (lowerBand == " << lowerBand << ", upperBand == " << upperBand
+                          << ", bandDelta == " << bandDelta << ")\n";
             if (options.method == RealignmentOptions::ANSON_MYERS_NW)
             {
                 _fixBandSize(lowerBand, upperBand, profilePart, source(readGaps), alignConfig, NeedlemanWunsch());
-                globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, NeedlemanWunsch());
+                globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
+                                NeedlemanWunsch());
             }
             else
             {
@@ -1393,11 +1412,13 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         {
             AlignConfig<true, false, false, true> alignConfig;
             if (options.debug)
-                std::cerr << "NOT case of left (lowerBand == " << lowerBand << ", upperBand == " << upperBand << ")\n";
+                std::cerr << "NOT case of left (lowerBand == " << lowerBand << ", upperBand == "
+                          << upperBand << ")\n";
             if (options.method == RealignmentOptions::ANSON_MYERS_NW)
             {
                 _fixBandSize(lowerBand, upperBand, profilePart, source(readGaps), alignConfig, NeedlemanWunsch());
-                globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand, NeedlemanWunsch());
+                globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
+                                NeedlemanWunsch());
             }
             else
             {
@@ -1559,7 +1580,8 @@ std::string _profileGapsStructureStr(TGapsIter begin, TGapsIter end)
     //     {
     //         ProfileChar<Dna5> y = *it;
     //         // if (y.count[x])
-    //         //     std::cout << "profile[" << i << "].count[ordValue(Dna5('" << Dna5(x) << "'))] = " << y.count[x] << ";\n";
+    //         //     std::cout << "profile[" << i << "].count[ordValue(Dna5('" << Dna5(x) << "'))] = "
+    //         //               << y.count[x] << ";\n";
     //         // if (y.count[5])
     //         //     std::cout << "profile[" << i << "].count[valueSize<Dna5>()] = " << y.count[5] << ";\n";
     //     }
@@ -1637,7 +1659,8 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
     {
         TAnchorReadGaps anchorReadGaps2(store.readSeqStore[el2.readId], el2.gaps);
         if (options.debug)
-            std::cerr << "removing gaps from " << windowInfo.readAliBeginPos << " to " << windowInfo.readAliEndPos << "\n"
+            std::cerr << "removing gaps from " << windowInfo.readAliBeginPos << " to " << windowInfo.readAliEndPos
+                      << "\n"
                       << "    from " << anchorReadGaps << "\n";
         clearGaps(anchorReadGaps);
         setClippedBeginPosition(anchorReadGaps, windowInfo.readEndPos);
@@ -1657,7 +1680,8 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
         clearClipping(anchorReadGaps2);
         windowInfo.readAliEndPos -= (length(anchorReadGaps2) - length(anchorReadGaps));
         if (options.debug)
-            std::cerr << "resulted in window on read " << windowInfo.readAliBeginPos << " to " << windowInfo.readAliEndPos << "\n"
+            std::cerr << "resulted in window on read " << windowInfo.readAliBeginPos << " to "
+                      << windowInfo.readAliEndPos << "\n"
                       << "    for  " << anchorReadGaps << "\n";
     }
     int readGapsPos = windowInfo.readAliBeginPos;
@@ -1799,9 +1823,11 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
     swap(it->gaps, el.gaps);
 
     if (options.debug)
-        std::cerr << "it->profBeginPos == " << info.profBeginPos << ", info.aliBeginPos == " << info.aliBeginPos << "\n"
+        std::cerr << "it->profBeginPos == " << info.profBeginPos << ", info.aliBeginPos == "
+                  << info.aliBeginPos << "\n"
                   << "it->profEndPos == " << info.profEndPos << ", info.aliEndPos == " << info.aliEndPos << "\n"
-                  << "windowInfo.readAliBeginPos == " << windowInfo.readAliBeginPos << ", windowInfo.readAliEndPos == " << windowInfo.readAliEndPos << "\n"
+                  << "windowInfo.readAliBeginPos == " << windowInfo.readAliBeginPos
+                  << ", windowInfo.readAliEndPos == " << windowInfo.readAliEndPos << "\n"
                   << "it->beginPos == " << it->beginPos << ", it->endPos == " << it->endPos << "\n";
     int newContigProfileLength = length(contigProfile) + length(newProfilePart) - length(profilePart);
     (void)newContigProfileLength;  // only used for assertion
@@ -1844,6 +1870,60 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
 // Function reAlignment()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn reAlignment
+ * @brief Perform realignment on a @link FragmentStore @endlink object.
+ *
+ * @signature void reAlignment(store, contigID, realignmentMethod, bandwidth, includeReference[,
+ *                             windowBegin, windowEnd][, debug][, printTiming]);
+ *
+ * @param[in,out] store             The @link FragmentStore @endlink to perform realignment for.
+ * @param[in]     realignmentMethod The realignment algorithm to use, <tt>1</tt> for affine gap costs, <tt>0</tt>
+ *                                  for linear gap costs, affine gap costs are recommended, <tt>unsigned</tt>.
+ * @param[in]     contigID          Identifier of the contig to realign, <tt>unsigned</tt>
+ * @param[in]     bandwidth         Bandwidth to use in the pairwise DP alignment algorithms <tt>unsigned</tt>.
+ * @param[in]     includeReference  A <tt>bool</tt>, if <tt>true</tt> then the reference will be included as a
+ *                                  pseudo-read to increase stability in case of indels.  See section "Including
+ *                                  the Reference" for details.
+ * @param[in]     windowBegin       Optional <tt>unsigned</tt> window begin for windowed alignment,
+ *                                  default: <tt>0</tt>, i.e. no windowing.  Also see section "Windowed
+ //                                 Realignment" below.
+ * @param[in]     windowEnd         Optional <tt>unsigned</tt> window end for windowed alignment, default: <tt>0</tt>,
+ *                                  i.e. no windowing.  Also see section "Windowed Realignment" below.
+ * @param[in]     debug             Optional <tt>bool</tt> to enable verbose logging, default: <tt>false</tt>.
+ * @param[in]     printTiming       Optional <tt>bool</tt> to enable printing of times, default: <tt>false</tt>.
+ *
+ * This function implements a variant of the Anson-Myers algorithm to refine the multi-read alignments.  The algorithm
+ * works in a round-robin fashion:
+ *
+ * First, the profile sequence is created for the multi-read alignment.  The algorithm then works in round.
+ *
+ * In each round, each read alignment is selected, removed from the profile and then aligned against the profile using
+ * a DP algorithm.  For this alignment, a region of <tt>bandwidth / 2</tt> positions around the previous alignment
+ * locus is chosen and aligned using a bandwidth of <tt>bandwidth</tt> in the DP alignment algorithm.  The profile is
+ * then updated with the resulting pairwise alignment.  This is iterated until the global alignment score does not
+ * improve.
+ *
+ * In the end, the reference sequence of the given contig is replaced by the consensus of the multi-read alignment.
+ *
+ * @section Including the Reference
+ *
+ * You can choose to include the reference sequence of the selected contig as a pseudo-read.  In this case, the
+ * reference sequence of the selected contig will be added as an additional read and also a read alignment will be
+ * created for it.  The appended pseudo-read will have the highest read ID in the store.
+ *
+ * @section Windowed Realignment
+ *
+ * Sometimes, it is useful to just realign a part of the fragment store.  This can be done by using the parameters
+ * <tt>windowBegin</tt> and <tt>windowEnd</tt>.  This refers to view positions in the current multi-read alignment.
+ * Set both to <tt>0</tt> (also the default) to disalbe windowed realignment.
+ *
+ * @section References
+ *
+ * <ul><li>Anson, Eric L., and Eugene W. Myers. "ReAligner: a program for refining DNA sequence multi-alignments."
+ *         Journal of Computational Biology 4.3 (1997): 369-383.</li></ul>
+ */
+
 template <typename TSpec, typename TConfig>
 void reAlignment(FragmentStore<TSpec, TConfig> & store,
                  unsigned contigID,
@@ -1880,7 +1960,8 @@ void reAlignment(FragmentStore<TSpec, TConfig> & store,
                  bool printTiming = false)
 {
     (void)score;
-    reAlignment(store, contigID, realignmentMethod, bandwidth, includeReference, windowBegin, windowEnd, debug, printTiming);
+    reAlignment(store, contigID, realignmentMethod, bandwidth, includeReference, windowBegin, windowEnd, debug,
+                printTiming);
 }
 
 }  // namespace seqan
