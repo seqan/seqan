@@ -47,6 +47,31 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// TODO(h4nn3s): dox
+
+enum class GeneticCodeEnum : uint8_t
+{
+    Canonical=1,
+    VertMitochondrial,
+    YeastMitochondrial,
+    MoldMitochondrial,
+    InvertMitochondrial,
+    Ciliate,
+    FlatwormMitochondrial = 9,
+    Euplotid,
+    Prokaryote,
+    AltYeast,
+    AscidianMitochondrial,
+    AltFlatwormMitochondrial,
+    Blepharisma,
+    ChlorophyceanMitochondrial,
+    TrematodeMitochondrial = 21,
+    ScenedesmusMitochondrial,
+    ThraustochytriumMitochondrial,
+    PterobranchiaMitochondrial,
+    Gracilibacteria
+};
+
 /*!
  * @defgroup GeneticCodeSpecs GeneticCode Specs
  * @brief Specialization tags for @link GeneticCode @endlink
@@ -73,7 +98,7 @@ namespace seqan {
  * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
  *        (genbank transl_table=4).
  *
- * @tag GeneticCodeSpecs#InvertMitchondrial
+ * @tag GeneticCodeSpecs#InvertMitochondrial
  * @headerfile seqan/translation.h
  * @brief The Invertebrate Mitochondrial Code (genbank transl_table=5)
  *
@@ -243,13 +268,13 @@ struct AltFlatwormMitochondrial_
 typedef Tag<AltFlatwormMitochondrial_> AltFlatwormMitochondrial;
 
 // -----------------------------------------------------------------------
-// Tag Blepherisma
+// Tag Blepharisma
 // -----------------------------------------------------------------------
 
-struct Blepherisma_
+struct Blepharisma_
 {};
 
-typedef Tag<Blepherisma_> Blepherisma;
+typedef Tag<Blepharisma_> Blepharisma;
 
 // -----------------------------------------------------------------------
 // Tag ChlorophyceanMitochondrial
@@ -683,7 +708,7 @@ char const TranslateTableDnaToAminoAcid_<
 template <>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Blepherisma> >::VALUE[4][4][4] =
+        Blepharisma> >::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?

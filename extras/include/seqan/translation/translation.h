@@ -515,6 +515,60 @@ translate(TTarget & target,
     return 0;
 }
 
+template <typename TTarget, typename TSource>
+inline int
+translate(TTarget & target,
+          TSource const & source,
+          TranslationOptions const options,
+          GeneticCodeEnum const & geneticCode)
+{
+    switch(geneticCode)
+    {
+        case GeneticCodeEnum::Canonical:
+            return translate(target, source, options, GeneticCode<Canonical>());
+        case GeneticCodeEnum::VertMitochondrial:
+            return translate(target, source, options, GeneticCode<VertMitochondrial>());
+        case GeneticCodeEnum::YeastMitochondrial:
+            return translate(target, source, options, GeneticCode<YeastMitochondrial>());
+        case GeneticCodeEnum::MoldMitochondrial:
+            return translate(target, source, options, GeneticCode<MoldMitochondrial>());
+        case GeneticCodeEnum::InvertMitochondrial:
+            return translate(target, source, options, GeneticCode<InvertMitochondrial>());
+        case GeneticCodeEnum::Ciliate:
+            return translate(target, source, options, GeneticCode<Ciliate>());
+        case GeneticCodeEnum::FlatwormMitochondrial:
+            return translate(target, source, options, GeneticCode<FlatwormMitochondrial>());
+        case GeneticCodeEnum::Euplotid:
+            return translate(target, source, options, GeneticCode<Euplotid>());
+        case GeneticCodeEnum::Prokaryote:
+            return translate(target, source, options, GeneticCode<Prokaryote>());
+        case GeneticCodeEnum::AltYeast:
+            return translate(target, source, options, GeneticCode<AltYeast>());
+        case GeneticCodeEnum::AscidianMitochondrial:
+            return translate(target, source, options, GeneticCode<AscidianMitochondrial>());
+        case GeneticCodeEnum::AltFlatwormMitochondrial:
+            return translate(target, source, options, GeneticCode<AltFlatwormMitochondrial>());
+        case GeneticCodeEnum::Blepharisma:
+            return translate(target, source, options, GeneticCode<Blepharisma>());
+        case GeneticCodeEnum::ChlorophyceanMitochondrial:
+            return translate(target, source, options, GeneticCode<ChlorophyceanMitochondrial>());
+        case GeneticCodeEnum::TrematodeMitochondrial:
+            return translate(target, source, options, GeneticCode<TrematodeMitochondrial>());
+        case GeneticCodeEnum::ScenedesmusMitochondrial:
+            return translate(target, source, options, GeneticCode<ScenedesmusMitochondrial>());
+        case GeneticCodeEnum::ThraustochytriumMitochondrial:
+            return translate(target, source, options, GeneticCode<ThraustochytriumMitochondrial>());
+        case GeneticCodeEnum::PterobranchiaMitochondrial:
+            return translate(target, source, options, GeneticCode<PterobranchiaMitochondrial>());
+        case GeneticCodeEnum::Gracilibacteria:
+            return translate(target, source, options, GeneticCode<Gracilibacteria>());
+    }
+
+    std::cerr << "Invalid genetic code translation table selected."
+                << std::endl;
+    return -1;
+}
+
 
 template <typename TTarget, typename TSource>
 inline int
