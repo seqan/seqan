@@ -1,0 +1,43 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem          1.0
+
+name                seqan-apps
+version             1.4.1
+# 1 stealth update has occurred, see dist_subdir
+categories          science
+platforms           darwin
+
+license             LGPL
+maintainers         fu-berlin.de:david.weese \
+                    fu-berlin.de:knut.reinert
+
+description         Applications distributed with the SeqAn library
+
+long_description    SeqAn applications for the analysis of large sets of sequences, e.g. \
+                    read mapping, genome comparison, local alignment, data mining. \
+                    If not stated otherwise, the SeqAn applications are licensed under \
+                    the GNU Lesser General Public License.
+
+homepage            http://www.seqan.de/projects
+
+
+master_sites        http://packages.seqan.de/${name}
+use_bzip2           yes
+distname            ${name}-${version}-Mac-x86_64
+# should be identical to distname in future releases
+worksrcdir          ${name}-${version}-Darwin-x86_64
+checksums           rmd160  57ec09ea5f496ae6bc4fddc5cafa71536f6ad789 \
+                    sha256  ec01b03a82256eb22d4786f10088fec231bb3446ea38eeb6698f4099a4721944
+
+configure {}
+
+build {}
+
+destroot {
+  foreach filename [glob ${worksrcpath}/bin/*] {
+    file copy $filename ${destroot}${prefix}/bin
+  }
+  file copy ${worksrcpath}/share/doc ${destroot}${prefix}/share
+}
