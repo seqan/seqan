@@ -5,9 +5,9 @@ PortSystem          1.0
 
 name                seqan
 version             1.4.1
-# 1 stealth update has occurred, see dist_subdir
 categories          science
 platforms           darwin
+supported_archs     noarch
 
 license             BSD
 maintainers         fu-berlin.de:david.weese \
@@ -18,7 +18,7 @@ description         SeqAn - The C++ Sequence Analysis Library
 long_description    SeqAn is an open source C++ library of efficient algorithms \
                     and data structures for the analysis of sequences with the \
                     focus on biological data. The library is licensed under the \
-                    3-clause BSD.
+                    3-clause BSD license.
 
 homepage            http://www.seqan.de
 
@@ -26,16 +26,14 @@ homepage            http://www.seqan.de
 master_sites        http://packages.seqan.de/${name}-library
 use_bzip2           yes
 distname            ${name}-library-${version}
-
-
 checksums           rmd160  e2fe1284943c170e9c098202e286b550fd151238 \
                     sha256  50f0d29f3526723225c64bfb76c0598256afc08c2c6c4f343e6345b1d453894f
 
-configure {}
+use_configure       no
 
 build {}
 
 destroot {
-  file copy ${worksrcpath}/include/seqan ${destroot}${prefix}/include
-  file copy ${worksrcpath}/share/doc ${destroot}${prefix}/share
+    file copy ${worksrcpath}/include/seqan ${destroot}${prefix}/include
+    file copy ${worksrcpath}/share/doc ${destroot}${prefix}/share
 }
