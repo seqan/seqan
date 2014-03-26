@@ -3851,6 +3851,8 @@ if (LOOP_LEVEL != 0)
                             overlap._errorsRight = errorsRight;         // store number errors for this operation
                             if (overallMinErrorsRight > errorsRight)    // update minimum over all operations
                                 overallMinErrorsRight = errorsRight;
+                        #else
+                            ignoreUnusedVariableWarning(errorsRight);
                         #endif
 
 //               bool debug = (errorReadId == (unsigned int)options.debugRead || errorReadId-length(store.readSeqStore)/2 == (unsigned int)options.debugRead);
