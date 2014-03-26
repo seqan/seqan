@@ -6,7 +6,7 @@
 
 #define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
 #define SEQAN_PROFILE		// enable time measuring
-//#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
+#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
 //#define FIONA_MEMOPT		// small suffix array values (<16mio reads of length <256)
 #define FIONA_USE_SA        // use binary search in a suffix array for traversal
 #define FIONA_REDUCE_MEMORY
@@ -21,7 +21,7 @@
 #endif
 
 // Dave's proposal to locally chose the operation with maximal support
-#define FIONA_MAXIMIZE_SUPPORT
+//#define FIONA_MAXIMIZE_SUPPORT
 
 #define FIONA_MATCH_N
 #define FIONA_MAXIMIZE_OVERLAPSUM   // instead of maximizing the SUM of left and right, simply use the MAXIMUM of left and right
@@ -101,7 +101,6 @@ using namespace boost::numeric::ublas;
 #include <seqan/store.h>
 #include <seqan/seq_io.h>
 #include <seqan/arg_parse.h>
-//#include <seqan/index_extras.h>
 
 
 // TODO(holtgrew): This raises a warning with Boost 1.42. Deactivate warnings, activate again afterwards. The correct #pragma has to be used for each supported compiler.
