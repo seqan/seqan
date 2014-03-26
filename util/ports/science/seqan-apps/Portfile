@@ -9,7 +9,7 @@ categories          science
 platforms           darwin
 universal_variant   no
 
-license             LGPL
+license             LGPL-3
 maintainers         fu-berlin.de:david.weese \
                     fu-berlin.de:knut.reinert
 
@@ -18,7 +18,7 @@ description         Applications distributed with the SeqAn library
 long_description    SeqAn applications for the analysis of large sets of sequences, e.g. \
                     read mapping, genome comparison, local alignment, data mining. \
                     If not stated otherwise, the SeqAn applications are licensed under \
-                    the GNU Lesser General Public License.
+                    the GNU Lesser General Public License version 3.
 
 homepage            http://www.seqan.de/projects
 
