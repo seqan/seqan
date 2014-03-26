@@ -162,29 +162,29 @@ _ord(Rna5 const & c)
 // --------------------------------------------------------------------------
 
 
-template <typename TOrd, typename TCodeSpec>
+template <typename TOrd, GeneticCodeSpec codeSpec>
 inline AminoAcid
 _translateTriplet(TOrd const & c1,
                   TOrd const & c2,
                   TOrd const & c3,
-                  GeneticCode<TCodeSpec> const & /**/)
+                  GeneticCode<codeSpec> const & /**/)
 {
     if (( c1 > 3 ) || ( c2 > 3 ) || ( c3 > 3 ) )
         return 'X';
     return TranslateTableDnaToAminoAcid_<
                GeneticCode<
-                   TCodeSpec> >::VALUE[c1][c2][c3];
+                   codeSpec> >::VALUE[c1][c2][c3];
 }
 
 // --------------------------------------------------------------------------
 // Function _translateString()
 // --------------------------------------------------------------------------
 
-template <typename TOutString, typename TInString, typename TCodeSpec>
+template <typename TOutString, typename TInString, GeneticCodeSpec codeSpec>
 inline void
 _translateString(TOutString & target,
                  TInString const & source,
-                 GeneticCode<TCodeSpec> const & /**/)
+                 GeneticCode<codeSpec> const & /**/)
 {
     SEQAN_ASSERT_EQ(length(source)/3, length(target));
     typedef typename Position<TInString>::Type TPos;
@@ -194,7 +194,7 @@ _translateString(TOutString & target,
         target[i/3] = _translateTriplet(_ord(value(source, i  )),
                                         _ord(value(source, i+1)),
                                         _ord(value(source, i+2)),
-                                        GeneticCode<TCodeSpec>());
+                                        GeneticCode<codeSpec>());
     }
 }
 
@@ -210,11 +210,11 @@ _translateString(TOutString & target,
 //   just use the above function, but with an && and remove the specialization
 //   below. This is due to reference collapsing in C++11 ( 'A& &&' is translated
 //   to 'A&', NOT 'A&&'),
-template <typename TOutString, typename TSpec, typename TInString, typename TCodeSpec>
+template <typename TOutString, typename TSpec, typename TInString, GeneticCodeSpec codeSpec>
 inline void
 _translateString(Segment<TOutString, TSpec> RVREF target,
                  TInString const & source,
-                 GeneticCode<TCodeSpec> const & /**/)
+                 GeneticCode<codeSpec> const & /**/)
 {
     SEQAN_ASSERT_EQ(length(source)/3, length(target));
     typedef typename Position<TInString>::Type TPos;
@@ -224,7 +224,7 @@ _translateString(Segment<TOutString, TSpec> RVREF target,
         target[i/3] = _translateTriplet(_ord(value(source, i  )),
                                         _ord(value(source, i+1)),
                                         _ord(value(source, i+2)),
-                                        GeneticCode<TCodeSpec>());
+                                        GeneticCode<codeSpec>());
     }
 }
 
@@ -234,14 +234,14 @@ _translateString(Segment<TOutString, TSpec> RVREF target,
 
 // single frame
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec>
+          GeneticCodeSpec codeSpec>
 inline void
 _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                    StringSet<TInString, TSpec3> const & source,
-                   GeneticCode<TCodeSpec> const & /**/,
+                   GeneticCode<codeSpec> const & /**/,
                    Frames_<1u> const & /**/)
 {
-    typedef GeneticCode<TCodeSpec> TCode;
+    typedef GeneticCode<codeSpec> TCode;
     #ifndef SEQAN_TRANSLATION_NO_PARALLEL
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
     #endif
@@ -251,16 +251,16 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
 // with reverse complement
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec>
+          GeneticCodeSpec codeSpec>
 inline void
 _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                    StringSet<TInString, TSpec3> const & source,
-                   GeneticCode<TCodeSpec> const & /**/,
+                   GeneticCode<codeSpec> const & /**/,
                    Frames_<2u> const & /**/)
 {
     typedef typename Value<StringSet<TInString, TSpec3> const>::Type TVal;
     typedef typename ReverseComplement_<TVal>::Type TRevComp;
-    typedef GeneticCode<TCodeSpec> TCode;
+    typedef GeneticCode<codeSpec> TCode;
 
     #ifndef SEQAN_TRANSLATION_NO_PARALLEL
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
@@ -281,14 +281,14 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
 // three frame
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec>
+          GeneticCodeSpec codeSpec>
 inline void
 _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                    StringSet<TInString, TSpec3> const & source,
-                   GeneticCode<TCodeSpec> const & /**/,
+                   GeneticCode<codeSpec> const & /**/,
                    Frames_<3u> const & /**/)
 {
-    typedef GeneticCode<TCodeSpec> TCode;
+    typedef GeneticCode<codeSpec> TCode;
     #ifndef SEQAN_TRANSLATION_NO_PARALLEL
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
     #endif
@@ -298,18 +298,18 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
 // six frame
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec>
+          GeneticCodeSpec codeSpec>
 inline void
 _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                    StringSet<TInString, TSpec3> const & source,
-                   GeneticCode<TCodeSpec> const & /**/,
+                   GeneticCode<codeSpec> const & /**/,
                    Frames_<6u> const & /**/)
 {
     typedef typename Prefix<
         typename Value<
             StringSet<TInString, TSpec3> const>::Type>::Type TVal;
     typedef typename ReverseComplement_<TVal>::Type TRevComp;
-    typedef GeneticCode<TCodeSpec> TCode;
+    typedef GeneticCode<codeSpec> TCode;
     #ifndef SEQAN_TRANSLATION_NO_PARALLEL
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
     #endif
@@ -334,11 +334,11 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
 // general case
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec, unsigned char n>
+          GeneticCodeSpec codeSpec, unsigned char n>
 inline void
 _translateImpl(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                StringSet<TInString, TSpec3> const & source,
-               GeneticCode<TCodeSpec> const & /**/,
+               GeneticCode<codeSpec> const & /**/,
                Frames_<n> const & /**/)
 {
     typedef typename Position<StringSet<TInString, TSpec3> >::Type TPos;
@@ -354,17 +354,17 @@ _translateImpl(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
         resize(target[i], len, Exact());
     }
 
-    _translateImplLoop(target, source, GeneticCode<TCodeSpec>(), Frames_<n>());
+    _translateImplLoop(target, source, GeneticCode<codeSpec>(), Frames_<n>());
 }
 
 // ConcatDirect specialization
 template <typename TSpec1, typename TSpec3, typename TInString,
-          typename TCodeSpec, unsigned char n>
+          GeneticCodeSpec codeSpec, unsigned char n>
 inline void
 _translateImpl(StringSet<String<AminoAcid,
                                 TSpec1>, Owner<ConcatDirect<> > > & target,
                StringSet<TInString, TSpec3> const & source,
-               GeneticCode<TCodeSpec> const & /**/,
+               GeneticCode<codeSpec> const & /**/,
                Frames_<n> const & /**/)
 {
     typedef typename Position<StringSet<TInString, TSpec3> >::Type TPos;
@@ -383,7 +383,7 @@ _translateImpl(StringSet<String<AminoAcid,
 
     resize(target.concat, back(target.limits), Exact());
 
-    _translateImplLoop(target, source, GeneticCode<TCodeSpec>(), Frames_<n>());
+    _translateImplLoop(target, source, GeneticCode<codeSpec>(), Frames_<n>());
 }
 
 // --------------------------------------------------------------------------
@@ -392,55 +392,55 @@ _translateImpl(StringSet<String<AminoAcid,
 
 // stringset to stringset
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
-          typename TCodeSpec, unsigned char n>
+          GeneticCodeSpec codeSpec, unsigned char n>
 inline int
 _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                     StringSet<TInString, TSpec3> const & source,
-                    GeneticCode<TCodeSpec> const & /**/,
+                    GeneticCode<codeSpec> const & /**/,
                     Frames_<n> const & /**/)
 {
-    _translateImpl(target, source, GeneticCode<TCodeSpec>(), Frames_<n>());
+    _translateImpl(target, source, GeneticCode<codeSpec>(), Frames_<n>());
     return 0;
 }
 
 // single string to stringset conversion
 template <typename TSpec1, typename TSpec2, typename TInString,
-          typename TCodeSpec, unsigned char n>
+          GeneticCodeSpec codeSpec, unsigned char n>
 inline int
 _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                     TInString const & source,
-                    GeneticCode<TCodeSpec> const & /**/,
+                    GeneticCode<codeSpec> const & /**/,
                     Frames_<n> const & /**/)
 {
     StringSet<TInString, Dependent<> > set;
     appendValue(set, source);
-    _translateImpl(target, set, GeneticCode<TCodeSpec>(), Frames_<n>());
+    _translateImpl(target, set, GeneticCode<codeSpec>(), Frames_<n>());
 
     return 0;
 }
 
 
 // bail out because multiple frames don't fit in one string
-template <typename TSpec1, typename TInString, typename TCodeSpec,
+template <typename TSpec1, typename TInString, GeneticCodeSpec codeSpec,
           unsigned char n>
 inline int
 _translateInputWrap(String<AminoAcid, TSpec1> & /**/,
                     TInString const & /**/,
-                    GeneticCode<TCodeSpec> const & /**/,
+                    GeneticCode<codeSpec> const & /**/,
                     Frames_<n> const & /**/)
 {
     return -1;
 }
 // single string to single string conversion
-template <typename TSpec1, typename TInString, typename TCodeSpec>
+template <typename TSpec1, typename TInString, GeneticCodeSpec codeSpec>
 inline int
 _translateInputWrap(String<AminoAcid, TSpec1> & target,
                     TInString const & source,
-                    GeneticCode<TCodeSpec> const & /**/,
+                    GeneticCode<codeSpec> const & /**/,
                     Frames_<1> const & /**/)
 {
     resize(target, length(source)/3, Exact());
-    _translateString(target, source, GeneticCode<TCodeSpec>());
+    _translateString(target, source, GeneticCode<codeSpec>());
 
     return 0;
 }
@@ -453,7 +453,8 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * @fn translate
  * @headerfile seqan/translation.h
  * @brief translate sequences of Dna or Rna into amino acid alphabet, optionally with frames
- * @signature int translate(target, source[, options][, codeSpec])
+ * @signature int translate(target, source[, options][, geneticCode])
+ * @signature int translate(target, source[, options][, geneticCodeSpec])
  *
  * @param[out]      target      The amino acid sequence(s).  @link StringSet @endlink of @link AminoAcid @endlink
  *                              or @link String @endlink of @link AminoAcid @endlink if source is a single string
@@ -462,7 +463,8 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *                              If the value type is not Dna, Dna5, Rna, Rna5 then it is converted
  *                              to Dna5.
  * @param[in]       options     The @link TranslationOptions @endlink, defaults to SINGLE_FRAME.
- * @param[in]       codeSpec    The @link GeneticCode @endlink to use, defaults to canonical.
+ * @param[in]       geneticCode The @link GeneticCode @endlink to use, defaults to GeneticCode<GeneticCodeSpec::Canonical> (this is compile-time constant)
+ * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use, this is a run-time parameter ("run-time argument")
  *
  * @return int 0 on success, and -1 on incompatible parameters (e.g. multiple frames but target type not StringSet).
  *
@@ -491,14 +493,14 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * @see GeneticCode
  */
 
-template <typename TTarget, typename TSource, typename TCodeSpec>
+template <typename TTarget, typename TSource, GeneticCodeSpec codeSpec>
 inline int
 translate(TTarget & target,
           TSource const & source,
           TranslationOptions const options,
-          GeneticCode<TCodeSpec> const & /**/)
+          GeneticCode<codeSpec> const & /**/)
 {
-    typedef GeneticCode<TCodeSpec> TCode;
+    typedef GeneticCode<codeSpec> TCode;
     switch (options)
     {
     case SINGLE_FRAME:
@@ -520,48 +522,48 @@ inline int
 translate(TTarget & target,
           TSource const & source,
           TranslationOptions const options,
-          GeneticCodeEnum const & geneticCode)
+          GeneticCodeSpec const & geneticCode)
 {
     switch(geneticCode)
     {
-        case GeneticCodeEnum::Canonical:
-            return translate(target, source, options, GeneticCode<Canonical>());
-        case GeneticCodeEnum::VertMitochondrial:
-            return translate(target, source, options, GeneticCode<VertMitochondrial>());
-        case GeneticCodeEnum::YeastMitochondrial:
-            return translate(target, source, options, GeneticCode<YeastMitochondrial>());
-        case GeneticCodeEnum::MoldMitochondrial:
-            return translate(target, source, options, GeneticCode<MoldMitochondrial>());
-        case GeneticCodeEnum::InvertMitochondrial:
-            return translate(target, source, options, GeneticCode<InvertMitochondrial>());
-        case GeneticCodeEnum::Ciliate:
-            return translate(target, source, options, GeneticCode<Ciliate>());
-        case GeneticCodeEnum::FlatwormMitochondrial:
-            return translate(target, source, options, GeneticCode<FlatwormMitochondrial>());
-        case GeneticCodeEnum::Euplotid:
-            return translate(target, source, options, GeneticCode<Euplotid>());
-        case GeneticCodeEnum::Prokaryote:
-            return translate(target, source, options, GeneticCode<Prokaryote>());
-        case GeneticCodeEnum::AltYeast:
-            return translate(target, source, options, GeneticCode<AltYeast>());
-        case GeneticCodeEnum::AscidianMitochondrial:
-            return translate(target, source, options, GeneticCode<AscidianMitochondrial>());
-        case GeneticCodeEnum::AltFlatwormMitochondrial:
-            return translate(target, source, options, GeneticCode<AltFlatwormMitochondrial>());
-        case GeneticCodeEnum::Blepharisma:
-            return translate(target, source, options, GeneticCode<Blepharisma>());
-        case GeneticCodeEnum::ChlorophyceanMitochondrial:
-            return translate(target, source, options, GeneticCode<ChlorophyceanMitochondrial>());
-        case GeneticCodeEnum::TrematodeMitochondrial:
-            return translate(target, source, options, GeneticCode<TrematodeMitochondrial>());
-        case GeneticCodeEnum::ScenedesmusMitochondrial:
-            return translate(target, source, options, GeneticCode<ScenedesmusMitochondrial>());
-        case GeneticCodeEnum::ThraustochytriumMitochondrial:
-            return translate(target, source, options, GeneticCode<ThraustochytriumMitochondrial>());
-        case GeneticCodeEnum::PterobranchiaMitochondrial:
-            return translate(target, source, options, GeneticCode<PterobranchiaMitochondrial>());
-        case GeneticCodeEnum::Gracilibacteria:
-            return translate(target, source, options, GeneticCode<Gracilibacteria>());
+        case GeneticCodeSpec::Canonical:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Canonical>());
+        case GeneticCodeSpec::VertMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::VertMitochondrial>());
+        case GeneticCodeSpec::YeastMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::YeastMitochondrial>());
+        case GeneticCodeSpec::MoldMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::MoldMitochondrial>());
+        case GeneticCodeSpec::InvertMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::InvertMitochondrial>());
+        case GeneticCodeSpec::Ciliate:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Ciliate>());
+        case GeneticCodeSpec::FlatwormMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::FlatwormMitochondrial>());
+        case GeneticCodeSpec::Euplotid:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Euplotid>());
+        case GeneticCodeSpec::Prokaryote:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Prokaryote>());
+        case GeneticCodeSpec::AltYeast:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::AltYeast>());
+        case GeneticCodeSpec::AscidianMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::AscidianMitochondrial>());
+        case GeneticCodeSpec::AltFlatwormMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::AltFlatwormMitochondrial>());
+        case GeneticCodeSpec::Blepharisma:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Blepharisma>());
+        case GeneticCodeSpec::ChlorophyceanMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::ChlorophyceanMitochondrial>());
+        case GeneticCodeSpec::TrematodeMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::TrematodeMitochondrial>());
+        case GeneticCodeSpec::ScenedesmusMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::ScenedesmusMitochondrial>());
+        case GeneticCodeSpec::ThraustochytriumMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::ThraustochytriumMitochondrial>());
+        case GeneticCodeSpec::PterobranchiaMitochondrial:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::PterobranchiaMitochondrial>());
+        case GeneticCodeSpec::Gracilibacteria:
+            return translate(target, source, options, GeneticCode<GeneticCodeSpec::Gracilibacteria>());
     }
 
     std::cerr << "Invalid genetic code translation table selected."
@@ -579,13 +581,13 @@ translate(TTarget & target,
     return translate(target, source, options, GeneticCode<>());
 }
 
-template <typename TTarget, typename TSource, typename TCodeSpec>
+template <typename TTarget, typename TSource, GeneticCodeSpec codeSpec>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          GeneticCode<TCodeSpec> const & /**/)
+          GeneticCode<codeSpec> const & /**/)
 {
-    return translate(target, source, SINGLE_FRAME, GeneticCode<TCodeSpec>());
+    return translate(target, source, SINGLE_FRAME, GeneticCode<codeSpec>());
 }
 
 template <typename TTarget, typename TSource>
