@@ -6,14 +6,14 @@
 
 #define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
 #define SEQAN_PROFILE		// enable time measuring
-#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
+//#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
 //#define FIONA_MEMOPT		// small suffix array values (<16mio reads of length <256)
 #define FIONA_USE_SA        // use binary search in a suffix array for traversal
 #define FIONA_REDUCE_MEMORY
 //#define FIONA_OVERLAP_WITH_EDIT_DISTANCE  // allow indels in the overlap (instead of only mismatches)
 #define FIONA_CONSENSUS_REDUCE_MEMORY
 
-#define FIONA_MAX_CORRECTIONS_PER_BASE 3  // record and limit the number of found corrections per base
+//#define FIONA_MAX_CORRECTIONS_PER_BASE 3  // record and limit the number of found corrections per base
 
 // currently, consensus works only without indels
 #ifndef FIONA_OVERLAP_WITH_EDIT_DISTANCE
@@ -101,7 +101,7 @@ using namespace boost::numeric::ublas;
 #include <seqan/store.h>
 #include <seqan/seq_io.h>
 #include <seqan/arg_parse.h>
-#include <seqan/index_extras.h>
+//#include <seqan/index_extras.h>
 
 
 // TODO(holtgrew): This raises a warning with Boost 1.42. Deactivate warnings, activate again afterwards. The correct #pragma has to be used for each supported compiler.
@@ -5232,6 +5232,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     setMaxValue(parser, "overlap-sum", "1");
     setDefaultValue(parser, "overlap-sum", "0.3");
 
+#ifdef FIONA_ALLOWINDELS
     addOption(parser, seqan::ArgParseOption("id", "indel-length", "Maximal indel length.  Use \\fI0\\fP for "
                                             "correcting only substitutions and \\fI1\\fP for edit distance "
                                             "corrections on Illumina reads.",
@@ -5243,6 +5244,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
         setMaxValue(parser, "indel-length", tmp.str().c_str());
     }
     setDefaultValue(parser, "indel-length", "1");
+#endif
 
     // DEBUG Options
 
@@ -5386,7 +5388,9 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 	getOptionValue(options.kmerStdDevCutOff, parser, "kmer-repeat-std-dev");
 	getOptionValue(options.depthSampleRate, parser, "depth-sample-rate");
 
+#ifdef FIONA_ALLOWINDELS
 	getOptionValue(options.maxIndelLength, parser, "indel-length");
+#endif
     getOptionValue(options.numThreads, parser, "num-threads");
 #ifdef FIONA_INTERNAL_MEMORY
     getOptionValue(options.numSuperPackages, parser, "super-packages");
