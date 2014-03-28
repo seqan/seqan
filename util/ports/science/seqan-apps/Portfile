@@ -2,6 +2,7 @@
 # $Id$
 
 PortSystem          1.0
+PortGroup           cmake 1.0
 
 name                seqan-apps
 version             1.4.1
@@ -23,7 +24,7 @@ long_description    SeqAn applications for the analysis of large sets of sequenc
 homepage            http://www.seqan.de/projects
 
 
-depends_build       port:cmake port:python27 port:boost port:coinor-liblemon
+depends_build       port:boost port:coinor-liblemon
 depends_lib         port:libgcc
 
 master_sites        http://packages.seqan.de/seqan-src
@@ -33,10 +34,4 @@ checksums           rmd160  0a9b9e8f669b719f8e72741562c9fed096320987 \
                     sha256  47c4cf698d9879000b7de514a5cb425c18c26c8b8a81e469da23b757f7680a8e
 
 configure.compiler  macports-gcc-4.7
-configure.ccache    no
-configure.cmd       cmake
-configure.pre_args  -DCMAKE_INSTALL_PREFIX=${prefix} \
-                    -DCMAKE_VERBOSE_MAKEFILE=ON \
-                    -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS \
-                    -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
-
+configure.args      -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS
