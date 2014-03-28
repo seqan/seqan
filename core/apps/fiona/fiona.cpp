@@ -20,6 +20,8 @@
     #define FIONA_CONSENSUS
 #endif
 
+#define FIONA_FIXED_OVERLAP_ERRORS  // use fixed (ISMB) instead of error rate dependent threshold for overlap errors
+
 // Dave's proposal to locally chose the operation with maximal support
 //#define FIONA_MAXIMIZE_SUPPORT
 
@@ -39,6 +41,29 @@
 //#define SEQAN_DEBUG_OR_TEST_
 //#define SEQAN_HEADER_PIPE_DEBUG
 
+
+
+/*
+ * ISMB settings (currently set above)
+ *
+ * #define FIONA_FIXED_OVERLAP_ERRORS
+ * #define FIONA_CONSENSUS
+ * #undef FIONA_MAXIMIZE_SUPPORT
+ * #undef FIONA_OVERLAP_WITH_EDIT_DISTANCE
+ * #undef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+ */
+
+/* current indel settings
+ *
+ * #undef FIONA_FIXED_OVERLAP_ERRORS
+ * #undef FIONA_CONSENSUS
+ * #define FIONA_MAXIMIZE_SUPPORT
+ * #define FIONA_OVERLAP_WITH_EDIT_DISTANCE
+ * #define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+ */
+
+
+
 #if defined(_OPENMP)
     #include <omp.h>
     #define SEQAN_PARALLEL      // Only enable parallelism in fiona if OpenMP is enabled.
@@ -57,7 +82,7 @@
 // The q-gram length used for the q-gram index.  This has to be hard-coded as a precompiler definition since it is part
 // of the template parameters for the indices.
 #ifndef QGRAM_LENGTH
-#define QGRAM_LENGTH 9                    // must be less or equal to fromLevel
+#define QGRAM_LENGTH 10                    // must be less or equal to fromLevel
 #endif
 
 // The hardcoded maximal indel length.
@@ -1792,7 +1817,6 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         unsigned errorReadLength = length(store.readSeqStore[readId]);
 
 #ifndef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
-  #warning "conflicting mode disabled"
         // if indel use just the first correction except there are Ns
         bool notFoundCorrectionLimit = (possibleCorrections[0].indelLength == 0);
 	
@@ -3697,11 +3721,12 @@ if (LOOP_LEVEL != 0)
                             // CCCCCCCCCCCCCCC
                             itCLeft += -delta;
                         }
-
-//                        unsigned acceptedMismatchesLeft = maxAcceptedMismatches;
+#ifdef FIONA_FIXED_OVERLAP_ERRORS
+                        unsigned acceptedMismatchesLeft = maxAcceptedMismatches;
+#else
                         // TOTAL NUMBER OF ERRORS IN THE OVERLAP
                         unsigned acceptedMismatchesLeft = options.overlap_errorrate * _min(itEEnd - itE, itCEnd - itCLeft);
-
+#endif
                         // COMPARE READ OVERLAPS WITH ERRORS
                     #ifdef FIONA_OVERLAP_WITH_EDIT_DISTANCE
                         // ALLOW INDELS
