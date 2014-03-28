@@ -2,6 +2,7 @@
 # $Id$
 
 PortSystem          1.0
+PortGroup           cmake 1.0
 
 name                coinor-liblemon
 version             1.3
@@ -21,9 +22,6 @@ long_description    A C++ template library providing easy-to-use implementations
 
 homepage            http://lemon.cs.elte.hu
 
-
-depends_build       port:cmake port:python27
-depends_lib
 
 master_sites        http://lemon.cs.elte.hu/pub/sources/
 distname            lemon-${version}
