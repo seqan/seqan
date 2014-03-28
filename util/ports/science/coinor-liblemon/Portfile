@@ -19,7 +19,7 @@ long_description    A C++ template library providing easy-to-use implementations
                     of common graph and network related data structures and \
                     algorithms.
 
-homepage            http://www.seqan.de/projects
+homepage            http://lemon.cs.elte.hu
 
 
 depends_build       port:cmake port:python27
