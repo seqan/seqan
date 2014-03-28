@@ -4,7 +4,7 @@
 //
 // Setting options triggers quite complex behaviours that we need to simplify later.
 
-#define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
+//#define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
 #define SEQAN_PROFILE		// enable time measuring
 #define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
 //#define FIONA_MEMOPT		// small suffix array values (<16mio reads of length <256)
@@ -26,7 +26,7 @@
 #define FIONA_MATCH_N
 #define FIONA_MAXIMIZE_OVERLAPSUM   // instead of maximizing the SUM of left and right, simply use the MAXIMUM of left and right
 #define FIONA_NO_SEPARATE_OVERLAPSUM //in this mode just save the max over left and right in the linked list of corrections and only keep one correction per position
-#define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION // in this mode errors are corrected independent of type (mismatch or indels) but constraining the corrections to be apart at least min_k distance on a read
+//#define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION // in this mode errors are corrected independent of type (mismatch or indels) but constraining the corrections to be apart at least min_k distance on a read
 #define FIONA_INTERNAL_MEMORY
 
 // debugging
@@ -57,7 +57,7 @@
 // The q-gram length used for the q-gram index.  This has to be hard-coded as a precompiler definition since it is part
 // of the template parameters for the indices.
 #ifndef QGRAM_LENGTH
-#define QGRAM_LENGTH 10                    // must be less or equal to fromLevel
+#define QGRAM_LENGTH 9                    // must be less or equal to fromLevel
 #endif
 
 // The hardcoded maximal indel length.
@@ -1792,7 +1792,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         unsigned errorReadLength = length(store.readSeqStore[readId]);
 
 #ifndef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
-
+  #warning "conflicting mode disabled"
         // if indel use just the first correction except there are Ns
         bool notFoundCorrectionLimit = (possibleCorrections[0].indelLength == 0);
 	
@@ -1824,11 +1824,13 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         }//endif
 
 #else //new mode that uses distances between corrections 
-        unsigned int next = 1;
-        bool add = true;
-	while( next < length(possibleCorrections) && possibleCorrections[next].overlap[0] > options.overlapSumCutoffs(errorReadLength, possibleCorrections[next].errorPos))
+    unsigned int next = 1;
+	while (next < length(possibleCorrections))
 	{
-		add=true;
+        if (possibleCorrections[next].overlap[0] <= options.overlapSumCutoffs(errorReadLength, possibleCorrections[next].errorPos))
+            continue;
+
+        bool add = true;
 		for(unsigned int i = 0; i < length(correctionsToSave); i++){
 			//check if the distance between correction positions is apart min_k to each correction accepted
 			if(abs(possibleCorrections[correctionsToSave[i]].errorPos-possibleCorrections[next].errorPos) <= options.fromLevel){
@@ -1836,10 +1838,10 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 				break;
 			}
 		}
-		if(add){
-			appendValue(correctionsToSave, next);			
-		}
-                next++;  //check the next possible correction in the list
+		if (add)
+			appendValue(correctionsToSave, next);
+
+        next++;  //check the next possible correction in the list
 	}
 #endif
 
@@ -4367,8 +4369,12 @@ unsigned correctReads(
 
 	if (options.errorrate != 0 && options.wovsum != 0)
     {
-        SEQAN_PROTIMESTART(timeCutoffComp);    
+        SEQAN_PROTIMESTART(timeCutoffComp);
 		ComputeCutoffOverlapSum(options.overlapSumCutoffs, options.fromLevel, readLengthHist, options.genomeLength, options);
+        int hack[100] = {  876, 876, 873, 870, 866, 863, 859, 856, 852, 848, 843, 839, 834, 830, 842, 855, 867, 878, 890, 901, 911, 922, 932, 941, 950, 959, 968, 976, 984, 991, 998, 1005, 1011, 1017, 1023, 1028, 1033, 1038, 1042, 1046, 1049, 1053, 1055, 1058, 1060, 1062, 1063, 1064, 1065, 1065, 1065, 1065, 1064, 1063, 1062, 1060, 1058, 1055, 1053, 1049, 1046, 1042, 1038, 1033, 1028, 1023, 1017, 1011, 1005, 998, 991, 984, 976, 968, 959, 950, 941, 932, 922, 911, 901, 890, 878, 867, 855, 842, 830, 834, 839, 843, 848, 852, 856, 859, 863, 866, 870, 873, 876, 8763 };
+        for (unsigned i=0;i<100;++i)
+            options.overlapSumCutoffs(100, i) = hack[i];
+ 
         if (options.verbosity >= 2)
         {
             unsigned len = _min(100u, maxReadLength);
@@ -4818,6 +4824,10 @@ unsigned correctReads(
 
     double startTime = sysTime();
     std::vector<double> done(omp_get_max_threads(), 0);
+
+    // this must be done before and here (out of the parallel section)
+    _refreshStringSetLimits(store.readSeqStore);
+
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
 	for (int i = 1; i < (int)length(packages); ++i)
 	{
