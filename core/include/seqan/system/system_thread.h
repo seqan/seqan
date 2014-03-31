@@ -51,7 +51,6 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename Worker>
     struct Thread
     {
-//IOREV _notio_
         typedef HANDLE Handle;
 
         Handle hThread;
@@ -62,7 +61,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template <typename TArg>
         Thread(TArg &arg):
-            worker(arg) {}
+            worker(arg)
+        {}
+
+        template <typename TArg>
+        Thread(TArg const &arg):
+            worker(arg)
+        {}
 
         ~Thread() {
             if (*this) {
@@ -117,7 +122,6 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename Worker>
     struct Thread
     {
-//IOREV _notio_
         typedef pthread_t* Handle;
 
         pthread_t data, *hThread;
@@ -127,9 +131,16 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template <typename TArg>
         Thread(TArg &arg):
-            worker(arg) {}
+            worker(arg)
+        {}
 
-        ~Thread() {
+        template <typename TArg>
+        Thread(TArg const &arg):
+            worker(arg)
+        {}
+
+        ~Thread() 
+        {
             if (*this) {
                 cancel();
                 wait();
