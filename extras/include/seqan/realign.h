@@ -48,9 +48,10 @@
 #include <seqan/consensus.h>
 
 // ===========================================================================
-// Realignment Code:w
+// Realignment Code
 // ===========================================================================
 
+#include <seqan/realign/realign_helper_functions.h>
 #include <seqan/realign/realign_base.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_REALIGN_H_
