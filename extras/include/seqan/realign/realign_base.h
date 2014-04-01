@@ -52,12 +52,12 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class RealignmentOptions
+// Class RealignmentOptions_
 // ----------------------------------------------------------------------------
 
 // Class used for holding the realignment options.
 
-struct RealignmentOptions
+struct RealignmentOptions_
 {
     // Enum for selecting a realignment method.
     enum RealignmentMethod
@@ -80,7 +80,7 @@ struct RealignmentOptions
     // Whether or not to print debugging information.
     bool debug;
 
-    RealignmentOptions() :
+    RealignmentOptions_() :
             method(ANSON_MYERS_NW), environment(0), bandwidth(0), includeReference(false), printTiming(false),
             debug(false)
     {}
@@ -228,7 +228,7 @@ public:
     // The timing helper struct.
     AnsonMyersTimes_ & times;
     // The options.
-    RealignmentOptions const & options;
+    RealignmentOptions_ const & options;
 
     // -----------------------------------------------------------------------
     // Public Interface
@@ -238,7 +238,7 @@ public:
                                 TProfileString & contigProfile,
                                 TAlignedReadStore & contigAlignedReads,
                                 AnsonMyersTimes_ & times,
-                                RealignmentOptions const & options) :
+                                RealignmentOptions_ const & options) :
             store(store), contigProfile(contigProfile), contigAlignedReads(contigAlignedReads), times(times),
             options(options)
     {}
@@ -471,7 +471,7 @@ public:
                     //     std::cerr << "\titP->count[" << i << "] == " << itP->count[i];
                     // std::cerr << "\n";
                 }
-                removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos, Standard()));
+                _removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos, Standard()));
                 gapsRemoved += 1;  // WAS: (removeGap(contigAlignedReads, posA, iter(contigAlignedReads, elPos,
                                    //                 Standard())) > 0);
                 if (pos < info.aliBeginPos)
@@ -544,7 +544,7 @@ public:
     // The FragmentStore object with the reads.
     TFragmentStore & store;
     // The configuration to use for the realignment.
-    RealignmentOptions options;
+    RealignmentOptions_ options;
 
     // A copy of the aligned reads for the current contig.
     TAlignedReadStore contigAlignedReads;
@@ -562,7 +562,7 @@ public:
     // -----------------------------------------------------------------------
 
     // Construct
-    AnsonMyersRealigner_(TFragmentStore & store, RealignmentOptions const & options) :
+    AnsonMyersRealigner_(TFragmentStore & store, RealignmentOptions_ const & options) :
             store(store), options(options)
     {}
 
@@ -1199,7 +1199,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
                       << "READ   \t" << readGaps << "\n";
 
         // TODO(holtgrew): Adjust begin/end gap scoring.
-        bool linear = (options.method == RealignmentOptions::ANSON_MYERS_NW);
+        bool linear = (options.method == RealignmentOptions_::ANSON_MYERS_NW);
         if (isSingleLeft)
         {
             if (options.debug)
@@ -1249,7 +1249,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             if (options.debug)
                 std::cerr << "CASE OF LEFT (lowerBand == " << lowerBand << ", upperBand == " << upperBand
                           << ", bandDelta == " << bandDelta << ")\n";
-            if (options.method == RealignmentOptions::ANSON_MYERS_NW)
+            if (options.method == RealignmentOptions_::ANSON_MYERS_NW)
             {
                 _fixBandSize(lowerBand, upperBand, profilePart, source(readGaps), alignConfig, NeedlemanWunsch());
                 globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
@@ -1267,7 +1267,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             if (options.debug)
                 std::cerr << "NOT case of left (lowerBand == " << lowerBand << ", upperBand == "
                           << upperBand << ")\n";
-            if (options.method == RealignmentOptions::ANSON_MYERS_NW)
+            if (options.method == RealignmentOptions_::ANSON_MYERS_NW)
             {
                 _fixBandSize(lowerBand, upperBand, profilePart, source(readGaps), alignConfig, NeedlemanWunsch());
                 globalAlignment(profileGaps, readGaps, consScore, alignConfig, lowerBand, upperBand,
@@ -1571,7 +1571,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
                 appendValue(newProfilePart, TProfileChar());  // new empty profile character
                 TAlphabet x = *itR;
                 back(newProfilePart).count[ordValue(x)] += 1;
-                int numGaps = insertGap(contigAlignedReads, pos, it);
+                int numGaps = _insertGap(contigAlignedReads, pos, it);
                 if (options.debug)
                     std::cerr << "inTrailingGapP == " << inTrailingGapP << "\n"
                               << "insertGap(contigAlignedRead, " << pos << ") == " << numGaps << "\n";
@@ -1788,8 +1788,8 @@ void reAlignment(FragmentStore<TSpec, TConfig> & store,
                  bool debug = false,
                  bool printTiming = false)
 {
-    RealignmentOptions options;
-    options.method = realignmentMethod ? RealignmentOptions::ANSON_MYERS_GOTOH : RealignmentOptions::ANSON_MYERS_NW;
+    RealignmentOptions_ options;
+    options.method = realignmentMethod ? RealignmentOptions_::ANSON_MYERS_GOTOH : RealignmentOptions_::ANSON_MYERS_NW;
     options.bandwidth = bandwidth;
     options.environment = bandwidth / 2;
     options.includeReference = includeReference;

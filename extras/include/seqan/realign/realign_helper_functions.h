@@ -55,8 +55,8 @@ namespace seqan {
 
 template <typename TPos, typename TGapAnchor, typename TSpec, typename TGapPos>
 inline bool  // true if removed gap that is not leading/trailing gap
-removeGap2(AlignedReadStoreElement<TPos, TGapAnchor, TSpec> & alignedRead,
-           TGapPos const gapPos)
+_removeGap2(AlignedReadStoreElement<TPos, TGapAnchor, TSpec> & alignedRead,
+            TGapPos const gapPos)
 {
     typedef String<TGapAnchor> TGaps;
     typedef typename Iterator<TGaps, Standard>::Type TGapIter;
@@ -80,9 +80,9 @@ removeGap2(AlignedReadStoreElement<TPos, TGapAnchor, TSpec> & alignedRead,
 // Returns number of returned gaps.
 template <typename TAlignedReads, typename TSpec, typename TGapPos, typename TAlignedReadIt>
 inline int
-removeGap(String<TAlignedReads, TSpec>& alignedReadStore,
-          TGapPos const gapPos,
-          TAlignedReadIt const & skipIt)
+_removeGap(String<TAlignedReads, TSpec>& alignedReadStore,
+           TGapPos const gapPos,
+           TAlignedReadIt const & skipIt)
 {
     typedef String<TAlignedReads, TSpec> TAlignedReadStore;
     typedef typename Iterator<TAlignedReadStore, Standard>::Type TAlignIter;
@@ -92,15 +92,15 @@ removeGap(String<TAlignedReads, TSpec>& alignedReadStore,
     TAlignIter alignItEnd = end(alignedReadStore, Standard());
     for(;alignIt != alignItEnd; ++alignIt)
         if (alignIt != skipIt)
-            result += removeGap2(*alignIt, gapPos);
+            result += _removeGap2(*alignIt, gapPos);
     return result;
 }
 
 template <typename TAlignedReads, typename TSpec, typename TGapPos, typename TAlignedReadIt>
 inline int
-insertGap(String<TAlignedReads, TSpec>& alignedReadStore,
-          TGapPos const gapPos,
-          TAlignedReadIt const & skipIt)
+_insertGap(String<TAlignedReads, TSpec>& alignedReadStore,
+           TGapPos const gapPos,
+           TAlignedReadIt const & skipIt)
 {
     typedef String<TAlignedReads, TSpec> TAlignedReadStore;
     typedef typename Iterator<TAlignedReadStore, Standard>::Type TAlignIter;
