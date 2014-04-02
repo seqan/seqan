@@ -32,6 +32,7 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
+// TODO(holtgrew): After this has been thoroughly tested, debug output should be removed.
 // TODO(holtgrew): With gaps instead of align we can now create "real" profile-sequence alignments.
 // TODO(holtgrew): For windows, we only need to create the profile of the window, this should save time for string resizing on replace().
 // TODO(holtgrew): Need to resort after display, changes order and might break realignment!
