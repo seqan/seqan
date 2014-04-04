@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,8 +34,9 @@
 #ifndef SEQAN_HEADER_INDEX_H
 #define SEQAN_HEADER_INDEX_H
 
-//____________________________________________________________________________
-// prerequisites
+// ==========================================================================
+// Prerequisites.
+// ==========================================================================
 
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
@@ -44,6 +46,7 @@
 #include <seqan/find.h>
 #include <seqan/misc/misc_set.h>
 #include <seqan/misc/misc_memset.h>
+#include <seqan/misc/misc_bit_twiddling.h>
 
 #include <climits>
 #include <functional>
@@ -56,10 +59,10 @@
 #include <cmath>    // isnan, isinf
 #include <string.h> // memset
 
-//////////////////////////////////////////////////////////////////////////////
-// INDEX CONSTRUCTION
-//////////////////////////////////////////////////////////////////////////////
 
+// ==========================================================================
+// Index construction.
+// ==========================================================================
 
 #include <seqan/index/index_forwards.h>
 
@@ -69,8 +72,9 @@
 
 #include <seqan/index/index_base.h>
 
-//____________________________________________________________________________
-// q-gram index creator
+// ----------------------------------------------------------------------------
+// q-Gram index creator.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/shape_base.h>
 #include <seqan/index/shape_gapped.h>
@@ -81,8 +85,9 @@
 #include <seqan/index/index_qgram_openaddressing.h>
 //#include <seqan/index/index_qgram_nested.h>
 
-//____________________________________________________________________________
-// suffix array creators
+// ----------------------------------------------------------------------------
+// Suffix array creators.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/radix.h>
 #include <seqan/index/index_sa_btree.h>
@@ -102,8 +107,9 @@
 #include <seqan/index/pump_separator7.h>
 #include <seqan/index/index_skew7_multi.h>
 
-//____________________________________________________________________________
-// enhanced table creators
+// ----------------------------------------------------------------------------
+// Enhanced table creators.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/pump_lcp_core.h>
 #include <seqan/index/index_lcp.h>
@@ -112,47 +118,90 @@
 #include <seqan/index/index_childtab.h>
 #include <seqan/index/index_bwt.h>
 
-
-//////////////////////////////////////////////////////////////////////////////
-// INDEX USAGE
-//////////////////////////////////////////////////////////////////////////////
+// ==========================================================================
+// Index usage.
+// ==========================================================================
 
 #include <seqan/index/index_shims.h>
 
-//____________________________________________________________________________
-// (virtual) string trees
+// ----------------------------------------------------------------------------
+// Virtual string trees.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/index_esa_base.h>
 #include <seqan/index/index_esa_stree.h>
 #include <seqan/index/index_wotd.h>
 #include <seqan/index/index_dfi.h>
+#include <seqan/index/index_sa_stree.h>
+#include <seqan/index/index_sa_truncated.h>
+#include <seqan/index/index_qgram_stree.h>
+#include <seqan/index/index_qgram_bucketrefinement.h>
 
-//____________________________________________________________________________
-// suffix tree algorithms
+// ----------------------------------------------------------------------------
+// Rank dictionaries.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_rank_dictionary_base.h>
+#include <seqan/index/index_fm_rank_dictionary_naive.h>
+#include <seqan/index/index_fm_rank_dictionary_levels.h>
+#include <seqan/index/index_fm_right_array_binary_tree.h>
+#include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
+#include <seqan/index/index_fm_rank_dictionary_wt.h>
+
+// ----------------------------------------------------------------------------
+// Sparse strings.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_sparse_string.h>
+
+// ----------------------------------------------------------------------------
+// FM index.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_lf_table.h>
+#include <seqan/index/index_fm_compressed_sa.h>
+#include <seqan/index/index_fm_compressed_sa_iterator.h>
+#include <seqan/index/index_fm.h>
+#include <seqan/index/index_fm_stree.h>
+
+// ----------------------------------------------------------------------------
+// Suffix tree algorithms.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/index_esa_algs.h>
 #include <seqan/index/index_esa_algs_multi.h>
 #include <seqan/index/index_esa_drawing.h>
 #include <seqan/index/repeat_base.h>
 
-//____________________________________________________________________________
-// Pizza & Chili interface (compressed indices)
+// ----------------------------------------------------------------------------
+// Pizza & Chili interface (compressed indices).
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/index_pizzachili.h>
 #include <seqan/index/index_pizzachili_find.h>
 
-//____________________________________________________________________________
-// Shawarma interface (suffix array creators)
+// ----------------------------------------------------------------------------
+// Shawarma interface (suffix array creators).
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/index_shawarma.h>
 
+// ----------------------------------------------------------------------------
+// View and device indices.
+// ----------------------------------------------------------------------------
 
-//////////////////////////////////////////////////////////////////////////////
-// FINDER INTERFACE
-//////////////////////////////////////////////////////////////////////////////
+#include <seqan/index/index_view.h>
+#ifdef PLATFORM_CUDA
+#include <seqan/index/index_device.h>
+#endif
 
-//____________________________________________________________________________
-// index based finders
+// ==========================================================================
+// Finder interface.
+// ==========================================================================
+
+// ----------------------------------------------------------------------------
+// Index based finders.
+// ----------------------------------------------------------------------------
 
 #include <seqan/index/find_index_esa.h>
 #include <seqan/index/find_index_approx.h>
@@ -160,24 +209,19 @@
 #include <seqan/index/find_index.h>
 #include <seqan/index/find_quasar.h>
 #include <seqan/index/find_swift.h>
+#include <seqan/index/find_backtracking.h>
 
-//////////////////////////////////////////////////////////////////////////////
-// FM INDEX
-//////////////////////////////////////////////////////////////////////////////
-#include <seqan/index/index_fm_rank_support_bit_string.h>
-#include <seqan/index/index_fm_rank_support_bit_string_iterator.h>
-#include <seqan/index/index_fm_sparse_string.h>
-#include <seqan/index/index_fm_compressed_sa.h>
-#include <seqan/index/index_fm_compressed_sa_iterator.h>
-#include <seqan/index/index_fm_prefix_sum_table.h>
-#include <seqan/index/index_fm_right_array_binary_tree.h>
-#include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
-// #include <seqan/index/index_fm_wavelet_tree.h>
-#include <seqan/index/index_fm_rank_dictionary_wt.h>
-#include <seqan/index/index_fm_rank_dictionary_bms.h>
-#include <seqan/index/index_fm_sentinel_rank_dictionary.h>
-#include <seqan/index/index_fm_lf_table.h>
-#include <seqan/index/index_fm.h>
-#include <seqan/index/index_fm_stree.h>
+// ----------------------------------------------------------------------------
+// New finders.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/iter_vstree_factory.h>
+
+#include <seqan/index/find2_index.h>
+#include <seqan/index/find_backtracking_exp.h>
+//#include <seqan/index/find_suffixfilter.h>
+#include <seqan/index/find2_index.h>
+#include <seqan/index/find_index_multiple.h>
+#include <seqan/index/find2_functors.h>
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -67,9 +67,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * @tparam THost The host sequence.
  * @tparam TSpec The specialization tag, defaults to <tt>void</tt>.
  *
- * @section Remarks
- *
- * THost can also be a modified string, so you can create nest modified strings to create custom combinations.
+ * <tt>THost</tt> can also be a modified string, so you can create nest modified strings to create custom combinations.
  *
  * @section Examples
  *
@@ -389,7 +387,18 @@ struct Host<ModifiedString<THost, TSpec> > {
 
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> const > {
-    typedef THost const Type;
+    typedef THost Type;
+};
+
+// special case: fixed size array
+template <typename TValue, size_t SIZE, typename TSpec >
+struct Host<ModifiedString<TValue [SIZE], TSpec> > {
+    typedef TValue * Type;
+};
+
+template <typename TValue, size_t SIZE, typename TSpec >
+struct Host<ModifiedString<TValue [SIZE], TSpec> const > {
+    typedef TValue const * Type;
 };
 
 // --------------------------------------------------------------------------
@@ -508,17 +517,17 @@ _toParameter(ModifiedString<THost, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline THost &
+inline typename Host<ModifiedString<THost, TSpec> >::Type &
 host(ModifiedString<THost, TSpec> & me)
 {
-    return _dereference<THost &>(me._host);
+    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
 }
 
 template <typename THost, typename TSpec>
-inline THost &
+inline typename Host<ModifiedString<THost, TSpec> const>::Type &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _dereference<THost &>(me._host);
+    return _dereference<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
 }
 
 // --------------------------------------------------------------------------

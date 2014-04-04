@@ -88,6 +88,24 @@ void crossIndex(TText &text)
 	crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
 }
 
+template <typename TIndexSpec, typename TText1, typename TText2>
+void crossSameIndex(TText1 &text1, TText2 &text2)
+{
+	Index<TText1, TIndexSpec> index1(text1);
+	Index<TText2, TIndexSpec> index2(text2);
+
+    SEQAN_ASSERT(text1 == text2);
+    SEQAN_ASSERT(indexText(index1) == indexText(index2));
+    {
+        typename Iterator<Index<TText1, TIndexSpec>, TopDown<ParentLinks<PreorderEmptyEdges> > >::Type iter1(index1);
+        typename Iterator<Index<TText2, TIndexSpec>, TopDown<ParentLinks<PreorderEmptyEdges> > >::Type iter2(index2);
+        SEQAN_ASSERT_EQ(indexSA(index1), indexSA(index2));
+    }
+
+	crossBottomUp< TopDown<ParentLinks<PreorderEmptyEdges> > > (index1, index2);
+	crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
+}
+
 template <typename TIndexSpec1, typename TIndexSpec2>
 void crossIndicesChar()
 {
@@ -158,6 +176,21 @@ void crossIndicesDna()
 	}
 }
 
+template <typename TIndexSpec, typename TStringSpec1, typename TStringSpec2>
+void crossStringsDna()
+{
+    StringSet<String<Dna, TStringSpec1> > t;
+    resize(t, 6);
+    t[0] = "caggctcgcgt";
+    t[1] = "caggaacg";
+    t[2] = "tcgttg";
+    t[3] = "tggtcg";
+    t[4] = "agg";
+    t[5] = "ctg";
+    StringSet<String<Dna, TStringSpec2>, Owner<ConcatDirect<> > > t2 = t;
+    crossSameIndex<TIndexSpec> (t, t2);
+}
+
 SEQAN_DEFINE_TEST(testIndexCrossCompareChar)
 {
 	crossIndicesChar<IndexEsa<>, IndexWotd<> >();
@@ -174,6 +207,20 @@ SEQAN_DEFINE_TEST(testIndexCrossCompareDna)
 {
 	crossIndicesDna<IndexEsa<>, IndexWotd<> >();
 	// crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
+}
+
+
+SEQAN_DEFINE_TEST(testIndexCrossCompareDnaStrings)
+{
+	crossStringsDna<IndexEsa<>, Alloc<>, Alloc<> >();
+	crossStringsDna<IndexEsa<>, Alloc<>, Packed<> >();
+	crossStringsDna<IndexEsa<>, Alloc<>, External<> >();
+	crossStringsDna<IndexEsa<>, Alloc<>, MMap<> >();
+
+	crossStringsDna<IndexWotd<>, Alloc<>, Alloc<> >();
+	crossStringsDna<IndexWotd<>, Alloc<>, Packed<> >();
+	crossStringsDna<IndexWotd<>, Alloc<>, External<> >();
+	crossStringsDna<IndexWotd<>, Alloc<>, MMap<> >();
 }
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareDnaDfi)

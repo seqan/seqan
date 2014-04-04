@@ -3,13 +3,11 @@
 {% block title %}{{ metafunction.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="metafunction" data-pimped="true"><a href="page_LanguageEntities.html#metafunction">Fn<></a> <span>{{ metafunction.title|e }}<div>{{ sections.brief(metafunction) }}</div></span></h1>
+<h1 data-lang-entity="metafunction" data-pimped="true">
+  <a href="page_LanguageEntities.html#metafunction">Fn<></a> <span>{{ metafunction.title|e }}<div>{{ sections.brief(metafunction) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(metafunction) }}
-
-	{{ sections.signatures(metafunction) }}
-</div>
+{{ sections.top_box(metafunction) }}
 
 <!-- @param -->
 {{ sections.params(metafunction) }}
@@ -26,6 +24,7 @@
  =============================================================================
 -->
 
+{% if metafunction.internals or metafunction.deprecation_msgs or metafunction.warnings or metafunction.notes or metafunction.akas or not metafunction.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -74,6 +73,7 @@
     {{ sections.body(metafunction) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(metafunction) }}

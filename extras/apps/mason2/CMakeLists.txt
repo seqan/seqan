@@ -15,7 +15,7 @@ message (STATUS "Configuring extras/apps/mason2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+set (SEQAN_FIND_DEPENDENCIES ZLIB OpenMP)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)
@@ -40,6 +40,10 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # We define a library for the reusable parts of Mason.
 add_library (mason_sim
@@ -93,24 +97,22 @@ add_executable (mason_splicing mason_splicing.cpp)
 add_executable (mason_tests mason_tests.cpp)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (mason_genome ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_methylation ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_frag_sequencing ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_variator ${SEQAN_LIBRARIES} mason_sim)
+target_link_libraries (mason_genome ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_materializer ${SEQAN_LIBRARIES} mason_sim)
+target_link_libraries (mason_methylation ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_simulator ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_splicing ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_tests ${SEQAN_LIBRARIES} mason_sim)
-
-
+target_link_libraries (mason_variator ${SEQAN_LIBRARIES} mason_sim)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
 
 # Include mason executables in CTD structure.
-set (SEQAN_CTD_EXECUTABLES 
-    ${SEQAN_CTD_EXECUTABLES} 
+set (SEQAN_CTD_EXECUTABLES
+    ${SEQAN_CTD_EXECUTABLES}
     mason_genome
     mason_frag_sequencing
     mason_variator
@@ -127,18 +129,27 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
   seqan_setup_install_vars (mason2)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
-# Install mason2 in ${PREFIX}/bin directory
-install (TARGETS mason_genome
-                 mason_frag_sequencing
-                 mason_variator
+# Install Mason binaries in ${PREFIX}/bin directory
+install (TARGETS mason_frag_sequencing
+                 mason_genome
                  mason_materializer
+                 mason_methylation
                  mason_simulator
+                 mason_splicing
+                 mason_variator
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/mason2 for SeqAn release builds.
 install (FILES LICENSE
                README
+               README.mason_frag_sequencing
+               README.mason_genome
+               README.mason_materializer
+               README.mason_methylation
+               README.mason_simulator
+               README.mason_splicing
+               README.mason_variator
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/adeno_virus.fa
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
@@ -155,7 +166,7 @@ seqan_add_app_test (mason2)
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:mason2")
   set (CPACK_PACKAGE_NAME "mason2")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "mason2")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Versatile package for the simulation of nucleic sequence.")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>")
 

@@ -207,19 +207,19 @@ struct Switch<TAG, NilCase>
 // Metafunction Loop
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): This is more of a class than a function or metafunction.
-
 /*!
- * @fn Loop
+ * @class Loop
  * @headerfile <seqan/basic.h>
+ * @brief Helper for loops.
  *
- * @signature void Loop<TWorker, COUNT>::run(args);
+ * @signature template <typename TWorker, unsigned COUNT>
+ *            struct Loop;
  *
  * @tparam TWorker A struct with a static inline void function called <tt>body</tt>.  <tt>body</tt> should have two
  *                 parameters, one for passing in values and state from the outside and the second is an int.  The
  *                 function will be called <tt>COUNT</tt> times with the same reference for the first one and the values
  *                 <tt>COUNT</tt>, <tt>COUNT - 1</tt>, ..., <tt>1</tt> for the second parameter.
- * @param COUNT    An <tt>int</tt> constant.
+ * @tparam COUNT   An <tt>int</tt> constant.
  *
  * @section Example
  *
@@ -235,6 +235,14 @@ struct Switch<TAG, NilCase>
  * @snippet demos/basic/metaprogramming_control.cpp print worker call loop reverse
  *
  * @see LoopReverse
+ *
+ * @fn Loop::run
+ * @brief Run the loop body.
+ *
+ * @signature Loop::run(arg, i);
+ *
+ * @param[in,out] arg The argument to pass to the worker's <tt>body()</tt> function.
+ * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
 
 /**
@@ -297,19 +305,20 @@ public:
 // Metafunction LoopReverse
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): This is more of a class than a function or metafunction.
-
 /*!
- * @fn LoopReverse
+ * @class LoopReverse
+ * @brief Helper for reverse loops.
+ *
  * @headerfile <seqan/basic.h>
  *
- * @signature void LoopReverse<TWorker, COUNT>::run(args);
+ * @signature template <typename TWorker, unsigned COUNT>
+ *            struct LoopReverse;
  *
  * @tparam TWorker A struct with a static inline void function called <tt>body</tt>.  <tt>body</tt> should have two
  *                 parameters, one for passing in values and state from the outside and the second is an int.  The
  *                 function will be called <tt>COUNT</tt> times with the same reference for the first one and the values
  *                 <tt>COUNT</tt>, <tt>COUNT - 1</tt>, ..., <tt>1</tt> for the second parameter.
- * @param COUNT    An <tt>int</tt> constant.
+ * @tparam COUNT   An <tt>int</tt> constant.
  *
  * @section Example
  *
@@ -325,6 +334,14 @@ public:
  * @snippet demos/basic/metaprogramming_control.cpp print worker call loop
  *
  * @see Loop
+ *
+ * @fn LoopReverse::run
+ * @brief Run the loop body.
+ *
+ * @signature LoopReverse::run(arg, i);
+ *
+ * @param[in,out] arg The argument to pass to the worker's <tt>body()</tt> function.
+ * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
 
 /**

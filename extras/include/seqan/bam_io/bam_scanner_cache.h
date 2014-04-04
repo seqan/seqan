@@ -72,9 +72,11 @@ struct BamScannerCacheKey_
 
 struct BamScannerCacheSearchKey_    
 {
+    typedef __uint16 TFlag;
+	
     BamScannerCacheKey_ cacheKey;
-    __uint16 flags;
-    __uint16 flagsMask;
+    TFlag flags;
+    TFlag flagsMask;
 };
 
 struct BamScannerCacheHash_ :
@@ -82,7 +84,7 @@ struct BamScannerCacheHash_ :
 {    
     size_t operator()(BamScannerCacheKey_ const &v) const
     {
-        return hash<__int32>()(v.rID) ^ hash<__int32>()(v.beginPos);
+        return std::hash<__int32>()(v.rID) ^ std::hash<__int32>()(v.beginPos);
     }
 };
 
@@ -164,6 +166,7 @@ _recursivelyFindSegmentGraph(
     BamScannerCache &cache)
 {
     typedef BamScannerCache::TMapIter TMapIter;
+    typedef BamScannerCacheSearchKey_::TFlag TFlag;
     
     // search for segment using contigId, position
     std::pair<TMapIter, TMapIter> range = cache.map.equal_range(searchKey.cacheKey);
@@ -199,7 +202,7 @@ _recursivelyFindSegmentGraph(
         {
             BamScannerCacheSearchKey_ searchKey = {
                 { record.rNextId, record.pNext },
-                (record.flag & BAM_FLAG_MULTIPLE) | ((record.flag & BAM_FLAG_NEXT_RC) >> 1),
+                static_cast<TFlag>((record.flag & BAM_FLAG_MULTIPLE) | ((record.flag & BAM_FLAG_NEXT_RC) >> 1)),
                 BAM_FLAG_MULTIPLE | BAM_FLAG_RC
             };
             if (_recursivelyFindSegmentGraph(records, searchKey, segmentNo + 1, cache))
@@ -220,6 +223,7 @@ inline int
 readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamScannerCache &cache)
 {
     typedef BamScannerCache::TMapIter TMapIter;
+    typedef BamScannerCacheSearchKey_::TFlag TFlag;
 
     if (empty(records))
         resize(records, 1);
@@ -253,7 +257,7 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamS
         // search mates in case of multiple templates
         BamScannerCacheSearchKey_ searchKey = {
             { record.rNextId, record.pNext },
-            (record.flag & BAM_FLAG_MULTIPLE) | ((record.flag & BAM_FLAG_NEXT_RC) >> 1),
+            static_cast<TFlag>((record.flag & BAM_FLAG_MULTIPLE) | ((record.flag & BAM_FLAG_NEXT_RC) >> 1)),
             BAM_FLAG_MULTIPLE | BAM_FLAG_RC
         };
         if (_recursivelyFindSegmentGraph(records, searchKey, 0, cache))

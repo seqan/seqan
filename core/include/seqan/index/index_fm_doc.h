@@ -106,11 +106,11 @@ you will get an error message: "Logic error. It is not possible to create this i
 .Class.CompressedSA:
 ..cat:Index
 ..summary:A suffix array storing only a few suffix array entries and computing the remaining on demand.
-..signature:CompressedSA<TSparseString, TLfTable, TSpec>
+..signature:CompressedSA<TSparseString, TLF, TSpec>
 ..param.TSparseString:The string containing specific suffix array entries.
 ...type:Class.SparseString
-..param.TLfTable:The lfTable containg an occurrence table and a prefix sum table.
-...type:Class.LfTable
+..param.TLF:The lf containg an occurrence table and a prefix sum table.
+...type:Class.LF
 ..param.TSpec:Possibility to specialize a compressed suffix array.
 ...default:void.
 ..remarks:The compressed suffix array can only be used with the FM index.
@@ -179,7 +179,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/index.h
-*/template <typename TSparseString, typename TLfTable, typename TSpec>
+*/template <typename TSparseString, typename TLF, typename TSpec>
 /**
 .Function.CompressedSA#save
 ..class:Class.CompressedSA
@@ -198,14 +198,14 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..include:seqan/index.h
 */
 /**
-.Function.setLfTable
+.Function.setFibre
 ..class:Class.CompressedSA
-..summary:Set the LfTable of the compressed suffix array.
-..signature:setLfTable(CompressedSA<TSparseString, TLfTable, TSpec> compressedSa, TLfTable & lfTable)
-..param.CompressedSA<TSparseString, TLfTable, TSpec>:The compressed suffix array.
+..summary:Set the LF of the compressed suffix array.
+..signature:setFibre(CompressedSA<TSparseString, TLF, TSpec> compressedSa, TLF & lf, FibreLF)
+..param.CompressedSA<TSparseString, TLF, TSpec>:The compressed suffix array.
 ...type:Class.CompressedSA
-..param.lfTable
-...type:Class.LfTable
+..param.lf
+...type:Class.LF
 ..include:seqan/index.h
 */
 /**
@@ -238,10 +238,10 @@ this function.
 ..include:seqan/index_fm.h
 */
 /**
-.Class.LfTable:
+.Class.LF:
 ..cat:Index
-..summary:LfTable is an object storing all necessary information for the LF-mapping.
-..signature:LfTable<TOccTable, TPrefixSumTable>
+..summary:LF is an object storing all necessary information for the LF-mapping.
+..signature:LF<TOccTable, TPrefixSumTable>
 ..param.TOccTable:The occurrence table data structure.
 ...type:Class.SentinelRankDictionary
 ..param.TPrefixSumTable:The specialisation tag.
@@ -249,45 +249,45 @@ this function.
 ..include:seqan/Index.h
 */
 /**
-.Function.LfTable#clear
-..class:Class.LfTable
+.Function.LF#clear
+..class:Class.LF
 ..summary:Clears the LF table.
-..signature:clear(lfTable)
-..param.lfTable:The LF table to be cleared.
-...type:Class.LfTable
+..signature:clear(lf)
+..param.lf:The LF table to be cleared.
+...type:Class.LF
 ..include:seqan/index.h
 */
 /**
-.Function.LfTable#empty
-..class:Class.LfTable
+.Function.LF#empty
+..class:Class.LF
 ..summary:Clears the LF table.
-..signature:empty(lfTable)
-..param.lfTable:The LF table to be cleared.
-...type:Class.LfTable
+..signature:empty(lf)
+..param.lf:The LF table to be cleared.
+...type:Class.LF
 ..returns:$true$ if the LF table is empty, $false$ otherwise.
 ...type:nolink:$bool$
 ..include:seqan/index.h
 */
 /**
 .Function.createLfTable
-..class:Class.LfTable
+..class:Class.LF
 ..summary:Creates the LF table
-..signature:createLfTable(lfTable, text)
-..param.lfTable:The LF table to be constructed.
-...type:Class.LfTable.
+..signature:createLfTable(lf, text)
+..param.lf:The LF table to be constructed.
+...type:Class.LF.
 ..param.text:The underlying text
 ...type:Class.String
 ..returns:$true$ on successes, $false$ otherwise.
 ..include:seqan/index.h
 */
 /**
-.Function.LfTable#getFibre:
+.Function.LF#getFibre:
 ..summary:Returns a specific fibre of a container.
 ..signature:getFibre(container, fibreTag)
-..class:Class.LfTable
+..class:Class.LF
 ..cat:Index
 ..param.container:The container holding the fibre.
-...type:Class.LfTable
+...type:Class.LF
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
 ...type:Tag.LF Table Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
@@ -295,24 +295,24 @@ this function.
 */
 /**
 .Function.lfMapping:
-..class:Class.LfTable
+..class:Class.LF
 ..summary:Returns the position of an character at a specified position of L in F. L corresponds to the last column of 
 the sorted cyclic rotations of the original text, while F correspond to the first column.
 ..cat:Index
-..signature:lfMapping(lfTable, pos)
-..param.lfTable:The @Class.LfTable@ holding the occurrence and prefix sum table.
-...type:Class.LfTable
+..signature:lfMapping(lf, pos)
+..param.lf:The @Class.LF@ holding the occurrence and prefix sum table.
+...type:Class.LF
 ..param.pos:The position in L
 ..returns:Returns the position of the character L[c] in F. The returned position is of the same type as pos.
 ..include:seqan/index.h
 */
 /**
-.Function.LfTable#open
-..class:Class.LfTable
+.Function.LF#open
+..class:Class.LF
 ..summary:This functions loads a LF table from disk.
-..signature:open(lfTable, fileName [, openMode])
-..param.lfTable:The lfTable.
-...type:Class.LfTable
+..signature:open(lf, fileName [, openMode])
+..param.lf:The lf.
+...type:Class.LF
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
 ...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
@@ -324,12 +324,12 @@ the sorted cyclic rotations of the original text, while F correspond to the firs
 ..include:seqan/index.h
 */
 /**
-.Function.LfTable#save
-..class:Class.LfTable
+.Function.LF#save
+..class:Class.LF
 ..summary:This functions saves a LF table to disk.
-..signature:save(lfTable, fileName [, openMode])
-..param.lfTable:The dictionary.
-...type:Class.LfTable
+..signature:save(lf, fileName [, openMode])
+..param.lf:The dictionary.
+...type:Class.LF
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
 ...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
@@ -369,7 +369,7 @@ smaller characters in a given text.
 ..summary:Clears the prefix sum table.
 ..signature:clear(prefixSumTable)
 ..param.prefixSumTable:The prefix sum table to be cleared.
-...type:Class.LfTable
+...type:Class.LF
 ..include:seqan/index.h
 */
 /**
@@ -454,9 +454,9 @@ smaller characters in a given text.
 .Function.PrefixSumTable#length
 ..class:Class.PrefixSumTable
 ..summary:Returns the number of different characters in the prefix-sum table.
-..signature:length(lfTable)
-..param.lfTable:The prefix-sum table.
-...type:Class.LfTable
+..signature:length(lf)
+..param.lf:The prefix-sum table.
+...type:Class.LF
 ..returns:Returns the number of different characters in the prefix-sum table.
 ...type:Metafunction.Size
 ...remarks:If the type of the characters of the prefix-sum table consists of more than 8 bit only the characters

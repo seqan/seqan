@@ -71,8 +71,6 @@ namespace seqan {
  * @param[in,out] x Integer to set to <tt>max(x, y)</tt>.
  * @param[in]     y Other integer.
  *
- * @section Remarks
- *
  * This is equivalent to
  *
  * @code{.cpp}
@@ -123,8 +121,6 @@ atomicMax(T volatile & x, T y)
  *
  * @param[in,out] x Integer to set to <tt>min(x, y)</tt>.
  * @param[in]     y Other integer.
- *
- * @section Remarks
  *
  * This is equivalent to
  *
