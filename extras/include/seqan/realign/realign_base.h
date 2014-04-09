@@ -1726,6 +1726,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
 
 /*!
  * @fn reAlignment
+ * @headerfile <seqan/realign.h>
  * @brief Perform realignment on a @link FragmentStore @endlink object.
  *
  * @signature void reAlignment(store, contigID, realignmentMethod, bandwidth, includeReference[,
