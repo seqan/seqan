@@ -46,8 +46,8 @@ void testAlignmentDPMatrixDataHostMF()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef _DataHost<TDPMatrix>::Type TDataHost;
-    typedef _DataHost<TDPMatrixConst>::Type TDataHostConst;
+    typedef DataHost_<TDPMatrix>::Type TDataHost;
+    typedef DataHost_<TDPMatrixConst>::Type TDataHostConst;
 
     bool result1 = IsSameType<Matrix<char, 2>, TDataHost>::VALUE;
     bool result2 = IsSameType<Matrix<char, 2> const, TDataHostConst>::VALUE;
@@ -63,8 +63,8 @@ void testAlignmentDPMatrixSizeArrMF()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef _SizeArr<TDPMatrix>::Type TSizeArr;
-    typedef _SizeArr<TDPMatrixConst>::Type TSizeArrConst;
+    typedef SizeArr_<TDPMatrix>::Type TSizeArr;
+    typedef SizeArr_<TDPMatrixConst>::Type TSizeArrConst;
 
     bool result1 = IsSameType<SizeArr_<Matrix<char, 2> >::Type, TSizeArr>::VALUE;
     bool result2 = IsSameType<SizeArr_<Matrix<char, 2> >::Type const, TSizeArrConst>::VALUE;
@@ -80,8 +80,8 @@ void testAlignmentDPMatrixDataHost()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef _DataHost<TDPMatrix>::Type TDataHost;
-    typedef _DataHost<TDPMatrixConst>::Type TDataHostConst;
+    typedef DataHost_<TDPMatrix>::Type TDataHost;
+    typedef DataHost_<TDPMatrixConst>::Type TDataHostConst;
 
     TDPMatrix dpMatrix;
 
