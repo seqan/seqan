@@ -20,10 +20,10 @@
     #define FIONA_CONSENSUS
 #endif
 
-#define FIONA_FIXED_OVERLAP_ERRORS  // use fixed (ISMB) instead of error rate dependent threshold for overlap errors
+//#define FIONA_FIXED_OVERLAP_ERRORS  // use fixed (ISMB) instead of error rate dependent threshold for overlap errors
 
 // Dave's proposal to locally chose the operation with maximal support
-//#define FIONA_MAXIMIZE_SUPPORT
+#define FIONA_MAXIMIZE_SUPPORT
 
 #define FIONA_MATCH_N
 #define FIONA_MAXIMIZE_OVERLAPSUM   // instead of maximizing the SUM of left and right, simply use the MAXIMUM of left and right
@@ -3725,7 +3725,7 @@ if (LOOP_LEVEL != 0)
                         unsigned acceptedMismatchesLeft = maxAcceptedMismatches;
 #else
                         // TOTAL NUMBER OF ERRORS IN THE OVERLAP
-                        unsigned acceptedMismatchesLeft = options.overlap_errorrate * _min(itEEnd - itE, itCEnd - itCLeft);
+                        unsigned acceptedMismatchesLeft = std::max(2u, (unsigned)(options.overlap_errorrate * _min(itEEnd - itE, itCEnd - itCLeft)));
 #endif
                         // COMPARE READ OVERLAPS WITH ERRORS
                     #ifdef FIONA_OVERLAP_WITH_EDIT_DISTANCE
