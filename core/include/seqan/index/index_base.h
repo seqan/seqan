@@ -698,9 +698,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 
 	template < typename TText, typename TSpec >
     struct Size< Index<TText, TSpec> > {
-		typedef typename Size<
-			typename Fibre< Index<TText, TSpec>, FibreRawText>::Type 
-		>::Type Type;
+        typedef typename LengthSum<TText>::Type Type;
     };
 
 	template < typename TText, typename TSpec >
