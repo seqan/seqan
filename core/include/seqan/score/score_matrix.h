@@ -61,6 +61,10 @@ struct ScoreMatrix;
  * @tparam TSeqValue The alphabet type, defaults to AminoAcid.
  * @tparam TSpec     Further specialization, defaults to Default.
  *
+ * For a predefined scoring matrix, specify one of the following tags:
+ * Blosum30_, Blosum45_, Blosum62_, Blosum80_, Pam40_, Pam120_, Pam200_, Pam250_, Vtml200_.
+ * This will internally call @link MatrixScore#setDefaultScoreMatrix setDefaultScoreMatrix@endlink.
+ *
  * @fn MatrixScore::Score
  * @brief Constructor
  *
@@ -210,14 +214,30 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  * @fn MatrixScore#setDefaultScoreMatrix
  * @brief Set the score matrix of a Score to one of the default matrixes.
  *
- * @signature void setScore(score, tag);
+ * @signature void setDefaultScoreMatrix(score, tag);
  *
  * @param[in,out] score The MatrixScore to update.
- * @param[in]     tag   The tag to select the default matrix from, one of Default, Blosum30, Blosum62, and Blosum80.
+ * @param[in]     tag   The tag to select the default matrix, see description below.
  *
  * @section Remarks
  *
+ * The tag must be one of the following: 
+ * Default, Blosum30_, Blosum45_, Blosum62_, Blosum80_, Pam40_, Pam120_, Pam200_, Pam250_, Vtml200_.
+ *
+ * Note the trailing underscore of these tags. For all these matrices shortcut definitions exist, that
+ * stand for predefined subclasses of Score. These typedefs are written without the underscore.
+ *
  * If Default is used for tag then the matrix will be filled with default-constructed TValue values.
+ * 
+ * @see Blosum30
+ * @see Blosum45
+ * @see Blosum62
+ * @see Blosum80
+ * @see Pam40
+ * @see Pam120
+ * @see Pam200
+ * @see Pam250
+ * @see Vtml200
  */
 
 /**
