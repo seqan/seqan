@@ -764,6 +764,18 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	};
 
 //////////////////////////////////////////////////////////////////////////////
+// lcp type
+
+	template <typename TText, typename TSSetSpec, typename TSpec>
+	struct Fibre<Index<StringSet<TText, TSSetSpec>, TSpec>, FibreLcp>
+    {
+		typedef String<
+            typename Size<TText>::Type,
+			typename DefaultIndexStringSpec<Index<StringSet<TText, TSSetSpec>, TSpec> >::Type
+		> Type;
+	};
+
+//////////////////////////////////////////////////////////////////////////////
 // globalize functor
 
 	template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
