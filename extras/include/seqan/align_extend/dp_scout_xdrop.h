@@ -122,7 +122,7 @@ struct ScoutStateSpecForScout_<
 // errors in MSVC.
 
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
-          typename TIsLastColumn = False>
+          typename TIsLastColumn>
 inline void
 _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
                 TDPCell const & activeCell,
@@ -144,7 +144,7 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
 }
 
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
-          typename TIsLastColumn = False>
+          typename TIsLastColumn>
 inline void
 _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
                 TDPCell const & activeCell,
