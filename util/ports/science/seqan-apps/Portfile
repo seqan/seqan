@@ -23,32 +23,20 @@ long_description    SeqAn applications for the analysis of large sets of sequenc
 homepage            http://www.seqan.de/projects
 
 
-master_sites        http://packages.seqan.de/${name}
-use_bzip2           yes
+depends_build       port:cmake port:python27 port:boost port:coinor-liblemon
+depends_lib         port:libgcc
 
-# distname and worksrcdir should be identical in future releases
-platform darwin x86_64 {
-    distname            ${name}-${version}-Mac-x86_64
-    worksrcdir          ${name}-${version}-Darwin-x86_64
-    checksums           rmd160  57ec09ea5f496ae6bc4fddc5cafa71536f6ad789 \
-                        sha256  ec01b03a82256eb22d4786f10088fec231bb3446ea38eeb6698f4099a4721944
-}
+master_sites        http://packages.seqan.de/seqan-src
+distfiles           seqan-src-${version}${extract.suffix}
+distname            seqan-${version}
+checksums           rmd160  0a9b9e8f669b719f8e72741562c9fed096320987 \
+                    sha256  47c4cf698d9879000b7de514a5cb425c18c26c8b8a81e469da23b757f7680a8e
 
-platform darwin i386 {
-    distname            ${name}-${version}-Mac-i686
-    worksrcdir          ${name}-${version}-Darwin-i686
-    checksums           rmd160  bef9796f0002253a0160b071bce216b027e1b55f \
-                        sha256  187f917a55f1d0f4de553079d42c016d4659f509d33a8573544396675257f754
-}
+configure.compiler  macports-gcc-4.7
+configure.ccache    no
+configure.cmd       cmake
+configure.pre_args  -DCMAKE_INSTALL_PREFIX=${prefix} \
+                    -DCMAKE_VERBOSE_MAKEFILE=ON \
+                    -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS \
+                    -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
 
-
-configure {}
-
-build {}
-
-destroot {
-    foreach filename [glob ${worksrcpath}/bin/*] {
-        file copy $filename ${destroot}${prefix}/bin
-    }
-    file copy ${worksrcpath}/share/doc ${destroot}${prefix}/share
-}
