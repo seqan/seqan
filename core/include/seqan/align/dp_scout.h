@@ -198,25 +198,6 @@ struct ScoutStateSpecForScout_
 // ----------------------------------------------------------------------------
 
 // Tracks the new score, if it is the new maximum.
-// template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator>
-// inline void
-// _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
-//                 TDPCell const & activeCell,
-//                 TTraceMatrixNavigator const & navigator,
-//                 bool isLastColumn = false,
-//                 bool isLastRow = false)
-// {
-//     (void)isLastColumn;
-//     (void)isLastRow;
-// 
-//     if (_scoreOfCell(activeCell) > _scoreOfCell(dpScout._maxScore))
-//     {
-//         dpScout._maxScore = activeCell;
-//         dpScout._maxHostPosition = position(navigator);
-//     }
-// }
-
-// Tracks the new score, if it is the new maximum.
 template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator,
           typename TIsLastColumn, typename TIsLastRow>
 inline void
@@ -232,6 +213,18 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
         dpScout._maxScore = activeCell;
         dpScout._maxHostPosition = position(navigator);
     }
+}
+
+template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator,
+          typename TIsLastColumn>
+inline void
+_scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn const & /**/)
+{
+    return _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(),
+                           False());
 }
 
 template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator>
