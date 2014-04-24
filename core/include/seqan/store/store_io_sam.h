@@ -335,7 +335,6 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;        
         typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
-        typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
         typedef typename Iterator<TAlignedReadStore, Standard>::Type    TIter;    
         typedef typename Iterator<TMatchMateInfos, Standard>::Type      TMIter;    
                 
@@ -678,7 +677,6 @@ namespace SEQAN_NAMESPACE_MAIN
         // All fragment store element types
         //typedef typename Value<typename TFragmentStore::TContigStore>::Type         TContigElement;
         //typedef typename Value<typename TFragmentStore::TLibraryStore>::Type        TLibraryStoreElement;
-        typedef typename Value<typename TFragmentStore::TMatePairStore>::Type       TMatePairElement;
         //typedef typename Value<typename TFragmentStore::TReadStore>::Type           TReadStoreElement;
         typedef typename Value<typename TFragmentStore::TAlignQualityStore>::Type   TAlignQualityElement;
 
@@ -957,14 +955,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
 
     typedef typename TFragmentStore::TContigStore                   TContigStore;
     typedef typename Value<TContigStore>::Type                      TContig;
-    typedef typename TFragmentStore::TContigSeq                     TContigSeq;
     typedef typename TContig::TGapAnchors                           TContigGapAnchors;
-
-    typedef typename TFragmentStore::TReadStore                     TReadStore;
-    typedef typename Value<TReadStore>::Type                        TReadStoreElement;
-
-    typedef typename TFragmentStore::TReadSeq                       TReadSeq;
-    typedef typename Iterator<TReadSeq, Standard>::Type             TReadSeqIterator;
 
     typedef Iterator<CharString, Standard>::Type                    TCharStringIterator;
 
@@ -978,7 +969,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
         appendValue(record.qName, *it);
 
     // Fill FLAG.
-    register unsigned short flag = 0;
+    unsigned short flag = 0;
 
     if (alignedRead.beginPos > alignedRead.endPos)
         flag |= BAM_FLAG_RC;
@@ -1086,16 +1077,10 @@ setMateMatch(BamAlignmentRecord & record,
 
     typedef typename TFragmentStore::TContigStore                   TContigStore;
     typedef typename Value<TContigStore>::Type                      TContig;
-    typedef typename TFragmentStore::TContigSeq                     TContigSeq;
     typedef typename TContig::TGapAnchors                           TContigGapAnchors;
 
     typedef typename TFragmentStore::TReadStore                     TReadStore;
     typedef typename Value<TReadStore>::Type                        TReadStoreElement;
-
-    typedef typename TFragmentStore::TReadSeq                       TReadSeq;
-    typedef typename Iterator<TReadSeq, Standard>::Type             TReadSeqIterator;
-
-    typedef Iterator<CharString, Standard>::Type                    TCharStringIterator;
 
     typedef Gaps<Nothing, AnchorGaps<TContigGapAnchors> >           TContigGaps;
 
@@ -1158,9 +1143,6 @@ inline void _writeAlignedReads(
     typedef typename TFragmentStore::TReadStore                     TReadStore;
     typedef typename Value<TReadStore>::Type                        TReadStoreElement;
 
-    typedef typename TFragmentStore::TReadSeqStore                  TReadSeqStore;
-    typedef typename Value<TReadSeqStore>::Type                     TReadSeq;
-
     typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
     typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadStoreIterator;
     typedef typename Value<TAlignedReadStore>::Type                 TAlignedReadStoreElement;
@@ -1169,7 +1151,6 @@ inline void _writeAlignedReads(
     typedef typename TFragmentStore::TAlignQualityStore             TAlignQualityStore;
     typedef typename Value<TAlignQualityStore>::Type                TAlignQualityStoreElement;
 
-    typedef TAlignedReadStoreElement *                              TAlignedReadStoreElementPtr;
     typedef TAlignQualityStoreElement *                             TAlignQualityStoreElementPtr;
 
     // Store outer library size for each pair match (indexed by pairMatchId)

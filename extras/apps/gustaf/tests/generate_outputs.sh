@@ -4,7 +4,36 @@
 
 # We use the current trunk version (r13805) for building the reference.
 GUSTAF="../../../../../build/debug/bin/gustaf"
+JOINMATES="../../../../../build/debug/bin/gustaf_mate_joining"
 STELLAR="../../../../../build/debug/bin/stellar"
+
+# ============================================================
+# Creating Stellar input files for paired-end mode using gustaf_mate_joining
+# ============================================================
+
+    ${JOINMATES} adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    -o adeno_modified_reads_joinedMates.fa -rc \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+# ============================================================
+# Gustaf_mate_joining output files
+# ============================================================
+
+    ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    -o reads_simulated_joined_rc.fa -rc 1 \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    -o reads_simulated_joined.fa \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    ${JOINMATES} reads_simulated_joined_gold.fa \
+    -o reads_simulated_mates1_rc.fa -o reads_simulated_mates2_rc.fa -rc 1 \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    ${JOINMATES} reads_simulated_joined_gold.fa \
+    -o reads_simulated_mates1.fa -o reads_simulated_mates2.fa \
+    > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
 
 # ============================================================
 # Creating Stellar output files

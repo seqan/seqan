@@ -15,10 +15,13 @@ message (STATUS "Configuring extras/apps/sgip")
 # ----------------------------------------------------------------------------
 
 # The SGIP program can only be built with MSVC++ 10 or later.
-if (MSVC AND NOT MSVC10)
-    message (STATUS "Not building SGIP. MSVC++ 10 or later required.")
+find_package(CXX11 REQUIRED)
+
+# Disable SGIP for MinGW and VS8 and earlier.
+if (NOT CXX11_FOUND)
+    message (STATUS "  SGIP cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
     return ()
-endif (MSVC AND NOT MSVC10)
+endif (NOT CXX11_FOUND)
 
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES NONE)
@@ -41,7 +44,7 @@ add_executable (sgip sgip.cpp sgip.h sgip_base.h sgip_output.h)
 target_link_libraries (sgip ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation

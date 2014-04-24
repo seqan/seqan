@@ -13,7 +13,8 @@ Table of Contents
   3.   Usage
   4.   Output Format
   5.   Example
-  6.   Contact
+  6.   Gustaf paired-end joining app gustaf_mate_joining
+  7.   Contact
 
 ---------------------------------------------------------------------------
 1. Overview
@@ -72,8 +73,8 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   the given GFF file.
   Given two read pair input files, Gustaf is run in paired-end mode.
   Note that option -m is mandatory in this case.
-  Remarks: There are different version paired-end (or mate pair) data can
-  come. Gustaf always expect two files, and in default expects the second
+  Remarks: There are different versions paired-end (or mate pair) data can
+  come in. Gustaf always expect two files, and in default expects the second
   mates (MATES2) to be reverse complemented in relation to the first mates
   (MATES1), see option -rc to turn this behaviour off.
 
@@ -298,7 +299,7 @@ the files 'adeno_modified_reads_mates1' and 'adeno_modified_reads_mates2'
 for paired-end mode. 
 
 ---------------------------------------------------------------------------
-5.1. Single-end mode
+5.1. Single-end Mode
 ---------------------------------------------------------------------------
 
 There is a pre-calculated Stellar output file 'stellar.gff' for the
@@ -321,13 +322,13 @@ In the second run, Gustaf used the pre-calculated file with Stellar matches
 and reuse the Stellar output for multiple Gustaf runs).
 
 ---------------------------------------------------------------------------
-5.2. Paired-end mode
+5.2. Paired-end Mode
 ---------------------------------------------------------------------------
 
 In paired-end mode, we join both read pair files before calling Stellar.
-This can be done using the app 'join_mates' by calling
+This can be done using the app 'gustaf_mate_joining' by calling
 
-    ./join_mates adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    ./gustaf_mate_joining adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
         -rc -o adeno_modified_reads_joinedMates.fa
 
 There is a pre-calculated Stellar output file 'stellar_joinedMates.gff' for
@@ -348,7 +349,36 @@ same orientation, so we prevent the second file from beeing reverse
 complemented.
 
 ---------------------------------------------------------------------------
-6. Contact
+6. Joining Paired-end Reads With Gustaf_mate_joining
+---------------------------------------------------------------------------
+
+The Gustaf directory includes another app called gustaf_mate_joining that can
+be build using the make gustaf_mate_joining command. Gustaf_mate_joining is a
+small app that helps prepare paired-end data for usage with Gustaf.
+
+This simple program takes as input two mate pair or paired-end files and outputs
+a file where both mate sequences have been joined together. The FASTA file with
+joined mates is an required input file for the paired-end mode of Gustaf.
+The tool assumes the mates in the second file to be reverse complemented
+compared to the first file. This behaviour can be turned off using the command
+line argument "-rc".
+
+Given only one input file and two output files, the program will split the reads
+from the input files at half length, and write the first half of each sequence
+as mates1 into the first output file and the reversed complemented second half
+of each sequence as mates2 into the second output file. Reverse complementing
+the sequences can again be turned off using "-rc".
+
+To prepare the joined mate file for the paired-end example above, call
+
+    ./gustaf_mate_joining adeno_modified_reads_mates1.fa \
+        adeno_modified_reads_mates2.fa -rc -o adeno_modified_reads_joinedMates.fa
+
+The mates in this small example are both from the same strand, so we avoid reverse
+complementing the second input file by using -rc.
+
+---------------------------------------------------------------------------
+7. Contact
 ---------------------------------------------------------------------------
 
 For questions or comments, contact:

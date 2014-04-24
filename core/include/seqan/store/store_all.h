@@ -834,41 +834,37 @@ public:
 
     void swap(FragmentStore & other)
     {
-        seqan::swap(readStore, other.readStore);
-        seqan::swap(matePairStore, other.matePairStore);
-        seqan::swap(libraryStore, other.libraryStore);
-        seqan::swap(contigStore, other.contigStore);
-        seqan::swap(contigFileStore, other.contigFileStore);
+        seqan::swap(alignQualityStore, other.alignQualityStore);
         seqan::swap(alignedReadStore, other.alignedReadStore);
+        seqan::swap(alignedReadTagStore, other.alignedReadTagStore);
+        seqan::swap(annotationKeyStore, other.annotationKeyStore);
+        seqan::swap(annotationNameStore, other.annotationNameStore);
         seqan::swap(annotationStore, other.annotationStore);
+        seqan::swap(annotationTypeStore, other.annotationTypeStore);
+        seqan::swap(contigFileStore, other.contigFileStore);
+        seqan::swap(contigNameStore, other.contigNameStore);
+        seqan::swap(contigStore, other.contigStore);
         seqan::swap(intervalTreeStore_F, other.intervalTreeStore_F);
         seqan::swap(intervalTreeStore_R, other.intervalTreeStore_R);
+        seqan::swap(libraryNameStore, other.libraryNameStore);
+        seqan::swap(libraryStore, other.libraryStore);
+        seqan::swap(matePairNameStore, other.matePairNameStore);
+        seqan::swap(matePairStore, other.matePairStore);
+        seqan::swap(readNameStore, other.readNameStore);
         seqan::swap(readSeqStore, other.readSeqStore);
-        seqan::swap(alignQualityStore, other.alignQualityStore);
-        seqan::swap(alignedReadTagStore, other.alignedReadTagStore);
-        seqan::swap(readNameStore, other.readNameStore);
-        seqan::swap(libraryNameStore, other.libraryNameStore);
-        seqan::swap(contigNameStore, other.contigNameStore);
-        seqan::swap(readNameStore, other.readNameStore);
-        seqan::swap(matePairNameStore, other.matePairNameStore);
-        seqan::swap(libraryNameStore, other.libraryNameStore);
-        seqan::swap(matePairNameStore, other.matePairNameStore);
-        seqan::swap(contigNameStore, other.contigNameStore);
-        seqan::swap(annotationNameStore, other.annotationNameStore);
-        seqan::swap(annotationTypeStore, other.annotationTypeStore);
-        seqan::swap(annotationKeyStore, other.annotationKeyStore);
+        seqan::swap(readStore, other.readStore);
 
-        refresh(readNameStoreCache);
-        refresh(contigNameStoreCache);
+        refresh(annotationKeyStoreCache);
         refresh(annotationNameStoreCache);
         refresh(annotationTypeStoreCache);
-        refresh(annotationKeyStoreCache);
+        refresh(contigNameStoreCache);
+        refresh(readNameStoreCache);
 
-        refresh(other.readNameStoreCache);
-        refresh(other.contigNameStoreCache);
+        refresh(other.annotationKeyStoreCache);
         refresh(other.annotationNameStoreCache);
         refresh(other.annotationTypeStoreCache);
-        refresh(other.annotationKeyStoreCache);
+        refresh(other.contigNameStoreCache);
+        refresh(other.readNameStoreCache);
     }
 };
 
@@ -1908,7 +1904,7 @@ calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> 
 
 template <typename TSpec, typename TConfig, typename TId>
 inline int
-getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
+getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
 {
 	typedef FragmentStore<TSpec, TConfig>			TFragmentStore;
 	typedef typename TFragmentStore::TReadStore		TReadStore;
@@ -1932,7 +1928,7 @@ getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
 
 /*!
  * @fn FragmentStore#calculateMateIndices
- * @brief Calculates a string that maps the readId of a read to the readId of its mate.
+ * @brief Calculates a string that maps the readId of a read to the index of its mate in the alignedReadStore.
  *
  * @signature void calculateMateIndices(mateIndices, store);
  *
@@ -1959,27 +1955,27 @@ getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
 // calculate index of the other mate for each pair match
 template <typename TMateIndexString, typename TSpec, typename TConfig>
 inline void
-calculateMateIndices(TMateIndexString &mateIndices, FragmentStore<TSpec, TConfig> &me)
+calculateMateIndices(TMateIndexString & mateIndices, FragmentStore<TSpec, TConfig> const & me)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
+    typedef FragmentStore<TSpec, TConfig> const                     TFragmentStore;
+    typedef typename TFragmentStore::TAlignedReadStore const        TAlignedReadStore;
 
-	TAlignedReadIter it = begin(me.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
+    typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
+    typedef typename Id<TAlignedRead>::Type                         TId;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
 
-	for (TId idx = 0; it != itEnd; ++it, ++idx)
-	{
-		TId id = (*it).pairMatchId;
-		if (id == TAlignedRead::INVALID_ID) continue;
-		if (length(mateIndices) < 2*id + 2)
-			resize(mateIndices, 2*id + 2, TAlignedRead::INVALID_ID, Generous());
-		SEQAN_ASSERT_NEQ(getMateNo(me, (*it).readId), -1);
-		mateIndices[2*id + 1 - getMateNo(me, (*it).readId)] = idx;
-	}
+    TAlignedReadIter it = begin(me.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
+
+    for (TId idx = 0; it != itEnd; ++it, ++idx)
+    {
+        TId id = (*it).pairMatchId;
+        if (id == TAlignedRead::INVALID_ID) continue;
+        if (length(mateIndices) < 2*id + 2)
+            resize(mateIndices, 2*id + 2, TAlignedRead::INVALID_ID, Generous());
+        SEQAN_ASSERT_NEQ(getMateNo(me, (*it).readId), -1);
+        mateIndices[2*id + 1 - getMateNo(me, (*it).readId)] = idx;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

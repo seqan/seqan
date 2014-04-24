@@ -37,6 +37,10 @@
 #ifndef SEQAN_MISC_MISC_UNION_FIND_H_
 #define SEQAN_MISC_MISC_UNION_FIND_H_
 
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/graph_types.h>
+
 // TODO(holtgrew): Comprehensive tests. Currently, there are *some* tests in the tests for graph_algorithm.
 
 namespace seqan {

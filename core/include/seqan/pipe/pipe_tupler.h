@@ -439,7 +439,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Pipe< TInput, Tupler<SIZE, omitLast, TPack> > >::Type
     length(Pipe< TInput, Tupler<SIZE, omitLast, TPack> > const &me) 
 	{
-		typedef Pipe< TInput, Tupler<SIZE, omitLast, TPack> >	TPipe;
 		if (length(me.in) > (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE))
 			return length(me.in) - (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE);
 		else

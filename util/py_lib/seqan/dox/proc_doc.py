@@ -377,6 +377,16 @@ class ProcCodeEntry(ProcEntry):
     def subEntries(self, kind):
         return []
 
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        ProcEntry.visitTextNodes(self, visitor)
+        for msg in self.deprecation_msgs:
+            visitor.visit(msg)
+        for msg in self.notes:
+            visitor.visit(msg)
+        for msg in self.warnings:
+            visitor.visit(msg)
+
 
 class ProcEnum(ProcCodeEntry):
     """A processed enum documentation.

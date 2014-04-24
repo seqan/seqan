@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,56 +31,27 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Test the specialization Unordered SeedSet.
+// Facade header for module realign.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
-#define TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
+#ifndef EXTRAS_INCLUDE_SEQAN_REALIGN_H_
+#define EXTRAS_INCLUDE_SEQAN_REALIGN_H_
 
-#include <seqan/basic.h>  // Includes testing infrastructure.
-#include <seqan/file.h>   // Required to print strings in tests.
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
 
-#include <seqan/seeds.h>  // Include module under test.
+#include <seqan/basic.h>
+#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/store.h>
+#include <seqan/consensus.h>
 
-template <typename TSeedSpec>
-void testSeedsSeedSetConstructors(TSeedSpec const &)
+// ===========================================================================
+// Realignment Code
+// ===========================================================================
 
-// Test container functions for specialization unordered.
-SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
-{
-    using namespace seqan;
+#include <seqan/realign/realign_helper_functions.h>
+#include <seqan/realign/realign_base.h>
 
-    { // Construct with begin/end in both dimensions.
-        // Define Seed type and declare a variable.
-        typedef Seed<Simple> TSeed;
-        TSeed s(1, 2, 3, 5);
-
-        // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
-        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
-        SEQAN_ASSERT_EQ(3u, endPositionH(s));
-        SEQAN_ASSERT_EQ(5u, endPositionV(s));
-        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
-        SEQAN_ASSERT_EQ(2, upperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, startDiagonal(s));
-        SEQAN_ASSERT_EQ(2, endDiagonal(s));
-    }
-    { // Construct from ChainedSeed object.
-        typedef Seed<ChainedSeed> TSeed2;
-        TSeed2 s2(1, 2, 3);
-        typedef Seed<Simple> TSeed;
-        TSeed s(s2);
-
-        // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
-        SEQAN_ASSERT_EQ(4u, endPositionH(s));
-        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
-        SEQAN_ASSERT_EQ(5u, endPositionV(s));
-        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
-        SEQAN_ASSERT_EQ(1, upperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, beginDiagonal(s));
-        SEQAN_ASSERT_EQ(1, endDiagonal(s));
-    }
-}
-
-#endif  // TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
+#endif  // EXTRAS_INCLUDE_SEQAN_REALIGN_H_

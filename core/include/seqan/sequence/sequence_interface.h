@@ -323,8 +323,7 @@ struct IsSequence
 };
 
 template <typename T>
-struct IsSequence<T const>
-    : public IsSequence<T> {};
+struct IsSequence<T const> : IsSequence<T> {};
 
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess

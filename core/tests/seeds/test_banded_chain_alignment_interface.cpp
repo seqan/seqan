@@ -34,12 +34,12 @@
 // Tests the different global interfaces of the banded chain alignment.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEEDS_TEST_BANDED_CHAIN_ALIGNMENT_INTERFACE_H_
-#define CORE_TESTS_SEEDS_TEST_BANDED_CHAIN_ALIGNMENT_INTERFACE_H_
+#include <sstream>
 
 #include <seqan/basic.h>
+#include <seqan/file.h>  // for printing seqan::String<>
+
 #include <seqan/seeds.h>
-#include <sstream>
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_one_score)
 {
@@ -2428,5 +2428,58 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_score
     }
 }
 
+SEQAN_BEGIN_TESTSUITE(test_banded_chain_alignment_interface)
+{
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_overlap_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_align_affine_overlap_two_scores);
 
-#endif  // #ifndef CORE_TESTS_SEEDS_TEST_BANDED_CHAIN_ALIGNMENT_INTERFACE_H_
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_global_two_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_semi_two_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_linear_overlap_two_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_gaps_affine_overlap_two_scores);
+
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_two_scores);
+
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_linear_overlap_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_global_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_global_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_semi_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_scores);
+}
+SEQAN_END_TESTSUITE
