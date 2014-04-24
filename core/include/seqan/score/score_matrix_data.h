@@ -63,6 +63,7 @@ namespace seqan {
 ..include:seqan/score.h
  */
 struct Blosum30_ {};
+typedef Blosum30_ ScoreSpecBlosum30;
 
 /*!
  * @typedef Blosum30
@@ -167,6 +168,7 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum30_> {
 ..include:seqan/score.h
  */
 struct Blosum45_ {};
+typedef Blosum45_ ScoreSpecBlosum45;
 
 /*!
  * @typedef Blosum45
@@ -270,6 +272,7 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum45_> {
 ..include:seqan/score.h
  */
 struct Blosum62_ {};
+typedef Blosum62_ ScoreSpecBlosum62;
 
 /*!
  * @typedef Blosum62
@@ -373,6 +376,7 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum62_> {
 ..include:seqan/score.h
  */
 struct Blosum80_ {};
+typedef Blosum80_ ScoreSpecBlosum80;
 
 /*!
  * @typedef Blosum80
@@ -476,6 +480,7 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum80_> {
 ..include:seqan/score.h
  */
 struct Pam40_ {};
+typedef Pam40_ ScoreSpecPam40;
 
 /*!
  * @typedef Pam40
@@ -582,6 +587,7 @@ struct ScoringMatrixData_<int, AminoAcid, Pam40_> {
 ..include:seqan/score.h
  */
 struct Pam120_ {};
+typedef Pam120_ ScoreSpecPam120;
 
 /*!
  * @typedef Pam120
@@ -687,6 +693,7 @@ struct ScoringMatrixData_<int, AminoAcid, Pam120_> {
 ..include:seqan/score.h
  */
 struct Pam200_ {};
+typedef Pam200_ ScoreSpecPam200;
 
 /*!
  * @typedef Pam200
@@ -792,6 +799,7 @@ struct ScoringMatrixData_<int, AminoAcid, Pam200_> {
 ..include:seqan/score.h
  */
 struct Pam250_ {};
+typedef Pam250_ ScoreSpecPam250;
 
 /*!
  * @typedef Pam250
@@ -897,6 +905,7 @@ struct ScoringMatrixData_<int, AminoAcid, Pam250_> {
 ..include:seqan/score.h
  */
 struct Vtml200_ {};
+typedef Vtml200_ ScoreSpecVtml200;
 
 /*!
  * @typedef Vtml200
