@@ -70,7 +70,7 @@ typedef Blosum30_ ScoreSpecBlosum30;
  * @headerfile <seqan/score.h>
  * @brief BLOSUM30 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum30_> > Blosum30;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
  *
  * @code{.cpp}
  * A     4
@@ -108,14 +108,14 @@ typedef Blosum30_ ScoreSpecBlosum30;
 ..summary:Blosum30 scoring matrix.
 ..signature:Blosum30
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Blosum30_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Blosum30_> > Blosum30;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Blosum30_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -175,7 +175,7 @@ typedef Blosum45_ ScoreSpecBlosum45;
  * @headerfile <seqan/score.h>
  * @brief BLOSUM45 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum45_> > Blosum45;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
  *
  * @code{.cpp}
  * A      5
@@ -213,14 +213,14 @@ typedef Blosum45_ ScoreSpecBlosum45;
 ..summary:Blosum45 scoring matrix.
 ..signature:Blosum45
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Blosum45_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Blosum45_> > Blosum45;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Blosum45_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum45> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -279,7 +279,7 @@ typedef Blosum62_ ScoreSpecBlosum62;
  * @headerfile <seqan/score.h>
  * @brief BLOSUM62 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum62_> > Blosum62;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
  *
  * @code{.cpp}
  * A      4
@@ -317,14 +317,14 @@ typedef Blosum62_ ScoreSpecBlosum62;
 ..summary:Blosum62 scoring matrix.
 ..signature:Blosum62
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Blosum62_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> >
 ..include:seqan/score.h
  */
-typedef Score<int, ScoreMatrix<AminoAcid, Blosum62_> > Blosum62;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Blosum62_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -383,7 +383,7 @@ typedef Blosum80_ ScoreSpecBlosum80;
  * @headerfile <seqan/score.h>
  * @brief BLOSUM80 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum80_> > Blosum80;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
  *
  * @code{.cpp}
  * A      7
@@ -421,14 +421,14 @@ typedef Blosum80_ ScoreSpecBlosum80;
 ..summary:Blosum80 scoring matrix.
 ..signature:Blosum80
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Blosum80_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Blosum80_> > Blosum80;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Blosum80_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum80> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -487,7 +487,7 @@ typedef Pam40_ ScoreSpecPam40;
  * @headerfile <seqan/score.h>
  * @brief PAM40 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam40_> > Pam40;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
  *
  * @code{.cpp}
  * A      6
@@ -525,14 +525,14 @@ typedef Pam40_ ScoreSpecPam40;
 ..summary:Pam40 scoring matrix.
 ..signature:Pam40
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Pam40_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Pam40_> > Pam40;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Pam40_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -594,7 +594,7 @@ typedef Pam120_ ScoreSpecPam120;
  * @headerfile <seqan/score.h>
  * @brief PAM120 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam120_> > Pam120;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
  *
  * @code{.cpp}
  * A      3
@@ -632,14 +632,14 @@ typedef Pam120_ ScoreSpecPam120;
 ..summary:Pam120 scoring matrix.
 ..signature:Pam120
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Pam120_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Pam120_> > Pam120;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Pam120_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -700,7 +700,7 @@ typedef Pam200_ ScoreSpecPam200;
  * @headerfile <seqan/score.h>
  * @brief PAM200 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam200_> > Pam200;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
  *
  * @code{.cpp}
  * A      3
@@ -738,14 +738,14 @@ typedef Pam200_ ScoreSpecPam200;
 ..summary:Pam200 scoring matrix.
 ..signature:Pam200
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Pam200_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Pam200_> > Pam200;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Pam200_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -806,7 +806,7 @@ typedef Pam250_ ScoreSpecPam250;
  * @headerfile <seqan/score.h>
  * @brief PAM250 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam250_> > Pam250;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
  *
  * @code{.cpp}
  * A      2
@@ -844,14 +844,14 @@ typedef Pam250_ ScoreSpecPam250;
 ..summary:Pam250 scoring matrix.
 ..signature:Pam250
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Pam250_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Pam250_> > Pam250;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Pam250_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -912,7 +912,7 @@ typedef Vtml200_ ScoreSpecVtml200;
  * @headerfile <seqan/score.h>
  * @brief VTML200 scoring matrix.
  *
- * @signature typedef Score<int, ScoreMatrix<AminoAcid, Vtml200_> > Vtml200;
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
  *
  * @code{.cpp}
  * A      4
@@ -950,14 +950,14 @@ typedef Vtml200_ ScoreSpecVtml200;
 ..summary:Vtml200 scoring matrix.
 ..signature:Vtml200
 ..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, Vtml200_> >
+...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> >
 ..include:seqan/score.h
 */
-typedef Score<int, ScoreMatrix<AminoAcid, Vtml200_> > Vtml200;
+typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
 
 
 template <>
-struct ScoringMatrixData_<int, AminoAcid, Vtml200_> {
+struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE

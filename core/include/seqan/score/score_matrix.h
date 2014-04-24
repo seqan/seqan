@@ -61,9 +61,18 @@ struct ScoreMatrix;
  * @tparam TSeqValue The alphabet type, defaults to AminoAcid.
  * @tparam TSpec     Further specialization, defaults to Default.
  *
- * For a predefined scoring matrix, specify one of the following tags:
- * Blosum30_, Blosum45_, Blosum62_, Blosum80_, Pam40_, Pam120_, Pam200_, Pam250_, Vtml200_.
+ * The TSpec argument can be used to obtain a predefined matrix.
+ * Specify one of the following tags:
+ *
+ * ScoreSpecBlosum30, ScoreSpecBlosum45, ScoreSpecBlosum62, ScoreSpecBlosum80,
+ * ScoreSpecPam40, ScoreSpecPam120, ScoreSpecPam200, ScoreSpecPam250, ScoreSpecVtml200.
+ *
  * This will internally call @link MatrixScore#setDefaultScoreMatrix setDefaultScoreMatrix@endlink.
+ * 
+ * In order to provide a more user-friendly access to the predefined scoring matrixes, typedefs exist:
+ * @link Blosum30 @endlink, @link Blosum45 @endlink,  @link Blosum62 @endlink,
+ * @link Blosum80 @endlink, @link Pam40 @endlink,     @link Pam120 @endlink,
+ * @link Pam200 @endlink,   @link Pam250 @endlink and @link Vtml200 @endlink.
  *
  * @fn MatrixScore::Score
  * @brief Constructor
@@ -222,22 +231,10 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  * @section Remarks
  *
  * The tag must be one of the following: 
- * Default, Blosum30_, Blosum45_, Blosum62_, Blosum80_, Pam40_, Pam120_, Pam200_, Pam250_, Vtml200_.
- *
- * Note the trailing underscore of these tags. For all these matrices shortcut definitions exist, that
- * stand for predefined subclasses of Score. These typedefs are written without the underscore.
+ * Default, ScoreSpecBlosum30, ScoreSpecBlosum45, ScoreSpecBlosum62, ScoreSpecBlosum80, 
+ * ScoreSpecPam40, ScoreSpecPam120, ScoreSpecPam200, ScoreSpecPam250, ScoreSpecVtml200.
  *
  * If Default is used for tag then the matrix will be filled with default-constructed TValue values.
- * 
- * @see Blosum30
- * @see Blosum45
- * @see Blosum62
- * @see Blosum80
- * @see Pam40
- * @see Pam120
- * @see Pam200
- * @see Pam250
- * @see Vtml200
  */
 
 /**
