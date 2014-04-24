@@ -39,13 +39,10 @@
 // the diagonals for the seed sets.
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_SEEDS_COMBINATION_H_
-#define TEST_SEEDS_TEST_SEEDS_COMBINATION_H_
+#include <seqan/basic.h>
+#include <seqan/file.h>  // for printing seqan::String<>
 
-#include <seqan/basic.h>  // Includes testing infrastructure.
-#include <seqan/file.h>   // Required to print strings in tests.
-
-#include <seqan/seeds.h>  // Include module under test.
+#include <seqan/seeds.h>
 
 SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_merge_chained)
 {
@@ -287,4 +284,13 @@ SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_simple_chaos_chaining_cha
     }
 }
 
-#endif  // TEST_SEEDS_TEST_SEEDS_COMBINATION_H_
+SEQAN_BEGIN_TESTSUITE(test_seeds_combination)
+{
+    SEQAN_CALL_TEST(test_seeds_combination_seeds_combineable_merge_chained);
+    SEQAN_CALL_TEST(test_seeds_combination_seeds_combineable_simple_chaining_chained);
+    SEQAN_CALL_TEST(test_seeds_combination_seeds_combineable_simple_chaos_chaining_chained);
+    SEQAN_CALL_TEST(test_seeds_combination_combine_seeds_merge_chained);
+    SEQAN_CALL_TEST(test_seeds_combination_combine_seeds_simple_chaining_chained);
+    SEQAN_CALL_TEST(test_seeds_combination_combine_seeds_simple_chaos_chaining_chained);
+}
+SEQAN_END_TESTSUITE

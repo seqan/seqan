@@ -1359,6 +1359,28 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
 }
 
 // --------------------------------------------------------------------------
+// Function maxLength()
+// --------------------------------------------------------------------------
+// Returns the length of the longest string in the set.
+
+template <typename TString, typename TSpec, typename TParallel>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+maxLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
+{
+    typedef StringSet<TString, TSpec>               TStringSet;
+    typedef typename Value<TStringSet const>::Type  TValue;
+
+    return length(maxElement(me, LengthLess<TValue>(), tag));
+}
+
+template <typename TString, typename TSpec>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+maxLength(StringSet<TString, TSpec> const & me)
+{
+    return maxLength(me, Serial());
+}
+
+// --------------------------------------------------------------------------
 // Function lengthSum()
 // --------------------------------------------------------------------------
 
@@ -1476,6 +1498,37 @@ reserve(StringSet<TString, TSpec > & me,
 {
     reserve(me.limits, new_capacity + 1, tag);
     return reserve(me.strings, new_capacity, tag);
+}
+
+// --------------------------------------------------------------------------
+// Function assign()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TSource, typename TExpand>
+inline void
+assign(StringSet<TString, TSpec> & target,
+       TSource const & source,
+       Tag<TExpand> tag)
+{
+    typedef typename Iterator<TSource const, Standard>::Type TSourceIterator;
+
+    clear(target);
+    reserve(target, length(source), tag);
+
+    // we append each source string for target being a ConcatDirect StringSet
+    TSourceIterator it = begin(source, Standard());
+    TSourceIterator itEnd = end(source, Standard());
+    for (; it != itEnd; ++it)
+        appendValue(target, getValue(it), tag);
+}
+
+template <typename TString, typename TSpec, typename TSource>
+inline void
+assign(StringSet<TString, TSpec> & target,
+       TSource const & source)
+{
+    typedef StringSet<TString, TSpec> TTarget;
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1833,6 +1886,27 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
+// ----------------------------------------------------------------------------
+// Function prefixSums<TValue>()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TPrefixSums, typename TText>
+inline void prefixSums(TPrefixSums & sums, TText const & text)
+{
+    typedef typename Concatenator<TText const>::Type        TConcat;
+    typedef typename Iterator<TConcat, Standard>::Type      TIter;
+
+    resize(sums, ValueSize<TValue>::VALUE + 1, 0, Exact());
+
+    // Compute symbol frequencies.
+    TIter itEnd = end(concat(text), Standard());
+    for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
+        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
+
+    // Cumulate symbol frequencies.
+    partialSum(sums);
+}
+
 // --------------------------------------------------------------------------
 // Function strSplit()
 // --------------------------------------------------------------------------
@@ -2047,6 +2121,33 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
 //SEQAN_CHECKPOINT
 //    subset(source, dest, ids, length(ids));
 //}
+
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+template <typename TLeftString, typename TLeftSpec, typename TRight >
+inline bool
+operator==(StringSet<TLeftString, TLeftSpec> const & left,
+           TRight const & right)
+{
+    typename Comparator<StringSet<TLeftString, TLeftSpec> >::Type _lex(left, right);
+    return isEqual(_lex);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
+
+template <typename TLeftString, typename TLeftSpec, typename TRight >
+inline bool
+operator!=(StringSet<TLeftString, TLeftSpec> const & left,
+           TRight const & right)
+{
+    typename Comparator<StringSet<TLeftString, TLeftSpec> >::Type _lex(left, right);
+    return isNotEqual(_lex);
+}
+
 
 }  // namespace seqan
 

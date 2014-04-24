@@ -49,6 +49,8 @@
 // ===========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/misc/misc_bit_twiddling_functors.h>
+#include <seqan/misc/misc_bit_twiddling.h>
 
 // ----------------------------------------------------------------------------
 // STL prerequisites.
@@ -94,6 +96,7 @@
 #include <seqan/sequence/segment_infix.h>
 #include <seqan/sequence/segment_suffix.h>
 #include <seqan/sequence/segment_prefix.h>
+#include <seqan/sequence/segment_utils.h>
 
 // ===========================================================================
 // Strings.
@@ -143,11 +146,5 @@
 #include <seqan/sequence/string_set_dependent_generous.h>
 #include <seqan/sequence/string_set_owner.h>
 #include <seqan/sequence/string_set_segment.h>
-
-// ===========================================================================
-// Utilities.
-// ===========================================================================
-
-#include <seqan/sequence/segment_utils.h>
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -54,7 +54,6 @@ class Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> >
 {
 public:
     typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
-    typedef typename TJournaledString::TValue TValue;
     typedef typename JournalType<TJournaledString>::Type TJournalEntries;
     // We need a rooted iterator for iterating the journal tree since we need atEnd().
     typedef typename Iterator<TJournalEntries, Standard>::Type TJournalEntriesIterator;
@@ -942,13 +941,8 @@ operator+=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
 {
     SEQAN_CHECKPOINT;
 
-    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
-
-    // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
 
-    // Handle other case.
-    typedef typename Size<TJournaledString>::Type TSize;
     TLen remaining;
     if (value(iterator._journalEntriesIterator).segmentSource == SOURCE_ORIGINAL)
         remaining = iterator._hostSegmentEnd - iterator._currentHostIt;

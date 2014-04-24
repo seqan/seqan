@@ -232,10 +232,10 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 
 		// check whether bucket map is disabled and
 		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramCode);
+		TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
-        register TSize h1 = _hashFunction(bucketMap, code);
+        TSize h1 = _hashFunction(bucketMap, code);
 #ifdef SEQAN_OPENADDRESSING_COMPACT
         --hlen;
 		h1 %= hlen;
@@ -252,7 +252,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         //
         // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
-        register TSize delta = 0;
+        TSize delta = 0;
         (void)delta;
         do {
 #ifdef SEQAN_OPENADDRESSING_COMPACT
@@ -276,10 +276,10 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		
 		// check whether bucket map is disabled and
 		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramCode);
+		TSize hlen = length(bucketMap.qgramCode);
 		if (hlen == 0ul) return code;
 
-        register TSize h1 = _hashFunction(bucketMap, code);
+        TSize h1 = _hashFunction(bucketMap, code);
 #ifdef SEQAN_OPENADDRESSING_COMPACT
         --hlen;
         h1 %= hlen;
@@ -292,7 +292,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         //
         // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
-        register TSize delta = 0;
+        TSize delta = 0;
         (void)delta;
 		while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != TBucketMap::EMPTY)
 		{

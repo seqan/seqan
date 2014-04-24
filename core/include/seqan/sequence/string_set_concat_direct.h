@@ -106,6 +106,20 @@ public:
         _initStringSetLimits(*this);
     }
 
+    template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, TOtherSpec> const &other)
+    {
+        _initStringSetLimits(*this);
+        assign(*this, other);
+    }
+
+    template <typename TOtherSpec>
+    StringSet(String<TString, TOtherSpec> const &other)
+    {
+        _initStringSetLimits(*this);
+        assign(*this, other);
+    }
+
     // ----------------------------------------------------------------------
     // Subscription operators; have to be defined in class def.
     // ----------------------------------------------------------------------
@@ -124,6 +138,13 @@ public:
     {
         SEQAN_CHECKPOINT;
         return value(*this, pos);
+    }
+
+    template <typename TStringSet>
+    StringSet & operator= (TStringSet const &other)
+    {
+        assign(*this, other);
+        return *this;
     }
 };
 
@@ -388,7 +409,7 @@ inline void erase(
     erase(me.concat, me.limits[pos], me.limits[pos_end]);
 
     TLimitValue lengthSum = 0;
-    for (TSize i = pos; i <pos_end; ++i)
+    for (TSize i = pos; i < pos_end; ++i)
         lengthSum += me.limits[i];
 
     erase(me.limits, pos, pos_end);

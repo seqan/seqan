@@ -171,7 +171,7 @@ template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
 _getVertexScore(Finder2<TText, TPattern, Backtracking<HammingDistance, TSpec> > const & finder)
 {
-    return parentEdgeLabel(textIterator(finder)) != value(patternIterator(finder));
+    return !ordEqual(parentEdgeLabel(textIterator(finder)), value(patternIterator(finder)));
 }
 
 // ----------------------------------------------------------------------------

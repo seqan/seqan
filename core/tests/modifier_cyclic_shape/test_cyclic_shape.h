@@ -29,60 +29,50 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Test the interface of the Seed class for specializations Simple Seed and
-// Chained Seed.
+// Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
-#define TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
+#ifndef SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
+#define SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_CYCLIC_SHAPE_H_
 
-#include <seqan/basic.h>  // Includes testing infrastructure.
-#include <seqan/file.h>   // Required to print strings in tests.
+#include <seqan/basic.h>
+#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/modifier.h>
 
-#include <seqan/seeds.h>  // Include module under test.
+using namespace seqan;
 
-#include <set>
 
-// Test constructors of the indirect iterator.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_constructors)
+SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_cyclic_shape)
 {
-    using namespace seqan;
+    CyclicShape<GenericShape> shape;
+    CharString tmp;
 
-    SEQAN_ASSERT_FAIL("Write me!");
+    cyclicShapeToString(tmp, shape);
+    SEQAN_ASSERT_EQ(tmp, "1");
+    SEQAN_ASSERT_EQ(weight(shape), 1u);
+    SEQAN_ASSERT_EQ(shape.span, 1u);
 
-    // Default constructor.
-    {
-    }
-    // Construct from wrapped iterator.
-    {
-    }
-    // Copy constructor.
-    {
-    }
+    unsigned DIFF[] = {1, 1, 1, 4, 1, 5};
+    typedef CyclicShape<FixedShape<1, GappedShape<HardwiredShape<1, 1, 1, 4, 1> >, 3> > TShape;
+
+    TShape s;
+    cyclicShapeToString(tmp, s);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(s), 6u);
+    SEQAN_ASSERT_EQ(static_cast<unsigned>(s.span), 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(s.diffs[i]), DIFF[i]);
+
+    stringToCyclicShape(shape, tmp);
+    SEQAN_ASSERT_EQ(tmp, "0111100011000");
+    SEQAN_ASSERT_EQ(weight(shape), 6u);
+    SEQAN_ASSERT_EQ(shape.span, 13u);
+    for (unsigned i = 0; i < 6; ++i)
+        SEQAN_ASSERT_EQ(static_cast<unsigned>(shape.diffs[i]), DIFF[i]);
+
+
 }
 
-// Test the metafunctions.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_metafunctions)
-{
-    using namespace seqan;
 
-    SEQAN_ASSERT_FAIL("Write me!");
-
-    // Iterator
-    {
-    }
-
-    // Const Iterator
-    {
-    }
-}
-
-// Test the common iterator functions.
-SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_basic_functions)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
-
-#endif  // #ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
+#endif  // SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_

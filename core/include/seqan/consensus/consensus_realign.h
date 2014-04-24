@@ -523,6 +523,8 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
  * @headerfile <seqan/consensus.h>
  * @brief Perform realignment using the Anson-Myers realignment.
  *
+ * @deprecated Do not use this function but use the new function @link reAlignment @endlink instead.
+ *
  * @signature void reAlign(fragStore, consensusScore, contigID, [realignmentMethod,] bandwidth, includeReference);
  *
  * @param[in,out] fragStore        The @link FragmentStore @endlink with the alignment to realign.
