@@ -71,7 +71,7 @@ typedef String<char, Alloc<void> > CharString;
 /*!
  * @typedef CharIterator
  * @headerfile <seqan/sequence.h>
- * @brief An iterator intoa @link CharString @endlink.
+ * @brief An iterator overa a @link CharString @endlink.
  *
  * @signature typedef Iterator<CharString, Rooted>::Type CharIterator;
  */

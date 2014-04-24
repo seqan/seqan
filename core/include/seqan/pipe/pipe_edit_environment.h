@@ -59,8 +59,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TInput    The type of the pipeline module this module reads from.
  * @tparam TUPLE_LEN The tuple length.The tuples contain elements <tt>in[i]in[i+1]...in[i+(tupleLen-1)]</tt>.
  * 
- * @section Remarks
- * 
  * The output type is a @link Tuple @endlink of input elements and length <tt>tupleLen</tt> (i.e.
  * <tt>Tuple&lt;Value&lt;TInput&gt;::Type, tupleLen&gt;</tt>).
  * 

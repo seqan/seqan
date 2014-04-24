@@ -30,15 +30,200 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
 #ifndef TESTS_INDEX_TEST_INDEX_HELPERS_H
 #define TESTS_INDEX_TEST_INDEX_HELPERS_H
 
+#include <seqan/basic.h>
+#include <seqan/file.h>
+#include <seqan/index.h>
 #include <seqan/random.h>
 
+using namespace seqan;
 
-//////////////////////////////////////////////////////////////////////////////
+unsigned const SEED = 41;
+
+// ==========================================================================
+// Functions
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Function generateText
+// --------------------------------------------------------------------------
+
+template <typename TText>
+void generateText(TText & text, unsigned textLength = 100000)
+{
+    typedef typename Value<TText>::Type TChar;
+
+    int minChar = MinValue<TChar>::VALUE;
+    unsigned alphabetSize = ValueSize<TChar>::VALUE;
+
+    Rng<MersenneTwister> rng(SEED);
+
+    resize(text, textLength);
+
+    for (unsigned i = 0; i < textLength; ++i)
+        text[i] = pickRandomNumber(rng) % alphabetSize - minChar;
+}
+
+// --------------------------------------------------------------------------
+// Function generateText(CharString)
+// --------------------------------------------------------------------------
+// NOTE(esiragusa): Why do we care about negative chars? MinValue<char> returns 0.
+
+void generateText(CharString & text, unsigned textLength = 100000)
+{
+    typedef char TChar;
+
+    int minChar = -128;
+    unsigned alphabetSize = ValueSize<TChar>::VALUE;
+
+    Rng<MersenneTwister> rng(SEED);
+
+    resize(text, textLength);
+
+    for (unsigned i = 0; i < textLength; ++i)
+        text[i] = pickRandomNumber(rng) % alphabetSize - minChar;
+}
+
+// --------------------------------------------------------------------------
+// Function generateText(StringSet)
+// --------------------------------------------------------------------------
+
+template <typename TText>
+void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
+{
+    typedef typename Value<TText>::Type TChar;
+
+    int minChar = MinValue<TChar>::VALUE;
+    unsigned alphabetSize = ValueSize<TChar>::VALUE;
+
+    Rng<MersenneTwister> rng(SEED);
+
+    resize(text, numSeq);
+
+    for (unsigned i = 0; i < numSeq; ++i)
+    {
+        resize(text[i], pickRandomNumber(rng) % (seqLength-1) + 1);
+        for (unsigned j = 0; j < length(text[i]); ++j)
+            text[i][j] = pickRandomNumber(rng) % alphabetSize - minChar;
+    }
+}
+
+// --------------------------------------------------------------------------
+// Function generatePattern
+// --------------------------------------------------------------------------
+
+template <typename TText>
+void generatePattern(StringSet<TText> & pattern, TText const & text, unsigned patternLength = 1000)
+{
+    typedef typename Value<TText>::Type TChar;
+
+    int minChar = MinValue<TChar>::VALUE;
+    unsigned alphabetSize = ValueSize<TChar>::VALUE;
+
+    Rng<MersenneTwister> rng(SEED);
+
+    resize(pattern, patternLength);
+
+    for (unsigned i = 0; i < patternLength; i = i + 2)
+    {
+        TText localPattern;
+        for (unsigned j = 0; j <= i; ++j)
+            appendValue(pattern[i], (TChar)(pickRandomNumber(rng) % alphabetSize - minChar));
+        unsigned readPos = pickRandomNumber(rng) % (length(text) - i - 1);
+        pattern[i + 1] = infix(text, readPos, readPos + i + 1);
+    }
+}
+
+template <typename TText>
+void generatePattern(StringSet<TText> & pattern, StringSet<TText> const & text, unsigned patternLength = 1000)
+{
+    Rng<MersenneTwister> rng(SEED);
+
+    resize(pattern, patternLength);
+
+    for (unsigned i = 0; i < patternLength; ++i)
+    {
+        unsigned readLocation;
+        do
+        {
+            readLocation = pickRandomNumber(rng) % length(text);
+        } while (length(text[readLocation]) < (i + 10));
+
+        TText localPattern;
+        unsigned readPos = pickRandomNumber(rng) % (length(text[readLocation]) - i - 1);
+        pattern[i] = infix(text[readLocation], readPos, readPos + i + 1);
+    }
+}
+
+// --------------------------------------------------------------------------
+// Function createText
+// --------------------------------------------------------------------------
+
+template <typename TText, typename TValue>
+void createText(TText & text, TValue)
+{
+    generateText(text, 100u);
+}
+
+// --------------------------------------------------------------------------
+// Function createText(StringSet)
+// --------------------------------------------------------------------------
+
+template <typename TValue>
+void createText(StringSet<TValue> & text, TValue)
+{
+    generateText(text, 10u, 100u);
+}
+
+// --------------------------------------------------------------------------
+// Function createText(bool)
+// --------------------------------------------------------------------------
+
+template <typename TText>
+void createText(TText & text, bool)
+{
+    clear(text);
+    for (unsigned i = 0; i < 10; i++)
+    {
+        appendValue(text, 1);
+        appendValue(text, 0);
+        appendValue(text, 1);
+        appendValue(text, 0);
+        appendValue(text, 1);
+        appendValue(text, 1);
+        appendValue(text, 1);
+    }
+}
+
+// --------------------------------------------------------------------------
+// Function createText(Dna)
+// --------------------------------------------------------------------------
+
+template <>
+void createText(DnaString & text, Dna)
+{
+    assign(text, "ACGTACGTACGTACGTACGTACGTACGTACGTCCCCCCCCCCCCCCCCCCGCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+}
+
+// --------------------------------------------------------------------------
+// Function createText(char)
+// --------------------------------------------------------------------------
+
+template <>
+void createText(CharString & text, char)
+{
+    assign(text, "testestestestestestestestestestestestestestestestestest");
+}
+
+// ==========================================================================
+// Functions
+// ==========================================================================
 
 namespace SEQAN_NAMESPACE_MAIN
 {
@@ -363,10 +548,86 @@ bool isEqual(TA &_a, TB &_b) {
 	return true;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////
-
-
 } //namespace SEQAN_NAMESPACE_MAIN
+
+
+// ==========================================================================
+// Types
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Index Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<Index<DnaString, FMIndex<> >,
+    TagList<Index<String<Dna, Packed<> >, FMIndex<> >,
+    TagList<Index<String<Dna5, Packed<> >, FMIndex<> >,
+    TagList<Index<CharString, FMIndex<> >,
+    TagList<Index<StringSet<DnaString>, FMIndex<> >,
+    TagList<Index<StringSet<CharString>, FMIndex<> >
+    > > > > > >
+    IndexTypes;
+
+// --------------------------------------------------------------------------
+// Trie Index Types
+// --------------------------------------------------------------------------
+
+typedef IndexTypes TrieIndexTypes;
+
+// ========================================================================== 
+// Test Classes
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Class IndexTest
+// --------------------------------------------------------------------------
+
+template <typename TIndex_>
+class IndexTest : public Test
+{
+public:
+    typedef TIndex_                                 TIndex;
+    typedef typename Value<TIndex>::Type            TValue;
+    typedef typename Fibre<TIndex, FibreText>::Type TText;
+
+    TText text;
+    TIndex index;
+
+    IndexTest() :
+        index(text)
+    {}
+
+    void setUp()
+    {
+        createText(text, TValue());
+    }
+};
+
+// --------------------------------------------------------------------------
+// Class FibreTest
+// --------------------------------------------------------------------------
+
+template <typename TIndex, typename TFibreTag>
+class FibreTest : public IndexTest<TIndex>
+{
+public:
+    typedef IndexTest<TIndex>                       TBase;
+    typedef typename Fibre<TIndex, TFibreTag>::Type TFibre;
+
+    TFibre & fibre;
+
+    FibreTest() :
+        fibre(getFibre(this->index, TFibreTag()))
+    {}
+
+    void setUp()
+    {
+        TBase::setUp();
+
+//        indexCreate(index, TFibreTag);
+        indexCreate(this->index);
+    }
+};
 
 #endif //#ifndef SEQAN_HEADER_...

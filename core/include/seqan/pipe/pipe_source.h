@@ -355,7 +355,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // choose the most efficient buffer handler
     template < typename TInput, typename TSpec >
-    struct BufReadHandler< Pipe<TInput, TSpec> > {
+    struct BufReadHandler< Pipe<TInput, TSpec> >
+    {
 		typedef			
 			typename IfC<
 				AllowsFastRandomAccess<TInput>::VALUE,
@@ -367,7 +368,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template < typename TValue, typename TConfig, typename TSpec >
-    struct BufReadHandler< Pipe< String<TValue, External<TConfig> >, TSpec > > {
+    struct BufReadHandler< Pipe< String<TValue, External<TConfig> >, TSpec > >
+    {
 		typedef BufferHandler< 
 			Pipe< String<TValue, External<TConfig> >, TSpec >, 
 			ExtStringSourceCachingSpec 
@@ -375,7 +377,8 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TValue, typename TConfig, typename TSpec >
-    struct BufReadHandler< Pipe< String<TValue, External<TConfig> > const, TSpec > > {
+    struct BufReadHandler< Pipe< String<TValue, External<TConfig> > const, TSpec > >
+    {
 		typedef BufferHandler< 
 			Pipe< String<TValue, External<TConfig> > const, TSpec >, 
 			ExtStringSourceCachingSpec 
@@ -384,35 +387,41 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	template < typename TInput, typename TSpec, typename TCommand >
-	inline bool control(Pipe< TInput, Source<TSpec> > &/*me*/, TCommand const &) {
+	inline bool control(Pipe< TInput, Source<TSpec> > &/*me*/, TCommand const &)
+    {
         return true;
     }
 
 	template < typename TInput, typename TSpec >
-	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlBeginRead const &) {
+	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlBeginRead const &)
+    {
 		me.cur = begin(me.in, Rooted());
 		return true;
 	}
 	
 	template < typename TInput, typename TSpec >
-	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEndRead const &) {
+	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEndRead const &)
+    {
         me.cur = end(me.in, Rooted());
 		return true;
 	}
 	
 	template < typename TInput, typename TSpec >
-	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEof const &) {
+	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEof const &)
+    {
 		return atEnd(me.cur);
 	}
 
 	template < typename TInput, typename TSpec >
-	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEos const &) {
+	inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEos const &)
+    {
 		return atEndOfSequence(me.cur);
 	}
 
     template < typename TInput, typename TSpec >
     inline typename Size< Pipe< TInput, Source<TSpec> > >::Type
-	length(Pipe< TInput, Source<TSpec> > const &me) {
+	length(Pipe< TInput, Source<TSpec> > const &me)
+    {
         return length(me.in);
     }
 

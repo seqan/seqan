@@ -55,19 +55,19 @@ namespace seqan {
  *
  * @signature enum BamHeaderRecordType;
  *
- * @var BamHeaderRecordType BAM_HEADER_FIRST = 0;
+ * @val BamHeaderRecordType BAM_HEADER_FIRST = 0;
  * @brief Is the first header (HD).
  *
- * @var BamHeaderRecordType BAM_HEADER_REFERENCE = 1;
+ * @val BamHeaderRecordType BAM_HEADER_REFERENCE = 1;
  * @brief Is a reference (SQ) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_READ_GROUP = 2;
+ * @val BamHeaderRecordType BAM_HEADER_READ_GROUP = 2;
  * @brief Is a read group (RG) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_PROGRAM = 3;
+ * @val BamHeaderRecordType BAM_HEADER_PROGRAM = 3;
  * @brief Is a program (PG) header.
  *
- * @var BamHeaderRecordType BAM_HEADER_COMMENT = 4;
+ * @val BamHeaderRecordType BAM_HEADER_COMMENT = 4;
  * @brief Is a comment (CO) header.
  */
 
@@ -100,16 +100,16 @@ enum BamHeaderRecordType
  *
  * @signature enum BamSortOrder;
  *
- * @var BamSortOrder BAM_SORT_UNKNOWN = 0;
+ * @val BamSortOrder BAM_SORT_UNKNOWN = 0;
  * @brief BAM file sort order is unknown.
  *
- * @var BamSortOrder BAM_SORT_UNSORTED = 1;
+ * @val BamSortOrder BAM_SORT_UNSORTED = 1;
  * @brief BAM file is unsorted.
  *
- * @var BamSortOrder BAM_SORT_QUERYNAME = 2;
+ * @val BamSortOrder BAM_SORT_QUERYNAME = 2;
  * @brief BAM file is sorted by query name;
  *
- * @var BamSortOrder BAM_SORT_COORDINATE = 3;
+ * @val BamSortOrder BAM_SORT_COORDINATE = 3;
  * @brief BAM file is sorted by coordinate.
  */
 
@@ -150,32 +150,30 @@ enum BamSortOrder
  * @brief Constructor.
  * @signature BamHeaderRecord::BamRecord();
  *
- * @section Remarks
- *
  * Only the default constructor is provided.
  */
 
 /*!
  * @typedef BamHeaderRecord::TTagName
- * @brief Type of the tag keys.
+ * @brief Type of the tag keys (@link CharString @endlink).
  * @signature BamHeaderRecord::TTagName;
  *
  * @typedef BamHeaderRecord::TTagValue
- * @brief Type of the tag values.
+ * @brief Type of the tag values (@link CharString @endlink).
  * @signature BamHeaderRecord::TTagValue;
  *
  * @typedef BamHeaderRecord::TTag
- * @brief Type of the tag keys.
+ * @brief Type of the tag keys (@link Pair @endlink of <tt>TTagName</tt> and <tt>TTagValue</tt>).
  * @signature BamHeaderRecord::TTag;
  *
  * @typedef BamHeaderRecord::TTags
- * @brief Type of the string of @link Pair Pairs @endlink.
+ * @brief Type of the tags string (@link AllocString @endlink of <tt>TTag</tt>).
  * @signature BamHeaderRecord::TTags;
  *
- * @var BamHeaderRecordType BamHeaderRecord::type
+ * @var BamHeaderRecordType BamHeaderRecord::type;
  * @brief Type of the record.
  *
- * @var TRecordString BamHeaderRecord::tags
+ * @var TRecordString BamHeaderRecord::tags;
  * @brief The header record's tags, of type @link BamHeaderRecord::TTags @endlink.
  */
 
@@ -248,14 +246,14 @@ public:
  *
  * Only the the default constructor is provided.
  *
- * @var TSequenceInfos BamHeader::sequenceInfos
- * @brief String of <tt>(seqId, length)</tt> with reference name / length information.
+ * @var TSequenceInfos BamHeader::sequenceInfos;
+ * @brief @link AllocString @endlink of <tt>(seqId, length)</tt> with reference name / length information.
  *
- * <tt>TSequenceInfos</tt> is a String of @link Pair @endlink objects with entries @link CharString @endlink and
- * <tt>__int32</tt>.
+ * <tt>TSequenceInfos</tt> is a @link AllocString @endlink of @link Pair @endlink objects with entries
+ * @link CharString @endlink and <tt>__int32</tt>.
  *
- * @var TBamHeaderRecords BamHeader::records
- * @brief String of @link BamHeaderRecord BamHeaderRecords @endlink.
+ * @var TBamHeaderRecords BamHeader::records;
+ * @brief @link AllocString @endlink of @link BamHeaderRecord BamHeaderRecords @endlink.
  */
 
 /**
@@ -305,12 +303,21 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
+ * @fn BamHeader::clear
+ * @brief Clear BamHeader object.
+ *
+ * @signature void clear(header);
+ *
+ * @param[in,out] header The record to clear.
+ */
+
+/*!
  * @fn BamHeaderRecord::clear
  * @brief Clear BamHeaderRecord object.
  *
- * @signature void(record);
+ * @signature void clear(record);
  *
- * @param record The record to clear.
+ * @param[in,out] record The record to clear.
  */
 
 ///.Function.clear.param.object.type:Class.BamHeaderRecord
@@ -370,9 +377,9 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
  * @signature bool getTagValue(tagValue, idx, record);
  * @signature bool getTagValue(tagValue, key, record);
  *
- * @param tagValue The @link CharString @endlink to write the tag value to.
- * @param idx      An integer with the index of the tag in the header record.
- * @param key      A two-letter sequence with the key of the tag in the header record.
+ * @param[out] tagValue The @link CharString @endlink to write the tag value to.
+ * @param[in]  idx      An integer with the index of the tag in the header record.
+ * @param[in]  key      A two-letter sequence with the key of the tag in the header record.
  *
  * @return bool true in case the value could be retrieved, false otherwise.
  *
@@ -437,9 +444,9 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
  * @signature void setTagValue(idx, value, record);
  * @signature void setTagValue(key, value, record);
  *
- * @param idx    The index of the tag in the header record to set the value for.
- * @param key    The name of the tag (two-letter sequence) to set.
- * @param record The header record to set the value for.
+ * @param[in,out] idx    The index of the tag in the header record to set the value for.
+ * @param[in]     key    The name of the tag (two-letter sequence) to set.
+ * @param[in]     record The header record to set the value for.
  */
 
 // TODO(holtgrew): Parameter order!

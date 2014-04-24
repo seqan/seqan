@@ -62,7 +62,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
 
 /*!
  * @class ArgParseArgument
- * @extends AssignableConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/arg_parse.h>
  * @brief Information for a specific command line argument.
  *
@@ -75,25 +75,31 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @brief Define the type of an @link ArgParseArgument @endlink.
  *
  * @signature enum ArgParseArgument::ArgumentType;
+ *
+ * @section Examples
+ *
+ * In the following example, the types <tt>INPUTFILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
+ *
+ * @include demos/arg_parse/argument_parser.cpp
  */
 
 /*!
- * @var ArgParseArgument::ArgumentType ArgParseArgument::STRING
+ * @val ArgParseArgument::ArgumentType STRING
  * @brief Argument is a string.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INTEGER
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INTEGER;
  * @brief Argument is a signed 32 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INT64
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INT64;
  * @brief Argument is a signed 64 bit integer.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
  * @brief Argument is an input file.
  *
- * @var ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
  * @brief Argument is an output file.
  */
 
@@ -114,11 +120,11 @@ a ArgParseArgument or directly an Argument on the command line.
  *
  * @signature ArgParseArgument::ArgParseArgument(argumentType[, argumentLabel[, isListArgument[, numberOfArgument]]]);
  *
- * @param argumentType      Type of the argument (<tt>ArgParseArgument::ArgumentType</tt>).
- * @param argumentLabel     Label for the argument (<tt>char const *</tt>).
- * @param isListArgument    Whether or not this argument can be given multiple times (<tt>bool</tt>).
- * @param numberOfArguments Number of times the argument must be given.  E.g. set to 2 for the parser to always
- *                          expect two values (<tt>int</tt>, default is 1).
+ * @param[in] argumentType      Type of the argument (<tt>ArgParseArgument::ArgumentType</tt>).
+ * @param[in] argumentLabel     Label for the argument (<tt>char const *</tt>).
+ * @param[in] isListArgument    Whether or not this argument can be given multiple times (<tt>bool</tt>).
+ * @param[in] numberOfArguments Number of times the argument must be given.  E.g. set to 2 for the parser to always
+ *                              expect two values (<tt>int</tt>, default is 1).
  */
 
 /**
@@ -151,12 +157,14 @@ public:
     enum ArgumentType
     {
         // argument is
-        STRING,     // .. a string
-        INTEGER,    // .. an integer
-        INT64,      // .. a 64 bit integer
-        DOUBLE,     // .. a float
-        INPUTFILE,  // .. an inputfile (implicitly also a string)
-        OUTPUTFILE  // .. an outputfile (implicitly also a string)
+        STRING,      // .. a string
+        INTEGER,     // .. an integer
+        INT64,       // .. a 64 bit integer
+        DOUBLE,      // .. a float
+        INPUTFILE,   // .. an inputfile (implicitly also a string)
+        OUTPUTFILE,  // .. an outputfile (implicitly also a string)
+        INPUTPREFIX, // .. an inputprefix (implicitly also a string)
+        OUTPUTPREFIX // .. an outoutprefix (implicitly also a string)
     };
 
 
@@ -256,6 +264,14 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "outputfile";
         break;
 
+    case ArgParseArgument::INPUTPREFIX:
+        typeName = "inputprefix";
+        break;
+
+    case ArgParseArgument::OUTPUTPREFIX:
+        typeName = "outputprefix";
+        break;
+
     default:
         typeName = "unknown";
         break;
@@ -276,7 +292,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
  *
  * @signature bool isListArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it can be given multiple times, <tt>false</tt> otherwise.
  */
@@ -309,9 +325,9 @@ inline bool isListArgument(ArgParseArgument const & me)
  *
  * @brief Returns whether the argument is a string.
  *
- * @signature bool ArgParseArgument#isStringArgument(arg);
+ * @signature bool isStringArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a string, <tt>false</tt> otherwise.
  */
@@ -333,7 +349,9 @@ inline bool isStringArgument(ArgParseArgument const & me)
 {
     return (me._argumentType == ArgParseArgument::STRING) ||
            (me._argumentType == ArgParseArgument::INPUTFILE) ||
-           (me._argumentType == ArgParseArgument::OUTPUTFILE);
+           (me._argumentType == ArgParseArgument::OUTPUTFILE) ||
+           (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
+           (me._argumentType == ArgParseArgument::OUTPUTPREFIX) ;
 }
 
 // ----------------------------------------------------------------------------
@@ -347,7 +365,7 @@ inline bool isStringArgument(ArgParseArgument const & me)
  *
  * @signature bool isIntegerArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is an integer, <tt>false</tt> otherwise.
  */
@@ -381,7 +399,7 @@ inline bool isIntegerArgument(ArgParseArgument const & me)
  *
  * @signature bool isInt64Argument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a 64 bit integer, <tt>false</tt> otherwise.
  */
@@ -415,7 +433,7 @@ inline bool isInt64Argument(ArgParseArgument const & me)
  *
  * @signature bool isDoubleArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a double argument, <tt>false</tt> otherwise.
  */
@@ -425,7 +443,7 @@ inline bool isInt64Argument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is a double.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isDoubleArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ..returns:$true$ if the argument argument is a double argument.
@@ -445,11 +463,11 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 /*!
  * @fn ArgParseArgument#isInputFileArgument
  * @headerfile <seqan/arg_parse.h>
- * @brief Returns whether the argument is a input file integer.
+ * @brief Returns whether the argument is a input file.
  *
  * @signature bool isInputFileArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a input file argument, <tt>false</tt> otherwise.
  */
@@ -459,7 +477,7 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is an input file.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isOutputFileArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ..returns:$true$ if the argument argument is an input file argument.
@@ -479,11 +497,11 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 /*!
  * @fn ArgParseArgument#isOutputFileArgument
  * @headerfile <seqan/arg_parse.h>
- * @brief Returns whether the argument is a output file integer.
+ * @brief Returns whether the argument is a output file.
  *
  * @signature bool isOutputFileArgument(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a output file argument, <tt>false</tt> otherwise.
  */
@@ -493,7 +511,7 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 ..class:Class.ArgParseArgument
 ..summary:Returns whether the argument is an output file.
 ..cat:Miscellaneous
-..signature:isListArgument(argument)
+..signature:isOutputFileArgument(argument)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
 ...type:Class.ArgParseOption
@@ -508,6 +526,76 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function isOutputPrefixArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isOutputPrefixArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is an output prefix.
+ *
+ * @signature bool isOutputPrefixArgument(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is an output prefix argument, <tt>false</tt> otherwise.
+ */
+
+/**
+ .Function.isOutputPrefixArgument
+ ..class:Class.ArgParseArgument
+ ..summary:Returns whether the argument is an output file.
+ ..cat:Miscellaneous
+ ..signature:isOutputPrefixArgument(argument)
+ ..param.argument:The @Class.ArgParseArgument@ object.
+ ...type:Class.ArgParseArgument
+ ...type:Class.ArgParseOption
+ ..returns:$true$ if the argument argument is an output file argument.
+ ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
+ ..include:seqan/arg_parse.h
+ */
+
+inline bool isOutputPrefixArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::OUTPUTPREFIX;
+}
+
+// ----------------------------------------------------------------------------
+// Function isOutputFileArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isInputPrefixArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is an input prefix argument.
+ *
+ * @signature bool isInputPrefixArgument(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is an input prefix argument, <tt>false</tt> otherwise.
+ */
+
+/**
+ .Function.isInputPrefixArgument
+ ..class:Class.ArgParseArgument
+ ..summary:Returns whether the argument is an output file.
+ ..cat:Miscellaneous
+ ..signature:isInputPrefixArgument(argument)
+ ..param.argument:The @Class.ArgParseArgument@ object.
+ ...type:Class.ArgParseArgument
+ ...type:Class.ArgParseOption
+ ..returns:$true$ if the argument argument is an input prefix argument.
+ ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
+ ..include:seqan/arg_parse.h
+ */
+
+inline bool isInputPrefixArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::INPUTPREFIX;
+}
+    
+// ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
@@ -518,7 +606,7 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
  *
  * @signature std::string getArgumentLabel(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return std::string The argument label as a STL string.
  */
@@ -548,6 +636,8 @@ inline std::string const getArgumentLabel(ArgParseArgument const & me)
         std::string baseLabel = "";
         if (isInputFileArgument(me) || isOutputFileArgument(me))
             baseLabel = "FILE";
+        else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
+            baseLabel = "PREFIX";
         else if (isStringArgument(me))
             baseLabel = "STR";
         else if (isIntegerArgument(me) || isDoubleArgument(me))
@@ -600,10 +690,8 @@ inline void _intervalAssert(const std::string minValueAsString, const std::strin
  *
  * @signature void setMinValue(arg, minValue);
  *
- * @param arg      The ArgParseArgument to set the smallest value of.
- * @param minValue The smallest value to set (<tt>std::string</tt>).
- *
- * @return std::string The argument label as a STL string.
+ * @param[in,out] arg      The ArgParseArgument to set the smallest value of.
+ * @param[in]     minValue The smallest value to set (<tt>std::string</tt>).
  */
 
 /**
@@ -654,10 +742,8 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
  *
  * @signature void setMaxValue(arg, maxValue);
  *
- * @param arg      The ArgParseArgument to set the smallest value of.
- * @param maxValue The largest value to set (<tt>std::string</tt>).
- *
- * @return std::string The argument label as a STL string.
+ * @param[in,out] arg      The ArgParseArgument to set the smallest value of.
+ * @param[in]     maxValue The largest value to set (<tt>std::string</tt>).
  */
 
 /**
@@ -708,9 +794,9 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  *
  * @signature void setValidValues(arg, values);
  *
- * @param arg    The ArgParseArgument to set the valid values for.
- * @param values Either a <tt>std::string</tt> containing all valid entries, separated by spaces or a
- *               <tt>std::vector&lt;std::string&gt;</tt> with the valid entries.
+ * @param[in,out] arg    The ArgParseArgument to set the valid values for.
+ * @param[in]     values Either a <tt>std::string</tt> containing all valid entries, separated by spaces or a
+ *                       <tt>std::vector&lt;std::string&gt;</tt> with the valid entries.
  *
  * If the argument is of type string then the list of valid values is the case-sensitive list of string values
  * allowed for this argument.  If it is an input or output file then the list of valid values is a list of
@@ -802,8 +888,8 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
  *
  * @signature void setHelpText(arg, text);
  *
- * @param arg  The ArgParseArgument to set the help text for.
- * @param text The text to display as the description of the argument (<tt>std::string</tt>).
+ * @param[in,out] arg  The ArgParseArgument to set the help text for.
+ * @param[in]     text The text to display as the description of the argument (<tt>std::string</tt>).
  */
 
 /**
@@ -893,7 +979,8 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string va
 {
     typedef std::vector<std::string>::const_iterator TVectorIterator;
 
-    if (!empty(me.validValues))
+    // we only check valid values for files and string arguments, but not for prefix arguments
+    if (!empty(me.validValues) && !(isInputPrefixArgument(me) || isOutputPrefixArgument(me)))
     {
         bool isContained = false;
         for (TVectorIterator validValue = me.validValues.begin();
@@ -1016,9 +1103,9 @@ inline void _assignArgumentValue(ArgParseArgument & me, std::string const & valu
  *
  * @signature std::string getArgumentValue(arg[, argNo]);
  *
- * @param arg   The ArgParseArgument to query.
- * @param argNo In case that the ArgParseArgument allowed multiple values, give the index of the argument
- *              that you want to retrieve (<tt>unsigned</tt>, starts at 0).
+ * @param[in,out] arg   The ArgParseArgument to query.
+ * @param[in]     argNo In case that the ArgParseArgument allowed multiple values, give the index of the argument
+ *                      that you want to retrieve (<tt>unsigned</tt>, starts at 0).
  *
  * @return std::string Const-reference to the argument value.
  */
@@ -1066,7 +1153,7 @@ inline std::string const & getArgumentValue(ArgParseArgument const & me)
  *
  * @signature std::vector<std::string> getArgumentValue(arg);
  *
- * @param arg   The ArgParseArgument to query.
+ * @param[in] arg   The ArgParseArgument to query.
  *
  * @return std::vector<std::string> Const-reference to the argument values.
  */
@@ -1103,8 +1190,8 @@ inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const
  *
  * @signature bool hasValue(arg[, pos]);
  *
- * @param arg The ArgParseArgument to query.
- * @param pos The position of the argument in case of being a list (<tt>unsigned</tt>, 0-based, default is 0).
+ * @param[in] arg The ArgParseArgument to query.
+ * @param[in] pos The position of the argument in case of being a list (<tt>unsigned</tt>, 0-based, default is 0).
  *
  * @return bool <tt>true</tt> if <tt>pos</tt> is less than the size and the argument is non-empty.
  */
@@ -1142,7 +1229,7 @@ inline bool hasValue(ArgParseArgument const & arg)
  *
  * @signature bool isSet(arg):
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if a value was assigned, <tt>false</tt> otherwise.
  */
@@ -1175,7 +1262,7 @@ inline bool isSet(ArgParseArgument const & me)
  *
  * @signature bool hasDefault(arg);
  *
- * @param arg The argument to query.
+ * @param[in] arg The argument to query.
  *
  * @return bool <tt>true</tt> if the argument has a default value and <tt>false</tt> if not.
  */
@@ -1207,7 +1294,7 @@ inline bool hasDefault(ArgParseArgument const & me)
  *
  * @signature unsigned numberOfAllowedValues(arg);
  *
- * @param arg The ArgParseArgument to query.
+ * @param[in] arg The ArgParseArgument to query.
  *
  * @return unsigned The number of allowed values.
  */
@@ -1248,8 +1335,8 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
  *
  * @signature std::string getFileExtension(arg[, pos]);
  *
- * @param arg The ArgParseArgument to query.
- * @param pos The position of the value to retrieve if multiple values (<tt>unsigned</tt>).
+ * @param[in] arg The ArgParseArgument to query.
+ * @param[in] pos The position of the value to retrieve if multiple values (<tt>unsigned</tt>).
  *
  * @return std::string The file extension, empty if no extension or not set.
  */

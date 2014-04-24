@@ -559,6 +559,7 @@ public:
 
 /*!
  * @class ToolDoc
+ * @implements AssignableConcept
  * @headerfile <seqan/arg_parse.>
  * @brief Container for string documentation on a command line tool.
  * 
@@ -767,8 +768,8 @@ public:
  * 
  * @signature void append(a, b);
  * 
- * @param a This object is updated
- * @param b This object is appended to <tt>b</tt>.
+ * @param[in,out] a This object is updated
+ * @param[in]     b This object is appended to <tt>b</tt>.
  */
 
 /**
@@ -822,8 +823,8 @@ inline void append(ToolDoc & a, ToolDoc const & b)
  *
  * @signature void setName(toolDoc, name);
  *
- * @param toolDoc The ToolDoc object to the set the name for.
- * @param name    The name of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the name for.
+ * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
 
 /**
@@ -856,7 +857,7 @@ inline void setName(ToolDoc & doc, CharString const & name)
  *
  * @signature CharString getName(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the name for.
+ * @param[in] toolDoc The ToolDoc object to the get the name for.
  *
  * @return CharString Resulting name (@link CharString @endlink).
  */
@@ -890,8 +891,8 @@ inline CharString const & getName(ToolDoc const & doc)
  *
  * @signature void setName(toolDoc, name);
  *
- * @param toolDoc The ToolDoc object to the set the name for.
- * @param name    The name of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the name for.
+ * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
 
 /**
@@ -924,7 +925,7 @@ inline void setCategory(ToolDoc & doc, CharString const & category)
  *
  * @signature CharString getCategory(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the category for.
+ * @param[in] toolDoc The ToolDoc object to the get the category for.
  *
  * @return CharString Resulting category (@link CharString @endlink).
  */
@@ -958,8 +959,8 @@ inline CharString const & getCategory(ToolDoc const & doc)
  *
  * @signature void setShortDescription(toolDoc, text);
  *
- * @param toolDoc The ToolDoc object to the set the short description for.
- * @param text    The short description of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the short description for.
+ * @param[in]     text    The short description of the tool (@link CharString @endlink).
  */
 
 /**
@@ -992,7 +993,7 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
  *
  * @signature CharString getShortDescription(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the short description for.
+ * @param[in] toolDoc The ToolDoc object to the get the short description for.
  *
  * @return CharString Resulting short description (@link CharString @endlink).
  */
@@ -1026,8 +1027,8 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
  *
  * @signature void setName(toolDoc, str);
  *
- * @param toolDoc The ToolDoc object to the set the date string for.
- * @param str     The date string of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the date string for.
+ * @param[in]     str     The date string of the tool (@link CharString @endlink).
  */
 
 /**
@@ -1060,7 +1061,7 @@ inline void setDate(ToolDoc & doc, CharString const & date)
  *
  * @signature CharString getDate(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the date from.
+ * @param[in] toolDoc The ToolDoc object to the get the date from.
  *
  * @return CharString Resulting date string (@link CharString @endlink).
  */
@@ -1094,8 +1095,8 @@ inline CharString const & getDate(ToolDoc const & doc)
  *
  * @signature void setName(toolDoc, str);
  *
- * @param toolDoc The ToolDoc object to the set the version string for.
- * @param str     The version string of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the version string for.
+ * @param[in]     str     The version string of the tool (@link CharString @endlink).
  */
 
 /**
@@ -1128,7 +1129,7 @@ inline void setVersion(ToolDoc & doc, CharString const & version)
  *
  * @signature CharString getVersion(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the version string.
+ * @param[in] toolDoc The ToolDoc object to the get the version string.
  *
  * @return CharString Resulting version string (@link CharString @endlink).
  */
@@ -1162,8 +1163,8 @@ inline CharString const & getVersion(ToolDoc const & doc)
  *
  * @signature void setTitle(toolDoc, title);
  *
- * @param toolDoc The ToolDoc object to the set the title for.
- * @param title   The title of the tool (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to the set the title for.
+ * @param[in]     title   The title of the tool (@link CharString @endlink).
  */
 
 /**
@@ -1196,7 +1197,7 @@ inline void setManTitle(ToolDoc & doc, CharString const & title)
  *
  * @signature CharString getManTitle(toolDoc);
  *
- * @param toolDoc The ToolDoc object to the get the man page title.
+ * @param[in] toolDoc The ToolDoc object to the get the man page title.
  *
  * @return CharString Resulting man page title (@link CharString @endlink).
  */
@@ -1230,8 +1231,8 @@ inline CharString const & getManTitle(ToolDoc & doc)
  *
  * @signature void addSection(toolDoc, title);
  *
- * @param toolDoc The ToolDoc object to add a section for.
- * @param title   The section title (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to add a section for.
+ * @param[in]     title   The section title (@link CharString @endlink).
  */
 
 /**
@@ -1264,8 +1265,8 @@ inline void addSection(ToolDoc & doc, CharString const & title)
  *
  * @signature void addSubSection(toolDoc, title);
  *
- * @param toolDoc The ToolDoc object to add a subsection for.
- * @param title   The subsection title (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to add a subsection for.
+ * @param[in]     title   The subsection title (@link CharString @endlink).
  */
 
 /**
@@ -1298,9 +1299,9 @@ inline void addSubSection(ToolDoc & doc, CharString const & title)
  *
  * @signature void addText(toolDoc, text[, isParagraph]);
  *
- * @param toolDoc     The ToolDoc to add the text to.
- * @param text        The text to add (@link CharString @endlink).
- * @param isParagraph Whether to insert as paragraph or just a line (only one line break if not a paragraph).
+ * @param[in,out] toolDoc     The ToolDoc to add the text to.
+ * @param[in]     text        The text to add (@link CharString @endlink).
+ * @param[in]     isParagraph Whether to insert as paragraph or just a line (only one line break if not a paragraph).
  */
 
 /**
@@ -1342,9 +1343,9 @@ inline void addText(ToolDoc & doc, CharString const & text)
  *
  * @signature void addListItem(toolDoc, key, value);
  *
- * @param toolDoc The ToolDoc object to add the list item to.
- * @param key     The key for the list (@link CharString @endlink).
- * @param value   The value for the list (@link CharString @endlink).
+ * @param[in,out] toolDoc The ToolDoc object to add the list item to.
+ * @param[in]     key     The key for the list (@link CharString @endlink).
+ * @param[in]     value   The value for the list (@link CharString @endlink).
  */
 
 /**
@@ -1381,9 +1382,9 @@ inline void addListItem(ToolDoc & doc, CharString const & key, CharString const 
  *
  * @signature void print(stream, toolDoc, format);
  *
- * @param stream  The <tt>std::ostream</tt> to write to.
- * @param toolDoc The ToolDoc to print.
- * @param format  The format, one of {"html", "man", "txt"}.
+ * @param[in,out] stream  The <tt>std::ostream</tt> to write to.
+ * @param[in]     toolDoc The ToolDoc to print.
+ * @param[in]     format  The format, one of {"html", "man", "txt"}.
  */
 
 /**
@@ -1418,7 +1419,7 @@ inline void print(std::ostream & stream, ToolDoc const & doc, CharString const &
  *
  * @signature void clearEntries(toolDoc);
  *
- * @param toolDoc The ToolDoc object to clear entries from.
+ * @param[in,out] toolDoc The ToolDoc object to clear entries from.
  */
 
 /**

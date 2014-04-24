@@ -45,7 +45,7 @@
  * 
  * @signature bool isalnum(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is alphanumeric.
  * 
@@ -80,7 +80,7 @@
  * 
  * @signature bool isalpha(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a character.
  * 
@@ -114,7 +114,7 @@
  * 
  * @signature bool isdigit(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a digit.
  * 
@@ -149,7 +149,7 @@
  * 
  * @signature bool iscntrl(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a control character.
  * 
@@ -182,7 +182,7 @@
  * 
  * @signature bool isprint(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -217,7 +217,7 @@
  * 
  * @signature bool isgraph(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -256,7 +256,7 @@
  * 
  * @signature bool isspace(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -300,7 +300,7 @@
  * 
  * @signature bool isblank(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a blank character.
  * 

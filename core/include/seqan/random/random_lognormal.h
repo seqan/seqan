@@ -109,10 +109,10 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * @signature Pdf::Pdf(mu,   sigma[, MuSigma()]);
  * @signature Pdf::Pdf(mean, stdDev, MeanStdDev());
  *
- * @param mu     Mean of the underlying normal distribution, double.
- * @param sigma  Standard deviation of the underlying normal distribution, double.
- * @param mean   Mean of the log-normal distribution, double.
- * @param stdDev Standard deviation of the log-normal distribution, double.
+ * @param[in] mu     Mean of the underlying normal distribution, double.
+ * @param[in] sigma  Standard deviation of the underlying normal distribution, double.
+ * @param[in] mean   Mean of the log-normal distribution, double.
+ * @param[in] stdDev Standard deviation of the log-normal distribution, double.
  */
 
 /**

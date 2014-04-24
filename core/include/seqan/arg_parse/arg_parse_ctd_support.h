@@ -169,7 +169,7 @@ inline void
 _getRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const & opt)
 {
     // we only extract non-file restrictions
-    if (isOutputFileArgument(opt) || isInputFileArgument(opt))
+    if (isOutputFileArgument(opt) || isInputFileArgument(opt) || isInputPrefixArgument(opt) || isOutputPrefixArgument(opt))
         return;
 
     if (length(opt.validValues) != 0)
@@ -209,7 +209,7 @@ inline void
 _getSupportedFormats(std::vector<std::string> & supported_formats, ArgParseArgument const & opt)
 {
     // we check only file arguments
-    if (!(isOutputFileArgument(opt) || isInputFileArgument(opt)))
+    if (!(isOutputFileArgument(opt) || isInputFileArgument(opt) || isInputPrefixArgument(opt) || isOutputPrefixArgument(opt)))
         return;
 
     if (length(opt.validValues) != 0)
@@ -289,6 +289,8 @@ inline std::string _getManual(ArgumentParser const & me)
 // Function writeCTD()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Change argument order.
+
 /*!
  * @fn ArgumentParser#writeCTD
  * @headerfile <seqan/arg_parse.h>\
@@ -296,9 +298,9 @@ inline std::string _getManual(ArgumentParser const & me)
  *
  * @signature bool writeCTD(parser[, stream]);
  *
- * @param parser The ArgumentParser to write the CTD file for.
- * @param stream A <tt>std::ostream</tt> to write to.  If omitted an output file with the name form the "write-ctd"
- *               parameter of the parser is used.
+ * @param[in]  parser The ArgumentParser to write the CTD file for.
+ * @param[out] stream A <tt>std::ostream</tt> to write to.  If omitted an output file with the name form the
+ *                    "write-ctd" parameter of the parser is used.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
@@ -408,6 +410,10 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             type = "input-file";
         else if (isOutputFileArgument(opt))
             type = "output-file";
+        else if (isInputPrefixArgument(opt))
+            type = "input-prefix";
+        else if (isOutputPrefixArgument(opt))
+            type = "output-prefix";
         else if (isStringArgument(opt) || isBooleanOption(opt))
             type = "string";
 
@@ -418,7 +424,6 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // set up supported formats
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, opt);
-
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(opt) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\"";
@@ -487,6 +492,10 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             type = "input-file";
         else if (isOutputFileArgument(arg))
             type = "output-file";
+        else if (isInputPrefixArgument(arg))
+            type = "input-prefix";
+        else if (isOutputPrefixArgument(arg))
+            type = "output-prefix";
         else if (isStringArgument(arg))
             type = "string";
 

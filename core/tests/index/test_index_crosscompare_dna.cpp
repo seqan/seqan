@@ -48,8 +48,9 @@ using namespace seqan;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {
-	//SEQAN_CALL_TEST(testIndexCrossCompareChar);
-	// SEQAN_CALL_TEST(testIndexCrossCompareDna);
-	SEQAN_CALL_TEST(testIndexCrossCompareDnaDfi);
+//	SEQAN_CALL_TEST(testIndexCrossCompareChar);
+	SEQAN_CALL_TEST(testIndexCrossCompareDna);
+	SEQAN_CALL_TEST(testIndexCrossCompareDnaStrings);
+//	SEQAN_CALL_TEST(testIndexCrossCompareDnaDfi);
 }
 SEQAN_END_TESTSUITE

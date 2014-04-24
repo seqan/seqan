@@ -2,11 +2,11 @@
 #
 # We create variants from a randomly generated genome.
 
-GENOME=../../../../../seqan-git-build/debug/bin/mason_genome
-METHYLATION=../../../../../seqan-git-build/debug/bin/mason_methylation
-VARIATOR=../../../../../seqan-git-build/debug/bin/mason_variator
-MATERIALIZER=../../../../../seqan-git-build/debug/bin/mason_materializer
-SIMULATOR=../../../../../seqan-git-build/debug/bin/mason_simulator
+GENOME=../../../../../seqan-git-build/release/bin/mason_genome
+METHYLATION=../../../../../seqan-git-build/release/bin/mason_methylation
+VARIATOR=../../../../../seqan-git-build/release/bin/mason_variator
+MATERIALIZER=../../../../../seqan-git-build/release/bin/mason_materializer
+SIMULATOR=../../../../../seqan-git-build/release/bin/mason_simulator
 
 # ============================================================
 # mason_genome
@@ -14,6 +14,7 @@ SIMULATOR=../../../../../seqan-git-build/debug/bin/mason_simulator
 
 echo "${GENOME} -l 1000 -o genome.test1.fasta >genome.test1.stdout 2>genome.test1.stderr"
 ${GENOME} -l 1000 -o genome.test1.fasta >genome.test1.stdout 2>genome.test1.stderr
+echo $?
 echo "${GENOME} -s 1 -l 1000 -l 100 -o genome.test2.fasta >genome.test2.stdout 2>genome.test2.stderr"
 ${GENOME} -s 1 -l 1000 -l 100 -o genome.test2.fasta >genome.test2.stdout 2>genome.test2.stderr
 echo $?
@@ -48,6 +49,11 @@ echo $?
 # Variation that crashed previously.
 echo "${VARIATOR} -ir adeno_virus.fa -ov random_var9.vcf -of random_var9.fasta --sv-indel-rate 0.01 --sv-inversion-rate 0.01 --sv-duplication-rate 0.01 --min-sv-size 20  --max-sv-size 300 >random_var9.vcf.stdout 2>random_var9.vcf.stderr"
 ${VARIATOR} -ir adeno_virus.fa -ov random_var9.vcf -of random_var9.fasta --sv-indel-rate 0.01 --sv-inversion-rate 0.01 --sv-duplication-rate 0.01 --min-sv-size 20  --max-sv-size 300 >random_var9.vcf.stdout 2>random_var9.vcf.stderr
+echo $?
+
+# Variation with variation library.
+echo "${VARIATOR} -it variants.var10.tsv -ir adeno_virus.fa -ov random_var10.vcf -of random_var10.fasta >random_var10.vcf.stdout 2>random_var10.vcf.stderr"
+${VARIATOR} -it variants.var10.tsv -ir adeno_virus.fa -ov random_var10.vcf -of random_var10.fasta >random_var10.vcf.stdout 2>random_var10.vcf.stderr
 echo $?
 
 # ============================================================

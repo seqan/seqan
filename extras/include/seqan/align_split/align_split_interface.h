@@ -411,8 +411,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *                          lower right part of the DP matrix, <tt>int</tt>.
  * @param[in]     upperDiag The lower diagonal.  Also see remark for <tt>lowerDiag</tt>, <tt>int</tt>.
  * 
- * @return TScoreValue The sum of the alignment scores of both alignments.  <tt>TScoreValue</tt> is the value type of
- *                     <tt>scoringScheme</tt>.
+ * @return TScoreValue The sum of the alignment scores of both alignments (Metafunction: @link Score#Value @endlink
+ *                     of the type of <tt>scoringScheme</tt>).
  * 
  * There are two variants of the split alignment problem.  In the first variant, we wan to align two sequences where the
  * first (say the reference) one is shorter than the second (say a read) and the read contains an insertion with respect

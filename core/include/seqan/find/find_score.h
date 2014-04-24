@@ -58,8 +58,6 @@ struct DPSearch {};
  * @tparam TScore  The scoring function. Types: Score
  * @tparam TNeedle The needle type. Types: String
  * 
- * @section Remarks
- * 
  * The algorithm is based on the Sellers/Needleman-Wunsch dynamic progamming algorithm. The <tt>Pattern</tt> object only
  * contains the right-most column of the dynamic programming matrix.
  */
@@ -295,7 +293,7 @@ SEQAN_CHECKPOINT
 /*!
  * @fn DPSearchPattern#setSoreLimit
  * @headerfile <seqan/find.h>
- * @brief Set the minimal score a match must reach in approximate serach..
+ * @brief Set the minimal score a match must reach in approximate serach.
  *
  * @signature void setScoreLimit(pattern, limit);
  *

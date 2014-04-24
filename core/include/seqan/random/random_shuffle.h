@@ -57,6 +57,7 @@ namespace seqan {
 
 /*!
  * @fn shuffle
+ * @headerfile <seqan/random.h>
  * @brief Shuffle the given container.
  *
  * @signature void shuffle(container, rng);

@@ -58,7 +58,7 @@ getValue(TSimdVector &vector, TPosition pos)                                    
 {                                                                                                       \
 /*                                                                                                      \
     typedef typename Value<TSimdVector>::Type TValue;                                                   \
-    register TValue val = (reinterpret_cast<TValue*>(&vector))[pos];                                    \
+    TValue val = (reinterpret_cast<TValue*>(&vector))[pos];                                    \
     return val;                                                                                         \
 */                                                                                                      \
     return vector[pos];                                                                                 \
