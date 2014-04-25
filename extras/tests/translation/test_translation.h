@@ -39,6 +39,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+// #include <seqan/parallel.h>
 
 #include <seqan/translation.h>
 
@@ -221,7 +222,7 @@ SEQAN_DEFINE_TEST(test_translation_onestring_singleframe_allcodes)
     }
 }
 
-template <typename TTargetSet>
+template <typename TTargetSet, typename TParallelism>
 inline void
 test_translation_onestring_multiframe_impl()
 {
@@ -241,14 +242,14 @@ test_translation_onestring_multiframe_impl()
     TTargetSet res;
 
     {
-        translate(res, str, TranslationFrames::SingleFrame);
+        translate(res, str, TranslationFrames::SingleFrame, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 1u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
     }
 
     {
-        translate(res, str, TranslationFrames::WithReverseComplement);
+        translate(res, str, TranslationFrames::WithReverseComplement, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 2u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -256,7 +257,7 @@ test_translation_onestring_multiframe_impl()
     }
 
     {
-        translate(res, str, TranslationFrames::WithFrameShifts);
+        translate(res, str, TranslationFrames::WithFrameShifts, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 3u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -265,7 +266,7 @@ test_translation_onestring_multiframe_impl()
     }
 
     {
-        translate(res, str, TranslationFrames::SixFrame);
+        translate(res, str, TranslationFrames::SixFrame, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 6u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -278,28 +279,41 @@ test_translation_onestring_multiframe_impl()
 }
 
 
-SEQAN_DEFINE_TEST(test_translation_onestring_multiframe)
+SEQAN_DEFINE_TEST(test_translation_onestring_multiframe_serial)
 {
     typedef StringSet<String<AminoAcid> > TRegSet;
-    test_translation_onestring_multiframe_impl<TRegSet>();
+    test_translation_onestring_multiframe_impl<TRegSet, Serial>();
 }
 
-SEQAN_DEFINE_TEST(test_translation_onestring_multiframe_concatdirect)
+SEQAN_DEFINE_TEST(test_translation_onestring_multiframe_concatdirect_serial)
 {
     typedef StringSet<String<AminoAcid>, Owner<ConcatDirect<> > > TConcatSet;
-    test_translation_onestring_multiframe_impl<TConcatSet>();
+    test_translation_onestring_multiframe_impl<TConcatSet, Serial>();
 }
 
-template <typename TSourceSet, typename TResultSet>
+SEQAN_DEFINE_TEST(test_translation_onestring_multiframe_parallel)
+{
+    typedef StringSet<String<AminoAcid> > TRegSet;
+    test_translation_onestring_multiframe_impl<TRegSet, Parallel>();
+}
+
+SEQAN_DEFINE_TEST(test_translation_onestring_multiframe_concatdirect_parallel)
+{
+    typedef StringSet<String<AminoAcid>, Owner<ConcatDirect<> > > TConcatSet;
+    test_translation_onestring_multiframe_impl<TConcatSet, Parallel>();
+}
+
+template <typename TSourceSet, typename TResultSet, typename TParallelism>
 inline void
 test_translation_stringset_multiframe_impl(TResultSet const & comp,
-                                                      TSourceSet const & source)
+                                           TSourceSet const & source,
+                                           TParallelism const & /**/)
 {
     TResultSet res;
     unsigned l = length(source);
 
     {
-        translate(res, source, TranslationFrames::SingleFrame);
+        translate(res, source, TranslationFrames::SingleFrame, TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 1u);
@@ -310,7 +324,8 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::WithReverseComplement);
+        translate(res, source, TranslationFrames::WithReverseComplement,
+                  TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 2u);
@@ -322,7 +337,8 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::WithFrameShifts);
+        translate(res, source, TranslationFrames::WithFrameShifts,
+                  TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 3u);
@@ -336,7 +352,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::SixFrame);
+        translate(res, source, TranslationFrames::SixFrame, TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 6u);
@@ -353,7 +369,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 }
 
-template <typename TSetSpec>
+template <typename TSetSpec, typename TParallelism>
 inline void
 test_translation_stringset_multiframe_impl0()
 {
@@ -387,7 +403,7 @@ test_translation_stringset_multiframe_impl0()
         appendValue(source, str);
 
 
-        test_translation_stringset_multiframe_impl(comp, source);
+        test_translation_stringset_multiframe_impl(comp, source, TParallelism());
     }
 
     //RNA
@@ -405,20 +421,33 @@ test_translation_stringset_multiframe_impl0()
         appendValue(source, str);
 
 
-        test_translation_stringset_multiframe_impl(comp, source);
+        test_translation_stringset_multiframe_impl(comp, source, TParallelism());
     }
 }
 
-SEQAN_DEFINE_TEST(test_translation_stringset_multiframe)
+SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_serial)
 {
 
-    test_translation_stringset_multiframe_impl0<Owner<> >();
+    test_translation_stringset_multiframe_impl0<Owner<>, Serial >();
 }
 
-SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_concatdirect)
+SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_concatdirect_serial)
 {
 
-    test_translation_stringset_multiframe_impl0<Owner<ConcatDirect<> > >();
+    test_translation_stringset_multiframe_impl0<Owner<ConcatDirect<> >,Serial>();
+}
+
+SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_parallel)
+{
+
+    test_translation_stringset_multiframe_impl0<Owner<>, Parallel>();
+}
+
+SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_concatdirect_parallel)
+{
+
+    test_translation_stringset_multiframe_impl0<Owner<ConcatDirect<> >,
+                                                Parallel>();
 }
 
 #endif  // SEQAN_EXTRAS_TESTS_BASIC_TEST_TRANSLATION_H_
