@@ -55,7 +55,7 @@ namespace seqan {
 /*!
  * @enum TranslationFrames
  * @headerfile seqan/translation.h
- * @brief Class Enum with options for @link translate @endlink()
+ * @brief Class Enum with frames for @link translate @endlink()
  *
  * @signature enum class TranslationFrames : uint8_t { ... };
  *
@@ -484,8 +484,9 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *
  * @return int 0 on success, and -1 on incompatible parameters (e.g. multiple frames but target type not StringSet).
  *
- * This call uses OpenMP internally, if supported by platform. If you want to
- * disable this, #define SEQAN_TRANSLATION_NO_PARALLEL.
+ * If OpenMP is supported by platform and TParallelism is not specified as
+ * "Serial", translation will be parallelized. The only exception is when doing
+ * single-frame translation of a single string -- which is never parallelized.
  *
  * The translation process is fastest when using ConcatDirect-StringSets for
  * both input and output StringSets and when not having to convert the alphabet
@@ -514,7 +515,7 @@ template <typename TTarget, typename TSource, typename TParallelism,
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TranslationFrames const options,
+          TranslationFrames const frames,
           GeneticCode<codeSpec> const & /**/,
           TParallelism const & /**/)
 {
@@ -523,7 +524,7 @@ translate(TTarget & target,
                   "TParallelism must either be Parallel() or Serial().");
 
     typedef GeneticCode<codeSpec> TCode;
-    switch (options)
+    switch (frames)
     {
     case TranslationFrames::SingleFrame:
         return _translateInputWrap(target, source, TCode(), Frames_<1>(),
@@ -547,10 +548,10 @@ template <typename TTarget, typename TSource, GeneticCodeSpec codeSpec>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TranslationFrames const options,
+          TranslationFrames const frames,
           GeneticCode<codeSpec> const & /**/)
 {
-    return translate(target, source, options, GeneticCode<codeSpec>(),
+    return translate(target, source, frames, GeneticCode<codeSpec>(),
                      Parallel());
 }
 
@@ -568,9 +569,9 @@ template <typename TTarget, typename TSource>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TranslationFrames const options)
+          TranslationFrames const frames)
 {
-    return translate(target, source, options, GeneticCode<>(), Parallel());
+    return translate(target, source, frames, GeneticCode<>(), Parallel());
 }
 
 template <typename TTarget, typename TSource>
@@ -586,7 +587,7 @@ template <typename TTarget, typename TSource, typename TParallelism>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TranslationFrames const options,
+          TranslationFrames const frames,
           GeneticCodeSpec const & geneticCode,
           TParallelism const & /**/)
 {
@@ -596,79 +597,79 @@ translate(TTarget & target,
     switch(geneticCode)
     {
         case GeneticCodeSpec::Canonical:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Canonical>(),
                              TParallelism());
         case GeneticCodeSpec::VertMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::VertMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::YeastMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::YeastMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::MoldMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::MoldMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::InvertMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::InvertMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::Ciliate:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Ciliate>(),
                              TParallelism());
         case GeneticCodeSpec::FlatwormMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::FlatwormMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::Euplotid:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Euplotid>(),
                              TParallelism());
         case GeneticCodeSpec::Prokaryote:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Prokaryote>(),
                              TParallelism());
         case GeneticCodeSpec::AltYeast:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::AltYeast>(),
                              TParallelism());
         case GeneticCodeSpec::AscidianMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::AscidianMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::AltFlatwormMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::AltFlatwormMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::Blepharisma:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Blepharisma>(),
                              TParallelism());
         case GeneticCodeSpec::ChlorophyceanMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::ChlorophyceanMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::TrematodeMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::TrematodeMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::ScenedesmusMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::ScenedesmusMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::ThraustochytriumMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::ThraustochytriumMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::PterobranchiaMitochondrial:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::PterobranchiaMitochondrial>(),
                              TParallelism());
         case GeneticCodeSpec::Gracilibacteria:
-            return translate(target, source, options,
+            return translate(target, source, frames,
                              GeneticCode<GeneticCodeSpec::Gracilibacteria>(),
                              TParallelism());
     }
@@ -682,10 +683,20 @@ template <typename TTarget, typename TSource>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TranslationFrames const options,
+          TranslationFrames const frames,
           GeneticCodeSpec const & geneticCode)
 {
-    return translate(target, source, options, geneticCode, Parallel());
+    return translate(target, source, frames, geneticCode, Parallel());
+}
+
+template <typename TTarget, typename TSource, typename TParallelism>
+inline int
+translate(TTarget & target,
+          TSource const & source,
+          TranslationFrames const frames,
+          TParallelism const & /**/)
+{
+    return translate(target, source, frames, GeneticCode<>(), TParallelism());
 }
 
 }
