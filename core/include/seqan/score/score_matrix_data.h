@@ -72,7 +72,7 @@ typedef Blosum30_ ScoreSpecBlosum30;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A     4
  * R    -1   8
  * N     0  -2   8
@@ -177,7 +177,7 @@ typedef Blosum45_ ScoreSpecBlosum45;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      5
  * R     -2   7
  * N     -1   0   6
@@ -281,7 +281,7 @@ typedef Blosum62_ ScoreSpecBlosum62;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      4
  * R     -1   5
  * N     -2   0   6
@@ -385,7 +385,7 @@ typedef Blosum80_ ScoreSpecBlosum80;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      7
  * R     -3   9
  * N     -3  -1   9
@@ -489,7 +489,7 @@ typedef Pam40_ ScoreSpecPam40;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      6
  * R     -6    8
  * N     -3   -5    7
@@ -596,7 +596,7 @@ typedef Pam120_ ScoreSpecPam120;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      3
  * R     -3    6
  * N     -1   -1    4
@@ -702,7 +702,7 @@ typedef Pam200_ ScoreSpecPam200;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      3
  * R     -2    7
  * N      0    0    3
@@ -808,7 +808,7 @@ typedef Pam250_ ScoreSpecPam250;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      2
  * R     -2    6
  * N      0    0    2
@@ -914,7 +914,7 @@ typedef Vtml200_ ScoreSpecVtml200;
  *
  * @signature typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
  *
- * @code{.cpp}
+ * @code{.txt}
  * A      4
  * R     -2    7
  * N     -1    0    6
