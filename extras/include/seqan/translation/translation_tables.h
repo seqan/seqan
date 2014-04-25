@@ -58,62 +58,62 @@ namespace seqan {
  *
  * This is a scoped enum, only available with C++11.
  *
- * @val GeneticCodeSpec::Canonical 1
+ * @val GeneticCodeSpec GeneticCodeSpec::Canonical = 1
  * @brief The Standard Genetic Code (genbank transl_table=1)
  *
- * @val GeneticCodeSpec::VertMitochondrial 2
+ * @val GeneticCodeSpec GeneticCodeSpec::VertMitochondrial = 2
  * @brief The Vertebrate Mitochondrial Code (genbank transl_table=2)
  *
- * @val GeneticCodeSpec::YeastMitochondrial 3
+ * @val GeneticCodeSpec GeneticCodeSpec::YeastMitochondrial = 3
  * @brief The Yeast Mitochondrial Code (genbank transl_table=3)
  *
- * @val GeneticCodeSpec::MoldMitochondrial 4
+ * @val GeneticCodeSpec GeneticCodeSpec::MoldMitochondrial = 4
  * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
  *        (genbank transl_table=4).
  *
- * @val GeneticCodeSpec::InvertMitochondrial 5
+ * @val GeneticCodeSpec GeneticCodeSpec::InvertMitochondrial = 5
  * @brief The Invertebrate Mitochondrial Code (genbank transl_table=5)
  *
- * @val GeneticCodeSpec::Ciliate 6
+ * @val GeneticCodeSpec GeneticCodeSpec::Ciliate = 6
  * @brief The Ciliate, Dasycladacean and Hexamita Nuclear Code (genbank transl_table=6).
  *
- * @val GeneticCodeSpec::FlatwormMitochondrial 9
+ * @val GeneticCodeSpec GeneticCodeSpec::FlatwormMitochondrial = 9
  * @brief The Echinoderm and Flatworm Mitochondrial Code (genbank transl_table=9).
  *
- * @val GeneticCodeSpec::Euplotid 10
+ * @val GeneticCodeSpec GeneticCodeSpec::Euplotid = 10
  * @brief The Euplotid Nuclear Code (genbank transl_table=10).
  *
- * @val GeneticCodeSpec::Prokaryote 11
+ * @val GeneticCodeSpec GeneticCodeSpec::Prokaryote = 11
  * @brief The Bacterial, Archaeal and Plant Plastid Code (genbank transl_table=11).
  *
- * @val GeneticCodeSpec::AltYeast 12
+ * @val GeneticCodeSpec GeneticCodeSpec::AltYeast = 12
  * @brief The Alternative Yeast Nuclear Code (genbank transl_table=12).
  *
- * @val GeneticCodeSpec::AscidianMitochondrial 13
+ * @val GeneticCodeSpec GeneticCodeSpec::AscidianMitochondrial = 13
  * @brief The Ascidian Mitochondrial Code (genbank transl_table=13).
  *
- * @val GeneticCodeSpec::AltFlatwormMitochondrial 14
+ * @val GeneticCodeSpec GeneticCodeSpec::AltFlatwormMitochondrial = 14
  * @brief The Alternative Flatworm Mitochondrial Code (genbank transl_table=14).
  *
- * @val GeneticCodeSpec::Blepharisma 15
+ * @val GeneticCodeSpec GeneticCodeSpec::Blepharisma = 15
  * @brief Blepharisma Nuclear Code (genbank transl_table=15).
  *
- * @val GeneticCodeSpec::ChlorophyceanMitochondrial 16
+ * @val GeneticCodeSpec GeneticCodeSpec::ChlorophyceanMitochondrial = 16
  * @brief Chlorophycean Mitochondrial Code (genbank transl_table=16).
  *
- * @val GeneticCodeSpec::TrematodeMitochondrial 21
+ * @val GeneticCodeSpec GeneticCodeSpec::TrematodeMitochondrial = 21
  * @brief Trematode Mitochondrial Code (genbank transl_table=21).
  *
- * @val GeneticCodeSpec::ScenedesmusMitochondrial 22
+ * @val GeneticCodeSpec GeneticCodeSpec::ScenedesmusMitochondrial = 22
  * @brief Scenedesmus obliquus mitochondrial Code (genbank transl_table=22).
  *
- * @val GeneticCodeSpec::ThraustochytriumMitochondrial 23
+ * @val GeneticCodeSpec GeneticCodeSpec::ThraustochytriumMitochondrial = 23
  * @brief Thraustochytrium Mitochondrial Code (genbank transl_table=23).
  *
- * @val GeneticCodeSpec::PterobranchiaMitochondrial 24
+ * @val GeneticCodeSpec GeneticCodeSpec::PterobranchiaMitochondrial = 24
  * @brief Pterobranchia mitochondrial code (genbank transl_table=24).
  *
- * @val GeneticCodeSpec::Gracilibacteria 25
+ * @val GeneticCodeSpec GeneticCodeSpec::Gracilibacteria = 25
  * @brief Candidate Division SR1 and Gracilibacteria Code (genbank transl_table=25).
  */
 
