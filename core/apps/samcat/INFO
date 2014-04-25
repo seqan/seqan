@@ -1,0 +1,10 @@
+Name: samcat
+Author: David Weese <david.weese@fu-berlin.de>
+Maintainer: David Weese <david.weese@fu-berlin.de>
+License: GPL v3
+Copyright: 2008-2014, FU Berlin
+Status: under development
+Description: Concatenate SAM or BAM files.
+ This tool reads a set of input files in SAM or BAM format and outputs the
+ concatenation of them. If the output file name is ommitted the result is
+ written to standard output in SAM format.
