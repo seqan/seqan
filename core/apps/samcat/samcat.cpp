@@ -55,8 +55,8 @@ using namespace seqan;
 
 struct AppOptions
 {
-    StringSet<CharString> inFiles;
-    CharString outFile;
+    std::vector<std::string> inFiles;
+    std::string outFile;
 };
 
 // ==========================================================================
@@ -68,7 +68,7 @@ struct AppOptions
 // --------------------------------------------------------------------------
 
 template <typename TWriter, typename TFormat>
-int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, StringSet<CharString> &inFiles)
+int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::string> &inFiles)
 {
     typedef StringSet<CharString>       TNameStore;
     typedef NameStoreCache<TNameStore>  TNameStoreCache;
@@ -88,10 +88,10 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, StringSet<CharStrin
         if (guessFormatFromFilename(inFiles[i], Bam()))
         {
             Stream<Bgzf> reader;
-            if (!open(reader, toCString(inFiles[i]), "r"))
+            if (!open(reader, inFiles[i].c_str(), "r"))
             {
                 std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
-                clear(inFiles[i]);
+                inFiles[i].clear();
                 returnedError = -1;
                 continue;
             }
@@ -101,7 +101,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, StringSet<CharStrin
         else
         {
             // Construct a RecordReader from the input file.
-            std::ifstream inStream(toCString(inFiles[i]));
+            std::ifstream inStream(inFiles[i].c_str());
             if (!inStream.is_open())
             {
                 std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
@@ -135,13 +135,13 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, StringSet<CharStrin
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
         // avoid to open failed files twice
-        if (empty(inFiles[i]))
+        if (inFiles[i].empty())
             continue;
 
         if (guessFormatFromFilename(inFiles[i], Bam()))
         {
             Stream<Bgzf> reader;
-            if (!open(reader, toCString(inFiles[i]), "r"))
+            if (!open(reader, inFiles[i].c_str(), "r"))
             {
                 std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
                 returnedError = -1;
@@ -167,7 +167,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, StringSet<CharStrin
         else
         {
             // Construct a RecordReader from the input file.
-            std::ifstream inStream(toCString(inFiles[i]));
+            std::ifstream inStream(inFiles[i].c_str());
             if (!inStream.is_open())
             {
                 std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
@@ -272,16 +272,16 @@ int main(int argc, char const ** argv)
     if (guessFormatFromFilename(options.outFile, Bam()))
     {
         Stream<Bgzf> writer;
-        if (!open(writer, toCString(options.outFile), "w"))
+        if (!open(writer, options.outFile.c_str(), "w"))
         {
             std::cout << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
             return -1;
         }
         return mergeBamFiles(writer, Bam(), options.inFiles);
     }
-    else if (!empty(options.outFile))
+    else if (!options.outFile.empty())
     {
-        std::ofstream writer(toCString(options.outFile));
+        std::ofstream writer(options.outFile.c_str());
         if (!writer.is_open())
         {
             std::cout << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
