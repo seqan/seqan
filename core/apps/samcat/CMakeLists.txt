@@ -15,7 +15,7 @@ message (STATUS "Configuring core/apps/samcat")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-#set (SEQAN_FIND_DEPENDENCIES NONE)
+set (SEQAN_FIND_DEPENDENCIES ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
@@ -63,7 +63,14 @@ install (FILES LICENSE
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (samcat)
+seqan_add_app_test (samcat)
+
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable razers in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} samcat CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -73,7 +80,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
   set (CPACK_PACKAGE_NAME "samcat")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Concatenate SAM or BAM files")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "David Weese <david.weese@fu-berlin.de>")
-  set (CPACK_PACKAGE_VENDOR "David Weese <david.weese@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (samcat "samcat")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
