@@ -39,6 +39,11 @@
 
 #include <seqan/arg_parse.h>
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
 using namespace seqan;
 
 // ==========================================================================
@@ -90,7 +95,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::st
             Stream<Bgzf> reader;
             if (!open(reader, inFiles[i].c_str(), "r"))
             {
-                std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
+                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
                 inFiles[i].clear();
                 returnedError = -1;
                 continue;
@@ -104,7 +109,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::st
             std::ifstream inStream(inFiles[i].c_str());
             if (!inStream.is_open())
             {
-                std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
+                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
                 clear(inFiles[i]);
                 returnedError = -1;
                 continue;
@@ -143,7 +148,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::st
             Stream<Bgzf> reader;
             if (!open(reader, inFiles[i].c_str(), "r"))
             {
-                std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
+                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
                 returnedError = -1;
                 continue;
             }
@@ -170,7 +175,7 @@ int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::st
             std::ifstream inStream(inFiles[i].c_str());
             if (!inStream.is_open())
             {
-                std::cout << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
+                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
                 returnedError = -1;
                 continue;
             }
@@ -274,7 +279,7 @@ int main(int argc, char const ** argv)
         Stream<Bgzf> writer;
         if (!open(writer, options.outFile.c_str(), "w"))
         {
-            std::cout << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
+            std::cerr << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
             return -1;
         }
         return mergeBamFiles(writer, Bam(), options.inFiles);
@@ -284,7 +289,7 @@ int main(int argc, char const ** argv)
         std::ofstream writer(options.outFile.c_str());
         if (!writer.is_open())
         {
-            std::cout << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
+            std::cerr << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
             return -1;
         }
         return mergeBamFiles(writer, Sam(), options.inFiles);
