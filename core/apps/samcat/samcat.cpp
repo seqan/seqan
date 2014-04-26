@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   samcat
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -210,7 +210,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Setup ArgumentParser.
     ArgumentParser parser("samcat");
     // Set short description, version, and date.
-    setShortDescription(parser, "Concatenate SAM or BAM files");
+    setShortDescription(parser, "SAM/BAM file concatenation and conversion");
     setCategory(parser, "Utilities");
     setVersion(parser, "0.1");
     setDate(parser, "May 2014");
