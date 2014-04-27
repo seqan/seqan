@@ -234,6 +234,17 @@ public:
     BamHeaderRecord() {}
 };
 
+// ----------------------------------------------------------------------------
+// Function std::swap()
+// ----------------------------------------------------------------------------
+
+inline void
+swap(BamHeaderRecord &a, BamHeaderRecord &b)
+{
+    std::swap(a.type, b.type);
+    swap(a.tags, b.tags);
+}
+
 /*!
  * @class BamHeader
  * @headerfile <seqan/bam_io.h>
@@ -518,6 +529,52 @@ searchRecord(unsigned & recordIdx,
              BamHeaderRecordType recordType)
 {
     return searchRecord(recordIdx, header, recordType, 0);
+}
+
+
+struct BamHeaderRecordTypeLess
+{
+    bool operator() (BamHeaderRecord const &a, BamHeaderRecord const &b) const
+    {
+        return a.type < b.type;
+    }
+};
+
+struct BamHeaderRecordEqual
+{
+    bool operator() (BamHeaderRecord const &a, BamHeaderRecord const &b) const
+    {
+        return a.type == b.type && a.tags == b.tags;
+    }
+};
+
+
+inline void
+removeDuplicates(BamHeader & header)
+{
+    BamHeaderRecordTypeLess less;
+    BamHeaderRecordEqual pred;
+
+    std::stable_sort(begin(header.records, Standard()), end(header.records, Standard()), less);
+
+    for (size_t uniqueBegin = 0, uniqueEnd = 1; uniqueEnd < length(header.records);)
+    {
+        if (less(header.records[uniqueBegin], header.records[uniqueEnd]))
+            uniqueBegin = uniqueEnd;
+
+        size_t j;
+        for (j = uniqueBegin; j < uniqueEnd; ++j)
+        {
+            if (pred(header.records[j], header.records[uniqueEnd]))
+            {
+                erase(header.records, uniqueEnd);
+                break;
+            }
+        }
+
+        if (j == uniqueEnd)
+            ++uniqueEnd;
+    }
 }
 
 inline BamSortOrder
