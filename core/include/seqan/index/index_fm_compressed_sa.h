@@ -150,6 +150,16 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
     typedef typename Value<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type   Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TConfig>
+struct DefaultOpenMode<CompressedSA<TText, TSpec, TConfig> >
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
+};
+
 // ============================================================================
 // Classes
 // ============================================================================
