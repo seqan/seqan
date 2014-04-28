@@ -604,14 +604,14 @@ void swap(StringSet<TString, Owner<ConcatDirect<TSpec> > > & lhs,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TAlloc, typename TSpec, typename TPos >
-inline typename Infix<thrust::device_vector<TValue, TAlloc> >::Type
+inline typename Value<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
 value(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
 }
 
 template <typename TValue, typename TAlloc, typename TSpec, typename TPos >
-inline typename Infix<thrust::device_vector<TValue, TAlloc> const>::Type
+inline typename Value<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const>::Type
 value(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
