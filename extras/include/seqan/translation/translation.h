@@ -59,6 +59,8 @@ namespace seqan {
  *
  * @signature enum class TranslationFrames : uint8_t { ... };
  *
+ * Please not that this is part of the translation module which requires C++11.
+ *
  * @val TranslationFrames TranslationFrames::SingleFrame = 0;
  * @brief Translate the sequence(s) "as is", n input sequences result in n output sequences.
  *
@@ -119,7 +121,6 @@ struct ReverseComplement_
 
 // returns ordValue of a DNA(5) or RNA(5) character
 // for everything else (e.g. char) the character is converted to Dna5 first
-// TODO(C++11): when ordValue is constexpr, this should be, too.
 
 template <typename T>
 inline typename ValueSize<T>::Type
@@ -158,7 +159,7 @@ _ord(Rna5 const & c)
 
 
 template <typename TOrd, GeneticCodeSpec codeSpec>
-constexpr AminoAcid
+inline AminoAcid
 _translateTriplet(TOrd const & c1,
                   TOrd const & c2,
                   TOrd const & c3,
@@ -478,8 +479,11 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *                              If the value type is not Dna, Dna5, Rna, Rna5 then it is converted
  *                              to Dna5.
  * @param[in]       frame       The @link TranslationFrames @endlink, defaults to SingleFrame.
- * @param[in]       geneticCode The @link GeneticCode @endlink to use, defaults to GeneticCode<GeneticCodeSpec::Canonical> (this is compile-time constant)
- * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use, this is a run-time parameter ("run-time argument")
+ * @param[in]       geneticCode The @link GeneticCode @endlink to use, defaults
+ * to GeneticCode<GeneticCodeSpec::Canonical>
+ * (use to specify GeneticCode at compile-time)
+ * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use
+ * (use to specify GenetiCode at run-time)
  * @param[in]       TParallelism Whether to use SMP or not, see @link ParallelismTags @endlink .
  *
  * @return int 0 on success, and -1 on incompatible parameters (e.g. multiple frames but target type not StringSet).
@@ -492,6 +496,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * both input and output StringSets and when not having to convert the alphabet
  * of the source (see below).
  *
+ * Please not that the translation module requires C++11.
  * @section Example
  *
  * @code{.cpp}
