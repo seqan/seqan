@@ -51,11 +51,12 @@ template <typename TSize, typename TShape>
 struct VertexQGram
 {
     typedef typename Host<TShape>::Type                 TAlphabet;
+    typedef typename Value<TShape>::Type                THashValue;
 
-    Pair<TSize> range;
-    Pair<TSize> hash;
-    TSize       repLen;
-    TAlphabet   lastChar;
+    Pair<TSize>         range;
+    Pair<THashValue>    hash;
+    TSize               repLen;
+    TAlphabet           lastChar;
 
     VertexQGram() :
         range(0, 0),
@@ -83,10 +84,11 @@ template <typename TSize, typename TShape>
 struct HistoryStackQGram_
 {
     typedef typename Host<TShape>::Type                 TAlphabet;
+    typedef typename Value<TShape>::Type                THashValue;
 
-    Pair<TSize> range;
-    Pair<TSize> hash;
-    TAlphabet   lastChar;
+    Pair<TSize>         range;
+    Pair<THashValue>    hash;
+    TAlphabet           lastChar;
 
     HistoryStackQGram_() {}
 };
