@@ -120,7 +120,7 @@ unlockWriting(ReadWriteLock &lock)
 }
 
 // ============================================================================
-// Class ConcurrentAppendValue
+// Class ConcurrentAppender
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -128,20 +128,27 @@ unlockWriting(ReadWriteLock &lock)
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TSpec = void>
-struct ConcurrentAppendValue
+struct ConcurrentAppender
 {
     TString *       data_host;
     ReadWriteLock   lock;
 
-    ConcurrentAppendValue() :
+    ConcurrentAppender() :
         data_host()
     {}
 
-    ConcurrentAppendValue(TString & string)
+    ConcurrentAppender(TString & string)
     {
         setHost(*this, string);
     }
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+struct Value<ConcurrentAppender<TString, TSpec> > : Value<TString> {};
 
 // ----------------------------------------------------------------------------
 // Function host()
@@ -149,14 +156,14 @@ struct ConcurrentAppendValue
 
 template <typename TString, typename TSpec>
 inline TString &
-host(ConcurrentAppendValue<TString, TSpec> & me)
+host(ConcurrentAppender<TString, TSpec> & me)
 {
     return *me.data_host;
 }
 
 template <typename TString, typename TSpec>
 inline TString const &
-host(ConcurrentAppendValue<TString, TSpec> const & me)
+host(ConcurrentAppender<TString, TSpec> const & me)
 {
     return *me.data_host;
 }
@@ -167,7 +174,7 @@ host(ConcurrentAppendValue<TString, TSpec> const & me)
 
 template <typename TString, typename TSpec>
 inline void
-setHost(ConcurrentAppendValue<TString, TSpec> & me, TString & string)
+setHost(ConcurrentAppender<TString, TSpec> & me, TString & string)
 {
     me.data_host = &string;
 }
@@ -178,7 +185,7 @@ setHost(ConcurrentAppendValue<TString, TSpec> & me, TString & string)
 
 template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
 inline void
-appendValue(ConcurrentAppendValue<TString, TSpec> & me,
+appendValue(ConcurrentAppender<TString, TSpec> & me,
             TValue const & val,
             Tag<TExpand> const & expandTag,
             Tag<TParallel> const & parallelTag)
@@ -192,7 +199,7 @@ appendValue(ConcurrentAppendValue<TString, TSpec> & me,
 
 template <typename TString, typename TSpec, typename TValue, typename TExpand>
 inline void
-appendValue(ConcurrentAppendValue<TString, TSpec> & me,
+appendValue(ConcurrentAppender<TString, TSpec> & me,
             TValue const & val,
             Tag<TExpand> const & expandTag,
             Parallel)
@@ -206,16 +213,13 @@ appendValue(ConcurrentAppendValue<TString, TSpec> & me,
         // try to append the value
         lockReading(me.lock);
         TSize newLen = _incLength(string, Parallel());
-        if (newLen < capacity(string))
+        if (newLen <= capacity(string))
         {
-            assignValue(string, newLen - 1, val);
+            valueConstruct(begin(string, Standard()) + newLen - 1, val);
             unlockReading(me.lock);
             break;
         }
-        else
-        {
-            _decLength(string, Parallel());
-        }
+        _decLength(string, Parallel());
         unlockReading(me.lock);
 
         // try to extend capacity
