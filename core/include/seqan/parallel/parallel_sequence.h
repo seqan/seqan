@@ -40,6 +40,194 @@
 namespace seqan {
 
 // ============================================================================
+// Class ReadWriteLock
+// ============================================================================
+// this lock augments a class by thread-safety as follows:
+//  - supports multiple concurrent readers (possibly waiting for writer to finish)
+//  - supports only a single writer at a time (possibly waiting for readers or other writers to finish)
+//  - the writer has higher priority than all readers
+
+// ----------------------------------------------------------------------------
+// Class
+// ----------------------------------------------------------------------------
+
+struct ReadWriteLock
+{
+    volatile unsigned readers;
+    volatile unsigned writers;
+
+    ReadWriteLock() :
+        readers(0),
+        writers(0)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Function lockReading()
+// ----------------------------------------------------------------------------
+
+inline void
+lockReading(ReadWriteLock &lock)
+{
+    do
+    {
+        // wait for the end of a write access
+        while (lock.writers != 0) ;
+
+        atomicInc(lock.readers);
+
+        if (lock.writers == 0)
+            break;
+
+        // writer hasn't noticed us -> retry
+        atomicDec(lock.readers);
+    }
+    while (true);
+}
+
+// ----------------------------------------------------------------------------
+// Function unlockReading()
+// ----------------------------------------------------------------------------
+
+inline void
+unlockReading(ReadWriteLock &lock)
+{
+    atomicDec(lock.readers);
+}
+
+// ----------------------------------------------------------------------------
+// Function lockWriting()
+// ----------------------------------------------------------------------------
+
+inline void
+lockWriting(ReadWriteLock &lock)
+{
+    // wait until we are the only writer
+    while (atomicCas(lock.writers, 0u, 1u) != 0) ;
+
+    // wait until all readers are done
+    while (lock.readers != 0) ;
+}
+
+// ----------------------------------------------------------------------------
+// Function unlockWriting()
+// ----------------------------------------------------------------------------
+
+inline void
+unlockWriting(ReadWriteLock &lock)
+{
+    lock.writers = 0;
+}
+
+// ============================================================================
+// Class ConcurrentAppendValue
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec = void>
+struct ConcurrentAppendValue
+{
+    TString *       data_host;
+    ReadWriteLock   lock;
+
+    ConcurrentAppendValue() :
+        data_host()
+    {}
+
+    ConcurrentAppendValue(TString & string)
+    {
+        setHost(*this, string);
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Function host()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+inline TString &
+host(ConcurrentAppendValue<TString, TSpec> & me)
+{
+    return *me.data_host;
+}
+
+template <typename TString, typename TSpec>
+inline TString const &
+host(ConcurrentAppendValue<TString, TSpec> const & me)
+{
+    return *me.data_host;
+}
+
+// ----------------------------------------------------------------------------
+// Function setHost()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+inline void
+setHost(ConcurrentAppendValue<TString, TSpec> & me, TString & string)
+{
+    me.data_host = &string;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendValue()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
+inline void
+appendValue(ConcurrentAppendValue<TString, TSpec> & me,
+            TValue const & val,
+            Tag<TExpand> const & expandTag,
+            Tag<TParallel> const & parallelTag)
+{
+    appendValue(host(me), val, expandTag, parallelTag);
+}
+
+// ----------------------------------------------------------------------------
+// Function appendValue(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TValue, typename TExpand>
+inline void
+appendValue(ConcurrentAppendValue<TString, TSpec> & me,
+            TValue const & val,
+            Tag<TExpand> const & expandTag,
+            Parallel)
+{
+    typedef typename Size<TString>::Type TSize;
+
+    TString & string = host(me);
+
+    while (true)
+    {
+        // try to append the value
+        lockReading(me.lock);
+        TSize newLen = _incLength(string, Parallel());
+        if (newLen < capacity(string))
+        {
+            assignValue(string, newLen - 1, val);
+            unlockReading(me.lock);
+            break;
+        }
+        else
+        {
+            _decLength(string, Parallel());
+        }
+        unlockReading(me.lock);
+
+        // try to extend capacity
+        lockWriting(me.lock);
+        TSize cap = capacity(string);
+        if (cap == length(string))
+            reserve(string, cap + 1, expandTag);
+        unlockWriting(me.lock);
+    }
+}
+
+// ============================================================================
 // Functions
 // ============================================================================
 
@@ -52,6 +240,17 @@ inline typename Size<String<TValue, Alloc<TSpec> > >::Type
 _incLength(String<TValue, Alloc<TSpec> > & me, Tag<TParallel> const & tag)
 {
     return atomicInc(me.data_end, tag) - begin(me, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function _decLength()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TParallel>
+inline typename Size<String<TValue, Alloc<TSpec> > >::Type
+_decLength(String<TValue, Alloc<TSpec> > & me, Tag<TParallel> const & tag)
+{
+    return atomicDec(me.data_end, tag) - begin(me, Standard());
 }
 
 // ----------------------------------------------------------------------------
