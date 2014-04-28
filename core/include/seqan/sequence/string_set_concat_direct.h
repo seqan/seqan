@@ -168,11 +168,11 @@ struct Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
 
 template <typename TString, typename TSpec>
 struct Value<StringSet< TString, Owner<ConcatDirect<TSpec> > > >
-    : Infix<TString> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template <typename TString, typename TSpec>
 struct Value<StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
-    : Infix<TString const> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
     
 // --------------------------------------------------------------------------
 // Metafunction GetValue
@@ -191,13 +191,13 @@ struct GetValue< StringSet< TString, Owner<ConcatDirect<TSpec> > > const >:
 template < typename TString, typename TSpec >
 struct GetValue< StringSet< TString, Owner<ConcatDirect<TSpec> > > >
 {
-    typedef typename Infix<TString>::Type const Type;
+    typedef typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const Type;
 };
 
 template < typename TString, typename TSpec >
 struct GetValue< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
 {
-    typedef typename Infix<TString const>::Type const Type;
+    typedef typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type const Type;
 };
 
 // --------------------------------------------------------------------------
@@ -206,11 +206,11 @@ struct GetValue< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
 
 template < typename TString, typename TSpec >
 struct Reference< StringSet< TString, Owner<ConcatDirect<TSpec> > > >
-    : Infix<TString> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template < typename TString, typename TSpec >
 struct Reference< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
-    : Infix<TString const> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Prefix
@@ -218,11 +218,11 @@ struct Reference< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
 
 template < typename TString, typename TSpec >
 struct Prefix<StringSet< TString, Owner<ConcatDirect<TSpec> > > >
-    : Infix<TString> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template < typename TString, typename TSpec >
 struct Prefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
-    : Infix<TString const> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Suffix
@@ -230,11 +230,11 @@ struct Prefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
 
 template <typename TString, typename TSpec>
 struct Suffix< StringSet< TString, Owner<ConcatDirect<TSpec> > > >
-    : Infix<TString> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template <typename TString, typename TSpec>
 struct Suffix< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
-    : Infix<TString const> {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Infix
@@ -242,11 +242,11 @@ struct Suffix< StringSet< TString, Owner<ConcatDirect<TSpec> > > const>
 
 template < typename TString, typename TSpec >
 struct Infix< StringSet< TString, Owner<ConcatDirect<TSpec> > > >
-    : Infix< TString > {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template < typename TString, typename TSpec >
 struct Infix< StringSet< TString, Owner<ConcatDirect<TSpec> > > const >
-    : Infix< TString const > {};
+    : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // ============================================================================
 // Functions
@@ -477,14 +477,14 @@ reserve(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TDelimiter, typename TPosition >
-inline typename Infix<TString>::Type
+inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
 prefix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos)
 {
     return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
 }
 
 template < typename TString, typename TDelimiter, typename TPosition >
-inline typename Infix<TString const>::Type
+inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
 prefix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos)
 {
     return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
@@ -495,14 +495,14 @@ prefix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosit
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TDelimiter, typename TPosition >
-inline typename Infix<TString>::Type
+inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
 suffix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos)
 {
     return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
 }
 
 template < typename TString, typename TDelimiter, typename TPosition >
-inline typename Infix<TString const>::Type
+inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
 suffix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos)
 {
     return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
@@ -513,14 +513,14 @@ suffix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosit
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TDelimiter, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString>::Type
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
 infix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosBegin posBegin, TPosEnd posEnd)
 {
     return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
 }
 
 template < typename TString, typename TDelimiter, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString const>::Type
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
 infix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosBegin posBegin, TPosEnd posEnd)
 {
     return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
@@ -531,14 +531,14 @@ infix(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosBeg
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TDelimiter, typename TPosition, typename TSize >
-inline typename Infix<TString>::Type
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
 infixWithLength(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos, TSize length)
 {
     return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
 }
 
 template < typename TString, typename TDelimiter, typename TPosition, typename TSize >
-inline typename Infix<TString const>::Type
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
 infixWithLength(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos, TSize length)
 {
     return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
@@ -549,14 +549,14 @@ infixWithLength(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & m
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Infix<TString>::Type
+SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
 }
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Infix<TString const>::Type
+SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
