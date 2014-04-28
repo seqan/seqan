@@ -997,7 +997,7 @@ I	ISSISSIPPI
         String<TValue, External< ExternalConfigLarge<> > > extString;
         if (!open(extString, fileName, openMode)) return false;
         clear(extString);
-        appenValue(extString, val);
+        appendValue(extString, val);
         return true;
     }
 
