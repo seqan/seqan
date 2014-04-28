@@ -135,6 +135,16 @@ struct RankDictionaryFibreSpec
     typedef Alloc<> Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct DefaultOpenMode<RankDictionary<TValue, TSpec> >
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
+};
+
 // ============================================================================
 // Functions
 // ============================================================================

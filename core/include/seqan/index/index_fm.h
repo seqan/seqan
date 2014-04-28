@@ -207,6 +207,16 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
     typedef FinderSTree Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TConfig>
+struct DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
+};
+
 // ============================================================================
 // Classes
 // ============================================================================
