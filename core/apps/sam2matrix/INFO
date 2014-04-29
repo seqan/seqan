@@ -4,10 +4,10 @@ Maintainer: Jochen Singer <jochen.singer@fu-berlin.de>
 License: GPL v3
 Copyright: 2008-2014, FU Berlin
 Status: under development
-Description: This program determines for each read in the reference file if it
- has an entry in the provided sam files stating that it mapped.
- .
-  The generated ouput file contains the number of references and the
+Description: This program outputs for each read the ids of references it 
+  maps to.
+  .
+  The generated output file contains the number of references and the
   number of reads in the first line. The next line contain the names of
   the references used in the sam files. Afterwards for each read a line
   is creating containing the ids of the references the read mapped to.
