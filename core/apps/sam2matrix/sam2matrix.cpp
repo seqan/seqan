@@ -76,12 +76,11 @@ seqan::ArgumentParser::ParseResult
 parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("sam2Matrix");
+    seqan::ArgumentParser parser("sam2matrix");
     // Set short description, version, and date.
-    setShortDescription(parser, "This program determines for each read in the reference file if it has an entry in"
-                                " the provided sam files stating that it mapped.");
+    setShortDescription(parser, "This program outputs for each read the ids of references it.");
     setVersion(parser, "0.1");
-    setDate(parser, "July 2012");
+    setDate(parser, "April 2014");
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-sf\\fP \\fISAMFILE\\fP \\fB-rf\\fP \\fIREADSFILE\\fP \\fB-gf\\fP \\fIGENOMEFILE\\fP"

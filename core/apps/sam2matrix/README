@@ -1,0 +1,32 @@
+sam2matrix - This program outputs for each read the ids of references it.
+=========================================================================
+
+SYNOPSIS
+    sam2Matrix -sf SAMFILE -rf READSFILE -gf GENOMEFILE-o OUTFILE
+
+DESCRIPTION
+    This program determines for each read in the reference file if it has an entry in the provided sam files stating
+    that it mapped. Afterwards a file is generated containing a row for each read which contains the read ID and the
+    index of the mapped references.
+
+    -h, --help
+          Displays this help message.
+    --version
+          Display version information
+    -sf, --samFiles SAMFILES
+          Sam files. Valid filetype is: sam.
+    -rf, --referenceFile FILE
+          Read name file. Valid filetypes are: fa, fasta, fq, and fastq.
+    -gf, --genomeFiles GENOMES
+          Names of the references of the corresponding sam file.. Valid filetypes are: fa, fasta, fq, and fastq.
+    -o, --outputFile FILE
+          Output file. Valid filetype is: csv.
+
+EXAMPLES
+    sam2Gasic -sf sam.sam -rf reads.fa -gf ecoli.fa -o out.csv
+          Call with SAMFILE set to "sam.sam", with READSFILE set to "reads.fa", with GENOMEFILE set to "ecoli.fa" and
+          OUTFILE set to "out.csv", where "ecoli.fa" is the file used as reference to generate "sam.sam"
+
+VERSION
+    sam2Matrix version: 0.1
+    Last update April 2014
