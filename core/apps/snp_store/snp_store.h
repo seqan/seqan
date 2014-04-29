@@ -573,11 +573,13 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
         if(options._debugLevel >=1)
             std::cout << std::endl << "Reading multiple genome files:" << std::endl;
         /*      //locations of genome files are relative to list file's location
-         ::std::string tempGenomeFile(filename);
-         size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = 0;
-         ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
+        ::std::string tempGenomeFile(filename);
+        size_t lastPos = tempGenomeFile.find_last_of('/\\');
+        if (lastPos == tempGenomeFile.npos)
+            lastPos = 0;
+        else
+            ++lastPos;
+        ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
         unsigned i = 0;
         for (; !atEnd(reader); ++i)
         {
