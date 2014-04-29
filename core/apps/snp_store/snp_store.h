@@ -574,7 +574,7 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
             std::cout << std::endl << "Reading multiple genome files:" << std::endl;
         /*      //locations of genome files are relative to list file's location
         ::std::string tempGenomeFile(filename);
-        size_t lastPos = tempGenomeFile.find_last_of('/\\');
+        size_t lastPos = tempGenomeFile.find_last_of("/\\");
         if (lastPos == tempGenomeFile.npos)
             lastPos = 0;
         else
