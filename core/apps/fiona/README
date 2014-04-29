@@ -1,19 +1,19 @@
-              *** Fiona: parallel and automatic error correction  ***
+  *** Fiona: a parallel and automatic strategy for read error correction ***
 
                  http://www.seqan.de/projects/fiona.html
                               March, 2014
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 Table of Contents
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
   1. Overview
   2. Installation
   3. Usage
   4. Contact
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 1. Overview
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 Fiona is a tool for NGS read correction.  The input consists of the read
 set as a FASTA or FASTQ file and an estimate of the genome length as well
@@ -22,9 +22,9 @@ as an estimate of the per-error base rate.
 The tool will then estimate all other parameters automatically and correct the
 reads using a suffix tree (emulated through a suffix array).
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 2. Installation
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 The binaries were compiled on a Debian 6.0.6 system, so it might not work
 on different systems.  We will soon provide it as source code for you to
@@ -54,9 +54,9 @@ Currently, you have to specify quite a number of parameters but in future
 versions, we will have them as default values.  The following parameters are
 always the same for the default settings.
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 3. Usage
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 The usage of fiona is as follows:
 
@@ -77,9 +77,9 @@ Options for Method Configuration
     -id INDELS          Number of indel errors to allow [0-4].  Set to 0
                         for Hamming distance, usually use 1 for edit distance.
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 4. Contact
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 For questions, comments, or suggestions feel free to contact
 
