@@ -139,7 +139,10 @@ njTree(String<TValue, TStringSpec> const & matIn,
     TValue normFactor = 0;
     for (unsigned i = 0; i < length(matIn); ++i)
         normFactor = std::max(normFactor, matIn[i]);
-    SEQAN_ASSERT_NEQ(normFactor, TValue(0));
+    // In the case that normFactor is 0 (e.g. all sequences equal) then fix it to 1 so the normalization
+    // does not break.
+    if (!normFactor)
+        normFactor = 1;
     String<__int64> mat;
     resize(mat, length(matIn));
     for (unsigned i = 0; i < length(mat); ++i)
