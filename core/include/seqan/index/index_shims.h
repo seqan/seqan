@@ -992,16 +992,17 @@ I	ISSISSIPPI
 // save
 
 	template <typename TValue>
-	inline bool save(TValue val, const char *fileName, int openMode)
+	inline bool save(TValue const &val, const char *fileName, int openMode)
     {
         String<TValue, External< ExternalConfigLarge<> > > extString;
         if (!open(extString, fileName, openMode)) return false;
+        clear(extString);
         appendValue(extString, val);
         return true;
     }
 
 	template <typename TValue>
-	inline bool save(TValue val, const char *fileName)
+	inline bool save(TValue const &val, const char *fileName)
     {
         return save(val, fileName, OPEN_WRONLY | OPEN_CREATE);
     }

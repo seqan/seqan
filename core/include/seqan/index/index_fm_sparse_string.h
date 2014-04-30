@@ -444,7 +444,7 @@ getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
 
 ///.Function.length.param.object.type:Class.SparseString
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type>::Type
+SEQAN_HOST_DEVICE inline typename Size<SparseString<TFibreValues, TSpec> const>::Type
 length(SparseString<TFibreValues, TSpec> const & string)
 {
     return string._length;
