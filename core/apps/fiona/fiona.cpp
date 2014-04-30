@@ -5047,6 +5047,8 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
     Dna5String seq2, seq;
 
     numCorrected = 0;
+    // disable linebreak in output file
+    outStream.outputOptions.lineLength = -1;
 
     for (unsigned i = 0; i < length(store.readSeqStore); ++i)
     {
