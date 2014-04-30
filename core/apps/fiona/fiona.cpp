@@ -122,14 +122,15 @@ using namespace boost::numeric::ublas;
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
 #include <seqan/index.h>
-#include <seqan/index/index_sa_stree.h>
+#include <seqan/store.h>
+#include <seqan/seq_io.h>
+#include <seqan/arg_parse.h>
+
+#include <../../extras/include/seqan/index/index_sa_stree.h>
 #include <../../extras/include/seqan/basic/basic_view.h>
 #include <../../extras/include/seqan/sequence/iterator_range.h>
 
 #include "index_qgram_parallel.h"
-#include <seqan/store.h>
-#include <seqan/seq_io.h>
-#include <seqan/arg_parse.h>
 
 
 // TODO(holtgrew): This raises a warning with Boost 1.42. Deactivate warnings, activate again afterwards. The correct #pragma has to be used for each supported compiler.
