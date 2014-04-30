@@ -51,7 +51,7 @@ std::ostream & operator<<(std::ostream & out, SmallIndelRecord const & record)
 int StructuralVariantRecord::endPosition() const
 {
     if (pos == -1)
-        return seqan::maxValue<int>();
+        return seqan::MaxValue<int>::VALUE;
 
     switch (kind)
     {
@@ -783,7 +783,7 @@ void PositionMap::reinit(TJournalEntries const & journal)
     SEQAN_ASSERT_NEQ(it->segmentSource, seqan::SOURCE_NULL);
     SEQAN_ASSERT_EQ(it->virtualPosition, 0u);
 
-    unsigned lastRefPos = seqan::maxValue<unsigned>();  // Previous position from reference.
+    unsigned lastRefPos = seqan::MaxValue<unsigned>::VALUE;  // Previous position from reference.
     for (; it != end(journal, seqan::Standard()); ++it)
     {
         // std::cerr << *it << "\n";

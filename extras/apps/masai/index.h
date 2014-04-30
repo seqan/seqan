@@ -172,6 +172,30 @@ struct TGenomeFMConfig : FMIndexConfig<void>
 typedef FMIndex<void, TGenomeFMConfig>      TGenomeFMSpec;
 typedef Index<TContigs, TGenomeFMSpec>      TGenomeFM;
 
+// ----------------------------------------------------------------------------
+// Rank Dictionary Size
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <typename TSpec>
+struct Size<RankDictionary<Dna, TwoLevels<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+
+template <typename TSpec>
+struct Size<RankDictionary<bool, TwoLevels<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+
+template <typename TSpec>
+struct Size<RankDictionary<bool, Naive<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+}
+
 // ============================================================================
 // Reads Index Fibres
 // ============================================================================
