@@ -122,6 +122,10 @@ using namespace boost::numeric::ublas;
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
 #include <seqan/index.h>
+#include <seqan/index/index_sa_stree.h>
+#include <../../extras/include/seqan/basic/basic_view.h>
+#include <../../extras/include/seqan/sequence/iterator_range.h>
+
 #include "index_qgram_parallel.h"
 #include <seqan/store.h>
 #include <seqan/seq_io.h>
@@ -600,7 +604,7 @@ namespace seqan
 
     // Copy from store_io.h, could/should go into library.
     template <typename TFSSpec, typename TFSConfig, typename TFileName>
-    bool loadReadsNoNames2(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName, FionaOptions const & options)
+    bool loadReadsNoNames2(FragmentStore<TFSSpec, TFSConfig> &, TFileName &fileName, FionaOptions const & options)
     {
         StringSet<String<Dna5, Packed<> >, Owner<ConcatDirect<> > > reads;
         SequenceStream seqStream(toCString(fileName));
