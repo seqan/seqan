@@ -158,6 +158,8 @@ public:
     mutable String<TPos> _positions;
 
     BamTagsDict() {}
+
+    explicit
     BamTagsDict(TBamTagsSequence & tags) : _host(tags) {}
 
     template <typename TPos>
@@ -168,6 +170,27 @@ public:
             buildIndex(*this);
         return infix(host(*this), _positions[pos], _positions[pos + 1]);
     }
+};
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Host
+// ----------------------------------------------------------------------------
+
+template <>
+struct Host<BamTagsDict>
+{
+    typedef CharString Type;
+};
+
+template <>
+struct Host<BamTagsDict const>
+{
+    typedef CharString const Type;
+>>>>>>> 8fdd58eecacd4b2085d372600432d0dcbea997ee
 };
 
 // ============================================================================
