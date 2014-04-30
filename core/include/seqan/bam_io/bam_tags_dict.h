@@ -139,6 +139,7 @@ public:
 
     BamTagsDict() {}
 
+    explicit
     BamTagsDict(CharString & tags) : _host(tags) {}
 };
 

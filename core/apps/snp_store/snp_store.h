@@ -4525,8 +4525,8 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 if(homoLength <= options.maxPolymerRun)
                 {
                     percentage = percentage/(float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned)round(depth/indelSize);   // coverage is spread over all positions
-                    quality = (int)round(quality/indelSize);   // quality is spread over all positions
+                    depth = (unsigned)round(depth/(float)indelSize);   // coverage is spread over all positions
+                    quality = (int)round(quality / (float)indelSize);   // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
                     if(!bsi) indelQ /= 2;
 
@@ -4585,9 +4585,9 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 if(homoLength <= options.maxPolymerRun)
                 {
            
-                    percentage = percentage/(float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned) round(depth/-indelSize);   // coverage is spread over all positions
-                    quality = (unsigned) round(quality/-indelSize);   // quality is spread over all positions
+                    percentage = percentage / (float)depth; // low coverage positions get a lower weight here
+                    depth = (unsigned) round(depth / (float)-indelSize);   // coverage is spread over all positions
+                    quality = (unsigned)round(quality / (float)-indelSize);   // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
                     if(!bsi) indelQ /= 2;
 
