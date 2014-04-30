@@ -125,6 +125,7 @@ using namespace boost::numeric::ublas;
 #include <seqan/store.h>
 #include <seqan/seq_io.h>
 #include <seqan/arg_parse.h>
+#include <seqan/version.h>
 
 #if SEQAN_VERSION_MAJOR == 1 && SEQAN_VERSION_MINOR == 4
 // in SeqAn 1.4.x the SA tree and the View classes were in extras
