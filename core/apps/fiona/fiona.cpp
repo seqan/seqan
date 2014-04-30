@@ -126,9 +126,12 @@ using namespace boost::numeric::ublas;
 #include <seqan/seq_io.h>
 #include <seqan/arg_parse.h>
 
+#if SEQAN_VERSION_MAJOR == 1 && SEQAN_VERSION_MINOR == 4
+// in SeqAn 1.4.x the SA tree and the View classes were in extras
 #include <../../extras/include/seqan/index/index_sa_stree.h>
 #include <../../extras/include/seqan/basic/basic_view.h>
 #include <../../extras/include/seqan/sequence/iterator_range.h>
+#endif
 
 #include "index_qgram_parallel.h"
 
