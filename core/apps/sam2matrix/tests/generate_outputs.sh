@@ -2,7 +2,7 @@
 #
 # Output generation script for sam2matrix
 
-SAM2MATRIX=../../../../build/Debug/extras/apps/sam2matrix/sam2matrix
+SAM2MATRIX=../../../../build/Debug/core/apps/sam2matrix/sam2matrix
 
 # ============================================================
 # First Section

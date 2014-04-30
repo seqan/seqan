@@ -81,6 +81,7 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
     setShortDescription(parser, "This program outputs for each read the ids of references it.");
     setVersion(parser, "0.1");
     setDate(parser, "April 2014");
+    setCategory(parser, "Metagenomics");
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-sf\\fP \\fISAMFILE\\fP \\fB-rf\\fP \\fIREADSFILE\\fP \\fB-gf\\fP \\fIGENOMEFILE\\fP"
@@ -106,7 +107,7 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
-    addListItem(parser, "\\fBsam2Gasic\\fP \\fB-sf\\fP \\fIsam.sam\\fP \\fB-rf\\fP \\fIreads.fa\\fP \\fB-gf\\fP "
+    addListItem(parser, "\\fBsam2matrix\\fP \\fB-sf\\fP \\fIsam.sam\\fP \\fB-rf\\fP \\fIreads.fa\\fP \\fB-gf\\fP "
                         "\\fIecoli.fa\\fP \\fB-o\\fP \\fIout.csv\\fP",
                         "Call with \\fISAMFILE\\fP set to \"sam.sam\", with  \\fIREADSFILE\\fP set to \"reads.fa\", with "
                         "\\fIGENOMEFILE\\fP set to \"ecoli.fa\" and \\fIOUTFILE\\fP set to \"out.csv\", where \"ecoli.fa\""
@@ -137,7 +138,7 @@ bool _initializeMap(std::map<String<char>, unsigned> & nameToPos, SamToGasicOpti
     SequenceStream seqStream(toCString(options.readNameFileName));
     if (!isGood(seqStream))
     {
-        std::cerr << "ERROR: Could not open the file.\n";
+        std::cerr << "ERROR: Could not open the file " << options.readNameFileName << "!\n";
         return 1;
     }
 
@@ -146,7 +147,7 @@ bool _initializeMap(std::map<String<char>, unsigned> & nameToPos, SamToGasicOpti
     {
         if (readRecord(id, seq, seqStream) != 0)
         {
-            std::cerr << "ERROR: Could not read from example.fa!\n";
+            std::cerr << "ERROR: Could not read from " << options.readNameFileName << "!\n";
             return 1;
         }
 

@@ -29,14 +29,14 @@ def main(source_base, binary_base):
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'extras/apps/sam2matrix/tests')  # tests dir
+        'core/apps/sam2matrix/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_program = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/sam2matrix', 'sam2matrix')
+      binary_base, 'core/apps/sam2matrix', 'sam2matrix')
 
     # ============================================================
     # Built TestConf list.
