@@ -495,6 +495,19 @@ operator!=(Pair<L1, L2, LPack> const & _left,
     return !operator==(_left, _right);
 }
 
+// ----------------------------------------------------------------------------
+// Function std::swap()
+// ----------------------------------------------------------------------------
+
+template <typename L1, typename L2, typename LPack, typename R1, typename R2, typename RPack>
+inline void
+swap(Pair<L1, L2, LPack> const & a,
+     Pair<R1, R2, RPack> const & b)
+{
+    swap(a.i1, b.i1);
+    swap(a.i2, b.i2);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PAIR_BASE_H_
