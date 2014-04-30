@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/sam2matrix/CMakeLists.txt
+# File: /core/apps/sam2matrix/CMakeLists.txt
 #
 # CMakeLists.txt file for sam2matrix.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_apps_sam2matrix)
-message (STATUS "Configuring extras/apps/sam2matrix")
+project (seqan_core_apps_sam2matrix)
+message (STATUS "Configuring core/apps/sam2matrix")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -64,12 +64,13 @@ install (FILES LICENSE
 # ----------------------------------------------------------------------------
 
 seqan_add_app_test (sam2matrix)
-# Add app tests if Python interpreter could be found.
-if(PYTHONINTERP_FOUND)
-  add_test(NAME app_test_ COMMAND ${PYTHON_EXECUTABLE}
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR})
-endif(PYTHONINTERP_FOUND)
+
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable razers in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} sam2matrix CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -77,10 +78,11 @@ endif(PYTHONINTERP_FOUND)
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
   set (CPACK_PACKAGE_NAME "sam2matrix")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "sam2matrix")
-  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Your Name <your.email@example.net>")
-  set (CPACK_PACKAGE_VENDOR "Your Name <your.email@example.net>")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Outputs for each read the ids of references it maps to.")
+  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Jochen Singer <jochen.singer@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (sam2matrix "sam2matrix")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
+
 
