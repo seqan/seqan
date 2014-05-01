@@ -1003,7 +1003,7 @@ int readMatchesFromGFF_Batch(
                         if (readNChars(curr_read, reader, 1) != 0)
                             return CALLSNPS_GFF_FAILED;
                     if (mScore != 100)
-                        editDist = (int)floor((length(curr_read) * ((100.0 - mScore + 0.001)/100.0)));
+                        editDist = (int)((length(curr_read) * ((100.0 - mScore + 0.001)/100.0)));
                 }
                 else if (current_tag == "mutations")
                 {
@@ -4524,11 +4524,11 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
                 if(homoLength <= options.maxPolymerRun)
                 {
-                    percentage = percentage/(float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned)round(depth/(float)indelSize);   // coverage is spread over all positions
-                    quality = (int)round(quality / (float)indelSize);   // quality is spread over all positions
+                    percentage /= depth;                                // low coverage positions get a lower weight
+                    depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
+                    quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
-                    if(!bsi) indelQ /= 2;
+                    if (!bsi) indelQ /= 2;
 
                     //print deletion
                     indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
@@ -4537,7 +4537,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)floor(percentage*depth);
+                    indelfile << ";count=" << (int)(percentage * depth);
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
                     indelfile << ";homorun=" << homoLength;
@@ -4584,12 +4584,12 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
                 if(homoLength <= options.maxPolymerRun)
                 {
-           
-                    percentage = percentage / (float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned) round(depth / (float)-indelSize);   // coverage is spread over all positions
-                    quality = (unsigned)round(quality / (float)-indelSize);   // quality is spread over all positions
+                    unsigned absIndelSize = -indelSize;
+                    percentage /= depth;                                        // low coverage positions get a lower weight
+                    depth = (depth + (absIndelSize >> 1)) / absIndelSize;       // coverage is spread over all positions
+                    quality = (quality + (absIndelSize >> 1)) / absIndelSize;   // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
-                    if(!bsi) indelQ /= 2;
+                    if (!bsi) indelQ /= 2;
 
                     //print insertion
                     indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
@@ -4598,7 +4598,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)floor(percentage*depth);
+                    indelfile << ";count=" << (int)(percentage * depth);
                     indelfile << ";seq="<< insertionSeq;
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
