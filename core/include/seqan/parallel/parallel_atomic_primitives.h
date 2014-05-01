@@ -337,25 +337,25 @@ atomic
 // We break the standard code layout here since we only wrap compiler
 // intrinsics and it's easier to see things with one glance this way.
 
-inline          long atomicInc(         long volatile & x) { return InterlockedIncrement(&x); }
-inline unsigned long atomicInc(unsigned long volatile & x) { return InterlockedIncrement(reinterpret_cast<long volatile *>(&x)); }
+inline unsigned atomicInc(unsigned volatile & x) { return InterlockedIncrement(&x); }
+inline      int atomicInc(     int volatile & x) { return InterlockedIncrement(reinterpret_cast<unsigned volatile *>(&x)); }
 #ifdef _WIN64
-inline       __int64 atomicInc( __int64 volatile & x) { return _InterlockedIncrement64(&x); }
-inline      __uint64 atomicInc(__uint64 volatile & x) { return _InterlockedIncrement64(reinterpret_cast<__int64 volatile *>(&x)); }
+inline __uint64 atomicInc(__uint64 volatile & x) { return InterlockedIncrement64(&x); }
+inline  __int64 atomicInc( __int64 volatile & x) { return InterlockedIncrement64(reinterpret_cast<__uint64 volatile *>(&x)); }
 #endif  // #ifdef _WIN64
 
-inline          long atomicDec(         long volatile & x) { return _InterlockedDecrement(&x); }
-inline unsigned long atomicDec(unsigned long volatile & x) { return _InterlockedDecrement(reinterpret_cast<long volatile *>(&x)); }
+inline unsigned atomicDec(unsigned volatile & x) { return InterlockedDecrement(&x); }
+inline      int atomicDec(     int volatile & x) { return InterlockedDecrement(reinterpret_cast<unsigned volatile *>(&x)); }
 #ifdef _WIN64
-inline       __int64 atomicDec( __int64 volatile & x) { return _InterlockedDecrement64(&x); }
-inline      __uint64 atomicDec(__uint64 volatile & x) { return _InterlockedDecrement64(reinterpret_cast<__int64 volatile *>(&x)); }
+inline __uint64 atomicDec(__uint64 volatile & x) { return InterlockedDecrement64(&x); }
+inline  __int64 atomicDec( __int64 volatile & x) { return InterlockedDecrement64(reinterpret_cast<__uint64 volatile *>(&x)); }
 #endif  // #ifdef _WIN64
 
-inline          long atomicAdd(         long volatile & x, long y) { return _InterlockedExchangeAdd(&x, y); }
-inline unsigned long atomicAdd(unsigned long volatile & x, long y) { return _InterlockedExchangeAdd(reinterpret_cast<long volatile *>(&x), y); }
+inline unsigned atomicAdd(unsigned volatile & x,     long y) { return InterlockedExchangeAdd(&x, y); }
+inline      int atomicAdd(     int volatile & x,     long y) { return InterlockedExchangeAdd(reinterpret_cast<unsigned volatile *>(&x), y); }
 #ifdef _WIN64
-inline       __int64 atomicAdd( __int64 volatile & x,  __int64 y) { return _InterlockedExchangeAdd64(&x, y); }
-inline      __uint64 atomicAdd(__uint64 volatile & x, __uint64 y) { return _InterlockedExchangeAdd64(reinterpret_cast<__int64 volatile *>(&x), y); }
+inline __uint64 atomicAdd(__uint64 volatile & x, __uint64 y) { return InterlockedExchangeAdd64(&x, y); }
+inline  __int64 atomicAdd( __int64 volatile & x,  __int64 y) { return InterlockedExchangeAdd64(reinterpret_cast<__uint64 volatile *>(&x), y); }
 #endif  // #ifdef _WIN64
 
 // TODO(holtgrew): Although documented to work, you get a linker error (LNK2019) in MS VS8 on 64 bit Windows.
@@ -364,11 +364,11 @@ inline      __uint64 atomicAdd(__uint64 volatile & x, __uint64 y) { return _Inte
 // inline unsigned  char atomicOr(unsigned  char volatile & x, unsigned  char y) { return _InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
 // inline          short atomicOr(         short volatile & x,          short y) { return _InterlockedOr16(&x, y); }
 // inline unsigned short atomicOr(unsigned short volatile & x, unsigned short y) { return _InterlockedOr16(reinterpret_cast<short volatile *>(&x), y); }
-inline           long atomicOr(          long volatile & x,           long y) { return _InterlockedOr(&x, y); }
-inline unsigned  long atomicOr(unsigned  long volatile & x, unsigned  long y) { return _InterlockedOr(reinterpret_cast<long volatile *>(&x), y); }
+inline unsigned atomicOr(         long volatile & x,          long y) { return InterlockedOr(&x, y); }
+inline      int atomicOr(unsigned long volatile & x, unsigned long y) { return InterlockedOr(reinterpret_cast<long volatile *>(&x), (long)y); }
 #ifdef _WIN64
-inline        __int64 atomicOr(       __int64 volatile & x,        __int64 y) { return _InterlockedOr64(&x, y); }
-inline       __uint64 atomicOr(      __uint64 volatile & x,       __uint64 y) { return _InterlockedOr64(reinterpret_cast<__int64 volatile*>(&x), y); }
+inline  __int64 atomicOr(      __int64 volatile & x,       __int64 y) { return InterlockedOr64(&x, y); }
+inline __uint64 atomicOr(     __uint64 volatile & x,      __uint64 y) { return InterlockedOr64(reinterpret_cast<__int64 volatile*>(&x), (__int64)y); }
 #endif  // #ifdef _WIN64
 
 // TODO(holtgrew): Although documented to work, you get a linker error (LNK2019) in MS VS8 on 64 bit Windows.
@@ -377,11 +377,11 @@ inline       __uint64 atomicOr(      __uint64 volatile & x,       __uint64 y) { 
 // inline unsigned  char atomicXor(unsigned  char volatile & x, unsigned  char y) { return _InterlockedXor8(reinterpret_cast<char volatile *>(&x), y); }
 // inline          short atomicXor(         short volatile & x,          short y) { return _InterlockedXor16(&x, y); }
 // inline unsigned short atomicXor(unsigned short volatile & x, unsigned short y) { return _InterlockedXor16(reinterpret_cast<short volatile *>(&x), y); }
-inline           long atomicXor(          long volatile & x,           long y) { return _InterlockedXor(&x, y); }
-inline unsigned  long atomicXor(unsigned  long volatile & x, unsigned  long y) { return _InterlockedXor(reinterpret_cast<long volatile *>(&x), y); }
+inline           long atomicXor(         long volatile & x,          long y) { return InterlockedXor(&x, y); }
+inline unsigned  long atomicXor(unsigned long volatile & x, unsigned long y) { return InterlockedXor(reinterpret_cast<long volatile *>(&x), (long)y); }
 #ifdef _WIN64
-inline        __int64 atomicXor(       __int64 volatile & x,        __int64 y) { return _InterlockedXor64(&x, y); }
-inline       __uint64 atomicXor(      __uint64 volatile & x,       __uint64 y) { return _InterlockedXor64(reinterpret_cast<__int64 volatile*>(&x), y); }
+inline        __int64 atomicXor(      __int64 volatile & x,       __int64 y) { return InterlockedXor64(&x, y); }
+inline       __uint64 atomicXor(     __uint64 volatile & x,      __uint64 y) { return InterlockedXor64(reinterpret_cast<__int64 volatile*>(&x), (__int64)y); }
 #endif  // #ifdef _WIN64
 
 inline          short atomicCas(         short volatile & x,          short cmp,          short y) { return _InterlockedCompareExchange16(&x, y, cmp); }
