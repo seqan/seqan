@@ -337,9 +337,6 @@ atomic
 // We break the standard code layout here since we only wrap compiler
 // intrinsics and it's easier to see things with one glance this way.
 
-template <int VALUE>
-struct ConstInt {};
-
 template <typename T, typename S>
 inline T _atomicOr(T volatile &x, ConstInt<sizeof(char)>, S y) { return InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
 template <typename T, typename S>
