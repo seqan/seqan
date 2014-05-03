@@ -40,7 +40,6 @@
 
 #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 #include <intrin.h>
-#include <winnt.h>
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 
 namespace seqan {
