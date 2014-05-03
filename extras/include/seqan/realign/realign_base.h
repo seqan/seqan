@@ -250,12 +250,12 @@ public:
     // Helper that returns whether the given profile character is for an all-gaps column.
     bool _allGaps(TProfileChar const & c)
     {
-        return (c.count[0] + c.count[1] + c.count[2] + c.count[3] + c.count[4] == 0);
+        return (c.count[0] + c.count[1] + c.count[2] + c.count[3] + c.count[4] == 0u);
     }
 
     bool _empty(TProfileChar const & c)
     {
-        return (c.count[0] + c.count[1] + c.count[2] + c.count[3] + c.count[4] + c.count[5] == 0);
+        return (c.count[0] + c.count[1] + c.count[2] + c.count[3] + c.count[4] + c.count[5] == 0u);
     }
 
     // -----------------------------------------------------------------------
@@ -285,7 +285,7 @@ public:
     ExtractProfileInfo_ _getExtractPositions(TAlignedReadElement const & el)
     {
         ExtractProfileInfo_ result;
-        if (el.beginPos < options.environment)
+        if ((unsigned)el.beginPos < options.environment)
         {
             result.profBeginPos = 0;
             result.aliBeginPos = el.beginPos;
@@ -296,7 +296,7 @@ public:
             result.aliBeginPos = options.environment;
         }
 
-        if (el.endPos + options.environment > (int)length(contigProfile))
+        if ((int)(el.endPos + options.environment) > (int)length(contigProfile))
             result.profEndPos = length(contigProfile);
         else
             result.profEndPos = el.endPos + options.environment;
@@ -304,10 +304,10 @@ public:
 
         // Sanity check on the result.
         SEQAN_ASSERT_LEQ(result.aliEndPos, result.profEndPos - result.profBeginPos);
-        SEQAN_ASSERT_EQ(el.endPos - el.beginPos, result.aliEndPos - result.aliBeginPos);
-        SEQAN_ASSERT_GEQ(result.profEndPos - result.profBeginPos, el.endPos - el.beginPos);
+        SEQAN_ASSERT_EQ((unsigned)(el.endPos - el.beginPos), result.aliEndPos - result.aliBeginPos);
+        SEQAN_ASSERT_GEQ(result.profEndPos - result.profBeginPos, (unsigned)(el.endPos - el.beginPos));
         SEQAN_ASSERT_LEQ(result.profEndPos - result.profBeginPos,
-                         el.endPos - el.beginPos + 2 * options.environment);
+                         (unsigned)(el.endPos - el.beginPos + 2 * options.environment));
 
         return result;
     }
@@ -353,19 +353,19 @@ public:
         }
 
         // Compute clipping flags.
-        windowInfo.clipLeft = (el.beginPos < windowBegin);
-        windowInfo.clipRight = (el.endPos > windowEnd);
+        windowInfo.clipLeft = ((unsigned)el.beginPos < windowBegin);
+        windowInfo.clipRight = ((unsigned)el.endPos > windowEnd);
 
         // Compute read alignment begin and end position.
         typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
         TReadGaps readGaps(store.readSeqStore[el.readId], el.gaps);
         if (options.debug)
             std::cerr << "READ GAPS\t" << readGaps << "\n";
-        if (windowBegin < el.beginPos)
+        if (windowBegin < (unsigned)el.beginPos)
             windowInfo.readAliBeginPos = 0;
         else
             windowInfo.readAliBeginPos = windowBegin - el.beginPos;
-        if (windowEnd > el.endPos)
+        if (windowEnd > (unsigned)el.endPos)
             windowInfo.readAliEndPos = length(readGaps);
         else
             windowInfo.readAliEndPos = length(readGaps) - (el.endPos - windowEnd);
@@ -1009,8 +1009,9 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
     // all gaps from this one read and exit.
     if (length(contigAlignedReads) == 1u)  // only one alignment
     {
-        if (((windowBegin == 0) && (windowBegin == windowEnd)) ||  // no window
-            (windowBegin <= contigAlignedReads[0].beginPos && windowEnd >= contigAlignedReads[0].endPos))  // spans only
+        if (((windowBegin == 0u) && (windowBegin == windowEnd)) ||  // no window
+            (windowBegin <= (unsigned)contigAlignedReads[0].beginPos &&
+             windowEnd >= (unsigned)contigAlignedReads[0].endPos))  // spans only
                                                                                                            // alignment
         {
             contigAlignedReads[0].beginPos = 0;
@@ -1051,8 +1052,8 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         double beginExtractProfile = sysTime();
         // Get positions in the alignment to extrad and positions in the alignment in this part.
         ExtractProfileInfo_ info = _getExtractPositions(*it);
-        SEQAN_ASSERT_EQ(info.profBeginPos + info.aliBeginPos, it->beginPos);
-        SEQAN_ASSERT_EQ(info.profBeginPos + info.aliEndPos, it->endPos);
+        SEQAN_ASSERT_EQ(info.profBeginPos + info.aliBeginPos, (unsigned)it->beginPos);
+        SEQAN_ASSERT_EQ(info.profBeginPos + info.aliEndPos, (unsigned)it->endPos);
         if (options.debug)
             std::cerr << "WINDOW                       [" << windowBegin << ", " << windowEnd << ")\n"
                       << "UNADJUSTED\n"
@@ -1177,7 +1178,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         // Compute the flag isSingleLeft that indicates whether the current read is the first read and the coverage at
         // the first position is 1 (i.e. only this reads aligns there).  In this case, we have to use an overlap
         // alignment here instead of a semiglobal alignment and also adjust the band for the alignment.
-        bool isSingleLeft = (it->beginPos == 0) &&
+        bool isSingleLeft = (it->beginPos == 0u) &&
                 (it == begin(contigAlignedReads, Standard())) &&
                 (it - begin(contigAlignedReads, Standard()) + 1 < (int)length(contigAlignedReads)) &&
                 (((it + 1)->beginPos - it->beginPos) > 0);
