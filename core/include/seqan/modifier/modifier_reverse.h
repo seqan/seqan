@@ -559,7 +559,6 @@ template < typename TSequence, typename TParallelTag >
 inline void
 reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
-    typedef typename Size<TSequence>::Type                  TSize;
     typedef typename Position<TSequence>::Type              TPos;
     typedef typename Iterator<TSequence, Standard>::Type    TIter;
     
