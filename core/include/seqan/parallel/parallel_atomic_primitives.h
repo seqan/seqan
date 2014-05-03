@@ -336,11 +336,12 @@ atomic
 
 // We break the standard code layout here since we only wrap compiler
 // intrinsics and it's easier to see things with one glance this way.
+#pragma intrinsic(_InterlockedOr, _InterlockedXor, _InterlockedCompareExchange)
 
 template <typename T, typename S>
-inline T _atomicOr(T volatile &x, ConstInt<sizeof(char)>, S y) { return InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(char)>, S y) { return _InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicXor(T volatile &x, ConstInt<sizeof(char)>, S y) { return InterlockedXor8(reinterpret_cast<char volatile *>(&x), y); }
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(char)>, S y) { return _InterlockedXor8(reinterpret_cast<char volatile *>(&x), y); }
 
 template <typename T>
 inline T _atomicInc(T volatile &x, ConstInt<sizeof(short)>) { return InterlockedIncrement16(reinterpret_cast<short volatile *>(&x)); }
@@ -349,11 +350,11 @@ inline T _atomicDec(T volatile &x, ConstInt<sizeof(short)>) { return Interlocked
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(short)>, S y) { return InterlockedExchangeAdd16(reinterpret_cast<short volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicOr(T volatile &x, ConstInt<sizeof(short)>, S y) { return InterlockedOr16(reinterpret_cast<short volatile *>(&x), y); }
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(short)>, S y) { return _InterlockedOr16(reinterpret_cast<short volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicXor(T volatile &x, ConstInt<sizeof(short)>, S y) { return InterlockedXor16(reinterpret_cast<short volatile *>(&x), y); }
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(short)>, S y) { return _InterlockedXor16(reinterpret_cast<short volatile *>(&x), y); }
 template <typename T, typename S, typename U>
-inline T _atomicCas(T volatile &x, ConstInt<sizeof(short)>, S cmp, U y) { return InterlockedCompareExchange16(reinterpret_cast<short volatile *>(&x), cmp, y); }
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(short)>, S cmp, U y) { return _InterlockedCompareExchange16(reinterpret_cast<short volatile *>(&x), y, cmp); }
 
 template <typename T>
 inline T _atomicInc(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedIncrement(reinterpret_cast<LONG volatile *>(&x)); }
@@ -362,11 +363,11 @@ inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedD
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONG)>, S y) { return InterlockedExchangeAdd(reinterpret_cast<LONG volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicOr(T volatile &x, ConstInt<sizeof(LONG)>, S y) { return InterlockedOr(reinterpret_cast<LONG volatile *>(&x), y); }
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(long)>, S y) { return _InterlockedOr(reinterpret_cast<long volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicXor(T volatile &x, ConstInt<sizeof(LONG)>, S y) { return InterlockedXor(reinterpret_cast<LONG volatile *>(&x), y); }
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(long)>, S y) { return _InterlockedXor(reinterpret_cast<long volatile *>(&x), y); }
 template <typename T, typename S, typename U>
-inline T _atomicCas(T volatile &x, ConstInt<sizeof(LONG)>, S cmp, U y) { return InterlockedCompareExchange(reinterpret_cast<LONG volatile *>(&x), cmp, y); }
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(long)>, S cmp, U y) { return _InterlockedCompareExchange(reinterpret_cast<long volatile *>(&x), y, cmp); }
 
 #ifdef _WIN64
 template <typename T>
@@ -376,11 +377,11 @@ inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return Interloc
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicOr(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedOr64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedOr64(reinterpret_cast<__int64 volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicXor(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedXor64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedXor64(reinterpret_cast<__int64 volatile *>(&x), y); }
 template <typename T, typename S, typename U>
-inline T _atomicCas(T volatile &x, ConstInt<sizeof(LONGLONG)>, S cmp, U y) { return InterlockedCompareExchange64(reinterpret_cast<LONGLONG volatile *>(&x), cmp, y); }
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(__int64)>, S cmp, U y) { return _InterlockedCompareExchange64(reinterpret_cast<__int64 volatile *>(&x), y, cmp); }
 #endif  // #ifdef _WIN64
 
 template <typename T>
