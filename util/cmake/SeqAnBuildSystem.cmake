@@ -430,8 +430,9 @@ macro (seqan_setup_cuda_vars)
 
     # Fix CUDA on OSX.
     if (APPLE AND COMPILER_IS_CLANG)
+      # (weese:) I had to deactivate the C compiler override to make it compile again
       # NVCC mistakes /usr/bin/cc as gcc.
-      list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
+      #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
       # NVCC does not support libc++.
       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
     endif ()
