@@ -43,8 +43,24 @@ using namespace seqan;
 
 // TODO(esiragusa): move this into metaprogramming algebra
 namespace seqan {
+
 template <typename T1, typename T2>
 struct Pair<T1, T2, Tag<void> > {};
+
+// Manually specialize word size to be compatible with GPU
+
+template <typename TValue>
+struct RankDictionaryWordSize_<TValue, TwoLevels<void> > :
+    BitsPerValue<__uint32> {};
+
+template <typename TValue>
+struct RankDictionaryWordSize_<TValue, TwoLevels<Device<void> > > :
+    BitsPerValue<__uint32> {};
+
+template <typename TValue, typename TSpec>
+struct RankDictionaryWordSize_<TValue, TwoLevels<View<TSpec> > > :
+    BitsPerValue<__uint32> {};
+
 }
 
 // ============================================================================
