@@ -48,12 +48,12 @@ using namespace seqan;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function onFind()                                             [FinderTester]
+// Function testFinder()                                             [FinderTester]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TFinderSpec>
 inline void
-onFind(FinderTester<TText, TPattern, TSpec> & tester, Finder2<TText, TPattern, TFinderSpec> const & finder)
+testFinder(FinderTester<TText, TPattern, TSpec> & tester, Finder2<TText, TPattern, TFinderSpec> const & finder)
 {
     typedef typename Fibre<TText, FibreSA>::Type const                          TTextSAFibre;
     typedef typename Infix<TTextSAFibre>::Type                                  TTextOccurrences;
@@ -76,8 +76,8 @@ onFind(FinderTester<TText, TPattern, TSpec> & tester, Finder2<TText, TPattern, T
 
 template <typename TText, typename TPattern, typename TPatternIndexSpec, typename TSpec, typename TFinderSpec>
 inline void
-onFind(FinderTester<TText, Index<TPattern, TPatternIndexSpec>, TSpec> & tester,
-       Finder2<TText, Index<TPattern, TPatternIndexSpec>, TFinderSpec> const & finder)
+testFinder(FinderTester<TText, Index<TPattern, TPatternIndexSpec>, TSpec> & tester,
+           Finder2<TText, Index<TPattern, TPatternIndexSpec>, TFinderSpec> const & finder)
 {
     typedef Index<TPattern, TPatternIndexSpec>                                  TPatternIndex;
     typedef typename Fibre<TText, FibreSA>::Type const                          TTextSAFibre;
