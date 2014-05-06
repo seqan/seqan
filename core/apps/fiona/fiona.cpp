@@ -5048,7 +5048,7 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
 
     numCorrected = 0;
     // disable linebreak in output file
-    outStream.outputOptions.lineLength = -1;
+    outStream.outputOptions.lineLength = 0;
 
     for (unsigned i = 0; i < length(store.readSeqStore); ++i)
     {
