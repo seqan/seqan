@@ -704,6 +704,36 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
     }
 
 
+// ----------------------------------------------------------------------------
+// Function indexCreate()
+// ----------------------------------------------------------------------------
+
+template <typename TTextSpec, typename TSSetSpec, typename TSpec>
+inline bool indexCreate(Index<StringSet<TTextSpec, TSSetSpec>, TSpec> & index, FibreSA, Trie)
+{
+    typedef StringSet<TTextSpec, TSSetSpec>         TText;
+    typedef Index<TText, TSpec>                     TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type   TSA;
+    typedef typename Value<TSA>::Type               TSAValue;
+    typedef QGramLess_<TSAValue, TText const>       TLess;
+    typedef typename Size<TText>::Type              TSize;
+
+    TText const & text = indexText(index);
+    TSA & sa = indexSA(index);
+    TSize textLen = length(text);
+
+    resize(sa, textLen, Exact());
+
+    // Fill the suffix array with (i, 0).
+    for (TSize i = 0; i < textLen; i++)
+        sa[i] = TSAValue(i, 0);
+
+    // Sort the suffix array using quicksort.
+    sort(sa, TLess(text, maxLength(text)));
+
+    return true;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // automatic fibre creation
 
