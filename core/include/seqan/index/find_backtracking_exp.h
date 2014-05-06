@@ -845,13 +845,13 @@ _updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 }
 
 // ----------------------------------------------------------------------------
-// Function setMaxScore()
+// Function setScoreThreshold()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TMaxScore>
 inline void
-setMaxScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
-            TMaxScore maxScore)
+setScoreThreshold(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
+                  TMaxScore maxScore)
 {
     finder.maxScore = maxScore;
 }
