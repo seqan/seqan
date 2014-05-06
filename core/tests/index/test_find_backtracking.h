@@ -59,7 +59,7 @@ testFinder(FinderTester<TText, TPattern, TSpec> & tester, Finder2<TText, TPatter
     typedef typename Infix<TTextSAFibre>::Type                                  TTextOccurrences;
     typedef typename Size<TText>::Type                                          TTextSize;
 
-    TTextOccurrences textOccurrences = getOccurrences(back(finder.textStack));
+    TTextOccurrences textOccurrences = getOccurrences(textIterator(finder));
 
     TTextSize textOccurrencesCount = length(textOccurrences);
 
@@ -87,8 +87,8 @@ testFinder(FinderTester<TText, Index<TPattern, TPatternIndexSpec>, TSpec> & test
     typedef typename Size<TText>::Type                                          TTextSize;
     typedef typename Size<TPatternIndex>::Type                                  TPatternSize;
 
-    TTextOccurrences textOccurrences = getOccurrences(back(finder.textStack));
-    TPatternOccurrences patternOccurrences = getEmptyEdges(back(finder.patternStack));
+    TTextOccurrences textOccurrences = getOccurrences(textIterator(finder));
+    TPatternOccurrences patternOccurrences = getEmptyEdges(patternIterator(finder));
 
     TTextSize textOccurrencesCount = length(textOccurrences);
     TPatternSize patternOccurrencesCount = length(patternOccurrences);
