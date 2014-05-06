@@ -1264,7 +1264,7 @@ _find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, 
             if (_inTerminalState(finder, TStage()))
             {
                 // Inversion of control.
-                onFind(delegate, finder);
+                delegate(finder);
             }
             else if (_inActiveState(finder, TStage()))
             {
