@@ -1308,7 +1308,7 @@ find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, B
     TTextIterator textIt(text);
     TPatternIterator patternIt(pattern);
 
-    setMaxScore(finder, maxScore);
+    setScoreThreshold(finder, maxScore);
     _initState(finder, textIt, patternIt);
     _find(finder, delegate, StageInitial_());
     _popState(finder, StageInitial_());
