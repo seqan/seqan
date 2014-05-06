@@ -38,6 +38,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
+#include <seqan/parallel.h>
 
 using namespace seqan;
 
@@ -98,6 +99,12 @@ struct FinderTester
 
     String<TMatch>   solution;
     String<TMatch>   results;
+
+    template <typename TFinder>
+    void operator() (TFinder const & finder)
+    {
+        testFinder(*this, finder);
+    }
 };
 
 // ============================================================================
@@ -140,8 +147,8 @@ template <typename TText, typename TPattern, typename TSpec>
 inline void
 test(FinderTester<TText, TPattern, TSpec> & tester)
 {
-    std::sort(begin(tester.solution, Standard()), end(tester.solution, Standard()));
-    std::sort(begin(tester.results, Standard()), end(tester.results, Standard()));
+    sort(tester.solution);
+    sort(tester.results);
 
     SEQAN_ASSERT(isEqual(tester.solution, tester.results));
 }

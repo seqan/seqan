@@ -100,6 +100,12 @@ struct DbFinder
         verifier(db),
         minSeedLength(0)
     {}
+
+    template <typename TFinder>
+    void operator()(TFinder const & finder)
+    {
+        onFind(*this, finder);
+    }
 };
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
@@ -140,6 +146,12 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>
         minSeedLength(0),
         parallelDepth(2)
     {}
+
+    template <typename TFinder>
+    void operator()(TFinder const & finder)
+    {
+        onFind(*this, finder);
+    }
 };
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
