@@ -150,7 +150,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_multiple_edit_banana_vs_ada_ana)
     TTextIndex textIndex(text);
 
     TPatternIndex patternIndex(pattern);
-    buildTrie(patternIndex, pattern);
+    indexCreate(patternIndex, FibreSA(), Trie());
 
     TTester tester;
     TFinder finder;
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_multiple_hamming_banana_vs_ada_ana)
     TTextIndex textIndex(text);
 
     TPatternIndex patternIndex(pattern);
-    buildTrie(patternIndex, pattern);
+    indexCreate(patternIndex, FibreSA(), Trie());
 
     TTester tester;
     TFinder finder;
