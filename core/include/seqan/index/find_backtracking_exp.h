@@ -901,6 +901,46 @@ getScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec
 }
 
 // ----------------------------------------------------------------------------
+// Function textIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
+textIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
+{
+    return back(finder.textStack);
+}
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
+textIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
+{
+    return back(finder.textStack);
+}
+
+// ----------------------------------------------------------------------------
+// Function patternIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
+patternIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
+{
+    return back(finder.patternStack);
+}
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
+patternIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
+{
+    return back(finder.patternStack);
+}
+
+// ----------------------------------------------------------------------------
 // Function _inTerminalState()
 // ----------------------------------------------------------------------------
 
