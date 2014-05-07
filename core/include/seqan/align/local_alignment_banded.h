@@ -70,26 +70,17 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
     typedef typename Size<TAlign>::Type TSize;
     typedef typename Position<TAlign>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
     SEQAN_ASSERT_EQ(length(rows(align)), 2u);
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score;
-    if (_usesAffineGaps(scoringScheme, source(row(align, 0)), source(row(align, 1))))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, source(row(align, 0)), source(row(align, 1)),
-                                      scoringScheme, lowerDiag, upperDiag, SmithWaterman());
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, source(row(align, 0)), source(row(align, 1)),
-                                      scoringScheme, lowerDiag, upperDiag, SmithWaterman());
-    }
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, source(row(align, 0)), source(row(align, 1)),
+                                            scoringScheme, TAlignConfig2(lowerDiag, upperDiag));
 
-    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traceSegments);
-    return score;
+    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -108,24 +99,15 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef typename Size<TSequenceH>::Type TSize;
     typedef typename Position<TSequenceH>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score;
-    if (_usesAffineGaps(scoringScheme, source(gapsH), source(gapsV)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV),
-                                      scoringScheme, lowerDiag, upperDiag, SmithWaterman());
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV),
-                                      scoringScheme, lowerDiag, upperDiag, SmithWaterman());
-    }
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, source(gapsH), source(gapsV), scoringScheme,
+                                            TAlignConfig2(lowerDiag, upperDiag));
 
-    _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
-    return score;
+    _adaptTraceSegmentsTo(gapsH, gapsV, trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -143,26 +125,17 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Position<TGraph>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score;
-    if (_usesAffineGaps(scoringScheme, value(stringSet(alignmentGraph), 0), value(stringSet(alignmentGraph), 1)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
-                                      value(stringSet(alignmentGraph), 1), scoringScheme, lowerDiag, upperDiag,
-                                      SmithWaterman());
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
-                                      value(stringSet(alignmentGraph), 1), scoringScheme, lowerDiag, upperDiag,
-                                      SmithWaterman());
-    }
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, value(stringSet(alignmentGraph), 0),
+                                            value(stringSet(alignmentGraph), 1), scoringScheme,
+                                            TAlignConfig2(lowerDiag, upperDiag));
+
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
-                          positionToId(stringSet(alignmentGraph), 1), traceSegments);
-    return score;
+                          positionToId(stringSet(alignmentGraph), 1), trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -170,7 +143,6 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
 // ----------------------------------------------------------------------------
 
 // Full interface.
-
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
           typename TScoreValue, typename TScoreSpec>
@@ -183,23 +155,15 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
     typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
     typedef typename Position<TFragments>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score;
-    if (_usesAffineGaps(scoringScheme, value(strings, 0), value(strings, 1)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme, lowerDiag, upperDiag,
-                                      SmithWaterman());
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        score = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme, lowerDiag, upperDiag,
-                                      SmithWaterman());
-    }
-    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
-    return score;
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, value(strings, 0), value(strings, 1), scoringScheme,
+                                            TAlignConfig2(lowerDiag, upperDiag));
+
+    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), trace);
+    return res;
 }
 
 }  // namespace seqan

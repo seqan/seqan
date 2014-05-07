@@ -593,7 +593,7 @@ _computeBandedAlignment(TDPScout & scout,
                      MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
         // we might need to additionally track this point.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, PartialColumnTop> >, FirstCell>::VALUE)
-            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, false);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, True(), False());
         return;
     }
     if (seqHIterEndColumnBottom == begin(seqH, Rooted()))
@@ -1461,58 +1461,6 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
 
     return maxScore(dpScout);
-}
-
-
-// OLD API without dpContext
-template <typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
-          typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline typename Value<TScoreScheme>::Type
-_computeAlignment(TTraceTarget & traceSegments,
-                  TScoutState & scoutState,
-                  TSequenceH const & seqH,
-                  TSequenceV const & seqV,
-                  TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
-{
-    typedef typename Value<TScoreScheme>::Type TScoreValue;
-    typedef DPContext<TScoreValue, TGapScheme> TDPContext;
-    TDPContext dpContext;
-    return _computeAlignment(dpContext, traceSegments, scoutState, seqH, seqV,
-                             scoreScheme, band, dpProfile);
-}
-
-template <typename TScoreValue, typename TGapScheme, typename TTraceTarget, typename TSequenceH, typename TSequenceV, typename TScoreScheme,
-          typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline typename Value<TScoreScheme>::Type
-_computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
-                  TTraceTarget & traceSegments,
-                  TSequenceH const & seqH,
-                  TSequenceV const & seqV,
-                  TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
-{
-    DPScoutState_<Default> noState;
-    return _computeAlignment(dpContext, traceSegments, noState, seqH, seqV, scoreScheme, band, dpProfile);
-}
-
-template <typename TGapScheme, typename TTraceTarget, typename TSequenceH, typename TSequenceV, typename TScoreScheme,
-          typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline typename Value<TScoreScheme>::Type
-_computeAlignment(TTraceTarget & traceSegments,
-                  TSequenceH const & seqH,
-                  TSequenceV const & seqV,
-                  TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
-{
-    DPScoutState_<Default> noState;
-    typedef typename Value<TScoreScheme>::Type TScoreValue;
-    typedef DPContext<TScoreValue, TGapScheme> TDPContext;
-    TDPContext dpContext;
-    return _computeAlignment(dpContext, traceSegments, noState, seqH, seqV, scoreScheme, band, dpProfile);
 }
 
 }  // namespace seqan

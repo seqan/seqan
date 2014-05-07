@@ -215,8 +215,8 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
     }
 }
 
-template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator,
-          typename TIsLastColumn>
+// TODO(rmaerker): Why is this needed?
+template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator, typename TIsLastColumn>
 inline void
 _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TDPCell const & activeCell,
@@ -227,6 +227,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                            False());
 }
 
+// TODO(rmaerker): Why is this needed?
 template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator>
 inline void
 _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
@@ -235,6 +236,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
 {
     return _scoutBestScore(dpScout, activeCell, navigator, False(), False());
 }
+
 
 // ----------------------------------------------------------------------------
 // Function maxScore()

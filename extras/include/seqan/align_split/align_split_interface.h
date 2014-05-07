@@ -243,11 +243,10 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
 // Metafunction SetupAlignmentProfile_
 // ----------------------------------------------------------------------------
 
-template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
-struct SetupAlignmentProfile_<SplitAlignmentAlgo, TAlignConfig, TGapCosts, TTraceSwitch>
+template <typename TFreeEndGaps, typename TGapCosts, typename TTraceSwitch>
+struct SetupAlignmentProfile_<SplitAlignmentAlgo, TFreeEndGaps, TGapCosts, TTraceSwitch>
 {
-    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
-    typedef DPProfile_<SplitAlignment_<TFreeEndGaps_>, TGapCosts, TTraceSwitch> Type;
+    typedef DPProfile_<SplitAlignment_<TFreeEndGaps>, TGapCosts, TTraceSwitch> Type;
 };
 
 // ============================================================================
@@ -298,7 +297,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     typedef typename Position<TGaps>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-    AlignConfig<false, false, true, true> alignConfig;
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    //alignConfig;
 
     // Check whether we need to run the banded versions.
     bool banded = (lowerDiagonal != minValue<int>() && upperDiagonal != maxValue<int>());
@@ -310,11 +310,16 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     String<TTraceSegment> traceL;
     if (!banded)
-        _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
+        _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme, TAlignConfig());
+    }
     else
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
+                              TAlignConfig(lowerDiagonal, upperDiagonal));
+    }
     _adaptTraceSegmentsTo(gapsContigL, gapsReadL, traceL);
 
     // Get reversed versions of the right contig and read sequence.
@@ -328,12 +333,16 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     String<TTraceSegment> traceR;
     if (!banded)
-        _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
+        _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme, TAlignConfig());
+    }
     else
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(),
-                              TracebackConfig_<CompleteTrace, GapsRight>());
+                              TAlignConfig(lowerDiagonal, upperDiagonal));
+    }
     // Reverse trace so it fits to the forward right sequences.  Also reverse the trace such that we can directly apply
     // it for the right alignment.
     _reverseTrace(traceR);
