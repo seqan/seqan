@@ -2,7 +2,7 @@ sam2matrix - This program outputs for each read the ids of references it maps to
 =================================================================================
 
 SYNOPSIS
-    sam2matrix -sf SAMFILE -rf READSFILE -gf GENOMEFILE -o OUTFILE
+    sam2matrix -m a.sam -m b.sam -r reads -rf ref_a.fasta -rf ref_b.fasta -o OUTFILE
 
 DESCRIPTION
     This program determines for each read in the reference file if it has an entry in the provided sam files stating
@@ -13,20 +13,20 @@ DESCRIPTION
           Displays this help message.
     --version
           Display version information
-    -sf, --samFiles SAMFILES
-          Sam files. Valid filetype is: sam.
-    -rf, --referenceFile FILE
-          Read name file. Valid filetypes are: fa, fasta, fq, and fastq.
-    -gf, --genomeFiles GENOMES
-          Names of the references of the corresponding sam file.. Valid filetypes are: fa, fasta, fq, and fastq.
-    -o, --outputFile FILE
+    -m, --mapping FILE
+          File containing the mappings. Valid filetype is: sam.
+    -r, --reads FILE
+          File containing the reads contained in the mapping file(s). Valid filetypes are: fa, fasta, fq, and fastq.
+    -rf, --reference STRING
+          Name of the file used as reference of the corresponding sam file.
+    -o, --out FILE
           Output file. Valid filetype is: csv.
 
 EXAMPLES
-    sam2Gasic -sf sam.sam -rf reads.fa -gf ecoli.fa -o out.csv
-          Call with SAMFILE set to "sam.sam", with READSFILE set to "reads.fa", with GENOMEFILE set to "ecoli.fa" and
-          OUTFILE set to "out.csv", where "ecoli.fa" is the file used as reference to generate "sam.sam"
+    ./sam2matrix -m a.sam -m b.sam -r reads.fasta -rf ref_a.fasta -rf ref_b.fasta -o out.csv
+          Storing in out.csv for each read contained in reads.fasta if it mapped to the references in ref_a.fasta or
+          ref_b.fasta using the corresponding sam files a.sam and b.sam.
 
 VERSION
-    sam2Matrix version: 0.1
+    sam2matrix version: 0.1
     Last update April 2014
