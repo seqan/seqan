@@ -616,7 +616,7 @@ macro (seqan_build_demos_develop PREFIX)
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
     # Setup flags for CUDA demos.
-    seqan_setup_cuda_vars(ARCH sm_20 DISABLE_WARNINGS)
+    seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -632,6 +632,9 @@ macro (seqan_build_demos_develop PREFIX)
             if (SEQAN_HAS_CUDA)
                 cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
                 target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                if (APPLE AND COMPILER_IS_CLANG)
+                    set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+                endif ()
                 _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
             endif ()
         else ()
