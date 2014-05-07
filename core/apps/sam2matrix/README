@@ -1,0 +1,32 @@
+sam2matrix - This program outputs for each read the ids of references it maps to.
+=================================================================================
+
+SYNOPSIS
+    sam2matrix -m a.sam -m b.sam -r reads -rf ref_a.fasta -rf ref_b.fasta -o out.csv
+
+DESCRIPTION
+    This program determines for each read in the reference file if it has an entry in the provided sam files stating
+    that it mapped. Afterwards a file is generated containing a row for each read which contains the read ID and the
+    index of the mapped references.
+
+    -h, --help
+          Displays this help message.
+    --version
+          Display version information
+    -m, --mapping FILE
+          File containing the mappings. Valid filetype is: sam.
+    -r, --reads FILE
+          File containing the reads contained in the mapping file(s). Valid filetypes are: fa, fasta, fq, and fastq.
+    -rf, --reference STRING
+          Name of the file used as reference of the corresponding sam file.
+    -o, --out FILE
+          Output file. Valid filetype is: csv.
+
+EXAMPLES
+    ./sam2matrix -m a.sam -m b.sam -r reads.fasta -rf ref_a.fasta -rf ref_b.fasta -o out.csv
+          Storing in out.csv for each read contained in reads.fasta if it mapped to the references in ref_a.fasta or
+          ref_b.fasta using the corresponding sam files a.sam and b.sam.
+
+VERSION
+    sam2matrix version: 0.1
+    Last update April 2014
