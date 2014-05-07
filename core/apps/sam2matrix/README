@@ -1,8 +1,8 @@
-sam2matrix - This program outputs for each read the ids of references it.
-=========================================================================
+sam2matrix - This program outputs for each read the ids of references it maps to.
+=================================================================================
 
 SYNOPSIS
-    sam2Matrix -sf SAMFILE -rf READSFILE -gf GENOMEFILE-o OUTFILE
+    sam2matrix -sf SAMFILE -rf READSFILE -gf GENOMEFILE -o OUTFILE
 
 DESCRIPTION
     This program determines for each read in the reference file if it has an entry in the provided sam files stating
