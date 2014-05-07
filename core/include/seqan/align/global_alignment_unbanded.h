@@ -248,44 +248,33 @@ The examples below show some common use cases.
 // Function globalAlignment()                                 [unbanded, Align]
 // ----------------------------------------------------------------------------
 
-template <typename TSequence, typename TAlignSpec,
-          typename TScoreValue, typename TScoreSpec,
-          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
-          typename TAlgoTag>
+template <typename TSequence, typename TAlignSpec, typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec, typename TAlgoTag>
 TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                            TAlgoTag const & algoTag)
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                            TAlgoTag const & /*algoTag*/)
 {
     typedef Align<TSequence, TAlignSpec> TAlign;
     typedef typename Size<TAlign>::Type TSize;
     typedef typename Position<TAlign>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-    String<TTraceSegment> trace;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
 
+    String<TTraceSegment> trace;
     TScoreValue res;
-    // We do not need string ids for this variant and set them to 0u.  They are
-    // only required for the Fragment String and the Alignment Graph variant.
-    if (_usesAffineGaps(scoringScheme, source(row(align, 0)), source(row(align, 1))))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        res  = _setUpAndRunAlignment(dpContext, trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
-                                     alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        res  = _setUpAndRunAlignment(dpContext, trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
-                                     alignConfig, algoTag);
-    }
+    DPScoutState_<Default> dpScoutState;
+    res  = _setUpAndRunAlignment(trace, dpScoutState, source(row(align, 0)), source(row(align, 1)), scoringScheme,
+                                 TAlignConfig2(), typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
 
     _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
     return res;
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TSequence, typename TAlignSpec,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
@@ -298,7 +287,6 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
 }
 
 // Interface without algorithm tag.
-
 template <typename TSequence, typename TAlignSpec,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
@@ -313,7 +301,6 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TSequence, typename TAlignSpec,
           typename TScoreValue, typename TScoreSpec>
 TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
@@ -335,37 +322,25 @@ template <typename TSequenceH, typename TGapsSpecH,
 TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                             Gaps<TSequenceV, TGapsSpecV> & gapsV,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                            TAlgoTag const & algoTag)
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                            TAlgoTag const & /*algoTag*/)
 {
     typedef typename Size<TSequenceH>::Type TSize;
     typedef typename Position<TSequenceH>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
-
-    // We do not need string ids for this variant and set them to 0u.  They are
-    // only required for the Fragment String and the Alignment Graph variant.
-    TScoreValue res;
-    if (_usesAffineGaps(scoringScheme, source(gapsH), source(gapsV)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        res  = _setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV), scoringScheme,
-                                     alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        res  = _setUpAndRunAlignment(dpContext, traceSegments, source(gapsH), source(gapsV), scoringScheme,
-                                     alignConfig, algoTag);
-    }
-
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, source(gapsH), source(gapsV), scoringScheme,
+                                            TAlignConfig2(), typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
     _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
     return res;
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TSequenceH, typename TGapsSpecH,
           typename TSequenceV, typename TGapsSpecV,
           typename TScoreValue, typename TScoreSpec,
@@ -380,7 +355,6 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 }
 
 // Interface without algorithm tag.
-
 template <typename TSequenceH, typename TGapsSpecH,
           typename TSequenceV, typename TGapsSpecV,
           typename TScoreValue, typename TScoreSpec,
@@ -397,7 +371,6 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TSequenceH, typename TGapsSpecH,
           typename TSequenceV, typename TGapsSpecV,
           typename TScoreValue, typename TScoreSpec>
@@ -414,36 +387,28 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 // ----------------------------------------------------------------------------
 
 // Full interface.
-
 template <typename TStringSet, typename TCargo, typename TGraphSpec,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
           typename TAlgoTag>
 TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                            TAlgoTag const & algoTag)
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                            TAlgoTag const & /*algoTag*/)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph;
     typedef typename Position<TGraph>::Type TPosition;
     typedef typename Size<TGraph>::Type TSize;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
-
-    TScoreValue res;
-    if (_usesAffineGaps(scoringScheme, value(stringSet(alignmentGraph), 0), value(stringSet(alignmentGraph), 1)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        res = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
-                                    value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        res = _setUpAndRunAlignment(dpContext, traceSegments, value(stringSet(alignmentGraph), 0),
-                                    value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, algoTag);
-    }
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, value(stringSet(alignmentGraph), 0),
+                                            value(stringSet(alignmentGraph), 1), scoringScheme, TAlignConfig2(),
+                                            typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
 
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
                           positionToId(stringSet(alignmentGraph), 1), traceSegments);
@@ -451,7 +416,6 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TStringSet, typename TCargo, typename TGraphSpec,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
@@ -464,7 +428,6 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
 }
 
 // Interface without algorithm tag.
-
 template <typename TStringSet, typename TCargo, typename TGraphSpec,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
@@ -479,7 +442,6 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TStringSet, typename TCargo, typename TGraphSpec,
           typename TScoreValue, typename TScoreSpec>
 TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
@@ -494,7 +456,6 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
 // ----------------------------------------------------------------------------
 
 // Full interface.
-
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
           typename TScoreValue, typename TScoreSpec,
@@ -503,34 +464,27 @@ template <typename TSize, typename TFragmentSpec, typename TStringSpec,
 TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & fragmentString,
                             StringSet<TSequence, TStringSetSpec> const & strings,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                            TAlgoTag const & algoTag)
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                            TAlgoTag const & /*algoTag*/)
 {
     typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
     typedef typename Position<TFragments>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, value(strings, 0), value(strings, 1),
+                                            scoringScheme, TAlignConfig2(),
+                                            typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
 
-    TScoreValue res;
-    if (_usesAffineGaps(scoringScheme, value(strings, 0), value(strings, 1)))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        res = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
-                                    alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        res = _setUpAndRunAlignment(dpContext, traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
-                                    alignConfig, algoTag);
-    }
     _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
     return res;
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
           typename TScoreValue, typename TScoreSpec,
@@ -545,7 +499,6 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 }
 
 // Interface without algorithm tag.
-
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
           typename TScoreValue, typename TScoreSpec,
@@ -562,7 +515,6 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
           typename TScoreValue, typename TScoreSpec>
@@ -666,23 +618,20 @@ template <typename TSequenceH,
 TScoreValue globalAlignmentScore(TSequenceH const & seqH,
                                  TSequenceV const & seqV,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                                 TAlgoTag const & algoTag)
+                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                 TAlgoTag const & /*algoTag*/)
 {
-    if (_usesAffineGaps(scoringScheme, seqH, seqV))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        return _setUpAndRunAlignment(dpContext, seqH, seqV, scoringScheme, alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        return _setUpAndRunAlignment(dpContext, seqH, seqV, scoringScheme, alignConfig, algoTag);
-    }
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, TAlignConfig2(),
+                                 typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
@@ -697,7 +646,6 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
 }
 
 // Interface without algorithm tag.
-
 template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
@@ -714,7 +662,6 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec>
@@ -736,24 +683,22 @@ template <typename TString, typename TSpec,
           typename TAlgoTag>
 TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                                 TAlgoTag const & algoTag)
+                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                 TAlgoTag const & /*algoTag*/)
 {
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+
     SEQAN_ASSERT_EQ(length(strings), 2u);
-    if (_usesAffineGaps(scoringScheme, strings[0], strings[1]))
-    {
-        DPContext<TScoreValue, AffineGaps> dpContext;
-        return _setUpAndRunAlignment(dpContext, strings[0], strings[1], scoringScheme, alignConfig, algoTag);
-    }
-    else
-    {
-        DPContext<TScoreValue, LinearGaps> dpContext;
-        return _setUpAndRunAlignment(dpContext, strings[0], strings[1], scoringScheme, alignConfig, algoTag);
-    }
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, strings[0], strings[1], scoringScheme, TAlignConfig2(),
+                                 typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
 }
 
 // Interface without AlignConfig<>.
-
 template <typename TString, typename TSpec,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
@@ -768,7 +713,6 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 }
 
 // Interface without algorithm tag.
-
 template <typename TString, typename TSpec,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
@@ -785,7 +729,6 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-
 template <typename TString, typename TSpec,
           typename TScoreValue, typename TScoreSpec>
 TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
