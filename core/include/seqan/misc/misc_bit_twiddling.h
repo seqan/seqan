@@ -40,9 +40,15 @@
 #define SEQAN_MISC_MISC_BIT_TWIDDLING_H_
 
 #ifdef PLATFORM_WINDOWS_VS
+
 // Make intrinsics visible.  It appears that this is not necessary with VS 10
 // any more, for VS 9, it must be included.
 #include <intrin.h>
+
+#ifdef __SSE4_2__
+#include <nmmintrin.h>
+#endif
+
 #endif  // #ifdef PLATFORM_WINDOWS_VS
 
 // TODO(holtgrew): Test this!
@@ -432,17 +438,14 @@ _popCountImpl(TWord word, WordSize_<NUM_BITS> const & /*tag*/)
 
 #if defined(_MSC_VER) && (_MSC_VER > 1400)  // MSVC >= 2008, has intrinsic
 
+#if defined(__SSE4_2__)
+
 template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
-#if defined(_WIN64)
     // 64-bit Windows, 64 bit intrinsic available
     return __popcnt64(static_cast<__uint64>(word));
-#else
-    // 32-bit Windows, 64 bit intrinsic not available
-	return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
-#endif
 }
 
 template <typename TWord>
@@ -451,6 +454,44 @@ _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
     return __popcnt(static_cast<__uint32>(word));
 }
+
+#else // #if defined(__SSE4_2__)
+
+template <typename TWord>
+inline unsigned
+_popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
+{
+#if defined(_WIN64)
+
+#if defined(__SSE4_2__)
+    // 64-bit Windows, SSE4.2 bit intrinsic available
+    return _mm_popcnt_u64(static_cast<__uint64>(word));
+#else
+    // 64-bit Windows, 64 bit intrinsic available
+    return __popcnt64(static_cast<__uint64>(word));
+#endif
+
+#else // #if defined(_WIN64)
+
+    // 32-bit Windows, 64 bit intrinsic not available
+	return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
+
+#endif // #if defined(_WIN64)
+}
+
+template <typename TWord>
+inline unsigned
+_popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
+{
+#if defined(__SSE4_2__)
+    // SSE4.2 bit intrinsic available
+    return _mm_popcnt_u32(static_cast<__uint32>(word));
+#else
+    return __popcnt(static_cast<__uint32>(word));
+#endif
+}
+
+#endif // #if defined(__SSE4_2__)
 
 template <typename TWord>
 inline unsigned
@@ -472,6 +513,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 // Function _popCountImpl()
 // ----------------------------------------------------------------------------
 // GCC or CLANG implementations.
+// SSE4.2 popcnt is emitted when compiling with -mpopcnt or -march=corei7
 
 #if !defined(_MSC_VER)  // GCC or CLANG
 
