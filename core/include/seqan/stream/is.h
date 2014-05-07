@@ -37,6 +37,8 @@
 #ifndef SEQAN_STREAM_IS_H_
 #define SEQAN_STREAM_IS_H_
 
+#include <cctype>
+
 // ==========================================================================
 // We add documentation for cctype here for completeness.
 // ==========================================================================
@@ -337,15 +339,5 @@
 ..see:Function.isspace
 ..include:seqan/stream.h
 */
-
-#ifdef PLATFORM_WINDOWS
-
-inline int
-isblank(int c)
-{
-    return (c == ' ' || c == '\t');
-}
-
-#endif  // #ifdef PLATFORM_WINDOWS
 
 #endif  // #ifndef SEQAN_STREAM_IS_H_
