@@ -24,7 +24,7 @@ def main(source_base, binary_base):
     """Main entry point of the script."""
 
     print 'Executing test for sam2matrix'
-    print '========================='
+    print '============================='
     print
     
     ph = app_tests.TestPathHelper(
@@ -55,7 +55,9 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         redir_stdout=ph.outFile('out.stdout'),
-        args=['-sf', ph.inFile('ecoli.sam'), '-sf', ph.inFile('ehec.sam'), '-rf', ph.inFile('ecoli_0.50_ehec_0.50.fastq'), '-gf', 'ecoli.fasta', '-gf', 'ehec.fasta', '-o', ph.outFile('test_sam2matrix.csv')],
+        args=['-m', ph.inFile('ecoli.sam'), '-m', ph.inFile('ehec.sam'),
+        '-r', ph.inFile('ecoli_0.50_ehec_0.50.fastq'), '-rf',
+        'ecoli.fasta', '-rf', 'ehec.fasta', '-o', ph.outFile('test_sam2matrix.csv')],
         to_diff=[(ph.inFile('out.stdout'),
                   ph.outFile('out.stdout')),
                  (ph.inFile('gold.csv'),
