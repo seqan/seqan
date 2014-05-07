@@ -85,18 +85,18 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-m\\fP \\fIa.sam\\fP \\fB-m\\fP \\fIb.sam\\fP \\fB-r\\fP \\fIreads\\fP \\fB-rf\\fP "
-                         "\\fIref_a.fasta\\fP \\fB-rf\\fP \\fIref_b.fasta\\fP \\fB-o\\fP \\fIOUTFILE\\fP");
+                         "\\fIref_a.fasta\\fP \\fB-rf\\fP \\fIref_b.fasta\\fP \\fB-o\\fP \\fIout.tsv\\fP");
     addDescription(parser, "This program determines for each read in the reference file if it has an entry in the "
                            "provided sam files stating that it mapped. Afterwards a file is generated containing a row"
                            " for each read which contains the read ID and the index of the mapped references.");
 
     addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUTFILE, 
                                      "FILE", true));
-    setValidValues(parser, "m", "sam");
+    setValidValues(parser, "m", ".sam");
     setRequired(parser, "m");
     addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).", 
                                      ArgParseOption::INPUTFILE, "FILE"));
-    setValidValues(parser, "r", "fa fasta fq fastq");
+    setValidValues(parser, "r", ".fa .fasta .fq .fastq");
     setRequired(parser, "r");
 
     addOption(parser, ArgParseOption("rf", "reference", "Name of the file used as reference of the corresponding sam "
@@ -105,14 +105,14 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 
     addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUTFILE));
     setRequired(parser, "o");
-    setValidValues(parser, "o", "csv");
+    setValidValues(parser, "o", ".tsv");
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
     addListItem(parser, "\\fB./sam2matrix\\fP \\fB-m\\fP \\fIa.sam\\fP \\fB-m\\fP \\fIb.sam\\fP \\fB-r\\fP "
                         "\\fIreads.fasta\\fP \\fB-rf\\fP \\fIref_a.fasta\\fP \\fB-rf\\fP \\fIref_b.fasta\\fP "
-                        "\\fB-o\\fP \\fIout.csv\\fP",
-                        "Storing in \\fIout.csv\\fP for each read contained in \\fIreads.fasta\\fP if it mapped to "
+                        "\\fB-o\\fP \\fIout.tsv\\fP",
+                        "Storing in \\fIout.tsv\\fP for each read contained in \\fIreads.fasta\\fP if it mapped to "
                         "the references in \\fIref_a.fasta\\fP or \\fIref_b.fasta\\fP using the corresponding sam "
                         "files \\fIa.sam\\fP and \\fIb.sam\\fP.");
 
