@@ -379,7 +379,7 @@ struct WordSize_ {};
 
 template <typename TWord>
 inline SEQAN_DEVICE
-unsigned _popCountImpl(TWord const & word, WordSize_<32> const & /*tag*/)
+unsigned _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
     return __popc(static_cast<__uint32>(word));
 }
