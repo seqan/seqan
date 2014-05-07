@@ -2,7 +2,7 @@ sam2matrix - This program outputs for each read the ids of references it maps to
 =================================================================================
 
 SYNOPSIS
-    sam2matrix -m a.sam -m b.sam -r reads -rf ref_a.fasta -rf ref_b.fasta -o OUTFILE
+    sam2matrix -m a.sam -m b.sam -r reads -rf ref_a.fasta -rf ref_b.fasta -o out.csv
 
 DESCRIPTION
     This program determines for each read in the reference file if it has an entry in the provided sam files stating
