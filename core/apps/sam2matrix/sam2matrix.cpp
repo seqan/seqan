@@ -100,8 +100,8 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
     setRequired(parser, "r");
 
     addOption(parser, ArgParseOption("rf", "reference", "Name of the file used as reference of the corresponding sam "
-                                     "file.", ArgParseOption::STRING, "STRING", true));
-    setRequired(parser, "rf");
+                                     "file. If not specified the names of the mapping files are taken", 
+                                     ArgParseOption::STRING, "STRING", true));
 
     addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUTFILE));
     setRequired(parser, "o");
@@ -127,6 +127,10 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
     getOptionValue(options.readNameFileName, parser, "r");
     options.genomeFileNames = getOptionValues(parser, "rf");
     getOptionValue(options.outPutFileName, parser, "o");
+
+    if (length(options.samFileNames) > length(options.genomeFileNames))
+        for (unsigned i = length(options.genomeFileNames); i < length(options.samFileNames); ++i)
+            appendValue(options.genomeFileNames, options.samFileNames[i]);
 
     return seqan::ArgumentParser::PARSE_OK;
 }
