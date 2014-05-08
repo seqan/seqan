@@ -782,7 +782,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * 
  * @signature template<> SEQAN_CONCEPT_IMPL(name, implementedConcepts)
- *            template<typename T, int I> SEQAN_CONCEPT_IMPL(name<T,I>, implementedConcepts)
+ *            template<typename T, int I> SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
  * 
  * @param implementedConcepts Identifiers of concepts that are fulfilled by the model.  This is a sequence of the
  *                            Boost Preprocessor Library, read <a
@@ -798,7 +798,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @code{.cpp}
  * template <typename TValue, typename TSpec>
- * SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
+ * SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
  * @endcode
  */
 
@@ -811,23 +811,23 @@ template<>
 SEQAN_CONCEPT_IMPL(name, implementedConcepts)
 
 template<typename T, int I>
-SEQAN_CONCEPT_IMPL(name<T,I>, implementedConcepts)
-..param.name:Model type, i.e. an identifier or an identifier with template arguments.
+SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
 ..param.implementedConcepts:Identifiers of concepts that are fulfilled by the model.
+..param.name:Model type, i.e. an identifier or an identifier with template arguments.
 ...remarks:This is a sequence of the Boost Preprocessor Library, read @http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html|more@.
 ..remarks:The metafunction @Metafunction.Is@ can be used to determine whether a class models (fulfills) a concepts.
 A model of a concept must pass the concept check via @Macro.SEQAN_CONCEPT_ASSERT@.
 ..example.code:
 template <typename TValue, typename TSpec>
-SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
+SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
 ..include:seqan/basic.h
  */
 
-# define SEQAN_CONCEPT_IMPL(model, implementedConcepts)                                                 \
-    struct Implements<model>                                                                            \
+# define SEQAN_CONCEPT_IMPL(implementedConcepts, ...)                                                   \
+    struct Implements<__VA_ARGS__>                                                                      \
     {                                                                                                   \
         typedef                                                                                         \
-            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(model),implementedConcepts)              \
+            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(__VA_ARGS__),implementedConcepts)        \
             SEQAN_PP_REPEAT(SEQAN_PP_SEQ_SIZE(implementedConcepts),SEQAN_CONCEPT_LIST_suffix,~) Type;   \
     }
 
