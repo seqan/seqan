@@ -170,10 +170,21 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       False const & /*TBoolBanded*/,
                       False const & /*TBoolXDrop*/)
 {
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    typedef AlignConfig2<AlignExtend_<>,
+                         DPBand_<BandOff>,
+                         TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace,
+                                                      GapsLeft> > > TAlignConfig;
+
+    DPScoutState_<Default> scoutState;
     return _setUpAndRunAlignment(alignContext.dpContext,
                                  alignContext.traceSegment,
-                                 str0, str1, scoreScheme,
-                                 AlignExtend_<>(), TTracebackConfig());
+                                 scoutState,
+                                 str0,
+                                 str1,
+                                 scoreScheme,
+                                 TAlignConfig());
 }
 
 template <typename TAliExtContext_, typename TString, typename TScoreValue,
@@ -190,12 +201,21 @@ _setUpAndRunAlignImpl( TAliExtContext_ & alignContext,
                        True const & /*TBoolBanded*/,
                        False const & /*TBoolXDrop*/)
 {
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    typedef AlignConfig2<AlignExtend_<>,
+                         DPBand_<BandOn>,
+                         TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace,
+                                                      GapsLeft> > > TAlignConfig;
+
+    DPScoutState_<Default> scoutState;
     return _setUpAndRunAlignment(alignContext.dpContext,
                                  alignContext.traceSegment,
-                                 str0, str1, scoreScheme,
-                                 AlignConfig<false, false, true, true>(),
-                                 lowerDiag, upperDiag, AlignExtend_<>(),
-                                 TTracebackConfig());
+                                 scoutState,
+                                 str0,
+                                 str1,
+                                 scoreScheme,
+                                 TAlignConfig(lowerDiag, upperDiag));
 }
 
 template <typename TAliExtContext_, typename TString, typename TScoreValue,
@@ -212,12 +232,21 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       False const & /*TBoolBanded*/,
                       True const & /*TBoolXDrop*/)
 {
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
+                         DPBand_<BandOff>,
+                         TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace,
+                                                      GapsLeft> > > TAlignConfig;
+
     DPScoutState_<Terminator_<XDrop_<TScoreValue> > > scoutState(xDrop);
     return _setUpAndRunAlignment(alignContext.dpContext,
                                  alignContext.traceSegment,
-                                 scoutState, str0, str1, scoreScheme,
-                                 AlignExtend_<XDrop_<TScoreValue> >(),
-                                 TTracebackConfig());
+                                 scoutState,
+                                 str0,
+                                 str1,
+                                 scoreScheme,
+                                 TAlignConfig());
 }
 
 template <typename TAliExtContext_, typename TString, typename TScoreValue,
@@ -234,16 +263,21 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       True const & /*TBoolBanded*/,
                       True const & /*TBoolXDrop*/)
 {
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
+                         DPBand_<BandOn>,
+                         TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace,
+                                                      GapsLeft> > > TAlignConfig;
+
     DPScoutState_<Terminator_<XDrop_<TScoreValue> > > scoutState(xDrop);
     return _setUpAndRunAlignment(alignContext.dpContext,
                                  alignContext.traceSegment,
                                  scoutState,
-                                 str0, str1,
+                                 str0,
+                                 str1,
                                  scoreScheme,
-                                 AlignConfig<false, false, true, true>(),
-                                 lowerDiag, upperDiag,
-                                 AlignExtend_<XDrop_<TScoreValue> >(),
-                                 TTracebackConfig());
+                                 TAlignConfig(lowerDiag, upperDiag));
 }
 
 // ----------------------------------------------------------------------------
