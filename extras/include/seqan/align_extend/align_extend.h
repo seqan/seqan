@@ -62,24 +62,35 @@ struct AliExtContext_
     TDPContext dpContext;
 
     String<TraceSegment_<TPosition, TSize> > traceSegment;
-
-    constexpr AliExtContext_() {}
 };
 
 template <typename TAlign, typename TDPContext>
 inline void
 clear(AliExtContext_<TAlign, TDPContext> & prov)
 {
+    // apparently this DOES WORK:
+    if (length(rows(prov.leftAlign)) != 2)
+    {
+        resize(rows(prov.leftAlign), 2);
+        createSource(row(prov.leftAlign, 0));
+        createSource(row(prov.leftAlign, 1));
+        if (row(prov.leftAlign, 0)._source.data_state != 1)
+            std::cout << "STATE NOT OWNER\n";
+    }
+    if (length(rows(prov.rightAlign)) != 2)
+    {
+        resize(rows(prov.rightAlign), 2);
+        createSource(row(prov.rightAlign, 0));
+        createSource(row(prov.rightAlign, 1));
+    }
+
     // the expected behaviour for the alignObjects is that they shouldn't
     // have to be cleared, since every row is always assignSource'd before it
     // is used. However this DOES NOT CLEAR the object and causes undefined
     // behaviour
     // Next we expect that a clear() on the array_gaps should solve this,
     // then this code would work:
-//     if (length(rows(prov.leftAlign)) != 2)
-//         resize(rows(prov.leftAlign), 2);
-//     if (length(rows(prov.rightAlign)) != 2)
-//         resize(rows(prov.rightAlign), 2);
+
 //     clear(row(prov.leftAlign,0));
 //     clear(row(prov.leftAlign,1));
 //     clear(row(prov.rightAlign,0));
@@ -87,11 +98,11 @@ clear(AliExtContext_<TAlign, TDPContext> & prov)
 
     // this is not the case either, apparently clear() doesnt work on gaps
     // instead we have to (which is EXPENSIVE!):
-    clear(rows(prov.leftAlign));
-    resize(rows(prov.leftAlign), 2);
-    // centerAlign is always assigned align, so it need not be reset
-    clear(rows(prov.rightAlign));
-    resize(rows(prov.rightAlign), 2);
+//     clear(rows(prov.leftAlign));
+//     resize(rows(prov.leftAlign), 2);
+//     // centerAlign is always assigned align, so it need not be reset
+//     clear(rows(prov.rightAlign));
+//     resize(rows(prov.rightAlign), 2);
 
     // trace segment always needs to be cleared
     clear(prov.traceSegment);
@@ -105,6 +116,16 @@ clear(AliExtContext_<TAlign, TDPContext> & prov)
 // ============================================================================
 // Functions
 // ============================================================================
+
+
+template <typename TSequence, typename TSequence2>
+inline void
+myAssignSource(Gaps<TSequence, ArrayGaps> & gaps, TSequence2 const & source)
+{
+    assignValue(gaps._source, source);
+    _reinitArrayGaps(gaps);
+}
+
 
 // ----------------------------------------------------------------------------
 // Function _reverseTrace()
@@ -255,6 +276,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     TPos const hEndPos      = positions[2];
     TPos const vEndPos      = positions[3];
 
+    SEQAN_ASSERT_EQ(length(rows(align)), 2);
     SEQAN_ASSERT_EQ(infix(source(row(align, 0)),
                           beginPosition(row(align, 0)),
                           endPosition(row(align, 0))),
@@ -328,8 +350,8 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         _reversePartialTrace(alignContext.traceSegment,
                              length(inf0), length(inf1));
 
-        assignSource(row(alignContext.leftAlign, 0), inf0);
-        assignSource(row(alignContext.leftAlign, 1), inf1);
+        myAssignSource(row(alignContext.leftAlign, 0), inf0);
+        myAssignSource(row(alignContext.leftAlign, 1), inf1);
 
         _adaptTraceSegmentsTo(row(alignContext.leftAlign, 0),
                               row(alignContext.leftAlign, 1),
@@ -374,10 +396,10 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
                                                sourceBeginPos1) - leadGaps1);
     }
 
+
     // right
     if (extendRight)
     {
-
         TInf inf0 = infix(hSeq, hEndPos, length(hSeq));
         TInf inf1 = infix(vSeq, vEndPos, length(vSeq));
 
@@ -388,8 +410,8 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
                                   TracebackConfig_<CompleteTrace, GapsLeft>(),
                                   TBoolBanded(), TBoolXDrop());
 
-        assignSource(row(alignContext.rightAlign, 0), inf0);
-        assignSource(row(alignContext.rightAlign, 1), inf1);
+        myAssignSource(row(alignContext.rightAlign, 0), inf0);
+        myAssignSource(row(alignContext.rightAlign, 1), inf1);
         _adaptTraceSegmentsTo(row(alignContext.rightAlign, 0),
                               row(alignContext.rightAlign, 1),
                               alignContext.traceSegment);
