@@ -823,11 +823,12 @@ SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
 ..include:seqan/basic.h
  */
 
-# define SEQAN_CONCEPT_IMPL(implementedConcepts, ...)                                                   \
-    struct Implements<__VA_ARGS__>                                                                      \
+# define SEQAN_CONCEPT_IMPL(implementedConcepts,model...)                                               \
+    struct Implements<model>                                                                            \
     {                                                                                                   \
+        typedef model TModel;                                                                           \
         typedef                                                                                         \
-            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(__VA_ARGS__),implementedConcepts)        \
+            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(TModel),implementedConcepts)             \
             SEQAN_PP_REPEAT(SEQAN_PP_SEQ_SIZE(implementedConcepts),SEQAN_CONCEPT_LIST_suffix,~) Type;   \
     }
 
@@ -925,8 +926,8 @@ void sameType(T, T) { }
  * SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
  * SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
  *  
- * SEQAN_CONCEPT_IMPL(Alice, (ConceptA)(ConceptB));
- * SEQAN_CONCEPT_IMPL(Bob, (ConceptC));
+ * SEQAN_CONCEPT_IMPL((ConceptA)(ConceptB), Alice);
+ * SEQAN_CONCEPT_IMPL((ConceptC), Bob);
  *  
  * std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
  * std::cout << Is< ConceptB<Alice> >::VALUE << std::endl; // 1
@@ -972,8 +973,8 @@ SEQAN_CONCEPT(ConceptB, (T)) {};
 SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
 SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
 
-SEQAN_CONCEPT_IMPL(Alice, (ConceptA)(ConceptB));
-SEQAN_CONCEPT_IMPL(Bob, (ConceptC));
+SEQAN_CONCEPT_IMPL((ConceptA)(ConceptB), Alice);
+SEQAN_CONCEPT_IMPL((ConceptC), Bob);
 
 std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
 std::cout << Is< ConceptB<Alice> >::VALUE << std::endl; // 1
