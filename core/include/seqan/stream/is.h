@@ -340,4 +340,14 @@
 ..include:seqan/stream.h
 */
 
+#if defined(_MSC_VER) && _MSC_VER < 1800
+
+inline int
+isblank(int c)
+{
+    return (c == ' ' || c == '\t');
+}
+
+#endif  // #if defined(_MSC_VER) && _MSC_VER < 1800
+
 #endif  // #ifndef SEQAN_STREAM_IS_H_
