@@ -68,20 +68,19 @@ template <typename TAlign, typename TDPContext>
 inline void
 clear(AliExtContext_<TAlign, TDPContext> & prov)
 {
-    // apparently this DOES WORK:
     if (length(rows(prov.leftAlign)) != 2)
     {
         resize(rows(prov.leftAlign), 2);
-        createSource(row(prov.leftAlign, 0));
-        createSource(row(prov.leftAlign, 1));
-        if (row(prov.leftAlign, 0)._source.data_state != 1)
-            std::cout << "STATE NOT OWNER\n";
+//         createSource(row(prov.leftAlign, 0));
+//         createSource(row(prov.leftAlign, 1));
+//         if (row(prov.leftAlign, 0)._source.data_state != 1)
+//             std::cout << "STATE NOT OWNER\n";
     }
     if (length(rows(prov.rightAlign)) != 2)
     {
         resize(rows(prov.rightAlign), 2);
-        createSource(row(prov.rightAlign, 0));
-        createSource(row(prov.rightAlign, 1));
+//         createSource(row(prov.rightAlign, 0));
+//         createSource(row(prov.rightAlign, 1));
     }
 
     // the expected behaviour for the alignObjects is that they shouldn't
@@ -91,10 +90,14 @@ clear(AliExtContext_<TAlign, TDPContext> & prov)
     // Next we expect that a clear() on the array_gaps should solve this,
     // then this code would work:
 
-//     clear(row(prov.leftAlign,0));
-//     clear(row(prov.leftAlign,1));
-//     clear(row(prov.rightAlign,0));
-//     clear(row(prov.rightAlign,1));
+    clear(row(prov.leftAlign,0)._source);
+    clear(row(prov.leftAlign,0));
+    clear(row(prov.leftAlign,1)._source);
+    clear(row(prov.leftAlign,1));
+    clear(row(prov.rightAlign,0)._source);
+    clear(row(prov.rightAlign,0));
+    clear(row(prov.rightAlign,1)._source);
+    clear(row(prov.rightAlign,1));
 
     // this is not the case either, apparently clear() doesnt work on gaps
     // instead we have to (which is EXPENSIVE!):
@@ -122,7 +125,7 @@ template <typename TSequence, typename TSequence2>
 inline void
 myAssignSource(Gaps<TSequence, ArrayGaps> & gaps, TSequence2 const & source)
 {
-    assignValue(gaps._source, source);
+    create(gaps._source, source);
     _reinitArrayGaps(gaps);
 }
 
@@ -384,8 +387,10 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         _reversePartialTrace(alignContext.traceSegment,
                              length(inf0), length(inf1));
 
-        myAssignSource(row(alignContext.leftAlign, 0), inf0);
-        myAssignSource(row(alignContext.leftAlign, 1), inf1);
+//         std::cout << "State is: " << uint(row(prov.leftAlign, 0)._source.data_state) << "\n";
+//         std::cout << "State is: " << uint(row(prov.leftAlign, 0)._source.data_value) << "\n";
+        assignSource(row(alignContext.leftAlign, 0), inf0);
+        assignSource(row(alignContext.leftAlign, 1), inf1);
 
         _adaptTraceSegmentsTo(row(alignContext.leftAlign, 0),
                               row(alignContext.leftAlign, 1),
@@ -444,8 +449,8 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
                                   TracebackConfig_<CompleteTrace, GapsLeft>(),
                                   TBoolBanded(), TBoolXDrop());
 
-        myAssignSource(row(alignContext.rightAlign, 0), inf0);
-        myAssignSource(row(alignContext.rightAlign, 1), inf1);
+        assignSource(row(alignContext.rightAlign, 0), inf0);
+        assignSource(row(alignContext.rightAlign, 1), inf1);
         _adaptTraceSegmentsTo(row(alignContext.rightAlign, 0),
                               row(alignContext.rightAlign, 1),
                               alignContext.traceSegment);
