@@ -845,13 +845,13 @@ _updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 }
 
 // ----------------------------------------------------------------------------
-// Function setMaxScore()
+// Function setScoreThreshold()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TMaxScore>
 inline void
-setMaxScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
-            TMaxScore maxScore)
+setScoreThreshold(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
+                  TMaxScore maxScore)
 {
     finder.maxScore = maxScore;
 }
@@ -898,6 +898,46 @@ getScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec
 {
     // Return the value of last cell in column.
     return back(back(finder.scoreStack));
+}
+
+// ----------------------------------------------------------------------------
+// Function textIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
+textIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
+{
+    return back(finder.textStack);
+}
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
+textIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
+{
+    return back(finder.textStack);
+}
+
+// ----------------------------------------------------------------------------
+// Function patternIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
+patternIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
+{
+    return back(finder.patternStack);
+}
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+SEQAN_HOST_DEVICE inline
+typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
+patternIterator(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
+{
+    return back(finder.patternStack);
 }
 
 // ----------------------------------------------------------------------------
@@ -1264,7 +1304,7 @@ _find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, 
             if (_inTerminalState(finder, TStage()))
             {
                 // Inversion of control.
-                onFind(delegate, finder);
+                delegate(finder);
             }
             else if (_inActiveState(finder, TStage()))
             {
@@ -1308,7 +1348,7 @@ find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, B
     TTextIterator textIt(text);
     TPatternIterator patternIt(pattern);
 
-    setMaxScore(finder, maxScore);
+    setScoreThreshold(finder, maxScore);
     _initState(finder, textIt, patternIt);
     _find(finder, delegate, StageInitial_());
     _popState(finder, StageInitial_());

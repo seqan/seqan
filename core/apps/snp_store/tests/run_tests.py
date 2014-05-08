@@ -51,7 +51,7 @@ def main(source_base, binary_base):
     # make it more canonical and host independent.
     ph.outFile('-')  # To ensure that the out path is set.
     transforms = [
-#        app_tests.RegexpReplaceTransform("#\.\./.*snp_store", "#snp_store"),
+        app_tests.RegexpReplaceTransform("#.*snp_store.exe", "#snp_store"),
         app_tests.RegexpReplaceTransform("#[^ ]+snp_store", "#snp_store"),
         app_tests.ReplaceTransform(ph.inFile(''), ''),
         app_tests.ReplaceTransform(ph.outFile(''), ''),

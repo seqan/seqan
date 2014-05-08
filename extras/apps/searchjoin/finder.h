@@ -100,6 +100,12 @@ struct DbFinder
         verifier(db),
         minSeedLength(0)
     {}
+
+    template <typename TFinder>
+    void operator()(TFinder const & finder)
+    {
+        onFind(*this, finder);
+    }
 };
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
@@ -140,6 +146,12 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>
         minSeedLength(0),
         parallelDepth(2)
     {}
+
+    template <typename TFinder>
+    void operator()(TFinder const & finder)
+    {
+        onFind(*this, finder);
+    }
 };
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
@@ -487,7 +499,7 @@ onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
     typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
     TFinder finderBottom;
-    setMaxScore(finderBottom, finder.maxScore);
+    setScoreThreshold(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
     appendValue(finderBottom.scoreStack, back(finder.scoreStack));
@@ -505,7 +517,7 @@ onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
     typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
     TFinder finderBottom;
-    setMaxScore(finderBottom, finder.maxScore);
+    setScoreThreshold(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
     appendValue(finderBottom.scoreStack, back(finder.scoreStack));
@@ -542,7 +554,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = dbFinder.queryIndex.seedLength;
 
-        setMaxScore(finderExt, 0);
+        setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
@@ -559,7 +571,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = dbFinder.queryIndex.seedLength;
 
-        setMaxScore(finderApx, seedErrors);
+        setScoreThreshold(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
         _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
@@ -598,7 +610,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
         
-        setMaxScore(finderExt, 0);
+        setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
@@ -615,7 +627,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
 
-        setMaxScore(finderApx, seedErrors);
+        setScoreThreshold(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
         _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
