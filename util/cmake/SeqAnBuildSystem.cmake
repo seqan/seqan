@@ -682,6 +682,12 @@ macro (seqan_register_tests)
     set (SEQAN_FIND_ENABLE_TESTING TRUE)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+    # Remove NDEBUG definition for tests.
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
         if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
