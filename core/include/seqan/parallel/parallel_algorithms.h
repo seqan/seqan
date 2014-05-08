@@ -342,6 +342,16 @@ inline void transform(TContainer & c, TUnaryOperator o, Tag<TParallelTag> const 
 }
 
 // ----------------------------------------------------------------------------
+// Function generate()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator, typename TParallelTag>
+inline void generate(TTarget & target, TGenerator g, Tag<TParallelTag> const & /* tag */)
+{
+    std::generate(begin(target, Standard()), end(target, Standard()), g);
+}
+
+// ----------------------------------------------------------------------------
 // Function count()
 // ----------------------------------------------------------------------------
 
@@ -463,6 +473,16 @@ inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Para
 {
     SEQAN_ASSERT_GEQ(length(target), length(source));
     __gnu_parallel::transform(begin(source, Standard()), end(source, Standard()), begin(target, Standard()), o);
+}
+
+// ----------------------------------------------------------------------------
+// Function generate(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator>
+inline void generate(TTarget & target, TGenerator g, Parallel)
+{
+    __gnu_parallel::generate(begin(target, Standard()), end(target, Standard()), g);
 }
 
 // ----------------------------------------------------------------------------
@@ -591,6 +611,16 @@ template <typename TContainer, typename TUnaryOperator>
 inline void transform(TContainer & c, TUnaryOperator o)
 {
     transform(c, o, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function generate()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator>
+inline void generate(TTarget & target, TGenerator g)
+{
+    generate(target, g, Serial());
 }
 
 // ----------------------------------------------------------------------------

@@ -430,8 +430,9 @@ macro (seqan_setup_cuda_vars)
 
     # Fix CUDA on OSX.
     if (APPLE AND COMPILER_IS_CLANG)
+      # (weese:) I had to deactivate the C compiler override to make it compile again
       # NVCC mistakes /usr/bin/cc as gcc.
-      list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
+      #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
       # NVCC does not support libc++.
       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
     endif ()
@@ -615,7 +616,7 @@ macro (seqan_build_demos_develop PREFIX)
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
     # Setup flags for CUDA demos.
-    seqan_setup_cuda_vars(ARCH sm_20 DISABLE_WARNINGS)
+    seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -631,6 +632,9 @@ macro (seqan_build_demos_develop PREFIX)
             if (SEQAN_HAS_CUDA)
                 cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
                 target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                if (APPLE AND COMPILER_IS_CLANG)
+                    set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+                endif ()
                 _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
             endif ()
         else ()
@@ -677,6 +681,12 @@ macro (seqan_register_tests)
     set (SEQAN_FIND_ENABLE_DEBUG TRUE)
     set (SEQAN_FIND_ENABLE_TESTING TRUE)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+    # Remove NDEBUG definition for tests.
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
