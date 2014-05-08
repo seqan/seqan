@@ -824,7 +824,6 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
  */
 
 # define SEQAN_CONCEPT_IMPL(model, implementedConcepts)                                                 \
-    template <>                                                                                         \
     struct Implements<model>                                                                            \
     {                                                                                                   \
         typedef                                                                                         \
