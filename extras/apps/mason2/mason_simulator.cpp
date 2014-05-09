@@ -809,8 +809,11 @@ public:
         // Note that all shared variables are correctly synchronized by implicit flushes at the critical sections below.
         MethylationLevels levels;
         seqan::Dna5String refSeq;  // reference sequence
-        while ((options.seqOptions.bsSeqOptions.bsSimEnabled && vcfMat.materializeNext(contigSeq, levels, rID, hID)) ||
-               (!options.seqOptions.bsSeqOptions.bsSimEnabled && vcfMat.materializeNext(contigSeq, rID, hID)))
+        std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
+        while ((options.seqOptions.bsSeqOptions.bsSimEnabled &&
+                vcfMat.materializeNext(contigSeq, levels, breakpoints, rID, hID)) ||
+               (!options.seqOptions.bsSeqOptions.bsSimEnabled &&
+                vcfMat.materializeNext(contigSeq, breakpoints, rID, hID)))
         {
             std::cerr << "  " << sequenceName(vcfMat.faiIndex, rID) << " (allele " << (hID + 1) << ") ";
             contigFragmentCount = 0;
