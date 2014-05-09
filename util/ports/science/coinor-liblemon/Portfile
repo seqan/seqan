@@ -2,6 +2,7 @@
 # $Id$
 
 PortSystem          1.0
+PortGroup           cmake 1.0
 
 name                coinor-liblemon
 version             1.3
@@ -19,11 +20,8 @@ long_description    A C++ template library providing easy-to-use implementations
                     of common graph and network related data structures and \
                     algorithms.
 
-homepage            http://www.seqan.de/projects
+homepage            http://lemon.cs.elte.hu
 
-
-depends_build       port:cmake port:python27
-depends_lib
 
 master_sites        http://lemon.cs.elte.hu/pub/sources/
 distname            lemon-${version}
@@ -31,12 +29,6 @@ checksums           rmd160  25a19a53166531f5794b5f6aa85e78e491e9d9bc \
                     sha256  6c190dbb1e17bdb71597e79c409b2e798ffcbdb7d764ea45d6299339b12d3e05
 
 configure.compiler  macports-gcc-4.7
-configure.ccache    no
-configure.cmd       cmake
-configure.pre_args  -DCMAKE_INSTALL_PREFIX=${prefix} \
-                    -DCMAKE_VERBOSE_MAKEFILE=ON \
-                    -DDCMAKE_BUILD_TYPE=Release \
-                    -DLEMON_ENABLE_GLPK=NO \
+configure.args      -DLEMON_ENABLE_GLPK=NO \
                     -DLEMON_ENABLE_COIN=NO \
                     -DLEMON_ENABLE_ILOG=NO
-
