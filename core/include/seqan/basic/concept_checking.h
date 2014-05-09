@@ -781,7 +781,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @headerfile seqan/basic.h
  * 
  * 
- * @signature template<> SEQAN_CONCEPT_IMPL(name, implementedConcepts)
+ * @signature template<> SEQAN_CONCEPT_IMPL(implementedConcepts, name)
  *            template<typename T, int I> SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
  * 
  * @param implementedConcepts Identifiers of concepts that are fulfilled by the model.  This is a sequence of the
@@ -808,7 +808,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 ..summary:Defines which concepts a model fulfills.
 ..signature:
 template<> 
-SEQAN_CONCEPT_IMPL(name, implementedConcepts)
+SEQAN_CONCEPT_IMPL(implementedConcepts, name)
 
 template<typename T, int I>
 SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
@@ -973,7 +973,9 @@ SEQAN_CONCEPT(ConceptB, (T)) {};
 SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
 SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
 
+template <>
 SEQAN_CONCEPT_IMPL((ConceptA)(ConceptB), Alice);
+template <>
 SEQAN_CONCEPT_IMPL((ConceptC), Bob);
 
 std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
