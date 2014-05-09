@@ -282,14 +282,14 @@ inline void assignValue(
 }
 
 // ----------------------------------------------------------------------------
-// Function globalReference()
+// Function host()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledSet#globalReference
+ * @fn JournaledSet#host
  * @brief Returns the global reference sequence of a @link JournaledSet @endlink.
  * 
- * @signature THost globalReference(stringSet);
+ * @signature THost host(stringSet);
  * 
  * @param[in] stringSet The JournaledStringSet that stores the sequences. Types: @link  JournaledSet  @endlink
  * 
@@ -297,36 +297,44 @@ inline void assignValue(
  */
 
 /**
-.Function.globalReference:
+.Function.host:
 ..summary:Returns the global reference sequence of a @Spec.Journaled Set@.
 ..class:Spec.Journaled Set
 ..cat:Sequences
-..signature:globalReference(stringSet)
+..signature:host(stringSet)
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..returns:The global reference sequence of the @Spec.Journaled Set@.
 ...metafunction:Metafunction.Host
-..see:Function.setGlobalReference
-..see:Function.createGlobalReference
+..see:Function.setHost
+..see:Function.createHost
 ..include:seqan/journal_set.h
 */
 
 template <typename TString>
+inline typename Host<StringSet<TString, Owner<JournaledSet> >const >::Type &
+host(StringSet<TString, Owner<JournaledSet> > const & journalSet)
+{
+    return value(journalSet._globalRefHolder);
+}
+
+
+template <typename TString>
 inline typename Host<StringSet<TString, Owner<JournaledSet> > >::Type &
-globalReference(StringSet<TString, Owner<JournaledSet> > const & journalSet)
+host(StringSet<TString, Owner<JournaledSet> > & journalSet)
 {
     return value(journalSet._globalRefHolder);
 }
 
 // ----------------------------------------------------------------------------
-// Function setGlobalReference()
+// Function setHost()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledSet#setGlobalReference
+ * @fn JournaledSet#setHost
  * @brief Sets the global reference of a @link JournaledSet @endlink.
  * 
- * @signature void setGlobalReference(stringSet, ref);
+ * @signature void setHost(stringSet, ref);
  * 
  * @param[in,out] stringSet The string set that stores the sequences. Types: @link JournaledSet @endlink
  * @param[in]     ref       The new reference sequence of the @link JournaledSet  @endlink.
@@ -337,37 +345,38 @@ globalReference(StringSet<TString, Owner<JournaledSet> > const & journalSet)
  */
 
 /**
-.Function.setGlobalReference:
+.Function.setHost:
 ..summary:Sets the global reference of a @Spec.Journaled Set@.
 ..class:Spec.Journaled Set
 ..cat:Sequences
-..signature:setGlobalReference(stringSet, reference)
+..signature:setHost(stringSet, reference)
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..param.reference: The new reference sequence of the Journaled Set.
 ...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
 ..remarks:Uses an @Class.Holder@ to store a reference to the new global reference sequence instead of copying it.
-..see:Function.createGlobalReference
-..see:Function.globalReference
+..see:Function.createHost
+..see:Function.host
 ..include:seqan/journal_set.h
 */
+
 template <typename TString>
 inline void
-setGlobalReference(StringSet<TString, Owner<JournaledSet> > & journalSet,
-                   typename Host<TString>::Type & newGlobalRef)
+setHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
+        typename Host<TString>::Type & newGlobalRef)
 {
     setValue(journalSet._globalRefHolder, newGlobalRef);
 }
 
 // ----------------------------------------------------------------------------
-// Function createGlobalReference()
+// Function createHost()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledSet#createGlobalReference
+ * @fn JournaledSet#createHost
  * @brief Creates the global reference of a @link JournaledSet @endlink.
  *
- * @signature void createGlobalReference(stringSet, ref);
+ * @signature void createHost(stringSet, ref);
  *
  * @param[in,out] stringSet The JournaledStringSet that stores the sequences.
  * @param[in]     ref       The new reference sequence of the JournaledSet.  Stores a copy of the passed global
@@ -375,23 +384,24 @@ setGlobalReference(StringSet<TString, Owner<JournaledSet> > & journalSet,
  */
 
 /**
-.Function.createGlobalReference:
+.Function.createHost:
 ..summary:Creates the global reference of a @Spec.Journaled Set@.
 ..class:Spec.Journaled Set
 ..cat:Sequences
-..signature:createGlobalReference(stringSet, reference)
+..signature:createHost(stringSet, reference)
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..param.reference: The new reference sequence of the Journaled Set.
 ...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
 ..remarks:Stores a copy of the passed global reference sequence.
-..see:Function.setGlobalReference
-..see:Function.globalReference
+..see:Function.setHost
+..see:Function.host
 ..include:seqan/journal_set.h
 */
+
 template <typename TString>
 inline void
-createGlobalReference(StringSet<TString, Owner<JournaledSet> > & journalSet,
+createHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
                    typename Host<TString>::Type const & newGlobalRef)
 {
     create(journalSet._globalRefHolder, newGlobalRef);

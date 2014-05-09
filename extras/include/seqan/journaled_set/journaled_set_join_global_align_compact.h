@@ -70,13 +70,13 @@ _joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & j
 
     // TODO(rmaerker): Check the correct behavior here.
     TJournalString tmpJournal;
-    setHost(tmpJournal, globalReference(journalSet));
+    setHost(tmpJournal, host(journalSet));
 
     if (isBandSet(joinConfig))
-        globalAlignment(tmpJournal, globalReference(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig,
+        globalAlignment(tmpJournal, host(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig,
                         lowerDiagonal(joinConfig), upperDiagonal(joinConfig));
     else
-        globalAlignment(tmpJournal, globalReference(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig);
+        globalAlignment(tmpJournal, host(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig);
 
     // Apply the alignment to the journal.
     set(journal, tmpJournal);
