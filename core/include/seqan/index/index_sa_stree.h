@@ -37,7 +37,7 @@
 #ifndef SEQAN_EXTRAS_INDEX_SA_STREE_H_
 #define SEQAN_EXTRAS_INDEX_SA_STREE_H_
 
-#define SEQAN_DEBUG
+//#define SEQAN_DEBUG
 
 namespace seqan {
 
@@ -146,9 +146,8 @@ template <typename TSize, typename TAlphabet>
 struct HistoryStackSA_
 {
     Pair<TSize> range;
+    TSize       repLen;
     TAlphabet   lastChar;
-
-    HistoryStackSA_() {}
 };
 
 // ============================================================================
@@ -525,9 +524,9 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     // Update range, lastChar and repLen.
     value(it).range.i1 = range.i1 - begin(sa, Standard());
     value(it).range.i2 = range.i2 - begin(sa, Standard());
-    value(it).lastChar = c;
     value(it).repLen++;
-    
+    value(it).lastChar = c;
+
 #ifdef SEQAN_DEBUG
     std::cout << "child: " <<  value(it).range << std::endl;
 #endif
@@ -570,8 +569,8 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     // Update range, lastChar and repLen.
     value(it).range.i1 = range.i1 - begin(sa, Standard());
     value(it).range.i2 = range.i2 - begin(sa, Standard());
-    value(it).lastChar = back(pattern);
     value(it).repLen += length(pattern);
+    value(it).lastChar = back(pattern);
 
 #ifdef SEQAN_DEBUG
     std::cout << "child: " <<  value(it).range << std::endl;
@@ -593,8 +592,8 @@ nodeUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec
     {
         typename VertexDescriptor<TIndex>::Type desc;
         desc.range = back(it.history).range;
+        desc.repLen = back(it.history).repLen;
         desc.lastChar = back(it.history).lastChar;
-        desc.repLen = value(it).repLen - 1;
         if (length(it.history) >= 2)
             desc.parentRight = backPrev(it.history).range.i2;
         else
@@ -614,8 +613,8 @@ inline bool _goUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<Parent
     if (!empty(it.history))
     {
         value(it).range = back(it.history).range;
+        value(it).repLen = back(it.history).repLen;
         value(it).lastChar = back(it.history).lastChar;
-        value(it).repLen--;
         eraseBack(it.history);
         if (!empty(it.history))
             value(it).parentRight = back(it.history).range.i2;
@@ -639,6 +638,7 @@ inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown
     typedef Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > TIter;
     typename HistoryStackEntry_<TIter>::Type h;
     h.range = value(it).range;
+    h.repLen = value(it).repLen;
     h.lastChar = value(it).lastChar;
 
     value(it).parentRight = value(it).range.i2;
