@@ -86,7 +86,7 @@ class Index<TText, IndexSa<TSpec> >
 {
 public:
     typename Member<Index, FibreText>::Type         text;
-    typename Fibre<Index, EsaSA>::Type              sa;
+    typename Fibre<Index, FibreSA>::Type            sa;
     typename Cargo<Index>::Type                     cargo;
 
     Index() {}
@@ -190,7 +190,7 @@ struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
 template <typename TText, typename TIndexSpec>
 SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexSa<TIndexSpec> > & index)
 {
-    indexRequire(index, EsaSA());
+    indexRequire(index, FibreSA());
 }
 
 template <typename TText>
@@ -650,7 +650,7 @@ inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown
 template <typename TText, typename TSpec>
 inline void clear(Index<TText, IndexSa<TSpec> > & index)
 {
-    clear(getFibre(index, EsaSA()));
+    clear(getFibre(index, FibreSA()));
 }
 
 template <typename TObject, typename TSpec>
@@ -659,11 +659,11 @@ inline bool open(Index<TObject, IndexSa<TSpec> > & index, const char * fileName,
     String<char> name;
 
     name = fileName;    append(name, ".txt");
-    if ((!open(getFibre(index, EsaText()), toCString(name), openMode)) &&
-        (!open(getFibre(index, EsaText()), fileName, openMode))) return false;
+    if ((!open(getFibre(index, FibreText()), toCString(name), openMode)) &&
+        (!open(getFibre(index, FibreText()), fileName, openMode))) return false;
 
     name = fileName;    append(name, ".sa");
-    if (!open(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+    if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
 
     return true;
 }
@@ -680,11 +680,11 @@ inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName,
     String<char> name;
     
     name = fileName;    append(name, ".txt");
-    if ((!save(getFibre(index, EsaText()), toCString(name), openMode)) &&
-        (!save(getFibre(index, EsaText()), fileName, openMode))) return false;
+    if ((!save(getFibre(index, FibreText()), toCString(name), openMode)) &&
+        (!save(getFibre(index, FibreText()), fileName, openMode))) return false;
 
     name = fileName;    append(name, ".sa");
-    if (!save(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+    if (!save(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
 
     return true;
 }
