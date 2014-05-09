@@ -544,6 +544,13 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
+    if (empty(pattern))
+    {
+        _historyPush(it);
+        lcp = 0;
+        return true;
+    }
+
     if (_isLeaf(it, HideEmptyEdges()))
         return false;
 
@@ -565,7 +572,7 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
 
     // Save vertex descriptor.
     _historyPush(it);
-    
+
     // Update range, lastChar and repLen.
     value(it).range.i1 = range.i1 - begin(sa, Standard());
     value(it).range.i2 = range.i2 - begin(sa, Standard());
@@ -640,9 +647,9 @@ inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown
     h.range = value(it).range;
     h.repLen = value(it).repLen;
     h.lastChar = value(it).lastChar;
+    appendValue(it.history, h);
 
     value(it).parentRight = value(it).range.i2;
-    appendValue(it.history, h);
 }
 
 // ============================================================================
