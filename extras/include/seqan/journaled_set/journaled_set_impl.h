@@ -102,7 +102,7 @@ struct Host<StringSet<TString, Owner<JournaledSet> > >
 template <typename TString>
 struct Host<StringSet<TString, Owner<JournaledSet> > const >
 {
-    typedef typename Host<TString const>::Type Type;
+    typedef typename Host<TString>::Type const Type;
 };
 
 // ============================================================================
@@ -312,7 +312,7 @@ inline void assignValue(
 */
 
 template <typename TString>
-inline typename Host<StringSet<TString, Owner<JournaledSet> >const >::Type &
+inline typename Host<StringSet<TString, Owner<JournaledSet> > >::Type const &
 host(StringSet<TString, Owner<JournaledSet> > const & journalSet)
 {
     return value(journalSet._globalRefHolder);
@@ -360,10 +360,10 @@ host(StringSet<TString, Owner<JournaledSet> > & journalSet)
 ..include:seqan/journal_set.h
 */
 
-template <typename TString>
+template <typename TString, typename THost>
 inline void
 setHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
-        typename Host<TString>::Type & newGlobalRef)
+        THost & newGlobalRef)
 {
     setValue(journalSet._globalRefHolder, newGlobalRef);
 }
