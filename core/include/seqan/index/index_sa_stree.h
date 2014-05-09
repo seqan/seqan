@@ -37,7 +37,7 @@
 #ifndef SEQAN_EXTRAS_INDEX_SA_STREE_H_
 #define SEQAN_EXTRAS_INDEX_SA_STREE_H_
 
-//#define SEQAN_DEBUG
+#define SEQAN_DEBUG
 
 namespace seqan {
 
@@ -53,12 +53,6 @@ struct SortedList;
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
-
-// TODO(esiragusa): Add IndexSa fibres.
-//typedef FibreText         SaText;
-//typedef FibreRawText      SaRawText;
-//typedef FibreSA           SaSA;
-//typedef FibreRawSA        SaRawSA;
 
 template <typename TSpec = void>
 struct IndexSa {};
@@ -339,10 +333,9 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     typedef typename Value<TIndex>::Type                    TAlphabet;
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "goDown" << std::endl;
+    std::cout << "goDown" << std::endl;
 #endif
 
-    // TODO(esiragusa): use HideEmptyEdges()
     if (_isLeaf(it, HideEmptyEdges()))
         return false;
 
@@ -353,7 +346,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     // TODO(esiragusa): check nodeHullPredicate
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
     Pair<typename Size<TIndex>::Type> saRange = range(it);
@@ -375,8 +368,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     TAlphabet cRight = textAt(posAdd(saAt(saRange.i2 - 1, index), value(it).repLen), index);
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "cLeft: " << cLeft << std::endl;
-    //std::cout << "cRight: " << cRight << std::endl;
+    std::cout << "char: " << Pair<TAlphabet>(cLeft, cRight) << std::endl;
 #endif
 
     // Save vertex descriptor.
@@ -407,7 +399,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     value(it).lastChar = cLeft;
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "child: " <<  value(it).range << std::endl;
 #endif
 
     return true;
@@ -425,7 +417,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     typedef typename Value<TIndex>::Type                    TAlphabet;
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "goRight" << std::endl;
+    std::cout << "goRight" << std::endl;
 #endif
 
     if (isRoot(it))
@@ -435,7 +427,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     TSA const & sa = indexSA(index);
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "current: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "current: " << value(it).range << std::endl;
 #endif
 
     Pair<typename Size<TIndex>::Type> saRange;
@@ -463,8 +455,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     SEQAN_ASSERT_NEQ(ordValue(cLeft), ordValue(value(it).lastChar));
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "cLeft: " << cLeft << std::endl;
-    //std::cout << "cRight: " << cRight << std::endl;
+    std::cout << "char: " << Pair<TAlphabet>(cLeft, cRight) << std::endl;
 #endif
 
     // Update left range.
@@ -493,7 +484,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     value(it).lastChar = cLeft;
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "sibling: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "sibling: " <<  value(it).range << std::endl;
 #endif
 
     return true;
@@ -507,7 +498,6 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     typedef typename Size<TIndex>::Type                     TSASize;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
-    //typedef typename Value<TIndex>::Type                    TAlphabet;
 
     if (_isLeaf(it, HideEmptyEdges()))
         return false;
@@ -517,7 +507,7 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     TText const & text = indexText(index);
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
     TSAIterator saBegin = begin(sa, Standard()) + value(it).range.i1;
@@ -539,7 +529,7 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     value(it).repLen++;
     
 #ifdef SEQAN_DEBUG
-    //std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "child: " <<  value(it).range << std::endl;
 #endif
 
     return true;
@@ -563,7 +553,7 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     TText const & text = indexText(index);
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
     TSAIterator saBegin = begin(sa, Standard()) + value(it).range.i1;
@@ -584,7 +574,7 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     value(it).repLen += length(pattern);
 
 #ifdef SEQAN_DEBUG
-    //std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+    std::cout << "child: " <<  value(it).range << std::endl;
 #endif
 
     lcp = length(pattern);
@@ -618,7 +608,7 @@ template <typename TText, typename TIndexSpec, typename TSpec>
 inline bool _goUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
 {
 #ifdef SEQAN_DEBUG
-    //std::cout << "goUp" << std::endl;
+    std::cout << "goUp" << std::endl;
 #endif
 
     if (!empty(it.history))
