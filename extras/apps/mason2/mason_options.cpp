@@ -380,9 +380,9 @@ void MaterializerOptions::getOptionValues(seqan::ArgumentParser const & parser)
 void MaterializerOptions::print(std::ostream & out) const
 {
     out << "MATERIALIZER OPTIONS\n"
-        << "  VERBOSITY      \t" << getVerbosityStr(verbosity) << "\n"
-        << "  REFERENCE FASTA\t" << fastaFileName << "\n"
-        << "  VARIANTS VCF   \t" << vcfFileName << "\n";
+        << "  VERBOSITY         \t" << getVerbosityStr(verbosity) << "\n"
+        << "  REFERENCE FASTA   \t" << fastaFileName << "\n"
+        << "  VARIANTS VCF      \t" << vcfFileName << "\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -1298,6 +1298,10 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     setRequired(parser, "out");
     setValidValues(parser, "out", "fa fasta");
 
+    addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
+                                            seqan::ArgParseOption::OUTPUTFILE, "TSV"));
+    setValidValues(parser, "out-breakpoints", "tsv txt");
+
     addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep",
                                             "String separating contig name from haplotype number.",
                                             seqan::ArgParseOption::STRING, "SEP"));
@@ -1343,6 +1347,7 @@ void MasonMaterializerOptions::getOptionValues(seqan::ArgumentParser const & par
     getOptionValue(seed, parser, "seed");
     getOptionValue(methSeed, parser, "meth-seed");
     getOptionValue(outputFileName, parser, "out");
+    getOptionValue(outputBreakpointFile, parser, "out-breakpoints");
     getOptionValue(haplotypeNameSep, parser, "haplotype-name-sep");
     getOptionValue(methFastaInFile, parser, "meth-fasta-in");
     getOptionValue(methFastaOutFile, parser, "meth-fasta-out");
@@ -1374,6 +1379,7 @@ void MasonMaterializerOptions::print(std::ostream & out) const
         << "METHYLATION SEED        \t" << methSeed << "\n"
         << "\n"
         << "OUTPUT FILE             \t" << outputFileName << "\n"
+        << "BREAKPOINT TSV OUT      \t" << outputBreakpointFile << "\n"
         << "METHYLATION LEVEL INPUT \t" << methFastaInFile << "\n"
         << "METHYLATION LEVEL OUTPUT\t" << methFastaOutFile << "\n"
         << "\n"
