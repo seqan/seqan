@@ -216,7 +216,8 @@ public:
             rID = idx;
 
             vcfMat.currRID = rID - 1;
-            while (vcfMat.materializeNext(seq, rID, hID))
+            std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
+            while (vcfMat.materializeNext(seq, breakpoints, rID, hID))
             {
                 std::cerr << " (allele " << (hID + 1) << ")";
                 if (rID != (int)idx)
