@@ -64,10 +64,6 @@ _joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & j
               StringSet<TJournalString2, Owner<JournaledSet> > const & journalSet,
               JoinConfig<GlobalAlign<JournaledCompact> > const & joinConfig)
 {
-
-    typedef StringSet<TJournalString2, Owner<JournaledSet> > TStringSet;
-    typedef typename Host<TStringSet const>::Type THost;
-
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
 
     // TODO(rmaerker): Check the correct behavior here.
