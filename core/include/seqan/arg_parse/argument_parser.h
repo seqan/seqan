@@ -86,7 +86,7 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  * See the documentation of @link ToolDoc @endlink on how to format text.  Wherever possible, formatting is added
  * automatically for you.  You have to use formatting in the following places: (1) usage lines, (2) option help texts,
  * (3) description and additional text sections.
- * 
+ *
  * @section Examples
  *
  * The following gives a simple example of how to use the ArgumentParser class.
@@ -479,6 +479,7 @@ inline void addArgument(ArgumentParser & me, ArgParseArgument const & arg)
         addOption(me, ArgParseOption("", longName, helpText, ArgParseOption::STRING, "EXT",
                                      isListArgument(arg), numberOfAllowedValues(arg)));
         getOption(me, longName.c_str()).tags.push_back("file-ext-override");
+        getOption(me, longName.c_str()).tags.push_back("gkn-ignore");
         // Hide option.
         hideOption(me, longName);
         // Copy valid values, remove leading dots.

@@ -75,7 +75,9 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "STRING"));
     setHelpText(parser, 1, "String Argument");
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
-    setHelpText(parser, 1, "Documentated Argument with \\fBformating\\fP");
+    setHelpText(parser, 2, "Documentated Argument with \\fBformating\\fP");
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUTPUT-FILE"));
+    setHelpText(parser, 3, "Testing output file arguments");
 
     // export ctd
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
