@@ -65,12 +65,14 @@ _joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & j
               JoinConfig<GlobalAlign<JournaledCompact> > const & joinConfig)
 {
 
+    typedef StringSet<TJournalString2, Owner<JournaledSet> > TStringSet;
+    typedef typename Host<TStringSet const>::Type THost;
+
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-//    typedef typename Size<TJournalString>::Type TSize;
 
     // TODO(rmaerker): Check the correct behavior here.
     TJournalString tmpJournal;
-    setHost(tmpJournal, host(journalSet));
+    setHost(tmpJournal, value(journalSet._globalRefHolder));
 
     if (isBandSet(joinConfig))
         globalAlignment(tmpJournal, host(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig,
