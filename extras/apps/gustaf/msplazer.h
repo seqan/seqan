@@ -109,7 +109,7 @@ struct MSplazerOptions
         tandemThresh(50),
         breakpointPosRange(5),
         support(2),
-        mateSupport(1),
+        mateSupport(2),
         libSize(0),
         libError(0),
         pairedEndMode(false),
