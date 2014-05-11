@@ -334,8 +334,9 @@ def main(source_base, binary_base):
               '-gff', ph.outFile('pairedEnd_st1_l30.gff'),
               '-vcf', ph.outFile('pairedEnd_st1_l30.vcf'),
               '-st', str(1),
+              '-mst', str(1),
               '-ll', str(1000),
-              '-le', str(30),
+              '-le', str(100),
               '-rc',
               ],
         to_diff=[(ph.inFile('pairedEnd_st1_l30.vcf'),
@@ -347,7 +348,7 @@ def main(source_base, binary_base):
 
     #out="pairedEnd_st1_l30"
     #${GUSTAF} adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa -m stellar_joinedMates_l30.gff -st 1
-    #-ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+    #-mst 1 -ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # Execute the tests.

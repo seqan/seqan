@@ -1,5 +1,5 @@
 gi|9632547|ref|NC_002077.1|	GUSTAF	inversion	211	280	.	-	.	ID=0;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=+;support=1;supportIds=210-350_inversion_210-280_bp_71,;breakpoint=71
 gi|9632547|ref|NC_002077.1|	GUSTAF	deletion	422	490	.	+	.	ID=1;size=69;support=1;supportIds=420-560_deletion_420-490_bp_71,;breakpoint=71
 gi|9632547|ref|NC_002077.1|	GUSTAF	insertion	910	910	.	+	.	ID=2;size=-70;seq=CTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT;support=1;supportIds=insertion_840-1050_bp_71,;breakpoint=70
-gi|9632547|ref|NC_002077.1|	GUSTAF	deletion	1194	1263	.	+	.	ID=3;size=70;support=1;supportIds=1050-1190_deletion_1050-1120_1190-1260_bp_71,;breakpoint=71
+gi|9632547|ref|NC_002077.1|	GUSTAF	deletion	1194	1262	.	+	.	ID=3;size=69;support=1;supportIds=1050-1190_deletion_1050-1120_1190-1260_bp_71,;breakpoint=71
 gi|9632547|ref|NC_002077.1|	GUSTAF	duplication	1469	1469	.	+	.	ID=4;endChr=gi|9632547|ref|NC_002077.1|;endPos=1888;endStrand=+;support=2;supportIds=1260-1470_translocation_1820-1890,1330-1400_bp_71_141,;breakpoint=139
