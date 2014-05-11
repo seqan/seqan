@@ -498,8 +498,8 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
-    if (_isLeaf(it, HideEmptyEdges()))
-        return false;
+    // Save vertex descriptor.
+    _historyPush(it);
 
     TIndex const & index = container(it);
     TSA const & sa = indexSA(index);
@@ -512,15 +512,11 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     TSAIterator saBegin = begin(sa, Standard()) + value(it).range.i1;
     TSASize saLen = isRoot(it) ? length(sa) : value(it).range.i2 - value(it).range.i1;
     TSearchTreeIterator node(saBegin, saLen);
-
     Pair<TSAIterator> range = _equalRangeSA(text, node, c, value(it).repLen);
 
     if (range.i1 >= range.i2)
         return false;
 
-    // Save vertex descriptor.
-    _historyPush(it);
-    
     // Update range, lastChar and repLen.
     value(it).range.i1 = range.i1 - begin(sa, Standard());
     value(it).range.i2 = range.i2 - begin(sa, Standard());
@@ -544,40 +540,33 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
-    if (empty(pattern))
-    {
-        _historyPush(it);
-        lcp = 0;
-        return true;
-    }
-
-    if (_isLeaf(it, HideEmptyEdges()))
-        return false;
-
-    TIndex const & index = container(it);
-    TSA const & sa = indexSA(index);
-    TText const & text = indexText(index);
+    // Save vertex descriptor.
+    _historyPush(it);
 
 #ifdef SEQAN_DEBUG
     std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
-    TSAIterator saBegin = begin(sa, Standard()) + value(it).range.i1;
-    TSASize saLen = isRoot(it) ? length(sa) : value(it).range.i2 - value(it).range.i1;
-    TSearchTreeIterator node(saBegin, saLen);
-    Pair<TSAIterator> range = _equalRangeSA(text, node, pattern, value(it).repLen);
+    if (!empty(pattern))
+    {
+        TIndex const & index = container(it);
+        TSA const & sa = indexSA(index);
+        TText const & text = indexText(index);
 
-    if (range.i1 >= range.i2)
-        return false;
+        TSAIterator saBegin = begin(sa, Standard()) + value(it).range.i1;
+        TSASize saLen = isRoot(it) ? length(sa) : value(it).range.i2 - value(it).range.i1;
+        TSearchTreeIterator node(saBegin, saLen);
+        Pair<TSAIterator> range = _equalRangeSA(text, node, pattern, value(it).repLen);
 
-    // Save vertex descriptor.
-    _historyPush(it);
+        if (range.i1 >= range.i2)
+            return false;
 
-    // Update range, lastChar and repLen.
-    value(it).range.i1 = range.i1 - begin(sa, Standard());
-    value(it).range.i2 = range.i2 - begin(sa, Standard());
-    value(it).repLen += length(pattern);
-    value(it).lastChar = back(pattern);
+        // Update range, lastChar and repLen.
+        value(it).range.i1 = range.i1 - begin(sa, Standard());
+        value(it).range.i2 = range.i2 - begin(sa, Standard());
+        value(it).repLen += length(pattern);
+        value(it).lastChar = back(pattern);
+    }
 
 #ifdef SEQAN_DEBUG
     std::cout << "child: " <<  value(it).range << std::endl;
