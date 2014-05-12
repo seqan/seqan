@@ -237,7 +237,6 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
     return _scoutBestScore(dpScout, activeCell, navigator, False(), False());
 }
 
-
 // ----------------------------------------------------------------------------
 // Function maxScore()
 // ----------------------------------------------------------------------------

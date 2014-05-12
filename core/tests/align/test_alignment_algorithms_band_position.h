@@ -48,7 +48,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
-
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
 
