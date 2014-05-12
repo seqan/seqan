@@ -223,6 +223,40 @@ void testJournaledStringClear(TStringJournalSpec const &)
     }
 }
 
+// Test empty().
+template <typename TStringJournalSpec>
+void testJournaledStringEmpty(TStringJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
+    typedef typename Size<TJournaledString>::Type TSize;
+
+    CharString charStr = "test";
+
+    {  // Empty string.
+        TJournaledString journaledString;
+        SEQAN_ASSERT_EQ(empty(journaledString), true);
+    }
+
+    {  // Host set.
+        TJournaledString journaledString;
+        setHost(journaledString, charStr);
+        SEQAN_ASSERT_EQ(empty(journaledString), false);
+    }
+
+    {  // Host is set but empty;
+        TJournaledString journaledString;
+        create(journaledString._holder);
+        SEQAN_ASSERT_EQ(empty(journaledString), true);
+    }
+
+    {  // Host is set and empty but insertion buffer is filled;
+        TJournaledString journaledString;
+        CharString otherString = "Other String";
+        assign(journaledString, otherString);
+        SEQAN_ASSERT_EQ(empty(journaledString), false);
+    }
+}
+
 
 // Test erase() with position only
 template <typename TStringJournalSpec>
@@ -1149,6 +1183,10 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_host) {
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_clear) {
     testJournaledStringClear(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_empty) {
+    testJournaledStringEmpty(SortedArray());
 }
 
 
