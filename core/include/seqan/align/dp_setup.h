@@ -192,17 +192,8 @@ struct SetupAlignmentProfile_;
 template <typename TFreeEndGaps, typename TGapCosts, typename TTraceSwitch>
 struct SetupAlignmentProfile_<DPGlobal, TFreeEndGaps, TGapCosts, TTraceSwitch>
 {
-//    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
     typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGapCosts, TTraceSwitch> Type;
 };
-
-// Profile for Gotoh algorithm.
-//template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
-//struct SetupAlignmentProfile_<Gotoh, TAlignConfig, TGapCosts, TTraceSwitch>
-//{
-//    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
-//    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps_>, TGapCosts, TTraceSwitch> Type;
-//};
 
 // Profile for Smith-Waterman algorithm.
 template <typename TFreeEndGaps, typename TGapCosts, typename TTraceSwitch>

@@ -270,22 +270,16 @@ _computeCell(TDPScout & scout,
                 _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                               TDPProfile()));
-//	std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
+
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
-//         bool isLastColumn = IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE;
-//         bool isLastRow = And<IsSameType<TCellDescriptor, LastCell>,
-//                              Or<IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>,
-//                                 IsSameType<typename TColumnDescriptor::TLocation, FullColumn> > >::VALUE;
-//         (scout, activeCell, traceMatrixNavigator, isLastColumn, isLastRow);
-        typedef typename IsSameType<
-                            typename TColumnDescriptor::TColumnProperty,
-                            DPFinalColumn>::Type               TIsLastColumn;
-        typedef typename And<IsSameType<TCellDescriptor, LastCell>,
-                            Or<IsSameType<typename TColumnDescriptor::TLocation,
-                                          PartialColumnBottom>,
-                               IsSameType<typename TColumnDescriptor::TLocation,
-                                          FullColumn> > >::Type    TIsLastRow;
+        typedef typename IsSameType<typename TColumnDescriptor::TColumnProperty,
+            DPFinalColumn>::Type TIsLastColumn;
+        typedef typename And<IsSameType<TCellDescriptor, LastCell>, Or<
+            IsSameType<typename TColumnDescriptor::TLocation,
+            PartialColumnBottom>,IsSameType<
+            typename TColumnDescriptor::TLocation, FullColumn> > >::Type
+            TIsLastRow;
         _scoutBestScore(scout, activeCell, traceMatrixNavigator,
                         TIsLastColumn(), TIsLastRow());
     }
