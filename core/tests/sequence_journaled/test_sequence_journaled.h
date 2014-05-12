@@ -228,7 +228,6 @@ template <typename TStringJournalSpec>
 void testJournaledStringEmpty(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
-    typedef typename Size<TJournaledString>::Type TSize;
 
     CharString charStr = "test";
 
