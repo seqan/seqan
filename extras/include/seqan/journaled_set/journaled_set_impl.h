@@ -133,40 +133,14 @@ value(StringSet<TString, Owner<JournaledSet> > const & me,
 // Function appendValue()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TExpand>
-void appendValue(StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
-                 String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & newElement,
-                 Tag<TExpand> tag)
-{
-    if (_validStringSetLimits(journalSet))
-        appendValue(journalSet.limits, lengthSum(journalSet) + length(newElement), tag);
-    appendValue(journalSet.strings, newElement, tag);
-}
-
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TExpand>
-void
-appendValue(StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
-        String<TValue, THostSpec> & newElement,
-        Tag<TExpand> tag)
-{
-    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-
-    TJournalString jrn(newElement);
-
-    if (_validStringSetLimits(journalSet))
-            appendValue(journalSet.limits, lengthSum(journalSet) + length(jrn), tag);
-    appendValue(journalSet.strings, jrn, tag);
-}
-
 template <typename TString, typename TString2, typename TExpand>
 void
 appendValue(StringSet<TString, Owner<JournaledSet> > & journalSet,
             TString2 const & newElement,
             Tag<TExpand> tag)
 {
-    if (_validStringSetLimits(journalSet))
-        appendValue(journalSet.limits, lengthSum(journalSet) + length(newElement), tag);
-    appendValue(journalSet.strings, newElement, tag);
+    resize(journalSet, length(journalSet) + 1, tag);
+    assignValue(journalSet, length(journalSet) - 1 , newElement);
 }
 
 // ----------------------------------------------------------------------------
@@ -205,82 +179,39 @@ erase(StringSet<TString, Owner<JournaledSet> > & journalSet, TPos pos, TPosEnd p
     return length(journalSet);
 }
 
+// ----------------------------------------------------------------------------
+// Function resize()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSize, typename TValue, typename TExpandTag>
+inline typename Size<StringSet<TString, Owner<JournaledSet> > >::Type
+resize(StringSet<TString, Owner<JournaledSet> > & journalSet,
+       TSize const & newSize,
+       TValue const & fillValue,
+       Tag<TExpandTag> const & expansionTag)
+{
+    resize(journalSet.strings, newSize, fillValue, expansionTag);
+    resize(journalSet.limits, newSize + 1);
+    journalSet.limitsValid = true;
+    return length(journalSet);
+}
+
 // --------------------------------------------------------------------------
 // Function assignValue()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TPos>
-inline void assignValue(
-    StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
-    TPos pos,
-    String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & newElement)
-{
-    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-    typedef StringSet<TJournalString, Owner<JournaledSet> > TJournaledSet;
-    typedef typename Size<TJournaledSet>::Type TSize;
-    typedef typename StringSetLimits<TJournaledSet>::Type TLimits;
-    typedef typename Value<TLimits>::Type TLimitValue;
-    typedef typename MakeSigned<TLimitValue>::Type TSignedLimitValue;
-
-    TSignedLimitValue oldSize = length(journalSet[pos]);
-    set(journalSet[pos], newElement);
-    if (_validStringSetLimits(journalSet))
-    {
-        TSignedLimitValue delta = (TSignedLimitValue)length(newElement) - oldSize;
-        TSize size = length(journalSet);
-        while (pos < size)
-            journalSet.limits[++pos] += delta;
-    }
-}
-
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TPos>
-inline void assignValue(
-    StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
-    TPos pos,
-    String<TValue, THostSpec> & newElement)
-{
-    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-    typedef StringSet<TJournalString, Owner<JournaledSet> > TJournaledSet;
-    typedef typename Size<TJournaledSet>::Type TSize;
-    typedef typename StringSetLimits<TJournaledSet>::Type TLimits;
-    typedef typename Value<TLimits>::Type TLimitValue;
-    typedef typename MakeSigned<TLimitValue>::Type TSignedLimitValue;
-
-    TSignedLimitValue oldSize = length(journalSet[pos]);
-    TJournalString newJrn(newElement);
-    set(journalSet[pos], newJrn);
-    if (_validStringSetLimits(journalSet))
-    {
-        TSignedLimitValue delta = (TSignedLimitValue)length(newJrn) - oldSize;
-        TSize size = length(journalSet);
-        while (pos < size)
-            journalSet.limits[++pos] += delta;
-    }
-}
-
+// No journaled strings as values.
 template <typename TString, typename TPos,  typename TString2>
 inline void assignValue(
     StringSet<TString, Owner<JournaledSet> > & journalSet,
     TPos pos,
     TString2 const & newElement)
 {
-    typedef StringSet<TString, Owner<JournaledSet> > TJournaledSet;
-    typedef typename Size<TJournaledSet>::Type TSize;
-    typedef typename StringSetLimits<TJournaledSet>::Type TLimits;
-    typedef typename Value<TLimits>::Type TLimitValue;
-    typedef typename MakeSigned<TLimitValue>::Type TSignedLimitValue;
+    SEQAN_ASSERT_GEQ(pos, static_cast<TPos>(0));
+    SEQAN_ASSERT_LT(pos, static_cast<TPos>(length(journalSet)));
 
-    TSignedLimitValue oldSize = length(journalSet[pos]);
     assign(journalSet[pos], newElement);
-    if (_validStringSetLimits(journalSet))
-    {
-        TSignedLimitValue delta = (TSignedLimitValue)length(newElement) - oldSize;
-        TSize size = length(journalSet);
-        while (pos < size)
-            journalSet.limits[++pos] += delta;
-    }
 }
-
 // ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
