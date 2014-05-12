@@ -221,9 +221,6 @@ find(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, T
             }
 
             goUp(textIt);
-
-            // Termination.
-            if (isRoot(textIt)) break;
         }
 
         // Approximate case.
