@@ -823,10 +823,10 @@ SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
 ..include:seqan/basic.h
  */
 
-# define SEQAN_CONCEPT_IMPL(implementedConcepts, ...)                                               \
-    struct Implements<__VA_ARGS__>                                                                            \
+# define SEQAN_CONCEPT_IMPL(implementedConcepts, ...)                                                   \
+    struct Implements<__VA_ARGS__>                                                                      \
     {                                                                                                   \
-        typedef __VA_ARGS__ TModel;                                                                           \
+        typedef __VA_ARGS__ TModel;                                                                     \
         typedef                                                                                         \
             SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(TModel),implementedConcepts)             \
             SEQAN_PP_REPEAT(SEQAN_PP_SEQ_SIZE(implementedConcepts),SEQAN_CONCEPT_LIST_suffix,~) Type;   \
