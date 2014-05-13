@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,13 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Thread-safe / lock-free sequence operations.
+// Thread-safe queue of either fixed/variable size
 // ==========================================================================
 
-#ifndef SEQAN_PARALLEL_PARALLEL_SEQUENCE_H_
-#define SEQAN_PARALLEL_PARALLEL_SEQUENCE_H_
+#ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
+#define SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 
 namespace seqan {
 
@@ -44,22 +44,40 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class ConcurrentAppender
+// Class ConcurrentQueue
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TSpec = void>
-struct ConcurrentAppender
+struct ConcurrentQueue
 {
+    typedef typename Position<TString>::Type TPos;
+
     TString *       data_host;
     ReadWriteLock   lock;
 
-    ConcurrentAppender() :
-        data_host()
+
+    volatile TPos headPos;
+    volatile TPos headReadPos;
+    volatile TPos tailPos;
+    volatile TPos tailWritePos;
+
+    ConcurrentQueue() :
+        data_host(),
+        headPos(0),
+        tailPos(0),
+        tailWritePos(0)
     {}
 
-    ConcurrentAppender(TString & string)
+    ConcurrentQueue(TString & string):
+        headPos(0),
+        tailPos(0),
+        tailWritePos(0)
     {
         setHost(*this, string);
+    }
+
+    ~ConcurrentQueue()
+    {
     }
 };
 
@@ -72,7 +90,7 @@ struct ConcurrentAppender
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct Value<ConcurrentAppender<TString, TSpec> > : Value<TString> {};
+struct Value<ConcurrentQueue<TString, TSpec> > : Value<TString> {};
 
 // ============================================================================
 // Functions
@@ -84,14 +102,14 @@ struct Value<ConcurrentAppender<TString, TSpec> > : Value<TString> {};
 
 template <typename TString, typename TSpec>
 inline TString &
-host(ConcurrentAppender<TString, TSpec> & me)
+host(ConcurrentQueue<TString, TSpec> & me)
 {
     return *me.data_host;
 }
 
 template <typename TString, typename TSpec>
 inline TString const &
-host(ConcurrentAppender<TString, TSpec> const & me)
+host(ConcurrentQueue<TString, TSpec> const & me)
 {
     return *me.data_host;
 }
@@ -102,47 +120,67 @@ host(ConcurrentAppender<TString, TSpec> const & me)
 
 template <typename TString, typename TSpec>
 inline void
-setHost(ConcurrentAppender<TString, TSpec> & me, TString & string)
+setHost(ConcurrentQueue<TString, TSpec> & me, TString & string)
 {
     me.data_host = &string;
+    me.tailPos = length(string);
 }
 
 // ----------------------------------------------------------------------------
-// Function _incLength()
+// Function _cyclicInc()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TParallel>
-inline typename Size<String<TValue, Alloc<TSpec> > >::Type
-_incLength(String<TValue, Alloc<TSpec> > & me, Tag<TParallel> const & tag)
+template <typename TValue>
+inline TValue
+cyclicInc(TValue value, TValue modulo)
 {
-    return atomicInc(me.data_end, tag) - begin(me, Standard());
+    TValue newVal = value + 1;
+    return (newVal == modulo)? 0 : newVal;
+}
+
+template <typename TValue>
+inline TValue
+atomicCyclicInc(TValue volatile & value, TValue modulo)
+{
+    do {
+        TValue curVal = value;
+        TValue newVal = cyclicInc(curVal);
+    }
+    while (atomicCas(value, curVal, newVal) != curVal);
+    return newVal;
 }
 
 // ----------------------------------------------------------------------------
-// Function _decLength()
+// Function _cyclicDec()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TParallel>
-inline typename Size<String<TValue, Alloc<TSpec> > >::Type
-_decLength(String<TValue, Alloc<TSpec> > & me, Tag<TParallel> const & tag)
+template <typename TValue>
+inline TValue
+cyclicDec(TValue value, TValue modulo)
 {
-    return atomicDec(me.data_end, tag) - begin(me, Standard());
+    TValue newVal = (value == 0)? modulo : value;
+    return newVal - 1;
+}
+
+template <typename TValue>
+inline TValue
+atomicCyclicDec(TValue volatile & value, TValue modulo)
+{
+    do {
+        TValue curVal = value;
+        TValue newVal = cyclicDec(curVal);
+    }
+    while (atomicCas(value, curVal, newVal) != curVal);
+    return newVal;
 }
 
 // ----------------------------------------------------------------------------
 // Function appendValue()
 // ----------------------------------------------------------------------------
 
-template <typename TTargetValue, typename TTargetSpec, typename TValue>
-inline void
-appendValue(String<TTargetValue, TTargetSpec> & me, TValue const & _value, Insist, Parallel)
-{
-    valueConstruct(begin(me, Standard()) + _incLength(me, Parallel()) - 1, _value);
-}
-
 template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
 inline void
-appendValue(ConcurrentAppender<TString, TSpec> & me,
+popFront(ConcurrentQueue<TString, TSpec> & me,
             TValue const & val,
             Tag<TExpand> const & expandTag,
             Tag<TParallel> const & parallelTag)
@@ -150,10 +188,80 @@ appendValue(ConcurrentAppender<TString, TSpec> & me,
     appendValue(host(me), val, expandTag, parallelTag);
 }
 
+template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
+inline void
+appendValue(ConcurrentQueue<TString, TSpec> & me,
+            TValue const & val,
+            Tag<TExpand> const & expandTag,
+            Tag<TParallel> const & parallelTag)
+{
+    appendValue(host(me), val, expandTag, parallelTag);
+}
+
+//
+//  [==0==] [==1==] [==2==] [==3==]
+//             ^       ^       ^
+//            head    tail  tailWrite
+//
+//
+// empty = (head == tail)
+// full = (tail + 1 == head)
+//
+// valid data between [head, tail)
+
+template <typename TValue, typename TString, typename TSpec>
+inline bool
+tryPopFront(TValue & result,
+            ConcurrentQueue<TString, TSpec> & me,
+            Parallel)
+{
+    typedef typename Size<TString>::Type                TSize;
+    typedef typename Iterator<TString, Standard>::Type  TIter;
+
+    // try to extract a value
+    ScopedReadLock(me.lock);
+
+    TSize headReadPos;
+    TSize newHeadReadPos;
+
+    // wait for queue to become filled
+    do {
+        headReadPos = me.headReadPos;
+
+        // return if queue is empty?
+        if (headReadPos == me.tailPos)
+            return false;
+
+        newHeadReadPos = cyclicInc(headReadPos, cap);
+    }
+    while (atomicCas(me.headReadPos, headReadPos, newHeadReadPos) != headReadPos);
+
+    // extract value and destruct it in the string
+    TString & string = host(me);
+    TIter it = begin(string, Standard()) + headReadPos;
+    swap(result, *it);
+    valueDestruct(it);
+
+    // wait for pending previous reads and synchronize headPos to headReadPos
+    while (atomicCas(me.headPos, headReadPos, newHeadReadPos) != headReadPos);
+
+    return true;
+}
+
+template <typename TValue, typename TString, typename TSpec, typename TParallel>
+inline TValue &&
+popFront(ConcurrentQueue<TString, TSpec> & me,
+         Tag<TParallel> parallelTag)
+{
+    TValue val;
+    while (!tryPopFront(val, me, parallelTag));
+    return std::move(val);
+}
+
 template <typename TString, typename TSpec, typename TValue, typename TExpand>
 inline void
-appendValue(ConcurrentAppender<TString, TSpec> & me,
-            TValue const & val,
+appendValue(ConcurrentQueue<TString, TSpec> & me,
+            TValue && val,
             Tag<TExpand> const & expandTag,
             Parallel)
 {
@@ -166,13 +274,21 @@ appendValue(ConcurrentAppender<TString, TSpec> & me,
         // try to append the value
         {
             ScopedReadLock(me.lock);
-            TSize newLen = _incLength(string, Parallel());
-            if (newLen <= capacity(string))
+
+            TSize cap = capacity(string);
+            SEQAN_ASSERT_NEQ(cap, 0u);
+
+            TSize newTailWritePos = atomicCyclicInc(me.tailWritePos, cap);
+            TSize tailWritePos = cyclicDec(newTailWritePos);
+
+            if (newTailWritePos != me.headPos)
             {
-                valueConstruct(begin(string, Standard()) + newLen - 1, val);
-                break;
+                valueConstruct(begin(string, Standard()) + tailWritePos, val);
+                // wait for pending previous writes and synchronize tailPos to tailWritePos
+                while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos);
+                return;
             }
-            _decLength(string, Parallel());
+            atomicCyclicDec(me.tailWritePos, cap);
         }
 
         // try to extend capacity
@@ -185,6 +301,13 @@ appendValue(ConcurrentAppender<TString, TSpec> & me,
     }
 }
 
+template <typename TTargetValue, typename TTargetSpec, typename TValue>
+inline void
+appendValue(String<TTargetValue, TTargetSpec> & me, TValue const & _value, Insist, Parallel)
+{
+    valueConstruct(begin(me, Standard()) + _incLength(me, Parallel()) - 1, _value);
+}
+
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_PARALLEL_PARALLEL_SEQUENCE_H_
+#endif  // #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
