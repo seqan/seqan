@@ -295,8 +295,23 @@ appendValue(ConcurrentQueue<TString, TSpec> & me,
         {
             ScopedWriteLock(me.lock);
             TSize cap = capacity(string);
-            if (cap == length(string))
+
+            // did we reach the capacity limit?
+            if (cyclicInc(me.tailPos) == me.headPos)
+            {
+                valueConstruct(begin(string, Standard()) + me.tailPos, val);
+                me.tailWritePos = me.tailPos = me.headPos;
+
+                // increase capacity
+                _setLength(string, cap);
                 reserve(string, cap + 1, expandTag);
+                TSize delta = capacity(string) - cap;
+
+                // create a gap of delta many values between tail and head
+                _clearSpace(string, delta, me.headPos, me.headPos, expandTag);
+                me.headPos += delta;
+                me.headReadPos = me.headPos;
+            }
         }
     }
 }
