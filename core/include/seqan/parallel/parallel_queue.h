@@ -138,18 +138,6 @@ cyclicInc(TValue value, TValue modulo)
     return (newVal == modulo)? 0 : newVal;
 }
 
-template <typename TValue>
-inline TValue
-atomicCyclicInc(TValue volatile & value, TValue modulo)
-{
-    do {
-        TValue curVal = value;
-        TValue newVal = cyclicInc(curVal);
-    }
-    while (atomicCas(value, curVal, newVal) != curVal);
-    return newVal;
-}
-
 // ----------------------------------------------------------------------------
 // Function _cyclicDec()
 // ----------------------------------------------------------------------------
@@ -162,52 +150,21 @@ cyclicDec(TValue value, TValue modulo)
     return newVal - 1;
 }
 
-template <typename TValue>
-inline TValue
-atomicCyclicDec(TValue volatile & value, TValue modulo)
-{
-    do {
-        TValue curVal = value;
-        TValue newVal = cyclicDec(curVal);
-    }
-    while (atomicCas(value, curVal, newVal) != curVal);
-    return newVal;
-}
-
 // ----------------------------------------------------------------------------
-// Function appendValue()
+// Function tryPopFront()
 // ----------------------------------------------------------------------------
-
-template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
-inline void
-popFront(ConcurrentQueue<TString, TSpec> & me,
-            TValue const & val,
-            Tag<TExpand> const & expandTag,
-            Tag<TParallel> const & parallelTag)
-{
-    appendValue(host(me), val, expandTag, parallelTag);
-}
-
-template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
-inline void
-appendValue(ConcurrentQueue<TString, TSpec> & me,
-            TValue const & val,
-            Tag<TExpand> const & expandTag,
-            Tag<TParallel> const & parallelTag)
-{
-    appendValue(host(me), val, expandTag, parallelTag);
-}
-
 //
-//  [==0==] [==1==] [==2==] [==3==]
-//             ^       ^       ^
-//            head    tail  tailWrite
-//
+//  [  ?  ]  [  4  ]  [  3  ]  [  8  ]  [  0  ]  [  x  ]  [  ?  ]
+//                       |                          ^
+//                       v                          |
+//             head            headRead   tail  tailWrite
 //
 // empty = (head == tail)
 // full = (tail + 1 == head)
 //
-// valid data between [head, tail)
+// valid data between  [headRead, tail)
+// currently filled    [tail, tailWrite)
+// currently removed   [head, headRead)
 
 template <typename TValue, typename TString, typename TSpec>
 inline bool
@@ -221,6 +178,9 @@ tryPopFront(TValue & result,
     // try to extract a value
     ScopedReadLock(me.lock);
 
+    TString & string = host(me);
+
+    TSize cap = capacity(string);
     TSize headReadPos;
     TSize newHeadReadPos;
 
@@ -237,7 +197,6 @@ tryPopFront(TValue & result,
     while (atomicCas(me.headReadPos, headReadPos, newHeadReadPos) != headReadPos);
 
     // extract value and destruct it in the string
-    TString & string = host(me);
     TIter it = begin(string, Standard()) + headReadPos;
     swap(result, *it);
     valueDestruct(it);
@@ -248,24 +207,55 @@ tryPopFront(TValue & result,
     return true;
 }
 
+// ----------------------------------------------------------------------------
+// Function popFront()
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TString, typename TSpec, typename TParallel>
+#ifdef SEQAN_CXX11_STANDARD
 inline TValue &&
+#else
+inline TValue
+#endif
 popFront(ConcurrentQueue<TString, TSpec> & me,
          Tag<TParallel> parallelTag)
 {
     TValue val;
     while (!tryPopFront(val, me, parallelTag));
+#ifdef SEQAN_CXX11_STANDARD
     return std::move(val);
+#else
+    return val;
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// Function appendValue()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TValue, typename TExpand, typename TParallel>
+inline void
+appendValue(ConcurrentQueue<TString, TSpec> & me,
+            TValue const & val,
+            Tag<TExpand> const & expandTag,
+            Tag<TParallel> const & parallelTag)
+{
+    appendValue(host(me), val, expandTag, parallelTag);
 }
 
 template <typename TString, typename TSpec, typename TValue, typename TExpand>
 inline void
 appendValue(ConcurrentQueue<TString, TSpec> & me,
+#ifdef SEQAN_CXX11_STANDARD
             TValue && val,
+#else
+            TValue val,
+#endif
             Tag<TExpand> const & expandTag,
             Parallel)
 {
-    typedef typename Size<TString>::Type TSize;
+    typedef typename Size<TString>::Type                TSize;
+    typedef typename Iterator<TString, Standard>::Type  TIter;
 
     TString & string = host(me);
 
@@ -278,23 +268,33 @@ appendValue(ConcurrentQueue<TString, TSpec> & me,
             TSize cap = capacity(string);
             SEQAN_ASSERT_NEQ(cap, 0u);
 
-            TSize newTailWritePos = atomicCyclicInc(me.tailWritePos, cap);
-            TSize tailWritePos = cyclicDec(newTailWritePos);
-
-            if (newTailWritePos != me.headPos)
+            while (true)
             {
-                valueConstruct(begin(string, Standard()) + tailWritePos, val);
-                // wait for pending previous writes and synchronize tailPos to tailWritePos
-                while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos);
-                return;
+                TValue tailWritePos = me.tailWritePos;
+                TValue newTailWritePos = cyclicInc(tailWritePos, cap);
+                if (newTailWritePos == me.headPos)
+                    break;
+
+                if (atomicCas(me.tailWritePos, tailWritePos, newTailWritePos) == tailWritePos)
+                {
+                    TIter it = begin(string, Standard()) + tailWritePos;
+                    valueConstruct(it);
+                    swap(*it, val);
+
+                    // wait for pending previous writes and synchronize tailPos to tailWritePos
+                    while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos);
+                    return;
+                }
             }
-            atomicCyclicDec(me.tailWritePos, cap);
         }
 
         // try to extend capacity
         {
             ScopedWriteLock(me.lock);
             TSize cap = capacity(string);
+
+            SEQAN_ASSERT_EQ(me.tailPos, me.tailWritePos);
+            SEQAN_ASSERT_EQ(me.headPos, me.headReadPos);
 
             // did we reach the capacity limit?
             if (cyclicInc(me.tailPos) == me.headPos)
@@ -314,13 +314,6 @@ appendValue(ConcurrentQueue<TString, TSpec> & me,
             }
         }
     }
-}
-
-template <typename TTargetValue, typename TTargetSpec, typename TValue>
-inline void
-appendValue(String<TTargetValue, TTargetSpec> & me, TValue const & _value, Insist, Parallel)
-{
-    valueConstruct(begin(me, Standard()) + _incLength(me, Parallel()) - 1, _value);
 }
 
 }  // namespace seqan
