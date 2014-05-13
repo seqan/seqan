@@ -75,8 +75,6 @@ namespace seqan {
  * 
  * @return Type Either True or False, depending on T being a "POD" type.
  * 
- * @section Remarks
- * 
  * A simple type is a type that does not need constructors to be created, a destructor to be destroyed, and copy
  * assignment operators or copy constructors to be copied.  All POD ("plain old data") types are simple, but some
  * non-POD types could be simple too, e.g. some specializations of SimpleType.
@@ -216,7 +214,6 @@ template <typename T>
 SEQAN_HOST_DEVICE inline T &
 value(T * me)
 {
-    SEQAN_CHECKPOINT;
     return *me;
 }
 
@@ -230,7 +227,6 @@ template <typename T>
 SEQAN_HOST_DEVICE inline T &
 getValue(T * me)
 {
-    SEQAN_CHECKPOINT;
     return value(me);
 }
 
@@ -249,12 +245,10 @@ getValue(T * me)
  * 
  * @signature void valueConstruct(iterator [, param [, move_tag]]);
  * 
- * @param iterator Pointer or iterator to position where the object should be constructed.
- * @param param    Parameter that is forwarded to constructor.
- * @param moveTag  Instance of the move tag.  If the tag is specified, it is forwarded to the constructor, so the
- *                 constructed object must support move construction.
- * 
- * @section Remarks
+ * @param[in,out] iterator Pointer or iterator to position where the object should be constructed.
+ * @param[in]     param    Parameter that is forwarded to constructor.
+ * @param[in]     moveTag  Instance of the move tag.  If the tag is specified, it is forwarded to the constructor,
+ *                         so the constructed object must support move construction.
  * 
  * The type of the destructed object is the value type of <tt>iterator</tt>.
  */
@@ -289,13 +283,14 @@ struct ValueConstructor_
     template <typename TIterator, typename TParam>
     static inline void
     construct(TIterator it,
-              TParam const & param_)
+              TParam SEQAN_FORWARD_CARG param_)
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        new( (void*) & value(it) ) TNonConstValue(param_);
+        new( (void*) & value(it) ) TNonConstValue(SEQAN_FORWARD(TParam, param_));
     }
 
+#ifndef SEQAN_CXX11_STANDARD
     template <typename TIterator, typename TParam>
     static inline void
     construct(TIterator it,
@@ -306,6 +301,7 @@ struct ValueConstructor_
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
         new( (void*) & value(it) ) TNonConstValue(param_, tag);
     }
+#endif
 };
 
 // Helper code for constructing values behind iterators that return proxies
@@ -318,17 +314,18 @@ struct ValueConstructorProxy_
     static inline void construct(TIterator) {}
 
     template <typename TIterator, typename TParam>
-    static inline void construct(TIterator, TParam const &) {}
+    static inline void construct(TIterator, TParam SEQAN_FORWARD_CARG) {}
 
+#ifndef SEQAN_CXX11_STANDARD
     template <typename TIterator, typename TParam>
     static inline void construct(TIterator, TParam &, Move const & ) {}
+#endif
 };
 
 template <typename TIterator>
 inline void
 valueConstruct(TIterator it)
 {
-    SEQAN_CHECKPOINT;
     typedef typename IfC<
         IsSameType<
             typename Value<TIterator>::Type &,
@@ -346,9 +343,8 @@ valueConstruct(TIterator it)
 template <typename TIterator, typename TParam>
 inline void
 valueConstruct(TIterator it,
-               TParam const & param_)
+               TParam SEQAN_FORWARD_CARG param_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename IfC<
         IsSameType<
             typename Value<TIterator>::Type &,
@@ -360,16 +356,16 @@ valueConstruct(TIterator it,
         ValueConstructorProxy_      // false, types differ -> value() returns a proxy
     >::Type TConstructor;
 
-    TConstructor::construct(it, param_);
+    TConstructor::construct(it, SEQAN_FORWARD(TParam, param_));
 }
 
+#ifndef SEQAN_CXX11_STANDARD
 template <typename TIterator, typename TParam>
 inline void
 valueConstruct(TIterator it,
                TParam & param_,
                Move const & tag)
 {
-    SEQAN_CHECKPOINT;
     typedef typename IfC<
         IsSameType<
             typename Value<TIterator>::Type &,
@@ -383,6 +379,7 @@ valueConstruct(TIterator it,
 
     TConstructor::construct(it, param_, tag);
 }
+#endif
 
 // ----------------------------------------------------------------------------
 // Function valueDestruct() using iterators
@@ -420,13 +417,11 @@ struct ValueDestructorProxy_
 /*!
  * @fn valueDestruct
  * @headerfile <seqan/basic.h>
- * @brief Destoys an object at specified position.
+ * @brief Destroys an object at specified position.
  * 
  * @signature void valueDestruct(iterator);
  * 
- * @param iterator Pointer or iterator to position where the object should be destructed.
- * 
- * @section Remarks
+ * @param[in,out] iterator Pointer or iterator to position where the object should be destructed.
  * 
  * The type of the constructed object is the value type of <tt>iterator</tt>.
  */
@@ -446,7 +441,6 @@ template <typename TIterator>
 inline void
 valueDestruct(TIterator it)
 {
-    SEQAN_CHECKPOINT;
     typedef typename IfC<
         IsSameType<
             typename Value<TIterator>::Type &,
@@ -472,12 +466,10 @@ valueDestruct(TIterator it)
  * 
  * @signature void arrayConstruct(begin, end[, value]);
  * 
- * @param begin Iterator to the begin of the range that is to be constructed.
- * @param end   Iterator behind the end of the range.
- * @param value Argument that is forwarded to the constructor.  An appropriate constructor is required.  If
- *              <tt>value</tt> is not specified, the default constructor is used.
- * 
- * @section Remarks
+ * @param[in] begin Iterator to the begin of the range that is to be constructed.
+ * @param[in] end   Iterator behind the end of the range.
+ * @param[in] value Argument that is forwarded to the constructor.  An appropriate constructor is required.  If
+ *                 <tt>value</tt> is not specified, the default constructor is used.
  * 
  * The type of the constructed Objects is the value type of <tt>begin</tt> and <tt>end</tt>.
  */
@@ -509,7 +501,6 @@ inline void
 _arrayConstructDefault(TIterator1 begin_, 
                        TIterator2 end_)
 {
-    SEQAN_CHECKPOINT;
     while (begin_ != end_)
     {
         valueConstruct(begin_);
@@ -522,7 +513,6 @@ inline void
 arrayConstruct(TIterator1 begin_, 
                TIterator2 end_)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructDefault(begin_, end_);
 }
 
@@ -532,7 +522,6 @@ _arrayConstructDefault(TIterator1 begin_,
                        TIterator2 end_, 
                        TParam const & param_)
 {
-    SEQAN_CHECKPOINT;
     while (begin_ != end_)
     {
         valueConstruct(begin_, param_);
@@ -546,7 +535,6 @@ arrayConstruct(TIterator1 begin_,
                TIterator2 end_, 
                TParam const & param_)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructDefault(begin_, end_, param_);
 }
 
@@ -561,14 +549,14 @@ arrayConstruct(TIterator1 begin_,
  * 
  * @signature void arrayConstructCopy(sourceBegin, sourceEnd, target);
  * 
- * @param sourceBegin Iterator to the first element of the source range.
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
- *                    type as <tt>sourceBegin</tt>.
- * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
- *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
- *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
- *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate (copy-) constructor that
- *                    constructs an target objects given a source object is required.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                        type as <tt>sourceBegin</tt>.
+ * @param[in] target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                        specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                        the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                        store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate (copy-) constructor that
+ *                        constructs an target objects given a source object is required.
  */
 
 /**
@@ -597,7 +585,6 @@ _arrayConstructCopyDefault(TSource1 source_begin,
                            TSource2 source_end, 
                            TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     while (source_begin != source_end)
     {
         // NOTE(holtgrew): getValue() is used here since value() could return
@@ -614,7 +601,6 @@ arrayConstructCopy(TSource1 source_begin,
                    TSource2 source_end, 
                    TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructCopyDefault(source_begin, source_end, target_begin);
 }
 
@@ -629,14 +615,14 @@ arrayConstructCopy(TSource1 source_begin,
  * 
  * @signature void arrayConstructMove(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
- *                    type as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source range.
- * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
- *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
- *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
- *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
- *                    constructs an target objects given a source object is required.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                        type as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                        specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                        the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                        store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
+ *                        constructs an target objects given a source object is required.
  */
 
 /**
@@ -666,14 +652,17 @@ _arrayConstructMoveDefault(TSource1 source_begin,
                            TSource2 source_end, 
                            TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     while (source_begin < source_end)
     {
         // NOTE(holtgrew): Using value() here, used to be getValue() but
         // cannot move from const reference or proxy.
         // valueConstruct(target_begin, value(source_begin), Move());
         // TODO(holtgrew): We need a "has move constructor" metafunction to switch between move/copy constructing before we can use the line here.
+#ifdef SEQAN_CXX11_STANDARD
+        valueConstruct(target_begin, std::move<decltype(*source_begin)>(*source_begin));
+#else
         valueConstruct(target_begin, value(source_begin));
+#endif
         ++source_begin;
         ++target_begin;
     }
@@ -685,7 +674,6 @@ arrayConstructMove(TSource1 source_begin,
                    TSource2 source_end, 
                    TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructMoveDefault(source_begin, source_end, target_begin);
 }
 
@@ -700,10 +688,8 @@ arrayConstructMove(TSource1 source_begin,
  * 
  * @signature void arrayDestruct(begin, end);
  * 
- * @param begin Iterator to the begin of the range that is to be destructed.
- * @param end   Iterator behind the end of the range.
- * 
- * @section Remarks
+ * @param[in] begin Iterator to the begin of the range that is to be destructed.
+ * @param[in] end   Iterator behind the end of the range.
  * 
  * This function does not deallocates the memory.
  */
@@ -726,7 +712,6 @@ inline void
 _arrayDestructDefault(TIterator1 begin_, 
                       TIterator2 end_)
 {
-    SEQAN_CHECKPOINT;
     while (begin_ != end_)
     {
         valueDestruct(begin_);
@@ -739,7 +724,6 @@ inline void
 arrayDestruct(TIterator1 begin_, 
               TIterator2 end_)
 {
-    SEQAN_CHECKPOINT;
     _arrayDestructDefault(begin_, end_);
 }
 
@@ -756,12 +740,10 @@ arrayDestruct(TIterator1 begin_,
  * 
  * @signature void arrayFill(begin, end, value[, parallelTag]);
  * 
- * @param begin       Iterator to the begin of the range that is to be filled.
- * @param end         Iterator behind the end of the range.
- * @param value       Argument that is assigned to all <tt>count</tt> objects in <tt>array</tt>.
- * @param parallelTag Tag to enable/disable parallelism. Types: Serial, Parallel
- * 
- * @section Remarks
+ * @param[in] begin       Iterator to the begin of the range that is to be filled.
+ * @param[in] end         Iterator behind the end of the range.
+ * @param[in] value       Argument that is assigned to all <tt>count</tt> objects in <tt>array</tt>.
+ * @param[in] parallelTag Tag to enable/disable parallelism. Types: Serial, Parallel
  * 
  * All objects <tt>target_begin[0]</tt> to <tt>target_begin[count-1]</tt> are set to <tt>value</tt>.
  */
@@ -788,7 +770,6 @@ arrayFill(TIterator begin_,
           TIterator end_,
           TValue const & value)
 {
-    SEQAN_CHECKPOINT;
     ::std::fill_n(begin_, end_ - begin_, value);
 }
 
@@ -813,13 +794,11 @@ arrayFill(TIterator begin_,
  * 
  * @signature void arrayCopyForward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * Be careful if source and target range overlap, because in this case some source elements could be accidently
  * overwritten before they are copied.
@@ -851,7 +830,6 @@ _arrayCopyForwardDefault(TSource1 source_begin,
                          TSource2 source_end, 
                          TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     ::std::copy(source_begin, source_end, target_begin);
 }
 
@@ -861,7 +839,6 @@ arrayCopyForward(TSource1 source_begin,
                  TSource2 source_end, 
                  TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyForwardDefault(source_begin, source_end, target_begin);   
 }
 
@@ -876,13 +853,11 @@ arrayCopyForward(TSource1 source_begin,
  * 
  * @signature void arrayCopyBackward(source_begin, source_end, target);
  * 
- * @param sourceBegin Iterator to the first element of the source array.
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>source_begin</tt>.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>source_begin</tt>.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * Be careful if source and target range overlap, because in this case some source elements could be accidently
  * overwritten before they are moved.
@@ -924,7 +899,6 @@ _arrayCopyBackwardDefault(TSource1 source_begin,
                           TSource2 source_end,
                           TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     ::std::copy_backward(source_begin, source_end, target_begin + (source_end - source_begin));
 }
 
@@ -934,7 +908,6 @@ arrayCopyBackward(TSource1 source_begin,
                   TSource2 source_end, 
                   TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyBackwardDefault(source_begin, source_end, target_begin);
 }
 
@@ -951,13 +924,11 @@ arrayCopyBackward(TSource1 source_begin,
  * 
  * @signature void arrayCopy(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source range.
- * @param target      Iterator to the first element of the target range.The target capacity should be at least as long
- *                    as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] target      Iterator to the first element of the target range.The target capacity should be at least as long
+ *                        as the source range.
  * 
  * If source and target range do not overlap, consider to use arrayCopyForward instead to improve performance.
  * 
@@ -1010,13 +981,11 @@ inline void arrayCopy(TSource1 source_begin,
  * 
  * @signature void arrayMoveForward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopyForward instead.
@@ -1050,13 +1019,16 @@ _arrayMoveForwardDefault(TSource1 source_begin,
                           TSource2 source_end, 
                           TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
+#ifdef SEQAN_CXX11_STANDARD
+    std::move(source_begin, source_end, target_begin);
+#else
     while (source_begin != source_end)
     {
         move(*target_begin, *source_begin);
         ++source_begin;
         ++target_begin;
     }
+#endif
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -1065,7 +1037,6 @@ arrayMoveForward(TSource1 source_begin,
                  TSource2 source_end, 
                  TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveForwardDefault(source_begin, source_end, target_begin);   
 }
 
@@ -1080,13 +1051,11 @@ arrayMoveForward(TSource1 source_begin,
  * 
  * @signature void arrayMoveBackward(sourceBegin, sourceEnd, target);
  * 
- * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param sourceBegin Iterator to the first element of the source array.
- * @param target      Iterator to the first element of the target array.The target capacity should be at least as long
- *                    as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] sourceBegin Iterator to the first element of the source array.
+ * @param[in] target      Iterator to the first element of the target array.The target capacity should be at least as long
+ *                        as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopyBackward instead.
@@ -1129,13 +1098,16 @@ _arrayMoveBackwardDefault(TSource1 source_begin,
                           TSource2 source_end, 
                           TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
+#ifdef SEQAN_CXX11_STANDARD
+    std::move_backward(source_begin, source_end, target_begin + (source_end - source_begin));
+#else
     target_begin += (source_end - source_begin);
     while (source_end != source_begin) {
         --source_end;
         --target_begin;
         move(*target_begin, *source_end);
     }
+#endif
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -1144,7 +1116,6 @@ arrayMoveBackward(TSource1 source_begin,
                   TSource2 source_end, 
                   TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveBackwardDefault(source_begin, source_end, target_begin);
 }
 
@@ -1159,13 +1130,11 @@ arrayMoveBackward(TSource1 source_begin,
  *
  * @signature void arrayMove(sourceBegin, sourceEnd, target);
  * 
- * @param sourceBegin Iterator to the first element of the source range.
- * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
- *                    as <tt>sourceBegin</tt>.
- * @param target      Iterator to the first element of the target range.  The target capacity should be at least as
- *                    long as the source range.
- * 
- * @section Remarks
+ * @param[in] sourceBegin Iterator to the first element of the source range.
+ * @param[in] sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                        as <tt>sourceBegin</tt>.
+ * @param[in] target      Iterator to the first element of the target range.  The target capacity should be at least as
+ *                        long as the source range.
  * 
  * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
  * to use arrayCopy instead.
@@ -1224,12 +1193,10 @@ arrayMove(TSource1 source_begin,
  * 
  * @signature void arrayClearSpace(arrBegin, arrLength, keepFrom, moveTo);
  * 
- * @param arrBegin  Pointer to the first element of the array.
- * @param keepFrom  Offset of the first object that will be kept.
- * @param arrLength Length of the array.
- * @param moveTo    Offset the first kept object will get at the end of the function.
- * 
- * @section Remarks
+ * @param[in] arrBegin  Pointer to the first element of the array.
+ * @param[in] keepFrom  Offset of the first object that will be kept.
+ * @param[in] arrLength Length of the array.
+ * @param[in] moveTo    Offset the first kept object will get at the end of the function.
  * 
  * The objects <tt>arr[keep_from]</tt> to <tt>arr[arr_length-1]</tt> are moved to the area beginning at positions
  * <tt>move_to</tt>. All objects in <tt>arr[0]</tt> to <tt>arr[keep_from-1]</tt> are destroyed. After this function, the
@@ -1289,20 +1256,17 @@ void _arrayClearSpaceDefault(TIterator array_begin,
         if (array_length > move_to) {
             // Case 2a: Moving right of array_length, i.e. we can move a part
             // of the objects and have to move-construct the rest.
-            SEQAN_CHECKPOINT;
             size_t middle = array_length - (move_to - keep_from);
             arrayConstructMove(array_begin + middle, array_begin + array_length, array_begin + array_length);
             arrayMove(array_begin + keep_from, array_begin + middle, array_begin + move_to);
             arrayDestruct(array_begin, array_begin + move_to);
         } else {
             // Case 2b: We have to move-construct all target objects.
-            SEQAN_CHECKPOINT;
             arrayConstructMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
             arrayDestruct(array_begin, array_begin + array_length);
         }
     } else {
         // Case 3: Move to the left.
-        SEQAN_CHECKPOINT;
         arrayMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
         arrayDestruct(array_begin, array_begin + move_to);
         arrayDestruct(array_begin + array_length - (keep_from - move_to), array_begin + array_length);
@@ -1328,7 +1292,6 @@ _arrayConstructPointer(TIterator,
                        TIterator,
                        True)
 {
-    SEQAN_CHECKPOINT;
     //nothing to do
 }
 
@@ -1338,38 +1301,34 @@ _arrayConstructPointer(TIterator begin_,
                        TIterator end_,
                        False)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructDefault(begin_, end_);
 }
 
-template<typename TValue>
+template <typename TValue>
 inline void 
 arrayConstruct(TValue * begin_, 
                TValue * end_)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructPointer(begin_, end_, typename IsSimple<TValue>::Type() );
 }
 
-template<typename TIterator, typename TParam>
+template <typename TValue, typename TParam>
 inline void 
-_arrayConstructPointer(TIterator begin_, 
-                        TIterator end_, 
-                        TParam const & param_,
-                        True)
+_arrayConstructPointer(TValue * begin_,
+                       TValue * end_,
+                       TParam const & param_,
+                       True)
 {
-    SEQAN_CHECKPOINT;
-    arrayFill(begin_, end_, param_);
+    arrayFill(begin_, end_, static_cast<TValue>(param_));
 }
 
-template<typename TIterator, typename TParam>
+template <typename TValue, typename TParam>
 inline void 
-_arrayConstructPointer(TIterator begin_, 
-                        TIterator end_, 
-                        TParam const & param_,
-                        False)
+_arrayConstructPointer(TValue * begin_,
+                       TValue * end_,
+                       TParam const & param_,
+                       False)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructDefault(begin_, end_, param_);
 }
 
@@ -1379,7 +1338,6 @@ arrayConstruct(TValue * begin_,
                TValue * end_, 
                TParam const & param_)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructPointer(begin_, end_, param_, typename IsSimple<TValue>::Type());
 }
 
@@ -1394,7 +1352,6 @@ _arrayConstructCopyPointer(TValueSource * source_begin,
                             TValueTarget * target_begin,
                             True)
 {
-    SEQAN_CHECKPOINT;
     arrayCopyForward(source_begin, source_end, target_begin);
 }
 
@@ -1405,7 +1362,6 @@ _arrayConstructCopyPointer(TValueSource * source_begin,
                             TValueTarget const* target_begin,
                             True)
 {
-    SEQAN_CHECKPOINT;
     arrayCopyForward(source_begin, source_end, const_cast<TValueTarget *>(target_begin));
 }
 
@@ -1416,7 +1372,6 @@ _arrayConstructCopyPointer(TValueSource * source_begin,
                             TValueTarget * target_begin,
                             False)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructCopyDefault(source_begin, source_end, target_begin);
 }
 template<typename TValueSource, typename TValueTarget>
@@ -1425,7 +1380,6 @@ arrayConstructCopy(TValueSource * source_begin,
                    TValueSource * source_end, 
                    TValueTarget * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructCopyPointer(source_begin, source_end, target_begin, typename IsSimple<TValueTarget>::Type() );
 }
 
@@ -1440,7 +1394,6 @@ _arrayConstructMovePointer(TValue * source_begin,
                             TValue * target_begin,
                             True)
 {
-    SEQAN_CHECKPOINT;
     arrayMoveForward(source_begin, source_end, target_begin);
 }
 
@@ -1451,7 +1404,6 @@ _arrayConstructMovePointer(TValue * source_begin,
                             TValue * target_begin,
                             False)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructMoveDefault(source_begin, source_end, target_begin);
 }
 
@@ -1461,7 +1413,6 @@ arrayConstructMove(TValue * source_begin,
                    TValue * source_end, 
                    TValue * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayConstructMovePointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
 }
 
@@ -1475,7 +1426,6 @@ _arrayDestructPointer(TValue * /*begin_*/,
                        TValue * /*end_*/,
                        True)
 {
-    SEQAN_CHECKPOINT;
     //do nothing
 }
 
@@ -1485,7 +1435,6 @@ _arrayDestructPointer(TValue * begin_,
                        TValue * end_,
                        False)
 {
-    SEQAN_CHECKPOINT;
     _arrayDestructDefault(begin_, end_);
 }
 
@@ -1494,7 +1443,6 @@ inline void
 arrayDestruct(TValue * begin_, 
               TValue * end_)
 {
-    SEQAN_CHECKPOINT;
     _arrayDestructPointer(begin_, end_, typename IsSimple<TValue>::Type() );
 }
 
@@ -1517,7 +1465,6 @@ _arrayCopyForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           True)
 {
-    SEQAN_CHECKPOINT;
     ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
@@ -1528,7 +1475,6 @@ _arrayCopyForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           False)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyForwardDefault(source_begin, source_end, target_begin);
 }
 
@@ -1538,7 +1484,6 @@ arrayCopyForward(TValue * source_begin,
                  TValue * source_end, 
                  TValue * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyForwardPointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
 }
 
@@ -1549,7 +1494,6 @@ _arrayCopyBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            True)
 {
-    SEQAN_CHECKPOINT;
     ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
@@ -1560,7 +1504,6 @@ _arrayCopyBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            False)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyBackwardDefault(source_begin, source_end, target_begin); 
 }
 
@@ -1570,7 +1513,6 @@ arrayCopyBackward(TValue * source_begin,
                   TValue * source_end, 
                   TValue * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayCopyBackwardPointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
 }
 
@@ -1585,7 +1527,6 @@ _arrayMoveForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           True)
 {
-    SEQAN_CHECKPOINT;
     ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
@@ -1596,7 +1537,6 @@ _arrayMoveForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           False)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveForwardDefault(source_begin, source_end, target_begin);
 }
 
@@ -1606,7 +1546,6 @@ arrayMoveForward(TValue * source_begin,
                  TValue * source_end, 
                  TValue * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveForwardPointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
 }
 
@@ -1617,7 +1556,6 @@ _arrayMoveBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            True)
 {
-    SEQAN_CHECKPOINT;
     ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 template <typename TValue>
@@ -1627,7 +1565,6 @@ _arrayMoveBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            False)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveBackwardDefault(source_begin, source_end, target_begin); 
 }
 
@@ -1637,7 +1574,6 @@ arrayMoveBackward(TValue * source_begin,
                   TValue * source_end, 
                   TValue * target_begin)
 {
-    SEQAN_CHECKPOINT;
     _arrayMoveBackwardPointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
 }
 
@@ -1655,7 +1591,6 @@ _arrayClearSpacePointer(TValue * array_begin,
                         True const & /*isSimple*/)
 {
     if (keep_from == move_to) return;
-    SEQAN_CHECKPOINT;
     // TODO(holtgrew): arrayCopy is more appropriate here since we are dealing with the IsSimple case.
     arrayMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
 }
