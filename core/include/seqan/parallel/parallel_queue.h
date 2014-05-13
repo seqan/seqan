@@ -47,37 +47,50 @@ namespace seqan {
 // Class ConcurrentQueue
 // ----------------------------------------------------------------------------
 
-template <typename TString, typename TSpec = void>
+template <typename TValue, typename TSpec = void>
 struct ConcurrentQueue
 {
-    typedef typename Position<TString>::Type TPos;
+    typedef typename Host<ConcurrentQueue>::Type    TString;
+    typedef typename Size<TString>::Type            TSize;
 
-    TString *       data_host;
+    TString         data;
     ReadWriteLock   lock;
 
-
-    volatile TPos headPos;
-    volatile TPos headReadPos;
-    volatile TPos tailPos;
-    volatile TPos tailWritePos;
+    volatile TSize headPos;
+    volatile TSize headReadPos;
+    volatile TSize tailPos;
+    volatile TSize tailWritePos;
 
     ConcurrentQueue() :
-        data_host(),
         headPos(0),
         tailPos(0),
         tailWritePos(0)
     {}
 
-    ConcurrentQueue(TString & string):
+    ConcurrentQueue(TString & data):
+        data(data),
         headPos(0),
         tailPos(0),
         tailWritePos(0)
-    {
-        setHost(*this, string);
-    }
+    {}
 
     ~ConcurrentQueue()
     {
+        SEQAN_ASSERT_EQ(tailPos, tailWritePos);
+        SEQAN_ASSERT_EQ(headPos, headReadPos);
+        SEQAN_ASSERT(empty(lock));
+
+        TSize cap = capacity(data);
+        if (tailPos < headPos)
+        {
+            _clearSpace(data, 0, tailPos, headPos);
+            _setLength(data, cap - (headPos - tailPos));
+        }
+        else
+        {
+            _clearSpace(data, 0, 0, headPos);
+            _setLength(data, cap - headPos);
+        }
     }
 };
 
@@ -89,42 +102,15 @@ struct ConcurrentQueue
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TString, typename TSpec>
-struct Value<ConcurrentQueue<TString, TSpec> > : Value<TString> {};
+template <typename TValue, typename TSpec>
+struct Value<ConcurrentQueue<TValue, TSpec> >
+{
+    typedef TValue Type;
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function host()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TSpec>
-inline TString &
-host(ConcurrentQueue<TString, TSpec> & me)
-{
-    return *me.data_host;
-}
-
-template <typename TString, typename TSpec>
-inline TString const &
-host(ConcurrentQueue<TString, TSpec> const & me)
-{
-    return *me.data_host;
-}
-
-// ----------------------------------------------------------------------------
-// Function setHost()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TSpec>
-inline void
-setHost(ConcurrentQueue<TString, TSpec> & me, TString & string)
-{
-    me.data_host = &string;
-    me.tailPos = length(string);
-}
 
 // ----------------------------------------------------------------------------
 // Function _cyclicInc()
@@ -132,7 +118,7 @@ setHost(ConcurrentQueue<TString, TSpec> & me, TString & string)
 
 template <typename TValue>
 inline TValue
-cyclicInc(TValue value, TValue modulo)
+_cyclicInc(TValue value, TValue modulo)
 {
     TValue newVal = value + 1;
     return (newVal == modulo)? 0 : newVal;
@@ -144,7 +130,7 @@ cyclicInc(TValue value, TValue modulo)
 
 template <typename TValue>
 inline TValue
-cyclicDec(TValue value, TValue modulo)
+_cyclicDec(TValue value, TValue modulo)
 {
     TValue newVal = (value == 0)? modulo : value;
     return newVal - 1;
@@ -192,7 +178,7 @@ tryPopFront(TValue & result,
         if (headReadPos == me.tailPos)
             return false;
 
-        newHeadReadPos = cyclicInc(headReadPos, cap);
+        newHeadReadPos = _cyclicInc(headReadPos, cap);
     }
     while (atomicCas(me.headReadPos, headReadPos, newHeadReadPos) != headReadPos);
 
@@ -271,7 +257,7 @@ appendValue(ConcurrentQueue<TString, TSpec> & me,
             while (true)
             {
                 TValue tailWritePos = me.tailWritePos;
-                TValue newTailWritePos = cyclicInc(tailWritePos, cap);
+                TValue newTailWritePos = _cyclicInc(tailWritePos, cap);
                 if (newTailWritePos == me.headPos)
                     break;
 
@@ -297,7 +283,7 @@ appendValue(ConcurrentQueue<TString, TSpec> & me,
             SEQAN_ASSERT_EQ(me.headPos, me.headReadPos);
 
             // did we reach the capacity limit?
-            if (cyclicInc(me.tailPos) == me.headPos)
+            if (_cyclicInc(me.tailPos) == me.headPos)
             {
                 valueConstruct(begin(string, Standard()) + me.tailPos, val);
                 me.tailWritePos = me.tailPos = me.headPos;
