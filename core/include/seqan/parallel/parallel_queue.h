@@ -233,7 +233,7 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 capacity(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    ScopedWriteLock<> writeLock(me.lock);
+    ScopedReadLock<> writeLock(me.lock);
     return capacity(me.data);
 }
 

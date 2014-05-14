@@ -120,7 +120,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 {
     typedef seqan::ConcurrentQueue<unsigned> TQueue;
 
-    TQueue queue;
+    TQueue queue(1u);
     seqan::String<unsigned> random;
     seqan::Rng<seqan::MersenneTwister> rng(0);
 
@@ -148,7 +148,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 //            }
             unsigned tid = omp_get_thread_num() / 2;
             for (unsigned i = splitter[tid]; i != splitter[tid + 1]; ++i)
-                appendValue(queue, random[i]);
+                appendValue(queue, random[i], seqan::Limit());
         }
 
         if (threadCount < 2 || (omp_get_thread_num() & 1) == 1)
@@ -169,8 +169,8 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
             seqan::atomicXor(chkSum2, chkSumLocal);
         }
     }
-//    std::cout << "len: " << length(queue) << std::endl;
-//    std::cout << "cap: " << capacity(queue) << std::endl;
+    std::cout << "len: " << length(queue) << std::endl;
+    std::cout << "cap: " << capacity(queue) << std::endl;
     SEQAN_ASSERT_EQ(chkSum, chkSum2);
 }
 
