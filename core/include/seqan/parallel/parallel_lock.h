@@ -149,10 +149,12 @@ inline void
 lockWriting(ReadWriteLock &lock)
 {
     // wait until we are the only writer
-    while (atomicCas(lock.writers, 0u, 1u) != 0) ;
+    while (atomicCas(lock.writers, 0u, 1u) != 0)
+    {}
 
     // wait until all readers are done
-    while (lock.readers != 0) ;
+    while (lock.readers != 0)
+    {}
 }
 
 // ----------------------------------------------------------------------------
