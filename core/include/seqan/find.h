@@ -33,11 +33,11 @@
 #ifndef SEQAN_HEADER_FIND_H
 #define SEQAN_HEADER_FIND_H
 
-//____________________________________________________________________________
-// prerequisites
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
 
 #include <cmath>
-
 #include <deque>
 
 #include <seqan/sequence.h>
@@ -46,14 +46,19 @@
 #include <seqan/graph_types.h>
 #include <seqan/graph_algorithms.h>
 #include <seqan/map.h>
+#include <seqan/parallel.h>
 
-//____________________________________________________________________________
+// ===========================================================================
+// Base headers.
+// ===========================================================================
 
 #include <seqan/find/find_base.h>
 #include <seqan/find/find_pattern_base.h>
 
-//____________________________________________________________________________
-// exact pattern matching
+// ===========================================================================
+// Exact pattern matching.
+// ===========================================================================
+
 #include <seqan/find/find_simple.h>
 #include <seqan/find/find_horspool.h>
 #include <seqan/find/find_shiftand.h>
@@ -61,12 +66,16 @@
 #include <seqan/find/find_bndm.h>
 #include <seqan/find/find_bom.h>
 
-//____________________________________________________________________________
-//complex pattern matching
+// ===========================================================================
+// Pattern matching with wildcards.
+// ===========================================================================
+
 #include <seqan/find/find_wild_shiftand.h>
 
-//____________________________________________________________________________
-//multiple pattern search
+// ===========================================================================
+// Multiple exact pattern matching.
+// ===========================================================================
+
 #include <seqan/find/find_ahocorasick.h>
 #include <seqan/find/find_multiple_shiftand.h>
 #include <seqan/find/find_set_horspool.h>
@@ -75,8 +84,10 @@
 #include <seqan/find/find_wumanber.h> 
 #include <seqan/find/find_multiple_bfam.h>
 
-//____________________________________________________________________________
-// approximate pattern matching
+// ===========================================================================
+// Approximate pattern matching.
+// ===========================================================================
+
 #include <seqan/find/find_begin.h>
 
 #include <seqan/find/find_score.h>
@@ -85,5 +96,13 @@
 #include <seqan/find/find_pex.h>
 
 #include <seqan/find/find_hamming_simple.h>
+
+// ===========================================================================
+// Lambda interface.
+// ===========================================================================
+
+#ifdef SEQAN_CXX11_STANDARD
+#include <seqan/find/find_lambda.h>
+#endif
 
 #endif //#ifndef SEQAN_HEADER_...
