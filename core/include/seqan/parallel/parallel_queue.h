@@ -61,11 +61,16 @@ struct ConcurrentQueue
     volatile TSize tailPos;
     volatile TSize tailWritePos;
 
+    mutable volatile unsigned readerCount;
+    mutable volatile unsigned writerCount;
+
     ConcurrentQueue() :
         headPos(0),
         headReadPos(0),
         tailPos(0),
-        tailWritePos(0)
+        tailWritePos(0),
+        readerCount(0),
+        writerCount(0)
     {}
 
     // you can set the initial capacity here
@@ -73,7 +78,9 @@ struct ConcurrentQueue
         headPos(0),
         headReadPos(0),
         tailPos(0),
-        tailWritePos(0)
+        tailWritePos(0),
+        readerCount(0),
+        writerCount(0)
     {
         reserve(data, capacity + 1, Exact());
     }
@@ -83,7 +90,9 @@ struct ConcurrentQueue
         headPos(0),
         headReadPos(0),
         tailPos(length(data)),
-        tailWritePos(length(data))
+        tailWritePos(length(data)),
+        readerCount(0),
+        writerCount(0)
     {}
 
     ~ConcurrentQueue()
@@ -91,6 +100,11 @@ struct ConcurrentQueue
         SEQAN_ASSERT_EQ(tailPos, tailWritePos);
         SEQAN_ASSERT_EQ(headPos, headReadPos);
         SEQAN_ASSERT(empty(lock));
+        SEQAN_ASSERT_EQ(writerCount, 0u);
+
+        // wait for all pending readers to finish
+        while (readerCount != 0)
+        {}
 
         TSize cap = capacity(data);
         if (tailPos < headPos)
@@ -100,8 +114,9 @@ struct ConcurrentQueue
         }
         else
         {
+            _setLength(data, tailPos);
             _clearSpace(data, 0u, (TSize)0, headPos, Insist());
-            _setLength(data, cap - headPos);
+            _setLength(data, tailPos - headPos);
         }
     }
 };
@@ -126,9 +141,50 @@ struct Host<ConcurrentQueue<TValue, TSpec> >
     typedef String<TValue> Type;
 };
 
+template <typename TValue, typename TSpec>
+struct Size<ConcurrentQueue<TValue, TSpec> >:
+    Size<Host<ConcurrentQueue<TValue, TSpec> > >
+{};
+
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function lockReading() / unlockReading()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline void
+lockReading(ConcurrentQueue<TValue, TSpec> const & me)
+{
+    atomicInc(me.readerCount);
+}
+
+template <typename TValue, typename TSpec>
+inline void
+unlockReading(ConcurrentQueue<TValue, TSpec> const & me)
+{
+    atomicDec(me.readerCount);
+}
+
+// ----------------------------------------------------------------------------
+// Function lockWriting() / unlockWriting()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline void
+lockWriting(ConcurrentQueue<TValue, TSpec> const & me)
+{
+    atomicInc(me.writerCount);
+}
+
+template <typename TValue, typename TSpec>
+inline void
+unlockWriting(ConcurrentQueue<TValue, TSpec> const & me)
+{
+    atomicDec(me.writerCount);
+}
 
 // ----------------------------------------------------------------------------
 // Function _cyclicInc()
@@ -150,7 +206,7 @@ template <typename TValue, typename TSpec>
 inline bool
 empty(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    ScopedWriteLock(me.lock);
+    ScopedWriteLock<> writeLock(me.lock);
     return me.headPos == me.tailPos;
 }
 
@@ -162,7 +218,7 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 length(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    ScopedWriteLock(me.lock);
+    ScopedWriteLock<> writeLock(me.lock);
     if (me.headPos <= me.tailPos)
         return me.tailPos - me.headPos;
     else
@@ -177,6 +233,7 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 capacity(ConcurrentQueue<TValue, TSpec> const & me)
 {
+    ScopedWriteLock<> writeLock(me.lock);
     return capacity(me.data);
 }
 
@@ -198,8 +255,7 @@ capacity(ConcurrentQueue<TValue, TSpec> const & me)
 
 template <typename TValue, typename TSpec>
 inline bool
-tryPopFront(TValue & result,
-            ConcurrentQueue<TValue, TSpec> & me)
+tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
     typedef ConcurrentQueue<TValue, TSpec>              TQueue;
     typedef typename Host<TQueue>::Type                 TString;
@@ -207,7 +263,7 @@ tryPopFront(TValue & result,
     typedef typename Iterator<TString, Standard>::Type  TIter;
 
     // try to extract a value
-    ScopedReadLock(me.lock);
+    ScopedReadLock<> readLock(me.lock);
 
     TSize cap = capacity(me.data);
     TSize headReadPos;
@@ -231,9 +287,29 @@ tryPopFront(TValue & result,
     valueDestruct(it);
 
     // wait for pending previous reads and synchronize headPos to headReadPos
-    while (atomicCas(me.headPos, headReadPos, newHeadReadPos) != headReadPos);
+    while (atomicCas(me.headPos, headReadPos, newHeadReadPos) != headReadPos)
+    {}
 
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function popFront()
+// ----------------------------------------------------------------------------
+
+// returns if no writer is locked the queue and queue is empty
+template <typename TValue, typename TSpec>
+inline bool
+popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
+{
+    while (me.writerCount != 0)
+    {
+        if (tryPopFront(result, me))
+            return true;
+    }
+    // we have to give it another try if the queue was empty inside the loop
+    // but after the check a writer pushes a value and zeroes the writerCount
+    return (tryPopFront(result, me));
 }
 
 // ----------------------------------------------------------------------------
@@ -248,12 +324,13 @@ inline TValue
 #endif
 popFront(ConcurrentQueue<TValue, TSpec> & me)
 {
-    TValue val;
-    while (!tryPopFront(val, me));
+    TValue result;
+    while (!tryPopFront(result, me))
+    {}
 #ifdef SEQAN_CXX11_STANDARD
-    return std::move(val);
+    return std::move(result);
 #else
-    return val;
+    return result;
 #endif
 }
 
@@ -298,7 +375,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
 
     // try to extend capacity
 
-    ScopedWriteLock(me.lock);
+    ScopedWriteLock<> writeLock(me.lock);
     TSize cap = capacity(me.data);
 
     SEQAN_ASSERT_EQ(me.tailPos, me.tailWritePos);
@@ -361,7 +438,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
     {
         // try to append the value
         {
-            ScopedReadLock(me.lock);
+            ScopedReadLock<> readLock(me.lock);
 
             TSize cap = capacity(me.data);
 
@@ -380,7 +457,9 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     std::swap(*it, val);
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
-                    while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos);
+                    while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos)
+                    {}
+
                     return;
                 }
             }

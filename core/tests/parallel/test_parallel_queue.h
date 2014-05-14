@@ -116,5 +116,63 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
     }
 }
 
+SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
+{
+    typedef seqan::ConcurrentQueue<unsigned> TQueue;
+
+    TQueue queue;
+    seqan::String<unsigned> random;
+    seqan::Rng<seqan::MersenneTwister> rng(0);
+
+    unsigned chkSum = 0;
+
+    resize(random, 1000000);
+    for (unsigned i = 0; i < length(random); ++i)
+    {
+//        random[i] = pickRandomNumber(rng);
+        random[i] = i;
+        chkSum ^= random[i];
+    }
+
+    volatile unsigned chkSum2 = 0;
+    size_t threadCount = omp_get_max_threads();
+    seqan::Splitter<unsigned> splitter(0, length(random), (threadCount + 1) / 2);
+    SEQAN_OMP_PRAGMA(parallel)
+    {
+        if ((omp_get_thread_num() & 1) == 0)
+        {
+            seqan::ScopedWriteLock<TQueue> writeLock(queue);
+//            SEQAN_OMP_PRAGMA(critical(cout))
+//            {
+//                std::cout << "start writer thread: " << omp_get_thread_num() << std::endl;
+//            }
+            unsigned tid = omp_get_thread_num() / 2;
+            for (unsigned i = splitter[tid]; i != splitter[tid + 1]; ++i)
+                appendValue(queue, random[i]);
+        }
+
+        if (threadCount < 2 || (omp_get_thread_num() & 1) == 1)
+        {
+            seqan::ScopedReadLock<TQueue> readLock(queue);
+            // wait for queue to be filled initialy
+            while (capacity(queue) == 0)
+            {}
+
+//            SEQAN_OMP_PRAGMA(critical(cout))
+//            {
+//                std::cout << "start reader thread: " << omp_get_thread_num() << std::endl;
+//            }
+
+            unsigned chkSumLocal = 0, val = 0;
+            while (popFront(val, queue))
+                chkSumLocal ^= val;
+            seqan::atomicXor(chkSum2, chkSumLocal);
+        }
+    }
+//    std::cout << "len: " << length(queue) << std::endl;
+//    std::cout << "cap: " << capacity(queue) << std::endl;
+    SEQAN_ASSERT_EQ(chkSum, chkSum2);
+}
+
 
 #endif  // TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_

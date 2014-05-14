@@ -165,7 +165,7 @@ appendValue(ConcurrentAppender<TString, TSpec> & me,
     {
         // try to append the value
         {
-            ScopedReadLock(me.lock);
+            ScopedReadLock<> readLock(me.lock);
             TSize newLen = _incLength(string, Parallel());
             if (newLen <= capacity(string))
             {
@@ -177,7 +177,7 @@ appendValue(ConcurrentAppender<TString, TSpec> & me,
 
         // try to extend capacity
         {
-            ScopedWriteLock(me.lock);
+            ScopedWriteLock<> writeLock(me.lock);
             TSize cap = capacity(string);
             if (cap == length(string))
                 reserve(string, cap + 1, expandTag);
