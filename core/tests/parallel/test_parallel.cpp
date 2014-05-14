@@ -79,7 +79,10 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
     SEQAN_CALL_TEST(test_parallel_sum);
     SEQAN_CALL_TEST(test_parallel_partial_sum);
+
+    // Tests for parallel queue.
     SEQAN_CALL_TEST(test_parallel_queue_simple);
     SEQAN_CALL_TEST(test_parallel_queue_resize);
+    SEQAN_CALL_TEST(test_parallel_queue_parallel_access);
 }
 SEQAN_END_TESTSUITE

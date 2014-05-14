@@ -40,16 +40,16 @@
 namespace seqan {
 
 // ============================================================================
-// Class ReadWriteLock
+// Classes
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class ReadWriteLock
+// ----------------------------------------------------------------------------
 // this lock augments a class by thread-safety as follows:
 //  - supports multiple concurrent readers (possibly waiting for writer to finish)
 //  - supports only a single writer at a time (possibly waiting for readers or other writers to finish)
 //  - the writer has higher priority than all readers
-
-// ----------------------------------------------------------------------------
-// Class
-// ----------------------------------------------------------------------------
 
 struct ReadWriteLock
 {
@@ -61,6 +61,52 @@ struct ReadWriteLock
         writers(0)
     {}
 };
+
+// ----------------------------------------------------------------------------
+// Class ScopedReadLock
+// ----------------------------------------------------------------------------
+
+template <typename TLock = ReadWriteLock>
+struct ScopedReadLock
+{
+    TLock &lock;
+
+    ScopedReadLock(TLock &lock):
+        lock(lock)
+    {
+        lockReading(lock);
+    }
+
+    ~ScopedReadLock()
+    {
+        unlockReading(lock);
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Class ScopedWriteLock
+// ----------------------------------------------------------------------------
+
+template <typename TLock = ReadWriteLock>
+struct ScopedWriteLock
+{
+    TLock &lock;
+
+    ScopedWriteLock(TLock &lock):
+        lock(lock)
+    {
+        lockWriting(lock);
+    }
+
+    ~ScopedWriteLock()
+    {
+        unlockWriting(lock);
+    }
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function lockReading()
@@ -128,46 +174,6 @@ empty(ReadWriteLock &lock)
 {
     return lock.readers == 0 && lock.writers == 0;
 }
-
-// ============================================================================
-// Class ScopedReadLock
-// ============================================================================
-
-struct ScopedReadLock
-{
-    ReadWriteLock &lock;
-
-    ScopedReadLock(ReadWriteLock &lock):
-        lock(lock)
-    {
-        lockReading(lock);
-    }
-
-    ~ScopedReadLock()
-    {
-        unlockReading(lock);
-    }
-};
-
-// ============================================================================
-// Class ScopedWriteLock
-// ============================================================================
-
-struct ScopedWriteLock
-{
-    ReadWriteLock &lock;
-
-    ScopedWriteLock(ReadWriteLock &lock):
-        lock(lock)
-    {
-        lockWriting(lock);
-    }
-
-    ~ScopedWriteLock()
-    {
-        unlockWriting(lock);
-    }
-};
 
 }  // namespace seqan
 
