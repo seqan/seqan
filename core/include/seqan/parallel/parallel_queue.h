@@ -61,8 +61,9 @@ struct ConcurrentQueue
     volatile TSize tailPos;
     volatile TSize tailWritePos;
 
-    mutable volatile unsigned readerCount;
-    mutable volatile unsigned writerCount;
+    volatile unsigned readerCount;
+    volatile unsigned writerCount;
+    volatile bool firstValue;
 
     ConcurrentQueue() :
         headPos(0),
@@ -70,7 +71,8 @@ struct ConcurrentQueue
         tailPos(0),
         tailWritePos(0),
         readerCount(0),
-        writerCount(0)
+        writerCount(0),
+        firstValue(false)
     {}
 
     // you can set the initial capacity here
@@ -80,7 +82,8 @@ struct ConcurrentQueue
         tailPos(0),
         tailWritePos(0),
         readerCount(0),
-        writerCount(0)
+        writerCount(0),
+        firstValue(false)
     {
         reserve(data, capacity + 1, Exact());
     }
@@ -92,7 +95,8 @@ struct ConcurrentQueue
         tailPos(length(data)),
         tailWritePos(length(data)),
         readerCount(0),
-        writerCount(0)
+        writerCount(0),
+        firstValue(false)
     {}
 
     ~ConcurrentQueue()
@@ -156,14 +160,14 @@ struct Size<ConcurrentQueue<TValue, TSpec> >:
 
 template <typename TValue, typename TSpec>
 inline void
-lockReading(ConcurrentQueue<TValue, TSpec> const & me)
+lockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicInc(me.readerCount);
 }
 
 template <typename TValue, typename TSpec>
 inline void
-unlockReading(ConcurrentQueue<TValue, TSpec> const & me)
+unlockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicDec(me.readerCount);
 }
@@ -174,16 +178,17 @@ unlockReading(ConcurrentQueue<TValue, TSpec> const & me)
 
 template <typename TValue, typename TSpec>
 inline void
-lockWriting(ConcurrentQueue<TValue, TSpec> const & me)
+lockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicInc(me.writerCount);
 }
 
 template <typename TValue, typename TSpec>
 inline void
-unlockWriting(ConcurrentQueue<TValue, TSpec> const & me)
+unlockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicDec(me.writerCount);
+    printf("left scope write lock: %i\n", omp_get_thread_num());
 }
 
 // ----------------------------------------------------------------------------
@@ -234,7 +239,7 @@ inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 capacity(ConcurrentQueue<TValue, TSpec> const & me)
 {
     ScopedReadLock<> writeLock(me.lock);
-    return capacity(me.data);
+    return capacity(me.data) - 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -294,6 +299,26 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function waitForWriters()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline void
+waitForWriters(ConcurrentQueue<TValue, TSpec> & me, unsigned writerCount)
+{
+    while (me.writerCount < writerCount)
+    {}
+}
+
+template <typename TValue, typename TSpec>
+inline void
+waitForFirstValue(ConcurrentQueue<TValue, TSpec> & me)
+{
+    while (!me.firstValue)
+    {}
+}
+
+// ----------------------------------------------------------------------------
 // Function popFront()
 // ----------------------------------------------------------------------------
 
@@ -311,10 +336,6 @@ popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
     // but after the check a writer pushes a value and zeroes the writerCount
     return (tryPopFront(result, me));
 }
-
-// ----------------------------------------------------------------------------
-// Function popFront()
-// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
 #ifdef SEQAN_CXX11_STANDARD
@@ -393,6 +414,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
             valueConstruct(it);
             std::swap(*it, val);
             me.tailWritePos = me.tailPos = me.headPos;
+            me.firstValue = true;
             valueWasAppended = true;
         }
 
@@ -439,7 +461,6 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
         // try to append the value
         {
             ScopedReadLock<> readLock(me.lock);
-
             TSize cap = capacity(me.data);
 
             while (true)
@@ -460,6 +481,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos)
                     {}
 
+                    me.firstValue = true;
                     return;
                 }
             }

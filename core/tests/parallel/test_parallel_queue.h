@@ -126,6 +126,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 
     unsigned chkSum = 0;
 
+//    resize(random, 232);
     resize(random, 1000000);
     for (unsigned i = 0; i < length(random); ++i)
     {
@@ -133,40 +134,58 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
         random[i] = i;
         chkSum ^= random[i];
     }
+//    std::cout <<chkSum<<std::endl;
 
     volatile unsigned chkSum2 = 0;
     size_t threadCount = omp_get_max_threads();
-    seqan::Splitter<unsigned> splitter(0, length(random), (threadCount + 1) / 2);
+    size_t writerCount = (threadCount + 1) / 2;
+    seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
+
     SEQAN_OMP_PRAGMA(parallel)
     {
         if ((omp_get_thread_num() & 1) == 0)
         {
             seqan::ScopedWriteLock<TQueue> writeLock(queue);
+            // barrier for all writers to set up
+            waitForWriters(queue, writerCount);
+
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-//                std::cout << "start writer thread: " << omp_get_thread_num() << std::endl;
+                printf("start writer thread: %i\n", omp_get_thread_num());
 //            }
             unsigned tid = omp_get_thread_num() / 2;
-            for (unsigned i = splitter[tid]; i != splitter[tid + 1]; ++i)
-                appendValue(queue, random[i], seqan::Limit());
+            for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
+                appendValue(queue, random[j], seqan::Limit());
+//                appendValue(queue, random[j]);
+//            SEQAN_OMP_PRAGMA(critical(cout))
+//            {
+                printf("stop writer thread: %i %d\n", omp_get_thread_num(), splitter[tid + 1] - splitter[tid]);
+//            }
         }
 
         if (threadCount < 2 || (omp_get_thread_num() & 1) == 1)
         {
             seqan::ScopedReadLock<TQueue> readLock(queue);
-            // wait for queue to be filled initialy
-            while (capacity(queue) == 0)
-            {}
+            // barrier for all writers to set up
+            waitForFirstValue(queue);
 
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-//                std::cout << "start reader thread: " << omp_get_thread_num() << std::endl;
+                printf("start reader thread: %i\n", omp_get_thread_num());
 //            }
 
-            unsigned chkSumLocal = 0, val = 0;
+            unsigned chkSumLocal = 0, val = 0, cnt = 0;
             while (popFront(val, queue))
+            {
                 chkSumLocal ^= val;
+                ++cnt;
+            }
             seqan::atomicXor(chkSum2, chkSumLocal);
+
+//            SEQAN_OMP_PRAGMA(critical(cout))
+//            {
+                printf("stop reader thread: %i %d %i\n", omp_get_thread_num(), cnt, queue.writerCount);
+//            }
         }
     }
     std::cout << "len: " << length(queue) << std::endl;
