@@ -57,7 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature Prefix<TSeq>::Type
  *
- * @tparam TSeq The segmentable sequence type to get infix type for.
+ * @tparam TSeq The segmentable sequence type to get prefix type for.
  * @return Type The prefix type.
  *
  * The prefix type of a prefix is a suffix, the prefix of any other segment type is an infix.
@@ -80,7 +80,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @mfn SegmentableConcept#Infix
  * @brief Returns infix type in a flattening fashion.
  *
- * @signature Suffix<TSeq>::Type
+ * @signature Infix<TSeq>::Type
  *
  * @tparam TSeq The segmentable sequence type to get infix type for.
  * @return Type The infix type.
@@ -92,7 +92,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn SegmentableConcept#infixWithLength
  * @brief Returns the infix of a Segmentable type.
  *
- * @signature TPrefix infixWithLength(s, beginPos, len);
+ * @signature TInfix infixWithLength(s, beginPos, len);
  *
  * @param s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
  * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
@@ -107,7 +107,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn SegmentableConcept#infix
  * @brief Returns the infix of a Segmentable type.
  *
- * @signature TPrefix infix(s, beginPos, endPos);
+ * @signature TInfix infix(s, beginPos, endPos);
  *
  * @param s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
  * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
@@ -132,7 +132,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn SegmentableConcept#suffix
  * @brief Returns the suffix of a Segmentable type.
  *
- * @signature TPrefix suffix(s, beginPos);
+ * @signature TSuffix suffix(s, beginPos);
  *
  * @param s        The segmentable type to get the suffix of.
  * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
