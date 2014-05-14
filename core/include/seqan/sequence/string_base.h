@@ -1843,9 +1843,8 @@ _reserveStorage(
     typename Value< String<TValue, TSpec> >::Type * old_array = _reallocateStorage(seq, new_capacity, tag);
     if (old_array)
     {//buffer was replaced, destruct old buffer
-//      arrayConstruct(begin(seq, Standard()), begin(seq, Standard()) + seq_length);
-//      arrayMoveForward(old_array, old_array + seq_length, begin(seq, Standard()));
-        arrayConstructCopy(old_array, old_array + seq_length, begin(seq, Standard()));
+//        arrayConstructCopy(old_array, old_array + seq_length, begin(seq, Standard()));
+        arrayConstructMove(old_array, old_array + seq_length, begin(seq, Standard()));
         arrayDestruct(old_array, old_array + seq_length);
         _deallocateStorage(seq, old_array, old_capacity);
     }
