@@ -43,7 +43,7 @@ namespace seqan {
 // ============================================================================
 
 template <typename TText, typename TPattern, typename TSpec = void>
-struct Finder2;
+struct Finder_;
 
 // ============================================================================
 // Metafunctions
@@ -54,9 +54,9 @@ struct Finder2;
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-struct View<Finder2<TText, TPattern, TSpec> >
+struct View<Finder_<TText, TPattern, TSpec> >
 {
-    typedef Finder2<typename View<TText>::Type, typename View<TPattern>::Type, TSpec>   Type;
+    typedef Finder_<typename View<TText>::Type, typename View<TPattern>::Type, TSpec>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -64,9 +64,9 @@ struct View<Finder2<TText, TPattern, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-struct RemoveView<Finder2<TText, TPattern, TSpec> >
+struct RemoveView<Finder_<TText, TPattern, TSpec> >
 {
-    typedef Finder2<typename RemoveView<TText>::Type, typename RemoveView<TPattern>::Type, TSpec>   Type;
+    typedef Finder_<typename RemoveView<TText>::Type, typename RemoveView<TPattern>::Type, TSpec>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -74,14 +74,14 @@ struct RemoveView<Finder2<TText, TPattern, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-struct IsView<Finder2<TText, TPattern, TSpec> > : IsView<TText> {};
+struct IsView<Finder_<TText, TPattern, TSpec> > : IsView<TText> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsDevice                                               [Finder]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-struct IsDevice<Finder2<TText, TPattern, TSpec> > : IsDevice<TText> {};
+struct IsDevice<Finder_<TText, TPattern, TSpec> > : IsDevice<TText> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction View                                                  [Pattern]
@@ -148,95 +148,74 @@ struct Score_
 };
 
 // ============================================================================
-// Classes
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class Finder
-// ----------------------------------------------------------------------------
-
-// TODO(esiragusa): Move Index Finder2 here and change it for a generic TText.
-
-// ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function textIterator()
+// Function _textIterator()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename TextIterator_<TText, TPattern, TSpec>::Type &
-textIterator(Finder2<TText, TPattern, TSpec> & finder)
+_textIterator(Finder_<TText, TPattern, TSpec> & finder)
 {
     return finder._textIt;
 }
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename TextIterator_<TText, TPattern, TSpec>::Type const &
-textIterator(Finder2<TText, TPattern, TSpec> const & finder)
+_textIterator(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._textIt;
 }
 
 // ----------------------------------------------------------------------------
-// Function patternIterator()
+// Function _patternIterator()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename PatternIterator_<TText, TPattern, TSpec>::Type &
-patternIterator(Finder2<TText, TPattern, TSpec> & finder)
+_patternIterator(Finder_<TText, TPattern, TSpec> & finder)
 {
     return finder._patternIt;
 }
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename PatternIterator_<TText, TPattern, TSpec>::Type const &
-patternIterator(Finder2<TText, TPattern, TSpec> const & finder)
+_patternIterator(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._patternIt;
 }
 
 // ----------------------------------------------------------------------------
-// Function setPatternIterator()
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TPattern, typename TSpec, typename TPatternIterator>
-SEQAN_HOST_DEVICE inline void
-setPatternIterator(Finder2<TText, TPattern, TSpec> & finder, TPatternIterator const & patternIt)
-{
-    finder._patternIt = patternIt;
-}
-
-// ----------------------------------------------------------------------------
-// Function getScore()
+// Function _getScore()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
-getScore(Finder2<TText, TPattern, TSpec> const & finder)
+_getScore(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._score;
 }
 
 // ----------------------------------------------------------------------------
-// Function getScoreThreshold()
+// Function _getScoreThreshold()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
-getScoreThreshold(Finder2<TText, TPattern, TSpec> const & finder)
+_getScoreThreshold(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._scoreThreshold;
 }
 
 // ----------------------------------------------------------------------------
-// Function setScoreThreshold()
+// Function _setScoreThreshold()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TScore>
 SEQAN_HOST_DEVICE inline void
-setScoreThreshold(Finder2<TText, TPattern, TSpec> & finder, TScore score)
+_setScoreThreshold(Finder_<TText, TPattern, TSpec> & finder, TScore score)
 {
     finder._scoreThreshold = score;
 }
@@ -247,12 +226,12 @@ setScoreThreshold(Finder2<TText, TPattern, TSpec> & finder, TScore score)
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-clear(Finder2<TText, TPattern, TSpec> & finder)
+clear(Finder_<TText, TPattern, TSpec> & finder)
 {
-    // NOTE(esiragusa): if find wasn't called yet, textIterator is uninitialized.
-//    goBegin(textIterator(finder));
-    // NOTE(esiragusa): if find wasn't called yet, patternIterator is uninitialized.
-//    goBegin(patternIterator(finder));
+    // NOTE(esiragusa): if find wasn't called yet, _textIterator is uninitialized.
+//    goBegin(_textIterator(finder));
+    // NOTE(esiragusa): if find wasn't called yet, _patternIterator is uninitialized.
+//    goBegin(_patternIterator(finder));
     finder._score = typename Score_<TSpec>::Type();
 }
 
