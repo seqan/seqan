@@ -71,6 +71,7 @@ struct ScopedReadLock
 {
     TLock &lock;
 
+    explicit
     ScopedReadLock(TLock &lock):
         lock(lock)
     {
@@ -92,6 +93,7 @@ struct ScopedWriteLock
 {
     TLock &lock;
 
+    explicit
     ScopedWriteLock(TLock &lock):
         lock(lock)
     {
