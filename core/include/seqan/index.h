@@ -215,13 +215,11 @@
 // New finders.
 // ----------------------------------------------------------------------------
 
-#include <seqan/index/iter_vstree_factory.h>
-
+#include <seqan/index/find2_base.h>
 #include <seqan/index/find2_index.h>
-#include <seqan/index/find_backtracking_exp.h>
-//#include <seqan/index/find_suffixfilter.h>
-#include <seqan/index/find2_index.h>
-#include <seqan/index/find_index_multiple.h>
+#include <seqan/index/find2_backtracking.h>
+#include <seqan/index/find2_vstree_factory.h>
+#include <seqan/index/find2_index_multi.h>
 #include <seqan/index/find2_functors.h>
 
 #endif //#ifndef SEQAN_HEADER_...

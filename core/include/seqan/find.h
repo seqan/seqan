@@ -86,10 +86,4 @@
 
 #include <seqan/find/find_hamming_simple.h>
 
-// ==========================================================================
-// New finder.
-// ==========================================================================
-
-#include <seqan/find/find2_base.h>
-
 #endif //#ifndef SEQAN_HEADER_...
