@@ -15,7 +15,7 @@ message (STATUS "Configuring extras/tests/translation")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
+set (SEQAN_FIND_DEPENDENCIES OpenMP)
 find_package(SeqAn REQUIRED)
 find_package(CXX11 REQUIRED)
 
