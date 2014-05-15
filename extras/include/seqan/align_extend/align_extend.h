@@ -68,44 +68,22 @@ template <typename TAlign, typename TDPContext>
 inline void
 clear(AliExtContext_<TAlign, TDPContext> & prov)
 {
+    // centerAlign nead not be cleared, because it is always reassigned
     if (length(rows(prov.leftAlign)) != 2)
-    {
         resize(rows(prov.leftAlign), 2);
-//         createSource(row(prov.leftAlign, 0));
-//         createSource(row(prov.leftAlign, 1));
-//         if (row(prov.leftAlign, 0)._source.data_state != 1)
-//             std::cout << "STATE NOT OWNER\n";
-    }
     if (length(rows(prov.rightAlign)) != 2)
-    {
         resize(rows(prov.rightAlign), 2);
-//         createSource(row(prov.rightAlign, 0));
-//         createSource(row(prov.rightAlign, 1));
-    }
 
     // the expected behaviour for the alignObjects is that they shouldn't
     // have to be cleared, since every row is always assignSource'd before it
     // is used. However this DOES NOT CLEAR the object and causes undefined
     // behaviour
-    // Next we expect that a clear() on the array_gaps should solve this,
-    // then this code would work:
+    // instead we have to clear() the array_gaps:
 
-    clear(row(prov.leftAlign,0)._source);
     clear(row(prov.leftAlign,0));
-    clear(row(prov.leftAlign,1)._source);
     clear(row(prov.leftAlign,1));
-    clear(row(prov.rightAlign,0)._source);
     clear(row(prov.rightAlign,0));
-    clear(row(prov.rightAlign,1)._source);
     clear(row(prov.rightAlign,1));
-
-    // this is not the case either, apparently clear() doesnt work on gaps
-    // instead we have to (which is EXPENSIVE!):
-//     clear(rows(prov.leftAlign));
-//     resize(rows(prov.leftAlign), 2);
-//     // centerAlign is always assigned align, so it need not be reset
-//     clear(rows(prov.rightAlign));
-//     resize(rows(prov.rightAlign), 2);
 
     // trace segment always needs to be cleared
     clear(prov.traceSegment);
@@ -119,16 +97,6 @@ clear(AliExtContext_<TAlign, TDPContext> & prov)
 // ============================================================================
 // Functions
 // ============================================================================
-
-
-template <typename TSequence, typename TSequence2>
-inline void
-myAssignSource(Gaps<TSequence, ArrayGaps> & gaps, TSequence2 const & source)
-{
-    create(gaps._source, source);
-    _reinitArrayGaps(gaps);
-}
-
 
 // ----------------------------------------------------------------------------
 // Function _reverseTrace()
@@ -387,8 +355,6 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         _reversePartialTrace(alignContext.traceSegment,
                              length(inf0), length(inf1));
 
-//         std::cout << "State is: " << uint(row(prov.leftAlign, 0)._source.data_state) << "\n";
-//         std::cout << "State is: " << uint(row(prov.leftAlign, 0)._source.data_value) << "\n";
         assignSource(row(alignContext.leftAlign, 0), inf0);
         assignSource(row(alignContext.leftAlign, 1), inf1);
 
@@ -434,7 +400,6 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
                                 toViewPosition(row(align, 1),
                                                sourceBeginPos1) - leadGaps1);
     }
-
 
     // right
     if (extendRight)
@@ -512,7 +477,6 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     }
 }
 
-
 // ----------------------------------------------------------------------------
 // Function extendAlignment()
 // ----------------------------------------------------------------------------
@@ -558,7 +522,6 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  *
  * @include demos/align_extend/extend_alignment.cpp.stdout
  */
-
 
 // NO BAND, NO XDROP
 template <typename TStringInfix, typename TAlignSpec, typename TString,
