@@ -507,7 +507,7 @@ void _doRecordErase(JournalEntries<TCargo, SortedArray> & tree,
 }
 
 // ----------------------------------------------------------------------------
-// Function _doRecordInsertion()
+// Function recordInsertion()
 // ----------------------------------------------------------------------------
 
 template <typename TCargo>
