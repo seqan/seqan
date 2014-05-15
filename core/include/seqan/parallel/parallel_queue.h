@@ -63,7 +63,9 @@ struct ConcurrentQueue
 
     volatile unsigned readerCount;
     volatile unsigned writerCount;
+    volatile unsigned pushed, popped;
     volatile bool firstValue;
+
 
     ConcurrentQueue() :
         headPos(0),
@@ -72,6 +74,7 @@ struct ConcurrentQueue
         tailWritePos(0),
         readerCount(0),
         writerCount(0),
+        pushed(0), popped(0),
         firstValue(false)
     {}
 
@@ -83,6 +86,7 @@ struct ConcurrentQueue
         tailWritePos(0),
         readerCount(0),
         writerCount(0),
+        pushed(0), popped(0),
         firstValue(false)
     {
         reserve(data, capacity + 1, Exact());
@@ -96,6 +100,7 @@ struct ConcurrentQueue
         tailWritePos(length(data)),
         readerCount(0),
         writerCount(0),
+        pushed(0), popped(0),
         firstValue(false)
     {}
 
@@ -284,15 +289,17 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 
         newHeadReadPos = _cyclicInc(headReadPos, cap);
     }
-    while (atomicCas(me.headReadPos, headReadPos, newHeadReadPos) != headReadPos);
+    while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos));
 
     // extract value and destruct it in the data string
     TIter it = begin(me.data, Standard()) + headReadPos;
     std::swap(result, *it);
     valueDestruct(it);
 
+    atomicInc(me.popped);
+
     // wait for pending previous reads and synchronize headPos to headReadPos
-    while (atomicCas(me.headPos, headReadPos, newHeadReadPos) != headReadPos)
+    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos))
     {}
 
     return true;
@@ -363,7 +370,8 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue &&, Insist)
 _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue &, Insist)
 #endif
 {
-    SEQAN_ASSERT_NEQ(capacity(me), 0u);
+    ignoreUnusedVariableWarning(me);
+    SEQAN_ASSERT_GT(capacity(me.data), 1u);
     return false;
 }
 
@@ -375,7 +383,8 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue &&, Limit)
 _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue &, Limit)
 #endif
 {
-    SEQAN_ASSERT_NEQ(capacity(me), 0u);
+    ignoreUnusedVariableWarning(me);
+    SEQAN_ASSERT_GT(capacity(me.data), 1u);
     return false;
 }
 
@@ -416,6 +425,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
             me.tailWritePos = me.tailPos = me.headPos;
             me.firstValue = true;
             valueWasAppended = true;
+            atomicInc(me.pushed);
         }
 
         SEQAN_ASSERT_EQ(me.tailPos, me.headPos);
@@ -470,7 +480,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                 if (newTailWritePos == me.headPos)
                     break;
 
-                if (atomicCas(me.tailWritePos, tailWritePos, newTailWritePos) == tailWritePos)
+                if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos))
                 {
                     TIter it = begin(me.data, Standard()) + tailWritePos;
 //                    valueConstruct(it, val, Move());
@@ -478,10 +488,11 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     std::swap(*it, val);
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
-                    while (atomicCas(me.tailPos, tailWritePos, newTailWritePos) != tailWritePos)
+                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos))
                     {}
 
                     me.firstValue = true;
+                    atomicInc(me.pushed);
                     return;
                 }
             }

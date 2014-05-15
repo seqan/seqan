@@ -396,6 +396,8 @@ template <typename T, typename S>
 inline T atomicXor(T volatile &x, S y) { return _atomicXor(x, ConstInt<sizeof(T)>(), y); }
 template <typename T, typename S, typename U>
 inline T atomicCas(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<sizeof(T)>(), cmp, y); }
+template <typename T, typename S, typename U>
+inline bool atomicCasBool(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<sizeof(T)>(), cmp, y) == cmp; }
 
 template <typename T> 
 inline T atomicPostInc(T volatile & x) { return atomicInc(x) - 1; }
@@ -458,6 +460,12 @@ inline T atomicCas(T volatile & x, T cmp, T y)
 }
 
 template <typename T>
+inline bool atomicCasBool(T volatile & x, T cmp, T y)
+{
+    return __sync_bool_compare_and_swap(&x, cmp, y);
+}
+
+template <typename T>
 inline T atomicSwap(T volatile & x, T y)
 {
     return __sync_lock_test_and_set(x, y);
@@ -509,6 +517,7 @@ template <typename T>   inline T atomicPostDec(T      & x,             Serial)  
 template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
 template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
 template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
+template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
 
 template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
 template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
@@ -517,6 +526,7 @@ template <typename T>   inline T atomicPostDec(T volatile & x,         Parallel)
 template <typename T>   inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
 template <typename T>   inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
 template <typename T>   inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
+template <typename T>   inline bool atomicCasBool(T volatile & x, T cmp, T y, Parallel) { return atomicCasBool(x, cmp, y); }
 
 template <typename T1, typename T2>   inline T1 atomicAdd(T1          & x, T2 y, Serial)    { return x = x + y; }
 template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y, Parallel)  { return atomicAdd(x, y); }

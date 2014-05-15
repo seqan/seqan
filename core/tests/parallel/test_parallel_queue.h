@@ -97,9 +97,9 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
             appendValue(queue, 10 + i);
             SEQAN_ASSERT_EQ(length(queue), (unsigned)(i + 1));
         }
-        SEQAN_ASSERT_EQ(capacity(queue), 3u);
+        SEQAN_ASSERT_EQ(capacity(queue), 2u);
         appendValue(queue, 12);
-        SEQAN_ASSERT_GT(capacity(queue), 3u);
+        SEQAN_ASSERT_GT(capacity(queue), 2u);
         SEQAN_ASSERT_EQ(length(queue), 3u);
 
         for (int i = 0; i < 3; ++i)
@@ -190,6 +190,8 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
     }
     std::cout << "len: " << length(queue) << std::endl;
     std::cout << "cap: " << capacity(queue) << std::endl;
+    std::cout << "pushed: " << queue.pushed << std::endl;
+    std::cout << "popped: " << queue.popped << std::endl;
     SEQAN_ASSERT_EQ(chkSum, chkSum2);
 }
 
