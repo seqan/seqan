@@ -284,7 +284,7 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
     typedef typename ReverseComplement_<TVal>::Type TRevComp;
     typedef GeneticCode<codeSpec> TCode;
 
-    if (i % 6 > 2)
+    if ((i % 6) > 2)
     {
         TRevComp revComp(prefix(value(source, i/6),
                                 length(value(source,i/6)) - (i % 3)));
