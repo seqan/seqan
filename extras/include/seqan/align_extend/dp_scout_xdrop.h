@@ -109,11 +109,10 @@ struct ScoutStateSpecForScout_<
     typedef Terminator_<XDrop_<typename Value<TDPCell>::Type> > Type;
 };
 
-
-
 // ============================================================================
 // Functions
 // ============================================================================
+
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
@@ -168,8 +167,6 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
 
-
-
 // Computes the score and tracks it if enabled.
 template <typename TDPScout, typename TTraceMatrixNavigator,
           typename TScoreValue, typename TGapCosts, typename TSequenceHValue,
@@ -214,11 +211,8 @@ _computeCell(TDPScout & scout,
         typedef typename IsSameType<TCellDescriptor, LastCell>::Type TIsLastRow;
         _scoutBestScore(scout, activeCell, traceMatrixNavigator,
                         TIsLastColumn(), TIsLastRow());
-
     }
 }
-
-
 
 }  // namespace seqan
 
