@@ -684,6 +684,18 @@ clearGaps(Gaps<TSequence, ArrayGaps> & gaps)
 }
 
 // ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence>
+inline void
+clear(Gaps<TSequence, ArrayGaps> & gaps)
+{
+    clear(gaps._source);
+    clearGaps(gaps); // this also clears the clipping
+}
+
+// ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
 
