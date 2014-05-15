@@ -52,18 +52,6 @@ struct DefaultFind
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction FindTraits_<>
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TPattern, typename TAlgorithm>
-struct FindTraits_
-{
-    typedef typename Iterator<TText, Rooted>::Type      TextIterator;
-    typedef typename Iterator<TPattern, Rooted>::Type   PatternIterator;
-    typedef unsigned int                                Score;
-};
-
-// ----------------------------------------------------------------------------
 // Metafunction FindState_<>
 // ----------------------------------------------------------------------------
 
@@ -97,6 +85,32 @@ struct StatesPool_
 };
 
 // ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class FindDelegator_
+// ----------------------------------------------------------------------------
+
+template <typename TDelegate, typename TNeedlesIt>
+struct FindDelegator_
+{
+    TDelegate & delegate;
+    TNeedlesIt & needlesIt;
+
+    FindDelegator_(TDelegate & delegate, TNeedlesIt & needlesIt) :
+        delegate(delegate),
+        needlesIt(needlesIt)
+    {}
+
+    template <typename TTextIt, typename TScore>
+    void operator()(TTextIt & textIt, TScore score)
+    {
+        delegate(textIt, needlesIt, score);
+    }
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
 
@@ -122,9 +136,8 @@ template <typename TText, typename TPattern, typename TDelegate>
 inline void find(TText & text, TPattern const & pattern, TDelegate && delegate)
 {
     typedef typename DefaultFind<TText, TPattern const>::Type   TAlgorithm;
-    typedef FindTraits_<TText, TPattern const, TAlgorithm>      Traits;
 
-    find(text, pattern, typename Traits::Score(), delegate, TAlgorithm());
+    find(text, pattern, unsigned(), delegate, TAlgorithm());
 }
 
 // ----------------------------------------------------------------------------
@@ -181,18 +194,14 @@ inline void find(TText & text,
                  TThreading)
 {
     typedef StringSet<TNeedle, TSSetSpec> const                     TNeedles;
-    typedef typename Value<TNeedles>::Type                          TPattern;
+    typedef typename Value<TNeedles>::Type                          TNeedle_;
+    typedef typename Iterator<TNeedles, Rooted>::Type               TNeedlesIt;
 
-    typedef typename FindState_<TText, TPattern, TAlgorithm>::Type  TState;
+    typedef typename FindState_<TText, TNeedle_, TAlgorithm>::Type  TState;
     typedef typename StatesPool_<TState, TThreading>::Type          TStatesPool;
     typedef typename HasStatesPool_<TState, TThreading>::Type       HasStatesPool;
 
-    typedef FindTraits_<TText, TPattern, TAlgorithm>                InnerTraits;
-    typedef typename InnerTraits::TextIterator                      TTextIt;
-    typedef typename InnerTraits::Score                             TScore;
-
-    typedef FindTraits_<TText, TNeedles, TAlgorithm>                Traits;
-    typedef typename Traits::PatternIterator                        TNeedlesIt;
+    typedef FindDelegator_<TDelegate, TNeedlesIt const>             TDelegator;
 
     TStatesPool pool;
     _findStatesPoolInit(pool, HasStatesPool());
@@ -200,14 +209,11 @@ inline void find(TText & text,
     iterate(needles, [&](TNeedlesIt const & needlesIt)
     {
         TState & state = _findPickState(pool, HasStatesPool());
-        TPattern const pattern = value(needlesIt);
+        TNeedle const needle = value(needlesIt);
+        TDelegator delegator(delegate, needlesIt);
 
-        _findStateInit(state, text, pattern, threshold, TAlgorithm());
-        _findImpl(state, text, pattern, threshold, [&](TTextIt const & textIt, TScore score)
-        {
-            delegate(textIt, needlesIt, score);
-        },
-        TAlgorithm());
+        _findStateInit(state, text, needle, threshold, TAlgorithm());
+        _findImpl(state, text, needle, threshold, delegator, TAlgorithm());
     },
     Rooted(), TThreading());
 }
