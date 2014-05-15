@@ -52,66 +52,12 @@ struct DefaultFind<Index<THaystack, THaystackSpec>, TPattern>
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction FindTraits_<Index, Backtracking<Exact> >
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TPattern, typename TSpec>
-struct FindTraits_<Index<THaystack, THaystackSpec>, TPattern, Backtracking<Exact, TSpec> >
-{
-    typedef typename Iterator<Index<THaystack, THaystackSpec>, TopDown<> >::Type    TextIterator;
-    typedef typename Iterator<TPattern, Rooted>::Type                               PatternIterator;
-    typedef unsigned char                                                           Score;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction FindTraits_<Index, Backtracking<HammingDistance> >
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TPattern, typename TSpec>
-struct FindTraits_<Index<THaystack, THaystackSpec>, TPattern, Backtracking<HammingDistance, TSpec> >
-{
-    typedef typename Iterator<Index<THaystack, THaystackSpec>, TopDown<ParentLinks<> > >::Type  TextIterator;
-    typedef typename Iterator<TPattern, Rooted>::Type                                           PatternIterator;
-    typedef unsigned char                                                                       Score;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction FindTraits_<Index, Index, Backtracking<Exact> >
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec, typename TSpec>
-struct FindTraits_<Index<THaystack, THaystackSpec>, Index<TNeedle, TNeedleSpec>, Backtracking<Exact, TSpec> >
-{
-    typedef typename Iterator<Index<THaystack, THaystackSpec>, TopDown<> >::Type    TextIterator;
-    typedef typename Iterator<Index<TNeedle, TNeedleSpec>, TopDown<> >::Type        PatternIterator;
-    typedef unsigned char                                                           Score;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction FindTraits_<Index, Index, Backtracking<HammingDistance> >
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec, typename TSpec>
-struct FindTraits_<Index<THaystack, THaystackSpec>, Index<TNeedle, TNeedleSpec>, Backtracking<HammingDistance, TSpec> > :
-    FindTraits_<Index<THaystack, THaystackSpec>, Index<TNeedle, TNeedleSpec>, Backtracking<Exact, TSpec> > {};
-
-// ----------------------------------------------------------------------------
-// Metafunction FindTraits_<Index, Index, Backtracking<EditDistance> >
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec, typename TSpec>
-struct FindTraits_<Index<THaystack, THaystackSpec>, Index<TNeedle, TNeedleSpec>, Backtracking<EditDistance, TSpec> > :
-    FindTraits_<Index<THaystack, THaystackSpec>, Index<TNeedle, TNeedleSpec>, Backtracking<Exact, TSpec> > {};
-
-// ----------------------------------------------------------------------------
 // Metafunction FindState_<Backtracking<HammingDistance> >
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TPattern, typename TSpec>
-struct FindState_<TIndex, TPattern, Backtracking<HammingDistance, TSpec> >
-{
-    typedef typename FindTraits_<TIndex, TPattern, Backtracking<HammingDistance, TSpec> >::TextIterator  Type;
-};
+struct FindState_<TIndex, TPattern, Backtracking<HammingDistance, TSpec> > :
+    Iterator<TIndex, TopDown<ParentLinks<> > > {};
 
 // ============================================================================
 // Functions
@@ -121,26 +67,23 @@ struct FindState_<TIndex, TPattern, Backtracking<HammingDistance, TSpec> >
 // Function _findImpl(..., Backtracking<Exact>)
 // ----------------------------------------------------------------------------
 
-template <typename TState, typename THaystack, typename TIndexSpec, typename TNeedle,
+template <typename TState, typename TIndex, typename TNeedle,
           typename TThreshold, typename TDelegate, typename TSpec>
 SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
 _findImpl(TState & /* state */,
-          Index<THaystack, TIndexSpec> & index,
+          TIndex & index,
           TNeedle const & needle,
           TThreshold /* threshold */,
           TDelegate && delegate,
           Backtracking<Exact, TSpec>)
 {
-    typedef Index<THaystack, TIndexSpec>                    TText;
-    typedef Backtracking<Exact, TSpec>                      TAlgorithm;
-    typedef FindTraits_<TText, TNeedle const, TAlgorithm>   Traits;
-    typedef typename Traits::TextIterator                   TTextIt;
+    typedef typename Iterator<TIndex, TopDown<> >::Type TIndexIt;
 
-    TTextIt textIt(index);
+    TIndexIt indexIt(index);
 
-    if (goDown(textIt, needle))
+    if (goDown(indexIt, needle))
     {
-        delegate(textIt, TThreshold());
+        delegate(indexIt, TThreshold());
     }
 }
 
@@ -148,37 +91,35 @@ _findImpl(TState & /* state */,
 // Function _findStateInit(..., Backtracking<HammingDistance>)
 // ----------------------------------------------------------------------------
 
-template <typename TTextIt, typename TIndex, typename TNeedle, typename TThreshold, typename TSpec>
+template <typename TIndexIt, typename TIndex, typename TNeedle, typename TThreshold, typename TSpec>
 SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
-_findStateInit(TTextIt & textIt,
+_findStateInit(TIndexIt & indexIt,
                TIndex & index,
                TNeedle const & /* needle */,
                TThreshold /* threshold */,
                Backtracking<HammingDistance, TSpec>)
 {
-    textIt.index = &index;
-    goRoot(textIt);
+    indexIt.index = &index;
+    goRoot(indexIt);
 }
 
 // ----------------------------------------------------------------------------
 // Function _findImpl(..., Backtracking<HammingDistance>)
 // ----------------------------------------------------------------------------
 
-template <typename TTextIt, typename TIndex, typename TNeedle,
+template <typename TIndexIt, typename TIndex, typename TNeedle,
           typename TThreshold, typename TDelegate, typename TSpec>
 SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
-_findImpl(TTextIt & textIt,
+_findImpl(TIndexIt & indexIt,
           TIndex & /* index */,
           TNeedle const & needle,
           TThreshold threshold,
           TDelegate && delegate,
           Backtracking<HammingDistance, TSpec>)
 {
-    typedef Backtracking<HammingDistance, TSpec>            TAlgorithm;
-    typedef FindTraits_<TIndex, TNeedle const, TAlgorithm>  Traits;
-    typedef typename Traits::PatternIterator                TPatternIt;
+    typedef typename Iterator<TNeedle const, Standard>::Type  TNeedleIt;
 
-    TPatternIt patternIt = begin(needle);
+    TNeedleIt needleIt = begin(needle, Standard());
     TThreshold errors = 0;
 
     do
@@ -186,28 +127,28 @@ _findImpl(TTextIt & textIt,
         // Exact case.
         if (errors == threshold)
         {
-            if (goDown(textIt, suffix(needle, position(patternIt))))
+            if (goDown(indexIt, suffix(needle, position(needleIt, needle))))
             {
-                delegate(textIt, errors);
+                delegate(indexIt, errors);
             }
 
-            goUp(textIt);
+            goUp(indexIt);
         }
 
         // Approximate case.
         else if (errors < threshold)
         {
             // Base case.
-            if (atEnd(patternIt))
+            if (atEnd(needleIt, needle))
             {
-                delegate(textIt, errors);
+                delegate(indexIt, errors);
             }
 
             // Recursive case.
-            else if (goDown(textIt))
+            else if (goDown(indexIt))
             {
-                errors += !ordEqual(parentEdgeLabel(textIt), value(patternIt));
-                goNext(patternIt);
+                errors += !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
+                goNext(needleIt);
                 continue;
             }
         }
@@ -216,18 +157,18 @@ _findImpl(TTextIt & textIt,
         do
         {
             // Termination.
-            if (isRoot(textIt)) break;
+            if (isRoot(indexIt)) break;
 
-            goPrevious(patternIt);
-            errors -= !ordEqual(parentEdgeLabel(textIt), value(patternIt));
+            goPrevious(needleIt);
+            errors -= !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
         }
-        while (!goRight(textIt) && goUp(textIt));
+        while (!goRight(indexIt) && goUp(indexIt));
 
         // Termination.
-        if (isRoot(textIt)) break;
+        if (isRoot(indexIt)) break;
 
-        errors += !ordEqual(parentEdgeLabel(textIt), value(patternIt));
-        goNext(patternIt);
+        errors += !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
+        goNext(needleIt);
     }
     while (true);
 }
