@@ -306,7 +306,7 @@ jumpToRegion(Stream<Bgzf> & stream,
         // __int32 endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (record.beginPos <= pos)
+        if (!hasAlignments || record.beginPos <= pos)
         {
             // Found a valid alignment.
             hasAlignments = true;
