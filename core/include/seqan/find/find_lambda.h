@@ -184,20 +184,20 @@ _findPickState(TStates & pool, True)
 // Function find(text, needles, errors, [](...){}, Algorithm(), Parallel());
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TNeedle, typename TSSetSpec,
+template <typename TText, typename TNeedle_, typename TSSetSpec,
           typename TThreshold, typename TDelegate, typename TAlgorithm, typename TThreading>
 inline void find(TText & text,
-                 StringSet<TNeedle, TSSetSpec> const & needles,
+                 StringSet<TNeedle_, TSSetSpec> const & needles,
                  TThreshold threshold,
                  TDelegate && delegate,
                  TAlgorithm,
                  TThreading)
 {
-    typedef StringSet<TNeedle, TSSetSpec> const                     TNeedles;
-    typedef typename Value<TNeedles>::Type                          TNeedle_;
+    typedef StringSet<TNeedle_, TSSetSpec> const                    TNeedles;
+    typedef typename Value<TNeedles>::Type                          TNeedle;
     typedef typename Iterator<TNeedles, Rooted>::Type               TNeedlesIt;
 
-    typedef typename FindState_<TText, TNeedle_, TAlgorithm>::Type  TState;
+    typedef typename FindState_<TText, TNeedle, TAlgorithm>::Type  TState;
     typedef typename StatesPool_<TState, TThreading>::Type          TStatesPool;
     typedef typename HasStatesPool_<TState, TThreading>::Type       HasStatesPool;
 
@@ -209,7 +209,7 @@ inline void find(TText & text,
     iterate(needles, [&](TNeedlesIt const & needlesIt)
     {
         TState & state = _findPickState(pool, HasStatesPool());
-        TNeedle const needle = value(needlesIt);
+        TNeedle const & needle = value(needlesIt);
         TDelegator delegator(delegate, needlesIt);
 
         _findStateInit(state, text, needle, threshold, TAlgorithm());
