@@ -194,7 +194,7 @@ find(Index<THaystack, THaystackSpec> & text,
     TFinder finder;
 
     // This lambda is stored locally because _find() does not accept rvalue delegates.
-    std::function<void(TFinder const &)> delegator = [&](...)
+    std::function<void(TFinder const &)> delegator = [&](TFinder const &)
     {
         delegate(_textIterator(finder), _patternIterator(finder), _getScore(finder));
     };
