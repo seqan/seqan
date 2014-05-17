@@ -51,14 +51,6 @@ struct DefaultFind<Index<THaystack, THaystackSpec>, TPattern>
     typedef Backtracking<Exact> Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction FindState_<Backtracking<HammingDistance> >
-// ----------------------------------------------------------------------------
-
-template <typename TIndex, typename TPattern, typename TSpec>
-struct FindState_<TIndex, TPattern, Backtracking<HammingDistance, TSpec> > :
-    Iterator<TIndex, TopDown<ParentLinks<> > > {};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -88,103 +80,19 @@ _findImpl(TState & /* state */,
 }
 
 // ----------------------------------------------------------------------------
-// Function _findStateInit(..., Backtracking<HammingDistance>)
+// Function _findImpl(..., Backtracking<Edit/HammingDistance>)
 // ----------------------------------------------------------------------------
 
-template <typename TIndexIt, typename TIndex, typename TNeedle, typename TThreshold, typename TSpec>
-SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
-_findStateInit(TIndexIt & indexIt,
-               TIndex & index,
-               TNeedle const & /* needle */,
-               TThreshold /* threshold */,
-               Backtracking<HammingDistance, TSpec>)
-{
-    indexIt.index = &index;
-    goRoot(indexIt);
-}
-
-// ----------------------------------------------------------------------------
-// Function _findImpl(..., Backtracking<HammingDistance>)
-// ----------------------------------------------------------------------------
-
-template <typename TIndexIt, typename TIndex, typename TNeedle,
-          typename TThreshold, typename TDelegate, typename TSpec>
-SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
-_findImpl(TIndexIt & indexIt,
-          TIndex & /* index */,
-          TNeedle const & needle,
-          TThreshold threshold,
-          TDelegate && delegate,
-          Backtracking<HammingDistance, TSpec>)
-{
-    typedef typename Iterator<TNeedle const, Standard>::Type  TNeedleIt;
-
-    TNeedleIt needleIt = begin(needle, Standard());
-    TThreshold errors = 0;
-
-    do
-    {
-        // Exact case.
-        if (errors == threshold)
-        {
-            if (goDown(indexIt, suffix(needle, position(needleIt, needle))))
-            {
-                delegate(indexIt, errors);
-            }
-
-            goUp(indexIt);
-        }
-
-        // Approximate case.
-        else if (errors < threshold)
-        {
-            // Base case.
-            if (atEnd(needleIt, needle))
-            {
-                delegate(indexIt, errors);
-            }
-
-            // Recursive case.
-            else if (goDown(indexIt))
-            {
-                errors += !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
-                goNext(needleIt);
-                continue;
-            }
-        }
-
-        // Backtrack.
-        do
-        {
-            // Termination.
-            if (isRoot(indexIt)) break;
-
-            goPrevious(needleIt);
-            errors -= !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
-        }
-        while (!goRight(indexIt) && goUp(indexIt));
-
-        // Termination.
-        if (isRoot(indexIt)) break;
-
-        errors += !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
-        goNext(needleIt);
-    }
-    while (true);
-}
-
-// ----------------------------------------------------------------------------
-// Function _findImpl(..., Backtracking<EditDistance>)
-// ----------------------------------------------------------------------------
-
-template <typename TIndexIt, typename TNeedle, typename TNeedleIt, typename TThreshold, typename TDelegate>
+template <typename TIndexIt, typename TNeedle, typename TNeedleIt,
+          typename TThreshold, typename TDelegate, typename TDistance>
 inline void
-_findBacktrackingEdit(TIndexIt indexIt,
-                      TNeedle const & needle,
-                      TNeedleIt needleIt,
-                      TThreshold errors,
-                      TThreshold threshold,
-                      TDelegate && delegate)
+_findBacktracking(TIndexIt indexIt,
+                  TNeedle const & needle,
+                  TNeedleIt needleIt,
+                  TThreshold errors,
+                  TThreshold threshold,
+                  TDelegate && delegate,
+                  TDistance)
 {
     // Exact case.
     if (errors == threshold)
@@ -204,7 +112,11 @@ _findBacktrackingEdit(TIndexIt indexIt,
         else
         {
             // Insertion.
-            _findBacktrackingEdit(indexIt, needle, needleIt + 1, errors + 1, threshold, delegate);
+            if (IsSameType<TDistance, EditDistance>::VALUE)
+            {
+                _findBacktracking(indexIt, needle, needleIt + 1,
+                                  errors + 1, threshold, delegate, TDistance());
+            }
 
             if (goDown(indexIt))
             {
@@ -212,10 +124,15 @@ _findBacktrackingEdit(TIndexIt indexIt,
                 {
                     // Mismatch.
                     TThreshold delta = !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
-                    _findBacktrackingEdit(indexIt, needle, needleIt + 1, errors + delta, threshold, delegate);
+                    _findBacktracking(indexIt, needle, needleIt + 1,
+                                      errors + delta, threshold, delegate, TDistance());
 
                     // Deletion.
-                    _findBacktrackingEdit(indexIt, needle, needleIt, errors + 1, threshold, delegate);
+                    if (IsSameType<TDistance, EditDistance>::VALUE)
+                    {
+                        _findBacktracking(indexIt, needle, needleIt, errors + 1,
+                                          threshold, delegate, TDistance());
+                    }
                 }
                 while (goRight(indexIt));
             }
@@ -224,14 +141,14 @@ _findBacktrackingEdit(TIndexIt indexIt,
 }
 
 template <typename TState, typename TIndex, typename TNeedle,
-          typename TThreshold, typename TDelegate, typename TSpec>
+          typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
 SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
 _findImpl(TState & /* indexIt */,
           TIndex & index,
           TNeedle const & needle,
           TThreshold threshold,
           TDelegate && delegate,
-          Backtracking<EditDistance, TSpec>)
+          Backtracking<TDistance, TSpec>)
 {
     typedef typename Iterator<TIndex, TopDown<> >::Type       TIndexIt;
     typedef typename Iterator<TNeedle const, Standard>::Type  TNeedleIt;
@@ -240,7 +157,7 @@ _findImpl(TState & /* indexIt */,
     TNeedleIt needleIt = begin(needle, Standard());
     TThreshold errors = 0;
 
-    _findBacktrackingEdit(indexIt, needle, needleIt, errors, threshold, delegate);
+    _findBacktracking(indexIt, needle, needleIt, errors, threshold, delegate, TDistance());
 }
 
 // ----------------------------------------------------------------------------
