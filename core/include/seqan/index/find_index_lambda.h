@@ -174,6 +174,76 @@ _findImpl(TIndexIt & indexIt,
 }
 
 // ----------------------------------------------------------------------------
+// Function _findImpl(..., Backtracking<EditDistance>)
+// ----------------------------------------------------------------------------
+
+template <typename TIndexIt, typename TNeedle, typename TNeedleIt, typename TThreshold, typename TDelegate>
+inline void
+_findBacktrackingEdit(TIndexIt indexIt,
+                      TNeedle const & needle,
+                      TNeedleIt needleIt,
+                      TThreshold errors,
+                      TThreshold threshold,
+                      TDelegate && delegate)
+{
+    // Exact case.
+    if (errors == threshold)
+    {
+        if (goDown(indexIt, suffix(needle, position(needleIt, needle))))
+            delegate(indexIt, errors);
+    }
+    // Approximate case.
+    else if (errors < threshold)
+    {
+        // Base case.
+        if (atEnd(needleIt, needle))
+        {
+            delegate(indexIt, errors);
+        }
+        // Recursive case.
+        else
+        {
+            // Insertion.
+            _findBacktrackingEdit(indexIt, needle, needleIt + 1, errors + 1, threshold, delegate);
+
+            if (goDown(indexIt))
+            {
+                do
+                {
+                    // Mismatch.
+                    TThreshold delta = !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
+                    _findBacktrackingEdit(indexIt, needle, needleIt + 1, errors + delta, threshold, delegate);
+
+                    // Deletion.
+                    _findBacktrackingEdit(indexIt, needle, needleIt, errors + 1, threshold, delegate);
+                }
+                while (goRight(indexIt));
+            }
+        }
+    }
+}
+
+template <typename TState, typename TIndex, typename TNeedle,
+          typename TThreshold, typename TDelegate, typename TSpec>
+SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
+_findImpl(TState & /* indexIt */,
+          TIndex & index,
+          TNeedle const & needle,
+          TThreshold threshold,
+          TDelegate && delegate,
+          Backtracking<EditDistance, TSpec>)
+{
+    typedef typename Iterator<TIndex, TopDown<> >::Type       TIndexIt;
+    typedef typename Iterator<TNeedle const, Standard>::Type  TNeedleIt;
+
+    TIndexIt indexIt(index);
+    TNeedleIt needleIt = begin(needle, Standard());
+    TThreshold errors = 0;
+
+    _findBacktrackingEdit(indexIt, needle, needleIt, errors, threshold, delegate);
+}
+
+// ----------------------------------------------------------------------------
 // Function find(index, index, errors, [](...){}, Backtracking<TDistance>());
 // ----------------------------------------------------------------------------
 
