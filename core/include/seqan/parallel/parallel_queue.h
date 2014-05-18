@@ -60,6 +60,7 @@ struct ConcurrentQueue
     volatile TSize headReadPos;
     volatile TSize tailPos;
     volatile TSize tailWritePos;
+    TSize roundSize;
 
     volatile unsigned readerCount;
     volatile unsigned writerCount;
@@ -72,6 +73,7 @@ struct ConcurrentQueue
         headReadPos(0),
         tailPos(0),
         tailWritePos(0),
+        roundSize(0),
         readerCount(0),
         writerCount(0),
         pushed(0), popped(0),
@@ -79,7 +81,7 @@ struct ConcurrentQueue
     {}
 
     // you can set the initial capacity here
-    ConcurrentQueue(TSize capacity) :
+    ConcurrentQueue(TSize initCapacity) :
         headPos(0),
         headReadPos(0),
         tailPos(0),
@@ -89,7 +91,8 @@ struct ConcurrentQueue
         pushed(0), popped(0),
         firstValue(false)
     {
-        reserve(data, capacity + 1, Exact());
+        reserve(data, initCapacity + 1, Exact());
+        roundSize = (TSize)1 << (log2(capacity(data) - 1) + 1);
     }
 
     ConcurrentQueue(TString & data):
@@ -102,7 +105,9 @@ struct ConcurrentQueue
         writerCount(0),
         pushed(0), popped(0),
         firstValue(false)
-    {}
+    {
+        roundSize = (TSize)1 << (log2(capacity(data) - 1) + 1);
+    }
 
     ~ConcurrentQueue()
     {
@@ -193,7 +198,6 @@ inline void
 unlockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicDec(me.writerCount);
-    printf("left scope write lock: %i\n", omp_get_thread_num());
 }
 
 // ----------------------------------------------------------------------------
@@ -202,10 +206,12 @@ unlockWriting(ConcurrentQueue<TValue, TSpec> & me)
 
 template <typename TValue>
 inline TValue
-_cyclicInc(TValue value, TValue modulo)
+_cyclicInc(TValue value, TValue modulo, TValue roundSize)
 {
     TValue newVal = value + 1;
-    return (newVal >= modulo)? 0 : newVal;
+    if ((newVal & (roundSize - 1)) >= modulo)
+        newVal += roundSize - modulo;
+    return newVal;
 }
 
 // ----------------------------------------------------------------------------
@@ -228,11 +234,14 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 length(ConcurrentQueue<TValue, TSpec> const & me)
 {
+    typedef typename Size<ConcurrentQueue<TValue, TSpec> >::Type TSize;
+
     ScopedWriteLock<> writeLock(me.lock);
-    if (me.headPos <= me.tailPos)
+    TSize mask = me.roundSize - 1;
+    if ((me.headPos & mask) <= (me.tailPos & mask))
         return me.tailPos - me.headPos;
     else
-        return capacity(me.data) - me.headPos + me.tailPos;
+        return me.tailPos - me.headPos - (me.roundSize - capacity(me.data));
 }
 
 // ----------------------------------------------------------------------------
@@ -276,6 +285,7 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
     ScopedReadLock<> readLock(me.lock);
 
     TSize cap = capacity(me.data);
+    TSize roundSize = me.roundSize;
     TSize headReadPos;
     TSize newHeadReadPos;
 
@@ -287,12 +297,12 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
         if (headReadPos == me.tailPos)
             return false;
 
-        newHeadReadPos = _cyclicInc(headReadPos, cap);
+        newHeadReadPos = _cyclicInc(headReadPos, cap, roundSize);
     }
     while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos));
 
     // extract value and destruct it in the data string
-    TIter it = begin(me.data, Standard()) + headReadPos;
+    TIter it = begin(me.data, Standard()) + (headReadPos & (roundSize - 1));
     std::swap(result, *it);
     valueDestruct(it);
 
@@ -414,33 +424,38 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
     bool valueWasAppended = false;
 
     // did we reach the capacity limit (another thread could have done the upgrade already)?
-    if (_cyclicInc(me.tailPos, cap) == me.headPos)
+    if (_cyclicInc(me.tailPos, cap, me.roundSize) >= me.headPos + me.roundSize)
     {
         if (cap != 0)
         {
-            TIter it = begin(me.data, Standard()) + me.tailPos;
+            TIter it = begin(me.data, Standard()) + (me.tailPos & (me.roundSize - 1));
     //        valueConstruct(it, val, Move());
             valueConstruct(it);
             std::swap(*it, val);
-            me.tailWritePos = me.tailPos = me.headPos;
+            me.tailWritePos = me.tailPos = me.headPos + me.roundSize;
             me.firstValue = true;
             valueWasAppended = true;
             atomicInc(me.pushed);
         }
 
-        SEQAN_ASSERT_EQ(me.tailPos, me.headPos);
+        SEQAN_ASSERT_EQ(me.tailPos, me.headPos + me.roundSize);
+
+        // get positions of head/tail in current data sequence
+        TSize headIdx = me.headPos & (me.roundSize - 1);
+        TSize tailIdx = me.tailPos & (me.roundSize - 1);
 
         // increase capacity
         _setLength(me.data, cap);
         reserve(me.data, cap + 1, expandTag);
         TSize delta = capacity(me.data) - cap;
+        me.roundSize = (TSize)1 << (log2(capacity(me.data) - 1) + 1);
 
         // create a gap of delta many values between tail and head
-        _clearSpace(me.data, delta, me.headPos, me.headPos, expandTag);
+        _clearSpace(me.data, delta, headIdx, headIdx, expandTag);
         if (cap != 0)
         {
-            me.headPos += delta;
-            me.headReadPos = me.headPos;
+            me.headReadPos = me.headPos = headIdx + delta;
+            me.tailWritePos = me.tailPos = tailIdx + me.roundSize;
         }
     }
     return valueWasAppended;
@@ -472,17 +487,18 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
         {
             ScopedReadLock<> readLock(me.lock);
             TSize cap = capacity(me.data);
+            TSize roundSize = me.roundSize;
 
             while (true)
             {
                 TSize tailWritePos = me.tailWritePos;
-                TSize newTailWritePos = _cyclicInc(tailWritePos, cap);
-                if (newTailWritePos == me.headPos)
+                TSize newTailWritePos = _cyclicInc(tailWritePos, cap, roundSize);
+                if (newTailWritePos >= me.headPos + roundSize)
                     break;
 
                 if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos))
                 {
-                    TIter it = begin(me.data, Standard()) + tailWritePos;
+                    TIter it = begin(me.data, Standard()) + (tailWritePos & (roundSize - 1));
 //                    valueConstruct(it, val, Move());
                     valueConstruct(it);
                     std::swap(*it, val);

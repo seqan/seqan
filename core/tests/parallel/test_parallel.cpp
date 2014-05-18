@@ -83,6 +83,12 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     // Tests for parallel queue.
     SEQAN_CALL_TEST(test_parallel_queue_simple);
     SEQAN_CALL_TEST(test_parallel_queue_resize);
-    SEQAN_CALL_TEST(test_parallel_queue_parallel_access);
+#if defined(_OPENMP)
+    if (omp_get_max_threads() >= 2)
+    {
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
+    }
+#endif
 }
 SEQAN_END_TESTSUITE
