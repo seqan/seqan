@@ -116,22 +116,23 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
     }
 }
 
-SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
+
+template <typename TResizeTag>
+void testMPMCQueue(size_t initialCapacity)
 {
     typedef seqan::ConcurrentQueue<unsigned> TQueue;
 
-    TQueue queue(1u);
+    TQueue queue(initialCapacity);
     seqan::String<unsigned> random;
     seqan::Rng<seqan::MersenneTwister> rng(0);
 
     unsigned chkSum = 0;
 
-//    resize(random, 232);
-    resize(random, 1000000);
+    resize(random, 10000000);
     for (unsigned i = 0; i < length(random); ++i)
     {
-//        random[i] = pickRandomNumber(rng);
-        random[i] = i;
+        random[i] = pickRandomNumber(rng);
+//        random[i] = i;
         chkSum ^= random[i];
     }
 //    std::cout <<chkSum<<std::endl;
@@ -151,15 +152,15 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-                printf("start writer thread: %i\n", omp_get_thread_num());
+//                printf("start writer thread: %i\n", omp_get_thread_num());
 //            }
             unsigned tid = omp_get_thread_num() / 2;
             for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
-                appendValue(queue, random[j], seqan::Limit());
-//                appendValue(queue, random[j]);
+                appendValue(queue, random[j], TResizeTag());
+
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-                printf("stop writer thread: %i %d\n", omp_get_thread_num(), splitter[tid + 1] - splitter[tid]);
+//                printf("stop writer thread: %i %d\n", omp_get_thread_num(), splitter[tid + 1] - splitter[tid]);
 //            }
         }
 
@@ -171,7 +172,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-                printf("start reader thread: %i\n", omp_get_thread_num());
+//                printf("start reader thread: %i\n", omp_get_thread_num());
 //            }
 
             unsigned chkSumLocal = 0, val = 0, cnt = 0;
@@ -184,16 +185,25 @@ SEQAN_DEFINE_TEST(test_parallel_queue_parallel_access)
 
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
-                printf("stop reader thread: %i %d %i\n", omp_get_thread_num(), cnt, queue.writerCount);
+//                printf("stop reader thread: %i %d %i\n", omp_get_thread_num(), cnt, queue.writerCount);
 //            }
         }
     }
-    std::cout << "len: " << length(queue) << std::endl;
-    std::cout << "cap: " << capacity(queue) << std::endl;
-    std::cout << "pushed: " << queue.pushed << std::endl;
-    std::cout << "popped: " << queue.popped << std::endl;
+//    std::cout << "len: " << length(queue) << std::endl;
+//    std::cout << "cap: " << capacity(queue) << std::endl;
+//    std::cout << "pushed: " << queue.pushed << std::endl;
+//    std::cout << "popped: " << queue.popped << std::endl;
     SEQAN_ASSERT_EQ(chkSum, chkSum2);
 }
 
+SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_dynamicsize)
+{
+    testMPMCQueue<seqan::Generous>(0u);
+}
+
+SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_fixedsize)
+{
+    testMPMCQueue<seqan::Limit>(10u);
+}
 
 #endif  // TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_
