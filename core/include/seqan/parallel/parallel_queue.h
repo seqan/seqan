@@ -64,9 +64,7 @@ struct ConcurrentQueue
 
     volatile unsigned readerCount;
     volatile unsigned writerCount;
-    volatile unsigned pushed, popped;
     volatile bool firstValue;
-
 
     ConcurrentQueue() :
         headPos(0),
@@ -76,7 +74,6 @@ struct ConcurrentQueue
         roundSize(0),
         readerCount(0),
         writerCount(0),
-        pushed(0), popped(0),
         firstValue(false)
     {}
 
@@ -88,7 +85,6 @@ struct ConcurrentQueue
         tailWritePos(0),
         readerCount(0),
         writerCount(0),
-        pushed(0), popped(0),
         firstValue(false)
     {
         reserve(data, initCapacity + 1, Exact());
@@ -103,7 +99,6 @@ struct ConcurrentQueue
         tailWritePos(length(data)),
         readerCount(0),
         writerCount(0),
-        pushed(0), popped(0),
         firstValue(false)
     {
         roundSize = (TSize)1 << (log2(capacity(data) - 1) + 1);
@@ -272,9 +267,9 @@ capacity(ConcurrentQueue<TValue, TSpec> const & me)
 // currently filled    [tail, tailWrite)
 // currently removed   [head, headRead)
 
-template <typename TValue, typename TSpec>
+template <typename TValue, typename TSpec, typename TParallel>
 inline bool
-tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
+tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
 {
     typedef ConcurrentQueue<TValue, TSpec>              TQueue;
     typedef typename Host<TQueue>::Type                 TString;
@@ -299,17 +294,15 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 
         newHeadReadPos = _cyclicInc(headReadPos, cap, roundSize);
     }
-    while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos));
+    while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos, parallelTag));
 
     // extract value and destruct it in the data string
     TIter it = begin(me.data, Standard()) + (headReadPos & (roundSize - 1));
     std::swap(result, *it);
     valueDestruct(it);
 
-    atomicInc(me.popped);
-
     // wait for pending previous reads and synchronize headPos to headReadPos
-    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos))
+    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
     {}
 
     return true;
@@ -435,7 +428,6 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
             me.tailWritePos = me.tailPos = me.headPos + me.roundSize;
             me.firstValue = true;
             valueWasAppended = true;
-            atomicInc(me.pushed);
         }
 
         SEQAN_ASSERT_EQ(me.tailPos, me.headPos + me.roundSize);
@@ -466,7 +458,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
 // ----------------------------------------------------------------------------
 // the queue is growing dynamically if expandTag is Generous,
 // otherwise appendValue spinlocks until there is space to fill the value
-template <typename TValue, typename TSpec, typename TExpand>
+template <typename TValue, typename TSpec, typename TExpand, typename TParallel>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
 #ifdef SEQAN_CXX11_STANDARD
@@ -474,7 +466,8 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 #else
             TValue val,
 #endif
-            Tag<TExpand> expandTag)
+            Tag<TExpand> expandTag,
+            Tag<TParallel> parallelTag)
 {
     typedef ConcurrentQueue<TValue, TSpec>              TQueue;
     typedef typename Host<TQueue>::Type                 TString;
@@ -496,7 +489,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                 if (newTailWritePos >= me.headPos + roundSize)
                     break;
 
-                if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos))
+                if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
                 {
                     TIter it = begin(me.data, Standard()) + (tailWritePos & (roundSize - 1));
 //                    valueConstruct(it, val, Move());
@@ -504,11 +497,10 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     std::swap(*it, val);
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
-                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos))
+                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
                     {}
 
                     me.firstValue = true;
-                    atomicInc(me.pushed);
                     return;
                 }
             }
@@ -517,6 +509,19 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
         if (_queueOverflow(me, val, expandTag))
             return;
     }
+}
+
+template <typename TValue, typename TSpec, typename TExpand>
+inline void
+appendValue(ConcurrentQueue<TValue, TSpec> & me,
+#ifdef SEQAN_CXX11_STANDARD
+            TValue && val,
+#else
+            TValue const & val,
+#endif
+            Tag<TExpand> expandTag)
+{
+    appendValue(me, val, expandTag, Parallel());
 }
 
 }  // namespace seqan
