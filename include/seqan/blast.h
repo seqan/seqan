@@ -37,6 +37,8 @@
 #ifndef SEQAN_EXTRAS_BLAST_H
 #define SEQAN_EXTRAS_BLAST_H
 
+#ifdef SEQAN_CXX11_STANDARD
+
 #include "blast/blast_base.h"
 #include "blast/blast_record.h"
 #include "blast/blast_statistics.h"
@@ -44,5 +46,12 @@
 #include "blast/read_blast_tabular.h"
 #include "blast/write_blast_report.h"
 #include "blast/write_blast_tabular.h"
+
+#else //SEQAN_C++11_STANDARD
+
+#error The blast module requires C++11 support. \
+If your compiler supports C++11, please define SEQAN_CXX11_STANDARD
+
+#endif //SEQAN_C++11_STANDARD
 
 #endif

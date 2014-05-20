@@ -363,7 +363,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
  *
  * @return     0 on success, and non-zero otherwise
- * @see onMatch
+ * @see BlastFormat#onMatch
  * @headerfile seqan/blast.h
  * @section Remarks
  *
@@ -656,7 +656,7 @@ readHeader(TqId                                             & qId,
  * @param[in]   strict  bool to signify whether the function should return error on a non-conforming header or just "skip whatever possible".
  * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
  *
- * @see skipUntilMatch
+ * @see BlastFormat#skipUntilMatch
  * @return     0 on success, and non-zero otherwise
  * @headerfile seqan/blast.h
  * @section Remarks

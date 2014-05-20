@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -42,10 +42,6 @@
 #include <seqan/version.h>
 #include <seqan/align.h>
 
-#ifndef SEQAN_CXX11_STANDARD //C++98
-#define constexpr inline
-#endif
-
 namespace seqan {
 
 
@@ -57,160 +53,161 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct BlastFormatOptions
-{
-
 /*!
- * @enum BlastFormatOptions::M
+ * @enum BlastFormatFile
  * @brief Enum with BLAST file format specs
  *
  * @headerfile seqan/blast.h
  *
- * @var BlastFormatOptions::M Pairwise;
- * @brief default blast output (blastall -m 0 & blast* -outfmt 0)
+ * @val BlastFormatFile BlastFormatFile::Pairwise;
+ * @brief default blast output (blastall -m 0 &amp; blast* -outfmt 0)
  *
- * @var BlastFormatOptions::M MasterSlaveIdent;
- * @brief master-slave showing identities (blastall -m 1 & blast* -outfmt 1)
+ * @val BlastFormatFile BlastFormatFile::MasterSlaveIdent;
+ * @brief master-slave showing identities (blastall -m 1 &amp; blast* -outfmt 1)
  *
- * @var BlastFormatOptions::M MasterSlaveNoIdent;
- * @brief master-slave without identities (blastall -m 2 & blast* -outfmt 2)
+ * @val BlastFormatFile BlastFormatFile::MasterSlaveNoIdent;
+ * @brief master-slave without identities (blastall -m 2 &amp; blast* -outfmt 2)
  *
- * @var BlastFormatOptions::M FlatMasterSlaveIdent;
- * @brief flat master-slave showing identities (blastall -m 3 & blast* -outfmt 3)
+ * @val BlastFormatFile BlastFormatFile::FlatMasterSlaveIdent;
+ * @brief flat master-slave showing identities (blastall -m 3 &amp; blast* -outfmt 3)
  *
- * @var BlastFormatOptions::M FlatMasterSlaveNoIdent;
+ * @val BlastFormatFile BlastFormatFile::FlatMasterSlaveNoIdent;
  * @brief master-slave without identities, with blunt ends (blastall -m 5, not available with Blast+)
  *
- * @var BlastFormatOptions::M MasterSlaveBluntEnds;
+ * @val BlastFormatFile BlastFormatFile::MasterSlaveBluntEnds;
  * @brief flat master-slave without identities, with blunt ends (blastall -m 6, not available with Blast+)
  *
- * @var BlastFormatOptions::M XML;
- * @brief XML (blastall -m 7 & blast* -outfmt 8)
+ * @val BlastFormatFile BlastFormatFile::XML;
+ * @brief XML (blastall -m 7 &amp; blast* -outfmt 8)
  *
- * @var BlastFormatOptions::M Tabular;
- * @brief tab-seperated (blastall -m 8 & blast* -outfmt 6)
+ * @val BlastFormatFile BlastFormatFile::Tabular;
+ * @brief tab-seperated (blastall -m 8 &amp; blast* -outfmt 6)
  *
- * @var BlastFormatOptions::M TabularWithHeader;
- * @brief tab-seperated with Header / comments (blastall -m 9 & blast* -outfmt 7)
+ * @val BlastFormatFile BlastFormatFile::TabularWithHeader;
+ * @brief tab-seperated with Header / comments (blastall -m 9 &amp; blast* -outfmt 7)
  *
- * @var BlastFormatOptions::M TextASN1;
+ * @val BlastFormatFile BlastFormatFile::TextASN1;
  * @brief Abstract Syntax Notation One (blast* -outfmt 8, not available in traditional BLAST)
  *
- * @var BlastFormatOptions::M BinASN1;
+ * @val BlastFormatFile BlastFormatFile::BinASN1;
  * @brief Abstract Syntax Notation One (blast* -outfmt 9, not available in traditional BLAST)
  *
- * @var BlastFormatOptions::M CSV;
+ * @val BlastFormatFile BlastFormatFile::CSV;
  * @brief comma-seperated values (blast* -outfmt 10, not available in traditional BLAST)
  *
- * @var BlastFormatOptions::M BlastArASN1;
+ * @val BlastFormatFile BlastFormatFile::BlastArASN1;
  * @brief Blast Archive Format, Abstract Syntax Notation One (blast* -outfmt 11, not available in traditional BLAST)
  *
  * @section Remarks
  *
- * SeqAn currently implements Pairwise, Tabular and TabularWithHeader
+ * SeqAn can currently write Pairwise, Tabular and TabularWithHeader. It can
+ * read Tabular and TabularWithHeader.
  */
-    enum M
-    {
-        Pairwise = 0,
-        MasterSlaveIdent = 1,
-        MasterSlaveNoIdent = 2,
-        FlatMasterSlaveIdent = 3,
-        FlatMasterSlaveNoIdent = 4,
-        MasterSlaveBluntEnds = 5,       // only available in Generation==Blast
-        FlatMasterSlaveBluntEnds = 6,   // only available in Generation==Blast
-        XML = 7,
-        Tabular = 8,
-        TabularWithHeader = 9,
-        TextASN1 = 10,                 // only available in Generation==Blast+
-        BinASN1 = 11,                  // only available in Generation==Blast+
-        CSV = 12,                      // only available in Generation==Blast+
-        BlastArASN1 = 13,              // only available in Generation==Blast+
-        INVALID_M=1023
-    };
+
+enum class BlastFormatFile : uint8_t
+{
+    Pairwise = 0,
+    MasterSlaveIdent = 1,
+    MasterSlaveNoIdent = 2,
+    FlatMasterSlaveIdent = 3,
+    FlatMasterSlaveNoIdent = 4,
+    MasterSlaveBluntEnds = 5,       // only available in Generation==Blast
+    FlatMasterSlaveBluntEnds = 6,   // only available in Generation==Blast
+    XML = 7,
+    Tabular = 8,
+    TabularWithHeader = 9,
+    TextASN1 = 10,                 // only available in Generation==Blast+
+    BinASN1 = 11,                  // only available in Generation==Blast+
+    CSV = 12,                      // only available in Generation==Blast+
+    BlastArASN1 = 13,              // only available in Generation==Blast+
+    INVALID_M=255
+};
 
 /*!
- * @enum BlastFormatOptions::Program
+ * @enum BlastFormatProgram
  * @brief Enum with BLAST program spec
  *
  * @headerfile seqan/blast.h
  *
- * @var BlastFormatOptions::Program BlastN
+ * @val BlastFormatProgram BlastFormatProgram::BlastN
  * @brief Nucleotide Query VS Nucleotide Subject
  *
- * @var BlastFormatOptions::Program BlastP
+ * @val BlastFormatProgram BlastFormatProgram::BlastP
  * @brief Protein Query VS Protein Subject
  *
- * @var BlastFormatOptions::Program BlastX
+ * @val BlastFormatProgram BlastFormatProgram::BlastX
  * @brief translated Nucleotide Query VS Protein Subject
  *
- * @var BlastFormatOptions::Program TBlastN
+ * @val BlastFormatProgram BlastFormatProgram::TBlastN
  * @brief Protein Query VS translated Nucleotide Subject
  *
- * @var BlastFormatOptions::Program TBlastX
+ * @val BlastFormatProgram BlastFormatProgram::TBlastX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
  */
-    enum Program
-    {
-        BlastN,         //              nucl VS             nucl
-        BlastP,         //              prot VS             prot
-        BlastX,         // translated   nucl VS             prot
-        TBlastN,        //              prot VS translated  nucl
-        TBlastX,        // translated   nucl VS translated  nucl
-        INVALID_Program=1023
-    };
+enum class BlastFormatProgram : uint8_t
+{
+    BlastN,         //              nucl VS             nucl
+    BlastP,         //              prot VS             prot
+    BlastX,         // translated   nucl VS             prot
+    TBlastN,        //              prot VS translated  nucl
+    TBlastX,        // translated   nucl VS translated  nucl
+    INVALID_Program=255
+};
 
 /*!
- * @enum BlastFormatOptions::Generation
+ * @enum BlastFormatGeneration
  * @brief Enum with BLAST program generation
  *
  * @headerfile seqan/blast.h
  *
- * @var BlastFormatOptions::Generation Blast
+ * @val BlastFormatGeneration BlastFormatGeneration::Blast
  * @brief traditional NCBI Blast, written in C ("blastall")
  *
- * @var BlastFormatOptions::Generation BlastPlus
+ * @val BlastFormatGeneration BlastFormatGeneration::BlastPlus
  * @brief NCBI Blast+, written in C++
  *
  */
-    enum Generation
-    {
-        Blast,
-        BlastPlus,
-        INVALID_Generation=1023
-    };
+
+enum class BlastFormatGeneration : uint8_t
+{
+    Blast,
+    BlastPlus,
+    INVALID_Generation=255
 };
+
 
 /*!
  * @class BlastFormat
  *
  * @brief Blast Format specifier
  *
- * @signature template <BlastFormatOptions::M _m,BlastFormatOptions::Program _p, BlastFormatOptions::Generation _g>
+ * @signature template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
  *            struct BlastFormat;
  *
  * @headerfile seqan/blast.h
- * @tparam _m    File Type Format
- * @see BlastFormatOptions::M
+ * @tparam _f    File Type Format
+ * @see BlastFormatFile
  * @tparam _p    Program Type Format
- * @see BlastFormatOptions::Program
+ * @see BlastFormatProgram
  * @tparam _g    Program Generation
- * @see BlastFormatOptions::Generation
+ * @see BlastFormatGeneration
  */
 
-/*TODO(C++11): change struct BlastFormat to struct BlastFormat_ and wrap
-a type-dependent typedef Tag around it */
-template <BlastFormatOptions::M            _m,
-          BlastFormatOptions::Program      _p,
-          BlastFormatOptions::Generation   _g>
+
+template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
 struct BlastFormat
 {
-    // have static members for run-time access to "type"
-    static const BlastFormatOptions::M          m = _m;
-    static const BlastFormatOptions::Program    p = _p;
-    static const BlastFormatOptions::Generation g = _g;
+    // have static members for easy and run-time access to "type"
+    static constexpr BlastFormatFile        f = _f;
+    static constexpr BlastFormatProgram     p = _p;
+    static constexpr BlastFormatGeneration  g = _g;
 
 };
+
+// template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
+// using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
+
 
 
 // ============================================================================
@@ -221,19 +218,34 @@ struct BlastFormat
 // getBlastProgramType()
 // ----------------------------------------------------------------------------
 
-//TODO(h4nn3s): test, document
+/*!
+ * @mfn getBlastProgramType
+ * @headerfile seqan/blast.h
+ * @brief for given query and subject alphabets, return the @link BlastFormatProgram @endlink
+ * @signature  getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
+ *
+ * @tparam          TQueryAlph  Alphabet of of the query sequences
+ * @tparam          TSubjAlph   Alphabet of of the subejct sequences
+ * @return          Value of @link BlastFormatProgram @endlink . For nucl VS nucl BlastFormatProgram::BlastN is returned, although TBlastX would also be legal.
+ *
+ * This is a convenience function for determining the Blast-Program type
+ * corresponding to input type combinations.
+ *
+ * This is a constexpr function.
+ */
+
 template< typename TQueryAlph, typename TSubjAlph>
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
 {
-    return BlastFormatOptions::INVALID_Program;
+    return BlastFormatProgram::INVALID_Program;
 }
 
 template<typename TQueryAlph, typename TSubjAlph,
          typename TSpec, typename TSpec2>
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(String<TQueryAlph, TSpec> const &,
                     String<TSubjAlph, TSpec2> const &)
 {
@@ -244,82 +256,127 @@ getBlastProgramType(String<TQueryAlph, TSpec> const &,
 // --- DNA vs DNA ---
 // NOTE that Dna VS Dna could also be TBlastX, but BlastN is more common
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna const &, Dna const &)
 {
-    return BlastFormatOptions::BlastN;
+    return BlastFormatProgram::BlastN;
 }
 
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna const &, Dna5 const &)
 {
-    return BlastFormatOptions::BlastN;
+    return BlastFormatProgram::BlastN;
 }
 
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna5 const &, Dna const &)
 {
-    return BlastFormatOptions::BlastN;
+    return BlastFormatProgram::BlastN;
 }
 
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna5 const &, Dna5 const &)
 {
-    return BlastFormatOptions::BlastN;
+    return BlastFormatProgram::BlastN;
 }
 
 // --- Protein vs Protein ---
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(AminoAcid const &, AminoAcid const &)
 {
-    return BlastFormatOptions::BlastP;
+    return BlastFormatProgram::BlastP;
 }
 
 // --- Dna vs Protein ---
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna const &, AminoAcid const &)
 {
-    return BlastFormatOptions::BlastX;
+    return BlastFormatProgram::BlastX;
 }
 
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(Dna5 const &, AminoAcid const &)
 {
-    return BlastFormatOptions::BlastX;
+    return BlastFormatProgram::BlastX;
 }
 
 // --- Protein vs Dna ---
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(AminoAcid const &, Dna const &)
 {
-    return BlastFormatOptions::TBlastX;
+    return BlastFormatProgram::TBlastX;
 }
 
 constexpr
-BlastFormatOptions::Program
+BlastFormatProgram
 getBlastProgramType(AminoAcid const &, Dna5 const &)
 {
-    return BlastFormatOptions::TBlastX;
+    return BlastFormatProgram::TBlastX;
 }
 
 // ============================================================================
 // Functions
 // ============================================================================
 
+
+/*!
+ * @defgroup BlastScoringScheme
+ * @brief functions for converting to and from Blast's scoring-scheme behaviour
+ *
+ * @fn seqanScoringScheme2blastScoringScheme
+ * @signature seqanScoringScheme2blastScoringScheme(scoringScheme)
+ * @brief convert to Blast's behaviour
+ * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
+ *
+ * @fn blastScoringScheme2seqanScoringScheme
+ * @signature blastScoringScheme2seqanScoringScheme(scoringScheme)
+ * @brief convert from Blast's behaviour
+ * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
+ *
+ * Blast (and many other tools) compute scores of a stretch of gaps as
+ * <tt>s = gO + n * gE</tt>
+ * where gO is the gapOpen score, gE is the gap extend score and n ist the
+ * total number of gaps.
+ *
+ * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>. The
+ * above functions convert between the behaviours by adjusting the
+ * gapOpen score.
+ *
+ * For more information, see <a href="https://trac.seqan.de/ticket/1091">https://trac.seqan.de/ticket/1091</a>.
+ *
+ * Please note that independent of this issue, SeqAn always works with
+ * scores, never with penalties, i.e. a penalty is represented by a negative
+ * score.
+ */
+
+template <typename TValue, typename TSpec>
+inline void
+seqanScoringScheme2blastScoringScheme(Score<TValue, TSpec> & scheme)
+{
+    setScoreGapOpen(scheme, scoreGapOpen(scheme) - scoreGapExtend(scheme));
+}
+
+template <typename TValue, typename TSpec>
+inline void
+blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
+{
+    setScoreGapOpen(scheme, scoreGapOpen(scheme) + scoreGapExtend(scheme));
+}
+
 // ----------------------------------------------------------------------------
 // _programTagToString()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatOptions::M m,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+template <BlastFormatFile m,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
                                              p,
@@ -328,46 +385,46 @@ const char * _programTagToString(BlastFormat<m,
     return "UNKOWN BLAST PROGRAM";
 }
 
-template <BlastFormatOptions::M m, BlastFormatOptions::Generation g>
+template <BlastFormatFile::m, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
-                                             BlastFormatOptions::BlastN,
+                                             BlastFormatProgram::BlastN,
                                              g> const & /*tag*/)
 {
     return "BlastN";
 }
 
-template <BlastFormatOptions::M m, BlastFormatOptions::Generation g>
+template <BlastFormatFile::m, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
-                                             BlastFormatOptions::BlastP,
+                                             BlastFormatProgram::BlastP,
                                              g> const & /*tag*/)
 {
     return "BLASTP";
 }
 
-template <BlastFormatOptions::M m, BlastFormatOptions::Generation g>
+template <BlastFormatFile::m, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
-                                             BlastFormatOptions::BlastX,
+                                             BlastFormatProgram::BlastX,
                                              g> const & /*tag*/)
 {
     return "BLASTX";
 }
 
-template <BlastFormatOptions::M m, BlastFormatOptions::Generation g>
+template <BlastFormatFile::m, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
-                                             BlastFormatOptions::TBlastN,
+                                             BlastFormatProgram::TBlastN,
                                              g> const & /*tag*/)
 {
     return "TBLASTN";
 }
 
-template <BlastFormatOptions::M m, BlastFormatOptions::Generation g>
+template <BlastFormatFile::m, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<m,
-                                             BlastFormatOptions::TBlastX,
+                                             BlastFormatProgram::TBlastX,
                                              g> const & /*tag*/)
 {
     return "TBLASTX";
@@ -377,7 +434,7 @@ const char * _programTagToString(BlastFormat<m,
 // _defaultFields()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatOptions::Generation g>
+template <BlastFormatGeneration g>
 constexpr
 const char * _defaultFields()
 {
@@ -386,7 +443,7 @@ const char * _defaultFields()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatOptions::Blast>()
+const char * _defaultFields<BlastFormatProgram::Blast>()
 {
     return "Fields: Query id, Subject id, % identity, alignment length," \
            " mismatches, gap openings, q. start, q. end, s. start, s." \
@@ -395,16 +452,16 @@ const char * _defaultFields<BlastFormatOptions::Blast>()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatOptions::BlastPlus>()
+const char * _defaultFields<BlastFormatProgram::BlastPlus>()
 {
     return "Fields: query id, subject id, % identity, alignment " \
            "length, mismatches, gap opens, q. start, q. end, s. " \
            "start, s. end, evalue, bit score";
 }
 
-template <BlastFormatOptions::Program p, BlastFormatOptions::Generation g>
+template <BlastFormat::Program p, BlastFormatGeneration g>
 constexpr
-const char * _defaultFields(BlastFormat<BlastFormatOptions::TabularWithHeader,
+const char * _defaultFields(BlastFormat<BlastFormat::TabularWithHeader,
                                         p,
                                         g> const &)
 {
@@ -413,9 +470,5 @@ const char * _defaultFields(BlastFormat<BlastFormatOptions::TabularWithHeader,
 
 
 } // namespace seqan
-
-#ifndef SEQAN_CXX11_STANDARD //C++98
-#undef constexpr
-#endif
 
 #endif // header guard
