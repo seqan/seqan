@@ -52,7 +52,7 @@
 #else //SEQAN_C++11_STANDARD
 
 #error The translation module requires C++11 support. \
-If your compiler supports C++11, please define SEQAN_C++11_STANDARD
+If your compiler supports C++11, please define SEQAN_CXX11_STANDARD
 
 #endif //SEQAN_C++11_STANDARD
 
