@@ -134,7 +134,7 @@ template <typename TTarget, typename TSource> inline void append(TTarget & targe
 template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename T, typename TValue> inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_ARG _value);
+template <typename T, typename TValue> inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG _value);
 #ifndef SEQAN_CXX11_STANDARD
 template <typename T, typename TValue> inline void appendValue(T const & me, TValue const & _value);
 #endif
