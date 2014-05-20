@@ -552,7 +552,8 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 	struct FibreText_;		// Original text. Can be a String or a StringSet
 	struct FibreRawText_;	// Concatenation of the strings above
 	struct FibreSA_;		// suffix array (of raw text with virtual $-delimiters) with Pair entries
-	struct FibreRawSA_;	// suffix array with integer entries
+	struct FibreRawSA_;	    // suffix array with integer entries
+	struct FibreIsa_;       // inverse suffix array.
 	struct FibreSae_;		// suffix array reordered in a b-tree
 	struct FibreLcp_;		// lcp table of raw text
 	struct FibreLcpe_;		// lcp interval tree
@@ -563,6 +564,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 	typedef Tag<FibreRawText_> const	FibreRawText;
 	typedef Tag<FibreSA_> const         FibreSA;
 	typedef Tag<FibreRawSA_> const		FibreRawSA;
+	typedef Tag<FibreIsa_> const        FibreIsa;
 	typedef Tag<FibreSae_> const		FibreSae;
 	typedef Tag<FibreLcp_> const		FibreLcp;
 	typedef Tag<FibreLcpe_> const		FibreLcpe;
@@ -762,6 +764,17 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 			typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type 
 		> Type;
 	};
+
+//////////////////////////////////////////////////////////////////////////////
+// inverse suffix array type
+
+    template < typename TText, typename TSpec >
+    struct Fibre< Index<TText, TSpec>, FibreIsa> {
+        typedef String<
+            typename Size<TText>::Type,
+            typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type
+        > Type;
+    };
 
 //////////////////////////////////////////////////////////////////////////////
 // lcp type
@@ -969,6 +982,19 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	getFibre(Index<TText, TSpec> const &index, FibreSA) {
 		return index.sa;
 	}
+
+//////////////////////////////////////////////////////////////////////////////
+
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreIsa>::Type &
+    getFibre(Index<TText, TSpec> &index, FibreIsa) {
+        return index.isa;
+    }
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreIsa>::Type &
+    getFibre(Index<TText, TSpec> const &index, FibreIsa) {
+        return index.isa;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /*
@@ -1480,7 +1506,28 @@ I	ISSISSIPPI*/
 		return posGlobalize(saAt(i, index), stringSetLimits(indexText(index)));
 	}
 
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#isaAt
+ * @headerfile seqan/index.h
+ * @brief Shortcut for <tt>value(indexIsa(..), ..)</tt>.
+ *
+ * @signature TValue isaAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the inverse suffix array.
+ */
 
+    template <typename TPos, typename TIndex>
+    SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex, FibreIsa>::Type>::Type isaAt(TPos i, TIndex &index) {
+        return value(getFibre(index, FibreIsa()), i);
+    }
+    template <typename TPos, typename TIndex>
+    SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex const, FibreIsa>::Type>::Type isaAt(TPos i, TIndex const &index) {
+        return value(getFibre(index, FibreIsa()), i);
+    }
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.IndexEsa#lcpAt:
@@ -1886,6 +1933,24 @@ I	ISSISSIPPI*/
 	inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type indexRawSA(Index<TText, TSpec> &index) { return getFibre(index, FibreRawSA()); }
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec> const, FibreRawSA>::Type indexRawSA(Index<TText, TSpec> const &index) { return getFibre(index, FibreRawSA()); }
+
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#indexIsa
+ * @headerfile seqan/index.h
+ * @brief Shortcut for <tt>getFibre(.., EsaIsa)</tt>.
+ *
+ * @signature TIsa indexIsa(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
+ * @return TIsa A reference to the inverse suffix array fibre.
+ */
+
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreIsa>::Type & indexIsa(Index<TText, TSpec> &index) { return getFibre(index, FibreIsa()); }
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreIsa>::Type & indexIsa(Index<TText, TSpec> const &index) { return getFibre(index, FibreIsa()); }
 
 //////////////////////////////////////////////////////////////////////////////
 /**
