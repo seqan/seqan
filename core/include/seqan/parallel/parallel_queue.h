@@ -308,6 +308,13 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel>
     return true;
 }
 
+template <typename TValue, typename TSpec>
+inline bool
+tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
+{
+    return tryPopFront(result, me, Parallel());
+}
+
 // ----------------------------------------------------------------------------
 // Function waitForWriters()
 // ----------------------------------------------------------------------------
@@ -333,18 +340,44 @@ waitForFirstValue(ConcurrentQueue<TValue, TSpec> & me)
 // ----------------------------------------------------------------------------
 
 // returns if no writer is locked the queue and queue is empty
-template <typename TValue, typename TSpec>
+template <typename TValue, typename TSpec, typename TParallel>
 inline bool
-popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
+popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
 {
     while (me.writerCount != 0)
     {
-        if (tryPopFront(result, me))
+        if (tryPopFront(result, me, parallelTag))
             return true;
     }
     // we have to give it another try if the queue was empty inside the loop
     // but after the check a writer pushes a value and zeroes the writerCount
     return (tryPopFront(result, me));
+}
+
+template <typename TValue, typename TSpec>
+inline bool
+popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
+{
+
+    return popFront(result, me, Parallel());
+}
+
+template <typename TValue, typename TSpec, typename TParallel>
+#ifdef SEQAN_CXX11_STANDARD
+inline TValue &&
+#else
+inline TValue
+#endif
+popFront(ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
+{
+    TValue result;
+    while (!tryPopFront(result, me, parallelTag))
+    {}
+#ifdef SEQAN_CXX11_STANDARD
+    return std::move(result);
+#else
+    return result;
+#endif
 }
 
 template <typename TValue, typename TSpec>
@@ -355,14 +388,7 @@ inline TValue
 #endif
 popFront(ConcurrentQueue<TValue, TSpec> & me)
 {
-    TValue result;
-    while (!tryPopFront(result, me))
-    {}
-#ifdef SEQAN_CXX11_STANDARD
-    return std::move(result);
-#else
-    return result;
-#endif
+    return popFront(me, Parallel());
 }
 
 template <typename TValue, typename TSpec>
