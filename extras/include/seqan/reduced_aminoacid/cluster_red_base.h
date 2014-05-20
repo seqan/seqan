@@ -52,7 +52,7 @@ namespace seqan {
 // Tag ClusterReduction
 // -----------------------------------------------------------------------
 
-/*!
+/*
  * @tag ClusterReduction
  * @brief Specialization for @link ReducedAminoAcid @endlink
  *
