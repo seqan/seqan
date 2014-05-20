@@ -137,7 +137,6 @@ _journalSnp(TTarget & target,
     _doRecordInsertion(target._journalEntries, entryIt, virtPos, physPos, 1u);
 }
 
-
 // ----------------------------------------------------------------------------
 // Function _journalSnp()
 // ----------------------------------------------------------------------------
@@ -300,9 +299,6 @@ _journalIndel(TTarget & target,
     _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + indel.i1);
 
     entryIt = end(target._journalEntries, Standard()) - 1;
-    SEQAN_ASSERT_EQ(entryIt->segmentSource, SOURCE_ORIGINAL);
-    SEQAN_ASSERT_EQ(refPos + indel.i1, entryIt->physicalOriginPosition);
-
     target._length += length(indel.i2);
     TEntryPos physPos = length(target._insertionBuffer);
     append(target._insertionBuffer, indel.i2);

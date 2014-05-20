@@ -94,29 +94,33 @@ template <typename TDeltaMap>
 class JournaledStringTree<TDeltaMap, StringTreeDefault>
 {
 public:
-    typedef typename GetStringSet<JournaledStringTree>::Type TJournalData;
-    typedef typename Value<TJournalData>::Type TJournaledString;
-    typedef typename Size<TJournalData>::Type TSize;
-    typedef typename MakeSigned<TSize>::Type TSignedSize;
+    typedef typename GetStringSet<JournaledStringTree>::Type    TJournalData;
+    typedef typename Value<TJournalData>::Type                  TJournaledString;
+    typedef typename Size<TJournalData>::Type                   TSize;
+    typedef typename MakeSigned<TSize>::Type                    TSignedSize;
+    typedef typename Container<JournaledStringTree>::Type       TContainer;
+    typedef typename Iterator<TContainer, Standard>::Type       TMapIterator;
 
     // TODO(rmaerker): Maybe no holder.
-    Holder<TDeltaMap> _container;
+    Holder<TDeltaMap>               _container;
 
-    TJournalData  _journalSet;
-    String<TSignedSize> _blockVPOffset;  // Virtual position offset for each sequence visited so far.
-    String<TSignedSize> _activeBlockVPOffset;  // Virtual position offset for each sequence visited so far.
-    TSize _activeBlock;
-    TSize _blockShift;
-    bool _emptyJournal;
+    mutable TJournalData            _journalSet;
+    mutable String<TSignedSize>     _blockVPOffset;  // Virtual position offset for each sequence visited so far.
+    mutable String<TSignedSize>     _activeBlockVPOffset;  // Virtual position offset for each sequence visited so far.
+    mutable TSize                   _activeBlock;
+    mutable TMapIterator            _mapBlockBegin;
+    mutable TMapIterator            _mapBlockEnd;
+    mutable bool                    _emptyJournal;
 
+    TSize                           _blockSize;
+    TSize                           _numBlocks;
     static const TSize REQUIRE_FULL_JOURNAL = MaxValue<TSize>::VALUE;
-    TSize _blockSize;
-    TSize _numBlocks;
 
     JournaledStringTree() : _container(),
                             _journalSet(),
                             _activeBlock(0),
-                            _blockShift(0),
+                            _mapBlockBegin(),
+                            _mapBlockEnd(),
                             _emptyJournal(true),
                             _blockSize(REQUIRE_FULL_JOURNAL),
                             _numBlocks(1)
@@ -126,7 +130,8 @@ public:
 
     template <typename THost>
     JournaledStringTree(THost & reference, TDeltaMap & varData) : _activeBlock(0),
-                                                                  _blockShift(0),
+                                                                  _mapBlockBegin(),
+                                                                  _mapBlockEnd(),
                                                                   _emptyJournal(true),
                                                                   _blockSize(REQUIRE_FULL_JOURNAL),
                                                                   _numBlocks(1)
@@ -340,69 +345,73 @@ void _journalNextVariant(TJournalString & jString, TMapIter const & it)
 // ----------------------------------------------------------------------------
 
 template <typename TDeltaMap, typename TSpec, typename TContextSize, typename TParallelTag>
-inline void
-_doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> & jst,
+inline bool
+_doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
                 TContextSize contextSize,
                 Tag<TParallelTag> parallelTag = Serial())
 {
     typedef JournaledStringTree<TDeltaMap, TSpec > TJst;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
+    typedef typename Iterator<TDeltaMap const, Standard>::Type TConstMapIterator;
 
     typedef typename DeltaCoverage<TDeltaMap>::Type TBitVec;
-    typedef typename Iterator<TBitVec, Standard>::Type TBitVecIter;
+    typedef typename Iterator<TBitVec const, Standard>::Type TBitVecIter;
 
     typedef typename GetStringSet<TJst>::Type TJournalSet;
     typedef typename Iterator<TJournalSet, Standard>::Type TJournalSetIter;
     typedef typename Size<TJournalSet>::Type TSize;
+    typedef typename MakeSigned<TSize>::Type TSignedSize;
 
     // Define the block limits.
-    TSize blockBegin = jst._activeBlock * jst._blockSize + jst._blockShift;
-    TSize blockEnd = _min(length(container(jst)), (jst._activeBlock + 1) * jst._blockSize);
+    if ((jst._activeBlock * jst._blockSize) >= length(container(jst)))
+        return false;
+
+    unsigned lastBlock = jst._activeBlock * jst._blockSize;
+    TSize blockJump = _min(length(container(jst)), lastBlock + jst._blockSize) - lastBlock;
 
     // Auxiliary variables.
-    TDeltaMap & variantMap = container(jst);
-    TJournalSet & journalSet = stringSet(jst);
+    TDeltaMap const & variantMap = container(jst);
 
     String<int> _lastVisitedNodes;
     if (!fullJournalRequired(jst))
-        resize(_lastVisitedNodes, length(journalSet), -1, Exact());
+    {
+        resize(_lastVisitedNodes, length(jst._journalSet), -1, Exact());
+        blockJump -= _max(0, (static_cast<TSignedSize>(jst._mapBlockEnd - jst._mapBlockBegin) - static_cast<TSignedSize>(jst._blockSize)));
+    }
 
-    TMapIterator itMapBegin = begin(variantMap, Standard());
-    TMapIterator itMap = itMapBegin + blockBegin;
-    TMapIterator itMapEnd = begin(variantMap, Standard()) + blockEnd;
-    for (; itMapEnd != end(variantMap, Standard()) && *itMapEnd == *(itMapEnd - 1); ++itMapEnd);
+    TConstMapIterator itMapBegin = begin(variantMap, Standard());
+    jst._mapBlockBegin = jst._mapBlockEnd;
+    jst._mapBlockEnd += blockJump;
+    for (; jst._mapBlockEnd != end(variantMap, Standard()) && *jst._mapBlockEnd == *(jst._mapBlockEnd - 1); ++jst._mapBlockEnd);
+    if (jst._mapBlockBegin == jst._mapBlockEnd)
+        return false;
 
     // Use parallel processing.
     // TODO(rmaerker): Consider more general Master-Worker design for parallelization?
-    Splitter<TJournalSetIter> jSetSplitter(begin(journalSet, Standard()), end(journalSet, Standard()), parallelTag);
-    SEQAN_OMP_PRAGMA(parallel for /*if (length(stringSet(jst)) > 1000),*/ firstprivate(itMapBegin, itMap, itMapEnd))
+    Splitter<TJournalSetIter> jSetSplitter(begin(jst._journalSet, Standard()), end(jst._journalSet, Standard()), parallelTag);
+    SEQAN_OMP_PRAGMA(parallel for /*if (length(stringSet(jst)) > 1000),*/ firstprivate(itMapBegin, jst._mapBlockBegin, jst._mapBlockEnd))
     for (unsigned jobId = 0; jobId < length(jSetSplitter); ++jobId)
     {
-
 //        printf("Thread: %i of %i\n", jobId, omp_get_num_threads());
-        unsigned jobBegin = jSetSplitter[jobId] - begin(journalSet, Standard());
-        unsigned jobEnd = jSetSplitter[jobId + 1] - begin(journalSet, Standard());
+        unsigned jobBegin = jSetSplitter[jobId] - begin(jst._journalSet, Standard());
+        unsigned jobEnd = jSetSplitter[jobId + 1] - begin(jst._journalSet, Standard());
 
         // Pre-processing: Update VPs for last block.
         if (!fullJournalRequired(jst))
             for (unsigned i = jobBegin; i < jobEnd; ++i)
             {
-                clear(journalSet[i]);  // Reinitialize the journal strings.
+                clear(jst._journalSet[i]);  // Reinitialize the journal strings.
                 jst._blockVPOffset[i] += jst._activeBlockVPOffset[i];
             }
 
 //        printf("Thread %i: jobBegin %i - jobEnd %i\n", jobId, jobBegin, jobEnd);
-
-        for (; itMap != itMapEnd; ++itMap)
+        for (TConstMapIterator itMap = jst._mapBlockBegin; itMap != jst._mapBlockEnd; ++itMap)
         {
-//            TMappedDelta varKey = mappedDelta(variantMap, itMap - itMapBegin);
-
             TBitVecIter itVecBegin = begin(deltaCoverage(itMap), Standard());
             TBitVecIter itVec = itVecBegin + jobBegin;
             TBitVecIter itVecEnd = begin(deltaCoverage(itMap), Standard()) + jobEnd;
             for (;itVec != itVecEnd; ++itVec)
             {
-                SEQAN_ASSERT_NOT(empty(host(journalSet[itVec - itVecBegin])));
+                SEQAN_ASSERT_NOT(empty(host(jst._journalSet[itVec - itVecBegin])));
 
                 if (!(*itVec))
                     continue;
@@ -410,7 +419,7 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> & jst,
                 // Store last visited node for current journaled string.
                 if (!fullJournalRequired(jst))
                     _lastVisitedNodes[itVec - itVecBegin] = itMap - itMapBegin;
-                _journalNextVariant(journalSet[itVec - itVecBegin], itMap);
+                _journalNextVariant(jst._journalSet[itVec - itVecBegin], itMap);
             }
         }
 
@@ -420,26 +429,26 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> & jst,
             // Buffer the next branch nodes depending on the context size.
             for (unsigned i = jobBegin; i < jobEnd; ++i)
             {
-                jst._activeBlockVPOffset[i] = length(journalSet[i]) - length(host(journalSet));
+                jst._activeBlockVPOffset[i] = length(jst._journalSet[i]) - length(host(jst._journalSet));
                 if (_lastVisitedNodes[i] == -1)  // skip empty journal strings.
                     continue;
 
-                TMapIterator tmpMapIt = begin(variantMap, Standard()) + _lastVisitedNodes[i];
+                TConstMapIterator tmpMapIt = begin(variantMap, Standard()) + _lastVisitedNodes[i];
                 unsigned offset = *tmpMapIt + contextSize;
                 if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_DEL)
                     offset += deltaDel(tmpMapIt);  // Adds the size of the deletion.
                 if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_INDEL)
                     offset += deltaIndel(tmpMapIt).i1;
 
-                if (itMapEnd != end(variantMap, Standard()) && offset > *itMapEnd)
+                if (jst._mapBlockEnd != end(variantMap, Standard()) && offset > *jst._mapBlockEnd)
                 {
-                    tmpMapIt = itMapEnd;
+                    tmpMapIt = jst._mapBlockEnd;
                     int localDiff = 0;
                     while (tmpMapIt != end(variantMap, Standard()) && *tmpMapIt < offset + localDiff)
                     {
                         if (deltaCoverage(tmpMapIt)[i])
                         {
-                            _journalNextVariant(journalSet[i], tmpMapIt);
+                            _journalNextVariant(jst._journalSet[i], tmpMapIt);
 
                             if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_DEL)
                                 localDiff += deltaDel(tmpMapIt);
@@ -457,7 +466,7 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> & jst,
             }
         }
     }
-    jst._blockShift = itMapEnd - (begin(variantMap, Standard()) + blockEnd);
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -565,26 +574,23 @@ fullJournalRequired(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
  */
 
 template <typename TDeltaMap, typename TSize, typename TParallelTag>
-bool journalNextBlock(JournaledStringTree<TDeltaMap, StringTreeDefault> & stringTree,
+bool journalNextBlock(JournaledStringTree<TDeltaMap, StringTreeDefault> const & stringTree,
                       TSize contextSize,
                       Tag<TParallelTag> tag)
 {
     typedef JournaledStringTree<TDeltaMap, StringTreeDefault> TJst;
 
-    if (stringTree._activeBlock < stringTree._numBlocks)
+    bool res = false;
+    if (stringTree._blockSize == TJst::REQUIRE_FULL_JOURNAL && stringTree._emptyJournal)
     {
-        if (stringTree._blockSize == TJst::REQUIRE_FULL_JOURNAL && stringTree._emptyJournal)
-        {
-            _doJournalBlock(stringTree, contextSize, tag);
-            stringTree._emptyJournal = false;
-        }
-        else if (stringTree._blockSize != TJst::REQUIRE_FULL_JOURNAL)
-            _doJournalBlock(stringTree, contextSize, tag);
-
-        ++stringTree._activeBlock;
-        return true;
+        res = _doJournalBlock(stringTree, contextSize, tag);
+        stringTree._emptyJournal = false;
     }
-    return false;
+    else if (stringTree._blockSize != TJst::REQUIRE_FULL_JOURNAL)
+        res = _doJournalBlock(stringTree, contextSize, tag);
+
+    ++stringTree._activeBlock;
+    return res;
 }
 
 template <typename TDeltaMap, typename TSpec, typename TSize>
@@ -618,14 +624,13 @@ reinit(JournaledStringTree<TDeltaMap, TSpec> & jst)
 {
     // Reset all positions to 0.
     jst._activeBlock = 0;
-    jst._blockShift = 0;
     if (!fullJournalRequired(jst))
     {
         jst._emptyJournal = true;
         arrayFill(begin(jst._activeBlockVPOffset, Standard()), end(jst._activeBlockVPOffset, Standard()), 0);
-        arrayFill(begin(jst._blockVPOffset, Standard()), end(jst._activeBlockVPOffset, Standard()), 0);
+        arrayFill(begin(jst._blockVPOffset, Standard()), end(jst._blockVPOffset, Standard()), 0);
     }
-
+    jst._mapBlockBegin = jst._mapBlockEnd = begin(container(jst), Standard());
 }
 
 // ----------------------------------------------------------------------------
@@ -665,6 +670,8 @@ init(JournaledStringTree<TDeltaMap, TSpec> & jst,
     resize(stringSet(jst), coverageSize(varData), tmp, Exact());
     resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
     resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
+
+    jst._mapBlockBegin = jst._mapBlockEnd = begin(varData, Standard());
 }
 
 // ----------------------------------------------------------------------------

@@ -187,7 +187,7 @@ public:
 
     // Branch-node information.
     TBranchNodeIterator _branchNodeIt;
-    TBranchNodeIterator _branchNodeItEnd;
+    TBranchNodeIterator _branchNodeBlockEnd;
     TBranchNodeIterator _proxyBranchNodeIt;
     mutable TBranchNodeIterator _branchNodeInContextIt;  // Points to left node within context or behind the context.
 
@@ -794,7 +794,7 @@ _globalInit(JstTraverser<TContainer, TState, TSpec> & traverser)
     else
     {  // We set the active branch state to the delta branch.
         TBranchNodeIt tmpIt = traverser._branchNodeIt;
-        while(tmpIt != traverser._branchNodeItEnd && *tmpIt == 0)
+        while(tmpIt != traverser._branchNodeBlockEnd && *tmpIt == 0)
         {
             // TODO(rmaerker): Add case for INDEL
             if (deltaType(traverser._branchNodeIt) != DeltaType::DELTA_TYPE_DEL)
@@ -1111,7 +1111,7 @@ _traverseBranch(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositi
 
     // Select the next node.
     traverser._proxyBranchNodeIt = traverser._branchNodeIt;
-    TBranchNodeIter nodeItEnd = traverser._branchNodeItEnd -1;  // TODO(rmaerker): Check if we can put it on the register.
+    TBranchNodeIter nodeItEnd = end(container(container(traverser)), Standard()) - 1;
 
     unsigned splitPointPos = 0;
     if (traverser._proxyBranchNodeIt != nodeItEnd)
@@ -1480,8 +1480,8 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<TContex
         {
             TIndel & indel = deltaIndel(traverser._branchNodeIt);
             nextBranch._proxyEndPosDiff = indel.i1;
-            nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2)) - 1;
-            contextSizeRight += length(indel.i2);
+            nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2));
+            contextSizeRight += length(indel.i2) - 1;
             if (indel.i1 > 1)
             {
                 nextBranch._mappedHostPos += indel.i1 - 1;  // Moves right by the size of the deletion.
@@ -1616,7 +1616,7 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<Co
         {
             TIndel & indel = deltaIndel(traverser._branchNodeIt);
             nextBranch._proxyEndPosDiff = indel.i1;
-            nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2)) - 1;
+            nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2));
             contextSizeRight += length(indel.i2);
             if (indel.i1 > 1)
             {
@@ -1805,14 +1805,14 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
     double timeAll = sysTime();
     unsigned counter = 0;
     unsigned currentPercentage = 0;
-    unsigned fivePercentInterval = ((traverser._branchNodeItEnd - traverser._branchNodeIt) * 5) / 100;
+    unsigned fivePercentInterval = ((traverser._branchNodeBlockEnd - traverser._branchNodeIt) * 5) / 100;
     std::cerr << currentPercentage << "% " << std::flush;
 #endif //PROFILE_DATA_PARALLEL
 
     traverser._lastMasterState = getState(externalAlg);
 
     // Loop over the branch nodes.
-    while (traverser._branchNodeIt != traverser._branchNodeItEnd)
+    while (traverser._branchNodeIt != traverser._branchNodeBlockEnd)
     {
 #ifdef PROFILE_DATA_PARALLEL_INTERN
         double timeMaster = sysTime();
@@ -1856,7 +1856,7 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
         traverser._lastMasterState = getState(externalAlg);  // Keep the last active caller state.
 
         // Search all haplotypes with the alternative allel at this position.
-        while(traverser._branchNodeIt != traverser._branchNodeItEnd && *traverser._branchNodeIt == branchPosition)
+        while(traverser._branchNodeIt != traverser._branchNodeBlockEnd && *traverser._branchNodeIt == branchPosition)
         {
 #ifdef DEBUG_DATA_PARALLEL
             std::cerr << "Coverage: " << traverser._activeBranchCoverage << std::endl;
@@ -1951,7 +1951,7 @@ _initSegment(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPosition,
         traverser._masterIt +=  (contextSize(traverser) - 1);
     traverser._masterItEnd = begin(host(container(traverser)), Rooted()) + hostSegmentEndPosition;
     traverser._branchNodeInContextIt = traverser._branchNodeIt = nodeItBegin;
-    traverser._branchNodeItEnd = nodeItEnd;
+    traverser._branchNodeBlockEnd = nodeItEnd;
     _globalInit(traverser);
 }
 
@@ -1967,17 +1967,11 @@ _reinitBlockEnd(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositi
     if (fullJournalRequired(container(traverser)))
         return;
 
-    unsigned maxNum = length(container(container(traverser)));
-    unsigned id = _min((container(traverser)._activeBlock) * container(traverser)._blockSize,
-                       maxNum);
-
-    if (id == maxNum)  // Last block.
+    traverser._branchNodeBlockEnd = container(traverser)._mapBlockEnd;
+    if (traverser._branchNodeBlockEnd == end(container(container(traverser)), Standard()))  // Last block.
         traverser._masterItEnd = end(host(container(traverser)), Rooted());
     else
-        traverser._masterItEnd = begin(host(container(traverser)), Rooted()) +
-                                 value(iter(container(container(traverser)), id, Standard()));
-
-    traverser._branchNodeItEnd = begin(container(container(traverser)), Rooted()) + id;
+        traverser._masterItEnd = begin(host(container(traverser)), Rooted()) + value(traverser._branchNodeBlockEnd);
 }
 
 // ----------------------------------------------------------------------------
@@ -2045,12 +2039,13 @@ init(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPosition, TRequir
  */
 
 template <typename TOperator, typename TDelegate, typename TContainer, typename TState, typename TSpec>
-inline void
-//SEQAN_FUNC_ENABLE_IF(Is<JstTraversalConcept<TOperator> >, void)
+inline
+SEQAN_FUNC_ENABLE_IF(Is<JstTraversalConcept<TOperator> >, void)
 traverse(TOperator & traversalCaller,
          TDelegate & delegate,
          JstTraverser<TContainer, TState, TSpec> & traverser)
 {
+    _reinitBlockEnd(traverser);
     _execTraversal(traverser, traversalCaller, delegate);
 }
 

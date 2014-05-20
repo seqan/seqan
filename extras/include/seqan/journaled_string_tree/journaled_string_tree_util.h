@@ -329,7 +329,7 @@ _mapVirtualToVirtual(TIter & target,
         SEQAN_ASSERT_GEQ(*branchNodeIt, _physicalOriginPosition(source));
         if (_physicalOriginPosition(source) == 0)
         {
-            setPosition(target, *branchNodeIt + _localEntryPosition(source));
+            setPosition(target, position(source));
             return;
         }
 
