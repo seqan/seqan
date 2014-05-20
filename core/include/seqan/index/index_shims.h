@@ -217,7 +217,46 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
         _createSuffixArrayWrapper(sa, s, alg, typename SACreatorRandomAccess_<TSA, TText, TAlgSpec>::Type());
     }
 
+//____________________________________________________________________________
 
+	/*!
+	 * @fn createInvSuffixArray
+	 * @headerfile <seqan/index.h>
+	 * @brief Creates the inverse suffix array from a given suffix array.
+	 *
+	 * @signature void createInvSuffixArray(invSuffixArray, suffixArray);
+	 *
+	 * @param[out] invSuffixArray  The resulting inverse suffix array.
+	 * @param[in]  suffixArray     The precomputed suffix array for some text.
+	 *
+	 * This function should not be called directly.  Please use @link Index#indexCreate
+	 * @endlink or @link Index#indexRequire @endlink.  The size of <tt>invSuffixArray</tt> must be at
+	 * least <tt>length(suffixArray)</tt> before calling this function.
+	 *
+	 * The complexity is linear in size of the suffix array.
+	 */
+
+	template <typename TIsa, typename TSa, typename TAlgSpec>
+    inline void
+    createInvSuffixArray(TIsa &isa,
+                         TSa const &sa,
+                         TAlgSpec const &/*alg*/)
+    {
+	    typedef typename Iterator<TSa const, Standard>::Type TSaIter;
+	    SEQAN_ASSERT_EQ(length(isa), length(sa));
+
+	    TSaIter itSaBegin = begin(sa, Standard());
+	    for (TSaIter itSa = itSaBegin; itSa != end(sa, Standard()); ++itSa)
+	        isa[*itSa] = itSa - itSaBegin;
+    }
+
+    template <typename TIsa, typename TSa, typename TAlgSpec>
+    inline void
+    createInvSuffixArray(TIsa &isa,
+                         TSa const &sa)
+    {
+        createInvSuffixArray(isa, sa, Default());
+    }
 
 //____________________________________________________________________________
 
@@ -663,6 +702,14 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 		return true;
 	}
 
+    template <typename TText, typename TSpec, typename TSpecAlg>
+    inline bool indexCreate(Index<TText, TSpec> &index, FibreIsa, TSpecAlg const alg)
+    {
+        resize(indexIsa(index), length(indexRawText(index)), Exact());
+        createInvSuffixArray(indexIsa(index), indexSA(index), alg);
+        return true;
+    }
+
 	template <typename TText, typename TSpec, typename TSpecAlg>
 	inline bool indexCreate(Index<TText, TSpec> &index, FibreLcp, TSpecAlg const alg) {
 	SEQAN_CHECKPOINT
@@ -865,6 +912,12 @@ I	ISSISSIPPI
 	SEQAN_CHECKPOINT
 		return true;
 	}
+
+    template <typename TText, typename TSpec>
+    inline bool indexSolveDependencies(Index<TText, TSpec> &index, FibreIsa) {
+    SEQAN_CHECKPOINT
+        return indexRequire(index, FibreSA());
+    }
 
 	template <typename TText, typename TSpec>
 	inline bool indexSolveDependencies(Index<TText, TSpec> &index, FibreLcp) {
