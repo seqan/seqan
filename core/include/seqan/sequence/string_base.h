@@ -437,7 +437,6 @@ inline void
 swap(String<TAlphabet, TSpec> & left,
      String<TAlphabet, TSpec> & right)
 {
-    SEQAN_CHECKPOINT;
 
     typedef String<TAlphabet, TSpec> TString;
 
@@ -457,7 +456,6 @@ inline bool
 shareResources(String<TValue, TSpec> const & obj1,
                TValue const & obj2)
 {
-    SEQAN_CHECKPOINT;
     return (begin(obj1) >= &obj2) && (end(obj1) <= &obj2);
 }
 
@@ -466,7 +464,6 @@ inline bool
 shareResources(TValue const & obj1,
                String<TValue, TSpec> const & obj2)
 {
-    SEQAN_CHECKPOINT;
     return (begin(obj2) >= &obj1) && (end(obj2) <= &obj1);
 }
 
@@ -487,7 +484,6 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
 value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position< String<TValue, TSpec> >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
@@ -498,7 +494,6 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> const >::Type
 value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position< String<TValue, TSpec> const >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
@@ -515,7 +510,6 @@ template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
 {
-    SEQAN_CHECKPOINT;
     return end(me, Standard()) - begin(me, Standard());
 }
 
@@ -530,7 +524,6 @@ template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline bool
 empty(String<TValue, TSpec> const & me)
 {
-    SEQAN_CHECKPOINT;
     return end(me, Standard()) == begin(me, Standard());
 }
 
@@ -559,7 +552,6 @@ template <typename TValue, typename TSpec>
 inline void
 clear(String<TValue, TSpec> & me)
 {
-    SEQAN_CHECKPOINT;
     arrayDestruct(begin(me, Standard()), end(me, Standard()));
     _setLength(me, 0);
 }
@@ -586,7 +578,6 @@ struct ClearSpaceStringBase_<Insist>
         T & seq,
         typename Size<T>::Type size)
     {
-        SEQAN_CHECKPOINT;
         arrayDestruct(begin(seq, Standard()), end(seq, Standard()));
         _setLength(seq, size);
         return size;
@@ -602,7 +593,6 @@ struct ClearSpaceStringBase_<Insist>
         arrayDestruct(begin(seq, Standard()), end(seq, Standard()));
         if (limit < size)
         {
-            SEQAN_CHECKPOINT;
             size = limit;
         }
         _setLength(seq, size);
@@ -617,7 +607,6 @@ struct ClearSpaceStringBase_<Insist>
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        SEQAN_CHECKPOINT;
         typename Size<T>::Type new_length = length(seq) + size - (end - start);
         arrayClearSpace(begin(seq, Standard()) + start, length(seq) - start, end - start, size);
         _setLength(seq, new_length);
@@ -638,12 +627,10 @@ struct ClearSpaceStringBase_<Insist>
 
         if (limit > start + size)
         {
-            SEQAN_CHECKPOINT;
             typename Size<T>::Type removed_size = end - start;
             typename Size<T>::Type new_length = seq_length - removed_size + size;
             if (limit < new_length)
             {
-                SEQAN_CHECKPOINT;
                 arrayDestruct(seq_buffer + limit, seq_buffer + new_length);
                 seq_length -= new_length - limit;
             }
@@ -653,7 +640,6 @@ struct ClearSpaceStringBase_<Insist>
         }
         else
         {
-            SEQAN_CHECKPOINT;
             arrayDestruct(seq_buffer + start, seq_buffer + seq_length);
             _setLength(seq, limit);
             if (limit > start) return limit - start;
@@ -699,7 +685,6 @@ struct ClearSpaceStringBase_<Limit>
         T & seq,
         typename Size<T>::Type size)
     {
-        SEQAN_CHECKPOINT;
         return _clearSpace(seq, size, capacity(seq), Insist());
     }
 
@@ -713,7 +698,6 @@ struct ClearSpaceStringBase_<Limit>
         typename Size<T>::Type seq_capacity = capacity(seq);
         if (limit > seq_capacity)
         {
-            SEQAN_CHECKPOINT;
             limit = seq_capacity;
         }
         return _clearSpace(seq, size, limit, Insist());
@@ -727,7 +711,6 @@ struct ClearSpaceStringBase_<Limit>
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        SEQAN_CHECKPOINT;
         return _clearSpace(seq, size, start, end, capacity(seq), Insist());
     }
 
@@ -743,7 +726,6 @@ struct ClearSpaceStringBase_<Limit>
         typename Size<T>::Type seq_capacity = capacity(seq);
         if (limit > seq_capacity)
         {
-            SEQAN_CHECKPOINT;
             limit = seq_capacity;
         }
         return _clearSpace(seq, size, start, end, limit, Insist());
@@ -791,7 +773,6 @@ struct ClearSpaceExpandStringBase_
         typename Value<T>::Type * old_array = _reallocateStorage(seq, size, TExpand());
         if (old_array)
         {
-            SEQAN_CHECKPOINT;
             _deallocateStorage(seq, old_array, old_capacity);
         }
         _setLength(seq, size);
@@ -808,7 +789,6 @@ struct ClearSpaceExpandStringBase_
         arrayDestruct(begin(seq, Standard()), end(seq, Standard()));
         if (limit < size)
         {
-            SEQAN_CHECKPOINT;
             size = limit;
         }
         typename Size<T>::Type old_capacity = capacity(seq);
@@ -839,14 +819,12 @@ struct ClearSpaceExpandStringBase_
 
         if (old_array)
         {
-            SEQAN_CHECKPOINT;
             arrayConstructMove(old_array, old_array + start, seq_array);
             arrayConstructMove(old_array + end, old_array + old_length, seq_array + start + size);
             _deallocateStorage(seq, old_array, old_capacity);
         }
         else
         {
-            SEQAN_CHECKPOINT;
             arrayClearSpace(seq_array + start, old_length - start, removed_size, size);
         }
 
@@ -872,7 +850,6 @@ struct ClearSpaceExpandStringBase_
         typename Size<T>::Type length_to_copy = old_length;
         if (limit < need_length)
         {
-            SEQAN_CHECKPOINT;
             new_length = limit;
             length_to_copy = new_length - size + removed_size;
         }
@@ -981,7 +958,6 @@ _clearSpace(String<TValue, TSpec> & me,
         TSize size,
         Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
@@ -992,7 +968,6 @@ _clearSpace(String<TValue, TSpec> & me,
         TCapacity limit,
         Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
@@ -1004,7 +979,6 @@ _clearSpace(String<TValue, TSpec> & me,
             TPosition pos_end,
             Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
@@ -1017,7 +991,6 @@ _clearSpace(String<TValue, TSpec> & me,
             TCapacity limit,
             Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
 }
 
@@ -1036,7 +1009,6 @@ resizeSpace(String<TValue, TSpec> & me,
             TEndPosition pos_end,
             Tag<TExpand> tag)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Size< String<TValue, TSpec> >::Type TSize_;
     typedef typename Position<String<TValue, TSpec> >::Type TPos_;
     TSize_ ret_ = _clearSpace(
@@ -1058,7 +1030,6 @@ resizeSpace(String<TValue, TSpec> & me,
             TCapacity limit,
             Tag<TExpand> tag)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Size< String<TValue, TSpec> >::Type TSize_;
     typedef typename Position<String<TValue, TSpec> >::Type TPos_;
     TSize_ ret_ = _clearSpace(
@@ -1117,13 +1088,11 @@ struct AssignString_
             return;  // Do nothing if both source and target are empty.
         if (!getObjectId(source) || !shareResources(target, source))
         {
-            SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type part_length = _clearSpace(target, length(source), TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()));
         }
         else
         {
-            SEQAN_CHECKPOINT;
             if ((void *) &target == (void *) &source) return;
 
             typename TempCopy_<TSource>::Type temp(source, length(source));
@@ -1140,13 +1109,11 @@ struct AssignString_
     {
         if (!getObjectId(source) || !shareResources(target, source))
         {
-            SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type part_length = _clearSpace(target, typename Size<TTarget>::Type(length(source)), limit, TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()));
         }
         else
         {
-            SEQAN_CHECKPOINT;
             if ((void *) &target == (void *) &source) return;
 
             typename Size<TTarget>::Type source_length = length(source);
@@ -1225,7 +1192,6 @@ _moveContiguous(TTarget & target,
     typename Size<TTarget>::Type size = sizeof(TSourceValue) * capacity(source);
     if (size >= sizeof(TTargetValue))
     {
-        SEQAN_CHECKPOINT;
         if (sizeof(TSourceValue) <= 2) ++size; //regard the "end of string termination" case
         typename Size<TTarget>::Type target_capacity = size / sizeof(TTargetValue);
         if (sizeof(TTargetValue) <= 2) --target_capacity; //regard the "end of string termination" case
@@ -1265,7 +1231,6 @@ inline void
 move(String<TTargetValue, TTargetSpec> & target,
      TSource & source)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
     move(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
@@ -1275,7 +1240,6 @@ inline void
 move(String<TTargetValue, TTargetSpec> & target,
      TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
     move(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
@@ -1286,7 +1250,6 @@ move(String<TTargetValue, TTargetSpec> & target,
      TSource & source,
      Tag<TTag> const & tag)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source, tag);
 }
 
@@ -1296,7 +1259,6 @@ move(String<TTargetValue, TTargetSpec> & target,
      TSource const & source,
      Tag<TTag> const & tag)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source, tag);
 }
 
@@ -1356,14 +1318,12 @@ struct AppendString_
         if (!getObjectId(source) || !shareResources(target, source) ||
             !_stringCheckForPossibleOverlap(begin(source, Standard()), end(target, Standard()), length(source)))
         {
-            SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type target_length = length(target);
             typename Size<TTarget>::Type part_length = _clearSpace(target, length(source), target_length, target_length, TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()) + target_length);
         }
         else
         {
-            SEQAN_CHECKPOINT;
             typename TempCopy_<TSource>::Type temp(source, length(source));
             append(target, temp, TExpand());
         }
@@ -1378,7 +1338,6 @@ struct AppendString_
         typename Iterator<TTarget, Standard>::Type target_begin = begin(target, Standard());
         if (!getObjectId(source) || !shareResources(target, source))
         {
-SEQAN_CHECKPOINT
             typename Size<TTarget>::Type target_length = length(target);
             typename Size<TTarget>::Type part_length = _clearSpace(target, length(source), target_length, target_length, limit, TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()) + target_length);
@@ -1388,13 +1347,11 @@ SEQAN_CHECKPOINT
             typename Size<TTarget>::Type target_length = length(target);
             if (target_length >= limit)
             {
-                SEQAN_CHECKPOINT;
                 arrayDestruct(target_begin + limit, target_begin + target_length);
                 _setLength(target, limit);
             }
             else
             {
-                SEQAN_CHECKPOINT;
                 limit -= target_length;
                 typename Size<TTarget>::Type source_length = length(source) ;
                 if (source_length > limit) source_length = limit;
@@ -1422,7 +1379,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
        Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
@@ -1435,7 +1391,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        TSourceValue * source,
        Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     AppendString_<Tag<TExpand> >::append_(target, source);
 }
 
@@ -1446,7 +1401,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
        Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
@@ -1460,25 +1414,27 @@ struct AppendValueToString_
     template <typename T, typename TValue>
     static inline void
     appendValue_(T & me,
-                TValue & _value)
+                 TValue SEQAN_FORWARD_CARG _value)
     {
-        SEQAN_CHECKPOINT;
-        typename Position<T>::Type me_length = length(me);
+        typedef typename Value<T>::Type TTargetValue;
+        typedef typename Size<T>::Type TSize;
+
+        TSize me_length = length(me);
         if (capacity(me) <= me_length)
         {
-            typename Value<T>::Type temp_copy(_value); //temp copy because resize could invalidate _value
+            TTargetValue temp_copy(SEQAN_FORWARD(TValue, _value)); //temp copy because resize could invalidate _value
             // TODO(holtgrew): The resize() function will default construct the last element. This is slow. Get rid of this.
-            typename Size<T>::Type new_length = reserve(me, me_length + 1, TExpand());
+            TSize new_length = reserve(me, me_length + 1, TExpand());
             if (me_length < new_length)
             {
                 // *(begin(me) + me_length) = temp_copy;
-                valueConstruct(begin(me, Standard()) + me_length, temp_copy); //??? this should be valueMoveConstruct
+                valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TTargetValue, temp_copy)); //??? this should be valueMoveConstruct
                 _setLength(me, me_length + 1);
             }
         }
         else
         {
-            valueConstruct(begin(me, Standard()) + me_length, _value);
+            valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TValue, _value));
             _setLength(me, me_length + 1);
         }
     }
@@ -1487,11 +1443,10 @@ struct AppendValueToString_
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue const & _value,
+            TValue SEQAN_FORWARD_CARG _value,
             Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
-    AppendValueToString_<Tag<TExpand> >::appendValue_(me, _value);
+    AppendValueToString_<Tag<TExpand> >::appendValue_(me, SEQAN_FORWARD(TValue, _value));
 }
 
 // ----------------------------------------------------------------------------
@@ -1501,11 +1456,11 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue const & _value,
+            TValue SEQAN_FORWARD_CARG _value,
             Tag<TExpand> const & expandTag,
             Serial)
 {
-    appendValue(me, _value, expandTag);
+    appendValue(me, SEQAN_FORWARD(TValue, _value), expandTag);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1527,7 +1482,6 @@ struct InsertValueToString_
                 TPosition pos,
                 TValue & _value)
     {
-        SEQAN_CHECKPOINT;
         typename Value<T>::Type temp_copy = _value; //temp copy because resizeSpace could invalidate _value
         resizeSpace(me, 1, pos, pos, TExpand());
         if ((typename Size<T>::Type) pos < length(me))
@@ -1542,7 +1496,6 @@ insertValue(String<TTargetValue, TTargetSpec> & me,
             TValue const & _value,
             Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     InsertValueToString_<Tag<TExpand> >::insertValue_(me, pos, _value);
 }
 
@@ -1566,13 +1519,11 @@ struct ReplaceString_
     {
         if (!getObjectId(source) || !shareResources(target, source))
         {
-            SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type part_length = _clearSpace(target, length(source), pos_begin, pos_end, TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()) + pos_begin);
         }
         else
         {
-            SEQAN_CHECKPOINT;
             typename TempCopy_<TSource>::Type temp(source, length(source));
             replace(target, pos_begin, pos_end, temp, TExpand());
         }
@@ -1588,7 +1539,6 @@ struct ReplaceString_
     {
         if (!getObjectId(source) || !shareResources(target, source))
         {
-            SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type part_length = _clearSpace(target, length(source), pos_begin, pos_end, limit, TExpand());
             arrayConstructCopy(begin(source, Standard()), begin(source, Standard()) + part_length, begin(target, Standard()) + pos_begin);
         }
@@ -1596,13 +1546,11 @@ struct ReplaceString_
         {
             if (pos_begin >= limit)
             {
-                SEQAN_CHECKPOINT;
                 arrayDestruct(begin(target) + limit, end(target));
                 _setLength(target, limit);
             }
             else
             {
-                SEQAN_CHECKPOINT;
                 limit -= pos_begin;
                 typename Size<TTarget>::Type source_length = length(source) ;
                 if (source_length > limit) source_length = limit;
@@ -1858,7 +1806,6 @@ reserve(
     TSize_ new_capacity,
     Tag<TExpand> tag)
 {
-SEQAN_CHECKPOINT
     _reserveStorage(seq, new_capacity, tag);
     return _capacityReturned(seq, new_capacity, tag);
 }
@@ -1882,7 +1829,6 @@ struct _Resize_String
         TSize me_length = length(me);
         if (new_length < me_length)
         {
-            SEQAN_CHECKPOINT;
             arrayDestruct(begin(me, Standard()) + new_length, begin(me, Standard()) + me_length);
         }
         else
@@ -1890,7 +1836,6 @@ struct _Resize_String
             typename Size<T>::Type me_capacity = capacity(me);
             if (new_length > me_capacity)
             {
-                SEQAN_CHECKPOINT;
                 TSize new_capacity = reserve(me, new_length, TExpand());
                 if (new_capacity < new_length)
                 {
@@ -1899,7 +1844,6 @@ struct _Resize_String
             }
             if (new_length > me_length)
             {
-                SEQAN_CHECKPOINT;
                 arrayConstruct(begin(me, Standard()) + me_length, begin(me, Standard()) + new_length);
             }
         }
@@ -1919,7 +1863,6 @@ struct _Resize_String
         TSize me_length = length(me);
         if (new_length < me_length)
         {
-            SEQAN_CHECKPOINT;
             arrayDestruct(begin(me, Standard()) + new_length, begin(me, Standard()) + me_length);
         }
         else
@@ -1927,7 +1870,6 @@ struct _Resize_String
             TSize me_capacity = capacity(me);
             if (new_length > me_capacity)
             {
-                SEQAN_CHECKPOINT;
                 TValue tempCopy = val;  // reserve could invalidate val
                 TSize new_capacity = reserve(me, new_length, TExpand());
                 if (new_capacity < new_length)
@@ -1938,7 +1880,6 @@ struct _Resize_String
             } else
                 if (new_length > me_length)
                 {
-                    SEQAN_CHECKPOINT;
                     arrayConstruct(begin(me, Standard()) + me_length, begin(me, Standard()) + new_length, val);
                 }
         }
@@ -1955,7 +1896,6 @@ resize(
     TSize new_length,
     Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return _Resize_String<Tag<TExpand> >::resize_(me, new_length);
 }
 
@@ -1967,7 +1907,6 @@ resize(
     TValue2 const & val,
     Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return _Resize_String<Tag<TExpand> >::resize_(me, new_length, val);
 }
 
@@ -1983,7 +1922,6 @@ String<TLeftValue, TLeftSpec> &
 operator+=(String<TLeftValue, TLeftSpec> & left,
            TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     append(left, right);
     return left;
 }
@@ -1999,7 +1937,6 @@ inline bool
 operator==(String<TLeftValue, TLeftSpec> const & left,
            TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     typename Comparator<String<TLeftValue, TLeftSpec> >::Type _lex(left, right);
     return isEqual(_lex);
 }
@@ -2009,7 +1946,6 @@ inline bool
 operator==(TLeftValue * left,
            String<TRightValue, TRightSpec> const & right)
 {
-    SEQAN_CHECKPOINT;
     typename Comparator<String<TRightValue, TRightSpec> >::Type _lex(left, right);
     return isEqual(_lex);
 }
@@ -2023,7 +1959,6 @@ inline bool
 operator!=(String<TLeftValue, TLeftSpec> const & left,
            TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     typename Comparator<String<TLeftValue, TLeftSpec> >::Type _lex(left, right);
     return isNotEqual(_lex);
 }
@@ -2033,7 +1968,6 @@ inline bool
 operator!=(TLeftValue * left,
            String<TRightValue, TRightSpec> const & right)
 {
-    SEQAN_CHECKPOINT;
     typename Comparator<String<TRightValue, TRightSpec> >::Type _lex(left, right);
     return isNotEqual(_lex);
 }
@@ -2047,7 +1981,6 @@ inline bool
 operator<(String<TLeftValue, TLeftSpec> const & left,
           TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     return isLess(left, right, typename DefaultPrefixOrder<String<TLeftValue, TLeftSpec> >::Type());
 }
 
@@ -2056,7 +1989,6 @@ inline bool
 operator<(TLeftValue * left,
           String<TRightValue, TRightSpec> const & right)
 {
-    SEQAN_CHECKPOINT;
     return isLess(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
@@ -2069,7 +2001,6 @@ inline bool
 operator<=(String<TLeftValue, TLeftSpec> const & left,
            TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     return isLessOrEqual(left, right, typename DefaultPrefixOrder<String<TLeftValue, TLeftSpec> >::Type());
 }
 
@@ -2078,7 +2009,6 @@ inline bool
 operator<=(TLeftValue * left,
            String<TRightValue, TRightSpec> const & right)
 {
-SEQAN_CHECKPOINT
     return isLessOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
@@ -2091,7 +2021,6 @@ inline bool
 operator>(String<TLeftValue, TLeftSpec> const & left,
           TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     return isGreater(left, right, typename DefaultPrefixOrder<String<TLeftValue, TLeftSpec> >::Type());
 }
 template <typename TLeftValue, typename TRightValue, typename TRightSpec >
@@ -2099,7 +2028,6 @@ inline bool
 operator>(TLeftValue * left,
           String<TRightValue, TRightSpec> const & right)
 {
-    SEQAN_CHECKPOINT;
     return isGreater(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
@@ -2112,7 +2040,6 @@ inline bool
 operator>=(String<TLeftValue, TLeftSpec> const & left,
            TRight const & right)
 {
-    SEQAN_CHECKPOINT;
     return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<String<TLeftValue, TLeftSpec> >::Type());
 }
 template <typename TLeftValue, typename TRightValue, typename TRightSpec>
@@ -2120,7 +2047,6 @@ inline bool
 operator>=(TLeftValue * left,
              String<TRightValue, TRightSpec> const & right)
 {
-    SEQAN_CHECKPOINT;
     return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
@@ -2133,7 +2059,6 @@ inline TStream &
 operator<<(TStream & target,
            String<TValue, TSpec> const & source)
 {
-SEQAN_CHECKPOINT
     write(target, source);
     return target;
 }
@@ -2147,7 +2072,6 @@ inline TStream &
 operator>>(TStream & source,
            String<TValue, TSpec> & target)
 {
-    SEQAN_CHECKPOINT;
     read(source, target);
     return source;
 }
