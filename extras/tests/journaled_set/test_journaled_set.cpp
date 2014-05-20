@@ -37,20 +37,19 @@
 
 #include "test_journaled_set.h"
 
-
 SEQAN_BEGIN_TESTSUITE(test_journaled_set)
 {
     // Journaled Set interface.
-	SEQAN_CALL_TEST(test_journaled_set_constructor);
-	SEQAN_CALL_TEST(test_journaled_set_assign);
+    SEQAN_CALL_TEST(test_journaled_set_constructor);
+    SEQAN_CALL_TEST(test_journaled_set_assign);
     SEQAN_CALL_TEST(test_journaled_set_set_host);
     SEQAN_CALL_TEST(test_journaled_set_host);
-	SEQAN_CALL_TEST(test_journaled_set_assign_value);
-	SEQAN_CALL_TEST(test_journaled_set_append_value);
-	SEQAN_CALL_TEST(test_journaled_set_value);
-	SEQAN_CALL_TEST(test_journaled_set_clear);
-	SEQAN_CALL_TEST(test_journaled_set_resize);
-	SEQAN_CALL_TEST(test_journaled_set_empty);
+    SEQAN_CALL_TEST(test_journaled_set_assign_value);
+    SEQAN_CALL_TEST(test_journaled_set_append_value);
+    SEQAN_CALL_TEST(test_journaled_set_value);
+    SEQAN_CALL_TEST(test_journaled_set_clear);
+    SEQAN_CALL_TEST(test_journaled_set_resize);
+    SEQAN_CALL_TEST(test_journaled_set_empty);
     SEQAN_CALL_TEST(test_journaled_set_iterator);
 }
 SEQAN_END_TESTSUITE

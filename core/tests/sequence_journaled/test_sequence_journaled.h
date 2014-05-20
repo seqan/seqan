@@ -1165,71 +1165,73 @@ void testJournaledStringReplace(TStringJournalSpec const &)
 
 // Tag: SortedArray()
 
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign)
+{
     testJournaledStringAssign(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_set) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_set)
+{
     testJournaledStringSet(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_host) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_host)
+{
     testJournaledStringHost(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_clear) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_clear)
+{
     testJournaledStringClear(SortedArray());
 }
 
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_empty) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_empty)
+{
     testJournaledStringEmpty(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_erase_position) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_erase_position)
+{
     testJournaledStringErasePosition(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_erase_begin_end) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_erase_begin_end)
+{
     testJournaledStringEraseBeginEnd(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_insert) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_insert)
+{
     testJournaledStringInsert(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_insert_value) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_insert_value)
+{
     testJournaledStringInsertValue(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign_value) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign_value)
+{
     testJournaledStringAssignValue(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_subscript_operator) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_subscript_operator)
+{
     testJournaledStringSubscriptOperator(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign_infix) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_assign_infix)
+{
     testJournaledStringAssignInfix(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_length) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_length)
+{
     testJournaledStringLength(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_virtual_to_host_position) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_virtual_to_host_position)
+{
     testJournaledStringVirtualToHostPosition<SortedArray>();
 }
 
@@ -1243,40 +1245,39 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_reset)
     testJournaledStringReset(seqan::SortedArray());
 }
 
-
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_copy_constructor) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_copy_constructor)
+{
     testJournaledStringCopyConstructor(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_begin_end_iterator) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_begin_end_iterator)
+{
     testJournaledStringBeginEndIteratorStandard(SortedArray());
     testJournaledStringBeginEndIteratorRooted(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_begin_end_const_iterator) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_begin_end_const_iterator)
+{
     testJournaledStringBeginEndConstIterator(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_subscript_operator_randomized) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_subscript_operator_randomized)
+{
     testJournaledStringSubscriptOperatorRandomized(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_fuzzying) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_fuzzying)
+{
     testJournaledStringFuzzying(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_only) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_only)
+{
     testJournaledStringSegmentsReadOnly(SortedArray());
 }
 
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_write) {
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_write)
+{
     testJournaledStringReplace(SortedArray());
 }
 
