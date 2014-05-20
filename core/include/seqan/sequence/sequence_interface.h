@@ -1506,21 +1506,23 @@ append(TTarget const & target,
 
 template <typename T, typename TValue>
 inline void
-appendValue(T & me,
-            TValue const & _value)
+appendValue(T SEQAN_FORWARD_ARG me,
+            TValue SEQAN_FORWARD_CARG _value)
 {
-    SEQAN_CHECKPOINT;
-    appendValue(me, _value, typename DefaultOverflowImplicit<T>::Type());
+    appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
 }
+
+#ifndef SEQAN_CXX11_STANDARD
 
 template <typename T, typename TValue>
 inline void
 appendValue(T const & me,
             TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     appendValue(me, _value, typename DefaultOverflowImplicit<T const>::Type());
 }
+
+#endif
 
 // --------------------------------------------------------------------------
 // Function insert()
