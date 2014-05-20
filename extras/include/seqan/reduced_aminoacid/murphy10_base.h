@@ -52,7 +52,7 @@ namespace seqan {
 // Tag Murphy10
 // -----------------------------------------------------------------------
 
-/*!
+/*
  * @tag Murphy10
  * @brief Specialization for @link ReducedAminoAcid @endlink
  *

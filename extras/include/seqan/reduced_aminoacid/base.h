@@ -52,7 +52,7 @@ namespace seqan {
 // Tag ReducedAminoAcid
 // -----------------------------------------------------------------------
 
-/*!
+/*
  * @class ReducedAminoAcid
  * @extends SimpleType
  * @brief Reduced versions of the amino acid alphabet.
