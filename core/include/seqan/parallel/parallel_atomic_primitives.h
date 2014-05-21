@@ -517,9 +517,8 @@ template <typename T>   inline T atomicPostDec(T      & x,             Serial)  
 template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
 template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
 // In serial mode, there is no other thread changing cmp except us
-//template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
+template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
 //template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
-template <typename T>   inline T atomicCas(T          & x, T, T y, Serial)          { return x = y;                  }
 template <typename T>   inline bool atomicCasBool(T   & x, T, T y, Serial)          { x = y; return true;            }
 
 template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
