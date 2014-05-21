@@ -1,0 +1,11 @@
+Name: journaled_string_tree
+Author: Rene Rahn <rene.rahn@fu-berlin.de>
+Maintainer: Rene Rahn <rene.rahn@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2014, FU Berlin
+Status: under development
+Description: Succinct data structure storing multiple similar sequences.
+ Implements the basic data strcuture to store multiple similar sequences
+ in succinct form. It also includes a traversal algorithm to conduct
+ forward iteration over the sequences simultaneously.
+ 
