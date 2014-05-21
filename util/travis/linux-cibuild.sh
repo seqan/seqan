@@ -18,7 +18,7 @@ if [ "${CXX}" == "clang++" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
-ctest -V -S util/travis/linux-cibuild.cmake
+ctest -V -S util/travis/linux-cibuild.cmake -R test_parallel
 
 # we indicate build failures if ctest experienced any errors
 if [ -f ${SOURCE_DIRECTORY}/failed ]; then
