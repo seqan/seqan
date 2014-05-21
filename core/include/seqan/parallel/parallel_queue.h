@@ -466,6 +466,7 @@ waitForWriters(ConcurrentQueue<TValue, TSpec> & me, unsigned writerCount)
 {
     while (me.writerCount < writerCount)
     {}
+    me.virgin = false;
 }
 
 /*!
@@ -485,7 +486,7 @@ template <typename TValue, typename TSpec>
 inline void
 waitForFirstValue(ConcurrentQueue<TValue, TSpec> & me)
 {
-    while (me.writerCount != 0 && me.virgin)
+    while (me.virgin)
     {}
 }
 
@@ -615,7 +616,6 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
             TIter it = begin(me.data, Standard()) + (me.tailPos & (me.roundSize - 1));
             valueConstruct(it, SEQAN_FORWARD(TValue, val));
             me.tailWritePos = me.tailPos = me.headPos + me.roundSize;
-            me.virgin = false;
             valueWasAppended = true;
         }
 
@@ -702,7 +702,6 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
                     {}
 
-                    me.virgin = false;
                     return;
                 }
             }
