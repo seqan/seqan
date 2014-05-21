@@ -142,7 +142,9 @@ void testMPMCQueue(size_t initialCapacity)
     size_t writerCount = (threadCount + 1) / 2;
     seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
 
-    SEQAN_OMP_PRAGMA(parallel)
+    SEQAN_ASSERT_GEQ(threadCount, 2);
+
+    SEQAN_OMP_PRAGMA(parallel num_threads(threadCount))
     {
         if ((omp_get_thread_num() & 1) == 0)
         {
