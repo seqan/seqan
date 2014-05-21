@@ -700,12 +700,12 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
                                             seqan::ArgParseOption::INPUTFILE, "IN.fq"));
-    setValidValues(parser, "illumina-left-template-fastq", "fq fastq");
+    setValidValues(parser, "illumina-left-template-fastq", "fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-right-template-fastq",
                                             "FASTQ file to use for a template for right-end reads.",
                                             seqan::ArgParseOption::INPUTFILE, "IN.fq"));
-    setValidValues(parser, "illumina-right-template-fastq", "fq fastq");
+    setValidValues(parser, "illumina-right-template-fastq", "fq fastq fq.gz fastq.gz");
 }
 
 // ----------------------------------------------------------------------------
@@ -1118,11 +1118,11 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq");
+    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUTFILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq");
+    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("oa", "out-alignment", "SAM/BAM file with alignments.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
@@ -1521,11 +1521,11 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq");
+    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUTFILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq");
+    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
                                             "is given."));
