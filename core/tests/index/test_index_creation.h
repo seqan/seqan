@@ -54,20 +54,20 @@ SEQAN_DEFINE_TEST(testIndexCreation)
         typedef String<char> TText;
         typedef String<unsigned> TArray;
 
-        TText	text;
-        TArray	sa;
+        TText   text;
+        TArray  sa;
         TArray  isa;
-        TArray	lcp;
-        TArray	child, childExt;
-        TText	bwt;
+        TArray  lcp;
+        TArray  child, childExt;
+        TText   bwt;
 
-        const int runs = 2;					// conduct 10 test runs
+        const int runs = 2;                     // conduct 10 test runs
         const int maxSize = 20 * 1024 * 1024;	// max text size is 20 megabyte
         bool result = true;
         (void)result;  // Is never read...
 
-        _proFloat timeDelta[12];
-        _proFloat timeSum[12];
+        _proFloat timeDelta[13];
+        _proFloat timeSum[13];
         for(int i = 0; i < 10; ++i)
             timeSum[i] = 0;
         __int64 textSum = 0;
@@ -78,9 +78,9 @@ SEQAN_DEFINE_TEST(testIndexCreation)
             "ManberMyers  ",
             "LarssonSadake",
             "SAQSort      ",
-            "SAQSortQGSR  ",
             "Skew3Ext     ",
             "Skew7Ext     ",
+            "InvSA        ",
             "Kasai        ",
             "KasaiInPlace ",
             "KasaiExt     ",
@@ -116,44 +116,44 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 //___create_suffix_array______________________________________________________
 
             resize(sa, size);
-/*          timeDelta[TI] = -SEQAN_PROGETTIME;
+            timeDelta[TI] = -SEQAN_PROGETTIME;
             createSuffixArray(sa, text, Skew3());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (internal Skew3) failed" << std::endl;
                 result = false;
             }
-*/          std::cout << "."; std::cout.flush();
+            std::cout << "."; std::cout.flush();
 
             blank(sa);
-/*          timeDelta[TI] = -SEQAN_PROGETTIME;
+            timeDelta[TI] = -SEQAN_PROGETTIME;
             createSuffixArray(sa, text, Skew7());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (internal Skew7) failed" << std::endl;
                 result = false;
             }
-*/          std::cout << "."; std::cout.flush();
+            std::cout << "."; std::cout.flush();
 
             blank(sa);
-/*          timeDelta[TI] = -SEQAN_PROGETTIME;
+            timeDelta[TI] = -SEQAN_PROGETTIME;
             createSuffixArray(sa, text, ManberMyers());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (internal ManberMyers) failed" << std::endl;
                 result = false;
             }
-*/          std::cout << "."; std::cout.flush();
+            std::cout << "."; std::cout.flush();
 
             blank(sa);
-/*          timeDelta[TI] = -SEQAN_PROGETTIME;
-            createSuffixArrayExt(sa, text, LarssonSadakane());
+            timeDelta[TI] = -SEQAN_PROGETTIME;
+            _createSuffixArrayPipelining(sa, text, LarssonSadakane());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (external LarssonSadakane) failed" << std::endl;
                 result = false;
             }
-*/          std::cout << "."; std::cout.flush();
+            std::cout << "."; std::cout.flush();
 
             blank(sa);
             timeDelta[TI] = -SEQAN_PROGETTIME;
@@ -164,8 +164,8 @@ SEQAN_DEFINE_TEST(testIndexCreation)
                 result = false;
             }
             std::cout << "."; std::cout.flush();
-/*
-            blank(sa);
+
+/*            blank(sa);
             timeDelta[TI] = -SEQAN_PROGETTIME;
             createSuffixArray(sa, text, QSQGSR(), 3);
             timeDelta[TI++] += SEQAN_PROGETTIME;
@@ -175,9 +175,9 @@ SEQAN_DEFINE_TEST(testIndexCreation)
             }
             std::cout << "."; std::cout.flush();
 */
-            //blank(sa);
-/*          timeDelta[TI] = -SEQAN_PROGETTIME;
-            createSuffixArrayExt(sa, text, Skew3());
+            blank(sa);
+            timeDelta[TI] = -SEQAN_PROGETTIME;
+            _createSuffixArrayPipelining(sa, text, Skew3());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (external Skew3) failed" << std::endl;
@@ -187,14 +187,14 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 
             blank(sa);
             timeDelta[TI] = -SEQAN_PROGETTIME;
-            createSuffixArrayExt(sa, text, Skew7());
+            _createSuffixArrayPipelining(sa, text, Skew7());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isSuffixArray(sa, text)) {
                 std::cout << "suffix array creation (external Skew7) failed" << std::endl;
                 result = false;
             }
             std::cout << "."; std::cout.flush();
-*/
+
 //___create_inverse_suffix_array______________________________________________
 
             resize(isa, size);
@@ -207,10 +207,9 @@ SEQAN_DEFINE_TEST(testIndexCreation)
             }
             std::cout << "."; std::cout.flush();
             blank(isa);
-            blank(sa);
 
 //___create_lcp_table_________________________________________________________
-/*
+
             resize(lcp, size);
             timeDelta[TI] = -SEQAN_PROGETTIME;
             createLcpTable(lcp, text, sa, KasaiOriginal());
@@ -233,7 +232,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 
             blank(lcp);
             timeDelta[TI] = -SEQAN_PROGETTIME;
-            createLcpTableExt(lcp, text, sa, Kasai());
+            _createLCPTablePipelining(lcp, text, sa, Kasai());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isLCPTable(lcp, sa, text)) {
                 std::cout << "suffix array creation (external Kasai) failed" << std::endl;
@@ -266,7 +265,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
                 std::cout << "child table creation failed" << std::endl;
                 result = false;
             }
-*/
+
 //___update_performance_table_________________________________________________
 
             for(int i=0; i<TI; ++i) {

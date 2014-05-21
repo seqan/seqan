@@ -219,35 +219,37 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 
 //____________________________________________________________________________
 
-	/*!
-	 * @fn createInvSuffixArray
-	 * @headerfile <seqan/index.h>
-	 * @brief Creates the inverse suffix array from a given suffix array.
-	 *
-	 * @signature void createInvSuffixArray(invSuffixArray, suffixArray);
-	 *
-	 * @param[out] invSuffixArray  The resulting inverse suffix array.
-	 * @param[in]  suffixArray     The precomputed suffix array for some text.
-	 *
-	 * This function should not be called directly.  Please use @link Index#indexCreate
-	 * @endlink or @link Index#indexRequire @endlink.  The size of <tt>invSuffixArray</tt> must be at
-	 * least <tt>length(suffixArray)</tt> before calling this function.
-	 *
-	 * The complexity is linear in size of the suffix array.
-	 */
+/*!
+ * @fn createInvSuffixArray
+ * @headerfile <seqan/index.h>
+ * @brief Creates the inverse suffix array from a given suffix array.
+ *
+ * @signature void createInvSuffixArray(invSuffixArray, suffixArray);
+ *
+ * @param[out] invSuffixArray  The resulting inverse suffix array.
+ * @param[in]  suffixArray     The precomputed suffix array for some text.
+ *
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The size of <tt>invSuffixArray</tt> must be at
+ * least <tt>length(suffixArray)</tt> before calling this function.
+ *
+ * The complexity is linear in size of the suffix array.
+ */
 
-	template <typename TIsa, typename TSa, typename TAlgSpec>
+    template <typename TIsa, typename TSa, typename TAlgSpec>
     inline void
     createInvSuffixArray(TIsa &isa,
                          TSa const &sa,
                          TAlgSpec const &/*alg*/)
     {
-	    typedef typename Iterator<TSa const, Standard>::Type TSaIter;
-	    SEQAN_ASSERT_EQ(length(isa), length(sa));
+        typedef typename Iterator<TSa const, Standard>::Type TSaIter;
+        typedef typename Size<TIsa>::Type TSize;
+        SEQAN_ASSERT_EQ(length(isa), length(sa));
 
-	    TSaIter itSaBegin = begin(sa, Standard());
-	    for (TSaIter itSa = itSaBegin; itSa != end(sa, Standard()); ++itSa)
-	        isa[*itSa] = itSa - itSaBegin;
+        TSaIter itSaBegin = begin(sa, Standard());
+        TSize currPos = 0u;
+        for (TSaIter itSa = itSaBegin; itSa != end(sa, Standard()); ++itSa, ++currPos)
+            isa[posGlobalize(*itSa, stringSetLimits(sa))] = currPos;
     }
 
     template <typename TIsa, typename TSa, typename TAlgSpec>

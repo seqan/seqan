@@ -39,15 +39,15 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-	// dfs order
+    // dfs order
     struct Preorder_;
     struct Postorder_;
 
-	template <typename TDfsOrder = Postorder_, typename THideEmptyEdges = True>
-	struct VSTreeIteratorTraits {
-		typedef TDfsOrder DfsOrder;
-		typedef THideEmptyEdges HideEmptyEdges;
-	};
+    template <typename TDfsOrder = Postorder_, typename THideEmptyEdges = True>
+    struct VSTreeIteratorTraits {
+        typedef TDfsOrder DfsOrder;
+        typedef THideEmptyEdges HideEmptyEdges;
+    };
 
 /**
 .Tag.DFS Order
@@ -440,17 +440,16 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 
 ///.Metafunction.Fibre.param.TSpec.type:Tag.ESA Index Fibres
 
-    typedef FibreText		EsaText;
-    typedef FibreRawText	EsaRawText;
+    typedef FibreText       EsaText;
+    typedef FibreRawText    EsaRawText;
     typedef FibreSA         EsaSA;
     typedef FibreIsa        EsaIsa;
-    typedef FibreRawSA		EsaRawSA;
-    typedef FibreSae		EsaSae;
-    typedef FibreLcp		EsaLcp;
-    typedef FibreLcpe		EsaLcpe;
-    typedef FibreChildtab	EsaChildtab;
-    typedef FibreBwt		EsaBwt;
-
+    typedef FibreRawSA      EsaRawSA;
+    typedef FibreSae        EsaSae;
+    typedef FibreLcp        EsaLcp;
+    typedef FibreLcpe       EsaLcpe;
+    typedef FibreChildtab   EsaChildtab;
+    typedef FibreBwt        EsaBwt;
 
 //////////////////////////////////////////////////////////////////////////////
 // ESA index
@@ -491,54 +490,54 @@ information of the suffix tree) are provided.
  */
 
 /*
-....already defined in index_base.h
+    already defined in index_base.h
 
-....template <typename TSpec = void>
-	struct IndexEsa;
+    template <typename TSpec = void>
+    struct IndexEsa;s
 */
 
-	template < typename TText, typename TSpec >
-	class Index<TText, IndexEsa<TSpec> > {
-	public:
+    template < typename TText, typename TSpec >
+    class Index<TText, IndexEsa<TSpec> > {
+    public:
         typename Member<Index, EsaText>::Type       text;
-		typename Fibre<Index, EsaSA>::Type          sa;			// suffix array
-		typename Fibre<Index, EsaIsa>::Type         isa;        // inverse suffix array
-		typename Fibre<Index, EsaLcp>::Type         lcp;		// longest-common-prefix table
-		typename Fibre<Index, EsaLcpe>::Type        lcpe;		// extended lcp table
-		typename Fibre<Index, EsaChildtab>::Type    childtab;	// child table (tree topology)
-		typename Fibre<Index, EsaBwt>::Type         bwt;		// burrows-wheeler table
-		typename Cargo<Index>::Type                 cargo;		// user-defined cargo
+        typename Fibre<Index, EsaSA>::Type          sa;			// suffix array
+        typename Fibre<Index, EsaIsa>::Type         isa;        // inverse suffix array
+        typename Fibre<Index, EsaLcp>::Type         lcp;		// longest-common-prefix table
+        typename Fibre<Index, EsaLcpe>::Type        lcpe;		// extended lcp table
+        typename Fibre<Index, EsaChildtab>::Type    childtab;	// child table (tree topology)
+        typename Fibre<Index, EsaBwt>::Type         bwt;		// burrows-wheeler table
+        typename Cargo<Index>::Type                 cargo;		// user-defined cargo
 
-		Index() {}
+        Index() {}
 
-		Index(Index &other):
-			text(other.text),
-			sa(other.sa),
-			isa(other.isa),
-			lcp(other.lcp),
-			lcpe(other.lcpe),
-			childtab(other.childtab),
-			bwt(other.bwt),
-			cargo(other.cargo) {}
+        Index(Index &other):
+            text(other.text),
+            sa(other.sa),
+            isa(other.isa),
+            lcp(other.lcp),
+            lcpe(other.lcpe),
+            childtab(other.childtab),
+            bwt(other.bwt),
+            cargo(other.cargo) {}
 
-		Index(Index const &other):
-			text(other.text),
-			sa(other.sa),
-			isa(other.isa),
-			lcp(other.lcp),
-			lcpe(other.lcpe),
-			childtab(other.childtab),
-			bwt(other.bwt),
-			cargo(other.cargo) {}
+        Index(Index const &other):
+            text(other.text),
+            sa(other.sa),
+            isa(other.isa),
+            lcp(other.lcp),
+            lcpe(other.lcpe),
+            childtab(other.childtab),
+            bwt(other.bwt),
+            cargo(other.cargo) {}
 
-		template <typename TText_>
-		Index(TText_ &_text):
-			text(_text) {}
+        template <typename TText_>
+        Index(TText_ &_text):
+            text(_text) {}
 
-		template <typename TText_>
-		Index(TText_ const &_text):
-			text(_text) {}
-	};
+        template <typename TText_>
+        Index(TText_ const &_text):
+            text(_text) {}
+    };
 
 //////////////////////////////////////////////////////////////////////////////
 

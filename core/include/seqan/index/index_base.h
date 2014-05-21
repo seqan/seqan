@@ -549,27 +549,27 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 //////////////////////////////////////////////////////////////////////////////
 // various fibre specs for enhanced suffix arrays
 
-	struct FibreText_;		// Original text. Can be a String or a StringSet
-	struct FibreRawText_;	// Concatenation of the strings above
-	struct FibreSA_;		// suffix array (of raw text with virtual $-delimiters) with Pair entries
-	struct FibreRawSA_;	    // suffix array with integer entries
-	struct FibreIsa_;       // inverse suffix array.
-	struct FibreSae_;		// suffix array reordered in a b-tree
-	struct FibreLcp_;		// lcp table of raw text
-	struct FibreLcpe_;		// lcp interval tree
-	struct FibreChildtab_;	// childtab (Kurtz et al.) of raw text
-	struct FibreBwt_;		// burrows wheeler table of raw text
+    struct FibreText_;      // Original text. Can be a String or a StringSet
+    struct FibreRawText_;   // Concatenation of the strings above
+    struct FibreSA_;        // suffix array (of raw text with virtual $-delimiters) with Pair entries
+    struct FibreRawSA_;     // suffix array with integer entries
+    struct FibreIsa_;       // inverse suffix array.
+    struct FibreSae_;       // suffix array reordered in a b-tree
+    struct FibreLcp_;       // lcp table of raw text
+    struct FibreLcpe_;      // lcp interval tree
+    struct FibreChildtab_;  // childtab (Kurtz et al.) of raw text
+    struct FibreBwt_;       // burrows wheeler table of raw text
 
-	typedef Tag<FibreText_> const		FibreText;
-	typedef Tag<FibreRawText_> const	FibreRawText;
-	typedef Tag<FibreSA_> const         FibreSA;
-	typedef Tag<FibreRawSA_> const		FibreRawSA;
-	typedef Tag<FibreIsa_> const        FibreIsa;
-	typedef Tag<FibreSae_> const		FibreSae;
-	typedef Tag<FibreLcp_> const		FibreLcp;
-	typedef Tag<FibreLcpe_> const		FibreLcpe;
-	typedef Tag<FibreChildtab_> const	FibreChildtab;
-	typedef Tag<FibreBwt_> const		FibreBwt;
+    typedef Tag<FibreText_> const      FibreText;
+    typedef Tag<FibreRawText_> const   FibreRawText;
+    typedef Tag<FibreSA_> const        FibreSA;
+    typedef Tag<FibreRawSA_> const     FibreRawSA;
+    typedef Tag<FibreIsa_> const       FibreIsa;
+    typedef Tag<FibreSae_> const       FibreSae;
+    typedef Tag<FibreLcp_> const       FibreLcp;
+    typedef Tag<FibreLcpe_> const      FibreLcpe;
+    typedef Tag<FibreChildtab_> const  FibreChildtab;
+    typedef Tag<FibreBwt_> const       FibreBwt;
 
 //////////////////////////////////////////////////////////////////////////////
 /**
@@ -764,17 +764,6 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 			typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type 
 		> Type;
 	};
-
-//////////////////////////////////////////////////////////////////////////////
-// inverse suffix array type
-
-    template < typename TText, typename TSpec >
-    struct Fibre< Index<TText, TSpec>, FibreIsa> {
-        typedef String<
-            typename Size<TText>::Type,
-            typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type
-        > Type;
-    };
 
 //////////////////////////////////////////////////////////////////////////////
 // lcp type
