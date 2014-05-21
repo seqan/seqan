@@ -33,7 +33,8 @@ add_executable (test_parallel
                test_parallel.cpp
                test_parallel_atomic_misc.h
                test_parallel_atomic_primitives.h
-               test_parallel_splitting.h)
+               test_parallel_splitting.h
+               test_parallel_queue.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_parallel ${SEQAN_LIBRARIES})
