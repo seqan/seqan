@@ -33,6 +33,8 @@
 // ==========================================================================
 // Thread-safe queue
 // ==========================================================================
+// TODO(weese:) We could replace the spinlocks by semaphores and suspend the
+//              waiting thread if the queue is empty or fixed-size and full.
 
 #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 #define SEQAN_PARALLEL_PARALLEL_QUEUE_H_
@@ -46,10 +48,39 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 // Class ConcurrentQueue
 // ----------------------------------------------------------------------------
-
+/*!
+ * @class ConcurrentQueue Concurrent Queue
+ * @headerfile <seqan/parallel.h>
+ * @brief Thread-safe queue for multiple producers and multiple consumers.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            class ConcurrentQueue;
+ * 
+ * @tparam TValue Element type of the queue.
+ * @tparam TSpec  Tag for further specializing the Concurrent Queue. Default is <tt>void</tt>.
+ * 
+ * The Concurrent Queue is a thread-safe FIFO queue that supports multiple producers and multiple consumers (MPMC).
+ * Elements are enqueued via @link ConcurrentQueue#appendValue @endlink and dequeued with @link 
+ * ConcurrentQueue#tryPopFront @endlink or @link ConcurrentQueue#popFront @endlink.
+ * Depending on the expansion tag of appendValue it can grow dynamically or have a fixed size.
+ *
+ * The implementation is lock-free and uses a @Class.AllocString@ as ring buffer.
+ *
+ * @section Examples
+ * 
+ * Simple example for a single producer single consumer (SPSC) dynamic queue.
+ * 
+ * @include demos/parallel/queue_example.cpp
+ *
+ * The output is:
+ *
+ * @include demos/parallel/queue_example.cpp.stdout
+ */
+ 
 template <typename TValue, typename TSpec = void>
-struct ConcurrentQueue
+class ConcurrentQueue
 {
+public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
     typedef typename Size<TString>::Type            TSize;
 
@@ -163,12 +194,34 @@ struct Size<ConcurrentQueue<TValue, TSpec> >:
 // Function lockReading() / unlockReading()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ConcurrentQueue#lockReading
+ * @brief Register a reader.
+ *
+ * @signature void lockReading(queue);
+ *
+ * @param[in] queue The queue to register a reader at.
+ *
+ * The destructor of the queue will spinlock until all readers are deregistered.
+ */
+
 template <typename TValue, typename TSpec>
 inline void
 lockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicInc(me.readerCount);
 }
+
+/*!
+ * @fn ConcurrentQueue#unlockReading
+ * @brief Deregister a reader.
+ *
+ * @signature void unlockReading(queue);
+ *
+ * @param[in] queue The queue to deregister a reader from.
+ *
+ * The destructor of the queue will spinlock until all readers are deregistered.
+ */
 
 template <typename TValue, typename TSpec>
 inline void
@@ -181,12 +234,32 @@ unlockReading(ConcurrentQueue<TValue, TSpec> & me)
 // Function lockWriting() / unlockWriting()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ConcurrentQueue#lockWriting
+ * @brief Register a writer.
+ *
+ * @signature void lockWriting(queue);
+ *
+ * @param[in] queue The queue to register a writer at.
+ *
+ */
+
 template <typename TValue, typename TSpec>
 inline void
 lockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
     atomicInc(me.writerCount);
 }
+
+/*!
+ * @fn ConcurrentQueue#unlockWriting
+ * @brief Deregister a writer.
+ *
+ * @signature void unlockWriting(queue);
+ *
+ * @param[in] queue The queue to deregister a writer from.
+ *
+ */
 
 template <typename TValue, typename TSpec>
 inline void
@@ -213,6 +286,17 @@ _cyclicInc(TValue value, TValue modulo, TValue roundSize)
 // Function empty()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ConcurrentQueue#empty
+ * @brief Returns whether a queue is empty.
+ *
+ * @signature bool empty(queue);
+ *
+ * @param[in] queue The queue to query.
+ *
+ * @return bool Whether or not the queue is empty.
+ */
+
 template <typename TValue, typename TSpec>
 inline bool
 empty(ConcurrentQueue<TValue, TSpec> const & me)
@@ -224,6 +308,17 @@ empty(ConcurrentQueue<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ConcurrentQueue#length
+ * @brief Returns the size of a queue.
+ *
+ * @signature TSize length(queue);
+ *
+ * @param[in] queue The queue to query for its size.
+ *
+ * @return TSize The number of elements in the queue.
+ */
 
 template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
@@ -243,6 +338,19 @@ length(ConcurrentQueue<TValue, TSpec> const & me)
 // Function capacity()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ConcurrentQueue#capacity
+ * @brief Returns the capacity of a queue.
+ *
+ * @signature TSize capacity(queue);
+ *
+ * @param[in] queue The queue to query for its capacity.
+ *
+ * @return TSize Returns the capacity of the queue.
+ *
+ * The capacity is the number of elements that can be enqueued at the same time without reallocating memory.
+ */
+
 template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 capacity(ConcurrentQueue<TValue, TSpec> const & me)
@@ -254,6 +362,24 @@ capacity(ConcurrentQueue<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 // Function tryPopFront()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ConcurrentQueue#tryPopFront
+ * @headerfile <seqan/parallel.h>
+ * @brief Try to dequeue a value from a queue.
+ *
+ * @signature bool tryPopFront(result, queue[, parallelTag]);
+ *
+ *
+ * @param[in,out] queue       A queue.
+ * @param[out]    result      The dequeued value (if available).
+ * @param[in]     parallelTag The concurrency scheme. If multiple threads dequeue values concurrently this tag must be
+ *                            @link ParallelismTags#Parallel @endlink. The more efficient @link ParallelismTags#Serial
+ *                            @endlink tag can only be used if one thread calls <tt>popFront</tt> at a time.
+ *                            Default is @link ParallelismTags#Parallel @endlink.
+ * @return        bool        Returns <tt>true</tt> if a value could be dequeued and <tt>false</tt> otherwise.
+ */
+
 //
 //  [  ?  ]  [  4  ]  [  3  ]  [  8  ]  [  0  ]  [  x  ]  [  ?  ]
 //                       |                          ^
@@ -319,6 +445,21 @@ tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 // Function waitForWriters()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ConcurrentQueue#waitForWriters
+ * @brief Wait for writers to register.
+ *
+ * @signature void waitForWriters(queue, writerCount);
+ *
+ * @param[in] queue       A queue.
+ * @param[in] writerCount The minimal required number of registered writers, see @link
+ *                        ConcurrentQueue#lockWriting @endlink.
+ *
+ * If the values are dequeued with @link ConcurrentQueue#popFront2 @endlink,
+ * this function is a barrier for all writers to set up completely and should be called before calling @link
+ * ConcurrentQueue#appendValue @endlink the first time.
+ */
+
 template <typename TValue, typename TSpec>
 inline void
 waitForWriters(ConcurrentQueue<TValue, TSpec> & me, unsigned writerCount)
@@ -327,17 +468,49 @@ waitForWriters(ConcurrentQueue<TValue, TSpec> & me, unsigned writerCount)
     {}
 }
 
+/*!
+ * @fn ConcurrentQueue#waitForFirstValue
+ * @brief Wait for writers to enqueue the first value.
+ *
+ * @signature void waitForFirstValue(queue);
+ *
+ * @param[in] queue       A queue.
+ *
+ * If the values are dequeued with @link ConcurrentQueue#popFront2 @endlink,
+ * this function is a barrier for all readers to wait until all writers are set up completely and should be called
+ * before calling @link ConcurrentQueue#popFront2 @endlink the first time.
+ */
+
 template <typename TValue, typename TSpec>
 inline void
 waitForFirstValue(ConcurrentQueue<TValue, TSpec> & me)
 {
-    while (me.virgin)
+    while (me.writerCount != 0 && me.virgin)
     {}
 }
 
 // ----------------------------------------------------------------------------
 // Function popFront()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ConcurrentQueue#popFront
+ * @headerfile <seqan/parallel.h>
+ * @brief Dequeue a value from a queue.
+ *
+ * @signature bool popFront(result, queue[, parallelTag]);
+ *
+ *
+ * @param[in,out] queue       A queue.
+ * @param[out]    result      The dequeued value. If the queue is empty but writers are available the thread spinlocks
+ *                            until a value becomes available.
+ * @param[in]     parallelTag The concurrency scheme. If multiple threads dequeue values concurrently this tag must be
+ *                            @link ParallelismTags#Parallel @endlink. The more efficient @link ParallelismTags#Serial
+ *                            @endlink tag can only be used if one thread calls <tt>popFront</tt> at a time.
+ *                            Default is @link ParallelismTags#Parallel @endlink.
+ * @return        bool        Returns <tt>true</tt> if a value could be dequeued or <tt>false</tt> if no writer is
+ *                            available, see @link ConcurrentQueue#waitForWriters @endlink.
+ */
 
 // returns if no writer is locked the queue and queue is empty
 template <typename TValue, typename TSpec, typename TParallel>
@@ -360,6 +533,23 @@ popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
     return popFront(result, me, Parallel());
 }
+
+/*!
+ * @fn ConcurrentQueue#popFront2
+ * @headerfile <seqan/parallel.h>
+ * @brief Dequeue a value from a queue.
+ *
+ * @signature TValue popFront(queue[, parallelTag]);
+ *
+ *
+ * @param[in,out] queue       A queue.
+ * @param[in]     parallelTag The concurrency scheme. If multiple threads dequeue values concurrently this tag must be
+ *                            @link ParallelismTags#Parallel @endlink. The more efficient @link ParallelismTags#Serial
+ *                            @endlink tag can only be used if one thread calls <tt>popFront</tt> at a time.
+ *                            Default is @link ParallelismTags#Parallel @endlink.
+ * @return        TValue      The dequeued value. If the queue is empty the thread spinlocks until a value becomes
+ *                            available.
+ */
 
 template <typename TValue, typename TSpec, typename TParallel>
 inline TValue SEQAN_FORWARD_RETURN
@@ -455,8 +645,27 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
 // ----------------------------------------------------------------------------
 // Function appendValue()
 // ----------------------------------------------------------------------------
-// the queue is growing dynamically if expandTag is Generous,
-// otherwise appendValue spinlocks until there is space to fill the value
+
+/*!
+ * @fn ConcurrentQueue#appendValue
+ * @headerfile <seqan/parallel.h>
+ * @brief Enqueue a value to a queue.
+ *
+ * @signature void appendValue(queue, val[, expandTag[, parallelTag]);
+ *
+ *
+ * @param[in,out] queue       A queue.
+ * @param[in]     val         The value to enqueue.
+ * @param[in]     expandTag   The overflow strategy. If @link OverflowStrategyTags#Generous @endlink the queue will be
+ *                            automatically resized if the capacity is exceeded, otherwise the thread spinlocks until
+ *                            the element can be enqueued.
+ *                            Default is the @link DefaultOverflowImplicit @endlink result for the <tt>queue</tt> type.
+ * @param[in]     parallelTag The concurrency scheme. If multiple threads enqueue values concurrently this tag must be
+ *                            @link ParallelismTags#Parallel @endlink. The more efficient @link ParallelismTags#Serial
+ *                            @endlink tag can only be used if one thread calls <tt>appendValue</tt> at a time.
+ *                            Default is @link ParallelismTags#Parallel @endlink.
+ */
+
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand, typename TParallel>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
