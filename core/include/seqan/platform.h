@@ -53,9 +53,24 @@
 
 // This macro defines an alias for the auto_ptr class template deprecated in C++11.
 #ifdef SEQAN_CXX11_STANDARD
-    #define SEQAN_AUTO_PTR_NAME unique_ptr
+
+    #define SEQAN_AUTO_PTR_NAME     unique_ptr
+    #define SEQAN_FORWARD_ARG       &&
+    #define SEQAN_FORWARD_CARG      &&
+    #define SEQAN_FORWARD_RETURN    &&
+    #define SEQAN_FORWARD(T, x)     std::forward<T>(x)
+    #define SEQAN_MOVE(x)           std::move(x)
+
 #else  // #ifdef SEQAN_CXX11_STANDARD
-    #define SEQAN_AUTO_PTR_NAME auto_ptr
+
+    #define SEQAN_AUTO_PTR_NAME     auto_ptr
+    #define SEQAN_FORWARD_ARG       &
+    #define SEQAN_FORWARD_CARG      const &
+    #define SEQAN_FORWARD_RETURN
+    #define SEQAN_FORWARD(T, x)     x
+    #define SEQAN_MOVE(x)           x
+
 #endif  // #ifdef SEQAN_CXX11_STANDARD
+
 
 #endif

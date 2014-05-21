@@ -46,6 +46,7 @@
 #include "test_parallel_atomic_misc.h"
 #include "test_parallel_splitting.h"
 #include "test_parallel_algorithms.h"
+#include "test_parallel_queue.h"
 
 SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
@@ -78,5 +79,16 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
     SEQAN_CALL_TEST(test_parallel_sum);
     SEQAN_CALL_TEST(test_parallel_partial_sum);
+
+    // Tests for parallel queue.
+    SEQAN_CALL_TEST(test_parallel_queue_simple);
+    SEQAN_CALL_TEST(test_parallel_queue_resize);
+#if defined(_OPENMP)
+    if (omp_get_max_threads() >= 2)
+    {
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
+    }
+#endif
 }
 SEQAN_END_TESTSUITE
