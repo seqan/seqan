@@ -142,11 +142,16 @@ void testMPMCQueue(size_t initialCapacity)
     size_t writerCount = (threadCount + 1) / 2;
     seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
 
+    std::cout << "threads: " << threadCount << std::endl;
+    std::cout << "writers: " << writerCount << std::endl;
+
     SEQAN_ASSERT_GEQ(threadCount, 2);
 
     SEQAN_OMP_PRAGMA(parallel num_threads(threadCount))
     {
-        if ((omp_get_thread_num() & 1) == 0)
+        unsigned tid = omp_get_thread_num();
+
+        if (tid < writerCount)
         {
             seqan::ScopedWriteLock<TQueue> writeLock(queue);
             // barrier for all writers to set up
@@ -156,7 +161,6 @@ void testMPMCQueue(size_t initialCapacity)
 //            {
 //                printf("start writer thread: %i\n", omp_get_thread_num());
 //            }
-            unsigned tid = omp_get_thread_num() / 2;
             for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
                 appendValue(queue, random[j], TResizeTag());
 
@@ -166,7 +170,7 @@ void testMPMCQueue(size_t initialCapacity)
 //            }
         }
 
-        if (threadCount < 2 || (omp_get_thread_num() & 1) == 1)
+        if (tid >= writerCount)
         {
             seqan::ScopedReadLock<TQueue> readLock(queue);
             // barrier for all writers to set up
@@ -192,7 +196,7 @@ void testMPMCQueue(size_t initialCapacity)
         }
     }
 //    std::cout << "len: " << length(queue) << std::endl;
-//    std::cout << "cap: " << capacity(queue) << std::endl;
+    std::cout << "cap: " << capacity(queue) << std::endl;
 //    std::cout << "pushed: " << queue.pushed << std::endl;
 //    std::cout << "popped: " << queue.popped << std::endl;
     SEQAN_ASSERT_EQ(chkSum, chkSum2);
@@ -205,7 +209,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_dynamicsize)
 
 SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_fixedsize)
 {
-    testMPMCQueue<seqan::Limit>(10u);
+    testMPMCQueue<seqan::Limit>(30u);
 }
 
 #endif  // TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_
