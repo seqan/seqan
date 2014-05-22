@@ -173,10 +173,12 @@ find(Index<THaystack, THaystackSpec> & text,
      TDelegate && delegate,
      Backtracking<TDistance, TSpec>)
 {
-    typedef Index<THaystack, THaystackSpec>         TText;
-    typedef Index<TNeedle, TNeedleSpec>             TPattern;
-    typedef Backtracking<TDistance, TSpec>          TAlgorithm;
-    typedef Finder_<TText, TPattern, TAlgorithm>    TFinder;
+    typedef typename If<IsSameType<TDistance, Exact>,
+                        HammingDistance, TDistance>::Type   TDistance_;
+    typedef Backtracking<TDistance_, TSpec>                 TAlgorithm;
+    typedef Index<THaystack, THaystackSpec>                 TText;
+    typedef Index<TNeedle, TNeedleSpec>                     TPattern;
+    typedef Finder_<TText, TPattern, TAlgorithm>            TFinder;
 
     TFinder finder;
 
