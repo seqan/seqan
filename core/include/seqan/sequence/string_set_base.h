@@ -1381,6 +1381,28 @@ maxLength(StringSet<TString, TSpec> const & me)
 }
 
 // --------------------------------------------------------------------------
+// Function minLength()
+// --------------------------------------------------------------------------
+// Returns the length of the shortest string in the set.
+
+template <typename TString, typename TSpec, typename TParallel>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+minLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
+{
+    typedef StringSet<TString, TSpec>               TStringSet;
+    typedef typename Value<TStringSet const>::Type  TValue;
+
+    return empty(me) : 0 ? length(minElement(me, LengthLess<TValue>(), tag));
+}
+
+template <typename TString, typename TSpec>
+inline typename Size<StringSet<TString, TSpec> const>::Type
+minLength(StringSet<TString, TSpec> const & me)
+{
+    return minLength(me, Serial());
+}
+
+// --------------------------------------------------------------------------
 // Function lengthSum()
 // --------------------------------------------------------------------------
 
