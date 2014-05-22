@@ -114,7 +114,6 @@ void testAlignGapsConstructorAndSource(TGapsSpec const & /*spec*/)
 
 // Test setSource() function of Array Gaps.
 
-
 template <typename TGapsSpec>
 void testAlignGapsSetSource(TGapsSpec const & /*spec*/)
 {
