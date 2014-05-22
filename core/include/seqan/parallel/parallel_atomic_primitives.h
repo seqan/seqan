@@ -519,7 +519,7 @@ template <typename T>   inline T atomicXor(T          & x, T y,        Serial)  
 // In serial mode, there is no other thread changing cmp except us
 template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
 //template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
-template <typename T>   inline bool atomicCasBool(T   & x, T, T y, Serial)          { x = y; return true;            }
+template <typename T>   inline bool atomicCasBool(T volatile & x, T, T y, Serial)   { x = y; return true;            }
 
 template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
 template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
