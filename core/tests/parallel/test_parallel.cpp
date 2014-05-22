@@ -86,6 +86,8 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
     if (omp_get_max_threads() >= 2)
     {
+        SEQAN_CALL_TEST(test_parallel_queue_spsc_dynamicsize);
+        SEQAN_CALL_TEST(test_parallel_queue_spsc_fixedsize);
         SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
         SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
     }
