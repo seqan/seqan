@@ -138,8 +138,6 @@ char const TranslateTableByteToRedAA_<
     21
 };
 
-
-
 // ---------------------------------- N = 22 ------------------------------
 
 template <>
@@ -226,8 +224,6 @@ char const TranslateTableByteToRedAA_<
     20
 };
 
-
-
 // ---------------------------------- N = 21 ------------------------------
 
 template <>
@@ -313,8 +309,6 @@ char const TranslateTableByteToRedAA_<
     19
 };
 
-
-
 // ---------------------------------- N = 20 ------------------------------
 
 template <>
@@ -399,8 +393,6 @@ char const TranslateTableByteToRedAA_<
     18
 };
 
-
-
 // ---------------------------------- N = 19 ------------------------------
 
 template <>
@@ -484,8 +476,6 @@ char const TranslateTableByteToRedAA_<
     17
 };
 
-
-
 // ---------------------------------- N = 18 ------------------------------
 
 template <>
@@ -568,8 +558,6 @@ char const TranslateTableByteToRedAA_<
     16
 };
 
-
-
 // ---------------------------------- N = 17 ------------------------------
 
 template <>
@@ -651,8 +639,6 @@ char const TranslateTableByteToRedAA_<
     15
 };
 
-
-
 // ---------------------------------- N = 16 ------------------------------
 
 template <>
@@ -733,8 +719,6 @@ char const TranslateTableByteToRedAA_<
     14
 };
 
-
-
 // ---------------------------------- N = 15 ------------------------------
 
 template <>
@@ -814,8 +798,6 @@ char const TranslateTableByteToRedAA_<
     13
 };
 
-
-
 // ---------------------------------- N = 14 ------------------------------
 
 template <>
@@ -894,8 +876,6 @@ char const TranslateTableByteToRedAA_<
     10
 };
 
-
-
 // ---------------------------------- N = 13 ------------------------------
 
 template <>
@@ -973,8 +953,6 @@ char const TranslateTableByteToRedAA_<
      9
 };
 
-
-
 // ---------------------------------- N = 12 ------------------------------
 
 template <>
@@ -1051,8 +1029,6 @@ char const TranslateTableByteToRedAA_<
      9
 };
 
-
-
 // ---------------------------------- N = 11 ------------------------------
 
 template <>
@@ -1128,8 +1104,6 @@ char const TranslateTableByteToRedAA_<
      9
 };
 
-
-
 // ---------------------------------- N = 10 ------------------------------
 
 template <>
@@ -1204,8 +1178,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 9 ------------------------------
 
 template <>
@@ -1279,8 +1251,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 8 ------------------------------
 
 template <>
@@ -1353,8 +1323,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 7 ------------------------------
 
 template <>
@@ -1426,8 +1394,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 6 ------------------------------
 
 template <>
@@ -1498,8 +1464,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 5 ------------------------------
 
 template <>
@@ -1569,8 +1533,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 4 ------------------------------
 
 template <>
@@ -1639,8 +1601,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 3 ------------------------------
 
 template <>
@@ -1707,8 +1667,6 @@ char const TranslateTableByteToRedAA_<
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0
 };
-
-
 
 // ---------------------------------- N = 2 ------------------------------
 
@@ -1780,6 +1738,5 @@ char const TranslateTableByteToRedAA_<
 // ============================================================================
 
 }
-
 
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_CLUSTER_RED_TABLES_24_to_n_B62_H_

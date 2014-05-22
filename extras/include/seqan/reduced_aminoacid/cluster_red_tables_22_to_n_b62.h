@@ -136,8 +136,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 20 ------------------------------
 
 template <>
@@ -222,8 +220,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 19 ------------------------------
 
 template <>
@@ -307,8 +303,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 18 ------------------------------
 
 template <>
@@ -391,8 +385,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 17 ------------------------------
 
 template <>
@@ -474,8 +466,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 16 ------------------------------
 
 template <>
@@ -556,8 +546,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 15 ------------------------------
 
 template <>
@@ -637,8 +625,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 14 ------------------------------
 
 template <>
@@ -717,8 +703,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 13 ------------------------------
 
 template <>
@@ -796,8 +780,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 12 ------------------------------
 
 template <>
@@ -874,8 +856,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 11 ------------------------------
 
 template <>
@@ -951,8 +931,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 10 ------------------------------
 
 template <>
@@ -1027,8 +1005,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 9 ------------------------------
 
 template <>
@@ -1102,8 +1078,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 8 ------------------------------
 
 template <>
@@ -1176,8 +1150,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 7 ------------------------------
 
 template <>
@@ -1249,8 +1221,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 6 ------------------------------
 
 template <>
@@ -1321,8 +1291,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 5 ------------------------------
 
 template <>
@@ -1392,8 +1360,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 4 ------------------------------
 
 template <>
@@ -1462,8 +1428,6 @@ char const TranslateTableByteToRedAA_<
      0
 };
 
-
-
 // ---------------------------------- N = 3 ------------------------------
 
 template <>
@@ -1530,8 +1494,6 @@ char const TranslateTableByteToRedAA_<
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0
 };
-
-
 
 // ---------------------------------- N = 2 ------------------------------
 
@@ -1602,7 +1564,6 @@ char const TranslateTableByteToRedAA_<
 // ============================================================================
 // Functions
 // ============================================================================
-
 
 } // namespace
 
