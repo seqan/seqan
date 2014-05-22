@@ -708,15 +708,14 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 // Function indexCreate()
 // ----------------------------------------------------------------------------
 
-template <typename TTextSpec, typename TSSetSpec, typename TSpec>
-inline bool indexCreate(Index<StringSet<TTextSpec, TSSetSpec>, TSpec> & index, FibreSA, Trie)
+template <typename TText, typename TSpec>
+inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 {
-    typedef StringSet<TTextSpec, TSSetSpec>         TText;
     typedef Index<TText, TSpec>                     TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type   TSA;
     typedef typename Value<TSA>::Type               TSAValue;
-    typedef QGramLess_<TSAValue, TText const>       TLess;
     typedef typename Size<TText>::Type              TSize;
+    typedef QGramLess_<TSAValue, TText const>       TLess;
 
     TText const & text = indexText(index);
     TSA & sa = indexSA(index);
