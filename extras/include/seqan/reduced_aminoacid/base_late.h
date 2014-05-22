@@ -39,7 +39,6 @@
 
 namespace seqan {
 
-
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -71,7 +70,6 @@ unknownValueImpl(ReducedAminoAcid<TRedSpec> *)
 // Function assign()
 // -----------------------------------------------------------------------
 
-
 template <typename TRedSpec>
 inline void assign(char & c_target, ReducedAminoAcid<TRedSpec> const & source)
 {
@@ -101,7 +99,6 @@ inline void assign(ReducedAminoAcid<TRedSpec> & target, Unicode c_source)
 {
     target.value = TranslateTableAsciiToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
 }
-
 
 }
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_LATE_H_

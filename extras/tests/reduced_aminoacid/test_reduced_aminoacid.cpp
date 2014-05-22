@@ -36,9 +36,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-// #include <seqan/file.h>
-
-#define SEQAN_CXX11_STANDARD
 
 #include "test_reduced_aminoacid.h"
 
