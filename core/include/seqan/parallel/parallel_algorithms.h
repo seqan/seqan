@@ -381,6 +381,7 @@ template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::max_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -388,6 +389,7 @@ template <typename TContainer, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::max_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -399,6 +401,7 @@ template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::min_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -406,6 +409,7 @@ template <typename TContainer, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::min_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -515,6 +519,7 @@ template <typename TContainer, typename TUnaryPredicate>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, TUnaryPredicate p, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::max_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -522,6 +527,7 @@ template <typename TContainer>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::max_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -533,6 +539,7 @@ template <typename TContainer, typename TUnaryPredicate>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, TUnaryPredicate p, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::min_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -540,6 +547,7 @@ template <typename TContainer>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::min_element(begin(c, Standard()), end(c, Standard())));
 }
 
