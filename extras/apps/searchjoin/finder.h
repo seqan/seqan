@@ -121,8 +121,8 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>
 
     typedef Backtracking<HammingDistance, Bottom>               TBacktrackingExt;
     typedef Backtracking<EditDistance, Bottom>                  TBacktrackingApx;
-    typedef Finder2<TIndex, TIndex, TBacktrackingExt>           TFinderExt;
-    typedef Finder2<TIndex, TIndex, TBacktrackingApx>           TFinderApx;
+    typedef Finder_<TIndex, TIndex, TBacktrackingExt>           TFinderExt;
+    typedef Finder_<TIndex, TIndex, TBacktrackingApx>           TFinderApx;
     typedef String<TFinderApx>                                  TFindersApx;
     typedef String<TFinderExt>                                  TFindersExt;
 
@@ -234,12 +234,12 @@ struct PatternIterator_<TDbGeoSaHuge, TDbGeoSaHuge, Backtracking<TDistance, TSpe
 namespace seqan {
 
 // ----------------------------------------------------------------------------
-// Function _inTerminalState()                          [Finder2<Backtracking>]
+// Function _inTerminalState()                          [Finder_<Backtracking>]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
+_inTerminalState(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                  StageFinal_ const & /* tag */)
 {
     return _inActiveState(finder, StageFinal_());
@@ -247,31 +247,31 @@ _inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternI
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
+_inTerminalState(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                  StageLower_ const & /* tag */)
 {
     return _inActiveState(finder, StageLower_());
 }
 
 // ----------------------------------------------------------------------------
-// Function _moveToNextStage()                          [Finder2<Backtracking>]
+// Function _moveToNextStage()                          [Finder_<Backtracking>]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
+_moveToNextStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
                  StageLower_ const & /* tag */)
 {
     return false;
 }
 
 // ----------------------------------------------------------------------------
-// Function _stayInCurrentStage()                       [Finder2<Backtracking>]
+// Function _stayInCurrentStage()                       [Finder_<Backtracking>]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                     StageInitial_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageInitial_());
@@ -279,7 +279,7 @@ _stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                     StageExact_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageExact_());
@@ -287,7 +287,7 @@ _stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageInitial_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageInitial_());
@@ -295,7 +295,7 @@ _stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageUpper_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageUpper_());
@@ -303,7 +303,7 @@ _stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageDiagonal_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageDiagonal_());
@@ -311,7 +311,7 @@ _stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
+_stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
                     StageLower_ const & /* tag */)
 {
     return true;
@@ -397,7 +397,7 @@ void prepare(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> &, Db<TText
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate, typename TSpec, typename TBacktracking>
 inline void
 onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder,
-       Finder2<TIndex, TIndex, TBacktracking> const & finder)
+       Finder_<TIndex, TIndex, TBacktracking> const & finder)
 {
     typedef typename TextIterator_<TIndex, TIndex, TBacktracking>::Type     TTextIterator;
     typedef typename PatternIterator_<TIndex, TIndex, TBacktracking>::Type  TPatternIterator;
@@ -493,13 +493,13 @@ _validHit(DbFinder<TText, TIndex, Query, TDelegate, TSpec> const & dbFinder,
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 inline void
 onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
-       Finder2<TIndex, TIndex, Backtracking<EditDistance, Top> > const & finder)
+       Finder_<TIndex, TIndex, Backtracking<EditDistance, Top> > const & finder)
 {
     typedef Backtracking<EditDistance, Bottom>                          TBacktracking;
-    typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
+    typedef Finder_<TIndex, TIndex, TBacktracking>                      TFinder;
 
     TFinder finderBottom;
-    setScoreThreshold(finderBottom, finder.maxScore);
+    _setScoreThreshold(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
     appendValue(finderBottom.scoreStack, back(finder.scoreStack));
@@ -511,13 +511,13 @@ onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 inline void
 onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
-       Finder2<TIndex, TIndex, Backtracking<HammingDistance, Top> > const & finder)
+       Finder_<TIndex, TIndex, Backtracking<HammingDistance, Top> > const & finder)
 {
     typedef Backtracking<HammingDistance, Bottom>                       TBacktracking;
-    typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
+    typedef Finder_<TIndex, TIndex, TBacktracking>                      TFinder;
 
     TFinder finderBottom;
-    setScoreThreshold(finderBottom, finder.maxScore);
+    _setScoreThreshold(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
     appendValue(finderBottom.scoreStack, back(finder.scoreStack));
@@ -535,8 +535,8 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 {
     typedef Backtracking<EditDistance>                                          TBacktrackingApx;
     typedef Backtracking<HammingDistance>                                       TBacktrackingExt;
-    typedef Finder2<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
-    typedef Finder2<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
+    typedef Finder_<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
+    typedef Finder_<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
     typedef typename TextIterator_<TIndex, TIndex, TBacktrackingApx>::Type      TTextIterator;
     typedef typename PatternIterator_<TIndex, TIndex, TBacktrackingApx>::Type   TPatternIterator;
 
@@ -554,7 +554,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = dbFinder.queryIndex.seedLength;
 
-        setScoreThreshold(finderExt, 0);
+        _setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
@@ -571,7 +571,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = dbFinder.queryIndex.seedLength;
 
-        setScoreThreshold(finderApx, seedErrors);
+        _setScoreThreshold(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
         _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
@@ -589,10 +589,10 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
     typedef Backtracking<HammingDistance, Top>                                  TBacktrackingExt;
     typedef Backtracking<EditDistance, Bottom>                                  TBacktrackingApxBottom;
     typedef Backtracking<HammingDistance, Bottom>                               TBacktrackingExtBottom;
-    typedef Finder2<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
-    typedef Finder2<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
-    typedef Finder2<TIndex, TIndex, TBacktrackingApxBottom>                     TFinderApxBottom;
-    typedef Finder2<TIndex, TIndex, TBacktrackingExtBottom>                     TFinderExtBottom;
+    typedef Finder_<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
+    typedef Finder_<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
+    typedef Finder_<TIndex, TIndex, TBacktrackingApxBottom>                     TFinderApxBottom;
+    typedef Finder_<TIndex, TIndex, TBacktrackingExtBottom>                     TFinderExtBottom;
     typedef typename TextIterator_<TIndex, TIndex, TBacktrackingApx>::Type      TTextIterator;
     typedef typename PatternIterator_<TIndex, TIndex, TBacktrackingApx>::Type   TPatternIterator;
 
@@ -610,7 +610,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
         
-        setScoreThreshold(finderExt, 0);
+        _setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
@@ -627,7 +627,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
 
-        setScoreThreshold(finderApx, seedErrors);
+        _setScoreThreshold(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
         _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
