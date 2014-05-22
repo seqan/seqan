@@ -1370,7 +1370,7 @@ maxLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Value<TStringSet const>::Type  TValue;
 
-    return length(maxElement(me, LengthLess<TValue>(), tag));
+    return empty(me) : 0 ? length(maxElement(me, LengthLess<TValue>(), tag));
 }
 
 template <typename TString, typename TSpec>
