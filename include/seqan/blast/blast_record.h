@@ -46,10 +46,8 @@ namespace seqan {
  * @signature struct BlastMatch<TQId, TSId, TPos, TAlign> { ... };
  * @brief An object to hold data members of a blast-match.
  *
- * @tparam TQId  Type of qId, defaults to @link CharString @endlink (but Segment
- * might also make sense)
- * @tparam TSId  Type of sId, defaults to @link CharString @endlink (but Segment
- * might also make sense)
+ * @tparam TQId  Type of qId, defaults to @link CharString @endlink
+ * @tparam TSId  Type of sId, defaults to @link CharString @endlink
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>

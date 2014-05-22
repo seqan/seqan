@@ -56,8 +56,12 @@ namespace seqan {
 /*!
  * @enum BlastFormatFile
  * @brief Enum with BLAST file format specs
+ * @signature enum class BlastFormatFile : uint8_t { ... };
  *
  * @headerfile seqan/blast.h
+ *
+ * SeqAn can currently write Pairwise, Tabular and TabularWithHeader. It can
+ * read Tabular and TabularWithHeader.
  *
  * @val BlastFormatFile BlastFormatFile::Pairwise;
  * @brief default blast output (blastall -m 0 &amp; blast* -outfmt 0)
@@ -97,11 +101,6 @@ namespace seqan {
  *
  * @val BlastFormatFile BlastFormatFile::BlastArASN1;
  * @brief Blast Archive Format, Abstract Syntax Notation One (blast* -outfmt 11, not available in traditional BLAST)
- *
- * @section Remarks
- *
- * SeqAn can currently write Pairwise, Tabular and TabularWithHeader. It can
- * read Tabular and TabularWithHeader.
  */
 
 enum class BlastFormatFile : uint8_t
@@ -120,12 +119,13 @@ enum class BlastFormatFile : uint8_t
     BinASN1 = 11,                  // only available in Generation==Blast+
     CSV = 12,                      // only available in Generation==Blast+
     BlastArASN1 = 13,              // only available in Generation==Blast+
-    INVALID_M=255
+    INVALID_File=255
 };
 
 /*!
  * @enum BlastFormatProgram
  * @brief Enum with BLAST program spec
+ * @signature enum class BlastFormatProgram : uint8_t { ... };
  *
  * @headerfile seqan/blast.h
  *
@@ -158,6 +158,7 @@ enum class BlastFormatProgram : uint8_t
 /*!
  * @enum BlastFormatGeneration
  * @brief Enum with BLAST program generation
+ * @signature enum class BlastFormatGeneration : uint8_t { ... };
  *
  * @headerfile seqan/blast.h
  *
@@ -330,23 +331,13 @@ getBlastProgramType(AminoAcid const &, Dna5 const &)
  * @defgroup BlastScoringScheme
  * @brief functions for converting to and from Blast's scoring-scheme behaviour
  *
- * @fn seqanScoringScheme2blastScoringScheme
- * @signature seqanScoringScheme2blastScoringScheme(scoringScheme)
- * @brief convert to Blast's behaviour
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- *
- * @fn blastScoringScheme2seqanScoringScheme
- * @signature blastScoringScheme2seqanScoringScheme(scoringScheme)
- * @brief convert from Blast's behaviour
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- *
  * Blast (and many other tools) compute scores of a stretch of gaps as
  * <tt>s = gO + n * gE</tt>
  * where gO is the gapOpen score, gE is the gap extend score and n ist the
  * total number of gaps.
  *
  * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>. The
- * above functions convert between the behaviours by adjusting the
+ * functions below convert between the behaviours by adjusting the
  * gapOpen score.
  *
  * For more information, see <a href="https://trac.seqan.de/ticket/1091">https://trac.seqan.de/ticket/1091</a>.
@@ -354,6 +345,17 @@ getBlastProgramType(AminoAcid const &, Dna5 const &)
  * Please note that independent of this issue, SeqAn always works with
  * scores, never with penalties, i.e. a penalty is represented by a negative
  * score.
+ *
+ * @fn BlastScoringScheme#seqanScoringScheme2blastScoringScheme
+ * @signature void seqanScoringScheme2blastScoringScheme(scoringScheme);
+ * @brief convert to Blast's behaviour
+ * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
+ *
+ * @fn BlastScoringScheme#blastScoringScheme2seqanScoringScheme
+ * @signature void blastScoringScheme2seqanScoringScheme(scoringScheme);
+ * @brief convert from Blast's behaviour
+ * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
+ *
  */
 
 template <typename TValue, typename TSpec>
