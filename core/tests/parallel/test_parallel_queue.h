@@ -218,6 +218,26 @@ SEQAN_DEFINE_TEST(test_parallel_queue_spsc_fixedsize)
     testMPMCQueue<seqan::Limit, seqan::Serial, seqan::Serial>(30u);
 }
 
+SEQAN_DEFINE_TEST(test_parallel_queue_spmc_dynamicsize)
+{
+    testMPMCQueue<seqan::Generous, seqan::Parallel, seqan::Serial>(0u);
+}
+
+SEQAN_DEFINE_TEST(test_parallel_queue_spmc_fixedsize)
+{
+    testMPMCQueue<seqan::Limit, seqan::Parallel, seqan::Serial>(30u);
+}
+
+SEQAN_DEFINE_TEST(test_parallel_queue_mpsc_dynamicsize)
+{
+    testMPMCQueue<seqan::Generous, seqan::Serial, seqan::Parallel>(0u);
+}
+
+SEQAN_DEFINE_TEST(test_parallel_queue_mpsc_fixedsize)
+{
+    testMPMCQueue<seqan::Limit, seqan::Serial, seqan::Parallel>(30u);
+}
+
 SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_dynamicsize)
 {
     testMPMCQueue<seqan::Generous, seqan::Parallel, seqan::Parallel>(0u);
