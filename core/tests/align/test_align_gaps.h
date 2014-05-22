@@ -1221,6 +1221,8 @@ void testAlignGapsSourceIsNothing(TGapsSpec const & /*spec*/)
     }
 }
 
+
+
 // ==========================================================================
 // Tests for Array Gaps
 // ==========================================================================
@@ -1407,6 +1409,35 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_is_nothing)
     testAlignGapsSourceIsNothing(TTag());
 }
 
+SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
+{
+    using namespace seqan;
+
+    Gaps<CharString, ArrayGaps > gaps;
+
+    assignSource(gaps, "FOO BAR BAX");
+
+    setClippedEndPosition(gaps, 10);
+    setClippedBeginPosition(gaps, 1);
+    insertGaps(gaps, 1, 2);
+
+    {
+        std::stringstream ss;
+        ss << gaps;
+        SEQAN_ASSERT_EQ(ss.str(), "O--O BAR BA");
+    }
+
+    clear(gaps);
+
+    SEQAN_ASSERT_EQ(gaps._source.data_state,
+                    (Holder<CharString, Tristate>::EMPTY));
+    SEQAN_ASSERT_EQ(length(gaps._array), 0);
+    SEQAN_ASSERT_EQ(gaps._sourceBeginPos, 0);
+    SEQAN_ASSERT_EQ(gaps._sourceEndPos, 0);
+    SEQAN_ASSERT_EQ(gaps._clippingBeginPos, 0);
+    SEQAN_ASSERT_EQ(gaps._clippingEndPos, 0);
+
+}
 // ==========================================================================
 // Tests for Anchor Gaps
 // ==========================================================================
@@ -1594,5 +1625,35 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_clipping)
 //     typedef AnchorGaps<> TTag;
 //     testAlignGapsSourceIsNothing(TTag());
 // }
+
+SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear)
+{
+    using namespace seqan;
+
+    Gaps<CharString, AnchorGaps<> > gaps;
+
+    assignSource(gaps, "FOO BAR BAX");
+
+    setClippedEndPosition(gaps, 10);
+    setClippedBeginPosition(gaps, 1);
+    insertGaps(gaps, 1, 2);
+
+    {
+        std::stringstream ss;
+        ss << gaps;
+        SEQAN_ASSERT_EQ(ss.str(), "O--O BAR BA");
+    }
+
+    clear(gaps);
+
+    SEQAN_ASSERT_EQ(gaps.data_source.data_state,
+                    (Holder<CharString, Tristate>::EMPTY));
+    SEQAN_ASSERT_EQ(gaps.data_gaps.data_state,
+                    (Holder<String<GapAnchor<unsigned int> >, Tristate>::EMPTY));
+    SEQAN_ASSERT_EQ(gaps.data_cutBegin,     0);
+    SEQAN_ASSERT_EQ(gaps.data_cutEnd,       0);
+    SEQAN_ASSERT_EQ(gaps.data_viewCutBegin, 0);
+    SEQAN_ASSERT_EQ(gaps.data_viewCutEnd,   0);
+}
 
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
