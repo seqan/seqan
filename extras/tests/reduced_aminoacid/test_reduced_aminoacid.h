@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,14 +45,11 @@
 
 using namespace seqan;
 
-
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
 {
-
     typedef ReducedAminoAcid<ClusterReduction<8> >  ReducedAminoAcid24to8;
     typedef ReducedAminoAcid<ClusterReduction<10> > ReducedAminoAcid24to10;
     typedef ReducedAminoAcid<ClusterReduction<12> > ReducedAminoAcid24to12;
-
 
     CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
     String<AminoAcid> aas = "ARNDCQEGHILKMFPSTWYVBZX*";
@@ -90,9 +87,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
 {
-
     typedef ReducedAminoAcid<Murphy10> ReducedAminoAcidMurphy10;
-
 
     CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
     String<AminoAcid> aas = "ARNDCQEGHILKMFPSTWYVBZX*";
