@@ -52,10 +52,11 @@ namespace seqan {
 // Tag ReducedAminoAcid
 // -----------------------------------------------------------------------
 
-/*
+/*!
  * @class ReducedAminoAcid
  * @extends SimpleType
  * @brief Reduced versions of the amino acid alphabet.
+ * @headerfile seqan/reduced_aminoacid.h
  *
  * @signature template <typename TReductionSpec>
  * using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TReductionSpec> >;
@@ -65,24 +66,17 @@ namespace seqan {
  *
  * @section Remarks
  *
- * This module is only available in C++11 and when SEQAN_CXX11_STANDARD is
- * defined.
+ * This module requires C++11
  *
  * @see ClusterReduction
- *
  * @see Murphy10
- *
- * @headerfile seqan/reduced_aminoacid.h
  */
-
-
 
 template <typename TRedSpec>
 struct ReducedAminoAcid_ {};
 
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
-
 
 // ============================================================================
 // Metafunctions
@@ -148,7 +142,6 @@ struct TranslateTableRedAAToAscii_
 // ============================================================================
 // Functions
 // ============================================================================
-
 
 }
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_H_

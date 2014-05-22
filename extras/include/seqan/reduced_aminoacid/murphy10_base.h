@@ -39,7 +39,6 @@
 
 namespace seqan {
 
-
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -52,27 +51,22 @@ namespace seqan {
 // Tag Murphy10
 // -----------------------------------------------------------------------
 
-/*
+/*!
  * @tag Murphy10
- * @brief Specialization for @link ReducedAminoAcid @endlink
+ * @brief Specialization for @link ReducedAminoAcid @endlink#
+ * @headerfile seqan/reduced_aminoacid.h
  *
  * @signature typedef Murphy10 Tag<Murphy10_>;
- *
- * @section Remarks
- * @subsection Background
  *
  * This is the 10-character reduction defined by Murphy et al,
  * 2000, <a href="http://www.ncbi.nlm.nih.gov/pubmed/10775656">http://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
  *
- * This alphabet is used by many tools, e.g. Rapsearch2.
+ * This alphabet is used by many tools, e.g. Rapsearch2, Lambda, UBlast.
  *
  * It looks like this :
  *
  * A, (R, K), (N, D, Q, E), C, G, H, (I, L, M, V), (F, W, Y), P, (S, T)
- *
- * @headerfile seqan/reduced_aminoacid.h
  */
-
 
 struct Murphy10_ {};
 
@@ -117,7 +111,6 @@ struct TranslateTableRedAAToAscii_<Murphy10 >
 // ============================================================================
 // Functions
 // ============================================================================
-
 
 }
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_MURPHY10_BASE_H_

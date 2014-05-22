@@ -39,7 +39,6 @@
 
 namespace seqan {
 
-
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -52,9 +51,10 @@ namespace seqan {
 // Tag ClusterReduction
 // -----------------------------------------------------------------------
 
-/*
- * @tag ClusterReduction
+/*!
+ * @class ClusterReduction
  * @brief Specialization for @link ReducedAminoAcid @endlink
+ * @headerfile seqan/reduced_aminoacid.h
  *
  * @signature template <unsigned char n, unsigned char m = 24, typename TMatrix = Blosum62>
  * using ClusterReduction = Tag<ClusterReduction_<n, m, TMatrix> >;
@@ -63,11 +63,9 @@ namespace seqan {
  * @tparam m size to truncate alphabet to, <b>before</b> clustering
  * (one of 20, 22, 24; default 24)
  * @tparam TMatrix Matrix used for clustering (default @link Blosum62 @endlink,
- * none other upported right now)
+ * none other supported right now)
  *
- * @section Remarks
- *
- * @subsection WhenToUse
+ * @section WhenToUse
  *
  * Use m = 24 when you expect 'X' and '*' in the dataset you reduce
  * from. This is especially the case on translated genomic reads.
@@ -76,7 +74,7 @@ namespace seqan {
  * m = 22, which will not include special characters (see
  * @link AminoAcid @endlink for details).
  *
- * @subsection Background
+ * @section Background
  *
  * The method employed for reducing the alphabet is similar to Murphy et al,
  * 2000, <a href="http://www.ncbi.nlm.nih.gov/pubmed/10775656">http://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
@@ -86,9 +84,12 @@ namespace seqan {
  * UPGMA as second criterium when WPGMA yields the same
  * distance between two clusters).
  *
- * [PLACEHOLDER FOR FIGURE]
+ * <img src="ClusterReduction.png">
  *
- * @headerfile seqan/reduced_aminoacid.h
+ * The exact clustering for m = 24.
+ *
+ * TODO change the definition to be "tag" as soon as dox can cope with templated tags.
+ * This should work (http://trac.seqan.de/changeset/14497), but it doesn't.
  */
 
 template <unsigned char n, unsigned char m, typename TMatrix>
@@ -96,7 +97,6 @@ struct ClusterReduction_;
 
 template <unsigned char n, unsigned char m = 24, typename TMatrix = Blosum62>
 using ClusterReduction = Tag<ClusterReduction_<n, m, TMatrix> >;
-
 
 // ============================================================================
 // Metafunctions
@@ -137,7 +137,6 @@ struct TranslateTableRedAAToAscii_<ClusterReduction<n,m,TMatrix> >
 // ============================================================================
 // Functions
 // ============================================================================
-
 
 }
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_CLUSTER_RED_BASE_H_
