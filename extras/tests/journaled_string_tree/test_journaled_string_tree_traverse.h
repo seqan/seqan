@@ -80,14 +80,17 @@ struct DummyDelegator_
 #ifdef TEST_DEBUG_OUTPUT
         std::cerr << "position(traverser): ";
 #endif
-        TPosVec posVec = positions(traverser);
-        for (unsigned i = 0; i < length(posVec); ++i)
+        SEQAN_OMP_PRAGMA(critical(pos))
         {
+            TPosVec posVec = positions(traverser);
+            for (unsigned i = 0; i < length(posVec); ++i)
+            {
 #ifdef TEST_DEBUG_OUTPUT
             std::cerr << "("<< posVec[i].i1 << ", " <<  posVec[i].i2 << ")" << "; ";
 #endif
-            appendValue(_processedSeq[posVec[i].i1],
-                        value(stringSet(container(traverser)), posVec[i].i1)[posVec[i].i2]);
+                appendValue(_processedSeq[posVec[i].i1],
+                            value(stringSet(container(traverser)), posVec[i].i1)[posVec[i].i2]);
+            }
         }
 #ifdef TEST_DEBUG_OUTPUT
         std::cerr << std::endl;
@@ -205,12 +208,14 @@ void _printDebugInfo(TMock const & mockGen, TTester const & dpTester, TSize cons
         << prefix(mockGen._seqData[i], length(mockGen._seqData[i]) - (windowSize - 1)) << "\n" << std::endl;
 }
 
+template <typename TParallelTag>
 bool _runTestForConfiguration(unsigned posConf,
                               unsigned varConf,
                               unsigned covConf,
                               unsigned refLength,
                               unsigned windowSize,
-                              seqan::StringTreeDefault const & /*stringTreeTag*/)
+                              seqan::StringTreeDefault const & /*stringTreeTag*/,
+                              TParallelTag /*tag*/)
 {
     using namespace seqan;
 
@@ -220,7 +225,7 @@ bool _runTestForConfiguration(unsigned posConf,
     typedef String<String<bool, Packed<> > > TCovData;
     typedef MockGenerator_<unsigned, char> TMockGenerator;
 
-    typedef TMockGenerator::TStringTree TStringTree;
+    typedef typename TMockGenerator::TStringTree TStringTree;
     typedef JstTraverser<TStringTree, Nothing, JstTraverserSpec<> > TTraverser;
     typedef DummyCaller_<TStringTree> TDummyCaller;
 
@@ -240,7 +245,7 @@ bool _runTestForConfiguration(unsigned posConf,
     TTraverser traverser(jst, windowSize);
     TDummyCaller dummyCaller(jst);
 
-    traverse(dummyCaller, seqAppender, traverser);
+    traverse(dummyCaller, seqAppender, traverser, TParallelTag());
 
     bool res = compareResults(seqAppender._processedSeq, mockGen._seqData, windowSize);
 
@@ -251,22 +256,30 @@ bool _runTestForConfiguration(unsigned posConf,
     return res;
 }
 
+bool _runTestForConfiguration(unsigned posConf, unsigned varConf, unsigned covConf, unsigned refLength, unsigned windowSize,
+                              seqan::StringTreeDefault const & stringTreeTag)
+{
+    return _runTestForConfiguration(posConf, varConf, covConf, refLength, windowSize, stringTreeTag, seqan::Serial());
+}
+
+template <typename TParallelTag>
 bool _runTestForConfigurationBlock(unsigned posConf,
                                   unsigned varConf,
                                   unsigned covConf,
                                   unsigned refLength,
                                   unsigned windowSize,
-                                  seqan::StringTreeDefault const & /*stringTreeTag*/)
+                                  seqan::StringTreeDefault const & /*stringTreeTag*/,
+                                  TParallelTag /*tag*/)
 {
     using namespace seqan;
 
     typedef String<String<bool, Packed<> > > TCovData;
     typedef MockGenerator_<unsigned, char> TMockGenerator;
 
-    typedef TMockGenerator::TStringTree TStringTree;
+    typedef typename TMockGenerator::TStringTree TStringTree;
     typedef JstTraverser<TStringTree, Nothing, JstTraverserSpec<> > TTraverser;
     typedef DummyCaller_<TStringTree> TDummyCaller;
-    typedef GetStringSet<TStringTree>::Type TJournalSet;
+    typedef typename GetStringSet<TStringTree>::Type TJournalSet;
 
     typedef String<MockVariantData<char> > TVarData;
     typedef DummyDelegatorBlock_<char, TJournalSet> TSequenceAppender;
@@ -288,7 +301,7 @@ bool _runTestForConfigurationBlock(unsigned posConf,
     TDummyCaller dummyCaller(jst);
 
     while(journalNextBlock(jst, windowSize))
-        traverse(dummyCaller, seqAppender, traverser);
+        traverse(dummyCaller, seqAppender, traverser, TParallelTag());
 
     bool res = compareResults(seqAppender._processedSeq, mockGen._seqData, windowSize);
 
@@ -297,6 +310,16 @@ bool _runTestForConfigurationBlock(unsigned posConf,
         _printDebugInfo(mockGen, seqAppender, windowSize);
 #endif
     return res;
+}
+
+bool _runTestForConfigurationBlock(unsigned posConf,
+                                  unsigned varConf,
+                                  unsigned covConf,
+                                  unsigned refLength,
+                                  unsigned windowSize,
+                                  seqan::StringTreeDefault const & stringTreeTag)
+{
+    return _runTestForConfigurationBlock(posConf, varConf, covConf, refLength, windowSize, stringTreeTag, seqan::Serial());
 }
 
 
@@ -2054,6 +2077,52 @@ SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_jou
 {
     SEQAN_ASSERT(_runTestForConfigurationBlock(9, 5, 5, 101, 3, seqan::StringTreeDefault()));
     SEQAN_ASSERT(_runTestForConfigurationBlock(9, 5, 5, 101, 10, seqan::StringTreeDefault()));
+}
+
+// ============================================================================
+// Test parallel traversal.
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Test all SNPs.
+// ----------------------------------------------------------------------------
+
+// Test all at position 0, all snps, different coverages.
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 0, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 0, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 1, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 1, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 2, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 2, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 3, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 3, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 4, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 4, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree_parallel)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 5, 101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(0, 0, 5, 101, 10, seqan::StringTreeDefault(), seqan::Parallel()));
 }
 
 #endif  // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_TRAVERSE_H_

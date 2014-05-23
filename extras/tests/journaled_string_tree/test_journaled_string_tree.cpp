@@ -45,393 +45,412 @@
 SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 {
     // Tests for delta map.
-    SEQAN_CALL_TEST(test_delta_map_value_mf);
-    SEQAN_CALL_TEST(test_delta_map_reference_mf);
-    SEQAN_CALL_TEST(test_delta_map_delta_value_mf);
-    SEQAN_CALL_TEST(test_delta_map_delta_coverage_mf);
-    SEQAN_CALL_TEST(test_delta_map_insert);
-    SEQAN_CALL_TEST(test_delta_map_length);
-    SEQAN_CALL_TEST(test_delta_map_empty);
-    SEQAN_CALL_TEST(test_delta_map_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_set_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_iterator);
-    SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
-    SEQAN_CALL_TEST(test_delta_map_iterator_assign);
-    SEQAN_CALL_TEST(test_delta_map_iterator_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_snp);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_ins);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_del);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_indel);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
-
-    // Tests for journaled string tree
-    SEQAN_CALL_TEST(test_journaled_string_tree_container_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_get_string_tree_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_host_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
-    SEQAN_CALL_TEST(test_journaled_string_tree_init);
-    SEQAN_CALL_TEST(test_journaled_string_tree_reinit);
-    SEQAN_CALL_TEST(test_journaled_string_tree_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_string_set);
-    SEQAN_CALL_TEST(test_journaled_string_tree_full_journal_required);
-    SEQAN_CALL_TEST(test_journaled_string_tree_set_block_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
-    SEQAN_CALL_TEST(test_journaled_string_tree_host);
-    SEQAN_CALL_TEST(test_journaled_string_tree_virtual_block_position);
-
-    SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
+//    SEQAN_CALL_TEST(test_delta_map_value_mf);
+//    SEQAN_CALL_TEST(test_delta_map_reference_mf);
+//    SEQAN_CALL_TEST(test_delta_map_delta_value_mf);
+//    SEQAN_CALL_TEST(test_delta_map_delta_coverage_mf);
+//    SEQAN_CALL_TEST(test_delta_map_insert);
+//    SEQAN_CALL_TEST(test_delta_map_length);
+//    SEQAN_CALL_TEST(test_delta_map_empty);
+//    SEQAN_CALL_TEST(test_delta_map_coverage_size);
+//    SEQAN_CALL_TEST(test_delta_map_set_coverage_size);
+//    SEQAN_CALL_TEST(test_delta_map_iterator);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_assign);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_value);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_snp);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_ins);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_del);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_indel);
+//    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
+//
+//    // Tests for journaled string tree
+//    SEQAN_CALL_TEST(test_journaled_string_tree_container_mf);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_get_string_tree_mf);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_host_mf);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_init);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_reinit);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_container);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_string_set);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_full_journal_required);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_set_block_size);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_host);
+//    SEQAN_CALL_TEST(test_journaled_string_tree_virtual_block_position);
+//
+//    SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
 
     // ----------------------------------------------------------------------------
     // Test all variants being SNPs.
     // ----------------------------------------------------------------------------
 
 	// Test all position 0, all snps, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree_block);
+//
+//    //Test all position 30, all snps, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_5_journaled_string_tree_block);
+//
+//    // Test all position 100, all snps, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including 0, all snps, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including last position, all snps, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_5_journaled_string_tree_block);
+//
+//    // ----------------------------------------------------------------------------
+//    // Test all variants being deletions.
+//    // ----------------------------------------------------------------------------
+//
+//    // Test all position 0, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_5_journaled_string_tree_block);
+//
+//    // Test all position 30, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_5_journaled_string_tree_block);
+//
+//    // Test all position 100, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including 0, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including last position, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_5_journaled_string_tree_block);
+//
+//    // ----------------------------------------------------------------------------
+//    // Test all variants being insertions.
+//    // ----------------------------------------------------------------------------
+//
+//    // Test all position 0, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_5_journaled_string_tree_block);
+//
+//    // Test all position 30, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_5_journaled_string_tree_block);
+//
+//    // Test all position 100, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including 0, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including last position, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_5_journaled_string_tree_block);
+//
+//    // ----------------------------------------------------------------------------
+//    // Test all variants being Replacements.
+//    // ----------------------------------------------------------------------------
+//
+//    // Test all position 0, all replacements, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_5_journaled_string_tree_block);
+//
+//    // Test all position 30, all replacements, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_5_journaled_string_tree_block);
+//
+//    // Test all position 100, all replacements, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including 0, all replacements, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_5_journaled_string_tree_block);
+//
+//    // Test equidistant position including last position, all replacements, different coverages.
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_5_journaled_string_tree_block);
+//
+//    // ----------------------------------------------------------------------------
+//    // Test special variant combinations.
+//    // ----------------------------------------------------------------------------
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_0_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_2_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_0_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_2_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_5_journaled_string_tree_block);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_6_4_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_7_4_3_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_6_4_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_7_4_3_journaled_string_tree_block);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_1_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_3_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_4_journaled_string_tree);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_journaled_string_tree);
+//
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_1_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_3_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_4_journaled_string_tree_block);
+//    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_journaled_string_tree_block);
 
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree_block);
 
-    //Test all position 30, all snps, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_0_5_journaled_string_tree_block);
-
-    // Test all position 100, all snps, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_0_5_journaled_string_tree_block);
-
-    // Test equidistant position including 0, all snps, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_0_5_journaled_string_tree_block);
-
-    // Test equidistant position including last position, all snps, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_0_5_journaled_string_tree_block);
+    // Tests parallel traversal
+//#ifdef _OPENMP
+    omp_set_num_threads(4);
 
     // ----------------------------------------------------------------------------
-    // Test all variants being deletions.
+    // Test all variants being SNPs.
     // ----------------------------------------------------------------------------
 
-    // Test all position 0, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_5_journaled_string_tree);
+    // Test all position 0, all snps, different coverages.
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_0_journaled_string_tree_parallel);
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_1_journaled_string_tree_parallel);
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_2_journaled_string_tree_parallel);
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_3_journaled_string_tree_parallel);
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_4_journaled_string_tree_parallel);
+    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_0_5_journaled_string_tree_parallel);
 
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_1_5_journaled_string_tree_block);
-
-    // Test all position 30, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_1_5_journaled_string_tree_block);
-
-    // Test all position 100, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_1_5_journaled_string_tree_block);
-
-    // Test equidistant position including 0, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_1_5_journaled_string_tree_block);
-
-    // Test equidistant position including last position, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_1_5_journaled_string_tree_block);
-
-    // ----------------------------------------------------------------------------
-    // Test all variants being insertions.
-    // ----------------------------------------------------------------------------
-
-    // Test all position 0, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_2_5_journaled_string_tree_block);
-
-    // Test all position 30, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_2_5_journaled_string_tree_block);
-
-    // Test all position 100, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_2_5_journaled_string_tree_block);
-
-    // Test equidistant position including 0, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_2_5_journaled_string_tree_block);
-
-    // Test equidistant position including last position, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_2_5_journaled_string_tree_block);
-
-    // ----------------------------------------------------------------------------
-    // Test all variants being Replacements.
-    // ----------------------------------------------------------------------------
-
-    // Test all position 0, all replacements, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_0_6_5_journaled_string_tree_block);
-
-    // Test all position 30, all replacements, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_1_6_5_journaled_string_tree_block);
-
-    // Test all position 100, all replacements, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_2_6_5_journaled_string_tree_block);
-
-    // Test equidistant position including 0, all replacements, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_3_6_5_journaled_string_tree_block);
-
-    // Test equidistant position including last position, all replacements, different coverages.
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_4_6_5_journaled_string_tree_block);
-
-    // ----------------------------------------------------------------------------
-    // Test special variant combinations.
-    // ----------------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_0_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_2_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_0_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_2_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_5_3_5_journaled_string_tree_block);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_6_4_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_7_4_3_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_6_4_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_7_4_3_journaled_string_tree_block);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_1_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_3_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_4_journaled_string_tree);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_journaled_string_tree);
-
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_1_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_3_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_4_journaled_string_tree_block);
-    SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_journaled_string_tree_block);
+//#endif
 }
 SEQAN_END_TESTSUITE

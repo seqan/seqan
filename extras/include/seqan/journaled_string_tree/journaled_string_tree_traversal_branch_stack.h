@@ -95,7 +95,19 @@ public:
                              _externalState()
     {}
 
-    // TODO(rmaerker): Add copy constructor and assignment operator
+    // Copy constructor.
+    JstBranchStackEntry_(JstBranchStackEntry_ const & other)
+    {
+        _copy(*this, other);
+    }
+
+    // Assignment Operator.
+    JstBranchStackEntry_ & operator=(JstBranchStackEntry_ const & other)
+    {
+        if (this != &other)
+            _copy(*this, other);
+        return *this;
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -118,7 +130,19 @@ public:
     JstBranchStack_() : _stack(), _stackIndex(), _activeId(-1)
     {}
 
-    // TODO(rmaerker): Add copy constructor and assignment operator
+    // Copy constructor.
+    JstBranchStack_(JstBranchStack_ const & other)
+    {
+        _copy(*this, other);
+    }
+
+    // Assignment Operator.
+    JstBranchStack_ & operator=(JstBranchStack_ const & other)
+    {
+        if (this != &other)
+            _copy(*this, other);
+        return *this;
+    }
 };
 
 // ============================================================================
@@ -188,6 +212,45 @@ struct Position<JstBranchStack_<TJournaledStringTree, TState> const > :
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _copy()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledStringTree, typename TState>
+inline void
+_copy(JstBranchStackEntry_<TJournaledStringTree, TState> & entry,
+      JstBranchStackEntry_<TJournaledStringTree, TState> const & other)
+{
+    entry._branchProxyId = other._branchProxyId;
+    entry._mappedHostPos = other._mappedHostPos;
+    entry._proxyEndPosDiff = other._proxyEndPosDiff;
+    entry._firstWindowBranchNode = other._firstWindowBranchNode;
+
+    // Poxy data.
+    entry._proxyIter = other._proxyIter;
+    entry._proxyEndPos = other._proxyEndPos;
+    entry._prefixOffset = other._prefixOffset;
+    entry._branchCoverage = other._branchCoverage;
+
+    // Additional data.
+    entry._externalState = other._externalState;
+}
+
+// ----------------------------------------------------------------------------
+// Function _copy()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledStringTree, typename TState>
+inline void
+_copy(JstBranchStack_<TJournaledStringTree, TState> & stack,
+      JstBranchStack_<TJournaledStringTree, TState> const & other)
+{
+    stack._stack = other._stack;
+    stack._stackIndex = other._stackIndex;
+    stack._activeId = other._activeId;
+}
+
 
 template <typename TJst, typename TState>
 inline typename Reference<JstBranchStack_<TJst, TState> >::Type
