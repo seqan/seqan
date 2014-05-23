@@ -47,8 +47,8 @@ template <typename TText>
 class Index<TText, IndexSa<InfixSegment> >
 {
 public:
-    typename Member<Index, EsaText>::Type         text;
-    Holder<typename Fibre<Index, EsaSA>::Type>    sa;
+    typename Member<Index, FibreText>::Type       text;
+    Holder<typename Fibre<Index, FibreSA>::Type>  sa;
 
     Index() {}
 
@@ -627,6 +627,7 @@ inline bool open(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index
 
     if (open(static_cast<TBaseIndex &>(index), fileName))
     {
+        setHost(index._indexSa, indexText(index));
         _setHost(index);
         return true;
     }
