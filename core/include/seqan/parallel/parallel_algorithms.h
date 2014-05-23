@@ -352,6 +352,18 @@ inline void generate(TTarget & target, TGenerator g, Tag<TParallelTag> const & /
 }
 
 // ----------------------------------------------------------------------------
+// Function iota()
+// ----------------------------------------------------------------------------
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TTarget, typename TValue, typename TParallelTag>
+inline void iota(TTarget & target, TValue val, Tag<TParallelTag> const & /* tag */)
+{
+    std::iota(begin(target, Standard()), end(target, Standard()), val);
+}
+#endif
+
+// ----------------------------------------------------------------------------
 // Function count()
 // ----------------------------------------------------------------------------
 
@@ -630,6 +642,18 @@ inline void generate(TTarget & target, TGenerator g)
 {
     generate(target, g, Serial());
 }
+
+// ----------------------------------------------------------------------------
+// Function iota()
+// ----------------------------------------------------------------------------
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TTarget, typename TValue>
+inline void iota(TTarget & target, TValue val)
+{
+    iota(target, val, Serial());
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Function count()
