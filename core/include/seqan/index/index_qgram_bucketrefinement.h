@@ -40,10 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -175,8 +171,6 @@ public:
     TTopIterator    _topIterator;
     TBottomIterator _bottomIterator;
 
-// ============================================================================
-
     Iter() {}
 
     Iter(TIndex & _index) :
@@ -198,8 +192,6 @@ public:
         _topIterator(_origin._topIterator),
         _bottomIterator(_origin._bottomIterator)
     {}
-
-// ============================================================================
 
     inline Iter const &
     operator=(Iter const & _origin)
@@ -228,8 +220,6 @@ public:
     TTopIterator    _topIterator;
     TBottomIterator _bottomIterator;
 
-// ============================================================================
-
     Iter() {}
 
     Iter(TIndex & _index) :
@@ -246,8 +236,6 @@ public:
         _topIterator(_origin._topIterator),
         _bottomIterator(_origin._bottomIterator)
     {}
-
-// ============================================================================
 
     inline Iter const &
     operator=(Iter const & _origin)
@@ -351,8 +339,7 @@ getFibre(Index<TText, IndexSa<InfixSegment> > const & index, FibreSA)
     return value(index.sa);
 }
 
-// ============================================================================
-
+// Works by creating the full SA and removing the suffixes of length < q.
 template <typename TText, typename TShapeSpec>
 inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
 {
@@ -372,6 +359,7 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
     return true;
 }
 
+// Works by creating the q-gram directory and quick-sorting the SA bucket-wise.
 //template <typename TText, typename TShapeSpec>
 //inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
 //{
@@ -388,8 +376,6 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
 //
 //    return true;
 //}
-
-// ============================================================================
 
 template <typename TText, typename TShapeSpec>
 void _setHost(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index)
@@ -455,8 +441,6 @@ inline bool _atTop(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 {
     return isRoot(it._bottomIterator);
 }
-
-// ============================================================================
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool isRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
