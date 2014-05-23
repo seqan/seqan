@@ -40,8 +40,8 @@
 
 /** Karlin-Altschul parameter values taken from blast_stat.c */
 
-#ifndef __BLAST_STATISTICS_H__
-#define __BLAST_STATISTICS_H__
+#ifndef __BLAST_STATISTICSgetH__
+#define __BLAST_STATISTICSgetH__
 
 #ifndef NCBI_INT2_MAX
 #define NCBI_INT2_MAX    32767
@@ -54,60 +54,13 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-template <typename TMatrixSpec>
-inline bool
-_selectSet(BlastScoringAdapter<
-                Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> & adapter)
-{
-    int scO = scoreGapOpen(scoringScheme) - scoreGapExtend(scoringScheme);
-    typedef BlastScoringAdapter<
-                Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > TAdapter;
-
-    for (TAdapter::size_t i = 0; i < TAdapter::nParamSets; ++i)
-    {
-        if ((adapter[i][0] == -scO)  &&
-            (adapter[i][1] == -scoreGapExtend(adapter.scheme)))
-        {
-            adapter.index = i;
-            return true;
-        }
-    }
-    // no suitable adapter
-    adapter.index =  std::numeric_limits<TAdapter::size_t>::max();
-    return false;
-}
-
-inline bool
-_selectSet(BlastScoringAdapter<Score<int, Simple>> & adapter)
-{
-    int scO = scoreGapOpen(scoringScheme) - scoreGapExtend(scoringScheme);
-    typedef BlastScoringAdapter<
-                Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > TAdapter;
-
-    for (TAdapter::size_t i = 0; i < TAdapter::nParamSets; ++i)
-    {
-        if ((adapter[i][0] == scoreMatch(adapter.scheme))  &&
-            (adapter[i][1] == -scoreMismatch(adapter.scheme)) &&
-            (adapter[i][2] == -scO) &&
-            (adapter[i][3] == -scoreGapExtend(adapter.scheme)))
-        {
-            adapter.index = i;
-            return true;
-        }
-    }
-    // no suitable adapter
-    adapter.index = std::numeric_limits<TAdapter::size_t>::max();
-    return false;
-}
-
-
 
 // ============================================================================
-// Metafunctions
+// Classes
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction BlastScoringAdapter
+// Class BlastScoringAdapter
 // ----------------------------------------------------------------------------
 
 /*!
@@ -115,45 +68,66 @@ _selectSet(BlastScoringAdapter<Score<int, Simple>> & adapter)
  * @headerfile seqan/blast.h
  * @brief An object that holds Statistical parameters in addition to the
  * scoring Scheme
- * @signature BlastScoringAdapter<TScore>(TScore const & scheme);
+ * @signature struct BlastScoringAdapter<TScore, TSpec> { ... };
  *
- * <b>Warning</b>, not every combination of gap scores is supported. Run
+ * This is an adapter around the SeqAn scoring scheme, for use with BLAST and
+ * other e-value statistics. It holds Karlin-Altschul statistical scoring
+ * parameters (&lambda;, &Kappa;, H, &alpha;, &beta;, &theta;) for the given
+ * scoring scheme. These values are empirically derived. The ones in
+ * SeqAn are imported from the NCBI blast source code (blast-2.2.26).
+ * For an explanation of the role of &lambda; and &Kappa; please see these
+ * slides: <a href="https://www.cs.umd.edu/class/fall2011/cmsc858s/Local_Alignment_Statistics.pdf">
+ * https://www.cs.umd.edu/class/fall2011/cmsc858s/Local_Alignment_Statistics.pdf</a>.
+ *
+ * <b>Warning</b>, not every scoring scheme supported by SeqAn and not every
+ * combination of gap scores is supported. Run
  * @link BlastScoringAdapter#isValid @endlink after construction.
  *
  * @tparam TScoringScheme A SeqAn Score type
- *
+ * @tparam TSpec This only prevents instantiation of tables that aren't used
+ * (defaults to void)
  *
  * @fn BlastScoringAdapter::BlastScoringAdapter(TScore const & scheme)
- * @brief Constructor
+ * @signature BlastScoringAdapter(TScore const & scheme)
  * @param scheme A scoring scheme.
+ * @brief The Constructor. Upon construction the statistical values are
+ * automatically selected for the given scheme. Run
+ * @link BlastScoringAdapter#isValid @endlink to see, if this was successful.
  */
 
 /// GENERIC
-template <typename TScore>
-struct BlastScoringAdapter
-{
-    static_assert(false, "BlastScoringAdapter has no specialization "
-                         "for your scoring scheme.");
-};
+template <typename TScore, typename TSpec = void>
+struct BlastScoringAdapter;
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TScoringScheme>
+bool
+assignScoreScheme(BlastScoringAdapter<TScoringScheme> &,
+                  TScoringScheme const &);
+
+// ============================================================================
+// Classes
+// ============================================================================
 
 /// BLOSUM30
 // not implemented in BLAST
 
 /// BLOSUM45
-template <>
-struct BlastScoringAdapter<Blosum45>
+template <typename TSpec>
+struct BlastScoringAdapter<Blosum45, TSpec>
 {
     typedef uint8_t size_t;
 
     /* statics */
     static constexpr size_t nParams = 8;
-    static constexpr size_t nParamSets = 14;
-    static constexpr std::array<std::array<double, nParams>, nParamSets>
-    karlinAltschulValues
+    static constexpr size_t nParamSets = 16;
+    static constexpr double karlinAltschulValues[nParamSets][nParams]
     {
-      {
         {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-                (double) NCBI_INT2_MAX, 0.2291, 0.0924, 0.2514, 0.9113, -5.7},
+              (double) NCBI_INT2_MAX, 0.2291, 0.0924, 0.2514, 0.9113, -5.7},
         {13, 3, (double) NCBI_INT2_MAX, 0.207,  0.049,  0.14,   1.5, -22},
         {12, 3, (double) NCBI_INT2_MAX, 0.199,  0.039,  0.11,   1.8, -34},
         {11, 3, (double) NCBI_INT2_MAX, 0.190,  0.031,  0.095,  2.0, -38},
@@ -167,7 +141,6 @@ struct BlastScoringAdapter<Blosum45>
         {18, 1, (double) NCBI_INT2_MAX, 0.198,  0.032,  0.10,   2.0, -43},
         {17, 1, (double) NCBI_INT2_MAX, 0.189,  0.024,  0.079,  2.4, -57},
         {16, 1, (double) NCBI_INT2_MAX, 0.176,  0.016,  0.063,  2.8, -67},
-      }
     };
 
     /* members */
@@ -180,38 +153,39 @@ struct BlastScoringAdapter<Blosum45>
     }
 };
 
-
+template <typename TSpec>
+constexpr double
+BlastScoringAdapter<Blosum45, TSpec>::karlinAltschulValues
+[BlastScoringAdapter<Blosum45, TSpec>::nParamSets]
+[BlastScoringAdapter<Blosum45, TSpec>::nParams];
 
 /// BLOSUM50
 // not implemented in seqan
 
 /// BLOSUM62
-template <>
-struct BlastScoringAdapter<Blosum62>
+template <typename TSpec>
+struct BlastScoringAdapter<Blosum62, TSpec>
 {
     typedef uint8_t size_t;
 
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 12;
-    static constexpr std::array<std::array<double, nParams>, nParamSets>
-    karlinAltschulValues
+    static constexpr double karlinAltschulValues[nParamSets][nParams]
     {
-      {
-        {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-                (double) NCBI_INT2_MAX, 0.3176, 0.134, 0.4012, 0.7916, -3.2},
-        {11, 2, (double) NCBI_INT2_MAX, 0.297,  0.082, 0.27,   1.1,    -10},
-        {10, 2, (double) NCBI_INT2_MAX, 0.291,  0.075, 0.23,   1.3,    -15},
-        { 9, 2, (double) NCBI_INT2_MAX, 0.279,  0.058, 0.19,   1.5,    -19},
-        { 8, 2, (double) NCBI_INT2_MAX, 0.264,  0.045, 0.15,   1.8,    -26},
-        { 7, 2, (double) NCBI_INT2_MAX, 0.239,  0.027, 0.10,   2.5,    -46},
-        { 6, 2, (double) NCBI_INT2_MAX, 0.201,  0.012, 0.061,  3.3,    -58},
-        {13, 1, (double) NCBI_INT2_MAX, 0.292,  0.071, 0.23,   1.2,    -11},
-        {12, 1, (double) NCBI_INT2_MAX, 0.283,  0.059, 0.19,   1.5,    -19},
-        {11, 1, (double) NCBI_INT2_MAX, 0.267,  0.041, 0.14,   1.9,    -30},
-        {10, 1, (double) NCBI_INT2_MAX, 0.243,  0.024, 0.10,   2.5,    -44},
-        { 9, 1, (double) NCBI_INT2_MAX, 0.206,  0.010, 0.052,  4.0,    -87},
-      }
+         {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
+                 (double) NCBI_INT2_MAX, 0.3176, 0.134, 0.4012, 0.7916, -3.2},
+         {11, 2, (double) NCBI_INT2_MAX, 0.297,  0.082, 0.27,   1.1,    -10} ,
+         {10, 2, (double) NCBI_INT2_MAX, 0.291,  0.075, 0.23,   1.3,    -15} ,
+         { 9, 2, (double) NCBI_INT2_MAX, 0.279,  0.058, 0.19,   1.5,    -19} ,
+         { 8, 2, (double) NCBI_INT2_MAX, 0.264,  0.045, 0.15,   1.8,    -26} ,
+         { 7, 2, (double) NCBI_INT2_MAX, 0.239,  0.027, 0.10,   2.5,    -46} ,
+         { 6, 2, (double) NCBI_INT2_MAX, 0.201,  0.012, 0.061,  3.3,    -58} ,
+         {13, 1, (double) NCBI_INT2_MAX, 0.292,  0.071, 0.23,   1.2,    -11} ,
+         {12, 1, (double) NCBI_INT2_MAX, 0.283,  0.059, 0.19,   1.5,    -19} ,
+         {11, 1, (double) NCBI_INT2_MAX, 0.267,  0.041, 0.14,   1.9,    -30} ,
+         {10, 1, (double) NCBI_INT2_MAX, 0.243,  0.024, 0.10,   2.5,    -44} ,
+         { 9, 1, (double) NCBI_INT2_MAX, 0.206,  0.010, 0.052,  4.0,    -87} ,
     };
 
     /* members */
@@ -220,26 +194,29 @@ struct BlastScoringAdapter<Blosum62>
 
     BlastScoringAdapter(Blosum62 const & _scheme)
     {
-        assignScoreScheme(*this, _scheme);
+        assignScoreScheme<Blosum62>(*this, _scheme);
     }
 };
 
+template <typename TSpec>
+constexpr double
+BlastScoringAdapter<Blosum62, TSpec>::karlinAltschulValues
+[BlastScoringAdapter<Blosum62, TSpec>::nParamSets]
+[BlastScoringAdapter<Blosum62, TSpec>::nParams];
 
 /// BLOSUM80
-template <>
-struct BlastScoringAdapter<Blosum62>
+template <typename TSpec>
+struct BlastScoringAdapter<Blosum80, TSpec>
 {
     typedef uint8_t size_t;
 
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 10;
-    static constexpr std::array<std::array<double, nParams>, nParamSets>
-    karlinAltschulValues
+    static constexpr double karlinAltschulValues[nParamSets][nParams]
     {
-      {
         {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-                (double) NCBI_INT2_MAX, 0.3430,  0.177, 0.6568, 0.5222, -1.6},
+              (double) NCBI_INT2_MAX, 0.3430,  0.177, 0.6568, 0.5222, -1.6},
         {25, 2, (double) NCBI_INT2_MAX, 0.342,   0.17,  0.66,   0.52,   -1.6},
         {13, 2, (double) NCBI_INT2_MAX, 0.336,   0.15,  0.57,   0.59,   -3},
         { 9, 2, (double) NCBI_INT2_MAX, 0.319,   0.11,  0.42,   0.76,   -6},
@@ -249,18 +226,23 @@ struct BlastScoringAdapter<Blosum62>
         {11, 1, (double) NCBI_INT2_MAX, 0.314,   0.095, 0.35,   0.90,   -9},
         {10, 1, (double) NCBI_INT2_MAX, 0.299,   0.071, 0.27,   1.1,   -14},
         { 9, 1, (double) NCBI_INT2_MAX, 0.279,   0.048, 0.20,   1.4,   -19},
-      }
     };
 
     /* members */
-    Blosum62 scheme;
+    Blosum80 scheme;
     size_t index = 0; // member signifying the paramSet belonging to scheme
 
-    BlastScoringAdapter(Blosum62 const & _scheme))
+    BlastScoringAdapter(Blosum80 const & _scheme)
     {
         assignScoreScheme(*this, _scheme);
     }
 };
+
+template <typename TSpec>
+constexpr double
+BlastScoringAdapter<Blosum80, TSpec>::karlinAltschulValues
+[BlastScoringAdapter<Blosum80, TSpec>::nParamSets]
+[BlastScoringAdapter<Blosum80, TSpec>::nParams];
 
 /// BLOSUM90
 // not implemented in seqan
@@ -281,20 +263,18 @@ struct BlastScoringAdapter<Blosum62>
 // not implemented in blast
 
 /// PAM250
-template <>
-struct BlastScoringAdapter<Pam250>
+template <typename TSpec>
+struct BlastScoringAdapter<Pam250, TSpec>
 {
     typedef uint8_t size_t;
 
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 16;
-    static constexpr std::array<std::array<double, nParams>, nParamSets>
-    karlinAltschulValues
+    static constexpr double karlinAltschulValues[nParamSets][nParams]
     {
-      {
         {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-                (double) NCBI_INT2_MAX, 0.2252, 0.0868, 0.2223, 0.98,  -5.0},
+              (double) NCBI_INT2_MAX, 0.2252, 0.0868, 0.2223, 0.98,  -5.0},
         {15, 3, (double) NCBI_INT2_MAX, 0.205,  0.049,  0.13,   1.6,  -23},
         {14, 3, (double) NCBI_INT2_MAX, 0.200,  0.043,  0.12,   1.7,  -26},
         {13, 3, (double) NCBI_INT2_MAX, 0.194,  0.036,  0.10,   1.9,  -31},
@@ -310,7 +290,6 @@ struct BlastScoringAdapter<Pam250>
         {19, 1, (double) NCBI_INT2_MAX, 0.192,  0.029,  0.083,  2.3,  -52},
         {18, 1, (double) NCBI_INT2_MAX, 0.183,  0.021,  0.070,  2.6,  -60},
         {17, 1, (double) NCBI_INT2_MAX, 0.171,  0.014,  0.052,  3.3,  -86},
-      }
     };
 
     /* members */
@@ -323,13 +302,19 @@ struct BlastScoringAdapter<Pam250>
     }
 };
 
+template <typename TSpec>
+constexpr double
+BlastScoringAdapter<Pam250, TSpec>::karlinAltschulValues
+[BlastScoringAdapter<Pam250, TSpec>::nParamSets]
+[BlastScoringAdapter<Pam250, TSpec>::nParams];
+
 /// VTML200
 // not implemented in blast
 
 
 /// NUCLEOTIDES
-template <>
-struct BlastScoringAdapter<Score<int, Simple>>
+template <typename TSpec>
+struct BlastScoringAdapter<Score<int, Simple>, TSpec>
 {
     typedef uint8_t size_t;
 
@@ -347,31 +332,29 @@ struct BlastScoringAdapter<Score<int, Simple>>
         8 = Beta,
         9 = Theta
         10 = only applicable to even score, uneven need to be rounded down */
-    static constexpr std::array<std::array<double, nParams>, nParamSets>
-    karlinAltschulValues
+    static constexpr double karlinAltschulValues[nParamSets][nParams]
     {
-      {
-        { 1, 5, 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 },
-        { 1, 5, 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 },
+        { 1, 5, 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
+        { 1, 5, 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
 
-        { 1, 4, 0, 0, 1.383, 0.738, 1.36, 1.02,  0, 100, 0 },
-        { 1, 4, 1, 2,  1.36,  0.67,  1.2,  1.1,  0,  98, 0 },
-        { 1, 4, 0, 2,  1.26,  0.43, 0.90,  1.4, -1,  91, 0 },
-        { 1, 4, 2, 1,  1.35,  0.61,  1.1,  1.2, -1,  98, 0 },
-        { 1, 4, 1, 1,  1.22,  0.35, 0.72,  1.7, -3,  88, 0 },
+        { 1, 4, 0, 0, 1.383, 0.738, 1.36, 1.02,  0, 100, 0 } ,
+        { 1, 4, 1, 2,  1.36,  0.67,  1.2,  1.1,  0,  98, 0 } ,
+        { 1, 4, 0, 2,  1.26,  0.43, 0.90,  1.4, -1,  91, 0 } ,
+        { 1, 4, 2, 1,  1.35,  0.61,  1.1,  1.2, -1,  98, 0 } ,
+        { 1, 4, 1, 1,  1.22,  0.35, 0.72,  1.7, -3,  88, 0 } ,
 
-        { 2, 7, 0, 0,  0.69, 0.73, 1.34, 0.515,  0, 100, 1 },
-        { 2, 7, 2, 4,  0.68, 0.67,  1.2,  0.55,  0,  99, 1 },
-        { 2, 7, 0, 4,  0.63, 0.43, 0.90,   0.7, -1,  91, 1 },
-        { 2, 7, 4, 2, 0.675, 0.62,  1.1,   0.6, -1,  98, 1 },
-        { 2, 7, 2, 2,  0.61, 0.35, 0.72,   1.7, -3,  88, 1 },
+        { 2, 7, 0, 0,  0.69, 0.73, 1.34, 0.515,  0, 100, 1 } ,
+        { 2, 7, 2, 4,  0.68, 0.67,  1.2,  0.55,  0,  99, 1 } ,
+        { 2, 7, 0, 4,  0.63, 0.43, 0.90,   0.7, -1,  91, 1 } ,
+        { 2, 7, 4, 2, 0.675, 0.62,  1.1,   0.6, -1,  98, 1 } ,
+        { 2, 7, 2, 2,  0.61, 0.35, 0.72,   1.7, -3,  88, 1 } ,
 
-        { 1, 3, 0, 0, 1.374, 0.711, 1.31, 1.05,  0, 100, 0 },
-        { 1, 3, 2, 2,  1.37,  0.70,  1.2,  1.1,  0,  99, 0 },
-        { 1, 3, 1, 2,  1.35,  0.64,  1.1,  1.2, -1,  98, 0 },
-        { 1, 3, 0, 2,  1.25,  0.42, 0.83,  1.5, -2,  91, 0 },
-        { 1, 3, 2, 1,  1.34,  0.60,  1.1,  1.2, -1,  97, 0 },
-        { 1, 3, 1, 1,  1.21,  0.34, 0.71,  1.7, -2,  88, 0 },
+        { 1, 3, 0, 0, 1.374, 0.711, 1.31, 1.05,  0, 100, 0 } ,
+        { 1, 3, 2, 2,  1.37,  0.70,  1.2,  1.1,  0,  99, 0 } ,
+        { 1, 3, 1, 2,  1.35,  0.64,  1.1,  1.2, -1,  98, 0 } ,
+        { 1, 3, 0, 2,  1.25,  0.42, 0.83,  1.5, -2,  91, 0 } ,
+        { 1, 3, 2, 1,  1.34,  0.60,  1.1,  1.2, -1,  97, 0 } ,
+        { 1, 3, 1, 1,  1.21,  0.34, 0.71,  1.7, -2,  88, 0 } ,
 
         { 2, 5, 0, 0, 0.675, 0.65,  1.1,  0.6, -1, 99, 1 },
         { 2, 5, 2, 4,  0.67, 0.59,  1.1,  0.6, -1, 98, 1 },
@@ -421,7 +404,7 @@ struct BlastScoringAdapter<Score<int, Simple>>
         { 3, 2,  5, 5, 0.208, 0.030, 0.072, 2.9, -47, 77, 0},
         { 5, 4, 10, 6, 0.163, 0.068, 0.16,  1.0, -19, 85, 0 },
         { 5, 4,  8, 6, 0.146, 0.039, 0.11,  1.3, -29, 76, 0 }
-      }
+
     };
 
     /* members */
@@ -434,140 +417,304 @@ struct BlastScoringAdapter<Score<int, Simple>>
     }
 };
 
+template <typename TSpec>
+constexpr double
+BlastScoringAdapter<Score<int, Simple>, TSpec>::karlinAltschulValues
+[BlastScoringAdapter<Score<int, Simple>, TSpec>::nParamSets]
+[BlastScoringAdapter<Score<int, Simple>, TSpec>::nParams];
+
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _Lambda
+// Function isValid
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#isValid
+ * @headerfile seqan/blast.h
+ * @brief check whether object holds correct Karlin-Altschul values for its scheme
+ * @signature bool isValid(blastScoringAdapter);
+ */
+
+template <typename TScoringScheme>
+inline bool
+isValid(BlastScoringAdapter<TScoringScheme> const & adapter)
+{
+    typedef BlastScoringAdapter<TScoringScheme> TAdapter;
+    return adapter.index != std::numeric_limits<typename TAdapter::size_t>::max();
+}
+
+// ----------------------------------------------------------------------------
+// Function _selectSet
 // ----------------------------------------------------------------------------
 
 template <typename TMatrixSpec>
+inline bool
+_selectSet(BlastScoringAdapter<
+                Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> & adapter)
+{
+    int scO = scoreGapOpen(adapter.scheme) - scoreGapExtend(adapter.scheme);
+    typedef BlastScoringAdapter<
+                Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > TAdapter;
+
+    for (typename TAdapter::size_t i = 0;
+         i < TAdapter::nParamSets; //karlinAltschulValues.size();
+         ++i)
+    {
+        if ((TAdapter::karlinAltschulValues[i][0] == -scO)  &&
+            (TAdapter::karlinAltschulValues[i][1] == -scoreGapExtend(adapter.scheme)))
+        {
+            adapter.index = i;
+            return true;
+        }
+    }
+    // no suitable adapter
+    adapter.index =  std::numeric_limits<typename TAdapter::size_t>::max();
+    return false;
+}
+
+inline bool
+_selectSet(BlastScoringAdapter<Score<int, Simple>> & adapter)
+{
+    int scO = scoreGapOpen(adapter.scheme) - scoreGapExtend(adapter.scheme);
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
+
+    for (typename TAdapter::size_t i = 0;
+         i < TAdapter::nParamSets; //karlinAltschulValues.size();
+         ++i)
+    {
+        if ((TAdapter::karlinAltschulValues[i][0] == scoreMatch(adapter.scheme))  &&
+            (TAdapter::karlinAltschulValues[i][1] == -scoreMismatch(adapter.scheme)) &&
+            (TAdapter::karlinAltschulValues[i][2] == -scO) &&
+            (TAdapter::karlinAltschulValues[i][3] == -scoreGapExtend(adapter.scheme)))
+        {
+            adapter.index = i;
+            return true;
+        }
+    }
+    // no suitable adapter
+    adapter.index = std::numeric_limits<typename TAdapter::size_t>::max();
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function assignScoreScheme
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#assignScoreScheme
+ * @headerfile seqan/blast.h
+ * @brief assign a new SeqAn @link Score @endlink to the adapter
+ * @signature bool assignScoreScheme(blastScoringAdapter, scoringScheme);
+ *
+ * @param blastScoringAdapter the adapter to modify
+ * @param scoringScheme the new scoring scheme
+ *
+ * @return whether the adapter @link BlastScoringAdapter#isValid @endlink after assignment
+ *
+ */
+
+template <typename TScoringScheme>
+inline bool
+assignScoreScheme(BlastScoringAdapter<TScoringScheme> & adapter,
+                  TScoringScheme const & _scheme)
+{
+    adapter.scheme = _scheme;
+    return _selectSet(adapter);
+}
+
+// ----------------------------------------------------------------------------
+// Function getScoreScheme
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getScoreScheme
+ * @headerfile seqan/blast.h
+ * @brief access the scoring scheme inside the adapter
+ * @signature bool getScoreScheme(blastScoringAdapter);
+ *
+ * @param blastScoringAdapter the adapter
+ *
+ * @return const Reference to the @link Score @endlink object inside the adapter
+ */
+
+template <typename TScoringScheme>
+TScoringScheme const &
+getScoreScheme(BlastScoringAdapter<TScoringScheme> const & adapter)
+{
+    return adapter.scheme;
+}
+
+// ----------------------------------------------------------------------------
+// Function getLambda
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getLambda
+ * @headerfile seqan/blast.h
+ * @brief get the &lambda; value of the Karlin-Altschul parameters.
+ * @signature double getLambda(blastScoringAdapter);
+ */
+
+template <typename TMatrixSpec>
 inline double
-_Lambda(typename BlastScoringAdapter<Score<int, ScoreMatrix<
+getLambda(BlastScoringAdapter<Score<int, ScoreMatrix<
             AminoAcid, TMatrixSpec>>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int,
+        ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][3];
 }
 
 inline double
-_Lambda(typename BlastScoringAdapter<Score<int, Simple>> const & adapter)
+getLambda(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][4];
 }
 
 // ----------------------------------------------------------------------------
-// Function _K
+// Function getKappa
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getKappa
+ * @headerfile seqan/blast.h
+ * @brief get the &Kappa; value of the Karlin-Altschul parameters.
+ * @signature double getKappa(blastScoringAdapter);
+ */
 
 template <typename TMatrixSpec>
 inline double
-_K(typename BlastScoringAdapter<Score<int, ScoreMatrix<
+getKappa(BlastScoringAdapter<Score<int, ScoreMatrix<
             AminoAcid, TMatrixSpec> > > const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int,
+        ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][4];
 }
 
 inline double
-_K(typename BlastScoringAdapter<Score<int, Simple>> const & adapter)
+getKappa(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][5];
 }
 
 // ----------------------------------------------------------------------------
-// Function _H
+// Function getH
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getH
+ * @headerfile seqan/blast.h
+ * @brief get the H value of the Karlin-Altschul parameters.
+ * @signature double getH(blastScoringAdapter);
+ */
 
 template <typename TMatrixSpec>
 inline double
-_H(typename BlastScoringAdapter<Score<int, ScoreMatrix<
+getH(BlastScoringAdapter<Score<int, ScoreMatrix<
             AminoAcid, TMatrixSpec> > > const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int,
+        ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][5];
 }
 
 inline double
-_H(typename BlastScoringAdapter<Score<int, Simple>> const & adapter)
+getH(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][6];
 }
 
 // ----------------------------------------------------------------------------
-// Function _Alpha
+// Function getAlpha
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getAlpha
+ * @headerfile seqan/blast.h
+ * @brief get the &alpha; value of the Karlin-Altschul parameters.
+ * @signature double getAlpha(blastScoringAdapter);
+ */
 
 template <typename TMatrixSpec>
 inline double
-_Alpha(typename BlastScoringAdapter<Score<int, ScoreMatrix<
+getAlpha(BlastScoringAdapter<Score<int, ScoreMatrix<
             AminoAcid, TMatrixSpec> > > const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int,
+        ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][6];
 }
 
 inline double
-_Alpha(typename BlastScoringAdapter<Score<int, Simple>> const & adapter)
+getAlpha(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][7];
 }
 
 // ----------------------------------------------------------------------------
-// Function _Beta
+// Function getBeta
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastScoringAdapter#getBeta
+ * @headerfile seqan/blast.h
+ * @brief get the &beta; value of the Karlin-Altschul parameters.
+ * @signature double getBeta(blastScoringAdapter);
+ */
 
 template <typename TMatrixSpec>
 inline double
-_Beta(typename BlastScoringAdapter<Score<int, ScoreMatrix<
+getBeta(BlastScoringAdapter<Score<int, ScoreMatrix<
             AminoAcid, TMatrixSpec> > > const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int,
+        ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][7];
 }
 
 inline double
-_Beta(typename BlastScoringAdapter<Score<int, Simple>> const & adapter)
+getBeta(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
-    typedef decltype(adapter) TAdapter;
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     SEQAN_ASSERT(isValid(adapter));
     return TAdapter::karlinAltschulValues[adapter.index][8];
 }
-
-
 // ----------------------------------------------------------------------------
 // Function _lengthAdjustment
 // ----------------------------------------------------------------------------
 
 // Computes the length adjustment for E-value computation
 // Based on the public domain NCBI BLAST code by Tom Madden.
-template <typename TSize, typename TSize2, typename TAdapter, typename TScore>
+template <typename TSize, typename TSize2, typename TScore>
 inline
 TSize
 _lengthAdjustment(TSize     const & dbLength,
                   TSize2    const & queryLength,
-                  TAdapter  const & adapter)
+                  BlastScoringAdapter<TScore> const & adapter)
 {
-    const double lambda = _Lambda(adapter);
-    const double K      = _K(adapter);
+    const double lambda = getLambda(adapter);
+    const double K      = getKappa(adapter);
     const double logK   = std::log(K);
-    const double alpha  = _Alpha(adapter);
+    const double alpha  = getAlpha(adapter);
     const double alphaByLambda = alpha/lambda;
-    const double beta   = _Beta(adapter);
+    const double beta   = getBeta(adapter);
     const TSize maxIterations = 20;
 
     double n = (double)dbLength;
@@ -632,62 +779,6 @@ _lengthAdjustment(TSize     const & dbLength,
         // Use the best value seen so far.
         return (TSize) val_min;
     }
-}
-
-
-/*!
- * @fn BlastScoringAdapter#isValid
- * @headerfile seqan/blast.h
- * @brief check whether object holds correct Karlin-Altschul values for its scheme
- * @signature bool isValid(blastScoringScheme);
- */
-
-template <typename TScoringScheme>
-inline bool
-isValid(BlastScoringAdapter<TScoringScheme> const & adapter)
-{
-    typedef BlastScoringAdapter<TScoringScheme> TAdapter;
-    return adapter.index != std::numeric_limits<TAdapter::size_t>::max();
-}
-
-/*!
- * @fn BlastScoringAdapter#assignScoreScheme
- * @headerfile seqan/blast.h
- * @brief assign a SeqAn @link Score @endlink to the adapter
- * @signature bool assignScoreScheme(blastScoringAdapter, scoringScheme);
- *
- * @param blastScoringAdapter the adapter to modify
- * @param scoringScheme the new scoring scheme
- *
- * @return whether the adapter @link BlastScoringAdapter#isValid @endlink after assignment
- * 
- */
-
-template <typename TScoringScheme>
-inline bool
-assignScoreScheme(BlastScoringAdapter<TScoringScheme> const & adapter,
-                   TScoringScheme const & _scheme)
-{
-    adapter.scheme = _scheme;
-    return _selectSet(adapter);
-}
-
-/*!
- * @fn BlastScoringAdapter#getScoreScheme
- * @headerfile seqan/blast.h
- * @brief assign a SeqAn @link Score @endlink to the adapter
- * @signature bool getScoreScheme(blastScoringAdapter);
- *
- * @param blastScoringAdapter the adapter
- *
- * @return Reference to the @link Score @endlink object inside the adapter
- */
-
-template <typename TScoringScheme>
-TScoringScheme &
-getScoreScheme(BlastScoringAdapter<TScoringScheme> const & adapter)
-{
-    return adapter.scheme;
 }
 
 // ----------------------------------------------------------------------------
@@ -766,26 +857,43 @@ void calcStatsAndScore(TScoreValue       & sc,
     mismatches = ali_length - gaps - identities;
 }
 
+template <typename TBlastMatch, typename TScore>
+inline
+void calcStatsAndScore(TBlastMatch      & match,
+                       TScore     const & scoringScheme)
+{
+    calcStatsAndScore(match.score,
+                      match.aliLength,
+                      match.identities,
+                      match.positives,
+                      match.mismatches,
+                      match.gaps,
+                      match.gapOpenings,
+                      row(match.align, 0),
+                      row(match.align, 1),
+                      scoringScheme);
+}
+
 #define LOGTWO 0.693147180
 
-template <typename TAdapter, typename TScore>
+template <typename TScore>
 inline double
-calcBitScore(double    const   rawScore,
-             TAdapter  const & adapter)
+calcBitScore(double                      const   rawScore,
+             BlastScoringAdapter<TScore> const & adapter)
 {
-    return ( _Lambda(adapter) * rawScore - log(_K(adapter)) )
+    return ( getLambda(adapter) * rawScore - log(getKappa(adapter)) )
             / log(2);
 }
 
-template <typename TAdapter, typename TScore>
+template <typename TScore>
 inline double
-calcEValue(double    const   rawScore,
-           double    const   adjDbLength,
-           double    const   adjQryLength,
-           TAdapter  const & adapter)
+calcEValue(double                      const   rawScore,
+           double                      const   adjDbLength,
+           double                      const   adjQryLength,
+           BlastScoringAdapter<TScore> const & adapter)
 {
-    return _K(adapter) * adjDbLength * adjQryLength *
-           exp(-_Lambda(adapter) * rawScore);
+    return getKappa(adapter) * adjDbLength * adjQryLength *
+           exp(-getLambda(adapter) * rawScore);
 }
 
 // ----------------------------------------------------------------------------
@@ -796,29 +904,27 @@ calcEValue(double    const   rawScore,
  * @fn BlastScoringAdapter#calcBitScoreAndEValue
  * @headerfile seqan/blast.h
  * @brief calculate the bits score and the E-Value from the raw score and parameters
- * @signature int calcBitScoreAndEValue(bitScore, eValue, score, lengthDb, engthQry, blastScoringScheme);
+ * @signature int calcBitScoreAndEValue(bitScore, eValue, score, lengthDb, lengthQry, blastScoringAdapter);
  *
  * @param[out]  bitScore    the bit Score [double]
  * @param[out]  eValue      the E-Value [double]
  * @param[in]   rawScore       the raw score [long]
  * @param[in]   lengthDb    total length of the database, when searching against DB (otherwise length of subject sequence) [unsigned long long]
  * @param[in]   lengthQry   length of the query sequence [unsigned long]
- * @param[in]   blastScoringScheme ScoringScheme with Karlin-Altschul statistical parameters
+ * @param[in]   blastScoringAdapter ScoringScheme and Karlin-Altschul statistical parameters
  *
- * @return     int         zero on success, non-zero if an error occurred
  * @see         Align#calcStatsAndScore
  */
 
-template <typename TAdapter, typename TScore>
-inline
-int _calcBitScoreAndEValue(double                    & bitScore,
-                           double                    & eValue,
-                           long                const & rawScore,
-                           unsigned long long  const & lengthDb,
-                           unsigned long       const & lengthQry,
-                           TAdapter            const & adapter)
+template <typename TScore>
+inline void
+_calcBitScoreAndEValue(double                            & bitScore,
+                       double                            & eValue,
+                       long                        const & rawScore,
+                       unsigned long long          const & lengthDb,
+                       unsigned long               const & lengthQry,
+                       BlastScoringAdapter<TScore> const & adapter)
 {
-
     bitScore = calcBitScore(rawScore, adapter);
 
     const unsigned long long lengthAdj = _lengthAdjustment(lengthDb,
@@ -829,21 +935,20 @@ int _calcBitScoreAndEValue(double                    & bitScore,
     const double n = lengthQry - lengthAdj;
 
     eValue = calcEValue(rawScore, m, n, adapter);
-
-    return 0;
 }
 
-inline
-int calcBitScoreAndEValue(double                    & bitScore,
-                          double                    & eValue,
-                          long                const & sc,
-                          unsigned long long  const & lengthDb,
-                          unsigned long       const & lengthQry,
-                          BlastScoringAdapter<Score<int, Simple>> const & adapter)
+inline void
+calcBitScoreAndEValue(double                    & bitScore,
+                      double                    & eValue,
+                      long                const & sc,
+                      unsigned long long  const & lengthDb,
+                      unsigned long       const & lengthQry,
+                      BlastScoringAdapter<Score<int, Simple>> const & adapter)
 {
+    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
     long mysc = sc;
     // for some parameters the score has to "rounded down" to being even
-    if (adapter[10])
+    if (TAdapter::karlinAltschulValues[adapter.index][10])
         if ((mysc % 2) != 0)
             mysc -= 1;
 
@@ -852,13 +957,13 @@ int calcBitScoreAndEValue(double                    & bitScore,
 }
 
 template <typename TScore>
-inline
-int calcBitScoreAndEValue(double                    & bitScore,
-                          double                    & eValue,
-                          long                const & sc,
-                          unsigned long long  const & lengthDb,
-                          unsigned long       const & lengthQry,
-                          BlastScoringAdapter<TScore> const & adapter)
+inline void
+calcBitScoreAndEValue(double                            & bitScore,
+                      double                            & eValue,
+                      long                        const & sc,
+                      unsigned long long          const & lengthDb,
+                      unsigned long               const & lengthQry,
+                      BlastScoringAdapter<TScore> const & adapter)
 {
     return _calcBitScoreAndEValue(bitScore, eValue, sc, lengthDb, lengthQry,
                                   adapter);
@@ -866,4 +971,4 @@ int calcBitScoreAndEValue(double                    & bitScore,
 
 }
 
-#endif // ndef __BLAST_STATISTICS_H__
+#endif // ndef __BLAST_STATISTICSgetH__

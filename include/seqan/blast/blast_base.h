@@ -326,7 +326,6 @@ getBlastProgramType(AminoAcid const &, Dna5 const &)
 // Functions
 // ============================================================================
 
-
 /*!
  * @defgroup BlastScoringScheme
  * @brief functions for converting to and from Blast's scoring-scheme behaviour
@@ -376,56 +375,56 @@ blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
 // _programTagToString()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatFile m,
+template <BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              p,
                                              g> const & /*tag*/)
 {
     return "UNKOWN BLAST PROGRAM";
 }
 
-template <BlastFormatFile::m, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              BlastFormatProgram::BlastN,
                                              g> const & /*tag*/)
 {
     return "BlastN";
 }
 
-template <BlastFormatFile::m, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              BlastFormatProgram::BlastP,
                                              g> const & /*tag*/)
 {
     return "BLASTP";
 }
 
-template <BlastFormatFile::m, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              BlastFormatProgram::BlastX,
                                              g> const & /*tag*/)
 {
     return "BLASTX";
 }
 
-template <BlastFormatFile::m, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              BlastFormatProgram::TBlastN,
                                              g> const & /*tag*/)
 {
     return "TBLASTN";
 }
 
-template <BlastFormatFile::m, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
-const char * _programTagToString(BlastFormat<m,
+const char * _programTagToString(BlastFormat<f,
                                              BlastFormatProgram::TBlastX,
                                              g> const & /*tag*/)
 {
@@ -445,7 +444,7 @@ const char * _defaultFields()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatProgram::Blast>()
+const char * _defaultFields<BlastFormatGeneration::Blast>()
 {
     return "Fields: Query id, Subject id, % identity, alignment length," \
            " mismatches, gap openings, q. start, q. end, s. start, s." \
@@ -454,16 +453,16 @@ const char * _defaultFields<BlastFormatProgram::Blast>()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatProgram::BlastPlus>()
+const char * _defaultFields<BlastFormatGeneration::BlastPlus>()
 {
     return "Fields: query id, subject id, % identity, alignment " \
            "length, mismatches, gap opens, q. start, q. end, s. " \
            "start, s. end, evalue, bit score";
 }
 
-template <BlastFormat::Program p, BlastFormatGeneration g>
+template <BlastFormatProgram p, BlastFormatGeneration g>
 constexpr
-const char * _defaultFields(BlastFormat<BlastFormat::TabularWithHeader,
+const char * _defaultFields(BlastFormat<BlastFormatFile::TabularWithHeader,
                                         p,
                                         g> const &)
 {

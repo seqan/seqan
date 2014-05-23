@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,27 +31,19 @@
 // ==========================================================================
 // Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
 // ==========================================================================
-// Module for handling NCBI Blast I/O and E-Value computation
+// Tests for align_extend
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_BLAST_H
-#define SEQAN_EXTRAS_BLAST_H
+#include <seqan/basic.h>
+#include <seqan/file.h>
 
-#ifdef SEQAN_CXX11_STANDARD
+#include "test_blast.h"
 
-#include "blast/blast_base.h"
-#include "blast/blast_record.h"
-#include "blast/blast_statistics.h"
-// #include "blast/read_blast_report.h"
-// #include "blast/read_blast_tabular.h"
-// #include "blast/write_blast_report.h"
-// #include "blast/write_blast_tabular.h"
-
-#else //SEQAN_C++11_STANDARD
-
-#error The blast module requires C++11 support. \
-If your compiler supports C++11, please define SEQAN_CXX11_STANDARD
-
-#endif //SEQAN_C++11_STANDARD
-
-#endif
+SEQAN_BEGIN_TESTSUITE(test_blast)
+{
+    SEQAN_CALL_TEST(test_blast_scoring_scheme_conversion);
+    SEQAN_CALL_TEST(test_blast_scoring_adapter);
+    SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
+    SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
+}
+SEQAN_END_TESTSUITE
