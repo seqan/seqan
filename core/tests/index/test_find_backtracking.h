@@ -65,10 +65,10 @@ testFinder(FinderTester<TText, TPattern, TSpec> & tester, Finder_<TText, TPatter
 
     for (TTextSize i = 0; i < textOccurrencesCount; ++i)
     {
-        addResult(tester, textOccurrences[i], 0, getScore(finder));
+        addResult(tester, textOccurrences[i], 0, _getScore(finder));
 #ifdef SEQAN_DEBUG
         std::cout << "text:           " << textOccurrences[i] << std::endl;
-        std::cout << "score:          " << static_cast<unsigned>(getScore(finder)) << std::endl;
+        std::cout << "score:          " << static_cast<unsigned>(_getScore(finder)) << std::endl;
         std::cout << std::endl;
 #endif
     }
@@ -96,11 +96,11 @@ testFinder(FinderTester<TText, Index<TPattern, TPatternIndexSpec>, TSpec> & test
     for (TTextSize i = 0; i < textOccurrencesCount; ++i)
         for (TPatternSize j = 0; j < patternOccurrencesCount; ++j)
         {
-            addResult(tester, textOccurrences[i], patternOccurrences[j], getScore(finder));
+            addResult(tester, textOccurrences[i], patternOccurrences[j], _getScore(finder));
 #ifdef SEQAN_DEBUG
             std::cout << "text:           " << textOccurrences[i] << std::endl;
             std::cout << "pattern:        " << patternOccurrences[j] << std::endl;
-            std::cout << "score:          " << static_cast<unsigned>(getScore(finder)) << std::endl;
+            std::cout << "score:          " << static_cast<unsigned>(_getScore(finder)) << std::endl;
             std::cout << std::endl;
 #endif
         }
@@ -163,7 +163,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_multiple_edit_banana_vs_ada_ana)
     addSolution(tester, TTextSAPos(4), TPatternSAPos(1, 0), 1);
     addSolution(tester, TTextSAPos(2), TPatternSAPos(1, 0), 1);
 
-    find_(finder, textIndex, patternIndex, 1, tester);
+    _find(finder, textIndex, patternIndex, 1, tester);
     test(tester);
 }
 
@@ -207,7 +207,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_multiple_hamming_banana_vs_ada_ana)
     addSolution(tester, TTextSAPos(3), TPatternSAPos(1, 0), 0);
     addSolution(tester, TTextSAPos(1), TPatternSAPos(1, 0), 0);
 
-    find_(finder, textIndex, patternIndex, 1, tester);
+    _find(finder, textIndex, patternIndex, 1, tester);
     test(tester);
 }
 
@@ -241,7 +241,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_single_hamming_banana_vs_ada)
     addSolution(tester, TTextSAPos(3), 0, 1);
     addSolution(tester, TTextSAPos(1), 0, 1);
 
-//    find_(finder, textIndex, pattern, 1, tester);
+//    _find(finder, textIndex, pattern, 1, tester);
 //    test(tester);
 }
 
@@ -279,7 +279,7 @@ SEQAN_DEFINE_TEST(test_find_backtracking_single_edit_banana_vs_ada)
     addSolution(tester, TTextSAPos(2), 0, 1);
 
 
-//    find_(finder, textIndex, pattern, 1, tester);
+//    _find(finder, textIndex, pattern, 1, tester);
 //    test(tester);
 }
 
