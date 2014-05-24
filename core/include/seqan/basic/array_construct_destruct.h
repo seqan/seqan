@@ -1256,18 +1256,18 @@ void _arrayClearSpaceDefault(TIterator array_begin,
         if (array_length > move_to) {
             // Case 2a: Moving right of array_length, i.e. we can move a part
             // of the objects and have to move-construct the rest.
-                    size_t middle = array_length - (move_to - keep_from);
+            size_t middle = array_length - (move_to - keep_from);
             arrayConstructMove(array_begin + middle, array_begin + array_length, array_begin + array_length);
             arrayMove(array_begin + keep_from, array_begin + middle, array_begin + move_to);
             arrayDestruct(array_begin, array_begin + move_to);
         } else {
             // Case 2b: We have to move-construct all target objects.
-                    arrayConstructMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
+            arrayConstructMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
             arrayDestruct(array_begin, array_begin + array_length);
         }
     } else {
         // Case 3: Move to the left.
-            arrayMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
+        arrayMove(array_begin + keep_from, array_begin + array_length, array_begin + move_to);
         arrayDestruct(array_begin, array_begin + move_to);
         arrayDestruct(array_begin + array_length - (keep_from - move_to), array_begin + array_length);
     }
