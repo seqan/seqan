@@ -142,22 +142,26 @@ public:
         SEQAN_ASSERT(empty(lock));
         SEQAN_ASSERT_EQ(writerCount, 0u);
 
+        TSize mask = roundSize - 1;
+        headPos &= mask;
+        tailPos &= mask;
+
         // wait for all pending readers to finish
         while (readerCount != 0)
         {}
 
-        TSize cap = capacity(data);
-        if (tailPos < headPos)
+        typename Iterator<TString, Standard>::Type arrayBegin = begin(data, Standard());
+
+        if (headPos <= tailPos)
         {
-            _clearSpace(data, 0u, tailPos, headPos, Insist());
-            _setLength(data, cap - (headPos - tailPos));
+            arrayDestruct(arrayBegin + headPos, arrayBegin + tailPos);
         }
         else
         {
-            _setLength(data, tailPos);
-            _clearSpace(data, 0u, (TSize)0, headPos, Insist());
-            _setLength(data, tailPos - headPos);
+            arrayDestruct(arrayBegin, arrayBegin + tailPos);
+            arrayDestruct(arrayBegin + headPos, arrayBegin + capacity(data));
         }
+        _setLength(data, 0);
     }
 };
 
