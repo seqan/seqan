@@ -219,34 +219,6 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 
 //____________________________________________________________________________
 
-    template <typename TInvSa, typename TSetLimits, typename TParallelTag>
-    struct InvSuffixArrayCreator_
-    {
-        typedef typename Size<TInvSa>::Type TSize;
-
-        TInvSa & data;
-        TSetLimits const & setLimits;
-        String<TSize> posArray;
-
-        InvSuffixArrayCreator_(TInvSa & invSa, TSetLimits const & limits) :
-            data(invSa),
-            setLimits(limits)
-        {
-            // Iinitializing.
-            Splitter<TSize> splitter(0, length(data), TParallelTag());
-            resize(posArray, length(splitter), Exact());
-            for (unsigned i = 0; i < length(splitter); ++i)
-                posArray[i] = splitter[i];
-        }
-
-        template <typename TSaIt>
-        inline void operator()(TSaIt const & itSa)
-        {
-            data[posGlobalize(*itSa, setLimits)] = value(posArray, omp_get_thread_num());
-            ++value(posArray, omp_get_thread_num());
-        }
-    };
-
 /*!
  * @fn createInvSuffixArray
  * @headerfile <seqan/index.h>
@@ -270,9 +242,23 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
                          TSa const &sa,
                          FromSortedSa<TParallel> const &/*alg*/)
     {
-        typedef typename StringSetLimits<TSa>::Type TLimits;
+        typedef typename Size<TSa>::Type                     TSize;
+        typedef typename StringSetLimits<TSa>::Type          TLimits;
+        typedef typename Iterator<TSa const, Standard>::Type TIter;
 
-        iterate(sa, InvSuffixArrayCreator_<TIsa, TLimits, TParallel>(isa, stringSetLimits(sa)), Standard(), TParallel());
+        TLimits const & limits = stringSetLimits(sa);
+        Splitter<TSize> splitter(0, length(isa), TParallel());
+
+        SEQAN_OMP_PRAGMA(parallel for)
+        for (TSize job = 0; job < length(splitter); ++job)
+        {
+            TIter saIt = begin(sa, Standard()) + splitter[job];
+            TIter saItEnd = begin(sa, Standard()) + splitter[job + 1];
+            TSize pos = splitter[job];
+
+            for (; saIt != saItEnd; ++saIt)
+                isa[posGlobalize(*saIt, limits)] = pos++;
+        }
     }
 
 //____________________________________________________________________________
