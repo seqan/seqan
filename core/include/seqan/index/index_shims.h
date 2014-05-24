@@ -219,6 +219,34 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 
 //____________________________________________________________________________
 
+    template <typename TInvSa, typename TSetLimits, typename TParallelTag>
+    struct InvSuffixArrayCreator_
+    {
+        typedef typename Size<TInvSa>::Type TSize;
+
+        TInvSa & data;
+        TSetLimits const & setLimits;
+        String<TSize> posArray;
+
+        InvSuffixArrayCreator_(TInvSa & invSa, TSetLimits const & limits) :
+            data(invSa),
+            setLimits(limits)
+        {
+            // Iinitializing.
+            Splitter<TSize> splitter(0, length(data), TParallelTag());
+            resize(posArray, length(splitter), Exact());
+            for (unsigned i = 0; i < length(splitter); ++i)
+                posArray[i] = splitter[i];
+        }
+
+        template <typename TSaIt>
+        inline void operator()(TSaIt const & itSa)
+        {
+            data[posGlobalize(*itSa, setLimits)] = value(posArray, omp_get_thread_num());
+            ++value(posArray, omp_get_thread_num());
+        }
+    };
+
 /*!
  * @fn createInvSuffixArray
  * @headerfile <seqan/index.h>
@@ -236,28 +264,15 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * The complexity is linear in size of the suffix array.
  */
 
-    template <typename TIsa, typename TSa, typename TAlgSpec>
+    template <typename TIsa, typename TSa, typename TParallel>
     inline void
     createInvSuffixArray(TIsa &isa,
                          TSa const &sa,
-                         TAlgSpec const &/*alg*/)
+                         FromSortedSa<TParallel> const &/*alg*/)
     {
-        typedef typename Iterator<TSa const, Standard>::Type TSaIter;
-        typedef typename Size<TIsa>::Type TSize;
-        SEQAN_ASSERT_EQ(length(isa), length(sa));
+        typedef typename StringSetLimits<TSa>::Type TLimits;
 
-        TSaIter itSaBegin = begin(sa, Standard());
-        TSize currPos = 0u;
-        for (TSaIter itSa = itSaBegin; itSa != end(sa, Standard()); ++itSa, ++currPos)
-            isa[posGlobalize(*itSa, stringSetLimits(sa))] = currPos;
-    }
-
-    template <typename TIsa, typename TSa, typename TAlgSpec>
-    inline void
-    createInvSuffixArray(TIsa &isa,
-                         TSa const &sa)
-    {
-        createInvSuffixArray(isa, sa, Default());
+        iterate(sa, InvSuffixArrayCreator_<TIsa, TLimits, TParallel>(isa, stringSetLimits(sa)), Standard(), TParallel());
     }
 
 //____________________________________________________________________________
@@ -704,8 +719,8 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 		return true;
 	}
 
-    template <typename TText, typename TSpec, typename TSpecAlg>
-    inline bool indexCreate(Index<TText, TSpec> &index, FibreIsa, TSpecAlg const alg)
+    template <typename TText, typename TSpec, typename TParallel>
+    inline bool indexCreate(Index<TText, TSpec> &index, FibreIsa, FromSortedSa<TParallel> const alg)
     {
         resize(indexIsa(index), length(indexRawText(index)), Exact());
         createInvSuffixArray(indexIsa(index), indexSA(index), alg);

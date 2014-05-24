@@ -66,26 +66,27 @@ SEQAN_DEFINE_TEST(testIndexCreation)
         bool result = true;
         (void)result;  // Is never read...
 
-        _proFloat timeDelta[13];
-        _proFloat timeSum[13];
+        _proFloat timeDelta[14];
+        _proFloat timeSum[14];
         for(int i = 0; i < 10; ++i)
             timeSum[i] = 0;
         __int64 textSum = 0;
 
         static const char* algNames[] = {
-            "Skew3        ",
-            "Skew7        ",
-            "ManberMyers  ",
-            "LarssonSadake",
-            "SAQSort      ",
-            "Skew3Ext     ",
-            "Skew7Ext     ",
-            "InvSA        ",
-            "Kasai        ",
-            "KasaiInPlace ",
-            "KasaiExt     ",
-            "Childtab     ",
-            "ChildTabExt  "
+            "Skew3         ",
+            "Skew7         ",
+            "ManberMyers   ",
+            "LarssonSadake ",
+            "SAQSort       ",
+            "Skew3Ext      ",
+            "Skew7Ext      ",
+            "InvSA         ",
+            "InvSA Parallel",
+            "Kasai         ",
+            "KasaiInPlace  ",
+            "KasaiExt      ",
+            "Childtab      ",
+            "ChildTabExt   "
         };
 
         int TI;
@@ -199,10 +200,20 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 
             resize(isa, size);
             timeDelta[TI] = -SEQAN_PROGETTIME;
-            createInvSuffixArray(isa, sa, Default());
+            createInvSuffixArray(isa, sa, FromSortedSa<Serial>());
             timeDelta[TI++] += SEQAN_PROGETTIME;
             if (!isInvSuffixArray(isa, sa, text)) {
                 std::cout << "inverse suffix array creation (in-memory) failed" << std::endl;
+                result = false;
+            }
+            std::cout << "."; std::cout.flush();
+            blank(isa);
+
+            timeDelta[TI] = -SEQAN_PROGETTIME;
+            createInvSuffixArray(isa, sa, FromSortedSa<Parallel>());
+            timeDelta[TI++] += SEQAN_PROGETTIME;
+            if (!isInvSuffixArray(isa, sa, text)) {
+                std::cout << "parallel inverse suffix array creation (in-memory) failed" << std::endl;
                 result = false;
             }
             std::cout << "."; std::cout.flush();
