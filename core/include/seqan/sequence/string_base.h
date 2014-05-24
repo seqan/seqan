@@ -822,6 +822,7 @@ struct ClearSpaceExpandStringBase_
             arrayConstructMove(old_array, old_array + start, seq_array);
             arrayConstructMove(old_array + end, old_array + old_length, seq_array + start + size);
             _deallocateStorage(seq, old_array, old_capacity);
+            // TODO(weese:) Did we miss to destruct the old_array here, e.g. with arrayDestruct
         }
         else
         {
