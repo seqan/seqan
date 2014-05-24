@@ -116,6 +116,35 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
     }
 }
 
+SEQAN_DEFINE_TEST(test_parallel_queue_non_pod)
+{
+//    typedef std::string TValue;
+    typedef seqan::CharString TValue;
+
+    // in a queue of capacity 3 try all 3 states of being empty
+    for (int ofs = 1; ofs < 10; ++ofs)
+    {
+        seqan::ConcurrentQueue<TValue> queue(10);
+
+        for (int i = 0; i < ofs; ++i)
+        {
+            TValue x;
+            TValue y = "al_";
+            y[2] = '0' + i;
+            appendValue(queue, TValue(y));
+            SEQAN_ASSERT(tryPopFront(x, queue));
+            SEQAN_ASSERT_EQ(x, y);
+        }
+        SEQAN_ASSERT(empty(queue));
+
+        for (int i = 0; i < 4; ++i)
+        {
+            TValue y = "al_";
+            y[2] = '0' + i;
+            appendValue(queue, TValue(y));
+        }
+    }
+}
 
 template <typename TResizeTag, typename TParallelPop, typename TParallelPush>
 void testMPMCQueue(size_t initialCapacity)
