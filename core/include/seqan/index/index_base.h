@@ -44,21 +44,25 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // needful forward declarations
 
-	// suffix array construction specs
-	struct Skew3;
-	struct Skew7;
-	struct LarssonSadakane;
-	struct ManberMyers;
-	struct SAQSort;
-	struct QGramAlg;
+    // suffix array construction specs
+    struct Skew3;
+    struct Skew7;
+    struct LarssonSadakane;
+    struct ManberMyers;
+    struct SAQSort;
+    struct QGramAlg;
 
-	// lcp table construction algorithms
-	struct Kasai;
-	struct KasaiOriginal;	// original, but more space-consuming algorithm
+    // inverse suffix array construction specs
+    template <typename TParallel>
+    struct FromSortedSa{};
 
-	// enhanced suffix array construction algorithms
-	struct Childtab;
-	struct Bwt;
+    // lcp table construction algorithms
+    struct Kasai;
+    struct KasaiOriginal;	// original, but more space-consuming algorithm
+
+    // enhanced suffix array construction algorithms
+    struct Childtab;
+    struct Bwt;
 
 /*
 .Tag.Index Find Algorithm
@@ -853,37 +857,41 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 //////////////////////////////////////////////////////////////////////////////
 // default fibre creators
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreSA> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreSA> {
         typedef Skew7 Type;							// standard suffix array creator is skew7
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreLcp> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreIsa> {
+        typedef FromSortedSa<Serial> Type;
+    };
+
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreLcp> {
         typedef Kasai Type;
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreBwt> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreBwt> {
         typedef Bwt Type;
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreChildtab> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreChildtab> {
         typedef Childtab Type;
     };
 
-
-	template <typename TText, typename TSpec>
-	inline typename Member<Index<TText, TSpec>, FibreText>::Type &
+    template <typename TText, typename TSpec>
+    inline typename Member<Index<TText, TSpec>, FibreText>::Type &
     _dataHost(Index<TText, TSpec> & index) {
-		return index.text;
-	}
-	template <typename TText, typename TSpec>
-	inline typename Member<Index<TText, TSpec> const, FibreText>::Type &
+        return index.text;
+    }
+    template <typename TText, typename TSpec>
+    inline typename Member<Index<TText, TSpec> const, FibreText>::Type &
     _dataHost(Index<TText, TSpec> const &index) {
-		return index.text;
-	}
+        return index.text;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /**
