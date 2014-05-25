@@ -247,7 +247,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
         typedef typename Iterator<TSa const, Standard>::Type TIter;
 
         TLimits const & limits = stringSetLimits(sa);
-        Splitter<TSize> splitter(0, length(isa), TParallel());
+        Splitter<TSize> splitter(0, length(sa), TParallel());
 
         SEQAN_OMP_PRAGMA(parallel for)
         for (TSize job = 0; job < length(splitter); ++job)
