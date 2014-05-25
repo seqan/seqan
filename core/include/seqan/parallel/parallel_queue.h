@@ -426,8 +426,6 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     }
     while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos, parallelTag));
 
-    __sync_synchronize();
-
     // extract value and destruct it in the data string
     TIter it = begin(me.data, Standard()) + (headReadPos & (roundSize - 1));
     std::swap(result, *it);
@@ -436,8 +434,6 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     // wait for pending previous reads and synchronize headPos to headReadPos
     while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
     {}
-
-    __sync_synchronize();
 
     return true;
 }
@@ -703,8 +699,6 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 
                 if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
                 {
-                    __sync_synchronize();
-
                     TIter it = begin(me.data, Standard()) + (tailWritePos & (roundSize - 1));
                     valueConstruct(it, SEQAN_FORWARD(TValue, val));
 
@@ -712,8 +706,6 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
                     {}
 
-                    __sync_synchronize();
-                    
                     return;
                 }
             }
