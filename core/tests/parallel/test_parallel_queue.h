@@ -157,7 +157,7 @@ void testMPMCQueue(size_t initialCapacity)
 
     unsigned chkSum = 0;
 
-    resize(random, 10000000);
+    resize(random, 100000);
     for (unsigned i = 0; i < length(random); ++i)
     {
         random[i] = pickRandomNumber(rng);
@@ -197,7 +197,9 @@ void testMPMCQueue(size_t initialCapacity)
 //                printf("start writer thread: %i\n", omp_get_thread_num());
 //            }
             for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
+            {
                 appendValue(queue, random[j], TResizeTag(), TParallelPush());
+            }
 
 //            SEQAN_OMP_PRAGMA(critical(cout))
 //            {
@@ -221,8 +223,8 @@ void testMPMCQueue(size_t initialCapacity)
             {
                 chkSumLocal ^= val;
                 ++cnt;
-                if ((cnt & 1024) == 0)
-                    printf("%d", tid - writerCount);
+                if ((cnt & 0xffff) == 0)
+                    printf("%d ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
 
