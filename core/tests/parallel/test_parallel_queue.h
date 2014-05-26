@@ -221,6 +221,8 @@ void testMPMCQueue(size_t initialCapacity)
             {
                 chkSumLocal ^= val;
                 ++cnt;
+                if ((cnt & 1024) == 0)
+                    printf("%d", tid - writerCount);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
 
