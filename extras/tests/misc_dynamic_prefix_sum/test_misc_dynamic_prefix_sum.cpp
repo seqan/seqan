@@ -39,7 +39,6 @@
 
 #include "test_misc_dynamic_prefix_sum.h"
 
-
 SEQAN_BEGIN_TESTSUITE(test_misc_dynamic_prefix_sum)
 {
     // Call tests.
@@ -47,5 +46,6 @@ SEQAN_BEGIN_TESTSUITE(test_misc_dynamic_prefix_sum)
 	SEQAN_CALL_TEST(test_misc_dynamic_prefix_sum_empty);
 	SEQAN_CALL_TEST(test_misc_dynamic_prefix_sum_insert);
 	SEQAN_CALL_TEST(test_misc_dynamic_prefix_sum_prefix_sum);
+	SEQAN_CALL_TEST(test_misc_dynamic_prefix_sum_find);
 }
 SEQAN_END_TESTSUITE

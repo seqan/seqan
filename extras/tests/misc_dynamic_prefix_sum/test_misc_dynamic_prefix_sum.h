@@ -642,5 +642,44 @@ SEQAN_DEFINE_TEST(test_misc_dynamic_prefix_sum_prefix_sum)
     }
 }
 
+SEQAN_DEFINE_TEST(test_misc_dynamic_prefix_sum_find)
+{
+    using namespace seqan;
+
+    typedef DynamicPrefixSumTree<unsigned, int, 3> TPrefixSumTree;
+
+    TPrefixSumTree tree;
+
+    SEQAN_ASSERT_EQ(find(tree, 0), false);
+    SEQAN_ASSERT_EQ(find(tree, 100), false);
+
+    insert(tree, 10, -2);
+    insert(tree, 20,  7);
+    insert(tree,  5,  4);
+    insert(tree, 25, -6);
+    insert(tree,  0,  1);
+    insert(tree, 19, -2);
+    insert(tree, 11,  7);
+    insert(tree,  7,  4);
+    insert(tree, 1, -6);
+    insert(tree,  25,  1);
+    insert(tree, 30, -2);
+    insert(tree, 75,  7);
+    insert(tree,  2,  4);
+    insert(tree, 18, -6);
+    insert(tree,  12,  1);
+
+    SEQAN_ASSERT_EQ(find(tree, 0), true);
+    SEQAN_ASSERT_EQ(find(tree, 8), false);
+    SEQAN_ASSERT_EQ(find(tree, 9), false);
+    SEQAN_ASSERT_EQ(find(tree, 10), true);
+    SEQAN_ASSERT_EQ(find(tree, 11), true);
+    SEQAN_ASSERT_EQ(find(tree, 12), true);
+    SEQAN_ASSERT_EQ(find(tree, 13), false);
+    SEQAN_ASSERT_EQ(find(tree, 20), true);
+    SEQAN_ASSERT_EQ(find(tree, 74), false);
+    SEQAN_ASSERT_EQ(find(tree, 75), true);
+    SEQAN_ASSERT_EQ(find(tree, 76), false);
+}
 
 #endif  // EXTRAS_TESTS_MISC_DYNAMIC_PREFIX_SUM_TEST_MISC_DYNAMIC_PREFIX_SUM_H_

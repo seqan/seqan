@@ -185,6 +185,28 @@ struct PrefixSumFunctor_<DpsTreeNode_<TKey, TCargo, B_FACTOR> >
     }
 };
 
+template <typename TNode>
+struct SimpleFindFunctor_{};
+
+template <typename TKey, typename TCargo, unsigned B_FACTOR>
+struct SimpleFindFunctor_<DpsTreeNode_<TKey, TCargo, B_FACTOR> >
+{
+    typedef DpsTreeNode_<TKey, TCargo, B_FACTOR> TNode;
+
+    bool foundKey;
+    TKey _key;
+
+    SimpleFindFunctor_(TKey key) : foundKey(false), _key(key)
+    {}
+
+    template <typename TPos>
+    inline void
+    operator()(TNode const & node, TPos idx)
+    {
+        foundKey = getKey(node, idx) == _key;
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -541,7 +563,7 @@ _find(TFunctor & functor,
             --it;
             // Now either it compares equal to the value or it must be in the subtree right of the current it.
             functor(*currNodePtr, it - begin(_getKeyTable(*currNodePtr), Standard()));
-            if (*it == key)
+            if (static_cast<TKey2>(*it) == key)
                 return true;
 
             if (isLeaf(*currNodePtr))
@@ -686,10 +708,34 @@ prefixSum(DynamicPrefixSumTree<TKey, TCargo, B_FACTOR, TSpec> const & tree,
     typedef DynamicPrefixSumTree<TKey, TCargo, B_FACTOR, TSpec> TTree;
     typedef typename Value<TTree>::Type TNode;
 
+    if (empty(tree))
+        return 0;
+
     PrefixSumFunctor_<TNode> func;
 
     _find(func, tree, newKey);
     return func.currSum;
+}
+
+// ----------------------------------------------------------------------------
+// Function find()
+// ----------------------------------------------------------------------------
+
+template <typename TKey, typename TCargo, unsigned B_FACTOR, typename TSpec, typename TKey2>
+inline bool
+find(DynamicPrefixSumTree<TKey, TCargo, B_FACTOR, TSpec> const & tree,
+     TKey2 const & key)
+{
+    typedef DynamicPrefixSumTree<TKey, TCargo, B_FACTOR, TSpec> TTree;
+    typedef typename Value<TTree>::Type TNode;
+
+    if (empty(tree))
+        return false;
+
+    SimpleFindFunctor_<TNode> func(key);
+
+    _find(func, tree, key);
+    return func.foundKey;
 }
 
 }
