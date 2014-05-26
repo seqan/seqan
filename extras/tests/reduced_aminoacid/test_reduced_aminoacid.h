@@ -101,8 +101,6 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
         conv = aas;
         SEQAN_ASSERT_EQ(CharString(conv), "ARNNCNNGHIIRIFPSSFFIAAAA");
     }
-
 }
-
 
 #endif  // SEQAN_EXTRAS_TESTS_REDUCED_ALPHABET_H_
