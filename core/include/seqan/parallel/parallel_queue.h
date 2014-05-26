@@ -87,11 +87,17 @@ public:
     TString                 data;
     mutable ReadWriteLock   lock;
 
-    volatile TSize headPos;
-    volatile TSize headReadPos;
-    volatile TSize tailPos;
-    volatile TSize tailWritePos;
-    TSize roundSize;
+//    volatile TSize headPos;
+//    volatile TSize headReadPos;
+//    volatile TSize tailPos;
+//    volatile TSize tailWritePos;
+//    TSize roundSize;
+
+    std::atomic<TSize> headPos;
+    std::atomic<TSize> headReadPos;
+    std::atomic<TSize> tailPos;
+    std::atomic<TSize> tailWritePos;
+    std::atomic<TSize> roundSize;
 
     volatile unsigned readerCount;
     volatile unsigned writerCount;
@@ -416,7 +422,8 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 
     // wait for queue to become filled
     do {
-        headReadPos = me.headReadPos;
+//        headReadPos = me.headReadPos;
+        headReadPos = me.headReadPos.load();
 
         // return if queue is empty?
         if (headReadPos == me.tailPos)
@@ -424,7 +431,8 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 
         newHeadReadPos = _cyclicInc(headReadPos, cap, roundSize);
     }
-    while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos, parallelTag));
+//    while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos, parallelTag));
+    while (!me.headReadPos.compare_exchange_strong(headReadPos, newHeadReadPos));
 
     // extract value and destruct it in the data string
     TIter it = begin(me.data, Standard()) + (headReadPos & (roundSize - 1));
@@ -432,7 +440,8 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     valueDestruct(it);
 
     // wait for pending previous reads and synchronize headPos to headReadPos
-    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
+//    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
+    while (!me.headPos.compare_exchange_strong(headReadPos, newHeadReadPos));
     {}
 
     return true;
@@ -613,7 +622,8 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
     bool valueWasAppended = false;
 
     // did we reach the capacity limit (another thread could have done the upgrade already)?
-    if (_cyclicInc(me.tailPos, cap, me.roundSize) >= me.headPos + me.roundSize)
+//    if (_cyclicInc(me.tailPos.load(), cap, me.roundSize) >= me.headPos + me.roundSize)
+    if (_cyclicInc(me.tailPos.load(), cap, me.roundSize.load()) >= me.headPos.load() + me.roundSize.load())
     {
         if (cap != 0)
         {
@@ -697,13 +707,15 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                 if (newTailWritePos >= me.headPos + roundSize)
                     break;
 
-                if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
+//                if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
+                if (me.tailWritePos.compare_exchange_strong(tailWritePos, newTailWritePos))
                 {
                     TIter it = begin(me.data, Standard()) + (tailWritePos & (roundSize - 1));
                     valueConstruct(it, SEQAN_FORWARD(TValue, val));
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
-                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
+//                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
+                    while (me.tailPos.compare_exchange_strong(tailWritePos, newTailWritePos))
                     {}
 
                     return;
