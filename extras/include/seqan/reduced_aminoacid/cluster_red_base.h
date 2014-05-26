@@ -109,7 +109,7 @@ using ClusterReduction = Tag<ClusterReduction_<n, m, TMatrix> >;
 template <unsigned char n, unsigned char m, typename TMatrix>
 struct ValueSize<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = n;
 };
 
@@ -120,19 +120,13 @@ struct ValueSize<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
 template <unsigned char n, unsigned char m, typename TMatrix>
 struct BitsPerValue<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = Log2<n>::VALUE;
 };
 
 // -----------------------------------------------------------------------
 // Translation Tables (implementations see extra files)
 // -----------------------------------------------------------------------
-
-template <unsigned char n, unsigned char m, typename TMatrix>
-struct TranslateTableRedAAToAscii_<ClusterReduction<n,m,TMatrix> >
-{
-    static char const VALUE[n];
-};
 
 // ============================================================================
 // Functions

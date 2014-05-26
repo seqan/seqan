@@ -83,7 +83,7 @@ typedef Tag<Murphy10_> Murphy10;
 template <>
 struct ValueSize<ReducedAminoAcid<Murphy10> >
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 10;
 };
 
@@ -94,19 +94,13 @@ struct ValueSize<ReducedAminoAcid<Murphy10> >
 template <>
 struct BitsPerValue<ReducedAminoAcid<Murphy10> >
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 4;
 };
 
 // -----------------------------------------------------------------------
 // Translation Tables (implementations see extra files)
 // -----------------------------------------------------------------------
-
-template <>
-struct TranslateTableRedAAToAscii_<Murphy10 >
-{
-    static char const VALUE[10];
-};
 
 // ============================================================================
 // Functions

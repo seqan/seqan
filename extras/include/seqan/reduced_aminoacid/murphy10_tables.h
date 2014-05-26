@@ -53,74 +53,113 @@ namespace seqan {
 
 // ---------------------------------- N = 10 ------------------------------
 
-// template <>
-char const TranslateTableRedAAToAscii_<Murphy10>::VALUE[10] =
+template <typename TSpec>
+struct TranslateTableRedAAToAscii_<Murphy10, TSpec>
 {
-    'A', // A
-    'R', // R K
-    'N', // N D Q E
-    'C', // C
-    'G', // G
-    'H', // H
-    'I', // I L M V
-    'F', // F W Y
-    'P', // P
-    'S'  // S T
+    typedef typename ValueSize<ReducedAminoAcid<Murphy10>>::Type Type;
+    static constexpr Type
+    VALUE[ValueSize<ReducedAminoAcid<Murphy10>>::VALUE]
+    {
+        'A', // A
+        'R', // R K
+        'N', // N D Q E
+        'C', // C
+        'G', // G
+        'H', // H
+        'I', // I L M V
+        'F', // F W Y
+        'P', // P
+        'S'  // S T
+    };
 };
 
-template <>
-char const TranslateTableAsciiToRedAA_<Murphy10>::VALUE[256] =
+template <typename TSpec>
+constexpr typename ValueSize<ReducedAminoAcid<Murphy10>>::Type
+TranslateTableRedAAToAscii_<Murphy10, TSpec>::VALUE
+[ValueSize<ReducedAminoAcid<Murphy10>>::VALUE];
+
+// --
+template <typename TSpec>
+struct TranslateTableAsciiToRedAA_<Murphy10, TSpec>
 {
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,  6,  0,
-     1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,  0,  7,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,
-     6,  0,  1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,
-     0,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
+    typedef typename ValueSize<ReducedAminoAcid<Murphy10>>::Type Type;
+    static constexpr Type
+    VALUE[256]
+    {
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,  6,  0,
+        1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,  0,  7,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,
+        6,  0,  1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,
+        0,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0
+    };
 };
 
-template <>
-char const TranslateTableAAToRedAA_<Murphy10>::VALUE[24] =
+template <typename TSpec>
+constexpr typename ValueSize<ReducedAminoAcid<Murphy10>>::Type
+TranslateTableAsciiToRedAA_<Murphy10, TSpec>::VALUE[256];
+
+// --
+template <typename TSpec>
+struct TranslateTableAAToRedAA_<Murphy10, TSpec>
 {
-     0,  1,  2,  2,  3,  2,  2,  4,  5,  6,  6,  1,
-     6,  7,  8,  9,  9,  7,  7,  6,  0,  0,  0,  0
+    typedef typename ValueSize<ReducedAminoAcid<Murphy10>>::Type Type;
+    static constexpr Type
+    VALUE[24]
+    {
+        0,  1,  2,  2,  3,  2,  2,  4,  5,  6,  6,  1,
+        6,  7,  8,  9,  9,  7,  7,  6,  0,  0,  0,  0
+    };
 };
 
-template <>
-char const TranslateTableByteToRedAA_<Murphy10>::VALUE[256] =
+template <typename TSpec>
+constexpr typename ValueSize<ReducedAminoAcid<Murphy10>>::Type
+TranslateTableAAToRedAA_<Murphy10, TSpec>::VALUE[24];
+
+// --
+template <typename TSpec>
+struct TranslateTableByteToRedAA_<Murphy10, TSpec>
 {
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
+    typedef typename ValueSize<ReducedAminoAcid<Murphy10>>::Type Type;
+    static constexpr Type
+    VALUE[256]
+    {
+        0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0
+    };
 };
 
+template <typename TSpec>
+constexpr typename ValueSize<ReducedAminoAcid<Murphy10>>::Type
+TranslateTableByteToRedAA_<Murphy10, TSpec>::VALUE[256];
 
 // ============================================================================
 // Functions

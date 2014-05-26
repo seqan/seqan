@@ -39,7 +39,6 @@
 
 namespace seqan {
 
-
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -114,30 +113,17 @@ struct CompareType<ReducedAminoAcid<TRedSpec>, Unicode>
 // Translation Tables (implementations see extra files)
 // -----------------------------------------------------------------------
 
-template <typename TRedSpec>
-struct TranslateTableAsciiToRedAA_
-{
-    static char const VALUE[256];
-};
+template <typename TRedSpec, typename TSpec = void>
+struct TranslateTableAsciiToRedAA_;
 
-template <typename TRedSpec>
-struct TranslateTableAAToRedAA_
-{
-    static char const VALUE[24];
-};
+template <typename TRedSpec, typename TSpec = void>
+struct TranslateTableAAToRedAA_;
 
-template <typename TRedSpec>
-struct TranslateTableByteToRedAA_
-{
-    static char const VALUE[256];
-};
+template <typename TRedSpec, typename TSpec = void>
+struct TranslateTableByteToRedAA_;
 
-// needs to be overwritten
-template <typename TRedSpec>
-struct TranslateTableRedAAToAscii_
-{
-    static char const VALUE[24];
-};
+template <typename TRedSpec, typename TSpec = void>
+struct TranslateTableRedAAToAscii_;
 
 // ============================================================================
 // Functions
