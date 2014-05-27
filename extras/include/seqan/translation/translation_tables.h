@@ -163,11 +163,9 @@ template <GeneticCodeSpec = GeneticCodeSpec::CANONICAL>
 struct GeneticCode
 {};
 
-
 // -----------------------------------------------------------------------
 // struct TranslateTableDnaToAminoAcid_
 // -----------------------------------------------------------------------
-
 
 template <typename TCodeSpec, typename TVoidSpec = void>
 struct TranslateTableDnaToAminoAcid_;
