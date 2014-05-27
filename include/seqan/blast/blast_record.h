@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -159,21 +159,21 @@ struct BlastMatch
         qId(TQId()), sId(TSId()), score(0), qStart(0), qEnd(0), sStart(0),
         sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
         mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
-        qFrameShift(0), sFrameShift(0)
+        qFrameShift(1), sFrameShift(1)
     {}
 
     BlastMatch(TQId const & _qId, TSId const & _sId) :
         qId(_qId), sId(_sId), score(0), qStart(0), qEnd(0), sStart(0),
         sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
         mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
-        qFrameShift(0), sFrameShift(0)
+        qFrameShift(1), sFrameShift(1)
     {}
 
     BlastMatch(TQId && _qId, TSId && _sId) :
         qId(std::move(_qId)), sId(std::move(_sId)), score(0), qStart(0),
         qEnd(0), sStart(0), sEnd(0), sLength(0),  aliLength(0), identities(0),
         positives(0), mismatches(0), gaps(0), gapOpenings(0), eVal(0),
-        bitScore(0), qFrameShift(0), sFrameShift(0)
+        bitScore(0), qFrameShift(1), sFrameShift(1)
     {}
 
     inline bool operator==(BlastMatch const & bm2) const
@@ -239,7 +239,7 @@ struct BlastMatch
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
  *
- * @typedef BlastRecord::TBlastMatch
+ * @typedef BlastRecord::TBLASTMatch
  * @signature typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
  * @brief type of the contained matches
  *
@@ -269,7 +269,7 @@ template <typename TDbName = CharString,
           typename TAlign = Align<CharString, ArrayGaps>>
 struct BlastRecord
 {
-    typedef         BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
     TDbName         dbName;
     uint64_t        dbTotalLength;
     uint32_t        dbNumberOfSeqs;

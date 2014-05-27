@@ -45,5 +45,10 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_scoring_adapter);
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
+
+    SEQAN_CALL_TEST(test_blast_write_tabular_generationblast);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_generationblast);
+    SEQAN_CALL_TEST(test_blast_write_pairwise_generationblast);
+
 }
 SEQAN_END_TESTSUITE

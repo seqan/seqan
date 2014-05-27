@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@
 
 /* IMPLEMENTATION NOTES
 
-BLAST Tabular example:
+BLAST TABULAR example:
 
 The format of a blast tabular output file is less simple than it looks, here's
 the general form
@@ -120,11 +120,11 @@ namespace seqan {
 
 template <typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline bool
 onMatch(RecordReader<TFile, TPass > & reader,
-         BlastFormat<BlastFormatOptions::Tabular,
+         BlastFormat<BlastFormatFile::TABULAR,
                      p,
                      g>       const & /*tag*/)
 {
@@ -135,36 +135,36 @@ onMatch(RecordReader<TFile, TPass > & reader,
 
 template <typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline bool
 onMatch(RecordReader<TFile, TPass > & reader,
-         BlastFormat<BlastFormatOptions::TabularWithHeader,
+         BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                      p,
                      g>       const & /*tag*/)
 {
     return onMatch(reader,
-                    BlastFormat<BlastFormatOptions::Tabular,p,g>());
+                    BlastFormat<BlastFormatFile::TABULAR,p,g>());
 }
 
 
 // verify whether the fields are default fields
 template <typename TString,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _verifyFields(StringSet<TString>    const & fields,
               unsigned              const   hits,
               // irrelevant for traditional header
-              BlastFormat<BlastFormatOptions::TabularWithHeader,
+              BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                           p,
                           g>        const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
-                        BlastFormatOptions::Blast>  TFormat;
+                        BlastFormatGeneration::BLAST>  TFormat;
 
-    if (g == BlastFormatOptions::BlastPlus)
+    if (g == BlastFormatGeneration::BLAST_PLUS)
         if ((hits == 0) && length(fields) )
             return 0;
 
@@ -188,8 +188,8 @@ template <typename TqId,
           typename TPass,
           typename TString,
           typename TString2,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _readHeaderImplBlastTab(TqId                                    & qId,
                         TDBName                                 & dbName,
@@ -200,11 +200,11 @@ _readHeaderImplBlastTab(TqId                                    & qId,
                         // any other lines
                         RecordReader<TFile, TPass >             & reader,
                         bool                              const   strict,
-                        BlastFormat<BlastFormatOptions::TabularWithHeader,
+                        BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                                     p,
                                     g>                    const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         g> TFormat;
 
@@ -282,7 +282,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
             strSplit(fields, buf, ", ");
 
             ++fieldsLinePresent;
-            if (g == BlastFormatOptions::Blast)
+            if (g == BlastFormatGeneration::BLAST)
                 break; // header is finished
         }
         else
@@ -295,7 +295,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
             CharString &fullLine = key;
             append(fullLine, buf);
 
-            if (g == BlastFormatOptions::BlastPlus)
+            if (g == BlastFormatGeneration::BLAST_PLUS)
             {
                 // last line of BlastPlus Format
                 if (hasPrefix(fullLine, "BLAST processed"))
@@ -325,7 +325,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
     if (!strict)
         return 0;
 
-    if (g == BlastFormatOptions::Blast)
+    if (g == BlastFormatGeneration::BLAST)
         if (  keyCorrect                &&
              (queryLinePresent   == 1)  &&
              (dbLinePresent      == 1)  &&
@@ -333,7 +333,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
              (length(otherLines) == 0)   )
             return 0;
 
-    if (g == BlastFormatOptions::BlastPlus)
+    if (g == BlastFormatGeneration::BLAST_PLUS)
         if (( keyCorrect                                   &&
              (queryLinePresent    == 1)                    &&
              (dbLinePresent       == 1)                    &&
@@ -360,7 +360,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[out]  otherLines  StringSet to hold any comment or header lines that are not identified otherwise
  * @param[in,out]   reader  RecordReader
  * @param[in]   strict  bool to signify whether the function should return error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
- * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
+ * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
  *
  * @return     0 on success, and non-zero otherwise
  * @see BlastFormat#onMatch
@@ -376,19 +376,19 @@ template <typename TqId,
           typename TVersionString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readHeader(TqId                                                 & qId,
            TDBName                                              & dbName,
            TVersionString                                       & versionString,
            RecordReader<TFile, TPass >                          & reader,
            bool                                           const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
                        g>                                 const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         g> TFormat;
 
@@ -424,7 +424,7 @@ template <typename TqId,
           typename TVersionString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p>
+          BlastFormatProgram p>
 inline int
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -432,13 +432,13 @@ readHeader(TqId                                             & qId,
            unsigned long                                    & hits,
            RecordReader<TFile, TPass >                      & reader,
            bool                                       const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
-                       BlastFormatOptions::BlastPlus> const & /*tag*/)
+                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
-                        BlastFormatOptions::BlastPlus> TFormat;
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
 
     StringSet<CharString> otherLines;
     StringSet<CharString> fields;
@@ -473,8 +473,8 @@ template <typename TqId,
           typename TFieldString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -482,11 +482,11 @@ readHeader(TqId                                             & qId,
            StringSet<TFieldString>                          & fields,
            RecordReader<TFile, TPass >                      & reader,
            bool                                       const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
                        g>                             const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         g> TFormat;
 
@@ -517,7 +517,7 @@ template <typename TqId,
           typename TFieldString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p>
+          BlastFormatProgram p>
 inline int
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -526,13 +526,13 @@ readHeader(TqId                                             & qId,
            StringSet<TFieldString>                          & fields,
            RecordReader<TFile, TPass >                      & reader,
            bool                                       const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
-                       BlastFormatOptions::BlastPlus> const & /*tag*/)
+                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
-                        BlastFormatOptions::BlastPlus> TFormat;
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
 
     StringSet<CharString> otherLines;
 
@@ -562,8 +562,8 @@ template <typename TqId,
           typename TOtherString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -572,11 +572,11 @@ readHeader(TqId                                             & qId,
            StringSet<TOtherString>                          & otherLines,
            RecordReader<TFile, TPass >                      & reader,
            bool                                       const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
                        g>                             const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         g> TFormat;
 
@@ -607,7 +607,7 @@ template <typename TqId,
           typename TOtherString,
           typename TFile,
           typename TPass,
-          BlastFormatOptions::Program p>
+          BlastFormatProgram p>
 inline int
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -617,13 +617,13 @@ readHeader(TqId                                             & qId,
            StringSet<TOtherString>                          & otherLines,
            RecordReader<TFile, TPass >                      & reader,
            bool                                       const   strict,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
-                       BlastFormatOptions::BlastPlus> const & /*tag*/)
+                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
-                        BlastFormatOptions::BlastPlus> TFormat;
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
 
     int ret =  _readHeaderImplBlastTab(qId,
                                        dbName,
@@ -654,7 +654,7 @@ readHeader(TqId                                             & qId,
  *
  * @param[in,out]   reader  RecordReader
  * @param[in]   strict  bool to signify whether the function should return error on a non-conforming header or just "skip whatever possible".
- * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
+ * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
  *
  * @see BlastFormat#skipUntilMatch
  * @return     0 on success, and non-zero otherwise
@@ -669,8 +669,8 @@ readHeader(TqId                                             & qId,
 template <typename TFile,
           typename TPass,
           BlastFormatOptions::M m,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 skipHeader(RecordReader<TFile, TPass >        & reader,
            bool                         const   strict,
@@ -697,8 +697,8 @@ skipHeader(RecordReader<TFile, TPass >        & reader,
 template <typename TFile,
           typename TPass,
           BlastFormatOptions::M m,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 skipHeader(RecordReader<TFile, TPass > & reader,
            BlastFormat<m,p,g> const & /*tag*/)
@@ -733,7 +733,7 @@ to standards), use @Function.BlastFormat#skipHeader@ instead.
  *
  * @param[in,out]   reader  RecordReader
  * @param[in]       tag     BlastFormat specialization,
- * with BlastFormat::_m == BlastFormatOptions::Tabular || BlastFormatOptions::TabularWithHeader
+ * with BlastFormat::_m == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
  * @return     0 on success, and non-zero otherwise
  * @see BlastFormat#skipHeader
@@ -747,8 +747,8 @@ to standards), use BlastFormat#skipHeader instead.
 template <typename TFile,
           typename TPass,
           BlastFormatOptions::M m,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 skipUntilMatch(RecordReader<TFile, TPass >    & reader,
                 BlastFormat<m,p,g>      const & /*tag*/)
@@ -900,7 +900,7 @@ _readMatchImplBlastTabDefault(TqId      & qId,
  *
  * @param[out]      blastMatch A BlastMatch object to hold all relevant info
  * @param[in,out]   reader  RecordReader
- * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
+ * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
  *
  * @signature int readMatch(qId, sId, identities, aliLength, numMismatches, gapOpenings, qStart, qEnd, sStart, sEnd, eValue, bitScore, recordReader, BlastFormat);
  * @param[out]   qId ID-String of the query
@@ -916,13 +916,13 @@ _readMatchImplBlastTabDefault(TqId      & qId,
  * @param[out]   eValue alignment e-Value
  * @param[out]   bitScore alignment bit-Score
  * @param[in,out]    reader  RecordReader
- * @param[in]    tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
+ * @param[in]    tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
  *
  * @signature int readMatch(fields, recordReader, BlastFormat);
  *
  * @param[out]      fields a StringSet with all the columns as entries
  * @param[in,out]   reader  RecordReader
- * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == Tabular || TabularWithHeader
+ * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
  *
  *
  * @return     0 on success, and non-zero otherwise
@@ -935,8 +935,8 @@ template <typename TqId,
           typename TPass,
           typename TPos,
           BlastFormatOptions::M          m,
-          BlastFormatOptions::Program    p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
 inline int
 _readMatch(TqId                         & qId,
            TsId                         & sId,
@@ -977,8 +977,8 @@ template <typename TqId,
           typename TFile,
           typename TPass,
           typename TPos,
-          BlastFormatOptions::Program    p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
 inline int
 readMatch(TqId                         & qId,
           TsId                         & sId,
@@ -993,11 +993,11 @@ readMatch(TqId                         & qId,
           double                       & eval,
           double                       & bitScore,
           RecordReader<TFile, TPass >  & reader,
-          BlastFormat<BlastFormatOptions::Tabular,p,g>     const & /*tag*/)
+          BlastFormat<BlastFormatFile::TABULAR,p,g>     const & /*tag*/)
 {
     return _readMatch(qId, sId, identities, ali_length, num_mismatches,
                       gap_openings, qStart, qEnd, sStart, sEnd, eval, bitScore,
-                      reader, BlastFormat<BlastFormatOptions::Tabular,p,g>());
+                      reader, BlastFormat<BlastFormatFile::TABULAR,p,g>());
 }
 
 template <typename TqId,
@@ -1005,8 +1005,8 @@ template <typename TqId,
           typename TFile,
           typename TPass,
           typename TPos,
-          BlastFormatOptions::Program    p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
 inline int
 readMatch(TqId                         & qId,
           TsId                         & sId,
@@ -1021,12 +1021,12 @@ readMatch(TqId                         & qId,
           double                       & eval,
           double                       & bitScore,
           RecordReader<TFile, TPass >  & reader,
-          BlastFormat<BlastFormatOptions::TabularWithHeader,p,g> const &/*tag*/)
+          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> const &/*tag*/)
 {
     return _readMatch(qId, sId, identities, ali_length, num_mismatches,
                       gap_openings, qStart, qEnd, sStart, sEnd, eval, bitScore,
                       reader,
-                      BlastFormat<BlastFormatOptions::TabularWithHeader,p,g>());
+                      BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g>());
 }
 
 template <typename TqId,
@@ -1035,16 +1035,16 @@ template <typename TqId,
           typename TPass,
           typename TPos,
           typename TAlign,
-          BlastFormatOptions::Program    p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
 inline int
 readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
            RecordReader<TFile, TPass >              & reader,
-           BlastFormat<BlastFormatOptions::Tabular,
+           BlastFormat<BlastFormatFile::TABULAR,
                        p,
                        g>                     const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Tabular,p,g> TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat;
     // header should have been read or skipped
     if (!onMatch(reader, TFormat()))
         return RecordReader<TFile, TPass >::INVALID_FORMAT;
@@ -1070,16 +1070,16 @@ template <typename TqId,
           typename TPass,
           typename TPos,
           typename TAlign,
-          BlastFormatOptions::Program    p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
 inline int
 readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
            RecordReader<TFile, TPass >              & reader,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
                        g>                     const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader,p,g> TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
     // header should have been read or skipped
     if (!onMatch(reader, TFormat()))
         return RecordReader<TFile, TPass >::INVALID_FORMAT;
@@ -1103,8 +1103,8 @@ template <typename TFile,
           typename TPass,
           typename TString,
           BlastFormatOptions::M m,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readMatch(StringSet<TString>            & fields,
            RecordReader<TFile, TPass >  & reader,
@@ -1144,16 +1144,16 @@ template <typename TFile,
           typename TSId = CharString,
           typename TAlign = Align<CharString, ArrayGaps>,
           typename TPos = unsigned,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readRecord(BlastRecord<TDbName, TQId, TSId, TAlign, TPos>   & blastRecord,
            RecordReader<TFile, TPass >                      & reader,
-           BlastFormat<BlastFormatOptions::TabularWithHeader,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                        p,
                        g>                             const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::TabularWithHeader, p, g> TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
     typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
 
     CharString versionString; // -> /dev/null
@@ -1196,16 +1196,16 @@ template <typename TFile,
           typename TSId = CharString,
           typename TAlign = Align<CharString, ArrayGaps>,
           typename TPos = unsigned,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 readRecord(BlastRecord<TDbName, TQId, TSId, TAlign, TPos>   & blastRecord,
            RecordReader<TFile, TPass >                      & reader,
-           BlastFormat<BlastFormatOptions::Tabular,
+           BlastFormat<BlastFormatFile::TABULAR,
                        p,
                        g>                             const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Tabular, p, g>  TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
     typedef BlastMatch<TQId, TSId, TAlign, TPos>            TBlastMatch;
 
     CharString curId, lastId;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec This only prevents instantiation of tables that aren't used
  * (defaults to void)
  *
- * @fn BlastScoringAdapter::BlastScoringAdapter(TScore const & scheme)
+ * @fn BlastScoringAdapter::BLASTScoringAdapter(TScore const & scheme)
  * @signature BlastScoringAdapter(TScore const & scheme)
  * @param scheme A scoring scheme.
  * @brief The Constructor. Upon construction the statistical values are
@@ -792,6 +792,7 @@ _lengthAdjustment(TSize     const & dbLength,
  * @brief calculate a basic score and some statistics from a given alignment and scoring scheme
  *
  * @signature void calcStatsAndScore(score, length, num_identities, num_positives, num_mismatches, num_gaps, num_gap_opens, row0, row1, scoreScheme);
+ * @signature void calcStatsAndScore(blastMatch, scoreScheme);
  *
  * @param[out]  score           the raw score (unnormalized) [long]
  * @param[out]  length          length of the alignment [unsigned]
@@ -803,6 +804,7 @@ _lengthAdjustment(TSize     const & dbLength,
  * @param[in]   row0            first row of alignment [Gaps]
  * @param[in]   row1            second row of alignment [Gaps]
  * @param[in]   scoreScheme     SeqAn Score object [Score]
+ * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
  *
  * @headerfile seqan/blast.h
  */
@@ -967,6 +969,17 @@ calcBitScoreAndEValue(double                            & bitScore,
 {
     return _calcBitScoreAndEValue(bitScore, eValue, sc, lengthDb, lengthQry,
                                   adapter);
+}
+
+template <typename TBlastMatch, typename TScore>
+inline void
+calcBitScoreAndEValue(TBlastMatch                       & match,
+                      unsigned long long          const & lengthDb,
+                      unsigned long               const & lengthQry,
+                      BlastScoringAdapter<TScore> const & adapter)
+{
+    return _calcBitScoreAndEValue(match.bitScore, match.eVal, match.score,
+                                  lengthDb, lengthQry, adapter);
 }
 
 }

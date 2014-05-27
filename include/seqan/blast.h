@@ -44,8 +44,8 @@
 #include "blast/blast_statistics.h"
 // #include "blast/read_blast_report.h"
 // #include "blast/read_blast_tabular.h"
-// #include "blast/write_blast_report.h"
-// #include "blast/write_blast_tabular.h"
+#include "blast/write_blast_report.h"
+#include "blast/write_blast_tabular.h"
 
 #else //SEQAN_C++11_STANDARD
 

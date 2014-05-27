@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,6 @@
 #include <seqan/blast/blast_base.h>
 #include <seqan/score.h>
 
-
 namespace seqan {
 
 // ============================================================================
@@ -79,7 +78,6 @@ _matrixName(T const & /**/)
     return "UNSCPECIFIED";
 }
 
-
 constexpr const char *
 _matrixName(Blosum62 const & /**/)
 {
@@ -95,12 +93,12 @@ _matrixName(Blosum62 const & /**/)
 // ============================================================================
 
 template <typename TMatch,
-          BlastFormatOptions::Generation g>
+          BlastFormatGeneration g>
 inline void
 _statsBlock(char                      * buffer,
             TMatch              const & m,
-            BlastFormat<BlastFormatOptions::Pairwise,
-                        BlastFormatOptions::BlastN,
+            BlastFormat<BlastFormatFile::PAIRWISE,
+                        BlastFormatProgram::BLASTN,
                         g>      const & /*tag*/)
 {
     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
@@ -121,14 +119,13 @@ _statsBlock(char                      * buffer,
         strcat(buffer, "Minus\n\n");
 }
 
-
 template <typename TMatch,
-          BlastFormatOptions::Generation g>
+          BlastFormatGeneration g>
 inline void
 _statsBlock(char                      * buffer,
             TMatch              const & m,
-            BlastFormat<BlastFormatOptions::Pairwise,
-                        BlastFormatOptions::BlastP,
+            BlastFormat<BlastFormatFile::PAIRWISE,
+                        BlastFormatProgram::BLASTP,
                         g>      const & /*tag*/)
 {
     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
@@ -142,12 +139,12 @@ _statsBlock(char                      * buffer,
 }
 
 template <typename TMatch,
-          BlastFormatOptions::Generation g>
+          BlastFormatGeneration g>
 inline void
 _statsBlock(char                     * buffer,
             TMatch             const & m,
-            BlastFormat<BlastFormatOptions::Pairwise,
-                        BlastFormatOptions::BlastX,
+            BlastFormat<BlastFormatFile::PAIRWISE,
+                        BlastFormatProgram::BLASTX,
                         g>     const & /*tag*/)
 {
     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
@@ -163,12 +160,12 @@ _statsBlock(char                     * buffer,
 }
 
 template <typename TMatch,
-          BlastFormatOptions::Generation g>
+          BlastFormatGeneration g>
 inline void
 _statsBlock(char                    * buffer,
             TMatch            const & m,
-            BlastFormat<BlastFormatOptions::Pairwise,
-                        BlastFormatOptions::TBlastN,
+            BlastFormat<BlastFormatFile::PAIRWISE,
+                        BlastFormatProgram::TBLASTN,
                         g>    const & /*tag*/)
 {
     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
@@ -184,12 +181,12 @@ _statsBlock(char                    * buffer,
 }
 
 template <typename TMatch,
-          BlastFormatOptions::Generation g>
+          BlastFormatGeneration g>
 inline void
 _statsBlock(char                    * buffer,
             TMatch            const & m,
-            BlastFormat<BlastFormatOptions::Pairwise,
-                        BlastFormatOptions::TBlastX,
+            BlastFormat<BlastFormatFile::PAIRWISE,
+                        BlastFormatProgram::TBLASTX,
                         g>    const & /*tag*/)
 {
     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
@@ -207,17 +204,16 @@ _statsBlock(char                    * buffer,
     //TODO there is an N-column beside e-value here, whats that?
 }
 
-
 template <typename TStream,
           typename TChar1,
           typename TChar2,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                      TChar1            const & char1,
                                      TChar2            const & char2,
-                                     BlastFormat<BlastFormatOptions::Pairwise,
+                                     BlastFormat<BlastFormatFile::PAIRWISE,
                                                 p,
                                                 g>     const & /*tag*/)
 {
@@ -237,14 +233,14 @@ _writeAlignmentBlockIntermediateChar(TStream                 & stream,
 template <typename TStream,
           typename TChar1,
           typename TChar2,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                      TChar1                  & char1,
                                      TChar2                  & char2,
-                                     BlastFormat<BlastFormatOptions::Pairwise,
-                                                 BlastFormatOptions::BlastN,
+                                     BlastFormat<BlastFormatFile::PAIRWISE,
+                                                 BlastFormatProgram::BLASTN,
                                                  g>    const & /*tag*/)
 {
     int ret = 0;
@@ -257,19 +253,18 @@ _writeAlignmentBlockIntermediateChar(TStream                 & stream,
     return ret;
 }
 
-
 template <typename TStream,
           typename TMatch,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeAlignmentBlock(TStream                 & stream,
                      TMatch            const & m,
-                     BlastFormat<BlastFormatOptions::Pairwise,
+                     BlastFormat<BlastFormatFile::PAIRWISE,
                                  p,
                                  g>    const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Pairwise,p,g> TFormat;
+    typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
     typedef decltype(m.qStart) TPos;
 
     int             ret         = 0;
@@ -357,19 +352,18 @@ _writeAlignmentBlock(TStream                 & stream,
     return 0;
 }
 
-
 template <typename TStream,
           typename TMatch,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeFullMatch(TStream             & stream,
                 TMatch        const & m,
-                BlastFormat<BlastFormatOptions::Pairwise,
+                BlastFormat<BlastFormatFile::PAIRWISE,
                             p,
                             g> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Pairwise,p,g> TFormat;
+    typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
     int ret = streamPut(stream, "> ");
     if (ret)
         return ret;
@@ -415,12 +409,12 @@ _writeFullMatch(TStream             & stream,
 
 template <typename TStream,
           typename TMatch,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeMatchOneLiner(TStream             & stream,
                    TMatch        const & m,
-                   BlastFormat<BlastFormatOptions::Pairwise,
+                   BlastFormat<BlastFormatFile::PAIRWISE,
                                p,
                                g> const & /*tag*/)
 {
@@ -469,18 +463,18 @@ _writeMatchOneLiner(TStream             & stream,
 
 template <typename TStream,
           typename TString,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 writeTop(TStream             & stream,
          TString       const & dbName,
          unsigned long const   dbNumSeqs,
          unsigned long const   dbTotalLength,
-            BlastFormat<BlastFormatOptions::Pairwise,
+            BlastFormat<BlastFormatFile::PAIRWISE,
                         p,
                         g> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Pairwise, p, g> TFormat;
+    typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
 
     // write TOP
     int ret = streamPut(stream, _programTagToString(TFormat()));
@@ -544,12 +538,12 @@ writeTop(TStream             & stream,
 
 template <typename TStream,
           typename TRecord,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 _writeRecordHeader(TStream               & stream,
                     TRecord        const & record,
-                    BlastFormat<BlastFormatOptions::Pairwise,
+                    BlastFormat<BlastFormatFile::PAIRWISE,
                                 p,
                                 g> const & /*tag*/)
 {
@@ -578,16 +572,16 @@ _writeRecordHeader(TStream               & stream,
 
 template <typename TStream,
           typename TRecord,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 writeRecord(TStream             & stream,
             TRecord       const & record,
-            BlastFormat<BlastFormatOptions::Pairwise,
+            BlastFormat<BlastFormatFile::PAIRWISE,
                         p,
                         g> const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatOptions::Pairwise, p, g> TFormat;
+    typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
 
     #ifdef DEBUG
     {
@@ -627,33 +621,34 @@ writeRecord(TStream             & stream,
 
 template <typename TStream,
           typename TValue, typename TSpec,
-          BlastFormatOptions::Program p,
-          BlastFormatOptions::Generation g>
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 writeBottom(TStream             & stream,
             Score<TValue, TSpec>   const & score,
-            BlastFormat<BlastFormatOptions::Pairwise,
+            BlastFormat<BlastFormatFile::PAIRWISE,
                         p,
                         g> const & /*tag*/)
 {
     //TODO add database specs
-
+    Score<TValue, TSpec> scheme(score);
+    seqanScoringScheme2blastScoringScheme(scheme);
     int ret = streamPut(stream, "\nMatrix:");
     if (ret)
         return ret;
-    ret = streamPut(stream, _matrixName(score));
+    ret = streamPut(stream, _matrixName(scheme));
     if (ret)
         return ret;
     ret = streamPut(stream, "\nGap Penalties: Existence: ");
     if (ret)
         return ret;
-    ret = streamPut(stream, scoreGapOpen(score));
+    ret = streamPut(stream, scoreGapOpen(scheme));
     if (ret)
         return ret;
     ret = streamPut(stream, ", Extension: ");
     if (ret)
         return ret;
-    ret = streamPut(stream, scoreGapExtend(score));
+    ret = streamPut(stream, scoreGapExtend(scheme));
     if (ret)
         return ret;
     ret = streamPut(stream, "\n\n");

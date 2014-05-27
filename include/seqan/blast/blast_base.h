@@ -60,65 +60,65 @@ namespace seqan {
  *
  * @headerfile seqan/blast.h
  *
- * SeqAn can currently write Pairwise, Tabular and TabularWithHeader. It can
- * read Tabular and TabularWithHeader.
+ * SeqAn can currently write PAIRWISE, TABULAR and TABULAR_WITH_HEADER. It can
+ * read TABULAR and TABULAR_WITH_HEADER.
  *
- * @val BlastFormatFile BlastFormatFile::Pairwise;
+ * @val BlastFormatFile BlastFormatFile::PAIRWISE;
  * @brief default blast output (blastall -m 0 &amp; blast* -outfmt 0)
  *
- * @val BlastFormatFile BlastFormatFile::MasterSlaveIdent;
+ * @val BlastFormatFile BlastFormatFile::MASTER_SLAVE_IDENT;
  * @brief master-slave showing identities (blastall -m 1 &amp; blast* -outfmt 1)
  *
- * @val BlastFormatFile BlastFormatFile::MasterSlaveNoIdent;
+ * @val BlastFormatFile BlastFormatFile::MASTER_SLAVE_NO_IDENT;
  * @brief master-slave without identities (blastall -m 2 &amp; blast* -outfmt 2)
  *
- * @val BlastFormatFile BlastFormatFile::FlatMasterSlaveIdent;
+ * @val BlastFormatFile BlastFormatFile::FLAT_MASTER_SLAVE_IDENT;
  * @brief flat master-slave showing identities (blastall -m 3 &amp; blast* -outfmt 3)
  *
- * @val BlastFormatFile BlastFormatFile::FlatMasterSlaveNoIdent;
+ * @val BlastFormatFile BlastFormatFile::FLAT_MASTER_SLAVE_NO_IDENT;
  * @brief master-slave without identities, with blunt ends (blastall -m 5, not available with Blast+)
  *
- * @val BlastFormatFile BlastFormatFile::MasterSlaveBluntEnds;
+ * @val BlastFormatFile BlastFormatFile::MASTER_SLAVE_BLUNT_ENDS;
  * @brief flat master-slave without identities, with blunt ends (blastall -m 6, not available with Blast+)
  *
  * @val BlastFormatFile BlastFormatFile::XML;
  * @brief XML (blastall -m 7 &amp; blast* -outfmt 8)
  *
- * @val BlastFormatFile BlastFormatFile::Tabular;
+ * @val BlastFormatFile BlastFormatFile::TABULAR;
  * @brief tab-seperated (blastall -m 8 &amp; blast* -outfmt 6)
  *
- * @val BlastFormatFile BlastFormatFile::TabularWithHeader;
+ * @val BlastFormatFile BlastFormatFile::TABULAR_WITH_HEADER;
  * @brief tab-seperated with Header / comments (blastall -m 9 &amp; blast* -outfmt 7)
  *
- * @val BlastFormatFile BlastFormatFile::TextASN1;
+ * @val BlastFormatFile BlastFormatFile::TEXT_ASN1;
  * @brief Abstract Syntax Notation One (blast* -outfmt 8, not available in traditional BLAST)
  *
- * @val BlastFormatFile BlastFormatFile::BinASN1;
+ * @val BlastFormatFile BlastFormatFile::BIN_ASN1;
  * @brief Abstract Syntax Notation One (blast* -outfmt 9, not available in traditional BLAST)
  *
  * @val BlastFormatFile BlastFormatFile::CSV;
  * @brief comma-seperated values (blast* -outfmt 10, not available in traditional BLAST)
  *
- * @val BlastFormatFile BlastFormatFile::BlastArASN1;
+ * @val BlastFormatFile BlastFormatFile::BLAST_AR_ASN1;
  * @brief Blast Archive Format, Abstract Syntax Notation One (blast* -outfmt 11, not available in traditional BLAST)
  */
 
 enum class BlastFormatFile : uint8_t
 {
-    Pairwise = 0,
-    MasterSlaveIdent = 1,
-    MasterSlaveNoIdent = 2,
-    FlatMasterSlaveIdent = 3,
-    FlatMasterSlaveNoIdent = 4,
-    MasterSlaveBluntEnds = 5,       // only available in Generation==Blast
-    FlatMasterSlaveBluntEnds = 6,   // only available in Generation==Blast
+    PAIRWISE = 0,
+    MASTER_SLAVE_IDENT = 1,
+    MASTER_SLAVE_NO_IDENT = 2,
+    FLAT_MASTER_SLAVE_IDENT = 3,
+    FLAT_MASTER_SLAVE_NO_IDENT = 4,
+    MASTER_SLAVE_BLUNT_ENDS = 5,       // only available in Generation==Blast
+    FLAT_MASTER_SLAVE_BLUNT_ENDS = 6,   // only available in Generation==Blast
     XML = 7,
-    Tabular = 8,
-    TabularWithHeader = 9,
-    TextASN1 = 10,                 // only available in Generation==Blast+
-    BinASN1 = 11,                  // only available in Generation==Blast+
+    TABULAR = 8,
+    TABULAR_WITH_HEADER = 9,
+    TEXT_ASN1 = 10,                 // only available in Generation==Blast+
+    BIN_ASN1 = 11,                  // only available in Generation==Blast+
     CSV = 12,                      // only available in Generation==Blast+
-    BlastArASN1 = 13,              // only available in Generation==Blast+
+    BLAST_AR_ASN1 = 13,              // only available in Generation==Blast+
     INVALID_File=255
 };
 
@@ -129,29 +129,29 @@ enum class BlastFormatFile : uint8_t
  *
  * @headerfile seqan/blast.h
  *
- * @val BlastFormatProgram BlastFormatProgram::BlastN
+ * @val BlastFormatProgram BlastFormatProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::BlastP
+ * @val BlastFormatProgram BlastFormatProgram::BLASTP
  * @brief Protein Query VS Protein Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::BlastX
+ * @val BlastFormatProgram BlastFormatProgram::BLASTX
  * @brief translated Nucleotide Query VS Protein Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::TBlastN
+ * @val BlastFormatProgram BlastFormatProgram::TBLASTN
  * @brief Protein Query VS translated Nucleotide Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::TBlastX
+ * @val BlastFormatProgram BlastFormatProgram::TBLASTX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
  */
 enum class BlastFormatProgram : uint8_t
 {
-    BlastN,         //              nucl VS             nucl
-    BlastP,         //              prot VS             prot
-    BlastX,         // translated   nucl VS             prot
-    TBlastN,        //              prot VS translated  nucl
-    TBlastX,        // translated   nucl VS translated  nucl
+    BLASTN,         //              NUCL VS             NUCL
+    BLASTP,         //              PROT VS             PROT
+    BLASTX,         // TRANSLATED   NUCL VS             PROT
+    TBLASTN,        //              PROT VS TRANSLATED  NUCL
+    TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
     INVALID_Program=255
 };
 
@@ -162,21 +162,20 @@ enum class BlastFormatProgram : uint8_t
  *
  * @headerfile seqan/blast.h
  *
- * @val BlastFormatGeneration BlastFormatGeneration::Blast
+ * @val BlastFormatGeneration BlastFormatGeneration::BLAST
  * @brief traditional NCBI Blast, written in C ("blastall")
  *
- * @val BlastFormatGeneration BlastFormatGeneration::BlastPlus
+ * @val BlastFormatGeneration BlastFormatGeneration::BLAST_PLUS
  * @brief NCBI Blast+, written in C++
  *
  */
 
 enum class BlastFormatGeneration : uint8_t
 {
-    Blast,
-    BlastPlus,
+    BLAST,
+    BLAST_PLUS,
     INVALID_Generation=255
 };
-
 
 /*!
  * @class BlastFormat
@@ -195,9 +194,8 @@ enum class BlastFormatGeneration : uint8_t
  * @see BlastFormatGeneration
  */
 
-
 template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
-struct BlastFormat
+struct BlastFormat_
 {
     // have static members for easy and run-time access to "type"
     static constexpr BlastFormatFile        f = _f;
@@ -206,10 +204,8 @@ struct BlastFormat
 
 };
 
-// template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
-// using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
-
-
+template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
+using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
 
 // ============================================================================
 // Metafunctions
@@ -227,7 +223,7 @@ struct BlastFormat
  *
  * @tparam          TQueryAlph  Alphabet of of the query sequences
  * @tparam          TSubjAlph   Alphabet of of the subejct sequences
- * @return          Value of @link BlastFormatProgram @endlink . For nucl VS nucl BlastFormatProgram::BlastN is returned, although TBlastX would also be legal.
+ * @return          Value of @link BlastFormatProgram @endlink . For nucl VS nucl BlastFormatProgram::BLASTN is returned, although TBlastX would also be legal.
  *
  * This is a convenience function for determining the Blast-Program type
  * corresponding to input type combinations.
@@ -260,28 +256,28 @@ constexpr
 BlastFormatProgram
 getBlastProgramType(Dna const &, Dna const &)
 {
-    return BlastFormatProgram::BlastN;
+    return BlastFormatProgram::BLASTN;
 }
 
 constexpr
 BlastFormatProgram
 getBlastProgramType(Dna const &, Dna5 const &)
 {
-    return BlastFormatProgram::BlastN;
+    return BlastFormatProgram::BLASTN;
 }
 
 constexpr
 BlastFormatProgram
 getBlastProgramType(Dna5 const &, Dna const &)
 {
-    return BlastFormatProgram::BlastN;
+    return BlastFormatProgram::BLASTN;
 }
 
 constexpr
 BlastFormatProgram
 getBlastProgramType(Dna5 const &, Dna5 const &)
 {
-    return BlastFormatProgram::BlastN;
+    return BlastFormatProgram::BLASTN;
 }
 
 // --- Protein vs Protein ---
@@ -289,7 +285,7 @@ constexpr
 BlastFormatProgram
 getBlastProgramType(AminoAcid const &, AminoAcid const &)
 {
-    return BlastFormatProgram::BlastP;
+    return BlastFormatProgram::BLASTP;
 }
 
 // --- Dna vs Protein ---
@@ -297,14 +293,14 @@ constexpr
 BlastFormatProgram
 getBlastProgramType(Dna const &, AminoAcid const &)
 {
-    return BlastFormatProgram::BlastX;
+    return BlastFormatProgram::BLASTX;
 }
 
 constexpr
 BlastFormatProgram
 getBlastProgramType(Dna5 const &, AminoAcid const &)
 {
-    return BlastFormatProgram::BlastX;
+    return BlastFormatProgram::BLASTX;
 }
 
 // --- Protein vs Dna ---
@@ -312,14 +308,14 @@ constexpr
 BlastFormatProgram
 getBlastProgramType(AminoAcid const &, Dna const &)
 {
-    return BlastFormatProgram::TBlastX;
+    return BlastFormatProgram::TBLASTX;
 }
 
 constexpr
 BlastFormatProgram
 getBlastProgramType(AminoAcid const &, Dna5 const &)
 {
-    return BlastFormatProgram::TBlastX;
+    return BlastFormatProgram::TBLASTX;
 }
 
 // ============================================================================
@@ -389,7 +385,7 @@ const char * _programTagToString(BlastFormat<f,
 template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BlastN,
+                                             BlastFormatProgram::BLASTN,
                                              g> const & /*tag*/)
 {
     return "BlastN";
@@ -398,7 +394,7 @@ const char * _programTagToString(BlastFormat<f,
 template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BlastP,
+                                             BlastFormatProgram::BLASTP,
                                              g> const & /*tag*/)
 {
     return "BLASTP";
@@ -407,7 +403,7 @@ const char * _programTagToString(BlastFormat<f,
 template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BlastX,
+                                             BlastFormatProgram::BLASTX,
                                              g> const & /*tag*/)
 {
     return "BLASTX";
@@ -416,7 +412,7 @@ const char * _programTagToString(BlastFormat<f,
 template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::TBlastN,
+                                             BlastFormatProgram::TBLASTN,
                                              g> const & /*tag*/)
 {
     return "TBLASTN";
@@ -425,7 +421,7 @@ const char * _programTagToString(BlastFormat<f,
 template <BlastFormatFile f, BlastFormatGeneration g>
 constexpr
 const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::TBlastX,
+                                             BlastFormatProgram::TBLASTX,
                                              g> const & /*tag*/)
 {
     return "TBLASTX";
@@ -444,7 +440,7 @@ const char * _defaultFields()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatGeneration::Blast>()
+const char * _defaultFields<BlastFormatGeneration::BLAST>()
 {
     return "Fields: Query id, Subject id, % identity, alignment length," \
            " mismatches, gap openings, q. start, q. end, s. start, s." \
@@ -453,7 +449,7 @@ const char * _defaultFields<BlastFormatGeneration::Blast>()
 
 template <>
 constexpr
-const char * _defaultFields<BlastFormatGeneration::BlastPlus>()
+const char * _defaultFields<BlastFormatGeneration::BLAST_PLUS>()
 {
     return "Fields: query id, subject id, % identity, alignment " \
            "length, mismatches, gap opens, q. start, q. end, s. " \
@@ -462,7 +458,7 @@ const char * _defaultFields<BlastFormatGeneration::BlastPlus>()
 
 template <BlastFormatProgram p, BlastFormatGeneration g>
 constexpr
-const char * _defaultFields(BlastFormat<BlastFormatFile::TabularWithHeader,
+const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                                         p,
                                         g> const &)
 {
