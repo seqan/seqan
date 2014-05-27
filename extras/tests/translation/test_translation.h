@@ -58,112 +58,112 @@ test_translation_onestring_singleframe_impl(TString const & str)
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::VertMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::VERT_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTT*S*SMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::YeastMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::YEAST_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSMIMIQHQHPPPPRRRRTTTTEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::InvertMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::INVERT_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTSSSSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::Ciliate>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::CILIATE>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVVQYQYSSSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::FlatwormMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::FLATWORM_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "NNKNTTTTSSSSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::Euplotid>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::EUPLOTID>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSCCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::Prokaryote>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::PROKARYOTE>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::AltYeast>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::ALT_YEAST>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLSLEDEDAAAAGGGGVVVV*Y*YSSSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::AscidianMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTGSGSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::Blepharisma>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::BLEPHARISMA>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YQYSSSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::ChlorophyceanMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YLYSSSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::TrematodeMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::TREMATODE_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "NNKNTTTTSSSSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::ScenedesmusMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YLY*SSS*CWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::ThraustochytriumMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSS*CWC*FLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::PterobranchiaMitochondrial>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTSSKSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
     }
 
     {
         String<AminoAcid> outStr;
-        translate(outStr, str, TranslationFrames::SingleFrame, GeneticCode<GeneticCodeSpec::Gracilibacteria>());
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCode<GeneticCodeSpec::GRACILIBACTERIA>());
         SEQAN_ASSERT_EQ(outStr,
         "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSGCWCLFLF");
     }
@@ -242,14 +242,14 @@ test_translation_onestring_multiframe_impl()
     TTargetSet res;
 
     {
-        translate(res, str, TranslationFrames::SingleFrame, TParallelism());
+        translate(res, str, TranslationFrames::SINGLE_FRAME, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 1u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
     }
 
     {
-        translate(res, str, TranslationFrames::WithReverseComplement, TParallelism());
+        translate(res, str, TranslationFrames::WITH_REVERSE_COMPLEMENT, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 2u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -257,7 +257,7 @@ test_translation_onestring_multiframe_impl()
     }
 
     {
-        translate(res, str, TranslationFrames::WithFrameShifts, TParallelism());
+        translate(res, str, TranslationFrames::WITH_FRAME_SHIFTS, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 3u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -266,7 +266,7 @@ test_translation_onestring_multiframe_impl()
     }
 
     {
-        translate(res, str, TranslationFrames::SixFrame, TParallelism());
+        translate(res, str, TranslationFrames::SIX_FRAME, TParallelism());
 
         SEQAN_ASSERT_EQ(length(res), 6u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
@@ -313,7 +313,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     unsigned l = length(source);
 
     {
-        translate(res, source, TranslationFrames::SingleFrame, TParallelism());
+        translate(res, source, TranslationFrames::SINGLE_FRAME, TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 1u);
@@ -324,7 +324,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::WithReverseComplement,
+        translate(res, source, TranslationFrames::WITH_REVERSE_COMPLEMENT,
                   TParallelism());
         unsigned r = length(res) / l;
 
@@ -337,7 +337,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::WithFrameShifts,
+        translate(res, source, TranslationFrames::WITH_FRAME_SHIFTS,
                   TParallelism());
         unsigned r = length(res) / l;
 
@@ -352,7 +352,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
     }
 
     {
-        translate(res, source, TranslationFrames::SixFrame, TParallelism());
+        translate(res, source, TranslationFrames::SIX_FRAME, TParallelism());
         unsigned r = length(res) / l;
 
         SEQAN_ASSERT_EQ(r, 6u);
