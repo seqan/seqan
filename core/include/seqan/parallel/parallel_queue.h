@@ -83,47 +83,44 @@ class ConcurrentQueue
 public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
     typedef typename Size<TString>::Type            TSize;
-
-    TString                 data;
-    mutable ReadWriteLock   lock;
-
 #ifdef SEQAN_CXX11_STANDARD
-    std::atomic<TSize> headPos;
-    std::atomic<TSize> headReadPos;
-    std::atomic<TSize> tailPos;
-    std::atomic<TSize> tailWritePos;
-    std::atomic<TSize> roundSize;
+    typedef std::atomic<TSize>                      TAtomicSize;
 #else
-    volatile TSize headPos;
-    volatile TSize headReadPos;
-    volatile TSize tailPos;
-    volatile TSize tailWritePos;
-    TSize roundSize;
+    typedef volatile TSize                          TAtomicSize;
 #endif
 
-    volatile unsigned readerCount;
-    volatile unsigned writerCount;
+    TString                 data;
+    mutable ReadWriteLock   lock;           char pad1[SEQAN_CACHE_LINE_SIZE - sizeof(ReadWriteLock)];
+    volatile size_t         readerCount;
+    volatile size_t         writerCount;
+
+    TAtomicSize headPos;                    char pad4[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
+    TAtomicSize headReadPos;                char pad5[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
+    TAtomicSize tailPos;                    char pad6[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
+    TAtomicSize tailWritePos;               char pad7[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
+    TAtomicSize roundSize;                  char pad8[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
+
     volatile bool virgin;
 
     ConcurrentQueue() :
+        readerCount(0),
+        writerCount(0),
         headPos(0),
         headReadPos(0),
         tailPos(0),
         tailWritePos(0),
         roundSize(0),
-        readerCount(0),
-        writerCount(0),
         virgin(true)
     {}
 
     // you can set the initial capacity here
     ConcurrentQueue(TSize initCapacity) :
+        readerCount(0),
+        writerCount(0),
         headPos(0),
         headReadPos(0),
         tailPos(0),
         tailWritePos(0),
-        readerCount(0),
-        writerCount(0),
         virgin(true)
     {
         reserve(data, initCapacity + 1, Exact());
@@ -132,12 +129,12 @@ public:
 
     ConcurrentQueue(TString & data):
         data(data),
+        readerCount(0),
+        writerCount(0),
         headPos(0),
         headReadPos(0),
         tailPos(length(data)),
         tailWritePos(length(data)),
-        readerCount(0),
-        writerCount(0),
         virgin(true)
     {
         roundSize = (TSize)1 << (log2(capacity(data) - 1) + 1);
@@ -171,6 +168,10 @@ public:
         }
         _setLength(data, 0);
     }
+
+private:
+    ConcurrentQueue(ConcurrentQueue const &);
+    void operator= (ConcurrentQueue const &);
 };
 
 // ============================================================================
@@ -288,10 +289,9 @@ template <typename TValue>
 inline TValue
 _cyclicInc(TValue value, TValue modulo, TValue roundSize)
 {
-    TValue newVal = value + 1;
-    if ((newVal & (roundSize - 1)) >= modulo)
-        newVal += roundSize - modulo;
-    return newVal;
+    if ((++value & (roundSize - 1)) >= modulo)
+        value += roundSize - modulo;
+    return value;
 }
 
 // ----------------------------------------------------------------------------
@@ -426,12 +426,18 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 
     // wait for queue to become filled
     do {
-//        headReadPos = me.headReadPos;
         headReadPos = me.headReadPos;
-	SEQAN_ASSERT_LEQ(headReadPos, me.tailPos);
+
+        atomic_thread_fence(std::memory_order_acquire);
+
+        TSize tailPos = me.tailPos;
+        if (headReadPos > tailPos)
+        {
+            SEQAN_ASSERT_LEQ(headReadPos, tailPos);
+        }
         
         // return if queue is empty?
-        if (headReadPos == me.tailPos)
+        if (headReadPos == tailPos)
             return false;
 
         newHeadReadPos = _cyclicInc(headReadPos, cap, roundSize);
@@ -447,13 +453,28 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     std::swap(result, *it);
     valueDestruct(it);
 
+    atomic_thread_fence(std::memory_order_release);
+
+    if (headReadPos >= newHeadReadPos)
+        SEQAN_ASSERT_LT(headReadPos, newHeadReadPos);
+
     // wait for pending previous reads and synchronize headPos to headReadPos
 #ifdef SEQAN_CXX11_STANDARD
-    while (!me.headPos.compare_exchange_strong(headReadPos, newHeadReadPos));
+    TSize savedHeadReadPos = headReadPos;
+    while (!me.headPos.compare_exchange_weak(headReadPos, newHeadReadPos));
+    {
+        // NOTE: compare_exchange_weak() changes tailWritePos
+        headReadPos = savedHeadReadPos;
+    }
 #else
     while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
-#endif
     {}
+#endif
+
+    atomic_thread_fence(std::memory_order_release);
+
+//    std::thread::id tid = std::this_thread::get_id();
+//    printf("(%#lx): headReadPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
 
     return true;
 }
@@ -718,15 +739,20 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 
             while (true)
             {
-                TSize tailWritePos = me.tailWritePos;
+                TSize tailWritePos = me.tailWritePos.load(std::memory_order_seq_cst);
                 TSize newTailWritePos = _cyclicInc(tailWritePos, cap, roundSize);
-		SEQAN_ASSERT_LEQ(newTailWritePos, me.headPos + roundSize);
-                
-                if (newTailWritePos >= me.headPos + roundSize)
+
+                TSize headPos = me.headPos.load(std::memory_order_seq_cst);
+                if (newTailWritePos > headPos + roundSize)
+                {
+                    SEQAN_ASSERT_LEQ(newTailWritePos, headPos + roundSize);
+                }
+
+                if (newTailWritePos >= headPos + roundSize)
                     break;
 
 #ifdef SEQAN_CXX11_STANDARD
-                if (me.tailWritePos.compare_exchange_strong(tailWritePos, newTailWritePos))
+                if (me.tailWritePos.compare_exchange_strong(tailWritePos, newTailWritePos, std::memory_order_seq_cst, std::memory_order_seq_cst))
 #else
                 if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
 #endif
@@ -735,13 +761,31 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     valueConstruct(it, SEQAN_FORWARD(TValue, val));
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
+
+                    atomic_thread_fence(std::memory_order_release);
+
+                    if (tailWritePos >= newTailWritePos)
+                        SEQAN_ASSERT_LT(tailWritePos, newTailWritePos);
+
 #ifdef SEQAN_CXX11_STANDARD
-                    while (!me.tailPos.compare_exchange_strong(tailWritePos, newTailWritePos))
+                    TSize savedTailWritePos = tailWritePos;
+                    while (!me.tailPos.compare_exchange_weak(tailWritePos, newTailWritePos))
+                    {
+                        // NOTE: compare_exchange_weak() changes tailWritePos
+                        tailWritePos = savedTailWritePos;
+                    }
 #else
                     while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
-#endif
                     {}
+#endif
 
+                    atomic_thread_fence(std::memory_order_release);
+
+//                    if (newTailWritePos < tailWritePos)
+//                    {
+//                        std::thread::id tid = std::this_thread::get_id();
+//                        printf("(%#lx): tailPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newTailWritePos, tailWritePos);
+//                    }
                     return;
                 }
             }

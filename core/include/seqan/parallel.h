@@ -60,6 +60,7 @@
 
 #ifdef SEQAN_CXX11_STANDARD
 #include <atomic>
+#include <thread>
 #endif // SEQAN_CXX11_STANDARD
 
 // ============================================================================
