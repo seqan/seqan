@@ -423,12 +423,12 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     TSize roundSize = me.roundSize;
     TSize headReadPos;
     TSize newHeadReadPos;
+    TSize exp;
 
     // wait for queue to become filled
     do {
         headReadPos = me.headReadPos;
-
-        atomic_thread_fence(std::memory_order_acquire);
+        atomic_thread_fence(std::memory_order_seq_cst);
 
         TSize tailPos = me.tailPos;
         if (headReadPos > tailPos)
@@ -441,40 +441,49 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
             return false;
 
         newHeadReadPos = _cyclicInc(headReadPos, cap, roundSize);
+        exp = headReadPos;
     }
 #ifdef SEQAN_CXX11_STANDARD
-    while (!me.headReadPos.compare_exchange_strong(headReadPos, newHeadReadPos));
+    while (!me.headReadPos.compare_exchange_strong(exp, newHeadReadPos));
 #else
     while (!atomicCasBool(me.headReadPos, headReadPos, newHeadReadPos, parallelTag));
 #endif
+
+//    std::thread::id tid = std::this_thread::get_id();
+//    printf("(%#lx): headReadPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
 
     // extract value and destruct it in the data string
     TIter it = begin(me.data, Standard()) + (headReadPos & (roundSize - 1));
     std::swap(result, *it);
     valueDestruct(it);
 
-    atomic_thread_fence(std::memory_order_release);
+    atomic_thread_fence(std::memory_order_seq_cst);
 
     if (headReadPos >= newHeadReadPos)
         SEQAN_ASSERT_LT(headReadPos, newHeadReadPos);
 
     // wait for pending previous reads and synchronize headPos to headReadPos
 #ifdef SEQAN_CXX11_STANDARD
-    TSize savedHeadReadPos = headReadPos;
-    while (!me.headPos.compare_exchange_weak(headReadPos, newHeadReadPos));
+    std::thread::id tid = std::this_thread::get_id();
+    printf("(%#lx): try     <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
+
+    exp = headReadPos;
+    while (!me.headPos.compare_exchange_strong(exp, newHeadReadPos));
     {
         // NOTE: compare_exchange_weak() changes tailWritePos
-        headReadPos = savedHeadReadPos;
+        if (exp > headReadPos)
+            printf("(%#lx): headPos <- %ld  !!! [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, exp);
+
+        exp = headReadPos;
     }
 #else
     while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
     {}
 #endif
 
-    atomic_thread_fence(std::memory_order_release);
+    atomic_thread_fence(std::memory_order_seq_cst);
 
-//    std::thread::id tid = std::this_thread::get_id();
-//    printf("(%#lx): headReadPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
+    printf("(%#lx): headPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
 
     return true;
 }
@@ -752,7 +761,8 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     break;
 
 #ifdef SEQAN_CXX11_STANDARD
-                if (me.tailWritePos.compare_exchange_strong(tailWritePos, newTailWritePos, std::memory_order_seq_cst, std::memory_order_seq_cst))
+                TSize exp = tailWritePos;
+                if (me.tailWritePos.compare_exchange_strong(exp, newTailWritePos))
 #else
                 if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
 #endif
@@ -762,29 +772,29 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
 
-                    atomic_thread_fence(std::memory_order_release);
+                    atomic_thread_fence(std::memory_order_seq_cst);
 
                     if (tailWritePos >= newTailWritePos)
                         SEQAN_ASSERT_LT(tailWritePos, newTailWritePos);
 
 #ifdef SEQAN_CXX11_STANDARD
-                    TSize savedTailWritePos = tailWritePos;
-                    while (!me.tailPos.compare_exchange_weak(tailWritePos, newTailWritePos))
+                    exp = tailWritePos;
+                    while (!me.tailPos.compare_exchange_strong(exp, newTailWritePos))
                     {
                         // NOTE: compare_exchange_weak() changes tailWritePos
-                        tailWritePos = savedTailWritePos;
+                        exp = tailWritePos;
                     }
 #else
                     while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
                     {}
 #endif
 
-                    atomic_thread_fence(std::memory_order_release);
+                    atomic_thread_fence(std::memory_order_seq_cst);
 
 //                    if (newTailWritePos < tailWritePos)
 //                    {
 //                        std::thread::id tid = std::this_thread::get_id();
-//                        printf("(%#lx): tailPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newTailWritePos, tailWritePos);
+//                        printf("(%#lx): tailWritePos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newTailWritePos, tailWritePos);
 //                    }
                     return;
                 }
