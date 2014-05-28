@@ -231,8 +231,7 @@ struct BlastMatch
  * @headerfile <seqan/blast.h>
  * @signature struct BlastRecord<TDbName, TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
- *
- * @tparam TDbName  Type of dbName, defaults to @link CharString @endlink
+
  * @tparam TQId  Type of qId, defaults to @link CharString @endlink
  * @tparam TSId  Type of sId, defaults to @link CharString @endlink
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
@@ -242,15 +241,6 @@ struct BlastMatch
  * @typedef BlastRecord::TBLASTMatch
  * @signature typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
  * @brief type of the contained matches
- *
- * @var TDbName BlastRecord::dbName;
- * @brief verbose name of the database
- *
- * @var uint64_t BlastRecord::dbTotalLength;
- * @brief summed sequence length of the database
- *
- * @var uint32_t BlastRecord::dbNumberOfSeqs;
- * @brief number of sequences in the database
  *
  * @var TQId BlastRecord::qId;
  * @brief verbose Id of the query
@@ -262,40 +252,67 @@ struct BlastMatch
  * @brief length of the query sequence
  */
 
-template <typename TDbName = CharString,
-          typename TQId = CharString,
+template <typename TQId = CharString,
           typename TSId = CharString,
           typename TPos = uint32_t,
           typename TAlign = Align<CharString, ArrayGaps>>
 struct BlastRecord
 {
     typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
-    TDbName         dbName;
-    uint64_t        dbTotalLength;
-    uint32_t        dbNumberOfSeqs;
 
     TQId            qId;
     TPos            qLength;
     std::list<TBlastMatch>  matches;
 
     BlastRecord() :
-        dbName(TDbName()), dbTotalLength(0), dbNumberOfSeqs(0), qId(TQId()),
-        qLength(0), matches()
+        qId(TQId()), qLength(0), matches()
     {}
 
-    BlastRecord(TDbName const & _dbName) :
-        dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(TQId()),
-        qLength(0), matches()
+    BlastRecord( TQId const &_qId) :
+        qId(_qId), qLength(0), matches()
     {}
 
-    BlastRecord(TDbName const & _dbName, TQId const &_qId) :
-        dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0), qId(_qId),
-        qLength(0), matches()
-    {}
-
-    BlastRecord(TDbName && _dbName, TQId && _qId) :
-        dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0),
+    BlastRecord(TQId && _qId) :
         qId(std::move(_qId)), qLength(0)
+    {}
+};
+
+
+/*!
+ * @class BlastDbSpecs
+ * @headerfile <seqan/blast.h>
+ * @signature struct BlastRecord<TDbName> { ... };
+ * @brief A record of blast-matches (belonging to one query).
+ *
+ * @tparam TDbName  Type of dbName, defaults to @link CharString @endlink
+ *
+ * @var TDbName BlastRecord::dbName;
+ * @brief verbose name of the database
+ *
+ * @var uint64_t BlastRecord::dbTotalLength;
+ * @brief summed sequence length of the database
+ *
+ * @var uint32_t BlastRecord::dbNumberOfSeqs;
+ * @brief number of sequences in the database
+ */
+
+template <typename TDbName = CharString>
+struct BlastDbSpecs
+{
+    TDbName         dbName;
+    uint64_t        dbTotalLength;
+    uint32_t        dbNumberOfSeqs;
+
+    BlastDbSpecs() :
+        dbName(), dbTotalLength(0), dbNumberOfSeqs(0)
+    {}
+
+    BlastDbSpecs(TDbName const & _dbName) :
+        dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0)
+    {}
+
+    BlastDbSpecs(TDbName && _dbName) :
+        dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0)
     {}
 };
 

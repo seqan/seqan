@@ -75,7 +75,7 @@ template <typename T>
 constexpr const char *
 _matrixName(T const & /**/)
 {
-    return "UNSCPECIFIED";
+    return "'_matrixName not implemented for this matrix'";
 }
 
 constexpr const char *
@@ -289,7 +289,7 @@ _writeAlignmentBlock(TStream                 & stream,
     while (aPos < m.aliLength)
     {
         // Query line
-        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + m.qStart);
+        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + m.qStart + 1);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -303,7 +303,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d", numberWidth, qPos + m.qStart - 1);
+        sprintf(buffer, "  %-*d", numberWidth, qPos + m.qStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -329,7 +329,7 @@ _writeAlignmentBlock(TStream                 & stream,
         }
 
         // Subject line
-        sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + m.sStart);
+        sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + m.sStart + 1);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -342,7 +342,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + m.sStart - 1);
+        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + m.sStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -462,17 +462,13 @@ _writeMatchOneLiner(TStream             & stream,
 // ----------------------------------------------------------------------------
 
 template <typename TStream,
-          typename TString,
+          typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
-writeTop(TStream             & stream,
-         TString       const & dbName,
-         unsigned long const   dbNumSeqs,
-         unsigned long const   dbTotalLength,
-            BlastFormat<BlastFormatFile::PAIRWISE,
-                        p,
-                        g> const & /*tag*/)
+writeTop(TStream                                            & stream,
+         TDbSpecs                                     const & dbSpecs,
+         BlastFormat<BlastFormatFile::PAIRWISE, p, g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
 
@@ -513,14 +509,14 @@ writeTop(TStream             & stream,
     ret = streamPut(stream, "\n\nDatabase: ");
     if (ret)
         return ret;
-    ret = streamPut(stream, dbName);
+    ret = streamPut(stream, dbSpecs.dbName);
     if (ret)
         return ret;
     ret = streamPut(stream, "\n           ");
     if (ret)
         return ret;
     char buffer[40] = "";
-    sprintf(buffer, "%lu", dbNumSeqs); //TODO insert commata
+    sprintf(buffer, "%u", dbSpecs.dbNumberOfSeqs); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
@@ -528,7 +524,7 @@ writeTop(TStream             & stream,
     if (ret)
         return ret;
         clear(buffer);
-    sprintf(buffer, "%lu", dbTotalLength); //TODO insert commata
+    sprintf(buffer, "%lu", dbSpecs.dbTotalLength); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
@@ -572,14 +568,14 @@ _writeRecordHeader(TStream               & stream,
 
 template <typename TStream,
           typename TRecord,
+          typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
-writeRecord(TStream             & stream,
-            TRecord       const & record,
-            BlastFormat<BlastFormatFile::PAIRWISE,
-                        p,
-                        g> const & /*tag*/)
+writeRecord(TStream                                            & stream,
+            TRecord                                      const & record,
+            TDbSpecs                                     const & /**/,
+            BlastFormat<BlastFormatFile::PAIRWISE, p, g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
 
@@ -620,18 +616,19 @@ writeRecord(TStream             & stream,
 }
 
 template <typename TStream,
-          typename TValue, typename TSpec,
+          typename TDbSpecs,
+          typename TScore,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
-writeBottom(TStream             & stream,
-            Score<TValue, TSpec>   const & score,
-            BlastFormat<BlastFormatFile::PAIRWISE,
-                        p,
-                        g> const & /*tag*/)
+writeBottom(TStream                                           & stream,
+            TDbSpecs                                    const & dbSpecs,
+            BlastScoringAdapter<TScore>                 const & adapter,
+            BlastFormat<BlastFormatFile::PAIRWISE, p,g> const & /*tag*/)
 {
-    //TODO add database specs
-    Score<TValue, TSpec> scheme(score);
+    (void)dbSpecs; //TODO add database specs
+
+    TScore scheme(getScoreScheme(adapter));
     seqanScoringScheme2blastScoringScheme(scheme);
     int ret = streamPut(stream, "\nMatrix:");
     if (ret)

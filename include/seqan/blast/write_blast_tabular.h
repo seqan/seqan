@@ -127,25 +127,34 @@ _firstOcc(TString const & str, typename Value<TString>::Type const & val)
 // Function writeHeader()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.BLAST I/O#writeHeader
-..signature:int writeHeader(stream, query_id, db_name, [fields,] BlastFormat)
-..signature:int writeHeader(stream, query_id, db_name, BlastFormat[, field1, ... fieldN])
-..param.stream:The stream to write to.
-...type:Concept.Stream
-..param.query_id:ID of the query sequence.
-...type:nolink:String-type
-..param.db_name:Name of the database / file name.
-...type:nolink:String-type
-..param.fields:A StringSet with column identifiers to print
-...type;StringSet
-..param.BlastFormat: The format tag, note that BlastFormat must be further specified
-...type:Class.BlastFormat
-..param.fieldN:Manually supply headers of columns, defaults to Blast's defaul 12 columns (only supported with C++11)
-...type:nolink:String-type
-..remarks:For BlastFormat-types that have no header, this is a NOOP.
-..include:seqan/blast.h
-*/
+/*!
+ * @fn BlastRecord#writeHeader
+ * @headerfile seqan/blast.h
+ * @brief write the header of a @link BlastRecord @endlink to file
+ * @signature int writeHeader(stream, blastRecord, blastFormatTag)
+ * @signature int writeHeader(stream, qryId, dbname, blastFormatTag[, labels...])
+ *
+ * This function writes the header of a record if @link BlastFormatFile @endlink
+ * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
+ * can be specified with the variadic fields argument (just pass a printable
+ * argument for each label); use this if you use custom columns.
+ *
+ * If you use this function, you also need to print your matches manually with
+ * @link BlastMatch#writeMatch @endlink .
+ *
+ * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param blastRecord    The @link BlastRecord @endlink whose header you want to print.
+ * @param qryId     Alternatively the full ID of the query sequence (e.g. FASTA
+ * one-line description)
+ * @param dbName    The name of the database (NOT the ID of a subject sequence,
+ * but the name of the database, e.g. "NCBI NR")
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param labels...   Optional custom column labels
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastRecord#writeRecord
+ */
 
 template <typename TStream, typename TString1, typename TString2,
           BlastFormatProgram p, BlastFormatGeneration g>
@@ -209,14 +218,16 @@ _writeHeaderWithoutFields(TStream & stream,
 }
 
 // default case
-template <typename TStream, typename TString1, typename TString2,
-          BlastFormatProgram p, BlastFormatGeneration g>
+template <typename TStream,
+          typename TString1,
+          typename TString2,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
 writeHeader(TStream & stream,
-            TString1 const & qryId, TString2 const & dbName,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/)
+            TString1 const & qryId,
+            TString2 const & dbName,
+            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> const & /**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
 
@@ -235,75 +246,39 @@ writeHeader(TStream & stream,
     return streamPut(stream, '\n');
 }
 
-// 
-template <typename TStream, typename TqId, typename TdbName,
-          BlastFormatProgram p, BlastFormatGeneration g>
-inline int
-writeHeader(TStream & stream,
-            TqId const & qryId, TdbName const & dbName,
-            StringSet<CharString> const & fields,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
-
-    int ret = _writeHeaderWithoutFields(stream, qryId, dbName, TFormat());
-    if (ret)
-        return ret;
-
-    ret = streamPut(stream, "# Fields: ");
-    if (ret)
-        return ret;
-
-    for (unsigned i = 0; i < length(fields); ++i)
-    {
-        ret = streamPut(stream, fields[i]);
-        if (ret)
-            return ret;
-
-        if (i == length(fields) -1)
-            ret = streamPut(stream, '\n');
-        else
-            ret = streamPut(stream, _seperatorString(TFormat()));
-
-        if (ret)
-            return ret;
-    }
-
-    return 0;
-}
-
-// Functions for arbitrary number and typed fields
-
-// template <typename TStream, typename TString,
-//           typename TField, typename... TFields,
-//           BlastFormatFile f,
-//           BlastFormatProgram p,
-//           BlastFormatGeneration g>
-// inline int
-// writeHeader(TStream & stream,
-//             TString const & qryId, TString const & dbName,
-//             BlastFormat<f,p,g> const & /*tag*/,
-//             TField const & field1,
-//             const TFields&... fields)
-// {
-//     return 0;
-// }
-
-template <typename TStream, typename TString, typename TString2,
-          typename TField, typename... TFields,
-          BlastFormatFile f,
+// default case
+template <typename TStream,
+          typename TRecord,
+          typename TSpec,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
 writeHeader(TStream & stream,
-            TString const & qryId, TString2 const & dbName,
-            BlastFormat<f,p,g> const & /*tag*/,
-            TField const & field1,
-            const TFields&... fields)
+            TRecord const & record,
+            BlastDbSpecs<TSpec> const & dbSpecs,
+            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> const & /**/)
 {
-    typedef BlastFormat<f,p,g> Format;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
+    return writeHeader(stream, record.qId, dbSpecs.dbName, TFormat());
+}
+
+
+template <typename TStream,
+          typename TString,
+          typename TString2,
+          typename TField,
+          typename... TFields,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline int
+writeHeader(TStream & stream,
+            TString const & qryId,
+            TString2 const & dbName,
+            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> const & /**/,
+            TField const & field1,
+            TFields const & ... fields)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> Format;
 
     int ret = _writeHeaderWithoutFields(stream, qryId, dbName, Format());
     if (ret)
@@ -318,225 +293,65 @@ writeHeader(TStream & stream,
     return _writeFields(stream, Format(), fields...);
 }
 
+template <typename TStream,
+          typename T,
+          typename T2,
+          typename... TFields,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline int
+writeHeader(TStream & /**/,
+            T const & /**/,
+            T2 const & /**/,
+            BlastFormat<BlastFormatFile::TABULAR,p,g> const & /*tag*/,
+            TFields const & ... /**/)
+{
+    return 0;
+}
+
 // ----------------------------------------------------------------------------
 // Function writeMatch()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.BLAST I/O#writeMatch
-..signature:int writeMatch(stream, query_id, subject_id, percentIdent, ali_length, num_mismatches, gap_openings, qStart, qEnd, sStart, sEnd, eval, bitScore, BlastFormat)
-..signature:int writeMatch(stream, fields, BlastFormat)
-..signature:int writeMatch(stream, query_id, subject_id, fields, BlastFormat)
-..signature:int writeMatch(stream, BlastFormat, field1,[ ... fieldN])
-..param.stream:The stream to write to.
-...type:Concept.Stream
-..param.query_id:ID of the query sequence.
-...type:nolink:String-type
-..param.subject_id:ID of the database sequence.
-...type:nolink:String-type
-..param.num_identies:number of identical position in the alignment
-...type:nolink:double
-..param.ali_length:length of alignment
-...type:nolink:unsigned
-..param.num_mismatches: number of mismatched positions in alignment
-...type:nolink:unsigned
-..param.gap_openings: number of gap_openings in alignment
-...type:nolink:unsigned
-..param.qStart: begin position of the alignment on the query
-...type:nolink:unsigned
-..param.qEnd: end position of the alignment on the query
-...type:nolink:unsigned
-..param.sStart: begin position of the alignment on the subject
-...type:nolink:unsigned
-..param.sEnd: end position of the alignment on the subject
-...type:nolink:unsigned
-..param.fields:A String with fields to print (note that these have to be of
-the same type, e.g. String(Set) of Strings, or String of Double)
-..type:String
-..param.BlastFormat: The format tag, note that BlastFormat must be further specified
-...type:Class.BlastFormat
-..param.fieldN:parameters of differently typed values to print (only supported with C++11)
-...type:nolink:anything printable by @streamPut@
-..include:seqan/blast.h
-*/
+/*!
+ * @fn BlastMatch#writeMatch
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastMatch @endlink to file
+ * @signature int writeMatch(stream, blastMatch, blastFormatTag)
+ * @signature int writeMatch(stream, blastFormatTag, columns...)
+ *
+ * This function writes a single match if @link BlastFormatFile @endlink
+ * is TABULAR_WITH_HEADER or TABULAR. The first signature causes default
+ * columns to be printed, which is described <a href="https://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node93.html">
+ * here</a>. Please note that BLAST is 1-indexed and considers the last position
+ * to be the back, not the end, i.e. last one included in a match/sequence/...,
+ * not the one behind it (as SeqAn does); this functions corrects for both
+ * these bahaviours, so you don't have to.
+ * Please not also that query and subject ida are truncated at the first space
+ * character in NCBI BLAST, this is also done by default here.
+ *
+ * The second signature allows an arbitrary amount of and
+ * arbitrary typed columns to be printed. If you do this and you use the
+ * TABULAR_WITH_HEADER format, you should also print custom column labels
+ * with @link BlastRecord#writeHeader @endlink. Please note that in this case
+ * the adjustments mentioned above have to be done by yourself (if you use
+ * the mentioned fields and you want compatability).
+ *
+ * Many guides recommend always printing the default columns and using only
+ * additional columns with custom data. In this case you still have to use the
+ * second signature and correct for BLAST's conventions.
+ *
+ * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param blastMatch    The @link BlastMatch @endlink you wish to print.
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param columns...   Custom columns
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastRecord#writeRecord
+ * @see BlastRecord#writeHeader
+ */
 
-// template <typename TStream, typename TqId, typename TsId,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             TqId const & qId, TsId const & sId, unsigned const & num_identies,
-//             unsigned const & ali_length, unsigned const & num_mismatches,
-//             unsigned const & gap_openings,
-//             unsigned long const & qStart, unsigned long const & qEnd,
-//             unsigned long const & sStart, unsigned long const & sEnd,
-//             double const & eval, double const & bitScore,
-//             BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
-// {
-//     int ret = streamPut(stream, prefix(qId, _firstOcc(qId, ' ')));
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, prefix(sId, _firstOcc(sId, ' ')));
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, double(num_identies) * 100 / ali_length );
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, ali_length);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, num_mismatches);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, gap_openings);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, qStart);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, qEnd);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, sStart);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, sEnd);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, eval);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, bitScore);
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\n');
-//     return ret;
-// }
-
-// template <typename TStream, typename TqId, typename TsId, typename TField,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             TqId const & qId, TsId const & sId,
-//             String<TField> const & fields,
-//             BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
-// {
-//     int ret = streamPut(stream, prefix(qId, _firstOcc(qId, ' ')));
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, '\t');
-//     if (ret)
-//         return ret;
-//     ret = streamPut(stream, prefix(sId, _firstOcc(sId, ' ')));
-//     if (ret)
-//         return ret;
-// 
-//     for (int i = 0; i < length(fields); ++i)
-//     {
-//         ret = streamPut(stream, '\t');
-//         if (ret)
-//             return ret;
-// 
-//         ret = streamPut(stream, fields[i]);
-//         if (ret)
-//             return ret;
-//     }
-//     ret = streamPut(stream, '\n');
-//     return ret;
-// }
-
-// template <typename TStream, typename TField,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             String<TField> const & fields,
-//             BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     return writeMatch(stream, "", "", fields, TFormat());
-// }
-
-// BlastTabHdr Record equal to BlastTab Record
-// template <typename TStream, typename TqId, typename TsId,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             TqId const & qId, TsId const & sId, double const & percentIdent,
-//             unsigned const & ali_length, unsigned const & num_mismatches,
-//             unsigned const & gap_openings,
-//             unsigned long const & qStart, unsigned long const & qEnd,
-//             unsigned long const & sStart, unsigned long const & sEnd,
-//             double const & eval, double const & bitScore,
-//             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         p,
-//                         g> const & /*tag*/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     return writeMatch(stream, qId, sId, percentIdent, ali_length,
-//                        num_mismatches, gap_openings, qStart, qEnd, sStart,
-//                        sEnd, eval, bitScore, TFormat());
-// }
-// 
-// // BlastTabHdr Record equal to BlastTab Record
-// template <typename TStream, typename TqId, typename TsId, typename TField,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             TqId const & qId, TsId const & sId,
-//             String<TField> const & fields,
-//             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         p,
-//                         g> const & /*tag*/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     return writeMatch(stream, qId, sId, fields, TFormat());
-// }
-
-// BlastTabHdr Record equal to BlastTab Record
-// template <typename TStream, typename TField,
-//           BlastFormatProgram p, BlastFormatGeneration g>
-// inline int
-// writeMatch(TStream & stream,
-//             String<TField> const & fields,
-//             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         p,
-//                         g> const & /*tag*/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     return writeMatch(stream, "", "", fields, TFormat());
-// }
 
 // Functions for arbitrary number and typed fields
 template <typename TStream, typename TField, typename... TFields,
@@ -547,7 +362,7 @@ writeMatch(TStream & stream,
                         p,
                         g> const & /*tag*/,
             TField const & field1,
-            const TFields&... fields)
+            TFields const & ... fields)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
     int ret = streamPut(stream, field1);
@@ -566,7 +381,7 @@ writeMatch(TStream & stream,
                         p,
                         g> const & /*tag*/,
             TField const & field1,
-            const TFields&... fields)
+            TFields const & ... fields)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
     return writeMatch(stream, TFormat(), field1, fields... );
@@ -587,9 +402,9 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       match.aliLength,
                       match.mismatches,
                       match.gapOpenings,
-                      match.qStart,
+                      match.qStart + 1u,
                       match.qEnd,
-                      match.sStart,
+                      match.sStart + 1u,
                       match.sEnd,
                       match.eVal,
                       match.bitScore);
@@ -610,9 +425,9 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       match.aliLength,
                       match.mismatches,
                       match.gapOpenings,
-                      match.qStart,
+                      match.qStart + 1,
                       match.qEnd,
-                      match.sStart,
+                      match.sStart + 1,
                       match.sEnd,
                       match.eVal,
                       match.bitScore);
@@ -622,41 +437,29 @@ writeMatch(TStream & stream, TBlastMatch const & match,
 // Function writeTop()
 // ----------------------------------------------------------------------------
 
-template <typename TStream,
-          typename TString,
-          typename TNum1,
-          typename TNum2,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline int
-writeTop(TStream             & /**/,
-         TString       const & /**/,
-         TNum1         const & /**/,
-         TNum2         const & /**/,
-            BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        g> const & /*tag*/)
-{
-    return 0;
-}
-
-template <typename TStream,
-          typename TString,
-          typename TNum1,
-          typename TNum2,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline int
-writeTop(TStream             & /**/,
-         TString       const & /**/,
-         TNum1         const & /**/,
-         TNum2         const & /**/,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/)
-{
-    return 0;
-}
+// template <typename TStream,
+//           typename TDbSpecs,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline int
+// writeTop(TStream                    & /**/,
+//          TDbSpecs             const & /**/,
+//          BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+// {
+//     return 0;
+// }
+// 
+// template <typename TStream,
+//           typename TDbSpecs,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline int
+// writeTop(TStream                    & /**/,
+//          TDbSpecs             const & /**/,
+//          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /*tag*/)
+// {
+//     return 0;
+// }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()
@@ -664,12 +467,14 @@ writeTop(TStream             & /**/,
 
 template <typename TStream,
           typename TRecord,
+          typename TDbSpecs,
           BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
 _writeRecordImplTab(TStream                    & stream,
                     TRecord              const & record,
+                    TDbSpecs             const & dbSpecs,
                     BlastFormat<f, p, g> const & /*tag*/)
 {
     typedef BlastFormat<f, p, g> TFormat;
@@ -677,7 +482,7 @@ _writeRecordImplTab(TStream                    & stream,
     //TODO if debug, do lots of sanity checks on record
 
     //NOOP for TABULAR
-    int ret = writeHeader(stream, record.qId, record.dbName, TFormat());
+    int ret = writeHeader(stream, record, dbSpecs, TFormat());
     if (ret)
         return ret;
     for (auto it = record.matches.begin(); it != record.matches.end(); ++it)
@@ -694,67 +499,72 @@ _writeRecordImplTab(TStream                    & stream,
 
 template <typename TStream,
           typename TRecord,
+          typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
 writeRecord(TStream             & stream,
             TRecord       const & record,
+            TDbSpecs      const & dbSpecs,
             BlastFormat<BlastFormatFile::TABULAR,
                         p,
                         g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    return _writeRecordImplTab(stream, record, TFormat());
+    return _writeRecordImplTab(stream, record, dbSpecs, TFormat());
 }
 
 template <typename TStream,
           typename TRecord,
+          typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline int
 writeRecord(TStream             & stream,
             TRecord       const & record,
+            TDbSpecs      const & dbSpecs,
             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    return _writeRecordImplTab(stream, record, TFormat());
+    return _writeRecordImplTab(stream, record, dbSpecs, TFormat());
 }
 
 // ----------------------------------------------------------------------------
 // Function writeBottom()
 // ----------------------------------------------------------------------------
 
-template <typename TStream,
-          typename TValue, typename TSpec,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline int
-writeBottom(TStream                      & /**/,
-            Score<TValue, TSpec>   const & /**/,
-            BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        g> const & /*tag*/)
-{
-    //TODO check if this is really empty
-    return 0;
-}
 
-template <typename TStream,
-          typename TValue, typename TSpec,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline int
-writeBottom(TStream                      & /**/,
-            Score<TValue, TSpec>   const & /**/,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/)
-{
-    //TODO check if this is really empty
-    return 0;
-}
+// template <typename TStream,
+//           typename TDbSpecs,
+//           typename TBlastScoringAdapater,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline int
+// writeBottom(TStream                           & /**/,
+//             TDbSpecs                    const & /**/,
+//             TBlastScoringAdapater       const & /**/,
+//             BlastFormat<BlastFormatFile::TABULAR, p,g> const & /*tag*/)
+// {
+//     //TODO check if this is really NO-OP forr this format
+//     return 0;
+// }
+// 
+// template <typename TStream,
+//           typename TDbSpecs,
+//           typename TBlastScoringAdapater,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline int
+// writeBottom(TStream                           & /**/,
+//             TDbSpecs                    const & /**/,
+//             TBlastScoringAdapater       const & /**/,
+//             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const & /*tag*/)
+// {
+//     //TODO check if this is really NO-OP forr this format
+//     return 0;
+// }
 
 } // namespace seqan
 #endif // header guard

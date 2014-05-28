@@ -179,13 +179,28 @@ enum class BlastFormatGeneration : uint8_t
 
 /*!
  * @class BlastFormat
- *
+ * @headerfile seqan/blast.h
  * @brief Blast Format specifier
  *
  * @signature template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
  *            struct BlastFormat;
  *
- * @headerfile seqan/blast.h
+ * @section Blast-I/O
+ *
+ * When writing Blast(-like) results to a file the easiest way to proceed
+ * is to organize your results into records (@link BlastRecord @endlink)
+ * that contain all matches (@link BlastMatch @endlink) of one query
+ * sequence. Another convenience data structure required for some functions is
+ * @link BlastDbSpecs @endlink .
+ *
+ * When writing this data, call @link BlastFormat#writeTop @endlink
+ * first, than iterate over the records, calling
+ * @link BlastRecord#writeRecord @endlink on each, and finishing with
+ * @link BlastFormat#writeBottom @endlink .
+ * Certain BlastFormats have additional more fine-grained functions, e.g.
+ * @link BlastRecord#writeHeader @endlink and
+ * @link BlastMatch#writeMatch @endlink .
+ *
  * @tparam _f    File Type Format
  * @see BlastFormatFile
  * @tparam _p    Program Type Format
@@ -463,6 +478,103 @@ const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                                         g> const &)
 {
     return _defaultFields<g>();
+}
+
+template <BlastFormatProgram p, BlastFormatGeneration g>
+constexpr
+const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR,
+                                        p,
+                                        g> const &)
+{
+    return "";
+}
+
+
+// ----------------------------------------------------------------------------
+// Function writeTop()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastFormat#writeTop
+ * @headerfile seqan/blast.h
+ * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
+ * @signature int writeTop(stream, blastDbSpecs, blastFormatTag)
+ *
+ * @param stream            The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastMatch
+ */
+
+template <typename TStream,
+          typename TDbSpecs,
+          BlastFormatFile f,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline int
+writeTop(TStream                    & /**/,
+         TDbSpecs             const & /**/,
+         BlastFormat<f, p, g> const & /*tag*/)
+{
+    return 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastRecord#writeRecord
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastRecord @endlink inluding it's @link BlastMatch @endlink es to a file.
+ * @signature int writeRecord(stream, blastRecord, blastDbSpecs. blastFormatTag)
+ *
+ * @param stream        The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param blastRecord   The @link BlastRecord @endlink you wish to print.
+ * @param blastDbSpecs  The @link BlastDbSpecs @endlink .
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ */
+
+
+// ----------------------------------------------------------------------------
+// Function writeBottom()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastFormat#writeBottom
+ * @headerfile seqan/blast.h
+ * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
+ * @signature int writeBottom(stream, blastDbSpecs, scoringAdapter, blastFormatTag)
+ *
+ * @param stream            The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param scoringAdapter    A @link BlastScoringAdapter @endlink with relevant information.
+ * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastMatch
+ */
+
+template <typename TStream,
+          typename TDbSpecs,
+          typename TBlastScoringAdapater,
+          BlastFormatFile f,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline int
+writeBottom(TStream                           & /**/,
+            TDbSpecs                    const & /**/,
+            TBlastScoringAdapater       const & /**/,
+            BlastFormat<f, p,g>         const & /*tag*/)
+{
+    return 0;
 }
 
 
