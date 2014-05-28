@@ -614,14 +614,14 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
                                             seqan::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-insert", "0");
     setMaxValue(parser, "illumina-prob-insert", "1");
-    setDefaultValue(parser, "illumina-prob-insert", "0.001");
+    setDefaultValue(parser, "illumina-prob-insert", "0.00005");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-prob-deletion",
                                             "Insert per-base probability for deletion in Illumina sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-deletion", "0");
     setMaxValue(parser, "illumina-prob-deletion", "1");
-    setDefaultValue(parser, "illumina-prob-deletion", "0.001");
+    setDefaultValue(parser, "illumina-prob-deletion", "0.00005");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch-scale",
                                             "Scaling factor for Illumina mismatch probability.",
