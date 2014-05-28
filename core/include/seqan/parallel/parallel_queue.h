@@ -419,6 +419,12 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     // try to extract a value
     ScopedReadLock<> readLock(me.lock);
 
+#ifdef SEQAN_CXX11_STANDARD
+    unsigned tid = std::hash<std::thread::id>()(std::this_thread::get_id()) & 0xff;
+#else
+    unsigned tid = omp_get_thread_num();
+#endif
+
     TSize cap = capacity(me.data);
     TSize roundSize = me.roundSize;
     TSize headReadPos;
@@ -428,7 +434,9 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     // wait for queue to become filled
     do {
         headReadPos = me.headReadPos;
+#ifdef SEQAN_CXX11_STANDARD
         atomic_thread_fence(std::memory_order_seq_cst);
+#endif
 
         TSize tailPos = me.tailPos;
         if (headReadPos > tailPos)
@@ -457,22 +465,23 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     std::swap(result, *it);
     valueDestruct(it);
 
+#ifdef SEQAN_CXX11_STANDARD
     atomic_thread_fence(std::memory_order_seq_cst);
+#endif
 
     if (headReadPos >= newHeadReadPos)
         SEQAN_ASSERT_LT(headReadPos, newHeadReadPos);
 
     // wait for pending previous reads and synchronize headPos to headReadPos
-#ifdef SEQAN_CXX11_STANDARD
-    std::thread::id tid = std::this_thread::get_id();
-    printf("(%#lx): try     <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
+    printf("(%#lx): try     <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
 
+#ifdef SEQAN_CXX11_STANDARD
     exp = headReadPos;
     while (!me.headPos.compare_exchange_strong(exp, newHeadReadPos));
     {
         // NOTE: compare_exchange_weak() changes tailWritePos
         if (exp > headReadPos)
-            printf("(%#lx): headPos <- %ld  !!! [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, exp);
+            printf("(%#lx): headPos <- %ld  !!! [from %ld]\n", tid, newHeadReadPos, exp);
 
         exp = headReadPos;
     }
@@ -481,9 +490,11 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     {}
 #endif
 
+#ifdef SEQAN_CXX11_STANDARD
     atomic_thread_fence(std::memory_order_seq_cst);
+#endif
 
-    printf("(%#lx): headPos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newHeadReadPos, headReadPos);
+    printf("(%#lx): headPos <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
 
     return true;
 }
@@ -663,11 +674,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
     bool valueWasAppended = false;
 
     // did we reach the capacity limit (another thread could have done the upgrade already)?
-#ifdef SEQAN_CXX11_STANDARD
-    if (_cyclicInc(me.tailPos.load(), cap, me.roundSize.load()) >= me.headPos.load() + me.roundSize.load())
-#else
     if (_cyclicInc(me.tailPos, cap, me.roundSize) >= me.headPos + me.roundSize)
-#endif
     {
         if (cap != 0)
         {
@@ -748,10 +755,10 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 
             while (true)
             {
-                TSize tailWritePos = me.tailWritePos.load(std::memory_order_seq_cst);
+                TSize tailWritePos = me.tailWritePos;
                 TSize newTailWritePos = _cyclicInc(tailWritePos, cap, roundSize);
 
-                TSize headPos = me.headPos.load(std::memory_order_seq_cst);
+                TSize headPos = me.headPos;
                 if (newTailWritePos > headPos + roundSize)
                 {
                     SEQAN_ASSERT_LEQ(newTailWritePos, headPos + roundSize);
@@ -772,8 +779,9 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
 
+#ifdef SEQAN_CXX11_STANDARD
                     atomic_thread_fence(std::memory_order_seq_cst);
-
+#endif
                     if (tailWritePos >= newTailWritePos)
                         SEQAN_ASSERT_LT(tailWritePos, newTailWritePos);
 
@@ -789,7 +797,9 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     {}
 #endif
 
+#ifdef SEQAN_CXX11_STANDARD
                     atomic_thread_fence(std::memory_order_seq_cst);
+#endif
 
 //                    if (newTailWritePos < tailWritePos)
 //                    {
