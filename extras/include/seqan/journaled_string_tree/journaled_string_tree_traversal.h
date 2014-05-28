@@ -2209,11 +2209,12 @@ init(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPosition, TRequir
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Triggers the traversal.
  *
- * @signature traverse(ext, delegate, traverser);
+ * @signature traverse(ext, delegate, traverser[, tag]);
  *
- * @param[in,out]  ext       An external algorithm. Has to implement the @link JstTraversalConcept @endlink.
+ * @param[in]      ext       An external algorithm. Has to implement the @link JstTraversalConcept @endlink.
  * @param[in,out]  delegate  A functor which is called by the external algorithm.
  * @param[in,out]  traverser The traverser that manages the traverser. Has to be of type @link JstTraverser @endlink.
+ * @param[in]      tag       Tag to enable parallel traversal. One of @link ParallelismTags @endlink.
  */
 
 template <typename TOperator, typename TDelegate, typename TContainer, typename TState, typename TSpec,
@@ -2248,7 +2249,7 @@ traverse(TOperator & traversalCaller,
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Sets the context size of the context.
  *
- * @signature TContainer setsetContextSize(traverser, w);
+ * @signature TContainer setContextSize(traverser, w);
  * @param[in,out]  traverser The traverser to set the context size to.
  * @param[in]       w         The context size.
  *
