@@ -388,7 +388,8 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
     // Use parallel processing.
     // TODO(rmaerker): Consider more general Master-Worker design for parallelization?
     Splitter<TJournalSetIter> jSetSplitter(begin(jst._journalSet, Standard()), end(jst._journalSet, Standard()), parallelTag);
-    SEQAN_OMP_PRAGMA(parallel for /*if (length(stringSet(jst)) > 1000),*/ firstprivate(itMapBegin, jst._mapBlockBegin, jst._mapBlockEnd))
+
+    SEQAN_OMP_PRAGMA(parallel for)
     for (unsigned jobId = 0; jobId < length(jSetSplitter); ++jobId)
     {
 //        printf("Thread: %i of %i\n", jobId, omp_get_num_threads());

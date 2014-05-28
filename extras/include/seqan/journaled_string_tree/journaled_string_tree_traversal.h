@@ -1469,10 +1469,7 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<TContex
         {
             nextBranch._proxyEndPosDiff = deltaDel(traverser._branchNodeIt);
             if (nextBranch._proxyEndPosDiff > 1)
-            {
                 nextBranch._mappedHostPos += nextBranch._proxyEndPosDiff - 1;  // Moves right by the size of the deletion.
-                push(traverser._mergePointStack, nextBranch._mappedHostPos, traverser._branchNodeIt);
-            }
 
             if (nextBranch._prefixOffset == 0)
             {
@@ -1498,10 +1495,7 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<TContex
             nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2));
             contextSizeRight += length(indel.i2) - 1;
             if (indel.i1 > 1)
-            {
                 nextBranch._mappedHostPos += indel.i1 - 1;  // Moves right by the size of the deletion.
-                push(traverser._mergePointStack, nextBranch._mappedHostPos, traverser._branchNodeIt);
-            }
             break;
         }
     }
@@ -1609,14 +1603,9 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<Co
         case DeltaType::DELTA_TYPE_DEL:
         {
             nextBranch._proxyEndPosDiff = deltaDel(traverser._branchNodeIt);
-
             // We only consider deletions bigger than 1.
             if (nextBranch._proxyEndPosDiff > 1)
-            {
                 nextBranch._mappedHostPos += nextBranch._proxyEndPosDiff - 1;  // Moves right by the size of the deletion.
-                // Add the new merge point to the merge point stack.
-                push(traverser._mergePointStack, nextBranch._mappedHostPos, traverser._branchNodeIt);
-            }
             --contextSizeRight;  // We update the right size.
             break;
         }
@@ -1634,10 +1623,7 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<Co
             nextBranch._proxyEndPosDiff -= static_cast<int>(length(indel.i2));
             contextSizeRight += length(indel.i2);
             if (indel.i1 > 1)
-            {
                 nextBranch._mappedHostPos += indel.i1 - 1;  // Moves right by the size of the deletion.
-                push(traverser._mergePointStack, nextBranch._mappedHostPos, traverser._branchNodeIt);
-            }
             break;
         }
     }
@@ -1839,6 +1825,22 @@ _produceOrConsume(TConcurrentQueue & /*queue*/,
     _traverseBranchWithAlt(traverser, externalAlg, delegate);
 }
 
+template <typename TContainer, typename TState, typename TSpec>
+inline void
+_recordMergePointEnds(JstTraverser<TContainer, TState, TSpec> & traverser)
+{
+    typedef typename DeltaType::TValue TValue;
+    TValue dType = deltaType(traverser._branchNodeIt);
+    if (dType == DeltaType::DELTA_TYPE_DEL)
+        if (deltaDel(traverser._branchNodeIt) > 1)
+            push(traverser._mergePointStack, *traverser._branchNodeIt + deltaDel(traverser._branchNodeIt),
+                 traverser._branchNodeIt);
+    if (dType == DeltaType::DELTA_TYPE_INDEL)
+        if (deltaIndel(traverser._branchNodeIt).i1 > 1)
+            push(traverser._mergePointStack, *traverser._branchNodeIt + deltaIndel(traverser._branchNodeIt).i1,
+                 traverser._branchNodeIt);
+}
+
 // ----------------------------------------------------------------------------
 // Function _execProducerThread()
 // ----------------------------------------------------------------------------
@@ -1918,12 +1920,18 @@ _execProducerThread(TConcurrentQueue & queue,
 #ifdef DEBUG_DATA_PARALLEL
             std::cerr << "Coverage: " << traverser._activeBranchCoverage << std::endl;
 #endif
+
+//            SEQAN_OMP_PRAGMA(critical(cout))
+//            {
+//                printf("Thread: %i pushed node %u of obj <%p>.\n", omp_get_thread_num(), branchPosition, getObjectId(traverser));
+//            }
             TBitVector& mappedCov = deltaCoverage(traverser._branchNodeIt); //mappedCoverage(container(container(traverser)), position(traverser._branchNodeIt));
             if (!testAllZeros(mappedCov))
             {
 #ifdef PROFILE_DATA_PARALLEL_INTERN
                 double timeBranch1 = sysTime();
 #endif
+                _recordMergePointEnds(traverser);
                 _produceOrConsume(queue, traverser, externalAlg, delegate, maxQueueSize, TParallelTag());
 #ifdef PROFILE_DATA_PARALLEL_INTERN
                 timeTable[1] += sysTime() - timeBranch1;
@@ -2022,7 +2030,7 @@ template <typename TContainer, typename TState, typename TContextPosition, typen
           typename TExternal, typename TDelegate, typename TParallelTag>
 inline void
 _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPosition, TRequireFullContext> > & traverser,
-               TExternal & externalAlg,
+               TExternal externalAlg,
                TDelegate & delegate,
                TParallelTag /*tag*/)
 {
@@ -2039,7 +2047,7 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
     std::cerr << currentPercentage << "% " << std::flush;
 #endif //PROFILE_DATA_PARALLEL
 
-    TQueue queue;  // Concurrently scheduling the jobs.
+    TQueue queue(0u);  // Concurrently scheduling the jobs.
 
     // Parallelize with SPMC-model.
     // Everyone works on its own external Algorithm.
@@ -2054,6 +2062,10 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
             _execProducerThread(queue, traverser, externalAlg, delegate, TParallelTag());
         }
 
+//        SEQAN_OMP_PRAGMA(critical(cout))
+//        {
+//            printf("Thread: %i registered for popping.\n", omp_get_thread_num());
+//        }
         ScopedReadLock<TQueue> readLock(queue);
         waitForFirstValue(queue); // Barrier to wait for all writers to set up.
 
@@ -2061,128 +2073,6 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
     }
 
     SEQAN_ASSERT(empty(queue));
-//    traverser._lastMasterState = getState(externalAlg);
-//
-//    // Loop over the branch nodes.
-//    while (traverser._branchNodeIt != traverser._branchNodeBlockEnd)
-//    {
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//        double timeMaster = sysTime();
-//#endif
-//
-//#ifdef DEBUG_DATA_PARALLEL
-//    std::cerr << "\n" << "#####################" << std::endl;
-//    std::cerr << "Search Master Segment: " << position(contextBegin(traverser, StateTraverseMaster())) << " - " << *traverser._branchNodeIt << std::endl;
-//    std::cerr << "Breakpoint: " << *traverser._branchNodeIt << std::endl;
-//    std::cerr << "Coverage: " << traverser._activeMasterCoverage << std::endl;
-//#endif
-//        if (isMasterState(traverser))
-//        {
-//            setState(externalAlg, traverser._lastMasterState);  // Reactivate the last state.
-//            // Search along the master strand.
-//            while (_contextEndPosition(traverser, StateTraverseMaster()) < *traverser._branchNodeIt)
-//            {
-//                traverser._isSynchronized = false;
-//                traverser._masterIt += deliverContext(externalAlg, delegate, traverser, StateTraverseMaster());
-//            }
-//        }
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//        timeTable[0] += sysTime() - timeMaster;
-//#endif
-//
-//        traverser._traversalState = JST_TRAVERSAL_STATE_BRANCH;
-//
-//        // Processing the current node.
-//        unsigned branchPosition = *traverser._branchNodeIt;
-//
-//#ifdef DEBUG_DATA_PARALLEL
-//        std::cerr << "#####################" << std::endl;
-//        std::cerr << "Search Branch Segment: " << std::endl;
-//        std::cerr << "Master Branch Coverage: " << traverser._activeMasterCoverage << std::endl;
-//#endif
-//
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//        double timeBranchAll = sysTime();
-//#endif
-//        _syncAndUpdateCoverage(traverser, StateTraverseMaster());
-//        traverser._lastMasterState = getState(externalAlg);  // Keep the last active caller state.
-//
-//        // Search all haplotypes with the alternative allel at this position.
-//        while(traverser._branchNodeIt != traverser._branchNodeBlockEnd && *traverser._branchNodeIt == branchPosition)
-//        {
-//#ifdef DEBUG_DATA_PARALLEL
-//            std::cerr << "Coverage: " << traverser._activeBranchCoverage << std::endl;
-//#endif
-//            TBitVector& mappedCov = deltaCoverage(traverser._branchNodeIt); //mappedCoverage(container(container(traverser)), position(traverser._branchNodeIt));
-//            if (!testAllZeros(mappedCov))
-//            {
-//                // We know search in the delta until we have reached the end position of this delta: x, if INS/SNP or x-1 if DEL
-//                // What if multiple deletions at the same position?
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//                double timeBranch1 = sysTime();
-//#endif
-//                _traverseBranchWithAlt(traverser, externalAlg, delegate);
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//                timeTable[1] += sysTime() - timeBranch1;
-//#endif
-//                // Remove the coverage from the current delta from the active master coverage.
-//                transform(traverser._activeMasterCoverage, traverser._activeMasterCoverage, mappedCov,
-//                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
-//            }
-//            // We increase the delta
-//            ++traverser._branchNodeIt;
-//
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//            if (++counter == fivePercentInterval)
-//            {
-//                currentPercentage += 5;
-//                std::cerr << currentPercentage << "% " << std::flush;
-//                counter = 0;
-//            }
-//#endif //PROFILE_DATA_PARALLEL
-//        }
-//        traverser._traversalState = JST_TRAVERSAL_STATE_MASTER;
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//        timeTable[2] += sysTime() - timeBranchAll;
-//#endif
-//    }
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//    double timeMaster = sysTime();
-//#endif
-//    traverser._traversalState = JST_TRAVERSAL_STATE_MASTER;
-//    setState(externalAlg, traverser._lastMasterState);  // Reactivate the last state.
-//
-//    // Set end of segment to next breakpoint.
-//#ifdef DEBUG_DATA_PARALLEL
-//    std::cerr << "#####################" << std::endl;
-//    std::cerr << "Search Master Segment: " << position(contextBegin(traverser, StateTraverseMaster())) << " - " << position(traverser._masterItEnd) << std::endl;
-//#endif
-//
-//    while (contextEnd(traverser, StateTraverseMaster()) < traverser._masterItEnd)
-//    {
-//        traverser._isSynchronized = false;
-//        traverser._masterIt += deliverContext(externalAlg, delegate, traverser, StateTraverseMaster());
-//#ifdef DEBUG_DATA_PARALLEL
-//    std::cerr << "--- position: " << position(contextBegin(traverser, StateTraverseMaster())) << std::endl;
-//#endif
-//    }
-//    // Synchronize master coverage in the end.
-//    _updateMergePoints(traverser._mergePointStack, position(contextBegin(traverser, StateTraverseMaster())));
-//    transform(traverser._activeMasterCoverage, traverser._activeMasterCoverage,
-//              traverser._mergePointStack._mergeCoverage,
-//              FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
-//
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//    timeTable[0] += sysTime() - timeMaster;
-//#endif
-//
-//#ifdef PROFILE_DATA_PARALLEL_INTERN
-//    std::cerr <<  std::endl;
-//    std::cerr << "Time Master: " << timeTable[0] << " s." << std::endl;
-//    std::cerr << "Time Branch iterate: " << timeTable[1] << " s." << std::endl;
-//    std::cerr << "Time Branch all: " << timeTable[2] << " s." << std::endl;
-//    std::cerr << "Time total: " << sysTime() - timeAll << " s." <<std::endl;
-//#endif // PROFILE_DATA_PARALLEL
 }
 
 // ----------------------------------------------------------------------------
@@ -2260,7 +2150,6 @@ _copy(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPosition, TRequi
         traverser._needInit = other._needInit;
         traverser._isSynchronized = other._isSynchronized;
         traverser._lastMasterState = other._lastMasterState;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -2451,6 +2340,17 @@ inline typename Container<JstTraverser<TContainer, TState, TSpec> const>::Type &
 container(JstTraverser<TContainer, TState, TSpec> const & traverser)
 {
     return *traverser._haystackPtr;
+}
+
+// ----------------------------------------------------------------------------
+// Function getObjId()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TState, typename TSpec>
+inline void const *
+getObjectId(JstTraverser<TContainer, TState, TSpec> const & obj)
+{
+    return static_cast<void const *>(&obj);
 }
 
 #ifdef DEBUG_DATA_PARALLEL

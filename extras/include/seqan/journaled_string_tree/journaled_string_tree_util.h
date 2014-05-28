@@ -150,6 +150,24 @@ struct Reference<MergePointMap_<TVariantMap> const>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TVariantMap>
+inline TStream &
+operator<<(TStream & str, MergePointMap_<TVariantMap> const & obj)
+{
+    str << "MergePoints: (";
+    for (unsigned i = length(obj._mergePoints); i > 1; --i)
+        str << obj._mergePoints[i-1] << ", ";
+    str << obj._mergePoints[0];
+    str << ")\n";
+    str << "Coverge: " << obj._mergeCoverage;
+    str << "\n";
+    return str;
+}
+
+// ----------------------------------------------------------------------------
 // Function _copy()
 // ----------------------------------------------------------------------------
 
