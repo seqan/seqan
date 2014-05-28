@@ -81,6 +81,7 @@ _importSequences(CharString const & fileNameL,
             std::cerr << "Problem reading from first input file." << std::endl;
             return false;
         }
+        // Note: overwrites id with ID of right mate, which is done also by gustaf_join_mates
         if (readRecord(id, seqR, qualR, r) != 0)
         {
             std::cerr << "Problem reading from first input file." << std::endl;
@@ -173,10 +174,10 @@ _importSequences(CharString const & fileNameL,
         if (revCompl)
             reverseComplement(seqR);
         readJoinPositions[i] = length(seqL);
-        // std::cout << "Read " << i+1 << " has joining position " << readJoinPositions[i] << std::endl;
         append(seq, seqL);
         append(seq, seqR);
-        assignSeqId(id, leftMates[i], formatL);
+        // Note: saving ID of right(!) mate per default
+        assignSeqId(id, rightMates[i], formatR);
         appendValue(seqs, seq, Generous());
         appendValue(ids, id, Generous());
 
@@ -210,7 +211,7 @@ inline bool
 _countMateMatches(TString const & confMateMatches, String<TMatch> const & queryMatches, TId & dbID, unsigned support)
 {
     unsigned count = 0;
-    // StellarMatches in confMateMatches have to correct mate distance, but the IntervalTree does not check for correct
+    // StellarMatches in confMateMatches have the correct mate distance, but the IntervalTree does not check for correct
     // database IDs, this is done here (i.e. only matches on the same reference are counted)
     // Note: matches on the opposite strand in the correct distance are considered valid
     for (unsigned i = 0; i < length(confMateMatches); ++i)
@@ -219,7 +220,7 @@ _countMateMatches(TString const & confMateMatches, String<TMatch> const & queryM
         if (queryMatches[index].id == dbID)
             ++count;
     }
-    // Support must dependent in the size of mateIntervalTrees!
+    // Support must/should dependend on the size of mateIntervalTrees!
     return count >= support;
 }
 
@@ -270,6 +271,7 @@ _checkLeftMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches
     return _countMateMatches(confMateMatches, queryMatches, sMatch.id, options.mateSupport);
 }
 
+// Check for one match if it is confirmed by ANY of the other (mate) matches
 template <typename TMatch, typename TMSplazerChain>
 inline bool
 _checkMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches, TMSplazerChain const & gustafChain, MSplazerOptions const & options)
@@ -280,10 +282,33 @@ _checkMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches, TM
 }
 
 
+// Check for two matches, each from a different mate, if they both apply to the libSize+sd, i.e. the BP is artificial
+// Assumptions: sMatch1 < sMatch2, valid order and valid gap between matches regarding read sequence
+template <typename TMatch, typename TMSplazerChain>
+inline bool
+_artificialBP(TMatch const & sMatch1, TMatch const & sMatch2, TMSplazerChain const & gustafChain)//, MSplazerOptions const & options)
+{
+    // Check if both matches are from different mates
+    if (_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && _isLeftMate(sMatch2, gustafChain.mateJoinPosition))
+        return false;
+    if (!_isLeftMate(sMatch1, gustafChain.mateJoinPosition) && !_isLeftMate(sMatch2, gustafChain.mateJoinPosition))
+        return false;
+    // Check the distance between inner match position on the reference
+    /*
+    typedef typename TMatch::TPos TPos;
+    TPos dist = sMatch2.begin1 - sMatch1.end1;
+    if (dist < (options.libSize - options.libError))
+        return false;
+    if (dist > (options.libSize + options.libError))
+        return false;
+        */
+    return true;
+}
+
 
 // Intitialisation of graph structure for combinable StellarMatches of a read
 template <typename TSequence, typename TId, typename TMSplazerChain>
-void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                       TMSplazerChain & chain,
                       MSplazerOptions const & options)
 {
@@ -298,9 +323,9 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
     String<TInterval> rightMateMatches;
     TIterator itStellarMatches = begin(queryMatches.matches);
     TIterator itEndStellarMatches = end(queryMatches.matches);
-    // The default vertex descriptor is an integer. So if inserted in the same order the vertex descriptor value is
+    // The default vertex descriptor is an integer. So if inserted in the same order, the vertex descriptor value is
     // the same as the position of the corresponding vertex within the QueryMatches --> since we can easily iterate
-    // through the QueryMatches and use the iterator we wont keep track of the vertex descriptors
+    // through the QueryMatches and use the iterator, we wont keep track of the vertex descriptors.
     unsigned index = 0;
     for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
     {
@@ -342,6 +367,8 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
         if (cargo < (options.initGapThresh + 1))
         {
             cargo += chain.matchDistanceScores[i];
+            // Note that the penalty for no mate matches is also always on the ingoing edge,
+            // so for the graph initialsation, we only check this for the start vertex.
             if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
                 cargo += options.noMateMatchesPen;
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
@@ -355,6 +382,116 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
             resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
             assignProperty(chain.breakpoints, edge);
+        }
+    }
+}
+
+// Intitialisation of graph structure for combinable StellarMatches of a read
+// including breakends
+template <typename TSequence, typename TId, typename TMSplazerChain>
+void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+                      TId & queryId,
+                      TMSplazerChain & chain,
+                      MSplazerOptions const & options)
+{
+
+    // std::cerr << " Initialising graph structure " << std::endl;
+    typedef typename TMSplazerChain::TGraph TGraph;
+    typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+    typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
+    typedef typename TMSplazerChain::TInterval TInterval;
+    typedef typename TMSplazerChain::TIntervalTree TIntervalTree;
+    typedef Breakpoint<TSequence, TId> TBreakpoint;
+
+    String<TInterval> leftMateMatches;
+    String<TInterval> rightMateMatches;
+    TIterator itStellarMatches = begin(queryMatches.matches);
+    TIterator itEndStellarMatches = end(queryMatches.matches);
+    // The default vertex descriptor is an integer. So if inserted in the same order the vertex descriptor value is
+    // the same as the position of the corresponding vertex within the QueryMatches --> since we can easily iterate
+    // through the QueryMatches and use the iterator we wont keep track of the vertex descriptors
+    unsigned index = 0;
+    for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
+    {
+        addVertex(chain.graph);
+        // Collect intervals for mate IntervalTrees
+        if (_isLeftMate(*itStellarMatches, chain.mateJoinPosition))
+            appendValue(leftMateMatches, TInterval((*itStellarMatches).begin1, (*itStellarMatches).end1, index));
+        else
+            appendValue(rightMateMatches, TInterval((*itStellarMatches).begin1, (*itStellarMatches).end1, index));
+        ++index;
+    }
+
+    // Create IntervalTree for mates
+    createIntervalTree(chain.rightMateTree, rightMateMatches);
+    createIntervalTree(chain.leftMateTree, leftMateMatches);
+
+    // std::cerr << " Created graph " << std::endl;
+    // Add start and end to graph and property map
+    chain.startVertex = addVertex(chain.graph);
+    chain.endVertex = addVertex(chain.graph);
+
+    int cargo = 0;
+    resize(chain.breakpoints.slotLookupTable, 2 * length(queryMatches.matches));
+    // Adding edges to start and end vertices
+    for (unsigned i = 0; i < length(queryMatches.matches); ++i)
+    {
+        // start vertex
+        cargo = static_cast<int>(queryMatches.matches[i].begin2);
+        if (cargo < (options.breakendThresh + 1))
+        {
+            cargo += chain.matchDistanceScores[i];
+            // Note that the penalty for no mate matches is also always on the ingoing edge,
+            // so for the graph initialsation, we only check this for the start vertex.
+            if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
+                cargo += options.noMateMatchesPen;
+            TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            if (cargo < (options.initGapThresh + 1))
+                assignProperty(chain.breakpoints, edge);
+            else
+            {
+                // TODO(ktrappe): needs trimming of x-drop/sloppy end
+                TBreakpoint bp(queryMatches.matches[i].id,
+                               queryMatches.matches[i].id,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].begin1,
+                               queryMatches.matches[i].begin1,
+                               queryMatches.matches[i].begin2,
+                               queryMatches.matches[i].begin2,
+                               queryId);
+                bp.svtype = TBreakpoint::BREAKEND;
+                // bp.imprecise = true;
+                bp.breakend = 0; // left breakend
+                assignProperty(chain.breakpoints, edge, bp);
+            }
+        }
+        // end vertex
+        cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
+                static_cast<int>(queryMatches.matches[i].end2);
+        if (cargo < (options.breakendThresh + 1))
+        {
+            TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            if (cargo < (options.initGapThresh + 1))
+                assignProperty(chain.breakpoints, edge);
+            else
+            {
+                TBreakpoint bp(queryMatches.matches[i].id,
+                               queryMatches.matches[i].id,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].end1,
+                               queryMatches.matches[i].end1,
+                               queryMatches.matches[i].end2,
+                               queryMatches.matches[i].end2,
+                               queryId);
+                bp.svtype = TBreakpoint::BREAKEND;
+                // bp.imprecise = true;
+                bp.breakend = 1; // right breakend
+                assignProperty(chain.breakpoints, edge, bp);
+            }
         }
     }
 }
