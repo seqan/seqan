@@ -85,8 +85,12 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_queue_resize);
     SEQAN_CALL_TEST(test_parallel_queue_non_pod);
 */
-#if defined(_OPENMP)
+#if defined(_OPENMP) || defined(SEQAN_CXX11_STANDARD)
+#ifdef SEQAN_CXX11_STANDARD
+    if (std::thread::hardware_concurrency() >= 2u)
+#else
     if (omp_get_max_threads() >= 2)
+#endif
     {
 //        SEQAN_CALL_TEST(test_parallel_queue_spsc_fixedsize);
 //        SEQAN_CALL_TEST(test_parallel_queue_spsc_dynamicsize);
