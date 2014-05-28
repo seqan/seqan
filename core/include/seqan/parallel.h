@@ -58,6 +58,10 @@
 #include <numeric>
 #endif // PLATFORM_GCC
 
+#ifdef SEQAN_CXX11_STANDARD
+#include <atomic>
+#endif // SEQAN_CXX11_STANDARD
+
 // ============================================================================
 // Module Headers
 // ============================================================================
