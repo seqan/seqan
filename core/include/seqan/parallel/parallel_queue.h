@@ -473,7 +473,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
         SEQAN_ASSERT_LT(headReadPos, newHeadReadPos);
 
     // wait for pending previous reads and synchronize headPos to headReadPos
-    printf("(%#lx): try     <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
+//    printf("(%#x): try     <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
 
 #ifdef SEQAN_CXX11_STANDARD
     exp = headReadPos;
@@ -481,7 +481,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     {
         // NOTE: compare_exchange_weak() changes tailWritePos
         if (exp > headReadPos)
-            printf("(%#lx): headPos <- %ld  !!! [from %ld]\n", tid, newHeadReadPos, exp);
+            printf("(%#x): headPos <- %ld  !!! [from %ld]\n", tid, newHeadReadPos, exp);
 
         exp = headReadPos;
     }
@@ -494,7 +494,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     atomic_thread_fence(std::memory_order_seq_cst);
 #endif
 
-    printf("(%#lx): headPos <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
+//    printf("(%#x): headPos <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
 
     return true;
 }
