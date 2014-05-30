@@ -625,7 +625,7 @@ information of the suffix tree) are provided.
 
 	template < typename TObject, typename TSpec >
 	inline bool save(
-		Index< TObject, IndexEsa<TSpec> > &index,
+		Index< TObject, IndexEsa<TSpec> > const &index,
 		const char *fileName,
 		int openMode)
 	{
@@ -654,7 +654,7 @@ information of the suffix tree) are provided.
 	}
 	template < typename TObject, typename TSpec >
 	inline bool save(
-		Index< TObject, IndexEsa<TSpec> > &index,
+		Index< TObject, IndexEsa<TSpec> > const &index,
 		const char *fileName)
 	{
 		return save(index, fileName, DefaultOpenMode<Index< TObject, IndexEsa<TSpec> > >::VALUE);
