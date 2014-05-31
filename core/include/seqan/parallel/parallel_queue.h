@@ -434,12 +434,9 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 	// wait for queue to become filled
 	do {
 		headReadPos = me.headReadPos;
-
 		TSize tailPos = me.tailPos;
-		if (headReadPos > tailPos)
-		{
-			SEQAN_ASSERT_LEQ(headReadPos, tailPos);
-		}
+
+        SEQAN_ASSERT_LEQ(headReadPos, tailPos);
 
 		// return if queue is empty?
 		if (headReadPos == tailPos)
@@ -464,20 +461,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     // wait for pending previous reads and synchronize headPos to headReadPos
     // printf("(%#x): try     <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
 
-#ifdef SEQAN_CXX11_STANDARD
-//	exp = headReadPos;
-	do {
-		// NOTE: compare_exchange_weak() changes tailWritePos
-//		if (exp != headReadPos)
-//			printf("(%#x): headPos <- %ld  !!! [from %ld]\n", tid, newHeadReadPos, exp);
-		exp = headReadPos;
-	} while (!me.headPos.compare_exchange_weak(exp, newHeadReadPos));
-#else
-    while (!atomicCasBool(me.headPos, headReadPos, newHeadReadPos, parallelTag))
-    {}
-#endif
-
-//    printf("(%#x): headPos <- %ld      [from %ld]\n", tid, newHeadReadPos, headReadPos);
+    spinCas(me.headPos, headReadPos, newHeadReadPos);
 
     return true;
 }
@@ -740,12 +724,9 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
             {
                 TSize tailWritePos = me.tailWritePos;
                 TSize newTailWritePos = _cyclicInc(tailWritePos, cap, roundSize);
-
                 TSize headPos = me.headPos;
-                if (newTailWritePos > headPos + roundSize)
-                {
-                    SEQAN_ASSERT_LEQ(newTailWritePos, headPos + roundSize);
-                }
+
+                SEQAN_ASSERT_LEQ(newTailWritePos, headPos + roundSize);
 
                 if (newTailWritePos == headPos + roundSize)
                     break;
@@ -761,22 +742,8 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                     valueConstruct(it, SEQAN_FORWARD(TValue, val));
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
+                    spinCas(me.tailPos, tailWritePos, newTailWritePos);
 
-#ifdef SEQAN_CXX11_STANDARD
-					do {
-						// NOTE: compare_exchange_weak() changes tailWritePos
-						exp = tailWritePos;
-					} while (!me.tailPos.compare_exchange_weak(exp, newTailWritePos));
-#else
-                    while (!atomicCasBool(me.tailPos, tailWritePos, newTailWritePos, parallelTag))
-                    {}
-#endif
-
-//                    if (newTailWritePos < tailWritePos)
-//                    {
-//                        std::thread::id tid = std::this_thread::get_id();
-//                        printf("(%#lx): tailWritePos <- %ld      [from %ld]\n", std::hash<std::thread::id>()(tid) & 0xff, newTailWritePos, tailWritePos);
-//                    }
                     return;
                 }
             }
