@@ -41,6 +41,10 @@
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
 
+#ifdef SEQAN_CXX11_STANDARD
+#include <chrono>
+#endif
+
 SEQAN_DEFINE_TEST(test_parallel_queue_simple)
 {
     seqan::ConcurrentQueue<int> queue;
@@ -186,6 +190,12 @@ void testMPMCQueue(size_t initialCapacity)
     seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
 
 #ifdef SEQAN_CXX11_STANDARD
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+#else
+    double start = omp_get_wtime();
+#endif
+
+#ifdef SEQAN_CXX11_STANDARD
     std::vector<std::thread> workers;
     for (size_t tid = 0; tid < threadCount; ++tid)
     {
@@ -238,6 +248,15 @@ void testMPMCQueue(size_t initialCapacity)
     for (auto &t : workers)
         t.join();
 #endif
+
+#ifdef SEQAN_CXX11_STANDARD
+    std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
+    double timeSpan = std::chrono::duration_cast<std::chrono::duration<double> >(stop - start).count();
+#else
+    double timeSpan = omp_get_wtime() - start;
+#endif
+    std::cout << "throughput: " << (__uint64)(length(random) / timeSpan) << " values/s" << std::endl;
+
 
 //    std::cout << "len: " << length(queue) << std::endl;
     std::cout << "cap: " << capacity(queue) << std::endl;
