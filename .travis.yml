@@ -8,6 +8,10 @@ cache:
   - _build
 before_script:
   - sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev python-jinja2
+  - if [ "$CC" = "clang" ];
+    then
+      sudo apt-get install -qq clang-3.3;
+    fi
   - if [ "$CC" = "gcc" ];
     then
       sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
