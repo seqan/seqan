@@ -122,7 +122,7 @@ spinCas(TAtomic & x, TValue cmp, TValue y)
         waitFor(spinDelay);
     }
 #else
-    while (!atomicCasBool(lock.writers, cmp, y))
+    while (!atomicCasBool(x, cmp, y))
         waitFor(spinDelay);
 #endif
 }
