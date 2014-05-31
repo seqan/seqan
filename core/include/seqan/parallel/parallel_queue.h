@@ -420,9 +420,9 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 	ScopedReadLock<> readLock(me.lock);
 
 #ifdef SEQAN_CXX11_STANDARD
-	unsigned tid = std::hash<std::thread::id>()(std::this_thread::get_id()) & 0xff;
+//	unsigned tid = std::hash<std::thread::id>()(std::this_thread::get_id()) & 0xff;
 #else
-	unsigned tid = omp_get_thread_num();
+//	unsigned tid = omp_get_thread_num();
 #endif
 
 	TSize cap = capacity(me.data);
