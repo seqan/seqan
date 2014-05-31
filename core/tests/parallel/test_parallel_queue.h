@@ -212,12 +212,12 @@ void testMPMCQueue(size_t initialCapacity)
             // barrier for all writers to set up
             waitForWriters(queue, writerCount);
 
-			printf("start writer thread: %ld\n", tid);
+//			printf("start writer #%ld\n", tid);
             for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
             {
                 appendValue(queue, random[j], TResizeTag(), TParallelPush());
             }
-            printf("stop writer thread: %ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
+            printf("stop writer #%ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
         }
 
         if (tid >= writerCount)
@@ -226,7 +226,7 @@ void testMPMCQueue(size_t initialCapacity)
             // barrier for all writers to set up
             waitForFirstValue(queue);
 
-            printf("start reader thread: %ld\n", tid);
+//            printf("start reader #%ld\n", tid);
             unsigned chkSumLocal = 0, val = 0, cnt = 0;
             while (popFront(val, queue, TParallelPop()))
             {
@@ -236,7 +236,7 @@ void testMPMCQueue(size_t initialCapacity)
                     printf("%ld ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
-            printf("stop reader thread: %ld %d\n", tid, cnt);
+//            printf("stop reader #%ld %d\n", tid, cnt);
         }
     }
 #ifdef SEQAN_CXX11_STANDARD
