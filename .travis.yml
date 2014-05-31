@@ -10,6 +10,7 @@ before_script:
   - sudo apt-get install -qq cmake python zlib1g-dev libbz2-dev libboost-dev python-jinja2
   - if [ "$CC" = "clang" ];
     then
+      dpkg -l clang\*;
       sudo apt-get purge -qq clang-3.4;
       sudo apt-get install -qq clang-3.3;
     fi
