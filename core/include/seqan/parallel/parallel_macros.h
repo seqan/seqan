@@ -109,10 +109,11 @@ i += 1;
   #define SEQAN_OMP_PRAGMA(x)
 
   // low-level OpenMP runtime compatibility
-  inline void omp_set_num_threads(int) {}
-  inline int  omp_get_num_threads()    { return 1; }
-  inline int  omp_get_max_threads()    { return 1; }
-  inline int  omp_get_thread_num()     { return 0; }
+  inline void   omp_set_num_threads(int) {}
+  inline int    omp_get_num_threads()    { return 1; }
+  inline int    omp_get_max_threads()    { return 1; }
+  inline int    omp_get_thread_num()     { return 0; }
+  inline double omp_get_wtime()          { return seqan::sysTime(); }
 
 #endif  // #ifdef _OPENMP
 
