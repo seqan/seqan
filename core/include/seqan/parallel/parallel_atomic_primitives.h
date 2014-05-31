@@ -516,8 +516,8 @@ template <typename T>   inline T atomicInc(T          & x,             Serial)  
 template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
 template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
 template <typename T>   inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
-template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
-template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
+template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x |= y;                 }
+template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x ^= y;                 }
 // In serial mode, there is no other thread changing cmp except us
 template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
 //template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
@@ -535,6 +535,19 @@ template <typename T>   inline bool atomicCasBool(T volatile & x, T cmp, T y, Pa
 template <typename T1, typename T2>   inline T1 atomicAdd(T1          & x, T2 y, Serial)    { return x = x + y; }
 template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y, Parallel)  { return atomicAdd(x, y); }
 
+
+// C++11 atomic wrappers
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename T>   inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
+template <typename T>   inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
+template <typename T>   inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
+template <typename T>   inline T atomicPostDec(std::atomic<T>    & x     )        { return x--;                    }
+template <typename T>   inline T atomicOr (std::atomic<T>        & x, T y)        { return x |= y;                 }
+template <typename T>   inline T atomicXor(std::atomic<T>        & x, T y)        { return x ^= y;                 }
+template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y) { x.compare_exchange_strong(cmp, y); return cmp; }
+template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y) { return x.compare_exchange_strong(cmp, y); }
+#endif
 
 } // namespace seqan
 

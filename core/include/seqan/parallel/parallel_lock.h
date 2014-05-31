@@ -37,11 +37,95 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_
 #define SEQAN_PARALLEL_PARALLEL_LOCK_H_
 
+#include <xmmintrin.h>
+
+#ifdef PLATFORM_WINDOWS
+#include <Windows.h>
+#else
+#include <sched.h>
+#endif
+
 namespace seqan {
 
 // ============================================================================
 // Classes
 // ============================================================================
+
+class SpinDelay
+{
+public:
+    static const unsigned LOOPS_BEFORE_YIELD = 16;
+    unsigned duration;
+
+    SpinDelay():
+        duration(1)
+    {}
+};
+
+inline void
+clear(SpinDelay &me)
+{
+    me.duration = 1;
+}
+
+inline void
+waitFor(SpinDelay &)
+{}
+
+/*inline void
+waitFor(SpinDelay &me)
+{
+    if (me.duration <= me.LOOPS_BEFORE_YIELD )
+    {
+        for (unsigned i = me.duration; i != 0; --i)
+            _mm_pause();
+        me.duration *= 2;
+    }
+    else
+    {
+#ifdef PLATFORM_WINDOWS
+        SwitchToThread();
+#else
+        sched_yield();
+#endif
+    }
+}*/
+
+template <typename TAtomic, typename TValue>
+inline void
+spinWhileEq(TAtomic & x, TValue cmp)
+{
+    SpinDelay spinDelay;
+    while (x == cmp)
+        waitFor(spinDelay);
+}
+
+template <typename TAtomic, typename TValue>
+inline void
+spinWhileNeq(TAtomic & x, TValue cmp)
+{
+    SpinDelay spinDelay;
+    while (x != cmp)
+        waitFor(spinDelay);
+}
+
+template <typename TAtomic, typename TValue>
+inline void
+spinCas(TAtomic & x, TValue cmp, TValue y)
+{
+    SpinDelay spinDelay;
+#ifdef SEQAN_CXX11_STANDARD
+    TValue exp = cmp;
+    while (!x.compare_exchange_weak(exp, y))
+    {
+        exp = cmp;
+        waitFor(spinDelay);
+    }
+#else
+    while (!atomicCasBool(lock.writers, cmp, y))
+        waitFor(spinDelay);
+#endif
+}
 
 // ----------------------------------------------------------------------------
 // Class ReadWriteLock
@@ -51,10 +135,16 @@ namespace seqan {
 //  - supports only a single writer at a time (possibly waiting for readers or other writers to finish)
 //  - the writer has higher priority than all readers
 
-struct ReadWriteLock
+class ReadWriteLock
 {
+public:
+#ifdef SEQAN_CXX11_STANDARD
+    std::atomic<unsigned> readers;
+    std::atomic<unsigned> writers;
+#else
     volatile unsigned readers;
     volatile unsigned writers;
+#endif
 
     ReadWriteLock() :
         readers(0),
@@ -120,7 +210,7 @@ lockReading(ReadWriteLock &lock)
     do
     {
         // wait for the end of a write access
-        while (lock.writers != 0) ;
+        spinWhileNeq(lock.writers, 0u);
 
         atomicInc(lock.readers);
 
@@ -151,12 +241,10 @@ inline void
 lockWriting(ReadWriteLock &lock)
 {
     // wait until we are the only writer
-    while (!atomicCasBool(lock.writers, 0u, 1u))
-    {}
+    spinCas(lock.writers, 0u, 1u);
 
     // wait until all readers are done
-    while (lock.readers != 0)
-    {}
+    spinWhileNeq(lock.readers, 0u);
 }
 
 // ----------------------------------------------------------------------------
