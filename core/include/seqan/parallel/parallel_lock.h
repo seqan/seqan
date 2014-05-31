@@ -68,11 +68,11 @@ clear(SpinDelay &me)
     me.duration = 1;
 }
 
-inline void
-waitFor(SpinDelay &)
-{}
+//inline void
+//waitFor(SpinDelay &)
+//{}
 
-/*inline void
+inline void
 waitFor(SpinDelay &me)
 {
     if (me.duration <= me.LOOPS_BEFORE_YIELD )
@@ -89,7 +89,7 @@ waitFor(SpinDelay &me)
         sched_yield();
 #endif
     }
-}*/
+}
 
 template <typename TAtomic, typename TValue>
 inline void
