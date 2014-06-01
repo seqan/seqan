@@ -81,9 +81,11 @@ template <typename TValue, typename TSpec = void>
 class ConcurrentQueue
 {
 public:
-    typedef typename Host<ConcurrentQueue>::Type    TString;
-    typedef typename Size<TString>::Type            TSize;
-    typedef typename Atomic<TSize>::Type            TAtomicSize;
+    typedef typename Host<ConcurrentQueue>::Type                TString;
+    typedef typename Size<TString>::Type                        TSize;
+    typedef typename Atomic<TSize>::Type                        TAtomicSize;
+    typedef typename IsSameType<TSpec, Limit>::Type             TFixedCapacity;
+    typedef typename If<TFixedCapacity, Serial, Parallel>::Type TLockTag;
 
     TString                 data;
     mutable ReadWriteLock   lock;           char pad1[SEQAN_CACHE_LINE_SIZE - sizeof(ReadWriteLock)];
@@ -308,7 +310,10 @@ template <typename TValue, typename TSpec>
 inline bool
 empty(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    ScopedWriteLock<> writeLock(me.lock);
+	typedef ConcurrentQueue<TValue, TSpec>  TQueue;
+    typedef typename TQueue::TLockTag       TLockTag;
+
+    ScopedWriteLock<ReadWriteLock, TLockTag> writeLock(me.lock);
     return me.headPos == me.tailPos;
 }
 
@@ -331,9 +336,11 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 length(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    typedef typename Size<ConcurrentQueue<TValue, TSpec> >::Type TSize;
+	typedef ConcurrentQueue<TValue, TSpec>  TQueue;
+    typedef typename TQueue::TLockTag       TLockTag;
+    typedef typename Size<TQueue>::Type     TSize;
 
-    ScopedWriteLock<> writeLock(me.lock);
+    ScopedWriteLock<ReadWriteLock, TLockTag> writeLock(me.lock);
     TSize mask = me.roundSize - 1;
     if ((me.headPos & mask) <= (me.tailPos & mask))
         return me.tailPos - me.headPos;
@@ -362,7 +369,10 @@ template <typename TValue, typename TSpec>
 inline typename Size<ConcurrentQueue<TValue, TSpec> >::Type
 capacity(ConcurrentQueue<TValue, TSpec> const & me)
 {
-    ScopedReadLock<> writeLock(me.lock);
+	typedef ConcurrentQueue<TValue, TSpec>  TQueue;
+    typedef typename TQueue::TLockTag       TLockTag;
+
+    ScopedReadLock<ReadWriteLock, TLockTag> writeLock(me.lock);
     return capacity(me.data) - 1;
 }
 
@@ -405,12 +415,13 @@ inline bool
 tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
 {
 	typedef ConcurrentQueue<TValue, TSpec>              TQueue;
+    typedef typename TQueue::TLockTag                   TLockTag;
 	typedef typename Host<TQueue>::Type                 TString;
 	typedef typename Size<TString>::Type                TSize;
 	typedef typename Iterator<TString, Standard>::Type  TIter;
 
 	// try to extract a value
-	ScopedReadLock<> readLock(me.lock);
+	ScopedReadLock<ReadWriteLock, TLockTag> readLock(me.lock);
 
 	TSize cap = capacity(me.data);
 	TSize roundSize = me.roundSize;
@@ -426,7 +437,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
 
         SEQAN_ASSERT_LEQ(headReadPos, tailPos);
 
-		// return if queue is empty?
+		// return if queue is empty
 		if (headReadPos == tailPos)
 			return false;
 
@@ -443,6 +454,7 @@ tryPopFront(TValue2 & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel
     std::swap(result, *it);
     valueDestruct(it);
 
+    // wait for pending previous reads and synchronize headPos to headReadPos
     spinCas(me.headPos, headReadPos, newHeadReadPos);
 
     return true;
@@ -616,14 +628,18 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
                TValue2 SEQAN_FORWARD_CARG val,
                Tag<TExpand> expandTag)
 {
-    typedef ConcurrentQueue<TValue, TSpec>              TQueue;
-    typedef typename Host<TQueue>::Type                 TString;
-    typedef typename Size<TString>::Type                TSize;
-    typedef typename Iterator<TString, Standard>::Type  TIter;
+    typedef ConcurrentQueue<TValue, TSpec>                  TQueue;
+    typedef typename TQueue::TLockTag                       TLockTag;
+    typedef typename Host<TQueue>::Type                     TString;
+    typedef typename Size<TString>::Type                    TSize;
+    typedef typename Iterator<TString, Standard>::Type      TIter;
+
+    bool queueIsResizable = IsSameType<TLockTag, Parallel>::VALUE;
+    SEQAN_ASSERT(queueIsResizable);
 
     // try to extend capacity
 
-    ScopedWriteLock<> writeLock(me.lock);
+    ScopedWriteLock<ReadWriteLock, TLockTag> writeLock(me.lock);
     TSize cap = capacity(me.data);
     TSize roundSize = me.roundSize;
     TSize headPos = me.headPos;
@@ -701,6 +717,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
             Tag<TParallel> parallelTag)
 {
     typedef ConcurrentQueue<TValue, TSpec>              TQueue;
+    typedef typename TQueue::TLockTag                   TLockTag;
     typedef typename Host<TQueue>::Type                 TString;
     typedef typename Size<TString>::Type                TSize;
     typedef typename Iterator<TString, Standard>::Type  TIter;
@@ -711,7 +728,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
     {
         // try to append the value
         {
-            ScopedReadLock<> readLock(me.lock);
+            ScopedReadLock<ReadWriteLock, TLockTag> readLock(me.lock);
             TSize cap = capacity(me.data);
             TSize roundSize = me.roundSize;
 

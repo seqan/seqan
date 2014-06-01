@@ -156,7 +156,7 @@ public:
 // Class ScopedReadLock
 // ----------------------------------------------------------------------------
 
-template <typename TLock = ReadWriteLock>
+template <typename TLock = ReadWriteLock, typename TParallel = Parallel>
 struct ScopedReadLock
 {
     TLock &lock;
@@ -174,11 +174,19 @@ struct ScopedReadLock
     }
 };
 
+template <typename TLock>
+struct ScopedReadLock<TLock, Serial>
+{
+    explicit
+    ScopedReadLock(TLock &)
+    {}
+};
+
 // ----------------------------------------------------------------------------
 // Class ScopedWriteLock
 // ----------------------------------------------------------------------------
 
-template <typename TLock = ReadWriteLock>
+template <typename TLock = ReadWriteLock, typename TParallel = Parallel>
 struct ScopedWriteLock
 {
     TLock &lock;
@@ -194,6 +202,14 @@ struct ScopedWriteLock
     {
         unlockWriting(lock);
     }
+};
+
+template <typename TLock>
+struct ScopedWriteLock<TLock, Serial>
+{
+    explicit
+    ScopedWriteLock(TLock &)
+    {}
 };
 
 // ============================================================================
