@@ -56,7 +56,23 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-// TODO(holtgrew): One could implement an HasAtomicFunction<T, Function> Metafunction but that would probably be pretty useless.
+#ifdef SEQAN_CXX11_STANDARD
+
+template <typename T>
+struct Atomic
+{
+    typedef std::atomic<T> Type;
+};
+
+#else
+
+template <typename T>
+struct Atomic
+{
+    typedef volatile T Type;
+};
+
+#endif
 
 // ============================================================================
 // Functions
@@ -545,8 +561,10 @@ template <typename T>   inline T atomicDec(std::atomic<T>        & x     )      
 template <typename T>   inline T atomicPostDec(std::atomic<T>    & x     )        { return x--;                    }
 template <typename T>   inline T atomicOr (std::atomic<T>        & x, T y)        { return x |= y;                 }
 template <typename T>   inline T atomicXor(std::atomic<T>        & x, T y)        { return x ^= y;                 }
-template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y) { x.compare_exchange_strong(cmp, y); return cmp; }
-template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y) { return x.compare_exchange_strong(cmp, y); }
+template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Serial)   { if (x == cmp) x = y;             return x;   }
+template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Parallel) { x.compare_exchange_weak(cmp, y); return cmp; }
+template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }
+template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y, Parallel) { return x.compare_exchange_weak(cmp, y);      }
 #endif
 
 } // namespace seqan

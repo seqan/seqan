@@ -217,7 +217,7 @@ void testMPMCQueue(size_t initialCapacity)
             {
                 appendValue(queue, random[j], TResizeTag(), TParallelPush());
             }
-            printf("stop writer #%ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
+//            printf("stop writer #%ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
         }
 
         if (tid >= writerCount)
@@ -236,7 +236,7 @@ void testMPMCQueue(size_t initialCapacity)
                     printf("%ld ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
-//            printf("stop reader #%ld %d\n", tid, cnt);
+            printf("stop reader #%ld %d\n", tid, cnt);
         }
     }
 #ifdef SEQAN_CXX11_STANDARD

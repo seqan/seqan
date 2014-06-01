@@ -75,7 +75,7 @@ clear(SpinDelay &me)
 inline void
 waitFor(SpinDelay &me)
 {
-    if (me.duration <= me.LOOPS_BEFORE_YIELD )
+    if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
         for (unsigned i = me.duration; i != 0; --i)
             _mm_pause();
