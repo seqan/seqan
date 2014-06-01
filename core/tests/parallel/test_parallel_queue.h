@@ -176,6 +176,10 @@ void testMPMCQueue(size_t initialCapacity)
 #else
     size_t threadCount = omp_get_max_threads();
 #endif
+    // limit thread count as virtualbox (used by Travis) seems to have problems with thread congestion
+    if (threadCount > 8)
+        threadCount = 8;
+    
     size_t writerCount = threadCount / 2;
     if (seqan::IsSameType<TParallelPush, seqan::Serial>::VALUE)
         writerCount = 1;
@@ -212,7 +216,7 @@ void testMPMCQueue(size_t initialCapacity)
             // barrier for all writers to set up
             waitForWriters(queue, writerCount);
 
-//			printf("start writer #%ld\n", tid);
+//            printf("start writer #%ld\n", tid);
             for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
             {
                 appendValue(queue, random[j], TResizeTag(), TParallelPush());
@@ -232,8 +236,8 @@ void testMPMCQueue(size_t initialCapacity)
             {
                 chkSumLocal ^= val;
                 ++cnt;
-                if ((cnt & 0xffff) == 0)
-                    printf("%ld ", tid);
+//                if ((cnt & 0xff) == 0)
+//                    printf("%ld ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
             printf("stop reader #%ld %d\n", tid, cnt);
