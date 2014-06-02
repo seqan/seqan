@@ -635,6 +635,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
     typedef typename Iterator<TString, Standard>::Type      TIter;
 
     bool queueIsResizable = IsSameType<TLockTag, Parallel>::VALUE;
+    ignoreUnusedVariableWarning(queueIsResizable);
     SEQAN_ASSERT(queueIsResizable);
 
     // try to extend capacity
