@@ -177,8 +177,8 @@ void testMPMCQueue(size_t initialCapacity)
     size_t threadCount = omp_get_max_threads();
 #endif
     // limit thread count as virtualbox (used by Travis) seems to have problems with thread congestion
-    if (threadCount > 8)
-        threadCount = 8;
+    if (threadCount > 4)
+        threadCount = 4;
     
     size_t writerCount = threadCount / 2;
     if (seqan::IsSameType<TParallelPush, seqan::Serial>::VALUE)
