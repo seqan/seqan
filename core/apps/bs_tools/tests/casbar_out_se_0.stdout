@@ -1,0 +1,14 @@
+main: 
+Average methylation rate in CG context: 0.740703
+Average methylation rate in CHG context: 0.0995548
+Average methylation rate in CHH context: 0.0619759
+  Time needed for all: 0.179013min
+  Time needed for doBsCalling: 0.0475871min
+  Time needed for optimization: 0.0120657min
+  Time needed for IO: 0.00945494min
+  Time needed for convertPairwiseToGlobal: 0.000935709min
+CounteBViolated: 0
+CountPlanB (Newton, error bound violated or f'' > 0: sampling applied): 0
+CountNoPlanB: 43674
+CountCovTooLow: 350
+CountScoreTooLow: 31
