@@ -1057,7 +1057,6 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     setValidValues(parser, "b", ".bed");
     setRequired(parser, "bed", true);
 
-
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
     addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
     hideOption(parser, "sqo");
