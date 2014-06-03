@@ -69,15 +69,15 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_default.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.gff'),
-              '-o', ph.outFile('snps_default.out'),
-              '-id', ph.outFile('indels_default.out'),],
+              '-o', ph.outFile('snps_default.vcf'),
+              '-id', ph.outFile('indels_default.gff'),],
         to_diff=[(ph.inFile('snp_store_default.stdout'),
                   ph.outFile('snp_store_default.stdout')),
-                 (ph.inFile('snps_default.out'),
-                  ph.outFile('snps_default.out'),
+                 (ph.inFile('snps_default.vcf'),
+                  ph.outFile('snps_default.vcf'),
                   transforms),
-                 (ph.inFile('indels_default.out'),
-                  ph.outFile('indels_default.out',))])
+                 (ph.inFile('indels_default.gff'),
+                  ph.outFile('indels_default.gff',))])
     conf_list.append(conf)
 
     # test 2
@@ -86,16 +86,16 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_realign.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
-              '-if', str(1), '-re',
-              '-o', ph.outFile('snps_realign.out'),
-              '-id', ph.outFile('indels_realign.out')],
+              '-re',
+              '-o', ph.outFile('snps_realign.vcf'),
+              '-id', ph.outFile('indels_realign.gff')],
         to_diff=[(ph.inFile('snp_store_realign.stdout'),
                   ph.outFile('snp_store_realign.stdout')),
-                 (ph.inFile('snps_realign.out'),
-                  ph.outFile('snps_realign.out'),
+                 (ph.inFile('snps_realign.vcf'),
+                  ph.outFile('snps_realign.vcf'),
                   transforms),
-                 (ph.inFile('indels_realign.out'),
-                  ph.outFile('indels_realign.out'))])
+                 (ph.inFile('indels_realign.gff'),
+                  ph.outFile('indels_realign.gff'))])
     conf_list.append(conf)
 
     # test 3
@@ -104,16 +104,16 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_realign_m1mp1oa.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
-              '-if', str(1), '-it', str(1), '-re', '-oa', '-mp', str(1), '-m', str(1), '-hq',
-              '-o', ph.outFile('snps_realign_m1mp1oa.out'),
-              '-id', ph.outFile('indels_realign_m1mp1oa.out')],
+              '-it', str(1), '-re', '-oa', '-mp', str(1), '-m', str(1), '-hq',
+              '-o', ph.outFile('snps_realign_m1mp1oa.vcf'),
+              '-id', ph.outFile('indels_realign_m1mp1oa.gff')],
         to_diff=[(ph.inFile('snp_store_realign_m1mp1oa.stdout'),
                   ph.outFile('snp_store_realign_m1mp1oa.stdout')),
-                 (ph.inFile('snps_realign_m1mp1oa.out'),
-                  ph.outFile('snps_realign_m1mp1oa.out'),
+                 (ph.inFile('snps_realign_m1mp1oa.vcf'),
+                  ph.outFile('snps_realign_m1mp1oa.vcf'),
                   transforms),
-                 (ph.inFile('indels_realign_m1mp1oa.out'),
-                  ph.outFile('indels_realign_m1mp1oa.out'))])
+                 (ph.inFile('indels_realign_m1mp1oa.gff'),
+                  ph.outFile('indels_realign_m1mp1oa.gff'))])
     conf_list.append(conf)
 
     # test 4
@@ -123,15 +123,15 @@ def main(source_base, binary_base):
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.gff'),
               '-it', str(2), '-re', '-oa', '-mp', str(1), '-hq',
-              '-o', ph.outFile('snps_realign_m0mp1oa.out'),
-              '-id', ph.outFile('indels_realign_m0mp1oa.out')],
+              '-o', ph.outFile('snps_realign_m0mp1oa.vcf'),
+              '-id', ph.outFile('indels_realign_m0mp1oa.gff')],
         to_diff=[(ph.inFile('snp_store_realign_m0mp1oa.stdout'),
                   ph.outFile('snp_store_realign_m0mp1oa.stdout')),
-                 (ph.inFile('snps_realign_m0mp1oa.out'),
-                  ph.outFile('snps_realign_m0mp1oa.out'),
+                 (ph.inFile('snps_realign_m0mp1oa.vcf'),
+                  ph.outFile('snps_realign_m0mp1oa.vcf'),
                   transforms),
-                 (ph.inFile('indels_realign_m0mp1oa.out'),
-                  ph.outFile('indels_realign_m0mp1oa.out'))])
+                 (ph.inFile('indels_realign_m0mp1oa.gff'),
+                  ph.outFile('indels_realign_m0mp1oa.gff'))])
     conf_list.append(conf)
 
     # test 5
@@ -140,16 +140,16 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
-              '-if', str(1), '-it', str(1), '-ipt', str(0.1), '-of', str(1), '-re', '-oa', '-hq',
-              '-o', ph.outFile('snps_realign_m0mp1oa_it1ipt01.out'),
-              '-id', ph.outFile('indels_realign_m0mp1oa_it1ipt01.out')],
+              '-it', str(1), '-ipt', str(0.1), '-osc', '-re', '-oa', '-hq',
+              '-o', ph.outFile('snps_realign_m0mp1oa_it1ipt01.vcf'),
+              '-id', ph.outFile('indels_realign_m0mp1oa_it1ipt01.gff')],
         to_diff=[(ph.inFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
                   ph.outFile('snp_store_realign_m0mp1oa_it1ipt01.stdout')),
-                 (ph.inFile('snps_realign_m0mp1oa_it1ipt01.out'),
-                  ph.outFile('snps_realign_m0mp1oa_it1ipt01.out'),
+                 (ph.inFile('snps_realign_m0mp1oa_it1ipt01.vcf'),
+                  ph.outFile('snps_realign_m0mp1oa_it1ipt01.vcf'),
                   transforms),
-                 (ph.inFile('indels_realign_m0mp1oa_it1ipt01.out'),
-                  ph.outFile('indels_realign_m0mp1oa_it1ipt01.out'))])
+                 (ph.inFile('indels_realign_m0mp1oa_it1ipt01.gff'),
+                  ph.outFile('indels_realign_m0mp1oa_it1ipt01.gff'))])
     conf_list.append(conf)
 
 
