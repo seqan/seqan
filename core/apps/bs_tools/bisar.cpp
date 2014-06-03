@@ -138,7 +138,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setShortDescription(parser, "Pairwise four-letter realignment computation for bisulfite reads");
     setVersion(parser, "0.1");
     setDate(parser, "May 2014");
-    setCategory(parser, "Utilities");
+    setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIMAPPED READ FILE(S)\" \"\\fIGENOME FILE\\fP\" \"\\fIREADS FILE\\fP\"");
@@ -146,16 +146,20 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addDescription(parser, "This program reads three-letter mappings of bisulfite reads and computes local pairwise four-letter realignments using an advanced statistical alignment model.");
 
     // We require ... arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 0, "sam");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 1, "fa fasta FA FASTA");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN", true));
-    setValidValues(parser, 2, "fastq fq FASTQ FQ");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "MAPPINGS"));
+    setHelpText(parser, 0, "SAM input file containing three-letter mappings (must be sorted by query names).");
+    setValidValues(parser, 0, ".sam");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
+    setHelpText(parser, 1, "A reference genome file.");
+    setValidValues(parser, 1, ".fa .fasta");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    setHelpText(parser, 2, "Either one (single-end) or two (paired-end) read files.");
+    setValidValues(parser, 2, ".fastq .fq");
 
     addSection(parser, "Options");
-    addOption(parser, ArgParseOption("o", "output-file", "SAM output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", "sam");
+    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "o", ".sam");
+    setRequired(parser, "output-file", true);
   
     addOption(parser, ArgParseOption("e3", "max3-error", "Max. error rate in 3-letter alphabet.", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "max3-error", options.max3Error);
@@ -163,7 +167,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setDefaultValue(parser, "max4-error", options.max4Error);
     addOption(parser, ArgParseOption("mq", "min-mapq", "Min required mapping quality.", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "min-mapq", options.minMapq);
-    addOption(parser, ArgParseOption("ns", "non-simple", "Use nonuniform SNP distributions."));
+    addOption(parser, ArgParseOption("ns", "non-simple", "Use non-uniform SNP distributions."));
     hideOption(parser, "ns");
     addOption(parser, ArgParseOption("nse", "ns-subst-errors", "Use empirical substitution error frequencies of Illumina sequencing data for alignment scoring scheme (corresponding to Dohm et al. 2008)."));
     addOption(parser, ArgParseOption("nsi", "ns-ins-errors", "Use empirical insertion error frequencies of Illumina sequencing data for alignment scoring scheme (corresponding to Minoche et al. 2011)."));
@@ -213,6 +217,11 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     {
         getArgumentValue(options.readFileName, parser, 2, 0);
         getArgumentValue(options.readFileName2, parser, 2, 1);  
+    }
+    else
+    {
+        std::cerr << "ERROR: " << getArgumentValueCount(parser, 2) << " read files specified (must be one or two)." << std::endl;
+        return ArgumentParser::PARSE_ERROR;
     }
 
     getOptionValue(options.outputFileName, parser, "output-file");

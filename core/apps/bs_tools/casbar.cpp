@@ -1035,23 +1035,28 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     setShortDescription(parser, "SNP and methylation level calling");
     setVersion(parser, "0.1");
     setDate(parser, "May 2014");
-    setCategory(parser, "Utilities");
+    setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIGENOME FILE\\fP\" \"\\fIMAPPED READ FILE(S)\\fP\" ");
-    addDescription(parser, "SNP and methylation level calling in mapped bisulfite read data (SAM file must be sorted by coordinates).");
+    addDescription(parser, "SNP and methylation level calling in mapped bisulfite read data.");
 
     // We require two arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 0, "fasta fa FASTA FA");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 1, "sam");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
+    setValidValues(parser, 0, ".fasta .fa");
+    setHelpText(parser, 0, "A reference genome file.");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "MAPPINGS"));
+    setValidValues(parser, 1, ".sam");
+    setHelpText(parser, 1, "SAM input file containing four-letter mappings (must be sorted by coordinates).");
 
     addSection(parser, "Options");
     addOption(parser, ArgParseOption("o", "output", "Output file for SNPs.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", "vcf");
+    setValidValues(parser, "o", ".vcf");
+    setRequired(parser, "output", true);
     addOption(parser, ArgParseOption("b", "bed", "Bed output file for methylation level calls.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "b", "bed");
+    setValidValues(parser, "b", ".bed");
+    setRequired(parser, "bed", true);
+
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
     addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));

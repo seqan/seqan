@@ -36,46 +36,39 @@ include_directories (${Boost_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your application.
-add_executable (bisar bisar.cpp)
-add_executable (casbar casbar.cpp)
-add_executable (four2three four2three.cpp)
+add_executable (bisar bisar.cpp  
+                    bisar.h
+                    bisar_base.h
+                    bisar_score.h
+                    bisar_score_data.h)
 
-# We define a library for the reusable parts of Mason.
-add_library (bs_tools
-             bisar.cpp
-             bisar.h
-             bisar_base.h
-             bisar_score.h
-             bisar_score_data.h
-             casbar.cpp
-             casbar.h
-             casbar_calling.h
-             casbar_realignment.h
-             casbar_consensus_realign.h
-             casbar_score.h
-             casbar_score_data.h
-             casbar_util.h
-             casbar_alphabets.h
-             four2three.cpp
-             four2three.h
-             )
+add_executable (casbar casbar.cpp 
+                    casbar.h
+                    casbar_calling.h
+                    casbar_realignment.h
+                    casbar_consensus_realign.h
+                    casbar_score.h
+                    casbar_score_data.h
+                    casbar_util.h
+                    casbar_alphabets.h)
+         
+add_executable (four2three four2three.cpp 
+                    four2three.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (bs_tools ${SEQAN_LIBRARIES})
-target_link_libraries (bisar ${SEQAN_LIBRARIES} bs_tools)
-target_link_libraries (casbar ${Boost_LIBRARIES} ${SEQAN_LIBRARIES} bs_tools)
-target_link_libraries (four2three ${SEQAN_LIBRARIES} bs_tools)
+target_link_libraries (bisar ${SEQAN_LIBRARIES})
+target_link_libraries (casbar ${Boost_LIBRARIES} ${SEQAN_LIBRARIES})
+target_link_libraries (four2three ${SEQAN_LIBRARIES})
 
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
-MESSAGE("Boost information:")
-MESSAGE(STATUS "** Search Boost root: ${BOOST_ROOT}")
-MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
-MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
-MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
-
+# MESSAGE("Boost information:")
+# MESSAGE(STATUS "** Search Boost root: ${BOOST_ROOT}")
+# MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
+# MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
+# MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes

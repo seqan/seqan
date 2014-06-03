@@ -67,17 +67,19 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setShortDescription(parser, "Four to three-letter alphabet reduction.");
     setVersion(parser, "0.1");
     setDate(parser, "May 2014");
-    setCategory(parser, "Utilities");
+    setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fISEQUENCE FILE\\fP\"");
     addDescription(parser, "This program converts four-letter sequences into three-letter sequences for bisulfite sequence analysis.");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 0, "fa fasta FASTA fastq fq FASTQ");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "SEQUENCES"));
+    setHelpText(parser, 0, "A sequence file containing reads or genome.");
+    setValidValues(parser, 0, ".fa .fasta .fastq .fq");
 
     addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", "fa fasta FASTA fastq fq FASTQ");
+    setValidValues(parser, "o", ".fa .fasta .fastq .fq");
+    setRequired(parser, "output-file", true);
     addOption(parser, ArgParseOption("ga", "ga-conversion", "Convert Gs to As, instead of Cs to Ts."));
 
     addOption(parser, ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
