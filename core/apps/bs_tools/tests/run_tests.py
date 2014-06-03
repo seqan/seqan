@@ -50,6 +50,20 @@ def main(source_base, binary_base):
     # Build list with TestConf objects, analoguely to how the output
     # was generated in generate_outputs.sh.
     conf_list = []
+    ph.outFile('-')  # To ensure that the out path is set.
+    transforms = [
+        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'core/apps/bs_tools/tests') + os.sep, '', right=True),
+        app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
+        app_tests.RegexpReplaceTransform(r'\tVN:[^\t]*', r'\tVN:VERSION', right=True, left=True)
+        ]
+
+    # We prepare a list of transforms to apply to the output files.  This is
+    # used to strip the input/output paths from the programs' output to
+    # make it more canonical and host independent.
+
+    
+    # Transforms for SAM output format only.  Make VN field of @PG header canonical.
+    #sam_transforms = [app_tests.RegexpReplaceTransform(r'\tVN:[^\t]*', r'\tVN:VERSION', right=True, left=True)]
 
     # ============================================================
     # se
@@ -70,13 +84,14 @@ def main(source_base, binary_base):
         to_diff=[#(ph.inFile('STDOUT_FILE'),
                   #ph.outFile('STDOUT_FILE')),
                  (ph.inFile('reads_se_N6000_0.CT_GA.verified.sam'),
-                  ph.outFile('reads_se_N6000_0.CT_GA.verified.sam'))])
+                  ph.outFile('reads_se_N6000_0.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
     # 1
     conf = app_tests.TestConf(
         program=path_to_bisar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.5), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-mq', str(0), '-e3', str(4), '-e4', str(5),   
+        args=['-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.5), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-e3', str(4), '-e4', str(5),   
               # -gas -4.5 -ges -2.0 -der 0.001 -bsc 0.99 -gmr 0.5 -i 0.8 -rn 0.001 -pms 0.9 -mq 0 -e3 4 -e4 5
               '-o', ph.outFile('reads_se_N6000_1.CT_GA.verified.sam'),
               ph.inFile('reads_se_N6000.CT_GA.sam'),
@@ -85,49 +100,53 @@ def main(source_base, binary_base):
         to_diff=[#(ph.inFile('STDOUT_FILE'),
                   #ph.outFile('STDOUT_FILE')),
                  (ph.inFile('reads_se_N6000_1.CT_GA.verified.sam'),
-                  ph.outFile('reads_se_N6000_1.CT_GA.verified.sam'))])
+                  ph.outFile('reads_se_N6000_1.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
 
     # 2
     conf = app_tests.TestConf(
         program=path_to_bisar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.5), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-mq', str(0), '-e3', str(4), '-e4', str(5),   
+        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.5), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-e3', str(4), '-e4', str(5),   
               # -nse -nsi -nsd -gas -4.5 -ges -2.0 -der 0.001 -bsc 0.99 -gmr 0.5 -i 0.8 -rn 0.001 -pms 0.9 -mq 0 -e3 4 -e4 5 
               '-o', ph.outFile('reads_se_N6000_2.CT_GA.verified.sam'),
               ph.inFile('reads_se_N6000.CT_GA.sam'),
               ph.inFile('hg18_chr21_3000.fa'),
               ph.inFile('reads_se_N6000.fastq')],
         to_diff=[(ph.inFile('reads_se_N6000_2.CT_GA.verified.sam'),
-                  ph.outFile('reads_se_N6000_2.CT_GA.verified.sam'))])
+                  ph.outFile('reads_se_N6000_2.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
 
     # 3
     conf = app_tests.TestConf(
         program=path_to_bisar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.2), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-mq', str(0), '-e3', str(4), '-e4', str(5),   
+        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.2), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-e3', str(4), '-e4', str(5),   
               # -nse -nsi -nsd -gas -4.5 -ges -2.0 -der 0.001 -bsc 0.99 -gmr 0.2 -i 0.8 -rn 0.001 -pms 0.9 -mq 0 -e3 4 -e4 5
               '-o', ph.outFile('reads_se_N6000_3.CT_GA.verified.sam'),
               ph.inFile('reads_se_N6000.CT_GA.sam'),
               ph.inFile('hg18_chr21_3000.fa'),
               ph.inFile('reads_se_N6000.fastq')],
         to_diff=[(ph.inFile('reads_se_N6000_3.CT_GA.verified.sam'),
-                  ph.outFile('reads_se_N6000_3.CT_GA.verified.sam'))])
+                  ph.outFile('reads_se_N6000_3.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
 
     # 4
     conf = app_tests.TestConf(
         program=path_to_bisar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.8), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-mq', str(0), '-e3', str(4), '-e4', str(5),   
+        args=['-nse', '-nsi', '-nsd', '-gas', str(-4.5), '-ges', str(-2.0), '-der', str(0.001), '-bsc', str(0.99), '-gmr', str(0.8), '-i', str(0.8), '-rn', str(0.001), '-pms', str(0.9), '-e3', str(4), '-e4', str(5),   
               # -nse -nsi -nsd -gas -4.5 -ges -2.0 -der 0.001 -bsc 0.99 -gmr 0.8 -i 0.8 -rn 0.001 -pms 0.9 -mq 0 -e3 4 -e4 5
               '-o', ph.outFile('reads_se_N6000_4.CT_GA.verified.sam'),
               ph.inFile('reads_se_N6000.CT_GA.sam'),
               ph.inFile('hg18_chr21_3000.fa'),
               ph.inFile('reads_se_N6000.fastq')],
         to_diff=[(ph.inFile('reads_se_N6000_4.CT_GA.verified.sam'),
-                  ph.outFile('reads_se_N6000_4.CT_GA.verified.sam'))])
+                  ph.outFile('reads_se_N6000_4.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
 
 
@@ -146,7 +165,8 @@ def main(source_base, binary_base):
               ph.inFile('reads_pe_N6000.L.fastq'),
               ph.inFile('reads_pe_N6000.R.fastq')],
         to_diff=[(ph.inFile('reads_pe_N6000_0.CT_GA.verified.sam'),
-                  ph.outFile('reads_pe_N6000_0.CT_GA.verified.sam'))])
+                  ph.outFile('reads_pe_N6000_0.CT_GA.verified.sam'),
+                  transforms)])
     conf_list.append(conf)
 
 
@@ -158,7 +178,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_casbar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-nec', '-umq', '-mc', str(6), '-msc', str(5), '-mpc', str(0.5), '-hes', str(0.005),
+        args=['-nec', '-mc', str(6), '-msc', str(5), '-mpc', str(0.5), '-hes', str(0.005),
               '-o', ph.outFile('snps_se_0.vcf'),
               '-b', ph.outFile('meths_se_0.bed'),
               ph.inFile('hg18_chr21_3000.fa'),
@@ -168,6 +188,21 @@ def main(source_base, binary_base):
                   (ph.inFile('meths_se_0.bed'),
                   ph.outFile('meths_se_0.bed'))])
     conf_list.append(conf)
+ 
+    # 1
+    conf = app_tests.TestConf(
+        program=path_to_casbar,
+        redir_stdout=ph.outFile('other.stdout'),
+        args=['-nec', '-mc', str(2), '-msc', str(3), '-mpc', str(0.5), '-hes', str(0.005),
+              '-o', ph.outFile('snps_se_1.vcf'),
+              '-b', ph.outFile('meths_se_1.bed'),
+              ph.inFile('hg18_chr21_3000.fa'),
+              ph.inFile('reads_se_N6000_2.CT_GA.verified.pos_so.sam')],
+        to_diff=[(ph.inFile('snps_se_1.vcf'),
+                  ph.outFile('snps_se_1.vcf')),
+                  (ph.inFile('meths_se_1.bed'),
+                  ph.outFile('meths_se_1.bed'))])
+    conf_list.append(conf)
    
     # ============================================================
     # pe
@@ -176,7 +211,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_casbar,
         redir_stdout=ph.outFile('other.stdout'),
-        args=['-nec', '-umq', '-mc', str(6), '-msc', str(5), '-mpc', str(0.5), '-hes', str(0.005),
+        args=['-nec', '-mc', str(6), '-msc', str(5), '-mpc', str(0.5), '-hes', str(0.005),
               '-o', ph.outFile('snps_pe_0.vcf'),
               '-b', ph.outFile('meths_pe_0.bed'),
               ph.inFile('hg18_chr21_3000.fa'),
