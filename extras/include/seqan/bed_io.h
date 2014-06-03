@@ -49,12 +49,12 @@
 // First Header Group.
 // ===========================================================================
 
-#include <seqan/bed_io/bed_record.h>
+#include "bed_io/bed_record.h"
 
-#include <seqan/bed_io/bed_io_context.h>
-#include <seqan/bed_io/read_bed.h>
-#include <seqan/bed_io/write_bed.h>
+#include "bed_io/bed_io_context.h"
+#include "bed_io/read_bed.h"
+#include "bed_io/write_bed.h"
 
-#include <seqan/bed_io/bed_stream.h>
+#include "bed_io/bed_stream.h"
 
 #endif  // EXTRAS_INCLUDE_SEQAN_BED_IO_H_
