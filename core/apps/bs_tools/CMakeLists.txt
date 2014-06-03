@@ -1,0 +1,132 @@
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /core/apps/bs_tools/CMakeLists.txt
+#
+# CMakeLists.txt file for bs_tools.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_core_apps_bs_tools)
+message (STATUS "Configuring core/apps/bs_tools")
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ----------------------------------------------------------------------------
+
+# Search SeqAn and select dependencies.
+#set (SEQAN_FIND_DEPENDENCIES NONE)
+find_package (SeqAn REQUIRED)
+find_package (Boost REQUIRED)
+
+if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+    message (STATUS "  Boost or zlib not found: Not building casbar.")
+    return ()
+endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+
+# ----------------------------------------------------------------------------
+# Build Setup
+# ----------------------------------------------------------------------------
+
+# Add include directories.
+include_directories (${SEQAN_INCLUDE_DIRS})
+include_directories (${Boost_INCLUDE_DIRS})
+
+# Add definitions set by find_package (SeqAn).
+add_definitions (${SEQAN_DEFINITIONS})
+
+# Update the list of file names below if you add source files to your application.
+add_executable (bisar bisar.cpp)
+add_executable (casbar casbar.cpp)
+add_executable (four2three four2three.cpp)
+
+# We define a library for the reusable parts of Mason.
+add_library (bs_tools
+             bisar.cpp
+             bisar.h
+             bisar_base.h
+             bisar_score.h
+             bisar_score_data.h
+             casbar.cpp
+             casbar.h
+             casbar_calling.h
+             casbar_realignment.h
+             casbar_consensus_realign.h
+             casbar_score.h
+             casbar_score_data.h
+             casbar_util.h
+             casbar_alphabets.h
+             four2three.cpp
+             four2three.h
+             )
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (bs_tools ${SEQAN_LIBRARIES})
+target_link_libraries (bisar ${SEQAN_LIBRARIES} bs_tools)
+target_link_libraries (casbar ${Boost_LIBRARIES} ${SEQAN_LIBRARIES} bs_tools)
+target_link_libraries (four2three ${SEQAN_LIBRARIES} bs_tools)
+
+
+# Add CXX flags found by find_package (SeqAn).
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+MESSAGE("Boost information:")
+MESSAGE(STATUS "** Search Boost root: ${BOOST_ROOT}")
+MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
+MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
+MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
+
+
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include bs_tools executables in CTD structure.
+set (SEQAN_CTD_EXECUTABLES 
+    ${SEQAN_CTD_EXECUTABLES} 
+    bisar
+    casbar
+    four2three
+    CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
+# Installation
+# ----------------------------------------------------------------------------
+
+# Set variables for installing, depending on the selected build type.
+if (NOT SEQAN_PREFIX_SHARE_DOC)
+  seqan_setup_install_vars (bs_tools)
+endif (NOT SEQAN_PREFIX_SHARE_DOC)
+
+# Install bs_tools in ${PREFIX}/bin directory
+install (TARGETS bisar casbar four2three
+         DESTINATION bin)
+
+# Install non-binary files for the package to "." for app builds and
+# ${PREFIX}/share/doc/bs_tools for SeqAn release builds.
+install (FILES LICENSE
+               README
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
+#install (FILES example/fasta1.fa
+#               example/fasta2.fa
+#         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
+
+# ----------------------------------------------------------------------------
+# App Test
+# ----------------------------------------------------------------------------
+
+seqan_add_app_test (bs_tools)
+
+# ----------------------------------------------------------------------------
+# CPack Install
+# ----------------------------------------------------------------------------
+
+if (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
+  set (CPACK_PACKAGE_NAME "bs_tools")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "bs_tools")
+  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Sabrina Krakau <sabrina.krakau@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "Sabrina Krakau <sabrina.krakau@fu-berlin.de>")
+
+  seqan_configure_cpack_app (bs_tools "bs_tools")
+endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
+
