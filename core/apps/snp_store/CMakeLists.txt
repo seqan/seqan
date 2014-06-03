@@ -51,6 +51,13 @@ target_link_libraries (snp_store ${SEQAN_LIBRARIES})
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable snp_store in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} snp_store CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------
 
