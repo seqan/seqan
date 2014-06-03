@@ -97,6 +97,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         int         _debugLevel;                // level of verbosity
         bool        printVersion;               // print version number
         std::stringstream   programCall;        // stores snpstore program call
+        std::string version;                    // version string
         std::string runID;                      // runID needed for gff output
     
         // input output options
