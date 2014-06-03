@@ -60,7 +60,3 @@ ${CASBAR} -nec -mc 6 -msc 5 -mpc 0.5 -hes 0.005 -o snps_pe_0.vcf -b meths_pe_0.b
 
 
 
-
-
-
-
