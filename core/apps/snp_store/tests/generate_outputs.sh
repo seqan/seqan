@@ -20,8 +20,8 @@ ${SNP_STORE} $genome $readsGff -o snps_default.vcf -id indels_default.gff > snp_
 ${SNP_STORE} $genome $readsSam -re -o snps_realign.vcf -id indels_realign.gff > snp_store_realign.stdout
 
 # orientation aware and pile up correction, threshold method, hide qualites, indel thershold 1
-#echo "${SNP_STORE} $genome $readsSam -it 1 -re -oa -mp 1 -m 1 -hq -o snps_realign_m1mp1oa.vcf -id indels_realign_m1mp1oa.gff > snp_store_realign_m1mp1oa.stdout"
-${SNP_STORE} $genome $readsSam -it 1 -re -oa -mp 1 -m 1 -hq -o snps_realign_m1mp1oa.vcf -id indels_realign_m1mp1oa.gff > snp_store_realign_m1mp1oa.stdout
+#echo "${SNP_STORE} $genome $readsSam -it 1 -re -oa -mp 1 -m maq -hq -o snps_realign_m1mp1oa.vcf -id indels_realign_m1mp1oa.gff > snp_store_realign_m1mp1oa.stdout"
+${SNP_STORE} $genome $readsSam -it 1 -re -oa -mp 1 -m maq -hq -o snps_realign_m1mp1oa.vcf -id indels_realign_m1mp1oa.gff > snp_store_realign_m1mp1oa.stdout
 
 # orientation aware and pile up correction, maq method, hide qualites, indel thershold 2
 #echo "${SNP_STORE} $genome $readsSam  -it 2 -re -oa -mp 1 -hq -o snps_realign_m0mp1oa.vcf -id indels_realign_m0mp1oa.gff > snp_store_realign_m0mp1oa.stdout"
