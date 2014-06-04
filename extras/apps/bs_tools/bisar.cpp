@@ -60,7 +60,7 @@ struct AppOptions
     CharString samFileName;
     CharString refFileName;
     CharString outputFileName;
-    unsigned intervalOffset;
+    int intervalOffset;
     double minMapq;
     double max4Error;        // max. allowed real error rate
     double max3Error;        // max. allowed error rate in 3 letter alphabet (corresponding to mapper settings)
