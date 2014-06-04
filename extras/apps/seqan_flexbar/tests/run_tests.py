@@ -37,13 +37,13 @@ def main(source_base, binary_base):
 
     path_to_program = []
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'seqFlexQC'))
+      binary_base, 'extras/apps/seqan_flexbar', 'sflexQC'))
 
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'seqFlexFilter'))
+      binary_base, 'extras/apps/seqan_flexbar', 'sflexFilter'))
     
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'seqFlexAR'))
+      binary_base, 'extras/apps/seqan_flexbar', 'sflexAR'))
 
     # ============================================================
     # Built TestConf list.
@@ -62,7 +62,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program[0],
         redir_stdout=ph.outFile('out.stdout'),
-        args=[ph.inFile('testsample.fq'), '-q', '20', '-out',
+        args=[ph.inFile('testsample.fq'), '-q', '20', '-o',
         ph.outFile('qc_test.fa'), '-t', '-ni'],
         to_diff=[(ph.inFile('qc_test.stdout'),
                   ph.outFile('out.stdout')),
@@ -74,7 +74,7 @@ def main(source_base, binary_base):
         program=path_to_program[1],
         redir_stdout=ph.outFile('out.stdout'),
         args=[ph.inFile('testsample.fq'), '-tl', '3', '-tr', '4', '-ml',
-        '70', '-u', '1', '-s', 'A', '-fl', '70', '-ni', '-out',
+        '70', '-u', '1', '-s', 'A', '-fl', '70', '-ni', '-o',
         ph.outFile('filter_test.fq')],
         to_diff=[(ph.inFile('filter_test.stdout'),
                   ph.outFile('out.stdout')),
@@ -87,7 +87,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('out.stdout'),
         args=[ph.inFile('testsample.fq'), '-a', 
         ph.inFile('adapter.fasta'), 
-        '-out', ph.outFile('ar_test.fq'), '-ni'],
+        '-o', ph.outFile('ar_test.fq'), '-ni'],
         to_diff=[(ph.inFile('ar_test.stdout'),
                   ph.outFile('out.stdout')),
                  (ph.inFile('gold_ar_test.fq'),

@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                   SeqAn-Flexbar
+//                                SeqAn-Flexbar
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,7 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch, Benjamin Strauch
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
+// Author: Benjamin Strauch <b.strauch@fu-berlin.de>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
 #ifndef SEQAN_FLEXBAR_H_
