@@ -104,7 +104,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_realign_m1mp1oa.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
-              '-it', str(1), '-re', '-oa', '-mp', str(1), '-m', str(1), '-hq',
+              '-it', str(1), '-re', '-oa', '-mp', str(1), '-m', 'maq', '-hq',
               '-o', ph.outFile('snps_realign_m1mp1oa.vcf'),
               '-id', ph.outFile('indels_realign_m1mp1oa.gff')],
         to_diff=[(ph.inFile('snp_store_realign_m1mp1oa.stdout'),
