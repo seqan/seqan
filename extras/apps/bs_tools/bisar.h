@@ -1308,7 +1308,7 @@ postProcessMain(TOptions &options, TModel const &)
         {
             typename TMatePairStoreElement::TId matePairId = store.readStore[readId].matePairId;
             
-            TMatchMateInfo matchMateInfo = {readId, record.rID, id, matePairId, hasFlagNextRC(record), record.pNext};
+            TMatchMateInfo matchMateInfo = {readId, (TId)record.rID, id, matePairId, hasFlagNextRC(record), record.pNext};
             appendValue(matchMateInfos, matchMateInfo);
             back(store.alignedReadStore).pairMatchId = id;  // pairMatchId == alignedRead id of first mate // abuse 
         }
