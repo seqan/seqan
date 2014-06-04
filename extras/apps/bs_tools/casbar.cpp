@@ -861,7 +861,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 #ifdef SEQAN_ENABLE_PARALLELISM
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1)) // TODO Check if guided is faster
 #endif
-    for (unsigned currContigId = 0; currContigId < length(fragmentStore1.contigStore); ++currContigId)
+    for (int currContigId = 0; currContigId < (int)length(fragmentStore1.contigStore); ++currContigId)
     {
 #ifdef SEQAN_ENABLE_PARALLELISM
         // For each contig we need own record readers (for each given sam file)
