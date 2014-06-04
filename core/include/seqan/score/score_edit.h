@@ -77,7 +77,7 @@ public:
 // TODO(holtgrew): Remove this?
 
 /*!
- * @typedef EditDistanceScoreShortcut EditDistance
+ * @typedef EditDistanceScoreTypedef EditDistance
  * @headerfile <seqan/score.h>
  * @brief Edit distance scoring scheme shortcut.
  *

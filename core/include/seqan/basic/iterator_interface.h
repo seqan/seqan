@@ -51,6 +51,7 @@ namespace seqan {
 
 /*!
  * @defgroup ContainerIteratorTags Container Iterator Tags
+ * @brief Tags for container iterators.
  *
  * The tags <tt>Standard</tt> and <tt>Rooted</tt> can be used for selecting specific iterator types with the
  * @link ContainerConcept#Iterator @endlink metafunction.  Rooted iterators also carry a pointer to the container
@@ -369,6 +370,18 @@ assignValue(T const & me,
 // ---------------------------------------------------------------------------
 // Function moveValue()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn BasicOutputIteratorConcept#moveValue
+ * @headerfile <seqan/sequence.h>
+ * @brief Move a value of a container to a given position.
+ * 
+ * @signature void moveValue(container, pos, value);
+ * 
+ * @param[in,out] container The container to manipulate.
+ * @param[in]     pos       The position of the item in the container to manipulate.
+ * @param[in,out] value     The value to move to <tt>container[pos]</tt>.
+ */
 
 /**
 .Function.moveValue

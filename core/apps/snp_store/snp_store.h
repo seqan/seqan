@@ -1329,7 +1329,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     bool res1 = findTagKey(editDistIndex, bamTags, "NM");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, editDistIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, editDistIndex));
         extractTagValue(editDist, bamTags, editDistIndex);
     }
     else editDist = 1; // we dont know whether there are errors in the alignment, we assume there are..
@@ -1339,7 +1339,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     res1 = findTagKey(numBestIndex, bamTags, "X0");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, numBestIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, numBestIndex));
         extractTagValue(numBest, bamTags, numBestIndex);
         if(numBest > 1) multi = true;
     }
@@ -1348,16 +1348,17 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     res1 = findTagKey(clipIndex, bamTags, "XC");
     if(res1)
     {
-//      SEQAN_ASSERT_EQ('Z', getTagValue(bamTags, clipIndex)[0]);  // XC is also used by BWA, also for clipping, but different fron ours
-        if('Z' == getTagValue(bamTags, clipIndex)[0])
+//      SEQAN_ASSERT_EQ('Z', getTagType(bamTags, clipIndex));  // XC is also used by BWA, also for clipping, but different fron ours
+        if('Z' == getTagType(bamTags, clipIndex))
         {
-            CharString clipLeftRight = getTagValue(bamTags, clipIndex);
+            CharString clipLeftRight;
+            extractTagValue(clipLeftRight, bamTags, clipIndex);
             // Get position of splitter char.
-            unsigned x = 1;
+            unsigned x = 0;
             while (x < length(clipLeftRight) && isdigit(clipLeftRight[x]))
                 ++x;
             // Extract left and right clipping count.
-            seqan::CharString buffer = infix(clipLeftRight, 1, x);
+            seqan::CharString buffer = infix(clipLeftRight, 0, x);
             lexicalCast2(clipLeft, buffer);
             if (x + 1 <= length(clipLeftRight))
                 buffer = infix(clipLeftRight, x + 1, length(clipLeftRight));

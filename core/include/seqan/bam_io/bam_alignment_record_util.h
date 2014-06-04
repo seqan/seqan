@@ -158,6 +158,8 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 // Function bamRecordToAlignment()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Should rather be a global function?
+
 /*!
  * @fn BamAlignmentRecord#bamRecordToAlignment
  * @headerfile <seqan/bam_io.h>
@@ -165,9 +167,9 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
  *
  * @signature void bamRecordToAlignment(align, reference, record);
  *
- * @param align     The @link Align @endlink object to create the alignment object in.
- * @param reference The string with the reference that <tt>record</tt> lies on.
- * @param record    The @link BamAlignmentRecord @endlink to construct alignment from.
+ * @param[out] align     The @link Align @endlink object to create the alignment object in.
+ * @param[in]  reference The string with the reference that <tt>record</tt> lies on.
+ * @param[in]  record    The @link BamAlignmentRecord @endlink to construct alignment from.
  *
  * The function will resize <tt>align</tt> to have two rows.  The part of the reference that the read from
  * <tt>record</tt> aligns to will be copied to the first row and the sequence from record will be copied to the second

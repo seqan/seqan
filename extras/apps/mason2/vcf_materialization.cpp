@@ -238,15 +238,17 @@ void VcfMaterializer::_loadLevels(int rID)
 // Function VcfMaterializer::materializeNext()
 // ----------------------------------------------------------------------------
 
-bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, int & rID, int & haplotype)
+bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, std::vector<std::pair<int, int> > & breakpoints,
+                                      int & rID, int & haplotype)
 {
-    return _materializeNext(seq, 0, rID, haplotype);
+    return _materializeNext(seq, 0, breakpoints, rID, haplotype);
 }
 
 bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, MethylationLevels & levels,
+                                      std::vector<std::pair<int, int> > & breakpoints,
                                       int & rID, int & haplotype)
 {
-    return _materializeNext(seq, &levels, rID, haplotype);
+    return _materializeNext(seq, &levels, breakpoints, rID, haplotype);
 }
 
 // ----------------------------------------------------------------------------
@@ -254,6 +256,7 @@ bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, MethylationLevels
 // ----------------------------------------------------------------------------
 
 bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq, MethylationLevels * levels,
+                                       std::vector<std::pair<int, int> > & breakpoints,
                                        int & rID, int & haplotype)
 {
     if (levels)
@@ -305,8 +308,6 @@ bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq, MethylationLevel
         if (levels && !empty(methFastaFileName))
             _loadLevels(currRID);
     }
-
-    std::vector<int> breakpoints;  // unused
 
     // Materialize variants for the current haplotype.
     VariantMaterializer varMat(rng, contigVariants, *methOptions);
@@ -391,7 +392,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
     {
         StructuralVariantRecord svRecord;
         svRecord.rId = vcfRecord.rID;
-        svRecord.pos = vcfRecord.beginPos;
+        svRecord.pos = vcfRecord.beginPos + 1;  // given with shift of -1
         svRecord.haplotype = 0;
 
         SEQAN_ASSERT_EQ(length(alts), 1u);
@@ -515,7 +516,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
     {
         SmallIndelRecord smallIndel;
         smallIndel.rId = vcfRecord.rID;
-        smallIndel.pos = vcfRecord.beginPos;
+        smallIndel.pos = vcfRecord.beginPos + 1;
 
         SEQAN_ASSERT_NOT(contains(vcfRecord.alt, ","));  // only one alternative
         SEQAN_ASSERT((length(vcfRecord.alt) == 1u) != (length(vcfRecord.ref) == 1u));  // XOR

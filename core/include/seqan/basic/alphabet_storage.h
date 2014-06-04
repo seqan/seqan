@@ -153,8 +153,6 @@ struct InternalValueSize_
  * 
  * @return VALUE The number of bytes to store on T object.
  *
- * @section Remarks
- *
  * By default, this function returns <tt>ceil(BitsPerValue&lt;T&gt;::VALUE)</tt>.  For built-in types, this is the same
  * as <tt>sizeof(T)</tt>.
  * 
@@ -191,13 +189,11 @@ struct BytesPerValue
  * @headerfile <seqan/basic.h>
  * @brief Returns an itegral type that provides sufficient space to store a value.
  * 
- * @signature IntegralForValue<T>::Type
+ * @signature IntegralForValue<T>::Type;
  * 
  * @tparam T The type to query.
  * 
  * @return Type An integral type.
- * 
- * @section Remarks
  * 
  * The type is the smallest unsigned integral type that has a size of at least BytesPerValue bytes.
  *

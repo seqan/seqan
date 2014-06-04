@@ -62,9 +62,7 @@ namespace seqan {
  * @signature template <typename T>
  *            struct Tag;
  *
- * @tparam T Any parameter less types.
- * 
- * @section Remarks
+ * @tparam T Any parameterless types.
  * 
  * This <tt>struct</tt> is defined such that parameter less tags are easier recognizeable.  This is best explained with
  * the example below.
@@ -189,8 +187,6 @@ struct Nothing {};
  *
  * @signature typedef Tag<Move_> Move;
  * 
- * @section Remarks
- * 
  * The difference between move constructor and copy constructor is that the source object is not copied but moved into
  * the target object.  The source object can lose its content and will be empty after this operation in this case.  A
  * move constructor can sigificantly faster than a copy constructor.
@@ -220,7 +216,7 @@ struct Nothing {};
  * };
  * @endcode
  *
- * @see move
+ * @see AssignableConcept#move
  */
 
 /**
@@ -290,14 +286,6 @@ typedef Tag<GoEnd_> GoEnd;
 // ----------------------------------------------------------------------------
 // Tag Serial
 // ----------------------------------------------------------------------------
-
-/*!
- * @tag Serial
- * @headerfile <seqan/basic.h>
- * @brief Tag to select a non-parallel implementation of an algorithm.
- *
- * @signature typedef<Serial_> Serial;
- */
 
 /**
 .Tag.Serial:

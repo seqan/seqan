@@ -46,10 +46,10 @@
 using namespace seqan;
 
 // Test difference operator: operator-()
-template <typename TStringJournalSpec>
-void testJournaledStringIteratorDifference(TStringJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorDifference(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
     
     CharString charStr = "test";
 
@@ -107,10 +107,10 @@ void testJournaledStringIteratorDifference(TStringJournalSpec const &)
 }
 
 // Test sum operator: operator+()
-template <typename TStringJournalSpec>
-void testJournaledStringIteratorSum(TStringJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorSum(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
     typedef typename Iterator<TJournaledString, Standard>::Type TIterator;
     
     CharString charStr = "test";
@@ -134,13 +134,23 @@ void testJournaledStringIteratorSum(TStringJournalSpec const &)
         it2 += 2;
         SEQAN_ASSERT(it == it2);
     }
+
+    // Case 3: Go over end of journal string.
+    {
+        TIterator it = begin(journaledString, Standard());
+        it += 5;
+        TIterator itEnd = end(journaledString, Standard());
+        SEQAN_ASSERT(it == itEnd);
+        it += 10;
+        SEQAN_ASSERT(it == itEnd);
+    }
 }
 
 // Test relation operators on iterators.
-template <typename TStringJournalSpec>
-void testJournaledStringIteratorRelations(TStringJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorRelations(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
     typedef typename Iterator<TJournaledString, Standard>::Type TIterator;
     
     CharString charStr = "test";
@@ -171,10 +181,10 @@ void testJournaledStringIteratorRelations(TStringJournalSpec const &)
     SEQAN_ASSERT(it3 >= it3);
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorDecrement(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorDecrement(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Standard>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -308,10 +318,10 @@ void testJournaledStringIteratorDecrement(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorSetPosition(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorSetPosition(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Standard>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -356,10 +366,10 @@ void testJournaledStringIteratorSetPosition(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorPosition(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorPosition(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Standard>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
     typedef typename Position<TIterator>::Type TPos;
@@ -385,10 +395,10 @@ void testJournaledStringIteratorPosition(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorAtBegin(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorAtBegin(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -407,10 +417,10 @@ void testJournaledStringIteratorAtBegin(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorAtEnd(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorAtEnd(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -429,10 +439,10 @@ void testJournaledStringIteratorAtEnd(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorGoBegin(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorGoBegin(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -451,10 +461,10 @@ void testJournaledStringIteratorGoBegin(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorGoEnd(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorGoEnd(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -473,10 +483,10 @@ void testJournaledStringIteratorGoEnd(TJournalSpec const &)
     }
 }
 
-template <typename TJournalSpec>
-void testJournaledStringIteratorContainer(TJournalSpec const &)
+template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
+void testJournaledStringIteratorContainer(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
-    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Standard>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
 
@@ -493,118 +503,72 @@ void testJournaledStringIteratorContainer(TJournalSpec const &)
     }
 }
 
-// Tag: UnbalancedTree()
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_difference)
-{
-    testJournaledStringIteratorDifference(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_sum)
-{
-    testJournaledStringIteratorSum(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_relations)
-{
-    testJournaledStringIteratorRelations(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement)
-{
-    testJournaledStringIteratorDecrement(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_set_position)
-{
-    testJournaledStringIteratorSetPosition(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_position)
-{
-    testJournaledStringIteratorPosition(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_begin)
-{
-    testJournaledStringIteratorAtBegin(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_end)
-{
-    testJournaledStringIteratorAtEnd(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_begin)
-{
-    testJournaledStringIteratorGoBegin(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_end)
-{
-    testJournaledStringIteratorGoEnd(UnbalancedTree());
-}
-
-SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_container)
-{
-    testJournaledStringIteratorContainer(UnbalancedTree());
-}
-
 // Tag: SortedArray()
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_difference)
 {
-    testJournaledStringIteratorDifference(SortedArray());
+    testJournaledStringIteratorDifference(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorDifference(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_sum)
 {
-    testJournaledStringIteratorSum(SortedArray());
+    testJournaledStringIteratorSum(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorSum(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_relations)
 {
-    testJournaledStringIteratorRelations(SortedArray());
+    testJournaledStringIteratorRelations(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorRelations(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_decrement)
 {
-    testJournaledStringIteratorDecrement(SortedArray());
+    testJournaledStringIteratorDecrement(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorDecrement(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_set_position)
 {
-    testJournaledStringIteratorSetPosition(SortedArray());
+    testJournaledStringIteratorSetPosition(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorSetPosition(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_position)
 {
-    testJournaledStringIteratorPosition(SortedArray());
+    testJournaledStringIteratorPosition(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorPosition(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_begin)
 {
-    testJournaledStringIteratorAtBegin(SortedArray());
+    testJournaledStringIteratorAtBegin(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorAtBegin(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_end)
 {
-    testJournaledStringIteratorAtEnd(SortedArray());
+    testJournaledStringIteratorAtEnd(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorAtEnd(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_begin)
 {
-    testJournaledStringIteratorGoBegin(SortedArray());
+    testJournaledStringIteratorGoBegin(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorGoBegin(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_end)
 {
-    testJournaledStringIteratorGoEnd(SortedArray());
+    testJournaledStringIteratorGoEnd(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorGoEnd(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_container)
 {
-    testJournaledStringIteratorContainer(SortedArray());
+    testJournaledStringIteratorContainer(Alloc<void>(), SortedArray(), Alloc<void>());
+    testJournaledStringIteratorContainer(Alloc<Nothing>(), SortedArray(), Alloc<void>());
 }
 
 #endif  // TEST_SEQUENCE_JOURNALED_TEST_SEQUENCE_JOURNALED_ITERATOR_H_

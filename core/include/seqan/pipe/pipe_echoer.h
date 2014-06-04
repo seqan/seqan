@@ -90,8 +90,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                      elements shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the
  *                      tuple is filled with blanks (default constructed elements) for undefined entries.
  * 
- * @section Remarks
- * 
  * The output type is a @link Tuple @endlink of input elements and length <tt>echoRepeats</tt> (i.e.
  * <tt>Tuple&lt;Value&lt;TInput&lt;::Type, echoRepeats&gt;</tt>).
  * 
