@@ -28,11 +28,19 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # Update the list of file names below if you add source files to your application.
 add_executable(test_sflex_demultiplex        test_demultiplex.cpp demultiplex.h)
 add_executable(test_sflex_trimming           test_trimming.cpp read_trimming.h)
 add_executable(test_sflex_adapter            test_adapter.cpp adapter_trimming.h)
 add_executable(test_sflex_general_processing test_general_processing.cpp general_processing.h)
+
+foreach (TEST demultiplex trimming adapter general_processing)
+    target_link_libraries (test_sflex_${TEST} ${SEQAN_LIBRARIES})
+endforeach ()
 
 add_library (seqan_flexlib
              demultiplex.h
