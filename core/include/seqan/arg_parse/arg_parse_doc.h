@@ -287,7 +287,7 @@ inline void setVersion(ArgumentParser & me, std::string const & versionString)
 {
     setVersion(me._toolDoc, versionString);
     if (!hasOption(me, "version"))
-        addOption(me, ArgParseOption("", "version", "Display version information"));
+        addOption(me, ArgParseOption("", "version", "Display version information."));
 }
 
 // --------------------------------------------------------------------------

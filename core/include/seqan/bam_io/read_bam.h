@@ -34,8 +34,6 @@
 // Code for reading Bam.
 // ==========================================================================
 
-// TODO(holtgrew): Indexing.
-
 #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_BAM_H_
 #define CORE_INCLUDE_SEQAN_BAM_IO_READ_BAM_H_
 
@@ -102,11 +100,10 @@ char const * FileFormatExtensions<Bam, T>::VALUE[1] = {
  * @brief Read a record from a SAM/BAM file.
  *
  * @signature int readRecord(record, context, stream, tag);
- * @signature int readRecord(header, context, stream, tag);
  *
  * @param[out]    record  The @link BamAlignmentRecord @endlink object to read the information into.
  * @param[out]    header  The @link BamHeader @endlink object to read the header information into.
- * @param[in,out] context The BamIOContext object to use.
+ * @param[in,out] context The @link BamIOContext @endlink object to use.
  * @param[in,out] stream  The @link StreamConcept Stream @endlink to read from.
  * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
  *

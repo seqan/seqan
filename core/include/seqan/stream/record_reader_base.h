@@ -62,7 +62,7 @@ struct DoublePass {};
  * @signature template <typename TStream, typename TSpec>
  *            class RecordReader;
  *
- * @tparam TStream The @link ConceptStream @endlink to read from.
+ * @tparam TStream The @link StreamConcept @endlink to read from.
  * @tparam TSpec   The record reader specialization type.
  *
  * @section Examples
@@ -217,7 +217,7 @@ struct Position<RecordReader<TStream, TSpec> const> :
  * 
  * @signature bool atEnd(reader);
  * 
- * @param reader The @link RecordReader @endlink to query the state of.
+ * @param[in] reader The @link RecordReader @endlink to query the state of.
  * 
  * @return bool This function returns <tt>true</tt> if the file is at end or there was an error reading.  It returns
  *              <tt>false</tt> if there is more data to read.  In parsing functions, you can use @link

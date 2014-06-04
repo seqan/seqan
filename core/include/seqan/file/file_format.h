@@ -90,6 +90,53 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @defgroup FileFormatTag File Format Tags
+ * @brief Tags to be used for file formats.
+ *
+ * @tag FileFormatTag#Amos
+ * @brief AMOS Message File.
+ *
+ * @tag FileFormatTag#CGViz
+ * @brief File format for sequences. Only output.
+ *
+ * @tag FileFormatTag#Embl
+ * @brief EMBL format for sequences.
+ *
+ * @tag FileFormatTag#Fasta
+ * @brief FASTA file format for sequences.
+ *
+ * @tag FileFormatTag#FastaAlignment
+ * @brief FASTA alignment file format for sequences.
+ *
+ * @tag FileFormatTag#Fastq
+ * @brief FASTQ file format for sequences.
+ *
+ * @tag FileFormatTag#Genbank
+ * @brief Genbank format for sequences from the Genbank database.
+ *
+ * @tag FileFormatTag#Gff
+ * @brief GFF annotation file.
+ *
+ * @tag FileFormatTag#Gtf
+ * @brief GTF annotation file.
+ *
+ * @tag FileFormatTag#QSeq
+ * @brief QSeq format, mostly used for Illumina read files.
+ *
+ * @tag FileFormatTag#Raw
+ * @brief Raw file format for sequences. The file contains data in a raw format.
+ *
+ * @tag FileFormatTag#ScoreMatrixFile
+ * @brief Score matrix file.
+ *
+ * @tag FileFormatTag#Ucsc
+ * @brief Ucsc Genome Browser annotation file (a.k.a. knownGene format).
+ *
+ * @tag FileFormatTag#UcscIsoforms
+ * @brief Ucsc Genome Browser isoforms file (a.k.a. knownIsoforms format).
+ */
+
 /**
 .Tag.File Format:
 ..cat:Input/Output

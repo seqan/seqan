@@ -280,7 +280,7 @@ private:
 // For now we just test for convertible to bool.
 
 /*!
- * @fn requireBooleanExpr
+ * @fn ConceptChecking#requireBooleanExpr
  * @headerfile <seqan/basic.h>
  * @brief Tests for a boolean expression.
  *
@@ -290,7 +290,7 @@ private:
  *
  * This function can be used to test for functions returning bools, e.g. less operators.
  *
- * @see SEQAN_CONCEPT_USAGE
+ * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
 /**
@@ -673,7 +673,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
  * 
  * @tparam T Type that is tested.
  * 
- * @return TReturn 
+ * @return Type Either True or False.
  * 
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  * 
@@ -703,7 +703,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
  * 
  * @tparam T Type that is tested.
  * 
- * @return TReturn 
+ * @return Type Either True or False.
  * 
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  */

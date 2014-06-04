@@ -58,6 +58,30 @@ _translateAsciiToDna(unsigned char c)
             return 0;
     };
 }
+
+// --------------------------------------------------------------------------
+// Dna5
+// --------------------------------------------------------------------------
+
+template <typename T>
+SEQAN_HOST_DEVICE inline unsigned char
+_translateAsciiToDna5(unsigned char c)
+{
+    switch (toUpperValue(c))
+    {
+        case 'A':
+            return 0;
+        case 'C':
+            return 1;
+        case 'G':
+            return 2;
+        case 'T':
+            return 3;
+        default:
+            return 4;
+    };
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_

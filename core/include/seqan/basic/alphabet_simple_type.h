@@ -65,8 +65,6 @@ namespace seqan {
  * @tparam TSpec  Specialization tag.
  * @tparam TValue Type that stores the values of an instance.  TValue must be a simple type.
  * 
- * @section Remarks
- * 
  * A "simple type" is a C++ type that can be constructed without constructor, destructed without destructor and copied
  * without copy constructor or assignment operator.  All basic types (like <tt>char</tt>, <tt>int</tt> or
  * <tt>float</tt>) are simple. Pointers, references and arrays of simple types are simple.  POD types ("plain old data
@@ -80,6 +78,13 @@ namespace seqan {
  * do so.
  * 
  * @see IsSimple
+ */
+
+/*!
+ * @fn SimpleType::SimpleType
+ * @brief The constructor.
+ *
+ * @signature SimpleType::SimpleType()
  */
 
 /**
@@ -359,7 +364,7 @@ struct Spec<SimpleType<TValue, TSpec> const>
 // TODO(holtgrew): Is some of the code below redundant, can we lose some copy and paste here?
 
 template <typename TValue, typename TSpec, typename TRight>
-struct CompareType<SimpleType<TValue, TSpec>, TRight>
+struct CompareTypeImpl<SimpleType<TValue, TSpec>, TRight>
 {
     typedef TRight Type;
 };

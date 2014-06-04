@@ -3,7 +3,7 @@
 # Currently, we run RazerS only on
 
 # We use revision 13383 for building the gold standard.
-RAZERS=../../../../../seqan-knime-build/release/bin/razers2 
+RAZERS=${RAZERS:-../../../../../seqan-knime-build/release/bin/razers2}
 
 # ============================================================
 # Run Adeno Single-End Example
@@ -26,8 +26,8 @@ for rl in 36 100; do
     done
 
     # Run with different output formats.
-    for of in 0 1 2 3 4 5; do
-        ${RAZERS} --low-memory -id adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-id-of${of}.razers > se-adeno-reads${rl}_1-id-of${of}.stdout
+    for suf in razers fa eland gff sam afg; do
+        ${RAZERS} --low-memory -id adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-id.${suf} > se-adeno-reads${rl}_1-id.${suf}.stdout
     done
 
     # Run with different match ordering.
@@ -57,10 +57,8 @@ for rl in 36 100; do
     done
 
     # Run with different output formats.
-    for pair in 0.razers 1.fa 2.eland 3.gff 4.sam 5.afg; do
-        of=$(echo $pair | sed 's/\..*$//g') 
-        suffix=$(echo $pair | sed 's/^.\.//g')
-        ${RAZERS} --low-memory -id adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2-id-of${of}.${suffix} > pe-adeno-reads${rl}_2-id-of${of}.stdout     
+    for suf in razers fa eland gff sam afg; do
+        ${RAZERS} --low-memory -id adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2-id.${suf} > pe-adeno-reads${rl}_2-id.${suf}.stdout     
     done
 
     # Run with different match ordering.

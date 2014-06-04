@@ -45,7 +45,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Stores the priority data on a heap.
  *
  * @signature template <[typename TValue[, typename TLess]]>
- *            class PriorityType;
+ *            class PriorityType<TValue, TLess, PriorityHeap>;
  *
  * @tparam TValue The value type.  Default: <tt>int</tt>.
  * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
@@ -100,6 +100,14 @@ SEQAN_CHECKPOINT
 
 
 
+/*!
+ * @fn PriorityType#clear
+ * @brief Remove all elements from the PriorityType.
+ *
+ * @signature void clear(pq);
+ *
+ * @param[in,out] pq PriorityType to clear.
+ */
 
 // Empty the priority queue
 ///.Function.clear.param.object.type:Class.PriorityType
@@ -111,7 +119,18 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 	clear(me.heap); 
 }
 
-// true if priority queue is empty 
+/*!
+ * @fn PriorityType#empty
+ * @headerfile <seqan/misc/priority_type_heap.h>
+ * @brief Query priority queue for beging empty.
+ *
+ * @signature bool empty(pq);
+ *
+ * @param[in] pq The @link PriorityType @endlink to query.
+ *
+ * @return bool <tt>true</tt> if <tt>pq</tt> queue is empty.
+ */
+
 ///.Function.empty.param.object.type:Class.PriorityType
 ///.Function.empty.class:Class.PriorityType
 template <typename TValue, typename TLess>
@@ -122,6 +141,17 @@ SEQAN_CHECKPOINT
 	return empty(me.heap); 
 }
 
+/*!
+ * @fn PriorityType#length
+ * @headerfile <seqan/misc/priority_type_heap.h>
+ * @brief Return number of elements in priority queue.
+ *
+ * @signature TSize length(pq);
+ *
+ * @param[in] pq The PriorityType to query.
+ * @return TSize Number of elements in priority queue.
+ */
+ 
 // Number of elements in the priority queue
 ///.Function.length.param.object.type:Class.PriorityType
 ///.Function.length.class:Class.PriorityType
@@ -144,9 +174,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#top
  * @brief Reference to the item with the highest priority.
  *
- * @signature TReference top(priorityType);
+ * @signature TReference top(pq);
  *
- * @param priorityType The PriorityType to query.
+ * @param[in] pq The PriorityType to query.
  *
  * @return TReference The result, reference to Value type.
  */
@@ -205,6 +235,10 @@ SEQAN_CHECKPOINT
 /*!
  * @fn PriorityType#adjustTop
  * @brief Adjusts the priority of the first item.
+ *
+ * @signature void adjustTop(pq);
+ *
+ * @param[in,out] pq The PriorityType to adjust.
  */
 
 /**
@@ -237,9 +271,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#push
  * @brief Inserts a new item and adjusts the priority queue if necessary.
  *
- * @signature void push(pt, element);
+ * @signature void push(pq, element);
  *
- * @param[in,out] pt      The PriorityType to push to.
+ * @param[in,out] pq      The PriorityType to push to.
  * @param[in]     element The element to push.
  */
 
@@ -303,9 +337,9 @@ SEQAN_CHECKPOINT
  * @fn PriorityType#pop
  * @brief Deletes item with the highest priority and adjusts the priority queue.
  *
- * @signature void push(pt);
+ * @signature void push(pq);
  *
- * @param[in,out] pt      The PriorityType to pop from.
+ * @param[in,out] pq      The PriorityType to pop from.
  */
 
 /**

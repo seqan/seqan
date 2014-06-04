@@ -51,7 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle, typename TAutomaton>
  *            class Pattern<TNeedle, MultiBfam<TAutomaton> >;
  * 
- * @tparam TAutomaton A tag that specifies the used automaton. Default: @link OracleMultiBfam @endlink.
+ * @tparam TAutomaton A tag that specifies the used automaton. Default: @link OracleMultiBfamPattern @endlink.
  * @tparam TNeedle    The needle type. Types: String
  * 
  * @see BfamPattern

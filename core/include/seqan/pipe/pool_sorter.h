@@ -83,8 +83,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSize    The Sorter's size type.
  * @tparam TFile    The underlying File type.  <tt>File&lt;&gt;</tt>
  * 
- * @section Remarks
- *
  * The requirement on TCompare are as follows: let <tt>comp</tt> be an object of type <tt>TCompare</tt>.  <tt>comp(a,
  * b)</tt> should return a value less, equal, or greater than 0 if <tt>a &lt; b</tt>, <tt>a == b</tt>, or <tt>a &gt;
  * b</tt>.
@@ -128,8 +126,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TCompare The compare function (see STL's <tt>binary_function</tt>).
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
  * 
- * @section Remarks
- * 
  * The requirement on TCompare are as follows: let <tt>comp</tt> be an object of type <tt>TCompare</tt>.  <tt>comp(a,
  * b)</tt> should return a value less, equal, or greater than 0 if <tt>a &lt; b</tt>, <tt>a == b</tt>, or <tt>a &gt;
  * b</tt>.
@@ -169,12 +165,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Sorts all elements using a custom compare function.
  *
  * @signature template <typename TValue, typename TConfig>
- *            struct Pool<TVAlue, SorterSpec<TConfig > >;
+ *            struct Pool<TValue, SorterSpec<TConfig > >;
  * 
  * @tparam TConfig Configuration Spec.  Defines compare function, size type, and file type.
  * @tparam TValue  The value type, that is the type of the stream elements.
- * 
- * @section Remarks
  * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  * 

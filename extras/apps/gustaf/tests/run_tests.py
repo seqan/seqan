@@ -38,6 +38,10 @@ def main(source_base, binary_base):
     path_to_program = app_tests.autolocateBinary(
       binary_base, 'bin', 'gustaf')
 
+    path_to_snd_program = app_tests.autolocateBinary(
+      binary_base, 'bin', 'gustaf_mate_joining')
+
+
     # ============================================================
     # Built TestConf list.
     # ============================================================
@@ -60,8 +64,132 @@ def main(source_base, binary_base):
         ]
 
     # ============================================================
-    # Adeno Tests
+    # Gustaf_mate_joining Tests
     # ============================================================
+
+    # ============================================================
+    # Simple gustaf_mate_joining app test
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('adeno_modified_reads_mates1.fa'),
+              ph.inFile('adeno_modified_reads_mates2.fa'),
+              '-o', ph.outFile('adeno_modified_reads_joinedMates.fa'),
+              '-rc',
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('adeno_modified_reads_joinedMates.fa'),
+                  ph.outFile('adeno_modified_reads_joinedMates.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+    # -o adeno_modified_reads_joinedMates.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+
+    # ============================================================
+    # Read joining, reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_mates1_gold.fa'),
+              ph.inFile('reads_simulated_mates2_gold.fa'),
+              '-o', ph.outFile('reads_simulated_joined_rc.fa'),
+              '-rc',
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('reads_simulated_joined_rc.fa'),
+                  ph.outFile('reads_simulated_joined_rc.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    # -o reads_simulated_joined_rc.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read joining, no reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_mates1_gold.fa'),
+              ph.inFile('reads_simulated_mates2_gold.fa'),
+              '-o', ph.outFile('reads_simulated_joined.fa'),
+              ],
+        to_diff=[#(ph.inFile('st2_l100.vcf'),
+                  #ph.outFile('st2_l100.vcf'),
+                  #transforms),
+                 (ph.inFile('reads_simulated_joined.fa'),
+                  ph.outFile('reads_simulated_joined.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_mates1_gold.fa reads_simulated_mates2_gold.fa \
+    # -o reads_simulated_joined.fa \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read splitting, reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_joined_gold.fa'),
+              '-o', ph.outFile('reads_simulated_mates1_rc.fa'),
+              '-o', ph.outFile('reads_simulated_mates2_rc.fa'),
+              '-rc',
+              ],
+        to_diff=[(ph.inFile('reads_simulated_mates1_rc.fa'),
+                  ph.outFile('reads_simulated_mates1_rc.fa'),
+                  transforms),
+                 (ph.inFile('reads_simulated_mates2_rc.fa'),
+                  ph.outFile('reads_simulated_mates2_rc.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_joined_gold.fa \
+    # -o reads_simulated_mates1_rc.fa -o reads_simulated_mates2_rc.fa -rc 1 \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Read splitting, no reverse complement
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_snd_program,
+        redir_stdout=ph.outFile('gustaf_mate_joining.stdout'),
+        redir_stderr=ph.outFile('gustaf_mate_joining.stderr'),
+        args=[ph.inFile('reads_simulated_joined_gold.fa'),
+              '-o', ph.outFile('reads_simulated_mates1.fa'),
+              '-o', ph.outFile('reads_simulated_mates2.fa'),
+              ],
+        to_diff=[(ph.inFile('reads_simulated_mates1.fa'),
+                  ph.outFile('reads_simulated_mates1.fa'),
+                  transforms),
+                 (ph.inFile('reads_simulated_mates2.fa'),
+                  ph.outFile('reads_simulated_mates2.fa'))])
+    conf_list.append(conf)
+
+    # ${JOINMATES} reads_simulated_joined_gold.fa \
+    # -o reads_simulated_mates1.fa -o reads_simulated_mates2.fa \
+    # > gustaf_mate_joining.stdout 2> gustaf_mate_joining.stderr
+
+    # ============================================================
+    # Gustaf Tests
+    # ============================================================
+
     # ============================================================
     # Sanity check with default values and empty output file
     # ============================================================
@@ -152,6 +280,7 @@ def main(source_base, binary_base):
               '-st', str(1),
               '-l', str(30),
               '-ith', str(5),
+              '-bth', str(5),
               ],
         to_diff=[(ph.inFile('st1_l30_m.vcf'),
                   ph.outFile('st1_l30_m.vcf'),
@@ -161,7 +290,7 @@ def main(source_base, binary_base):
     conf_list.append(conf)
 
     #out="st1_l30_ith5"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -bth 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -l 30 -gth 3
@@ -188,6 +317,38 @@ def main(source_base, binary_base):
  
     #out="st1_l30_gth3"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gth 3 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+
+    # ============================================================
+    # paired-end
+    # -st 1 -m stellar_joinedMates_l30.gff
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_program,
+        redir_stdout=ph.outFile('pairedEnd_st1_l30.stdout'),
+        redir_stderr=ph.outFile('pairedEnd_st1_l30.stderr'),
+        args=[ph.inFile('adeno.fa'),
+              ph.inFile('adeno_modified_reads_mates1.fa'),
+              ph.inFile('adeno_modified_reads_mates2.fa'),
+              '-m', ph.inFile('stellar_joinedMates_l30.gff'),
+              '-gff', ph.outFile('pairedEnd_st1_l30.gff'),
+              '-vcf', ph.outFile('pairedEnd_st1_l30.vcf'),
+              '-st', str(1),
+              '-mst', str(1),
+              '-ll', str(1000),
+              '-le', str(100),
+              '-rc',
+              ],
+        to_diff=[(ph.inFile('pairedEnd_st1_l30.vcf'),
+                  ph.outFile('pairedEnd_st1_l30.vcf'),
+                  transforms),
+                 (ph.inFile('pairedEnd_st1_l30.gff'),
+                  ph.outFile('pairedEnd_st1_l30.gff'))])
+    conf_list.append(conf)
+
+    #out="pairedEnd_st1_l30"
+    #${GUSTAF} adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa -m stellar_joinedMates_l30.gff -st 1
+    #-mst 1 -ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # Execute the tests.

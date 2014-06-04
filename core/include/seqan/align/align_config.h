@@ -55,7 +55,7 @@ namespace seqan {
  * @brief Indication of whether begin/end gaps are free for DP alignment algorithms.
  *
  * @signature template <bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TSpec>
- *            AlignConfig;
+ *            struct AlignConfig;
  *
  * @tparam TOP    Whether or not the begin gaps in the vertical sequence are free.
  * @tparam LEFT   Whether or not the begin gaps in the horizontal sequence are free.
@@ -64,6 +64,8 @@ namespace seqan {
  * @tparam TSpec  Tag for specializing the AlignConfig object (default: <tt>Default</tt>).
  *
  * Used in the DP alignment algorithms to configure the begin/end gap free-nes.
+ *
+ * @see globalAlignment
  *
  * @section Specialization List
  *

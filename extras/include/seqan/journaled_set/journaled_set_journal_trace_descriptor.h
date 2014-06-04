@@ -471,50 +471,6 @@ _constructAndSetJournalTree(String<TValue, Journaled<THostSpec, SortedArray, TBu
     assign(journalSeq._insertionBuffer, insertionBuffer);
 }
 
-template <typename TValue, typename THostSpec, typename TBuffSpec, typename TCargo, typename THostSpec2>
-inline void
-_constructAndSetJournalTree(String<TValue, Journaled<THostSpec, UnbalancedTree, TBuffSpec> > & seq,
-                            String<TCargo, THostSpec2> const & cargoArray,
-                            String<TValue, TBuffSpec> const & insertionBuffer)
-{
-//    typedef String<TValue, Journaled<THostSpec, UnbalancedTree, TBuffSpec> > TJournalString;
-//      typedef typename TJournalString::TJournalEntry TEntry;
-//    typedef typename JournalEntries<TCargo, UnbalancedTree>::TNode TNode;
-    //sorted array
-    clear(seq._journalEntries._nodeAllocator);
-    _doConstructTree(seq._journalEntries._root,seq._journalEntries, cargoArray, 0, (int) length(cargoArray)-1);
-    assign(seq._insertionBuffer, insertionBuffer);
-}
-
-// ----------------------------------------------------------------------------
-// Function _doConstructTree()
-// ----------------------------------------------------------------------------
-
-template <typename TEntry, typename TTree, typename THostSpec, typename TPos>
-void
-_doConstructTree(JournalEntriesUnorderedTreeNode<TEntry> *& node,
-                TTree & tree,
-                String<TEntry, THostSpec> const & array,
-                TPos const begin,
-                TPos const end )
-{
-    typedef typename JournalEntries<TEntry, UnbalancedTree>::TNode TNode;
-
-    if (begin > end) {
-        return;
-    }
-    TPos mid = begin + (end - begin) /2;
-    TNode * tmp;
-    allocate(tree._nodeAllocator, tmp, 1);
-    node = new (tmp) TNode(array[mid]);
-    doConstructTree(node->left, tree, array, begin, mid-1);
-    if (node->left != 0)
-        node->left->parent = node;
-    doConstructTree(node->right, tree, array, mid+1, end);
-    if (node->right != 0)
-        node->right->parent = node;
-}
-
 }  // namespace seqan
 
 #endif  // #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_

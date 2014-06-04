@@ -1,10 +1,10 @@
 @HD	VN:1.4	SO:coordinate
-@PG	ID:razers3	VN:3.2 [13765]	PN:razers3	CL:-tc 1 adeno-genome.fa adeno-reads36_1.fa adeno-reads36_2.fa -o pe-adeno-reads36_2-of4-tc1.sam
+@PG	ID:razers3	VN:3.2[fffb824]	PN:razers3	CL:-tc 1 adeno-genome.fa adeno-reads36_1.fa adeno-reads36_2.fa -o pe-adeno-reads36_2-of4-tc1.sam
 @SQ	SN:gi|9632547|ref|NC_002077.1|	LN:4718
 adeno-reads36.fasta.000000018	99	gi|9632547|ref|NC_002077.1|	4089	255	36M	=	4319	266	CCTCACACAGATGGACACTTTCACCCGTCTCCTCTT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000018	147	gi|9632547|ref|NC_002077.1|	4319	255	36M	=	4089	-266	GCAGTACACATCCAATTATGCAAAATCTGCCAACGT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000022	99	gi|9632547|ref|NC_002077.1|	320	255	36M	=	535	252	GAACGAGCAGCAGCCATGCCGGGCTTCTACGAGATC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
-adeno-reads36.fasta.000000022	147	gi|9632547|ref|NC_002077.1|	535	255	13M1D23M	=	320	-252	GCGCCGCGTGAGTAGGCCCCGGAGGCCCTCTTCTTT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:1	MD:Z:13A23
+adeno-reads36.fasta.000000022	147	gi|9632547|ref|NC_002077.1|	535	255	13M1D23M	=	320	-252	GCGCCGCGTGAGTAGGCCCCGGAGGCCCTCTTCTTT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:1	MD:Z:13^A23
 adeno-reads36.fasta.000000026	99	gi|9632547|ref|NC_002077.1|	2485	255	36M	=	2719	270	ATCCGTACCTGCGGTATAACCACGCCGACGCCGAGT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000026	147	gi|9632547|ref|NC_002077.1|	2719	255	36M	=	2485	-270	CCGCTAAAAAGAGACTCAATTTTGGTCAGACTGGCG	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000046	83	gi|9632547|ref|NC_002077.1|	2908	255	36M	=	2676	-268	ATTGCGATTCCACATGGCTGGGCGACAGAGTCATCA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
@@ -66,7 +66,7 @@ adeno-reads36.fasta.000000552	163	gi|9632547|ref|NC_002077.1|	163	255	36M	=	394	
 adeno-reads36.fasta.000000553	83	gi|9632547|ref|NC_002077.1|	1998	255	36M	=	1769	-265	ATCAGAATTTCAACATTTGCTTCACGCACGGGACGA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000553	163	gi|9632547|ref|NC_002077.1|	1769	255	36M	=	1998	265	GAGGTGGCGCATGAGTTCTACGTCAGAAAGGGTGGA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000577	83	gi|9632547|ref|NC_002077.1|	1912	255	36M	=	1683	-265	CTTTGCCGACAGGTACCAAAACAAATGTTCTCGTCA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
-adeno-reads36.fasta.000000577	163	gi|9632547|ref|NC_002077.1|	1683	255	29M1D7M	=	1912	265	TCACCCGCCGTCTGGAGCATGACTTTGGCAGGTGAC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:1	MD:Z:29A7
+adeno-reads36.fasta.000000577	163	gi|9632547|ref|NC_002077.1|	1683	255	29M1D7M	=	1912	265	TCACCCGCCGTCTGGAGCATGACTTTGGCAGGTGAC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:1	MD:Z:29^A7
 adeno-reads36.fasta.000000618	83	gi|9632547|ref|NC_002077.1|	3020	255	36M	=	2786	-270	GGCCAGCAACGACAACCACTACTTCGGCTACAGCAC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000618	163	gi|9632547|ref|NC_002077.1|	2786	255	36M	=	3020	270	CGGAGAACCTCCAGCAACCCCCGCTGCTGTGGGACC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000620	99	gi|9632547|ref|NC_002077.1|	349	255	36M	=	565	252	CGAGATCGTGATCAAGGTGCCGAGCGACCTGGACGA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36

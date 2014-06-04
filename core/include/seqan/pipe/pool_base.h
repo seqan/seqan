@@ -84,8 +84,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
  * 
- * @section Remarks
- * 
  * Using this configuration spec., the Pool's size type is <tt>Size&lt;TFile&gt;::Type</tt>.  To use a custom size type
  * PoolConfigSize should be used.
  * 
@@ -124,8 +122,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                 Types: PoolConfig, PoolConfigSize
  * @tparam TValue  The value type, that is the type of the stream elements.
  * 
- * @section Remarks
- * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
@@ -158,8 +154,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TSpec  The specializing type. Default: PoolSpec&lt;&gt;, see PoolSpec.
  * @tparam TValue The value type, that is the type of the stream elements.
- * 
- * @section Remarks
  * 
  * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by default).
  * 
@@ -1100,7 +1094,14 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename MakeSigned_<typename Size<Pool< TValue, TSpec > >::Type>::Type Type;
     };
 
-
+/*!
+ * @fn Pool#clear
+ * @brief Remove all elements from the pool.
+ *
+ * @signature void clear(pool);
+ *
+ * @param[in,out] pool Pool to clear.
+ */
 ///.Function.clear.param.object.type:Class.Pool
 ///.Function.clear.class:Class.Pool
 
@@ -1118,6 +1119,18 @@ namespace SEQAN_NAMESPACE_MAIN
         return me.size();
     }
 
+/*!
+ * @fn Pool#length
+ * @headerfile <seqan/pipe.h>
+ * @brief Length of the pool.
+ *
+ * @signature TSize length(pool);
+ *
+ * @param[in] pool  The Pool to query for its size.
+ *
+ * @return    TSize The number of elements in the pool.
+ */
+
 ///.Function.length.param.object.type:Class.Pool
 ///.Function.length.class:Class.Pool
 
@@ -1127,6 +1140,16 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         return me.size();
     }
+
+/*!
+ * @fn Pool#resize
+ * @brief Resize a pool.
+ *
+ * @signature void resize(pool, len);
+ *
+ * @param[in,out] pool Pool to resize.
+ * @param[in]     len  Length to resize <tt>pool</tt> to.
+ */
 
 ///.Function.resize.param.object.type:Class.Pool
 ///.Function.resize.class:Class.Pool
@@ -1138,6 +1161,17 @@ namespace SEQAN_NAMESPACE_MAIN
         return me.size();
     }
 
+/*!
+ * @fn Pool#front
+ * @brief Return reference to the first element.
+ *
+ * @signature TReference front(pool);
+ *
+ * @param[in] pool The pool to get the first element of.
+ *
+ * @return TReference A reference to the first element of <tt>seq</tt>.
+ */
+
 ///.Function.Pipe#front.param.object.type:Class.Pool
 ///.Function.Pipe#front.class:Class.Pool
 
@@ -1145,7 +1179,21 @@ namespace SEQAN_NAMESPACE_MAIN
 	inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {
         return me.front();
     }
-
+/*!
+ * @fn Pool#pop
+ * @headerfile <seqan/pipe.h>
+ * @brief Pops the first element of the remaining stream.
+ * 
+ * @signature void pop(pool[, ref]);
+ * 
+ * @param[in,out] pool A pop-passive pipeline module.
+ * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
+ *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
+ * 
+ * In contrast to Pool#front this function also steps one element further.
+ * 
+ * Pool#front or Pool#pop can only be called within a read process surrounded by beginRead and endRead.
+ */
 ///.Function.pop.param.object.type:Class.Pool
 ///.Function.pop.class:Class.Pool
 
@@ -1163,12 +1211,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn Pool#push
  * @brief Appends an item at the end of an input stream.
  * 
- * @signature void push(object, val);
+ * @signature void push(pool, val);
  * 
- * @param[in,out] object A push-passive pipeline module.
+ * @param[in,out] pool A pool module.
  * @param[in]     val    Item to be pushed.
- * 
- * @section Remarks
  * 
  * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
  */
@@ -1249,15 +1295,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/pipe.h>
  * @brief Initiates a write process.
  * 
- * @signature bool beginWrite(object);
+ * @signature bool beginWrite(pool);
  * 
- * @param object A push-passive pipeline module.
+ * @param[in,out] pool A pool module.
  * 
  * @return bool <tt>true</tt> on success, false on failure.
  * 
- * @section Remarks
- * 
- * <tt>beginWrite</tt> prepares a Pool for succeeding writes.
+ * <tt>beginWrite</tt> prepares a pool for succeeding writes.
  * 
  * A write process must be terminated with endWrite.  Nested write processes are not allowed.
  * 
@@ -1291,11 +1335,9 @@ SEQAN_CHECKPOINT
  * 
  * @signature bool endWrite(pool);
  * 
- * @param pool A push-passive pipeline module.
+ * @param[in,out] pool A push-passive pipeline module.
  * 
  * @return bool true on success, false on failure.
- * 
- * @section Remarks
  * 
  * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite 
  * 
@@ -1323,7 +1365,16 @@ SEQAN_CHECKPOINT
 
 ///.Function.atEnd.param.iterator.type:Class.Pool
 ///.Function.atEnd.class:Class.Pool
-// TODO(holtgrew): Documentation bug!
+/*!
+ * @fn Pool#atEnd
+ * @brief Check whether the @link Pool @endlink object is at end.
+ *
+ * @signature bool atEnd(pool);
+ *
+ * @param[in] pool The @link Pool @endlink object to query.
+ *
+ * @return bool true in case of the pool being at the end, false otherwise.
+ */
 
 		template < typename TValue, typename TSpec >
 	    inline bool eof(Pool< TValue, TSpec > &me) {
@@ -1331,12 +1382,39 @@ SEQAN_CHECKPOINT
             return control(me, ControlEof());
         }
 
+/*!
+ * @fn Pool#beginRead
+ * @headerfile <seqan/pipe.h>
+ * @brief Initiates a read process.
+ * 
+ * @signature bool beginRead(pool);
+ * 
+ * @param[in,out] pool A pool module.
+ * 
+ * @return bool true on success, false on failure.
+ * 
+ * A read process must be terminated with endRead. Nested read processes are not allowed.
+ * 
+ * @see Pool#endRead
+ */
 		template < typename TValue, typename TSpec >
 	    inline bool beginRead(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
             return control(me, ControlBeginRead());
         }
-
+/*!
+ * @fn Pool#endRead
+ * @headerfile <seqan/pipe.h>
+ * @brief Terminates a read process.
+ * 
+ * @signature bool endRead(pool);
+ * 
+ * @param[in,out] pool A pool module.
+ * 
+ * @return bool true on success, false on failure.
+ * 
+ * @see Pool#beginRead
+ */
 		template < typename TValue, typename TSpec >
 	    inline bool endRead(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
@@ -1375,7 +1453,18 @@ SEQAN_CHECKPOINT
         }
         return true;
     }
-
+/*!
+ * @fn Pool#assign
+ * @headerfile <seqan/pipe.h>
+ * @brief Assigns one object to another object.
+ *
+ * @signature void assign(target, source);
+ *
+ * @param[out] target Reference to assign to.
+ * @param[in]  source Value to assign.
+ *
+ * Assign value of source to target.
+ */
 ///.Function.assign.param.target.type:Class.Pool
 ///.Function.assign.class:Class.Pool
 

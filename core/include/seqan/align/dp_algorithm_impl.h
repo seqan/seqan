@@ -159,7 +159,7 @@ namespace seqan {
 template <typename TSequenceH, typename TSequenceV, typename TAlignmentProfile>
 inline bool _checkBandProperties(TSequenceH const & /*seqH*/,
                                  TSequenceV const & /*seqV*/,
-                                 DPBand_<BandOff> const & /*band*/,
+                                 DPBandConfig<BandOff> const & /*band*/,
                                  TAlignmentProfile const & /*alignProfile*/)
 {
     return true;
@@ -168,7 +168,7 @@ inline bool _checkBandProperties(TSequenceH const & /*seqH*/,
 template <typename TSequenceH, typename TSequenceV, typename TAlignmentProfile>
 inline bool _checkBandProperties(TSequenceH const & seqH,
                                  TSequenceV const & seqV,
-                                 DPBand_<BandOn> const & band,
+                                 DPBandConfig<BandOn> const & band,
                                  TAlignmentProfile const & /*alignProfile*/)
 {
     typedef typename MakeSigned<typename Size<TSequenceH>::Type>::Type TSignedSize;
@@ -238,7 +238,7 @@ inline bool _isValidDPSettings(TSequenceH const & seqH,
 // Returns true if a band is selected, otherwise false.
 template <typename TBandSpec>
 inline bool
-_isBandEnabled(DPBand_<TBandSpec> const & /*band*/)
+_isBandEnabled(DPBandConfig<TBandSpec> const & /*band*/)
 {
     return IsSameType<TBandSpec, BandOn>::VALUE;
 }
@@ -1361,7 +1361,7 @@ _computeAlignment(TTraceTarget & traceSegments,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
+                  DPBandConfig<TBandSwitch> const & band,
                   DPProfile_<TAlignmentAlgorithm, TGapCosts, TTraceFlag> const & dpProfile)
 {
     typedef typename Value<TScoreScheme>::Type TScoreValue;
@@ -1449,7 +1449,7 @@ _computeAlignment(TTraceTarget & traceSegments,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
+                  DPBandConfig<TBandSwitch> const & band,
                   DPProfile_<TAlignmentAlgorithm, TGapCosts, TTraceFlag> const & dpProfile)
 {
     DPScoutState_<Default> noState;

@@ -69,39 +69,35 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class SuperMaxRepeatsIterator Super Max Repeats Iterator
- * 
  * @extends BottomUpIterator
- * 
  * @headerfile seqan/index.h
  * 
  * @brief Iterator to search for all supermaximal repeats.
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * @signature Iterator<TContainer, SuperMaxRepeats>::Type;
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeats> > >;
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: @link IndexEsa @endlink
  *
  *
- * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ * @note Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
  *               Iterator&lt;TContainer, SuperMaxRepeats&gt;::Type (which is Iter&lt;TContainer, VSTree&lt;BottomUp&lt;SuperMaxRepeats&gt; &g;t &gt;).
- * 
- * Demo: Demo.Supermaximal Repeats
+ *
+ * @see DemoSupermaximalRepeats
  */
 
 /*!
- * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * @fn SuperMaxRepeatsIterator::Iter
+ * @brief The constructor
  *
- * brief The constructor
+ * @signature Iter::Iter(index[, minLength]);
+ * @signature Iter::Iter(iterator);
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(index [, minLength]) 
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(iterator) 
- *
- * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
- *
- * @param minLength Minimum length of the supermaximal repeats, default value is 1.
- *
- * @param iterator Another SuperMaxRepeats iterator. Types: @link SuperMaxRepeatsIterator @endlink
+ * @param[in] index     The index to be used for the iteration. Types: @link IndexEsa @endlink
+ * @param[in] minLength Minimum length of the supermaximal repeats, default value is 1.
+ * @param[in] iterator  Another SuperMaxRepeats iterator. Types: @link SuperMaxRepeatsIterator @endlink
  */
 	//////////////////////////////////////////////////////////////////////////////
 	// super-maximal repeats - suffix tree version
@@ -191,39 +187,34 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another SuperMaxRepeatsFast iterator. (copy constructor)
 ...type:Spec.SuperMaxRepeatsFast Iterator
 */
-/*H
+/*!
  * @class SuperMaxRepeatsFastIterator Super Max Repeats Fast Iterator
- *
  * @extends BottomUpIterator
- * 
  * @headerfile seqan/index.h
  * 
- * @brief Iterator to search for all supermaximal repeats (for enh. suffix
- *        arrays only).
+ * @brief Iterator to search for all supermaximal repeats (for enh. suffix arrays only).
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+ * @signature Iterator<TContainer, SuperMaxRepeatsFast>::Type;
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree<BottomUp<SuperMaxRepeatsFast> > >;
  * 
  * @tparam TContainer Type of an index based on enhanced suffix array. Types:
  *                    @link IndexEsa @endlink
  * 
- * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, SuperMaxRepeatsFast>::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >).
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *       Iterator&lt;TContainer, SuperMaxRepeatsFast&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast&gt; &gt; &gt;).
  */
 
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+/*!
+ * @fn SuperMaxRepeatsFastIterator::Iter
+ * @brief The constructor
  *
- * brief The constructor
+ * @signature Iter::Iter(index[, minLength]);
+ * @signature Iter::Iter(iterator);
  *
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(iterator)
- *
- * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
- *
- * @param minLength Minimum length of the supermaximal repeats, default value is 1.
- *
- * @param iterator Another SuperMaxRepeatsFast iterator. Types: @link SuperMaxRepeatsFastIterator @endlink
+ * @param[in] index     The index to be used for the iteration. Types: @link IndexEsa @endlink
+ * @param[in] minLength Minimum length of the supermaximal repeats, default value is 1.
+ * @param[in] iterator  Another SuperMaxRepeatsFast iterator. Types: @link SuperMaxRepeatsFastIterator @endlink
  */
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -358,40 +349,36 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MaxRepeats iterator. (copy constructor)
 ...type:Spec.MaxRepeats Iterator
 */
-/*H
+/*!
  * @class MaxRepeatsIterator Max Repeats Iterator
- * 
  * @extends BottomUpIterator
- * 
  * @headerfile seqan/index.h
  * 
  * @brief Iterator to search for all maximal repeats.
  * 
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
+ * @signature Iterator<TContainer, MaxRepeats>::Type;
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >;
  * 
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: IndexEsa
  * 
- * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, MaxRepeats>::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >).
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *       Iterator&lt;TContainer, MaxRepeats&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats&gt; &gt; &gt;).
  * 
- * Demo: Demo.Maximal Repeats
+ * @see DemoMaximalRepeats
  */
 
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
+/*!
+ * @fn MaxRepeatsIterator::Iter
+ * @brief The constructor
  *
- * brief The constructor
+ * @signature Iter::Iter(index[, minLength]);
+ * @signature Iter::Iter(iterator);
  *
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
- * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
- *
- * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
- *
- * @param minLength Minimum length of the supermaximal repeats, default value is 1.
- *
- * @param iterator Another MaxRepeats iterator. Types: @link MaxRepeatsIterator @endlink
+ * @param[in] index     The index to be used for the iteration. Types: @link IndexEsa @endlink
+ * @param[in] minLength Minimum length of the supermaximal repeats, default value is 1.
+ * @param[in] iterator  Another MaxRepeats iterator. Types: @link MaxRepeatsIterator @endlink
  */
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -491,7 +478,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Iterator<TSet>::Type			TSetIterator;
 		typedef typename Iterator<TSet const>::Type		TConstSetIterator;
 
-		typedef typename TBase::TStackEntry				TStackEntry;
+        typedef typename HistoryStackEntry_<TBase>::Type TStackEntry;
 
 //____________________________________________________________________________
 
@@ -570,7 +557,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			if (length(setStack) < 2) return 0;
 
 			TFractionCompound const &child  = back(setStack);
-			TFractionCompound const &parent = topPrev(setStack);
+			TFractionCompound const &parent = backPrev(setStack);
 
 			TConstSetIterator childFraction	= begin(child.set);
 			TConstSetIterator childEnd		= end(child.set);
@@ -754,6 +741,19 @@ namespace SEQAN_NAMESPACE_MAIN
 		return back(it.history).range.i2;
 	}
 //____________________________________________________________________________
+
+/*!
+ * @fn MaxRepeatsIterator#length
+ * @headerfile <seqan/index.h>
+ * @brief Return the number of repeats.
+ *
+ * @signature TSize length(it);
+ *
+ * @param[in] it The MaxRepeatsIterator to query.
+ *
+ * @return TSize The number of found repeats.
+ */
+
 
 ///.Function.length.param.object.type:Spec.MaxRepeats Iterator
 ///.Function.length.class:Spec.MaxRepeats Iterator
