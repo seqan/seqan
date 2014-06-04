@@ -1278,7 +1278,7 @@ postProcessMain(TOptions &options, TModel const &)
             setSource(readGaps, readSeq);
             if (beginPos < options.intervalOffset) beginInf = 0;    
             else beginInf = beginPos-options.intervalOffset;
-            if (endPos > (long)length(store.contigStore[record.rID].seq) - options.intervalOffset) endInf = length(store.contigStore[record.rID].seq);
+            if (endPos > (long)length(store.contigStore[record.rID].seq) - (signed)options.intervalOffset) endInf = length(store.contigStore[record.rID].seq);
             else endInf = endPos+options.intervalOffset;
         }
         else 
@@ -1292,7 +1292,7 @@ postProcessMain(TOptions &options, TModel const &)
             assignSource(readGaps, readSeq);  
             if (endPos < options.intervalOffset) beginInf = 0;
             else beginInf = endPos-options.intervalOffset;
-            if (beginPos > (long)length(store.contigStore[record.rID].seq) - options.intervalOffset) endInf = length(store.contigStore[record.rID].seq);
+                if (beginPos > (long)length(store.contigStore[record.rID].seq) - options.intervalOffset) endInf = length(store.contigStore[record.rID].seq);
             else endInf = beginPos+options.intervalOffset;
         }
         // Create contigGaps
