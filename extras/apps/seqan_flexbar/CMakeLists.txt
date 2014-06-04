@@ -29,42 +29,31 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your application.
-#add_executable (seqan_flexbar seqan_flexbar.cpp
-#                seqan_flexbar.h
-#                demultiplex.h
-#			    readTrimming.h
-#			    adapterTrimming.h
-#			    generalProcessing.h)
-add_executable(demultiplex_test demultiplex_test.cpp demultiplex.h)
-add_executable(trimming_test trimming_test.cpp readTrimming.h)
-add_executable(adapter_test adapter_test.cpp adapterTrimming.h)
-add_executable(generalProcessing_test generalProcessing_test.cpp generalProcessing.h)
+add_executable(test_sflex_demultiplex        test_demultiplex.cpp demultiplex.h)
+add_executable(test_sflex_trimming           test_trimming.cpp read_trimming.h)
+add_executable(test_sflex_adapter            test_adapter.cpp adapter_trimming.h)
+add_executable(test_sflex_general_processing test_general_processing.cpp general_processing.h)
 
-add_library (seqan_flexbar_lib
+add_library (seqan_flexlib
              demultiplex.h
-             readTrimming.h
-             adapterTrimming.h
-             generalProcessing.h
+             read_trimming.h
+             adapter_trimming.h
+             general_processing.h
              seqan_flexbar.h
-             seqan_flexbar.cpp)
-target_link_libraries (seqan_flexbar_lib ${SEQAN_LIBRARIES})
+             seqan_flexlib.cpp)
+target_link_libraries (seqan_flexlib ${SEQAN_LIBRARIES})
 
-add_executable (seqFlexQC seqan_flexbar_quality_control.cpp)
-add_executable (seqFlexAR seqan_flexbar_adapter_removal.cpp)
-add_executable (seqFlexDMulti seqan_flexbar_demultiplexing.cpp)
-add_executable (seqFlexFilter seqan_flexbar_filtering.cpp)
-add_executable (seqan_flexbar seqan_flexbar_all.cpp)
+set (KNIME_FLEX_NODES sflexQC sflexAR sflexDMulti sflexFilter)
 
-# Add dependencies found by find_package (SeqAn).
-foreach (EXEC trimming_test
-         demultiplex_test adapter_test generalProcessing_test
-         seqan_flexbar
-         seqFlexQC
-         seqFlexAR
-         seqFlexDMulti
-         seqFlexFilter)
-    target_link_libraries (${EXEC} seqan_flexbar_lib ${SEQAN_LIBRARIES})
+foreach (TARGET ${KNIME_FLEX_NODES} seqan_flexbar)
+    add_executable (${TARGET} seqan_flexbar.cpp)
+    target_link_libraries (${TARGET} seqan_flexlib ${SEQAN_LIBRARIES})
 endforeach ()
+
+set_target_properties (sflexQC PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=QUALITY_CONTROL")
+set_target_properties (sflexAR PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=ADAPTER_REMOVAL")
+set_target_properties (sflexDMulti PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=DEMULTIPLEXING")
+set_target_properties (sflexFilter PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=FILTERING")
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -87,9 +76,6 @@ install (TARGETS seqan_flexbar
 install (FILES LICENSE
                README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
-#install (FILES example/fasta1.fa
-#               example/fasta2.fa
-#         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
 
 # ----------------------------------------------------------------------------
 # App Test
@@ -102,7 +88,7 @@ seqan_add_app_test (seqan_flexbar)
 # ----------------------------------------------------------------------------
 
 # Include executable seqanFlexbar in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} seqan_flexbar CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} ${KNIME_FLEX_NODES} CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -110,9 +96,9 @@ set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} seqan_flexbar CACHE INTERNAL
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_flexbar")
   set (CPACK_PACKAGE_NAME "seqan_flexbar")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "seqan_flexbar")
-  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Your Name <your.email@example.net>")
-  set (CPACK_PACKAGE_VENDOR "Your Name <your.email@example.net>")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "SeqAn::Flexbar - Flexible barcode and adapter removal for sequencing platforms in SeqAn")
+  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Jochen Singer <jochen.singer@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (seqan_flexbar "seqan_flexbar")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_flexbar")

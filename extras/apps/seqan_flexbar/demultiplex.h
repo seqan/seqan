@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch 
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
 
 #ifndef SANDBOX_GROUP3_APPS_SEQDPT_DEMULTIPLEX_H_
@@ -43,7 +43,7 @@
 #include <seqan/sequence.h>
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
-#include "generalProcessing.h"
+#include "general_processing.h"
 
 using namespace seqan;
 
