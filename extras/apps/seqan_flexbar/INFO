@@ -1,21 +1,20 @@
 Name: seqan_flexbar
-Author: Your Name <your.email@example.net>
-Maintainer: Your Name <your.email@example.net>
+Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
+Maintainer: Jochen Singer <jochen.singer@fu-berlin.de>
 License: GPL v3
-Copyright: 2008-2012, FU Berlin
+Copyright: 2008-2014, FU Berlin
 Status: under development
-Description: One-line description for app seqan_flexbar.
- This is the long text description for the app.  You should wrap text to 78
- characters and you have to wrap it to 80 characters.  The lines must have one
- leading space.  Successive lines in this format will be word-wrapped when
- displayed.  Leading space is stripped off.
- .
- Use empty lines with one dot to insert an empty line / break paragraphs.
- .
-  Start lines with two spaces to make them display verbatim.  Lines that
-  cannot be displayed horizontally will be hard-wrapped (not at word bor-
-  ders), so maybe do your own hyphenation.
- .
- Do not use tab characters, their effect is not predictable.
- .
- The INFO file format is oriented after the Debian controfields format.
+Description: SeqAn-Flexbar is a toolkit for the processing of sequenced NGS
+reads based on the original Flexbar implementation in [1]. It is possible to
+demultiplex the reads and order them according to different kinds of barcodes,
+to remove adapter contamination from reads, to trim low quality bases, filter
+N's or trim whole reads. The different tools are controlled through command
+line parameters and can operate on both single- and paired-end read data.
+.
+See the project website and README file for more information.
+
+[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible Barcode
+and Adapter Processing for Next-Generation Sequencing Platforms. Biology 2012,
+1, 895-905.
+
+
