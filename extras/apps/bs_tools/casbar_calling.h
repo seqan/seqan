@@ -406,7 +406,6 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                             TRefContext &refContext,
                             TMethod const &)
 {
-    typedef typename Value<TLHoods>::Type   TLHood;
     unsigned minCountCT = 1;
     unsigned countF_CT = countF[ordValue((Dna)'C')] + countF[ordValue((Dna)'T')];
     unsigned countR_CT = countR[ordValue((Dna)'G')] + countR[ordValue((Dna)'A')];

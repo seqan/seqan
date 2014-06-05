@@ -33,6 +33,12 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--out-file-ext" isList="false">
 			<mapping referenceName="test_app.out-file-ext" />
 		</clielement>
+		<clielement optionIdentifier="--input-prefix-option" isList="false">
+			<mapping referenceName="test_app.input-prefix-option" />
+		</clielement>
+		<clielement optionIdentifier="--output-prefix-option" isList="false">
+			<mapping referenceName="test_app.output-prefix-option" />
+		</clielement>
 		<clielement optionIdentifier="--hidden" isList="false">
 			<mapping referenceName="test_app.hidden" />
 		</clielement>
@@ -65,6 +71,8 @@ The second one contains formating &lt;bla&gt;.
 			<ITEM name="in-file-ext" value="" type="string" description="Override file extension for --in" restrictions="fasta" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
 			<ITEM name="out" value="" type="output-file" description="set an output file" supported_formats="*.sam" required="false" advanced="false" />
 			<ITEM name="out-file-ext" value="" type="string" description="Override file extension for --out" restrictions="sam" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
+			<ITEM name="input-prefix-option" value="" type="input-prefix" description="set an input prefix" supported_formats="*.btx" required="false" advanced="false" />
+			<ITEM name="output-prefix-option" value="" type="output-prefix" description="set an output prefix" supported_formats="*.blub" required="false" advanced="false" />
 			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" required="false" advanced="true" />
 			<ITEM name="arg-4-file-ext" value="" type="string" description="Override file extension for argument 4" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
 			<ITEM name="argument-0" value="" type="double" description="Double Argument" required="true" advanced="false" />

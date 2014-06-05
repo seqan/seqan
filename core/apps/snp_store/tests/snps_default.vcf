@@ -1,4 +1,4 @@
-#../../../../../seqan-clean-build/release/bin/snp_store human-chr22-inf2.fa human-reads2.gff -o snps_default.out -id indels_default.out 
+#../../../../../seqan-dev/build/clang/bin/snp_store human-chr22-inf2.fa human-reads2.gff -o snps_default.vcf -id indels_default.gff 
 #chr	pos	ref	A	C	G	T	cov	call	quality	snpQ
 22	15	C	[]	[]]]]]]]	[]	[]]	7		
 22	16	A	[]]]]]]]]	[]]	[]	[]	8		
