@@ -1169,6 +1169,25 @@ void MasonSimulatorOptions::addTextSections(seqan::ArgumentParser & parser) cons
             "When using multi-threading, each thread gets its own random number generator (RNG).  The RNG of thread "
             "i is initialized with the value of \\fB--seed\\fP plus i.");
 
+    addTextSection(parser, "BAM/SAM Tags");
+    addText(parser,
+            "Mason can write out a BAM or SAM file with alignments of the reads against the reference.  The records "
+            "have tags that give information about the simulated reads.  Below is a list of the tags and their meaning.");
+
+    addListItem(parser, "NM", "Edit distance when aligned to the reference (i).");
+    addListItem(parser, "MD", "String for mismatching positions (Z).");
+
+    addListItem(parser, "oR", "Name of \\fBo\\fPriginal \\fBr\\fPeference, (Z).");
+    addListItem(parser, "oH", "Number of the \\fBo\\fPriginal \\fBh\\fPhaplotype (1-based), (i).");
+    addListItem(parser, "oP", "\\fBo\\fPriginal \\fBp\\fPosition on the original reference (i).");
+    addListItem(parser, "oS", "\\fBo\\fPriginal \\fBs\\fPtrand, \\fIF/R\\fP for forward and reverse strand (A).");
+    addListItem(parser, "uR",
+                "Reason for being unaligned, \\fII/B\\fP for being in insertion or spanning over breakpoint.");
+
+    addListItem(parser, "XE", "Number of sequencing \\fIe\\fPrrors in the read (i).");
+    addListItem(parser, "XS", "Number of \\fIS\\fPNPs in the read alignment (i).");
+    addListItem(parser, "XI", "Number of small \\fIi\\fPndels in the read alignment (i).");
+
     // Add text sections of the component options.
     matOptions.addTextSections(parser);
     methOptions.addTextSections(parser);

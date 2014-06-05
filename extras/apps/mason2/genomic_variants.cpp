@@ -134,6 +134,7 @@ int VariantMaterializer::_runImpl(
         seqan::Dna5String * resultSeq,
         PositionMap * posMap,
         MethylationLevels * resultLvls,
+        std::vector<SmallVarInfo> & varInfos,
         std::vector<std::pair<int, int> > & breakpoints,
         seqan::Dna5String const * ref,
         MethylationLevels const * refLvls,
@@ -149,7 +150,8 @@ int VariantMaterializer::_runImpl(
     TJournalEntries journal;
     MethylationLevels levelsSmallVariants;  // only used if revLevels != 0
     MethylationLevels * smallLvlsPtr = refLvls ? &levelsSmallVariants : 0;
-    if (_materializeSmallVariants(seqSmallVariants, journal, smallLvlsPtr, *ref, *variants,
+    std::vector<SmallVarInfo> smallVarInfos;
+    if (_materializeSmallVariants(seqSmallVariants, journal, smallLvlsPtr, smallVarInfos, *ref, *variants,
                                   refLvls, haplotypeId) != 0)
         return 1;
 
@@ -157,9 +159,12 @@ int VariantMaterializer::_runImpl(
     posMap->reinit(journal);  // build mapping from small variant to reference positions
 
     // Apply structural variants and build the interval tree of posMap
-    if (_materializeLargeVariants(*resultSeq, resultLvls, breakpoints, *posMap, journal, seqSmallVariants,
-                                  *variants, smallLvlsPtr, haplotypeId) != 0)
+    if (_materializeLargeVariants(*resultSeq, resultLvls, varInfos, breakpoints, *posMap, journal, seqSmallVariants,
+                                  smallVarInfos, *variants, smallLvlsPtr, haplotypeId) != 0)
         return 1;
+
+    // Sort resulting variant infos.
+    std::sort(varInfos.begin(), varInfos.end());
 
     // std::sort(breakpoints.begin(), breakpoints.end());
     // std::cout << "SV Breakpoints\n";
@@ -180,6 +185,7 @@ int VariantMaterializer::_materializeSmallVariants(
         seqan::Dna5String & seq,
         TJournalEntries & journal,
         MethylationLevels * levelsSmallVariants,
+        std::vector<SmallVarInfo> & smallVarInfos,
         seqan::Dna5String const & contig,
         Variants const & variants,
         MethylationLevels const * levels,
@@ -223,7 +229,7 @@ int VariantMaterializer::_materializeSmallVariants(
         std::cerr << "building output\n";
     while (snpRecord.rId != seqan::maxValue<int>() || smallIndelRecord.rId != seqan::maxValue<int>())
     {
-        // TODO(holtgrew): Extract SNP and small indel handling in functions.
+        // TODO(holtgrew): Extract SNP and small indel handling into their own functions.
         if (snpRecord.getPos() < smallIndelRecord.getPos())  // process SNP records
         {
             if (snpRecord.haplotype == hId)  // Ignore all but the current contig.
@@ -247,6 +253,9 @@ int VariantMaterializer::_materializeSmallVariants(
                 lastPos = snpRecord.pos + 1;
                 if (verbosity >= 3)
                     std::cerr << __LINE__ << "\tlastPos == " << lastPos << "\n";
+
+                // Register SNP as small variant info.
+                smallVarInfos.push_back(SmallVarInfo(SmallVarInfo::SNP, length(seq) - 1, 1));
             }
 
             if (snpsIdx >= length(variants.snps))
@@ -261,7 +270,8 @@ int VariantMaterializer::_materializeSmallVariants(
                 if (smallIndelRecord.size > 0)
                 {
                     if (verbosity >= 3)
-                        std::cerr << "append(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ") " << __LINE__ << "\n";
+                        std::cerr << "append(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ") "
+                                  << __LINE__ << "\n";
 
                     // Simulate methylation levels for insertion.
                     MethylationLevels lvls;
@@ -283,6 +293,9 @@ int VariantMaterializer::_materializeSmallVariants(
                     SEQAN_ASSERT_GEQ(smallIndelRecord.pos, lastPos);
                     if (verbosity >= 3)
                         std::cerr << "append(seq, \"" << smallIndelRecord.seq << "\") " << __LINE__ << "\n";
+                    // Register insertion as small variant info.
+                    for (unsigned i = 0; i < length(smallIndelRecord.seq); ++i)
+                        smallVarInfos.push_back(SmallVarInfo(SmallVarInfo::INS, length(seq) + i, 1));
                     // Append novel sequence and methylation levels->
                     append(seq, smallIndelRecord.seq);
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
@@ -317,6 +330,9 @@ int VariantMaterializer::_materializeSmallVariants(
                                 hostToVirtualPosition(journal, smallIndelRecord.pos - smallIndelRecord.size));
                     if (verbosity >= 3)
                         std::cerr << __LINE__ << "\tlastPos == " << lastPos << "\n";
+
+                    // Register deletion as small variant info.
+                    smallVarInfos.push_back(SmallVarInfo(SmallVarInfo::DEL, length(seq), -smallIndelRecord.size));
                 }
             }
 
@@ -352,10 +368,12 @@ int VariantMaterializer::_materializeSmallVariants(
 int VariantMaterializer::_materializeLargeVariants(
         seqan::Dna5String & seq,
         MethylationLevels * levelsLargeVariants,
+        std::vector<SmallVarInfo> & varInfos,
         std::vector<std::pair<int, int> > & breakpoints,
         PositionMap & positionMap,
         TJournalEntries const & journal,
         seqan::Dna5String const & contig,
+        std::vector<SmallVarInfo> const & smallVarInfos,
         Variants const & variants,
         MethylationLevels const * levels,
         int hId)
@@ -381,6 +399,9 @@ int VariantMaterializer::_materializeLargeVariants(
     if (verbosity >= 3)
         std::cerr << __LINE__ << "\tlastPos == " << lastPos << "\n";
 
+    // Pointer to the current small variant to write out translated to varInfo.
+    std::vector<SmallVarInfo>::const_iterator itSmallVar = smallVarInfos.begin();
+
     // Number of bytes written out so far/current position in variant.
     unsigned currentPos = 0;
 
@@ -404,6 +425,14 @@ int VariantMaterializer::_materializeLargeVariants(
             svRecord.targetPos = hostToVirtualPosition(journal, svRecord.targetPos);
         if (verbosity >= 2)
             std::cerr << "  => " << svRecord << '\n';
+
+        // Copy out small variant infos for interim chars.
+        for (; itSmallVar != smallVarInfos.end() && itSmallVar->pos < svRecord.pos; ++itSmallVar)
+        {
+            int offset = (int)currentPos - lastPos;
+            varInfos.push_back(*itSmallVar);
+            varInfos.back().pos += offset;
+        }
 
         // Copy from contig to seq with SVs.
         if (verbosity >= 3)
@@ -485,6 +514,13 @@ int VariantMaterializer::_materializeLargeVariants(
                         appendValue(intervals, GenomicInterval(currentPos, length(seq), svRecord.pos, svRecord.pos + svRecord.size,
                                                                '-', GenomicInterval::INVERTED));
 
+                    // Copy out small variant infos for inversion.
+                    for (; itSmallVar != smallVarInfos.end() && itSmallVar->pos < svRecord.pos + svRecord.size; ++itSmallVar)
+                    {
+                        varInfos.push_back(*itSmallVar);
+                        varInfos.back().pos = currentPos + svRecord.size - (varInfos.back().pos - lastPos);
+                    }
+
                     if (verbosity >= 3)
                         std::cerr << "append(seq, infix(contig, " << svRecord.pos << ", " << svRecord.pos + svRecord.size << ") " << __LINE__ << " (inversion)\n";
                     reverseComplement(infix(seq, oldLen, length(seq)));
@@ -527,6 +563,22 @@ int VariantMaterializer::_materializeLargeVariants(
                                   << "append(seq, infix(contig, " << svRecord.pos << ", " << svRecord.pos + svRecord.size << ") " << __LINE__ << "\n";
                     lastPos = svRecord.targetPos;
                     SEQAN_ASSERT_LT(lastPos, (int)length(contig));
+
+                    // Copy out small variant infos for translocation, shift left to right and righ to left but keep
+                    // center intact.
+                    for (; itSmallVar != smallVarInfos.end() && itSmallVar->pos < svRecord.pos; ++itSmallVar)
+                    {
+                        int offset = (int)currentPos - lastPos;
+                        varInfos.push_back(*itSmallVar);
+                        varInfos.back().pos += offset;
+
+                        int bpLeft = svRecord.pos + svRecord.size;
+                        int bpRight = svRecord.targetPos;
+                        if (itSmallVar->pos < bpLeft)
+                            varInfos.back().pos -= (svRecord.targetPos - svRecord.pos);
+                        else if (itSmallVar->pos >= bpRight)
+                            varInfos.back().pos += (svRecord.targetPos - svRecord.pos);
+                    }
 
                     // Copy out breakpoints.
                     breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
@@ -578,6 +630,20 @@ int VariantMaterializer::_materializeLargeVariants(
                     lastPos = svRecord.targetPos;
                     SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
+                    // Write out small variant infos for duplication.
+                    for (; itSmallVar != smallVarInfos.end() && itSmallVar->pos < svRecord.pos + svRecord.size; ++itSmallVar)
+                    {
+                        int offset = (int)currentPos - lastPos;
+                        varInfos.push_back(*itSmallVar);
+                        varInfos.back().pos += offset;
+
+                        if (itSmallVar->pos < svRecord.pos + svRecord.size)
+                        {
+                            varInfos.push_back(*itSmallVar);
+                            varInfos.back().pos += (svRecord.targetPos - svRecord.pos);
+                        }
+                    }
+
                     // Copy out breakpoints.
                     breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
                     breakpoints.push_back(std::make_pair(currentPos + svRecord.pos + svRecord.size - svRecord.pos, variants.posToIdx(Variants::SV, i)));
@@ -608,6 +674,14 @@ int VariantMaterializer::_materializeLargeVariants(
     if (currentPos != length(seq))
         appendValue(intervals, GenomicInterval(currentPos, length(seq), lastPos, length(contig),
                                                '+', GenomicInterval::NORMAL));
+
+    // Copy out small variant infos for trailing characters.
+    for (; itSmallVar != smallVarInfos.end(); ++itSmallVar)
+    {
+        int offset = (int)currentPos - lastPos;
+        varInfos.push_back(*itSmallVar);
+        varInfos.back().pos += offset;
+    }
 
     // Build the interval trees of the positionMap.
     seqan::String<PositionMap::TInterval> svIntervals, svIntervalsSTL;
@@ -655,7 +729,6 @@ GenomicInterval PositionMap::getGenomicIntervalSmallVarPos(int smallVarPos) cons
 {
     seqan::String<GenomicInterval> intervals;
     findIntervals(svIntervalTreeSTL, smallVarPos, intervals);
-    SEQAN_ASSERT_EQ(length(intervals), 1u);
     return intervals[0];
 }
 
