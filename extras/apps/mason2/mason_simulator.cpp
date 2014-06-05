@@ -212,22 +212,37 @@ public:
                            int & editDistance,
                            seqan::CharString & mdString,
                            seqan::Dna5String & seq,
-                           int beginPos,
+                           int & beginPos,
                            int endPos)
     {
-        // Realign the read sequence against the original interval.
+        int const PADDING = 5;
+        int const PADDING_BEGIN = std::min(PADDING, beginPos);
+        int const PADDING_END = std::min(PADDING, (int)length(refSeq) - endPos);
+
+        // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
+        // the ends can be converted to matches/mismatches as they appear after the mapping.
         typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
-        TContigInfix contigInfix(refSeq, beginPos, endPos);
+        TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
         seqan::Gaps<TContigInfix> gapsContig(contigInfix);
         seqan::Gaps<seqan::Dna5String> gapsRead(seq);
         seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
         int lDiag = -std::max((int)(length(seq) - length(contigInfix)), 0) - buffer;
 
-        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, lDiag, uDiag);
+        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
+
+        beginPos += PADDING_BEGIN - countGaps(begin(gapsRead, seqan::Standard()));
+        while (isGap(gapsRead, length(gapsRead) - 1))
+        {
+            setClippedEndPosition(gapsRead, length(gapsRead) - 1);
+            setClippedEndPosition(gapsContig, length(gapsContig) - 1);
+        }
+        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
         getMDString2(mdString, gapsContig, gapsRead);
@@ -503,22 +518,33 @@ public:
                            int & editDistance,
                            seqan::CharString & mdString,
                            seqan::Dna5String & seq,
-                           int beginPos,
+                           int & beginPos,
                            int endPos)
     {
-        // Realign the read sequence against the original interval.
+        int const PADDING = 5;
+        int const PADDING_BEGIN = std::min(PADDING, beginPos);
+        int const PADDING_END = std::min(PADDING, (int)length(refSeq) - endPos);
+
+        // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
+        // the ends can be converted to matches/mismatches as they appear after the mapping.
         typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
-        TContigInfix contigInfix(refSeq, beginPos, endPos);
+        TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
         seqan::Gaps<TContigInfix> gapsContig(contigInfix);
         seqan::Gaps<seqan::Dna5String> gapsRead(seq);
         seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
         int lDiag = -std::max((int)(length(seq) - length(contigInfix)), 0) - buffer;
 
-        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, lDiag, uDiag);
+        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
+
+        beginPos += PADDING_BEGIN - countGaps(begin(gapsRead, seqan::Standard()));
+        while (isGap(gapsRead, length(gapsRead) - 1))
+            setClippedEndPosition(gapsRead, length(gapsRead) - 1);
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
         getMDString2(mdString, gapsContig, gapsRead);
