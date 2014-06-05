@@ -23,8 +23,7 @@ addToProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase, dou
                 profileChar.count[i] += (1.0/4.0)*pm;   // Not equal distr. ! 
         else
         {
-            DnaMR profBase = (DnaMR)(ordValue(readBase));
-            profileChar.count[profBase] += (1.0-e)*pm;
+            profileChar.count[ordValue(readBase)] += (1.0-e)*pm;
             for (TSize i = 0; i < 4; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)))
                     profileChar.count[i] += (e/3.0)*pm;         
@@ -37,8 +36,7 @@ addToProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase, dou
                 profileChar.count[i] += (1.0/4.0)*pm; 
         else
         {
-            DnaMR profBase = (DnaMR)(ordValue(readBase)+4);
-            profileChar.count[profBase] += (1.0-e)*pm;
+            profileChar.count[ordValue(readBase)+4] += (1.0-e)*pm;
             for (TSize i = 4; i < 8; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)+4))
                     profileChar.count[i] += (e/3.0)*pm; 
@@ -74,8 +72,7 @@ removeFromProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase
                 profileChar.count[i] -= (1.0/4.0)*pm; 
         else
         {
-            DnaMR profBase = (DnaMR)(ordValue(readBase));
-            profileChar.count[profBase] -= (1.0-e)*pm;
+            profileChar.count[ordValue(readBase)] -= (1.0-e)*pm;
             for (TSize i = 0; i < 4; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)))
                     profileChar.count[i] -= (e/3.0)*pm; 
@@ -88,8 +85,7 @@ removeFromProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase
                 profileChar.count[i] -= (1.0/4.0)*pm; 
         else
         {
-            DnaMR profBase = (DnaMR)(ordValue(readBase)+4);
-            profileChar.count[profBase] -= (1.0-e)*pm;
+            profileChar.count[ordValue(readBase)+4] -= (1.0-e)*pm;
             for (TSize i = 4; i < 8; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)+4))
                     profileChar.count[i] -= (e/3.0)*pm; 
