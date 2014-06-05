@@ -515,7 +515,7 @@ typename TSetContigAnchorGaps,
 typename TReader,
 typename TNameStore,
 typename TFragmentStore,
-typename TSize,
+typename TContigId,
 typename TContigPos,
 typename TOptions
 >
@@ -526,10 +526,10 @@ int readMatchesFromSamBam(
                          BamAlignmentRecord         &record,                // Need at the moment to check if record has already been read
                          TFragmentStore             &fragmentStore,             // forward/reverse fragmentStore.alignedReadStore
                          TFragmentStore             &fragmentStore1,             // to check order of reads regarding to contigs
-                         TSize                  currContigId,
-                         TContigPos             currentBegin,
-                         TContigPos             currentEnd,
-                         TOptions               &options)
+                         TContigId                  currContigId,
+                         TContigPos                 currentBegin,
+                         TContigPos                 currentEnd,
+                         TOptions                   &options)
 {
     //std::cout << "readMatchesFromSamBam..." << std::endl;
     //bool setZero = true;
@@ -546,9 +546,6 @@ int readMatchesFromSamBam(
     typedef typename Value<TReadStore>::Type                TReadStoreElement;
     typedef typename TMatch::TGapAnchors                    TReadGapAnchors;
     typedef Gaps<TRead, AnchorGaps<TReadGapAnchors> >       TReadGaps;
-    typedef typename TFragmentStore::TContigStore           TContigStore;
-    typedef typename Value<TContigStore>::Type              TContig;
-    typedef typename TContig::TContigSeq                    TContigSeq;
     //typedef typename TContig::TGapAnchors                   TContigGapAnchors;
     //typedef Gaps<TContigSeq, AnchorGaps<TContigGapAnchors> >    TContigGaps;
     typedef String<typename TFragmentStore::TContigGapAnchor>                                       TContigAnchorGaps;
@@ -559,8 +556,7 @@ int readMatchesFromSamBam(
     typedef String<typename TFragmentStore::TContigGapAnchor>                                       TContigAnchorGaps;
 
     typedef typename Id<TFragmentStore>::Type               TId;
-    typedef typename Iterator<TMatches,Standard>::Type      TMatchIterator;
-    
+
     if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
     {
         ::std::cerr << "Lengths need to be equal!!\n";
@@ -576,7 +572,7 @@ int readMatchesFromSamBam(
     String<Dna5Q> curr_read;
     CharString readTemplate, temp_read;
     CharString readName, temp_str;
-    unsigned prevRefId = 0; 
+    TId prevRefId = 0;
     while (!atEnd(reader))
     {
         // read next record unless current one has not been handled yet
@@ -611,19 +607,19 @@ int readMatchesFromSamBam(
             clear(record);
             continue;
         }
-        if((int)contigId < (int)prevRefId)
+        if ((TId)contigId < prevRefId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
         }
         
         prevRefId = contigId; 
-        if(contigId < currContigId)    // havent reached the sequence of interest yet
+        if (contigId < (TId)currContigId)    // havent reached the sequence of interest yet
         {
             clear(record);
             continue;
         }
-        if(contigId > currContigId)    // have passed the seq of interest
+        if (contigId > (TId)currContigId)    // have passed the seq of interest
         {
             break;
         }
@@ -845,10 +841,6 @@ template<typename TAlign, typename TString>
 void
 getMismatchMutations(TAlign & align, TString & mutations)
 {
-    
-    typedef typename Source<TAlign>::Type TSource;
-    typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
-
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
  
@@ -1128,7 +1120,6 @@ void doCheckRealignCall(
     typedef typename Value<TMatches>::Type                          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore             TMatchQualities;
     typedef typename Iterator<TMatches,Standard>::Type              TMatchIterator;
-    typedef typename Iterator<TSetContigAnchorGaps,Standard>::Type  TContigGapsIterator;
 
     // for test
     typedef typename TFragmentStore::TContigStore       TContigStore;
@@ -1275,13 +1266,11 @@ void doSnpAndMethCalling(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename TFragmentStore::TReadSeqStore      TReads;
     typedef typename Value<TReads>::Type                TRead;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
-    typedef typename TFragmentStore::TReadStore         TReadStore;
     typedef typename Value<TMatches>::Type              TReadStoreElement;
 
 

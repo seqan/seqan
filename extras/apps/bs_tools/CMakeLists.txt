@@ -15,7 +15,8 @@ message (STATUS "Configuring extras/apps/bs_tools")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-#set (SEQAN_FIND_DEPENDENCIES NONE)
+set (SEQAN_FIND_DEPENDENCIES ZLIB)
+
 find_package (SeqAn REQUIRED)
 find_package (Boost)
 
@@ -35,14 +36,18 @@ include_directories (${Boost_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # Update the list of file names below if you add source files to your application.
-add_executable (bisar bisar.cpp  
+add_executable (bisar bisar.cpp
                     bisar.h
                     bisar_base.h
                     bisar_score.h
                     bisar_score_data.h)
 
-add_executable (casbar casbar.cpp 
+add_executable (casbar casbar.cpp
                     casbar.h
                     casbar_calling.h
                     casbar_realignment.h
@@ -51,8 +56,8 @@ add_executable (casbar casbar.cpp
                     casbar_score_data.h
                     casbar_util.h
                     casbar_alphabets.h)
-         
-add_executable (four2three four2three.cpp 
+
+add_executable (four2three four2three.cpp
                     four2three.h)
 
 # Add dependencies found by find_package (SeqAn).
@@ -60,27 +65,19 @@ target_link_libraries (bisar ${SEQAN_LIBRARIES})
 target_link_libraries (casbar ${Boost_LIBRARIES} ${SEQAN_LIBRARIES})
 target_link_libraries (four2three ${SEQAN_LIBRARIES})
 
-
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-
-# MESSAGE("Boost information:")
-# MESSAGE(STATUS "** Search Boost root: ${BOOST_ROOT}")
-# MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
-# MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
-# MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
 
 # Include bs_tools executables in CTD structure.
-set (SEQAN_CTD_EXECUTABLES 
-    ${SEQAN_CTD_EXECUTABLES} 
-    bisar
-    casbar
-    four2three
-    CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES}
+        bisar
+        casbar
+        four2three
+        CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # Installation
@@ -118,7 +115,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
   set (CPACK_PACKAGE_NAME "bs_tools")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "bs_tools")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Sabrina Krakau <sabrina.krakau@fu-berlin.de>")
-  set (CPACK_PACKAGE_VENDOR "Sabrina Krakau <sabrina.krakau@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (bs_tools "bs_tools")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
