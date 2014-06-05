@@ -437,7 +437,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 adjustConstantsSize(constantSet, 'F', TMethod());
                 continue;
             }
-            long double e = pow(10.0, (long double)(-qual/10.0));
+            long double e = pow(10.0L, (long double)(-qual/10.0));
             // for each possible candidate genotype
             // likelihood to observe single base under assumption of given genotype
             String<long double> singleProbs;
@@ -449,7 +449,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 {
                     //singleProbs[h] *= mapqsF[i][j];
                     //if (countF_CT == 7) std::cerr << "Use mapq : " << mapqsF[i][j]  << std::endl;
-                    long double e_m = pow(10.0, (long double)(- mapqsF[i][j]/10.0));
+                    long double e_m = pow(10.0L, (long double)(- mapqsF[i][j]/10.0));
                     singleProbs[h] = (1.0 -  e_m) * singleProbs[h];
                     double sim = 0.98;  // expected similarity
                     //  TODO how to deal with prob. to observe this base in wrong mapping ? 
@@ -519,7 +519,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 continue;
             }
 
-            long double e = pow(10.0, (long double)(-qual/10.0));  
+            long double e = pow(10.0L, (long double)(-qual/10.0));  
             // likelihood to observe single base under assumption of given genotype
             String<long double> singleProbs;
             resize(singleProbs, 6);
@@ -529,7 +529,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 getSingleBaseProbHaploR(singleProbs[h], (Dna)i, (DnaM)h, e, originStringR[i][j], methOptions);
                 if (methOptions.useMapq)
                 {
-                    long double e_m = pow(10.0, (long double)(- mapqsR[i][j]/10.0));
+                    long double e_m = pow(10.0L, (long double)(- mapqsR[i][j]/10.0));
                     singleProbs[h] = (1.0 -  e_m) * singleProbs[h];
                     double sim = 0.98;
                     if ((Dna)i == 'G' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
