@@ -6,7 +6,6 @@
 
 //#define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
 #define SEQAN_PROFILE		// enable time measuring
-#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
 //#define FIONA_MEMOPT		// small suffix array values (<16mio reads of length <256)
 #define FIONA_USE_SA        // use binary search in a suffix array for traversal
 #define FIONA_REDUCE_MEMORY
@@ -15,25 +14,14 @@
 
 //#define FIONA_MAX_CORRECTIONS_PER_BASE 3  // record and limit the number of found corrections per base
 
-// currently, consensus works only without indels
-#ifndef FIONA_OVERLAP_WITH_EDIT_DISTANCE
-    #define FIONA_CONSENSUS
-#endif
-
-//#define FIONA_FIXED_OVERLAP_ERRORS  // use fixed (ISMB) instead of error rate dependent threshold for overlap errors
-
-// Dave's proposal to locally chose the operation with maximal support
-#define FIONA_MAXIMIZE_SUPPORT
-
 #define FIONA_MATCH_N
 #define FIONA_MAXIMIZE_OVERLAPSUM   // instead of maximizing the SUM of left and right, simply use the MAXIMUM of left and right
 #define FIONA_NO_SEPARATE_OVERLAPSUM //in this mode just save the max over left and right in the linked list of corrections and only keep one correction per position
-//#define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION // in this mode errors are corrected independent of type (mismatch or indels) but constraining the corrections to be apart at least min_k distance on a read
 #define FIONA_INTERNAL_MEMORY
 
 // debugging
 //#define SEQAN_DEBUG_INDEX
-#define SEQAN_DEBUG
+//#define SEQAN_DEBUG
 //#define SEQAN_VERBOSE
 //#define SEQAN_VVERBOSE
 
@@ -43,25 +31,42 @@
 
 
 
-/*
- * ISMB settings (currently set above)
- *
- * #define FIONA_FIXED_OVERLAP_ERRORS
- * #define FIONA_CONSENSUS
- * #undef FIONA_MAXIMIZE_SUPPORT
- * #undef FIONA_OVERLAP_WITH_EDIT_DISTANCE
- * #undef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
- */
+//    #define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
+//
+//    // currently, consensus works only without indels
+//    #ifndef FIONA_OVERLAP_WITH_EDIT_DISTANCE
+//        #define FIONA_CONSENSUS
+//    #endif
+//
+//    //#define FIONA_FIXED_OVERLAP_ERRORS  // use fixed (ISMB) instead of error rate dependent threshold for overlap errors
+//
+//    // Dave's proposal to locally chose the operation with maximal support
+//    #define FIONA_MAXIMIZE_SUPPORT
+//
+//    //#define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION // in this mode errors are corrected independent of type (mismatch or indels) but constraining the corrections to be apart at least min_k distance on a read
 
-/* current indel settings
- *
- * #undef FIONA_FIXED_OVERLAP_ERRORS
- * #undef FIONA_CONSENSUS
- * #define FIONA_MAXIMIZE_SUPPORT
- * #define FIONA_OVERLAP_WITH_EDIT_DISTANCE
- * #define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
- */
 
+#ifdef FIONA_ILLUMINA
+
+//  Illumina settings (currently set above)
+
+  #define FIONA_FIXED_OVERLAP_ERRORS
+  #define FIONA_CONSENSUS
+  #undef FIONA_OVERLAP_WITH_EDIT_DISTANCE
+  #undef FIONA_MAXIMIZE_SUPPORT
+  #undef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+
+#else
+
+//  Indel settings
+
+  #undef FIONA_FIXED_OVERLAP_ERRORS
+  #undef FIONA_CONSENSUS
+  #define FIONA_OVERLAP_WITH_EDIT_DISTANCE
+  #define FIONA_MAXIMIZE_SUPPORT
+  #define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+
+#endif
 
 
 #if defined(_OPENMP)
@@ -309,33 +314,41 @@ struct FionaOptions
 	bool trimNsOnOutput;
     unsigned numSuperPackages;
 
-	FionaOptions() :
-            verbosity(0), method(CLASSIFIER), numThreads(1), limitCorrPerRound(true), trimNsOnOutput(true)
+	FionaOptions()
 	{
+        verbosity = 0;
+        method = CLASSIFIER;
+        numThreads = 1;
+        limitCorrPerRound = true;
+        trimNsOnOutput = true;
 		genomeLength = 0;
 		strictness = 0.0001;
 		acceptedMismatches = 1;
-		maxIndelLength = 0;
+		maxIndelLength = 1;
 		cycles = 0;
         cycle = 1;
 		autolevel = false;
 		fromLevel = 0;
 		toLevel = 0;
-		errorrate = 0;
+#ifdef FIONA_ILLUMINA
+		errorrate = 0.01;
+#else
+		errorrate = 0.02;
+#endif
 		overlap_errorrate = 0;
 		oddserrorreads = 0;
-		wovsum = 0;
+		wovsum = 0.3;
         debugRead = -1;
         corrRead = -1;
         packagesPerThread = 100;
         kmerAbundanceCutoff = 0.01;
         kmerStdDevCutOff = 2.0;
-        depthSampleRate = 1;
+        depthSampleRate = 3;
         relativeErrorsToCorrect = 0.02;
         timeComputeOverlapSum = 0;
         loopLevel = -1;
         appendCorrectionInfo = false;
-        numSuperPackages = 1;
+        numSuperPackages = 10;
 	}
 };
 
@@ -559,10 +572,6 @@ namespace seqan
     template <typename TFSSpec, typename TFSConfig, typename TFileName>
     bool loadReadsNoNames(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName, FionaOptions const & options)
     {
-        typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
-        typedef typename TFragmentStore::TContigFileStore   TContigFileStore;
-        typedef typename Value<TContigFileStore>::Type      TContigFile;
-
         //StringSet<String<Dna5, Packed<> >, Owner<ConcatDirect<> > > reads;
 
         MultiSeqFile multiSeqFile;
@@ -3469,7 +3478,6 @@ void traverseAndSearchCorrections(
 	typedef typename Value<TReadSet>::Type TRead;
 	typedef typename Value<TRead>::Type TValue;
 	typedef typename Iterator<TRead, Standard>::Type TReadIterator;
-	typedef typename Value<TCorrections>::Type TCorrection;
 
     double start = omp_get_wtime();
     TFionaIndex &index = container(iter);
@@ -4193,7 +4201,6 @@ unsigned correctReads(
 {
 	/*iterator with restrictions*/
 	typedef Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type TConstrainedIterator;
-	typedef FionaCorrectedError TCorrected;
 
 	// append their reverse complements
 	unsigned readCount = length(store.readSeqStore);
@@ -4865,9 +4872,6 @@ unsigned correctReads(
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
 	for (int i = 1; i < (int)length(packages); ++i)
 	{
-        typedef Fibre<TFionaIndex, FibreSA>::Type   TSA;
-        typedef typename Value<TSA>::Type           TSAValue;
-        typedef typename Size<TSA>::Type            TSASize;
         typedef __uint64                            TFileSize;
 
         SEQAN_OMP_PRAGMA(atomic)
@@ -4881,6 +4885,10 @@ unsigned correctReads(
 		TFionaIndex myIndex(store.readSeqStore);
 
 #if defined(FIONA_REDUCE_MEMORY) && !defined(FIONA_INTERNAL_MEMORY)
+        typedef Fibre<TFionaIndex, FibreSA>::Type   TSA;
+        typedef typename Value<TSA>::Type           TSAValue;
+        typedef typename Size<TSA>::Type            TSASize;
+
         TFileSize mapOfs = bktBegin & ~(TFileSize)0xfff;
         TFileSize mapSize = (TFileSize)sizeof(TSAValue) * (bktEnd - mapOfs);
 
@@ -5156,32 +5164,24 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     // Dataset Properties.
     addSection(parser, "Dataset Properties");
 
-    addOption(parser, seqan::ArgParseOption("", "sequencing-technology",
-                                            "Sequencing technology used for the datasets.  Currently, setting this to "
-                                            "\\fIillumina\\fP triggers \\fB-e\\fP \\fI0.01\\fP and setting it to "
-                                            "\\fI454\\fP or \\fIiontorrent\\fP triggers \\fB-e\\fP \\fI0.02\\fP.",
-                                            seqan::ArgParseOption::STRING, "TECH"));
-    setValidValues(parser, "sequencing-technology", "illumina 454 iontorrent");
-
     addOption(parser, seqan::ArgParseOption("g", "genome-length", "Approximate length of the underlying genome.",
                                             seqan::ArgParseOption::INT64, "LEN"));
     setMinValue(parser, "genome-length", "1");
     setRequired(parser, "genome-length");
 
     addOption(parser, seqan::ArgParseOption("e", "error-rate",
-                                            "Approximate per-base error rate in the read set.  A slight "
-                                            "overestimation gives better results.  A value of \\fI0.01\\fP is "
-                                            "good for current Illumina data.",
+                                            "Approximate per-base error rate in the read set. A slight "
+                                            "overestimation gives better results.",
                                             seqan::ArgParseOption::DOUBLE, "ERATE"));
     setMinValue(parser, "error-rate", "0");
     setMaxValue(parser, "error-rate", "1");
-    setDefaultValue(parser, "error-rate", "0.01");
+    setDefaultValue(parser, "error-rate", options.errorrate);
 
-    addOption(parser, seqan::ArgParseOption("oe", "overlap-error-rate",
-                                            "Allowed error rate in the pairwise read overlap. Default: twice the error-rate",
+    addOption(parser, seqan::ArgParseOption("oe", "overlap-error-scale",
+                                            "The \\fIerror-rate\\fP is multiplied by this scale to define the error rate cutoff in the pairwise read overlap.",
                                             seqan::ArgParseOption::DOUBLE, "ERATE"));
-    setMinValue(parser, "overlap-error-rate", "0");
-    setMaxValue(parser, "overlap-error-rate", "1");
+    setMinValue(parser, "overlap-error-scale", "0");
+    setDefaultValue(parser, "overlap-error-scale", "2");
 
     // Tree Iteration Options.
     addSection(parser, "Tree Iteration Options");
@@ -5193,7 +5193,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                                             "to get automatic level detection.",
                                             seqan::ArgParseOption::INTEGER, "LEVEL"));
     setMinValue(parser, "from-level", "0");
-    setDefaultValue(parser, "from-level", "0");
+    setDefaultValue(parser, "from-level", options.fromLevel);
 
     // TODO(holtgrew): The old help for --levels was "set to 0 <x> for auto HiTEC, 1 <x> for auto fiona".. Fix this here?
     addOption(parser, seqan::ArgParseOption("tl", "to-level",
@@ -5202,12 +5202,12 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                                             "to get automatic level detection.",
                                             seqan::ArgParseOption::INTEGER, "LEVEL"));
     setMinValue(parser, "to-level", "0");
-    setDefaultValue(parser, "to-level", "0");
+    setDefaultValue(parser, "to-level", options.toLevel);
 
     addOption(parser, seqan::ArgParseOption("dsr", "depth-sample-rate", "The depth sampling rate factor.",
                                             seqan::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "depth-sample-rate", "1");
-    setDefaultValue(parser, "depth-sample-rate", "3");
+    setDefaultValue(parser, "depth-sample-rate", options.depthSampleRate);
 
     // Repeat Masking Options
     addSection(parser, "Repeat Masking Options");
@@ -5220,13 +5220,13 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                                             seqan::ArgParseOption::DOUBLE, "RATIO"));
     setMinValue(parser, "kmer-repeat-ratio", "0");
     setMaxValue(parser, "kmer-repeat-ratio", "1");
-    setDefaultValue(parser, "kmer-repeat-ratio", "0.01");
+    setDefaultValue(parser, "kmer-repeat-ratio", options.kmerAbundanceCutoff);
 
     addOption(parser, seqan::ArgParseOption("krsd", "kmer-repeat-std-dev",
                                             "Multiples of standard deviation (for k-mer repeat cut-off).",
-                                            seqan::ArgParseOption::DOUBLE, "RATIO"));
+                                            seqan::ArgParseOption::DOUBLE, "SCALE"));
     setMinValue(parser, "kmer-repeat-std-dev", "0");
-    setDefaultValue(parser, "kmer-repeat-std-dev", "2");
+    setDefaultValue(parser, "kmer-repeat-std-dev", options.kmerStdDevCutOff);
 
     // Correction Algorithm Options.
     addSection(parser, "Correction Algorithm Options");
@@ -5238,9 +5238,9 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("i", "iterations",
                                             "Number of iterations.  Use \\fI0\\fP for auto-detection.",
-                                            seqan::ArgParseOption::INTEGER, "NAME"));
+                                            seqan::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "iterations", "0");
-    setDefaultValue(parser, "iterations", "0");
+    setDefaultValue(parser, "iterations", options.cycles);
 
     addOption(parser, seqan::ArgParseOption("f", "expected",
                                             "Use expected value correction with the given strictness cutoff "
@@ -5268,7 +5268,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("m", "mismatches", "The number of accepted mismatches per read.",
                                             seqan::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "mismatches", "0");
-    setDefaultValue(parser, "mismatches", "1");
+    setDefaultValue(parser, "mismatches", options.acceptedMismatches);
 
     addOption(parser, seqan::ArgParseOption("os", "overlap-sum",
                                             "Filter on the number of overlapping bp needed to correct an "
@@ -5277,7 +5277,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                                             seqan::ArgParseOption::DOUBLE, "P-VALUE"));
     setMinValue(parser, "overlap-sum", "0");
     setMaxValue(parser, "overlap-sum", "1");
-    setDefaultValue(parser, "overlap-sum", "0.3");
+    setDefaultValue(parser, "overlap-sum", options.wovsum);
 
 #ifdef FIONA_ALLOWINDELS
     addOption(parser, seqan::ArgParseOption("id", "indel-length", "Maximal indel length.  Use \\fI0\\fP for "
@@ -5290,14 +5290,14 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
         tmp << MAX_INDEL_LENGTH;
         setMaxValue(parser, "indel-length", tmp.str().c_str());
     }
-    setDefaultValue(parser, "indel-length", "1");
+    setDefaultValue(parser, "indel-length", options.maxIndelLength);
 #endif
 
     // DEBUG Options
 
     addOption(parser, seqan::ArgParseOption("", "loop-level", "For time measurements.",
                                             seqan::ArgParseOption::INTEGER, "NUM"));
-    setDefaultValue(parser, "loop-level", "-1");
+    setDefaultValue(parser, "loop-level", options.loopLevel);
     hideOption(parser, "loop-level");
 
     addOption(parser, seqan::ArgParseOption("", "debug-read", "Dump information for a read given by its id.",
@@ -5314,13 +5314,13 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threds to use (default 1).",
                                             seqan::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "num-threads", "1");
-    setDefaultValue(parser, "num-threads", "1");
+    setDefaultValue(parser, "num-threads", options.numThreads);
 
 #ifdef FIONA_INTERNAL_MEMORY
     addOption(parser, seqan::ArgParseOption("", "super-packages", "Number of internal q-gram index creation runs.",
                                             seqan::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "super-packages", "1");
-    setDefaultValue(parser, "super-packages", "10");
+    setDefaultValue(parser, "super-packages", options.numSuperPackages);
 #endif
 
 
@@ -5329,7 +5329,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                                             "lower memory consumption but possibly a longer running time.",
                                             seqan::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "packages-per-thread", "1");
-    setDefaultValue(parser, "packages-per-thread", "100");
+    setDefaultValue(parser, "packages-per-thread", options.packagesPerThread);
 
     // Documentation on the correction methods.
     addTextSection(parser, "Method Description");
@@ -5347,17 +5347,23 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
             "enable multi-threading using the \\fB-nt\\fP option.  For best performance, use as many threads "
             "as you have (virtual) cores in your machine.");
 
-    addListItem(parser, "\\fBfiona\\fP \\fB-g\\fP 4639675 IN.fq OUT.fq",
+#ifdef FIONA_ILLUMINA
+    std::string toolName = "\\fBfiona_illumina\\fP";
+#else
+    std::string toolName = "\\fBfiona\\fP";
+#endif
+
+    addListItem(parser, toolName + " \\fB-g\\fP 4639675 IN.fq OUT.fq",
                 "Correct reads in \\fIIN.fq\\fP with one thread and write the results to \\fIOUT.fq\\fP. "
                 "The estimated genome length fits for E.coli.");
 
-    addListItem(parser, "\\fBfiona\\fP \\fB-nt\\fP 16 \\fB-g\\fP 4639675 IN.fq OUT.fq",
+    addListItem(parser, toolName + " \\fB-nt\\fP 16 \\fB-g\\fP 4639675 IN.fq OUT.fq",
                 "Same as above, but use \\fI16\\fP threads.");
 
-    addListItem(parser, "\\fBfiona\\fP \\fB-id\\fP 0 \\fB-g\\fP 4639675 IN.fq OUT.fq",
-                "Sequential correction using Hamming distance only.");
+    addListItem(parser, toolName + " \\fB-id\\fP 0 \\fB-g\\fP 4639675 IN.fq OUT.fq",
+                "Sequential correction that corrects only mismatches no indels.");
 
-    addListItem(parser, "\\fBfiona\\fP \\fB-e\\fP 0.02 \\fB-g\\fP 4639675 IN.fq OUT.fq",
+    addListItem(parser, toolName + " \\fB-e\\fP 0.02 \\fB-g\\fP 4639675 IN.fq OUT.fq",
                 "Sequential correction using an expected base error rate of 2%.");
 
     // Environment Variables.
@@ -5402,7 +5408,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
             getOptionValue(options.strictness, parser, "count");
             break;
         case CONTROL_FP:
-            getOptionValue(options.strictness, parser, "pvalue");
+            getOptionValue(options.strictness, parser, "p-value");
             break;
         case CONTROL_FN:
             // Empty on purpose, --error-rate is always interpreted.
@@ -5412,19 +5418,14 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
             break;
     }
 
+    double overlapErrorScale = 2;
     getOptionValue(options.errorrate, parser, "error-rate");
-    if (isSet(parser, "overlap-error-rate"))
-        getOptionValue(options.overlap_errorrate, parser, "overlap-error-rate");
-    else
-        options.overlap_errorrate = 2 * options.errorrate;
-
-    getOptionValue(options.fromLevel, parser, "from-level");
-    getOptionValue(options.toLevel, parser, "to-level");
+    getOptionValue(overlapErrorScale, parser, "overlap-error-scale");
+    options.overlap_errorrate = overlapErrorScale * options.errorrate;
 
     options.appendCorrectionInfo = isSet(parser, "correction-infos");
-
-    getOptionValue(options.packagesPerThread, parser, "packages-per-thread");
-
+    getOptionValue(options.fromLevel, parser, "from-level");
+    getOptionValue(options.toLevel, parser, "to-level");
     getOptionValue(options.packagesPerThread, parser, "packages-per-thread");
 	getOptionValue(options.wovsum, parser, "overlap-sum");
     getOptionValue(options.genomeLength, parser, "genome-length");
@@ -5445,24 +5446,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     getOptionValue(options.debugRead, parser, "debug-read");
     getOptionValue(options.corrRead, parser, "corr-read");
 
-    // Override parameters with settings from --sequencing-technology.
-    if (isSet(parser, "sequencing-technology"))
-    {
-        seqan::CharString tmp;
-        getOptionValue(tmp, parser, "sequencing-technology");
-        if (tmp == "454" || tmp == "iontorrent")
-            options.errorrate = 0.02;
-        else
-            options.errorrate = 0.01;
-    }
-
     // Check Arguments.
-
-	if ((options.wovsum > 1 || options.wovsum < 0 ))
-    {
-		std::cerr << "ovsum parameter should be between 0 and 1" << std::endl;
-        return seqan::ArgumentParser::PARSE_ERROR;
-    }
 
 	if (options.packagesPerThread >= _intPow((unsigned)ValueSize<Dna5>::VALUE, QGRAM_LENGTH))
     {

@@ -19,11 +19,11 @@ set (SEQAN_FIND_DEPENDENCIES OpenMP)
 find_package (SeqAn REQUIRED)
 find_package (Boost)
 
-# Stop here if we cannot find CUDA.
-if (NOT Boost_FOUND)
-    message (STATUS "  Boost not found, not building fiona.")
+# Stop here if we cannot find Boost or OpenMP.
+if (NOT Boost_FOUND OR NOT OpenMP_FLAG_DETECTED)
+    message (STATUS "  Boost or OpenMP not found, not building fiona.")
     return ()
-endif (NOT Boost_FOUND)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -37,12 +37,16 @@ add_definitions (${SEQAN_DEFINITIONS})
 #add_definitions("-DQGRAM_LENGTH=5")
 
 # Update the list of file names below if you add source files to your application.
-add_executable (fiona fiona.cpp)
 add_executable (compute_gain compute_gain.cpp)
+add_executable (fiona fiona.cpp)
+add_executable (fiona_illumina fiona.cpp)
+
+set_target_properties (fiona_illumina PROPERTIES COMPILE_DEFINITIONS "FIONA_ILLUMINA")
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (fiona ${SEQAN_LIBRARIES})
 target_link_libraries (compute_gain ${SEQAN_LIBRARIES})
+target_link_libraries (fiona ${SEQAN_LIBRARIES})
+target_link_libraries (fiona_illumina ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -78,7 +82,7 @@ install (FILES example/reads.fa
 # ----------------------------------------------------------------------------
 
 # Include executable fiona in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fiona CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fiona fiona_illumina compute_gain CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -88,7 +92,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
   set (CPACK_PACKAGE_NAME "fiona")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "fiona")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "David Weese <david.weese@fu-berlin.de>")
-  set (CPACK_PACKAGE_VENDOR "David Weese <david.weese@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (fiona "fiona")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
