@@ -17,7 +17,7 @@ message (STATUS "Configuring extras/apps/bs_tools")
 # Search SeqAn and select dependencies.
 #set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
-find_package (Boost REQUIRED)
+find_package (Boost)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     message (STATUS "  Boost or zlib not found: Not building casbar.")
