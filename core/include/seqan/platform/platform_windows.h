@@ -31,7 +31,9 @@
 //
 // ==========================================================================
 
+#ifndef PLATFORM_WINDOWS
 #define PLATFORM_WINDOWS
+
 #define PLATFORM_WINDOWS_VS
 
 // ==========================================================================
@@ -134,3 +136,5 @@ inline T round(T const & x)
 #ifndef ftello
 #define ftello(fp) ftell(fp)
 #endif  // #ifndef ftello
+
+#endif  // #ifndef PLATFORM_WINDOWS

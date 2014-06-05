@@ -38,6 +38,8 @@
 #ifndef SEQAN_HEADER_SEQUENCE_FORWARDS_H
 #define SEQAN_HEADER_SEQUENCE_FORWARDS_H
 
+#if !defined(_MSC_VER) || _MSC_VER <= 1600
+
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
 //////////////////////////////////////////////////////////////////////////////
@@ -396,6 +398,8 @@ template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inl
 #endif
 
 }  // namespace SEQAN_NAMESPACE_MAIN
+
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1600
 
 #endif
 

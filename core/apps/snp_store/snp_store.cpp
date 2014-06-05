@@ -1120,94 +1120,163 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     ArgumentParser parser("snp_store");
     // Set short description, version, and date.
     setShortDescription(parser, "SnpStore");
-    setVersion(parser, "1.0.1");
-    setDate(parser, "March 14, 2013");
+    setCategory(parser, "Variant Detection");
+    options.version = "1.1";
+#ifdef SEQAN_REVISION
+    options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+	setVersion(parser, options.version);
 
     // Define usage line and long description.
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIGENOME FILE\\fP\" \"\\fIMAPPED READ FILE(S)\\fP\" ");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIALIGNMENT FILE\\fP> [<\\fIALIGNMENT FILE\\fP> ...]");
+
+    // We require two mandatory arguments: genome file and read file(s)
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "GENOME"));
+    setValidValues(parser, 0, ".fa .fasta");
+    setHelpText(parser, 0, "A reference genome file.");
+
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "ALIGNMENTS", true));
+    setValidValues(parser, 1, ".sam .bam .gff");
+    setHelpText(parser, 1, "Read alignment file(s) sorted by genomic position.");
+
     addDescription(parser, "SNP and Indel Calling in Mapped Read Data.");
-
-    // We require two arguments.
-    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
-    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
-
-    addSection(parser, "Options: ");
-    addOption(parser, ArgParseOption("o", "output", "Output file for SNPs (must be set, no default construction).", ArgParseArgument::OUTPUTFILE)); 
-    addOption(parser, ArgParseOption("if", "input-format", "Set input format: 0 for GFF format and 1 for SAM format (both must be sorted according to genome positions).", ArgParseArgument::INTEGER));
-    setDefaultValue(parser, "if", "0");
-    addOption(parser, ArgParseOption("of", "output-format", "Set output format: 0 to output all candidate snps amd 1 to output successful candidate snps only.", ArgParseArgument::INTEGER));
-    setDefaultValue(parser, "of", "0");
+    addSection(parser, "Main Options");
+    addOption(parser, ArgParseOption("o", "output", "SNP output file (mandatory).", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "output", ".vcf");
+    setRequired(parser, "output");
+    addOption(parser, ArgParseOption("osc", "only-successful-candidates", "Output only successfully called SNP candidates. Default: Output all candidates."));
     addOption(parser, ArgParseOption("dc", "dont-clip", "Ignore clip tags in gff. Default: off."));
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique fragmentStore.alignedReadStore. Default: off."));
     addOption(parser, ArgParseOption("hq", "hide-qualities", "Only show coverage (no qualities) in SNP output file. Default: off."));
     addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
-    addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUTFILE));  
-    addOption(parser, ArgParseOption("m", "method", "Set method used for SNP calling: 0 for threshold method and 1 for maq method.", ArgParseArgument::INTEGER));
-    setDefaultValue(parser, "m", "1");
+    addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "indel-file", ".gff");
+    addOption(parser, ArgParseOption("m", "method", "Set method used for SNP calling either threshold based or Maq method.", ArgParseArgument::STRING));
+    setValidValues(parser, "method", "thresh maq");
+    setDefaultValue(parser, "method", "maq");
     addOption(parser, ArgParseOption("mp", "max-pile", "Maximal number of matches allowed to pile up at the same genome position.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "max-pile", "1");
+    setDefaultValue(parser, "max-pile", options.maxPile);
     addOption(parser, ArgParseOption("mmp", "merged-max-pile", "Do pile up correction on merged lanes. Default: off."));
     addOption(parser, ArgParseOption("mc", "min-coverage", "Minimal required number of reads covering a candidate position.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-coverage", "1");
+    setDefaultValue(parser, "min-coverage", options.minCoverage);
     addOption(parser, ArgParseOption("fc", "force-call", "Always call base if count is >= fc, ignore other parameters. Default: off.", ArgParseArgument::INTEGER));
     setMinValue(parser, "force-call", "1");
     addOption(parser, ArgParseOption("oa", "orientation-aware", "Distinguish between forward and reverse reads. Default: off."));
-    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUTFILE));
-    hideOption(parser, "cnv");
-    addOption(parser, ArgParseOption("op", "output-positions", "Name of positions output file.", ArgParseArgument::OUTPUTFILE)); 
+//    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUTFILE));
+//    hideOption(parser, "cnv");
+    addOption(parser, ArgParseOption("op", "output-positions", "Name of positions output file.", ArgParseArgument::STRING));
     hideOption(parser, "op");
-    addOption(parser, ArgParseOption("ip", "input-positions", "Name of positions input file.", ArgParseArgument::INPUTFILE)); 
+    addOption(parser, ArgParseOption("ip", "input-positions", "Name of positions input file.", ArgParseArgument::STRING));
     hideOption(parser, "ip");
     addOption(parser, ArgParseOption("mpr", "max-polymer-run", "Discard indels in homopolymer runs longer than mpr.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "max-polymer-run", "0");
+    setDefaultValue(parser, "max-polymer-run", options.maxPolymerRun);
     addOption(parser, ArgParseOption("dp", "diff-pos", "Minimal number of different read positions supporting the mutation.", ArgParseArgument::INTEGER));
-    addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNV calling.", ArgParseArgument::INTEGER)); 
-    addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads."));  
-    addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates."));   
+    setMinValue(parser, "diff-pos", "0");
+    setDefaultValue(parser, "diff-pos", options.minDifferentReadPos);
+    addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNV calling. Default: off.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads. Default: off"));
+    addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates. Default: off"));
     addOption(parser, ArgParseOption("cq", "corrected-quality", "New quality calibration factor.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "corrected-quality", "0.0");
+    setDefaultValue(parser, "corrected-quality", options.newQualityCalibrationFactor);
     hideOption(parser, "cq");
     addOption(parser, ArgParseOption("pws", "parse-window-size", "Genomic window size for parsing reads (concerns memory consumption, choose smaller windows for higher coverage).", ArgParseArgument::INTEGER));
     setMinValue(parser, "parse-window-size", "1");
-    setMaxValue(parser, "parse-window-size", "100000");
+    setDefaultValue(parser, "parse-window-size", options.windowSize);
     addOption(parser, ArgParseOption("reb", "realign-border", "Realign border.", ArgParseArgument::INTEGER));
     setMinValue(parser, "realign-border", "0");
     setMaxValue(parser, "realign-border", "10");
+    setDefaultValue(parser, "realign-border", options.realignAddBorder);
     hideOption(parser, "reb");
 
-    addSection(parser, "SNP calling options: ");
-    addSection(parser, " Threshold method related: ");
+    addSection(parser, "SNP calling options");
+    addSection(parser, " Threshold method related");
     addOption(parser, ArgParseOption("mm", "min-mutations", "Minimal number of observed mutations for mutation to be called.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-mutations", "0");
+    setDefaultValue(parser, "min-mutations", options.minMutT);
     addOption(parser, ArgParseOption("pt", "perc-threshold", "Minimal percentage of mutational base for mutation to be called.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "perc-threshold", "0");
+    setDefaultValue(parser, "perc-threshold", options.percentageT);
     addOption(parser, ArgParseOption("mq", "min-quality", "Minimal average quality of mutational base for mutation to be called.", ArgParseArgument::DOUBLE));
-    addSection(parser, " Maq method related: ");
+    setMinValue(parser, "min-quality", "0");
+    setDefaultValue(parser, "min-quality", options.avgQualT);
+    addSection(parser, " Maq method related");
     addOption(parser, ArgParseOption("th", "theta", "Dependency coefficient.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "theta", "0");
+    setDefaultValue(parser, "theta", options.theta);
     addOption(parser, ArgParseOption("hr", "hetero-rate", "Heterozygote rate.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "hetero-rate", "0");
+    setMaxValue(parser, "hetero-rate", "1");
+    setDefaultValue(parser, "hetero-rate", options.hetRate);
     addOption(parser, ArgParseOption("mmq", "min-map-quality", "Minimum base call (mapping) quality for a match to be considered.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-map-quality", "0");
+    setDefaultValue(parser, "min-map-quality", options.minMapQual);
     addOption(parser, ArgParseOption("ch", "corrected-het", "Use amplification bias corrected distribution for heterozygotes. Default: off."));
     addOption(parser, ArgParseOption("maf", "mean-alleleFreq", "Mean ref allele frequency in heterozygotes.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "mean-alleleFreq", "0");
+    setDefaultValue(parser, "mean-alleleFreq", options.meanAlleleFrequency);
     addOption(parser, ArgParseOption("ac", "amp-cycles", "Number of amplification cycles.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "amp-cycles", "0");
+    setDefaultValue(parser, "amp-cycles", options.amplificationCycles);
     addOption(parser, ArgParseOption("ae", "amp-efficiency", "Polymerase efficiency, probability of amplification.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "amp-efficiency", "0");
+    setMaxValue(parser, "amp-efficiency", "1");
+    setDefaultValue(parser, "amp-efficiency", options.amplificationEfficiency);
     addOption(parser, ArgParseOption("in", "initial-N", "Initial allele population size.", ArgParseArgument::INTEGER));
-    addOption(parser, ArgParseOption("pht", "print-hetTable", "Print het table. Default: off.")); 
+    setMinValue(parser, "initial-N", "0");
+    setDefaultValue(parser, "initial-N", options.initialN);
+    addOption(parser, ArgParseOption("pht", "print-hetTable", "Print het table. Default: off."));
     hideOption(parser, "pht");
     addOption(parser, ArgParseOption("mec", "min-explained-column", "Minimum fraction of alignment column reads explained by genotype call.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "min-explained-column", "0");
+    setMaxValue(parser, "min-explained-column", "1");
+    setDefaultValue(parser, "min-explained-column", options.minExplainedColumn);
 
-    addSection(parser, "Indel calling options: ");
+    addSection(parser, "Indel calling options");
     addOption(parser, ArgParseOption("it", "indel-threshold", "Minimal number of indel-supporting reads required for indel calling.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "indel-threshold", "1");
+    setDefaultValue(parser, "indel-threshold", options.indelCountThreshold);
     addOption(parser, ArgParseOption("ipt", "indel-perc-threshold", "Minimal ratio of indel-supporting/covering reads for indel to be called.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "indel-perc-threshold", "0");
+    setMaxValue(parser, "indel-perc-threshold", "1");
+    setDefaultValue(parser, "indel-perc-threshold", options.indelPercentageT);
     addOption(parser, ArgParseOption("iqt", "indel-quality-thresh", "Minimal average quality of inserted base/deletion-neighboring bases for indel to be called.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "indel-quality-thresh", "0");
+    setDefaultValue(parser, "indel-quality-thresh", options.indelQualityThreshold);
     addOption(parser, ArgParseOption("bsi", "both-strands-indel", "Both strands need to be observed for indel to be called. Default: off."));
     addOption(parser, ArgParseOption("iw", "indel-window", "Overlap window used for indel calling.", ArgParseArgument::INTEGER)); 
+    setMinValue(parser, "indel-window", "0");
+    setDefaultValue(parser, "indel-window", options.indelWindow);
     hideOption(parser, "iw");
     addOption(parser, ArgParseOption("ebi", "exclude-border-indel", "Same as option -eb but for indel candidates.", ArgParseArgument::INTEGER)); 
-    addOption(parser, ArgParseOption("cws", "cnv-window-size", "CNV window size.", ArgParseArgument::INTEGER)); 
-    hideOption(parser, "cws");
+    setMinValue(parser, "exclude-border-indel", "0");
+    setDefaultValue(parser, "exclude-border-indel", options.indelDepthMinOverlap);
+    addOption(parser, ArgParseOption("cws", "cnv-window-size", "CNV window size.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "cnv-window-size", "1");
     setMaxValue(parser, "cnv-window-size", "10000");
+    setDefaultValue(parser, "cnv-window-size", options.cnvWindowSize);
+    hideOption(parser, "cws");
 
-    addSection(parser, "Other options: ");
-    addOption(parser, ArgParseOption("lf", "log-file", "Write log file to FILE.", ArgParseArgument::OUTPUTFILE)); 
+    addSection(parser, "Other options");
+    addOption(parser, ArgParseOption("lf", "log-file", "Write log to FILE.", ArgParseArgument::STRING));
     addOption(parser, ArgParseOption("v", "verbose", "Enable verbose output."));
     addOption(parser, ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
     addOption(parser, ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
 
+    addTextSection(parser, "Examples");
+    addListItem(parser,
+                "\\fBsnp_store\\fP \\fB-mc\\fP \\fB2\\fP \\fB-it\\fP \\fB2\\fP \\fBexampleGenome.fa\\fP \\fBexampleReads.gff\\fP \\fB-o\\fP \\fexampleSNPs.vcf\\fP \\fB-id\\fP \\fBexampleIndels.gff\\fP",
+                "Call SNPs and indels of a low-coverage example (minimum coverage and indel threshold were reduced to 2).");
+    addListItem(parser,
+                "\\fBsnp_store\\fP \\fB-re\\fP \\fB-mc\\fP \\fB2\\fP \\fB-it\\fP \\fB2\\fP \\fBexampleGenome.fa\\fP \\fBexampleReads.gff\\fP \\fB-o\\fP \\fBexampleSNPs.vcf\\fP \\fB-id\\fP \\fBexampleIndels.gff\\fP",
+                "Computes a realignment before variant calling. Now, the two 1bp insertions should have been merged into one 2bp insertion.");
 
     // Parse command line.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
@@ -1219,35 +1288,31 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     // Extract option values.
     // Options:
     getOptionValue(options.outputSNP, parser, "output");
-    getOptionValue(options.inputFormat, parser, "input-format");
-    getOptionValue(options.outputFormat, parser, "output-format");
-    if (isSet(parser, "dont-clip"))
-        options.dontClip = true;
-    if (isSet(parser, "multi"))
-        options.keepMultiReads = true;
-    if (isSet(parser, "hide-qualities"))
-        options.showQualityStrings = false;
+
+    if (isSet(parser, "only-successful-candidates"))
+        options.outputFormat = 1;
+    options.dontClip = isSet(parser, "dont-clip");
+    options.keepMultiReads = isSet(parser, "multi");
+    options.showQualityStrings = !isSet(parser, "hide-qualities");
     if (isSet(parser, "solexa-qual-offset"))
         options.asciiQualOffset = 64;
     getOptionValue(options.outputIndel, parser, "indel-file");
-    getOptionValue(options.method, parser, "method");
+    std::string tmp;
+    getOptionValue(tmp, parser, "method");
+    options.method = (tmp == "maq")? 1: 0;
     getOptionValue(options.maxPile, parser, "max-pile");
-    if (isSet(parser, "merged-max-pile"))
-        options.laneSpecificMaxPile = false;
+    options.laneSpecificMaxPile = !isSet(parser, "merged-max-pile");
     getOptionValue(options.minCoverage, parser, "min-coverage");
     getOptionValue(options.forceCallCount, parser, "force-call");
-    if (isSet(parser, "orientation-aware"))
-        options.orientationAware = true;
-    getOptionValue(options.outputCNV, parser, "output-cnv");
+    options.orientationAware = isSet(parser, "orientation-aware");
+//    getOptionValue(options.outputCNV, parser, "output-cnv");
     getOptionValue(options.outputPosition, parser, "output-positions");
     getOptionValue(options.inputPositionFile, parser, "input-positions");
     getOptionValue(options.maxPolymerRun, parser, "max-polymer-run");
     getOptionValue(options.minDifferentReadPos, parser, "diff-pos");
     getOptionValue(options.excludeBorderPos, parser, "exclude-border");
-    if (isSet(parser, "suboptimal"))
-        options.keepSuboptimalReads = true;
-    if (isSet(parser, "realign"))
-        options.realign = true;
+    options.keepSuboptimalReads = isSet(parser, "suboptimal");
+    options.realign = isSet(parser, "realign");
     getOptionValue(options.newQualityCalibrationFactor, parser, "corrected-quality");
     getOptionValue(options.windowSize, parser, "parse-window-size");
     getOptionValue(options.realignAddBorder, parser, "realign-border");
@@ -1258,21 +1323,18 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     getOptionValue(options.theta, parser, "theta");
     getOptionValue(options.hetRate, parser, "hetero-rate");
     getOptionValue(options.minMapQual, parser, "min-map-quality");
-    if (isSet(parser, "corrected-het"))
-        options.correctedHetTable = true;
+    options.correctedHetTable = isSet(parser, "corrected-het");
     getOptionValue(options.meanAlleleFrequency, parser, "mean-alleleFreq");
     getOptionValue(options.amplificationCycles, parser, "amp-cycles");
     getOptionValue(options.amplificationEfficiency, parser, "amp-efficiency");
     getOptionValue(options.initialN, parser, "initial-N");
-    if (isSet(parser, "print-hetTable"))
-        options.printHetTable = true;
+    options.printHetTable = isSet(parser, "print-hetTable");
     getOptionValue(options.minExplainedColumn, parser, "min-explained-column");
     // Indel Calling Options:
     getOptionValue(options.indelCountThreshold, parser, "indel-threshold");
     getOptionValue(options.indelPercentageT, parser, "indel-perc-threshold");
     getOptionValue(options.indelQualityThreshold, parser, "indel-quality-thresh");
-    if (isSet(parser, "both-strands-indel"))
-        options.bothIndelStrands = true;
+    options.bothIndelStrands = isSet(parser, "both-strands-indel");
     getOptionValue(options.indelWindow, parser, "indel-window");
     getOptionValue(options.indelDepthMinOverlap, parser, "exclude-border-indel");
     getOptionValue(options.cnvWindowSize, parser, "cnv-window-size");
@@ -1282,13 +1344,44 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
         options._debugLevel = max(options._debugLevel, 1);
     if (isSet(parser, "very-verbose"))
         options._debugLevel = max(options._debugLevel, 2);
-    
+
     getArgumentValue(options.genomeFName, parser, 0);
     unsigned countFiles = getArgumentValueCount(parser, 1);
+
+    if (countFiles == 0)
+    {
+        cerr << "No mapping files specified." << endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
     resize(options.readFNames, countFiles);
     for (unsigned i = 0; i < countFiles; ++i)
+    {
         getArgumentValue(options.readFNames[i], parser, 1, i);
 
+        // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+        CharString tmp = options.readFNames[i];
+        toLower(tmp);
+        unsigned format = 0;
+        if (endsWith(tmp, ".gff"))
+            format = 0;
+        else if (endsWith(tmp, ".sam"))
+            format = 1;
+        else if (endsWith(tmp, ".bam"))
+            format = 2;
+
+        if (i == 0)
+        {
+            options.inputFormat = format;
+        }
+        else
+        {
+            if (options.inputFormat != format)
+            {
+                cerr << "All mapping files must have the same format." << endl;
+                return ArgumentParser::PARSE_ERROR;
+            }
+        }
+    }
 
     // some additional option checking:
 
@@ -1312,9 +1405,11 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     if(options.runID == "")
     {
         ::std::string tempStr = toCString(options.readFNames[0]);
-        size_t lastPos = tempStr.find_last_of('/') + 1;
-        if (lastPos == tempStr.npos) lastPos = tempStr.find_last_of('\\') + 1;
-        if (lastPos == tempStr.npos) lastPos = 0;
+        size_t lastPos = tempStr.find_last_of("/\\");
+        if (lastPos == tempStr.npos)
+            lastPos = 0;
+        else
+            ++lastPos;
         options.runID = tempStr.substr(lastPos);
     }
 
