@@ -148,6 +148,27 @@ struct SmallIndelRecord
 std::ostream & operator<<(std::ostream & out, SmallIndelRecord const & record);
 
 // --------------------------------------------------------------------------
+// Class SmallVarInfo
+// --------------------------------------------------------------------------
+
+// Information about small variants.
+
+struct SmallVarInfo
+{
+    enum Kind { SNP, INS, DEL };
+
+    Kind kind;
+    int pos;
+    int count;
+
+    SmallVarInfo() : kind(SNP), pos(-1), count(0) {}
+    SmallVarInfo(Kind kind, int pos, int count) : kind(kind), pos(pos), count(count) {}
+
+    bool operator<(SmallVarInfo const & other) const
+    { return (pos < other.pos || (pos == other.pos && kind < other.kind)); }
+};
+
+// --------------------------------------------------------------------------
 // Class StructuralVariantRecord
 // --------------------------------------------------------------------------
 
@@ -488,23 +509,25 @@ public:
     // an integer index into variants.  See Variants::resolveIdx() for more information.
     int run(seqan::Dna5String & resultSeq,
             PositionMap & posMap,
+            std::vector<SmallVarInfo> & smallVars,
             std::vector<std::pair<int, int> > & breakpoints,
             seqan::Dna5String const & refSeq,
             int haplotypeId)
     {
-        return _runImpl(&resultSeq, &posMap, 0, breakpoints, &refSeq, 0, haplotypeId);
+        return _runImpl(&resultSeq, &posMap, 0, smallVars, breakpoints, &refSeq, 0, haplotypeId);
     }
 
     // Same as the run() above, but including reference levels.
     int run(seqan::Dna5String & resultSeq,
             PositionMap & posMap,
             MethylationLevels & resultLvls,
+            std::vector<SmallVarInfo> & smallVars,
             std::vector<std::pair<int, int> > & breakpoints,
             seqan::Dna5String const & refSeq,
             MethylationLevels const & refLvls,
             int haplotypeId)
     {
-        return _runImpl(&resultSeq, &posMap, &resultLvls, breakpoints, &refSeq, &refLvls, haplotypeId);
+        return _runImpl(&resultSeq, &posMap, &resultLvls, smallVars, breakpoints, &refSeq, &refLvls, haplotypeId);
     }
 
     // Implementation of the materialization, uses pointers instead of references for deciding whether materializing
@@ -512,6 +535,7 @@ public:
     int _runImpl(seqan::Dna5String * resultSeq,
                  PositionMap * posMap,
                  MethylationLevels * resultLvls,
+                 std::vector<SmallVarInfo> & smallVars,
                  std::vector<std::pair<int, int> > & breakpoints,
                  seqan::Dna5String const * ref,
                  MethylationLevels const * refLvls,
@@ -523,6 +547,7 @@ public:
     int _materializeSmallVariants(seqan::Dna5String & seq,
                                   TJournalEntries & journal,
                                   MethylationLevels * levelsSmallVariants,
+                                  std::vector<SmallVarInfo> & smallVarInfos,
                                   seqan::Dna5String const & contig,
                                   Variants const & variants,
                                   MethylationLevels const * levels,
@@ -533,10 +558,12 @@ public:
     // Levels passed as NULL if not given.
     int _materializeLargeVariants(seqan::Dna5String & seq,
                                   MethylationLevels * levelsLargeVariants,
+                                  std::vector<SmallVarInfo> & varInfos,
                                   std::vector<std::pair<int, int> > & breakpoints,
                                   PositionMap & positionMap,
                                   TJournalEntries const & journal,
                                   seqan::Dna5String const & contig,
+                                  std::vector<SmallVarInfo> const & smallVarInfos,
                                   Variants const & variants,
                                   MethylationLevels const * levels,
                                   int hId);

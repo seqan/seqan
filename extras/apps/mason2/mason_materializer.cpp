@@ -136,9 +136,10 @@ public:
         seqan::Dna5String seq;
         std::cerr << "Materializing...";
         MethylationLevels levels;
+        std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
         std::vector<std::pair<int, int> > breakpoints;
         if (options.methOptions.simulateMethylationLevels)  // methylation level simulation
-            while (vcfMat.materializeNext(seq, levels, breakpoints, rID, hID))
+            while (vcfMat.materializeNext(seq, levels, varInfos, breakpoints, rID, hID))
             {
                 std::stringstream ssName;
                 ssName << vcfMat.vcfStream.header.sequenceNames[rID] << options.haplotypeNameSep << (hID + 1);
@@ -165,7 +166,7 @@ public:
                     throw MasonIOException("Problem writing to methylation output file.");
             }
         else  // NO methylation level simulation
-            while (vcfMat.materializeNext(seq, breakpoints, rID, hID))
+            while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
             {
                 std::stringstream ssName;
                 ssName << vcfMat.vcfStream.header.sequenceNames[rID] << options.haplotypeNameSep << (hID + 1);
