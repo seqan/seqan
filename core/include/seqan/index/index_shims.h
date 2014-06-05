@@ -243,6 +243,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
                          FromSortedSa<TParallel> const &/*alg*/)
     {
         typedef typename Size<TSa>::Type                     TSize;
+		typedef typename MakeSigned<TSize>::Type			 TSignedSize;
         typedef typename StringSetLimits<TSa>::Type          TLimits;
         typedef typename Iterator<TSa const, Standard>::Type TIter;
 
@@ -250,7 +251,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
         Splitter<TSize> splitter(0, length(sa), TParallel());
 
         SEQAN_OMP_PRAGMA(parallel for)
-        for (TSize job = 0; job < length(splitter); ++job)
+        for (TSignedSize job = 0; job < static_cast<TSignedSize>(length(splitter)); ++job)
         {
             TIter saIt = begin(sa, Standard()) + splitter[job];
             TIter saItEnd = begin(sa, Standard()) + splitter[job + 1];
