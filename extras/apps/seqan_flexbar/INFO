@@ -13,8 +13,8 @@ line parameters and can operate on both single- and paired-end read data.
 .
 See the project website and README file for more information.
 
-[1] MDPI and ACS Style Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.
-FLEXBAR—Flexible Barcode and Adapter Processing for Next-Generation Sequencing
-Platforms. Biology 2012, 1, 895-905.
+[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible Barcode
+and Adapter Processing for Next-Generation Sequencing Platforms. Biology 2012,
+1, 895-905.
 
 
