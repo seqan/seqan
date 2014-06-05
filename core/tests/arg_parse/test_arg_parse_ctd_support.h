@@ -66,6 +66,10 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setValidValues(parser, "f", "fasta");
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
     setValidValues(parser, "o", "sam");
+    addOption(parser, seqan::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan::ArgParseArgument::INPUTPREFIX));
+    setValidValues(parser, "ip", "btx");
+    addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUTPREFIX));
+    setValidValues(parser, "output-prefix-option", "blub");
     addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
 
     hideOption(parser, "hi");
@@ -75,7 +79,9 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "STRING"));
     setHelpText(parser, 1, "String Argument");
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
-    setHelpText(parser, 1, "Documentated Argument with \\fBformating\\fP");
+    setHelpText(parser, 2, "Documentated Argument with \\fBformating\\fP");
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUTPUT-FILE"));
+    setHelpText(parser, 3, "Testing output file arguments");
 
     // export ctd
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
