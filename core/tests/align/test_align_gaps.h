@@ -1410,10 +1410,10 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
 {
     using namespace seqan;
 
-    typedef Gaps<CharString, ArrayGaps > TGaps;
+    typedef Gaps<CharString, ArrayGaps> TGaps;
     typedef typename Size<TGaps>::Type TSize;
     typedef typename Position<TGaps>::Type TPosition;
-    typedef typename Position<typename Source<TGaps>::Type >::Type TSrcPosition;
+    typedef typename Position<typename Source<TGaps>::Type>::Type TSrcPosition;
 
     TGaps gaps;
 
