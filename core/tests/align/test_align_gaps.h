@@ -1410,7 +1410,12 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
 {
     using namespace seqan;
 
-    Gaps<CharString, ArrayGaps > gaps;
+    typedef Gaps<CharString, ArrayGaps > TGaps;
+    typedef typename Size<TGaps>::Type TSize;
+    typedef typename Position<TGaps>::Type TPosition;
+    typedef typename Position<typename Source<TGaps>::Type >::Type TSrcPosition;
+
+    TGaps gaps;
 
     assignSource(gaps, "FOO BAR BAX");
 
@@ -1426,14 +1431,12 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
 
     clear(gaps);
 
-    SEQAN_ASSERT_EQ(gaps._source.data_state,
-                    (Holder<CharString, Tristate>::EMPTY));
-    SEQAN_ASSERT_EQ(length(gaps._array), 0);
-    SEQAN_ASSERT_EQ(gaps._sourceBeginPos, 0);
-    SEQAN_ASSERT_EQ(gaps._sourceEndPos, 0);
-    SEQAN_ASSERT_EQ(gaps._clippingBeginPos, 0);
-    SEQAN_ASSERT_EQ(gaps._clippingEndPos, 0);
-
+    SEQAN_ASSERT_EQ(gaps._source.data_state, (Holder<CharString, Tristate>::EMPTY));
+    SEQAN_ASSERT_EQ(length(gaps._array), static_cast<TSize>(0));
+    SEQAN_ASSERT_EQ(gaps._sourceBeginPos, static_cast<TSrcPosition>(0));
+    SEQAN_ASSERT_EQ(gaps._sourceEndPos, static_cast<TSrcPosition>(0));
+    SEQAN_ASSERT_EQ(gaps._clippingBeginPos, static_cast<TPosition>(0));
+    SEQAN_ASSERT_EQ(gaps._clippingEndPos, static_cast<TPosition>(0));
 }
 // ==========================================================================
 // Tests for Anchor Gaps
