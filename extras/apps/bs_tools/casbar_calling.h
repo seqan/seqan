@@ -438,7 +438,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 adjustConstantsSize(constantSet, 'F', TMethod());
                 continue;
             }
-            long double e = pow(10.0, (long double)(-qual/10.0));
+            long double e = pow(10.0L, (long double)(-qual/10.0));
             // for each possible candidate genotype
             // likelihood to observe single base under assumption of given genotype
             String<long double> singleProbs;
@@ -520,7 +520,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 continue;
             }
 
-            long double e = pow(10.0, (long double)(-qual/10.0));  
+            long double e = pow(10.0L, (long double)(-qual/10.0));  
             // likelihood to observe single base under assumption of given genotype
             String<long double> singleProbs;
             resize(singleProbs, 6);
