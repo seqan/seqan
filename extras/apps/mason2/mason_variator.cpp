@@ -1113,7 +1113,8 @@ public:
         {
             MethylationLevels levelsVariants;
             PositionMap posMap;  // unused, though
-            varMat.run(seqVariants, posMap, levelsVariants, breakpoints, contig, levels, hId);
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
+            varMat.run(seqVariants, posMap, levelsVariants, varInfos, breakpoints, contig, levels, hId);
             // Write out methylation levels if necessary.
             if (!empty(options.methFastaOutFile))
                 if (_writeMethylationLevels(levelsVariants, hId, rId) != 0)
@@ -1122,7 +1123,8 @@ public:
         else
         {
             PositionMap posMap;  // unused, though
-            varMat.run(seqVariants, posMap, breakpoints, contig, hId);
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
+            varMat.run(seqVariants, posMap, varInfos, breakpoints, contig, hId);
         }
 
         // Build sequence id.
