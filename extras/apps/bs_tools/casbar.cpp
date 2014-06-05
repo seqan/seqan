@@ -311,7 +311,6 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
                         TOptions &)
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
-    typedef typename Value<TMatches>::Type                  TMatch;
     typedef typename TFragmentStore::TReadSeqStore          TReads;
     typedef typename Value<TReads>::Type                    TRead;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
@@ -624,15 +623,11 @@ detectSNPsForContig(TVcfStream &vcfStream,
     typedef typename TFragmentStore::TContigStore       TContigStore;           // TGenomeSet
     typedef typename Value<TContigStore>::Type          TContig;
     typedef          TContigSeq                         TGenome;
-    typedef          StringSet<TGenome>                 TGenomeSet;
 
     typedef String<typename TFragmentStore::TContigGapAnchor>               TContigAnchorGaps;
-    typedef Gaps<Dna5String, AnchorGaps<TContigAnchorGaps> >                TContigGaps;
-    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
 
     typedef typename TFragmentStore::TContigNameStore                       TContigNameStore;
     typedef NameStoreCache<TContigNameStore, CharString>                    TContigNameStoreCache;
-    typedef BamIOContext<TContigNameStore, TContigNameStoreCache>           TBamIOContext;
     typedef String<String<typename TFragmentStore::TContigGapAnchor> >      TSetContigAnchorGaps;
     
     if (!empty(methOptions.intervals) && empty(contigIntervals[currContigId])) return 0;
