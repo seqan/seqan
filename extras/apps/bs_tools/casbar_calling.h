@@ -449,7 +449,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 {
                     //singleProbs[h] *= mapqsF[i][j];
                     //if (countF_CT == 7) std::cerr << "Use mapq : " << mapqsF[i][j]  << std::endl;
-                    long double e_m = pow(10.0, (long double)(- mapqsF[i][j]/10.0));
+                    long double e_m = pow(10.0L, (long double)(- mapqsF[i][j]/10.0));
                     singleProbs[h] = (1.0 -  e_m) * singleProbs[h];
                     double sim = 0.98;  // expected similarity
                     //  TODO how to deal with prob. to observe this base in wrong mapping ? 
