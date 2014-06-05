@@ -529,7 +529,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                 getSingleBaseProbHaploR(singleProbs[h], (Dna)i, (DnaM)h, e, originStringR[i][j], methOptions);
                 if (methOptions.useMapq)
                 {
-                    long double e_m = pow(10.0, (long double)(- mapqsR[i][j]/10.0));
+                    long double e_m = pow(10.0L, (long double)(- mapqsR[i][j]/10.0));
                     singleProbs[h] = (1.0 -  e_m) * singleProbs[h];
                     double sim = 0.98;
                     if ((Dna)i == 'G' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
