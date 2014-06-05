@@ -524,8 +524,6 @@ template<typename TFragmentStore, typename TOptions>
 inline VerifiedRead
 verifyRead(TFragmentStore &store, TOptions &options)
 {
-    typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
-    typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
     typedef typename TFragmentStore::TMappingQuality        TScore;
 
     // Find best and second best hit (match mate hit) -> lowest score
@@ -695,7 +693,6 @@ template<typename TFragmentStore, typename TOptions>
 inline VerifiedMates
 verifyMates(TFragmentStore &store, TOptions &options)
 {
-    typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
     typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
     typedef typename Value<TMatePairStore>::Type            TMatePairStoreElement;
     typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
@@ -703,9 +700,7 @@ verifyMates(TFragmentStore &store, TOptions &options)
     typedef typename TAlignedReadStoreElement::TId          TId;
     typedef typename TFragmentStore::TContigPos             TContigPos;
     typedef typename TFragmentStore::TMappingQuality        TScore;
-    typedef typename TFragmentStore::TReadSeqStore          TReadSeqStore;
-    typedef typename Value<TReadSeqStore>::Type             TReadSeq;
-    
+
     // Find best and second best hit (match mate hit) -> lowest score
     TScore bestScoreL = store.alignQualityStore[0].score;
     TId bestIdL = 0;

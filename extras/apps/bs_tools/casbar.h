@@ -545,9 +545,6 @@ int readMatchesFromSamBam(
     typedef typename Value<TReadStore>::Type                TReadStoreElement;
     typedef typename TMatch::TGapAnchors                    TReadGapAnchors;
     typedef Gaps<TRead, AnchorGaps<TReadGapAnchors> >       TReadGaps;
-    typedef typename TFragmentStore::TContigStore           TContigStore;
-    typedef typename Value<TContigStore>::Type              TContig;
-    typedef typename TContig::TContigSeq                    TContigSeq;
     //typedef typename TContig::TGapAnchors                   TContigGapAnchors;
     //typedef Gaps<TContigSeq, AnchorGaps<TContigGapAnchors> >    TContigGaps;
     typedef String<typename TFragmentStore::TContigGapAnchor>                                       TContigAnchorGaps;
@@ -558,8 +555,7 @@ int readMatchesFromSamBam(
     typedef String<typename TFragmentStore::TContigGapAnchor>                                       TContigAnchorGaps;
 
     typedef typename Id<TFragmentStore>::Type               TId;
-    typedef typename Iterator<TMatches,Standard>::Type      TMatchIterator;
-    
+
     if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
     {
         ::std::cerr << "Lengths need to be equal!!\n";
@@ -844,10 +840,6 @@ template<typename TAlign, typename TString>
 void
 getMismatchMutations(TAlign & align, TString & mutations)
 {
-    
-    typedef typename Source<TAlign>::Type TSource;
-    typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
-
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
  
@@ -1127,7 +1119,6 @@ void doCheckRealignCall(
     typedef typename Value<TMatches>::Type                          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore             TMatchQualities;
     typedef typename Iterator<TMatches,Standard>::Type              TMatchIterator;
-    typedef typename Iterator<TSetContigAnchorGaps,Standard>::Type  TContigGapsIterator;
 
     // for test
     typedef typename TFragmentStore::TContigStore       TContigStore;
@@ -1274,13 +1265,11 @@ void doSnpAndMethCalling(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename TFragmentStore::TReadSeqStore      TReads;
     typedef typename Value<TReads>::Type                TRead;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
-    typedef typename TFragmentStore::TReadStore         TReadStore;
     typedef typename Value<TMatches>::Type              TReadStoreElement;
 
 
