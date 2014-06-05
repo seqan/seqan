@@ -1167,6 +1167,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setDefaultValue(parser, "min-coverage", options.minCoverage);
     addOption(parser, ArgParseOption("fc", "force-call", "Always call base if count is >= fc, ignore other parameters. Default: off.", ArgParseArgument::INTEGER));
     setMinValue(parser, "force-call", "1");
+    setDefaultValue(parser, "force-call", options.forceCallCount);
     addOption(parser, ArgParseOption("oa", "orientation-aware", "Distinguish between forward and reverse reads. Default: off."));
 //    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUTFILE));
 //    hideOption(parser, "cnv");
@@ -1181,6 +1182,8 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setMinValue(parser, "diff-pos", "0");
     setDefaultValue(parser, "diff-pos", options.minDifferentReadPos);
     addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNV calling. Default: off.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "exclude-border", "0");
+    setDefaultValue(parser, "exclude-border", options.excludeBorderPos);
     addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads. Default: off"));
     addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates. Default: off"));
     addOption(parser, ArgParseOption("cq", "corrected-quality", "New quality calibration factor.", ArgParseArgument::DOUBLE));
