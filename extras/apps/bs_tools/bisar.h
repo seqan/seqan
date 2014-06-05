@@ -208,15 +208,12 @@ writeBsAlignment(TStream & stream,
     double timeStamp = sysTime();
 #endif 
     typedef typename TFragmentStore::TContigStore                               TContigStore;
-    typedef typename TFragmentStore::TContigPos                                 TContigPos;
     typedef typename Value<TContigStore>::Type                                  TContig;
     typedef typename TContig::TId                                               TContigId;
-    typedef typename TContig::TContigSeq                                        TContigSeq;
 
     typedef typename TFragmentStore::TAlignedReadStore                          TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type                             TAlignedRead;
     typedef typename TAlignedRead::TGapAnchors                                  TReadGapAnchors;
-    typedef typename TFragmentStore::TReadSeqStore                              TReadSeqStore;
     typedef typename TFragmentStore::TReadSeq                                   TReadSeq;
     typedef Gaps<TReadSeq, AnchorGaps<TReadGapAnchors> >                        TReadGaps;
 
@@ -527,12 +524,6 @@ template<typename TFragmentStore, typename TOptions>
 inline VerifiedRead
 verifyRead(TFragmentStore &store, TOptions &options)
 {
-    typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
-    typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
-    typedef typename Value<TMatePairStore>::Type            TMatePairStoreElement;
-    typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
-    typedef typename Value<TAlignedReadStore>::Type         TAlignedReadStoreElement;
-    typedef typename TFragmentStore::TReadSeq               TReadSeq;
     typedef typename TFragmentStore::TMappingQuality        TScore;
 
     // Find best and second best hit (match mate hit) -> lowest score
@@ -702,7 +693,6 @@ template<typename TFragmentStore, typename TOptions>
 inline VerifiedMates
 verifyMates(TFragmentStore &store, TOptions &options)
 {
-    typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
     typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
     typedef typename Value<TMatePairStore>::Type            TMatePairStoreElement;
     typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
@@ -710,9 +700,7 @@ verifyMates(TFragmentStore &store, TOptions &options)
     typedef typename TAlignedReadStoreElement::TId          TId;
     typedef typename TFragmentStore::TContigPos             TContigPos;
     typedef typename TFragmentStore::TMappingQuality        TScore;
-    typedef typename TFragmentStore::TReadSeqStore          TReadSeqStore;
-    typedef typename Value<TReadSeqStore>::Type             TReadSeq;
-    
+
     // Find best and second best hit (match mate hit) -> lowest score
     TScore bestScoreL = store.alignQualityStore[0].score;
     TId bestIdL = 0;
@@ -1063,19 +1051,18 @@ template<typename TOptions, typename TModel>
 inline bool
 postProcessMain(TOptions &options, TModel const &)
 {
-    typedef Align<Dna5String,ArrayGaps> TAlign; 
     typedef FragmentStore<MyFragmentStoreConfig> TFragmentStore;
 
-    typedef typename TFragmentStore::TReadNameStore            TReadNameStore;
+    typedef typename TFragmentStore::TReadNameStore             TReadNameStore;
     typedef NameStoreCache<TReadNameStore, CharString>          TReadNameStoreCache;
 
-    typedef typename TFragmentStore::TContigNameStore                              TContigNameStore;
+    typedef typename TFragmentStore::TContigNameStore                               TContigNameStore;
     typedef NameStoreCache<TContigNameStore, CharString>                            TContigNameStoreCache;
-    typedef typename TFragmentStore::TContigStore                                  TContigStore;
+    typedef typename TFragmentStore::TContigStore                                   TContigStore;
     typedef typename Value<TContigStore>::Type                                      TContig;
     typedef typename TContig::TContigSeq                                            TContigSeq;
-    typedef typename TFragmentStore::TReadSeq                                      TReadSeq;
-    typedef typename TFragmentStore::TAlignedReadStore                             TAlignedReadStore;
+    typedef typename TFragmentStore::TReadSeq                                       TReadSeq;
+    typedef typename TFragmentStore::TAlignedReadStore                              TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type                                 TAlignedRead;
  
     typedef BamIOContext<TContigNameStore, TContigNameStoreCache>                   TBamIOContext;
@@ -1083,14 +1070,13 @@ postProcessMain(TOptions &options, TModel const &)
     typedef Gaps<TReadSeq, AnchorGaps<TReadGapAnchors> >                            TReadGaps;
     typedef typename TContig::TGapAnchors                                           TContigGapAnchors;
     typedef Gaps<TContigSeq, AnchorGaps<TContigGapAnchors> >                        TContigGaps;
-    typedef typename TFragmentStore::TContigPos                                    TContigPos;
+    typedef typename TFragmentStore::TContigPos                                     TContigPos;
     
-    typedef typename TAlignedRead::TId     TId;
+    typedef typename TAlignedRead::TId                                              TId;
     
-    typedef StringSet<TContigGapAnchors> TSetContigGapAnchors;
-    typedef StringSet<TContigGaps> TSetContigGaps;
+    typedef StringSet<TContigGaps>                                                  TSetContigGaps;
 
-    typedef typename Value<typename TFragmentStore::TMatePairStore>::Type          TMatePairStoreElement;
+    typedef typename Value<typename TFragmentStore::TMatePairStore>::Type           TMatePairStoreElement;
     typedef MatchMateInfo_<TContigPos, TId>                                         TMatchMateInfo;
     typedef String<TMatchMateInfo>                                                  TMatchMateInfos;
 
