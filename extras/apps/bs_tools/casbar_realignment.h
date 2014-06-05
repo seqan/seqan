@@ -229,22 +229,8 @@ void doRealigning(
     std::cout << " doRealigning() ... " << std::endl;
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
-    typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
-    typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type                TRead;
-
-    typedef typename TFragmentStore::TContigStore       TContigStore;
-    typedef typename Value<TContigStore>::Type          TContig;
-    typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename TFragmentStore::TContigSeq         TContigSeq;
-
-    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
-    typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
-    typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
-    typedef typename Iterator<TReadGaps>::Type                              TReadGapIter;
-     
     SEQAN_PROTIMESTART(dump_time);
     
     // matches need to be ordered according to genome position
