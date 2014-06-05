@@ -32,6 +32,14 @@
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // ==========================================================================
+// This file provides the argument parsing functionality is of
+// seqan-flexbar which is based in the implementation of the original
+// flexbar program in [1].  In addition, the file contains the main body
+// of the program, selecting the sub-routines.
+// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
+// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
+// Biology 2012, 1, 895-905.
+// ==========================================================================
 
 #include "seqan_flexbar.h"
 
@@ -168,6 +176,7 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     seqan::ArgParseOption uncalledOpt = seqan::ArgParseOption(
         "u", "uncalled", "Number of allowed uncalled bases per sequence.",
         seqan::ArgParseOption::INTEGER, "VALUE");
+    setDefaultValue(uncalledOpt, 0);
     setMinValue(uncalledOpt, "0");
     addOption(parser, uncalledOpt);
 
@@ -188,6 +197,7 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     seqan::ArgParseOption finLenOpt = seqan::ArgParseOption(
         "fl", "finalLength", "Trims reads to desired length after the complete workflow.",
         seqan::ArgParseArgument::INTEGER, "LENGTH");
+    setDefaultValue(finLenOpt, 0);
     setMinValue(finLenOpt, "1");
     addOption(parser, finLenOpt);
 }
@@ -241,11 +251,13 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
     seqan::ArgParseOption rateOpt = seqan::ArgParseOption(
         "e", "errors", "Allowed errors in adapter detection.",
         seqan::ArgParseOption::INTEGER, "VALUE");
+    setDefaultValue(rateOpt, 0);
     addOption(parser, rateOpt);
 
     seqan::ArgParseOption overlapOpt = seqan::ArgParseOption(
         "ol", "overlap", "Minimum length of overlap for a significant adapter match.",
         seqan::ArgParseOption::INTEGER, "VALUE");
+    setDefaultValue(overlapOpt, 0);
     addOption(parser, overlapOpt);
 
     if (flexiProgram != ALL_STEPS)
@@ -300,48 +312,6 @@ void ArgumentParserBuilder::addReadTrimmingOptions(seqan::ArgumentParser & parse
 }
 
 // --------------------------------------------------------------------------
-// Class AdapterRemovalParserBuilder
-// --------------------------------------------------------------------------
-
-class AdapterRemovalParserBuilder : public ArgumentParserBuilder
-{
-public:
-    seqan::ArgumentParser build();
-
-private:
-    void addHeader(seqan::ArgumentParser & parser);
-};
-
-void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
-{
-    setShortDescription(parser, "The SeqAn NGS-Data Postprocessing Toolkit");
-    addUsageLine(parser, " READ_FILE1 [READ_FILE2] [OPTIONS]");
-    addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the postprocessing of sequenced NGS reads. It "
-        "is possible to demultiplex the reads and order them according to different kind of barcodes, to remove adapter "
-        "contamination from reads, to trim low quality bases, filter N's or trim whole reads. The different tools are controlled through "
-        "command line parameters and can operate on both single- and paired-end read data.");
-    setDate(parser, __DATE__);
-    setVersion(parser, "1.0.1");
-
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
-    addArgument(parser, fileArg);
-    setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
-}
-
-seqan::ArgumentParser AdapterRemovalParserBuilder::build()
-{
-    seqan::ArgumentParser parser("sflexAR");
-
-    addHeader(parser);
-    addGeneralOptions(parser);
-    addAdapterTrimmingOptions(parser);
-
-    return parser;
-}
-
-// --------------------------------------------------------------------------
 // Class FilteringParserBuilder
 // --------------------------------------------------------------------------
 
@@ -356,15 +326,26 @@ private:
 
 void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
-    setShortDescription(parser, "The SeqAn NGS-Data Postprocessing Toolkit");
-    addUsageLine(parser, " READ_FILE1 [READ_FILE2] [OPTIONS]");
+    setCategory(parser, "NGS Quality Control");
+    setShortDescription(parser, "The SeqAn Filtering Toolkit of seqan_flexbar.");
+    addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the postprocessing of sequenced NGS reads. It "
-        "is possible to demultiplex the reads and order them according to different kind of barcodes, to remove adapter "
-        "contamination from reads, to trim low quality bases, filter N's or trim whole reads. The different tools are controlled through "
-        "command line parameters and can operate on both single- and paired-end read data.");
-    setDate(parser, __DATE__);
-    setVersion(parser, "1.0.1");
+       "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+       " the original flexbar[1]) and can be used to filter reads and apply "
+       "sequence independent trimming options");
+
+    addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
+            "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
+            "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
+
+    std::string version = "1.0.1";
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
     setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
@@ -384,6 +365,60 @@ seqan::ArgumentParser FilteringParserBuilder::build()
 }
 
 // --------------------------------------------------------------------------
+// Class AdapterRemovalParserBuilder
+// --------------------------------------------------------------------------
+
+class AdapterRemovalParserBuilder : public ArgumentParserBuilder
+{
+public:
+    seqan::ArgumentParser build();
+
+private:
+    void addHeader(seqan::ArgumentParser & parser);
+};
+
+void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
+{
+    setCategory(parser, "NGS Quality Control");
+    setShortDescription(parser, "The SeqAn Adapter Removal Toolkit of seqan_flexbar.");
+    addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
+    addDescription(parser,
+        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        " the original flexbar[1]) and removes adapter sequences from reads.");
+
+    addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
+            "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
+            "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
+
+    std::string version = "1.0.1";
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    seqan::setDate(parser, SEQAN_DATE);
+#endif
+    seqan::setVersion(parser, version);
+
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    addArgument(parser, fileArg);
+    setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
+}
+
+seqan::ArgumentParser AdapterRemovalParserBuilder::build()
+{
+    seqan::ArgumentParser parser("sflexAR");
+
+    addHeader(parser);
+    addGeneralOptions(parser);
+    addAdapterTrimmingOptions(parser);
+
+    return parser;
+}
+
+
+
+// --------------------------------------------------------------------------
 // Class DemultiplexingParserBuilder
 // --------------------------------------------------------------------------
 
@@ -398,15 +433,26 @@ private:
 
 void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
-    setShortDescription(parser, "The SeqAn NGS-Data Postprocessing Toolkit");
-    addUsageLine(parser, " READ_FILE1 [READ_FILE2] [OPTIONS]");
+    setCategory(parser, "NGS Quality Control");
+    setShortDescription(parser, "The SeqAn Demultiplexing Toolkit of seqan_flexbar.");
+    addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the postprocessing of sequenced NGS reads. It "
-        "is possible to demultiplex the reads and order them according to different kind of barcodes, to remove adapter "
-        "contamination from reads, to trim low quality bases, filter N's or trim whole reads. The different tools are controlled through "
-        "command line parameters and can operate on both single- and paired-end read data.");
-    setDate(parser, __DATE__);
-    setVersion(parser, "1.0.1");
+        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        " the original flexbar[1]) and can be used for demultiplexing of reads.");
+
+    addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
+            "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
+            "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
+
+
+    std::string version = "1.0.1";
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
     setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
@@ -441,15 +487,25 @@ private:
 
 void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
-    setShortDescription(parser, "The SeqAn NGS-Data Postprocessing Toolkit");
-    addUsageLine(parser, " READ_FILE1 [READ_FILE2] [OPTIONS]");
+    setCategory(parser, "NGS Quality Control");
+    setShortDescription(parser, "The SeqAn Quality Control Toolkit of seqan_flexbar.");
+    addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the postprocessing of sequenced NGS reads. It "
-        "is possible to demultiplex the reads and order them according to different kind of barcodes, to remove adapter "
-        "contamination from reads, to trim low quality bases, filter N's or trim whole reads. The different tools are controlled through "
-        "command line parameters and can operate on both single- and paired-end read data.");
-    setDate(parser, __DATE__);
-    setVersion(parser, "1.0.1");
+        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        " the original flexbar [1]) and can be used for quality controlling of reads.");
+
+    addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
+            "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
+            "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
+
+    std::string version = "1.0.1";
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
     setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
@@ -483,15 +539,32 @@ private:
 
 void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
-    setShortDescription(parser, "The SeqAn NGS-Data Postprocessing Toolkit");
-    addUsageLine(parser, " READ_FILE1 [READ_FILE2] [OPTIONS]");
+    setCategory(parser, "NGS Quality Control");
+    setShortDescription(parser, "The SeqAn NGS-Data Processing Toolkit");
+    addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the postprocessing of sequenced NGS reads. It "
-        "is possible to demultiplex the reads and order them according to different kind of barcodes, to remove adapter "
-        "contamination from reads, to trim low quality bases, filter N's or trim whole reads. The different tools are controlled through "
-        "command line parameters and can operate on both single- and paired-end read data.");
-    setDate(parser, __DATE__);
-    setVersion(parser, "1.0.1");
+        "SeqAn-Flexbar is a toolkit for the processing of sequenced NGS reads "
+        "and based on the original Flexbar implementation of Dodt [1]. It is "
+        "possible to demultiplex the reads and order them according to "
+        "different kind of barcodes, to remove adapter contamination from "
+        "reads, to trim low quality bases, filter N's or trim whole reads. The "
+        "different tools are controlled through command line parameters and can "
+        "operate on both single- and paired-end read data.");
+
+    addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
+            "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
+            "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
+
+    addDescription(parser, "(c) Copyright 2008-2013 by Sebastian Roskosch.");
+
+    std::string version = "1.0.1";
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
     setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
