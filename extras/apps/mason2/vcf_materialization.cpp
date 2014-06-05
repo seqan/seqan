@@ -238,26 +238,35 @@ void VcfMaterializer::_loadLevels(int rID)
 // Function VcfMaterializer::materializeNext()
 // ----------------------------------------------------------------------------
 
-bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, std::vector<std::pair<int, int> > & breakpoints,
-                                      int & rID, int & haplotype)
+bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
+                                      std::vector<SmallVarInfo> & varInfos,
+                                      std::vector<std::pair<int, int> > & breakpoints,
+                                      int & rID,
+                                      int & haplotype)
 {
-    return _materializeNext(seq, 0, breakpoints, rID, haplotype);
+    return _materializeNext(seq, 0, varInfos, breakpoints, rID, haplotype);
 }
 
-bool VcfMaterializer::materializeNext(seqan::Dna5String & seq, MethylationLevels & levels,
+bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
+                                      MethylationLevels & levels,
+                                      std::vector<SmallVarInfo> & varInfos,
                                       std::vector<std::pair<int, int> > & breakpoints,
-                                      int & rID, int & haplotype)
+                                      int & rID,
+                                      int & haplotype)
 {
-    return _materializeNext(seq, &levels, breakpoints, rID, haplotype);
+    return _materializeNext(seq, &levels, varInfos, breakpoints, rID, haplotype);
 }
 
 // ----------------------------------------------------------------------------
 // Function VcfMaterializer::_materializeNext()
 // ----------------------------------------------------------------------------
 
-bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq, MethylationLevels * levels,
+bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq,
+                                       MethylationLevels * levels,
+                                       std::vector<SmallVarInfo> & varInfos,
                                        std::vector<std::pair<int, int> > & breakpoints,
-                                       int & rID, int & haplotype)
+                                       int & rID,
+                                       int & haplotype)
 {
     if (levels)
         SEQAN_CHECK(!empty(methFastaFileName), "Must initialize with methylation FASTA file for levels");
@@ -312,9 +321,9 @@ bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq, MethylationLevel
     // Materialize variants for the current haplotype.
     VariantMaterializer varMat(rng, contigVariants, *methOptions);
     if (levels)
-        varMat.run(seq, posMap, *levels, breakpoints, contigSeq, currentLevels, nextHaplotype);
+        varMat.run(seq, posMap, *levels, varInfos, breakpoints, contigSeq, currentLevels, nextHaplotype);
     else
-        varMat.run(seq, posMap, breakpoints, contigSeq, nextHaplotype);
+        varMat.run(seq, posMap, varInfos, breakpoints, contigSeq, nextHaplotype);
 
     // Write out rID and haploty
     rID = currRID;
