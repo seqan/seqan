@@ -653,7 +653,7 @@ computeMapq(TScore &mapq, TId &bestId, unsigned countHits, TId &secBestId, TFrag
     }
     else
     {
-        mapq = store.alignQualityStore[secBestId].score  - store.alignQualityStore[bestId].score - 10*std::log10(countSecBest);     
+        mapq = store.alignQualityStore[secBestId].score  - store.alignQualityStore[bestId].score - 10*std::log10((double)countSecBest);     
 
         //std::cout << " Unique:  read:" << store.readNameStore[store.alignedReadStore[bestId].readId] << std::endl;
         //std::cout << "***: sec best score :" << store.alignQualityStore[secBestId].score  << " best score: " << store.alignQualityStore[bestId].score << "  count2: " << countSecBest << std::endl;
