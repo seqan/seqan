@@ -243,7 +243,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
                          FromSortedSa<TParallel> const &/*alg*/)
     {
         typedef typename Size<TSa>::Type                     TSize;
-        typedef typename MakeSigned<TSize>::Type			 TSignedSize;
+        typedef typename MakeSigned<TSize>::Type             TSignedSize;
         typedef typename StringSetLimits<TSa>::Type          TLimits;
         typedef typename Iterator<TSa const, Standard>::Type TIter;
 
