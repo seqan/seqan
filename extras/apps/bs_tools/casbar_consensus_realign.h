@@ -584,7 +584,6 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 		TModel const &)
 {
 	typedef FragmentStore<TSpec, TConfig>                   TFragmentStore;
-	typedef typename Size<TFragmentStore>::Type             TSize;
 	typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
 	typedef typename TFragmentStore::TReadPos               TReadPos;
 	
@@ -596,7 +595,6 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 	
 	typedef typename TFragmentStore::TReadSeq                       TReadSeq;
 	typedef typename TFragmentStore::TReadGapAnchor                 TGapAnchor;
-	typedef typename Value<typename TFragmentStore::TReadSeq>::Type TStoreAlphabet;
 	typedef typename Value<TAlignedReadStore>::Type                 TAlignedElement;
 
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type TAlignIter;

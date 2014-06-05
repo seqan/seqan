@@ -311,7 +311,6 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
                         TOptions &)
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
-    typedef typename Value<TMatches>::Type                  TMatch;
     typedef typename TFragmentStore::TReadSeqStore          TReads;
     typedef typename Value<TReads>::Type                    TRead;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
@@ -613,26 +612,14 @@ detectSNPsForContig(TVcfStream &vcfStream,
                     TMethOptions &methOptions)
 {
     typedef          FragmentStore<TSpec>               TFragmentStore;
-    typedef typename TFragmentStore::TContigSeq         TContigSeq;             // TGenome
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TAlignedReadStore  TAlignedReadStore;      // TMatches
-    typedef typename Value<TAlignedReadStore>::Type     TAlignedRead;
     typedef typename TFragmentStore::TAlignQualityStore TAlignQualityStore;     // TMatchQualities
     typedef typename TFragmentStore::TReadStore         TReadStore;             // TReadSet
     typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;              // TReadSet
-    typedef typename Value<TReadSeqStore>::Type         TReadSeq;
     typedef typename TFragmentStore::TContigStore       TContigStore;           // TGenomeSet
     typedef typename Value<TContigStore>::Type          TContig;
-    typedef          TContigSeq                         TGenome;
-    typedef          StringSet<TGenome>                 TGenomeSet;
 
-    typedef String<typename TFragmentStore::TContigGapAnchor>               TContigAnchorGaps;
-    typedef Gaps<Dna5String, AnchorGaps<TContigAnchorGaps> >                TContigGaps;
-    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
-
-    typedef typename TFragmentStore::TContigNameStore                       TContigNameStore;
-    typedef NameStoreCache<TContigNameStore, CharString>                    TContigNameStoreCache;
-    typedef BamIOContext<TContigNameStore, TContigNameStoreCache>           TBamIOContext;
     typedef String<String<typename TFragmentStore::TContigGapAnchor> >      TSetContigAnchorGaps;
     
     if (!empty(methOptions.intervals) && empty(contigIntervals[currContigId])) return 0;
@@ -861,7 +848,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 #ifdef SEQAN_ENABLE_PARALLELISM
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1)) // TODO Check if guided is faster
 #endif
-    for (unsigned currContigId = 0; currContigId < length(fragmentStore1.contigStore); ++currContigId)
+    for (int currContigId = 0; currContigId < (int)length(fragmentStore1.contigStore); ++currContigId)
     {
 #ifdef SEQAN_ENABLE_PARALLELISM
         // For each contig we need own record readers (for each given sam file)
