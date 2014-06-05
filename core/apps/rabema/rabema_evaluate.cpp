@@ -104,6 +104,9 @@ public:
     // target position.
     bool trustNM;
 
+    // If the CIGAR string is absent, this tag provides the position of the other end of the alignment.
+    CharString extraPosTag;
+
     // If enabled then all reads are treated as single-end mapped.  This is required for analyzing SOAP output that has
     // been converted to SAM since it will set the paired-end flags.
     bool ignorePairedFlags;
@@ -622,9 +625,36 @@ int benchmarkReadResult(RabemaStats & result,
         // C-style end) of the read.
         unsigned lastPos = 0;
         if (!hasFlagRC(samRecord))
+        {
             lastPos = samRecord.beginPos + getAlignmentLengthInRef(samRecord) - countPaddings(samRecord.cigar) - 1;
+
+            // If the CIGAR is not present, e.g. a * is present instead,
+            // we can still get the extra position from an user-defined tag.
+            if (empty(samRecord.cigar))
+            {
+                BamTagsDict bamTags(const_cast<CharString &>(samRecord.tags));
+
+                unsigned idx = 0;
+                unsigned extraPos = 0;
+
+                if (!empty(options.extraPosTag) &&
+                    findTagKey(idx, bamTags, options.extraPosTag) &&
+                    extractTagValue(extraPos, bamTags, idx))
+                {
+                    lastPos = extraPos - 1;
+                }
+                else
+                {
+                    lastPos = samRecord.beginPos + length(readSeq) - 1;
+
+                    std::cerr << "WARNING: Unknown alignment end position for read " << samRecord.qName << ".\n";
+                }
+            }
+        }
         else
+        {
             lastPos = length(refSeqs[seqId]) - samRecord.beginPos - 1;
+        }
 
         if (options.showTryHitIntervals)
             std::cerr << "TRY HIT\tchr=" << refSeqNames[seqId] << "\tlastPos=" << lastPos << "\tqName="
@@ -1097,6 +1127,11 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     addOption(parser, seqan::ArgParseOption("", "trust-NM",
                                             "When set, we trust the alignment and distance from SAM/BAM file and no "
                                             "realignment is performed.  Off by default."));
+    addOption(parser, seqan::ArgParseOption("", "extra-pos-tag",
+                                            "If the CIGAR string is absent, the missing alignment end position can be "
+                                            "provided by this BAM tag.",
+                                            seqan::ArgParseOption::STRING));
+
     addOption(parser, seqan::ArgParseOption("", "ignore-paired-flags",
                                             "When set, we ignore all SAM/BAM flags related to pairing.  This is "
                                             "necessary when analyzing SAM from SOAP's soap2sam.pl script."));
@@ -1206,6 +1241,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     else
         options.distanceMetric = HAMMING_DISTANCE;
     options.trustNM = isSet(parser, "trust-NM");
+    getOptionValue(options.extraPosTag, parser, "extra-pos-tag");
     options.ignorePairedFlags = isSet(parser, "ignore-paired-flags");
     options.dontPanic = isSet(parser, "DONT-PANIC");
 
