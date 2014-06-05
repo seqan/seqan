@@ -831,51 +831,7 @@ int readMatchesFromSamBam(
 
 
 
-#ifdef PLATFORM_WINDOWS
 
-template<typename TVal>
-double
-lgamma(TVal x)
-{
-    // TODO: replace
-    x -= 1;
-    if(x < 2) return log((double)1);
-    else
-    {
-        double f = log((double)2);
-        for(int s = 3; s <= x;++s) f += log((double)s);
-        return f;
-    }
-  
-}
-
-#endif
-
-template<typename TValue>
-inline bool my_isnan(TValue value)
-{
-    return value != value;
-}
-
-
-
-// function taken from keith b. hall, computation of probs in log-space
-template<typename TValue>
-inline TValue
-logSum(TValue x, TValue y) {
-    // If one value is much smaller than the other, keep the larger value.
-    if (x < (y - log(1e200)))
-        return y;
-    if (y < (x - log(1e200)))
-        return x;
-    double diff = x - y;
-    double retVal;
-    if (!finite((double)exp(diff))) // difference is too large
-        return (x > y ? x : y);
-    // otherwise return the sum.
-    retVal = (double)(y + log((double)(1.0) + exp(diff)));
-    return retVal;
-}
 
 
 
