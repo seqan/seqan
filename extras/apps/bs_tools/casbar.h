@@ -514,7 +514,7 @@ typename TSetContigAnchorGaps,
 typename TReader,
 typename TNameStore,
 typename TFragmentStore,
-typename TSize,
+typename TContigId,
 typename TContigPos,
 typename TOptions
 >
@@ -525,10 +525,10 @@ int readMatchesFromSamBam(
                          BamAlignmentRecord         &record,                // Need at the moment to check if record has already been read
                          TFragmentStore             &fragmentStore,             // forward/reverse fragmentStore.alignedReadStore
                          TFragmentStore             &fragmentStore1,             // to check order of reads regarding to contigs
-                         TSize                  currContigId,
-                         TContigPos             currentBegin,
-                         TContigPos             currentEnd,
-                         TOptions               &options)
+                         TContigId                  currContigId,
+                         TContigPos                 currentBegin,
+                         TContigPos                 currentEnd,
+                         TOptions                   &options)
 {
     //std::cout << "readMatchesFromSamBam..." << std::endl;
     //bool setZero = true;
@@ -571,7 +571,7 @@ int readMatchesFromSamBam(
     String<Dna5Q> curr_read;
     CharString readTemplate, temp_read;
     CharString readName, temp_str;
-    unsigned prevRefId = 0; 
+    TId prevRefId = 0;
     while (!atEnd(reader))
     {
         // read next record unless current one has not been handled yet
@@ -606,19 +606,19 @@ int readMatchesFromSamBam(
             clear(record);
             continue;
         }
-        if((int)contigId < (int)prevRefId)
+        if ((TId)contigId < prevRefId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
         }
         
         prevRefId = contigId; 
-        if(contigId < currContigId)    // havent reached the sequence of interest yet
+        if (contigId < (TId)currContigId)    // havent reached the sequence of interest yet
         {
             clear(record);
             continue;
         }
-        if(contigId > currContigId)    // have passed the seq of interest
+        if (contigId > (TId)currContigId)    // have passed the seq of interest
         {
             break;
         }
