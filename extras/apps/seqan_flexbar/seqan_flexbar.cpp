@@ -31,6 +31,13 @@
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
+// This file is used to generate sub-programs of seqan-flexbar which is
+// based in the implementation of the original flexbar program in [1].
+// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
+// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
+// Biology 2012, 1, 895-905.
+// ==========================================================================
+
 
 // Wrapper for KNIME
 
