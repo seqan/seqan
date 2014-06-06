@@ -32,7 +32,13 @@
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
-
+// This file provides the adapter trimming functionality of seqan-flexbar
+// which is based in the implementation of the original flexbar program in 
+// [1].
+// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
+// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
+// Biology 2012, 1, 895-905.
+// ==========================================================================
 
 #ifndef SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_
 #define SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_

@@ -150,7 +150,7 @@ struct FctLog_02N
             f_0 += std::log10(constants[0][i] + constants[1][i]*beta);  
             f_2 += -pow(constants[1][i],2)/( pow(constants[0][i] , 2) + 2*constants[0][i]*constants[1][i]*beta + pow(constants[1][i], 2)*pow(beta, 2) );
         }
-        f_2 *= 1.0/(std::log(10));  
+        f_2 *= 1.0/(std::log((double)10));  
 
         return  boost::math::make_tuple(f_0, f_2);
     }
@@ -176,8 +176,8 @@ struct FctLog_12N
             f_2 += -pow(constants[1][i],2)/( pow(constants[0][i], 2) + 2*constants[0][i]*constants[1][i]*beta + pow(constants[1][i], 2)*pow(beta, 2) );
         }
 
-        f_1 *= 1.0/(std::log(10)) ;  // 1/(ln*b)
-        f_2 *= 1.0/(std::log(10)) ;  
+        f_1 *= 1.0/(std::log((double)10)) ;  // 1/(ln*b)
+        f_2 *= 1.0/(std::log((double)10)) ;  
         
         return boost::math::make_tuple(f_1, f_2);
     }
