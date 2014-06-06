@@ -2338,7 +2338,7 @@ int flexbarMain(int argc, char const ** argv)
         }
         else
         {
-            if(flexiProgram == DEMULTIPLEXING)
+            if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
             {
                std::cerr << "No Barcodefile was provided." << std::endl;
                return 1;
