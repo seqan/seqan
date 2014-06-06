@@ -36,7 +36,7 @@ getSingleBaseProbHaploF(TProb &singleProb, Dna i, DnaM h, TErrorProb &e, bool & 
         if ( h == 'C')                              // Haplotype C
         {                     
             if (i == 'C')                                               // correct and not converted + converted and error  
-                singleProb = (1.0-e)*(1-methOptions.convRate) ; //+ methOptions.convRate*(e/3.0);  
+                singleProb = (1.0-e)*(1.0-methOptions.convRate) ; //+ methOptions.convRate*(e/3.0);  
             else if (i == 'T')                                          // error + correct and converted 
                 singleProb = e/3.0 + (1.0-e)*(methOptions.convRate);          
             else                                                        // error            
