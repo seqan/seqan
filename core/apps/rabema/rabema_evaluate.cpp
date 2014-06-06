@@ -633,11 +633,11 @@ int benchmarkReadResult(RabemaStats & result,
                     findTagKey(idx, bamTags, options.extraPosTag) &&
                     extractTagValue(extraPos, bamTags, idx))
                 {
-                    lastPos = extraPos - 1;
+                    lastPos = extraPos - 2;
                 }
                 else
                 {
-                    lastPos = samRecord.beginPos + length(readSeq) - 1;
+                    lastPos = samRecord.beginPos + length(readSeq) - 2;
 
                     std::cerr << "WARNING: Unknown alignment end position for read " << samRecord.qName << ".\n";
                 }
