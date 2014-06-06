@@ -1100,7 +1100,6 @@ _traverseBranch(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositi
     typedef typename Container<TContainer>::Type TVariantMap;
     typedef typename DeltaCoverage<TVariantMap>::Type TBitVector;
 
-//    TBranchStackEntry* deltaWindow = &top(traverser._branchStack);
 #ifdef DEBUG_DATA_PARALLEL
     bool check = false;
     if (top(traverser._branchStack)._branchProxyId == 1058 && position(top(traverser._branchStack)._proxyIter) == 17669170)
@@ -1493,7 +1492,6 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<TContex
     pop(traverser._branchStack);
     while (!empty(traverser._branchStack))
     {
-//        nextBranch = &top(traverser._branchStack);
         // We first check if we need to update the current branch split.
         if (top(traverser._branchStack)._prefixOffset <= 0)  // The branch starts directly within the variant.
         {
@@ -1617,8 +1615,6 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<Co
     pop(traverser._branchStack);
     while (!empty(traverser._branchStack))
     {
-        // Here we setup the new branch.
-//        TBranchStackEntry & nextBranch = top(traverser._branchStack);
         // Now we come back with the reduced branch coverage.
         SEQAN_ASSERT(!testAllZeros(top(traverser._branchStack)._branchCoverage));  // The coverage cannot be empty.
 
@@ -1646,7 +1642,6 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserSpec<Co
         _traverseBranch(traverser, externalAlg, delegate);
         pop(traverser._branchStack);
     }
-//    reinit(traverser._branchStack);
 }
 
 // ----------------------------------------------------------------------------
