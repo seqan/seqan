@@ -130,11 +130,11 @@ _journalSnp(TTarget & target,
     SEQAN_ASSERT_GT(entryIt->physicalOriginPosition + entryIt->length, refPos);
 
     TEntryPos virtPos = entryIt->virtualPosition + (refPos - entryIt->physicalOriginPosition);
-    _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + 1);
-    entryIt = end(_journalEntries(target), Standard()) -1;
-    TEntryPos physPos = length(target._insertionBuffer);
     appendValue(target._insertionBuffer, snp);
-    _doRecordInsertion(target._journalEntries, entryIt, virtPos, physPos, 1u);
+    _doRecordInsertion(target._journalEntries, entryIt, virtPos, length(target._insertionBuffer) - 1, 1u);
+    entryIt = end(_journalEntries(target), Standard()) -1;
+    ++virtPos;
+    _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + 1);
 }
 
 // ----------------------------------------------------------------------------
