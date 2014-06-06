@@ -760,7 +760,10 @@ inline void setInsertionSeq(TBreakpoint & bp, TSequence & inSeq)
 template <typename TPos, typename TPosR>
 inline bool _posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
 {
-    return (__int64)abs(pos2 - pos1) < (__int64)(range + 1);
+    if (pos1 < pos2)
+        return pos2 <= pos1 + range;
+    else
+        return pos1 <= pos2 + range;
 }
 
 // Breakends are distinguishable by there one reference Id (startId=endId) and position
