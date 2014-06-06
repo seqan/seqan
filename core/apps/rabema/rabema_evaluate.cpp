@@ -104,7 +104,7 @@ public:
     // target position.
     bool trustNM;
 
-    // If the CIGAR string is absent, this tag provides the position of the other end of the alignment.
+    // If the CIGAR string is absent, this tag provides the position of the other end of the alignment. Implies trustNM.
     CharString extraPosTag;
 
     // If enabled then all reads are treated as single-end mapped.  This is required for analyzing SOAP output that has
@@ -567,6 +567,14 @@ int benchmarkReadResult(RabemaStats & result,
         // If we run in oracle mode then we ignore the actual alignment score and use the best alignment.  We only care
         // about the alignment's end position in this case.
         Dna5String readSeq;
+        if (hasFlagFirst(samRecord) || (!hasFlagFirst(samRecord) && !hasFlagLast(samRecord)))
+            readSeq = readSeqL;
+        if (hasFlagLast(samRecord))
+            readSeq = readSeqR;
+
+        // TODO(holtgrew): Remove const cast once we have const holders!
+        BamTagsDict bamTags(const_cast<CharString &>(samRecord.tags));
+
         int bestDistance = minValue<int>();  // Marker for "not set yet".
         // Note that bestDistance expresses the distance in percent error, relative to the read length, ceiled up
         // and converted to an int value.
@@ -575,30 +583,16 @@ int benchmarkReadResult(RabemaStats & result,
             // Get best distance from NM tag if set and we are to trust it.
             if (options.trustNM)
             {
-                // TODO(holtgrew): Remove const cast once we have const holders!
-                BamTagsDict bamTags(const_cast<CharString &>(samRecord.tags));
                 unsigned idx = 0;
-                if (findTagKey(idx, bamTags, "NM"))
+                if (findTagKey(idx, bamTags, "NM") && extractTagValue(bestDistance, bamTags, idx))
                 {
-                    if (extractTagValue(bestDistance, bamTags, idx))
-                    {
-                        // Convert from count to rate.
-                        bestDistance = static_cast<int>(ceil(100.0 * bestDistance / length(readSeq)));
-                    }
-                    else
-                    {
-                        bestDistance = minValue<int>();  // Reset to sentinel.
-                    }
+                    // Convert from count to rate.
+                    bestDistance = static_cast<int>(ceil(100.0 * bestDistance / length(readSeq)));
                 }
             }
             // Otherwise, perform a realignment.
-            Dna5String contigSeq;
-            if (bestDistance == minValue<int>())
+            else
             {
-                if (hasFlagFirst(samRecord) || (!hasFlagFirst(samRecord) && !hasFlagLast(samRecord)))
-                    readSeq = readSeqL;
-                if (hasFlagLast(samRecord))
-                    readSeq = readSeqR;
                 int bandwidth = static_cast<int>(ceil(0.01 * options.maxError * length(readSeq)));
                 __int32 beginPos = samRecord.beginPos - bandwidth;
                 __int32 endPos = (beginPos + getAlignmentLengthInRef(samRecord) -
@@ -607,7 +601,7 @@ int benchmarkReadResult(RabemaStats & result,
                     beginPos = 0;
                 if (endPos > (int)length(refSeqs[seqId]))
                     endPos = length(refSeqs[seqId]);
-                contigSeq = infix(refSeqs[seqId], beginPos, endPos);
+                Dna5String contigSeq = infix(refSeqs[seqId], beginPos, endPos);
                 if (hasFlagRC(samRecord))
                     reverseComplement(contigSeq);
                 Finder<Dna5String> finder(contigSeq);
@@ -632,8 +626,6 @@ int benchmarkReadResult(RabemaStats & result,
             // we can still get the extra position from an user-defined tag.
             if (empty(samRecord.cigar))
             {
-                BamTagsDict bamTags(const_cast<CharString &>(samRecord.tags));
-
                 unsigned idx = 0;
                 unsigned extraPos = 0;
 
@@ -1129,7 +1121,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
                                             "realignment is performed.  Off by default."));
     addOption(parser, seqan::ArgParseOption("", "extra-pos-tag",
                                             "If the CIGAR string is absent, the missing alignment end position can be "
-                                            "provided by this BAM tag.",
+                                            "provided by this BAM tag. This implies trust-NM.",
                                             seqan::ArgParseOption::STRING));
 
     addOption(parser, seqan::ArgParseOption("", "ignore-paired-flags",
@@ -1242,6 +1234,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
         options.distanceMetric = HAMMING_DISTANCE;
     options.trustNM = isSet(parser, "trust-NM");
     getOptionValue(options.extraPosTag, parser, "extra-pos-tag");
+    if (!empty(options.extraPosTag)) options.trustNM = true;
     options.ignorePairedFlags = isSet(parser, "ignore-paired-flags");
     options.dontPanic = isSet(parser, "DONT-PANIC");
 
