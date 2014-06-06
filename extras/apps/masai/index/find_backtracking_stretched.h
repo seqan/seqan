@@ -63,9 +63,9 @@ protected:
 
     typedef typename Fibre<TIndex, EsaText>::Type                       TSAText;
     typedef typename Infix<TSAText const>::Type                         TPrefix;
-    typedef PrefixAligner<TPrefix, TDistance>                           TPrefixAligner;
+    typedef PrefixAligner_<TPrefix, TDistance>                          TPrefixAligner;
 
-    typedef typename State<TPrefix, TDistance>::Type                    TState;
+    typedef typename BacktrackingState_<TPrefix, TDistance>::Type       TState;
     typedef String<TState, Block<> >                                    TStateStack;
 
     typedef String<bool, Block<> >                                      TEndStack;

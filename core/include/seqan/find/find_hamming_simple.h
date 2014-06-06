@@ -53,8 +53,6 @@ namespace SEQAN_NAMESPACE_MAIN {
  * 
  * @tparam TNeedle The needle type. Types: String
  * 
- * @section Remarks
- * 
  * This specialization should only be used if no other is applicable or for verification purposes.
  */
 

@@ -74,8 +74,9 @@ inline void close(Stream<BZ2File> & stream);
  * Not copy constructable.
  *
  *
- * @fn BZ2FileStream::Stream();
- * @fn BZ2FileStream::Stream(bzFile);
+ * @fn BZ2FileStream::Stream
+ * @brief Constructor.
+ * @signature BZ2FileStream::Stream([bzFile]);
  *
  * @param[in] bzFile The <tt>BZFILE *</tt> to open.
  *

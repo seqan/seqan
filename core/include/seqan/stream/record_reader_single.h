@@ -67,8 +67,6 @@ _refillBuffer(RecordReader<TFile, SinglePass<void> > & recordReader);
  * @tparam TStream The @link StreamConcept @endlink to work on.
  * @tparam TSpec   Specializing type.  Defaults to <tt>void</tt>.
  *
- * @section Remarks
- *
  * Is neither default nor copy constructable.
  */
 

@@ -53,25 +53,25 @@ namespace seqan {
  * @headerfile <seqan/seeds.h>
  * @brief Try to merge with existing seed.
  *
- * @typedef Tag<Merge_> Merge;
+ * @signature typedef Tag<Merge_> Merge;
  *
  * @tag LocalChainingTags#Chaos
  * @headerfile <seqan/seeds.h>
  * @brief Chain to other seed using CHAOS chaining condition.
  *
- * @typedef Tag<Chaos_> Chaos;
+ * @signature typedef Tag<Chaos_> Chaos;
  *
  * @tag LocalChainingTags#SimpleChain
  * @headerfile <seqan/seeds.h>
  * @brief Chain to other seed by simple chaining.
  *
- * @typedef Tag<SimpleChain_> SimpleChain;
+ * @signature typedef Tag<SimpleChain_> SimpleChain;
  *
  * @tag LocalChainingTags#Single
  * @headerfile <seqan/seeds.h>
  * @brief Force adding without chaining.
  *
- * @typedef Tag<Single_> Single;
+ * @signature typedef Tag<Single_> Single;
  */
 
 // TODO(holtgrew): Stream-line tags to Merge, ChaosChain, SimpleChain?

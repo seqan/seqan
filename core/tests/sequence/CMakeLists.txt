@@ -34,7 +34,8 @@ add_executable (test_sequence
                test_segment.h
                test_sequence_std_adaptions.h
                test_string.h
-               test_stringset.h)
+               test_stringset.h
+               test_string_packed_extension.h)
 target_link_libraries (test_sequence ${SEQAN_LIBRARIES})
 
 add_executable (test_sequence_v2 test_sequence_v2.cpp
@@ -50,6 +51,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_sequence COMMAND $<TARGET_FILE:test_sequence>)
-if (SEQAN_COMPILE_SEQUENCE_TESTS_V2)
 add_test (NAME test_test_sequence_v2 COMMAND $<TARGET_FILE:test_sequence_v2>)
-endif ()

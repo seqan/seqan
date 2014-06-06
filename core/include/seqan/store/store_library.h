@@ -54,9 +54,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TStd  The type to use for storing library size standard deviations.  Default: <tt>double</tt>.
  * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
  *
- * Valkue type of the @link FragmentStore::libraryStore @endlink string.
+ * Value type of the @link FragmentStore::libraryStore @endlink string.
  *
- * A fragment library is a set of mate pairs having a certain distribution of interst sizes.
+ * A fragment library is a set of mate pairs having a certain distribution of insert sizes.
  *
  *
  * @fn LibraryStoreElement::LibraryStoreElement

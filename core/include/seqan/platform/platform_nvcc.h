@@ -132,6 +132,11 @@
 #define SEQAN_DEVICE __device__
 #define SEQAN_GLOBAL __global__
 
+// NOTE(esiragusa): this solves a problem with nvcc using gcc4.x on MacOS X
+#if defined(PLATFORM_GCC) && defined (__APPLE__)
+#undef _GLIBCXX_USE_INT128
+#endif
+
 #else
 
 #define SEQAN_FUNC inline

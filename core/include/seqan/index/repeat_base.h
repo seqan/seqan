@@ -68,29 +68,25 @@ namespace seqan {
  */
 /*!
  * @class Repeat
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief Store information about a repeat.
  * 
- * @signature Repeat<TPos, TPeriod>
+ * @signature template <typename TPos, typename TPeriod>
+ *            struct Repeat;
  * 
  * @tparam TPeriod Type to use for storing the repeat period. Default: 1
  * @tparam TPos Type to use for storing positions.
  * 
  * @see findRepeats
- * 
- * @var VariableType Repeat::endPosition
- * 
+ *
+ * @var TPos Repeat::endPosition;
  * @brief The end position of the repeat of type <tt>TPos</tt>.
- * 
- * @var VariableType Repeat::beginPosition
- * 
+ *
+ * @var TPos Repeat::beginPosition;
  * @brief The begin position of the repeat of type <tt>TPos</tt>.
- * 
- * @var VariableType Repeat::period
- * 
- * @brief The period of the repeat of type <tt>TSize</tt>.
+ *
+ * @var TPeriod Repeat::period;
+ * @brief The period of the repeat of type <tt>TPeriod</tt>.
  */
 
 	template <typename TPos, typename TPeriod>
@@ -215,20 +211,15 @@ findRepeats(repeats, text, 3);
  */
 /*!
  * @fn findRepeats
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief Search for repeats in a text.
  * 
- * @signature findRepeats(repeatString, text, minRepeatLength[, maxPeriod])
+ * @signature void findRepeats(repeatString, text, minRepeatLength[, maxPeriod]);
  * 
- * @param text The text to search repeats in. Types: @link SequenceConcept @endlink
- * @param repeatString A @link String @endlink of @link Repeat @endlink objects.
- * @param maxPeriod Optionally, the maximal period that reported repeats can
- *                  have. Default: 1
- * @param minRepeatLength The minimum length each reported repeat must have.
- * 
- * @section Remarks
+ * @param[out] repeatString    A @link String @endlink of @link Repeat @endlink objects.
+ * @param[in]  text            The text to search repeats in.  Types: @link SequenceConcept @endlink
+ * @param[in]  minRepeatLength The minimum length each reported repeat must have.
+ * @param[in]  maxPeriod       Optionally, the maximal period that reported repeats can have. Default: 1
  * 
  * Subsequences of undefined values/<tt>N</tt>s will always be reported.
  * 
