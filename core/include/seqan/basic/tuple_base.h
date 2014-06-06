@@ -89,6 +89,15 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
 ..include:seqan/basic.h
 */
 
+/*!
+ * @fn Tuple::i
+ * @brief Array of tuple value.
+ *
+ * @signature TValue Tuple::i[SIZE];
+ *
+ * The array of the tuple's values.
+ */
+
 template <typename TValue, unsigned SIZE, typename TSpec = void>
 struct Tuple
 {
@@ -270,9 +279,9 @@ operator<< (std::ostream & out, Tuple<TValue, SIZE, TSpec> const &a)
 {
     out << '[';
     if (SIZE > 0)
-        out << a[0];
+        out << (TValue)a[0];
     for(unsigned j = 1; j < SIZE; ++j)
-        out << ' ' << a[j];
+        out << ' ' << (TValue)a[j];
     out << ']';
     return out;
 }
@@ -455,14 +464,14 @@ inline void clear(Tuple<TValue, SIZE, TSpec> & me)
 // Function operator==()
 // -----------------------------------------------------------------------
 
-template <typename TTuple>
+template <typename TTupleL, typename TTupleR>
 struct ComparisonWorkerContext_
 {
     int result;
-    TTuple const & left;
-    TTuple const & right;
+    TTupleL const & left;
+    TTupleR const & right;
 
-    ComparisonWorkerContext_(int b, TTuple const & l, TTuple const & r)
+    ComparisonWorkerContext_(int b, TTupleL const & l, TTupleR const & r)
             : result(b), left(l), right(r)
     {}
 };
@@ -474,18 +483,19 @@ struct TupleComparisonWorkerEq_
     {
         if (arg.result != 1)
             return;
-        if (arg.left.i[I - 1] != arg.right.i[I - 1])
+        if (getValue(arg.left, I - 1) != getValue(arg.right, I - 1))
             arg.result = 0;
     }
 };
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator==(Tuple<TValue, SIZE, TSpec> const & left,
-           Tuple<TValue, SIZE, TSpec> const & right)
+operator==(Tuple<TValue, SIZE, TSpecL> const & left,
+           Tuple<TValue, SIZE, TSpecR> const & right)
 {
-    typedef Tuple<TValue, SIZE, TSpec> TTuple;
-    ComparisonWorkerContext_<TTuple> context(1, left, right);
+    typedef Tuple<TValue, SIZE, TSpecL> TTupleL;
+    typedef Tuple<TValue, SIZE, TSpecR> TTupleR;
+    ComparisonWorkerContext_<TTupleL, TTupleR> context(1, left, right);
     Loop<TupleComparisonWorkerEq_, SIZE>::run(context);
     return context.result == 1;
 }
@@ -495,10 +505,10 @@ operator==(Tuple<TValue, SIZE, TSpec> const & left,
 // -----------------------------------------------------------------------
 
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator!=(Tuple<TValue, SIZE, TSpec> const & left,
-           Tuple<TValue, SIZE, TSpec> const & right)
+operator!=(Tuple<TValue, SIZE, TSpecL> const & left,
+           Tuple<TValue, SIZE, TSpecR> const & right)
 {
     return !operator==(left, right);
 }
@@ -523,13 +533,14 @@ struct TupleComparisonWorkerLt_
     }
 };
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator<(Tuple<TValue, SIZE, TSpec> const & left,
-          Tuple<TValue, SIZE, TSpec> const & right)
+operator<(Tuple<TValue, SIZE, TSpecL> const & left,
+          Tuple<TValue, SIZE, TSpecR> const & right)
 {
-    typedef Tuple<TValue, SIZE, TSpec> TTuple;
-    ComparisonWorkerContext_<TTuple> context(-1, left, right);
+    typedef Tuple<TValue, SIZE, TSpecL> TTupleL;
+    typedef Tuple<TValue, SIZE, TSpecR> TTupleR;
+    ComparisonWorkerContext_<TTupleL, TTupleR> context(-1, left, right);
     Loop<TupleComparisonWorkerLt_, SIZE>::run(context);
     return context.result == 1;
 }
@@ -554,13 +565,14 @@ struct TupleComparisonWorkerGt_
     }
 };
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator>(Tuple<TValue, SIZE, TSpec> const & left,
-          Tuple<TValue, SIZE, TSpec> const & right)
+operator>(Tuple<TValue, SIZE, TSpecL> const & left,
+          Tuple<TValue, SIZE, TSpecR> const & right)
 {
-    typedef Tuple<TValue, SIZE, TSpec> TTuple;
-    ComparisonWorkerContext_<TTuple> context(-1, left, right);
+    typedef Tuple<TValue, SIZE, TSpecL> TTupleL;
+    typedef Tuple<TValue, SIZE, TSpecR> TTupleR;
+    ComparisonWorkerContext_<TTupleL, TTupleR> context(-1, left, right);
     Loop<TupleComparisonWorkerGt_, SIZE>::run(context);
     return context.result == 1;
 }
@@ -569,10 +581,10 @@ operator>(Tuple<TValue, SIZE, TSpec> const & left,
 // Function operator<=()
 // -----------------------------------------------------------------------
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator<=(Tuple<TValue, SIZE, TSpec> const & left,
-           Tuple<TValue, SIZE, TSpec> const & right)
+operator<=(Tuple<TValue, SIZE, TSpecL> const & left,
+           Tuple<TValue, SIZE, TSpecR> const & right)
 {
     return !operator>(left, right);
 }
@@ -581,10 +593,10 @@ operator<=(Tuple<TValue, SIZE, TSpec> const & left,
 // Function operator>=()
 // -----------------------------------------------------------------------
 
-template <typename TValue, unsigned SIZE, typename TSpec>
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
 inline bool
-operator>=(Tuple<TValue, SIZE, TSpec> const & left,
-           Tuple<TValue, SIZE, TSpec> const & right)
+operator>=(Tuple<TValue, SIZE, TSpecL> const & left,
+           Tuple<TValue, SIZE, TSpecR> const & right)
 {
     return !operator<(left, right);
 }
@@ -593,12 +605,12 @@ operator>=(Tuple<TValue, SIZE, TSpec> const & left,
 // Function operator+()
 // -----------------------------------------------------------------------
 
-template <typename TValue, unsigned SIZE, typename TSpec>
-inline Tuple<TValue, SIZE, TSpec>
-operator+(Tuple<TValue, SIZE, TSpec> const & left,
-          Tuple<TValue, SIZE, TSpec> const & right)
+template <typename TValue, unsigned SIZE, typename TSpecL, typename TSpecR>
+inline Tuple<TValue, SIZE, TSpecL>
+operator+(Tuple<TValue, SIZE, TSpecL> const & left,
+          Tuple<TValue, SIZE, TSpecR> const & right)
 {
-    Tuple<TValue, SIZE, TSpec>  tuple;
+    Tuple<TValue, SIZE, TSpecL>  tuple;
 
     for (unsigned j = 0; j < SIZE; ++j)
         tuple[j] = left[j] + right[j];

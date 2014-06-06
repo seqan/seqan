@@ -1,0 +1,7 @@
+Name: realign
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2012-2014, FU Berlin
+Status: under development
+Description: Realignment using the Anson-Myers algorithm.

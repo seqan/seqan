@@ -1,0 +1,30 @@
+adeno_modified_reads_mates1.fa
+adeno_modified_reads_mates2.fa
+Database file   : adeno.fa
+Query file      : adeno_modified_reads_mates1.fa
+
+Thresholds:
+  overlap threshold (oth)          : 0.5
+  gap threshold (gth)              : 5
+  inital gap threshold (ith)       : 15
+Penalties:
+  translocation penalty (tp)       : 5
+  inversion penalty (ip)           : 5
+  order penalty (op)               : 0
+  required read support (st)       : 1
+Loading paired-end read sequences... Loaded 1 mate pair sequence.
+done
+Loading reference sequences... Loaded 1 database sequence.
+Loaded db seq with length: 4718
+Loaded db ID: gi|9632547|ref|NC_002077.1|
+done
+ Getting STELLAR matches from file, not calling STELLAR
+Importing STELLAR matches from file stellar_joinedMates_l30.gff
+done
+TIME importing stellar matches 0.000504754s
+Getting match distance...
+Constructing graphs... done
+Analyzing graphs... done
+ completed gff writing pairedEnd_st1_l30.gff
+ completed vcf writing pairedEnd_st1_l30.vcf
+TIME all 0.0491245s

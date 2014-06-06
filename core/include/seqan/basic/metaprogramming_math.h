@@ -95,15 +95,18 @@ struct ConstUInt {};
 ..include:seqan/basic.h
  */
 
-template <__int64 numerus>
-struct Log2
+template <__uint64 numerus, __uint64 base>
+struct LogN
 {
-    static const __uint64 VALUE = Log2<(numerus + 1) / 2>::VALUE + 1; // ceil(log_2(n))
+    static const __uint64 VALUE = LogN<(numerus + 1) / base, base>::VALUE + 1; // ceil(log(numerus) / log(base))
 };
 
+template <__uint64 numerus>
+struct Log2: LogN<numerus, 2> {};
+
 // Base cases.
-template <> struct Log2<1> { static const __uint64 VALUE = 0; };
-template <> struct Log2<0> { static const __uint64 VALUE = 0; };
+template <__uint64 base> struct LogN<1, base> { static const __uint64 VALUE = 0; };
+template <__uint64 base> struct LogN<0, base> { static const __uint64 VALUE = 0; };
 
 // ----------------------------------------------------------------------------
 // Metafunction Log2Floor
@@ -135,15 +138,18 @@ template <> struct Log2<0> { static const __uint64 VALUE = 0; };
 ..include:seqan/basic.h
  */
 
-template <__int64 numerus>
-struct Log2Floor
+template <__uint64 numerus, __uint64 base>
+struct LogNFloor
 {
-    static const __uint64 VALUE = Log2Floor<numerus / 2>::VALUE + 1;  // floor(log_2(n))
+    static const __uint64 VALUE = LogNFloor<numerus / base, base>::VALUE + 1; // floor(log(numerus) / log(base))
 };
 
+template <__uint64 numerus>
+struct Log2Floor: LogNFloor<numerus, 2> {};
+
 // Base cases.
-template <> struct Log2Floor<1> { static const __uint64 VALUE = 0; };
-template <> struct Log2Floor<0> { static const __uint64 VALUE = 0; };
+template <__uint64 base> struct LogNFloor<1, base> { static const __uint64 VALUE = 0; };
+template <__uint64 base> struct LogNFloor<0, base> { static const __uint64 VALUE = 0; };
 
 // ----------------------------------------------------------------------------
 // Metafunction Power

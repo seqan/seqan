@@ -63,8 +63,7 @@ parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const 
     seqan::ArgumentParser parser("mason_frag_sequencing");
     // Set short description, version, and date.
     setShortDescription(parser, "Fragment Sequencing Simulation");
-    setVersion(parser, "2.1");
-    setDate(parser, "March 2013");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.
@@ -94,6 +93,19 @@ parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const 
     options.getOptionValues(parser);
 
     return seqan::ArgumentParser::PARSE_OK;
+}
+
+// --------------------------------------------------------------------------
+// Function trimAfterSpace()
+// --------------------------------------------------------------------------
+
+void trimAfterSpace(seqan::CharString & s)
+{
+    unsigned i = 0;
+    for (; i < length(s); ++i)
+        if (isspace(s[i]))
+            break;
+    resize(s, i);
 }
 
 // --------------------------------------------------------------------------
@@ -202,6 +214,9 @@ int main(int argc, char const ** argv)
         if (readRecord(fragId, fragSeq, inFragments) != 0)
             return 1;
 
+        // Trim fragment identifier after first whitespace.
+        trimAfterSpace(fragId);
+
         if (empty(options.outFileNameRight))  // Single-end sequencing.
         {
             sim->simulateSingleEnd(seqL, qualsL, simInfoL, infix(fragSeq, 0, length(fragSeq)));
@@ -210,6 +225,7 @@ int main(int argc, char const ** argv)
             {
                 ssL << ' ';
                 simInfoL.serialize(ssL);
+                ssL << " FRAG_ID=" << fragId;
             }
             if (writeRecord(outReads, ssL.str(), seqL, qualsL) != 0)
             {
@@ -226,8 +242,10 @@ int main(int argc, char const ** argv)
             {
                 ssL << ' ';
                 simInfoL.serialize(ssL);
+                ssL << " FRAG_ID=" << fragId;
                 ssR << ' ';
                 simInfoR.serialize(ssR);
+                ssR << " FRAG_ID=" << fragId;
             }
 
             // std::cerr << seqL << "\t" << qualsL << "\n"

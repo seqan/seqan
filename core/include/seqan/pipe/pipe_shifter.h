@@ -65,8 +65,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam DELTA      The shift size. For the output stream holds <tt>out[i]=in[i+delta]</tt>.  For <tt>delta>0</tt>
  *                    the input stream is cut of at the beginning and for <tt>delta<0</tt> at the end.
  * 
- * @section Remarks
- * 
  * The output type equals the input type.
  */
 

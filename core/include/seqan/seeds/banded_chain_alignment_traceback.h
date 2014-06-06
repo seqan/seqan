@@ -235,7 +235,7 @@ void _computeTraceback(TTarget & target,
                        DPScout_<TDPCell, TScoutSpec> & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
-                       DPBand_<TBandFlag> const & band,
+                       DPBandConfig<TBandFlag> const & band,
                        DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     typedef DPScout_<TDPCell, TScoutSpec> TDPScout_;
@@ -355,7 +355,7 @@ void _computeTraceback(StringSet<TTarget> & targetSet,
                        TDPScout & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
-                       DPBand_<TBandFlag> const & band,
+                       DPBandConfig<TBandFlag> const & band,
                        DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     typedef typename TDPScout::TMaxHostPositionString TMaxHostPositions;

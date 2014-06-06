@@ -37,6 +37,8 @@
 #ifndef SEQAN_STREAM_IS_H_
 #define SEQAN_STREAM_IS_H_
 
+#include <cctype>
+
 // ==========================================================================
 // We add documentation for cctype here for completeness.
 // ==========================================================================
@@ -48,7 +50,7 @@
  * 
  * @signature bool isalnum(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is alphanumeric.
  * 
@@ -83,7 +85,7 @@
  * 
  * @signature bool isalpha(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a character.
  * 
@@ -117,7 +119,7 @@
  * 
  * @signature bool isdigit(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a digit.
  * 
@@ -152,7 +154,7 @@
  * 
  * @signature bool iscntrl(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a control character.
  * 
@@ -185,7 +187,7 @@
  * 
  * @signature bool isprint(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -220,7 +222,7 @@
  * 
  * @signature bool isgraph(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -259,7 +261,7 @@
  * 
  * @signature bool isspace(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
  * 
@@ -303,7 +305,7 @@
  * 
  * @signature bool isblank(c);
  * 
- * @param c The character to be checked. Type: <tt>int</tt>
+ * @param[in] c The character to be checked. Type: <tt>int</tt>
  * 
  * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a blank character.
  * 
@@ -338,13 +340,14 @@
 ..include:seqan/stream.h
 */
 
-#ifdef PLATFORM_WINDOWS_VS
-// TODO(holtgrew): Adding basic/POSIX functions for OS that do not support them theirselves should go into platform.
-inline
-int isblank(int c)
+#if defined(_MSC_VER) && _MSC_VER < 1800
+
+inline int
+isblank(int c)
 {
-    return (c == ' ') || (c == '\t');
+    return (c == ' ' || c == '\t');
 }
-#endif  // #ifdef PLATFORM_WINDOWS_VS
+
+#endif  // #if defined(_MSC_VER) && _MSC_VER < 1800
 
 #endif  // #ifndef SEQAN_STREAM_IS_H_

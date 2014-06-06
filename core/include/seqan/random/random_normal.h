@@ -53,6 +53,7 @@ typedef Tag<Normal_> Normal;
 
 /*!
  * @class NormalPdf Normal Pdf
+ * @brief Probability density function for normal distribution.
  * @extends Pdf
  * @headerfile <seqan/random.h>
  *

@@ -204,6 +204,18 @@ typedef Tag<Tell_> Tell;
 template <typename TStream, typename TTag>
 struct HasStreamFeature;
 
+/*!
+ * @mfn StreamConcept#Size
+ * @headerfile <seqan/stream.h>
+ * @brief Return the size type for a stream.
+ *
+ * @signature Size<TStream>::Type;
+ *
+ * @tparam TStream The stream to query for its size type.
+ *
+ * @return Type The size type of <tt>TStream</tt>.
+ */
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -259,7 +271,7 @@ struct HasStreamFeature;
  * @param[in]     source The data to write to the stream. Types: nolink:<tt>char *</tt>
  * @param[in]     count  The number of bytes to write to the stream.
  * 
- * @return TSize The number of successfully written objects.
+ * @return TSize The number of successfully written objects  (Metafunction: @link StreamConcept#Size @endlink).
  * 
  * @section Examples
  * 
@@ -320,13 +332,12 @@ struct HasStreamFeature;
  * 
  * @signature TSize streamReadBlock(target, stream, maxLen)
  * 
- * @param maxLen maximal number of characters to read. Types:
- *               nolink:<tt>size_t</tt>
- * @param target The buffer to read into. There has to be enough space for
- *               <tt>maxLen</tt> bytes. Types: nolink:<tt>char *</tt>
- * @param stream The stream to read from. Types: StreamConcept
+ * @param[in]     maxLen maximal number of characters to read (<tt>size_t</tt>).
+ * @param[out]    target The buffer to read into.  There has to be enough space for <tt>maxLen</tt> bytes
+ *                       (<tt>char *</tt>).
+ * @param[in,out] stream The stream to read from.
  * 
- * @return TSize Number of read bytes.
+ * @return TSize Number of read bytes  (Metafunction: @link StreamConcept#Size @endlink).
  * 
  * @section Examples
  * 
