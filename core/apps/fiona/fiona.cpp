@@ -2275,7 +2275,7 @@ inline unsigned PoisClassifCutoff(TOddsRatio prior, TMean lambda, TErrorrates er
 	unsigned k = 0;
 	//std::cerr << "prefix of len " << prefixlen << " expected " << lambda << " prior " << prior << " error-rate " <<errorrate << std::endl;
 	//we impose that k shall not be higher than the expected count for correct reads.
-	unsigned kquart = round(errexpnoerr);
+	unsigned kquart = (unsigned)round(errexpnoerr);
 	
 	//while ((log((Pposterr / (Ppostnoerr)) * prior) > 0) || k == 0){
 	while ((k < kquart && log(Pposterr / Ppostnoerr * prior) > 0) || k == 0){
@@ -2359,8 +2359,8 @@ inline int OddsRepeatCutoff(
 	}
 	//
 	double post1occ = 0.0;
-	int c = (odds < 1) ? 0 : (lambda *pnoerr);
-	int cmax = 100 * lambda * pnoerr;
+	int c = (odds < 1) ? 0 : (int)(lambda * pnoerr);
+	int cmax = (int)(100.0 * lambda * pnoerr);
 	while(post1occ < odds && c <cmax){
 		clear(posteriors);
 		resize( posteriors, nrmax+1, 0.0);
@@ -2420,7 +2420,7 @@ precomputeOverlapCombinatorics(
         binomial Zerr(nonSeedOverlap, options.errorrate);
         binomial Zotherov(nonSeedOverlap, (1 + options.errorrate) / 4);
 
-        unsigned maxErrors = options.overlap_errorrate * (nonSeedOverlap + k + 1);
+		unsigned maxErrors = (unsigned)(options.overlap_errorrate * (nonSeedOverlap + k + 1));
 
         double expovsumT1 = 0;
         double expovsumT2 = 0;
@@ -2517,8 +2517,8 @@ inline int OddsOverlapSumCutoff(
 //        }
 //    }
 
-	int cutoff = ceil((1 - w) * totalExpectedCorrectOverlapSum + w * totalExpectedFPOverlapSum);
-	return _max(cutoff, 5.0);
+	int cutoff = (int)((1 - w) * totalExpectedCorrectOverlapSum + w * totalExpectedFPOverlapSum);
+	return _max(cutoff, 5);
 
 
 //	SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1) reduction(+:expovsumT1) reduction(+:expovsumT2))
@@ -2704,7 +2704,7 @@ void CombinatoricsNoSeed(TMatrix &m, int lread, int kmax, int nerrmax)
 		for (k = 0; k < ne; ++k)
 			m(ne, k) = 0;
 		for (k = ne; k <= kmax; ++k)
-			m(ne, k) = boost::math::binomial_coefficient<double>(k, ne);
+			m(ne, k) = (int)boost::math::binomial_coefficient<double>(k, ne);
 		int mpos = (ne + 1) * kmax;
 		for (k = mpos; k <= lread; ++k)
 			m(ne, k) = 0;
@@ -2884,7 +2884,7 @@ void ComputeCutoffErroneous(
 	clear(thresholds);
 	resize(thresholds, kmax+1, 0);
 	for (int k = kmin; k <= kmax; k++){
-		thresholds[k] = cutoff;
+		thresholds[k] = (int)cutoff;
 	}
 }
 
@@ -2904,7 +2904,7 @@ void ComputeCutoffErroneous(
 		clear(thresholds);
 		resize(thresholds, kmax+1, 0);
 	for (int k = kmin; k <= kmax; k++){
-		thresholds[k] = expected[k];
+		thresholds[k] = (int)expected[k];
 	}
 }
 
@@ -3493,7 +3493,7 @@ void traverseAndSearchCorrections(
 	//by controlling the proportion pNeig of the reads that are expected with that many mismatches (given the error rate)
     unsigned replen_min = cargo(index).replen_min;
     unsigned cycle = options.cycle;
-	float pNeig = 0.95;
+	float pNeig = 0.95f;
 	binomial Nmismatch(readLength, options.errorrate);
 	unsigned maxAcceptedMismatches = _max((unsigned) ceil(quantile(Nmismatch, pNeig)), 2u);   //unlikely that 2 reads share the same error         (weese:) don't understand the comment
 //	double oldAcceptedMismatches = (options.errorrate * readLength);
@@ -4360,8 +4360,8 @@ unsigned correctReads(
 		}
         if (options.verbosity >= 1)
             std::cerr << "Determination of minimum tree level according to HiTEC strategy." << std::endl;
-        int mink_genome = log(200* options.genomeLength) / log(4);
-		options.fromLevel = (int)HiTEC_mink < mink_genome ? HiTEC_mink : mink_genome;
+        double mink_genome = log(200.0 * options.genomeLength) / log(4.0);
+		options.fromLevel = (HiTEC_mink < mink_genome) ? HiTEC_mink : (int)mink_genome;
         
 		int upl = (options.fromLevel + 10) < (int)maxReadLength ? (options.fromLevel + 10) : (int)maxReadLength;
 		options.toLevel = upl; // OLD let to high toplevels: toplevel < upl ? upl : toplevel;
