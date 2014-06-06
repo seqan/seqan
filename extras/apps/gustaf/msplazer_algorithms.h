@@ -1211,7 +1211,6 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 template <typename TBreakpoint>
 bool _insertBreakpointOld(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange)
 {
-    typedef typename TBreakpoint::TId TId;
     bool foundNewBP = true;
     String<unsigned> toBeErased;
     // Breakpoint bp is compared to each breakpoint in the list (tempBP)
