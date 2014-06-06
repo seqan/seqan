@@ -1074,6 +1074,10 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addOption(parser, ArgParseOption("I", "intervals", "Genomic intervals to analyse. E.g. 21:1000-2000.",  ArgParseArgument::STRING, "TEXT"));
 
     addSection(parser, "Calling options");
+    addOption(parser, ArgParseOption("bcr", "bs-conv-rate", "Bisulfite conversion rate.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "bs-conv-rate", "0.0");
+    setMaxValue(parser, "bs-conv-rate", "1.0");
+    setDefaultValue(parser, "bs-conv-rate", methOptions.convRate);
     addOption(parser, ArgParseOption("mm", "min-mutations", "Minimal number of deviating bases for calling.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "min-mutations", options.minMutT);
     addOption(parser, ArgParseOption("mq", "min-quality", "Minimal average quality for calling.", ArgParseArgument::DOUBLE));
@@ -1095,6 +1099,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addOption(parser, ArgParseOption("gp", "genotype-priors", "Use non-uniform genotype prior probabilities."));
     hideOption(parser, "gp");   // simulate data and check
     addOption(parser, ArgParseOption("nec", "ns-errors-calling", "Use empirical error frequencies of Illumina sequencing data to compute likelihoods in bayesian model (corresponding to Dohm et al. 2008)."));
+
 
     // Realignment
     addOption(parser, ArgParseOption("nse", "ns-subst-errors", "Use non-uniform substitution error frequencies for realigning."));
@@ -1161,6 +1166,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     getOptionValue(options.windowSize, parser, "parse-window-size");
     getOptionValue(options.realignAddBorder, parser, "realign-border");
     // SNP Calling Options:
+    getOptionValue(methOptions.convRate, parser, "bs-conv-rate");
     getOptionValue(options.minMutT, parser, "min-mutations");
     getOptionValue(options.avgQualT, parser, "min-quality");
     getOptionValue(options.minMapQual, parser, "min-map-quality");
