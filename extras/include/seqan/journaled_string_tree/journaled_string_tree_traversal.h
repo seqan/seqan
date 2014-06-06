@@ -2050,8 +2050,11 @@ traverse(TOperator & traversalCaller,
          TDelegate & delegate,
          JstTraverser<TContainer, TState, TSpec> & traverser)
 {
-    _reinitBlockEnd(traverser);
-    _execTraversal(traverser, traversalCaller, delegate);
+    while(journalNextBlock(container(traverser), contextSize(traverser)))
+    {
+        _reinitBlockEnd(traverser);
+        _execTraversal(traverser, traversalCaller, delegate);
+    }
 }
 
 // ----------------------------------------------------------------------------
