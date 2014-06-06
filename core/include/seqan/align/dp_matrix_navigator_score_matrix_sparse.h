@@ -101,7 +101,7 @@ template <typename TValue>
 inline void
 _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
       DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
-      DPBand_<BandOff> const &)
+      DPBandConfig<BandOff> const &)
 {
     navigator._ptrDataContainer = &dpMatrix;
     navigator._activeColIterator = begin(dpMatrix, Standard());
@@ -114,7 +114,7 @@ template <typename TValue>
 inline void
 _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
       DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
-      DPBand_<BandOn> const & band)
+      DPBandConfig<BandOn> const & band)
 {
     typedef DPMatrix_<TValue, SparseDPMatrix> TSparseDPMatrix;
     typedef typename Size<TSparseDPMatrix>::Type TSize;

@@ -60,8 +60,6 @@ namespace seqan {
  *
  * @tparam TString The @link String @endlink specialization to use for reading from.
  *
- * @section Remarks
- *
  * This RecordReader does not have any buffers but uses the string directly.
  *
  * Not default or copy constructable.

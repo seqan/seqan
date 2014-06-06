@@ -69,7 +69,7 @@ public:
     template <typename TBandFlag, typename TSizeH, typename TSizeV>
     TracebackCoordinator_(TPosition currColumn,
                           TPosition currRow,
-                          DPBand_<TBandFlag> const & band,
+                          DPBandConfig<TBandFlag> const & band,
                           TSizeH seqHSize,
                           TSizeV seqVSize)
         : _currColumn(currColumn),
@@ -88,7 +88,7 @@ public:
                           TPosition currRow,
                           TPosition endColumn,
                           TPosition endRow,
-                          DPBand_<TBandFlag> const & band,
+                          DPBandConfig<TBandFlag> const & band,
                           TSizeH seqHSize,
                           TSizeV seqVSize)
         : _currColumn(currColumn),
@@ -144,11 +144,11 @@ _hasReachedEnd(TracebackCoordinator_<TPosition> const & coordinator)
 template <typename TPosition, typename TBandFlag, typename TSizeH, typename TSizeV>
 inline void
 _initTracebackCoordinator(TracebackCoordinator_<TPosition> & coordinator,
-                          DPBand_<TBandFlag> const & band,
+                          DPBandConfig<TBandFlag> const & band,
                           TSizeH seqHSize,
                           TSizeV seqVSize)
 {
-    typedef typename Position<DPBand_<TBandFlag> >::Type TBandPosition;
+    typedef typename Position<DPBandConfig<TBandFlag> >::Type TBandPosition;
     if (IsSameType<TBandFlag, BandOn>::VALUE)
     {
         // Adapt the current column value when the lower diagonal is positive (shift right in horizontal direction).
@@ -493,7 +493,7 @@ void _computeTraceback(TTarget & target,
                        unsigned  maxHostPosition,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
-                       DPBand_<TBandFlag> const & band,
+                       DPBandConfig<TBandFlag> const & band,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
@@ -561,7 +561,7 @@ void _computeTraceback(TTarget & target,
                        DPScout_<TDPCell, TScoutSpec> const & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
-                       DPBand_<TBandFlag> const & band,
+                       DPBandConfig<TBandFlag> const & band,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);

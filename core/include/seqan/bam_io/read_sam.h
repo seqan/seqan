@@ -217,10 +217,13 @@ int readRecord(BamHeaderRecord & record,
         }
     }
 
-    // Skip remaining line break.
-    int res = skipLine(reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
+    // Skip remaining line break, in case of comment, we already skipped over it.
+    if (record.type != BAM_HEADER_COMMENT)
+    {
+        int res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return res;
+    }
     return 0;
 }
 

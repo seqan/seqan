@@ -114,7 +114,7 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  *
  * @signature ArgumentParser::ArgumentParser([appName]);
  *
- * @param appName The name of the application (<tt>std::string</tt>), defaults to <tt>argv[0]</tt>.
+ * @param[in] appName The name of the application (<tt>std::string</tt>), defaults to <tt>argv[0]</tt>.
  */
 
 /*!
@@ -123,22 +123,22 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  *
  * @signature enum ArgumentParser::ParseResult;
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_OK;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_OK;
  * @brief Parsing the program's arguments was successful and no builtin command was triggered.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_ERROR;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_ERROR;
  * @brief There were errors parsing the arguments.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
  * @brief Parsing was successful, built-in <tt>--help</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
  * @brief Parsing was successful, built-in <tt>--version</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
  * @brief Parsing was successful, built-in <tt>--write-ctd</tt> option was used.
  *
- * @var ArgumentParser::ParseResult ArgumentParser::PARSE_EXPORT_HELP;
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_EXPORT_HELP;
  * @brief Parsing was successful, built-in <tt>--export-help</tt> option was used.
  */
 
@@ -301,8 +301,8 @@ public:
  *
  * @signature bool hasOption(parser, name);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The name to query for (<tt>std::string</tt>).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The name to query for (<tt>std::string</tt>).
  *
  * @return bool <tt>true</tt> if there is such an option, <tt>false</tt> otherwise.
  */
@@ -336,8 +336,8 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
  *
  * @signature void addOption(parser, option);
  *
- * @param parser The ArgumentParser to add the option to.
- * @param option The ArgParseOption to add to <tt>parser</tt>.
+ * @param[in,out] parser The ArgumentParser to add the option to.
+ * @param[in]     option The ArgParseOption to add to <tt>parser</tt>.
  */
 
 /**
@@ -414,8 +414,8 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
  *
  * @signature void addArgument(parser, arg);
  *
- * @param parser The ArgumentParser to add the argument to.
- * @param arg    The ArgParseArgument to add to <tt>parser</tt>.
+ * @param[in,out] parser The ArgumentParser to add the argument to.
+ * @param[in]     arg    The ArgParseArgument to add to <tt>parser</tt>.
  */
 
 /**
@@ -518,8 +518,8 @@ inline ArgumentParser::TOptionMapSize _getOptionIndex(ArgumentParser const & me,
  *
  * @signature TOption getOption(parser, name);
  *
- * @param parser The parser to query.
- * @param name   The short or long name of the option (<tt>std::string</tt>).
+ * @param[in] parser The parser to query.
+ * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
  *
  * @return TOption Reference to the @link ArgParseOption @endlink with the given short or long name.
  */
@@ -560,9 +560,9 @@ inline ArgParseOption const & getOption(ArgumentParser const & me, std::string c
  *
  * @signature void setRequired(parser, name[, required]).
  *
- * @param parser   The ArgumentParser to set the flag of.
- * @param name     The short or long name of the option (<tt>std::string</tt>).
- * @param required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
+ * @param[in,out] parser   The ArgumentParser to set the flag of.
+ * @param[in]     name     The short or long name of the option (<tt>std::string</tt>).
+ * @param[in]     required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
  */
 
 /**
@@ -598,9 +598,9 @@ inline void setRequired(ArgumentParser & me, std::string const & name, bool requ
  *
  * @signature void hideOption(parser, name[, hide]).
  *
- * @param parser The ArgParseOption to the the hidden flag of.
- * @param name   The short or long name of the option to modify.
- * @param hide   Whether or not to hide the flag (<tt>bool</tt>, defaults to <tt>true</tt>).
+ * @param[in,out] parser The ArgParseOption to the the hidden flag of.
+ * @param[in]     name   The short or long name of the option to modify.
+ * @param[in]     hide   Whether or not to hide the flag (<tt>bool</tt>, defaults to <tt>true</tt>).
  */
 
 /**
@@ -635,10 +635,10 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
  *
  * @signature TArgument getArgument(parser, pos);
  *
- * @param parser The ArgumentParser to query.
- * @param pos    The position of the argument to return (<tt>unsigned</tt>, starting at 0).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] pos    The position of the argument to return (<tt>unsigned</tt>, starting at 0).
  *
- * @return TArgument Reference to the argument with the given position.
+ * @return TArgument Reference to the @link ArgParseArgument @endlink with the given position.
  */
 
 /**
@@ -679,8 +679,8 @@ inline ArgParseArgument const & getArgument(ArgumentParser const & me, unsigned 
  *
  * @signature bool isSet(parser, name);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The short or long name of the option (<tt>std::string</tt>).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
  *
  * @return bool Whether or not the option was set on the command line or not.
  */
@@ -715,8 +715,8 @@ inline bool isSet(ArgumentParser const & me, std::string const & name)
  *
  * @signature bool hasDefault(parser, name);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The short or long name of the option (<tt>std::string</tt>).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
  *
  * @return bool Whether or not the option has a default value.
  */
@@ -776,11 +776,12 @@ inline bool _allArgumentsSet(ArgumentParser const & me)
  *
  * @signature bool getOptionValue(dest, parser, name[, pos]);
  *
- * @param dest   The variable to write the result to (the type is a template parameter and the value type of the option
- *               must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see result value).
- * @param parser The ArgumentParser to get the value from.
- * @param name   The short or long name of the option (<tt>std::string</tt>).
- * @param pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ * @param[in] dest   The variable to write the result to (the type is a template parameter and the value type of the
+ *                    option must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see
+ *                    result value).
+ * @param[in] parser The ArgumentParser to get the value from.
+ * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
+ * @param[in] pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
  *
  * @return bool <tt>true</tt> if the requested option was given on the command line and could be coverted to the type of
  *              <tt>dest</tt>.
@@ -838,13 +839,25 @@ inline bool getOptionValue(TValue & val,
  *
  * @signature std::string getOptionFileExtension(parser, name[, pos]);
  *
- * Can be overridden by <tt>--${name}-file-ext</tt>.
- *
- * @param parser The ArgumentParser to get the value from.
- * @param name   The short or long name of the option (<tt>std::string</tt>).
- * @param pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ * @param[in] parser The ArgumentParser to get the value from.
+ * @param[in] name   The short or long name of the option (<tt>std::string</tt>).
+ * @param[in] pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
  *
  * @return std::string The extension of the option. Empty if not set or no extension.
+ *
+ * @see ArgumentParser#getArgumentFileExtension
+ *
+ * @section Overriding File Extension on the Command Line
+ *
+ * For each option with type <tt>INPUTFILE</tt> and <tt>OUTPUTFILE</tt>, an option with the name
+ * <tt>${name}-file-ext</tt> is automatically added to the ArgumentParser (where <tt>${name}</tt> is the name
+ * of the original option).  The extension can be overridden by specifying the argument.  Thus, the user of
+ * the program could give the value "file.ext" to the parameter "fname" and override the extension on the
+ * command line to "ext2" as follows:
+ *
+ * @code{.console}
+ * # program_name --fname file.ext --fname-file-ext ext2
+ * @endcode
  */
 
 /**
@@ -881,8 +894,10 @@ inline std::string getOptionFileExtension(ArgumentParser const & me,
  *
  * @signature unsigned getOptionValueCount(parser, name);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The short or long name of the option (<tt>string</tt>).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The short or long name of the option (<tt>string</tt>).
+ *
+ * @return unsigned The number of values for the option with the given name.
  */
 
 /**
@@ -915,8 +930,10 @@ inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const
  *
  * @signature unsigned getArgumentValueCount(parser, pos);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The position of the argument (<tt>unsigned</tt>, 0-based).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The position of the argument (<tt>unsigned</tt>, 0-based).
+ *
+ * @return unsigned The number of values for the argument with the given position.
  */
 
 /**
@@ -951,12 +968,12 @@ inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argume
  *
  * @signature bool getArgumentValue(dest, parser, pos[, no]);
  *
- * @param dest   The variable to write the result to (the type is a template parameter and the value type of the
- *               argument must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see result
- *               value).
- * @param parser The ArgumentParser to get the value from.
- * @param pos    The position of the argument to get the value of.
- * @param no     Optional position for multi-value arguments (<tt>unsigned</tt>, defaults to 0).
+ * @param[in] dest   The variable to write the result to (the type is a template parameter and the value type of the
+ *                   argument must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see
+ *                   result value).
+ * @param[in] parser The ArgumentParser to get the value from.
+ * @param[in] pos    The position of the argument to get the value of.
+ * @param[in] no     Optional position for multi-value arguments (<tt>unsigned</tt>, defaults to 0).
  *
  * @return bool <tt>true</tt> if the retrieval was successful, <tt>false</tt> otherwise.
  */
@@ -1008,13 +1025,25 @@ inline bool getArgumentValue(TValue & value,
  *
  * @signature std::string argumentFileExtension(parser, pos[, argNo]);
  *
- * Can be overridden by <tt>--arg-${pos}-file-ext</tt>.
- *
- * @param parser The ArgumentParser to get the value from.
- * @param pos    The position of the argument to query (<tt>unsigned</tt>).
- * @param argNo  Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ * @param[in] parser The ArgumentParser to get the value from.
+ * @param[in] pos    The position of the argument to query (<tt>unsigned</tt>).
+ * @param[in] argNo  Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
  *
  * @return std::string The extension of the argument if any.
+ *
+ * @see ArgumentParser#getOptionFileExtension
+ *
+ * @section Overriding File Extensions on the Command Line
+ *
+ * For each argument with type <tt>INPUTFILE</tt> and <tt>OUTPUTFILE</tt>, an option with the index
+ * <tt>arg-${idx}-file-ext</tt> is automatically added to the ArgumentParser (where <tt>${idx}</tt> is the index
+ * of the original option).  The extension can be overridden by specifying the argument.  Thus, the user of
+ * the program could give the value "file.ext" to the parameter "0" and override the extension on the
+ * command line to "ext2" as follows:
+ *
+ * @code{.console}
+ * # program_name file.ext --arg-0-file-ext ext2
+ * @endcode
  */
 
 /**
@@ -1055,8 +1084,8 @@ inline std::string getArgumentFileExtension(ArgumentParser const & me,
  *
  * @signature TVector getOptionValues(parser, name);
  *
- * @param parser The ArgumentParser to query.
- * @param name   The short or long name of the option to get (<tt>std::string</tt>).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] name   The short or long name of the option to get (<tt>std::string</tt>).
  *
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
@@ -1092,8 +1121,8 @@ inline std::vector<std::string> const & getOptionValues(ArgumentParser const & m
  *
  * @signature TVector getArgumentValues(parser, pos);
  *
- * @param parser The ArgumentParser to query.
- * @param pos    The position of the argument (<tt>unsigned</tt>, 0-based).
+ * @param[in] parser The ArgumentParser to query.
+ * @param[in] pos    The position of the argument (<tt>unsigned</tt>, 0-based).
  *
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
@@ -1131,9 +1160,9 @@ inline std::vector<std::string> const & getArgumentValues(ArgumentParser const &
  *
  * @signature void setDefaultValue(parser, name, v);
  *
- * @param parser The ArgumentParser to set the default value to.
- * @param name   The short or long name of the argument (<tt>std::string</tt>).
- * @param v      The value to set (template parameter, must be streamable into a <tt>std::stringstream</tt>).
+ * @param[in] parser The ArgumentParser to set the default value to.
+ * @param[in] name   The short or long name of the argument (<tt>std::string</tt>).
+ * @param[in] v      The value to set (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
 
 /**
@@ -1168,9 +1197,9 @@ inline void setDefaultValue(ArgumentParser & me,
  *
  * @signature void addDefaultValue(parser, name, v);
  *
- * @param parser The ArgumentParser to append the default value to.
- * @param name   The short or long name of the argument (<tt>std::string</tt>).
- * @param v      The value to append (template parameter, must be streamable into a <tt>std::stringstream</tt>).
+ * @param[in,out] parser The ArgumentParser to append the default value to.
+ * @param[in]     name   The short or long name of the argument (<tt>std::string</tt>).
+ * @param[in]     v      The value to append (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
 
 /**
@@ -1206,10 +1235,10 @@ inline void addDefaultValue(ArgumentParser & me,
  * @signature void setMinValue(parser, name, v);
  * @signature void setMinValue(parser, pos, v);
  *
- * @param parser The ArgumentParser to set the minimal value for.
- * @param name   The name of the option to set the minimal value for (<tt>std::string</tt>).
- * @param pos    The position of the argument to set the minimal value for (<tt>unsigned</tt>, 0-based).
- * @param v      The minimal value to set (<tt>std::string</tt>).
+ * @param[in,out] parser The ArgumentParser to set the minimal value for.
+ * @param[in]     name   The name of the option to set the minimal value for (<tt>std::string</tt>).
+ * @param[in]     pos    The position of the argument to set the minimal value for (<tt>unsigned</tt>, 0-based).
+ * @param[in]     v      The minimal value to set (<tt>std::string</tt>).
  *
  * @section Remarks
  *
@@ -1260,10 +1289,10 @@ inline void setMinValue(ArgumentParser & me,
  * @signature void setMaxValue(parser, name, v);
  * @signature void setMaxValue(parser, pos, v);
  *
- * @param parser The ArgumentParser to set the maximal value for.
- * @param name   The name of the option to set the maximal value for (<tt>std::string</tt>).
- * @param pos    The position of the argument to set the maximal value for (<tt>unsigned</tt>, 0-based).
- * @param v      The maximal value to set (<tt>std::string</tt>).
+ * @param[in,out] parser The ArgumentParser to set the maximal value for.
+ * @param[in]     name   The name of the option to set the maximal value for (<tt>std::string</tt>).
+ * @param[in]     pos    The position of the argument to set the maximal value for (<tt>unsigned</tt>, 0-based).
+ * @param[in]     v      The maximal value to set (<tt>std::string</tt>).
  *
  * @section Remarks
  *
@@ -1314,11 +1343,11 @@ inline void setMaxValue(ArgumentParser & me,
  * @signature void setValidValues(parser, name, values);
  * @signature void setValidValues(parser, pos, values);
  *
- * @param parser The ArgumentParser to set the default values to.
- * @param name   The name of the option (<tt>std::string</tt>).
- * @param pos    The position of the argument (<tt>unsigned</tt>, 0-based).
- * @param values The values to set.  Either a <tt>std::string</tt> with the values as space-separated list
- *               or a <tt>std::vector&lt;std::string&gt;</tt> with the values.
+ * @param[in,out] parser The ArgumentParser to set the default values to.
+ * @param[in]     name   The name of the option (<tt>std::string</tt>).
+ * @param[in]     pos    The position of the argument (<tt>unsigned</tt>, 0-based).
+ * @param[in]     values The values to set.  Either a <tt>std::string</tt> with the values as space-separated list
+ *                       or a <tt>std::vector&lt;std::string&gt;</tt> with the values.
  */
 
 /**
@@ -1388,10 +1417,10 @@ inline void setValidValues(ArgumentParser & me,
  * @signature void setHelpText(parser, name, text);
  * @signature void setHelpText(parser, pos, text);
  *
- * @param parser The ArgumentParser object.
- * @param name   The name of the option to set the help text for (<tt>std::string</tt>).
- * @param pos    The position of the argument to set the help text for.
- * @param text   The string to use for the help text (<tt>std::string</tt>).
+ * @param[in,out] parser The ArgumentParser object.
+ * @param[in]     name   The name of the option to set the help text for (<tt>std::string</tt>).
+ * @param[in]     pos    The position of the argument to set the help text for.
+ * @param[in]     text   The string to use for the help text (<tt>std::string</tt>).
  */
 
 /**
@@ -1439,9 +1468,9 @@ inline void setHelpText(ArgumentParser & me,
  * @signature TVector getFormatExtension(tagList);
  * @signature TVector getFormatExtension(tagSelector);
  *
- * @param tag         A single file foramt, e.g. <tt>Fastq()</tt>.
- * @param tagList     A list of file format (@link TagList @endlink).
- * @param tagSelector A file format selector (@link TagSelector @endlink).
+ * @param[in] tag         A single file foramt, e.g. <tt>Fastq()</tt>.
+ * @param[in] tagList     A list of file format (@link TagList @endlink).
+ * @param[in] tagSelector A file format selector (@link TagSelector @endlink).
  *
  * @return TVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file format extensions.
  */
