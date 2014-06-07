@@ -104,13 +104,13 @@ struct BamTypeChar
 // List of primitive BAM types (ordered by expected frequency of use)
 typedef TagList<int,
         TagList<unsigned int,
-        TagList<double,
         TagList<float,
         TagList<short,
         TagList<unsigned short,
         TagList<char,
         TagList<unsigned char,
         TagList<signed char
+        TagList<double,
         > > > > > > > > > BamTagTypes;
 
 
