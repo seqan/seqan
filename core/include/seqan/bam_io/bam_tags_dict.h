@@ -109,8 +109,8 @@ typedef TagList<int,
         TagList<unsigned short,
         TagList<char,
         TagList<unsigned char,
-        TagList<signed char
-        TagList<double,
+        TagList<signed char,
+        TagList<double
         > > > > > > > > > BamTagTypes;
 
 
