@@ -81,6 +81,38 @@ struct Position<BamTagsDict>
     typedef unsigned Type;
 };
 
+template <typename TValue>
+struct BamTypeChar
+{
+    enum
+    {
+        VALUE =
+            (IsSameType<TValue, char>::VALUE)?      'A':
+            (IsSameType<TValue, __int8>::VALUE)?    'c':
+            (IsSameType<TValue, __uint8>::VALUE)?   'C':
+            (IsSameType<TValue, __int16>::VALUE)?   's':
+            (IsSameType<TValue, __uint16>::VALUE)?  'S':
+            (IsSameType<TValue, __int32>::VALUE)?   'i':
+            (IsSameType<TValue, __uint32>::VALUE)?  'I':
+            (IsSameType<TValue, float>::VALUE)?     'f':
+            (IsSameType<TValue, double>::VALUE)?    'd':
+            (IsSequence<TValue>::VALUE)?            'Z':
+                                                    '?'
+    };
+};
+
+// List of primitive BAM types (ordered by expected frequency of use)
+typedef TagList<int,
+        TagList<unsigned int,
+        TagList<double,
+        TagList<float,
+        TagList<short,
+        TagList<unsigned short,
+        TagList<char,
+        TagList<unsigned char,
+        TagList<signed char
+        > > > > > > > > > BamTagTypes;
+
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -258,25 +290,43 @@ hasIndex(BamTagsDict const & bamTags)
 ..include:seqan/bam_io.h
 */
 
+struct GetBamTypeSizeHelper_
+{
+    int     &resultSize;
+    char    typeC;
+    
+    GetBamTypeSizeHelper_(int &resultSize, char typeC) :
+        resultSize(resultSize),
+        typeC(typeC)
+    {}
+    
+    template <typename Type>
+    bool operator() (Type) const
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        resultSize = sizeof(Type);
+        return true;
+    }
+};
+
+
 inline int
 getBamTypeSize(char c)
 {
     switch (toUpperValue(c))
     {
-        case 'A':
-        case 'C':
-            return 1;
-        case 'S':
-            return 2;
-        case 'I':
-        case 'F':
-            return 4;
         case 'Z':
         case 'H':
         case 'B':
             return -1;
+
         default:
-            return -2;
+            int result = -2;
+            GetBamTypeSizeHelper_ func(result, c);
+            tagApply(func, BamTagTypes());
+            return result;
     }
 }
 
@@ -579,6 +629,36 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
 ..include:seqan/bam_io.h
 */
 
+template <typename TResultType, typename TIter>
+struct ExtractTagValueHelper_
+{
+    TResultType &result;
+    TIter rawIter;
+    char typeC;
+    
+    ExtractTagValueHelper_(TResultType &result, char typeC, TIter rawIter) :
+        result(result),
+        rawIter(rawIter),
+        typeC(typeC)
+    {}
+    
+    template <typename Type>
+    bool operator() (Type) const
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(Type)];
+            Type i;
+        } tmp;
+
+        arrayCopyForward(rawIter, rawIter + sizeof(Type), tmp.raw);
+        result = static_cast<TResultType>(tmp.i);
+        return true;
+    }
+};
+
 template <typename TResultValue, typename TId>
 SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TResultValue> >, bool)
 extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
@@ -587,51 +667,14 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
     typedef Iterator<TInfix, Standard>::Type TIter;
 
     TInfix inf = tags[id];
-    if (length(inf) < 4)
+    if (length(inf) < 4 || inf[2] == 'Z')
         return false;
 
     TIter it = begin(inf, Standard()) + 2;
     char typeC = getValue(it++);
-
-    if (typeC == 'A' || typeC == 'c' || typeC == 'C')
-    {
-        val = static_cast<TResultValue>(getValue(it));
-    }
-    else if (typeC == 's' || typeC == 'S')
-    {
-        if (length(inf) < 5)
-            return false;
-
-        union {
-            char raw[2];
-            short i;
-        } tmp;
-
-        arrayCopyForward(it, it + 2, tmp.raw);
-        val = static_cast<TResultValue>(tmp.i);
-    }
-    else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
-    {
-        if (length(inf) < 7)
-            return false;
-
-        union {
-            char raw[4];
-            int i;
-            float f;
-        } tmp;
-
-        arrayCopyForward(it, it + 4, tmp.raw);
-        if (typeC == 'f')
-            val = static_cast<TResultValue>(tmp.f);
-        else
-            val = static_cast<TResultValue>(tmp.i);
-    }
-    else // variable sized type or invald
-    {
-        return false;
-    }
-    return true;
+    ExtractTagValueHelper_<TResultValue, TIter> func(val, typeC, it);
+    
+    return tagApply(func, BamTagTypes());
 }
 
 template <typename TResultValue, typename TId>
@@ -692,26 +735,6 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 ..remarks:In your programs, this should not make any difference, only the written SAM/BAM will differ.
 ..include:seqan/bam_io.h
 */
-
-template <typename TValue>
-struct BamTypeChar
-{
-    enum
-    {
-        VALUE =
-            (IsSameType<TValue, char>::VALUE)?      'A':
-            (IsSameType<TValue, __int8>::VALUE)?    'c':
-            (IsSameType<TValue, __uint8>::VALUE)?   'C':
-            (IsSameType<TValue, __int16>::VALUE)?   's':
-            (IsSameType<TValue, __uint16>::VALUE)?  'S':
-            (IsSameType<TValue, __int32>::VALUE)?   'i':
-            (IsSameType<TValue, __uint32>::VALUE)?  'I':
-            (IsSameType<TValue, float>::VALUE)?     'f':
-            (IsSameType<TValue, double>::VALUE)?    'f':
-            (IsSequence<TValue>::VALUE)?            'Z':
-                                                    '?'
-    };
-};
 
 template <typename TValue>
 struct BamTypeChar<TValue const> :
@@ -838,49 +861,51 @@ setTagValue(tags, "XB", y);
 setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point number.
 */
 
+template <typename TBamValueSequence, typename TValue>
+struct ToBamTagValueHelper_
+{
+    TBamValueSequence &result;
+    TValue val;
+    char typeC;
+    
+    ToBamTagValueHelper_(TBamValueSequence &result, char typeC, TValue val) :
+        result(result),
+        val(val),
+        typeC(typeC)
+    {}
+    
+    template <typename Type>
+    bool operator() (Type) const
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(Type)];
+            Type i;
+        } tmp;
+
+        tmp.i = static_cast<Type>(val);
+        append(result, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
+        return true;
+    }
+};
+
 // Convert "atomic" value to BAM tag.  Return whether val was atomic.
 template <typename TBamValueSequence, typename TValue>
 SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, bool)
 _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
-    appendValue(result, typeC);
-
-    if (typeC == 'A' || typeC == 'c' || typeC == 'C')
-    {
-        appendValue(result, static_cast<char>(val));
-    }
-    else if (typeC == 's' || typeC == 'S')
-    {
-        union {
-            char raw[2];
-            short i;
-        } tmp;
-
-        tmp.i = static_cast<short>(val);
-
-        append(result, toRange(&tmp.raw[0], &tmp.raw[2]));
-    }
-    else if (typeC == 'i' || typeC == 'I' || typeC == 'f')
-    {
-        union {
-            char raw[4];
-            int i;
-            float f;
-        } tmp;
-
-        if (typeC == 'f')
-            tmp.f = static_cast<float>(val);
-        else
-            tmp.i = static_cast<int>(val);
-            
-        append(result, toRange(&tmp.raw[0], &tmp.raw[4]));
-    }
-    else // non-string and variable sized type or invald
-    {
-        resize(result, length(result) - 1);
+    if (typeC == 'Z')
         return false;
-    }
-    return true;
+
+    appendValue(result, typeC);
+    ToBamTagValueHelper_<TBamValueSequence, TValue> func(result, typeC, val);
+    if (tagApply(func, BamTagTypes()))
+        return true;
+
+    resize(result, length(result) - 1);
+    return false;
 }
 
 template <typename TBamValueSequence, typename TValue>
