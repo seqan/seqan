@@ -601,6 +601,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("compute_gain");
 
     setShortDescription(parser, "Compute read correction metric GAIN.");
+    setCategory(parser, "Error Correction");
     setVersion(parser, "0.2");
     setDate(parser, "August 2012");
 
