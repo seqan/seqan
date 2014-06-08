@@ -30,7 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-//         David Weese <david.weese@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Code for read/write access to BAM tag dicts.
 // ==========================================================================
