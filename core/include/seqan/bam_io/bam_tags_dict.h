@@ -81,39 +81,6 @@ struct Position<BamTagsDict>
     typedef unsigned Type;
 };
 
-template <typename TValue>
-struct BamTypeChar
-{
-    enum
-    {
-        VALUE =
-            (IsSameType<TValue, char>::VALUE)?      'A':
-            (IsSameType<TValue, __int8>::VALUE)?    'c':
-            (IsSameType<TValue, __uint8>::VALUE)?   'C':
-            (IsSameType<TValue, __int16>::VALUE)?   's':
-            (IsSameType<TValue, __uint16>::VALUE)?  'S':
-            (IsSameType<TValue, __int32>::VALUE)?   'i':
-            (IsSameType<TValue, __uint32>::VALUE)?  'I':
-            (IsSameType<TValue, float>::VALUE)?     'f':
-            (IsSameType<TValue, double>::VALUE)?    'd':
-            (IsSequence<TValue>::VALUE)?            'Z':
-                                                    '?'
-    };
-};
-
-// List of primitive BAM types (ordered by expected frequency of use)
-typedef TagList<int,
-        TagList<unsigned int,
-        TagList<float,
-        TagList<short,
-        TagList<unsigned short,
-        TagList<char,
-        TagList<unsigned char,
-        TagList<signed char,
-        TagList<double
-        > > > > > > > > > BamTagTypes;
-
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
