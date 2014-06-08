@@ -1611,7 +1611,7 @@ void doSnpAndMethCalling(
 #ifdef SNPSTORE_DEBUG
                     std::cout <<"del readPos = " << readPos  << " readlength=" << length(reads[(*matchIt).readId]) << std::endl;
 #endif
-                    quality = (int)((double)getQualityValue(reads[(*matchIt).readId][readPos-1]) + getQualityValue(reads[(*matchIt).readId][readPos])) / 2.0;
+                    quality = (getQualityValue(reads[(*matchIt).readId][readPos-1]) + getQualityValue(reads[(*matchIt).readId][readPos])) / 2;
                     if(orientation == 'F')
                     {
                         indelQualF += quality;
