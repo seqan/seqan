@@ -360,6 +360,118 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
 // Function assignTagsBamToSam()
 // ----------------------------------------------------------------------------
 
+
+template <typename TTarget, typename TSourceIter>
+struct AssignTagsBamToSamOneTagHelper_
+{
+    TTarget &target;
+    TSourceIter &it;
+    char typeC;
+    String<char, Array<32> > buffer;
+    
+    AssignTagsBamToSamOneTagHelper_(TTarget &target, TSourceIter &it, char typeC):
+        target(target),
+        it(it),
+        typeC(typeC)
+    {}
+
+    template <typename Type>
+    bool operator() (Type)
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(Type)];
+            Type i;
+        } tmp;
+        
+        for (unsigned i = 0; i < sizeof(Type); ++i)
+        {
+            SEQAN_ASSERT_NOT(atEnd(it));
+            tmp.raw[i] = *it++;
+        }
+        clear(buffer);
+        if (IsSignedInteger<Type>::VALUE)
+            lexicalCast2(buffer, static_cast<__int64>(tmp.i));
+        else if (IsUnsignedInteger<Type>::VALUE)
+            lexicalCast2(buffer, static_cast<__uint64>(tmp.i));
+        else
+            lexicalCast2(buffer, tmp.i);
+        append(target, buffer);
+        return true;
+    }
+};
+
+template <typename TTarget, typename TSourceIter>
+void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
+{   
+    // Copy tag name.
+    SEQAN_ASSERT_NOT(atEnd(it));
+    appendValue(target, *it++);
+    SEQAN_ASSERT_NOT(atEnd(it));
+    appendValue(target, *it++);
+
+    // Add ':'.
+    appendValue(target, ':');
+    
+    char typeC = *it++;
+    char c = FunctorLowcase<char>()(typeC);
+
+    // The only integer type supported is a 32bit signed int (SAM Format Spec, 28 Feb 2014, Section 1.5)
+    // This sucks as this projection is not identically reversible
+    if (c == 'c' || c == 's' || c == 'i')
+        appendValue(target, 'i');
+    else
+        appendValue(target, typeC);
+
+    // Add ':'.
+    appendValue(target, ':');
+
+    if (typeC == 'Z' || typeC == 'H')
+    {
+        // BAM string
+        SEQAN_ASSERT_NOT(atEnd(it));
+        while (*it != '\0')
+        {
+            appendValue(target, *it);
+            ++it;
+            SEQAN_ASSERT_NOT(atEnd(it));
+        }
+        ++it;
+    }
+    else if (typeC != 'B')
+    {
+        // BAM simple value
+        AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
+        tagApply(func, BamTagTypes());
+    }
+    else
+    {
+        // BAM array
+        typeC = *it++;
+        appendValue(target, typeC);
+        AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
+        
+        // Read array length.
+        union {
+            char raw[4];
+            unsigned len;
+        } tmp;
+        for (unsigned i = 0; i < 4; ++i)
+        {
+            SEQAN_ASSERT_NOT(atEnd(it));
+            tmp.raw[i] = *it++;
+        }
+        for (unsigned i = 0; i < tmp.len; ++i)
+        {
+            appendValue(target, ',');
+            tagApply(func, BamTagTypes());
+        }
+    }
+}
+
+/*
 template <typename TTarget, typename TSourceIter>
 void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 {
@@ -627,6 +739,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
         SEQAN_ASSERT_FAIL("Invalid tag type: %c!", t);
     }
 }
+*/
 
 /*!
  * @fn assignTagsBamToSam
