@@ -2838,8 +2838,8 @@ void DestructibleExpectedBases(
 	SEQAN_OMP_PRAGMA(parallel for)
     for (int k = kmin; k <= kmax; ++k)
     {
-        double muw = pow(4.0, k);
-        double qw = (1 - pow(1 - perr, k)) * (1 - perr) * (1 - pow(1 - 1.0 / muw, genomelen)) * 0.75;
+        double muw = pow(4.0, (double)k);
+        double qw = (1 - pow(1 - perr, (double)k)) * (1 - perr) * (1 - pow(1 - 1.0 / muw, (double)genomelen)) * 0.75;
 
         for (unsigned readLen = 1; readLen < length(readLenHist); ++readLen)
         {
@@ -2847,7 +2847,7 @@ void DestructibleExpectedBases(
             if (numReads == 0)
                 continue;
 
-            destrExp[k] += (1 - pow(1 - qw, readLen - k)) * pow(1 - perr, readLen) * (double) numReads * (double) readLen;
+            destrExp[k] += (1 - pow(1 - qw, (double)(readLen - k))) * pow(1 - perr, (double)readLen) * (double) numReads * (double) readLen;
         }
     }
 }
@@ -3482,7 +3482,7 @@ void traverseAndSearchCorrections(
 	typedef typename Iterator<TRead, Standard>::Type TReadIterator;
 
     double start = omp_get_wtime();
-    TFionaIndex &index = container(iter);
+    TFionaIndex &index = container(static_cast<TTreeIterator&>(iter));
 	unsigned readCount = length(store.readSeqStore) / 2;
 	//for debugging of read data
 	String<TOccs, Array<4> > correctCandidates;     // there are at most 4 correcting branches
@@ -4938,9 +4938,8 @@ unsigned correctReads(
         FionaResources &resources = resourcesPerPackage[i - 1];
         resources.bucketBegin = bktBegin;
         resources.bucketEnd = bktEnd;
-    if (options.loopLevel == -1)
-                traverseAndSearchCorrections<-1>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
-    if (options.loopLevel == 0)
+        traverseAndSearchCorrections<-1>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
+/*    if (options.loopLevel == 0)
                 traverseAndSearchCorrections<0>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
     if (options.loopLevel == 1)
                 traverseAndSearchCorrections<1>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
@@ -4952,6 +4951,7 @@ unsigned correctReads(
                 traverseAndSearchCorrections<4>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
     if (options.loopLevel == 5)
                 traverseAndSearchCorrections<5>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
+*/
 //		traverseAndSearchCorrections(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg,readLength, resources);
 //		mmapAdvise(indexSA(qgramIndex), MAP_DONTNEED, bktBegin, bktEnd);
 #if defined(FIONA_REDUCE_MEMORY) && !defined(FIONA_INTERNAL_MEMORY)
