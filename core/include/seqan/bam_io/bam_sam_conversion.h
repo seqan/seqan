@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Code to convert between SAM and BAM format tags (textual <-> binary).
 // ==========================================================================
@@ -59,6 +60,41 @@ namespace seqan {
 // Function assignTagsSamToBam()
 // ----------------------------------------------------------------------------
 
+template <typename TTarget, typename TBuffer>
+struct AssignTagsSamToBamOneTagHelper_
+{
+    TTarget     &target;
+    TBuffer     buffer;
+    char        typeC;
+
+    AssignTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
+        target(target),
+        buffer(buffer),
+        typeC(typeC)
+    {}
+
+    template <typename Type>
+    bool operator() (Type)
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(Type)];
+            Type i;
+        } tmp;
+
+        if (IsSignedInteger<Type>::VALUE)
+            tmp.i = lexicalCast<__int64>(buffer);   // avoid textual interpretation of char types
+        else if (IsUnsignedInteger<Type>::VALUE)
+            tmp.i = lexicalCast<__uint64>(buffer);
+        else
+            tmp.i = lexicalCast<Type>(buffer);
+        append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
+        return true;
+    }
+};
+
 template <typename TTarget, typename TRecordReader>
 void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharString & buffer)
 {
@@ -73,231 +109,91 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_EQ(buffer[0], ':');
     SEQAN_ASSERT_EQ(buffer[2], ':');
-    char t = buffer[1];
-    appendValue(target, t);
+    char typeC = buffer[1];
+    appendValue(target, typeC);
 
     SEQAN_ASSERT_NOT(atEnd(reader));
 
-    switch (t)
+    switch (typeC)
     {
-    case 'A':
-        clear(buffer);
-        res = readNChars(target, reader, 1);
-        SEQAN_ASSERT_EQ(res, 0);
-        break;
-    case 'i':
-        {
-            clear(buffer);
-            res = readUntilTabOrLineBreak(buffer, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
-            __int32 x = 0;
-            bool b = lexicalCast2<__int32>(x, buffer);
-            (void)b;
-            SEQAN_ASSERT(b);
-            char const * ptr = reinterpret_cast<char const *>(&x);
-            for (int i = 0; i < 4; ++i, ++ptr)
-                appendValue(target, *ptr);
-        }
-        break;
-    case 'f':
-        {
-            clear(buffer);
-            res = readUntilTabOrLineBreak(buffer, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
-            float x = 0;
-            bool b = lexicalCast2<float>(x, buffer);
-            (void)b;
-            SEQAN_ASSERT(b);
-            char const * ptr = reinterpret_cast<char const *>(&x);
-            for (int i = 0; i < 4; ++i, ++ptr)
-                appendValue(target, *ptr);
-        }
-        break;
-    case 'H':
-    case 'Z':
-        {
+        case 'Z':
+        case 'H':
+            // BAM string
             // TODO(holtgrew): Could test on even length in case of 'H'.
             res = readUntilTabOrLineBreak(target, reader);
             SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
             appendValue(target, '\0');
-        }
-        break;
-    case 'B':
+            break;
+
+        case 'B':
         {
-            CharString buffer2; // TODO(holtgrew): Also give from outside.
+            // BAM array
 
             // Read type.
             clear(buffer);
             res = readNChars(buffer, reader, 1);
             SEQAN_ASSERT_EQ(res, 0);
-            char t2 = back(buffer);
-            appendValue(target, t2);
+            typeC = buffer[0];
+            appendValue(target, typeC);
 
             // Read array contents.
             clear(buffer);
             res = readUntilTabOrLineBreak(buffer, reader);
             SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
-            typename Iterator<CharString, Rooted>::Type it, it2;
-            // Search first non-comma position.
-            it = begin(buffer, Rooted());
-            for (;!atEnd(it) && *it == ','; ++it)
-                continue;
-            // Count number of entries.
-            __int32 nEntries = !atEnd(it);  // At least one if array not empty.
-            for (it2 = it; !atEnd(it2); ++it2)
-                nEntries += (*it2 == ',');
-            // Write out array length to result.
-            char const * ptr = reinterpret_cast<char const *>(&nEntries);
-            for (int i = 0; i < 4; ++i, ++ptr)
-                appendValue(target, *ptr);
 
-            // Now, write out the arrays, depending on the entry type.
-            // TODO(holtgrew): Whee, this could be a bit more compact...
-            switch (t2)
+            size_t len = length(buffer);
+            union {
+                char raw[4];
+                unsigned nEntries;
+            } tmp;
+
+            // Count number of entries (== number of commas after type character).
+            tmp.nEntries = 0;
+            for (size_t i = 0; i != len; ++i)
+                if (buffer[i] == ',')
+                    ++tmp.nEntries;
+
+            // Write out array length.
+            for (int i = 0; i < 4; ++i)
+                appendValue(target, tmp.raw[i]);
+
+            // Write out array values.
+            typedef typename Infix<CharString>::Type TBufferInfix;
+            size_t startPos = 0;
+            for (unsigned i = 0; i < tmp.nEntries; ++i)
             {
-            case 'c':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __int16 x = 0;  // short to avoid textual interpretation in lexicalCast<> below.
-                    bool b = lexicalCast2<__int16>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    appendValue(target, static_cast<__int8>(x));
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 'C':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __uint16 x = 0;  // short to avoid textual interpretation in lexicalCast<> below.
-                    bool b = lexicalCast2<__uint16>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    appendValue(target, static_cast<__int8>(x));
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 's':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __int16 x = 0;
-                    bool b = lexicalCast2<__int16>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    char const * ptr = reinterpret_cast<char const *>(&x);  // write out byte-wise
-                    for (int i = 0; i < 2; ++i, ++ptr)
-                        appendValue(target, *ptr);
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 'S':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __uint16 x = 0;
-                    bool b = lexicalCast2<__uint16>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    char const * ptr = reinterpret_cast<char const *>(&x);  // write out byte-wise
-                    for (int i = 0; i < 2; ++i, ++ptr)
-                        appendValue(target, *ptr);
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 'i':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __int32 x = 0;
-                    bool b = lexicalCast2<__int32>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    char const * ptr = reinterpret_cast<char const *>(&x);  // write out byte-wise
-                    for (int i = 0; i < 4; ++i, ++ptr)
-                        appendValue(target, *ptr);
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 'I':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    __uint32 x = 0;
-                    bool b = lexicalCast2<__uint32>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    char const * ptr = reinterpret_cast<char const *>(&x);  // write out byte-wise
-                    for (int i = 0; i < 4; ++i, ++ptr)
-                        appendValue(target, *ptr);
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            case 'f':
-                for (int i = 0; i < nEntries; ++i)
-                {
-                    SEQAN_ASSERT_NOT(atEnd(it));
-                    clear(buffer2);
-                    for (; !atEnd(it) && *it != ',' && *it != '\t'; goNext(it))
-                        appendValue(buffer2, *it);
-                    float x = 0;
-                    bool b = lexicalCast2<float>(x, buffer2);
-                    (void)b;
-                    SEQAN_ASSERT(b);
-                    char const * ptr = reinterpret_cast<char const *>(&x);  // write out byte-wise
-                    for (int i = 0; i < 4; ++i, ++ptr)
-                        appendValue(target, *ptr);
-                    if (!atEnd(it) && *it == ',')
-                        goNext(it);  // Skip ','.
-                    else
-                        break;  // End of field or end of string.
-                }
-                break;
-            default:
-                SEQAN_FAIL("Invalid array type: %c!", t2);
+                SEQAN_ASSERT_LT(startPos, len);
+                if (buffer[startPos] == ',')
+                    ++startPos;
+
+                // search end of current entry
+                size_t endPos = startPos;
+                for (; endPos < len; ++endPos)
+                    if (buffer[endPos] == ',' || buffer[endPos] == '\t')
+                        break;
+
+                AssignTagsSamToBamOneTagHelper_<TTarget, TBufferInfix> func(target,
+                                                                            infix(buffer, startPos, endPos),
+                                                                            typeC);
+                if (!tagApply(func, BamTagTypes()))
+                    SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
+
+                startPos = endPos;
             }
+            break;
         }
-        break;
-    default:
-        SEQAN_ASSERT_FAIL("Invalid tag type: %c!", t);
+
+        default:
+        {
+            // BAM simple value
+            clear(buffer);
+            res = readUntilTabOrLineBreak(buffer, reader);
+            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
+
+            AssignTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
+            if (!tagApply(func, BamTagTypes()))
+                SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
+        }
     }
 }
 
@@ -361,270 +257,122 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TSourceIter>
-void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
+struct AssignTagsBamToSamOneTagHelper_
 {
+    typedef String<char, Array<32> > TBuffer;
+
+    TTarget     &target;
+    TSourceIter &it;
+    char        typeC;
+    TBuffer     buffer;
+    
+    AssignTagsBamToSamOneTagHelper_(TTarget &target, TSourceIter &it, char typeC):
+        target(target),
+        it(it),
+        typeC(typeC)
+    {}
+
+    template <typename Type>
+    bool operator() (Type)
+    {
+        if (BamTypeChar<Type>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(Type)];
+            Type i;
+        } tmp;
+        
+        for (unsigned i = 0; i < sizeof(Type); ++i)
+        {
+            SEQAN_ASSERT_NOT(atEnd(it));
+            tmp.raw[i] = *it++;
+        }
+        clear(buffer);
+        if (IsSignedInteger<Type>::VALUE)
+            lexicalCast2(buffer, static_cast<__int64>(tmp.i));    // avoid textual interpretation of char types
+        else if (IsUnsignedInteger<Type>::VALUE)
+            lexicalCast2(buffer, static_cast<__uint64>(tmp.i));
+        else
+            lexicalCast2(buffer, tmp.i);
+        append(target, buffer);
+        return true;
+    }
+};
+
+template <typename TTarget, typename TSourceIter>
+void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
+{   
     // Copy tag name.
     SEQAN_ASSERT_NOT(atEnd(it));
     appendValue(target, *it++);
     SEQAN_ASSERT_NOT(atEnd(it));
     appendValue(target, *it++);
-    unsigned char t = *it;
 
     // Add ':'.
     appendValue(target, ':');
+    
+    char typeC = *it++;
+    char c = FunctorLowcase<char>()(typeC);
 
-    // Add type.
-    SEQAN_ASSERT_NOT(atEnd(it));
-    if (*it == 'c' || *it == 'C' || *it == 's' || *it == 'S' || *it == 'i' || *it == 'I')
+    // The only integer type supported is a 32bit signed int (SAM Format Spec, 28 Feb 2014, Section 1.5)
+    // This sucks as this projection is not identically reversible
+    if (c == 'c' || c == 's' || c == 'i')
         appendValue(target, 'i');
     else
-        appendValue(target, *it);
-    ++it;
+        appendValue(target, typeC);
 
     // Add ':'.
     appendValue(target, ':');
 
-    // Convert the payload, depending on the field's type.
-
-    switch (t)
+    switch (typeC)
     {
-    case 'A':
-        appendValue(target, *it++);
-        break;
-    case 'c':
-        {
+        case 'Z':
+        case 'H':
+            // BAM string
             SEQAN_ASSERT_NOT(atEnd(it));
-            __int8 x = *it++;
-            char buffer[4];
-            snprintf(buffer, 4, "%d", x);
-            append(target, buffer);
-        }
-        break;
-    case 'C':
-        {
-            SEQAN_ASSERT_NOT(atEnd(it));
-            char buffer[4];
-            __uint8 x = *it++;
-            snprintf(buffer, 4, "%u", x);
-            append(target, buffer);
-        }
-        break;
-    case 's':
-        {
-            __int16 x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 2; ++i)
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
-            }
-            char buffer[32];
-            snprintf(buffer, 32, "%d", x);
-            append(target, buffer);
-        }
-        break;
-    case 'S':
-        {
-            __uint16 x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 2; ++i)
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
-            }
-            char buffer[32];
-            snprintf(buffer, 32, "%u", x);
-            append(target, buffer);
-        }
-        break;
-    case 'i':
-        {
-            __int32 x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 4; ++i)
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
-            }
-            char buffer[32];
-            snprintf(buffer, 32, "%d", x);
-            append(target, buffer);
-        }
-        break;
-    case 'I':
-        {
-            __uint32 x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 4; ++i)
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
-            }
-            char buffer[32];
-            snprintf(buffer, 32, "%u", x);
-            append(target, buffer);
-        }
-        break;
-    case 'f':
-        {
-            float x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 4; ++i)
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
-            }
-            char buffer[32];
-            snprintf(buffer, 32, "%g", x);
-            append(target, buffer);
-        }
-        break;
-    case 'Z':
-        {
             while (*it != '\0')
             {
+                appendValue(target, *it);
+                ++it;
                 SEQAN_ASSERT_NOT(atEnd(it));
-                appendValue(target, *it++);
             }
-            SEQAN_ASSERT_NOT(atEnd(it));
-            it++;
-        }
-        break;
-    case 'H':
+            ++it;
+            break;
+
+        case 'B':
         {
-            while (*it != '\0')
-            {
-                SEQAN_ASSERT_NOT(atEnd(it));
-                appendValue(target, *it++);
-            }
-            SEQAN_ASSERT_NOT(atEnd(it));
-            it++;
-        }
-        break;
-    case 'B':
-        {
-            // Read type.
-            char t2 = *it++;
-            appendValue(target, t2);
+            // BAM array
+            typeC = *it++;
+            appendValue(target, typeC);
+            AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
+            
             // Read array length.
-            __int32 x = 0;
-            char * ptr = reinterpret_cast<char *>(&x);
-            for (int i = 0; i < 4; ++i)
+            union {
+                char raw[4];
+                unsigned len;
+            } tmp;
+            for (unsigned i = 0; i < 4; ++i)
             {
                 SEQAN_ASSERT_NOT(atEnd(it));
-                *ptr++ = *it++;
+                tmp.raw[i] = *it++;
             }
-            // Depending on t2, read array.
-            // TODO(holtgrew): Whee, this could be a bit more compact...
-            switch (t2)
+            for (unsigned i = 0; i < tmp.len; ++i)
             {
-            case 'c':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __int8 y = *it++;
-                    char buffer[32];
-                    snprintf(buffer, 32, "%d", y);
-                    append(target, buffer);
-                }
-                break;
-            case 'C':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __uint8 y = *it++;
-                    char buffer[32];
-                    snprintf(buffer, 32, "%u", y);
-                    append(target, buffer);
-                }
-                break;
-            case 's':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __int16 y = 0;
-                    char * ptr = reinterpret_cast<char *>(&y);
-                    for (int i = 0; i < 2; ++i)
-                    {
-                        SEQAN_ASSERT_NOT(atEnd(it));
-                        *ptr++ = *it++;
-                    }
-                    char buffer[32];
-                    snprintf(buffer, 32, "%d", y);
-                    append(target, buffer);
-                }
-                break;
-            case 'S':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __uint16 y = 0;
-                    char * ptr = reinterpret_cast<char *>(&y);
-                    for (int i = 0; i < 2; ++i)
-                    {
-                        SEQAN_ASSERT_NOT(atEnd(it));
-                        *ptr++ = *it++;
-                    }
-                    char buffer[32];
-                    snprintf(buffer, 32, "%d", y);
-                    append(target, buffer);
-                }
-                break;
-            case 'i':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __int32 y = 0;
-                    char * ptr = reinterpret_cast<char *>(&y);
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        SEQAN_ASSERT_NOT(atEnd(it));
-                        *ptr++ = *it++;
-                    }
-                    char buffer[32];
-                    snprintf(buffer, 32, "%d", y);
-                    append(target, buffer);
-                }
-                break;
-            case 'I':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    __uint32 y = 0;
-                    char * ptr = reinterpret_cast<char *>(&y);
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        SEQAN_ASSERT_NOT(atEnd(it));
-                        *ptr++ = *it++;
-                    }
-                    char buffer[32];
-                    snprintf(buffer, 32, "%u", y);
-                    append(target, buffer);
-                }
-                break;
-            case 'f':
-                for (__int32 i = 0; i < x; ++i)
-                {
-                    appendValue(target, ',');
-                    float y = 0;
-                    char * ptr = reinterpret_cast<char *>(&y);
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        SEQAN_ASSERT_NOT(atEnd(it));
-                        *ptr++ = *it++;
-                    }
-                    char buffer[32];
-                    snprintf(buffer, 32, "%g", y);
-                    append(target, buffer);
-                }
-                break;
-            default:
-                SEQAN_FAIL("Invalid array type: %c!", t2);
+                appendValue(target, ',');
+                if (!tagApply(func, BamTagTypes()))
+                    SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
             }
+            break;
         }
-        break;
-    default:
-        SEQAN_ASSERT_FAIL("Invalid tag type: %c!", t);
+
+        default:
+        {
+            // BAM simple value
+            AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
+            if (!tagApply(func, BamTagTypes()))
+                SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
+        }
     }
 }
 
