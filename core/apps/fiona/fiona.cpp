@@ -55,6 +55,7 @@
   #undef FIONA_OVERLAP_WITH_EDIT_DISTANCE
   #undef FIONA_MAXIMIZE_SUPPORT
   #undef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+  #define FIONA_BINARY_NAME "fiona_illumina"
 
 #else
 
@@ -65,6 +66,7 @@
   #define FIONA_OVERLAP_WITH_EDIT_DISTANCE
   #define FIONA_MAXIMIZE_SUPPORT
   #define FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
+  #define FIONA_BINARY_NAME "fiona"
 
 #endif
 
@@ -5118,18 +5120,21 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
 seqan::ArgumentParser::ParseResult
 parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 {
-    std::string rev  = "$Revision: 13285 $";
-    std::string date = "$Date: 2013-11-18 13:11:00 +0100 (Mo, 18. Nov 2013) $";
-
     // Setup command line parser.
-    seqan::ArgumentParser parser("fiona");
+    seqan::ArgumentParser parser(FIONA_BINARY_NAME);
 
     // Set short description, version, and date.
     setShortDescription(parser, "Parallel and automatic read error correction");
     setCategory(parser, "Error Correction");
 
-    setVersion(parser, (std::string(PROGRAM_VERSION) + " [") + (rev.substr(11, rev.size() - 13) + "]"));
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+    std::string version = PROGRAM_VERSION;
+#ifdef SEQAN_REVISION
+    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+    setVersion(parser, version);
 
     // Define usage line and long description.
     addUsageLine(parser,
@@ -5347,12 +5352,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
             "enable multi-threading using the \\fB-nt\\fP option.  For best performance, use as many threads "
             "as you have (virtual) cores in your machine.");
 
-#ifdef FIONA_ILLUMINA
-    std::string toolName = "\\fBfiona_illumina\\fP";
-#else
-    std::string toolName = "\\fBfiona\\fP";
-#endif
-
+    std::string toolName = "\\fB" FIONA_BINARY_NAME "\\fP";
     addListItem(parser, toolName + " \\fB-g\\fP 4639675 IN.fq OUT.fq",
                 "Correct reads in \\fIIN.fq\\fP with one thread and write the results to \\fIOUT.fq\\fP. "
                 "The estimated genome length fits for E.coli.");
