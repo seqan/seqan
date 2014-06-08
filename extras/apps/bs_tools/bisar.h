@@ -226,7 +226,7 @@ writeBsAlignment(TStream & stream,
         record.beginPos = store.alignedReadStore[bestId].endPos;
         record.flag |= 0x0010;          
     }
-    record.mapQ = mapq;
+	record.mapQ = (unsigned)mapq;
 
     CharString md;
     String<CigarElement<> > cigar;
@@ -487,7 +487,7 @@ computePseudoWorstScore2(TScore &score, TReadSeq &readSeq, TOptions &options)
     }
     avgQual = avgQual/(double)length(readSeq);
     // Compute pseudo worst score
-    unsigned max3Errors = floor(options.max3Error * length(readSeq)/ 100.0);
+	unsigned max3Errors = (unsigned)(options.max3Error * length(readSeq) / 100.0);
     unsigned pseudoErrors = max3Errors + 1;
     score = 0;
     score += pseudoErrors * options.gapOpenScore; //std::log10((0.01/12.0)/(1.0/16.0)); //options.scoreMismatch; // ??? (-1.0);   // Assumed mismatches
@@ -1188,18 +1188,18 @@ postProcessMain(TOptions &options, TModel const &)
                     //std::cout << "alignedReadIdL: " << verifiedMates.alignedReadIdL << "  alignedReadIdr: " << verifiedMates.alignedReadIdR << "  length(alignedReadStore) " <<  length(store.alignedReadStore) << std::endl;
                     //std::cout << "Contig gaps: "  << std::endl;
                     //std::cout << setContigGaps[verifiedMates.alignedReadIdL] << std::endl;
-                    unsigned max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdL].readId])/100.0);
+					unsigned max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdL].readId]) / 100.0);
                     
                     if (verifiedMates.mapqL >= options.minMapq && store.alignQualityStore[verifiedMates.alignedReadIdL].errors <= max4Errors && store.alignQualityStore[verifiedMates.alignedReadIdL].score <= options.maxScore)
                         writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedMates.alignedReadIdL], verifiedMates.alignedReadIdL, verifiedMates.mapqL, verifiedMates.recordL, options);
-                    max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdR].readId])/100.0);
+					max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdR].readId]) / 100.0);
                     if (verifiedMates.mapqR >= options.minMapq && store.alignQualityStore[verifiedMates.alignedReadIdR].errors <= max4Errors && store.alignQualityStore[verifiedMates.alignedReadIdR].score <= options.maxScore)
                         writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedMates.alignedReadIdR], verifiedMates.alignedReadIdR, verifiedMates.mapqR, verifiedMates.recordR, options);
                 }
                 else
                 {
                     VerifiedRead verifiedRead = verifyRead(store, options);   // Find best alignment and compute mapq, verify
-                    unsigned max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedRead.alignedReadId].readId])/100.0);
+					unsigned max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedRead.alignedReadId].readId]) / 100.0);
                     if (verifiedRead.mapq >= options.minMapq && static_cast<unsigned int>(store.alignQualityStore[verifiedRead.alignedReadId].errors) <= max4Errors && store.alignQualityStore[verifiedRead.alignedReadId].score <= options.maxScore)
                     {
                         writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedRead.alignedReadId], verifiedRead.alignedReadId, verifiedRead.mapq, verifiedRead.record, options);
@@ -1313,10 +1313,10 @@ postProcessMain(TOptions &options, TModel const &)
             // set the match mate IDs using the information stored in matchMateInfos
             _generatePseudoPairMatchIds(store, matchMateInfos, options);
             VerifiedMates verifiedMates = verifyMates(store, options);  // For mates: Find best alignments and compute mapq, verify
-            unsigned max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdL].readId])/100.0);
+            unsigned max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdL].readId])/100.0);
             if (verifiedMates.mapqL >= options.minMapq && store.alignQualityStore[verifiedMates.alignedReadIdL].errors <= max4Errors && store.alignQualityStore[verifiedMates.alignedReadIdL].score <= options.maxScore)
                 writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedMates.alignedReadIdL], verifiedMates.alignedReadIdL, verifiedMates.mapqL, verifiedMates.recordL, options);
-            max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdR].readId])/100.0);
+			max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedMates.alignedReadIdR].readId]) / 100.0);
             if (verifiedMates.mapqR >= options.minMapq && store.alignQualityStore[verifiedMates.alignedReadIdR].errors <= max4Errors && store.alignQualityStore[verifiedMates.alignedReadIdR].score <= options.maxScore)
                 writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedMates.alignedReadIdR], verifiedMates.alignedReadIdR, verifiedMates.mapqR, verifiedMates.recordR, options);
 
@@ -1324,7 +1324,7 @@ postProcessMain(TOptions &options, TModel const &)
         else
         {
             VerifiedRead verifiedRead = verifyRead(store, options);   // Find best alignment and compute mapq, verify
-            unsigned max4Errors = floor(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedRead.alignedReadId].readId])/100.0);
+			unsigned max4Errors = (unsigned)(options.max4Error*length(store.readSeqStore[store.alignedReadStore[verifiedRead.alignedReadId].readId]) / 100.0);
             if (verifiedRead.mapq >= options.minMapq && store.alignQualityStore[verifiedRead.alignedReadId].errors <= max4Errors && store.alignQualityStore[verifiedRead.alignedReadId].score <= options.maxScore)
                 writeBsAlignment(outStream, bamIOContext, store, setContigGaps[verifiedRead.alignedReadId], verifiedRead.alignedReadId, verifiedRead.mapq, verifiedRead.record, options);
         }
