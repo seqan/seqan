@@ -817,16 +817,16 @@ score(Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescriptor> > cons
       ConsensusScoreSequenceEntry<TSeq2> const & entry2)    // Curr. read base
 {
     TValue sc = 0;
-    if ((Dna5)value(entry2).count[0] == 'A')
+	if (value(entry2).count[0] == ordValue(Dna5('A')))
         sc = me.targetFreqs[position(entry1)][0];       // For the beginning: use profile value from non bs (regarding this ref. base) strand 
-    else if ((Dna5)value(entry2).count[0] == 'C')
+	else if (value(entry2).count[0] == ordValue(Dna5('C')))
         sc = me.targetFreqs[position(entry1)][5]; 
-    else if ((Dna5)value(entry2).count[0] == 'G')
+	else if (value(entry2).count[0] == ordValue(Dna5('G')))
         sc = me.targetFreqs[position(entry1)][2]; 
-    else if ((Dna5)value(entry2).count[0] == 'T')
+	else if (value(entry2).count[0] == ordValue(Dna5('T')))
         sc = me.targetFreqs[position(entry1)][7]; 
 
-    else if ((Dna5)value(entry2).count[0] == 'N')
+	else if (value(entry2).count[0] == ordValue(Dna5('N')))
         sc = 1.0/4.0;   // ? 
 
     sc = sc/me.refBaseFreqs[(unsigned)value(entry2).count[0]];

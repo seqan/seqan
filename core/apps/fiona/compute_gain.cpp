@@ -237,7 +237,7 @@ void updateStats(Stats & stats,
     bool skipAlignPre = (infix(seqs[seqIdx], beginPos, endPos) == preRead);
     bool skipAlignPost = (infix(seqs[seqIdx], beginPos, endPos) == postRead);
 
-    int padding = ceil(0.01 * options.padding * length(preRecord.seq));
+    int padding = (options.padding * length(preRecord.seq) + 99) / 100;
     if (options.indels)
     {
         if ((int)beginPos > padding + beginShift)
@@ -882,7 +882,7 @@ int main(int argc, char const ** argv)
         SEQAN_OMP_PRAGMA(critical (read_chunk))
         {
             int const tid = omp_get_thread_num();
-            unsigned myChunkSize = pickRandomNumber(rng, chunkSizeNoise);
+            unsigned myChunkSize = (unsigned)pickRandomNumber(rng, chunkSizeNoise);
             seqan::CharString prevName;
             seqan::CharString postId;
             clear(recordPre.qName);
