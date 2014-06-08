@@ -36,6 +36,10 @@ include_directories (${SEQAN_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 #add_definitions("-DQGRAM_LENGTH=5")
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # Update the list of file names below if you add source files to your application.
 add_executable (compute_gain compute_gain.cpp)
 add_executable (fiona fiona.cpp)

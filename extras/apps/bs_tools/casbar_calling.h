@@ -751,7 +751,7 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
             {
                 if (countF_CT >= minCountCT)
                 {
-                    int diff = (long double)countF[ordValue((Dna)'T')] - (long double)(countF_CT)/2;
+					int diff = (int)countF[ordValue((Dna)'T')] - (int)countF_CT / 2;
                     if (diff > 0) guess = (long double)countF[ordValue((Dna)'C')]/(long double)(countF[ordValue((Dna)'C')] + diff);
                     else guess = 1.0;   // Set to 0.9 to avoid algorithm to get stuck?
                     TLHood lHood;
@@ -774,7 +774,7 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
             {
                 if (countR_CT >= minCountCT)
                 {
-                    int diff = (long double)countR[ordValue((Dna)'A')] - (long double)(countR_CT)/2;
+                    int diff = (int)countR[ordValue((Dna)'A')] - (int)countR_CT / 2;
                     if (diff > 0) guess = (long double)countR[ordValue((Dna)'G')]/(long double)(countR[ordValue((Dna)'G')] + diff);
                     else guess = 1.0;   // Set to 0.9 to avoid algorithm to get stuck?
                     TLHood lHood;
