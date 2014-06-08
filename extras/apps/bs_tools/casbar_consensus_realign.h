@@ -124,9 +124,9 @@ insertGap(String<TAlignedReads, TSpec>& alignedReadStoreTmp,
         if (alignIt->id == length(fragmentStoreOrig.alignedReadStore))    // Ref
             insertGap(*alignIt, gapPos);
         else if (fragmentStoreOrig.alignedReadStore[alignIt->id].beginPos <  fragmentStoreOrig.alignedReadStore[alignIt->id].endPos) // Top
-            numGapsTop += insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0));
+            numGapsTop += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
         else                                                // Bottom            
-            numGapsBottom += insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0));
+            numGapsBottom += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
     }
 }
 
@@ -474,12 +474,12 @@ reAlign(double &profileScore,
 					if (!isRef)
                     {
                         double qual = myRead[readPos].count[1];
-                        addToProfileChar(tmpChar, top, myRead[readPos].count[0], qual, mapq);
+						addToProfileChar(tmpChar, top, (unsigned)myRead[readPos].count[0], qual, mapq);
                         tmpChar.count[8] = -1;
                     }
                     else
                     {
-                        addToProfileChar(tmpChar, myRead[readPos].count[0]);
+						addToProfileChar(tmpChar, (unsigned)myRead[readPos].count[0]);
                     }
 					tmpChar.count[10] = numGapsTop;
                     tmpChar.count[11] = numGapsBottom;
@@ -504,11 +504,11 @@ reAlign(double &profileScore,
 					if (!isRef)
                     {
                         double qual = myRead[readPos].count[1];
-                        addToProfileChar(*bandIt, top, myRead[readPos].count[0], qual, mapq);
+						addToProfileChar(*bandIt, top, (unsigned)myRead[readPos].count[0], qual, mapq);
                     }
                     else
                     {
-                        addToProfileChar(*bandIt, myRead[readPos].count[0]);
+						addToProfileChar(*bandIt, (unsigned)myRead[readPos].count[0]);
                     }
 					*newConsIt = *bandIt;
 				}
@@ -523,12 +523,12 @@ reAlign(double &profileScore,
 			if (!isRef)
             {
                 double qual = myRead[readPos].count[1];
-                addToProfileChar(tmpChar, top, myRead[readPos].count[0], qual, mapq);
+				addToProfileChar(tmpChar, top, (unsigned)myRead[readPos].count[0], qual, mapq);
                 tmpChar.count[8] = -1;
             }
             else
             {
-                addToProfileChar(tmpChar, myRead[readPos].count[0]);
+				addToProfileChar(tmpChar, (unsigned)myRead[readPos].count[0]);
             }
 	    	tmpChar.count[10] = numGapsTop;
             tmpChar.count[11] = numGapsBottom;
