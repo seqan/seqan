@@ -20,6 +20,7 @@ import sig_parser
 import dox_parser
 import dox_tokens
 import raw_doc
+import validation
 
 
 def escapeForXml(s):
@@ -86,12 +87,9 @@ class ProcDoc(object):
             self.top_level_entries[first].registerSubentry(x)
         
     def addVariable(self, x):
-        """Add a second-level entry."""
+        """Add a variable entry."""
         self.registerEntry(x)
-        if self.top_level_entries.get(x.type):
-            self.second_level_entries[x.name] = x
-            self.top_level_entries[x.type].registerSubentry(x)
-        elif '::' in x.name:
+        if '::' in x.name:
             self.second_level_entries[x.name] = x
             first, second = splitSecondLevelEntry(x.name)
             if not first in self.top_level_entries:
@@ -102,10 +100,26 @@ class ProcDoc(object):
                 self.top_level_entries[first].registerSubentry(x)
         else:
             self.top_level_entries[x.name] = x
+
+    def addEnumValue(self, x):
+        """Add an enum value entry."""
+        self.registerEntry(x)
+        if not x.type in self.top_level_entries:
+            token = x.raw_entry.name.tokens[0]
+            self.doc_processor.msg_printer.printTokenError(
+                token, 'Unknown top level entry %s' % x.type, 'error')
+        else:
+            self.top_level_entries[x.type].registerSubentry(x)
         
     def registerEntry(self, x):
         """Register an entry."""
         name = x.name
+        if name == '':
+            msg = 'Entry must not have an empty name.'
+            raise DocumentationBuildException(token=x.raw_entry.first_token,
+                                              msg=msg)
+        if x.kind == 'variable' and self.top_level_entries.get(x.type) and self.top_level_entries[x.type].kind == 'enum':
+            name = x.type + '::' + name
         if name.endswith(';'):
             name = name[:-1]
         if name in self.entries:
@@ -122,9 +136,11 @@ class ProcDoc(object):
                 'old_name': old.name,
                 'old_file' : x.location[0],
                 'old_line' : x.location[1]}
-            raise DocumentationBuildException(token=x.raw_entry.name.tokens[0], msg=tpl % vals)
-        self.entries[name] = x
-        x.doc = self
+            self.doc_processor.msg_printer.printTokenError(x.raw_entry.name.tokens[0],
+                                                           tpl % vals, 'error')
+        else:
+          self.entries[name] = x
+          x.doc = self
 
     def runTextVisitor(self, v):
         """Run visitor v on all Text members of all entries and sub entries.
@@ -151,7 +167,7 @@ class TextNode(object):
     We represent plain links, i.e. where the label is the same as the target
     using the representation for "<a href="seqan:$target">$target</a>".
 
-    We represent included code snippets as "<code type='.cpp'>$code</code>."
+    We represent included code snippets as "<dox:code type='.cpp'>$code</dox:code>."
 
     @ivar type: The type of the node, as a string.  Reserved values are
                 '<text>' for plain text nodes.
@@ -179,7 +195,14 @@ class TextNode(object):
 
     def __repr__(self):
         return str(self)
-        
+
+    @property
+    def empty(self):
+        if self.type == '<text>':
+            return not not self.text
+        else:
+            return not (self.children or self.attrs)
+
     def setAttr(self, key, value):
         self.attrs[escapeForXml(key)] = escapeForXml(value)
 
@@ -230,6 +253,7 @@ class ProcEntry(object):
     other elements (list of TextNode(type='<link>')).  Also, it has a body
     which is a TextNode with children.
 
+    @ivar raw: The raw_doc.Raw* object.
     @ivar kind: The kind of the entry, string.
     @ivar name: The name of the entry, string.
     @ivar title_str: A string with the title.
@@ -241,7 +265,8 @@ class ProcEntry(object):
     @ivar raw_entry: The RawEntry object that this ProcEntry was generated from.
     """
 
-    def __init__(self, name, title=None, brief=None, body=None, sees=[]):
+    def __init__(self, raw, name, title=None, brief=None, body=None, sees=[]):
+        self.raw = raw
         self.name = name
         self.title_str = title
         self.brief = brief
@@ -314,8 +339,8 @@ class ProcCodeEntry(ProcEntry):
                      internal.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcEntry.__init__(self, raw, name, brief, body, sees)
         self.signatures = []
         self.signature_entries = []
         self.headerfiles = []
@@ -352,6 +377,16 @@ class ProcCodeEntry(ProcEntry):
     def subEntries(self, kind):
         return []
 
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        ProcEntry.visitTextNodes(self, visitor)
+        for msg in self.deprecation_msgs:
+            visitor.visit(msg)
+        for msg in self.notes:
+            visitor.visit(msg)
+        for msg in self.warnings:
+            visitor.visit(msg)
+
 
 class ProcEnum(ProcCodeEntry):
     """A processed enum documentation.
@@ -360,8 +395,8 @@ class ProcEnum(ProcCodeEntry):
                   of this enum.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.values = []
 
 
@@ -372,8 +407,8 @@ class ProcAdaption(ProcCodeEntry):
                   of this adaption.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.values = []
 
 
@@ -384,8 +419,8 @@ class ProcTypedef(ProcCodeEntry):
                   of this typedef.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.values = []
 
     @property
@@ -411,8 +446,8 @@ class ProcConcept(ProcCodeEntry):
                             implementing classes.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.extends = []
         self.all_extended = set()
         self.all_extending = set()
@@ -443,8 +478,8 @@ class ProcClass(ProcCodeEntry):
     @ivar all_extended: Set of str values with the names of all extended classes.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.extends = []
         self.implements = []
         self.all_implemented = set()
@@ -473,17 +508,36 @@ class ProcClass(ProcCodeEntry):
     def addTypedef(self, t):
         self.typedefs.append(t)
 
+    @property
+    def isSpecialization(self):
+        return not not self.extends
+
+    @property
+    def kind(self):
+        if self.isSpecialization:
+            return 'specialization'
+        else:
+            return 'class'
+
 
 class ProcTag(ProcCodeEntry):
     """A processed tag documentation.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.tparams = []
 
     def addTParam(self, t):
         self.tparams.append(t)
+
+    @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -496,12 +550,14 @@ class ProcTag(ProcCodeEntry):
 class ProcParam(object):
     """Representation of a parameter.
 
+    @ivar raw: Raw representation.
     @ivar name: The name of the parameter. str.
     @ivar in_out: One of IN, OUT, IN_OUT, None.
     @ivar desc: Documentation of the parameter. TextNode.
     """
 
-    def __init__(self):
+    def __init__(self, raw):
+        self.raw = raw
         self.name = None
         self.in_out = None
         self.desc = TextNode()
@@ -519,11 +575,13 @@ ProcParam.IN_OUT = 'IN_OUT'
 class ProcTParam(object):
     """Documentation of a processed template parameter.
 
+    @ivar var: The raw representation.
     @ivar type: The type of the parameter. str
     @ivar desc: Documentation of the parameter. TextNode.
     """
 
-    def __init__(self):
+    def __init__(self, raw):
+        self.raw = raw
         self.type = None
         self.desc = TextNode()
 
@@ -535,11 +593,13 @@ class ProcTParam(object):
 class ProcReturn(object):
     """Documentation of a @return entry.
 
+    @ivar raw: The raw version of this ProcReturn (required for location lookup).
     @ivar type: The return type. str.
     @ivar desc: The documentation of the return value. TextNode.
     """
 
-    def __init__(self):
+    def __init__(self, raw):
+        self.raw = raw
         self.type = None
         self.desc = TextNode()
 
@@ -557,8 +617,8 @@ class ProcFunction(ProcCodeEntry):
     @ivar returns:
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.tparams = []
         self.returns = []
@@ -571,6 +631,16 @@ class ProcFunction(ProcCodeEntry):
             return 'member_function'
         else:
             return 'global_function'
+
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
 
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
@@ -600,10 +670,18 @@ class ProcMacro(ProcCodeEntry):
     @ivar returns:
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.returns = []
+
+    @property
+    def local_name(self):
+        """Returns name without group prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -635,8 +713,8 @@ class ProcMetafunction(ProcCodeEntry):
     @ivar returns: A list of ProcReturn values.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.tparams = []
         self.returns = []
 
@@ -647,13 +725,23 @@ class ProcMetafunction(ProcCodeEntry):
         else:
             return 'global_metafunction'
 
-    def visitTextNode(self, visitor):
+    @property
+    def local_name(self):
+        """Returns name without class/concept prefix."""
+        if '#' in self.name:
+            return self.name.split('#', 1)[-1]
+        elif '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
-        ProcCodeEntry.visitTextNode(self, visitor)
+        ProcCodeEntry.visitTextNodes(self, visitor)
         for p in self.tparams:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.returns:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         
     def addTParam(self, t):
         self.tparams.append(t)
@@ -663,14 +751,22 @@ class ProcMetafunction(ProcCodeEntry):
 
 
 class ProcVariable(ProcCodeEntry):
-    """A processed function documentation.
+    """A processed variable documentation.
 
     @ivar type: A string with the name of a type.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcCodeEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.type = None
+
+    @property
+    def local_name(self):
+        """Returns name without class prefix."""
+        if '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
 
     @property
     def kind(self):
@@ -680,11 +776,30 @@ class ProcVariable(ProcCodeEntry):
             return 'variable'
 
 
+class ProcEnumValue(ProcVariable):
+    """A processed enum value documentation."""
+
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcVariable.__init__(self, raw, name, brief, body, sees)
+
+    @property
+    def local_name(self):
+        """Returns name without class prefix."""
+        if '::' in self.name:
+            return self.name.split('::', 1)[-1]
+        else:
+            return self.name
+
+    @property
+    def kind(self):
+        return 'enum_value'
+
+
 class ProcPage(ProcEntry):
     """A processed page."""
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcEntry.__init__(self, raw, name, brief, body, sees)
 
     def __str__(self):
         return 'Page(name=%s)' % repr(self.name)
@@ -693,8 +808,8 @@ class ProcPage(ProcEntry):
 class ProcGroup(ProcEntry):
     """A processed group."""
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
-        ProcEntry.__init__(self, name, brief, body, sees)
+    def __init__(self, raw, name, brief=None, body=None, sees=[]):
+        ProcEntry.__init__(self, raw, name, brief, body, sees)
         self.tags = []
         self.typedefs = []
 
@@ -961,14 +1076,14 @@ class EntryConverter(object):
                     # Including a whole file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadFile(p.path.text)
-                    proc_include = TextNode(type='code', attrs={'type': ftype, 'source': 'include', 'path': p.path.text})
+                    proc_include = TextNode(type='dox:code', attrs={'type': ftype, 'source': 'include', 'path': p.path.text})
                     proc_include.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_include)
                 elif p.getType() == 'snippet':
                     # Including a snippet file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadSnippet(p.path.text, p.name.text)
-                    proc_snippet = TextNode(type='code', attrs={'type': ftype, 'source': 'snippet', 'path': p.path.text})
+                    proc_snippet = TextNode(type='dox:code', attrs={'type': ftype, 'source': 'snippet', 'path': p.path.text})
                     proc_snippet.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_snippet)
                 elif p.getType() == 'code':
@@ -979,7 +1094,7 @@ class EntryConverter(object):
                         type = m.group(0)[1:-1]
                     code_text = code_text[len(type) + 2:].strip()
                     #print [repr(t.val) for t in p.text.tokens]
-                    x = TextNode(type='code', attrs={'type': type})
+                    x = TextNode(type='dox:code', attrs={'type': type})
                     x.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(x)
                 elif p.getType() == 'htmlonly':
@@ -993,7 +1108,7 @@ class EntryConverter(object):
         return res
 
     def process(self, raw_entry):
-        entry = self.entry_class(name=raw_entry.name.text)
+        entry = self.entry_class(raw_entry, name=raw_entry.name.text)
         # Convert the title
         if raw_entry.title.text:
             entry.title_str = raw_entry.title.text
@@ -1118,7 +1233,7 @@ class ClassConverter(CodeEntryConverter):
         for e in raw_entry.implements:
             klass.addImplements(e.text.text.strip())
         for t in raw_entry.tparams:
-            proc_tparam = ProcTParam()
+            proc_tparam = ProcTParam(t)
             proc_tparam.type = t.name.text
             proc_tparam.desc = self.rawTextToTextNode(t.text)
             klass.addTParam(proc_tparam)
@@ -1154,19 +1269,19 @@ class FunctionConverter(CodeEntryConverter):
     def process(self, raw_entry):
         function = CodeEntryConverter.process(self, raw_entry)
         for p in raw_entry.params:
-            proc_param = ProcParam()
+            proc_param = ProcParam(p)
             proc_param.name = p.name.text
             if p.inout:
                 proc_param.in_out = self.in_out_map.get(p.inout.val[1:-1])
             proc_param.desc = self.rawTextToTextNode(p.text)
             function.addParam(proc_param)
         for t in raw_entry.tparams:
-            proc_tparam = ProcTParam()
+            proc_tparam = ProcTParam(t)
             proc_tparam.type = t.name.text
             proc_tparam.desc = self.rawTextToTextNode(t.text)
             function.addTParam(proc_tparam)
         for r in raw_entry.returns:
-            proc_return = ProcReturn()
+            proc_return = ProcReturn(r)
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             function.addReturn(proc_return)
@@ -1187,14 +1302,14 @@ class MacroConverter(CodeEntryConverter):
     def process(self, raw_entry):
         macro = CodeEntryConverter.process(self, raw_entry)
         for p in raw_entry.params:
-            proc_param = ProcParam()
+            proc_param = ProcParam(p)
             proc_param.name = p.name.text
             if p.inout:
                 proc_param.in_out = self.in_out_map.get(p.inout.val[1:-1])
             proc_param.desc = self.rawTextToTextNode(p.text)
             macro.addParam(proc_param)
         for r in raw_entry.returns:
-            proc_return = ProcReturn()
+            proc_return = ProcReturn(r)
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             macro.addReturn(proc_return)
@@ -1209,12 +1324,12 @@ class MetafunctionConverter(CodeEntryConverter):
     def process(self, raw_entry):
         metafunction = CodeEntryConverter.process(self, raw_entry)
         for t in raw_entry.tparams:
-            proc_tparam = ProcTParam()
+            proc_tparam = ProcTParam(t)
             proc_tparam.type = t.name.text
             proc_tparam.desc = self.rawTextToTextNode(t.text)
             metafunction.addTParam(proc_tparam)
         for r in raw_entry.returns:
-            proc_return = ProcReturn()
+            proc_return = ProcReturn(r)
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             metafunction.addReturn(proc_return)
@@ -1225,12 +1340,24 @@ class VariableConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcVariable
-    
+
     def process(self, raw_entry):
         variable = CodeEntryConverter.process(self, raw_entry)
         if raw_entry.type:
             variable.type = raw_entry.type.text
         return variable
+
+
+class EnumValueConverter(CodeEntryConverter):
+    def __init__(self, doc_proc):
+        CodeEntryConverter.__init__(self, doc_proc)
+        self.entry_class = ProcEnumValue
+    
+    def process(self, raw_entry):
+        enum_value = CodeEntryConverter.process(self, raw_entry)
+        if raw_entry.type:
+            enum_value.type = raw_entry.type.text
+        return enum_value
 
 
 class TagStack(object):
@@ -1340,12 +1467,14 @@ class DocProcessor(object):
             'macro' : MacroConverter(self),
             'member_function': FunctionConverter(self),
             'member_variable': VariableConverter(self),
+            'enum_value': EnumValueConverter(self),
             'page': PageConverter(self),
             'tag': TagConverter(self),
             'grouped_tag': TagConverter(self),
             'variable': VariableConverter(self),
             }
         self.msg_printer = msg_printer or dox_parser.MessagePrinter()
+        self.validators = [x(self.msg_printer) for x in validation.VALIDATORS]
 
     def run(self, doc):
         res = ProcDoc(self)
@@ -1355,6 +1484,7 @@ class DocProcessor(object):
         self.convertVariables(doc, res)
         self.checkLinks(doc, res)
         self.buildInheritanceLists(res)
+        self.validate(res)
         return res
 
     def convertTopLevelEntries(self, doc, res):
@@ -1403,7 +1533,7 @@ class DocProcessor(object):
             res.addSecondLevelEntry(proc_entry)
 
     def convertVariables(self, doc, res):
-        self.log('  3) Converting Variable entries.')
+        self.log('  3) Converting variable and enum value entries.')
         var_types = ['member_variable', 'grouped_variable', 'variable']
         for raw_entry in [e for e in doc.entries if e.getType() in var_types]:
             kind = raw_entry.getType()
@@ -1416,6 +1546,16 @@ class DocProcessor(object):
             # Store object in ProcDoc.
             #self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
             res.addVariable(proc_entry)
+        for raw_entry in [e for e in doc.entries if e.getType() == 'enum_value']:
+            converter = self.converters.get(raw_entry.getType())
+            if not converter:
+                self.logWarning('Could not find converter for kind "%s".', kind)
+                continue  # Skip if no converter could be found.
+            # Perform conversion.
+            proc_entry = converter.process(raw_entry)
+            # Store object in ProcDoc.
+            #self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
+            res.addEnumValue(proc_entry)
 
     def checkLinks(self, doc, res):
         """Check <link> items of text nodes and references.
@@ -1437,7 +1577,7 @@ class DocProcessor(object):
         known extending concepts, (c) all known implementing classes.
 
         For classes, this is the list of (a) all implemented concepts, (b) all
-        direct known subclasses, (c) all extended classes.
+        direct known specializations, (c) all extended classes.
 
         @param doc: The ProcDoc object with the classes and concept.
 
@@ -1462,7 +1602,7 @@ class DocProcessor(object):
                 doc.top_level_entries[name].all_extending.add(c.name)
         # Process classes: All extended and all extending classes.
         classes = [x for x in doc.top_level_entries.values()
-                   if x.kind == 'class']
+                   if x.kind in ['class', 'specialization']]
         # Get all classes that c extends into c.all_extended.
         for c in classes:
             q = list(c.extends)  # Queue for recursion
@@ -1496,6 +1636,17 @@ class DocProcessor(object):
             for name in cl.all_implemented:
                 co = doc.top_level_entries[name]
                 co.all_implementing.add(cl.name)
+
+    def validate(self, doc):
+        """Execute validation using the validators from self.validators.
+        
+        @param doc: The ProcDoc object to validate.
+        """
+        self.log('  5) Running validation.')
+        for name, entry in doc.entries.iteritems():
+            for v in self.validators:
+                #print v, entry
+                v.validate(entry)
 
     def log(self, msg, *args, **kwargs):
         """Print the given message to the configured logger if any.

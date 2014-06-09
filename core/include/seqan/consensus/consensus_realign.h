@@ -85,10 +85,10 @@ insertGap(AlignedReadStoreElement<TPos, TGapAnchor, TSpec>& alignedRead,
 	typedef String<TGapAnchor> TGaps;
 	typedef typename Iterator<TGaps, Standard>::Type TGapIter;
 	
-	if (gapPos <= alignedRead.beginPos) {
+	if (gapPos <= (TGapPos)alignedRead.beginPos) {
 		++alignedRead.beginPos; ++alignedRead.endPos;
 		return 0;
-	} else if (gapPos < alignedRead.endPos) {
+	} else if (gapPos < (TGapPos)alignedRead.endPos) {
 		++alignedRead.endPos;
 		TGapIter gapIt = lowerBoundGapAnchor(alignedRead.gaps, gapPos - alignedRead.beginPos, SortGapPos() );
 		TGapIter gapItEnd = end(alignedRead.gaps, Standard());
@@ -109,7 +109,8 @@ insertGap(AlignedReadStoreElement<TPos, TGapAnchor, TSpec>& alignedRead,
 				gapPrev = (int) gapPrevious->gapPos - (int) gapPrevious->seqPos;
 			}
 			// If gap is within an existing gap, extend this gap
-			if ((gapIt->gapPos - (((int) gapIt->gapPos - (int) gapIt->seqPos) - gapPrev) <= insertPos) && (gapIt->gapPos >= insertPos)) {
+			if (((TGapPos)(gapIt->gapPos - (((int) gapIt->gapPos - (int) gapIt->seqPos) - gapPrev)) <= insertPos) &&
+                ((TGapPos)gapIt->gapPos >= insertPos)) {
 				for(;gapIt != gapItEnd; ++gapIt) 
 					++(gapIt->gapPos);
 			} else {
@@ -523,15 +524,15 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
  * @headerfile <seqan/consensus.h>
  * @brief Perform realignment using the Anson-Myers realignment.
  *
+ * @deprecated Do not use this function but use the new function @link reAlignment @endlink instead.
+ *
  * @signature void reAlign(fragStore, consensusScore, contigID, [realignmentMethod,] bandwidth, includeReference);
  *
  * @param[in,out] fragStore        The @link FragmentStore @endlink with the alignment to realign.
  * @param[in]     consensusScore   The @link Score @endlink to use for scoring alignments.
  * @param[in]     contigID         The integer id of the contig to realign.
- * @param[in]     bandwidth        The bandwidth to use for realignment.
+ * @param[in]     bandwidth        The integer bandwidth to use for realignment.
  * @param[in]     includeReference A <tt>bool</tt> flag that indicates whether to include the reference as a pseudo-read.
- *
- * @section Remarks
  *
  * If <tt>includeReference</tt> then the reference of the given contig will be used as a pseudo-read.  In this case, the
  * reference will be replaced by the consensus.  When included as a pseudo-read, the alignment of the consensus relative

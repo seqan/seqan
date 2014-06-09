@@ -41,7 +41,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include <seqan/index_extras.h>
 
 #define SEQAN_DEBUG
 

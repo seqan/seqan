@@ -123,8 +123,6 @@ struct DefaultPrefixOrder
  *
  * @tparam TSpec The specializing size type, defaults to <tt>size_t</tt>.
  *
- * @section Remarks
- * 
  * This class implement comparator objects that perform (lexical) comparisons between two sequences.  The result of the
  * comparison is stored in the data members of the instance and can be accessed by some functions, for example @link
  * Lexical#isLess @endlink or @link Lexical#isEqual @endlink.
@@ -291,8 +289,6 @@ SEQAN_CHECKPOINT
  * @tparam T Type for which the comparator type is to be determined.
  * 
  * @return Type the comparator type.
- * 
- * @section Remarks
  * 
  * Comparators are objects that can be used to compare other objects and store the result of comparisons.
  */
@@ -913,8 +909,6 @@ SEQAN_CHECKPOINT
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
  *
- * @section Remarks
- *
  * By definition, a sequence is a prefix of itself: <tt>isPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
@@ -970,8 +964,6 @@ SEQAN_CHECKPOINT
  * @param[in] comparator A comparator. Types: Lexical
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
- *
- * @section Remarks
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
@@ -1029,8 +1021,6 @@ SEQAN_CHECKPOINT
  * 
  * @return TSize The length of the longest common prefix of <tt>left</tt> and <tt>right</tt>.  TSize is the Size type of
  *               the left size type.
- *
- * @section Remarks
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */

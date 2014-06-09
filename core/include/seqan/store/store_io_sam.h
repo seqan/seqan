@@ -241,8 +241,8 @@ namespace SEQAN_NAMESPACE_MAIN
         TId     contigId;
         TId     pairMatchId;
         TId     matePairId;//:(sizeof(TId)*8-1);
-        bool    reversed;
         TPos    beginPos;
+        bool    reversed;
     };
     
     template <typename TFragStore>
@@ -265,8 +265,8 @@ namespace SEQAN_NAMESPACE_MAIN
             if (posA < posB) return true;
             if (posA > posB) return false;
             
-            bool reversedA = (a.beginPos > a.endPos);
-            bool reversedB = (b.beginPos > b.endPos);
+            bool reversedA = (a.endPos < a.beginPos);
+            bool reversedB = (b.endPos < b.beginPos);
             if (reversedA != reversedB) return reversedB;
 
             typedef typename TFragStore::TMatePairStore     TMatePairStore;
@@ -294,12 +294,14 @@ namespace SEQAN_NAMESPACE_MAIN
             if (a.beginPos < b.beginPos) return true;
             if (a.beginPos > b.beginPos) return false;
             if (a.reversed != b.reversed) return b.reversed;
-            return (a.matePairId < b.matePairId);
+            if (a.matePairId < b.matePairId) return true;
+            if (a.matePairId > b.matePairId) return false;
+            return (a.pairMatchId < b.pairMatchId);
         }
     };
     
     template <typename TAlignedRead, typename TMInfo, typename TFragStore>
-    inline int 
+    inline int
     _compareAlignedReadAndMateInfo(TAlignedRead const &a, TMInfo const &b, TFragStore const &fragStore)
     {
         if (a.contigId < b.contigId) return -1;
@@ -309,9 +311,9 @@ namespace SEQAN_NAMESPACE_MAIN
         if (posA < b.beginPos) return -1;
         if (posA > b.beginPos) return 1;
         
-        bool reversedA = (a.beginPos > a.endPos);
-        if (!reversedA && b.reversed) return -1;
-        if (reversedA && !b.reversed) return 1;
+        bool reversedA = (a.endPos < a.beginPos);
+        if (!reversedA &&  b.reversed) return -1;
+        if ( reversedA && !b.reversed) return 1;
 
         typedef typename TFragStore::TMatePairStore     TMatePairStore;
         typedef typename Value<TMatePairStore>::Type    TMatePair;
@@ -333,7 +335,6 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;        
         typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
-        typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
         typedef typename Iterator<TAlignedReadStore, Standard>::Type    TIter;    
         typedef typename Iterator<TMatchMateInfos, Standard>::Type      TMIter;    
                 
@@ -350,28 +351,19 @@ namespace SEQAN_NAMESPACE_MAIN
 
         while (true)
         {
-            // skip already aligned reads
-            while (it->pairMatchId != TAlignedRead::INVALID_ID)
-                if (++it == itEnd) return;
-
             int cmp = _compareAlignedReadAndMateInfo(*it, *mit, fragStore);
 
             if (cmp == 0)   // both are equal -> link them
-                (*it).pairMatchId = (*mit).pairMatchId;
+                if (it->pairMatchId > mit->pairMatchId)     // avoid id swap and instead decide for
+                    it->pairMatchId = mit->pairMatchId;     // the smaller of both ids
 
             if (cmp >= 0)   // MateInfo is less or equal
-            {
-                if (++mit == mitEnd) return;
-//                if (cmp>0)
-//                    std::cout << "mateInfo:   contigId="<<mit->contigId<<"  beginPos="<<mit->beginPos<<"  reversed="<<mit->reversed<<"  matePairId="<<mit->matePairId<<std::endl;
-            }
+                if (++mit == mitEnd)
+                    return;
 
             if (cmp <= 0)   // AlignedRead is less or equal
-            {
-                if (++it == itEnd) return;
-//                if (cmp<0)
-//                    std::cout << "alignedR:   contigId="<<it->contigId<<"  beginPos="<<_min(it->beginPos,it->endPos)<<"  reversed="<<(it->beginPos > it->endPos)<<"  matePairId="<<fragStore.readStore[it->readId].matePairId<<std::endl;
-            }
+                if (++it == itEnd)
+                    return;
         }
     }    
 
@@ -685,7 +677,6 @@ namespace SEQAN_NAMESPACE_MAIN
         // All fragment store element types
         //typedef typename Value<typename TFragmentStore::TContigStore>::Type         TContigElement;
         //typedef typename Value<typename TFragmentStore::TLibraryStore>::Type        TLibraryStoreElement;
-        typedef typename Value<typename TFragmentStore::TMatePairStore>::Type       TMatePairElement;
         //typedef typename Value<typename TFragmentStore::TReadStore>::Type           TReadStoreElement;
         typedef typename Value<typename TFragmentStore::TAlignQualityStore>::Type   TAlignQualityElement;
 
@@ -702,6 +693,8 @@ namespace SEQAN_NAMESPACE_MAIN
         // Read next BamAlignmentRecord and get shortcut.
         if (readRecord(contextSAM.bamRecord, bamIOContext, streamOrReader, tag) != 0)
         {
+//  TODO(weese:) skipLine would be required to continue reading after an invalid SAM line but is not yet implemented for Bgzf stream
+//            skipLine(streamOrReader);
             std::cerr << "ERROR: Problem reading SAM/BAM record.\n";
             return;
         }
@@ -823,14 +816,18 @@ namespace SEQAN_NAMESPACE_MAIN
                 resize(fragStore.contigStore, length(fragStore.contigNameStore));
             }
 
-            if (getMateNo(fragStore, contextSAM.readId) == 0)  // store mate info only for one mate
+            if (contextSAM.readId < length(fragStore.readStore))
             {
-                typename TMatePairElement::TId matePairId = TMatePairElement::INVALID_ID;
-                if (contextSAM.readId < length(fragStore.readStore))
-                    matePairId = fragStore.readStore[contextSAM.readId].matePairId;
-                
-                TMatchMateInfo matchMateInfo = {contextSAM.readId, mcontigId, pairMatchId, matePairId,
-                                                hasFlagNextRC(record), record.pNext};
+                // insert match mate info for the mate record
+                TMatchMateInfo matchMateInfo =
+                {
+                    /* .readId      = */  contextSAM.readId,
+                    /* .contigId    = */  mcontigId,
+                    /* .pairMatchId = */  pairMatchId,
+                    /* .matePairId  = */  fragStore.readStore[contextSAM.readId].matePairId,
+                    /* .beginPos    = */  record.pNext,
+                    /* .reversed    = */  hasFlagNextRC(record)
+                };
                 appendValue(matchMateInfos, matchMateInfo);
                 back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
             }
@@ -902,322 +899,331 @@ _fillHeader(BamHeader & header,
         // Sample name needs to be included into fragment store.
         appendValue(pgRecord.tags, TTag("SM", "none"));
     }
-
 }
+
+// --------------------------------------------------------------------------
+// Function _writeHeader()
+// --------------------------------------------------------------------------
+
+template <typename TStream, typename TSpec, typename TConfig, typename TContext>
+inline void _writeHeader(TStream & target,
+                         FragmentStore<TSpec, TConfig> & store,
+                         TContext & context,
+                         Sam)
+{
+    BamHeader header;
+
+    // Fill header with information from fragment store.
+    _fillHeader(header, store);
+
+    // Write header to target.
+    write2(target, header, context, Sam());
+}
+
+// --------------------------------------------------------------------------
+// Function _fillBamSeqAndQual()
+// --------------------------------------------------------------------------
+template <typename TSeq, typename TQual, typename TRead>
+inline void
+_fillBamSeqAndQual(TSeq &bamSeq, TQual &bamQual, TRead const &read)
+{
+    bamSeq = read;
+
+    resize(bamQual, length(read));
+    typename Iterator<TQual, Standard>::Type       tIt    = begin(bamQual, Standard());
+    typename Iterator<TRead const, Standard>::Type sIt    = begin(read, Standard());
+    typename Iterator<TRead const, Standard>::Type sItEnd = end(read, Standard());
+
+    for (; sIt != sItEnd; ++sIt, ++tIt)
+        *tIt = (char)(getQualityValue(*sIt) + '!');
+}
+
+// --------------------------------------------------------------------------
+// Function _fillRecord()
+// --------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig, typename TAlignedRead, typename TAlignQuality, typename TAlignFunctor>
+inline void
+setPrimaryMatch(BamAlignmentRecord & record,
+                FragmentStore<TSpec, TConfig> & store,
+                TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+                TAlignQuality const & alignQuality,     // read alignment quality
+                TAlignFunctor & alignFunctor,           // functor that extracts/computes alignment for cigar/md strings
+                bool secondaryAlignment)                // is this a secondary alignment?
+{
+    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+
+    typedef typename TFragmentStore::TContigStore                   TContigStore;
+    typedef typename Value<TContigStore>::Type                      TContig;
+    typedef typename TContig::TGapAnchors                           TContigGapAnchors;
+
+    typedef Iterator<CharString, Standard>::Type                    TCharStringIterator;
+
+    typedef Gaps<Nothing, AnchorGaps<TContigGapAnchors> >           TContigGaps;
+
+    // Fill QNAME with read name.
+    clear(record.qName);
+    TCharStringIterator it = begin(store.readNameStore[alignedRead.readId], Standard());
+    TCharStringIterator itEnd = end(store.readNameStore[alignedRead.readId], Standard());
+    for (; it != itEnd && !isblank(*it); ++it)
+        appendValue(record.qName, *it);
+
+    // Fill FLAG.
+    unsigned short flag = 0;
+
+    if (alignedRead.beginPos > alignedRead.endPos)
+        flag |= BAM_FLAG_RC;
+    if (secondaryAlignment)
+        flag |= BAM_FLAG_SECONDARY;     // we've already output an alignment for this read (this one is secondary)
+
+    signed char mateNo = getMateNo(store, alignedRead.readId);
+    if (mateNo == 0)
+        flag |= BAM_FLAG_FIRST;        // this read is the first in the pair
+    else if (mateNo == 1)
+        flag |= BAM_FLAG_LAST;         // this read is the second in the pair
     
-//////////////////////////////////////////////////////////////////////////////
-// _writeAlignments
+    // Set flags regarding mate alignment.
+    
+    // We disinguish 3 cases:
+    //  1) We have no mate (single-end read)
+    //  2) We might have a mate, but it wasn't aligned properly
+    //  3) We have a mate which was aligned properly
+    //
+    // wich are encoded as follows:
+    //  1) alignedRead and alignedMate have the same address in _fillRecord
+    //  2) alignedMate has an invalid contigId (== INVALID_ID)
+    //  3) alignedRead and alignedMate have valid readIds
 
-    template<typename TFile, typename TSpec, typename TConfig, typename TAlignFunctor>
-    inline void _writeAlignments(TFile & target,
-                                 FragmentStore<TSpec, TConfig> & store,
-                                 Sam,
-                                 TAlignFunctor const & alignFunctor)
+    if (mateNo >= 0)
+        flag |=   BAM_FLAG_MULTIPLE | BAM_FLAG_NEXT_UNMAPPED;   // there is a mate
+    else
+        flag &= ~(BAM_FLAG_MULTIPLE | BAM_FLAG_NEXT_UNMAPPED);  // there is no mate
+
+    record.flag = flag;
+
+    // Fill RNAME by providing contig id.
+    record.rID = alignedRead.contigId;
+
+    // Fill POS with start position.
+    TContigGaps contigGaps(/*store.contigStore[alignedRead.contigId].seq, */store.contigStore[alignedRead.contigId].gaps);
+    record.beginPos = positionGapToSeq(contigGaps, std::min(alignedRead.beginPos, alignedRead.endPos));    
+
+    // Fill MAPQ with mapping quality.
+//    if (alignQuality.score != TAlignedReadQualityElement::INVALID_SCORE)
+    if (alignQuality.score > 0)
+        record.mapQ = alignQuality.score;
+    else
+        record.mapQ = 255;
+
+//    // Fill CIGAR using aligned read.
+//    if (!IsSameType<TAlignFunctor, Nothing>::VALUE)
+//        getCigarString(record.cigar, row(align, 0), row(align, 1));
+
+    // Retrieve number of errors from quality store.
+    int errors = -1;
+    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
+        errors = alignQuality.errors;
+
+    // Use record.qual as a temporary for the md string.
+    alignAndGetCigarString(record.cigar, record.qual, store.contigStore[alignedRead.contigId],
+            store.readSeqStore[alignedRead.readId], alignedRead, errors, alignFunctor);
+
+    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
     {
-//IOREV
-        typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+//        if (errors > (int)alignQuality.errors)
+//            std::cerr << "WARNING: More errors in the alignment (" << errors << ") than given in NM tag / alignQuality ("
+//                      << (int)alignQuality.errors << ") for read " << record.qName << std::endl;
 
-        typedef typename TFragmentStore::TReadStore                     TReadStore;
-        typedef typename TFragmentStore::TReadNameStore                 TReadNameStore;
-        typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
-        typedef typename TFragmentStore::TContigStore                   TContigStore;
-        typedef typename TFragmentStore::TReadSeq                       TReadSeq;
+        // To output the same NM value if a SAM file is loaded and saved, we overwrite error with the original value
+        // TODO(weese): This can be changed if desired (uncomment the following line) but now even the ex1.sam example
+        //              of the SAMtools have NM values that are inconsistent to their CIGAR/MD strings
+        errors = alignQuality.errors;
+    }
 
-        typedef typename Value<TReadStore>::Type                        TRead;
-        //typedef typename Size<TReadStore>::Type                         TSize;
-        typedef typename Value<TContigStore>::Type                      TContig;
-        typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
+    // Fill tags here to release record.qual 
+    clear(record.tags);
+    if (errors != -1)
+        appendTagValue(record.tags, "NM", errors);
+    if (!empty(record.tags))
+        appendTagValue(record.tags, "MD", record.qual, 'Z');
 
-        typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignIter;
-        typedef typename Iterator<TReadSeq, Standard>::Type             TReadSeqIter;
-        typedef typename Id<TAlignedRead>::Type                         TId;
+    record.rNextId = BamAlignmentRecord::INVALID_REFID;
+    record.pNext = BamAlignmentRecord::INVALID_POS;
+    record.tLen = BamAlignmentRecord::INVALID_LEN;
 
-        typedef Gaps<Nothing, AnchorGaps<typename TContig::TGapAnchors> >   TContigGaps;
+    if (!secondaryAlignment)
+    {
+        // Fill SEQ and QUAL with read sequence and quality values.
+        if (alignedRead.beginPos <= alignedRead.endPos)
+            _fillBamSeqAndQual(record.seq, record.qual, store.readSeqStore[alignedRead.readId]);
+        else
+            _fillBamSeqAndQual(record.seq, record.qual, reverseComplementString(store.readSeqStore[alignedRead.readId]));
+    }
+    else
+    {
+        clear(record.seq);
+        clear(record.qual);
+    }
+}
 
-        String<int> mateIndex;  // store outer library size for each pair match (indexed by pairMatchId)
-        calculateMateIndices(mateIndex, store);
+template <typename TSpec, typename TConfig, typename TAlignedRead>
+inline void
+setMateMatch(BamAlignmentRecord & record,
+            FragmentStore<TSpec, TConfig> & store,
+            TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+            TAlignedRead const & alignedMate)       // alignment of the mate
+{
+    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+
+    typedef typename TFragmentStore::TContigStore                   TContigStore;
+    typedef typename Value<TContigStore>::Type                      TContig;
+    typedef typename TContig::TGapAnchors                           TContigGapAnchors;
+
+    typedef typename TFragmentStore::TReadStore                     TReadStore;
+    typedef typename Value<TReadStore>::Type                        TReadStoreElement;
+
+    typedef Gaps<Nothing, AnchorGaps<TContigGapAnchors> >           TContigGaps;
+
+
+    record.flag &= ~(BAM_FLAG_ALL_PROPER | BAM_FLAG_NEXT_RC | BAM_FLAG_NEXT_UNMAPPED);
+    if (alignedMate.contigId != TReadStoreElement::INVALID_ID)
+    {
+        record.flag |= BAM_FLAG_ALL_PROPER;    // mate is mapped properly
         
-        TAlignIter it = begin(store.alignedReadStore, Standard());
-        TAlignIter itEnd = end(store.alignedReadStore, Standard());
-        TAlignIter mit = it;
-        CharString cigar, md;
-        TReadSeq readSeq;
-        
-        typedef unsigned long TWord;
-        const unsigned wordLen = BitsPerValue<TWord>::VALUE;
-        String<TWord> readAligned;  // bitset to signal wether a read was aligned at least once
-        resize(readAligned, (length(store.readStore) + wordLen - 1) / wordLen, (TWord)0);
+        if (alignedMate.beginPos > alignedMate.endPos)
+            record.flag |= BAM_FLAG_NEXT_RC;   // mate is mapped on reverse strand
+    }
+    else
+    {
+        record.flag |= BAM_FLAG_NEXT_UNMAPPED; // mate is unmapped
+    }
 
-        for(; it != itEnd; ++it)
+    record.rNextId = (alignedMate.contigId != TContig::INVALID_ID)? alignedMate.contigId : BamAlignmentRecord::INVALID_REFID;
+
+    // Fill PNEXT with mate start position
+    // Fill TLEN with outer distance of the read alignments
+    if (alignedMate.contigId < length(store.contigStore))
+    {
+        TContigGaps contigGaps(store.contigStore[alignedMate.contigId].gaps);
+        record.pNext = positionGapToSeq(contigGaps, std::min(alignedMate.beginPos, alignedMate.endPos));
+
+        if (alignedMate.contigId == alignedRead.contigId)
         {
-            TId alignedId = (*it).id;
-            TId readId = (*it).readId;
-            TId mateIdx = TRead::INVALID_ID;
-
-            if ((*it).pairMatchId != TRead::INVALID_ID)
-                mateIdx = mateIndex[2*(*it).pairMatchId + getMateNo(store, (*it).readId)];
-
-            TContigGaps contigGaps(/*store.contigStore[(*it).contigId].seq, */store.contigStore[(*it).contigId].gaps);
-            __int64 pos = positionGapToSeq(contigGaps, _min((*it).beginPos, (*it).endPos)) + 1;
-            __int64 mpos = 0;
-            int isize = 0;
-            unsigned short flag = 0;
-
-            if ((*it).beginPos > (*it).endPos)
-                flag |= 0x0010;         
-
-            // calculate flags, mpos, isize
-            if (mateIdx < length(store.alignedReadStore))
-            {
-                mit = begin(store.alignedReadStore, Standard()) + mateIdx;
-                if ((*it).contigId == (*mit).contigId)
-                {
-                    mpos = positionGapToSeq(contigGaps, _min((*mit).beginPos, (*mit).endPos)) + 1;
-                    if ((*it).beginPos < (*mit).beginPos)
-                        isize = positionGapToSeq(contigGaps, _max((*mit).beginPos, (*mit).endPos) - 1) + 2 - pos;
-                    else
-                        isize = mpos - positionGapToSeq(contigGaps, _max((*it).beginPos, (*it).endPos) - 1) - 2;
-                }
-                flag |= 0x0002;
-                if ((*mit).beginPos > (*mit).endPos)
-                    flag |= 0x0020;             
-            }
-            
-            signed char mateNo = getMateNo(store, readId);
-            if (mateNo == 0) flag |= 0x0040;    // this read is the first in the pair
-            if (mateNo == 1) flag |= 0x0080;    // this read is the second in the pair
-            
-            // test for secondary alignment
-            TWord mask = (TWord)1 << (readId % wordLen);
-            bool secondary = (readAligned[readId / wordLen] & mask) != 0;
-            readAligned[readId / wordLen] |= mask;
-            if (secondary) flag |= 0x0100;      // we've already output an alignment for this read (this one is secondary)
-
-            if (readId < length(store.readStore))
-            {
-                TRead &read = store.readStore[readId];
-                if (read.matePairId != TRead::INVALID_ID)
-                {
-                    flag |= 0x0001;
-                    if (mateIdx >= length(store.alignedReadStore))
-                        flag |= 0x0008;         // mate is unmapped (actually we should check if the mate has no match at all)
-                }
-            }
-            
-            // <qname>
-            if (readId < length(store.readNameStore))
-            {
-                typedef typename Iterator<typename Value<TReadNameStore>::Type const>::Type TReadNameIterator;
-                if (empty(store.readNameStore[readId]))
-                    continue;
-                for (TReadNameIterator it = begin(store.readNameStore[readId]); it != end(store.readNameStore[readId]); ++it) {
-                    if (*it == ' ' || *it == '\t' || *it == '\n' || *it == '\r')
-                        break;
-                    _streamPut(target, *it);
-                }
-            } else
-                continue;
-            _streamPut(target, '\t');
-            
-            // <flag>
-            _streamPutInt(target, flag);
-            _streamPut(target, '\t');
-            
-            // <rname>
-            if ((*it).contigId < length(store.contigNameStore))
-                _streamWrite(target, store.contigNameStore[(*it).contigId]);
+            if (alignedRead.beginPos < alignedMate.beginPos)
+                record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
             else
-                _streamWrite(target, '.');  // No reference name given.  Standard says field must not be empty but gives no "NULL" value.
-            _streamPut(target, '\t');
-            
-            // <pos>
-            _streamPutInt(target, pos);
-            _streamPut(target, '\t');
-            
-            // <mapq>
-            if (alignedId < length(store.alignQualityStore) && store.alignQualityStore[alignedId].score > 0) // a value <= 0 equals -errors (forbidden in SAM)
-                _streamPutInt(target, store.alignQualityStore[alignedId].score);
-            else
-                _streamPutInt(target, 255);
-            _streamPut(target, '\t');
-            
-            // get read sequence
-            if (readId < length(store.readSeqStore))
-            {
-                readSeq = store.readSeqStore[readId];
-                if ((*it).beginPos > (*it).endPos) 
-                    reverseComplement(readSeq);
-            } else
-                clear(readSeq);
-            
-            // <cigar>
-            int errors = -1;
-            if (alignedId < length(store.alignQualityStore))
-                errors = store.alignQualityStore[alignedId].errors;
-            // std::cout << store.readNameStore[readId] << "\n";
-            alignAndGetCigarString(cigar, md, store.contigStore[(*it).contigId], readSeq, *it, errors, alignFunctor);
-            _streamWrite(target, cigar);
-			// _streamWrite(std::cout, cigar);
-            // std::cout << "\n";
-            _streamPut(target, '\t');
-            
-            // <mrnm>
-            if ((mateIdx < length(store.alignedReadStore)))
-            {
-                if ((*it).contigId == (*mit).contigId)
-                    _streamWrite(target, '=');
-                else
-                    if ((*mit).contigId < length(store.contigNameStore))
-                        _streamWrite(target, store.contigNameStore[(*mit).contigId]);
-            } else
-                _streamWrite(target, '*');
-                
-            _streamPut(target, '\t');
-            
-            // <mpos>
-            _streamPutInt(target, (int)mpos);
-            _streamPut(target, '\t');
-            
-            // <isize>
-            _streamPutInt(target, isize);
-            _streamPut(target, '\t');
+                record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
+        }
+        else
+        {
+            record.tLen = BamAlignmentRecord::INVALID_LEN;
+        }
+    }
+    else
+    {
+        record.pNext = BamAlignmentRecord::INVALID_POS;
+        record.tLen = BamAlignmentRecord::INVALID_LEN;
+    }
+}
 
-            // <seq>
-            if (!secondary)
-                _streamWrite(target, readSeq);
-            else
-                _streamPut(target, '*');
-            _streamPut(target, '\t');
-            
-            // <qual>
-            if (!secondary)
-            {
-                TReadSeqIter it = begin(readSeq, Standard());
-                TReadSeqIter itEnd = end(readSeq, Standard());
-                for (; it != itEnd; ++it)
-                    _streamPut(target, (char)(getQualityValue(*it) + 33));
-            }
-            else
-                _streamPut(target, '*');
-            
-            // <tags>
-            
-            if (errors != -1)
-            {
-                _streamWrite(target, "\tNM:i:");
-                _streamPutInt(target, errors);
-            }
+// --------------------------------------------------------------------------
+// Function _writeAlignedReads()
+// --------------------------------------------------------------------------
 
-            if (!empty(md))
-            {
-                _streamWrite(target, "\tMD:Z:");
-                _streamWrite(target, md);
-            }
+template <typename TStream, typename TSpec, typename TConfig, typename TContext, typename TAlignFunctor>
+inline void _writeAlignedReads(
+    TStream & target,
+    FragmentStore<TSpec, TConfig> & store,
+    TContext & context,
+    TAlignFunctor & alignFunctor,
+    Sam)
+{
+    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
-            if (alignedId < length(store.alignedReadTagStore) && !empty(store.alignedReadTagStore[alignedId]))
-            {
-                _streamPut(target, '\t');
-                _streamWrite(target, store.alignedReadTagStore[alignedId]);
-            }
-            
-            _streamPut(target, '\n');
+    typedef typename TFragmentStore::TReadStore                     TReadStore;
+    typedef typename Value<TReadStore>::Type                        TReadStoreElement;
+
+    typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadStoreIterator;
+    typedef typename Value<TAlignedReadStore>::Type                 TAlignedReadStoreElement;
+    typedef typename Id<TAlignedReadStoreElement>::Type             TAlignedReadStoreElementId;
+
+    typedef typename TFragmentStore::TAlignQualityStore             TAlignQualityStore;
+    typedef typename Value<TAlignQualityStore>::Type                TAlignQualityStoreElement;
+
+    typedef TAlignQualityStoreElement *                             TAlignQualityStoreElementPtr;
+
+    // Store outer library size for each pair match (indexed by pairMatchId)
+    String<TAlignedReadStoreElementId> mateIndices;
+    calculateMateIndices(mateIndices, store);
+
+    // Bitset to signal wether a read was aligned at least once.
+    String<bool, Packed<> > readAligned;
+    resize(readAligned, length(store.readStore), false);
+
+    // Dummy store elements to cope with missing information.
+    TAlignQualityStoreElement       noAlignQuality;
+    TAlignQualityStoreElementPtr    alignQualityPtr;
+
+    TAlignedReadStoreIterator it    = begin(store.alignedReadStore, Standard());
+    TAlignedReadStoreIterator itEnd = end(store.alignedReadStore, Standard());
+
+    BamAlignmentRecord record;
+
+    for (; it != itEnd; ++it)
+    {
+        TAlignedReadStoreElement &alignedRead = *it;
+
+        // Try to get quality.
+        if (alignedRead.id < length(store.alignQualityStore))
+            alignQualityPtr = &store.alignQualityStore[alignedRead.id];
+        else
+            alignQualityPtr = &noAlignQuality;
+
+        // Try to get a mate.
+
+        // We disinguish 3 cases:
+        //  1) We have no mate (single-end read)
+        //  2) We might have a mate, but it wasn't aligned properly
+        //  3) We have a mate which was aligned properly
+
+        // Test for secondary alignment and mark read as seen.
+        bool secondary = getValue(readAligned, alignedRead.readId);
+        assignValue(readAligned, alignedRead.readId, true);
+
+        // Fill record.
+        clear(record);
+
+        // case 1 or 2 is handled here
+        setPrimaryMatch(record, store, alignedRead, *alignQualityPtr, alignFunctor, secondary);
+
+        if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
+        {
+            // case 3
+            TAlignedReadStoreElementId mateIndex = mateIndices[2 * alignedRead.pairMatchId + getMateNo(store, alignedRead.readId)];
+            if (mateIndex < length(store.alignedReadStore))
+                setMateMatch(record, store, alignedRead, store.alignedReadStore[mateIndex]);
         }
 
-#if 0  // DISABLE FOR NOW
-        // Write out records for unaligned reads.
-        TSize readCount = length(store.readSeqStore);
-        for (unsigned readId = 0; readId < readCount; ++readId)
-        {
-            TWord mask = (TWord)1 << (readId % wordLen);
-            if ((readAligned[readId / wordLen] & mask) != 0)
-                continue;
-            
-            // <qname>
-            if (readId < length(store.readNameStore)) {
-                typedef typename Iterator<CharString, Standard>::Type TCharStringIterator;
-                if (empty(store.readNameStore[readId]))
-                    continue;
-                for (TCharStringIterator it = begin(store.readNameStore[readId]); it != end(store.readNameStore[readId]); ++it) {
-                    if (*it == ' ' || *it == '\t' || *it == '\n' || *it == '\r')
-                        break;
-                    _streamPut(target, *it);
-                }
-            } else
-                continue;
-            _streamPut(target, '\t');
-            
-            // <flag>
-            unsigned short flag = 0x04;         // read is unaligned
-            int mateNo = getMateNo(store, readId);
-            if (mateNo == 0) flag |= 0x0041;    // this read is the first in the pair
-            if (mateNo == 1) flag |= 0x0081;    // this read is the second in the pair
+        // Append additional tags.
+        if (alignedRead.id < length(store.alignedReadTagStore))
+            assignTagsSamToBam(record.tags, store.alignedReadTagStore[alignedRead.id]);
 
-            _streamPutInt(target, flag);
-            _streamPut(target, '\t');
-            
-            // <rname>
-            _streamWrite(target, '*');
-            _streamPut(target, '\t');
-            
-            // <pos>
-            _streamWrite(target, '0');
-            _streamPut(target, '\t');
-            
-            // <mapq>
-            _streamWrite(target, '0');
-            _streamPut(target, '\t');
-            
-            // <cigar>
-            _streamWrite(target, '*');
-            _streamPut(target, '\t');
-            
-            // <mrnm>
-            _streamWrite(target, '*');
-            _streamPut(target, '\t');
-            
-            // <mpos>
-            _streamWrite(target, '0');
-            _streamPut(target, '\t');
-            
-            // <isize>
-            _streamWrite(target, '0');
-            _streamPut(target, '\t');
 
-            // <seq>
-            readSeq = store.readSeqStore[readId];
-            _streamWrite(target, readSeq);
-            _streamPut(target, '\t');
-            
-            // <qual>
-            TReadSeqIter it = begin(readSeq, Standard());
-            TReadSeqIter itEnd = end(readSeq, Standard());
-            for (; it != itEnd; ++it)
-                _streamPut(target, (char)(getQualityValue(*it) + 33));
-
-            // <tags>
-            _streamWrite(target, "\tNH:i:0");
-            
-            _streamPut(target, '\n');
-        }
-#endif  // #if 0
+        // Write record to target.
+        write2(target, record, context, Sam());
     }
-    
-    template<typename TFile, typename TSpec, typename TConfig>
-    inline void _writeAlignments(TFile & target,
-                                 FragmentStore<TSpec, TConfig> & store,
-                                 Sam)
-    {
-        _writeAlignments(target, store, Sam(), Nothing());
-    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // write
 
 ///.Function.write.param.tag.type:Tag.File Format.tag.Sam
-    
-    template<typename TFile, typename TSpec, typename TConfig>
+
+    template<typename TFile, typename TSpec, typename TConfig, typename TAlignFunctor>
     inline void write(TFile & target,
                       FragmentStore<TSpec, TConfig> & store,
+                      TAlignFunctor & alignFunctor,
                       Sam)
     {
         typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
@@ -1227,18 +1233,21 @@ _fillHeader(BamHeader & header,
         TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
 
         // 1. write header
-        BamHeader header;
-
-        // fill header with information from fragment store.
-        _fillHeader(header, store);
-
-        // write header to target.
-        write2(target, header, context, Sam());
+        _writeHeader(target, store, context, Sam());
 
         // 2. write aligments
-        _writeAlignments(target, store, Sam());
+        _writeAlignedReads(target, store, context, alignFunctor, Sam());
     }
-    
+
+    template<typename TFile, typename TSpec, typename TConfig>
+    inline void write(TFile & target,
+                      FragmentStore<TSpec, TConfig> & store,
+                      Sam)
+    {
+        BamAlignFunctorDefault alignFunctor;
+        write(target, store, alignFunctor, Sam());
+    }
+
 }// namespace SEQAN_NAMESPACE_MAIN
 
 #endif //#ifndef SEQAN_HEADER_...

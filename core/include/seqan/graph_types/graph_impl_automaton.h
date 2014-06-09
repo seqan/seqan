@@ -770,7 +770,7 @@ assignRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 /*!
  * @fn Automaton#root
- * @signature Gets reference to the root of the automaton.
+ * @brief Gets reference to the root of the automaton.
  *
  * @signature TVertexDescriptor root(a);
  *
@@ -809,7 +809,7 @@ root(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g)
 
 /*!
  * @fn Automaton#getRoot
- * @signature Gets the root of the automaton.
+ * @brief Gets the root of the automaton.
  *
  * @signature TVertexDescriptor getRoot(a);
  *
@@ -848,7 +848,7 @@ getRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g)
 
 /*!
  * @fn Automaton#isRoot
- * @signature Tests whether a given vertex is the root or not.
+ * @brief Tests whether a given vertex is the root or not.
  *
  * @signature bool isRoot(a, v);
  *

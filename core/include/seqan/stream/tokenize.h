@@ -58,13 +58,13 @@ namespace seqan {
  *
  * @signature enum TokenizeResult;
  *
- * @var TokenizeResult SUCCESS = 0;
+ * @val TokenizeResult SUCCESS = 0;
  * @brief Reading the specified data succeeded.
  *
- * @var TokenizeResult EOF_BEFORE_SUCCESS = 1024;
+ * @val TokenizeResult EOF_BEFORE_SUCCESS = 1024;
  * @brief End of file was reached before the read/skip operation succeeded.
  *
- * @var TokenizeResult NO_SUCCESS = 1025;
+ * @val TokenizeResult NO_SUCCESS = 1025;
  * @brief The pattern was not found but we are not at EOF (may be returned when tokenizing on limited scope.
  */
 

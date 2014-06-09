@@ -59,7 +59,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
 
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 2, -static_cast<int>(length(strV)) - 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 2, -static_cast<int>(length(strV)) - 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -79,7 +79,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 2, -static_cast<int>(length(strV)) - 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 2, -static_cast<int>(length(strV)) - 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -117,7 +117,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, -static_cast<int>(length(strV))),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, -static_cast<int>(length(strV))),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -136,7 +136,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, -static_cast<int>(length(strV))),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, -static_cast<int>(length(strV))),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -173,7 +173,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, -3),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, -3),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -192,7 +192,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, -3),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, -3),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -229,7 +229,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, 0),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -248,7 +248,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, 0),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -285,7 +285,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, static_cast<int>(length(strH)) - static_cast<int>(length(strV))),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, static_cast<int>(length(strH)) - static_cast<int>(length(strV))),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -303,7 +303,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, static_cast<int>(length(strH)) - static_cast<int>(length(strV))),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, static_cast<int>(length(strH)) - static_cast<int>(length(strV))),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -340,7 +340,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, 6),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -359,7 +359,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, 6),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -397,7 +397,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -415,7 +415,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -452,7 +452,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -471,7 +471,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -509,7 +509,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), -3),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), -3),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -529,7 +529,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
 
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), -3),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), -3),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -566,7 +566,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), 0),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -585,7 +585,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), 0),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -622,7 +622,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH) - length(strV)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -641,7 +641,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH) - length(strV)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -679,7 +679,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), 6),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -698,7 +698,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), 6),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -735,7 +735,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -754,7 +754,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -791,7 +791,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -810,7 +810,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-static_cast<int>(length(strV)), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-static_cast<int>(length(strV)), length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -848,7 +848,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, 0),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -867,7 +867,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, 0),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -904,7 +904,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH) - length(strV)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -923,7 +923,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH) - length(strV)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -960,7 +960,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, 6),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -979,7 +979,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, 6),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1016,7 +1016,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1035,7 +1035,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1072,7 +1072,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1091,7 +1091,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1128,7 +1128,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH) - length(strV)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1147,7 +1147,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH) - length(strV)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH) - length(strV)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1184,7 +1184,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, 6),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1203,7 +1203,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, 6),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1240,7 +1240,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1259,7 +1259,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1296,7 +1296,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1315,7 +1315,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1352,7 +1352,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), 6),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1372,7 +1372,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
         String<TraceSegment_<unsigned, unsigned> > traces;
 
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), 6),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), 6),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1410,7 +1410,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1430,7 +1430,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
         String<TraceSegment_<unsigned, unsigned> > traces;
 
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1468,7 +1468,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1487,7 +1487,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) - length(strV), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) - length(strV), length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1524,7 +1524,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(6, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(6, length(strH)),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1543,7 +1543,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(6, length(strH)),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(6, length(strH)),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1581,7 +1581,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(6, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(6, length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1600,7 +1600,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(6, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(6, length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1637,7 +1637,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH), length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1656,7 +1656,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH), length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH), length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1693,7 +1693,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) + 1, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) + 1, length(strH) + 1),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1712,7 +1712,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(length(strH) + 1, length(strH) + 1),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(length(strH) + 1, length(strH) + 1),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1749,7 +1749,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, 0),
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1768,7 +1768,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
     {
         String<TraceSegment_<unsigned, unsigned> > traces;
         clearGaps(align);
-        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(0, 0),
+        int score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(0, 0),
                                       TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1787,7 +1787,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
         clearGaps(align);
         clear(traces);
 
-        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-3, -3),
+        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-3, -3),
                                   TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1806,7 +1806,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
         clearGaps(align);
         clear(traces);
 
-        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(6, 6),
+        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(6, 6),
                                   TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1825,7 +1825,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
         clearGaps(align);
         clear(traces);
 
-        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(-9, -9),
+        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(-9, -9),
                                   TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
@@ -1844,7 +1844,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
         clearGaps(align);
         clear(traces);
 
-        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBand_<BandOn>(12, 12),
+        score = _computeAlignment(traces, strH, strV, scoringScheme, DPBandConfig<BandOn>(12, 12),
                                   TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
