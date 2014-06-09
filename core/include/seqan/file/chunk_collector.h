@@ -310,6 +310,19 @@ assign(ChunkCollector_<THost> & target,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+template <typename TSource, typename TSize>
+inline bool _isLastChunk(TSize size)
+{
+    return size <= ChunkLength<TSource>::VALUE;
+}
+
+template <typename TSource>
+inline bool _isLastChunk(unsigned char)
+{
+    return true;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TExpand>
@@ -327,7 +340,7 @@ struct AssignChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target);
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
@@ -349,7 +362,7 @@ struct AssignChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target);
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
@@ -402,7 +415,7 @@ struct AppendChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target) + target_length_old; //begin(target) was possibly changed by _clearSpace
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : (TSize) ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
@@ -426,7 +439,7 @@ struct AppendChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target) + target_length_old; //begin(target) was possibly changed by _clearSpace
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : (TSize) ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
@@ -478,7 +491,7 @@ struct ReplaceChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target) + pos_begin;
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
@@ -502,7 +515,7 @@ struct ReplaceChunkCollectorToString_
 		typename Value<TTarget>::Type * pos = begin(target) + pos_begin;
 		for (int i = 0; i < i_end; ++i)
 		{
-			bool is_last_chunk = ( part_length <= ChunkLength<TSource>::VALUE);
+			bool is_last_chunk = _isLastChunk<TSource>(part_length);
 			typename Size<TTarget>::Type chunk_length = (is_last_chunk) ? part_length : ChunkLength<TSource>::VALUE;
 			typename Value<TSource>::Type * chunk = getChunk(source, i);
 			
