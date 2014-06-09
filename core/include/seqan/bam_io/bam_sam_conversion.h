@@ -439,7 +439,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
         break;
     case 'i':
         {
-            __int32 x = 0;
+            int x = 0;
             char * ptr = reinterpret_cast<char *>(&x);
             for (int i = 0; i < 4; ++i)
             {
@@ -453,7 +453,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
         break;
     case 'I':
         {
-            __uint32 x = 0;
+            unsigned x = 0;
             char * ptr = reinterpret_cast<char *>(&x);
             for (int i = 0; i < 4; ++i)
             {
@@ -574,7 +574,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    __int32 y = 0;
+                    int y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 4; ++i)
                     {
@@ -590,7 +590,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    __uint32 y = 0;
+                    unsigned y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 4; ++i)
                     {
