@@ -1187,7 +1187,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads. Default: off"));
     addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates. Default: off"));
     addOption(parser, ArgParseOption("cq", "corrected-quality", "New quality calibration factor.", ArgParseArgument::DOUBLE));
-    setMinValue(parser, "corrected-quality", "0.0");
+    setMinValue(parser, "corrected-quality", "0");
     setDefaultValue(parser, "corrected-quality", options.newQualityCalibrationFactor);
     hideOption(parser, "cq");
     addOption(parser, ArgParseOption("pws", "parse-window-size", "Genomic window size for parsing reads (concerns memory consumption, choose smaller windows for higher coverage).", ArgParseArgument::INTEGER));
@@ -1202,7 +1202,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addSection(parser, "SNP calling options");
     addSection(parser, " Threshold method related");
     addOption(parser, ArgParseOption("mm", "min-mutations", "Minimal number of observed mutations for mutation to be called.", ArgParseArgument::INTEGER));
-    setMinValue(parser, "min-mutations", "0");
+    setMinValue(parser, "min-mutations", "1");
     setDefaultValue(parser, "min-mutations", options.minMutT);
     addOption(parser, ArgParseOption("pt", "perc-threshold", "Minimal percentage of mutational base for mutation to be called.", ArgParseArgument::DOUBLE));
     setMinValue(parser, "perc-threshold", "0");
@@ -1275,7 +1275,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
 
     addTextSection(parser, "Examples");
     addListItem(parser,
-                "\\fBsnp_store\\fP \\fB-mc\\fP \\fB2\\fP \\fB-it\\fP \\fB2\\fP \\fBexampleGenome.fa\\fP \\fBexampleReads.gff\\fP \\fB-o\\fP \\fexampleSNPs.vcf\\fP \\fB-id\\fP \\fBexampleIndels.gff\\fP",
+                "\\fBsnp_store\\fP \\fB-mc\\fP \\fB2\\fP \\fB-it\\fP \\fB2\\fP \\fBexampleGenome.fa\\fP \\fBexampleReads.gff\\fP \\fB-o\\fP \\fBexampleSNPs.vcf\\fP \\fB-id\\fP \\fBexampleIndels.gff\\fP",
                 "Call SNPs and indels of a low-coverage example (minimum coverage and indel threshold were reduced to 2).");
     addListItem(parser,
                 "\\fBsnp_store\\fP \\fB-re\\fP \\fB-mc\\fP \\fB2\\fP \\fB-it\\fP \\fB2\\fP \\fBexampleGenome.fa\\fP \\fBexampleReads.gff\\fP \\fB-o\\fP \\fBexampleSNPs.vcf\\fP \\fB-id\\fP \\fBexampleIndels.gff\\fP",

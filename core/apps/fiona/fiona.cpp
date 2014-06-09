@@ -2000,7 +2000,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 template <typename TErrorRate, typename TPrefixLen>
 inline double probabilityNoError(TErrorRate perrorrate, TPrefixLen k)
 {
-	return pow(1 - perrorrate, (double) k);
+	return pow(1.0 - perrorrate, (double) k);
 }
 
 // factorial
@@ -2099,7 +2099,7 @@ void standardDeviation(TDeviationValues & deviation, TReadSet const & readSet, T
 	for (unsigned suffixLength = 0; suffixLength <= readLength; ++suffixLength)
 	{
 		valueFirst  = (readLength - suffixLength + 1) / (double)genomeLength;
-		valueSecond = pow(valueFirst, 2);
+		valueSecond = valueFirst * valueFirst;
 		deviation[suffixLength] = sqrt((valueFirst - valueSecond) * readCount);	
 	}
 }
@@ -2112,7 +2112,7 @@ void standardDeviation(TDeviationValues & deviation, TReadSet const & readSet, T
 template <typename TValue, typename TMean>
 inline double dpois(TValue k, TMean mean)
 {
-	return pow(mean, k) * exp(-mean) / factorial(k);
+	return pow(mean, (double)k) * exp(-mean) / factorial(k);
 }
 
 // cumulative poisson distribution
@@ -2156,7 +2156,7 @@ inline unsigned qpois(TPValue alpha, TMean lambda){
 template <typename TValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline double dpoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
 	double noerrlm1 = noerrlm2 * (1-errorrate);
 	double errexp1err = lambda * noerrlm1 * (errorrate/3);
 	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
@@ -2179,7 +2179,7 @@ inline double dpoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPref
 template <typename TValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline double ppoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
 	double noerrlm1 = noerrlm2 * (1-errorrate);
 	double errexp1err = lambda * noerrlm1 * (errorrate/3);
 	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
@@ -2212,7 +2212,7 @@ inline double ppoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPref
 template <typename TPValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline unsigned qpoismixerror(TPValue alpha, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
 	double noerrlm1 = noerrlm2 * (1-errorrate);
 	double errexp1err = lambda * noerrlm1 * (errorrate/3);
 	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
@@ -2249,7 +2249,7 @@ inline unsigned qpoismixerror(TPValue alpha, TMean lambda, TErrorrates errorrate
 template <typename TOddsRatio, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline unsigned PoisClassifCutoff(TOddsRatio prior, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen){
 	double noerr = probabilityNoError(errorrate, prefixlen);	
-	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
 	double noerrlm1 = noerrlm2 * (1-errorrate);
 	double errexpnoerr = lambda * noerr;
 	double errexp1err = lambda * noerrlm1 * (errorrate/3);
@@ -2309,7 +2309,7 @@ inline double drepeat(int nrep, double pword, long genomelength){
 //given an (iid M00) genome, a prefix length, the errorrate and the expected coverage
 template <typename TPosterior, typename TCount, typename TMean, typename TErrorrates , typename TPrefixLen, typename TGenomeLen>
 void OddsRepeat(TPosterior & post1occ, TCount cmin, TCount cmax, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen, TGenomeLen genomelength){
-	double pword = 1/ pow(4, prefixlen);
+	double pword = 1.0 / pow(4.0, (double)prefixlen);
 	int nrmax = 10;
 	//prior on having a repeat for a random genome, not used now.
 	String <double> prepeats ;
@@ -2347,7 +2347,7 @@ inline int OddsRepeatCutoff(
 		TErrorrate errorrate,
 		TPrefixLen prefixlen, 
 		TGenomeLen genomelength){
-	double pword = 1/ pow(4, prefixlen);
+	double pword = 1.0 / pow(4.0, (double)prefixlen);
 	int nrmax = 10;
 	String <double> posteriors;
 	clear(posteriors);
@@ -2457,7 +2457,7 @@ inline int OddsOverlapSumCutoff(
 {
 	double pnoerr = probabilityNoError(errorrate, k+1); 
 	double potherpos = probabilityNoError(errorrate, k) * (3./4); 
-	double pword = 1. / pow(4, k);
+	double pword = 1.0 / pow(4.0, (double)k);
     
 	double totalExpectedCorrectOverlapSum = 0.0;    // expected value for bona fide reads
 	double totalExpectedFPOverlapSum = 0.0;         // expected value for reads with errors
@@ -2677,7 +2677,7 @@ double medianLevel(Iter<TIndex, VSTree<TSpec> > iter){
 template <typename TPercentage, typename TSize>
 inline double probabilityOneError(TPercentage percentageErr, TSize repLen)
 {
-	return 1.0 - pow(1.0 - percentageErr, repLen);
+	return 1.0 - pow(1.0 - percentageErr, (double)repLen);
 }
 
 //Compute the number of ways of placing at most e errors in a read of length l such that
@@ -2748,7 +2748,7 @@ void UncorrectableExpected(
 	clear(pkerrs);
 	resize( pkerrs, kmax+1, 0.0);
 	for (int i =0; i<=kmax; ++i)
-		pkerrs[i] = pow(perr, i) * pow(1-perr, lread-i);
+		pkerrs[i] = pow(perr, (double)i) * pow(1.0 - perr, (double)(lread - i));
 	matrix <unsigned> MatNoSeed (kmax+1, lread+1);
 	for (int k = kmin; k <= kmax; k++){
 		CombinatoricsNoSeed(MatNoSeed, lread, k, k);
@@ -2776,7 +2776,7 @@ void UncorrectableExpectedBases(
 	SEQAN_OMP_PRAGMA(parallel for)
 	for (int readLen = 1; readLen < (int)length(readLenHist); ++readLen)
         for (TPrefixLen k = 1; k <= kmax; ++k)
-            pkerrs(k, readLen) = pow(perr, k) * pow(1 - perr, readLen - k);
+            pkerrs(k, readLen) = pow(perr, (double)k) * pow(1.0 - perr, (double)(readLen - k));
 
     // distribute the work (interval [kmin..kmax+1)) over different threads
     Splitter<int> splitter(kmin, kmax + 1);
@@ -2814,11 +2814,11 @@ void DestructibleExpected(
 		TGenomeLen const genomelen){
 	clear(DestrExp);
 	resize(DestrExp, kmax+1, 0.0);
-	double muw = pow(4.0, kmin -1);
+	double muw = pow(4.0, kmin - 1.0);
 	for (int k = kmin; k <= kmax; ++k){
 		muw *= 4;
-		double qw = (1- pow(1-perr, k))*(1-perr)*(1-pow(1-1.0/muw, genomelen))* (3.0/4);
-		DestrExp[k] = (1- pow(1-qw, lread-k))*pow(1-perr, lread) * nreads;
+		double qw = (1- pow(1-perr, (double)k))*(1-perr)*(1-pow(1-1.0/muw, (double)genomelen))* (3.0/4);
+		DestrExp[k] = (1- pow(1-qw, (double)(lread-k)))*pow(1-perr, (double)lread) * nreads;
 	}
 }
 
@@ -3019,17 +3019,17 @@ inline void linearRegression(
 	 * and compute first the slope than the intercept of the linear function */
 	TValue covarianceXY = 0;
 	TValue varianceX = 0;
-	 for(unsigned int i=0;i<length(x);i++)
-        {
-                covarianceXY += (x[i] - meanX)*( y[i] - meanY);
-                varianceX   += pow((x[i] - meanX), 2);
-        }
-	
+    for(unsigned int i=0;i<length(x);i++)
+    {
+        covarianceXY += (x[i] - meanX) * (y[i] - meanY);
+        varianceX    += (x[i] - meanX) * (x[i] - meanX);
+    }
+
 	/* save the parameters in the model */
 	linearModel.slope     = (double) covarianceXY/varianceX;
 	linearModel.intercept = (double) (meanY - ((TValue)linearModel.slope * meanX) );
 	linearModel.numberObservations = (unsigned int) length(x);
-        linearModel.numberPredictors  = (unsigned int) 1;	 
+    linearModel.numberPredictors  = (unsigned int) 1;
 }
 
        /* compute R-Square (or Coefficient of Determination) for a set of values that
@@ -3051,11 +3051,11 @@ inline TValue RSquare(
 	 * and SStotal is the variance of the y values	*/
 	TValue SSerror = 0;
 	TValue SStotal =0;
-         for(unsigned int i=0;i<length(x);i++)
-        {
-                SStotal  += pow((y[i] - meanY), 2);
-				SSerror  += pow( (y[i] - fittedValue(linearModel,x[i])), 2);
-        }
+    for(unsigned int i=0;i<length(x);i++)
+    {
+        SStotal  += (y[i] - meanY) * (y[i] - meanY);
+        SSerror  += pow((y[i] - fittedValue(linearModel,x[i])), 2.0);
+    }
 	return((TValue) ( 1- (SSerror/SStotal)));
 }
 
