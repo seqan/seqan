@@ -44,6 +44,9 @@ def main(source_base, binary_base):
     
     path_to_program.append(app_tests.autolocateBinary(
       binary_base, 'extras/apps/seqan_flexbar', 'sflexAR'))
+    
+    path_to_program.append(app_tests.autolocateBinary(
+      binary_base, 'extras/apps/seqan_flexbar', 'sflexDMulti'))
 
     # ============================================================
     # Built TestConf list.
@@ -94,6 +97,29 @@ def main(source_base, binary_base):
                   ph.outFile('ar_test.fq'))])
     conf_list.append(conf)
 
+    conf = app_tests.TestConf(
+        program=path_to_program[3],
+        redir_stdout=ph.outFile('out.stdout'),
+        args=[ph.inFile('testsample_multiplex.fq'), '-b', 
+        ph.inFile('barcodes.fasta'), 
+        '-o', ph.outFile('test_de_multi.fastq'), '-ni'],
+        to_diff=[(ph.inFile('gold_de_multi.stdout'),
+                  ph.outFile('out.stdout')),
+                 (ph.inFile('gold_de_multi_Sample-1.fastq'),
+                  ph.outFile('test_de_multi_Sample-1.fastq')),
+                 (ph.inFile('gold_de_multi_Sample26.fastq'),
+                  ph.outFile('test_de_multi_Sample26.fastq')),
+                 (ph.inFile('gold_de_multi_Sample-2.fastq'),
+                  ph.outFile('test_de_multi_Sample-2.fastq')),
+                 (ph.inFile('gold_de_multi_Sample0.fastq'),
+                  ph.outFile('test_de_multi_Sample0.fastq')),
+                 (ph.inFile('gold_de_multi_Sample1458.fastq'),
+                  ph.outFile('test_de_multi_Sample1458.fastq')),
+                 (ph.inFile('gold_de_multi_Sample37.fastq'),
+                  ph.outFile('test_de_multi_Sample37.fastq')),
+                 (ph.inFile('gold_de_multi_unidentified.fastq'),
+                  ph.outFile('test_de_multi_unidentified.fastq'))])
+    conf_list.append(conf)
 
     # ============================================================
     # Execute the tests.
