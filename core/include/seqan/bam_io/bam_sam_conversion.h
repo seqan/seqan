@@ -85,9 +85,9 @@ struct AssignTagsSamToBamOneTagHelper_
         } tmp;
 
         if (IsSignedInteger<Type>::VALUE)
-            tmp.i = lexicalCast<__int64>(buffer);   // avoid textual interpretation of char types
+            tmp.i = static_cast<Type>(lexicalCast<__int64>(buffer));    // avoid textual interpretation of char types
         else if (IsUnsignedInteger<Type>::VALUE)
-            tmp.i = lexicalCast<__uint64>(buffer);
+            tmp.i = static_cast<Type>(lexicalCast<__uint64>(buffer));
         else
             tmp.i = lexicalCast<Type>(buffer);
         append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
