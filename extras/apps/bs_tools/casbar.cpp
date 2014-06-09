@@ -1025,32 +1025,34 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIGENOME FILE\\fP\" \"\\fIMAPPED READ FILE(S)\\fP\" ");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIALIGNMENT FILE\\fP> -o <\\fISNP FILE\\fP> -b <\\fIMETH-LEVEL FILE\\fP>");
     addDescription(parser, "SNP and methylation level calling in mapped bisulfite read data.");
 
     // We require two arguments.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
     setValidValues(parser, 0, ".fasta .fa");
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "MAPPINGS"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
     setValidValues(parser, 1, ".sam");
-    setHelpText(parser, 1, "SAM input file containing four-letter mappings (must be sorted by coordinates).");
+    setHelpText(parser, 1, "SAM input file containing four-letter read alignments (must be sorted by coordinates).");
 
     addSection(parser, "Options");
     addOption(parser, ArgParseOption("o", "output", "Output file for SNPs.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", ".vcf");
+    setValidValues(parser, "output", ".vcf");
     setRequired(parser, "output", true);
     addOption(parser, ArgParseOption("b", "bed", "Bed output file for methylation level calls.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "b", ".bed");
+    setValidValues(parser, "bed", ".bed");
     setRequired(parser, "bed", true);
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
     addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
     hideOption(parser, "sqo");
     addOption(parser, ArgParseOption("mp", "max-pile", "Maximal number of matches allowed to pile up at the same genome position.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "max-pile", "0");
     setDefaultValue(parser, "max-pile", options.maxPile);
     addOption(parser, ArgParseOption("mmp", "merged-max-pile", "Do pile up correction on merged lanes."));
     addOption(parser, ArgParseOption("mc", "min-coverage", "Minimal required number of reads covering a candidate position.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-coverage", "1");
     setDefaultValue(parser, "min-coverage", options.minCoverage);
     addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNP calling.", ArgParseArgument::INTEGER)); 
     setDefaultValue(parser, "exclude-border", options.excludeBorderPos);
@@ -1071,28 +1073,37 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addOption(parser, ArgParseOption("it", "indel-threshold", "Minimal number of indel-supporting reads required for realignment.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "indel-threshold", options.indelCountThreshold);
     hideOption(parser, "it");
-    addOption(parser, ArgParseOption("I", "intervals", "Genomic intervals to analyse. E.g. 21:1000-2000.",  ArgParseArgument::STRING, "TEXT"));
+    addOption(parser, ArgParseOption("I", "intervals", "Genomic intervals to analyze. E.g. 21:1000-2000.",  ArgParseArgument::STRING, "TEXT"));
 
     addSection(parser, "Calling options");
     addOption(parser, ArgParseOption("bcr", "bs-conv-rate", "Bisulfite conversion rate.", ArgParseArgument::DOUBLE));
-    setMinValue(parser, "bs-conv-rate", "0.0");
-    setMaxValue(parser, "bs-conv-rate", "1.0");
+    setMinValue(parser, "bs-conv-rate", "0");
+    setMaxValue(parser, "bs-conv-rate", "1");
     setDefaultValue(parser, "bs-conv-rate", methOptions.convRate);
     addOption(parser, ArgParseOption("mm", "min-mutations", "Minimal number of deviating bases for calling.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-mutations", "1");
     setDefaultValue(parser, "min-mutations", options.minMutT);
     addOption(parser, ArgParseOption("mq", "min-quality", "Minimal average quality for calling.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "min-quality", "0");
     setDefaultValue(parser, "min-quality", options.avgQualT);
     addOption(parser, ArgParseOption("mmq", "min-map-quality", "Minimum base call quality for a match to be considered.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "min-map-quality", "0");
     setDefaultValue(parser, "min-map-quality", options.minMapQual);
     addOption(parser, ArgParseOption("hes", "prob-hetero-snp", "Heterozygous SNP probability to compute genotype prior probabilities.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "prob-hetero-snp", "0");
+    setMaxValue(parser, "prob-hetero-snp", "1");
     setDefaultValue(parser, "prob-hetero-snp", options.pHetSnp);
     addOption(parser, ArgParseOption("hos", "prob-homo-snp", "Homozygous SNP probability to compute genotype prior probabilities.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "prob-homo-snp", "0");
+    setMaxValue(parser, "prob-homo-snp", "1");
     setDefaultValue(parser, "prob-homo-snp", options.pHomoSnp);
     addOption(parser, ArgParseOption("spl", "beta-sampling", "Sample beta values (instead of using MLE and newton method)."));
     hideOption(parser, "spl");
     addOption(parser, ArgParseOption("msc", "min-score", "Minimum score to call.", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "min-score", methOptions.minScoreToCallSnp);
     addOption(parser, ArgParseOption("mpc", "min-prob", "Minimum genotype probability to call.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "min-prob", "0");
+    setMaxValue(parser, "min-prob", "1");
     setDefaultValue(parser, "min-prob", methOptions.minProbToCallSnp);
     addOption(parser, ArgParseOption("umq", "use-mapq", "Use mapqs as weights for SNP/BS calling."));
     hideOption(parser, "umq");
@@ -1109,10 +1120,16 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addOption(parser, ArgParseOption("nsd", "ns-del-errors", "Use non-uniform deletion error frequencies for realigning."));
     hideOption(parser, "nsd");
     addOption(parser, ArgParseOption("dr", "del-rate", "Genomic deletion rate.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "del-rate", "0");
+    setMaxValue(parser, "del-rate", "1");
     hideOption(parser, "dr");
     addOption(parser, ArgParseOption("der", "del-error-rate", "Deletion error rate.", ArgParseArgument::DOUBLE)); 
+    setMinValue(parser, "del-error-rate", "0");
+    setMaxValue(parser, "del-error-rate", "1");
     hideOption(parser, "der");
     addOption(parser, ArgParseOption("ier", "ins-error-rate", "Insertion error rate.", ArgParseArgument::DOUBLE));
+    setMinValue(parser, "ins-error-rate", "0");
+    setMaxValue(parser, "ins-error-rate", "1");
     hideOption(parser, "ier");
     addOption(parser, ArgParseOption("egs", "end-gap-score", "Simple score for end gaps (must be in the range of internal gaps) to avoid introducing of gaps.", ArgParseArgument::DOUBLE));
     hideOption(parser, "egs");
@@ -1126,9 +1143,9 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
-    addListItem(parser, "\\fBcasbar\\fP \\fB-nec \\fP \\fB-o \\fP \\fBsnps.vcf \\fP \\fB-b \\fP \\fBmeth_levels.bed \\fP \\fBgenome.fa \\fP \\fBmapped_bisulfite_reads.sam \\fP",
+    addListItem(parser, "\\fBcasbar\\fP \\fB-nec\\fP \\fB-o\\fP \\fBsnps.vcf\\fP \\fB-b\\fP \\fBmeth_levels.bed\\fP \\fBgenome.fa\\fP \\fBmapped_bisulfite_reads.sam\\fP",
                 "SNP and methylation level calling by taking nonuniform sequencing error probabilities into account.");
-    addListItem(parser, "\\fBcasbar\\fP \\fB-nec \\fP \\fB-mc \\fP \\fB6 \\fB-msc \\fP \\fB5 \\fP \\fB-o \\fP \\fBsnps.vcf \\fP \\fB-b \\fP \\fBmeth_levels.bed \\fP \\fBgenome.fa \\fP \\fBmapped_bisulfite_reads.sam \\fP",
+    addListItem(parser, "\\fBcasbar\\fP \\fB-nec\\fP \\fB-mc\\fP \\fB6 \\fB-msc\\fP \\fB5\\fP \\fB-o\\fP \\fBsnps.vcf\\fP \\fB-b\\fP \\fBmeth_levels.bed\\fP \\fBgenome.fa\\fP \\fBmapped_bisulfite_reads.sam\\fP",
                 "SNP and methylation level calling by taking nonuniform sequencing error probabilities into account for genomic positions with a coverage >= 6. The minimum score a SNP or methylation level to be called is 5.");
 
 
@@ -1145,22 +1162,17 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     // Options:
     getOptionValue(options.vcfOut, parser, "output");
     getOptionValue(options.bedOut, parser, "bed"); 
-    if (isSet(parser, "multi"))
-        options.keepMultiReads = true;
+    options.keepMultiReads = isSet(parser, "multi");
     if (isSet(parser, "solexa-qual-offset"))
         options.asciiQualOffset = 64;
     getOptionValue(options.maxPile, parser, "max-pile");
-    if (isSet(parser, "merged-max-pile"))
-        options.laneSpecificMaxPile = false;
+    options.laneSpecificMaxPile = !isSet(parser, "merged-max-pile");
     getOptionValue(options.minCoverage, parser, "min-coverage");
     getOptionValue(options.excludeBorderPos, parser, "exclude-border");
-    if (isSet(parser, "suboptimal"))
-        options.keepSuboptimalReads = true;
-    if (isSet(parser, "realign"))
-    {
-        options.realign = true;
+    options.keepSuboptimalReads = isSet(parser, "suboptimal");
+    options.realign = isSet(parser, "realign");
+    if (options.realign)
         options.windowSize = 1000;
-    }
     hideOption(parser, "re");   // hide for the beginning !
 
     getOptionValue(options.windowSize, parser, "parse-window-size");
