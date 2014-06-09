@@ -207,9 +207,10 @@ refresh(NameStoreCache<TNameStore, TName> &cache)
  *
  * @signature bool getIdByName(nameStore, name, idx[, cache]);
  *
- * @param[in]     nameStore The name store to search the name in.
- * @param[in]     name      The name to search in the name store.
- * @param[out]    idx       The variable to store the id/index at.
+ * @param[in]     nameStore The name store to search the name in (<tt>TNameStore</tt>).
+ * @param[in]     name      The name to search in the name store (@link ContainerConcept#Value @endlink of
+ *                          <tt>TNameStore</tt>).
+ * @param[out]    idx       The variable to store the id/index at (@link IntegerConcept @endlink).
  * @param[in,out] cache     The NameStoreCache to use for speeding up the lookup.  If omitted then a linear
  *                          search is used.
  *

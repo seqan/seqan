@@ -77,12 +77,25 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 /*!
  * @class ArrayGaps
  * @headerfile <seqan/align.h>
+ * @extends Gaps
  * @brief Stores length of gap- and non-gap runs in an array.
  *
  * @signature template <typename TSequence>
  *            class Gaps<TSequence, ArrayGaps>
  *
  * @tparam TSequence The type of the underling sequence.
+ */
+
+/*!
+ * @fn ArrayGaps::Gaps
+ * @headerfile <seqan/align.h>
+ * @brief Constructor.
+ *
+ * @signature Gaps::Gaps([other]);
+ * @signature Gaps::Gaps(seq);
+ *
+ * @param[in] other Other Gaps object to copy from.
+ * @param[in] seq   Sequence concept to construct the gaps for.
  */
 
 /**
@@ -668,6 +681,24 @@ inline void
 clearGaps(Gaps<TSequence, ArrayGaps> & gaps)
 {
     _reinitArrayGaps(gaps);
+}
+
+// ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence>
+inline void
+clear(Gaps<TSequence, ArrayGaps> & gaps)
+{
+    clear(gaps._source);
+    clear(gaps._array);
+    gaps._sourceBeginPos     = 0;
+    gaps._sourceEndPos       = 0;
+    gaps._clippingBeginPos   = 0;
+    gaps._clippingEndPos     = 0;
+    // cannot use clearGaps() here, since that calls value() on _source
+    // which instates the Holder to Owner; we want it to be empty
 }
 
 // ----------------------------------------------------------------------------

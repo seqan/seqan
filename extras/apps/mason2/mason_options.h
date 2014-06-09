@@ -657,7 +657,7 @@ struct MasonSimulatorOptions
 
     // Whether to force single-end simulation although !empty(outFileNameRight).
     bool forceSingleEnd;
-    
+
     // Path to input methylation FASTA file.
     seqan::CharString methFastaInFile;
     // Path to output sequence files for left (and single end) and right reads.
@@ -723,6 +723,8 @@ struct MasonMaterializerOptions
 
     // Path to output file.
     seqan::CharString outputFileName;
+    // Path to TSV file to write the resulting breakpoints in variant genomes to.
+    seqan::CharString outputBreakpointFile;
     // Separator between contig names and haplotype number.
     seqan::CharString haplotypeNameSep;
     // FASTA file to load the methylation levels from.
@@ -894,5 +896,24 @@ char const * getMateOrientationStr(SequencingOptions::MateOrientation orientatio
 char const * getSourceStrandsStr(SequencingOptions::SourceStrands strands);
 char const * getSequencingTechnologyStr(SequencingOptions::SequencingTechnology technology);
 char const * getFragmentSizeModelStr(Roche454SequencingOptions::ReadLengthModel model);
+
+// ----------------------------------------------------------------------------
+// Function setDateAndVersion()
+// ----------------------------------------------------------------------------
+
+inline
+void setDateAndVersion(seqan::ArgumentParser & parser)
+{
+#ifdef SEQAN_REVISION
+    setVersion(parser, "2.0.0-beta1 [" + std::string(SEQAN_REVISION) + "]");
+#else
+    setVersion(parser, "2.0.0-beta1");
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#else
+    setDate(parser, "February 2014");
+#endif
+}
 
 #endif  // #ifndef EXTRAS_APPS_MASON2_MASON_OPTIONS_H_

@@ -61,7 +61,10 @@ typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as 
  * @signature template <[typename TConfig]>
  *            class Seed<ChainedSeed, TConfig>;
  *
- * @tparam TConfig The configuration to use for the chained seed specialization.
+ * @tparam TConfig The configuration to use for the chained seed specialization.  Defaults to
+ *                 @link DefaultSeedConfig @endlink.
+ *
+ * Diagonals are stored as @link SeedDiagonal @endlink objects.
  *
  *
  * @fn ChainedSeed::Seed

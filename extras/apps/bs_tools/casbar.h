@@ -453,7 +453,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     bool res1 = findTagKey(editDistIndex, bamTags, "NM");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, editDistIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, editDistIndex));
         extractTagValue(editDist, bamTags, editDistIndex);
     }
     else editDist = 1; // we dont know whether there are errors in the alignment, we assume there are..
@@ -463,7 +463,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     res1 = findTagKey(numBestIndex, bamTags, "X0");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, numBestIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, numBestIndex));
         extractTagValue(numBest, bamTags, numBestIndex);
         if(numBest > 1) multi = true;
     }
@@ -473,10 +473,11 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     if(res1)
     {
 //      SEQAN_ASSERT_EQ('Z', getTagValue(bamTags, clipIndex)[0]);  // XC is also used by BWA, also for clipping, but different fron ours
-        if('Z' == getTagValue(bamTags, clipIndex)[0])
+        if('Z' == getTagType(bamTags, clipIndex))
         {
-            CharString clipLeftRight = getTagValue(bamTags, clipIndex);
-            unsigned x=1;
+            CharString clipLeftRight;
+            extractTagValue(clipLeftRight, bamTags, clipIndex);
+            unsigned x=0;
             clipLeft = _parseReadNumber(clipLeftRight, x);
             clipRight = _parseReadNumber(clipLeftRight, ++x);
             options.clipTagsInFile = true;

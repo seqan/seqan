@@ -71,57 +71,39 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*! 
  * @defgroup WOTDIndexFibres WOTD Index Fibres
- * 
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexWotd @endlink index.
  * 
- * @section Remarks
- * 
- * These tags can be used to get @link Index#Fibre @endlink of an @link IndexWotd @endlink.
+ * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
  * 
  * TODO(holtgrew): Ask David.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexWotd
  * 
  * @tag WOTDIndexFibres#WotdDir
- * 
  * @brief The child table.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawSA
- * 
  * @brief The raw suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdText
- * 
  * @brief The original text the index should be based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdRawText
- * 
  * @brief The raw text the index is really based on.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdSA
- * 
  * @brief The suffix array.
- * 
- * @section Remarks
  * 
  * TODO(holtgrew): Ask David.
  */
@@ -152,23 +134,19 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 /*!
  * @class IndexWotd
- * 
  * @extends Index
- * 
  * @headerfile seqan/index.h
+ * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
+ *        trees").
  * 
- * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient
- *        implementation of lazy suffix trees").
+ * @signature template <typename TText, typename TSpec>
+ *            class Index<TText, IndexWotd<TSpec> >;
  * 
- * @signature Index<TText, IndexWotd<> >
+ * @tparam TText The @link TextConcept @endlink text type.
+ * @tparam TSpec The type for further specialization of the Index type.
  * 
- * @tparam TText The text type. Types: @link SequenceConcept @endlink
- * 
- * @section Remarks
- * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
- * are a partially sorted suffix array (see @link WOTDIndexFibres#WotdSA
- * @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a partially sorted suffix array
+ * (see @link WOTDIndexFibres#WotdSA @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
  * 
  * Demo: Demo.Constraint Iterator
  * 
@@ -894,7 +872,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).node = entry.node;
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
-			pop(it.history);
+			eraseBack(it.history);
 			return true;
 		}
 		return false;
@@ -913,7 +891,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
 			value(it).range = entry.range;
-			pop(it.history);
+			eraseBack(it.history);
 			if (!empty(it.history))
 				value(it).parentRight = back(it.history).range.i2;	// copy right boundary of parent's range
 			return true;
@@ -1081,7 +1059,10 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
 
-		TTextIterator itText = TTextIterator();
+        if (empty(stringSet))
+            return 0;
+
+        TTextIterator itText = begin(front(stringSet), Standard());
 		TSAIterator itSA = begin(sa, Standard());
 		TSAIterator itSAEnd = end(sa, Standard());
 
@@ -1162,21 +1143,18 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 /*!
  * @fn IndexWotd#createWotdIndex
- * 
  * @headerfile seqan/index.h
+ * @brief Builds a the WOTD index.
  * 
- * @brief Builds a q-gram index on a sequence.
+ * @signature void createWotdIndex(sa, dir, text);
  * 
- * @signature createWotdIndex(sa, dir, text)
+ * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically. 
+ * @param[out] dir The resulting array that indicates at which position in index the corresponding <i>q</i>-grams
+ *                 can be found.
+ * @param[in] text The sequence. Types: @link SequenceConcept @endlink
  * 
- * @param text The sequence. Types: @link SequenceConcept @endlink
- * @param sa The resulting list in which all q-grams are sorted alphabetically. 
- * @param dir The resulting array that indicates at which position in index the
- *            corresponding q-grams can be found.
- * 
- * @return TReturn Index contains the sorted list of qgrams. For each possible
- *                 q-gram pos contains the first position in index that
- *                 corresponds to this q-gram.
+ * The resulting <tt>index</tt> contains the sorted list of qgrams.  For each possible <i>q</i>-gram pos contains
+ * the first position in index that corresponds to this <i>q</i>-gram.
  */
 
 	// single sequence
@@ -1514,11 +1492,14 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 
 		// 4. fill suffix array
 		{
+            if (empty(stringSet))
+                return requiredSize;
+
 			TSA &sa = indexSA(index);
 			TSAIterator saBeg = begin(sa, Standard());
 			TCntIterator boundBeg = begin(bound, Standard());
 
-			TTextIterator itText = TTextIterator();
+			TTextIterator itText = begin(front(stringSet), Standard());
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;

@@ -63,11 +63,9 @@ template <typename THost, typename TSpec> class ModifiedString;
  *            class ModifiedIterator;
  *
  * @tparam THost The host iterator type.
- * @tparam TSpec Tag used for the specialization, defaults to void.
+ * @tparam TSpec Tag used for the specialization, defaults to <tt>void</tt>.
  *
- * @section Remarks
- *
- * THost can also be a modified iterator, so you can create custom iterators by combining predefined ones.
+ * <tt>THost</tt> can also be a modified iterator, so you can create custom iterators by combining predefined ones.
  */
 
 /**

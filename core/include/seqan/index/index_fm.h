@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,6 +31,7 @@
 //
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
 //SEQAN_NO_DDDOC:do not generate documentation for this file
@@ -39,59 +41,58 @@
 
 namespace seqan {
 
-// ==========================================================================
-// Forwards
-// ==========================================================================
+// ============================================================================
+// Metafunctions
+// ============================================================================
 
-template <typename TChar, typename TSpec>
-class PrefixSumTable;
+// ----------------------------------------------------------------------------
+// Metafunction FMIndexConfig
+// ----------------------------------------------------------------------------
 
-// WT = WaveletTree
-/**
-.Tag.WT
-..summary:Tag that specifies the @Spec.FMIndex@ to use a wavelet tree as the occurrence table.
-..cat:Index
-*/
-
+/*!
+ * @class FMIndexConfig
+ * @headerfile seqan/index.h
+ * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
+ * 
+ * @signature template <[typename TSpec]>
+ *            struct FMIndexConfig;
+ *
+ * @tparam TSpec The specializating type, defaults to <tt>void</tt>.
+ *
+ * @var unsigned FMIndexConfig::SAMPLING;
+ * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
+ *        @link CompressedSA @endlink.
+ *
+ * @typedef FMIndexConfig::TValuesSpec
+ * @signature typedef WaveletTree<TSpec> TValuesSpec;
+ * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
+ *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
+ *
+ * @typedef FMIndexConfig::TSentinelsSpec
+ * @signature typedef TwoLevels<TSpec> TSentinelsSpec;
+ * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
+ *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
+ *        @link RankDictionary @endlink.
+ */
 template <typename TSpec = void>
-class WT;
-
-template <typename TOccSpec = WT<>, typename TSpec = void>
-class FMIndex;
-
-struct FinderFMIndex_;
-typedef Tag<FinderFMIndex_> FinderFMIndex;
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct DefaultFinder<Index<TText, FMIndex<TOccSpec, TSpec> > >
+struct FMIndexConfig
 {
-	typedef FinderFMIndex Type;
+    typedef WaveletTree<TSpec>      TValuesSpec;
+    typedef TwoLevels<TSpec>        TSentinelsSpec;
+
+    static const unsigned SAMPLING = 10;
 };
 
-// ==========================================================================
-// Tags, Classes, Enums
-// ==========================================================================
+// ============================================================================
+// Forwards
+// ============================================================================
 
-struct FibrePrefixSumTable_;
-struct FibreSA_;
-struct FibreTempSA_;
-struct FibreText_;
-struct FibreLfTable_;
-struct FibreSaLfTable_;
-struct CompressText_;
-struct Sentinel_;
-struct Sentinels_;
+template <typename TSpec = void, typename TConfig = FMIndexConfig<TSpec> >
+class FMIndex;
 
-typedef Tag<FibrePrefixSumTable_> const FibrePrefixSumTable;
-typedef Tag<FibreSA_> const             FibreSA;
-typedef Tag<FibreTempSA_> const         FibreTempSA;
-typedef Tag<FibreText_> const           FibreText;
-typedef Tag<FibreLfTable_> const        FibreLfTable;
-typedef Tag<FibreSaLfTable_> const      FibreSaLfTable;
-typedef Tag<CompressText_> const        CompressText;
-typedef Tag<Sentinel_> const            Sentinel;
-typedef Tag<Sentinels_> const           Sentinels;
-
+// ============================================================================
+// Tags
+// ============================================================================
 
 // FM index fibres
 /**
@@ -100,11 +101,10 @@ typedef Tag<Sentinels_> const           Sentinels;
 ..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a FM index.
 ..cat:Index
 
-..tag.FibrePrefixSumTable:The prefix sum table of the index.
 ..tag.FibreSA:The compressed suffix array of the text.
 ..tag.FibreText:The original text of the index.
-..tag.FibreLfTable:The lf table.
-..tag.FibreSaLfTable:The lf table as well as the compressed suffix array.
+..tag.FibreLF:The lf table.
+..tag.FibreSALF:The lf table as well as the compressed suffix array.
 ...remarks:This tag can only be used with the functions @Function.indexRequire@ or @Function.indexSupplied@.
 
 ..see:Metafunction.Fibre
@@ -112,22 +112,22 @@ typedef Tag<Sentinels_> const           Sentinels;
 ..include:seqan/index_fm.h
 */
 
-/**
-.Tag.CompressText
-..cat:Index
-..summary:Tag to select a FM index variant that can be used such that it is 
-not necessary to store the text after index construction. This index is very
-space efficient.
-*/
+struct FibreTempSA_;
+struct FibreLF_;
+struct FibreSALF_;
 
-// ==========================================================================
+typedef Tag<FibreTempSA_> const         FibreTempSA;
+typedef Tag<FibreLF_> const             FibreLF;
+typedef Tag<FibreSALF_> const           FibreSALF;
+
+// ============================================================================
 // Metafunctions
-// ==========================================================================
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
-    
+
 /*
 .Metafunction.Fibre:
 ..summary:Type of a specific FMIndex member (fibre).
@@ -140,7 +140,6 @@ space efficient.
 ..param.TSentinelRankDictionary:The type of the sentinel rank dictionary.
 ...type:Class.SentinelRankDictionary
 ..param.TSpec:Tag to specify a certain variant of the FM index.
-...type:Tag.CompressText
 ...default;$void$
 ..param.TFibreSpec:Tag to specify the fibre.
 ...type:Tag.FM Index Fibres
@@ -152,116 +151,68 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> >, FibreOccTable>
+/*!
+ * @defgroup FMIndexFibres FM Index Fibres
+ * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
+ * 
+ * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
+ * 
+ * @see Fibre
+ * @see Index#getFibre
+ * 
+ * @tag FMIndexFibres#FibreText
+ * @brief The original text of the index.
+ * 
+ * @tagFMIndexFibres#FibreSA
+ * @brief The compressed suffix array of the text.
+ * 
+ * @tag FMIndexFibres#FibreLF
+ * @brief The lf table.
+ */
+
+
+template <typename TText, typename TSpec, typename TConfig>
+struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>
 {
-    typedef typename Value<TText>::Type TValue_;
-	typedef SentinelRankDictionary<RankDictionary<WaveletTree<TValue_> >, Sentinel> Type;
+    typedef LF<TText, TSpec, TConfig>  Type;
 };
 
-template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > >, FibreOccTable>
+template <typename TText, typename TSpec, typename TConfig>
+struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreSA>
 {
-    typedef typename Value<TText>::Type TValue_;
-    typedef SentinelRankDictionary<RankDictionary<WaveletTree<TValue_> >, Sentinels> Type;
+    typedef CompressedSA<TText, TSpec, TConfig> Type;
 };
 
-template <typename TText, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<SBM<TWaveletTreeSpec>, TSpec> >, FibreOccTable>
+template <typename TText, typename TSpec, typename TConfig>
+struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreTempSA>
 {
-    typedef typename Value<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> > >::Type TValue_;
-	typedef SentinelRankDictionary<RankDictionary<SequenceBitMask<TValue_> >, Sentinel> Type;
+    typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex_;
+    typedef typename SAValue<TIndex_>::Type                 TSAValue_;
+
+    // NOTE(esiragusa): External causes problems on device code.
+#ifndef PLATFORM_CUDA
+    typedef String<TSAValue_, External<ExternalConfigLarge<> > >                Type;
+#else
+    typedef String<TSAValue_, typename DefaultIndexStringSpec<TText>::Type>     Type;
+#endif
 };
 
-template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<SBM<TWaveletTreeSpec>, TSpec > >, FibreOccTable>
+// ----------------------------------------------------------------------------
+// Metafunction DefaultFinder
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TConfig>
+struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 {
-    typedef typename Value<TText>::Type TValue_;
-    typedef SentinelRankDictionary<RankDictionary<SequenceBitMask<TValue_> >, Sentinels> Type;
+    typedef FinderSTree Type;
 };
 
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable>
-{
-    typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreOccTable>::Type        TOccTable_;
-	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable>::Type  TPrefixSumTable_;
-	typedef LfTable<TOccTable_, TPrefixSumTable_>   	                                        Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreLfTable>
-{
-    typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreOccTable>::Type          TOccTable_;
-	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>::Type    TPrefixSumTable_;
-	typedef LfTable<TOccTable_, TPrefixSumTable_>   	                                                Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable>
-{
-    typedef typename Value<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type  TChar_;
-    typedef typename MakeUnsigned<TChar_>::Type                             TUChar_;
-	typedef PrefixSumTable<TUChar_, void>                                   Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>
-{
-    typedef typename Value<Index<TText, FMIndex<TOccSpec, TSpec> > const>::Type TChar_;
-    typedef typename MakeUnsigned<TChar_>::Type                                 TUChar_;
-	typedef PrefixSumTable<TUChar_, void>                                       Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>
-{
-	typedef typename SAValue<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type                TSAValue_;
-	typedef SparseString<String<TSAValue_>, void>                                           TSparseString_;
-	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable>::Type     TLfTable_;
-	typedef CompressedSA<TSparseString_, TLfTable_, void>                                   Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreTempSA>
-{
-	typedef typename SAValue<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type    TSAValue;
-	typedef String<TSAValue, External<ExternalConfigLarge<> > >                 Type;
-};
-
-// ==========================================================================
+// ============================================================================
 // Classes
-// ==========================================================================
+// ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class FmIndexInfo_ 
-// ----------------------------------------------------------------------------
-
-// Stores the information about an FM index file bundle and is written to the .fma file.
-
-#ifdef PLATFORM_WINDOWS
-    #pragma pack(push,1)
-#endif
-
-struct FmIndexInfo_
-{
-    // The compression factor.
-    __uint32 compressionFactor;
-    // The sizeof(TSAEntry) values for suffix array entries.
-    __uint32 sizeOfSAEntry;
-    // The length of the genome.
-    __uint64 genomeLength;
-}
-
-#ifndef PLATFORM_WINDOWS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef PLATFORM_WINDOWS
-      #pragma pack(pop)
-#endif
-
-// ----------------------------------------------------------------------------
-// Spec FMIndex 
+// Class FMIndex 
 // ----------------------------------------------------------------------------
 
 /**
@@ -269,7 +220,7 @@ struct FmIndexInfo_
 ..summary:An index based on the Burrows-Wheeler transform.
 ..cat:Index
 ..general:Class.Index
-..signature:Index<TText, FMIndex<TOccSpec, TSpec> >
+..signature:Index<TText, FMIndex<TSpec, TConfig> >
 ..param.TText:The text type.
 ...type:Class.String
 ...type:Class.StringSet
@@ -279,215 +230,77 @@ struct FmIndexInfo_
 ...remarks:The tags are really shortcuts for the different @Class.SentinelRankDictionary@s
 ...default:Tag.WT
 ..param.TSpec:FM index specialisation.
-...type:Tag.CompressText
 ...default:void
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TOccSpec, typename TSpec>
-class Index<TText, FMIndex<TOccSpec, TSpec> >
+/*!
+ * @class FMIndex
+ * @extends Index
+ * @headerfile seqan/index.h
+ * @brief An index based on the Burrows-Wheeler transform.
+ * 
+ * @signature template <typename TText[, typename TSpec[, typename TConfig]]>
+ *            class Index<TText, FMIndex<TSpec, TConfig> >;
+ * 
+ * @tparam TText   The text type. Types: @link String @endlink, @link StringSet @endlink
+ * @tparam TSpec   FM index specialisation, defaults to <tt>void</tt>.
+ * @tparam TConfig A config object which determines the data types of the different fibres, defaults to
+ *                 <tt>FMIndexConfig&lt;TSpec&gt;</tt>.
+ *
+ * @section Structure
+ *
+ * The FM index consists of various @link Fibre @endlink of which the most important ones are the compressed
+ * suffix array and the LF table, which provides all necessary information for the LF mapping.
+ */
+
+template <typename TText, typename TSpec, typename TConfig>
+class Index<TText, FMIndex<TSpec, TConfig> >
 {
-    public:
-    Holder<typename Fibre<Index, FibreText>::Type>  text;
-	typename Fibre<Index, FibreLfTable>::Type       lfTable;
-	typename Fibre<Index, FibreSA>::Type            compressedSA;
-	typename Size<TText>::Type                      n;
-    unsigned                                        compressionFactor; 
+public:
+    typename Member<Index, FibreText>::Type         text;
+    typename Fibre<Index, FibreLF>::Type            lf;
+    typename Fibre<Index, FibreSA>::Type            sa;
 
-	Index() :
-		n(0)
-	{}
+    Index() {};
 
-	Index(TText & text, unsigned compressionFactor = 10) :
-	    text(text),
-		n(_computeBwtLength(text)),
-		compressionFactor(compressionFactor)
-	{}
-
-	inline bool operator==(const Index & b) const
-    {
-        return lfTable == b.lfTable &&
-               compressedSA == b.compressedSA &&
-               n == b.n &&
-               compressionFactor == b.compressionFactor;
-    }
+    Index(TText & text) :
+        text(text)
+    {}
 };
 
-// ==========================================================================
+// ============================================================================
 // Functions
-// ==========================================================================
+// ============================================================================
+
 // ----------------------------------------------------------------------------
-// Function clear
+// Function clear()
 // ----------------------------------------------------------------------------
 
 // Already documented
-template <typename TText, typename TOccSpec, typename TSpec>
-inline void clear(Index<TText, FMIndex<TOccSpec, TSpec> > & index)
+template <typename TText, typename TSpec, typename TConfig>
+inline void clear(Index<TText, FMIndex<TSpec, TConfig> > & index)
 {
-    clear(getFibre(index, FibreLfTable()));
+    clear(getFibre(index, FibreText()));
+    clear(getFibre(index, FibreLF()));
     clear(getFibre(index, FibreSA()));
 }
 
 // ----------------------------------------------------------------------------
-// Helper function _computeBwtLength
-// ----------------------------------------------------------------------------
-
-// This function computes the length of the bwt string.
-template <typename TText>
-inline typename Size<TText>::Type
-_computeBwtLength(TText const & text)
-{
-    return length(text) + 1;
-}
-
-// This function computes the length of the bwt string.
-template <typename TText, typename TSetSpec>
-inline typename Size<typename StringSetLimits<TText>::Type>::Type
-_computeBwtLength(StringSet<TText, TSetSpec> const & text)
-{
-    return lengthSum(text) + countSequences(text);
-}
-
-// ----------------------------------------------------------------------------
-// Helper function _createBwTable
-// ----------------------------------------------------------------------------
-
-// This function computes the BWT of a text. Note that the sentinel sign is substituted and its position stored.
-// The function is tested implicitly in lfTableLfMapping() in test_index_fm.h
-template <typename TBwt, typename TSentinelPosition, typename TText, typename TSA, typename TSentinelSub>
-inline void _createBwTable(TBwt & bwt, TSentinelPosition & sentinelPos, TText const & text, TSA const & sa,
-		                   TSentinelSub const sentinelSub)
-{
-	//typedefs
-	typedef typename GetValue<TSA>::Type                    TSAValue;
-    typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
-    typedef typename Iterator<TBwt, Standard>::Type         TBwtIter;
-
-	//little helpers
-    TSAIter saIt = begin(sa, Standard());
-    TSAIter saItEnd = end(sa, Standard());
-    TBwtIter bwtIt = begin(bwt, Standard());
-    
-	assignValue(bwtIt, back(text));
-	for (; saIt != saItEnd; ++saIt)
-	{
-        ++bwtIt;
-		TSAValue pos = getValue(saIt);
-		if (pos != 0)
-			assignValue(bwtIt, getValue(text, pos - 1));
-		else
-		{
-			assignValue(bwtIt, sentinelSub);
-			sentinelPos = bwtIt - begin(bwt, Standard());
-		}
-	}
-}
-
-// This function computes the BWT of a text. Note that the sentinel sign is substituted and its position stored.
-// The function is tested implicitly in lfTableLfMapping() in test_index_fm.h
-template <typename TBwt, typename TSentinelPosition, typename TText, typename TSetSpec, typename TSA, typename TSentinelSub>
-inline void _createBwTable(TBwt & bwt, TSentinelPosition & sentinelPos, StringSet<TText, TSetSpec> const & text,
-		                   TSA const & sa, TSentinelSub const sentinelSub)
-{
-    typedef typename Value<TSA>::Type                       TSAValue;
-    typedef typename Size<TSA>::Type                        TSize;
-    typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
-    typedef typename Iterator<TBwt, Standard>::Type         TBwtIter;
-
-    // little Helpers
-    TSize seqNum = countSequences(text);
-    TSize totalLen = lengthSum(text);
-
-    resize(sentinelPos, seqNum + totalLen, Exact());
-    
-    TSAIter saIt = begin(sa, Standard());
-    TSAIter saItEnd = end(sa, Standard());
-    TBwtIter bwtItBeg = begin(bwt, Standard());
-    TBwtIter bwtIt = bwtItBeg;
-
-    // fill the sentinel positions (they are all at the beginning of the bwt)
-    for (TSize i = 1; i <= seqNum; ++i, ++bwtIt)
-        assignValue(bwtIt, back(text[seqNum - i]));
-
-    // compute the rest of the bwt
-    for (; saIt != saItEnd; ++saIt, ++bwtIt)
-    {
-        TSAValue pos;    // = SA[i];
-        posLocalize(pos, getValue(saIt), stringSetLimits(text));
-        if (getSeqOffset(pos) != 0)
-            assignValue(bwtIt, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
-        else
-        {
-            assignValue(bwtIt, sentinelSub);
-            setBit(sentinelPos, bwtIt - bwtItBeg);
-        }
-    }
-
-    // update the auxiliary rank support bit string information.
-    _updateRanks(sentinelPos);
-}
-
-// ----------------------------------------------------------------------------
-// Helper function _determineSentinelSubstitute
-// ----------------------------------------------------------------------------
-
-// This function determines the '$' substitute.
-// The character with the smallest number of occurrences greater 0 is chosen.
-template <typename TPrefixSumTable, typename TChar>
-inline void _determineSentinelSubstitute(TPrefixSumTable const & pst, TChar & sub)
-{
-    typedef typename RemoveConst<TPrefixSumTable>::Type TNonConstPrefixSumTable;
-	typedef typename Value<TNonConstPrefixSumTable>::Type TValue;
-
-	TValue min = getPrefixSum(pst, length(pst) - 1);
-	unsigned pos = length(pst) - 1;
-	for (unsigned i = 0; i < length(pst) - 1; ++i)
-	{
-		unsigned diff = pst[i + 1] - pst[i];
-		if (diff != 0 && diff < min)
-		{
-			min = diff;
-			pos = i;
-		}
-	}
-	sub = getCharacter(pst, pos);
-}
-
-// ----------------------------------------------------------------------------
-// Function empty
+// Function empty()
 // ----------------------------------------------------------------------------
 
 // This function checks whether the index is empty. Its already documented.
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-inline bool empty(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool empty(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 {
-    return empty(getFibre(index, FibreLfTable()))
-            && empty(getFibre(index, FibreSA()));
+    return empty(getFibre(index, FibreText())) &&
+           empty(getFibre(index, FibreLF())) &&
+           empty(getFibre(index, FibreSA()));
 }
 
 // ----------------------------------------------------------------------------
-// Function _findFirstIndex
-// ----------------------------------------------------------------------------
-
-// This function is used by the finder interface. It initializes the range of the finder.
-template <typename TText, typename TPattern, typename TIndexSpec, typename TFMISpeedEnhancement>
-inline void
-_findFirstIndex(Finder<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FinderFMIndex> & finder,
-		        TPattern const & pattern, FinderFMIndex const &)
-{
-	typedef Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >    TIndex;
-
-	TIndex & index = haystack(finder);
-
-	indexRequire(index, FibreSaLfTable());
-    setContainer(finder.range.i1, getFibre(container(finder), FibreSA()));
-    setContainer(finder.range.i2, getFibre(container(finder), FibreSA()));
-
-	_range(index, pattern, finder.range);
-}
-
-// ----------------------------------------------------------------------------
-// Function getFibre
+// Function getFibre()
 // ----------------------------------------------------------------------------
 
 /**
@@ -504,37 +317,72 @@ _findFirstIndex(Finder<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >,
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreLfTable >::Type &
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > & index, FibreLfTable /*tag*/)
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+getFibre(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreLF /*tag*/)
 {
-	return index.lfTable;
+    return index.lf;
 }
 
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreLfTable >::Type const &
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index, FibreLfTable /*tag*/)
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
 {
-	return index.lfTable;
-}
-
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreSA >::Type &
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > & index, FibreSA /*tag*/)
-{
-	return index.compressedSA;
-}
-
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreSA >::Type const &
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index, FibreSA /*tag*/)
-{
-	return index.compressedSA;
+    return index.lf;
 }
 
 // ----------------------------------------------------------------------------
-// Function toSuffixPosition
+// Function indexLF()
 // ----------------------------------------------------------------------------
+/*!
+ * @fn FMIndex#indexLF
+ * @headerfile seqan/index.h
+ * @brief A shortcut for <tt>getFibre(index, FibreLF())</tt>.
+ *
+ * @signature TFibre indexLF(index);
+ * 
+ * @param[in] index The FM index.
+ *
+ * @return TFibre A reference to the @link FMIndexFibres#FibreLF @endlink.
+ */
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+indexLF(Index<TText, FMIndex<TSpec, TConfig> > & index)
+{
+    return getFibre(index, FibreLF());
+}
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
+{
+    return getFibre(index, FibreLF());
+}
+
+// ----------------------------------------------------------------------------
+// Function toSuffixPosition()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn FMIndex#toSuffixPosition
+ * @headerfile seqan/index.h
+ * @brief This function computes the position of a specified position in the compressed suffix array (additionally 
+ *        containing entries for the sentinels). The returned position corresponds to the suffix array of the original
+ *        text without sentinels.
+ * 
+ * @signature TSAValue toSuffixPosition(index, pos, offset);
+ * 
+ * @param[in] index  The FM index.
+ * @param[in] pos    The position in the suffix array of the FM index (with sentinels).
+ *                   Types: @link UnsignedIntegerConcept @endlink
+ * @param[in] offset The number of sequences in the original text.  Types: @link UnsignedIntegerConcept @endlink
+ *
+ * @return TSAValue The function function computes the position of a specified position in the compressed suffix array
+ *                  (additionally containing entries for the sentinels).  The returned position corresponds to the
+ *                  suffix array of the original text without sentinels.  The return type is @link SAValue
+ *                  @endlink&lt;@link Index @endlink&lt;TText, FMIndex&lt;TSpec, TConfig&gt; &gt; &gt;::Type
+ */
 
 /**
 .Function.FMIndex#toSuffixPosition
@@ -551,114 +399,55 @@ entries for the sentinels. The returned position correspond to the suffix array 
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos, typename TSize>
-inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > >::Type
-toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > & index, TPos i, TSize offset)
+template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TSize>
+inline typename SAValue<Index<TText, FMIndex<TSpec, TConfig> > >::Type
+toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > & index, TPos i, TSize offset)
 {
     SEQAN_ASSERT_GEQ(suffixLength(i, index), offset);
     setSeqOffset(i, suffixLength(i, index) - offset);
     return i;
 }
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos, typename TSize>
-inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > const>::Type
-toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > const & index, TPos i, TSize offset)
+template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TSize>
+inline typename SAValue<Index<TText, FMIndex<TSpec, TConfig> > const>::Type
+toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > const & index, TPos i, TSize offset)
 {
     SEQAN_ASSERT_GEQ(suffixLength(i, index), offset);
     setSeqOffset(i, suffixLength(i, index) - offset);
     return i;
 }
 
-// ----------------------------------------------------------------------------
-// Helper function _getFrequencies
-// ----------------------------------------------------------------------------
-
-// This function determines the number of the different characters in the text.
-template <typename TText, typename TSetSpec, typename TFreq>
-inline void _getFrequencies(TFreq & freq,
-						    StringSet<TText, TSetSpec> const & text)
+template <typename TText, typename TSpec, typename TConfig, typename TSpecFinder, typename TPattern>
+inline void 
+_findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & finder,
+                TPattern const & pattern,
+                FinderSTree const)
 {
-	typedef typename Value<TText>::Type TChar;
-	resize(freq, ValueSize<TChar>::VALUE, 0, Exact());
+    typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
+    typedef typename Iterator<TSA const, Standard>::Type    TIterator;
 
-    typedef typename Size<TText>::Type TSize;
-	for (TSize i = 0; i < length(text); ++i)
-	    for (TSize j = 0; j < length(text[i]); ++j)
-		    ++freq[getCharacterPosition(freq, text[i][j])];
-}
+    TIndex & index = haystack(finder);
+    TIterator saIt = begin(indexSA(index), Standard());
+    typename Iterator<TIndex, TopDown<EmptyEdges> >::Type it(index);
 
-// This function determines the number of the different characters in the text.
-template <typename TText, typename TFreq>
-inline void _getFrequencies(TFreq & freq,
-		   	   	   	   	   TText const & text)
-{
-	typedef typename Value<TText>::Type TChar;
-	resize(freq, ValueSize<TChar>::VALUE, 0, Exact());
+    ModifiedString<TPattern const, ModReverse> revPattern(pattern);
 
-    typedef typename Size<TText>::Type TSize;
-	for (TSize i = 0; i < length(text); ++i)
-		++freq[getCharacterPosition(freq, text[i])];
-}
-
-// ----------------------------------------------------------------------------
-// Function _indexCreateSA
-// ----------------------------------------------------------------------------
-
-// This function computes the full and compressed suffix array. 
-// Note, in contrast to indexCreate(index, FibreSA()) the full suffix array is also computed.
-template <typename TText, typename TIndexSpec, typename TSpec, typename TSA>
-inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TSA & fullSa, TText const & text)
-{
-	typedef Index<TText, FMIndex<TIndexSpec, TSpec> > TIndex;
-	typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
-
-    // TODO(singer): If there is a lfTable we do not need the Skew7
-	// create the fulle sa
-
-    // create the compressed sa
-	TCompressedSA & compressedSA = getFibre(index, FibreSA());
-    setLfTable(compressedSA, getFibre(index, FibreLfTable()));
-
-    unsigned numSentinel = countSequences(text);
-    createCompressedSa(compressedSA, fullSa, index.compressionFactor, numSentinel); 
-
-	return true;
+    if (goDown(it, revPattern))
+    {
+        Pair<typename Size<TIndex>::Type> rng = range(it);
+        finder.range.i1 = saIt + rng.i1;
+        finder.range.i2 = saIt + rng.i2;
+    }
+    else
+    {
+        finder.range.i1 = saIt;
+        finder.range.i2 = saIt;
+    }
 }
 
 // ----------------------------------------------------------------------------
-// Function _indexCreateLfTables
-// ----------------------------------------------------------------------------
-
-// This function creates all table of the lf table given a text and a suffix array.
-template <typename TIndexSpec, typename TSpec, typename TText, typename TSA>
-inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TText & text, TSA const & sa)
-{
-	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >		        TIndex;
-	typedef typename Fibre<TIndex, FibreLfTable>::Type              TLfTable;
-	typedef typename Fibre<TLfTable, FibreOccTable>::Type           TOccTable;
-	typedef typename Fibre<TOccTable, FibreSentinelPosition>::Type  TSentinelPosition;
-	typedef typename Value<TIndex>::Type						    TAlphabet;
-
-	createPrefixSumTable(index.lfTable.prefixSumTable, text);
-
-	TAlphabet sentinelSub(0);
-	_determineSentinelSubstitute(index.lfTable.prefixSumTable, sentinelSub);
-
-	String<TAlphabet> bwt;
-	resize(bwt, index.n, Exact());
-	TSentinelPosition sentinelPos = _setDefaultSentinelPosition(length(bwt), TSentinelPosition());
-
-	_createBwTable(bwt, sentinelPos, text, sa, sentinelSub);
-
-    createSentinelRankDictionary(index.lfTable, bwt, sentinelSub, sentinelPos);
-
-	_insertSentinel(index.lfTable.prefixSumTable, countSequences(text));
-
-	return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function indexCreate
+// Function indexCreate()
 // ----------------------------------------------------------------------------
 
 /**
@@ -668,53 +457,54 @@ inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & ind
 ..param.index:The index to be created.
 ...type:Spec.FMIndex
 ..param.fibreTag:The fibre of the index to be computed.
-...type:Tag.FM Index Fibres.tag.FibreSaLfTable
-..remarks:If you call this function on the compressed text version of the FM index
-you will get an error message: "Logic error. It is not possible to create this index without a text."
+...type:Tag.FM Index Fibres.tag.FibreSALF
 */
 
-// This function creates the index.
-template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool _indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec > > & index, TText & text)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF)
 {
-	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >   TIndex;
-	typedef typename Fibre<TIndex, FibreTempSA>::Type   TTempSA;
+    typedef Index<TText, FMIndex<TSpec, TConfig> >      TIndex;
+    typedef typename Fibre<TIndex, FibreTempSA>::Type   TTempSA;
+    typedef typename Size<TIndex>::Type                 TSize;
+
+    TText const & text = indexText(index);
 
     if (empty(text))
         return false;
 
     TTempSA tempSA;
-    
-	resize(tempSA, lengthSum(text), Exact());
-	createSuffixArray(tempSA,
-			text,
-			Skew7());
 
+    // Create the full SA.
+    resize(tempSA, lengthSum(text), Exact());
+    createSuffixArray(tempSA, text, Skew7());
 
-	// create the compressed SA
-	_indexCreateSA(index, tempSA, text);
+    // Create the LF table.
+    createLF(indexLF(index), text, tempSA);
 
-	// create the lf table
-	_indexCreateLfTables(index, text, tempSA);
+    // Set the FMIndex LF as the CompressedSA LF.
+    setFibre(indexSA(index), indexLF(index), FibreLF());
 
-	return true;
+    // Create the compressed SA.
+    TSize numSentinel = countSequences(text);
+    createCompressedSa(indexSA(index), tempSA, numSentinel);
+
+    return true;
 }
 
-
-template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, FibreSaLfTable const)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSA)
 {
-    return _indexCreate(index, getFibre(index, FibreText()));
+    return indexCreate(index, FibreSALF());
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec> > & index)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index)
 {
-    return indexCreate(index, FibreSaLfTable());
+    return indexCreate(index, FibreSALF());
 }
 
 // ----------------------------------------------------------------------------
-// Function indexSupplied
+// Function indexSupplied()
 // ----------------------------------------------------------------------------
 
 /**
@@ -723,65 +513,20 @@ inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec> > & index)
 ..param.fibreTag:
 ...type:Tag.FM Index Fibres
 */
-template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool indexSupplied(Index<TText, FMIndex<TIndexSpec, TSpec > > & index, FibreSaLfTable const)
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
-    return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLfTable())));
+    return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool indexSupplied(Index<TText, FMIndex<TIndexSpec, TSpec > > const & index, FibreSaLfTable const)
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreSALF const)
 {
-    return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLfTable())));
-}
-
-// ----------------------------------------------------------------------------
-// Function _range
-// ----------------------------------------------------------------------------
-
-// This function computes a range in the suffix array whose entries point to location
-// in the text where the pattern occurs. 
-template <typename TText, typename TOccSpec, typename TSpec, typename TPattern, typename TIter, typename TPairSpec>
-inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index, const TPattern & pattern, 
-                   Pair<TIter, TPairSpec> & range)
-{
-    typedef Index<TText, FMIndex<TOccSpec, TSpec> >             TIndex;
-    typedef typename Value<TIndex>::Type                        TAlphabet;
-    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
-    typedef typename Size<TIndex>::Type                         TSize;
- 	typedef typename Value<TPattern>::Type                      TChar;
-
-    if (empty(pattern))
-    {
-	    setPosition(range.i1, countSequences(index));
-	    setPosition(range.i2, index.n);
-    }
-
-	TSize i = length(pattern) - 1;
-	TChar letter = pattern[i];
-
-    // initilization
-	TAlphabetSize letterPosition = getCharacterPosition(index.lfTable.prefixSumTable, letter);
-	TSize sp = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
-	TSize ep = getPrefixSum(index.lfTable.prefixSumTable, letterPosition + 1) - 1;
-
-	// the search as proposed by Ferragina and Manzini
-	while ((sp <= ep) && (i > 0))
-	{
-	    --i;
-		letter = pattern[i];
-		letterPosition = getCharacterPosition(index.lfTable.prefixSumTable, letter);
-		TSize prefixSum = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
-		sp = prefixSum + countOccurrences(index.lfTable.occTable, letter, sp - 1);
-		ep = prefixSum + countOccurrences(index.lfTable.occTable, letter, ep) - 1;
-	}
-
-    setPosition(range.i1, sp);
-	setPosition(range.i2, ep + 1);
+    return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }
 
 // ----------------------------------------------------------------------------
-// Function open
+// Function open()
 // ----------------------------------------------------------------------------
 
 /**
@@ -803,54 +548,34 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index, const 
 */
 
 // This function can be used to open a previously saved index.
-template <typename TText, typename TOccSpec, typename TSpec>
-inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * fileName, int openMode)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fileName, int openMode)
 {
     String<char> name;
 
-//    typedef Index<TText, FMIndex<TOccSpec, TSpec> > TIndex;
-//    typedef typename Fibre<TIndex, FibreSA>::Type TSAFibre;
-//    typedef typename Value<TSAFibre>::Type TSAValue;
-
-    String<FmIndexInfo_> infoString;
-
-    if (!(IsSameType<TSpec, CompressText>::VALUE))
-    {
-        name = fileName;    append(name, ".txt");
-        if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
-    }
+    name = fileName;    append(name, ".txt");
+    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".sa");
     if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".lf");
-    if (!open(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
+    if (!open(getFibre(index, FibreLF()), toCString(name), openMode)) return false;
 
-    name = fileName;    append(name, ".fma");
-    if (!open(infoString, toCString(name), openMode)) return false;
-
-    // TODO(weese): Why do we check the SA size here? Everywhere else we require the types being the same for reading and writing
-    //              Moreover a correct size is not indicating a correct type
-    // Check that the size of the SA entries is correct.
-//    if (infoString[0].sizeOfSAEntry != 0 && infoString[0].sizeOfSAEntry != sizeof(TSAValue))
-//        return false;
-
-    index.compressionFactor = infoString[0].compressionFactor;
-    index.n = infoString[0].genomeLength;
-    getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
+    setFibre(getFibre(index, FibreSA()), getFibre(index, FibreLF()), FibreLF());
 
     return true;
 }
 
 // This function can be used to open a previously saved index.
-template <typename TText, typename TOccSpec, typename TSpec>
-inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * fileName)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fileName)
 {
-    return open(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TOccSpec, TSpec> > >::VALUE);
+    return open(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
 }
 
 // ----------------------------------------------------------------------------
-// Function save
+// Function save()
 // ----------------------------------------------------------------------------
 
 /**
@@ -871,42 +596,28 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TOccSpec, typename TSpec>
-inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const char * fileName, int openMode)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName, int openMode)
 {
     String<char> name;
 
-    typedef Index<TText, FMIndex<TOccSpec, TSpec> > TIndex;
-    typedef typename Fibre<TIndex, FibreSA>::Type TSAFibre;
-    typedef typename Value<TSAFibre>::Type TSAValue;
-
-    String<FmIndexInfo_> infoString;
-    FmIndexInfo_ info = { index.compressionFactor, sizeof(TSAValue), index.n };
-    appendValue(infoString, info);
-    
-    if (!(IsSameType<TSpec, CompressText>::VALUE))
-    {
-        name = fileName;    append(name, ".txt");
-        if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
-    }
+    name = fileName;    append(name, ".txt");
+    if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".sa");
     if (!save(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".lf");
-    if (!save(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
-
-    name = fileName;    append(name, ".fma");
-    if (!save(infoString, toCString(name), openMode)) return false;
+    if (!save(getFibre(index, FibreLF()), toCString(name), openMode)) return false;
 
     return true;
 }
 
 // This function can be used to save an index on disk.
-template <typename TText, typename TOccSpec, typename TSpec>
-inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const char * fileName)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName)
 {
-    return save(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TOccSpec, TSpec> > >::VALUE);
+    return save(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
 }
 
 }

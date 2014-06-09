@@ -1,7 +1,8 @@
 // ==========================================================================
-//                               fm_index_beta
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,7 +30,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Your Name <your.email@example.net>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
 #ifndef TESTS_WAVELT_TREE_STRUCTURE_ITERATOR_BETA_H_
@@ -55,21 +56,22 @@ void waveletTreeStructureIteratorBegin(TIter & /*tag*/)
 	SEQAN_ASSERT_EQ(getCharacter(begin(waveletTreeStructure, typename Spec<TIter>::Type())), 'G');
 }
 
-template <typename TIter>
-void waveletTreeStructureIteratorContainer(TIter & /*tag*/)
-{
-	typedef typename Container<TIter>::Type TRightArrayBinaryTree;
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-
-	String<TChar> text = "ACGTNACGTNACGTN";
-	TRightArrayBinaryTree waveletTreeStructure(text);
-
-	TIter it(waveletTreeStructure, 0);	
-
-	SEQAN_ASSERT(container(it) == waveletTreeStructure);
-}
+// NOTE(esiragusa): IteratorContainer test should not use operator==()
+//template <typename TIter>
+//void waveletTreeStructureIteratorContainer(TIter & /*tag*/)
+//{
+//	typedef typename Container<TIter>::Type TRightArrayBinaryTree;
+//	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+//	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+//	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+//
+//	String<TChar> text = "ACGTNACGTNACGTN";
+//	TRightArrayBinaryTree waveletTreeStructure(text);
+//
+//	TIter it(waveletTreeStructure, 0);	
+//
+//	SEQAN_ASSERT(container(it) == waveletTreeStructure);
+//}
 
 template <typename TIter>
 void waveletTreeStructureIteratorEnd(TIter & /*tag*/)
@@ -576,15 +578,16 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_begin)
     waveletTreeStructureIteratorBegin(tag);
 }
 
-SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_container)
-{
-    using namespace seqan;
-
-    RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
-    typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
-    TIter tag(waveletTreeStructure, 0);
-    waveletTreeStructureIteratorContainer(tag);
-}
+// NOTE(esiragusa): IteratorContainer test should not use operator==()
+//SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_container)
+//{
+//    using namespace seqan;
+//
+//    RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
+//    typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
+//    TIter tag(waveletTreeStructure, 0);
+//    waveletTreeStructureIteratorContainer(tag);
+//}
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_end)
 {

@@ -59,8 +59,6 @@ namespace seqan {
  *
  * @tparam TStream The @link StreamConcept @endlink type to use for reading.
  *
- * @section Remarks
- *
  * Not default or copy constructable.
  */
 
@@ -206,8 +204,6 @@ _fillNextBuffer(RecordReader<TFile, DoublePass<> > & recordReader)
  *
  * @param[in,out] reader The RecordReader to start the first pass with.
  *
- * @section Remarks
- *
  * Calling this function will memoize the current position in the buffer to return to in second pass.
  */
 
@@ -281,8 +277,6 @@ _jumpToNextBuffer(RecordReader<TFile, DoublePass<> > & recordReader)
  * @signature void startSecondPass(reader);
  *
  * @param[in,out] reader The RecordReader to start the second pass with.
- *
- * @section Remarks
  *
  * This will reset the position in the buffer.
  */

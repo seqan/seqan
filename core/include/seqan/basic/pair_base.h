@@ -51,7 +51,7 @@ namespace seqan {
 
 /*!
  * @class Pair
- * @extends ComparableConcept
+ * @implements ComparableConcept
  * @headerfile <seqan/basic.h>
  * @brief Store two arbitrary objects.
  *
@@ -71,9 +71,9 @@ namespace seqan {
  * @signature Pair::Pair(other);
  * @signature Pair::Pair(x1, x2);
  *
- * @param other The other Pair object to copy from.
- * @param x1    Copied to first member.
- * @param x2    Copied to second member
+ * @param[in] other The other Pair object to copy from.
+ * @param[in] x1    Copied to first member.
+ * @param[in] x2    Copied to second member
  */
 
 /*!
@@ -297,7 +297,7 @@ std::ostream & operator<<(std::ostream & out, Pair<T1, T2, TSpec> const & p)
  *
  * @signature T1 getValue(pair);
  *
- * @param pair The pair to get entry from.
+ * @param[in] pair The pair to get entry from.
  *
  * @return T1 The first entry of the Pair.
  */
@@ -317,7 +317,7 @@ T1 getValueI1(Pair<T1, T2, TSpec> const & pair)
  *
  * @signature T2 getValue(pair);
  *
- * @param pair The pair to get entry from.
+ * @param[in] pair The pair to get entry from.
  *
  * @return T2 The second entry of the Pair.
  */
@@ -339,8 +339,8 @@ T2 getValueI2(Pair<T1, T2, TSpec> const & pair)
  *
  * @signature void assignValueI1(pair, val);
  *
- * @param pair The pair to get entry from.
- * @param val  Set the value of the Pair's first entry.
+ * @param[in] pair The pair to get entry from.
+ * @param[in] val  Set the value of the Pair's first entry.
  */
 
 // Cannot be assignValue with index since T1 can be != T2.
@@ -357,8 +357,8 @@ inline void assignValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
  *
  * @signature void assignValueI1(pair, val);
  *
- * @param pair The pair to get entry from.
- * @param val  Set the value of the Pair's second entry.
+ * @param[in] pair The pair to get entry from.
+ * @param[in] val  Set the value of the Pair's second entry.
  */
 
 template <typename T1, typename T2, typename TSpec, typename T>
@@ -377,8 +377,8 @@ inline void assignValueI2(Pair<T1, T2, TSpec> & pair, T const & _i)
  *
  * @signature void setValueI1(pair, val);
  *
- * @param pair The pair to get entry from.
- * @param val  Set the value of the Pair's first entry.
+ * @param[in] pair The pair to get entry from.
+ * @param[in] val  Set the value of the Pair's first entry.
  */
 
 // Cannot be setValue with index since T1 can be != T2.
@@ -395,8 +395,8 @@ inline void setValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
  *
  * @signature void setValueI1(pair, val);
  *
- * @param pair The pair to get entry from.
- * @param val  Set the value of the Pair's second entry.
+ * @param[in] pair The pair to get entry from.
+ * @param[in] val  Set the value of the Pair's second entry.
  */
 
 template <typename T1, typename T2, typename TSpec, typename T>

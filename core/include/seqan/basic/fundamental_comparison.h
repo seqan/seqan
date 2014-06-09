@@ -69,9 +69,7 @@ template <typename TValue> SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::
  * 
  * @return Type The resulting type to convert other type to.
  * 
- * @section Remarks
- * 
- * Comparisons are for example operators like <tt>==</tt> or <tt><</tt>.
+ * Comparisons are for example operators like <tt>==</tt> or <tt>&lt;</tt>.
  * 
  * Do not implement, implement CompareTypeImpl instead.
  * 
@@ -130,9 +128,7 @@ comparisons that involve @Class.SimpleType@.
 // Given two types, the CompareType is a type that both types can be cast to
 // and where the results are then used to compare two values.
 
-template <typename T1, typename T2>
-struct CompareType;
-
+// step 3: choose the actual comparison type
 template <typename T1, typename T2>
 struct CompareTypeImpl;
 
@@ -142,13 +138,15 @@ struct CompareTypeImpl<T, T>
     typedef T Type;
 };
 
+// step 2: disolve all iterator proxies (see proxy_iterator.h)
 template <typename T1, typename T2>
-struct CompareType
-{
-    typedef typename RemoveConst<T1>::Type T1_;
-    typedef typename RemoveConst<T2>::Type T2_;
-    typedef typename CompareTypeImpl<T1_, T2_>::Type Type;
-};
+struct CompareTypeRemoveProxy:
+    CompareTypeImpl<T1, T2> {};
+
+// step 1: remove const from types
+template <typename T1, typename T2>
+struct CompareType:
+    CompareTypeRemoveProxy<typename RemoveConst<T1>::Type, typename RemoveConst<T2>::Type> {};
 
 // ============================================================================
 // Functions

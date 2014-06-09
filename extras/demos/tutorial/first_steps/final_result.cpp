@@ -106,7 +106,7 @@ int main()
     print(pattern);
     // > tutorial
     print(score);
-    // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 1 0 0 0 0 0 0 0 0 0 0 0
+    // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 1 0 0 0 0
     print(score, MaxOnly());
     // > 19 
     print(score, GreaterZero());

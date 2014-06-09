@@ -96,8 +96,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *               its destined position. The result type of this unary function should convertible to <tt>TSize</tt>.
  * @tparam TFile The underlying File type, defaults to <tt>File&lg;&gt;</tt>.
  * 
- * @section Remarks
- * 
  * Using this configuration spec., the Mapper's size type is <tt>Size&lt;TFile&gt;::Type</tt>. To use a custom size type
  * MapperConfigSize should be used.
  * 
@@ -140,8 +138,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TConfig Configuration Spec. Defines destination function, size type, and file type.
  *                 Types: MapperConfig, MapperConfigSize
  * @tparam TValue  The value type, that is the type of the stream elements.
- * 
- * @section Remarks
  * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
