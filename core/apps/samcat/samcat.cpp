@@ -237,9 +237,9 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
-    addListItem(parser, "\\fBsamcat\\fP mapped1.sam mapped2.sam \\fI-o merged.sam\\fP",
+    addListItem(parser, "\\fBsamcat\\fP \\fBmapped1.sam\\fP \\fBmapped2.sam\\fP \\fB-o\\fP \\fBmerged.sam\\fP",
                 "Merge two SAM files.");
-    addListItem(parser, "\\fBsamcat\\fP input.sam \\fI-o ouput.bam\\fP",
+    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBouput.bam\\fP",
                 "Convert a SAM file into BAM format.");
 
     // Parse command line.
