@@ -129,7 +129,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
-            "o", "output", "Folder for output (must already exist).",
+            "o", "output", "Prefix and fileending of output files (prefix$.fasta - $: spaceholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
         setValidValues(outputOpt, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
         addOption(parser, outputOpt);
@@ -868,6 +868,48 @@ struct ProgramParams
     ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
 };
 
+
+// ----------------------------------------------------------------------------
+// Helper Function lastOf()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TToken>
+typename Iterator<TString const, Standard>::Type
+lastOf(TString const & string, TToken const & token)
+{
+    typedef typename Iterator<TString const, Standard>::Type TIterator;
+
+    TIterator it = end(string, Standard()) - length(token);
+
+    for (TIterator itBegin = begin(string, Standard());
+         it != itBegin && !isEqual(infix(string, it, it + length(token)), token);
+         goPrevious(it)) ;
+
+    return it;
+}
+
+// ----------------------------------------------------------------------------
+// Helper Function trimExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, PrefixSegment>
+trimExtension(TString & string)
+{
+    return prefix(string, lastOf(string, '.'));
+}
+
+// ----------------------------------------------------------------------------
+// Helper Function getExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, SuffixSegment>
+getExtension(TString & string)
+{
+    return suffix(string, lastOf(string, '.') + 1);
+}
+
 /**
 .Class.OutputStreams:
 ..summary:Class that dynamically manages output streams that write out sets of sequences.
@@ -1003,9 +1045,12 @@ public:
     void addStream(seqan::CharString fileName, int id)
     {
         //Prepend basePath and append file extension to the filename.
-        seqan::CharString path = basePath;
+        seqan::CharString path = trimExtension(basePath);
+        if (fileName != "")
+            seqan::append(path, "_");
         seqan::append(path, fileName);
-        seqan::append(path, this->extension);
+        seqan::append(path, ".");
+        seqan::append(path, getExtension(basePath));
         char* file = seqan::toCString(path);
         PSeqStream stream = new SequenceStream(file, seqan::SequenceStream::WRITE);
         fileStreams[id] = stream;
@@ -1014,11 +1059,18 @@ public:
     void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
     {
         //Prepend basePath and append file extension to the filename.
-        seqan::CharString path1 = basePath, path2 = basePath;
+        seqan::CharString path1 = trimExtension(basePath);
+        seqan::CharString path2 = trimExtension(basePath);
+        if (fileName1 != "")
+            seqan::append(path1, "_");
+        if (fileName2 != "")
+            seqan::append(path2, "_");
         seqan::append(path1, fileName1);
-        seqan::append(path1, this->extension);
+        seqan::append(path1, ".");
+        seqan::append(path1, getExtension(basePath));
         seqan::append(path2, fileName2);
-        seqan::append(path2, this->extension);
+        seqan::append(path2, ".");
+        seqan::append(path2, getExtension(basePath));
         char* file1 = seqan::toCString(path1);
         char* file2 = seqan::toCString(path2);
         PSeqStream stream1 = new SequenceStream(file1, seqan::SequenceStream::WRITE);
@@ -1031,6 +1083,7 @@ public:
     template <typename TMap, typename TNames>
     void updateStreams(TMap& map, TNames& names, bool pair)
     {
+
         for (unsigned i=0; i < length(map); ++i)
         {
             unsigned streamIndex = map[i];
@@ -1055,6 +1108,7 @@ public:
                     // Create a new subfolder at basePath/[barcodeID, unidentified].
                     seqan::CharString folderPath(basePath);
                     seqan::append(folderPath, file);
+                    /*
                     int result = 0;
                     #ifdef __linux__
                         result = mkdir(seqan::toCString(folderPath), 0777);
@@ -1068,6 +1122,7 @@ public:
                             std::cerr << "Warning: Directory " << folderPath << " already exists.\n";
                         }
                     }
+                    */
                     // Turn file target from [barcodeID,unidentified]
                     // to subfolder [barcodeID, unidentified]/[barcodeID, unidentified]
                     seqan::CharString filePath(file);
@@ -1081,6 +1136,7 @@ public:
                 }
                 else
                 {
+                    //std::cerr << file << " " << streamIndex << std::endl;
                     this->addStream(file, streamIndex);
                 }
             }
@@ -1131,48 +1187,6 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Helper Function lastOf()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TToken>
-typename Iterator<TString const, Standard>::Type
-lastOf(TString const & string, TToken const & token)
-{
-    typedef typename Iterator<TString const, Standard>::Type TIterator;
-
-    TIterator it = end(string, Standard()) - length(token);
-
-    for (TIterator itBegin = begin(string, Standard());
-         it != itBegin && !isEqual(infix(string, it, it + length(token)), token);
-         goPrevious(it)) ;
-
-    return it;
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function trimExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, PrefixSegment>
-trimExtension(TString & string)
-{
-    return prefix(string, lastOf(string, '.'));
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function getExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, SuffixSegment>
-getExtension(TString & string)
-{
-    return suffix(string, lastOf(string, '.') + 1);
-}
-
 
 /**
 .Function.loadSeqs:
