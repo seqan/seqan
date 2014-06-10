@@ -922,7 +922,7 @@ public:
             }
         }
         if (inN)
-            intervals.push_back(std::make_pair(beginPos, length(contigSeq)));
+            intervals.push_back(std::make_pair(beginPos, (int)length(contigSeq)));
 
         std::sort(intervals.begin(), intervals.end());
     }
