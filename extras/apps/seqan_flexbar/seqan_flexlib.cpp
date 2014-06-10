@@ -129,7 +129,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
-            "o", "output", "Folder for output (must already exist).",
+            "o", "output", "Prefix and file ending of output files (prefix$.fasta - $: placeholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
         setValidValues(outputOpt, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
         addOption(parser, outputOpt);
@@ -971,28 +971,24 @@ class OutputStreams
     std::map<int, PSeqStream> fileStreams;
     const seqan::CharString basePath;
     seqan::CharString extension;
+    StringSet<String<char> > possibleExt;
+
 public:
 //Constructor prepares the file extension which will be used for all streams created 
 //by this object and saves a base directory path.
     OutputStreams(seqan::CharString base, bool /*noQuality*/) : basePath(base)
     {
-        /*
-        seqan::CharString fileExt("");
-        if (noQuality)
-        {
-            seqan::append(fileExt, seqan::CharString(".fasta"));
-        }
-        else
-        {
-            seqan::append(fileExt, seqan::CharString(".fastq"));
-        }
-        if (compress)
-        {
-            seqan::append(fileExt, seqan::CharString(".gz"));
-        }
-        extension = fileExt;
-        */
-    }    
+        // TODO(singer): Use values of argument parser
+        appendValue(possibleExt, ".fasta");
+        appendValue(possibleExt, ".fastq");
+        appendValue(possibleExt, ".fa");
+        appendValue(possibleExt, ".fq");
+        appendValue(possibleExt, ".fasta.gz");
+        appendValue(possibleExt, ".fastq.gz");
+        appendValue(possibleExt, ".fa.gz");
+        appendValue(possibleExt, ".fq.gz");
+
+    }
      //Checks whether a key exists in a map. 
     template <typename TKey, typename TMap>
     bool exists(TKey& key, TMap& map)
@@ -1002,10 +998,21 @@ public:
     //Adds a new output streams to the collection of streams.
     void addStream(seqan::CharString fileName, int id)
     {
-        //Prepend basePath and append file extension to the filename.
-        seqan::CharString path = basePath;
+                //Prepend basePath and append file extension to the filename.
+        unsigned extLength = 0;
+        unsigned i = 0;
+        for (; i < length(possibleExt); ++i)
+            if (endsWith(basePath, possibleExt[i]))
+            {
+                extLength = length(possibleExt[i]);
+                break;
+            }
+
+        seqan::CharString path = prefix(basePath, length(basePath) - extLength);
+        if (fileName != "")
+            seqan::append(path, "_");
         seqan::append(path, fileName);
-        seqan::append(path, this->extension);
+        seqan::append(path, possibleExt[i]);
         char* file = seqan::toCString(path);
         PSeqStream stream = new SequenceStream(file, seqan::SequenceStream::WRITE);
         fileStreams[id] = stream;
@@ -1014,11 +1021,25 @@ public:
     void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
     {
         //Prepend basePath and append file extension to the filename.
-        seqan::CharString path1 = basePath, path2 = basePath;
+        unsigned extLength = 0;
+        unsigned i = 0;
+        for (; i < length(possibleExt); ++i)
+            if (endsWith(basePath, possibleExt[i]))
+            {
+                extLength = length(possibleExt[i]);
+                break;
+            }
+
+        seqan::CharString path1 = prefix(basePath, length(basePath) - extLength);
+        seqan::CharString path2 = prefix(basePath, length(basePath) - extLength);
+        if (fileName1 != "")
+            seqan::append(path1, "_");
+        if (fileName2 != "")
+            seqan::append(path2, "_");
         seqan::append(path1, fileName1);
-        seqan::append(path1, this->extension);
+        seqan::append(path1, possibleExt[i]);
         seqan::append(path2, fileName2);
-        seqan::append(path2, this->extension);
+        seqan::append(path2, possibleExt[i]);
         char* file1 = seqan::toCString(path1);
         char* file2 = seqan::toCString(path2);
         PSeqStream stream1 = new SequenceStream(file1, seqan::SequenceStream::WRITE);
@@ -1031,6 +1052,7 @@ public:
     template <typename TMap, typename TNames>
     void updateStreams(TMap& map, TNames& names, bool pair)
     {
+
         for (unsigned i=0; i < length(map); ++i)
         {
             unsigned streamIndex = map[i];
@@ -1055,6 +1077,7 @@ public:
                     // Create a new subfolder at basePath/[barcodeID, unidentified].
                     seqan::CharString folderPath(basePath);
                     seqan::append(folderPath, file);
+                    /*
                     int result = 0;
                     #ifdef __linux__
                         result = mkdir(seqan::toCString(folderPath), 0777);
@@ -1068,6 +1091,7 @@ public:
                             std::cerr << "Warning: Directory " << folderPath << " already exists.\n";
                         }
                     }
+                    */
                     // Turn file target from [barcodeID,unidentified]
                     // to subfolder [barcodeID, unidentified]/[barcodeID, unidentified]
                     seqan::CharString filePath(file);
@@ -1081,6 +1105,7 @@ public:
                 }
                 else
                 {
+                    //std::cerr << file << " " << streamIndex << std::endl;
                     this->addStream(file, streamIndex);
                 }
             }
@@ -1131,48 +1156,6 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Helper Function lastOf()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TToken>
-typename Iterator<TString const, Standard>::Type
-lastOf(TString const & string, TToken const & token)
-{
-    typedef typename Iterator<TString const, Standard>::Type TIterator;
-
-    TIterator it = end(string, Standard()) - length(token);
-
-    for (TIterator itBegin = begin(string, Standard());
-         it != itBegin && !isEqual(infix(string, it, it + length(token)), token);
-         goPrevious(it)) ;
-
-    return it;
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function trimExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, PrefixSegment>
-trimExtension(TString & string)
-{
-    return prefix(string, lastOf(string, '.'));
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function getExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, SuffixSegment>
-getExtension(TString & string)
-{
-    return suffix(string, lastOf(string, '.') + 1);
-}
-
 
 /**
 .Function.loadSeqs:
@@ -2338,7 +2321,7 @@ int flexbarMain(int argc, char const ** argv)
         }
         else
         {
-            if(flexiProgram == DEMULTIPLEXING)
+            if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
             {
                std::cerr << "No Barcodefile was provided." << std::endl;
                return 1;
