@@ -200,6 +200,12 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     setDefaultValue(finLenOpt, 0);
     setMinValue(finLenOpt, "1");
     addOption(parser, finLenOpt);
+
+    addTextSection(parser, "EXAMPLE");
+    std::string appName;
+    assign(appName, getAppName(parser));
+    addText(parser, appName + " READS.fq -tr r -u 1 -o RESULT.fq");
+
 }
 
 void ArgumentParserBuilder::addDemultiplexingOptions(seqan::ArgumentParser & parser)
@@ -227,6 +233,11 @@ void ArgumentParserBuilder::addDemultiplexingOptions(seqan::ArgumentParser & par
 
     addOption(parser, seqan::ArgParseOption(
         "ex", "exclude", "Exclude unidentified reads from further processing."));
+    
+    addTextSection(parser, "EXAMPLE");
+    std::string appName;
+    assign(appName, getAppName(parser));
+    addText(parser, appName + " READS.fq -b BARCODES.fa -o RESULT.fq");
 }
 
 void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & parser)
@@ -267,6 +278,11 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
         addOption(parser, adTagOpt);
     }
 
+    addTextSection(parser, "EXAMPLE");
+    std::string appName;
+    assign(appName, getAppName(parser));
+    addText(parser, appName + " READS.fq -a ADAPTER.fa -o RESULT.fq");
+
 }
 
 void ArgumentParserBuilder::addReadTrimmingOptions(seqan::ArgumentParser & parser)
@@ -283,7 +299,7 @@ void ArgumentParserBuilder::addReadTrimmingOptions(seqan::ArgumentParser & parse
     seqan::ArgParseOption lenOpt = seqan::ArgParseOption(
         "l", "length", 
         "Minimum read length after trimming. " 
-        "Shorter reads will substitutet by a single N or removed if the paired read also is too short.",
+        "Shorter reads will be substituted by a single N or removed if the paired read is too short as well.",
         seqan::ArgParseArgument::INTEGER, "LENGTH");
     setDefaultValue(lenOpt, 1);
     setMinValue(lenOpt, "1");
@@ -303,12 +319,10 @@ void ArgumentParserBuilder::addReadTrimmingOptions(seqan::ArgumentParser & parse
         addOption(parser, adTagOpt);
     }
 
-    addTextSection(parser, "EXAMPLES");
+    addTextSection(parser, "EXAMPLE");
     std::string appName;
     assign(appName, getAppName(parser));
-    addText(parser, appName + " INPUT -b BARCODES -app -o FOLDER\\Prefix");
-    addText(parser, appName + " INPUT -a ADAPTERS -q 20 -o FOLDER");
-    addText(parser, appName + " INPUT1 INPUT2 -b BARCODES -na -ex -q 20 -tnum 2 -l 50 -o FOLDER");
+    addText(parser, appName + " READS.fq -q 20 -l 80 BARCODES -app -o RESULT.fq");
 }
 
 // --------------------------------------------------------------------------
@@ -963,6 +977,8 @@ struct ProgramParams
 ...type:Class.StringSet
 ..returns:void    
 */
+
+//TODO(singer): THIS NEEDS TO BE REDONE/DELETED
 class OutputStreams
 {
     typedef seqan::SequenceStream * PSeqStream;
@@ -995,8 +1011,9 @@ public:
     {
         return map.find(key) == map.end();
     }
+
     //Adds a new output streams to the collection of streams.
-    void addStream(seqan::CharString fileName, int id)
+    void addStream(seqan::CharString fileName, int id, bool useDefault)
     {
                 //Prepend basePath and append file extension to the filename.
         unsigned extLength = 0;
@@ -1011,14 +1028,22 @@ public:
         seqan::CharString path = prefix(basePath, length(basePath) - extLength);
         if (fileName != "")
             seqan::append(path, "_");
+        if (useDefault)
+            append(path, "_result");
+
         seqan::append(path, fileName);
         seqan::append(path, possibleExt[i]);
         char* file = seqan::toCString(path);
         PSeqStream stream = new SequenceStream(file, seqan::SequenceStream::WRITE);
         fileStreams[id] = stream;
     }
+    
+    void addStream(seqan::CharString fileName, int id)
+    {
+         addStream(fileName, id, false);
+    }
      //Adds two new output streams to the collection of streams.
-    void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
+    void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id, bool useDefault)
     {
         //Prepend basePath and append file extension to the filename.
         unsigned extLength = 0;
@@ -1036,6 +1061,13 @@ public:
             seqan::append(path1, "_");
         if (fileName2 != "")
             seqan::append(path2, "_");
+
+        if (useDefault)
+        {
+            append(path1, "_result");
+            append(path2, "_result");
+        }
+
         seqan::append(path1, fileName1);
         seqan::append(path1, possibleExt[i]);
         seqan::append(path2, fileName2);
@@ -1046,6 +1078,12 @@ public:
         PSeqStream stream2 = new SequenceStream(file2, seqan::SequenceStream::WRITE);
         pairedFileStreams[id] = TStreamPair(stream1, stream2);
     }
+
+    void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
+    {
+        addStreams(fileName1, fileName2, id, false);
+    }
+
     //This method takes a String of integers and checks if these integers are
     //already associated with a stream. If not, a new stream is added and the opened
     //file is named according to the list of names. One or two files are created.
@@ -2391,6 +2429,17 @@ int flexbarMain(int argc, char const ** argv)
     {
         noQuality = true;
     }
+
+    seqan::CharString filename1;
+    getArgumentValue(filename1, parser, 0, 0);
+
+    bool useDefault = false;
+    if (output == "")
+    {
+        output = filename1;
+        useDefault = true;
+    }
+
     OutputStreams outputStreams(output, noQuality);
     seqan::String<unsigned> map;
     resize(map,1);
@@ -2398,7 +2447,7 @@ int flexbarMain(int argc, char const ** argv)
     // Output additional Information on selected stages:
     if (!isSet(parser, "ni"))
     {
-        seqan::CharString filename1, filename2, out;
+        seqan::CharString filename2, out;
         getOptionValue(out, parser, "output");
         std::cout << "Overview:\n";
         std::cout << "=========\n";
@@ -2578,7 +2627,7 @@ int flexbarMain(int argc, char const ** argv)
     if (fileCount == 1)
     {
         if (!demultiplexingParams.run)
-            outputStreams.addStream("", 0);
+            outputStreams.addStream("", 0, useDefault);
 
         seqan::String<seqan::StringSet<seqan::CharString> > idSet;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet;
@@ -2637,7 +2686,7 @@ int flexbarMain(int argc, char const ** argv)
      else
      {
         if (!demultiplexingParams.run)
-            outputStreams.addStreams("", "", 0);
+            outputStreams.addStreams("", "", 0, useDefault);
 
         seqan::String<seqan::StringSet<seqan::CharString> > idSet1, idSet2;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet1, seqSet2;
