@@ -1013,28 +1013,24 @@ class OutputStreams
     std::map<int, PSeqStream> fileStreams;
     const seqan::CharString basePath;
     seqan::CharString extension;
+    StringSet<String<char> > possibleExt;
+
 public:
 //Constructor prepares the file extension which will be used for all streams created 
 //by this object and saves a base directory path.
     OutputStreams(seqan::CharString base, bool /*noQuality*/) : basePath(base)
     {
-        /*
-        seqan::CharString fileExt("");
-        if (noQuality)
-        {
-            seqan::append(fileExt, seqan::CharString(".fasta"));
-        }
-        else
-        {
-            seqan::append(fileExt, seqan::CharString(".fastq"));
-        }
-        if (compress)
-        {
-            seqan::append(fileExt, seqan::CharString(".gz"));
-        }
-        extension = fileExt;
-        */
-    }    
+        // TODO(singer): Use values of argument parser
+        appendValue(possibleExt, ".fasta");
+        appendValue(possibleExt, ".fastq");
+        appendValue(possibleExt, ".fa");
+        appendValue(possibleExt, ".fq");
+        appendValue(possibleExt, ".fasta.gz");
+        appendValue(possibleExt, ".fastq.gz");
+        appendValue(possibleExt, ".fa.gz");
+        appendValue(possibleExt, ".fq.gz");
+
+    }
      //Checks whether a key exists in a map. 
     template <typename TKey, typename TMap>
     bool exists(TKey& key, TMap& map)
@@ -1044,13 +1040,21 @@ public:
     //Adds a new output streams to the collection of streams.
     void addStream(seqan::CharString fileName, int id)
     {
-        //Prepend basePath and append file extension to the filename.
-        seqan::CharString path = trimExtension(basePath);
+                //Prepend basePath and append file extension to the filename.
+        unsigned extLength = 0;
+        unsigned i = 0;
+        for (; i < length(possibleExt); ++i)
+            if (endsWith(basePath, possibleExt[i]))
+            {
+                extLength = length(possibleExt[i]);
+                break;
+            }
+
+        seqan::CharString path = prefix(basePath, length(basePath) - extLength);
         if (fileName != "")
             seqan::append(path, "_");
         seqan::append(path, fileName);
-        seqan::append(path, ".");
-        seqan::append(path, getExtension(basePath));
+        seqan::append(path, possibleExt[i]);
         char* file = seqan::toCString(path);
         PSeqStream stream = new SequenceStream(file, seqan::SequenceStream::WRITE);
         fileStreams[id] = stream;
@@ -1059,18 +1063,25 @@ public:
     void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
     {
         //Prepend basePath and append file extension to the filename.
-        seqan::CharString path1 = trimExtension(basePath);
-        seqan::CharString path2 = trimExtension(basePath);
+        unsigned extLength = 0;
+        unsigned i = 0;
+        for (; i < length(possibleExt); ++i)
+            if (endsWith(basePath, possibleExt[i]))
+            {
+                extLength = length(possibleExt[i]);
+                break;
+            }
+
+        seqan::CharString path1 = prefix(basePath, length(basePath) - extLength);
+        seqan::CharString path2 = prefix(basePath, length(basePath) - extLength);
         if (fileName1 != "")
             seqan::append(path1, "_");
         if (fileName2 != "")
             seqan::append(path2, "_");
         seqan::append(path1, fileName1);
-        seqan::append(path1, ".");
-        seqan::append(path1, getExtension(basePath));
+        seqan::append(path1, possibleExt[i]);
         seqan::append(path2, fileName2);
-        seqan::append(path2, ".");
-        seqan::append(path2, getExtension(basePath));
+        seqan::append(path2, possibleExt[i]);
         char* file1 = seqan::toCString(path1);
         char* file2 = seqan::toCString(path2);
         PSeqStream stream1 = new SequenceStream(file1, seqan::SequenceStream::WRITE);
