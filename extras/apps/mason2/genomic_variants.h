@@ -336,10 +336,10 @@ struct Variants
     {
         if (idx < (int)length(snps))
             return std::make_pair(SNP, idx);
-        else if (idx < (int)(length(snps) + length(smallIndels)))
-            return std::make_pair(SMALL_INDEL, idx - length(snps));
-        else if (idx < (int)(length(snps) + length(smallIndels) + length(svRecords)))
-            return std::make_pair(SV, idx - length(snps) - length(smallIndels));
+        else if (idx < (int)(length(snps) + (int)length(smallIndels)))
+            return std::make_pair(SMALL_INDEL, (int)(idx - length(snps)));
+        else if (idx < (int)(length(snps) + (int)(length(smallIndels) + length(svRecords))))
+            return std::make_pair(SV, (int)(idx - length(snps) - length(smallIndels)));
         else
             SEQAN_FAIL("Invalid idx!");
         return std::make_pair(SNP, -1);

@@ -484,7 +484,7 @@ int VariantMaterializer::_materializeLargeVariants(
 
                         // Copy out breakpoints.
                         breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
-                        breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
+                        breakpoints.push_back(std::make_pair((int)length(seq), variants.posToIdx(Variants::SV, i)));
 
                         currentPos = length(seq);
                     }
@@ -529,7 +529,7 @@ int VariantMaterializer::_materializeLargeVariants(
 
                     // Copy out breakpoints.
                     breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
-                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair((int)length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
@@ -583,7 +583,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     // Copy out breakpoints.
                     breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
                     breakpoints.push_back(std::make_pair(currentPos + svRecord.targetPos - svRecord.pos - svRecord.size, variants.posToIdx(Variants::SV, i)));
-                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair((int)length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
@@ -648,7 +648,7 @@ int VariantMaterializer::_materializeLargeVariants(
                     breakpoints.push_back(std::make_pair(currentPos, variants.posToIdx(Variants::SV, i)));
                     breakpoints.push_back(std::make_pair(currentPos + svRecord.pos + svRecord.size - svRecord.pos, variants.posToIdx(Variants::SV, i)));
                     breakpoints.push_back(std::make_pair(currentPos + svRecord.pos + svRecord.size - svRecord.pos + svRecord.targetPos - (svRecord.pos + svRecord.size), variants.posToIdx(Variants::SV, i)));
-                    breakpoints.push_back(std::make_pair(length(seq), variants.posToIdx(Variants::SV, i)));
+                    breakpoints.push_back(std::make_pair((int)length(seq), variants.posToIdx(Variants::SV, i)));
 
                     currentPos = length(seq);
                 }
