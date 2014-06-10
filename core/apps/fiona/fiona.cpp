@@ -108,18 +108,6 @@ const char * PROGRAM_VERSION = "0.2";
 #include <sstream>
 //#include <sys/resource.h>
 
-
-//Boost Math headers
-#include <boost/math/distributions.hpp>
-#include <boost/math/special_functions/binomial.hpp>
-
-using boost::math::binomial;
-
-#include <boost/numeric/ublas/matrix.hpp>
-
-using namespace boost::numeric::ublas;
-
-
 // TODO (hugues) 
 // 1_ Update all formulas of mixed poisson and binomial to use
 // boost library
@@ -142,6 +130,17 @@ using namespace boost::numeric::ublas;
 #endif
 
 #include "index_qgram_parallel.h"
+
+//Boost Math headers
+#include <boost/math/distributions.hpp>
+#include <boost/math/special_functions/binomial.hpp>
+
+using boost::math::binomial;
+
+#include <boost/numeric/ublas/matrix.hpp>
+
+using namespace boost::numeric::ublas;
+
 
 
 // TODO(holtgrew): This raises a warning with Boost 1.42. Deactivate warnings, activate again afterwards. The correct #pragma has to be used for each supported compiler.
