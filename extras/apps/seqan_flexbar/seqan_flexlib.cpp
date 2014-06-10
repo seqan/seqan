@@ -129,7 +129,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
-            "o", "output", "Prefix and fileending of output files (prefix$.fasta - $: spaceholder which will be determined by the program.).",
+            "o", "output", "Prefix and file ending of output files (prefix$.fasta - $: placeholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
         setValidValues(outputOpt, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
         addOption(parser, outputOpt);
@@ -867,48 +867,6 @@ struct ProgramParams
 
     ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
 };
-
-
-// ----------------------------------------------------------------------------
-// Helper Function lastOf()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TToken>
-typename Iterator<TString const, Standard>::Type
-lastOf(TString const & string, TToken const & token)
-{
-    typedef typename Iterator<TString const, Standard>::Type TIterator;
-
-    TIterator it = end(string, Standard()) - length(token);
-
-    for (TIterator itBegin = begin(string, Standard());
-         it != itBegin && !isEqual(infix(string, it, it + length(token)), token);
-         goPrevious(it)) ;
-
-    return it;
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function trimExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, PrefixSegment>
-trimExtension(TString & string)
-{
-    return prefix(string, lastOf(string, '.'));
-}
-
-// ----------------------------------------------------------------------------
-// Helper Function getExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-Segment<TString, SuffixSegment>
-getExtension(TString & string)
-{
-    return suffix(string, lastOf(string, '.') + 1);
-}
 
 /**
 .Class.OutputStreams:
