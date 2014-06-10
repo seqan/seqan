@@ -17,3 +17,9 @@ ${BASE}sflexFilter
 
 ${BASE}sflexAR
 ./../../seqan-git/extras/apps/seqan_flexbar/tests/testsample.fq -a ../../../seqan-git/extras/apps/seqan_flexbar/tests/adapter.fasta -o ar_test.fq -ni > ar_test.stdout
+
+${BASE}sflexDMulti
+../../../seqan-git/extras/apps/seqan_flexbar/tests/testsample_multiplex.fq
+-b ../../../seqan-git/extras/apps/seqan_flexbar/tests/barcodes.fasta -o
+test_de_multi.fastq -ni > test_de_multi.stdout
+
