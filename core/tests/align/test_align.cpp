@@ -213,6 +213,11 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_dp_cell_affine_vertical_score);
     SEQAN_CALL_TEST(test_dp_cell_affine_horizontal_score);
 
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_copy_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_assignment);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_score);
+
     // ----------------------------------------------------------------------------
     // Test DPMatrix.
     // ----------------------------------------------------------------------------
@@ -329,6 +334,13 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_upper_band_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_lower_band_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_all_direction);
+
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_all_direction);
 
     SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_diagonal_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_horizontal_direction);
