@@ -114,6 +114,7 @@
 #include <seqan/align/dp_cell.h>
 #include <seqan/align/dp_cell_linear.h>
 #include <seqan/align/dp_cell_affine.h>
+#include <seqan/align/dp_cell_dynamic.h>
 
 // Stores the actual trace segment that was detected during traceback.
 // The trace segments can be adapted into any alignment representation
@@ -130,6 +131,7 @@
 #include <seqan/align/dp_formula.h>
 #include <seqan/align/dp_formula_linear.h>
 #include <seqan/align/dp_formula_affine.h>
+#include <seqan/align/dp_formula_dynamic.h>
 
 // Defines meta informations which determine how to compute a column and a
 // certain cell for different profiles.
