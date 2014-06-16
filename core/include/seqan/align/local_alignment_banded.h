@@ -59,12 +59,12 @@ namespace seqan {
 // Function localAlignment()                                    [banded, Align]
 // ----------------------------------------------------------------------------
 
-template <typename TSequence, typename TAlignSpec,
-          typename TScoreValue, typename TScoreSpec>
+template <typename TSequence, typename TAlignSpec, typename TScoreValue, typename TScoreSpec, typename TTag>
 TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme,
                            int lowerDiag,
-                           int upperDiag)
+                           int upperDiag,
+                           TTag const & tag)
 {
     typedef Align<TSequence, TAlignSpec> TAlign;
     typedef typename Size<TAlign>::Type TSize;
@@ -75,23 +75,32 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
 
     String<TTraceSegment> traceSegments;
     TScoreValue score = _setUpAndRunAlignment(traceSegments, source(row(align, 0)), source(row(align, 1)),
-                                              scoringScheme, lowerDiag, upperDiag, SmithWaterman());
+                                              scoringScheme, lowerDiag, upperDiag, tag);
     _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traceSegments);
     return score;
+}
+
+template <typename TSequence, typename TAlignSpec, typename TScoreValue, typename TScoreSpec>
+TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
+                           Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                           int lowerDiag,
+                           int upperDiag)
+{
+    return localAlignment(align, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
 }
 
 // ----------------------------------------------------------------------------
 // Function localAlignment()                                     [banded, Gaps]
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH,
-          typename TSequenceV, typename TGapsSpecV,
-          typename TScoreValue, typename TScoreSpec>
+template <typename TSequenceH, typename TGapsSpecH, typename TSequenceV, typename TGapsSpecV,
+          typename TScoreValue, typename TScoreSpec, typename TTag>
 TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                            Gaps<TSequenceV, TGapsSpecV> & gapsV,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme,
                            int lowerDiag,
-                           int upperDiag)
+                           int upperDiag,
+                           TTag const & tag)
 {
     typedef typename Size<TSequenceH>::Type TSize;
     typedef typename Position<TSequenceH>::Type TPosition;
@@ -99,21 +108,33 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
     String<TTraceSegment> traceSegments;
     TScoreValue score = _setUpAndRunAlignment(traceSegments, source(gapsH), source(gapsV), scoringScheme, lowerDiag,
-                                              upperDiag, SmithWaterman());
+                                              upperDiag, tag);
     _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
     return score;
+}
+
+template <typename TSequenceH, typename TGapsSpecH, typename TSequenceV, typename TGapsSpecV,
+          typename TScoreValue, typename TScoreSpec>
+TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
+                           Gaps<TSequenceV, TGapsSpecV> & gapsV,
+                           Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                           int lowerDiag,
+                           int upperDiag)
+{
+    return localAlignment(gapsH, gapsV, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
 }
 
 // ----------------------------------------------------------------------------
 // Function localAlignment()                      [banded, Graph<Alignment<> >]
 // ----------------------------------------------------------------------------
 
-template <typename TStringSet, typename TCargo, typename TGraphSpec,
-          typename TScoreValue, typename TScoreSpec>
+template <typename TStringSet, typename TCargo, typename TGraphSpec, typename TScoreValue, typename TScoreSpec,
+          typename TTag>
 TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme,
                            int lowerDiag,
-                           int upperDiag)
+                           int upperDiag,
+                           TTag const & tag)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
@@ -123,10 +144,20 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
     String<TTraceSegment> traceSegments;
     TScoreValue score = _setUpAndRunAlignment(traceSegments, value(stringSet(alignmentGraph), 0),
                                               value(stringSet(alignmentGraph), 1), scoringScheme, lowerDiag, upperDiag,
-                                              SmithWaterman());
+                                              tag);
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
                           positionToId(stringSet(alignmentGraph), 1), traceSegments);
     return score;
+}
+
+template <typename TStringSet, typename TCargo, typename TGraphSpec,
+          typename TScoreValue, typename TScoreSpec>
+TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
+                           Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                           int lowerDiag,
+                           int upperDiag)
+{
+    return localAlignment(alignmentGraph, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
 }
 
 // ----------------------------------------------------------------------------
@@ -134,6 +165,27 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
 // ----------------------------------------------------------------------------
 
 // Full interface.
+
+template <typename TSize, typename TFragmentSpec, typename TStringSpec, typename TSequence, typename TStringSetSpec,
+          typename TScoreValue, typename TScoreSpec, typename TTag>
+TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & fragmentString,
+                           StringSet<TSequence, TStringSetSpec> const & strings,
+                           Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                           int lowerDiag,
+                           int upperDiag,
+                           TTag const & tag)
+{
+    typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
+    typedef typename Position<TFragments>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+
+    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
+                                              lowerDiag, upperDiag, tag);
+    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
+    return score;
+}
 
 template <typename TSize, typename TFragmentSpec, typename TStringSpec,
           typename TSequence, typename TStringSetSpec,
@@ -144,16 +196,7 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
                            int lowerDiag,
                            int upperDiag)
 {
-    typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
-    typedef typename Position<TFragments>::Type TPosition;
-    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
-
-    String<TTraceSegment> traceSegments;
-
-    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
-                                              lowerDiag, upperDiag, SmithWaterman());
-    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
-    return score;
+    return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
 }
 
 }  // namespace seqan

@@ -203,6 +203,14 @@ struct SetupAlignmentProfile_<Gotoh, TAlignConfig, TGapCosts, TTraceSwitch>
     typedef DPProfile_<GlobalAlignment_<TFreeEndGaps_>, AffineGaps, TTraceSwitch> Type;
 };
 
+// Profile for Dynamic Gap cost algorithm.
+template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
+struct SetupAlignmentProfile_<DynamicGaps, TAlignConfig, TGapCosts, TTraceSwitch>
+{
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
+    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps_>, DynamicGaps, TTraceSwitch> Type;
+};
+
 // Profile for Smith-Waterman algorithm.
 template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
 struct SetupAlignmentProfile_<SmithWaterman, TAlignConfig, TGapCosts, TTraceSwitch>
