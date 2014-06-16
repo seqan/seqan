@@ -344,7 +344,9 @@ atomic
 ..include:seqan/parallel.h
  */
 
+#ifndef SEQAN_CACHE_LINE_SIZE
 #define SEQAN_CACHE_LINE_SIZE 128
+#endif
 
 #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 

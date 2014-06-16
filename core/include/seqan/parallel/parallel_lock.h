@@ -57,23 +57,19 @@ public:
     static const unsigned LOOPS_BEFORE_YIELD = 16;
     unsigned duration;
 
-    SpinDelay():
+    SpinDelay() :
         duration(1)
     {}
 };
 
 inline void
-clear(SpinDelay &me)
+clear(SpinDelay & me)
 {
     me.duration = 1;
 }
 
-//inline void
-//waitFor(SpinDelay &)
-//{}
-
 inline void
-waitFor(SpinDelay &me)
+waitFor(SpinDelay & me)
 {
     if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
@@ -142,8 +138,8 @@ public:
     std::atomic<unsigned> readers;
     std::atomic<unsigned> writers;
 #else
-    volatile unsigned readers;
-    volatile unsigned writers;
+    unsigned readers;
+    unsigned writers;
 #endif
 
     ReadWriteLock() :
@@ -159,10 +155,10 @@ public:
 template <typename TLock = ReadWriteLock, typename TParallel = Parallel>
 struct ScopedReadLock
 {
-    TLock &lock;
+    TLock & lock;
 
     explicit
-    ScopedReadLock(TLock &lock):
+    ScopedReadLock(TLock & lock) :
         lock(lock)
     {
         lockReading(lock);
@@ -172,6 +168,7 @@ struct ScopedReadLock
     {
         unlockReading(lock);
     }
+
 };
 
 template <typename TLock>
@@ -189,10 +186,10 @@ struct ScopedReadLock<TLock, Serial>
 template <typename TLock = ReadWriteLock, typename TParallel = Parallel>
 struct ScopedWriteLock
 {
-    TLock &lock;
+    TLock & lock;
 
     explicit
-    ScopedWriteLock(TLock &lock):
+    ScopedWriteLock(TLock & lock) :
         lock(lock)
     {
         lockWriting(lock);
@@ -202,6 +199,7 @@ struct ScopedWriteLock
     {
         unlockWriting(lock);
     }
+
 };
 
 template <typename TLock>
@@ -221,7 +219,7 @@ struct ScopedWriteLock<TLock, Serial>
 // ----------------------------------------------------------------------------
 
 inline void
-lockReading(ReadWriteLock &lock)
+lockReading(ReadWriteLock & lock)
 {
     do
     {
@@ -230,7 +228,7 @@ lockReading(ReadWriteLock &lock)
 
         atomicInc(lock.readers);
 
-        if (lock.writers == 0)
+        if (lock.writers == 0u)
             break;
 
         // writer hasn't noticed us -> retry
@@ -244,7 +242,7 @@ lockReading(ReadWriteLock &lock)
 // ----------------------------------------------------------------------------
 
 inline void
-unlockReading(ReadWriteLock &lock)
+unlockReading(ReadWriteLock & lock)
 {
     atomicDec(lock.readers);
 }
@@ -254,7 +252,7 @@ unlockReading(ReadWriteLock &lock)
 // ----------------------------------------------------------------------------
 
 inline void
-lockWriting(ReadWriteLock &lock)
+lockWriting(ReadWriteLock & lock)
 {
     // wait until we are the only writer
     spinCas(lock.writers, 0u, 1u);
@@ -268,7 +266,7 @@ lockWriting(ReadWriteLock &lock)
 // ----------------------------------------------------------------------------
 
 inline void
-unlockWriting(ReadWriteLock &lock)
+unlockWriting(ReadWriteLock & lock)
 {
     lock.writers = 0;
 }
@@ -278,9 +276,9 @@ unlockWriting(ReadWriteLock &lock)
 // ----------------------------------------------------------------------------
 
 inline bool
-empty(ReadWriteLock &lock)
+empty(ReadWriteLock & lock)
 {
-    return lock.readers == 0 && lock.writers == 0;
+    return (lock.readers == 0u && lock.writers == 0u);
 }
 
 }  // namespace seqan

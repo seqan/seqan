@@ -2194,16 +2194,15 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     }
 //____________________________________________________________________________
 
-	template < typename TTargetValue, typename TConfig, typename TValue, typename TExpand >
-	inline void
-	appendValue(String<TTargetValue, External<TConfig> > &me,
-				TValue SEQAN_FORWARD_CARG value,
-				Tag<TExpand> expand)
-	{
-//IOREV
-		resize(me, me.data_size + 1, expand);
-		back(me) = SEQAN_FORWARD(TValue, value);
-	}
+    template < typename TTargetValue, typename TConfig, typename TValue, typename TExpand >
+    inline void
+    appendValue(String<TTargetValue, External<TConfig> > &me,
+                TValue SEQAN_FORWARD_CARG value,
+                Tag<TExpand> expand)
+    {
+        resize(me, me.data_size + 1, expand);
+        back(me) = SEQAN_FORWARD(TValue, value);
+    }
 
 //____________________________________________________________________________
 
