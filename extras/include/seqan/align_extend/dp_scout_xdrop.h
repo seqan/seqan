@@ -120,8 +120,7 @@ struct ScoutStateSpecForScout_<
 // NOTE: The original code here used Value<TDPCell>::Type instead of TDPCellValue but this caused ambiguous call
 // errors in MSVC.
 
-template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
-          typename TIsLastColumn>
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue, typename TIsLastColumn>
 inline void
 _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
                 TDPCell const & activeCell,
@@ -138,12 +137,10 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
     _scoutBestScore(static_cast<TParent &>( dpScout ), activeCell, navigator);
 
     // column maximum
-    dpScout.state->columnMax = _max(dpScout.state->columnMax,
-                                    _scoreOfCell(activeCell));
+    dpScout.state->columnMax = _max(dpScout.state->columnMax, _scoreOfCell(activeCell));
 }
 
-template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue,
-          typename TIsLastColumn>
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue, typename TIsLastColumn>
 inline void
 _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
                 TDPCell const & activeCell,
@@ -156,8 +153,7 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
     _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(), False());
 
     // check termination condition
-    if (_scoreOfCell(dpScout._maxScore) - dpScout.state->columnMax
-        >= dpScout.state->terminationThreshold)
+    if (_scoreOfCell(dpScout._maxScore) - dpScout.state->columnMax >= dpScout.state->terminationThreshold)
         terminateScout(dpScout);
     else // reset columMax at end of column
         dpScout.state->columnMax = MinValue<TScoreValue>::VALUE;
@@ -168,11 +164,9 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
 // ----------------------------------------------------------------------------
 
 // Computes the score and tracks it if enabled.
-template <typename TDPScout, typename TTraceMatrixNavigator,
-          typename TScoreValue, typename TGapCosts, typename TSequenceHValue,
-          typename TSequenceVValue, typename TScoringScheme,
-          typename TColumnDescriptor, typename TCellDescriptor,
-          typename TTraceback>
+template <typename TDPScout, typename TTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
+          typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme, typename TColumnDescriptor,
+          typename TCellDescriptor, typename TTraceback>
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
@@ -188,29 +182,22 @@ _computeCell(TDPScout & scout,
              DPProfile_<AlignExtend_<XDrop_<TScoreValue> >, TGapCosts,
                         TTraceback> const &)
 {
-    typedef DPProfile_<AlignExtend_<XDrop_<TScoreValue> >, TGapCosts,
-                       TTraceback> TDPProfile;
+    typedef DPProfile_<AlignExtend_<XDrop_<TScoreValue> >, TGapCosts, TTraceback> TDPProfile;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumn;
 
-    assignValue(traceMatrixNavigator,
-                _computeScore(activeCell, previousDiagonal, previousHorizontal,
-                              previousVertical, seqHVal, seqVVal, scoringScheme,
-                              typename RecursionDirection_<TMetaColumn,
-                                                           TCellDescriptor
-                                                          >::Type(),
-                              TDPProfile()));
+    assignValue(traceMatrixNavigator, _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical,
+                                                    seqHVal, seqVVal, scoringScheme,
+                                                    typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
+                                                    TDPProfile()));
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
-        typedef typename IsSameType<
-                            typename TColumnDescriptor::TColumnProperty,
-                            DPFinalColumn>::Type TIsLastColumn;
+        typedef typename IsSameType< typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::Type TIsLastColumn;
 
         // the following is the only change to the regular _computeCell:
         // for the evaluation of the termination criterium we treat
         // all lastCells as lastRows
         typedef typename IsSameType<TCellDescriptor, LastCell>::Type TIsLastRow;
-        _scoutBestScore(scout, activeCell, traceMatrixNavigator,
-                        TIsLastColumn(), TIsLastRow());
+        _scoutBestScore(scout, activeCell, traceMatrixNavigator, TIsLastColumn(), TIsLastRow());
     }
 }
 

@@ -70,7 +70,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
                             TReference const & reference,
                             TSource const & source,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
                             TAlgoTag const & /*tag*/)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
@@ -161,7 +161,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
                             TReference const & reference,
                             TSource const & source,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
                             int lowerDiag,
                             int upperDiag,
                             TAlgoTag const & /*algoTag*/)
