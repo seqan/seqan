@@ -311,12 +311,12 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     String<TTraceSegment> traceL;
     if (!banded)
     {
-        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme, TAlignConfig());
     }
     else
     {
-        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
                               TAlignConfig(lowerDiagonal, upperDiagonal));
     }
@@ -334,12 +334,12 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     String<TTraceSegment> traceR;
     if (!banded)
     {
-        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme, TAlignConfig());
     }
     else
     {
-        typedef AlignConfig2<SplitAlignmentAlgo, DPBand_<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
                               TAlignConfig(lowerDiagonal, upperDiagonal));
     }

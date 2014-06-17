@@ -1159,7 +1159,7 @@ _computeAlignment(TTraceTarget & traceSegments,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
-                  DPBand_<TBandSwitch> const & band,
+                  DPBandConfig<TBandSwitch> const & band,
                   DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
 {
     typedef typename Value<TScoreScheme>::Type TScoreValue;
