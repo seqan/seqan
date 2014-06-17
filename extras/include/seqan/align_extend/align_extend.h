@@ -142,19 +142,11 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       False const & /*TBoolXDrop*/)
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
-    typedef AlignConfig2<AlignExtend_<>,
-                         DPBandConfig<BandOff>,
-                         TFreeEndGaps,
-                         TracebackOn<TracebackConfig_<CompleteTrace,
-                                                      GapsLeft> > > TAlignConfig;
+    typedef AlignConfig2<AlignExtend_<>, DPBandConfig<BandOff>, TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
 
     DPScoutState_<Default> scoutState;
-    return _setUpAndRunAlignment(alignContext.dpContext,
-                                 alignContext.traceSegment,
-                                 scoutState,
-                                 str0,
-                                 str1,
-                                 scoreScheme,
+    return _setUpAndRunAlignment(alignContext.dpContext, alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
                                  TAlignConfig());
 }
 
@@ -173,19 +165,11 @@ _setUpAndRunAlignImpl( TAliExtContext_ & alignContext,
                        False const & /*TBoolXDrop*/)
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
-    typedef AlignConfig2<AlignExtend_<>,
-                         DPBandConfig<BandOn>,
-                         TFreeEndGaps,
-                         TracebackOn<TracebackConfig_<CompleteTrace,
-                                                      GapsLeft> > > TAlignConfig;
+    typedef AlignConfig2<AlignExtend_<>, DPBandConfig<BandOn>, TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
 
     DPScoutState_<Default> scoutState;
-    return _setUpAndRunAlignment(alignContext.dpContext,
-                                 alignContext.traceSegment,
-                                 scoutState,
-                                 str0,
-                                 str1,
-                                 scoreScheme,
+    return _setUpAndRunAlignment(alignContext.dpContext, alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
                                  TAlignConfig(lowerDiag, upperDiag));
 }
 
@@ -204,19 +188,11 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       True const & /*TBoolXDrop*/)
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
-    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
-                         DPBandConfig<BandOff>,
-                         TFreeEndGaps,
-                         TracebackOn<TracebackConfig_<CompleteTrace,
-                                                      GapsLeft> > > TAlignConfig;
+    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >, DPBandConfig<BandOff>, TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
 
     DPScoutState_<Terminator_<XDrop_<TScoreValue> > > scoutState(xDrop);
-    return _setUpAndRunAlignment(alignContext.dpContext,
-                                 alignContext.traceSegment,
-                                 scoutState,
-                                 str0,
-                                 str1,
-                                 scoreScheme,
+    return _setUpAndRunAlignment(alignContext.dpContext, alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
                                  TAlignConfig());
 }
 
@@ -235,19 +211,11 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                       True const & /*TBoolXDrop*/)
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
-    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
-                         DPBandConfig<BandOn>,
-                         TFreeEndGaps,
-                         TracebackOn<TracebackConfig_<CompleteTrace,
-                                                      GapsLeft> > > TAlignConfig;
+    typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >, DPBandConfig<BandOn>, TFreeEndGaps,
+                         TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
 
     DPScoutState_<Terminator_<XDrop_<TScoreValue> > > scoutState(xDrop);
-    return _setUpAndRunAlignment(alignContext.dpContext,
-                                 alignContext.traceSegment,
-                                 scoutState,
-                                 str0,
-                                 str1,
-                                 scoreScheme,
+    return _setUpAndRunAlignment(alignContext.dpContext, alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
                                  TAlignConfig(lowerDiag, upperDiag));
 }
 
@@ -275,26 +243,21 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
 {
     typedef typename Infix<TString const>::Type TInf;
     typedef Align<TStringInfix, TAlignSpec>     TAlign;
+    typedef typename Size<TAlign>::Type         TSize SEQAN_TYPEDEF_FOR_DEBUG;
 
     TPos const hBeginPos    = positions[0];
     TPos const vBeginPos    = positions[1];
     TPos const hEndPos      = positions[2];
     TPos const vEndPos      = positions[3];
 
-    SEQAN_ASSERT_EQ(length(rows(align)), 2);
-    SEQAN_ASSERT_EQ(infix(source(row(align, 0)),
-                          beginPosition(row(align, 0)),
-                          endPosition(row(align, 0))),
+    SEQAN_ASSERT_EQ(length(rows(align)), static_cast<TSize>(2));
+    SEQAN_ASSERT_EQ(infix(source(row(align, 0)), beginPosition(row(align, 0)), endPosition(row(align, 0))),
                     infix(hSeq, hBeginPos, hEndPos));
-    SEQAN_ASSERT_EQ(infix(source(row(align, 1)),
-                          beginPosition(row(align, 1)),
-                          endPosition(row(align, 1))),
+    SEQAN_ASSERT_EQ(infix(source(row(align, 1)), beginPosition(row(align, 1)), endPosition(row(align, 1))),
                     infix(vSeq, vBeginPos, vEndPos));
 
-    bool extendLeft   = ((direction & EXTEND_LEFT) && (hBeginPos > 0u)
-                         && (vBeginPos > 0u));
-    bool extendRight  = ((direction & EXTEND_RIGHT) && (hEndPos < length(hSeq))
-                         && (vEndPos < length(vSeq)));
+    bool extendLeft = ((direction & EXTEND_LEFT) && (hBeginPos > 0u) && (vBeginPos > 0u));
+    bool extendRight = ((direction & EXTEND_RIGHT) && (hEndPos < length(hSeq)) && (vEndPos < length(vSeq)));
 
     clear(alignContext);
     alignContext.centerAlign = align;
@@ -346,32 +309,24 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         ModifiedString<TInf, ModReverse> const r_inf0(inf0);
         ModifiedString<TInf, ModReverse> const r_inf1(inf1);
 
-        leftScore =
-            _setUpAndRunAlignImpl(alignContext, r_inf0, r_inf1, scoreScheme,
-                                  lowerDiag, upperDiag, xDrop,
-                                  TracebackConfig_<CompleteTrace, GapsRight>(),
-                                  TBoolBanded(), TBoolXDrop());
+        leftScore = _setUpAndRunAlignImpl(alignContext, r_inf0, r_inf1, scoreScheme, lowerDiag, upperDiag, xDrop,
+                                          TracebackConfig_<CompleteTrace, GapsRight>(), TBoolBanded(), TBoolXDrop());
         // un-reverve
-        _reversePartialTrace(alignContext.traceSegment,
-                             length(inf0), length(inf1));
+        _reversePartialTrace(alignContext.traceSegment, length(inf0), length(inf1));
 
         assignSource(row(alignContext.leftAlign, 0), inf0);
         assignSource(row(alignContext.leftAlign, 1), inf1);
 
-        _adaptTraceSegmentsTo(row(alignContext.leftAlign, 0),
-                              row(alignContext.leftAlign, 1),
+        _adaptTraceSegmentsTo(row(alignContext.leftAlign, 0), row(alignContext.leftAlign, 1),
                               alignContext.traceSegment);
 
         if (length(row(alignContext.leftAlign, 0)) > 0)
         {
-            integrateAlign(align,alignContext.leftAlign);
-            setClippedBeginPosition(row(align, 0),
-                                    clippedBeginPosition(
-                                        row(alignContext.leftAlign, 0)));
-            setClippedBeginPosition(row(align, 1),
-                                    clippedBeginPosition(
-                                        row(alignContext.leftAlign, 1)));
-        } else
+            integrateAlign(align, alignContext.leftAlign);
+            setClippedBeginPosition(row(align, 0), clippedBeginPosition(row(alignContext.leftAlign, 0)));
+            setClippedBeginPosition(row(align, 1), clippedBeginPosition(row(alignContext.leftAlign, 1)));
+        }
+        else
         {
             extendLeft = false;
         }
@@ -384,21 +339,13 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         TPos leadGaps0 = countGaps(begin(row(alignContext.centerAlign, 0)));
         TPos leadGaps1 = countGaps(begin(row(alignContext.centerAlign, 1)));
 
-        TPos sourceBeginPos0 = toSourcePosition(row(alignContext.centerAlign,0),
-                                                leadGaps0)
-                               + hBeginPos
-                               - beginPosition(row(alignContext.centerAlign, 0));
-        TPos sourceBeginPos1 = toSourcePosition(row(alignContext.centerAlign,1),
-                                                leadGaps1)
-                               + vBeginPos
-                               - beginPosition(row(alignContext.centerAlign, 1));
+        TPos sourceBeginPos0 = toSourcePosition(row(alignContext.centerAlign, 0), leadGaps0) + hBeginPos -
+                               beginPosition(row(alignContext.centerAlign, 0));
+        TPos sourceBeginPos1 = toSourcePosition(row(alignContext.centerAlign, 1), leadGaps1) + vBeginPos -
+                               beginPosition(row(alignContext.centerAlign, 1));
 
-        setClippedBeginPosition(row(align,0),
-                                toViewPosition(row(align, 0),
-                                               sourceBeginPos0) - leadGaps0);
-        setClippedBeginPosition(row(align,1),
-                                toViewPosition(row(align, 1),
-                                               sourceBeginPos1) - leadGaps1);
+        setClippedBeginPosition(row(align, 0), toViewPosition(row(align, 0), sourceBeginPos0) - leadGaps0);
+        setClippedBeginPosition(row(align, 1), toViewPosition(row(align, 1), sourceBeginPos1) - leadGaps1);
     }
 
     // right
@@ -408,30 +355,22 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         TInf inf1 = infix(vSeq, vEndPos, length(vSeq));
 
         clear(alignContext.traceSegment);
-        rightScore =
-            _setUpAndRunAlignImpl(alignContext, inf0, inf1, scoreScheme,
-                                  lowerDiag, upperDiag, xDrop,
-                                  TracebackConfig_<CompleteTrace, GapsLeft>(),
-                                  TBoolBanded(), TBoolXDrop());
+        rightScore = _setUpAndRunAlignImpl(alignContext, inf0, inf1, scoreScheme, lowerDiag, upperDiag, xDrop,
+                                           TracebackConfig_<CompleteTrace, GapsLeft>(), TBoolBanded(), TBoolXDrop());
 
         assignSource(row(alignContext.rightAlign, 0), inf0);
         assignSource(row(alignContext.rightAlign, 1), inf1);
-        _adaptTraceSegmentsTo(row(alignContext.rightAlign, 0),
-                              row(alignContext.rightAlign, 1),
+        _adaptTraceSegmentsTo(row(alignContext.rightAlign, 0), row(alignContext.rightAlign, 1),
                               alignContext.traceSegment);
 
         if (length(row(alignContext.rightAlign, 0)) > 0)
             integrateAlign(align, alignContext.rightAlign);
     }
 
-    setClippedEndPosition(row(align, 0), clippedBeginPosition(row(align, 0))
-                          + length(row(alignContext.leftAlign, 0))
-                          + length(row(alignContext.centerAlign, 0))
-                          + length(row(alignContext.rightAlign, 0)));
-    setClippedEndPosition(row(align, 1), clippedBeginPosition(row(align, 1))
-                          + length(row(alignContext.leftAlign, 1))
-                          + length(row(alignContext.centerAlign, 1))
-                          + length(row(alignContext.rightAlign, 1)));
+    setClippedEndPosition(row(align, 0), clippedBeginPosition(row(align, 0)) + length(row(alignContext.leftAlign, 0)) +
+                          length(row(alignContext.centerAlign, 0)) + length(row(alignContext.rightAlign, 0)));
+    setClippedEndPosition(row(align, 1), clippedBeginPosition(row(align, 1)) + length(row(alignContext.leftAlign, 1)) +
+                          length(row(alignContext.centerAlign, 1)) + length(row(alignContext.rightAlign, 1)));
 
     return leftScore + centerScore + rightScore;
 }
@@ -457,23 +396,18 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     if (scoreGapOpen(scoreScheme) == scoreGapExtend(scoreScheme))
     {
         typedef DPContext<TScoreValue, LinearGaps> TDPContext;
-        typedef AliExtContext_<Align<TStringInfix, TAlignSpec>,
-                               TDPContext> TAliExtContext_;
+        typedef AliExtContext_<Align<TStringInfix, TAlignSpec>, TDPContext> TAliExtContext_;
         TAliExtContext_ alignContext;
-        return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                    direction, lowerDiag, upperDiag, xDrop,
-                                    scoreScheme, TBoolBanded(), TBoolXDrop(),
-                                    alignContext);
-    } else
+        return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, lowerDiag, upperDiag, xDrop,
+                                    scoreScheme, TBoolBanded(), TBoolXDrop(), alignContext);
+    }
+    else
     {
         typedef DPContext<TScoreValue, AffineGaps> TDPContext;
-        typedef AliExtContext_<Align<TStringInfix, TAlignSpec>,
-                               TDPContext> TAliExtContext_;
+        typedef AliExtContext_<Align<TStringInfix, TAlignSpec>, TDPContext> TAliExtContext_;
         TAliExtContext_ alignContext;
-        return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                    direction, lowerDiag, upperDiag, xDrop,
-                                    scoreScheme, TBoolBanded(), TBoolXDrop(),
-                                    alignContext);
+        return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, lowerDiag, upperDiag, xDrop,
+                                    scoreScheme, TBoolBanded(), TBoolXDrop(), alignContext);
     }
 }
 
@@ -534,8 +468,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 ExtensionDirection const & direction,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq,
-                                positions, direction, 0, 0, 0, scoreScheme,
+    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme,
                                 False(), False());
 }
 
@@ -550,8 +483,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 ExtensionDirection const & direction,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                direction, 0, 0, 0, scoreScheme, False(),
+    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme, False(),
                                 False());
 }
 
@@ -568,9 +500,8 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 int const upperDiag,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq,
-                                positions, direction, lowerDiag, upperDiag, 0,
-                                scoreScheme, True(), False());
+    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
+                                0, scoreScheme, True(), False());
 }
 
 template <typename TStringInfix, typename TAlignSpec, typename TString,
@@ -586,9 +517,8 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 int const upperDiag,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                direction, lowerDiag, upperDiag, 0, scoreScheme,
-                                True(), False());
+    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, lowerDiag, upperDiag, 0,
+                                scoreScheme, True(), False());
 }
 
 // NO BAND, XDROP
@@ -603,9 +533,8 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq,
-                                positions, direction, 0, 0, xDrop, scoreScheme,
-                                False(), True());
+    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, xDrop,
+                                scoreScheme, False(), True());
 }
 
 template <typename TStringInfix, typename TAlignSpec, typename TString,
@@ -620,8 +549,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                direction, 0, 0, xDrop, scoreScheme, False(),
+    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, 0, 0, xDrop, scoreScheme, False(),
                                 True());
 }
 
@@ -639,8 +567,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq,
-                                positions, direction, lowerDiag, upperDiag,
+    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
                                 xDrop, scoreScheme, True(), True());
 }
 
@@ -658,8 +585,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                direction, lowerDiag, upperDiag, xDrop,
+    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, lowerDiag, upperDiag, xDrop,
                                 scoreScheme, True(), True());
 }
 
@@ -679,11 +605,10 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions,
-                                direction, lowerDiag, upperDiag, xDrop,
+    return _extendAlignmentImpl(align, origScore, hSeq, vSeq, positions, direction, lowerDiag, upperDiag, xDrop,
                                 scoreScheme, True(), True(), alignContext);
 }
 
 }
 
-#endif
+#endif  // EXTRAS_INCLUDE_ALIGN_ALIGN_EXTEND_H
