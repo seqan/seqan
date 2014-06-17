@@ -288,7 +288,7 @@ jumpToRegion(Stream<Bgzf> & stream,
                 offsetCandidates.insert(it2->i1);
     }
 
-    // Search through candidate offsets, find smallest with a fitting alignment.
+    // Search through candidate offsets, find rightmost possible.
     //
     // Note that it is not necessarily the first.
     //
@@ -306,14 +306,15 @@ jumpToRegion(Stream<Bgzf> & stream,
         // __int32 endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (record.beginPos >= posEnd)
-            continue;  // Cannot overlap with [pos, posEnd).
+        if (!hasAlignments || record.beginPos <= pos)
+        {
+            // Found a valid alignment.
+            hasAlignments = true;
+            offset = *candIt;
+        }
 
-        // Found an alignment.
-        hasAlignments = true;
-        offset = *candIt;
-        // std::cerr << "offset == " << offset << "\n";
-        break;
+        if (record.beginPos >= posEnd)
+            break;  // Cannot find overlapping any more.
     }
 
     if (offset != MaxValue<__uint64>::VALUE)

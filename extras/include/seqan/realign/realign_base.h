@@ -595,7 +595,7 @@ public:
             TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
             // if (options.debug)
             //     std::cerr << "it2->beginPos == " << it2->beginPos << ", it2->endPos == " << it2->endPos << "\n";
-            if ((unsigned)abs(it2->endPos - it2->beginPos) != length(readGaps))
+            if ((unsigned)abs((int)(it2->endPos - it2->beginPos)) != length(readGaps))
             {
                 std::cerr << "READ GAPS\t>>>" << readGaps << "<<<\n";
                 SEQAN_FAIL("Inconsistent begin/endPos");

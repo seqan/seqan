@@ -70,7 +70,7 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
     typedef typename Size<TAlign>::Type TSize;
     typedef typename Position<TAlign>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
-    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
     SEQAN_ASSERT_EQ(length(rows(align)), 2u);
 
@@ -99,7 +99,7 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef typename Size<TSequenceH>::Type TSize;
     typedef typename Position<TSequenceH>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
-    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
     String<TTraceSegment> trace;
     DPScoutState_<Default> dpScoutState;
@@ -125,7 +125,7 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Position<TGraph>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
-    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
     String<TTraceSegment> trace;
     DPScoutState_<Default> dpScoutState;
@@ -155,7 +155,7 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
     typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
     typedef typename Position<TFragments>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
-    typedef AlignConfig2<DPLocal, DPBand_<BandOn>, FreeEndGaps_<> > TAlignConfig2;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> > TAlignConfig2;
 
     String<TTraceSegment> trace;
     DPScoutState_<Default> dpScoutState;
