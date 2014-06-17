@@ -262,7 +262,7 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
 
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> trace;
     TScoreValue res;
@@ -330,7 +330,7 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
@@ -402,7 +402,7 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
@@ -472,7 +472,7 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
@@ -623,7 +623,7 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
 {
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
 
     DPScoutState_<Default> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
@@ -688,7 +688,7 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 {
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
 
     SEQAN_ASSERT_EQ(length(strings), 2u);
 

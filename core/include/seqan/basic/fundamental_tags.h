@@ -705,6 +705,24 @@ inline void assign(TagSelector<TTagList> &selector, TTag const &)
     selector.tagId = Find<TTagList, TTag>::VALUE;
 }
 
+// tagApply()
+template <typename TFunctor, typename TTag>
+inline bool
+tagApply(TFunctor &func, TagList<TTag>)
+{
+    return func(TTag());
+}
+
+template <typename TFunctor, typename TTag, typename TSubList>
+inline bool
+tagApply(TFunctor &func, TagList<TTag, TSubList>)
+{
+    if (func(TTag()))
+        return true;
+    return tagApply(func, TSubList());
+}
+
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_TAGS_H_

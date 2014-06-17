@@ -144,7 +144,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitUnbanded()
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 0);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), -10);
@@ -169,7 +169,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 0);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -198,7 +198,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix, 0);
 
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOn>(-4, 3));
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOn>(-4, 3));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
@@ -216,7 +216,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         resize(dpMatrix2);
 
         value(host(dpMatrix2), 0) = 10;
-        _init(dpScoreMatrixNavigator, dpMatrix2, DPBand_<BandOn>(0, 7));
+        _init(dpScoreMatrixNavigator, dpMatrix2, DPBandConfig<BandOn>(0, 7));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
@@ -234,7 +234,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         resize(dpMatrix3);
 
 
-        _init(dpScoreMatrixNavigator, dpMatrix3, DPBand_<BandOn>(-7, 0));
+        _init(dpScoreMatrixNavigator, dpMatrix3, DPBandConfig<BandOn>(-7, 0));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
@@ -263,7 +263,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix, 0);
 
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOn>(-4, 3));
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOn>(-4, 3));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
@@ -280,7 +280,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         setLength(dpMatrix2, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix2);
 
-        _init(dpScoreMatrixNavigator, dpMatrix2, DPBand_<BandOn>(0, 7));
+        _init(dpScoreMatrixNavigator, dpMatrix2, DPBandConfig<BandOn>(0, 7));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
@@ -297,7 +297,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         setLength(dpMatrix3, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix3);
 
-        _init(dpScoreMatrixNavigator, dpMatrix3, DPBand_<BandOn>(-7, 0));
+        _init(dpScoreMatrixNavigator, dpMatrix3, DPBandConfig<BandOn>(-7, 0));
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
@@ -330,7 +330,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     host(dpMatrix)[5] = 5;
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell());
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -358,7 +358,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), FirstCell());
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -386,7 +386,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -414,7 +414,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), FirstCell());
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -442,7 +442,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
         ++dpScoreMatrixNavigator._laneLeap;  // For the test we simulate as if we were in a band.
@@ -473,7 +473,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -503,7 +503,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -533,7 +533,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -563,7 +563,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
         ++dpScoreMatrixNavigator._laneLeap;
@@ -594,7 +594,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -624,7 +624,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -654,7 +654,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpScoreMatrixNavigator._activeColIterator += 2;
         dpScoreMatrixNavigator._prevColIterator += 2;
 
@@ -702,7 +702,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     host(dpMatrix)[2] = 2;
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
@@ -745,7 +745,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), FirstCell());
@@ -780,7 +780,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
@@ -815,7 +815,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), FirstCell());
@@ -851,7 +851,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
 
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         // Need to update iterator just for the test.
@@ -889,7 +889,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         // Need to update Iterator just for the test.
@@ -927,7 +927,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         // Need to update Iterator just for the test.
@@ -967,7 +967,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -1004,7 +1004,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         dpScoreMatrixNavigator._activeColIterator += 3;
@@ -1041,7 +1041,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -1079,7 +1079,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -1118,7 +1118,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     }
 
     {
-        _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
 
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -1169,7 +1169,7 @@ void testAlignmentDPScoreMatrixNavigatorAssignValue(TDPMatrixSpec const)
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     assignValue(dpScoreMatrixNavigator, 20);
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._activeColIterator), 20);
@@ -1189,7 +1189,7 @@ void testAlignmentDPScoreMatrixNavigatorValue(TDPMatrixSpec const)
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     assignValue(dpScoreMatrixNavigator, 20);
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator), 20);
@@ -1213,7 +1213,7 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellDiagonal(TDPMatrixSpec const
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevCellDiagonal, TDPCell());
 
     dpScoreMatrixNavigator._prevCellDiagonal = 20;
@@ -1238,7 +1238,7 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec con
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevCellHorizontal, TDPCell());
 
     dpScoreMatrixNavigator._prevCellHorizontal = 20;
@@ -1263,7 +1263,7 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellVertical(TDPMatrixSpec const
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevCellVertical, TDPCell());
 
     dpScoreMatrixNavigator._prevCellVertical = 20;
@@ -1287,7 +1287,7 @@ void testAlignmentDPScoreMatrixNavigatorCoordinate(TDPMatrixSpec const)
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     dpScoreMatrixNavigator._activeColIterator += 7;
     dpScoreMatrixNavigator._prevColIterator += 7;
@@ -1310,7 +1310,7 @@ void testAlignmentDPScoreMatrixNavigatorContainer(TDPMatrixSpec const)
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_EQ(&container(dpScoreMatrixNavigator), &dpMatrix);
 
@@ -1472,7 +1472,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_u
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix);
 
-    _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -1492,7 +1492,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix);
 
-    _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
@@ -1512,7 +1512,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix);
 
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOn>(-4, 3));
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOn>(-4, 3));
 
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
@@ -1526,7 +1526,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         resize(dpMatrix2);
 
         value(host(dpMatrix2), 0) = 10;
-        _init(dpTraceMatrixNavigator, dpMatrix2, DPBand_<BandOn>(0, 7));
+        _init(dpTraceMatrixNavigator, dpMatrix2, DPBandConfig<BandOn>(0, 7));
 
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
@@ -1540,7 +1540,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         resize(dpMatrix3);
 
 
-        _init(dpTraceMatrixNavigator, dpMatrix3, DPBand_<BandOn>(-7, 0));
+        _init(dpTraceMatrixNavigator, dpMatrix3, DPBandConfig<BandOn>(-7, 0));
 
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
@@ -1562,7 +1562,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
         setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 8);
         resize(dpMatrix);
 
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOn>(-4, 3));
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOn>(-4, 3));
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
@@ -1575,7 +1575,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
         resize(dpMatrix2);
 
         value(host(dpMatrix2), 0) = 10;
-        _init(dpTraceMatrixNavigator, dpMatrix2, DPBand_<BandOn>(0, 7));
+        _init(dpTraceMatrixNavigator, dpMatrix2, DPBandConfig<BandOn>(0, 7));
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
@@ -1588,7 +1588,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
         resize(dpMatrix3);
 
 
-        _init(dpTraceMatrixNavigator, dpMatrix3, DPBand_<BandOn>(-7, 0));
+        _init(dpTraceMatrixNavigator, dpMatrix3, DPBandConfig<BandOn>(-7, 0));
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
@@ -1615,7 +1615,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     host(dpMatrix)[5] = 5;
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell());
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -1632,7 +1632,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), FirstCell());
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -1648,7 +1648,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -1664,7 +1664,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), FirstCell());
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -1680,7 +1680,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
         ++dpTraceMatrixNavigator._laneLeap;  // For the test we simulate as if we were in a band.
 
@@ -1698,7 +1698,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), FirstCell());
@@ -1715,7 +1715,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), FirstCell());
@@ -1732,7 +1732,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, FullColumn>(), FirstCell());
@@ -1749,7 +1749,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
         ++dpTraceMatrixNavigator._laneLeap;
 
@@ -1767,7 +1767,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnMiddle>(), FirstCell());
@@ -1784,7 +1784,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom>(), FirstCell());
@@ -1801,7 +1801,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _goNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, FullColumn>(), FirstCell());
@@ -1847,7 +1847,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     host(dpMatrix)[5] = 5;
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), InnerCell());
@@ -1855,7 +1855,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), InnerCell());
@@ -1863,7 +1863,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), InnerCell());
@@ -1871,7 +1871,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), InnerCell());
@@ -1879,7 +1879,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         dpTraceMatrixNavigator._activeColIterator += 2;
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), FirstCell());
@@ -1888,14 +1888,14 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), InnerCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), LastCell());
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), InnerCell());
@@ -1903,7 +1903,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, FullColumn>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, FullColumn>(), InnerCell());
@@ -1911,7 +1911,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), InnerCell());
@@ -1919,7 +1919,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnMiddle>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnMiddle>(), InnerCell());
@@ -1927,7 +1927,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom>(), InnerCell());
@@ -1935,7 +1935,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_go_ne
     }
 
     {
-        _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+        _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, FullColumn>(), FirstCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, FullColumn>(), InnerCell());
         _testGoNextCell(dpTraceMatrixNavigator, MetaColumnDescriptor<DPFinalColumn, FullColumn>(), LastCell());
@@ -1955,7 +1955,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_assign
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     assignValue(dpScoreMatrixNavigator, 20);
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._activeColIterator), 20);
@@ -1975,7 +1975,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value)
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     assignValue(dpTraceMatrixNavigator, 20);
     SEQAN_ASSERT_EQ(value(dpTraceMatrixNavigator), 20);
@@ -1998,7 +1998,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordi
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     dpScoreMatrixNavigator._activeColIterator += 7;
 
@@ -2019,7 +2019,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_contai
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
     resize(dpMatrix, 3);
 
-    _init(dpTraceMatrixNavigator, dpMatrix, DPBand_<BandOff>());
+    _init(dpTraceMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
 
     SEQAN_ASSERT_EQ(&container(dpTraceMatrixNavigator), &dpMatrix);
 

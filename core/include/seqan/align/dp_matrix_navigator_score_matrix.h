@@ -102,7 +102,7 @@ template <typename TValue>
 inline void
 _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
       DPMatrix_<TValue, FullDPMatrix> & dpMatrix,
-      DPBand_<BandOff> const &)
+      DPBandConfig<BandOff> const &)
 {
     navigator._ptrDataContainer = &dpMatrix;
     navigator._activeColIterator = begin(dpMatrix, Standard());
@@ -116,7 +116,7 @@ template <typename TValue>
 inline void
 _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
       DPMatrix_<TValue, FullDPMatrix> & dpMatrix,
-      DPBand_<BandOn> const & band)
+      DPBandConfig<BandOn> const & band)
 {
     typedef typename Size<DPMatrix_<TValue, FullDPMatrix> >::Type TMatrixSize;
     typedef typename MakeSigned<TMatrixSize>::Type TSignedSize;

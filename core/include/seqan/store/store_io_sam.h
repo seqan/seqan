@@ -965,7 +965,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
     clear(record.qName);
     TCharStringIterator it = begin(store.readNameStore[alignedRead.readId], Standard());
     TCharStringIterator itEnd = end(store.readNameStore[alignedRead.readId], Standard());
-    for (; it != itEnd && !isblank(*it); ++it)
+    for (; it != itEnd && *it != ' ' && *it != '\t'; ++it)
         appendValue(record.qName, *it);
 
     // Fill FLAG.
