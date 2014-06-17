@@ -79,7 +79,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
@@ -172,7 +172,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
-    typedef AlignConfig2<DPGlobal, DPBand_<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;

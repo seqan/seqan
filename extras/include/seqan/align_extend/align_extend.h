@@ -143,7 +143,7 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
     typedef AlignConfig2<AlignExtend_<>,
-                         DPBand_<BandOff>,
+                         DPBandConfig<BandOff>,
                          TFreeEndGaps,
                          TracebackOn<TracebackConfig_<CompleteTrace,
                                                       GapsLeft> > > TAlignConfig;
@@ -174,7 +174,7 @@ _setUpAndRunAlignImpl( TAliExtContext_ & alignContext,
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
     typedef AlignConfig2<AlignExtend_<>,
-                         DPBand_<BandOn>,
+                         DPBandConfig<BandOn>,
                          TFreeEndGaps,
                          TracebackOn<TracebackConfig_<CompleteTrace,
                                                       GapsLeft> > > TAlignConfig;
@@ -205,7 +205,7 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
     typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
-                         DPBand_<BandOff>,
+                         DPBandConfig<BandOff>,
                          TFreeEndGaps,
                          TracebackOn<TracebackConfig_<CompleteTrace,
                                                       GapsLeft> > > TAlignConfig;
@@ -236,7 +236,7 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
     typedef AlignConfig2<AlignExtend_<XDrop_<TScoreValue> >,
-                         DPBand_<BandOn>,
+                         DPBandConfig<BandOn>,
                          TFreeEndGaps,
                          TracebackOn<TracebackConfig_<CompleteTrace,
                                                       GapsLeft> > > TAlignConfig;
