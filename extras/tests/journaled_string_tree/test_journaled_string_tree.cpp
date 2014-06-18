@@ -33,7 +33,7 @@
 // ==========================================================================
 
 //#define TEST_DEBUG_OUTPUT
-//#define TEST_DEBUG_OUTPUT_RES
+#define TEST_DEBUG_OUTPUT_RES
 
 #include <seqan/basic.h>
 #include <seqan/file.h>

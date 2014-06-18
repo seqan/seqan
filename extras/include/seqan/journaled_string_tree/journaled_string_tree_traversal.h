@@ -1954,6 +1954,46 @@ _execProducerThread(TConcurrentQueue & queue,
 //    }
 }
 
+template <typename TJstTraverserState, typename TExternal, typename TDelegate>
+inline void
+_internallyExecuteConsumerThread(TJstTraverserState & traverser, TExternal & externalAlg, TDelegate & delegate)
+{
+    typedef typename TJstTraverserState::TBitVector TCoverage;
+
+    // We need to initialize the state here.
+    traverser._traversalState = JST_TRAVERSAL_STATE_MASTER;
+    initState(externalAlg);
+    // Search along the master strand.
+    while (_contextEndPosition(traverser, StateTraverseMaster()) < *traverser._branchNodeIt)
+    {
+        traverser._isSynchronized = false;
+        traverser._masterIt += deliverContext(externalAlg, delegate, traverser, StateTraverseMaster());
+    }
+
+    traverser._traversalState = JST_TRAVERSAL_STATE_BRANCH;
+
+    // Processing the current node.
+    unsigned branchPosition = *traverser._branchNodeIt;
+
+    _syncAndUpdateCoverage(traverser, StateTraverseMaster());
+    traverser._lastMasterState = getState(externalAlg);  // Keep the last active caller state.
+
+    // Search all haplotypes with the alternative allel at this position.
+    while(traverser._branchNodeIt != traverser._branchNodeBlockEnd && *traverser._branchNodeIt == branchPosition)
+    {
+        TCoverage& mappedCov = deltaCoverage(traverser._branchNodeIt); //mappedCoverage(container(container(traverser)), position(traverser._branchNodeIt));
+        if (!testAllZeros(mappedCov))
+        {
+            _traverseBranchWithAlt(traverser, externalAlg, delegate);
+            // Remove the coverage from the current delta from the active master coverage.
+            transform(traverser._activeMasterCoverage, traverser._activeMasterCoverage, mappedCov,
+                      FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+        }
+        // We increase the delta
+        ++traverser._branchNodeIt;
+    }
+}
+
 // ----------------------------------------------------------------------------
 // Function _execConsumerThread()
 // ----------------------------------------------------------------------------
@@ -1966,42 +2006,20 @@ _execConsumerThread(ConcurrentQueue<TValue> & queue,
                     TDelegate & delegate,
                     Parallel /*tag*/)
 {
-    typedef typename TJstTraverserState::TBitVector TCoverage;
     TValue jobState;
+
     while (popFront(jobState, queue))
     {
         _copy(traverser, jobState);  // TODO(rmaerker): Would be nice to have a move construct here.
-        // We need to initialize the state here.
-        traverser._traversalState = JST_TRAVERSAL_STATE_MASTER;
-        initState(externalAlg);
-        // Search along the master strand.
-        while (_contextEndPosition(traverser, StateTraverseMaster()) < *traverser._branchNodeIt)
+        _internallyExecuteConsumerThread(traverser, externalAlg, delegate);
+    }
+
+    while (!empty(queue))
+    {
+        if (tryPopFront(jobState, queue, Parallel()))
         {
-            traverser._isSynchronized = false;
-            traverser._masterIt += deliverContext(externalAlg, delegate, traverser, StateTraverseMaster());
-        }
-
-        traverser._traversalState = JST_TRAVERSAL_STATE_BRANCH;
-
-        // Processing the current node.
-        unsigned branchPosition = *traverser._branchNodeIt;
-
-        _syncAndUpdateCoverage(traverser, StateTraverseMaster());
-        traverser._lastMasterState = getState(externalAlg);  // Keep the last active caller state.
-
-        // Search all haplotypes with the alternative allel at this position.
-        while(traverser._branchNodeIt != traverser._branchNodeBlockEnd && *traverser._branchNodeIt == branchPosition)
-        {
-            TCoverage& mappedCov = deltaCoverage(traverser._branchNodeIt); //mappedCoverage(container(container(traverser)), position(traverser._branchNodeIt));
-            if (!testAllZeros(mappedCov))
-            {
-                _traverseBranchWithAlt(traverser, externalAlg, delegate);
-                // Remove the coverage from the current delta from the active master coverage.
-                transform(traverser._activeMasterCoverage, traverser._activeMasterCoverage, mappedCov,
-                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
-            }
-            // We increase the delta
-            ++traverser._branchNodeIt;
+            _copy(traverser, jobState);  // TODO(rmaerker): Would be nice to have a move construct here.
+            _internallyExecuteConsumerThread(traverser, externalAlg, delegate);
         }
     }
 }
@@ -2225,6 +2243,7 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
             waitForWriters(queue, 1);  // Barrier for writers until all are registered to the queue.
 
             _execProducerThread(queue, jobs[omp_get_thread_num()], externalAlg, delegate, parallelTag);
+            traverser = jobs[0];
         }
 
 //        SEQAN_OMP_PRAGMA(critical(cout))
@@ -2238,7 +2257,6 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositio
     }
 
     SEQAN_ASSERT(empty(queue));
-    traverser = jobs[0];
 }
 
 // ----------------------------------------------------------------------------
