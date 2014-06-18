@@ -1,4 +1,4 @@
-// USAGE: compute_gain GENOME.fa PRE.sam POST.sam
+// USAGE: compute_gain GENOME.fa PRE.sam POST.{sam,fq,fa}
 //
 // Where PRE.sam are the mapped reads before mapping, POST.sam are the mapped reads after mapping, and GENOME.fa is the
 // used FASTA file with the genome.
@@ -120,6 +120,9 @@ struct Stats
     __uint64 numErrorReadsPost;
     __uint64 numReads;
 
+    // Usual TP/FP/FN values.
+    __uint64 tp, fp, tn, fn;
+
     // Histogram of differences (before/after correction).
     std::map<int, unsigned> histo;
 
@@ -149,7 +152,8 @@ struct Stats
     seqan::String<seqan::BamAlignmentRecord> _chunkPre;
     seqan::String<seqan::Dna5String> _chunkPost;
 
-    seqan::Dna5String _genomeInfix;
+    seqan::Dna5String _genomeInfixPre;
+    seqan::Dna5String _genomeInfixPost;
     seqan::Dna5String _preRead;
     seqan::Dna5String _postRead;
 
@@ -159,8 +163,8 @@ struct Stats
 
     Stats() : numUnmappedPre(0), numUnmappedPost(0), numIgnoredPre(0), numTotal(0),
               numBasesPre(0), numBasesPost(0), numErrorsPre(0), numErrorsPost(0), numErrorReadsPre(0),
-              numErrorReadsPost(0), numReads(0), actualErrorSum(0), diffErrorSum(0), numErrorsIntroduced(0),
-              numErrorsRemoved(0)
+              numErrorReadsPost(0), numReads(0), tp(0), fp(0), tn(0), fn(0), actualErrorSum(0), diffErrorSum(0),
+              numErrorsIntroduced(0), numErrorsRemoved(0)
     {
         zeroCounts[0] = 0;
         zeroCounts[1] = 0;
@@ -171,6 +175,105 @@ struct Stats
 
 typedef seqan::StringSet<seqan::CharString> TNameStore;
 typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
+
+// Error in alignment.
+
+struct AlignmentError
+{
+    int pos;          // position in genome
+    int offset;       // offset in case of long gaps in genome
+    char genomeBase;  // base in genome
+    char readBase;    // base in the read
+
+    AlignmentError() : pos(-1), offset(-1), genomeBase('X'), readBase('X') {}
+    AlignmentError(int pos, int offset, char genomeBase, char readBase) :
+            pos(pos), offset(offset), genomeBase(genomeBase), readBase(readBase)
+    {}
+
+    bool operator<(AlignmentError const & other) const
+    {
+        return ((pos < other.pos) ||
+                (pos == other.pos && offset < other.offset) ||
+                (pos == other.pos && offset == other.offset && genomeBase < other.genomeBase) ||
+                (pos == other.pos && offset == other.offset && genomeBase == other.genomeBase &&
+                 readBase < other.readBase));
+    }
+};
+
+std::ostream & operator<<(std::ostream & out, AlignmentError const & ae)
+{
+    return out << "AlignmentError(pos=" << ae.pos << ", offset=" << ae.offset << ", genome=" << ae.genomeBase
+               << ", read=" << ae.readBase << ")";
+}
+
+void computeErrors(std::vector<AlignmentError> & result,
+                   seqan::Align<seqan::Dna5String> const & align,
+                   int genomeOffset)
+{
+    using namespace seqan;
+
+    result.clear();
+
+    int leadingGaps = countGaps(begin(row(align, 1), Standard()));
+    int trailingGaps = 0;
+    while (trailingGaps < (int)length(row(align, 1)) && isGap(row(align, 1), length(row(align, 1)) - trailingGaps - 1))
+        ++trailingGaps;
+
+    typedef Iterator<Row<Align<Dna5String> const>::Type, Standard>::Type TIterator;
+    TIterator itC = iter(row(align, 0), leadingGaps, Standard());  // contig
+    TIterator itCEnd = iter(row(align, 0), length(row(align, 0)) - trailingGaps, Standard());  // contig
+    TIterator itR = iter(row(align, 1), leadingGaps, Standard());  // read
+
+    for (int pos = genomeOffset, offset = 0; itC != itCEnd; ++itC, ++itR)
+        if (isGap(itC) && !isGap(itR))
+        {
+            result.push_back(AlignmentError(pos, offset, '-', convert<char>(*itR)));
+            ++offset;
+        }
+        else if (!isGap(itC) && isGap(itR))
+        {
+            result.push_back(AlignmentError(pos, offset, convert<char>(*itC), '-'));
+            ++pos;
+            offset = 0;
+        }
+        else if (!isGap(itC) && !isGap(itR))
+        {
+            if (convert<Dna5>(*itC) != convert<Dna5>(*itR))
+                result.push_back(AlignmentError(pos, offset, convert<char>(*itC), convert<char>(*itR)));
+            ++pos;
+            offset = 0;
+        }
+}
+
+int countTrueNegatives(std::vector<AlignmentError> const & errorsPre,
+                       std::vector<AlignmentError> const & errorsPost,
+                       seqan::Align<seqan::Dna5String> const & alignPre,
+                       int genomeOffsetPre)
+{
+    using namespace seqan;
+
+    int leadingGaps = countGaps(begin(row(alignPre, 1), Standard()));
+    int trailingGaps = 0;
+    while (trailingGaps < (int)length(row(alignPre, 1)) && isGap(row(alignPre, 1), length(row(alignPre, 1)) - trailingGaps - 1))
+        ++trailingGaps;
+
+    int offset = genomeOffsetPre + leadingGaps;
+
+    // Compute at which positions there was no error before and after.
+    std::vector<bool> noError(length(row(alignPre, 0)) - leadingGaps - trailingGaps, false);
+    for (std::vector<AlignmentError>::const_iterator it = errorsPre.begin(); it != errorsPre.end(); ++it)
+        if (it->pos >= offset && it->pos - offset < (int)noError.size())
+            noError.at(it->pos - offset) = false;
+    for (std::vector<AlignmentError>::const_iterator it = errorsPost.begin(); it != errorsPost.end(); ++it)
+        if (it->pos >= offset && it->pos - offset < (int)noError.size())
+            noError.at(it->pos - offset) = false;
+
+    int result = 0;
+    for (std::vector<bool>::const_iterator it = noError.begin(); it != noError.end(); ++it)
+        result += !*it;
+    return result;
+}
+
 
 // Allows the trimming of strings after the first whitespace.
 
@@ -229,15 +332,17 @@ void updateStats(Stats & stats,
     // Compute begin and positions of genome infix, with padding, but not going over the end of the genome.
     unsigned beginPos = preRecord.beginPos;
     unsigned endPos = beginPos + length(preRecord.seq);
+    unsigned beginPosPre = beginPos, beginPosPost = beginPos;
+    unsigned endPosPre = endPos, endPosPost = endPos;
 
-    Dna5String &preRead = stats._preRead;
+    Dna5String & preRead = stats._preRead;
     preRead = preRecord.seq;
 
     // speed-up heuristic
     bool skipAlignPre = (infix(seqs[seqIdx], beginPos, endPos) == preRead);
     bool skipAlignPost = (infix(seqs[seqIdx], beginPos, endPos) == postRead);
 
-    int padding = (options.padding * length(preRecord.seq) + 99) / 100;
+    int padding = ceil(0.01 * options.padding * length(preRecord.seq));
     if (options.indels)
     {
         if ((int)beginPos > padding + beginShift)
@@ -248,16 +353,29 @@ void updateStats(Stats & stats,
         endPos += (padding + endShift);
         if (endPos > length(seqs[seqIdx]))
             endPos = length(seqs[seqIdx]);
+        if (!skipAlignPre)
+        {
+            beginPosPre = beginPos;
+            endPosPre = endPos;
+        }
+        if (!skipAlignPost)
+        {
+            beginPosPost = beginPos;
+            endPosPost = endPos;
+        }
     }
 
     // Get genome infix, and convert read seqs (CharString) into Dna5Strings.
-    Dna5String &genomeInfix = stats._genomeInfix;
-    genomeInfix = infix(seqs[seqIdx], beginPos, endPos);
+    Dna5String & genomeInfixPre = stats._genomeInfixPre;
+    genomeInfixPre = infix(seqs[seqIdx], beginPosPre, endPosPre);
+    Dna5String & genomeInfixPost = stats._genomeInfixPost;
+    genomeInfixPost = infix(seqs[seqIdx], beginPosPost, endPosPost);
 
     if (hasFlagRC(preRecord))
     {
         // bring sequences to original read direction
-        reverseComplement(genomeInfix);
+        reverseComplement(genomeInfixPre);
+        reverseComplement(genomeInfixPost);
         reverseComplement(preRead);
         reverseComplement(postRead);
     }
@@ -269,19 +387,22 @@ void updateStats(Stats & stats,
 
     // Create alignment objects and AlignConfig object.
     typedef Align<Dna5String> TAlign;
-    TAlign &preAlign = stats._preAlign;
-    TAlign &postAlign = stats._postAlign;
+    TAlign & preAlign = stats._preAlign;
+    TAlign & postAlign = stats._postAlign;
     
     resize(rows(preAlign), 2);
-    setSource(row(preAlign, 0), genomeInfix);
+    setSource(row(preAlign, 0), genomeInfixPre);
     setSource(row(preAlign, 1), preRead);
     resize(rows(postAlign), 2);
-    setSource(row(postAlign, 0), genomeInfix);
+    setSource(row(postAlign, 0), genomeInfixPost);
     setSource(row(postAlign, 1), postRead);
 
     // Compute distance before and after correction.
     int diffPre = 0;
     int diffPost = 0;
+
+    // Sorted vectors (i.e. sets) of alignment errors computed for FP/TP rate.
+    std::vector<AlignmentError> errorsPre, errorsPost, errorsTmp;
 
     if (options.indels)
     {
@@ -296,6 +417,7 @@ void updateStats(Stats & stats,
         // Align pre record to genome.
         if (!skipAlignPre)
             diffPre = -globalAlignment(preAlign, scoringScheme, alignConfig, NeedlemanWunsch()) / 1000;
+        computeErrors(errorsPre, preAlign, beginPosPre);
 
         int diffPreRate = (int)ceil(100.0 * diffPre / length(preRead));
         if ((options.maxErrorRate != 0 && diffPreRate > options.maxErrorRate) ||
@@ -356,12 +478,45 @@ void updateStats(Stats & stats,
         // Align post record to genome.
         if (!skipAlignPost)
             diffPost = -globalAlignment(postAlign, scoringScheme, alignConfig, NeedlemanWunsch()) / 1000;
+        computeErrors(errorsPost, postAlign, beginPosPost);
+
+        __uint64 tp = 0, fp = 0, tn = 0, fn = 0;
+        errorsTmp.clear();
+        std::set_difference(errorsPre.begin(), errorsPre.end(), errorsPost.begin(), errorsPost.end(),
+                            std::back_inserter(errorsTmp));
+        tp += errorsTmp.size();
+
+        errorsTmp.clear();
+        std::set_difference(errorsPost.begin(), errorsPost.end(), errorsPre.begin(), errorsPre.end(),
+                            std::back_inserter(errorsTmp));
+        fp += errorsTmp.size();
+
+        tn += countTrueNegatives(errorsPre, errorsPost, preAlign, beginPosPre);
+
+        errorsTmp.clear();
+        std::set_intersection(errorsPost.begin(), errorsPost.end(), errorsPre.begin(), errorsPre.end(),
+                              std::back_inserter(errorsTmp));
+        fn += errorsTmp.size();
+
+        stats.tp += tp;
+        stats.fp += fp;
+        stats.tn += tn;
+        stats.fn += fn;
 
         if (options.verbosity >= 3 || (options.verbosity >= 2 && (abs(diffPre) > 10 || abs(diffPost) > 10)))
+        {
             std::cerr << "RECORD: " << preRecord.qName << "\n"
-                      << "BEFORE, score == " << diffPre << "\n" << preAlign << '\n'
-                      << "AFTER, score == " << diffPost << "\n" << postAlign << '\n'
-                      << " --> BEFORE - AFTER == " << diffPre - diffPost << '\n';
+                      << "BEFORE, score == " << diffPre << "\n" << preAlign << '\n';
+            std::cerr << "Alignment Errors PRE\n";
+            std::copy(errorsPre.begin(), errorsPre.end(), std::ostream_iterator<AlignmentError>(std::cerr, "\n"));
+            std::cerr << "---\n";
+            std::cerr << "AFTER, score == " << diffPost << "\n" << postAlign << '\n';
+            std::cerr << "Alignment Errors POST\n";
+            std::copy(errorsPost.begin(), errorsPost.end(), std::ostream_iterator<AlignmentError>(std::cerr, "\n"));
+            std::cerr << "---\n";
+            std::cerr << " --> BEFORE - AFTER == " << diffPre - diffPost << '\n'
+                      << "TP = " << tp << ", FP = " << fp << ", TN = " << tn << ", FN = " << fn << '\n';
+        }
 
         if (correctionLog.good() && (diffPre != diffPost || options.logAll))
         {
@@ -426,9 +581,9 @@ void updateStats(Stats & stats,
         // In the case of Hamming distance, we can simply count matching and mismatching bases.
 
         if (options.verbosity >= 3)
-            std::cerr << "infix == " << genomeInfix << "\tpre == " << preRead << "\tpost == " << postRead << '\n';
-        //SEQAN_CHECK(length(genomeInfix) >= length(preRead), "Must have geq length with Hamming distance.");
-        //SEQAN_CHECK(length(genomeInfix) >= length(postRead), "Must have geq length with Hamming distance.");
+            std::cerr << "infix == " << genomeInfixPre << "\tpre == " << preRead << "\tpost == " << postRead << '\n';
+        //SEQAN_CHECK(length(genomeInfixPre) >= length(preRead), "Must have geq length with Hamming distance.");
+        //SEQAN_CHECK(length(genomeInfixPre) >= length(postRead), "Must have geq length with Hamming distance.");
         //SEQAN_CHECK(length(preRead) >= length(postRead), "Must have the same length with Hamming distance.");
 
         // For Hamming distance, we compare at most m characters where m is the smaller one of the
@@ -443,8 +598,8 @@ void updateStats(Stats & stats,
         unsigned numRemoved = 0;
         for (unsigned i = 0; i < minLen; ++i)
         {
-            bool badPre = (genomeInfix[i] != preRead[i]);
-            bool badPost = (genomeInfix[i] != postRead[i]);
+            bool badPre = (genomeInfixPre[i] != preRead[i]);
+            bool badPost = (genomeInfixPre[i] != postRead[i]);
             if (badPre && !badPost)
             {
                 flags.push_back('-');
@@ -472,7 +627,7 @@ void updateStats(Stats & stats,
         // errors.  Mismatches are counted as removed errors.
         for (unsigned i = minLen; i < length(preRead); ++i)
         {
-            if (genomeInfix[i] == preRead[i])
+            if (genomeInfixPre[i] == preRead[i])
             {
                 diffPost += 1;
                 numIntroduced += 1;
@@ -496,7 +651,7 @@ void updateStats(Stats & stats,
                 numIntroduced += length(postRead) - i;
                 break;  // End of genome.
             }
-            if (genomeInfix[i] == postRead[i])
+            if (genomeInfixPre[i] == postRead[i])
             {
                 diffPre += 1;
                 numRemoved += 1;
@@ -516,7 +671,8 @@ void updateStats(Stats & stats,
 
         if (options.verbosity >= 3 || (options.verbosity >= 2 && (abs(diffPre) > 10 || abs(diffPost) > 10)))
             std::cerr << "RECORD: " << preRecord.qName << "\n"
-                      << "GENOME " << genomeInfix << "\n"
+                      << "GENOME (PRE) " << genomeInfixPre << "\n"
+                      << "GENOME (POST) " << genomeInfixPost << "\n"
                       << "BEFORE " << preRead << "\tscore == " << diffPre << '\n'
                       << "AFTER  " << postRead << "\tscore == " << diffPost << '\n'
                       << "REMOVED    " << numRemoved << "\n"
@@ -529,15 +685,15 @@ void updateStats(Stats & stats,
                           << "INTRODUCED " << numIntroduced << "\tREMOVED\t" << numRemoved << "\n"
                           << "\n"
                           << "BEFORE\n"
-                          << genomeInfix << "\n";
+                          << genomeInfixPre << "\n";
             for (unsigned i = 0; i < minLen; ++i)
-                correctionLog << ((genomeInfix[i] == preRead[i]) ? '|' : ' ');
+                correctionLog << ((genomeInfixPre[i] == preRead[i]) ? '|' : ' ');
             correctionLog << "\n"
                           << preRead << "\n\n"
                           << "AFTER\n"
-                          << genomeInfix << "\n";
+                          << genomeInfixPost << "\n";
             for (unsigned i = 0; i < minLen; ++i)
-                correctionLog << ((genomeInfix[i] == postRead[i]) ? '|' : ' ');
+                correctionLog << ((genomeInfixPost[i] == postRead[i]) ? '|' : ' ');
             correctionLog << "\n"
                           << postRead << "\n"
                           << flags << "\n"
@@ -677,20 +833,20 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUTFILE,
                                             "GENOME.fa"));
     setRequired(parser, "genome");
-    setValidValues(parser, "genome", "FA FASTA");
+    setValidValues(parser, "genome", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
                                             "PRE.sam"));
     setRequired(parser, "pre");
-    setValidValues(parser, "pre", "SAM");
+    setValidValues(parser, "pre", "sam");
 
     addOption(parser, seqan::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
                                             "POST.sam"));
-    setValidValues(parser, "post-sam", "SAM");
+    setValidValues(parser, "post-sam", "sam");
 
     addOption(parser, seqan::ArgParseOption("", "post", "Post-correction FASTQ or FASTA file.", seqan::ArgParseOption::INPUTFILE,
                                             "POST.fq"));
-    setValidValues(parser, "post", "FASTQ FQ FASTA FA");
+    setValidValues(parser, "post", "fastq fq fastq.gz fq.gz fasta fa fasta.gz fa.gz");
 
     addOption(parser, seqan::ArgParseOption("", "correction-log", "Write log about introduced/removed errors to this file.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT.txt"));
@@ -812,6 +968,11 @@ int main(int argc, char const ** argv)
     StringSet<CharString> ids;
     StringSet<Dna5String> seqs;
     std::fstream inGenome(toCString(options.pathGenome), std::ios::in | std::ios::binary);
+    if (!inGenome.good())
+    {
+        std::cerr << "ERROR: Could not open genome file\n";
+        return 1;
+    }
     RecordReader<std::fstream, SinglePass<> > readerGenome(inGenome);
     if (read2(ids, seqs, readerGenome, Fasta()) != 0)
     {
@@ -883,7 +1044,7 @@ int main(int argc, char const ** argv)
         SEQAN_OMP_PRAGMA(critical (read_chunk))
         {
             int const tid = omp_get_thread_num();
-            unsigned myChunkSize = (unsigned)pickRandomNumber(rng, chunkSizeNoise);
+            unsigned myChunkSize = pickRandomNumber(rng, chunkSizeNoise);
             seqan::CharString prevName;
             seqan::CharString postId;
             clear(recordPre.qName);
@@ -1011,6 +1172,11 @@ int main(int argc, char const ** argv)
         globalStats.numErrorsIntroduced += stats[i].numErrorsIntroduced;
         globalStats.numErrorsRemoved += stats[i].numErrorsRemoved;
 
+        globalStats.tp += stats[i].tp;
+        globalStats.fp += stats[i].fp;
+        globalStats.tn += stats[i].tn;
+        globalStats.fn += stats[i].fn;
+
         for (std::map<int, unsigned>::const_iterator it = stats[i].histo.begin(); it != stats[i].histo.end(); ++it)
             globalStats.histo[it->first] += it->second;
         for (std::map<int, unsigned>::const_iterator it = stats[i].preErrorHisto.begin(); it != stats[i].preErrorHisto.end(); ++it)
@@ -1029,16 +1195,22 @@ int main(int argc, char const ** argv)
 
     // The quick stats are what we need for the table in the paper.
     std::cout << "QUICK STATS\n"
-              << "gain\tbase error rate pre\tread error rate pre\tbase error rate post\tread error rate post";
+              << "gain\tbase error rate pre\tread error rate pre\tbase error rate post\tread error rate post"
+              << "\tsensitivity\tspecificity\tTP\tFP\tTN\tFN";
     if (!options.indels)
         std::cout << "errors removed\terrors introduced";
     std::cout << "\n";
-    fprintf(stdout, "%2.5f\t%2.5f\t%2.5f\t%2.5f\t%2.5f",
+    double sens = (globalStats.tp + globalStats.fn) ? (100.0 * globalStats.tp / (globalStats.tp + globalStats.fn)) : 100.0;
+    double spec = (globalStats.fp + globalStats.tn) ? (100.0 * globalStats.tn / (globalStats.fp + globalStats.tn)) : 100.0;
+    fprintf(stdout, "%2.5f\t%2.5f\t%2.5f\t%2.5f\t%2.5f\t%.2f\t%.2f",
             100.0 * globalStats.diffErrorSum / globalStats.actualErrorSum,
             100.0 * globalStats.numErrorsPre / globalStats.numBasesPre,
             100.0 * globalStats.numErrorReadsPre / globalStats.numReads,
             100.0 * globalStats.numErrorsPost / globalStats.numBasesPost,
-            100.0 * globalStats.numErrorReadsPost / globalStats.numReads);
+            100.0 * globalStats.numErrorReadsPost / globalStats.numReads,
+            sens,
+            spec);
+    std::cout << "\t" << globalStats.tp << "\t" << globalStats.fp << "\t" << globalStats.tn << "\t" << globalStats.fn;
     if (!options.indels)
         std::cout << "\t" << globalStats.numErrorsRemoved << "\t" << globalStats.numErrorsIntroduced;
 
@@ -1049,6 +1221,22 @@ int main(int argc, char const ** argv)
               << "total read count     " << globalStats.numTotal << "\t\t(excludes unmapped reads)\n"
               << "unmapped pre count   " << globalStats.numUnmappedPre << "\n"
               << "ignored pre count    " << globalStats.numIgnoredPre << "\n"
+              << "\n"
+              << "gain                 " << 100.0 * globalStats.diffErrorSum / globalStats.actualErrorSum << "\n"
+              << "\n"
+              << "base error rate pre  " << 100.0 * globalStats.numErrorsPre / globalStats.numBasesPre << "\n"
+              << "read error rate pre  " << 100.0 * globalStats.numErrorReadsPre / globalStats.numReads << "\n"
+              << "base error rate post " << 100.0 * globalStats.numErrorsPost / globalStats.numBasesPost << "\n"
+              << "read error rate post " << 100.0 * globalStats.numErrorReadsPost / globalStats.numReads << "\n"
+              << "\n"
+              << "sensitivity          " << sens << "\n"
+              << "specificity          " << spec << "\n"
+              << "\n"
+              << "true positives       " << globalStats.tp << "\n"
+              << "false positives      " << globalStats.fp << "\n"
+              << "true negatives       " << globalStats.tn << "\n"
+              << "false negatives      " << globalStats.fn << "\n"
+              << "\n"
               //<< "unmapped post count  " << globalStats.numUnmappedPost << "\n"
               //<< "unmapped both count  " << globalStats.numUnmappedBoth << "\n"
               << "\n"
