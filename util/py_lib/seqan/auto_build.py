@@ -3,55 +3,99 @@
 Automatic building of SeqAn apps and releases.
 """
 
+from __future__ import print_function
+
 import subprocess
 import optparse
 import os.path
+import re
 import sys
 import shutil
 import tempfile
 
-# The SVN command to use.
-SVN_BINARY='svn'
+# The git command to use.
+GIT_BINARY='git'
 # The CMake command to use.
 CMAKE_BINARY='cmake'
 
-# The default value for the SVN tags.
-DEFAULT_TAGS_URL='http://svn.seqan.de/seqan/tags'
-# The default value for the SVN trunk.
-DEFAULT_TRUNK_URL='http://svn.seqan.de/seqan/trunk'
-# The default minimal revision of that tags must have.
-DEFAULT_START_REVISION=13708
+# The default repository URL.
+REPOSITORY_URL='git@github.com:holtgrewe/seqan.git'
 # The path to the package repository.
 DEFAULT_PACKAGE_DB='.'
 
-class MinisculeSvnWrapper(object):
-    """Minimal SVN wrapper."""
+# Regular expression to use for tag names.
+TAG_RE=r'.*-v\d+\.\d+\.\d'
 
-    def ls(self, url):
-        """Execute 'svn ls ${url}'."""
-        print >>sys.stderr, 'Executing "%s %s %s"' % (SVN_BINARY, 'ls -v', url)
-        popen = subprocess.Popen([SVN_BINARY, 'ls', '-v', url],
+class MinisculeGitWrapper(object):
+    """Minimal git wrapper."""
+
+    def lsRemote(self, url):
+        """Execute 'git ls-remote ${url} --tags'."""
+        # Execute ls-remote command.
+        print('Executing "%s %s %s"' % (GIT_BINARY, 'ls-remote --tags', url), file=sys.stderr)
+        popen = subprocess.Popen([GIT_BINARY, 'ls-remote', '--tags', url],
                                  stdout=subprocess.PIPE)
         out_data, err_data = popen.communicate()
+        print('  => %d' % popen.returncode, file=sys.stderr)
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during SVN call.'
+            print('ERROR during git call.', file=sys.stderr)
             return 1
+        # Parse out revisions and tags names.
         lines = out_data.splitlines()
-        revs_tags = [(int(line.split()[0]), line.split()[-1]) for line in lines]
+        revs_tags = [(line.split()[0], line.split()[-1]) for line in lines]
         res = []
         for rev, tag in revs_tags:
-            if tag == './':
-                continue  # Skip dot-slash.
-            tag2 = tag[:-1]
+            if '^{}' in tag:
+                continue  # Skip with ^{} in tag name
+            tag2 = tag[10:]
             res.append((rev, tag2))
         return res
 
-    def co(self, url, dest_dir):
-        """Execute 'svn co ${url} ${dest_dir}'."""
-        print >>sys.stderr, 'Executing "%s %s %s %s"' % (SVN_BINARY, 'co', url, dest_dir)
-        popen = subprocess.Popen([SVN_BINARY, 'co', url, dest_dir])
-        popen.wait()
+    def checkout(self, path, treeish):
+        """Execute "git checkout" in the checkout at path."""
+        # Executing git checkout.
+        args = [GIT_BINARY, 'checkout', treeish]
+        print('Executing "%s" in "%s"' % (' '.join(args), path), file=sys.stderr)
+        popen = subprocess.Popen(args, cwd=path)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print('ERROR during git call.', file=sys.stderr)
+        # Executing force resetting to current revision.
+        args = [GIT_BINARY, 'rm', '--cached', '.']
+        print('Executing "%s" in "%s"' % (' '.join(args), path), file=sys.stderr)
+        popen = subprocess.Popen(args, cwd=path)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print('ERROR during git call.', file=sys.stderr)
+        args = [GIT_BINARY, 'reset', '--hard']
+        print('Executing "%s" in "%s"' % (' '.join(args), path), file=sys.stderr)
+        popen = subprocess.Popen(args, cwd=path)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print('ERROR during git call.', file=sys.stderr)
         return popen.returncode
+
+    def archive(self, path, treeish, output, prefix):
+        """Execute git archive."""
+        args = [GIT_BINARY, 'archive', '--prefix=%s/' % prefix, '--output=%s' % output, treeish]
+        print('Executing "%s" in "%s"' % (' '.join(args), path), file=sys.stderr)
+        popen = subprocess.Popen(args, cwd=path)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print('ERROR during git call.', file=sys.stderr)
+        return popen.returncode
+
+    def clone(self, url, tag, dest_dir):
+        """Execute 'git clone ${url} ${dest_dir}' and then get specific tag."""
+        # Clone repository
+        args = [GIT_BINARY, 'clone', url, dest_dir]
+        print('Executing "%s"' % ' '.join(args), file=sys.stderr)
+        popen = subprocess.Popen(args)
+        popen.wait()
+        print('  => %d' % popen.returncode, file=sys.stderr)
+        if popen.returncode != 0:
+            return popen.returncode
+        return self.checkout(dest_dir, tag)
 
 
 class Package(object):
@@ -79,9 +123,10 @@ class Package(object):
 class BuildStep(object):
     """Management of one build step."""
 
-    def __init__(self, path, name, version, os, word_size, pkg_formats,
-                 svn_url, make_args, options, tmp_dir=None):
+    def __init__(self, path, treeish, name, version, os, word_size, pkg_formats,
+                 repository_url, make_args, options, tmp_dir=None):
         self.base_path = path
+        self.treeish = treeish
         self.name = name
         self.version = version  # TODO(holtgrew): Unused, overwritten below.
         self.major_version = int(version.split('.')[0])
@@ -99,7 +144,7 @@ class BuildStep(object):
         else:
             self.packages = [Package(name, self.version, os, word_size, f)
                              for f in pkg_formats]
-        self.svn_url = svn_url
+        self.repository_url = repository_url
         self.make_args = make_args
         self.options = options
         # If set then this is used instead of a random name in TMPDIR.
@@ -117,10 +162,10 @@ class BuildStep(object):
                 package_path = package_path.replace('Darwin', 'Mac')
             if not os.path.exists(package_path):
                 if self.options.verbosity >= 1:
-                    print >>sys.stderr, 'File %s does not exist yet.' % package_path
+                    print('File %s does not exist yet.' % package_path, file=sys.stderr)
                 return True
             elif self.options.verbosity >= 1:
-                print >>sys.stderr, 'File %s exists.' % package_path
+                print('File %s exists.' % package_path, file=sys.stderr)
         return False
 
     def copyArchives(self, build_dir):
@@ -131,7 +176,7 @@ class BuildStep(object):
                 to = os.path.join(self.base_path, p.name, os.path.basename(from_))
                 if not os.path.exists(os.path.dirname(to)):  # Create directory if necessary.
                     os.makedirs(os.path.dirname(to))
-                print >>sys.stderr, "Copying %s => %s" % (from_, to)
+                print("Copying %s => %s" % (from_, to), file=sys.stderr)
                 if 'x86' in to and 'x86_64' not in to:  # fix processor name
                     to = to.replace('x86', 'x86_64')
                 if 'win32' in to or 'win64' in to:  # fix OS name
@@ -140,7 +185,7 @@ class BuildStep(object):
                     to = to.replace('Darwin', 'Mac')
                 shutil.copyfile(from_, to)
             else:
-                print >>sys.stderr, '%s does not exist (not fatal)' % from_
+                print('%s does not exist (not fatal)' % from_, file=sys.stderr)
 
     def buildSeqAnRelease(self, checkout_dir, build_dir):
         """Build SeqAn release: Apps and library build."""
@@ -148,7 +193,7 @@ class BuildStep(object):
         #
         # Create build directory.
         if not os.path.exists(build_dir):
-            print >>sys.stderr, 'Creating build directory %s' % (build_dir,)
+            print('Creating build directory %s' % (build_dir,), file=sys.stderr)
             os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,
@@ -165,76 +210,76 @@ class BuildStep(object):
             cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=x86_64')
             if self.os == 'Windows':
                 cmake_args += ['-G', 'Visual Studio 10 Win64']
-        print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        print('Executing CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         # Execute Make.
         cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release'] + self.make_args
-        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         # Copy over the archives.
         self.copyArchives(build_dir)
         # Remove build directory.
         if not self.options.keep_build_dir:
-            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            print('Removing build directory %s' % build_dir, file=sys.stderr)
             shutil.rmtree(build_dir)
         # Build seqan-library.
         #
         # Create build directory.
         if not os.path.exists(build_dir):
-            print >>sys.stderr, "Creating build directory %s" % (build_dir,)
+            print("Creating build directory %s" % (build_dir,), file=sys.stderr)
             os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,
                       "-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY"]
-        print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        print('Executing CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         # Build Docs
         cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'docs'] + self.make_args
-        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make docs call.'
-            print out_data
-            print err_data
+            print('ERROR during make docs call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
         # Execute Make.
         cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
-        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         self.copyArchives(build_dir)
         # Remove build directory.
         if not self.options.keep_build_dir:
-            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            print('Removing build directory %s' % build_dir, file=sys.stderr)
             shutil.rmtree(build_dir)
 
     def buildApp(self, checkout_dir, build_dir):
         """Build an application."""
         # Create build directory.
-        print >>sys.stderr, "Creating build directory %s" % (build_dir,)
+        print("Creating build directory %s" % (build_dir,), file=sys.stderr)
         if not os.path.exists(build_dir):
             os.mkdir(build_dir)
         # Execute CMake.
@@ -254,37 +299,37 @@ class BuildStep(object):
             cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=x86_64')
             if self.os == 'Windows':
                 cmake_args += ['-G', 'Visual Studio 10 Win64']
-        print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        print('Executing CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         #for key in sorted(os.environ.keys()):
-        #    print key, ': ', os.environ[key]
+        #    print(key, ': ', os.environ[key], file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         # Build and package project.
         make_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release']
         if self.options.verbosity > 1:
             make_args.insert(1, 'VERBOSE=1')
-        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(make_args),)
+        print('Building with CMake: "%s"' % (' '.join(make_args),), file=sys.stderr)
         popen = subprocess.Popen(make_args, cwd=build_dir)
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
+            print('ERROR during make call.', file=sys.stderr)
+            print(out_data, file=sys.stderr)
+            print(err_data, file=sys.stderr)
             return 1
         # Copy out archives.
         self.copyArchives(build_dir)
         # Remove build directory.
         if not self.options.keep_co_dir:
-            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            print('Removing build directory %s' % build_dir, file=sys.stderr)
             shutil.rmtree(build_dir)
 
     def tmpDir(self):
-      print 'self.tmp_dir = %s' % self.tmp_dir
+      print('self.tmp_dir = %s' % self.tmp_dir, file=sys.stderr)
       if self.tmp_dir:
         if not os.path.exists(self.tmp_dir):
           os.makedirs(self.tmp_dir)
@@ -296,51 +341,50 @@ class BuildStep(object):
         """Execute build step."""
         # Create temporary directory.
         tmp_dir = self.tmpDir()
-        print >>sys.stderr, 'Temporary directory is %s' % (tmp_dir,)
-        # Create SVN checkout in temporary directory.
-        checkout_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url))
-        print >>sys.stderr, 'Creating checkout in %s' % checkout_dir
-        svn = MinisculeSvnWrapper()
-        svn.co(self.svn_url, checkout_dir)
+        print('Temporary directory is %s' % (tmp_dir,), file=sys.stderr)
+        # Create Git checkout in temporary directory.
+        checkout_dir = os.path.join(tmp_dir, os.path.basename(self.repository_url))
+        print('Creating checkout in %s' % checkout_dir, file=sys.stderr)
+        git = MinisculeGitWrapper()
+        git.clone(self.repository_url, self.treeish, checkout_dir)
         # Create build directory.
         suffix = '-build-%s-%s' % (self.os, self.word_size)
-        build_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url) + suffix)
+        build_dir = os.path.join(tmp_dir, os.path.basename(self.repository_url) + suffix)
         if os.path.exists(build_dir) and not self.options.keep_build_dir:
-          print >>sys.stderr, 'Removing build directory %s' % (build_dir,)
-          shutil.rmtree(build_dir)
+            print('Removing build directory %s' % (build_dir,), file=sys.stderr)
+            shutil.rmtree(build_dir)
         # Perform the build.  We have to separate between app and whole SeqAn releases.
         if self.name == 'seqan':
             self.buildSeqAnRelease(checkout_dir, build_dir)
         else:
             self.buildApp(checkout_dir, build_dir)
         if not self.options.keep_co_dir:
-            print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
+            print('Removing checkout directory %s' % (checkout_dir,), file=sys.stderr)
             shutil.rmtree(checkout_dir)
         # Remove temporary directory again.
         if self.tmp_dir and not self.options.keep_tmp_dir:
             # Only remove if not explicitely given and not forced to keep.
-            print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
+            print('Removing temporary directory %s' % (tmp_dir,), file=sys.stderr)
             shutil.rmtree(tmp_dir)
 
 
 def workTags(options):
     """Run the individual steps for tags."""
     # Get the revisions and tag names.
-    svn = MinisculeSvnWrapper()
-    revs_tags = [(rev, tag) for (rev, tag) in svn.ls(options.tags_url)
-                 if rev >= options.start_revision and
-                    '-' in tag]
+    git = MinisculeGitWrapper()
+    revs_tags = [(rev, tag) for (rev, tag) in git.lsRemote(options.repository_url)
+                 if re.match(TAG_RE, tag)]
     # Enumerate all package names that we could enumerate.
-    print 'revs_tags = %s' % revs_tags
-    print 'word_sizes = %s' % options.word_sizes
+    print('revs_tags = %s' % revs_tags, file=sys.stderr)
+    print('word_sizes = %s' % options.word_sizes, file=sys.stderr)
     for rev, tag in revs_tags:
         name, version = tag.rsplit('-', 1)
+        version = version[1:]
         for word_size in options.word_sizes.split(','):
             # Create build step for this package name.
             pkg_formats = options.package_formats.split(',')
-            svn_url = options.tags_url + '/' + tag
-            build_step = BuildStep(options.package_db, name, version, options.os,
-                                   word_size, pkg_formats, svn_url,
+            build_step = BuildStep(options.package_db, tag, name, version, options.os,
+                                   word_size, pkg_formats, options.repository_url,
                                    options.make_args.split(), options, options.tmp_dir)
             # Check whether we need to build this.
             if not build_step.buildNeeded():
@@ -353,17 +397,17 @@ def workTags(options):
 def workTrunk(options):
     """Run the individual steps for the trunk with fake tag name."""
     # Get the revisions and tag names.
-    svn = MinisculeSvnWrapper()
+    git = MinisculeGitWrapper()
     # Enumerate all package names that we could enumerate.
-    print 'fake tag = %s' % options.build_trunk_as
-    print 'word_sizes = %s' % options.word_sizes
+    print('fake tag = %s' % options.build_trunk_as, file=sys.stderr)
+    print('word_sizes = %s' % options.word_sizes, file=sys.stderr)
     name, version = options.build_trunk_as.rsplit('-', 1)
+    version = version[1:]
     for word_size in options.word_sizes.split(','):
         # Create build step for this package name.
         pkg_formats = options.package_formats.split(',')
-        svn_url = options.trunk_url
-        build_step = BuildStep(options.package_db, name, version, options.os,
-                               word_size, pkg_formats, svn_url,
+        build_step = BuildStep(options.package_db, 'master', name, version, options.os,
+                               word_size, pkg_formats, options.repository_url,
                                options.make_args.split(), options, options.tmp_dir)
         # Check whether we need to build this.
         if not build_step.buildNeeded():
@@ -376,57 +420,45 @@ def workTrunk(options):
 def workSrcTar(options):
     """Build the source tarball."""
     # Get the revisions and tag names.
-    svn = MinisculeSvnWrapper()
-    revs_tags = [(rev, tag) for (rev, tag) in svn.ls(options.tags_url)
-                 if rev >= options.start_revision and
-                    '-' in tag]
+    git = MinisculeGitWrapper()
+    revs_tags = [(rev, tag) for (rev, tag) in git.lsRemote(options.repository_url)
+                 if re.match(TAG_RE, tag)]
     # Enumerate all package names that we could enumerate.
     for rev, tag in revs_tags:
         # Build URL.
-        svn_url = os.path.join(options.tags_url, tag)
         name, version = tag.rsplit('-', 1)
+        version = version[1:]  # remove prefix "v"
         if name != 'seqan':
-          continue  # only build source tarballs for seqan
-        # Destination file name
-        file_name = '%s-src-%s.tar.gz' % (name, version)
+            continue  # only build source tarballs for seqan
         # Create destination file name.
+        file_name = '%s-src-%s.tar.gz' % (name, version)
         dest = os.path.join(options.package_db, '%s-src' % name, file_name)
         # Check whether we need to rebuild.
         if os.path.exists(dest):
-          print >>sys.stderr, 'Skipping %s; already exists.' % dest
-          continue
+            print('Skipping %s; already exists.' % dest, file=sys.stderr)
+            continue
         # Create temporary directory.
         if options.tmp_dir:
-          if not os.path.exists(options.tmp_dir):
-            os.makedirs(options.tmp_dir)
-          tmp_dir = options.tmp_dir
+            if not os.path.exists(options.tmp_dir):
+                os.makedirs(options.tmp_dir)
+            tmp_dir = options.tmp_dir
         else:
-          tmp_dir = tempfile.mkdtemp()
-        print >>sys.stderr, 'Temporary directory is %s' % (tmp_dir,)
-        # Create SVN checkout in temporary directory.
-        checkout_dir = os.path.join(tmp_dir, os.path.basename(svn_url))
-        print >>sys.stderr, 'Creating checkout in %s' % checkout_dir
+            tmp_dir = tempfile.mkdtemp()
+        print('Temporary directory is %s' % tmp_dir, file=sys.stderr)
+        # Create git checkout in temporary directory.
+        checkout_dir = os.path.join(tmp_dir, tag)
+        print('Creating checkout in %s' % checkout_dir, file=sys.stderr)
         from_ = os.path.join(tmp_dir, file_name)
-        args = ['tar', '--exclude=.svn', '-z', '-c', '-f', from_, os.path.basename(svn_url)]
-        print ' '.join(args)
-        svn = MinisculeSvnWrapper()
-        svn.co(svn_url, checkout_dir)
-        # Create tarball.
-        popen = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=tmp_dir)
-        out_data, err_data = popen.communicate()
-        if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during SVN call.'
-            return 1
+        git.clone(options.repository_url, tag, checkout_dir)
         # Create target directory if it does not exist yet.
         if not os.path.exists(os.path.dirname(dest)):  # Create directory if necessary.
             os.makedirs(os.path.dirname(dest))
-        # Create tarball in target directory.
-        print  >>sys.stderr, 'Copying %s => %s' % (from_, dest)
-        shutil.copyfile(from_, dest)
+        # Create tarball.
+        git.archive(checkout_dir, tag, dest, prefix='%s-%s' % (name, version))
         # Remove temporary directory again.
         if tmp_dir and not options.keep_tmp_dir:
             # Only remove if not explicitely given and not forced to keep.
-            print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
+            print('Removing temporary directory %s' % (tmp_dir,), file=sys.stderr)
             shutil.rmtree(tmp_dir)
     return 0
 
@@ -445,20 +477,15 @@ def main():
     """Program entry point."""
     # Parse Arguments.
     parser = optparse.OptionParser()
-    parser.add_option('-t', '--tags-url', dest='tags_url',
-                      default=DEFAULT_TAGS_URL,
-                      help='This URL is searched for tags.', metavar='URL')
-    parser.add_option('--trunk-url', dest='trunk_url',
-                      default=DEFAULT_TRUNK_URL,
-                      help='This URL is searched for trunk.', metavar='URL')
+
+    parser.add_option('-u', '--repository-url', default=REPOSITORY_URL,
+                      help='The git repository URL.', metavar='URL')
     parser.add_option('--package-db', dest='package_db', type='string',
                       default=DEFAULT_PACKAGE_DB,
                       help='Path the directory with the packages.')
+
     parser.add_option('--src-tar', dest='src_tar', action='store_true',
                       help='If specified then only the src tarball will be created')
-    parser.add_option('-s', '--start-revision', dest='start_revision',
-                      default=DEFAULT_START_REVISION,
-                      type='int', help='Ignore all tags with smaller revision.')
     parser.add_option('-v', dest='verbosity', action='count', default=1,
                       help='Increase verbosity.')
     parser.add_option('--package-formats', dest='package_formats',
@@ -488,6 +515,8 @@ def main():
         parser.error('No arguments expected!')
         return 1
 
+    options.package_db = os.path.abspath(options.package_db)
+
     # Fire up work.
-    print >>sys.stderr, 'Running SeqAn Auto Builder'
+    print('Running SeqAn Auto Builder', file=sys.stderr)
     return work(options)
