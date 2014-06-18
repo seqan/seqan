@@ -1519,7 +1519,7 @@ appendValue(T const & me,
     appendValue(me, _value, typename DefaultOverflowImplicit<T const>::Type());
 }
 
-#endif
+#endif  // #ifndef SEQAN_CXX11_STANDARD
 
 // --------------------------------------------------------------------------
 // Function insert()
