@@ -132,8 +132,6 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionHorizontal const &)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TCell;
-
     if(!isHorizontalExtension(prevCell, DynamicGapExtensionHorizontal()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV);
     return TraceBitMap_::NONE;
@@ -149,8 +147,6 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOn<TTraceConfig> const &,
                       RecursionDirectionHorizontal const &)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TCell;
-
     if (!isGapExtension(prevCell, DynamicGapExtensionHorizontal()))
     {
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV);
@@ -173,8 +169,6 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionVertical const &)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TCell;
-
     if(!isVerticalExtension(prevCell, DynamicGapExtensionVertical()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV);
     return TraceBitMap_::NONE;
@@ -190,8 +184,6 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOn<TTraceConfig> const &,
                       RecursionDirectionVertical const &)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TCell;
-
     if (!isGapExtension(prevCell, DynamicGapExtensionVertical()))
     {
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV);

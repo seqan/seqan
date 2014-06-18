@@ -146,7 +146,6 @@ inline void _setBit(DPCell_<TScoreValue, DynamicGaps> & cell,
                     TFlag const & /*flag*/,
                     DynamicGapExtensionVertical const & /*tag*/)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TDPCell;
     if (IsSameType<TFlag, True>::VALUE)
         cell._flagMask |= MASK_VERTICAL_GAP;
     else
@@ -158,7 +157,6 @@ inline void _setBit(DPCell_<TScoreValue, DynamicGaps> & cell,
                     TFlag const & /*flag*/,
                     DynamicGapExtensionHorizontal const & /*tag*/)
 {
-    typedef DPCell_<TScoreValue, DynamicGaps> TDPCell;
     if (IsSameType<TFlag, True>::VALUE)
         cell._flagMask |= MASK_HORIZONTAL_GAP;
     else
