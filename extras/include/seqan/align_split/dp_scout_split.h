@@ -107,10 +107,13 @@ public:
 /**
  * Tracks the new score, if it is the new maximum.
  */
-template <typename TDPCell, typename TTraceMatrixNavigator>
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
 inline void
-_scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout, TDPCell const & activeCell,
-                TTraceMatrixNavigator const & navigator, bool isLastColumn = false, bool isLastRow = false)
+_scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn /*isLastColumn*/,
+                TIsLastRow /*isLastRow*/ )
 {
     //typedef typename Value<TDPCell>::Type TScoreValue;
     // Note that the underlying matrix has the coordinates flipped.  We use posH/posV as we would in pairwise alignments
@@ -122,7 +125,7 @@ _scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout, TDPCell const 
     i = std::max(i, _scoreOfCell(activeCell));
 
     // We track only the last row for the best traceback score.
-    if (isLastColumn || isLastRow)
+    if (TIsLastColumn::VALUE || TIsLastRow::VALUE)
     {
         typedef DPScout_<TDPCell, SplitAlignmentScout> TDPScout;
         typedef typename TDPScout::TParent TParent;
