@@ -132,7 +132,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionHorizontal const &)
 {
-    if(!isHorizontalExtension(prevCell, DynamicGapExtensionHorizontal()))
+    if(!isGapExtension(prevCell, DynamicGapExtensionHorizontal()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV);
     return TraceBitMap_::NONE;
 }
@@ -169,7 +169,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionVertical const &)
 {
-    if(!isVerticalExtension(prevCell, DynamicGapExtensionVertical()))
+    if(!isGapExtension(prevCell, DynamicGapExtensionVertical()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV);
     return TraceBitMap_::NONE;
 }
