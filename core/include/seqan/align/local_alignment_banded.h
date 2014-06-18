@@ -89,7 +89,11 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
                            int lowerDiag,
                            int upperDiag)
 {
-    return localAlignment(align, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
+    SEQAN_ASSERT(length(rows(align)) == 2u);
+    if (_usesAffineGaps(scoringScheme, source(row(align, 0)), source(row(align, 1))))
+        return localAlignment(align, scoringScheme, lowerDiag, upperDiag, AffineGaps());
+    else
+        return localAlignment(align, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
 // ----------------------------------------------------------------------------
@@ -126,7 +130,10 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                            int lowerDiag,
                            int upperDiag)
 {
-    return localAlignment(gapsH, gapsV, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
+    if (_usesAffineGaps(scoringScheme, source(gapsH), source(gapsV)))
+        return localAlignment(gapsH, gapsV, scoringScheme, lowerDiag, upperDiag, AffineGaps());
+    else
+        return localAlignment(gapsH, gapsV, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
 // ----------------------------------------------------------------------------
@@ -165,7 +172,12 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
                            int lowerDiag,
                            int upperDiag)
 {
-    return localAlignment(alignmentGraph, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
+    SEQAN_ASSERT(length(stringSet(alignmentGraph)) == 2u);
+
+    if (_usesAffineGaps(scoringScheme, stringSet(alignmentGraph)[0], stringSet(alignmentGraph)[1]))
+        return localAlignment(alignmentGraph, scoringScheme, lowerDiag, upperDiag, AffineGaps());
+    else
+        return localAlignment(alignmentGraph, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
 // ----------------------------------------------------------------------------
@@ -204,7 +216,12 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
                            int lowerDiag,
                            int upperDiag)
 {
-    return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, SmithWaterman());
+    SEQAN_ASSERT(length(strings) == 2u);
+
+    if (_usesAffineGaps(scoringScheme, strings[0], strings[1]))
+        return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, AffineGaps());
+    else
+        return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
 }  // namespace seqan

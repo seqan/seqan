@@ -54,7 +54,8 @@ bool _validateAlignment(TAlignment const & align,
 
     SEQAN_ASSERT_EQ(length(row(align,0)), length(row(align, 1)));
 
-    std::cerr << align << std::endl;
+    if (length(row(align, 0)) == 0u && length(row(align, 1) == 0u))
+        return true;
 
     TRowIterator itH = begin(row(align, 0), Standard());
     TRowIterator itV = begin(row(align, 1), Standard());
@@ -168,28 +169,17 @@ bool _validateAlignment(TAlignment const & align,
         }
     }
 
-    std::cout << "Is = " << score << std::endl;
-    std::cout << "Expected = " << eScore << std::endl;
     return eScore == score;
 }
 
-//template <typename TAlgorithm>
-//void
-
-template <typename TAlgorithm, typename TAlignConfig>
-void testDynamicGapInterfaces(TAlgorithm const & /*algorithm*/,
+template <typename TAlign, typename TAlgorithm, typename TAlignConfig>
+void testDynamicGapInterfaces(TAlign & alignObj,
+                              TAlgorithm const & /*algorithm*/,
                               TAlignConfig const & alignConfig,
                               int lDiag = 0,
                               int uDiag = 0)
 {
     using namespace seqan;
-
-    DnaString str1 = "AAAAACTACGTACGTTTCTGGCCCCC";  // A G T A G C T A C G T A C G T T T C T G G A T G A C
-    DnaString str2 = "CCCCCCACGTGTTACGTACGTAAAAA";   // G G T G A C A C G T G T T A C G T A C G T A A
-    Align<DnaString> alignObj;
-    resize(rows(alignObj), 2);
-    assignSource(row(alignObj, 0), str1);
-    assignSource(row(alignObj, 1), str2);
 
     Score<int, Simple> scoreScheme(2, -2, -1, -4);
 
@@ -213,6 +203,66 @@ void testDynamicGapInterfaces(TAlgorithm const & /*algorithm*/,
         else
             score = globalAlignment(alignObj, scoreScheme, alignConfig, lDiag, uDiag, DynamicGaps());
         SEQAN_ASSERT(_validateAlignment(alignObj, alignConfig, score, scoreScheme));
+    }
+}
+
+template <typename TAlgorithm, typename TAlignConfig>
+void testDynamicGapInterfaces(TAlgorithm const & algo,
+                              TAlignConfig const & alignConfig,
+                              int lDiag = 0,
+                              int uDiag = 0)
+{
+    using namespace seqan;
+
+    {
+        DnaString str1 = "AAAAACTACGTACGTTTCTGGCCCCC";  // A G T A G C T A C G T A C G T T T C T G G A T G A C
+        DnaString str2 = "CCCCCCACGTGTTACGTACGTAAAAA";   // G G T G A C A C G T G T T A C G T A C G T A A
+        Align<DnaString> alignObj;
+        resize(rows(alignObj), 2);
+        assignSource(row(alignObj, 0), str1);
+        assignSource(row(alignObj, 1), str2);
+        testDynamicGapInterfaces(alignObj, algo, alignConfig, lDiag, uDiag);
+    }
+
+    {
+        DnaString str1 = "AAAAACTACGTACGTTTCTGGCCCCC";
+        DnaString str2 = "CCCCCCACGTGTTACGTACGTAAAAA";
+        Align<DnaString> alignObj;
+        resize(rows(alignObj), 2);
+        assignSource(row(alignObj, 0), str1);
+        assignSource(row(alignObj, 1), str2);
+        testDynamicGapInterfaces(alignObj, algo, alignConfig, lDiag, uDiag);
+    }
+
+    {
+        DnaString str1 = "AAAAAGGGGTTTT";
+        DnaString str2 = "AAAGTT";
+        Align<DnaString> alignObj;
+        resize(rows(alignObj), 2);
+        assignSource(row(alignObj, 0), str1);
+        assignSource(row(alignObj, 1), str2);
+        testDynamicGapInterfaces(alignObj, algo, alignConfig, lDiag, uDiag);
+    }
+
+    {
+        DnaString str1 = "AAAAAATTTTTGGG";
+        DnaString str2 = "TTTTTTTTGGGGGGGG";
+        Align<DnaString> alignObj;
+        resize(rows(alignObj), 2);
+        assignSource(row(alignObj, 0), str1);
+        assignSource(row(alignObj, 1), str2);
+        testDynamicGapInterfaces(alignObj, algo, alignConfig, lDiag, uDiag);
+    }
+
+
+    {
+        DnaString str1 = "GGGGCTTTTTTAAAGAGCGCCCTTTTTTGGGG";
+        DnaString str2 = "AAAACTTTTTTGGTTTTTTAAAA";
+        Align<DnaString> alignObj;
+        resize(rows(alignObj), 2);
+        assignSource(row(alignObj, 0), str1);
+        assignSource(row(alignObj, 1), str2);
+        testDynamicGapInterfaces(alignObj, algo, alignConfig, lDiag, uDiag);
     }
 }
 
