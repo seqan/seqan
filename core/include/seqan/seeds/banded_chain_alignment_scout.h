@@ -283,6 +283,18 @@ _scoutBestScore(DPScout_<TDPCell, BandedChainAlignmentScout> &,
     //no-op
 }
 
+// Delegate.
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
+inline void
+_scoutBestScore(DPScout_<TDPCell, BandedChainAlignmentScout> & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn const & /**/,
+                TIsLastRow const & /**/)
+{
+    _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn::VALUE, TIsLastRow::VALUE);
+}
+
 // ----------------------------------------------------------------------------
 // Function maxScore()
 // ----------------------------------------------------------------------------

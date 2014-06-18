@@ -107,6 +107,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, Navig
     navigator._activeColIterator = begin(dpMatrix, Standard());
     navigator._prevColIterator = navigator._activeColIterator;
     navigator._laneLeap = 1 - _dataLengths(dpMatrix)[DPMatrixDimension_::VERTICAL];
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // Initializes the navigator for banded alignments
@@ -138,6 +139,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, Navig
         navigator._activeColIterator = begin(dpMatrix, Standard()) + length(dpMatrix, DPMatrixDimension_::VERTICAL) + navigator._laneLeap - 1;
     }
     navigator._prevColIterator = navigator._activeColIterator;
+    assignValue(navigator._activeColIterator, TValue());
 }
 
 // ----------------------------------------------------------------------------
