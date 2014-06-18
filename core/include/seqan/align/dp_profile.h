@@ -82,6 +82,8 @@ typedef Tag<AlignmentSplitBreakpoint_> SplitBreakpointAlignment;
 template <typename TSpec = FreeEndGaps_<> >
 struct GlobalAlignment_;
 
+typedef GlobalAlignment_<> DPGlobal;
+
 // ----------------------------------------------------------------------------
 // Class SuboptimalAlignment
 // ----------------------------------------------------------------------------
@@ -103,6 +105,8 @@ typedef Tag<AlignmentSuboptimal_> SuboptimalAlignment;
 template <typename TSpec = Default>
 struct LocalAlignment_;
 
+typedef LocalAlignment_<> DPLocal;
+typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 
 // ----------------------------------------------------------------------------
 // Class TraceBitMap_
@@ -238,6 +242,21 @@ typedef Tag<DPLastRow_> DPLastRow;
 
 struct DPLastColumn_;
 typedef Tag<DPLastColumn_> DPLastColumn;
+
+template <typename TDPType, typename TBand, typename TFreeEndGaps = FreeEndGaps_<False, False, False, False>,
+          typename TTraceConfig = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > >
+class AlignConfig2
+{
+public:
+    TBand _band;
+
+    AlignConfig2() : _band()
+    {}
+
+    template <typename TPosition>
+    AlignConfig2(TPosition const & lDiag, TPosition const & uDiag) : _band(lDiag, uDiag)
+    {}
+};
 
 // ============================================================================
 // Metafunctions

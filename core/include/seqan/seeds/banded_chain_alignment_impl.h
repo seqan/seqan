@@ -379,7 +379,8 @@ _applyBandedChainTracking(TDPScout & scout,
 {
     unsigned result = BandedChainTracking::OPTION_INIT;
     _determineTrackingOptions(result, scout, traceMatrixNavigator, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
-    _scoutBestScore(scout, activeCell, traceMatrixNavigator, (result & BandedChainTracking::OPTION_IS_LAST_COLUMN),
+    _scoutBestScore(scout, activeCell, traceMatrixNavigator,
+                    (result & BandedChainTracking::OPTION_IS_LAST_COLUMN),
                     (result & BandedChainTracking::OPTION_IS_LAST_ROW),
                     (result & BandedChainTracking::OPTION_STORE_INIT_COLUMN),
                     (result & BandedChainTracking::OPTION_STORE_INIT_ROW));
@@ -836,7 +837,8 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
         if (gridEnd.i1 == length(seqH) && gridEnd.i2 == length(seqV))   // Standard global alignment problem.
         {
             resize(localTraceSet, 1);
-            score = _computeAlignment(localTraceSet[0], infixH, infixV, scoreSchemeGap, band,
+            DPScoutState_<Default> noScout;
+            score = _computeAlignment(localTraceSet[0], noScout, infixH, infixV, scoreSchemeGap, band,
                       DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGaps, TracebackOn<TTracebackConfig> >());
         }
         else
@@ -1143,6 +1145,27 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     if (!empty(localTraceSet))
         _glueTracebacks(globalTraceSet, localTraceSet);
     return score;
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeAlignment()                                    [DP-Wrapper]
+// ----------------------------------------------------------------------------
+
+template <typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
+          typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
+inline typename Value<TScoreScheme>::Type
+_computeAlignment(TTraceTarget & traceSegments,
+                  TScoutState & scoutState,
+                  TSequenceH const & seqH,
+                  TSequenceV const & seqV,
+                  TScoreScheme const & scoreScheme,
+                  DPBandConfig<TBandSwitch> const & band,
+                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+{
+    typedef typename Value<TScoreScheme>::Type TScoreValue;
+    typedef DPContext<TScoreValue, TGapScheme> TDPContext;
+    TDPContext dpContext;
+    return _computeAlignment(dpContext, traceSegments, scoutState, seqH, seqV, scoreScheme, band, dpProfile);
 }
 
 // ----------------------------------------------------------------------------

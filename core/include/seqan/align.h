@@ -122,11 +122,6 @@
 #include <seqan/align/dp_trace_segment.h>
 #include <seqan/align/dp_traceback_adaptor.h>
 
-// Ensures the backwards compatibility for the global interfaces of the
-// alignment algorithms. Based on the called function this selects the
-// correct parameters for the new alignment module.
-#include <seqan/align/dp_setup.h>
-
 // Implements the different recursion formula of the alignment algorithms.
 #include <seqan/align/dp_formula.h>
 #include <seqan/align/dp_formula_linear.h>
@@ -148,6 +143,12 @@
 #include <seqan/align/dp_matrix_navigator_score_matrix.h>
 #include <seqan/align/dp_matrix_navigator_score_matrix_sparse.h>
 #include <seqan/align/dp_matrix_navigator_trace_matrix.h>
+
+// Ensures the backwards compatibility for the global interfaces of the
+// alignment algorithms. Based on the called function this selects the
+// correct parameters for the new alignment module.
+#include <seqan/align/dp_context.h>
+#include <seqan/align/dp_setup.h>
 
 // The actual implementations of the traceback and the dynamic programming that
 // is used by all different alignment algorithms.

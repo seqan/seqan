@@ -31,8 +31,8 @@
 
 
 
-//    #define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
-//
+#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
+
 //    // currently, consensus works only without indels
 //    #ifndef FIONA_OVERLAP_WITH_EDIT_DISTANCE
 //        #define FIONA_CONSENSUS
