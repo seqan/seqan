@@ -58,6 +58,11 @@
 #include <numeric>
 #endif // PLATFORM_GCC
 
+#ifdef SEQAN_CXX11_STANDARD
+#include <atomic>
+#include <thread>
+#endif // SEQAN_CXX11_STANDARD
+
 // ============================================================================
 // Module Headers
 // ============================================================================
@@ -69,6 +74,7 @@
 // Atomic operations.
 #include <seqan/parallel/parallel_atomic_primitives.h>
 #include <seqan/parallel/parallel_atomic_misc.h>
+#include <seqan/parallel/parallel_lock.h>
 
 // Splitting.
 #include <seqan/parallel/parallel_splitting.h>
@@ -76,7 +82,8 @@
 // Parallel variants of basic algorithms
 #include <seqan/parallel/parallel_algorithms.h>
 
-// Thread-safe / lock-free sequence operations.
+// Thread-safe / lock-free container operations.
 #include <seqan/parallel/parallel_sequence.h>
+#include <seqan/parallel/parallel_queue.h>
 
 #endif  // SEQAN_PARALLEL_H_
