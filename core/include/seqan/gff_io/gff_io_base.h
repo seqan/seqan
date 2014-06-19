@@ -331,7 +331,10 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     skipUntil(iter, NotFunctor<IsWhitespace>());
 
     if (value(iter) == '=')
+    {
         skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+    }
 
     if (value(iter) == '"')
     {
