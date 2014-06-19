@@ -402,6 +402,38 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 }
 
 // ----------------------------------------------------------------------------
+// Function appendValue()
+// ----------------------------------------------------------------------------
+
+///.Function.appendValue.param.target.type:Spec.Block String
+
+template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
+inline void
+appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG value, Tag<TExpand> tag)
+{
+    // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
+    typedef String<TTargetValue, Block<SPACE> > TString;
+    typedef typename Size<TString>::Type        TSize;
+
+    if (me.lastValue == me.blockLast)
+    {
+        TSize last = length(me.blocks);
+        resize(me.blocks, last + 1, tag);
+        allocate(me.alloc, me.blocks[last], 1);
+        valueConstruct(me.blocks[last]);
+        me.lastValue = me.blockFirst = begin(*me.blocks[last]);
+        me.blockLast = (me.blockFirst + (SPACE - 1));
+        back(me.blocks)->data_length += 1;
+    }
+    else
+    {
+        ++me.lastValue;
+        back(me.blocks)->data_length += 1;
+    }
+    valueConstruct(me.lastValue, SEQAN_FORWARD(TValue, value));
+}
+
+// ----------------------------------------------------------------------------
 // Function append()
 // ----------------------------------------------------------------------------
 
@@ -413,34 +445,6 @@ append(String<TValue, Block<SPACE> >& me, TSource const& source, Tag<TExpand> /*
     typedef typename Iterator<TSource const, Standard>::Type TIter;
     for(TIter it = begin(source, Standard()); !atEnd(it, source); goNext(it))
         appendValue(me, *it);
-}
-
-// ----------------------------------------------------------------------------
-// Function appendValue()
-// ----------------------------------------------------------------------------
-
-///.Function.appendValue.param.target.type:Spec.Block String
-
-template<typename TValue, size_t SPACE, typename TVal, typename TExpand>
-inline void
-appendValue(String<TValue, Block<SPACE> >& me, TVal const& source, Tag<TExpand> tag)
-{
-    // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
-    SEQAN_CHECKPOINT;
-    if (me.lastValue == me.blockLast) {
-        typename Size< String<TValue, Block<SPACE> > >::Type last = length(me.blocks);
-
-        resize(me.blocks, last + 1, tag);
-        allocate(me.alloc, me.blocks[last], 1);
-        valueConstruct(me.blocks[last]);
-        me.lastValue = me.blockFirst = begin(*me.blocks[last]);
-        me.blockLast = (me.blockFirst + (SPACE - 1));
-        back(me.blocks)->data_length += 1;
-    } else {
-        ++me.lastValue;
-        back(me.blocks)->data_length += 1;
-    }
-    valueConstruct(me.lastValue, source);
 }
 
 // ----------------------------------------------------------------------------
