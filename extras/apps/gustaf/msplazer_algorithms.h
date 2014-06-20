@@ -325,7 +325,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 
     // Output values for compatibility check: do breakpoint evaluation, insert edge into graph,
     // found gap --> stop iterating if gap is too big (overlap in read)
-    bool doBP, insertEdge = false;
+    bool doBP, insertEdge = false, refOrder;
     // Penalties
     int diffDBPen, diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Terminating condition for taking the next snd match for comparison:
@@ -364,6 +364,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
             // std::cout << "chain matches " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
             // Returns false, if next match is def. not compatible anymore
             takeNextMatch = _checkMatchComp(m1Begin, m1End, m2Begin, m2End, doBP, insertEdge, msplazerOptions);
+	    refOrder = true;
 
             //std::cout << "insertEdge: " << insertEdge << " doBP: " << doBP << std::endl;
             // match is compatible
@@ -377,9 +378,9 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 diffStrandPen =
                     (diffDBPen > 0 || _checkMatchStrands(stMatch1, stMatch2)) ? 0 : msplazerOptions.diffStrandPen;
                 // Different order in reference than in read penalty
+		refOrder = _checkMatchOrderInDB(stMatch1, stMatch2);
                 diffOrderPen =
-                    (diffDBPen > 0 || diffStrandPen > 0 ||
-                     _checkMatchOrderInDB(stMatch1, stMatch2)) ? 0 : msplazerOptions.diffOrderPen;
+                    (diffDBPen > 0 || diffStrandPen > 0 || refOrder) ? 0 : msplazerOptions.diffOrderPen;
                 // Penalty if there are no confirming mate matches
                 noMateMatchesPen =
                     _checkMateMatches(stMatch2, queryMatches.matches, chain, msplazerOptions) ? 0 : msplazerOptions.noMateMatchesPen;
@@ -470,8 +471,10 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 // Imprecise breakpoint?
                 // if (!doBP) bp.imprecise = true;
 
+		std::cout << bp << std::endl;
+		std::cout << stMatch1 << stMatch2 << std::endl;
                 // Returns true for insertion type, get insertion infix then
-                if (setSVType(bp))
+                if (setSVType(bp, refOrder))
                 {
                     if (stMatch1.end2 < stMatch2.begin2)
                     {
@@ -482,6 +485,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                         setInsertionSeq(bp, inSeq);
                     }
                 }
+		std::cout << bp << std::endl;
                 // TODO(ktrappe): needs adjustment of positions?
                 if (bp.svtype == TBreakpoint::DISPDUPLICATION && _isTandemOverlap(stMatch1.begin1, startSeqPos, endSeqPos, msplazerOptions.tandemThresh))
                 {
@@ -530,7 +534,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
     int diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Output values for compatibility check: do breakpoint evaluation, insert edge into graph,
     // found gap --> stop iterating if gap is too big (overlap in read)
-    bool doBP, insertEdge, swap;
+    bool doBP, insertEdge, swap, refOrder;
     // Breakpoint parameters
     // edit distance
     // edit distance with affine gap cost (can improve alignment around split points in present of gaps)
@@ -555,6 +559,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
         for (unsigned m2 = m1 + 1; m2 < length(queryMatches.matches); ++m2)
         {
             swap = false;
+	    refOrder = true;
             // /////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Compatibility check
             TMatch * stMatch2 = &queryMatches.matches[m2];
@@ -588,10 +593,10 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     diffStrandPen = (_checkMatchStrands(*stMatch1, *stMatch2)) ? 0 : msplazerOptions.diffStrandPen;
                     // Different order in reference than in read penalty
                     diffOrderPen = 0;
+		    refOrder = _checkMatchOrderInDB(*stMatch1, *stMatch2);
                     if (swap)
                         diffOrderPen =
-                            (diffStrandPen > 0 ||
-                             _checkMatchOrderInDB(*stMatch1, *stMatch2)) ? 0 : msplazerOptions.diffOrderPen;
+                            (diffStrandPen > 0 || refOrder) ? 0 : msplazerOptions.diffOrderPen;
                     // Penalty if there are no confirming mate matches
                     noMateMatchesPen =
                         _checkMateMatches(*stMatch2, queryMatches.matches, chain, msplazerOptions) ? 0 : msplazerOptions.noMateMatchesPen;
@@ -697,7 +702,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     // if (!doBP) bp.imprecise = true;
 
                     // Set SV type of breakpoint, returns true if SV type is "insertion", if so, compute inserted sequence and assign to bp
-                    if (setSVType(bp))
+                    if (setSVType(bp, refOrder))
                     {
                         // TSequence inSeq;
                         TInfix inSeq;
@@ -710,6 +715,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         else
                             setInsertionSeq(bp, inSeq);
                     }
+		    std::cout << "Reference " << bp << std::endl;
 
                     // Put breakpoint on corresponding edge in breakpoint graph, overwrite existing bp if new one better (smaller cargo)
                     bool artificialBP = _artificialBP(*stMatch1, *stMatch2, chain);
@@ -1019,7 +1025,7 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
     if (bp.svtype == TBreakpoint::DELETION && tempBP.svtype == TBreakpoint::DELETION)
     {
         // If startPos of bp is equal to endPos of tempBP, bp is upstream of tempBP, they form the translocation
-        // startPos=tempBP.startPos, middlePos=tempBP.endPos, endPos=bp.endPos
+        // startPos=tempBP.startPos, middlePos=min(tempBP.endPos,bp.startPos), endPos=bp.endPos
         if (_posInSameRange(bp.startSeqPos, tempBP.endSeqPos, bpPosRange))
         {
             TBreakpoint translBP(tempBP.startSeqId,
@@ -1032,8 +1038,8 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
                                bp.readEndPos
                               );
             translBP.svtype = TBreakpoint::TRANSLOCATION;
-            translBP.dupMiddlePos = tempBP.startSeqPos;
-            translBP.midPosId = tempBP.startSeqId;
+            translBP.dupMiddlePos = std::min(tempBP.endSeqPos,bp.startSeqPos);
+            translBP.midPosId = tempBP.endSeqId;
             translBP.translSuppStartPos = true;
             translBP.translSuppEndPos = true;
             appendSupportId(translBP, bp.supportIds);
@@ -1049,7 +1055,7 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
             return true;
         }
         // If startPos of tempBP is equal to endPos of bp, bp is downstream of tempBP, they form the translocation
-        // startPos=bp.startPos, middlePos=bp.endPos, endPos=tempBP.endPos
+        // startPos=bp.startPos, middlePos=min(bp.endPos,tempBP.startPos), endPos=tempBP.endPos
         if (_posInSameRange(bp.endSeqPos, tempBP.startSeqPos, bpPosRange))
         {
             TBreakpoint translBP(bp.startSeqId,
@@ -1062,7 +1068,7 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
                                tempBP.readEndPos
                               );
             translBP.svtype = TBreakpoint::TRANSLOCATION;
-            translBP.dupMiddlePos = bp.endSeqPos;
+            translBP.dupMiddlePos = std::min(bp.endSeqPos, tempBP.startSeqPos);
             translBP.midPosId = bp.endSeqId;
             translBP.translSuppStartPos = true;
             translBP.translSuppEndPos = true;
@@ -1174,7 +1180,20 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         }
         else if (_similarBreakpoints(bp, tempBP, bpPosRange))
         {
-            bp.similar = tempBP.similar;
+            appendSupportId(tempBP, bp.supportIds);
+	    if (bp.dupMiddlePos != maxValue<unsigned>() && tempBP.dupMiddlePos != maxValue<unsigned>()
+		&& bp.dupMiddlePos < tempBP.dupMiddlePos)
+            {
+                tempBP.dupMiddlePos = bp.dupMiddlePos; 
+	    }
+	    if (bp.startSeqPos < tempBP.startSeqPos)
+		tempBP.startSeqPos = bp.startSeqPos;
+	    if (bp.endSeqPos < tempBP.endSeqPos)
+		tempBP.endSeqPos = bp.endSeqPos;
+                //std::cout << "equ bps" << std::endl;
+            // Very special case, should be no other support likely
+            newBP = false;
+            //bp.similar = tempBP.similar;
             // Mark breakpoint to be similar via an ID
         }
         // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
