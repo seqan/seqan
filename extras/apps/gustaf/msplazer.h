@@ -684,7 +684,7 @@ inline void setSVType(TBreakpoint & bp, TSVType type)
  */
 
 template <typename TBreakpoint>
-inline bool setSVType(TBreakpoint & bp)
+inline bool setSVType(TBreakpoint & bp, bool refOrder)
 {
     // if insertion return 1; else return 0;
     if (bp.startSeqId != bp.endSeqId)
@@ -703,8 +703,27 @@ inline bool setSVType(TBreakpoint & bp)
         setSVType(bp, TBreakpoint::INVERSION);
         return false;
     }
+    /*
+    if (diffOrder)
+    {
+        if (bp.startSeqPos > bp.endSeqPos)
+        {
+            std::swap(bp.startSeqPos, bp.endSeqPos);
+            // bp.startSeqPos = bp.startSeqPos - 1;
+            // bp.endSeqPos = bp.endSeqPos + 1;
+        }
+        setSVType(bp, TBreakpoint::DISPDUPLICATION);
+        return false;
+    }
+    */
     if (bp.startSeqPos < bp.endSeqPos)
     {
+        if (!bp.startSeqStrand)
+        {
+            setSVType(bp, TBreakpoint::DISPDUPLICATION);
+            // setSVType(bp, TBreakpoint::TRANSLOCATION);
+            return false;
+        }
         setSVType(bp, TBreakpoint::DELETION);
         return false;
     }
@@ -713,14 +732,18 @@ inline bool setSVType(TBreakpoint & bp)
         std::swap(bp.startSeqPos, bp.endSeqPos);
         // bp.startSeqPos = bp.startSeqPos - 1;
         // bp.endSeqPos = bp.endSeqPos + 1;
-        if (bp.startSeqStrand)
+        //if (bp.startSeqStrand)
+        if (!refOrder && !bp.startSeqStrand)
         {
-            setSVType(bp, TBreakpoint::DISPDUPLICATION);
+            setSVType(bp, TBreakpoint::DELETION);
+            bp.revStrandDel = true;
+            // setSVType(bp, TBreakpoint::DISPDUPLICATION);
             // setSVType(bp, TBreakpoint::TRANSLOCATION);
             return false;
         }
-        setSVType(bp, TBreakpoint::DELETION);
-        bp.revStrandDel = true;
+        setSVType(bp, TBreakpoint::DISPDUPLICATION);
+        // setSVType(bp, TBreakpoint::DELETION);
+        // bp.revStrandDel = true;
         return false;
     }
     setSVType(bp, TBreakpoint::INSERTION);
