@@ -275,6 +275,10 @@ _copy(JstBranchStack_<TJournaledStringTree, TState> & stack,
     stack._activeId   = other._activeId;
 }
 
+// ----------------------------------------------------------------------------
+// Function createEntry()
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TState>
 inline typename Reference<JstBranchStack_<TJst, TState> >::Type
 createEntry(JstBranchStack_<TJst, TState> & stack)
@@ -304,6 +308,10 @@ createEntry(JstBranchStack_<TJst, TState> & stack)
     return stack._stack[id];
 }
 
+// ----------------------------------------------------------------------------
+// Function createInitialEntry()
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TState>
 inline typename Reference<JstBranchStack_<TJst, TState> >::Type
 createInitialEntry(JstBranchStack_<TJst, TState> & stack)
@@ -314,6 +322,9 @@ createInitialEntry(JstBranchStack_<TJst, TState> & stack)
     return *stack._currEntry;
 }
 
+// ----------------------------------------------------------------------------
+// Function pop()
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TState>
 inline void
@@ -327,12 +338,20 @@ pop(JstBranchStack_<TJst, TState> & stack)
     stack._currEntry = iter(stack._stack, bitScanReverse(stack._stackIndex), Standard());
 }
 
+// ----------------------------------------------------------------------------
+// Function top()
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TState>
 inline typename Reference<JstBranchStack_<TJst, TState> >::Type
 top(JstBranchStack_<TJst, TState> & stack)
 {
     return *stack._currEntry;
 }
+
+// ----------------------------------------------------------------------------
+// Function reinit()
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TState>
 inline void
@@ -343,6 +362,10 @@ reinit(JstBranchStack_<TJst, TState> & stack)
         clear(stack._stack);
         arrayFill(begin(stack._stackIndex, Standard()), end(stack._stackIndex, Standard()), 0);
 }
+
+// ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TState>
 inline bool

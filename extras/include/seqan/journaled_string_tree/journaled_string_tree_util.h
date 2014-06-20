@@ -67,8 +67,8 @@ public:
     typedef typename DeltaCoverage<TVariantMap>::Type TDeltaCoverage;
     typedef String<TValue> TMergePoints;
 
-    TVariantMap*    _varMapPtr;
-    mutable TDeltaCoverage _mergeCoverage;
+    TVariantMap*            _varMapPtr;
+    mutable TDeltaCoverage  _mergeCoverage;
     mutable TMergePoints    _mergePoints;  // Stores the reference position of the merge point
 
     MergePointMap_() : _varMapPtr(NULL), _mergeCoverage(), _mergePoints()
@@ -79,6 +79,19 @@ public:
         resize(_mergeCoverage, coverageSize(map), false, Exact());
     }
 
+    // Copy constructor.
+    MergePointMap_(MergePointMap_ const & other)
+    {
+        _copy(*this, other);
+    }
+
+    // Assignment Operator.
+    MergePointMap_ & operator=(MergePointMap_ const & other)
+    {
+        if (this != &other)
+            _copy(*this, other);
+        return *this;
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -135,6 +148,38 @@ struct Reference<MergePointMap_<TVariantMap> const>
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TVariantMap>
+inline TStream &
+operator<<(TStream & str, MergePointMap_<TVariantMap> const & obj)
+{
+    str << "MergePoints: (";
+    for (unsigned i = length(obj._mergePoints); i > 1; --i)
+        str << obj._mergePoints[i-1] << ", ";
+    str << obj._mergePoints[0];
+    str << ")\n";
+    str << "Coverge: " << obj._mergeCoverage;
+    str << "\n";
+    return str;
+}
+
+// ----------------------------------------------------------------------------
+// Function _copy()
+// ----------------------------------------------------------------------------
+
+template <typename TVariantMap>
+inline void
+_copy(MergePointMap_<TVariantMap> & map,
+      MergePointMap_<TVariantMap> const & other)
+{
+    map._varMapPtr = other._varMapPtr;
+    map._mergeCoverage = other._mergeCoverage;
+    map._mergePoints = other._mergePoints;
+}
 
 // ----------------------------------------------------------------------------
 // Function clear()
