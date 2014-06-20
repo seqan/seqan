@@ -285,7 +285,7 @@ inline void _readUntil(TTarget &target,
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, length(ichunk));
 
-        Range<TOValue*> const ochunk = getChunk(end(target, Rooted()), Output());
+        Range<TOValue*> const ochunk = getChunk(target, Output());
         SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
         register const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
@@ -350,6 +350,40 @@ template <typename TTarget, typename TFwdIterator, typename TStopFunctor>
 inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor)
 {
     readUntil(target, iter, stopFunctor, False());
+}
+    
+// ----------------------------------------------------------------------------
+// Function readOne()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TFwdIterator, typename TFunctor>
+inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor &functor)
+{
+    if (atEnd(iter))
+        throw UnexpectedEnd();
+    
+    AssertFunctor<TFunctor, ParseError> asserter(functor);
+    
+    asserter(*iter);
+    target = *iter;
+    ++iter;
+}
+    
+template <typename TTarget, typename TFwdIterator, typename TFunctor>
+inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor const &functor)
+{
+    TFunctor func(functor);
+    readOne(target, iter, func);
+}
+
+template <typename TTarget, typename TFwdIterator>
+inline void readOne(TTarget & target, TFwdIterator &iter)
+{
+    if (atEnd(iter))
+        throw UnexpectedEnd();
+    
+    target = *iter;
+    ++iter;
 }
 
 // ----------------------------------------------------------------------------

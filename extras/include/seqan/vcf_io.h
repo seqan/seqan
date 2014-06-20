@@ -44,7 +44,8 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
-#include <seqan/store.h>  // For NameStoreCache.
+#include <seqan/misc/misc_name_store_cache.h>
+#include <seqan/stream.h>
 
 // ===========================================================================
 // First Header Group.
@@ -58,6 +59,7 @@
 #include <seqan/vcf_io/read_vcf.h>
 #include <seqan/vcf_io/write_vcf.h>
 
-#include <seqan/vcf_io/vcf_stream.h>
+// TODO(singer): implement the stream
+//#include <seqan/vcf_io/vcf_stream.h>
 
 #endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_H_

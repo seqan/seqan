@@ -44,8 +44,8 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct TagRaw_;
-typedef Tag<TagRaw_> Raw;
+struct Raw_;
+typedef Tag<Raw_> Raw;
 
 // ============================================================================
 // Tags, Classes, Enums

@@ -31,21 +31,14 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
+// Facade header for module ucsc_io.
+// ==========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/file.h>
+#ifndef CORE_INCLUDE_SEQAN_UCSC_IO_H_
+#define CORE_INCLUDE_SEQAN_UCSC_IO_H_
 
-#include "test_vcf_io.h"
+#include <seqan/ucsc_io/ucsc_record.h>
+#include <seqan/ucsc_io/ucsc_io.h>
 
+#endif  // CORE_INCLUDE_SEQAN_UCSC_IO_H_
 
-SEQAN_BEGIN_TESTSUITE(test_vcf_io)
-{
-    SEQAN_CALL_TEST(test_vcf_io_read_vcf_header);
-    SEQAN_CALL_TEST(test_vcf_io_read_vcf_record);
-    //SEQAN_CALL_TEST(test_vcf_io_vcf_stream_read_record);
-
-    SEQAN_CALL_TEST(test_vcf_io_write_vcf_header);
-    SEQAN_CALL_TEST(test_vcf_io_write_vcf_record);
-    //SEQAN_CALL_TEST(test_vcf_io_vcf_stream_write_record);
-}
-SEQAN_END_TESTSUITE

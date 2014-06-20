@@ -48,6 +48,8 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 
 // This is unused and a deletion candidate.
+// TODO(singer): Remove this!
+/*
 template<typename TPath, typename TStringSet, typename TNames>
 inline unsigned int
 _loadSequences(TPath const& in_path,
@@ -85,7 +87,7 @@ _loadSequences(TPath const& in_path,
 
 	return count;
 }
-
+*/
 
 }// namespace SEQAN_NAMESPACE_MAIN
 
