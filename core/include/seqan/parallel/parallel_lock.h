@@ -74,13 +74,17 @@ waitFor(SpinDelay & me)
     if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
         for (unsigned i = me.duration; i != 0; --i)
+        {
             _mm_pause();
+        }
         me.duration *= 2;
     }
     else
     {
 #ifdef PLATFORM_WINDOWS
+#if _WIN32_WINNT >= 0x0400
         SwitchToThread();
+#endif
 #else
         sched_yield();
 #endif
