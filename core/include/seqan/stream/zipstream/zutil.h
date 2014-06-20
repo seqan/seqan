@@ -220,7 +220,7 @@ void   zcfree  OF((voidpf opaque, voidpf ptr));
 #define TRY_FREE(s, p) {if (p) ZFREE(s, p);}
 
 #ifdef local
-#  undef local
+#undef local
 #endif
 
 #endif /* _Z_UTIL_H */

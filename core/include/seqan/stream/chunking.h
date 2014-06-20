@@ -155,14 +155,14 @@ inline void advanceChunk(String<TValue, TSpec> &str, TSize size)
 // StreamBuffer
 template <typename TValue, typename TTraits>
 inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits>  &buf, Input)
+getChunk(StreamBuffer<TValue, TTraits> &buf, Input)
 {
     return toRange(buf.gptr(), buf.egptr());
 }
 
 template <typename TValue, typename TTraits>
 inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits>  &buf, Output)
+getChunk(StreamBuffer<TValue, TTraits> &buf, Output)
 {
     return toRange(buf.pptr(), buf.epptr());
 }
@@ -170,7 +170,7 @@ getChunk(StreamBuffer<TValue, TTraits>  &buf, Output)
 // StreamIterator
 template <typename TStream, typename TDirection>
 inline typename Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >::Type
-getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > >  &iter, Tag<TDirection>)
+getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
 {
     typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
     SEQAN_ASSERT(iter.streamBuf != NULL);

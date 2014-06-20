@@ -356,8 +356,6 @@ inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFun
 // Function readOne()
 // ----------------------------------------------------------------------------
 
-//TODO(singer): implement a chunked version!
-
 template <typename TTarget, typename TFwdIterator, typename TFunctor>
 inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor &functor)
 {

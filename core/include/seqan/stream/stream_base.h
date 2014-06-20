@@ -80,6 +80,7 @@ namespace seqan {
 ..remarks:This flag is normally set from the outside by your build system using compiler flags.
  */
 
+// TODO(singer): remove this
 //#if SEQAN_HAS_ZLIB
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
