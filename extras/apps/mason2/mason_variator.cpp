@@ -337,7 +337,7 @@ public:
                         }
                         else
                         {
-                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size, record.seq, seq))
+                            if (!simulateSVIndel(variants, haploCount, rId, pos, record.size, seq, record.seq))
                                 continue;
                         }
                         break;
@@ -469,10 +469,12 @@ public:
     }
 
     bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                         seqan::CharString const & /*seq*/, seqan::CharString const & indelSeq)
+                         seqan::CharString const & seq, seqan::CharString const & indelSeq)
     {
         if (options.verbosity >= 2)
             std::cerr << "Simulating SV INDEL indelSeq = " << indelSeq << '\n';
+        if (isNearN(seq, pos))
+            return false;  // do not allow insertion into gap
 
         int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
         appendValue(variants.svRecords, StructuralVariantRecord(
@@ -1111,7 +1113,8 @@ public:
         {
             MethylationLevels levelsVariants;
             PositionMap posMap;  // unused, though
-            varMat.run(seqVariants, posMap, levelsVariants, breakpoints, contig, levels, hId);
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
+            varMat.run(seqVariants, posMap, levelsVariants, varInfos, breakpoints, contig, levels, hId);
             // Write out methylation levels if necessary.
             if (!empty(options.methFastaOutFile))
                 if (_writeMethylationLevels(levelsVariants, hId, rId) != 0)
@@ -1120,7 +1123,8 @@ public:
         else
         {
             PositionMap posMap;  // unused, though
-            varMat.run(seqVariants, posMap, breakpoints, contig, hId);
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
+            varMat.run(seqVariants, posMap, varInfos, breakpoints, contig, hId);
         }
 
         // Build sequence id.

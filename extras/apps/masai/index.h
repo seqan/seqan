@@ -37,6 +37,8 @@
 #ifndef SEQAN_EXTRAS_MASAI_INDEX_H_
 #define SEQAN_EXTRAS_MASAI_INDEX_H_
 
+#define SEQAN_INDEX_QGRAM_TREE
+
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>

@@ -216,8 +216,9 @@ public:
             rID = idx;
 
             vcfMat.currRID = rID - 1;
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
             std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
-            while (vcfMat.materializeNext(seq, breakpoints, rID, hID))
+            while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
             {
                 std::cerr << " (allele " << (hID + 1) << ")";
                 if (rID != (int)idx)

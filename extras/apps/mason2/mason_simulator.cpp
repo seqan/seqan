@@ -193,7 +193,7 @@ public:
         _flipState(info.isForward == isRC);  // restore state if previously flipped
 
         // Fill BAM tags.
-        _fillTags(record, editDistance, buffer);
+        _fillTags(record, info, editDistance, buffer);
     }
 
     // Flip the sequence and quality in case that the record is reverse complemented.
@@ -212,22 +212,37 @@ public:
                            int & editDistance,
                            seqan::CharString & mdString,
                            seqan::Dna5String & seq,
-                           int beginPos,
+                           int & beginPos,
                            int endPos)
     {
-        // Realign the read sequence against the original interval.
+        int const PADDING = 5;
+        int const PADDING_BEGIN = std::min(PADDING, beginPos);
+        int const PADDING_END = std::min(PADDING, (int)length(refSeq) - endPos);
+
+        // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
+        // the ends can be converted to matches/mismatches as they appear after the mapping.
         typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
-        TContigInfix contigInfix(refSeq, beginPos, endPos);
+        TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
         seqan::Gaps<TContigInfix> gapsContig(contigInfix);
         seqan::Gaps<seqan::Dna5String> gapsRead(seq);
         seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
         int lDiag = -std::max((int)(length(seq) - length(contigInfix)), 0) - buffer;
 
-        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, lDiag, uDiag);
+        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
+
+        beginPos += countGaps(begin(gapsRead, seqan::Standard())) - PADDING_BEGIN;
+        while (isGap(gapsRead, length(gapsRead) - 1))
+        {
+            setClippedEndPosition(gapsRead, length(gapsRead) - 1);
+            setClippedEndPosition(gapsContig, length(gapsContig) - 1);
+        }
+        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
         getMDString2(mdString, gapsContig, gapsRead);
@@ -235,16 +250,29 @@ public:
 
     // Fill the tags dict.
     void _fillTags(seqan::BamAlignmentRecord & record,
+                   SequencingSimulationInfo & infoRecord,
                    int editDistance,
                    seqan::CharString const & mdString)
     {
         seqan::BamTagsDict tagsDict(record.tags);
         setTagValue(tagsDict, "NM", editDistance);        // edit distance to reference
         setTagValue(tagsDict, "MD", toCString(mdString));
+
+        // Set position on original haplotype.
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
         setTagValue(tagsDict, "oP", info.beginPos);       // original position
         setTagValue(tagsDict, "oS", info.isForward ? 'F' : 'R', 'A');  // original strand
+
+        // Compute number of errors.
+        int numErrors = 0;
+        for (unsigned i = 0; i < length(infoRecord.cigar); ++i)
+            if (infoRecord.cigar[i].operation != 'M')
+                numErrors += infoRecord.cigar[i].count;
+        setTagValue(tagsDict, "XE", numErrors);
+        // Write out number of bases overlapping with snp/indel variants.
+        setTagValue(tagsDict, "XS", infoRecord.snpCount);
+        setTagValue(tagsDict, "XI", infoRecord.indelCount);
     }
 };
 
@@ -436,9 +464,11 @@ public:
 
         // Write out some tags with the information.
         seqan::BamTagsDict tagsDict(record.tags);
+
         // Set tag with the eason for begin unmapped: Inserted or over breakpoint.  We only reach here if the alignment
         // does not overlap with a breakpoint in the case that the alignment is in an inserted region.
         setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I', 'A');
+
         // Set position on original haplotype.
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oP", infoRecord.beginPos);       // original position
@@ -503,22 +533,37 @@ public:
                            int & editDistance,
                            seqan::CharString & mdString,
                            seqan::Dna5String & seq,
-                           int beginPos,
+                           int & beginPos,
                            int endPos)
     {
-        // Realign the read sequence against the original interval.
+        int const PADDING = 5;
+        int const PADDING_BEGIN = std::min(PADDING, beginPos);
+        int const PADDING_END = std::min(PADDING, (int)length(refSeq) - endPos);
+
+        // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
+        // the ends can be converted to matches/mismatches as they appear after the mapping.
         typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
-        TContigInfix contigInfix(refSeq, beginPos, endPos);
+        TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
         seqan::Gaps<TContigInfix> gapsContig(contigInfix);
         seqan::Gaps<seqan::Dna5String> gapsRead(seq);
         seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
         int lDiag = -std::max((int)(length(seq) - length(contigInfix)), 0) - buffer;
 
-        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, lDiag, uDiag);
+        editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
+
+        beginPos += countGaps(begin(gapsRead, seqan::Standard())) - PADDING_BEGIN;
+        while (isGap(gapsRead, length(gapsRead) - 1))
+        {
+            setClippedEndPosition(gapsRead, length(gapsRead) - 1);
+            setClippedEndPosition(gapsContig, length(gapsContig) - 1);
+        }
+        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
         getMDString2(mdString, gapsContig, gapsRead);
@@ -533,10 +578,22 @@ public:
         seqan::BamTagsDict tagsDict(record.tags);
         setTagValue(tagsDict, "NM", editDistance);        // edit distance to reference
         setTagValue(tagsDict, "MD", toCString(mdString));
+
+        // Write out original sampling pos info.
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
         setTagValue(tagsDict, "oP", infoRecord.beginPos);       // original position
         setTagValue(tagsDict, "oS", infoRecord.isForward ? 'F' : 'R', 'A');  // original strand
+
+        // Compute number of errors.
+        int numErrors = 0;
+        for (unsigned i = 0; i < length(infoRecord.cigar); ++i)
+            if (infoRecord.cigar[i].operation != 'M')
+                numErrors += infoRecord.cigar[i].count;
+        setTagValue(tagsDict, "XE", numErrors);
+        // Write out number of bases overlapping with snp/indel variants.
+        setTagValue(tagsDict, "XS", infoRecord.snpCount);
+        setTagValue(tagsDict, "XI", infoRecord.indelCount);
     }
 };
 
@@ -623,7 +680,9 @@ public:
         str = ss.str();
     }
 
-    void _simulatePairedEnd(seqan::Dna5String const & seq, PositionMap const & posMap,
+    void _simulatePairedEnd(seqan::Dna5String const & seq,
+                            std::vector<SmallVarInfo> const & varInfos,
+                            PositionMap const & posMap,
                             seqan::CharString const & refName,
                             seqan::Dna5String /*const*/ & refSeq,
                             int rID, int hID)
@@ -642,6 +701,18 @@ public:
             // Set the sequence ids.
             _setId(ids[i], ss, fragmentIds[i / 2], 1, infos[i]);
             _setId(ids[i + 1], ss, fragmentIds[i / 2], 2, infos[i + 1]);
+            // Compute number of bases overlapping with SNPs/indels.
+            int beginPos = infos[i].beginPos, endPos = infos[i].beginPos + infos[i].lengthInRef();
+            infos[i].snpCount = countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::SNP);
+            infos[i].indelCount =
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::INS) +
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::DEL);
+            beginPos = infos[i + 1].beginPos;
+            endPos = infos[i + 1].beginPos + infos[i + 1].lengthInRef();
+            infos[i + 1].snpCount = countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::SNP);
+            infos[i + 1].indelCount =
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::INS) +
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::DEL);
 
             if (buildAlignments)
             {
@@ -657,7 +728,27 @@ public:
         }
     }
 
+    int countSmallVars(std::vector<SmallVarInfo> const & varInfos,
+                       int beginPos, int endPos,
+                       SmallVarInfo::Kind kind)
+    {
+        SmallVarInfo query;
+
+        std::vector<SmallVarInfo>::const_iterator it, itBegin, itEnd;
+        query.pos = beginPos;
+        itBegin = std::lower_bound(varInfos.begin(), varInfos.end(), query);
+        query.pos = endPos;
+        itEnd = std::lower_bound(varInfos.begin(), varInfos.end(), query);
+
+        int result = 0;
+        for (it = itBegin; it != itEnd; ++it)
+            if (it->kind == kind)
+                result += it->count;
+        return result;
+    }
+
     void _simulateSingleEnd(seqan::Dna5String /*const*/ & seq,
+                            std::vector<SmallVarInfo> const & varInfos,
                             PositionMap const & posMap,
                             seqan::CharString const & refName,
                             seqan::Dna5String /*const*/ & refSeq,
@@ -671,6 +762,11 @@ public:
             TFragment frag(seq, fragments[i].beginPos, fragments[i].endPos);
             seqSimulator->simulateSingleEnd(seqs[i], quals[i], infos[i], frag, methLevels);
             _setId(ids[i], ss, fragmentIds[i], 0, infos[i]);
+            int beginPos = infos[i].beginPos, endPos = infos[i].beginPos + infos[i].lengthInRef();
+            infos[i].snpCount = countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::SNP);
+            infos[i].indelCount =
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::INS) +
+                    countSmallVars(varInfos, beginPos, endPos, SmallVarInfo::DEL);
             if (buildAlignments)
             {
                 // Build the alignment record itself.
@@ -686,6 +782,7 @@ public:
     // Simulate next chunk.
     void run(seqan::Dna5String /*const*/ & seq,
              std::vector<std::pair<int, int> > const & gapIntervals,
+             std::vector<SmallVarInfo> const & varInfos,
              PositionMap const & posMap,
              seqan::CharString const & refName,
              seqan::Dna5String /*const*/ & refSeq,
@@ -706,9 +803,9 @@ public:
             alignmentRecords.resize(seqCount);
         }
         if (options->seqOptions.simulateMatePairs)
-            _simulatePairedEnd(seq, posMap, refName, refSeq, rID, hID);
+            _simulatePairedEnd(seq, varInfos, posMap, refName, refSeq, rID, hID);
         else
-            _simulateSingleEnd(seq, posMap, refName, refSeq, rID, hID);
+            _simulateSingleEnd(seq, varInfos, posMap, refName, refSeq, rID, hID);
     }
 };
 
@@ -825,7 +922,7 @@ public:
             }
         }
         if (inN)
-            intervals.push_back(std::make_pair(beginPos, length(contigSeq)));
+            intervals.push_back(std::make_pair(beginPos, (int)length(contigSeq)));
 
         std::sort(intervals.begin(), intervals.end());
     }
@@ -841,11 +938,12 @@ public:
         // Note that all shared variables are correctly synchronized by implicit flushes at the critical sections below.
         MethylationLevels levels;
         seqan::Dna5String refSeq;  // reference sequence
+        std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
         std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
         while ((options.seqOptions.bsSeqOptions.bsSimEnabled &&
-                vcfMat.materializeNext(contigSeq, levels, breakpoints, rID, hID)) ||
+                vcfMat.materializeNext(contigSeq, levels, varInfos, breakpoints, rID, hID)) ||
                (!options.seqOptions.bsSeqOptions.bsSimEnabled &&
-                vcfMat.materializeNext(contigSeq, breakpoints, rID, hID)))
+                vcfMat.materializeNext(contigSeq, varInfos, breakpoints, rID, hID)))
         {
             std::cerr << "  " << sequenceName(vcfMat.faiIndex, rID) << " (allele " << (hID + 1) << ") ";
             contigFragmentCount = 0;
@@ -877,7 +975,7 @@ public:
                 // Perform the simulation.
                 SEQAN_OMP_PRAGMA(parallel num_threads(options.numThreads))
                 {
-                    threads[omp_get_thread_num()].run(contigSeq, gapIntervals, vcfMat.posMap,
+                    threads[omp_get_thread_num()].run(contigSeq, gapIntervals, varInfos, vcfMat.posMap,
                                                       sequenceName(vcfMat.faiIndex, rID),
                                                       refSeq, rID, hID);
                 }

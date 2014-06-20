@@ -614,14 +614,14 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
                                             seqan::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-insert", "0");
     setMaxValue(parser, "illumina-prob-insert", "1");
-    setDefaultValue(parser, "illumina-prob-insert", "0.001");
+    setDefaultValue(parser, "illumina-prob-insert", "0.00005");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-prob-deletion",
                                             "Insert per-base probability for deletion in Illumina sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-deletion", "0");
     setMaxValue(parser, "illumina-prob-deletion", "1");
-    setDefaultValue(parser, "illumina-prob-deletion", "0.001");
+    setDefaultValue(parser, "illumina-prob-deletion", "0.00005");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch-scale",
                                             "Scaling factor for Illumina mismatch probability.",
@@ -700,12 +700,12 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
                                             seqan::ArgParseOption::INPUTFILE, "IN.fq"));
-    setValidValues(parser, "illumina-left-template-fastq", "fq fastq");
+    setValidValues(parser, "illumina-left-template-fastq", "fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-right-template-fastq",
                                             "FASTQ file to use for a template for right-end reads.",
                                             seqan::ArgParseOption::INPUTFILE, "IN.fq"));
-    setValidValues(parser, "illumina-right-template-fastq", "fq fastq");
+    setValidValues(parser, "illumina-right-template-fastq", "fq fastq fq.gz fastq.gz");
 }
 
 // ----------------------------------------------------------------------------
@@ -1118,11 +1118,11 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq");
+    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUTFILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq");
+    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("oa", "out-alignment", "SAM/BAM file with alignments.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
@@ -1168,6 +1168,25 @@ void MasonSimulatorOptions::addTextSections(seqan::ArgumentParser & parser) cons
     addText(parser,
             "When using multi-threading, each thread gets its own random number generator (RNG).  The RNG of thread "
             "i is initialized with the value of \\fB--seed\\fP plus i.");
+
+    addTextSection(parser, "BAM/SAM Tags");
+    addText(parser,
+            "Mason can write out a BAM or SAM file with alignments of the reads against the reference.  The records "
+            "have tags that give information about the simulated reads.  Below is a list of the tags and their meaning.");
+
+    addListItem(parser, "NM", "Edit distance when aligned to the reference (i).");
+    addListItem(parser, "MD", "String for mismatching positions (Z).");
+
+    addListItem(parser, "oR", "Name of \\fBo\\fPriginal \\fBr\\fPeference, (Z).");
+    addListItem(parser, "oH", "Number of the \\fBo\\fPriginal \\fBh\\fPhaplotype (1-based), (i).");
+    addListItem(parser, "oP", "\\fBo\\fPriginal \\fBp\\fPosition on the original reference (i).");
+    addListItem(parser, "oS", "\\fBo\\fPriginal \\fBs\\fPtrand, \\fIF/R\\fP for forward and reverse strand (A).");
+    addListItem(parser, "uR",
+                "Reason for being unaligned, \\fII/B\\fP for being in insertion or spanning over breakpoint.");
+
+    addListItem(parser, "XE", "Number of sequencing \\fIe\\fPrrors in the read (i).");
+    addListItem(parser, "XS", "Number of \\fIS\\fPNPs in the read alignment (i).");
+    addListItem(parser, "XI", "Number of small \\fIi\\fPndels in the read alignment (i).");
 
     // Add text sections of the component options.
     matOptions.addTextSections(parser);
@@ -1521,11 +1540,11 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq");
+    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUTFILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq");
+    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
                                             "is given."));

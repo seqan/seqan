@@ -69,11 +69,7 @@ typedef Tag<Equidistant_> Equidistant;
  *
  * The output is:
  *
- * @code
- * [10,14)
- * [14,17)
- * [17,20)
- * @endlink
+ * @include demos/parallel/splitter_example.cpp.stdout
  */
 
 /*!

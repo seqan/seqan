@@ -55,27 +55,27 @@ struct Counts_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class OccurrencesCounter
+// Class OccurrencesCounter_
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec = typename ExecSpec<TIndex>::Type>
-struct OccurrencesCounter
+struct OccurrencesCounter_
 {
-    typename Member<OccurrencesCounter, Counts_>::Type    counts;
+    typename Member<OccurrencesCounter_, Counts_>::Type    counts;
 
-    OccurrencesCounter() {}
+    OccurrencesCounter_() {}
 
     template <typename TPattern>
-    OccurrencesCounter(TPattern const & pattern)
+    OccurrencesCounter_(TPattern const & pattern)
     {
-        init(*this, pattern);
+        _init(*this, pattern);
     }
 
     template <typename TFinder>
     inline SEQAN_HOST_DEVICE void
     operator() (TFinder const & finder)
     {
-        counts[getThreadId()] += countOccurrences(textIterator(finder));
+        counts[getThreadId()] += countOccurrences(_textIterator(finder));
     }
 };
 
@@ -84,23 +84,23 @@ struct OccurrencesCounter
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec>
-struct Member<OccurrencesCounter<TIndex, TSpec>, Counts_>
+struct Member<OccurrencesCounter_<TIndex, TSpec>, Counts_>
 {
     typedef String<typename Size<TIndex>::Type> Type;
 };
 
 #ifdef PLATFORM_CUDA
 template <typename TIndex, typename TSpec>
-struct Member<OccurrencesCounter<TIndex, Device<TSpec> >, Counts_>
+struct Member<OccurrencesCounter_<TIndex, Device<TSpec> >, Counts_>
 {
     typedef thrust::device_vector<typename Size<TIndex>::Type>  Type;
 };
 #endif
 
 template <typename TIndex, typename TSpec>
-struct Member<OccurrencesCounter<TIndex, View<Device<TSpec> > >, Counts_>
+struct Member<OccurrencesCounter_<TIndex, View<Device<TSpec> > >, Counts_>
 {
-    typedef typename View<typename Member<OccurrencesCounter<TIndex, Device<TSpec> >, Counts_>::Type>::Type Type;
+    typedef typename View<typename Member<OccurrencesCounter_<TIndex, Device<TSpec> >, Counts_>::Type>::Type Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -108,9 +108,9 @@ struct Member<OccurrencesCounter<TIndex, View<Device<TSpec> > >, Counts_>
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec>
-struct View<OccurrencesCounter<TIndex, TSpec> >
+struct View<OccurrencesCounter_<TIndex, TSpec> >
 {
-    typedef OccurrencesCounter<TIndex, View<TSpec> >  Type;
+    typedef OccurrencesCounter_<TIndex, View<TSpec> >  Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -118,9 +118,9 @@ struct View<OccurrencesCounter<TIndex, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec>
-struct Device<OccurrencesCounter<TIndex, TSpec> >
+struct Device<OccurrencesCounter_<TIndex, TSpec> >
 {
-    typedef OccurrencesCounter<TIndex, Device<TSpec> >  Type;
+    typedef OccurrencesCounter_<TIndex, Device<TSpec> >  Type;
 };
 
 // ============================================================================
@@ -128,19 +128,19 @@ struct Device<OccurrencesCounter<TIndex, TSpec> >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function init()
+// Function _init()
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec, typename TPattern>
 inline void
-init(OccurrencesCounter<TIndex, TSpec> & counter, TPattern const & /* pattern */)
+_init(OccurrencesCounter_<TIndex, TSpec> & counter, TPattern const & /* pattern */)
 {
     resize(counter.counts, omp_get_max_threads(), 0, Exact());
 }
 
 template <typename TIndex, typename TSpec, typename TPattern>
 inline void
-init(OccurrencesCounter<TIndex, Device<TSpec> > & counter, TPattern const & pattern)
+_init(OccurrencesCounter_<TIndex, Device<TSpec> > & counter, TPattern const & pattern)
 {
     resize(counter.counts, length(needle(pattern)), Exact());
 }
@@ -150,10 +150,10 @@ init(OccurrencesCounter<TIndex, Device<TSpec> > & counter, TPattern const & patt
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec>
-typename View<OccurrencesCounter<TIndex, TSpec> >::Type
-view(OccurrencesCounter<TIndex, TSpec> & counter)
+typename View<OccurrencesCounter_<TIndex, TSpec> >::Type
+view(OccurrencesCounter_<TIndex, TSpec> & counter)
 {
-    typename View<OccurrencesCounter<TIndex, TSpec> >::Type counterView;
+    typename View<OccurrencesCounter_<TIndex, TSpec> >::Type counterView;
 
     counterView.counts = view(counter.counts);
 
@@ -161,27 +161,20 @@ view(OccurrencesCounter<TIndex, TSpec> & counter)
 }
 
 // ----------------------------------------------------------------------------
-// Function getCount()
+// Function _getCount()
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
-getCount(OccurrencesCounter<TIndex, TSpec> & counter)
+_getCount(OccurrencesCounter_<TIndex, TSpec> & counter)
 {
-    typedef typename Size<TIndex>::Type TSize;
-
-    // TODO(esiragusa): Add function reduce().
-    TSize count = 0;
-    for (TSize i = 0; i < length(counter.counts); ++i)
-        count += counter.counts[i];
-
-    return count;
+    return sum(counter.counts);
 }
 
 #ifdef PLATFORM_CUDA
 template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
-getCount(OccurrencesCounter<TIndex, Device<TSpec> > & counter)
+_getCount(OccurrencesCounter_<TIndex, Device<TSpec> > & counter)
 {
     return thrust::reduce(begin(counter.counts, Standard()), end(counter.counts, Standard()));
 }
@@ -200,8 +193,8 @@ countOccurrences(Index<TText, TSpec> & index, StringSet<TNeedle, TSSetSpec> & ne
     typedef StringSet<TNeedle, TSSetSpec>               TNeedles;
     typedef Multiple<FinderSTree>                       TAlgorithmSpec;
     typedef Pattern<TNeedles, TAlgorithmSpec>           TPattern;
-    typedef Finder2<TIndex, TPattern, TAlgorithmSpec>   TFinder;
-    typedef OccurrencesCounter<TIndex>                  TCounter;
+    typedef Finder_<TIndex, TPattern, TAlgorithmSpec>   TFinder;
+    typedef OccurrencesCounter_<TIndex>                  TCounter;
 
     // Instantiate a finder object holding the context of the search algorithm.
     TFinder finder(index);
@@ -213,10 +206,10 @@ countOccurrences(Index<TText, TSpec> & index, StringSet<TNeedle, TSSetSpec> & ne
     TCounter counter(pattern);
 
     // Find all needles in haystack and call counter() on match.
-    find(finder, pattern, counter);
+    _find(finder, pattern, counter);
 
     // Return the number of occurrences.
-    return getCount(counter);
+    return _getCount(counter);
 }
 
 }
