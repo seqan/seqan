@@ -37,24 +37,20 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
-#include <seqan/seq_io.h>
 #include <seqan/gff_io.h>
 
-
 using namespace seqan;
+
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
 {
     CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/gff_io/example_gff.tsv");
+    append(gffPath, "/core/tests/gff_io/example_gff_with_errors.tsv");
 
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(gffPath));
 
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
-
-    //seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
 
     seqan::GffRecord record;
     seqan::readRecord(record, iter, seqan::Gff());
@@ -86,6 +82,22 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
 
+    for (unsigned i = 0; i < 12; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(ParseError,
+                             seqan::readRecord(record, iter, seqan::Gff()));
+        skipLine(iter);
+    }
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+
     seqan::readRecord(record, iter, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
@@ -101,6 +113,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "");
     SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
+
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)

@@ -29,23 +29,23 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// ==========================================================================
+// Tests for the SeqAn module ucsc_io.
 // ==========================================================================
 
+#define SEQAN_ENABLE_CHECKPOINTS 0
+
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include "test_ucsc.h"
 
-#include "test_vcf_io.h"
-
-
-SEQAN_BEGIN_TESTSUITE(test_vcf_io)
+SEQAN_BEGIN_TESTSUITE(test_store)
 {
-    SEQAN_CALL_TEST(test_vcf_io_read_vcf_header);
-    SEQAN_CALL_TEST(test_vcf_io_read_vcf_record);
-    //SEQAN_CALL_TEST(test_vcf_io_vcf_stream_read_record);
+    // the UCSC knownGene format
+    SEQAN_CALL_TEST(test_store_io_read_record_ucsc_known_genes);
+    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
 
-    SEQAN_CALL_TEST(test_vcf_io_write_vcf_header);
-    SEQAN_CALL_TEST(test_vcf_io_write_vcf_record);
-    //SEQAN_CALL_TEST(test_vcf_io_vcf_stream_write_record);
+    SEQAN_CALL_TEST(test_store_io_write_record_ucsc_known_genes);
+    SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
 }
 SEQAN_END_TESTSUITE

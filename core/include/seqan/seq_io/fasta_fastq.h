@@ -35,8 +35,8 @@
 // Input/Output on FASTA and FASTQ files.
 // ==========================================================================
 
-#ifndef SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
-#define SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
+#ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_
+#define SEQAN_SEQ_IO_FASTA_FASTQ_H_
 
 namespace seqan {
 
@@ -97,7 +97,7 @@ struct SequenceOutputOptions
     SequenceOutputOptions(int lineLength = -1, bool qualMeta = false) :
         lineLength(lineLength),
         qualMeta(qualMeta)
-    {}    
+    {}
 };
 
 // ----------------------------------------------------------------------------
@@ -293,4 +293,4 @@ inline void writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
+#endif  // #ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_
