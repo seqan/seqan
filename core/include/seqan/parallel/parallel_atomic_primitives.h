@@ -56,7 +56,7 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700)
 
 template <typename T>
 struct Atomic
