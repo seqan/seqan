@@ -361,16 +361,10 @@ readRecord(VcfRecord & record,
     skipOne(iter);
 
     // INFO
-    readUntil(record.info, iter, IsWhitespace());
-    if (IsNewline()(value(iter)))
-    {
-        if (empty(record.info))
-            throw ParseError("Unexpected end of record.");
-        skipOne(iter);
+    readUntil(record.info, iter, OrFunctor<IsTab, IsNewline>());
+    char c = readOne(iter);
+    if (IsNewline()(c))
         return;
-    }
-    else
-        skipOne(iter);
 
     // FORMAT
     readUntil(record.format, iter, NextEntry());
@@ -390,16 +384,13 @@ readRecord(VcfRecord & record,
             else
                 break;  // Done
         }
-        if (IsNewline()(value(iter)))
-        {
-            skipOne(iter);
+
+        char c = readOne(iter);
+        if (IsNewline()(c))
             return;
-        }
-        else
-            skipOne(iter);
     }
 
-    // Skip empty lines, necessary for getting to EOF if there is an empty line at the ned of the file.
+    // Skip empty lines, necessary for getting to EOF if there is an empty line at the end of the file.
     while (!atEnd(iter) && IsNewline()(value(iter)))
         skipOne(iter);
 }
