@@ -19,7 +19,7 @@ GIT_BINARY='git'
 CMAKE_BINARY='cmake'
 
 # The default repository URL.
-REPOSITORY_URL='git@github.com:seqan/seqan.git'
+REPOSITORY_URL='https://github.com/seqan/seqan.git'
 # The path to the package repository.
 DEFAULT_PACKAGE_DB='.'
 
