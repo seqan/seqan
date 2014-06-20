@@ -757,7 +757,6 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("compute_gain");
 
     setShortDescription(parser, "Compute read correction metric GAIN.");
-    setCategory(parser, "Error Correction");
     setVersion(parser, "0.2");
     setDate(parser, "August 2012");
 
@@ -1071,9 +1070,9 @@ int main(int argc, char const ** argv)
                 }
                 prevName = recordPre.qName;
 
-                
                 // read post-records as long as they are less than the last pre-record
-                while (!atEnd(readerPost) && (empty(recordPost.qName) || strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0))
+                clear(recordPost.qName);
+                while (!atEnd(readerPost) && (empty(recordPost.qName) || (options.checkSorting && strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0)))
                 {
                     if (postSam)
                     {
