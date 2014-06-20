@@ -58,10 +58,10 @@
 #include <numeric>
 #endif // PLATFORM_GCC
 
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700)
 #include <atomic>
 #include <thread>
-#endif // SEQAN_CXX11_STANDARD
+#endif
 
 // ============================================================================
 // Module Headers
