@@ -37,7 +37,9 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_
 #define SEQAN_PARALLEL_PARALLEL_LOCK_H_
 
-#include <xmmintrin.h>
+#ifdef __SSE2__
+#include <xmmintrin.h>  // _mm_pause()
+#endif
 
 #ifdef PLATFORM_WINDOWS
 #include <Windows.h>
@@ -46,6 +48,12 @@
 #endif
 
 namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+inline void yieldProcessor();
 
 // ============================================================================
 // Classes
@@ -74,9 +82,7 @@ waitFor(SpinDelay & me)
     if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
         for (unsigned i = me.duration; i != 0; --i)
-        {
-            _mm_pause();
-        }
+			yieldProcessor();
         me.duration *= 2;
     }
     else
@@ -212,6 +218,22 @@ struct ScopedWriteLock<TLock, Serial>
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function yieldProcessor()
+// ----------------------------------------------------------------------------
+
+inline void
+yieldProcessor()
+{
+#if defined(PLATFORM_WINDOWS_VS)
+	YieldProcessor();
+#elif defined(__SSE__)
+	_mm_pause();
+#else
+	__asm__ __volatile__("rep; nop" : : );
+#endif
+}
 
 // ----------------------------------------------------------------------------
 // Function lockReading()
