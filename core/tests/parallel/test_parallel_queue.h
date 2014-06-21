@@ -230,7 +230,7 @@ void testMPMCQueue(size_t initialCapacity)
             // barrier for all writers to set up
             waitForFirstValue(queue);
 
-//            printf("start reader #%ld\n", tid);
+//            printf("start reader #%lu\n",  (long unsigned)tid);
             unsigned chkSumLocal = 0, val = 0, cnt = 0;
             while (popFront(val, queue, TParallelPop()))
             {
@@ -240,7 +240,7 @@ void testMPMCQueue(size_t initialCapacity)
 //                    printf("%ld ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
-            printf("stop reader #%ld %d\n", tid, cnt);
+            printf("stop reader #%lu %d\n", (long unsigned)tid, cnt);
         }
     }
 #ifdef SEQAN_CXX11_STL
