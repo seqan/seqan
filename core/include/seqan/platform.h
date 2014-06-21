@@ -78,5 +78,9 @@
 
 #endif  // #ifdef SEQAN_CXX11_STANDARD
 
+// Is the C++11 STL (thread, atomic, chrono) available?
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700)
+#define SEQAN_CXX11_STL
+#endif
 
 #endif

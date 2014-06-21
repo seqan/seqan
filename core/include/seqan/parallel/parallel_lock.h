@@ -114,7 +114,7 @@ inline void
 spinCas(TAtomic & x, TValue cmp, TValue y)
 {
     SpinDelay spinDelay;
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     TValue exp = cmp;
     while (!x.compare_exchange_weak(exp, y))
     {
@@ -138,13 +138,8 @@ spinCas(TAtomic & x, TValue cmp, TValue y)
 class ReadWriteLock
 {
 public:
-#ifdef SEQAN_CXX11_STANDARD
-    std::atomic<unsigned> readers;
-    std::atomic<unsigned> writers;
-#else
-    unsigned readers;
-    unsigned writers;
-#endif
+	Atomic<unsigned>::Type readers;
+    Atomic<unsigned>::Type writers;
 
     ReadWriteLock() :
         readers(0),

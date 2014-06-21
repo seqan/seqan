@@ -58,7 +58,7 @@
 #include <numeric>
 #endif // PLATFORM_GCC
 
-#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700)
+#ifdef SEQAN_CXX11_STL
 #include <atomic>
 #include <thread>
 #endif
