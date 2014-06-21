@@ -37,6 +37,8 @@
 #ifndef SEQAN_STREAM_IS_H_
 #define SEQAN_STREAM_IS_H_
 
+#include <cctype>
+
 // ==========================================================================
 // We add documentation for cctype here for completeness.
 // ==========================================================================
@@ -338,7 +340,7 @@
 ..include:seqan/stream.h
 */
 
-#ifdef PLATFORM_WINDOWS
+#if defined(_MSC_VER) && _MSC_VER < 1800
 
 inline int
 isblank(int c)
@@ -346,6 +348,6 @@ isblank(int c)
     return (c == ' ' || c == '\t');
 }
 
-#endif  // #ifdef PLATFORM_WINDOWS
+#endif  // #if defined(_MSC_VER) && _MSC_VER < 1800
 
 #endif  // #ifndef SEQAN_STREAM_IS_H_

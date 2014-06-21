@@ -244,12 +244,15 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
     typedef typename Size<TAlign>::Type TSize;
     typedef typename Position<TAlign>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score = _setUpAndRunAlignment(traceSegments, source(row(align, 0)), source(row(align, 1)),
-                                              scoringScheme, SmithWaterman());
-    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traceSegments);
-    return score;
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, source(row(align, 0)), source(row(align, 1)),
+                                            scoringScheme, TAlignConfig2());
+
+    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -266,12 +269,15 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef typename Size<TSequenceH>::Type TSize;
     typedef typename Position<TSequenceH>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score = _setUpAndRunAlignment(traceSegments, source(gapsH), source(gapsV), scoringScheme,
-                                              SmithWaterman());
-    _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
-    return score;
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, source(gapsH), source(gapsV), scoringScheme,
+                                            TAlignConfig2());
+
+    _adaptTraceSegmentsTo(gapsH, gapsV, trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -289,13 +295,16 @@ TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & a
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Position<TGraph>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(stringSet(alignmentGraph), 0),
-                                              value(stringSet(alignmentGraph), 1), scoringScheme, SmithWaterman());
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, value(stringSet(alignmentGraph), 0),
+                                            value(stringSet(alignmentGraph), 1), scoringScheme, TAlignConfig2());
+
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
-                          positionToId(stringSet(alignmentGraph), 1), traceSegments);
-    return score;
+                          positionToId(stringSet(alignmentGraph), 1), trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -314,12 +323,15 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
     typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
     typedef typename Position<TFragments>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<> > TAlignConfig2;
 
-    String<TTraceSegment> traceSegments;
-    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
-                                              SmithWaterman());
-    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
-    return score;
+    String<TTraceSegment> trace;
+    DPScoutState_<Default> dpScoutState;
+    TScoreValue res = _setUpAndRunAlignment(trace, dpScoutState, value(strings, 0), value(strings, 1), scoringScheme,
+                                            TAlignConfig2());
+
+    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), trace);
+    return res;
 }
 
 }  // namespace seqan

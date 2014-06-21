@@ -79,7 +79,7 @@ struct SequencingSimulationInfo
     // Originally sampled sequence, that together with the errors introduced by sequencing gives the read sequence.
     TRead sampleSequence;
 
-    // The CIGAR string.
+    // The CIGAR string, MXID for matches, mismatches, insertions, deletions with respect to the reference.
     TCigarString cigar;
 
     // Whether or not this comes from the forward strand.
@@ -91,17 +91,31 @@ struct SequencingSimulationInfo
     // The begin position of the sequence.
     int beginPos;
 
-    SequencingSimulationInfo() : isForward(false), rID(-1), hID(-1), beginPos(-1)
+    // Number of bases covering SNPs and overlapping with indels.
+    int snpCount, indelCount;
+
+    SequencingSimulationInfo() : isForward(false), rID(-1), hID(-1), beginPos(-1), snpCount(0), indelCount(0)
     {}
+
+    // Returns number in reference covered by this read.
+    int lengthInRef() const
+    {
+        int result = 0;
+        for (unsigned i = 0; i < length(cigar); ++i)
+            if (cigar[i].operation == 'M' || cigar[i].operation == 'M' || cigar[i].operation == 'D')
+                result += cigar[i].count;
+        return result;
+    }
 
     template <typename TStream>
     void serialize(TStream & stream) const
     {
-        stream << "SEQUENCE=" << rID << " HAPLOTYP=" << hID << " BEGIN_POS=" << beginPos
+        stream << "SEQUENCE=" << rID << " HAPLOTYPE=" << hID << " BEGIN_POS=" << beginPos
                << " SAMPLE_SEQUENCE=" << sampleSequence << " CIGAR=";
         for (unsigned i = 0; i < length(cigar); ++i)
             stream << cigar[i].count << cigar[i].operation;
         stream << " STRAND=" << (isForward ? 'F' : 'R');
+        stream << " NUM_SNPS=" << snpCount << " NUM_INDELS=" << indelCount;
     }
 };
 

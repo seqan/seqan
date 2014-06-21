@@ -595,7 +595,7 @@ public:
             TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
             // if (options.debug)
             //     std::cerr << "it2->beginPos == " << it2->beginPos << ", it2->endPos == " << it2->endPos << "\n";
-            if ((unsigned)abs(it2->endPos - it2->beginPos) != length(readGaps))
+            if ((unsigned)abs((int)(it2->endPos - it2->beginPos)) != length(readGaps))
             {
                 std::cerr << "READ GAPS\t>>>" << readGaps << "<<<\n";
                 SEQAN_FAIL("Inconsistent begin/endPos");
@@ -973,10 +973,10 @@ void _fixBandSize(int & lDiag,
                   TAlignConfig const & /*alignConfig*/,
                   TAlgoTag const & /*algoTag*/)
 {
-    // typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef typename If<typename IsSameType<TAlgoTag, Gotoh>::Type, AffineGaps, LinearGaps>::Type TGapsType;
-    typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, TGapsType,
-                                            TracebackConfig_<SingleTrace, GapsLeft> >::Type TDPProfile;
+    typedef typename SetupAlignmentProfile_<DPGlobal, TFreeEndGaps, TGapsType,
+                                            TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > >::Type TDPProfile;
 
     if (uDiag < -(int)length(seqV))
         uDiag = -(int)length(seqV);
