@@ -663,6 +663,16 @@ clear(JournalEntries<TNode, SortedArray> & journalEntries)
     journalEntries._originalStringLength = 0u;
 }
 
+// ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+template <typename TNode>
+inline bool
+empty(JournalEntries<TNode, SortedArray> const & journalEntries)
+{
+    return empty(journalEntries._journalNodes);
+}
 
 }  // namespace seqan
 
