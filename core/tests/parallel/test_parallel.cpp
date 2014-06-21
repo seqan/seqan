@@ -86,7 +86,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_queue_non_pod);
 
 #if defined(_OPENMP) || defined(SEQAN_CXX11_STANDARD)
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     if (std::thread::hardware_concurrency() >= 2u)
 #else
     if (omp_get_max_threads() >= 2)
