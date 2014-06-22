@@ -389,6 +389,20 @@ struct JournalType<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline bool
+empty(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & target)
+{
+    if (empty(target._holder) || empty(target._journalEntries))
+        return true;
+
+    return begin(target, Standard()) == end(target, Standard());
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<<
 // ----------------------------------------------------------------------------
 
@@ -435,7 +449,7 @@ assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target
        String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TTarget;
-    assign(target, source, DefaultOverflowImplicit<TTarget>::Type());
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec,

@@ -457,6 +457,24 @@ bool isSortedLCP(String<TSize1, TSpec1> &LCP, String<TSize2, TSpec2> &SA, TText 
 	return true;  
 }
 */
+
+// Is SA a sorted suffix array and iSA the correct inverse suffix array for SA.
+template < typename TIsa, typename TSA, typename TText >
+bool isSortedInvSA(TIsa &iSA, TSA &SA, TText const &s) {
+    typedef typename Value<TSA>::Type             TSize;
+    typedef typename Iterator<TSA, Rooted>::Type  TIterSA;
+    typedef typename Iterator<TIsa, Rooted>::Type TIterIsa;
+
+    TSize    n       = length(s);
+    TIterSA  iterSa  = begin(SA);
+    TIterIsa iterIsa = begin(iSA);
+
+    for (unsigned i = 0; i < n; ++i, ++iterIsa)
+        if (i != *(iterSa + *iterIsa))
+            return false;
+    return true;
+}
+
 template < typename TLCP, typename TSA, typename TText >
 bool isSortedLCP(TLCP &LCP, TSA &SA, TText const &s) {
 	typedef typename Value<TSA>::Type TSize;
@@ -500,6 +518,38 @@ bool isSuffixArray(TSufArray &SA, TText const &s) {
 
 //        ::std::cerr<<"SATest OK! n="<<length(s)<<std::endl;
 	return true;
+}
+
+template <typename TInvSuffArray, typename TSufArray, typename TText>
+bool isInvSuffixArray(TInvSuffArray &iSA, TSufArray &SA, TText const &s)
+{
+
+    if (length(SA) != length(s))
+    {
+        printf("isInvSuffixArray: length is bad: SA=%d, s=%d\n", (int)length(SA), (int)length(s));
+        return false;
+    }
+
+    if (length(iSA) != length(s))
+    {
+        ::std::cerr<<"isInvSuffixArray: length is bad: iSA="<<length(iSA)<<", s="<<length(s)<<::std::endl;
+        return false;
+    }
+
+    if (!isPermutation(SA))
+    {
+        ::std::cerr<<"isInvSuffixArray: SA is not a permutation!"<<::std::endl;
+        return false;
+    }
+
+    if (!isSortedInvSA(iSA, SA, s))
+    {
+        ::std::cerr<<"isInvSuffixArray: iSA is not sorted!"<<::std::endl;
+        return false;
+    }
+
+//        ::std::cerr<<"iSATest OK! n="<<length(s)<<std::endl;
+    return true;
 }
 
 template <typename TLCP, typename TSufArray, typename TText>
