@@ -648,9 +648,9 @@ _importSequences(CharString const & fileName,
         assignSeq(seq, multiSeqFile[i], format);
         assignSeqId(id, multiSeqFile[i], format);
         appendValue(seqs, seq, Generous());
-        appendValue(ids, id, Generous());
 
         _getShortId(sId, id);
+        appendValue(ids, sId, Generous());
         if (!_checkUniqueId(sId, id, ids, sQueryIds))
             ++counter;
         appendValue(sQueryIds, sId);

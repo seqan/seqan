@@ -73,7 +73,7 @@ _joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & j
     stream << journal;
     appendValue(getTrace(traceDescriptor), TJounralEntry(SOURCE_PATCH, 0, 0, 0,length(journal)));
     append(getInsertionBuffer(traceDescriptor), stream.str());
-    _applyTraceOperations(journal, globalReference(journalSet), traceDescriptor);
+    _applyTraceOperations(journal, host(journalSet), traceDescriptor);
 }
 
 }  // namespace seqan

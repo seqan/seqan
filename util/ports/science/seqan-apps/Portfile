@@ -2,6 +2,7 @@
 # $Id$
 
 PortSystem          1.0
+PortGroup           cmake 1.0
 
 name                seqan-apps
 version             1.4.1
@@ -10,21 +11,16 @@ platforms           darwin
 universal_variant   no
 
 license             LGPL-3
-maintainers         fu-berlin.de:david.weese \
-                    fu-berlin.de:knut.reinert
+maintainers         fu-berlin.de:david.weese
 
 description         Applications distributed with the SeqAn library
 
 long_description    SeqAn applications for the analysis of large sets of sequences, e.g. \
-                    read mapping, genome comparison, local alignment, data mining. \
-                    If not stated otherwise, the SeqAn applications are licensed under \
-                    the GNU Lesser General Public License version 3.
+                    read mapping, genome comparison, local alignment, data mining.
 
 homepage            http://www.seqan.de/projects
 
-
-depends_build       port:cmake port:python27 port:boost port:coinor-liblemon
-depends_lib         port:libgcc
+depends_build       port:boost port:coinor-liblemon
 
 master_sites        http://packages.seqan.de/seqan-src
 distfiles           seqan-src-${version}${extract.suffix}
@@ -32,11 +28,11 @@ distname            seqan-${version}
 checksums           rmd160  0a9b9e8f669b719f8e72741562c9fed096320987 \
                     sha256  47c4cf698d9879000b7de514a5cb425c18c26c8b8a81e469da23b757f7680a8e
 
-configure.compiler  macports-gcc-4.7
-configure.ccache    no
-configure.cmd       cmake
-configure.pre_args  -DCMAKE_INSTALL_PREFIX=${prefix} \
-                    -DCMAKE_VERBOSE_MAKEFILE=ON \
-                    -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS \
-                    -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7
+# FIXME: llvm-gcc42 is broken, https://trac.macports.org/ticket/40713
+# FIXME: SeqAn 1.4.1 does not yet compile with gcc49 (will be fixed in the upcoming release 1.5)
+# For OpenMP only clang really needs to be blacklisted
 
+compiler.blacklist  *gcc-4.2 *clang* macports-gcc-4.9
+compiler.fallback   macports-gcc-4.8 macports-gcc-4.7 macports-gcc-4.6 macports-gcc-4.5 macports-gcc-4.3
+
+configure.args      -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS
