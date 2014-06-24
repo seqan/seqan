@@ -10,18 +10,15 @@ platforms           darwin
 supported_archs     noarch
 
 license             BSD
-maintainers         fu-berlin.de:david.weese \
-                    fu-berlin.de:knut.reinert
+maintainers         fu-berlin.de:david.weese
 
 description         SeqAn - The C++ Sequence Analysis Library
 
 long_description    SeqAn is an open source C++ library of efficient algorithms \
                     and data structures for the analysis of sequences with the \
-                    focus on biological data. The library is licensed under the \
-                    3-clause BSD license.
+                    focus on biological data.
 
 homepage            http://www.seqan.de
-
 
 master_sites        http://packages.seqan.de/${name}-library
 use_bzip2           yes

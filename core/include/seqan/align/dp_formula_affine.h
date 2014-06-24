@@ -164,9 +164,9 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
 // Function _internalComputeScore      [RecursionDirectionDiagonal, AffineGaps]
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap>
+template <typename TScoreValue, typename TAffineGaps, typename TTraceValueL, typename TTraceValueGap>
 inline typename TraceBitMap_::TTraceValue
-_internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+_internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       TScoreValue const & rightCompare,
                       TTraceValueL,
                       TTraceValueGap,
@@ -178,9 +178,9 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     return TraceBitMap_::NONE;
 }
 
-template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
+template <typename TScoreValue, typename TAffineGaps, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
 inline typename TraceBitMap_::TTraceValue
-_internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+_internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       TScoreValue const & rightCompare,
                       TTraceValueL leftTrace,
                       TTraceValueGap gapTrace,
@@ -195,9 +195,9 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     return leftTrace | gapTrace;
 }
 
-template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
+template <typename TScoreValue, typename TAffineGaps, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
 inline typename TraceBitMap_::TTraceValue
-_internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+_internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       TScoreValue const & rightCompare,
                       TTraceValueL leftTrace,
                       TTraceValueGap gapTrace,
@@ -353,10 +353,8 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     {
         activeCell._score = activeCell._horizontalScore;
         return TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-//        return traceRight;
     }
     return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-//    returntraceRight;
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
@@ -368,16 +366,10 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     {
         activeCell._score = activeCell._horizontalScore;
         return TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-//        return traceRight | (traceLeft & TraceBitMap_::VERTICAL_OPEN);
     }
-//    traceGap = TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
     if (activeCell._score == activeCell._horizontalScore)
-    {
         return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-//        return traceRight | traceLeft;
-    }
     return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-//    return traceLeft | (traceRight & TraceBitMap_::HORIZONTAL_OPEN);
 }
 
 // ----------------------------------------------------------------------------
@@ -406,7 +398,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
 
     TTraceValue tvGap = _internalComputeScore(activeCell, tmpScore, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal());
-//    activeCell._score = activeCell._horizontalScore; _max(activeCell._horizontal, tmpScore)
 
     // Now we can decide for the optimal score in horizontal score or not?
     activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
@@ -417,32 +408,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TTraceValue tvMax = _internalComputeScore(activeCell, TTracebackConfig());  // Stores from where the maximal score comes.
     tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
     return _internalComputeScore(activeCell, tmpScore, tvGap, tvMax, TTracebackConfig(), RecursionDirectionDiagonal());
-
-    // This should be the fastest version.
-
-//    TScoreValue tmpScoreDiagonal = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal) +
-//                                         scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal)
-//                                       + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical)
-//                                       + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical)
-//                                     + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-//
-//    activeCell._horizontalScore = _max(tmpGapExtendHorizontal, tmpGapOpenHorizontal);
-//    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
-//    activeCell._score = _max(tmpScoreDiagonal, _max(activeCell._horizontalScore, activeCell._verticalScore));
-//
-//    if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
-//        return TraceBitMap_::NONE;
-//
-//    TTraceValue traceGapOpen = TraceBitMap_::NONE;
-//    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
-//    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
-//    return traceGapOpen |
-//           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, tmpGapExtendHorizontal, tmpGapOpenHorizontal,
-//                                tmpGapExtendVertical, tmpGapOpenVertical, RecursionDirectionAll());
 }
 
 // ----------------------------------------------------------------------------
@@ -471,24 +436,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TTraceValue tv = _internalComputeScore(activeCell, tmpScore, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal());
     tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
     return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX, TTracebackConfig(), RecursionDirectionDiagonal());
-
-//    TScoreValue tmpScoreDiagonal = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal)
-//                                         + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal)
-//                                       + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-//
-//    activeCell._horizontalScore = _max(tmpGapExtendHorizontal, tmpGapOpenHorizontal);
-//    activeCell._score = _max(tmpScoreDiagonal, activeCell._horizontalScore);
-//
-//    if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
-//        return TraceBitMap_::NONE;
-//
-//    TTraceValue traceGapOpen = TraceBitMap_::NONE;
-//    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
-//    return traceGapOpen |
-//           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, tmpGapExtendHorizontal, tmpGapOpenHorizontal,
-//                                TScoreValue(), TScoreValue(), RecursionDirectionUpperDiagonal());
 }
 
 // ----------------------------------------------------------------------------
@@ -521,18 +468,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     // Up to here, activeCell stores the highest value of vertical or vertical open.
     tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
     return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX, TTracebackConfig(), RecursionDirectionDiagonal());  // Now we have this problem. How do we determine if the max comes from the vertical distance.
-
-//    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
-//    activeCell._score = _max(tmpScoreDiagonal, activeCell._verticalScore);
-//
-//    if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
-//        return TraceBitMap_::NONE;
-//
-//    TTraceValue traceGapOpen = TraceBitMap_::NONE;
-//    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
-//    return traceGapOpen |
-//           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, TScoreValue(), TScoreValue(), tmpGapExtendVertical,
-//                                tmpGapOpenVertical, RecursionDirectionLowerDiagonal());
 }
 
 // ----------------------------------------------------------------------------
@@ -558,23 +493,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
     activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     return _internalComputeScore(activeCell, tmpGapOpenHorizontal, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal()) | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-
-//    typedef typename TraceBitMap_::TTraceValue TTraceValue;
-//    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal) +
-//                                       scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal) +
-//                                         scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-//    activeCell._horizontalScore = _max(tmpGapOpenHorizontal, tmpGapExtendHorizontal);
-//    activeCell._score = activeCell._horizontalScore;
-//
-//    if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
-//        return TraceBitMap_::NONE;
-//
-//    TTraceValue traceGapOpen = TraceBitMap_::NONE;
-//    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
-//    return traceGapOpen |
-//           _retrieveTraceAffine(activeCell._score, TScoreValue(), tmpGapExtendHorizontal, tmpGapOpenHorizontal,
-//                                TScoreValue(), TScoreValue(), RecursionDirectionHorizontal());
 }
 
 // ----------------------------------------------------------------------------
@@ -601,22 +519,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     // Here we distinguish between vertical and vertical open.
     activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     return _internalComputeScore(activeCell, tmpGapOpenVertical, TraceBitMap_::VERTICAL, TraceBitMap_::VERTICAL_OPEN, TTracebackConfig(), RecursionDirectionVertical()) | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-//    typedef typename TraceBitMap_::TTraceValue TTraceValue;
-//    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) +
-//                                     scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-//    TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical) +
-//                                       scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-//    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
-//    activeCell._score = activeCell._verticalScore;
-//
-//    if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
-//        return TraceBitMap_::NONE;
-//
-//    TTraceValue traceGapOpen = TraceBitMap_::NONE;
-//    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
-//    return traceGapOpen |
-//           _retrieveTraceAffine(activeCell._score, TScoreValue(), TScoreValue(), TScoreValue(), tmpGapExtendVertical,
-//                                tmpGapOpenVertical, RecursionDirectionVertical());
 }
 
 }  // namespace seqan

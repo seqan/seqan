@@ -139,16 +139,24 @@ public:
     // Call init() before calling materializeNext().
     //
     // Throws: MasonIOException
-    bool materializeNext(seqan::Dna5String & seq, int & rID, int & haplotype);
+    bool materializeNext(seqan::Dna5String & seq,
+                         std::vector<SmallVarInfo> & varInfos,
+                         std::vector<std::pair<int, int> > & breakpoints,
+                         int & rID, int & haplotype);   
 
     // Similar to the one above but loads methylation levels into levels.  Can only work if methFastFileName is not
     // empty.
-    bool materializeNext(seqan::Dna5String & seq, MethylationLevels & levels,
+    bool materializeNext(seqan::Dna5String & seq,
+                         MethylationLevels & levels,
+                         std::vector<SmallVarInfo> & varInfos,
+                         std::vector<std::pair<int, int> > & breakpoints,
                          int & rID, int & haplotype);
 
 private:
 
     bool _materializeNext(seqan::Dna5String & seq, MethylationLevels * levels,
+                          std::vector<SmallVarInfo> & varInfos,
+                          std::vector<std::pair<int, int> > & breakpoints,
                           int & rID, int & haplotype);
 
     // Load variants of next contig into variants.

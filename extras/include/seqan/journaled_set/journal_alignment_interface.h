@@ -70,18 +70,22 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
                             TReference const & reference,
                             TSource const & source,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                            TAlgoTag const & algoTag)
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                            TAlgoTag const & /*tag*/)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Position<TJournalString>::Type TPosition;
     typedef typename Size<TJournalString>::Type TSize;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
 
     String<TTraceSegment> traceSegments;
-
+    DPScoutState_<Default> dpScoutState;
     // We need to do that in order to build journal strings from two simple sequences.
-    TScoreValue res = _setUpAndRunAlignment(traceSegments, reference, source, scoringScheme, alignConfig, algoTag);
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, reference, source, scoringScheme, TDPConfig(),
+                                            IsSameType<TAlgoTag, NeedlemanWunsch>());
     _adaptTraceSegmentsTo(journaledString, reference, source, traceSegments);
     return res;
 }
@@ -157,21 +161,25 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
                             TReference const & reference,
                             TSource const & source,
                             Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                            AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
                             int lowerDiag,
                             int upperDiag,
-                            TAlgoTag const & algoTag)
+                            TAlgoTag const & /*algoTag*/)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Position<TJournalString>::Type TPosition;
     typedef typename Size<TJournalString>::Type TSize;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPConfig;
 
     String<TTraceSegment> traceSegments;
-
+    DPScoutState_<Default> dpScoutState;
     // We need to do that in order to build journal strings from two simple sequences.
-    TScoreValue res = _setUpAndRunAlignment(traceSegments, reference, source, scoringScheme, alignConfig, lowerDiag,
-                                            upperDiag, algoTag);
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, reference, source, scoringScheme,
+                                            TDPConfig(lowerDiag, upperDiag),
+                                            IsSameType<TAlgoTag, NeedlemanWunsch>());
     _adaptTraceSegmentsTo(journaledString, reference, source, traceSegments);
     return res;
 }
