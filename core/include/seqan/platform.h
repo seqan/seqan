@@ -51,7 +51,13 @@
 // NOTE(esiragusa): nvcc header must be included even if __CUDACC__ is not defined.
 #include "platform/platform_nvcc.h"
 
-// This macro defines an alias for the auto_ptr class template deprecated in C++11.
+// SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
+// SEQAN_FORWARD_ARG,
+// SEQAN_FORWARD_CARG ..... macros to insert between argument type and name ...
+// SEQAN_FORWARD_RETURN ... or return type and function name to declare forwarding of variables
+// SEQAN_FORWARD .......... pass a variable as (of type T) as it was given to a function
+// SEQAN_MOVE ............. pass a variable to a function and never use it again
+
 #ifdef SEQAN_CXX11_STANDARD
 
     #define SEQAN_AUTO_PTR_NAME     unique_ptr
@@ -72,5 +78,9 @@
 
 #endif  // #ifdef SEQAN_CXX11_STANDARD
 
+// Is the C++11 STL (thread, atomic, chrono) available?
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700) && !defined(PLATFORM_WINDOWS_MINGW)
+#define SEQAN_CXX11_STL
+#endif
 
 #endif
