@@ -37,7 +37,9 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_
 #define SEQAN_PARALLEL_PARALLEL_LOCK_H_
 
-#include <xmmintrin.h>
+#if defined(__SSE2__) && !defined(__CUDACC__)
+#include <xmmintrin.h>  // _mm_pause()
+#endif
 
 #ifdef PLATFORM_WINDOWS
 #include <Windows.h>
@@ -46,6 +48,12 @@
 #endif
 
 namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+inline void yieldProcessor();
 
 // ============================================================================
 // Classes
@@ -74,13 +82,15 @@ waitFor(SpinDelay & me)
     if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
         for (unsigned i = me.duration; i != 0; --i)
-            _mm_pause();
+			yieldProcessor();
         me.duration *= 2;
     }
     else
     {
 #ifdef PLATFORM_WINDOWS
+#if _WIN32_WINNT >= 0x0400
         SwitchToThread();
+#endif
 #else
         sched_yield();
 #endif
@@ -110,7 +120,7 @@ inline void
 spinCas(TAtomic & x, TValue cmp, TValue y)
 {
     SpinDelay spinDelay;
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     TValue exp = cmp;
     while (!x.compare_exchange_weak(exp, y))
     {
@@ -134,13 +144,8 @@ spinCas(TAtomic & x, TValue cmp, TValue y)
 class ReadWriteLock
 {
 public:
-#ifdef SEQAN_CXX11_STANDARD
-    std::atomic<unsigned> readers;
-    std::atomic<unsigned> writers;
-#else
-    unsigned readers;
-    unsigned writers;
-#endif
+	Atomic<unsigned>::Type readers;
+    Atomic<unsigned>::Type writers;
 
     ReadWriteLock() :
         readers(0),
@@ -213,6 +218,24 @@ struct ScopedWriteLock<TLock, Serial>
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function yieldProcessor()
+// ----------------------------------------------------------------------------
+
+inline void
+yieldProcessor()
+{
+#if defined( __CUDACC__)
+    // don't wait on the GPU
+#elif defined(PLATFORM_WINDOWS_VS)
+	YieldProcessor();
+#elif defined(__SSE2__)
+	_mm_pause();
+#else
+	__asm__ __volatile__("rep; nop" : : );
+#endif
+}
 
 // ----------------------------------------------------------------------------
 // Function lockReading()

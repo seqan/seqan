@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
 #include <chrono>
 #endif
 
@@ -171,7 +171,7 @@ void testMPMCQueue(size_t initialCapacity)
 //    std::cout <<chkSum<<std::endl;
 
     volatile unsigned chkSum2 = 0;
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     size_t threadCount = std::thread::hardware_concurrency();
 #else
     size_t threadCount = omp_get_max_threads();
@@ -193,13 +193,13 @@ void testMPMCQueue(size_t initialCapacity)
     SEQAN_ASSERT_GEQ(threadCount, 2u);
     seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 #else
     double start = omp_get_wtime();
 #endif
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     std::vector<std::thread> workers;
     for (size_t tid = 0; tid < threadCount; ++tid)
     {
@@ -230,7 +230,7 @@ void testMPMCQueue(size_t initialCapacity)
             // barrier for all writers to set up
             waitForFirstValue(queue);
 
-//            printf("start reader #%ld\n", tid);
+//            printf("start reader #%lu\n",  (long unsigned)tid);
             unsigned chkSumLocal = 0, val = 0, cnt = 0;
             while (popFront(val, queue, TParallelPop()))
             {
@@ -240,20 +240,20 @@ void testMPMCQueue(size_t initialCapacity)
 //                    printf("%ld ", tid);
             }
             seqan::atomicXor(chkSum2, chkSumLocal);
-            printf("stop reader #%ld %d\n", tid, cnt);
+            printf("stop reader #%lu %d\n", (long unsigned)tid, cnt);
         }
     }
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     ));
     }
 #endif
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     for (auto &t : workers)
         t.join();
 #endif
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
     std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
     double timeSpan = std::chrono::duration_cast<std::chrono::duration<double> >(stop - start).count();
 #else

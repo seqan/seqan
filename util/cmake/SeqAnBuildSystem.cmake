@@ -67,8 +67,9 @@ include (SeqAnUsabilityAnalyzer)
 # ---------------------------------------------------------------------------
 
 # We need the /bigobj switch on windows (for 64 bit builds only actually).
+# Set target system to be Windows XP and later.
 if (MSVC)
-  add_definitions (/bigobj)
+  add_definitions (/bigobj /D_WIN32_WINNT=0x0501 /DWINVER=0x0501)
 endif (MSVC)
 
 # ---------------------------------------------------------------------------
