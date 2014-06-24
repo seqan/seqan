@@ -263,12 +263,13 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     String<TTraceSegment> trace;
     TScoreValue res;
     DPScoutState_<Default> dpScoutState;
     res  = _setUpAndRunAlignment(trace, dpScoutState, source(row(align, 0)), source(row(align, 1)), scoringScheme,
-                                 TAlignConfig2(), typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+                                 TAlignConfig2(), TGapModel());
 
     _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
     return res;
@@ -331,11 +332,12 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
     TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, source(gapsH), source(gapsV), scoringScheme,
-                                            TAlignConfig2(), typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+                                            TAlignConfig2(), TGapModel());
     _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
     return res;
 }
@@ -403,12 +405,13 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
     TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, value(stringSet(alignmentGraph), 0),
                                             value(stringSet(alignmentGraph), 1), scoringScheme, TAlignConfig2(),
-                                            typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+                                            TGapModel());
 
     _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
                           positionToId(stringSet(alignmentGraph), 1), traceSegments);
@@ -473,12 +476,12 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     String<TTraceSegment> traceSegments;
     DPScoutState_<Default> dpScoutState;
     TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, value(strings, 0), value(strings, 1),
-                                            scoringScheme, TAlignConfig2(),
-                                            typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+                                            scoringScheme, TAlignConfig2(), TGapModel());
 
     _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
     return res;
@@ -624,11 +627,11 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     DPScoutState_<Default> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
-    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, TAlignConfig2(),
-                                 typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, TAlignConfig2(), TGapModel());
 }
 
 // Interface without AlignConfig<>.
@@ -689,13 +692,14 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
     SEQAN_ASSERT_EQ(length(strings), 2u);
 
     DPScoutState_<Default> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
     return _setUpAndRunAlignment(traceSegments, dpScoutState, strings[0], strings[1], scoringScheme, TAlignConfig2(),
-                                 typename IsSameType<TAlgoTag, NeedlemanWunsch>::Type());
+                                 TGapModel());
 }
 
 // Interface without AlignConfig<>.

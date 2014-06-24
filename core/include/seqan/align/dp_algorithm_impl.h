@@ -1350,7 +1350,24 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
         value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
         value(traceNavigator) |= TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     }
+}
 
+template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
+inline void
+_correctTraceValue(TTraceNavigator & traceNavigator,
+                   DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
+{
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
+    if (isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()))
+    {
+        value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
+        value(traceNavigator) |= TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    }
+    else if (isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal()))
+    {
+        value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
+        value(traceNavigator) |= TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    }
 }
 
 // ----------------------------------------------------------------------------
