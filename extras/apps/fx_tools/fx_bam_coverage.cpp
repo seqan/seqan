@@ -99,6 +99,7 @@ parseArgs(FxBamCoverageOptions & options,
 {
     seqan::ArgumentParser parser("fx_bam_coverage");
     setShortDescription(parser, "Read Coverage Computation.");
+    setCategory(parser, "Utilities");
     setVersion(parser, "0.2");
     setDate(parser, "August 2013");
     

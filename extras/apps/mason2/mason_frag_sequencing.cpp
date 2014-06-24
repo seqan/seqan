@@ -96,6 +96,19 @@ parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const 
 }
 
 // --------------------------------------------------------------------------
+// Function trimAfterSpace()
+// --------------------------------------------------------------------------
+
+void trimAfterSpace(seqan::CharString & s)
+{
+    unsigned i = 0;
+    for (; i < length(s); ++i)
+        if (isspace(s[i]))
+            break;
+    resize(s, i);
+}
+
+// --------------------------------------------------------------------------
 // Function main()
 // --------------------------------------------------------------------------
 
@@ -201,6 +214,9 @@ int main(int argc, char const ** argv)
         if (readRecord(fragId, fragSeq, inFragments) != 0)
             return 1;
 
+        // Trim fragment identifier after first whitespace.
+        trimAfterSpace(fragId);
+
         if (empty(options.outFileNameRight))  // Single-end sequencing.
         {
             sim->simulateSingleEnd(seqL, qualsL, simInfoL, infix(fragSeq, 0, length(fragSeq)));
@@ -209,6 +225,7 @@ int main(int argc, char const ** argv)
             {
                 ssL << ' ';
                 simInfoL.serialize(ssL);
+                ssL << " FRAG_ID=" << fragId;
             }
             if (writeRecord(outReads, ssL.str(), seqL, qualsL) != 0)
             {
@@ -225,8 +242,10 @@ int main(int argc, char const ** argv)
             {
                 ssL << ' ';
                 simInfoL.serialize(ssL);
+                ssL << " FRAG_ID=" << fragId;
                 ssR << ' ';
                 simInfoR.serialize(ssR);
+                ssR << " FRAG_ID=" << fragId;
             }
 
             // std::cerr << seqL << "\t" << qualsL << "\n"

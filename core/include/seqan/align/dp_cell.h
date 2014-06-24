@@ -123,8 +123,8 @@ template <typename TScoreValue, typename TGapCostFunction>
 const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE = MinValue<TScoreValue>::VALUE / 2;
 
 template <typename TScoreValue, typename TGapCostFunction>
-struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const>:
-    DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >{};
+struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :
+    public DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >{};
 
 // ============================================================================
 // Functions
@@ -218,6 +218,17 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 template <typename TScoreValue, typename TGapSpec>
 inline void
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/)
+{
+    // no-op
+}
+
+// ----------------------------------------------------------------------------
+// Function setGapExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
+inline void
+setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2)
 {
     // no-op
 }

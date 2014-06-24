@@ -173,8 +173,6 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
     return traceDir;
 }
 
-
-
 // ----------------------------------------------------------------------------
 // Function _doComputeScore                        [RecursionDirectionDiagonal]
 // ----------------------------------------------------------------------------
@@ -193,7 +191,7 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 TDPProfile const &)
 {
     activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-
+    setGapExtension(activeCell, False(), False());
     if (!IsTracebackEnabled_<TDPProfile>::VALUE)
         return TraceBitMap_::NONE;
 
