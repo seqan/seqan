@@ -207,6 +207,18 @@ _compareTextFilesAlt(const char * file1, const char * file2)
         getline(fl1, line1);
         getline(fl2, line2);
 
+        // Normalize line endings.
+        if (line1.size() > 2u && line1[line1.size() - 2] == '\r' && line1[line1.size() - 2] == '\n')
+        {
+            line1[line1.size() - 2] = '\n';
+            line1.erase(line1.size() - 1);
+        }
+        if (line2.size() > 2u && line2[line2.size() - 2] == '\r' && line2[line2.size() - 2] == '\n')
+        {
+            line2[line2.size() - 2] = '\n';
+            line2.erase(line2.size() - 1);
+        }
+
         if (line1 != line2)
         {
             std::cerr << "Line " << lineNo << " of the text files differ:" << std::endl;
