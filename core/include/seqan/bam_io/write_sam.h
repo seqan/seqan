@@ -66,19 +66,12 @@ int write(TTarget & target,
            Sam const & /*tag*/)
 {
     char const * headerTypes[] = {"@HD", "@SQ", "@RG", "@PG", "@CO"};
-<<<<<<< HEAD
-    streamPut(stream, headerTypes[header.type]);
-    if (header.type == BAM_HEADER_COMMENT)
-    {
-        streamPut(stream, header.tags[0].i2);
-=======
     write(target, headerTypes[header.type]);
 
     if (header.type == BAM_HEADER_COMMENT && !empty(header.tags))
     {
         writeValue(target, '\t');
         write(target, header.tags[0].i2);
->>>>>>> ffe8366... [FIX, FEATURE] Adjusted parts of the sam/bam module to the new seq_io module.
     }
     else
     {

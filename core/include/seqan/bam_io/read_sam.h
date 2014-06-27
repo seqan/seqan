@@ -181,17 +181,9 @@ void readRecord(BamHeaderRecord & record,
         }
     }
 
-<<<<<<< HEAD
-    // Skip remaining line break.
-    int res = skipLine(reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
-    return 0;
-=======
     // Skip remaining line break, in case of comment, we already skipped over it.
     if (record.type != BAM_HEADER_COMMENT)
         skipLine(iter);
->>>>>>> ffe8366... [FIX, FEATURE] Adjusted parts of the sam/bam module to the new seq_io module.
 }
 
 // ----------------------------------------------------------------------------
