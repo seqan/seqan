@@ -33,7 +33,7 @@
 // ==========================================================================
 // Implements the dynamic gap model published in "Dynamic Gaps Selector:
 // A Smith Waterman Sequence Alignment Algorithm with Affine Gap Model
-// Optimization" by Giavanito Urgese et al.
+// Optimization" by Gianvito Urgese et al.
 // ==========================================================================
 
 #ifndef CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_

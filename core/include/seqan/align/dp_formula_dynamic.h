@@ -33,7 +33,7 @@
 // ==========================================================================
 // Implements the score function for dynamic gap costs published in
 // "Dynamic Gaps Selector: A Smith Waterman Sequence Alignment Algorithm with
-// Affine Gap Model Optimization" by Giavanito Urgese et al.
+// Affine Gap Model Optimization" by Gianvito Urgese et al.
 // ==========================================================================
 
 #ifndef CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
@@ -112,10 +112,10 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
         setGapExtension(activeCell, False(), False());
         return TraceBitMap_::DIAGONAL | leftTrace;  // Return trace for Diagonal.
     }
-    if (_scoreOfCell(activeCell) == diagCompare)      // Maximal score comes from previous computed directions and diagonal.
-        return leftTrace | TraceBitMap_::DIAGONAL | gapTrace;   // Return all directions inclusively the flag indicating max from gap.
+    if (_scoreOfCell(activeCell) == diagCompare)  // Maximal score comes from previous computed directions and diagonal.
+        return leftTrace | TraceBitMap_::DIAGONAL | gapTrace;  // Return all directions inclusively the flag indicating max from gap.
 
-    return leftTrace | gapTrace; // Maximum comes from gap. Return gap value inclusively the flag indicating max from gap.
+    return leftTrace | gapTrace;  // Maximum comes from gap. Return gap value inclusively the flag indicating max from gap.
 }
 
 // ----------------------------------------------------------------------------
@@ -273,9 +273,8 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TTraceValue tvGap = _internalComputeScore(tmpScore, previousHorizontal, seqHVal, seqVVal, scoringScheme,
                                               TTracebackConfig(), RecursionDirectionHorizontal());
 
-    // Compute best alignment between vertical and horizontal gap.
+    // Compute best alignment between vertical and vertical open gap.
     activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-    // Now we can decide for the optimal score in horizontal score or not?
     tvGap |= _internalComputeScore(activeCell, previousVertical, seqHVal, seqVVal, scoringScheme,
                                    TTracebackConfig(), RecursionDirectionVertical());
 
@@ -304,7 +303,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
 
-    // This computes the difference between the vertical extend and vertical open.
+    // This computes the difference between the horizontal extend and horizontal open.
     activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     TTraceValue tv = _internalComputeScore(activeCell, previousHorizontal, seqHVal, seqVVal, scoringScheme,
                                            TTracebackConfig(), RecursionDirectionHorizontal());

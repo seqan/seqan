@@ -197,6 +197,15 @@ typedef Tag<AffineGaps_> AffineGaps;
 // Tag DynamicGaps
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag AlignmentAlgorithmTags#DynamicGaps
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting dynamic gap cost model. This tag can be used for all standard DP algorithms.
+ *
+ * @signature struct DynamicGaps_;
+ * @signature typedef Tag<DynamicGaps_> DynamicGaps;
+ */
+
 struct DynamicGaps_;
 typedef Tag<DynamicGaps_> DynamicGaps;
 
