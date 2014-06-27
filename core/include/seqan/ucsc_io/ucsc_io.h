@@ -92,7 +92,6 @@ struct UcscContext
     String<char> buffer;
 };
 
-// TODO(singer): return int instead of bool
 template <typename TForwardIter>
 inline void
 readRecord(
@@ -100,67 +99,76 @@ readRecord(
     TForwardIter & iter,
     UcscContext & ucscContext)
 {
+
+    OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> > nextRecord;
+
     clear(record);
 
     // read column 1: transcript name
     // The letters until the first whitespace will be read.
     // Then, we skip until we hit the first tab character.
 
-    readUntil(record.transName, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(record.transName, iter, IsWhitespace());
     if (!empty(record.transName) && record.transName[0] == '#')
+    {
+        skipLine(iter);
         return;
-    skipOne(iter);
+    }
+    skipOne(iter, IsTab());
 
     // read column 2: contig name
-    readUntil(record.contigName, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(record.contigName, iter, nextRecord);
     skipOne(iter);
 
     // read column 3: orientation
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
 
-    if (ucscContext.buffer[0] != '+' && ucscContext.buffer[0] != '-' && length(ucscContext.buffer) == 1u)
+    if (length(ucscContext.buffer) > 0)
     {
-        record.format = record.KNOWN_ISOFORMS;
-        insert(record.transName, 0, "GENE");
-        skipUntil(iter, IsNewline());
-        if(!atEnd(iter))
-            skipOne(iter);
+        if (length(ucscContext.buffer) == 1u && ucscContext.buffer[0] != '+' && ucscContext.buffer[0] != '-')
+        {
+            record.format = record.KNOWN_ISOFORMS;
+            insert(record.transName, 0, "GENE");
+            skipUntil(iter, IsNewline());
+            if(!atEnd(iter))
+                skipOne(iter);
 
-        return;
+            return;
+        }
+        record.format = record.KNOWN_GENE;
+        char orientation = ucscContext.buffer[0];
+        skipOne(iter);
     }
-    record.format = record.KNOWN_GENE;
-    char orientation = ucscContext.buffer[0];
-    skipOne(iter);
 
     // read column 4: transcript begin position
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
     record.annotationBeginPos = lexicalCast<__uint64>(ucscContext.buffer);
     skipOne(iter);
 
     // read column 5: transcript end position
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
     record.annotationEndPos = lexicalCast<__uint64>(ucscContext.buffer);
     skipOne(iter);
 
     // read column 6: CDS begin position
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
     record.cdsBegin = lexicalCast<__uint64>(ucscContext.buffer);
     skipOne(iter);
 
     // read column 7: CDS end position
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
     record.cdsEnd = lexicalCast<__uint64>(ucscContext.buffer);
     skipOne(iter);
 
     // read column 8: exon count
     int exons;
     clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+    readUntil(ucscContext.buffer, iter, nextRecord);
     exons = lexicalCast<int>(ucscContext.buffer);
     skipOne(iter);
 
