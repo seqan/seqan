@@ -117,63 +117,58 @@ readRecord(
     skipOne(iter, IsTab());
 
     // read column 2: contig name
-    readUntil(record.contigName, iter, nextRecord);
-    skipOne(iter);
+    readUntil(record.contigName, iter, IsWhitespace());
+    if (empty(record.contigName))
+        throw ParseError("unexpected end of record.");
 
     // read column 3: orientation
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-
-    if (length(ucscContext.buffer) > 0)
+    char orientation;
+    readOne(orientation, iter);
+    if (IsNewline()(orientation))
     {
-        if (length(ucscContext.buffer) == 1u && ucscContext.buffer[0] != '+' && ucscContext.buffer[0] != '-')
-        {
-            record.format = record.KNOWN_ISOFORMS;
-            insert(record.transName, 0, "GENE");
-            skipUntil(iter, IsNewline());
-            if(!atEnd(iter))
-                skipOne(iter);
-
-            return;
-        }
-        record.format = record.KNOWN_GENE;
-        char orientation = ucscContext.buffer[0];
-        skipOne(iter);
+        record.format = record.KNOWN_ISOFORMS;
+        // TODO: What is this?
+        insert(record.transName, 0, "GENE");
+        return;
     }
+    readOne(orientation, iter, OrFunctor<EqualsChar<'+'>, EqualsChar<'-'> >());
+    skipOne(iter, IsTab());
+
+    record.format = record.KNOWN_GENE;
 
     // read column 4: transcript begin position
     clear(ucscContext.buffer);
     readUntil(ucscContext.buffer, iter, nextRecord);
     record.annotationBeginPos = lexicalCast<__uint64>(ucscContext.buffer);
-    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // read column 5: transcript end position
     clear(ucscContext.buffer);
     readUntil(ucscContext.buffer, iter, nextRecord);
     record.annotationEndPos = lexicalCast<__uint64>(ucscContext.buffer);
-    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
     clear(ucscContext.buffer);
     readUntil(ucscContext.buffer, iter, nextRecord);
     record.cdsBegin = lexicalCast<__uint64>(ucscContext.buffer);
-    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // read column 7: CDS end position
     clear(ucscContext.buffer);
     readUntil(ucscContext.buffer, iter, nextRecord);
     record.cdsEnd = lexicalCast<__uint64>(ucscContext.buffer);
-    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // read column 8: exon count
-    int exons;
+    unsigned int exons;
     clear(ucscContext.buffer);
     readUntil(ucscContext.buffer, iter, nextRecord);
-    exons = lexicalCast<int>(ucscContext.buffer);
-    skipOne(iter);
+    exons = lexicalCast<unsigned int>(ucscContext.buffer);
+    skipOne(iter, IsTab());
 
     // read column 9: exon begin positions
-    for (int i = 0; i < exons; ++i)
+    for (unsigned int i = 0; i < exons; ++i)
     {
         clear(ucscContext.buffer);
         readUntil(ucscContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
@@ -186,7 +181,7 @@ readRecord(
     skipOne(iter, IsTab());
 
     // read column 10: exon end positions
-    for (int i = 0; i < exons; ++i)
+    for (unsigned int i = 0; i < exons; ++i)
     {
         clear(ucscContext.buffer);
         readUntil(ucscContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
@@ -200,8 +195,7 @@ readRecord(
 
     // read column 11: protein name
     readUntil(record.proteinName, iter, IsWhitespace());
-
-    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // skip column 12
     skipLine(iter);
@@ -215,7 +209,7 @@ readRecord(
         tmp = record.cdsBegin;
         record.cdsBegin = record.cdsEnd;
         record.cdsEnd = tmp;
-        for (int i = 0; i < exons; ++i)
+        for (unsigned int i = 0; i < exons; ++i)
         {
             tmp = record.exonBegin[i];
             record.exonBegin[i] = record.exonEnd[i];
@@ -245,7 +239,7 @@ read(
         }
         catch(std::runtime_error())
         {
-            
+
         }
     }
 }

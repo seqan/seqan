@@ -45,6 +45,9 @@ SEQAN_BEGIN_TESTSUITE(test_store)
     SEQAN_CALL_TEST(test_store_io_read_record_ucsc_known_genes);
     SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
 
+    SEQAN_CALL_TEST(test_store_io_read_record_ucsc_known_isoforms);
+    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_isoforms);
+
     SEQAN_CALL_TEST(test_store_io_write_record_ucsc_known_genes);
     SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
 }

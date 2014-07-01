@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_ucsc_known_genes)
     // The file contains 13 annotations in total which will be checked line
     // after line.
     String<char> ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/ucsc_io/example_known_genes_with_errors.tsv");
 
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(ucscPath));
@@ -150,6 +150,70 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT_EQ(records[1].proteinName, "P00441");
     SEQAN_ASSERT_EQ(records[1].annotationBeginPos, 33031934u);
     SEQAN_ASSERT_EQ(records[1].annotationEndPos, 33041243u);
+}
+
+SEQAN_DEFINE_TEST(test_store_io_read_record_ucsc_known_isoforms)
+{
+    // The file contains 13 annotations in total which will be checked line
+    // after line.
+    String<char> ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/ucsc_io/example_known_isoforms.tsv");
+
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(ucscPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
+
+    UcscRecord record;
+    UcscContext ucscContext;
+
+    readRecord(record, iter, ucscContext);
+    SEQAN_ASSERT_EQ(record.transName, "GENE1");
+    SEQAN_ASSERT_EQ(record.contigName, "NM_001025288");
+    SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
+
+    readRecord(record, iter, ucscContext);
+    SEQAN_ASSERT_EQ(record.transName, "GENE2");
+    SEQAN_ASSERT_EQ(record.contigName, "NM_134386");
+    SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
+
+    readRecord(record, iter, ucscContext);
+    SEQAN_ASSERT_EQ(record.transName, "GENE3");
+    SEQAN_ASSERT_EQ(record.contigName, "NM_001030033");
+    SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
+
+    for (unsigned i = 0; i < 20; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(ParseError,
+                             seqan::readRecord(record, iter, ucscContext));
+        skipLine(iter);
+    }
+}
+
+SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_isoforms)
+{
+    // The file contains 13 annotations in total which will be checked line
+    // after line.
+    String<char> ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/ucsc_io/example_known_isoforms.tsv");
+
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(ucscPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
+
+    String<UcscRecord> records;
+
+    read(records, iter);
+    SEQAN_ASSERT_EQ(records[0].transName, "GENE1");
+    SEQAN_ASSERT_EQ(records[0].contigName, "NM_001025288");
+    SEQAN_ASSERT(records[0].format == records[0].KNOWN_ISOFORMS);
+
+    SEQAN_ASSERT_EQ(records[1].transName, "GENE2");
+    SEQAN_ASSERT_EQ(records[1].contigName, "NM_134386");
+    SEQAN_ASSERT(records[1].format == records[0].KNOWN_ISOFORMS);
+
+    SEQAN_ASSERT_EQ(records[2].transName, "GENE3");
+    SEQAN_ASSERT_EQ(records[2].contigName, "NM_001030033");
+    SEQAN_ASSERT(records[2].format == records[0].KNOWN_ISOFORMS);
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_ucsc_known_genes)
