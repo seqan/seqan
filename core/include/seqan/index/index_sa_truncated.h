@@ -151,7 +151,7 @@ getEmptyEdges(Iter< TIndex, VSTree<TSpec> > const &it)
     TSize repLen = repLength(it);
     Pair<TSize> saRange = range(it);
 
-    register TSize i2 = saRange.i1;
+    TSize i2 = saRange.i1;
     while (i2 < saRange.i2 && suffixLength(saAt(i2, index), index) <= repLen)
         ++i2;
 

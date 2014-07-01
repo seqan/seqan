@@ -65,7 +65,7 @@ namespace seqan {
  * 
  */
 
-template<unsigned int SPACE = 4096>
+template<size_t SPACE = 4096>
 struct Block;
 
 /**
@@ -80,7 +80,7 @@ struct Block;
 ...remarks: Size should be a power of 2, e.g., 1024.
 ..include:seqan/sequence.h
 */
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 class String<TValue, Block<SPACE> >
 {
     typedef String<TValue, Array<SPACE> >               TBlock;
@@ -170,7 +170,7 @@ public:
 // Metafunction DefaultOverflowImplicit
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 struct DefaultOverflowImplicit< String<TValue, Block<SPACE> > >
 {
     typedef Generous Type;
@@ -183,25 +183,25 @@ struct DefaultOverflowImplicit< String<TValue, Block<SPACE> > >
 ///.Metafunction.Iterator.param.T.type:Spec.Block String
 ///.Metafunction.Iterator.class:Spec.Block String
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> >, Standard>
 {
     typedef Iter<String<TValue, Block<SPACE> >, PositionIterator> Type;
 };
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> > const, Standard>
 {
     typedef Iter<String<TValue, Block<SPACE> > const, PositionIterator> Type;
 };
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> >, Rooted>
 {
     typedef Iter<String<TValue, Block<SPACE> >, PositionIterator> Type;
 };
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> > const, Rooted>
 {
     typedef Iter<String<TValue, Block<SPACE> > const, PositionIterator> Type;
@@ -215,7 +215,7 @@ struct Iterator<String<TValue, Block<SPACE> > const, Rooted>
 // Function begin()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TSpec>
+template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type
 begin(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
 {
@@ -223,7 +223,7 @@ begin(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
     return Iter<String<TValue, Block<SPACE> >, PositionIterator>(me, 0);
 }
 
-template<typename TValue, unsigned int SPACE, typename TSpec>
+template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type
 begin(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 {
@@ -235,7 +235,7 @@ begin(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 // Function end()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TSpec>
+template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type
 end(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
 {
@@ -243,7 +243,7 @@ end(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
     return Iter<String<TValue, Block<SPACE> >, PositionIterator>(me, length(me));
 }
 
-template<typename TValue, unsigned int SPACE, typename TSpec>
+template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type
 end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 {
@@ -255,7 +255,7 @@ end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 // Function assign()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TSource>
+template<typename TValue, size_t SPACE, typename TSource>
 inline void
 assign(String<TValue, Block<SPACE> >& target, TSource const& source)
 {
@@ -270,7 +270,7 @@ assign(String<TValue, Block<SPACE> >& target, TSource const& source)
 // Function value()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TPos>
+template<typename TValue, size_t SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
 value(String<TValue, Block<SPACE> >& stack, TPos const pos)
 {
@@ -278,7 +278,7 @@ value(String<TValue, Block<SPACE> >& stack, TPos const pos)
     return value(*(stack.blocks[pos / SPACE]), pos % SPACE);
 }
 
-template<typename TValue, unsigned int SPACE, typename TPos>
+template<typename TValue, size_t SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
 value(String<TValue, Block<SPACE> > const& stack, TPos const pos)
 {
@@ -291,7 +291,7 @@ value(String<TValue, Block<SPACE> > const& stack, TPos const pos)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Probably wrong place?
-template<typename TValue, unsigned int SPACE, typename TIteratorSpec>
+template<typename TValue, size_t SPACE, typename TIteratorSpec>
 inline bool
 atEnd(Iter<String<TValue, Block<SPACE> >, TIteratorSpec>& it, String<TValue, Block<SPACE> >& container)
 {
@@ -305,7 +305,7 @@ atEnd(Iter<String<TValue, Block<SPACE> >, TIteratorSpec>& it, String<TValue, Blo
 // Function clear()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline void
 clear(String<TValue, Block<SPACE> >& me)
 {
@@ -328,7 +328,7 @@ clear(String<TValue, Block<SPACE> >& me)
 // Function resize()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TSize2, typename TExpand>
+template<typename TValue, size_t SPACE, typename TSize2, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Tag<TExpand>)
 {
@@ -348,7 +348,7 @@ resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Tag<TExpand>)
     return new_length;
 }
 
-template<typename TValue, unsigned int SPACE, typename TSize2>
+template<typename TValue, size_t SPACE, typename TSize2>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 {
@@ -379,7 +379,7 @@ resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 ///.Function.reserve.param.object.type:Spec.Block String
 ///.Function.reserve.class:Spec.Block String
 /*
-template <typename TValue, unsigned int SPACE, typename TSize, typename TExpand>
+template <typename TValue, size_t SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 reserve(
     String<TValue, Block<SPACE> >& me,
@@ -393,7 +393,7 @@ SEQAN_CHECKPOINT
 */
 
 // dummy implementation
-template<typename TValue, unsigned int SPACE, typename TSize, typename TExpand>
+template<typename TValue, size_t SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>)
 {
@@ -402,10 +402,42 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 }
 
 // ----------------------------------------------------------------------------
+// Function appendValue()
+// ----------------------------------------------------------------------------
+
+///.Function.appendValue.param.target.type:Spec.Block String
+
+template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
+inline void
+appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG value, Tag<TExpand> tag)
+{
+    // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
+    typedef String<TTargetValue, Block<SPACE> > TString;
+    typedef typename Size<TString>::Type        TSize;
+
+    if (me.lastValue == me.blockLast)
+    {
+        TSize last = length(me.blocks);
+        resize(me.blocks, last + 1, tag);
+        allocate(me.alloc, me.blocks[last], 1);
+        valueConstruct(me.blocks[last]);
+        me.lastValue = me.blockFirst = begin(*me.blocks[last]);
+        me.blockLast = (me.blockFirst + (SPACE - 1));
+        back(me.blocks)->data_length += 1;
+    }
+    else
+    {
+        ++me.lastValue;
+        back(me.blocks)->data_length += 1;
+    }
+    valueConstruct(me.lastValue, SEQAN_FORWARD(TValue, value));
+}
+
+// ----------------------------------------------------------------------------
 // Function append()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE, typename TSource, typename TExpand>
+template<typename TValue, size_t SPACE, typename TSource, typename TExpand>
 inline void
 append(String<TValue, Block<SPACE> >& me, TSource const& source, Tag<TExpand> /*tag*/)
 {
@@ -416,38 +448,10 @@ append(String<TValue, Block<SPACE> >& me, TSource const& source, Tag<TExpand> /*
 }
 
 // ----------------------------------------------------------------------------
-// Function appendValue()
-// ----------------------------------------------------------------------------
-
-///.Function.appendValue.param.target.type:Spec.Block String
-
-template<typename TValue, unsigned int SPACE, typename TVal, typename TExpand>
-inline void
-appendValue(String<TValue, Block<SPACE> >& me, TVal const& source, Tag<TExpand> tag)
-{
-    // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
-    SEQAN_CHECKPOINT;
-    if (me.lastValue == me.blockLast) {
-        typename Size< String<TValue, Block<SPACE> > >::Type last = length(me.blocks);
-
-        resize(me.blocks, last + 1, tag);
-        allocate(me.alloc, me.blocks[last], 1);
-        valueConstruct(me.blocks[last]);
-        me.lastValue = me.blockFirst = begin(*me.blocks[last]);
-        me.blockLast = (me.blockFirst + (SPACE - 1));
-        back(me.blocks)->data_length += 1;
-    } else {
-        ++me.lastValue;
-        back(me.blocks)->data_length += 1;
-    }
-    valueConstruct(me.lastValue, source);
-}
-
-// ----------------------------------------------------------------------------
 // Function back()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline TValue &
 back(String<TValue, Block<SPACE> > & me)
 {
@@ -457,7 +461,7 @@ back(String<TValue, Block<SPACE> > & me)
     return *me.lastValue;
 }
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline TValue const &
 back(String<TValue, Block<SPACE> > const & me)
 {
@@ -471,7 +475,7 @@ back(String<TValue, Block<SPACE> > const & me)
 // Function backPrev()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline TValue &
 backPrev(String<TValue, Block<SPACE> > & me)
 {
@@ -484,7 +488,7 @@ backPrev(String<TValue, Block<SPACE> > & me)
         return *(begin(*me.blocks[length(me.blocks) - 1]) + (SPACE - 1));
 }
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline TValue const &
 backPrev(String<TValue, Block<SPACE> > const& me)
 {
@@ -501,7 +505,7 @@ backPrev(String<TValue, Block<SPACE> > const& me)
 // Function eraseBack()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline void
 eraseBack(String<TValue, Block<SPACE> >& me)
 {
@@ -538,7 +542,7 @@ eraseBack(String<TValue, Block<SPACE> >& me)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline bool
 empty(String<TValue, Block<SPACE> > const& me)
 {
@@ -550,7 +554,7 @@ empty(String<TValue, Block<SPACE> > const& me)
 // Function length()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline typename Size<String<TValue, Block<SPACE> > >::Type
 length(String<TValue, Block<SPACE> > const & me)
 {
@@ -565,7 +569,7 @@ length(String<TValue, Block<SPACE> > const & me)
 // Function capacity()
 // ----------------------------------------------------------------------------
 
-template<typename TValue, unsigned int SPACE>
+template<typename TValue, size_t SPACE>
 inline typename Size<String<TValue, Block<SPACE> > >::Type
 capacity(String<TValue, Block<SPACE> > const & me)
 {

@@ -117,11 +117,11 @@ namespace seqan {
  * @signature SequenceStream::SequenceStream(fileName[, operationMode[, format[, fileType]]]);
  * 
  * @param[in] fileName      Path to the file to open.  Type: <tt>char const *</tt>
- * @param[in] operationMode Mode to open the file in.  Optional.  Type: SequenceStream::OperationMode.
+ * @param[in] operationMode Mode to open the file in.  Optional.  Type: @link SequenceStream::OperationMode @endlink.
  *                          Default: <tt>READ</tt>
- * @param[in] format        Mode to open the file in.  Optional.  Type: SequenceStream::FileFormat.
+ * @param[in] format        Mode to open the file in.  Optional.  Type: @link SequenceStream::FileFormat @endlink.
  *                          Default: <tt>AUTO_FORMAT</tt>.
- * @param[in] fileType      Mode to open the file in.  Optional.  Type: SequenceStream::FileType.
+ * @param[in] fileType      Mode to open the file in.  Optional.  Type: @link SequenceStream::FileType @endlink.
  *                          Default: <tt>AUTO_TYPE</tt>.
  */
 
@@ -134,14 +134,14 @@ namespace seqan {
  *
  * @see SequenceStream
  * 
- * @var SequenceStream::OperationMode SequenceStream::READ;
+ * @val SequenceStream::OperationMode SequenceStream::READ;
  * @brief Open stream for reading.
  * 
- * @var SequenceStream::OperationMode SequenceStream::WRITE;
+ * @val SequenceStream::OperationMode SequenceStream::WRITE;
  * @brief Open stream for writing.
  * 
- * @var SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
- * @brief Open stream for reading, mark as "persisent reading".  See @link SequenceStream @endlink for more information
+ * @val SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
+ * @brief Open stream for reading, mark as "persistent reading".  See @link SequenceStream @endlink for more information
  *        on the difference between normal and persistent reading.
  */
 
@@ -156,18 +156,18 @@ namespace seqan {
  * 
  * @see SequenceStream
  * 
- * @var SequenceStream::FileType SequenceStream::AUTO_TYPE;
+ * @val SequenceStream::FileType SequenceStream::AUTO_TYPE;
  * 
  * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
  *        <tt>PLAIN_TEXT</tt> is used.
  * 
- * @var SequenceStream::FileType SequenceStream::PLAIN_TEXT;
+ * @val SequenceStream::FileType SequenceStream::PLAIN_TEXT;
  * @brief Force reading/writing of plain text.
  * 
- * @var SequenceStream::FileType SequenceStream::BZ2;
+ * @val SequenceStream::FileType SequenceStream::BZ2;
  * @brief Force reading/writing with bzip compression.
  * 
- * @var SequenceStream::FileType SequenceStream::GZ;
+ * @val SequenceStream::FileType SequenceStream::GZ;
  * @brief Force reading/writing with gzip compression.
  */
 
@@ -182,14 +182,14 @@ namespace seqan {
  * 
  * @see SequenceStream
  * 
- * @var SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
+ * @val SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
  * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
  *        FASTA is used.
  * 
- * @var SequenceStream::FileFormat SequenceStream::FASTA;
+ * @val SequenceStream::FileFormat SequenceStream::FASTA;
  * @brief Force reading/writing of FASTA.
  * 
- * @var SequenceStream::FileFormat SequenceStream::FASTQ;
+ * @val SequenceStream::FileFormat SequenceStream::FASTQ;
  * @brief Force reading/writing of FASTQ.
  */
 
@@ -418,12 +418,12 @@ public:
  * @signature void open(seqStream, fileName[, operationMode[, format[, fileType]]]);
  * 
  * @param[in,out] seqStream     The SequenceStream object to open. Types: SequenceStream.
- * @param[in]     fileType      Mode to open the file in. Optional. Types: SequenceStream::FileType  Default:
- *                              AUTO_TYPE.
- * @param[in]     format        Mode to open the file in. Optional.  Types: SequenceStream::FileFormat.
- *                              Default: AUTO_FORMAT.
- * @param[in]     operationMode Mode to open the file in.  Optional. Types: SequenceStream::OperationMode.
- *                              Default: READ.
+ * @param[in]     fileType      Mode to open the file in. Optional. Types: @link SequenceStream::FileType @endlink.
+ *                              Default: <tt>AUTO_TYPE</tt>.
+ * @param[in]     format        Mode to open the file in. Optional.  Types: @link SequenceStream::FileFormat @endlink.
+ *                              Default: <tt>AUTO_FORMAT</tt>.
+ * @param[in]     operationMode Mode to open the file in.  Optional. Types: @link SequenceStream::OperationMode
+ *                              @endlink. Default: <tt>READ</tt>.
  * @param[in]     fileName      Path to the file to open. Types: <tt>char const *</tt>
  */
 

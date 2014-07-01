@@ -217,7 +217,50 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
         _createSuffixArrayWrapper(sa, s, alg, typename SACreatorRandomAccess_<TSA, TText, TAlgSpec>::Type());
     }
 
+//____________________________________________________________________________
 
+/*!
+ * @fn createInvSuffixArray
+ * @headerfile <seqan/index.h>
+ * @brief Creates the inverse suffix array from a given suffix array.
+ *
+ * @signature void createInvSuffixArray(invSuffixArray, suffixArray);
+ *
+ * @param[out] invSuffixArray  The resulting inverse suffix array.
+ * @param[in]  suffixArray     The precomputed suffix array for some text.
+ *
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The size of <tt>invSuffixArray</tt> must be at
+ * least <tt>length(suffixArray)</tt> before calling this function.
+ *
+ * The complexity is linear in size of the suffix array.
+ */
+
+    template <typename TIsa, typename TSa, typename TParallel>
+    inline void
+    createInvSuffixArray(TIsa &isa,
+                         TSa const &sa,
+                         FromSortedSa<TParallel> const &/*alg*/)
+    {
+        typedef typename Size<TSa>::Type                     TSize;
+        typedef typename MakeSigned<TSize>::Type             TSignedSize;
+        typedef typename StringSetLimits<TSa>::Type          TLimits;
+        typedef typename Iterator<TSa const, Standard>::Type TIter;
+
+        TLimits const & limits = stringSetLimits(sa);
+        Splitter<TSize> splitter(0, length(sa), TParallel());
+
+        SEQAN_OMP_PRAGMA(parallel for)
+        for (TSignedSize job = 0; job < static_cast<TSignedSize>(length(splitter)); ++job)
+        {
+            TIter saIt = begin(sa, Standard()) + splitter[job];
+            TIter saItEnd = begin(sa, Standard()) + splitter[job + 1];
+            TSize pos = splitter[job];
+
+            for (; saIt != saItEnd; ++saIt)
+                isa[posGlobalize(*saIt, limits)] = pos++;
+        }
+    }
 
 //____________________________________________________________________________
 
@@ -663,6 +706,14 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 		return true;
 	}
 
+    template <typename TText, typename TSpec, typename TParallel>
+    inline bool indexCreate(Index<TText, TSpec> &index, FibreIsa, FromSortedSa<TParallel> const alg)
+    {
+        resize(indexIsa(index), length(indexRawText(index)), Exact());
+        createInvSuffixArray(indexIsa(index), indexSA(index), alg);
+        return true;
+    }
+
 	template <typename TText, typename TSpec, typename TSpecAlg>
 	inline bool indexCreate(Index<TText, TSpec> &index, FibreLcp, TSpecAlg const alg) {
 	SEQAN_CHECKPOINT
@@ -700,12 +751,38 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
     template <typename TText, typename TSpec, typename TFibre>
     inline bool indexCreate(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
     SEQAN_CHECKPOINT
-        if (!empty(indexText(index)))
-            return indexCreate(index, fibre, typename DefaultIndexCreator<Index<TText, TSpec>, Tag<TFibre> const>::Type());
-        else
-            return false;
+        return indexCreate(index, fibre, typename DefaultIndexCreator<Index<TText, TSpec>, Tag<TFibre> const>::Type());
     }
 
+
+// ----------------------------------------------------------------------------
+// Function indexCreate()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec>
+inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
+{
+    typedef Index<TText, TSpec>                     TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type   TSA;
+    typedef typename Value<TSA>::Type               TSAValue;
+    typedef typename Size<TText>::Type              TSize;
+    typedef QGramLess_<TSAValue, TText const>       TLess;
+
+    TText const & text = indexText(index);
+    TSA & sa = indexSA(index);
+    TSize textLen = length(text);
+
+    resize(sa, textLen, Exact());
+
+    // Fill the suffix array with (i, 0).
+    for (TSize i = 0; i < textLen; i++)
+        sa[i] = TSAValue(i, 0);
+
+    // Sort the suffix array using quicksort.
+    sort(sa, TLess(text, maxLength(text)));
+
+    return true;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // automatic fibre creation
@@ -838,6 +915,12 @@ I	ISSISSIPPI
 	SEQAN_CHECKPOINT
 		return true;
 	}
+
+    template <typename TText, typename TSpec>
+    inline bool indexSolveDependencies(Index<TText, TSpec> &index, FibreIsa) {
+    SEQAN_CHECKPOINT
+        return indexRequire(index, FibreSA());
+    }
 
 	template <typename TText, typename TSpec>
 	inline bool indexSolveDependencies(Index<TText, TSpec> &index, FibreLcp) {
@@ -995,16 +1078,17 @@ I	ISSISSIPPI
 // save
 
 	template <typename TValue>
-	inline bool save(TValue val, const char *fileName, int openMode)
+	inline bool save(TValue const &val, const char *fileName, int openMode)
     {
         String<TValue, External< ExternalConfigLarge<> > > extString;
         if (!open(extString, fileName, openMode)) return false;
+        clear(extString);
         appendValue(extString, val);
         return true;
     }
 
 	template <typename TValue>
-	inline bool save(TValue val, const char *fileName)
+	inline bool save(TValue const &val, const char *fileName)
     {
         return save(val, fileName, OPEN_WRONLY | OPEN_CREATE);
     }

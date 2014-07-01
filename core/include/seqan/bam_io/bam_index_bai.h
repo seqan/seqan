@@ -95,6 +95,7 @@ struct BaiBamIndexBinData_
 
 /*!
  * @class BaiBamIndex
+ * @headerfile <seqan/bam_io.h>
  * @extends BamIndex
  * @brief Access to BAI (samtools-style).
  *
@@ -287,7 +288,7 @@ jumpToRegion(Stream<Bgzf> & stream,
                 offsetCandidates.insert(it2->i1);
     }
 
-    // Search through candidate offsets, find smallest with a fitting alignment.
+    // Search through candidate offsets, find rightmost possible.
     //
     // Note that it is not necessarily the first.
     //
@@ -305,14 +306,15 @@ jumpToRegion(Stream<Bgzf> & stream,
         // __int32 endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (record.beginPos >= posEnd)
-            continue;  // Cannot overlap with [pos, posEnd).
+        if (!hasAlignments || record.beginPos <= pos)
+        {
+            // Found a valid alignment.
+            hasAlignments = true;
+            offset = *candIt;
+        }
 
-        // Found an alignment.
-        hasAlignments = true;
-        offset = *candIt;
-        // std::cerr << "offset == " << offset << "\n";
-        break;
+        if (record.beginPos >= posEnd)
+            break;  // Cannot find overlapping any more.
     }
 
     if (offset != MaxValue<__uint64>::VALUE)
@@ -403,6 +405,16 @@ bool jumpToOrphans(Stream<Bgzf> & stream,
 // Function getUnalignedCount()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamIndex#getUnalignedCount 
+ * @brief Query index for number of unaligned reads.
+ *
+ * @signature __uint64 getUnalignedCount(index);
+ *
+ * @param[in] index     Index to query.
+ * @return    __uint64  The number of unaligned reads.
+ */
+
 /**
 .Function.BamIndex#getUnalignedCount
 ..class:Class.BamIndex
@@ -424,6 +436,17 @@ getUnalignedCount(BamIndex<Bai> const & index)
 // ----------------------------------------------------------------------------
 // Function read()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamIndex#read
+ * @brief Load a BAM index from a given file name.
+ * @signature int read(index, filename);
+
+ * @param[in,out] index    Target data structure.
+ * @param[in]     filename Path to file to load. Types: char const *
+ *
+ * @return        int      The status code, <tt>0</tt> indicating success.
+ */
 
 /**
 .Function.BamIndex#read

@@ -44,21 +44,25 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // needful forward declarations
 
-	// suffix array construction specs
-	struct Skew3;
-	struct Skew7;
-	struct LarssonSadakane;
-	struct ManberMyers;
-	struct SAQSort;
-	struct QGramAlg;
+    // suffix array construction specs
+    struct Skew3;
+    struct Skew7;
+    struct LarssonSadakane;
+    struct ManberMyers;
+    struct SAQSort;
+    struct QGramAlg;
 
-	// lcp table construction algorithms
-	struct Kasai;
-	struct KasaiOriginal;	// original, but more space-consuming algorithm
+    // inverse suffix array construction specs
+    template <typename TParallel>
+    struct FromSortedSa{};
 
-	// enhanced suffix array construction algorithms
-	struct Childtab;
-	struct Bwt;
+    // lcp table construction algorithms
+    struct Kasai;
+    struct KasaiOriginal;	// original, but more space-consuming algorithm
+
+    // enhanced suffix array construction algorithms
+    struct Childtab;
+    struct Bwt;
 
 /*
 .Tag.Index Find Algorithm
@@ -549,25 +553,27 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 //////////////////////////////////////////////////////////////////////////////
 // various fibre specs for enhanced suffix arrays
 
-	struct FibreText_;		// Original text. Can be a String or a StringSet
-	struct FibreRawText_;	// Concatenation of the strings above
-	struct FibreSA_;		// suffix array (of raw text with virtual $-delimiters) with Pair entries
-	struct FibreRawSA_;	// suffix array with integer entries
-	struct FibreSae_;		// suffix array reordered in a b-tree
-	struct FibreLcp_;		// lcp table of raw text
-	struct FibreLcpe_;		// lcp interval tree
-	struct FibreChildtab_;	// childtab (Kurtz et al.) of raw text
-	struct FibreBwt_;		// burrows wheeler table of raw text
+    struct FibreText_;      // Original text. Can be a String or a StringSet
+    struct FibreRawText_;   // Concatenation of the strings above
+    struct FibreSA_;        // suffix array (of raw text with virtual $-delimiters) with Pair entries
+    struct FibreRawSA_;     // suffix array with integer entries
+    struct FibreIsa_;       // inverse suffix array.
+    struct FibreSae_;       // suffix array reordered in a b-tree
+    struct FibreLcp_;       // lcp table of raw text
+    struct FibreLcpe_;      // lcp interval tree
+    struct FibreChildtab_;  // childtab (Kurtz et al.) of raw text
+    struct FibreBwt_;       // burrows wheeler table of raw text
 
-	typedef Tag<FibreText_> const		FibreText;
-	typedef Tag<FibreRawText_> const	FibreRawText;
-	typedef Tag<FibreSA_> const         FibreSA;
-	typedef Tag<FibreRawSA_> const		FibreRawSA;
-	typedef Tag<FibreSae_> const		FibreSae;
-	typedef Tag<FibreLcp_> const		FibreLcp;
-	typedef Tag<FibreLcpe_> const		FibreLcpe;
-	typedef Tag<FibreChildtab_> const	FibreChildtab;
-	typedef Tag<FibreBwt_> const		FibreBwt;
+    typedef Tag<FibreText_> const      FibreText;
+    typedef Tag<FibreRawText_> const   FibreRawText;
+    typedef Tag<FibreSA_> const        FibreSA;
+    typedef Tag<FibreRawSA_> const     FibreRawSA;
+    typedef Tag<FibreIsa_> const       FibreIsa;
+    typedef Tag<FibreSae_> const       FibreSae;
+    typedef Tag<FibreLcp_> const       FibreLcp;
+    typedef Tag<FibreLcpe_> const      FibreLcpe;
+    typedef Tag<FibreChildtab_> const  FibreChildtab;
+    typedef Tag<FibreBwt_> const       FibreBwt;
 
 //////////////////////////////////////////////////////////////////////////////
 /**
@@ -644,22 +650,17 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
     
     template <typename TObject>
 	struct SAValue:
-		Size<TObject> {};
-	
+		Position<TObject> {};
+
 	template <typename TObject>
 	struct SAValue<TObject const>:
 		SAValue<TObject> {};
-	
+
 	// to speed up sequence number computation
 	// we use a pair of seqNo and localPosition
-	template < typename TString, typename TSpec >
-	struct SAValue< StringSet<TString, TSpec> > {
-		typedef Pair<
-			typename Size< StringSet<TString, TSpec> >::Type,
-			typename SAValue<TString>::Type,
-			Pack
-		> Type;
-	};
+	template <typename TString, typename TSpec>
+	struct SAValue<StringSet<TString, TSpec> > :
+        StringSetPosition<StringSet<TString, TSpec> > {};
 
 /*
 	template < typename TString, typename TSpec >
@@ -703,9 +704,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 
 	template < typename TText, typename TSpec >
     struct Size< Index<TText, TSpec> > {
-		typedef typename Size<
-			typename Fibre< Index<TText, TSpec>, FibreRawText>::Type 
-		>::Type Type;
+        typedef typename LengthSum<TText>::Type Type;
     };
 
 	template < typename TText, typename TSpec >
@@ -767,6 +766,18 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 		typedef String<
 			typename SAValue< Index<TText, TSpec> >::Type,
 			typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type 
+		> Type;
+	};
+
+//////////////////////////////////////////////////////////////////////////////
+// lcp type
+
+	template <typename TText, typename TSSetSpec, typename TSpec>
+	struct Fibre<Index<StringSet<TText, TSSetSpec>, TSpec>, FibreLcp>
+    {
+		typedef String<
+            typename Size<TText>::Type,
+			typename DefaultIndexStringSpec<Index<StringSet<TText, TSSetSpec>, TSpec> >::Type
 		> Type;
 	};
 
@@ -846,37 +857,41 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 //////////////////////////////////////////////////////////////////////////////
 // default fibre creators
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreSA> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreSA> {
         typedef Skew7 Type;							// standard suffix array creator is skew7
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreLcp> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreIsa> {
+        typedef FromSortedSa<Serial> Type;
+    };
+
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreLcp> {
         typedef Kasai Type;
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreBwt> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreBwt> {
         typedef Bwt Type;
     };
 
-	template < typename TText, typename TSpec >
-	struct DefaultIndexCreator<Index<TText, TSpec>, FibreChildtab> {
+    template < typename TText, typename TSpec >
+    struct DefaultIndexCreator<Index<TText, TSpec>, FibreChildtab> {
         typedef Childtab Type;
     };
 
-
-	template <typename TText, typename TSpec>
-	inline typename Member<Index<TText, TSpec>, FibreText>::Type &
+    template <typename TText, typename TSpec>
+    inline typename Member<Index<TText, TSpec>, FibreText>::Type &
     _dataHost(Index<TText, TSpec> & index) {
-		return index.text;
-	}
-	template <typename TText, typename TSpec>
-	inline typename Member<Index<TText, TSpec> const, FibreText>::Type &
+        return index.text;
+    }
+    template <typename TText, typename TSpec>
+    inline typename Member<Index<TText, TSpec> const, FibreText>::Type &
     _dataHost(Index<TText, TSpec> const &index) {
-		return index.text;
-	}
+        return index.text;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /**
@@ -964,6 +979,19 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	getFibre(Index<TText, TSpec> const &index, FibreSA) {
 		return index.sa;
 	}
+
+//////////////////////////////////////////////////////////////////////////////
+
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreIsa>::Type &
+    getFibre(Index<TText, TSpec> &index, FibreIsa) {
+        return index.isa;
+    }
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreIsa>::Type &
+    getFibre(Index<TText, TSpec> const &index, FibreIsa) {
+        return index.isa;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /*
@@ -1475,7 +1503,28 @@ I	ISSISSIPPI*/
 		return posGlobalize(saAt(i, index), stringSetLimits(indexText(index)));
 	}
 
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#isaAt
+ * @headerfile seqan/index.h
+ * @brief Shortcut for <tt>value(indexIsa(..), ..)</tt>.
+ *
+ * @signature TValue isaAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the inverse suffix array.
+ */
 
+    template <typename TPos, typename TIndex>
+    SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex, FibreIsa>::Type>::Type isaAt(TPos i, TIndex &index) {
+        return value(getFibre(index, FibreIsa()), i);
+    }
+    template <typename TPos, typename TIndex>
+    SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex const, FibreIsa>::Type>::Type isaAt(TPos i, TIndex const &index) {
+        return value(getFibre(index, FibreIsa()), i);
+    }
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.IndexEsa#lcpAt:
@@ -1881,6 +1930,24 @@ I	ISSISSIPPI*/
 	inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type indexRawSA(Index<TText, TSpec> &index) { return getFibre(index, FibreRawSA()); }
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec> const, FibreRawSA>::Type indexRawSA(Index<TText, TSpec> const &index) { return getFibre(index, FibreRawSA()); }
+
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#indexIsa
+ * @headerfile seqan/index.h
+ * @brief Shortcut for <tt>getFibre(.., EsaIsa)</tt>.
+ *
+ * @signature TIsa indexIsa(index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
+ * @return TIsa A reference to the inverse suffix array fibre.
+ */
+
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreIsa>::Type & indexIsa(Index<TText, TSpec> &index) { return getFibre(index, FibreIsa()); }
+    template <typename TText, typename TSpec>
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreIsa>::Type & indexIsa(Index<TText, TSpec> const &index) { return getFibre(index, FibreIsa()); }
 
 //////////////////////////////////////////////////////////////////////////////
 /**

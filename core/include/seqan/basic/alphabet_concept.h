@@ -409,19 +409,21 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @mfn FiniteOrderedAlphabetConcept#ValueSize
  * @brief Number of different values a value type object can have.
  * 
- * @signature ValueSize<T>::VALUE
+ * @signature ValueSize<T>::Type;
+ * @signature ValueSize<T>::VALUE;
  * 
- * @tparam T A class.
+ * @tparam T A type to query for its value size.
  * 
- * @return VALUE The number of different values the value can have.
+ * @return VALUE The number of different values a value of type T can have.  The type is <tt>Type</tt>.
+ * @return Type  The type of the result <tt>VALUE</tt>.
  * 
  * This function is only defined for integral types like <tt>unsigned</tt>, <tt>int</tt>, or Dna.  For floating point
  * numbers and the 64 bit types <tt>__int64</tt> and <tt>__uint64</tt>, it returns 0 since there is no standard
  * compliant way to return the number of values for these types.
  * 
  * Note that you cannot get pointers or references to <tt>ValueSize&lt;T&gt;::VALUE</tt> in your program.  You can use
- * @link FiniteOrderedAlphabetConcept#valueSize @endlink in your programs without problems, though.  When you get problems in your tests, use the
- * "unary plus" workaround from the examples section.
+ * @link FiniteOrderedAlphabetConcept#valueSize @endlink in your programs without problems, though.  When you get
+ * problems in your tests, use the "unary plus" workaround from the examples section.
  * 
  * @section Examples
  * 
@@ -454,11 +456,11 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @fn FiniteOrderedAlphabetConcept#valueSize
  * @brief Returns size of an alphabet.
  * 
- * @signature T valueSize<T>();
+ * @signature T1 valueSize<T2>();
  * 
- * @tparam T Type to query for value size.
+ * @tparam T2 Type to query for value size.
  * 
- * @return T Number of values in type <tt>T</tt>.
+ * @return T1 Number of values in type <tt>T2</tt>.
  * 
  * @see FiniteOrderedAlphabetConcept#ValueSize
  */

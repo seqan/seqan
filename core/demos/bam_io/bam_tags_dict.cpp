@@ -6,21 +6,30 @@ using namespace seqan;
 
 int main()
 {
-	CharString samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
-	CharString bamStr;
+	CharString bamStr, samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
 	assignTagsSamToBam(bamStr, samStr);
 	BamTagsDict tags(bamStr);
-	std::cerr << length(tags) << std::endl;  // #=> "3"
-	for (unsigned i = 0; i < length(tags); ++i)
+	std::cout << length(tags) << std::endl;  // #=> "3"
+	for (unsigned id = 0; id < length(tags); ++id)
 	{
-	    std::cerr << getTagKey(tags, i) << " -> " << getTagValue(tags, i) << std::endl;
-	    if (getTagValue(tags, i)[0] == 'i')  // is 32 bit integer
+	    std::cout << getTagKey(tags, id) << " -> ";
+
+	    if (getTagType(tags, id) == 'i')  // is 32 bit integer
 	    {
 	        __int32 x = 0;
-	        bool res = extractTagValue(x, tags, i);
-	        SEQAN_ASSERT_MSG(res, "Not a valid integer at pos %u!", i);
-	        std::cerr << "     " << x << std::endl;
+	        bool res = extractTagValue(x, tags, id);
+	        SEQAN_ASSERT_MSG(res, "Not a valid integer at pos %u!", id);
+	        std::cout << x;
 	    }
+	    if (getTagType(tags, id) == 'Z')  // is string
+	    {
+	        CharString str;
+	        bool res = extractTagValue(str, tags, id);
+	        SEQAN_ASSERT_MSG(res, "Not a valid string at pos %u!", id);
+	        std::cout << '"' << str << '"';
+	    }
+
+        std::cout << std::endl;
 	}
 
     return 0;

@@ -57,37 +57,37 @@ inline void clear(BamAlignmentRecord & record);
  *
  * @signature enum BamFlags;
  *
- * @var BamFlags BAM_FLAG_MULTIPLE = 0x0001;
+ * @val BamFlags BAM_FLAG_MULTIPLE = 0x0001;
  * @brief Template has multiple fragments in sequencing.
  *
- * @var BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
+ * @val BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
  * @brief All fragments in the template are properly mapped.
  *
- * @var BamFlags BAM_FLAG_UNMAPPED = 0x0004;
+ * @val BamFlags BAM_FLAG_UNMAPPED = 0x0004;
  * @brief This fragment is unmapped.
  *
- * @var BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
+ * @val BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
  * @brief Next fragment in template is unmapped.
  *
- * @var BamFlags BAM_FLAG_RC = 0x0010;
+ * @val BamFlags BAM_FLAG_RC = 0x0010;
  * @brief Fragment is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_NEXT_RC = 0x0020;
+ * @val BamFlags BAM_FLAG_NEXT_RC = 0x0020;
  * @brief Next fragment in template is reverse-complemented.
  *
- * @var BamFlags BAM_FLAG_FIRST = 0x0040;
+ * @val BamFlags BAM_FLAG_FIRST = 0x0040;
  * @brief This fragment is the first one in its template.
  *
- * @var BamFlags BAM_FLAG_LAST = 0x0080;
+ * @val BamFlags BAM_FLAG_LAST = 0x0080;
  * @brief This fragment is the last one in its template (second in case of paired sequencing).
  *
- * @var BamFlags BAM_FLAG_SECONDARY = 0x0100;
+ * @val BamFlags BAM_FLAG_SECONDARY = 0x0100;
  * @brief Secondary alignment.
  *
- * @var BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
+ * @val BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
  * @brief Does not pass quality controls.
  *
- * @var BamFlags BAM_FLAG_DUPLICATE = 0x0400;
+ * @val BamFlags BAM_FLAG_DUPLICATE = 0x0400;
  * @brief PCR or optical duplicate.
  */
 
@@ -125,6 +125,39 @@ enum BamFlags
     BAM_FLAG_QC_NO_PASS    = 0x0200,
     BAM_FLAG_DUPLICATE     = 0x0400
 };
+
+template <typename TValue>
+struct BamTypeChar
+{
+    enum
+    {
+        VALUE =
+            (IsSameType<TValue, char>::VALUE)?              'A':
+            (IsSameType<TValue, signed char>::VALUE)?       'c':
+            (IsSameType<TValue, unsigned char>::VALUE)?     'C':
+            (IsSameType<TValue, short>::VALUE)?             's':
+            (IsSameType<TValue, unsigned short>::VALUE)?    'S':
+            (IsSameType<TValue, int>::VALUE)?               'i':
+            (IsSameType<TValue, unsigned int>::VALUE)?      'I':
+            (IsSameType<TValue, float>::VALUE)?             'f':
+//          (IsSameType<TValue, double>::VALUE)?            'd':
+            (IsSequence<TValue>::VALUE)?                    'Z':
+                                                            '?'
+    };
+};
+
+// List of primitive BAM types (ordered by expected usage frequency)
+typedef TagList<int,
+        TagList<unsigned int,
+        TagList<float,
+        TagList<short,
+        TagList<unsigned short,
+        TagList<char,
+        TagList<unsigned char,
+        TagList<signed char
+//      TagList<double
+        > > > > > > > > BamTagTypes;
+
 
 /*!
  * @class BamAlignmentRecord
@@ -324,6 +357,7 @@ public:
     CharString seq;
     CharString qual;
     CharString tags;  // raw tags in BAM format
+    CharString _buffer; // reusable internal buffer (used for I/O)
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
@@ -358,6 +392,7 @@ inline void
 clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
+    record.flag = 0;
     record._qID = MaxValue<__uint32>::VALUE;
     record.rID = BamAlignmentRecord::INVALID_REFID;
     record.beginPos = BamAlignmentRecord::INVALID_POS;

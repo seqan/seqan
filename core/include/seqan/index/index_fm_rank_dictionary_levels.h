@@ -111,22 +111,21 @@ struct RankDictionaryBitMask_<__uint32, TSpec>
 template <typename TSpec>
 struct RankDictionaryBitMask_<__uint64, TSpec>
 {
-    static const __uint64 VALUE = 0x5555555555555555;
+    static const __uint64 VALUE = 0x5555555555555555ull;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryWordSize_
 // ----------------------------------------------------------------------------
 
-//#ifdef CUDA_DISABLED
-//template <typename TValue, typename TSpec>
-//struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
-//    BitsPerValue<unsigned long> {};
-//#else
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
-    BitsPerValue<__uint32> {};
-//#endif
+    BitsPerValue<__uint64> {};
+
+// NOTE(esiragusa): This is required on CUDA devices.
+//template <typename TValue, typename TSpec>
+//struct RankDictionaryWordSize_<TValue, TwoLevels<TSpec> > :
+//    BitsPerValue<__uint32> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBitsPerBlock_
@@ -137,11 +136,10 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBitsPerBlock_<TValue, TwoLevels<TSpec> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type> {};
 
-//#ifdef CUDA_DISABLED
+// NOTE(esiragusa): This lets a Dna block to have the size of one word - one popcount per block.
 //template <typename TSpec>
 //struct RankDictionaryBitsPerBlock_<Dna, TwoLevels<TSpec> > :
 //    RankDictionaryWordSize_<Dna, TwoLevels<TSpec> > {};
-//#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlock_
@@ -867,8 +865,8 @@ template <typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 reserve(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newCapacity, Tag<TExpand> const tag)
 {
-    return reserve(dict.ranks, std::ceil(newCapacity /
-                   static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
+    return reserve(dict.ranks, (newCapacity + RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK - 1) /
+                               RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -880,8 +878,8 @@ inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 resize(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newLength, Tag<TExpand> const tag)
 {
     dict._length = newLength;
-    return resize(dict.ranks, std::ceil(newLength /
-                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
+    return resize(dict.ranks, (newLength + RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK - 1) /
+                              RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK, tag);
 }
 
 }

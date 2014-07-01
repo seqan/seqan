@@ -1202,7 +1202,7 @@ you should think of using @Tag.ExternalConfig@.
         typedef typename TConfig::TSize                                 TSize;
 
 		typedef String<int>                                             TPageTable;
-		typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >    TPageFrame;
+		typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >     TPageFrame;
 		typedef PageContainer<TPageFrame, FRAMES>                       TCache;
 		typedef VolatilePtr<TValue>                                     TVolatilePtr;
 
@@ -1225,16 +1225,6 @@ you should think of using @Tag.ExternalConfig@.
 
 			resize(*this, size);
         }
-
-/*
-	private:	// making these C'tors private clashes with Holder<external String>
-		String(String &) {}
-		String(String const &) {}
-
-	public:
-*/
-		String(String &) { SEQAN_ASSERT_FAIL("Aborted attempt to copy a String<..,External<..> >"); }  // TODO(holtgrew): Actually, this should be an ABORT
-		String(String const &) { SEQAN_ASSERT_FAIL("Aborted attempt to copy a String<..,External<..> >"); }  // TODO(holtgrew): Actually, this should be an ABORT
 
 /*!
  * @fn ExternalString::String
@@ -1286,21 +1276,38 @@ needs to swap out page frames. Then a temporary file will be used which will be 
 Instead of giving $file$ or $fileName$ to the constructor, you could also use the default constructor and call @Function.open@
 or @Function.openTemp@ afterwards to reach the same behaviour.
 */
-		String(TFile &_file)
+        explicit
+        String(TFile &_file)
         {
-			open(*this, _file);
+            open(*this, _file);
         }
 
-		String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
-			file(NULL)
+        explicit
+        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
+            file(NULL)
         {
-			open(*this, fileName, openMode);
+            open(*this, fileName, openMode);
         }
 
-		~String() 
+        // copy the contents from another string
+        String(String const & source):
+            file(NULL),
+            data_size(0)
 		{
-			close(*this);
+            assign(*this, source);
 		}
+        template <typename TSource>
+        String(TSource const & source):
+            file(NULL),
+            data_size(0)
+        {
+            assign(*this, source);
+        }
+
+        ~String()
+        {
+            close(*this);
+        }
 
 		inline TValue & operator[] (TSize offset) {
 			TPageFrame &pf = getPage(offset / PAGESIZE);
@@ -1739,7 +1746,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     clear(String<TValue, External<TConfig> > &me) 
 	{
 //IOREV
-		clear(me.pager);
+//		clear(me.pager);
         resize(me, 0);
     }
 //____________________________________________________________________________
@@ -1866,13 +1873,13 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
         for(; f != fEnd ; ++f) 
         {
-            if ((*f).pageNo >= 0) 
+            if (f->pageNo >= 0)
             {
-                me.pager[(*f).pageNo] = (*f).dataStatus;
-                (*f).pageNo = TPageFrame::UNINITIALIZED;
+                me.pager[f->pageNo] = f->dataStatus;
+                f->pageNo = TPageFrame::UNINITIALIZED;
             }
 //			::std::cerr << *f << ::std::endl;
-            if ((*f).begin) freePage(*f, me.file);
+            if (f->begin) freePage(*f, me.file);
         }
 	}
 //____________________________________________________________________________
@@ -2085,20 +2092,35 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		Tag<TExpand> expand)
 	{
 //IOREV
-		typedef String<TValue, External<TConfig> >	TString;
-		typedef typename TString::TPageFrame		TPageFrame;
-		typedef typename Size<TString>::Type		TSize;
+		typedef String<TValue, External<TConfig> >          TString;
+		typedef typename TString::TPageFrame                TPageFrame;
+		typedef typename Size<TString>::Type                TSize;
+		typedef typename TString::TCache					TCache;
+		typedef typename Iterator<TCache, Standard>::Type	TIter;
 
 		resize(me.pager, enclosingBlocks(new_length, (unsigned)me.PAGESIZE), TPageFrame::UNINITIALIZED, expand);
-        if ((TSize)new_length < me.data_size && me.file) 
+        if ((TSize)new_length < me.data_size)
 		{
-			// wait for all pending transfers
-            waitForAll(me);
+
+			TIter f = begin(me.cache, Standard());
+			TIter fEnd = end(me.cache, Standard());
+
+            // remove pages from cache that are behind our new file end
+            int new_pages = (new_length + me.PAGESIZE - 1) / me.PAGESIZE;
+			for(; f != fEnd ; ++f)
+				if (f->begin && f->pageNo >= new_pages)
+                {
+                    if (f->status != READY)
+                        cancel(*f, me.file);
+                    clear(*f);
+                }
 
 			// before shrinking the file size
-            resize(me.file, (TSize)new_length * (TSize)sizeof(TValue));
             me.lastDiskPage = new_length / me.PAGESIZE;
             me.lastDiskPageSize = new_length % me.PAGESIZE;
+
+            if (me.file)
+                resize(me.file, (TSize)new_length * (TSize)sizeof(TValue));
         }
 		me.data_size = new_length;
 		return length(me);
@@ -2172,16 +2194,15 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     }
 //____________________________________________________________________________
 
-	template < typename TValue, typename TConfig, typename TExpand >
-	inline void
-	appendValue(String<TValue, External<TConfig> > &me, 
-				TValue const &Val_,
-				Tag<TExpand> expand)
-	{
-//IOREV
-		resize(me, me.data_size + 1, expand);
-		back(me) = Val_;
-	}
+    template < typename TTargetValue, typename TConfig, typename TValue, typename TExpand >
+    inline void
+    appendValue(String<TTargetValue, External<TConfig> > &me,
+                TValue SEQAN_FORWARD_CARG value,
+                Tag<TExpand> expand)
+    {
+        resize(me, me.data_size + 1, expand);
+        back(me) = SEQAN_FORWARD(TValue, value);
+    }
 
 //____________________________________________________________________________
 
@@ -2279,14 +2300,14 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		for (; it_source != it_source_end; ++it_source, ++it_target)
 			*it_target = *it_source;
     }
-
+/*
     template < typename TValue,
                typename TConfig,
                typename TSourceValue,
 			   typename TExpand >
     inline void assign(
 		String<TValue, External<TConfig> > &target, 
-		TSourceValue * source,
+		TSourceValue const * source,
 		Tag<TExpand>) 
 	{
 //IOREV
@@ -2303,7 +2324,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		for (; it_source != it_source_end; ++it_source, ++it_target)
 			*it_target = *it_source;
     }
-
+*/
 //____________________________________________________________________________
 
 	template < typename TValue, typename TConfig >

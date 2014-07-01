@@ -200,6 +200,78 @@ public:
     }
 };
 
+// ----------------------------------------------------------------------------
+// Functor FunctorTestAllZeros
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FunctorTestAllZeros
+{};
+
+template <typename THostSpec>
+struct FunctorTestAllZeros<String<bool, Packed<THostSpec> > >
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Value<TPackedHost>::Type TPackedHostValue;
+    typedef typename Size<TPackedHostValue>::Type TSize;
+
+    TSize _wastedBits;
+
+    template <typename TShift>
+    FunctorTestAllZeros(TShift const & shift) : _wastedBits(shift)
+    {}
+
+    template <typename TValue>
+    inline bool operator()(TValue const & val, False const & /*tag*/) const
+    {
+        return testAllZeros(val);
+    }
+
+    template <typename TValue>
+    inline bool operator()(TValue const & val, True const & /*tag*/) const
+    {
+        return testAllZeros(val >> _wastedBits);
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Functor FunctorTestAllOnes
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FunctorTestAllOnes
+{};
+
+template <typename THostSpec>
+struct FunctorTestAllOnes<String<bool, Packed<THostSpec> > >
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Value<TPackedHost>::Type TPackedHostValue;
+    typedef typename TPackedHostValue::TBitVector TBitVector;
+    typedef typename Size<TPackedHostValue>::Type TSize;
+
+    TSize _wastedBits;
+
+    template <typename TShift>
+    FunctorTestAllOnes(TShift const & shift) : _wastedBits(shift)
+    {}
+
+    template <typename TValue>
+    inline bool operator()(TValue const & val, False const & /*tag*/) const
+    {
+        return testAllOnes(val);
+    }
+
+    template <typename TValue>
+    inline bool operator()(TValue const & val, True const & /*tag*/) const
+    {
+        TBitVector maskWastedBits = (1 << _wastedBits) - 1;  // We only need the mask if we are in the last value.
+        return testAllOnes(val | maskWastedBits);
+    }
+};
+
 // --------------------------------------------------------------------------
 // Specialization Packed String Iter
 // --------------------------------------------------------------------------
@@ -389,14 +461,14 @@ struct Size<String<TValue, Packed<THostspec> > const>
 // Metafunction Iterator
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed<THostspec> >, TSpec>
+template <typename TValue, typename THostspec>
+struct Iterator<String<TValue, Packed<THostspec> >, Standard>
 {
     typedef Iter<String<TValue, Packed<THostspec> >, Packed<THostspec> > Type;
 };
 
-template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed<THostspec> > const, TSpec>
+template <typename TValue, typename THostspec>
+struct Iterator<String<TValue, Packed<THostspec> > const, Standard>
 {
     typedef Iter<String<TValue, Packed<THostspec> > const, Packed<THostspec> > Type;
 };
@@ -614,23 +686,23 @@ getObjectId(String<TValue, Packed<THostspec> > const & me)
 // Function iter()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec, typename TPos>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 iter(String<TValue, Packed<THostspec> > & me,
      TPos pos,
-     Tag<TTag> const &)
+     Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me, pos);
 }
 
-template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec, typename TPos>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 iter(String<TValue, Packed<THostspec> > const & me,
      TPos pos,
-     Tag<TTag> const &)
+     Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me, pos);
 }
 
@@ -638,21 +710,21 @@ iter(String<TValue, Packed<THostspec> > const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 begin(String<TValue, Packed<THostspec> > & me,
-      Tag<TTag> const &)
+      Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me);
 }
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 begin(String<TValue, Packed<THostspec> > const & me,
-      Tag<TTag> const &)
+      Standard)
 {
-    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me);
 }
 
@@ -660,20 +732,20 @@ begin(String<TValue, Packed<THostspec> > const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 end(String<TValue, Packed<THostspec> > & me,
-    Tag<TTag> const & tag_)
+    Standard)
 {
-    return iter(me, length(me), tag_);
+    return iter(me, length(me), Standard());
 }
 
-template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
+template <typename TValue, typename THostspec>
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 end(String<TValue, Packed<THostspec> > const & me,
-    Tag<TTag> const & tag_)
+    Standard)
 {
-    return iter(me, length(me), tag_);
+    return iter(me, length(me), Standard());
 }
 
 // --------------------------------------------------------------------------
@@ -801,22 +873,22 @@ arrayCopyForward(Iter<TPackedString, Packed<TSpec> > source_begin,
         }
 
         // now copy whole words
-        register int leftShift = source_begin.localPos;
+        int leftShift = source_begin.localPos;
         if (leftShift != 0)
         {
             THostIter source_lastWord = hostIterator(source_end);
             if (source_end.localPos < source_begin.localPos)
                 --source_lastWord;
 
-            register typename THostValue::TBitVector prevWord = hostIterator(source_begin)->i;
-            register int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
+            typename THostValue::TBitVector prevWord = hostIterator(source_begin)->i;
+            int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
             leftShift *= TTraits::BITS_PER_VALUE;
             rightShift *= TTraits::BITS_PER_VALUE;
             for (; hostIterator(source_begin) != source_lastWord; ++hostIterator(target_begin))
             {
                 // words must be shifted and or'ed (BB|CCCC in the figure)
                 ++hostIterator(source_begin);
-                register typename THostValue::TBitVector curWord = hostIterator(source_begin)->i;
+                typename THostValue::TBitVector curWord = hostIterator(source_begin)->i;
                 hostIterator(target_begin)->i = (prevWord << leftShift) | (curWord >> rightShift);
                 prevWord = curWord;
             }
@@ -883,11 +955,11 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
         }
 
         // now copy whole words
-        register int leftShift = source_end.localPos;
+        int leftShift = source_end.localPos;
         if (leftShift != 0)
         {
-            register typename THostValue::TBitVector prevWord = hostIterator(source_end)->i;
-            register int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
+            typename THostValue::TBitVector prevWord = hostIterator(source_end)->i;
+            int rightShift = TTraits::VALUES_PER_HOST_VALUE - leftShift;
             leftShift *= TTraits::BITS_PER_VALUE;
             rightShift *= TTraits::BITS_PER_VALUE;
             while (hostIterator(target_begin) != target_firstWord)
@@ -896,7 +968,7 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
                 --hostIterator(target_begin);
 
                 // words must be shifted and or'ed (BB|CCCC in the figure)
-                register typename THostValue::TBitVector curWord = hostIterator(source_end)->i;
+                typename THostValue::TBitVector curWord = hostIterator(source_end)->i;
                 hostIterator(target_begin)->i = (curWord << leftShift) | (prevWord >> rightShift);
                 prevWord = curWord;
             }
@@ -1161,43 +1233,43 @@ FINISH:
 */
 };
 
-template<typename TValue, typename THostspec, typename TExpand>
+template<typename TValue, typename THostspec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type 
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-        Tag<TExpand>)
+            TSize size,
+            Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
-template<typename TValue, typename THostspec, typename TExpand>
-inline typename Size< String<TValue, Packed<THostspec> > >::Type 
+template<typename TValue, typename THostspec, typename TSize, typename TCapacity, typename TExpand>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-        typename Size< String<TValue, Packed<THostspec> > >::Type limit, 
-        Tag<TExpand>)
+            TSize size,
+            TCapacity limit,
+            Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
-template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
+template<typename TValue, typename THostspec, typename TSize, typename TPosition, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type 
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-            TPosition pos_begin, 
+            TSize size,
+            TPosition pos_begin,
             TPosition pos_end, 
             Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
-template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
-inline typename Size< String<TValue, Packed<THostspec> > >::Type 
+template<typename TValue, typename THostspec, typename TSize, typename TPosition, typename TCapacity, typename TExpand>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
 _clearSpace(String<TValue, Packed<THostspec> > & me, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type size, 
-            TPosition pos_begin, 
+            TSize size,
+            TPosition pos_begin,
             TPosition pos_end, 
-            typename Size< String<TValue, Packed<THostspec> > >::Type limit, 
+            TCapacity limit,
             Tag<TExpand>)
 {
     return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
@@ -1351,11 +1423,12 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & /*it*/)
 template <typename TPackedString, typename THostspec, typename TParam>
 inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam const & param_)
+               TParam SEQAN_FORWARD_CARG param_)
 {
-    assignValue(it, param_);
+    assignValue(it, SEQAN_FORWARD(TParam, param_));
 }
 
+#ifndef SEQAN_CXX11_STANDARD
 template <typename TPackedString, typename THostspec, typename TParam>
 inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
@@ -1364,6 +1437,7 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
 {
     moveValue(it, param_);
 }
+#endif
 
 // --------------------------------------------------------------------------
 // Function valueDestruct()
@@ -1616,6 +1690,302 @@ operator-(Iter<TPackedString, Packed<THostspec> > const & iterLeft,
     typedef typename Difference<Iter<TPackedString, Packed<THostspec> > >::Type TDiff;
     return (TDiff)(hostIterator(iterLeft) - hostIterator(iterRight)) * (TDiff)TTraits::VALUES_PER_HOST_VALUE +
            (TDiff)iterLeft.localPos - (TDiff)iterRight.localPos;
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanReverse()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline typename Position<String<bool, Packed<THostSpec> > >::Type
+bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef typename Position<TPackedString>::Type TPosition;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
+    typedef PackedTraits_<TPackedString> TTraits;
+    typedef typename TTraits::THostValue THostValue;  // Is a tuple.
+    typedef typename THostValue::TBitVector TBitVector;
+
+    if (empty(host(obj)))
+        return MaxValue<TPosition>::VALUE;
+
+    TConstPackedHostIterator it = end(host(obj), Standard()) - 1;
+    TConstPackedHostIterator itBegin = begin(host(obj), Standard());
+
+    // We need to treat the last value differently, because it's possible not all bits are in use.
+    TBitVector lastVal = it->i & (~static_cast<TBitVector>(0) <<
+                                  (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+
+    if (!testAllZeros(lastVal))
+        return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
+               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(lastVal);
+    --it;
+    for(;it != itBegin && testAllZeros(*it); --it)
+    {}
+
+    if (it != itBegin)
+        return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
+               (BitsPerValue<TBitVector>::VALUE - 1) - bitScanForward(it->i);
+    return length(obj);
+}
+
+// ----------------------------------------------------------------------------
+// Function bitScanForward()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline typename Position<String<bool, Packed<THostSpec> > >::Type
+bitScanForward(String<bool, Packed<THostSpec> > const & obj)
+{
+    typedef String<bool, Packed<THostSpec> >  TPackedString;
+    typedef typename Position<TPackedString>::Type TPosition;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
+    typedef PackedTraits_<TPackedString> TTraits;
+    typedef typename TTraits::THostValue THostValue;
+    typedef typename THostValue::TBitVector TBitVector;
+
+    if (empty(host(obj)))
+        return MaxValue<TPosition>::VALUE;
+
+    TConstPackedHostIterator itBegin = begin(host(obj), Standard()) + 1;
+    TConstPackedHostIterator it = itBegin;
+    TConstPackedHostIterator itEnd = end(host(obj), Standard()) - 1;
+
+    for (; it != itEnd && testAllZeros(*it); ++it)
+    {}
+
+    // If last element is not 0, we return the last position. Note, that we do not check for the returned index to be
+    // bigger than the length of the string. The caller has to do this.
+    TBitVector lastVal = (it != itEnd) ? it->i :
+             it->i & (~static_cast<TBitVector>(0) << (BitsPerValue<TBitVector>::VALUE -
+                                                      (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+    if (testAllZeros(lastVal))
+        return length(obj);
+    return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) + (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(lastVal);
+}
+
+// ----------------------------------------------------------------------------
+// Function transform()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec, typename TBinaryFunctor>
+inline void transform(String<bool, Packed<THostSpec> > & target,
+                      String<bool, Packed<THostSpec> > const & lhs,
+                      String<bool, Packed<THostSpec> > const & rhs,
+                      TBinaryFunctor const & binaryFunctor)
+{
+    typedef String<bool, Packed<THostSpec> > TBitVector;
+    typedef typename Host<TBitVector>::Type THost;
+    typedef typename Iterator<THost const, Standard>::Type TConstIterator;
+    typedef typename Iterator<THost, Standard>::Type TIterator;
+
+    if (empty(host(lhs)) || empty(host(rhs)))
+        return;
+
+    SEQAN_ASSERT_EQ(length(lhs), length(rhs));
+
+    resize(target, length(lhs), Exact());
+
+    TConstIterator itLhsBegin = begin(host(lhs), Standard()) + 1;
+    TConstIterator itLhsEnd = end(host(lhs), Standard());
+    TConstIterator itRhsBegin = begin(host(rhs), Standard()) + 1;
+    TIterator itTarget = begin(host(target), Standard()) + 1;
+
+    std::transform(itLhsBegin, itLhsEnd, itRhsBegin, itTarget, binaryFunctor);
+}
+
+// ----------------------------------------------------------------------------
+// Function transform()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec, typename TUnaryFunctor>
+inline void transform(String<bool, Packed<THostSpec> > & target,
+                      String<bool, Packed<THostSpec> > const & src,
+                      TUnaryFunctor const & unaryFunctor)
+{
+    typedef String<bool, Packed<THostSpec> > TBitVector;
+    typedef typename Host<TBitVector>::Type THost;
+    typedef typename Iterator<THost const, Standard>::Type TConstIterator;
+    typedef typename Iterator<THost, Standard>::Type TIterator;
+
+    if (empty(host(src)))
+        return;
+
+    resize(target, length(src), Exact());
+
+    TConstIterator itSrcBegin = begin(host(src), Standard()) + 1;
+    TConstIterator itSrcEnd = end(host(src), Standard());
+    TIterator itTarget = begin(host(target), Standard()) + 1;
+
+    std::transform(itSrcBegin, itSrcEnd, itTarget, unaryFunctor);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator|
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> >
+operator|(String<bool, Packed<THostSpec> > const & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    String<bool, Packed<THostSpec> > tmp;
+    transform(tmp, lhs, rhs, FunctorBitwiseOr());
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator|=
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> > &
+operator|=(String<bool, Packed<THostSpec> > & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    transform(lhs, lhs, rhs, FunctorBitwiseOr());
+    return lhs;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator&
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> >
+operator&(String<bool, Packed<THostSpec> > const & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    String<bool, Packed<THostSpec> > tmp;
+    transform(tmp, lhs, rhs, FunctorBitwiseAnd());
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator&=
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> > &
+operator&=(String<bool, Packed<THostSpec> > & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    transform(lhs, lhs, rhs, FunctorBitwiseAnd());
+    return lhs;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator~
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> >
+operator~(String<bool, Packed<THostSpec> > const & vec)
+{
+    String<bool, Packed<THostSpec> > tmp;
+    transform(tmp, vec, FunctorBitwiseNot());
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator^
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> >
+operator^(String<bool, Packed<THostSpec> > const & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    String<bool, Packed<THostSpec> > tmp;
+    transform(tmp, lhs, rhs, FunctorBitwiseXor());
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator^=
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline String<bool, Packed<THostSpec> > &
+operator^=(String<bool, Packed<THostSpec> > & lhs, String<bool, Packed<THostSpec> > const & rhs)
+{
+    transform(lhs, lhs, rhs, FunctorBitwiseXor());
+    return lhs;
+}
+
+// ----------------------------------------------------------------------------
+// Function _packedStringTestAll()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec, typename TTester>
+inline bool
+_packedStringTestAll(String<bool, Packed<THostSpec> > const & obj, TTester const & tester)
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const>::Type TConstIterator;
+
+    if (empty(host(obj)))
+        return false;
+
+    TConstIterator itFirst = begin(host(obj), Standard()) + 1;
+    TConstIterator itLast = end(host(obj), Standard()) - 1;
+
+    while (itFirst != itLast && tester(*itFirst, False()))
+        ++itFirst;
+
+    if (itFirst != itLast)
+        return false;
+
+    return tester(*(itFirst), True());  // Test last case.
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllZeros()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline bool
+testAllZeros(String<bool, Packed<THostSpec> > const & obj)
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef PackedTraits_<TPackedString> TPackedTraits;
+
+    return _packedStringTestAll(obj, FunctorTestAllZeros<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE -
+                                     (length(obj) % TPackedTraits::VALUES_PER_HOST_VALUE))));
+}
+
+// ----------------------------------------------------------------------------
+// Function testAllOnes()
+// ----------------------------------------------------------------------------
+
+template <typename THostSpec>
+inline bool
+testAllOnes(String<bool, Packed<THostSpec> > const & obj)
+{
+    typedef String<bool, Packed<THostSpec> > TPackedString;
+    typedef PackedTraits_<TPackedString> TPackedTraits;
+
+    return _packedStringTestAll(obj, FunctorTestAllOnes<TPackedString>((TPackedTraits::VALUES_PER_HOST_VALUE -
+                                     (length(obj) % TPackedTraits::VALUES_PER_HOST_VALUE))));
+}
+
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool open(String<TValue, Packed<THostspec> > & me, const char *fileName, int openMode)
+{
+    return open(host(me), fileName, openMode);
+}
+
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool save(String<TValue, Packed<THostspec> > const & me, const char *fileName, int openMode)
+{
+    return save(host(me), fileName, openMode);
 }
 
 }  // namespace seqan

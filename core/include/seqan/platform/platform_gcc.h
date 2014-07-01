@@ -31,8 +31,6 @@
 //
 // ==========================================================================
 
-//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
-
 /*!
  * @macro PLATFORM_GCC
  * @headerfile <seqan/platform.h>
@@ -42,8 +40,7 @@
  */
 
 #ifndef PLATFORM_GCC
-  #define PLATFORM_GCC
-#endif
+#define PLATFORM_GCC
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS
@@ -175,3 +172,5 @@ typedef uint8_t __uint8;   // nolint
 #    define SEQAN_CXX11_STANDARD
 #  endif
 #endif
+
+#endif  // #ifndef PLATFORM_GCC
