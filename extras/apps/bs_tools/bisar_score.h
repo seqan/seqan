@@ -38,28 +38,28 @@ struct FunctorDna5OrdValueComplement<int> : public std::unary_function<int,int>
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-template <typename TValue, typename TSequence>
-struct SequenceEntryForScore<Score<TValue, BsCaseCT >, TSequence>
+template <typename TSequence>
+struct SequenceEntryForScore<Score<int, BsCaseCT >, TSequence>
 {
     typedef typename Value<TSequence>::Type Type;   // For the beginning, base and quality are enough
 };
 
-template <typename TValue, typename TSequence>
-struct SequenceEntryForScore<Score<TValue, BsCaseGA >, TSequence>
+template <typename TSequence>
+struct SequenceEntryForScore<Score<int, BsCaseGA >, TSequence>
 {
     typedef typename Value<TSequence>::Type Type;
 };
 
-template <typename TValue, typename TSequence, typename TPosition>
+template <typename TSequence, typename TPosition>
 inline typename Value<TSequence>::Type
-sequenceEntryForScore(Score<TValue, BsCaseCT > const & /*scoringScheme*/, TSequence const & seq, TPosition pos)
+sequenceEntryForScore(Score<int, BsCaseCT > const & /*scoringScheme*/, TSequence const & seq, TPosition pos)
 {
     return seq[pos];
 }
 
-template <typename TValue, typename TSequence, typename TPosition>
+template <typename TSequence, typename TPosition>
 inline typename Value<TSequence>::Type
-sequenceEntryForScore(Score<TValue, BsCaseGA > const & /*scoringScheme*/, TSequence const & seq, TPosition pos)
+sequenceEntryForScore(Score<int, BsCaseGA > const & /*scoringScheme*/, TSequence const & seq, TPosition pos)
 {
     return seq[pos];
 }
@@ -416,21 +416,21 @@ computeRefGapScores(TScores &sc_data,
 //////////////////////////////////////////////////////////////////////
 
 
-template<typename TValue, typename TBsCase, typename TModel, typename TSegment>
-class Score<TValue, BsTagList<TBsCase, TModel, TSegment> >
+template<typename TBsCase, typename TModel, typename TSegment>
+class Score<int, BsTagList<TBsCase, TModel, TSegment> >
 {
 public:
-    String<String<String<TValue> > > data;  // precomputed score values for all possible qual values, bases etc.
+    String<String<String<double> > > data;  // precomputed score values for all possible qual values, bases etc.
 
     // The gap extension score.
-    String<String<TValue> >     data_gap_extend_ref;    // Score dependent on read base and qual
-    String<TValue>              data_gap_extend_read;   // Score dependent on ref base
+    String<String<double> >     data_gap_extend_ref;    // Score dependent on read base and qual
+    String<double>              data_gap_extend_read;   // Score dependent on ref base
 
     // The gap open score.
-    String<String<TValue> >     data_gap_open_ref;      // Score dependent on read base and qual
-    String<TValue>              data_gap_open_read;     // Score dependent on ref base
+    String<String<double> >     data_gap_open_ref;      // Score dependent on read base and qual
+    String<double>              data_gap_open_read;     // Score dependent on ref base
 
-    TValue lambda;
+    double lambda;
 
     // Use default values apart of gap costs
     /*template<typename TOptions>
@@ -448,7 +448,7 @@ public:
     }*/
 
     // User defined rates
-    template<typename TOptions, typename TBsSubstitutionMatrix>
+    template<typename TOptions, typename TBsSubstitutionMatrix, typename TValue>
     Score(TOptions &options, 
             TBsSubstitutionMatrix &bsSubstitutionMatrix, 
             TValue const * &seqErrorFreqs,
@@ -457,7 +457,7 @@ public:
     {
         computeBsScores((*this).data, bsSubstitutionMatrix.data_tab, seqErrorFreqs, TBsCase(), TSegment());
 
-        computeReadGapScores((*this).data_gap_open_read, options.gapOpenScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());
+        computeReadGapScores((*this).data_gap_open_read, options.gapOpenScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());     
         computeReadGapScores((*this).data_gap_extend_read, options.gapExtendScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());
 
         computeRefGapScores((*this).data_gap_open_ref, options.gapOpenScore, insErrorFreqs, seqErrorFreqs, options, TBsCase(), TSegment());
@@ -469,83 +469,81 @@ public:
 // Bs scores functions
 ///////////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
-inline TValue
+template <typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
+inline int
 scoreGapOpenVertical(
-    Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & me,
+    Score<int, BsTagList<TBsCase, TModel, TSegment> > const & me,
     TSeqHValue const & /*seqHVal*/,
     TSeqVValue const & seqVVal)
 { 
     unsigned int qual = getQualityValue(seqVVal); 
     unsigned int j = (Dna5)seqVVal;  // Read base
     
-    return std::log10(me.data_gap_open_ref[qual][j]);
+    return (int)(std::log10(me.data_gap_open_ref[qual][j]) *10000 + 0.5);
 }
 
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
-inline TValue
+template <typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
+inline int
 scoreGapOpenHorizontal(
-    Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & me,
+    Score<int, BsTagList<TBsCase, TModel, TSegment> > const & me,
     TSeqHValue const & seqHVal,
     TSeqVValue const & /*seqVVal*/)
 {
     unsigned int i = (Dna5)seqHVal;  // Ref base
-    return std::log10(me.data_gap_open_read[i]);
+    return (int)(std::log10(me.data_gap_open_read[i]) *10000 + 0.5);
 }
 
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
-inline TValue
+template <typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
+inline int
 scoreGapExtendVertical(
-    Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & me,
+    Score<int, BsTagList<TBsCase, TModel, TSegment> > const & me,
     TSeqHValue const & /*seqHVal*/,
     TSeqVValue const & seqVVal)
 {
     unsigned int qual = getQualityValue(seqVVal); 
     unsigned int j = (Dna5)seqVVal;  // Read base
     
-    return std::log10(me.data_gap_extend_ref[qual][j]);
+    return (int)(std::log10(me.data_gap_extend_ref[qual][j]) *10000 + 0.5);
 }
 
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
-inline TValue
+template <typename TBsCase, typename TModel, typename TSegment, typename TSeqHValue, typename TSeqVValue>
+inline int
 scoreGapExtendHorizontal(
-    Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & me,
+    Score<int, BsTagList<TBsCase, TModel, TSegment> > const & me,
     TSeqHValue const & seqHVal,
     TSeqVValue const & /*seqVVal*/)
 {
     unsigned int i = (Dna5)seqHVal;  // Ref base
-    return std::log10(me.data_gap_extend_read[i]);
+    return (int)(std::log10(me.data_gap_extend_read[i]) *10000 + 0.5);
 }
 
 // Just for global alignment function to check, if open and extenc cost are the same
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment>
-inline TValue
-scoreGapExtend(Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
+template <typename TBsCase, typename TModel, typename TSegment>
+inline int
+scoreGapExtend(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
     SEQAN_CHECKPOINT;
-    //std::cout << "This should happen only once: scoreGapExtend()" << std::endl;
-    return -100;
+    //std::cout << "This should happen only once: scoreGapExtend()"<< std::endl;
+    return (int)-100;
 }
-
-
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment>
-inline TValue
-scoreGapOpen(Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
+template <typename TBsCase, typename TModel, typename TSegment>
+inline int
+scoreGapOpen(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
     SEQAN_CHECKPOINT;
     //std::cout << "This should happen only once: scoreGapOpen()" << std::endl;
-    return -200;
+    return (int)-200;
 }
 
 
-template <typename TValue, typename TBsCase, typename TModel, typename TSegment, typename TVal1>
-inline TValue
-score(Score<TValue, BsTagList<TBsCase, TModel, TSegment> > const & sc, TVal1 val1, Dna5Q val2) 
+template <typename TBsCase, typename TModel, typename TSegment, typename TVal1>
+inline int
+score(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & sc, TVal1 val1, Dna5Q val2) 
 {
     unsigned int i = (Dna5) val1;  
     unsigned int j = (Dna5) val2;
     int qual = getQualityValue(val2);  
 
     //std::cout << "qual: " << qual << std::endl;
-    return std::log10(sc.data[qual][i][j]); 
+    return (int)(std::log10(sc.data[qual][i][j]) *10000 + 0.5); 
 }
 
 
