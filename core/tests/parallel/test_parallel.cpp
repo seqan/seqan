@@ -46,13 +46,14 @@
 #include "test_parallel_atomic_misc.h"
 #include "test_parallel_splitting.h"
 #include "test_parallel_algorithms.h"
+#include "test_parallel_queue.h"
 
 SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
     // Set number of threads to >=2 so there actually is parallelism.
     if (omp_get_max_threads() < 2)
         omp_set_num_threads(2);
-    std::cout << "PARALLELISM ENABLED" << std::endl;
+    std::cout << "PARALLELISM ENABLED (CTEST_FULL_OUTPUT)" << std::endl;
 #endif  // #if defined(_OPENMP)
 
     // TODO(holtgrew): Re-enable tests on LLVM when bug 9041 is fixed.
@@ -78,5 +79,28 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
     SEQAN_CALL_TEST(test_parallel_sum);
     SEQAN_CALL_TEST(test_parallel_partial_sum);
+
+    // Tests for parallel queue.
+    SEQAN_CALL_TEST(test_parallel_queue_simple);
+    SEQAN_CALL_TEST(test_parallel_queue_resize);
+    SEQAN_CALL_TEST(test_parallel_queue_non_pod);
+
+#if defined(_OPENMP) || defined(SEQAN_CXX11_STANDARD)
+#ifdef SEQAN_CXX11_STL
+    if (std::thread::hardware_concurrency() >= 2u)
+#else
+    if (omp_get_max_threads() >= 2)
+#endif
+    {
+        SEQAN_CALL_TEST(test_parallel_queue_spsc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_spsc_dynamicsize);
+        SEQAN_CALL_TEST(test_parallel_queue_spmc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_spmc_dynamicsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpsc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpsc_dynamicsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
+        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
+    }
+#endif
 }
 SEQAN_END_TESTSUITE

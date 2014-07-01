@@ -22,7 +22,7 @@ class MissingSignatureValidator(ProcDocValidator):
     def validate(self, proc_entry):
         IGNORED = ['variable', 'member_variable', 'tag', 'grouped_tag', 'typedef',
                    'grouped_typedef', 'signature', 'concept', 'member_typedef',
-                   'enum', 'grouped_enum']
+                   'enum', 'grouped_enum', 'enum_value']
         if not hasattr(proc_entry, 'signatures') or proc_entry.kind in IGNORED:
             return  # Skip if type has no signatures.
         if not proc_entry.signatures:
@@ -39,10 +39,10 @@ class MissingSignatureKeywordsValidator(ProcDocValidator):
         for i, sig in enumerate(proc_entry.raw.signatures):
             # TODO(holtgrew): Really allow typedef and ::Type/mfns here?
             if 'class ' not in sig.text.text and 'struct ' not in sig.text.text \
-                    and 'typedef ' not in sig.text.text \
+                    and 'typedef ' not in sig.text.text and 'using' not in sig.text.text \
                     and not sig.text.text.strip().endswith('::Type') \
                     and not sig.text.text.strip().endswith('::Type;'):
-                msg = 'Missing keyword "class", "struct", "typedef" in signature.'
+                msg = 'Missing keyword "class", "struct", "typedef", "using" in signature.'
                 self.msg_printer.printTokenError(proc_entry.raw.signatures[i].text.tokens[0], msg, 'warning')
 
 

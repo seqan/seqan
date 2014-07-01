@@ -719,7 +719,7 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
  * @see IndexQGram#setStepSize
  */
 	template <typename TText, typename TShapeSpec, typename TSpec>
-	inline typename Size<TText>::Type 
+	inline typename Size<Index<TText, IndexQGram<TShapeSpec, TSpec> > const>::Type
 	getStepSize(Index<TText, IndexQGram<TShapeSpec, TSpec> > const &index)
 	{
 		return (index.stepSize != 0)? index.stepSize: length(indexShape(index));
@@ -2461,15 +2461,18 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 //////////////////////////////////////////////////////////////////////////////
 // interface for automatic index creation 
 
-	template <typename TText, typename TShape, typename TSize>
+	template <typename TText, typename TShape, typename TStepSize>
 	inline typename LengthSum<TText const>::Type
-	_qgramQGramCount(TText const &text, TShape const &shape, TSize stepSize)
+	_qgramQGramCount(TText const &text, TShape const &shape, TStepSize stepSize)
 	{
+        typedef typename LengthSum<TText const>::Type   TSize;
+        typedef typename Size<TText const>::Type        TSetSize;
+
 		if (empty(shape)) return 0;
 
 		// count all overlapping q-grams
 		TSize qgramCount = 0;
-		for(unsigned i = 0; i < countSequences(text); ++i)
+		for(TSetSize i = 0; i < countSequences(text); ++i)
 			if (sequenceLength(i, text) >= length(shape))
 				qgramCount += (sequenceLength(i, text) - length(shape)) / stepSize + 1;
 		return qgramCount;

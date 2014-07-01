@@ -1059,7 +1059,10 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
 
-		TTextIterator itText = TTextIterator();
+        if (empty(stringSet))
+            return 0;
+
+        TTextIterator itText = begin(front(stringSet), Standard());
 		TSAIterator itSA = begin(sa, Standard());
 		TSAIterator itSAEnd = end(sa, Standard());
 
@@ -1489,11 +1492,14 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 
 		// 4. fill suffix array
 		{
+            if (empty(stringSet))
+                return requiredSize;
+
 			TSA &sa = indexSA(index);
 			TSAIterator saBeg = begin(sa, Standard());
 			TCntIterator boundBeg = begin(bound, Standard());
 
-			TTextIterator itText = TTextIterator();
+			TTextIterator itText = begin(front(stringSet), Standard());
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;
@@ -1986,13 +1992,13 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
         typedef typename Value<TIndex>::Type    TValue;
         typedef typename Size<TIndex>::Type     TSize;
 
-		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1);
-		resize(index.tempBound, ValueSize<TValue>::VALUE + 1);
+		resize(index.tempOcc, ValueSize<TValue>::VALUE + 1, Exact());
+		resize(index.tempBound, ValueSize<TValue>::VALUE + 1, Exact());
 
 		TSize size;
 		if (empty(indexSA(index)))
 		{
-			resize(indexSA(index), length(indexRawText(index)));
+			resize(indexSA(index), length(indexRawText(index)), Exact());
 			size = _sortFirstWotdBucket(index);
 		} else
 		{

@@ -56,7 +56,23 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-// TODO(holtgrew): One could implement an HasAtomicFunction<T, Function> Metafunction but that would probably be pretty useless.
+#ifdef SEQAN_CXX11_STL
+
+template <typename T>
+struct Atomic
+{
+    typedef std::atomic<T> Type;
+};
+
+#else
+
+template <typename T>
+struct Atomic
+{
+    typedef T Type;
+};
+
+#endif
 
 // ============================================================================
 // Functions
@@ -328,6 +344,10 @@ atomic
 ..include:seqan/parallel.h
  */
 
+#ifndef SEQAN_CACHE_LINE_SIZE
+#define SEQAN_CACHE_LINE_SIZE 128
+#endif
+
 #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 
 // ----------------------------------------------------------------------------
@@ -336,68 +356,73 @@ atomic
 
 // We break the standard code layout here since we only wrap compiler
 // intrinsics and it's easier to see things with one glance this way.
+#pragma intrinsic(_InterlockedOr, _InterlockedXor, _InterlockedCompareExchange)
 
-inline          long atomicInc(         long volatile & x) { return InterlockedIncrement(&x); }
-inline unsigned long atomicInc(unsigned long volatile & x) { return InterlockedIncrement(reinterpret_cast<long volatile *>(&x)); }
+template <typename T, typename S>
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(char)>, S y) { return _InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(char)>, S y) { return _InterlockedXor8(reinterpret_cast<char volatile *>(&x), y); }
+
+template <typename T>
+inline T _atomicInc(T volatile &x, ConstInt<sizeof(short)>) { return InterlockedIncrement16(reinterpret_cast<short volatile *>(&x)); }
+template <typename T>
+inline T _atomicDec(T volatile &x, ConstInt<sizeof(short)>) { return InterlockedDecrement16(reinterpret_cast<short volatile *>(&x)); }
+template <typename T, typename S>
+inline T _atomicAdd(T volatile &x, ConstInt<sizeof(short)>, S y) { return InterlockedExchangeAdd16(reinterpret_cast<short volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(short)>, S y) { return _InterlockedOr16(reinterpret_cast<short volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(short)>, S y) { return _InterlockedXor16(reinterpret_cast<short volatile *>(&x), y); }
+template <typename T, typename S, typename U>
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(short)>, S cmp, U y) { return _InterlockedCompareExchange16(reinterpret_cast<short volatile *>(&x), y, cmp); }
+
+template <typename T>
+inline T _atomicInc(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedIncrement(reinterpret_cast<LONG volatile *>(&x)); }
+template <typename T>
+inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedDecrement(reinterpret_cast<LONG volatile *>(&x)); }
+template <typename T, typename S>
+inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONG)>, S y) { return InterlockedExchangeAdd(reinterpret_cast<LONG volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(long)>, S y) { return _InterlockedOr(reinterpret_cast<long volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(long)>, S y) { return _InterlockedXor(reinterpret_cast<long volatile *>(&x), y); }
+template <typename T, typename S, typename U>
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(long)>, S cmp, U y) { return _InterlockedCompareExchange(reinterpret_cast<long volatile *>(&x), y, cmp); }
+
 #ifdef _WIN64
-inline       __int64 atomicInc( __int64 volatile & x) { return _InterlockedIncrement64(&x); }
-inline      __uint64 atomicInc(__uint64 volatile & x) { return _InterlockedIncrement64(reinterpret_cast<__int64 volatile *>(&x)); }
+template <typename T>
+inline T _atomicInc(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return InterlockedIncrement64(reinterpret_cast<LONGLONG volatile *>(&x)); }
+template <typename T>
+inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return InterlockedDecrement64(reinterpret_cast<LONGLONG volatile *>(&x)); }
+template <typename T, typename S>
+inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedOr64(reinterpret_cast<__int64 volatile *>(&x), y); }
+template <typename T, typename S>
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedXor64(reinterpret_cast<__int64 volatile *>(&x), y); }
+template <typename T, typename S, typename U>
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(__int64)>, S cmp, U y) { return _InterlockedCompareExchange64(reinterpret_cast<__int64 volatile *>(&x), y, cmp); }
 #endif  // #ifdef _WIN64
 
-inline          long atomicDec(         long volatile & x) { return _InterlockedDecrement(&x); }
-inline unsigned long atomicDec(unsigned long volatile & x) { return _InterlockedDecrement(reinterpret_cast<long volatile *>(&x)); }
-#ifdef _WIN64
-inline       __int64 atomicDec( __int64 volatile & x) { return _InterlockedDecrement64(&x); }
-inline      __uint64 atomicDec(__uint64 volatile & x) { return _InterlockedDecrement64(reinterpret_cast<__int64 volatile *>(&x)); }
-#endif  // #ifdef _WIN64
+template <typename T>
+inline T atomicInc(T volatile & x) { return _atomicInc(x, ConstInt<sizeof(T)>()); }
+template <typename T>
+inline T atomicDec(T volatile & x) { return _atomicDec(x, ConstInt<sizeof(T)>()); }
+template <typename T, typename S>
+inline T atomicAdd(T volatile &x, S y) { return _atomicAdd(x, ConstInt<sizeof(T)>(), y); }
+template <typename T, typename S>
+inline T atomicOr(T volatile &x, S y) { return _atomicOr(x, ConstInt<sizeof(T)>(), y); }
+template <typename T, typename S>
+inline T atomicXor(T volatile &x, S y) { return _atomicXor(x, ConstInt<sizeof(T)>(), y); }
+template <typename T, typename S, typename U>
+inline T atomicCas(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<sizeof(T)>(), cmp, y); }
+template <typename T, typename S, typename U>
+inline bool atomicCasBool(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<sizeof(T)>(), cmp, y) == cmp; }
 
-inline          long atomicAdd(         long volatile & x, long y) { return _InterlockedExchangeAdd(&x, y); }
-inline unsigned long atomicAdd(unsigned long volatile & x, long y) { return _InterlockedExchangeAdd(reinterpret_cast<long volatile *>(&x), y); }
-#ifdef _WIN64
-inline       __int64 atomicAdd( __int64 volatile & x,  __int64 y) { return _InterlockedExchangeAdd64(&x, y); }
-inline      __uint64 atomicAdd(__uint64 volatile & x, __uint64 y) { return _InterlockedExchangeAdd64(reinterpret_cast<__int64 volatile *>(&x), y); }
-#endif  // #ifdef _WIN64
-
-// TODO(holtgrew): Although documented to work, you get a linker error (LNK2019) in MS VS8 on 64 bit Windows.
-//   LNK2019: unresolved external symbol _InterlockedOr8 referenced in function "char __cdecl seqan::atomicOr(char volatile &,char)" (?atomicOr@seqan@@YADAECDD@Z)
-// inline           char atomicOr(          char volatile & x,           char y) { return _InterlockedOr8(&x, y); }
-// inline unsigned  char atomicOr(unsigned  char volatile & x, unsigned  char y) { return _InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }
-// inline          short atomicOr(         short volatile & x,          short y) { return _InterlockedOr16(&x, y); }
-// inline unsigned short atomicOr(unsigned short volatile & x, unsigned short y) { return _InterlockedOr16(reinterpret_cast<short volatile *>(&x), y); }
-inline           long atomicOr(          long volatile & x,           long y) { return _InterlockedOr(&x, y); }
-inline unsigned  long atomicOr(unsigned  long volatile & x, unsigned  long y) { return _InterlockedOr(reinterpret_cast<long volatile *>(&x), y); }
-#ifdef _WIN64
-inline        __int64 atomicOr(       __int64 volatile & x,        __int64 y) { return _InterlockedOr64(&x, y); }
-inline       __uint64 atomicOr(      __uint64 volatile & x,       __uint64 y) { return _InterlockedOr64(reinterpret_cast<__int64 volatile*>(&x), y); }
-#endif  // #ifdef _WIN64
-
-// TODO(holtgrew): Although documented to work, you get a linker error (LNK2019) in MS VS8 on 64 bit Windows.
-//   LNK2019: unresolved external symbol _InterlockedOr8 referenced in function "char __cdecl seqan::atomicOr(char volatile &,char)" (?atomicOr@seqan@@YADAECDD@Z)
-// inline           char atomicXor(          char volatile & x,           char y) { return _InterlockedXor8(&x, y); }
-// inline unsigned  char atomicXor(unsigned  char volatile & x, unsigned  char y) { return _InterlockedXor8(reinterpret_cast<char volatile *>(&x), y); }
-// inline          short atomicXor(         short volatile & x,          short y) { return _InterlockedXor16(&x, y); }
-// inline unsigned short atomicXor(unsigned short volatile & x, unsigned short y) { return _InterlockedXor16(reinterpret_cast<short volatile *>(&x), y); }
-inline           long atomicXor(          long volatile & x,           long y) { return _InterlockedXor(&x, y); }
-inline unsigned  long atomicXor(unsigned  long volatile & x, unsigned  long y) { return _InterlockedXor(reinterpret_cast<long volatile *>(&x), y); }
-#ifdef _WIN64
-inline        __int64 atomicXor(       __int64 volatile & x,        __int64 y) { return _InterlockedXor64(&x, y); }
-inline       __uint64 atomicXor(      __uint64 volatile & x,       __uint64 y) { return _InterlockedXor64(reinterpret_cast<__int64 volatile*>(&x), y); }
-#endif  // #ifdef _WIN64
-
-inline          short atomicCas(         short volatile & x,          short cmp,          short y) { return _InterlockedCompareExchange16(&x, y, cmp); }
-inline unsigned short atomicCas(unsigned short volatile & x, unsigned short cmp, unsigned short y) { return _InterlockedCompareExchange16(reinterpret_cast<short volatile *>(&x), y, cmp); }
-inline           long atomicCas(           int volatile & x,            int cmp,            int y) { return _InterlockedCompareExchange(reinterpret_cast<long volatile *>(&x), y, cmp); }
-inline unsigned  long atomicCas(unsigned   int volatile & x, unsigned   int cmp, unsigned   int y) { return _InterlockedCompareExchange(reinterpret_cast<long volatile *>(&x), y, cmp); }
-inline           long atomicCas(          long volatile & x,           long cmp,           long y) { return _InterlockedCompareExchange(&x, y, cmp); }
-inline unsigned  long atomicCas(unsigned  long volatile & x, unsigned  long cmp, unsigned  long y) { return _InterlockedCompareExchange(reinterpret_cast<long volatile *>(&x), y, cmp); }
-#ifdef _WIN64
-inline        __int64 atomicCas(       __int64 volatile & x,        __int64 cmp,        __int64 y) { return _InterlockedCompareExchange64(&x, y, cmp); }
-inline       __uint64 atomicCas(      __uint64 volatile & x,       __uint64 cmp,       __uint64 y) { return _InterlockedCompareExchange64(reinterpret_cast<__int64 volatile *>(&x), y, cmp); }
-#endif  // #ifdef _WIN64
-
-
-template <typename T> inline T atomicPostInc(T volatile & x) { return atomicInc(x) - 1; }
-template <typename T> inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
+template <typename T> 
+inline T atomicPostInc(T volatile & x) { return atomicInc(x) - 1; }
+template <typename T> 
+inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
 
 
 #else  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
@@ -455,9 +480,47 @@ inline T atomicCas(T volatile & x, T cmp, T y)
 }
 
 template <typename T>
+inline bool atomicCasBool(T volatile & x, T cmp, T y)
+{
+    return __sync_bool_compare_and_swap(&x, cmp, y);
+}
+
+template <typename T>
 inline T atomicSwap(T volatile & x, T y)
 {
     return __sync_lock_test_and_set(x, y);
+}
+
+// Pointer versions
+
+template <typename T>
+inline T * atomicInc(T * volatile & x)
+{
+    return (T *) __sync_add_and_fetch((size_t volatile *)&x, sizeof(T));
+}
+
+template <typename T>
+inline T * atomicPostInc(T * volatile & x)
+{
+    return (T *) __sync_fetch_and_add((size_t volatile *)&x, sizeof(T));
+}
+
+template <typename T>
+inline T * atomicDec(T * volatile & x)
+{
+    return (T *) __sync_add_and_fetch((size_t volatile *)&x, -sizeof(T));
+}
+
+template <typename T>
+inline T * atomicPostDec(T * volatile & x)
+{
+    return (T *) __sync_fetch_and_add((size_t volatile *)&x, -sizeof(T));
+}
+
+template <typename T1, typename T2>
+inline T1 * atomicAdd(T1 * volatile & x, T2 y)
+{
+    return (T1 *) __sync_add_and_fetch((size_t volatile *)&x, y * sizeof(T2));
 }
 
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
@@ -471,20 +534,40 @@ template <typename T>   inline T atomicInc(T          & x,             Serial)  
 template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
 template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
 template <typename T>   inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
-template <typename T>   inline T atomicAdd(T          & x, T y,        Serial)      { return x = x + y;              }
-template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
-template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
+template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x |= y;                 }
+template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x ^= y;                 }
+// In serial mode, there is no other thread changing cmp except us
 template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
- 
+//template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
+template <typename T>   inline bool atomicCasBool(T volatile & x, T, T y, Serial)   { x = y; return true;            }
+
 template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
 template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
 template <typename T>   inline T atomicDec(T volatile & x,             Parallel)    { return atomicDec(x);           }
 template <typename T>   inline T atomicPostDec(T volatile & x,         Parallel)    { return atomicPostDec(x);       }
-template <typename T>   inline T atomicAdd(T volatile & x, T y,        Parallel)    { return atomicAdd(x, y);        }
 template <typename T>   inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
 template <typename T>   inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
 template <typename T>   inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
+template <typename T>   inline bool atomicCasBool(T volatile & x, T cmp, T y, Parallel) { return atomicCasBool(x, cmp, y); }
 
+template <typename T1, typename T2>   inline T1 atomicAdd(T1          & x, T2 y, Serial)    { return x = x + y; }
+template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y, Parallel)  { return atomicAdd(x, y); }
+
+
+// C++11 atomic wrappers
+
+#ifdef SEQAN_CXX11_STL
+template <typename T>   inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
+template <typename T>   inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
+template <typename T>   inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
+template <typename T>   inline T atomicPostDec(std::atomic<T>    & x     )        { return x--;                    }
+template <typename T>   inline T atomicOr (std::atomic<T>        & x, T y)        { return x |= y;                 }
+template <typename T>   inline T atomicXor(std::atomic<T>        & x, T y)        { return x ^= y;                 }
+template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Serial)   { if (x == cmp) x = y;             return x;   }
+template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Parallel) { x.compare_exchange_weak(cmp, y); return cmp; }
+template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }
+template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y, Parallel) { return x.compare_exchange_weak(cmp, y);      }
+#endif  // #ifdef SEQAN_CXX11_STL
 
 } // namespace seqan
 

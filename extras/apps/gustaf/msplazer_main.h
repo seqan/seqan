@@ -237,7 +237,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     String<TBreakpoint> globalBreakpoints;
     // String<TBreakpoint> globalStellarIndels;
-    _findAllBestChains(queryChains, stellarMatches, globalBreakpoints); // , msplazerOptions);
+    _findAllBestChains(queryChains, stellarMatches, globalBreakpoints, msplazerOptions);
     // _findAllBestChains(queryChains, stellarMatches, queries, queryIDs, globalBreakpoints, globalStellarIndels, msplazerOptions);
     // _findAllChains(queryChains, stellarMatches, queries, queryIDs, globalBreakpoints, globalStellarIndels, msplazerOptions);
     // _findAllChains(queryChains);
@@ -286,7 +286,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     //
     // if(length(queries) < 200)
     if (msplazerOptions.dotOut)
-        _writeDotfiles(stellarMatches, queries, queryChains, msplazerOptions);
+        _writeDotfiles(stellarMatches, queries, queryIDs, queryChains, msplazerOptions);
     return 0;
 }
 

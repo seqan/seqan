@@ -43,18 +43,6 @@ using namespace seqan;
 // Types
 // ========================================================================== 
 
-// --------------------------------------------------------------------------
-// Trie Index Types
-// --------------------------------------------------------------------------
-
-typedef
-    TagList<Index<DnaString, FMIndex<> >,
-    TagList<Index<CharString, FMIndex<> >,
-    TagList<Index<StringSet<DnaString>, FMIndex<> >,
-    TagList<Index<StringSet<CharString>, FMIndex<> >
-    > > > >
-    TrieIndexTypes;
-
 // ========================================================================== 
 // Test Classes
 // ========================================================================== 

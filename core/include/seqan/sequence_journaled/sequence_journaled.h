@@ -389,6 +389,20 @@ struct JournalType<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline bool
+empty(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & target)
+{
+    if (empty(target._holder) || empty(target._journalEntries))
+        return true;
+
+    return begin(target, Standard()) == end(target, Standard());
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<<
 // ----------------------------------------------------------------------------
 
@@ -435,7 +449,7 @@ assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target
        String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TTarget;
-    assign(target, source, DefaultOverflowImplicit<TTarget>::Type());
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec,
@@ -658,7 +672,6 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
 ..include:seqan/sequence_journaled.h
  */
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
-// TODO(rmaerker): Only supported by SortedArray, since there is a bug in the UnbalancedTree iterator. Is not fixed since UT is deprecated.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
 flatten(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString)

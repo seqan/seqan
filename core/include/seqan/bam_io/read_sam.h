@@ -217,10 +217,13 @@ int readRecord(BamHeaderRecord & record,
         }
     }
 
-    // Skip remaining line break.
-    int res = skipLine(reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
+    // Skip remaining line break, in case of comment, we already skipped over it.
+    if (record.type != BAM_HEADER_COMMENT)
+    {
+        int res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return res;
+    }
     return 0;
 }
 
@@ -242,6 +245,8 @@ int readRecord(BamHeader & header,
                RecordReader<TStream, SinglePass<TSpec> > & reader,
                Sam const & tag)
 {
+    typedef typename BamHeader::TSequenceInfo TSequenceInfo;
+
     BamHeaderRecord record;
     while (nextIs(reader, SamHeader()))
     {
@@ -268,14 +273,18 @@ int readRecord(BamHeader & header,
                         ln = 0;
                 }
             }
-            typedef typename BamHeader::TSequenceInfo TSequenceInfo;
-            appendValue(header.sequenceInfos, TSequenceInfo(sn, ln));
 
             // Add name to name store cache if necessary.
-            unsigned unusedId = 0;
-            ignoreUnusedVariableWarning(unusedId);
-            if (!getIdByName(nameStore(context), sn, unusedId, nameStoreCache(context)))
+            unsigned contigId = 0;
+            if (!getIdByName(nameStore(context), sn, contigId, nameStoreCache(context)))
+            {
+                contigId = length(nameStore(context));
                 appendName(nameStore(context), sn, nameStoreCache(context));
+            }
+
+            if (length(header.sequenceInfos) <= contigId)
+                resize(header.sequenceInfos, contigId + 1);
+            header.sequenceInfos[contigId] = TSequenceInfo(sn, ln);
         }
     }
 

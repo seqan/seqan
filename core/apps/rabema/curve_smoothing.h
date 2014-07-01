@@ -24,7 +24,7 @@
 // ==========================================================================
 
 #ifndef SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHING_H_
-#define SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHINGH_
+#define SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHING_H_
 
 #include <algorithm>
 

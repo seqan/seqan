@@ -38,38 +38,38 @@
 #include <seqan/basic.h>
 #include <seqan/align.h>
 
-void testDPBandOffBandSize()
+void testDPBandConfigOffBandSize()
 {
     using namespace seqan;
 
-    DPBand_<BandOff> band;
+    DPBandConfig<BandOff> band;
 
     SEQAN_ASSERT_EQ(bandSize(band), 0u);
 }
 
-void testDPBandOnBandSize()
+void testDPBandConfigOnBandSize()
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_EQ(bandSize(DPBand_<BandOn>(-3, 7)), 11u);
-    SEQAN_ASSERT_EQ(bandSize(DPBand_<BandOn>(3, 7)), 5u);
-    SEQAN_ASSERT_EQ(bandSize(DPBand_<BandOn>(-7, -3)), 5u);
-    SEQAN_ASSERT_EQ(bandSize(DPBand_<BandOn>(-7, 0)), 8u);
+    SEQAN_ASSERT_EQ(bandSize(DPBandConfig<BandOn>(-3, 7)), 11u);
+    SEQAN_ASSERT_EQ(bandSize(DPBandConfig<BandOn>(3, 7)), 5u);
+    SEQAN_ASSERT_EQ(bandSize(DPBandConfig<BandOn>(-7, -3)), 5u);
+    SEQAN_ASSERT_EQ(bandSize(DPBandConfig<BandOn>(-7, 0)), 8u);
 }
 
 SEQAN_DEFINE_TEST(test_dp_band_on_constructor)
 {
     using namespace seqan;
-    DPBand_<BandOn> dpBand;
+    DPBandConfig<BandOn> dpBand;
 
     SEQAN_ASSERT_EQ(dpBand._lowerDiagonal, 0);
     SEQAN_ASSERT_EQ(dpBand._upperDiagonal, 0);
 
-    DPBand_<BandOn> dpBand2(-2, 2);
+    DPBandConfig<BandOn> dpBand2(-2, 2);
     SEQAN_ASSERT_EQ(dpBand2._lowerDiagonal, -2);
     SEQAN_ASSERT_EQ(dpBand2._upperDiagonal, 2);
 
-    DPBand_<BandOn> dpBand3(dpBand2);
+    DPBandConfig<BandOn> dpBand3(dpBand2);
 
     SEQAN_ASSERT_EQ(dpBand3._lowerDiagonal, -2);
     SEQAN_ASSERT_EQ(dpBand3._upperDiagonal, 2);
@@ -78,7 +78,7 @@ SEQAN_DEFINE_TEST(test_dp_band_on_constructor)
 SEQAN_DEFINE_TEST(test_dp_band_on_lower_diagonal)
 {
     using namespace seqan;
-    DPBand_<BandOn> dpBand;
+    DPBandConfig<BandOn> dpBand;
     SEQAN_ASSERT_EQ(lowerDiagonal(dpBand), 0);
 
     dpBand._lowerDiagonal = -10;
@@ -88,7 +88,7 @@ SEQAN_DEFINE_TEST(test_dp_band_on_lower_diagonal)
 SEQAN_DEFINE_TEST(test_dp_band_on_upper_diagonal)
 {
     using namespace seqan;
-    DPBand_<BandOn> dpBand;
+    DPBandConfig<BandOn> dpBand;
     SEQAN_ASSERT_EQ(upperDiagonal(dpBand), 0);
 
     dpBand._upperDiagonal = 10;
@@ -98,7 +98,7 @@ SEQAN_DEFINE_TEST(test_dp_band_on_upper_diagonal)
 SEQAN_DEFINE_TEST(test_dp_band_on_set_lower_diagonal)
 {
     using namespace seqan;
-    DPBand_<BandOn> dpBand;
+    DPBandConfig<BandOn> dpBand;
 
     setLowerDiagonal(dpBand, -10);
     SEQAN_ASSERT_EQ(dpBand._lowerDiagonal, -10);
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(test_dp_band_on_set_lower_diagonal)
 SEQAN_DEFINE_TEST(test_dp_band_on_set_upper_diagonal)
 {
     using namespace seqan;
-    DPBand_<BandOn> dpBand;
+    DPBandConfig<BandOn> dpBand;
 
     setUpperDiagonal(dpBand, 10);
     SEQAN_ASSERT_EQ(dpBand._upperDiagonal, 10);
@@ -115,12 +115,12 @@ SEQAN_DEFINE_TEST(test_dp_band_on_set_upper_diagonal)
 
 SEQAN_DEFINE_TEST(test_dp_band_off_band_size)
 {
-    testDPBandOffBandSize();
+    testDPBandConfigOffBandSize();
 }
 
 SEQAN_DEFINE_TEST(test_dp_band_on_band_size)
 {
-    testDPBandOnBandSize();
+    testDPBandConfigOnBandSize();
 }
 
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_BAND_H_

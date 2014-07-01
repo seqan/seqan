@@ -37,6 +37,8 @@
 #ifndef SEQAN_EXTRAS_MASAI_INDEX_H_
 #define SEQAN_EXTRAS_MASAI_INDEX_H_
 
+#define SEQAN_INDEX_QGRAM_TREE
+
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
@@ -172,6 +174,30 @@ struct TGenomeFMConfig : FMIndexConfig<void>
 typedef FMIndex<void, TGenomeFMConfig>      TGenomeFMSpec;
 typedef Index<TContigs, TGenomeFMSpec>      TGenomeFM;
 
+// ----------------------------------------------------------------------------
+// Rank Dictionary Size
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <typename TSpec>
+struct Size<RankDictionary<Dna, TwoLevels<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+
+template <typename TSpec>
+struct Size<RankDictionary<bool, TwoLevels<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+
+template <typename TSpec>
+struct Size<RankDictionary<bool, Naive<TSpec> > >
+{
+    typedef __uint32 Type;
+};
+}
+
 // ============================================================================
 // Reads Index Fibres
 // ============================================================================
@@ -301,7 +327,6 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
     typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
     typedef typename Value<TIndex>::Type                        TAlphabet;
-    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
 
     TIndex const & index = container(it);
     TLF const & lf = indexLF(index);

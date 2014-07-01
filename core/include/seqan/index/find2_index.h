@@ -76,33 +76,13 @@ struct TextIterator_<Index<TText, TIndexSpec>, TPattern, TSpec>
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction TextIterator_                             [Backtracking Finder]
+// Metafunction TextIterator_
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TDistance, typename TSpec>
 struct TextIterator_<Index<TText, TIndexSpec>, TPattern, Backtracking<TDistance, TSpec> >
 {
     typedef typename Iterator<Index<TText, TIndexSpec>, TopDown<ParentLinks<> > >::Type  Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Score_                                           [STree Finder]
-// ----------------------------------------------------------------------------
-
-template <>
-struct Score_<FinderSTree>
-{
-    typedef Nothing Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Score_                                    [Backtracking Finder]
-// ----------------------------------------------------------------------------
-
-template <typename TDistance, typename TSpec>
-struct Score_<Backtracking<TDistance, TSpec> >
-{
-    typedef unsigned char   Type;
 };
 
 // ============================================================================
@@ -114,7 +94,7 @@ struct Score_<Backtracking<TDistance, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
-struct Finder2<Index<TText, TIndexSpec>, TPattern, TSpec>
+struct Finder_<Index<TText, TIndexSpec>, TPattern, TSpec>
 {
     typedef Index<TText, TIndexSpec>                                    TIndex;
     typedef typename TextIterator_<TIndex, TPattern, TSpec>::Type       TTextIterator;
@@ -127,20 +107,20 @@ struct Finder2<Index<TText, TIndexSpec>, TPattern, TSpec>
     TScore              _score;
 
     SEQAN_HOST_DEVICE
-    Finder2() :
+    Finder_() :
         _scoreThreshold(),
         _score()
     {}
 
     SEQAN_HOST_DEVICE
-    Finder2(TIndex /* const */ & index) :
+    Finder_(TIndex /* const */ & index) :
         _textIt(index),
         _scoreThreshold(),
         _score()
     {}
 
     SEQAN_HOST_DEVICE
-    Finder2(TTextIterator const & textIt) :
+    Finder_(TTextIterator const & textIt) :
         _textIt(textIt),
         _scoreThreshold(),
         _score()
@@ -157,81 +137,78 @@ struct Finder2<Index<TText, TIndexSpec>, TPattern, TSpec>
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-clear(Finder2<Index<TText, TIndexSpec>, TPattern, TSpec> & finder)
+clear(Finder_<Index<TText, TIndexSpec>, TPattern, TSpec> & finder)
 {
     // NOTE(esiragusa): should clear() be called on text/patternIt?
-    goRoot(textIterator(finder));
-    // NOTE(esiragusa): if find wasn't called yet, patternIterator is uninitialized.
-//    goBegin(patternIterator(finder));
+    goRoot(_textIterator(finder));
+    // NOTE(esiragusa): if find wasn't called yet, _patternIterator is uninitialized.
+//    goBegin(_patternIterator(finder));
     finder._score = typename Score_<TSpec>::Type();
 }
 
 // ----------------------------------------------------------------------------
-// Function find()                                               [Exact Finder]
+// Function find_()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TDelegate>
 SEQAN_HOST_DEVICE inline void
-find(Finder2<Index<TText, TIndexSpec>, TPattern, FinderSTree> & finder,
-     TPattern const & pattern,
-     TDelegate & delegate)
+_find(Finder_<Index<TText, TIndexSpec>, TPattern, FinderSTree> & finder,
+      TPattern const & pattern,
+      TDelegate & delegate)
 {
-    if (goDown(textIterator(finder), pattern))
+    if (goDown(_textIterator(finder), pattern))
     {
-        // TODO(esiragusa): update patternIterator.
+        // TODO(esiragusa): update _patternIterator.
         delegate(finder);
     }
 }
 
 // ----------------------------------------------------------------------------
-// Function _getVertexScore()                             [Backtracking Finder]
+// Function _getVertexScore()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
-_getVertexScore(Finder2<TText, TPattern, Backtracking<HammingDistance, TSpec> > const & finder)
+_getVertexScore(Finder_<TText, TPattern, Backtracking<HammingDistance, TSpec> > const & finder)
 {
-    return parentEdgeLabel(textIterator(finder)) != value(patternIterator(finder));
+    return !ordEqual(parentEdgeLabel(_textIterator(finder)), value(_patternIterator(finder)));
 }
 
 // ----------------------------------------------------------------------------
-// Function _printState()                                 [Backtracking Finder]
+// Function _printState()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-_printState(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder)
+_printState(Finder_<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder)
 {
-    std::cout << "Text:        " << parentEdgeLabel(textIterator(finder)) << std::endl;
-    std::cout << "Pattern:     " << value(patternIterator(finder)) << std::endl;
-    std::cout << "Text Len:    " << repLength(textIterator(finder)) << std::endl;
-    std::cout << "Pattern Len: " << position(patternIterator(finder)) + 1 << std::endl;
-    std::cout << "Errors:      " << static_cast<unsigned>(getScore(finder)) << std::endl;
+    std::cout << "Text:        " << parentEdgeLabel(_textIterator(finder)) << std::endl;
+    std::cout << "Pattern:     " << value(_patternIterator(finder)) << std::endl;
+    std::cout << "Text Len:    " << repLength(_textIterator(finder)) << std::endl;
+    std::cout << "Pattern Len: " << position(_patternIterator(finder)) + 1 << std::endl;
+    std::cout << "Errors:      " << static_cast<unsigned>(_getScore(finder)) << std::endl;
     std::cout << "Max errors:  " << static_cast<unsigned>(finder._scoreThreshold) << std::endl;
 }
 
 // ----------------------------------------------------------------------------
-// Function find()                                        [Backtracking Finder]
+// Function _find()
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec, typename TDelegate>
 SEQAN_HOST_DEVICE inline void
-find(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder,
-     TPattern const & pattern,
-     TDelegate & delegate)
+_find(Finder_<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder,
+      TPattern const & pattern,
+      TDelegate & delegate)
 {
     typedef Index<TText, TIndexSpec>                                        TIndex;
     typedef Backtracking<HammingDistance, TSpec>                            TFinderSpec;
     typedef typename TextIterator_<TIndex, TPattern, TFinderSpec>::Type     TTextIterator;
     typedef typename PatternIterator_<TIndex, TPattern, TFinderSpec>::Type  TPatternIterator;
 
-    setPatternIterator(finder, begin(pattern));
+    _patternIterator(finder) = begin(pattern);
 
-    TTextIterator & textIt = textIterator(finder);
-    TPatternIterator & patternIt = patternIterator(finder);
-
-    finder._score = 0;
-    finder._scoreThreshold = 1;
+    TTextIterator & textIt = _textIterator(finder);
+    TPatternIterator & patternIt = _patternIterator(finder);
 
     do
     {
@@ -244,9 +221,6 @@ find(Finder2<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, T
             }
 
             goUp(textIt);
-
-            // Termination.
-            if (isRoot(textIt)) break;
         }
 
         // Approximate case.

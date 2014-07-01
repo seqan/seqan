@@ -31,17 +31,18 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// TopDown Iterators for the QGram Index.
+// ==========================================================================
+// Define SEQAN_INDEX_QGRAM_TREE to let the edge labels be tree-like infixes
+// of arbitrary length instead of trie-like unitary symbols.
+// ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_QGRAM_STREE_H_
-#define SEQAN_EXTRAS_INDEX_QGRAM_STREE_H_
+#ifndef SEQAN_INDEX_QGRAM_STREE_H_
+#define SEQAN_INDEX_QGRAM_STREE_H_
 
 //#define SEQAN_DEBUG
 
 namespace seqan {
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -51,11 +52,12 @@ template <typename TSize, typename TShape>
 struct VertexQGram
 {
     typedef typename Host<TShape>::Type                 TAlphabet;
+    typedef typename Value<TShape>::Type                THashValue;
 
-    Pair<TSize> range;
-    Pair<TSize> hash;
-    TSize       repLen;
-    TAlphabet   lastChar;
+    Pair<TSize>         range;
+    Pair<THashValue>    hash;
+    TSize               repLen;
+    TAlphabet           lastChar;
 
     VertexQGram() :
         range(0, 0),
@@ -83,10 +85,11 @@ template <typename TSize, typename TShape>
 struct HistoryStackQGram_
 {
     typedef typename Host<TShape>::Type                 TAlphabet;
+    typedef typename Value<TShape>::Type                THashValue;
 
-    Pair<TSize> range;
-    Pair<TSize> hash;
-    TAlphabet   lastChar;
+    Pair<TSize>         range;
+    Pair<THashValue>    hash;
+    TAlphabet           lastChar;
 
     HistoryStackQGram_() {}
 };
@@ -120,12 +123,13 @@ public:
     typedef HistoryStackQGram_<TSize, TShape>                   Type;
 };
 
-// TODO(esiragusa): Uncomment this for BucketRefinement QGramIndex.
-//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-//struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
-//{
-//    typedef typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type Type;
-//};
+#ifndef SEQAN_INDEX_QGRAM_TREE
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
+{
+    typedef typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type Type;
+};
+#endif
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 struct Iterator<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> >
@@ -162,20 +166,21 @@ repLength(TIndex const &, VertexQGram<TSize, TShape> const & vDesc)
     return vDesc.repLen;
 }
 
-// TODO(esiragusa): Uncomment this for BucketRefinement QGramIndex.
-//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-//inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
-//parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
-//{
-//    return value(it).lastChar;
-//}
-//
-//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-//inline typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
-//parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
-//{
-//    return value(it).lastChar;
-//}
+#ifndef SEQAN_INDEX_QGRAM_TREE
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
+parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return value(it).lastChar;
+}
+
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+inline typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
+parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return value(it).lastChar;
+}
+#endif
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > & it)
@@ -374,4 +379,4 @@ _goUp(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<Par
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_QGRAM_STREE_H_
+#endif  // #ifndef SEQAN_INDEX_QGRAM_STREE_H_

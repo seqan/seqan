@@ -58,7 +58,7 @@ getValue(TSimdVector &vector, TPosition pos)                                    
 {                                                                                                       \
 /*                                                                                                      \
     typedef typename Value<TSimdVector>::Type TValue;                                                   \
-    register TValue val = (reinterpret_cast<TValue*>(&vector))[pos];                                    \
+    TValue val = (reinterpret_cast<TValue*>(&vector))[pos];                                    \
     return val;                                                                                         \
 */                                                                                                      \
     return vector[pos];                                                                                 \
@@ -109,8 +109,8 @@ struct SimdVector;
     SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                        \
     SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector const)                                                  \
     SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                                  \
-    SEQAN_CONCEPT_IMPL(TSimdVector,       (SimdVectorConcept));                                         \
-    SEQAN_CONCEPT_IMPL(TSimdVector const, (SimdVectorConcept))
+    template <> SEQAN_CONCEPT_IMPL((SimdVectorConcept), TSimdVector);                                   \
+    template <> SEQAN_CONCEPT_IMPL((SimdVectorConcept), TSimdVector const)
 
 #ifdef __SSE4_1__
 

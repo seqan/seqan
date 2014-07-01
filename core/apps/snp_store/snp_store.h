@@ -26,15 +26,16 @@
 
 #include <iostream>
 #include <fstream>
-#include <math.h>
 #include <cmath>
 
 #include <seqan/misc/misc_svg.h>
 #include <seqan/stream.h>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #ifdef CORRECTED_HET
 #include <boost/math/distributions.hpp>
 #endif
+
 namespace SEQAN_NAMESPACE_MAIN
 {
 
@@ -96,6 +97,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         int         _debugLevel;                // level of verbosity
         bool        printVersion;               // print version number
         std::stringstream   programCall;        // stores snpstore program call
+        std::string version;                    // version string
         std::string runID;                      // runID needed for gff output
     
         // input output options
@@ -291,7 +293,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             indelPercentageT = (float) 0.25;
             indelCountThreshold = 3;
             indelWindow = 0;            // off
-            indelHetMax = 0.70;
+            indelHetMax = 0.70f;
             
             windowSize = 1000000;
             windowBuff = 70;
@@ -572,11 +574,13 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
         if(options._debugLevel >=1)
             std::cout << std::endl << "Reading multiple genome files:" << std::endl;
         /*      //locations of genome files are relative to list file's location
-         ::std::string tempGenomeFile(filename);
-         size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = 0;
-         ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
+        ::std::string tempGenomeFile(filename);
+        size_t lastPos = tempGenomeFile.find_last_of("/\\");
+        if (lastPos == tempGenomeFile.npos)
+            lastPos = 0;
+        else
+            ++lastPos;
+        ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
         unsigned i = 0;
         for (; !atEnd(reader); ++i)
         {
@@ -1000,7 +1004,7 @@ int readMatchesFromGFF_Batch(
                         if (readNChars(curr_read, reader, 1) != 0)
                             return CALLSNPS_GFF_FAILED;
                     if (mScore != 100)
-                        editDist = (int)floor((length(curr_read) * ((100.0 - mScore + 0.001)/100.0)));
+                        editDist = (int)((length(curr_read) * ((100.0 - mScore + 0.001)/100.0)));
                 }
                 else if (current_tag == "mutations")
                 {
@@ -1325,7 +1329,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     bool res1 = findTagKey(editDistIndex, bamTags, "NM");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, editDistIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, editDistIndex));
         extractTagValue(editDist, bamTags, editDistIndex);
     }
     else editDist = 1; // we dont know whether there are errors in the alignment, we assume there are..
@@ -1335,7 +1339,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     res1 = findTagKey(numBestIndex, bamTags, "X0");
     if(res1)
     {
-        SEQAN_ASSERT_EQ('i', getTagValue(bamTags, numBestIndex)[0]);
+        SEQAN_ASSERT_EQ('i', getTagType(bamTags, numBestIndex));
         extractTagValue(numBest, bamTags, numBestIndex);
         if(numBest > 1) multi = true;
     }
@@ -1344,16 +1348,17 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     res1 = findTagKey(clipIndex, bamTags, "XC");
     if(res1)
     {
-//      SEQAN_ASSERT_EQ('Z', getTagValue(bamTags, clipIndex)[0]);  // XC is also used by BWA, also for clipping, but different fron ours
-        if('Z' == getTagValue(bamTags, clipIndex)[0])
+//      SEQAN_ASSERT_EQ('Z', getTagType(bamTags, clipIndex));  // XC is also used by BWA, also for clipping, but different fron ours
+        if('Z' == getTagType(bamTags, clipIndex))
         {
-            CharString clipLeftRight = getTagValue(bamTags, clipIndex);
+            CharString clipLeftRight;
+            extractTagValue(clipLeftRight, bamTags, clipIndex);
             // Get position of splitter char.
-            unsigned x = 1;
+            unsigned x = 0;
             while (x < length(clipLeftRight) && isdigit(clipLeftRight[x]))
                 ++x;
             // Extract left and right clipping count.
-            seqan::CharString buffer = infix(clipLeftRight, 1, x);
+            seqan::CharString buffer = infix(clipLeftRight, 0, x);
             lexicalCast2(clipLeft, buffer);
             if (x + 1 <= length(clipLeftRight))
                 buffer = infix(clipLeftRight, x + 1, length(clipLeftRight));
@@ -1902,18 +1907,12 @@ lgamma(TVal x)
 
 #endif
 
-template<typename TValue>
-inline bool my_isnan(TValue value)
-{
-    return value != value;
-}
-
-
 
 // function taken from keith b. hall, computation of probs in log-space
 template<typename TValue>
 inline TValue
-logSum(TValue x, TValue y) {
+logSum(TValue x, TValue y)
+{
     // If one value is much smaller than the other, keep the larger value.
     if (x < (y - log(1e200)))
         return y;
@@ -1921,7 +1920,7 @@ logSum(TValue x, TValue y) {
         return x;
     double diff = x - y;
     double retVal;
-    if (!finite((double)exp(diff))) // difference is too large
+    if (!std::isfinite((double)exp(diff))) // difference is too large
         return (x > y ? x : y);
     // otherwise return the sum.
     retVal = (double)(y + log((double)(1.0) + exp(diff)));
@@ -1988,7 +1987,7 @@ void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
             { 
                 temp[k] = -4.343 * logl(1.0 - expl(lFks[k] * logl(beta[k])));
                 cnks[q<<16|n<<8|k] = (k > 0 ? q_c[k-1] : 0);// + temp[k]; 
-                cnks[q<<16|n<<8|k] += (my_isnan(temp[k]) ? 0 : temp[k]);
+                cnks[q<<16|n<<8|k] += (boost::math::isnan(temp[k]) ? 0 : temp[k]);
             }
             
         }
@@ -2263,9 +2262,9 @@ getHomoProbs(THomoTable & cnks,
     if(extraV)std::cout << "totalCount" <<  countTotal << " countBest"<< countBest << " countSecondBest"<< countSecondBest << "\n";
 #endif
     probQ1 = ((countSecondBest > 0) ? sumE[secondBest] : 0);
-    probQ1 += (my_isnan(cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest])) ? 0 : cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest];
+    probQ1 += (boost::math::isnan(cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest])) ? 0 : cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest];
     probQ2 = ((countBest > 0) ? sumE[best] : 0);
-    probQ2 += (my_isnan(cnks[qAvgBest<<16|countTotal<<8|countBest])) ? 0 : cnks[qAvgBest<<16|countTotal<<8|countBest];
+    probQ2 += (boost::math::isnan(cnks[qAvgBest<<16|countTotal<<8|countBest])) ? 0 : cnks[qAvgBest<<16|countTotal<<8|countBest];
     
 #ifdef SNPSTORE_DEBUG_CANDPOS
     if(extraV)std::cout << "cnkBest" <<  cnks[qAvgBest<<16|countTotal<<8|countBest] << "  bei cnkindex " <<(qAvgBest<<16|countTotal<<8|countBest)<<"\n";
@@ -3835,7 +3834,7 @@ calibrateQuality(TRead & read, TMatchQuality & matchQuality, int originalQuality
 {
     double epsilon = (double)(matchQuality.errors)/length(read);
     //return ( (int)((double) (epsilon*100.0) * (int) matchQuality.score / pow(2.0,(100.0*epsilon - 1.0)) + (double)originalQuality ) / (double)(100.0* epsilon + 1.0));
-    return ( (int)((double) (epsilon*options.newQualityCalibrationFactor) * (int) matchQuality.score / pow(2.0,(20.0*options.newQualityCalibrationFactor - 1.0)) + (double)originalQuality ) / (double)(20.0* options.newQualityCalibrationFactor+ 1.0));
+    return (int)( (int)((double) (epsilon*options.newQualityCalibrationFactor) * (int) matchQuality.score / pow(2.0,(20.0*options.newQualityCalibrationFactor - 1.0)) + (double)originalQuality ) / (double)(20.0* options.newQualityCalibrationFactor+ 1.0));
     
 }
 
@@ -4306,7 +4305,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 #ifdef SNPSTORE_DEBUG
                     if(extraVVVV) std::cout <<"del readPos = " << readPos  << "readlength=" << length(reads[(*matchIt).readId]) << std::endl;
 #endif
-                    quality = (int)((double)getQualityValue(reads[(*matchIt).readId][readPos-1]) + getQualityValue(reads[(*matchIt).readId][readPos])) / 2.0;
+                    quality = (getQualityValue(reads[(*matchIt).readId][readPos-1]) + getQualityValue(reads[(*matchIt).readId][readPos])) / 2;
                     if(orientation == 'F')
                     {
                         indelQualF += quality;
@@ -4515,7 +4514,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     ++indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
                     percentage += (float)((indelConsens[candidateViewPos].i2 >> 8) & 255);
-                    quality += (float)((indelConsens[candidateViewPos].i1 >> 8) & 255);
+                    quality += ((indelConsens[candidateViewPos].i1 >> 8) & 255);
                     bsi = bsi && (((indelConsens[candidateViewPos].i1 >> 4) & 1) == 1 );
                 }
                 ++candidateViewPos;
@@ -4527,11 +4526,11 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
                 if(homoLength <= options.maxPolymerRun)
                 {
-                    percentage = percentage/(float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned)round(depth/indelSize);   // coverage is spread over all positions
-                    quality = (int)round(quality/indelSize);   // quality is spread over all positions
-                    int indelQ = (quality * percentage);
-                    if(!bsi) indelQ /= 2;
+                    percentage /= depth;                                // low coverage positions get a lower weight
+                    depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
+                    quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
+                    int indelQ = (int)(quality * percentage);
+                    if (!bsi) indelQ /= 2;
 
                     //print deletion
                     indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
@@ -4540,7 +4539,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)floor(percentage*depth);
+                    indelfile << ";count=" << (int)(percentage * depth + 0.00001);
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
                     indelfile << ";homorun=" << homoLength;
@@ -4576,7 +4575,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     --indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
                     percentage += (float)((indelConsens[candidateViewPos].i2 >> 8) & 255);
-                    quality += (float)((indelConsens[candidateViewPos].i1 >> 8) & 255);
+                    quality += ((indelConsens[candidateViewPos].i1 >> 8) & 255);
                     appendValue(insertionSeq,(Dna5)(indelConsens[candidateViewPos].i1 & 7));
                     bsi = bsi && (((indelConsens[candidateViewPos].i1 >> 4) & 1) == 1 );
                 }
@@ -4587,12 +4586,12 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
                 if(homoLength <= options.maxPolymerRun)
                 {
-           
-                    percentage = percentage/(float)depth; // low coverage positions get a lower weight here
-                    depth = (unsigned) round(depth/-indelSize);   // coverage is spread over all positions
-                    quality = (unsigned) round(quality/-indelSize);   // quality is spread over all positions
-                    int indelQ = (quality * percentage);
-                    if(!bsi) indelQ /= 2;
+                    unsigned absIndelSize = -indelSize;
+                    percentage /= depth;                                        // low coverage positions get a lower weight
+                    depth = (depth + (absIndelSize >> 1)) / absIndelSize;       // coverage is spread over all positions
+                    quality = (quality + (absIndelSize >> 1)) / absIndelSize;   // quality is spread over all positions
+                    int indelQ = (int)(quality * percentage);
+                    if (!bsi) indelQ /= 2;
 
                     //print insertion
                     indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
@@ -4601,7 +4600,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)floor(percentage*depth);
+                    indelfile << ";count=" << (int)(percentage * depth + 0.00001);
                     indelfile << ";seq="<< insertionSeq;
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
