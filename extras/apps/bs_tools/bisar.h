@@ -63,30 +63,30 @@ reAlign4(TReadGaps &readGaps,
     {
         if (getMateNo(store, store.alignedReadStore[id].readId) == 0 && store.alignedReadStore[id].beginPos < store.alignedReadStore[id].endPos)
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeCTLeft, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeCTLeft, AlignConfig<true, false, false, true>(), -band, band)/10000.0;    // convert back from int to double 
         }    
         else if (getMateNo(store, store.alignedReadStore[id].readId) == 0 && store.alignedReadStore[id].beginPos > store.alignedReadStore[id].endPos)
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeGALeft, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeGALeft, AlignConfig<true, false, false, true>(), -band, band)/10000.0;
         }  
         else if (getMateNo(store, store.alignedReadStore[id].readId) == 1 && store.alignedReadStore[id].beginPos > store.alignedReadStore[id].endPos)
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeCTRight, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeCTRight, AlignConfig<true, false, false, true>(), -band, band)/10000.0;
         }     
         else //if (getMateNo(store, store.alignedReadStore[id].readId) == 1 && store.alignedReadStore[id].beginPos < store.alignedReadStore[id].endPos)
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeGARight, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeGARight, AlignConfig<true, false, false, true>(), -band, band)/10000.0;
         } 
     }
     else
     {
         if (store.alignedReadStore[id].beginPos < store.alignedReadStore[id].endPos)
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeCTLeft, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeCTLeft, AlignConfig<true, false, false, true>(), -band, band)/10000.0;
         }
         else
         {
-            scoreA = globalAlignment(contigGaps, readGaps, scoringSchemeGALeft, AlignConfig<true, false, false, true>(), -band, band);
+            scoreA = (double)globalAlignment(contigGaps, readGaps, scoringSchemeGALeft, AlignConfig<true, false, false, true>(), -band, band)/10000.0;
         }
     }
 #ifdef POST_PRO_PROFILE
@@ -1082,10 +1082,10 @@ postProcessMain(TOptions &options, TModel const &)
 
     // Initialize aligment scores
     typedef double  TValue;
-    typedef Score<TValue, BsTagList<BsCaseCT, TModel, Left> >           TBsScoreCTLeft;
-    typedef Score<TValue, BsTagList<BsCaseCT, TModel, Right> >          TBsScoreCTRight;
-    typedef Score<TValue, BsTagList<BsCaseGA, TModel, Left> >           TBsScoreGALeft;
-    typedef Score<TValue, BsTagList<BsCaseGA, TModel, Right> >          TBsScoreGARight;
+    typedef Score<int, BsTagList<BsCaseCT, TModel, Left> >           TBsScoreCTLeft;
+    typedef Score<int, BsTagList<BsCaseCT, TModel, Right> >          TBsScoreCTRight;
+    typedef Score<int, BsTagList<BsCaseGA, TModel, Left> >           TBsScoreGALeft;
+    typedef Score<int, BsTagList<BsCaseGA, TModel, Right> >          TBsScoreGARight;
 
     BsSubstitutionMatrix<TValue, BsCaseCT, BsSimple> bsSubstitutionMatrixCT(options.globalMethRate, options.bsConversionRate, options.seqIdentity, options.refNRate);
     BsSubstitutionMatrix<TValue, BsCaseGA, BsSimple> bsSubstitutionMatrixGA(options.globalMethRate, options.bsConversionRate, options.seqIdentity, options.refNRate);
