@@ -106,7 +106,7 @@ install (FILES LICENSE
 # ----------------------------------------------------------------------------
 
 # (weese:) temporarily disabled app test
-#seqan_add_app_test (bs_tools)
+seqan_add_app_test (bs_tools)
 
 # ----------------------------------------------------------------------------
 # CPack Install
