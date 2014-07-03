@@ -127,7 +127,6 @@ readRecord(
     if (IsNewline()(orientation))
     {
         record.format = record.KNOWN_ISOFORMS;
-        // TODO: What is this?
         insert(record.transName, 0, "GENE");
         return;
     }
