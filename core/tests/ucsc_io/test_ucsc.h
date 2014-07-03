@@ -254,3 +254,42 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 
     SEQAN_ASSERT_EQ(mmapString, outString);
 }
+
+SEQAN_DEFINE_TEST(test_store_io_write_record_ucsc_known_isoforms)
+{
+    String<char> ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/store/example_known_isoforms.tsv");
+
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(ucscPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
+
+    String<char> outString;
+    while (!atEnd(iter))
+    {
+        UcscRecord record;
+        UcscContext ucscContext;
+        readRecord(record, iter, ucscContext);
+        writeRecord(outString, record);
+    }
+
+    SEQAN_ASSERT_EQ(mmapString, outString);
+}
+
+SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_isoforms)
+{
+    String<char> ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/store/example_known_isoforms.tsv");
+
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(ucscPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
+
+    String<UcscRecord> records;
+    read(records, iter);
+
+    String<char> outString;
+    write(outString, records);
+
+    SEQAN_ASSERT_EQ(mmapString, outString);
+}
