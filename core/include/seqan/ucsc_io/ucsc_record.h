@@ -1,5 +1,6 @@
+
 // ==========================================================================
-//                           arg_parse_exceptions.h
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,81 +30,82 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
+// Author: Jochen Singer<jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
+#ifndef CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
+#define CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
 
 namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+class UcscRecord;
 
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Class ParseError
-// ----------------------------------------------------------------------------
-
-// Defined in core/include/seqan/stream/tokenization.h
-struct ParseError;
-
-// ----------------------------------------------------------------------------
-// Class InvalidOption
-// ----------------------------------------------------------------------------
-
-/*
-.Internal.Class.InvalidOption
-..cat:Miscellaneous
-..summary:Thrown if an unknown option was set on the command line.
-*/
-
-class InvalidOption : public ParseError
+class UcscRecord
 {
 public:
-    InvalidOption(std::string const & option) :
-        ParseError("illegal option -- " + option)
-    {}
+
+    CharString      transName;
+    CharString      contigName;
+    __int64         cdsBegin;
+    __int64         cdsEnd;
+    String<__int64> exonBegin;
+    String<__int64> exonEnd;
+    CharString      proteinName;
+
+    __uint64        annotationBeginPos;
+    __uint64        annotationEndPos;
+
+    enum {KNOWN_GENE, KNOWN_ISOFORMS} format;
 };
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ============================================================================
+// Functions
+// ============================================================================
+
 // ----------------------------------------------------------------------------
-// Class MissingArgument
+// Function clear()
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.MissingArgument
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but without giving the
-required arguments for this option.
-*/
+/*!
+ * @fn BamAlignmentRecord#clear
+ * @brief Clear BamAlignmentRecord.
+ *
+ * @signature void clear(record);
+ *
+ * @param record The BamAlignmentRecord to clear.
+ *
+ * Clears all strings and resets it to default initialization state.
+ */
 
-class MissingArgument : public ParseError
+///.Function.clear.param.object.type:Class.BamAlignmentRecord
+///.Function.clear.class:Class.BamAlignmentRecord
+
+inline void clear(UcscRecord & record)
 {
-public:
-    MissingArgument(std::string const & option) :
-        ParseError("option requires an argument -- " + option)
-    {}
-};
+    clear(record.transName);
+    clear(record.contigName);
+    record.cdsBegin = -1;
+    record.cdsEnd = -1;
+    clear(record.exonBegin);
+    clear(record.exonEnd);
+    clear(record.proteinName);
 
-// ----------------------------------------------------------------------------
-// Class NotEnoughArguments
-// ----------------------------------------------------------------------------
-
-/*
-.Internal.Class.NotEnoughArguments
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but not enough arguments for
-this option were provided.
-*/
-
-class NotEnoughArguments : public ParseError
-{
-public:
-    NotEnoughArguments(std::string const & option) :
-        ParseError("option requires more arguments -- " + option)
-    {}
-};
+    record.annotationBeginPos = -1;
+    record.annotationEndPos = -1;
+}
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
+#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

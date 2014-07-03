@@ -73,6 +73,7 @@ template <typename T>
 struct IntegerFormatString_<False, 1, T>
 {
     static const char VALUE[];
+    typedef char Type;
 };
 template <typename T>
 const char IntegerFormatString_<False, 1, T>::VALUE[] = "%hhi%n";
@@ -82,6 +83,7 @@ template <typename T>
 struct IntegerFormatString_<True, 1, T>
 {
     static const char VALUE[];
+    typedef unsigned char Type;
 };
 template <typename T>
 const char IntegerFormatString_<True, 1, T>::VALUE[] = "%hhu%n";
@@ -91,6 +93,7 @@ template <typename T>
 struct IntegerFormatString_<False, 2, T>
 {
     static const char VALUE[];
+    typedef short Type;
 };
 template <typename T>
 const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
@@ -100,6 +103,7 @@ template <typename T>
 struct IntegerFormatString_<True, 2, T>
 {
     static const char VALUE[];
+    typedef unsigned short Type;
 };
 template <typename T>
 const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
@@ -109,6 +113,7 @@ template <typename T>
 struct IntegerFormatString_<False, 4, T>
 {
     static const char VALUE[];
+    typedef int Type;
 };
 template <typename T>
 const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
@@ -118,6 +123,7 @@ template <typename T>
 struct IntegerFormatString_<True, 4, T>
 {
     static const char VALUE[];
+    typedef unsigned Type;
 };
 template <typename T>
 const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
@@ -127,6 +133,7 @@ template <typename T>
 struct IntegerFormatString_<False, 8, T>
 {
     static const char VALUE[];
+    typedef __int64 Type;
 };
 template <typename T>
 const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
@@ -136,6 +143,7 @@ template <typename T>
 struct IntegerFormatString_<True, 8, T>
 {
     static const char VALUE[];
+    typedef __uint64 Type;
 };
 template <typename T>
 const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
@@ -224,8 +232,13 @@ template <typename TInteger, typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(Is<SignedIntegerConcept<TInteger> >, bool)
 lexicalCast(TInteger & target, TSource const & source)
 {
+    typedef IntegerFormatString_<False, sizeof(TInteger)> TInt;
+
     int offset;
-    return (sscanf(toCString(source), IntegerFormatString_<False, sizeof(TInteger)>::VALUE, &target, &offset) == 1) &&
+    return (sscanf(toCString(source), 
+                   TInt::VALUE, 
+                   reinterpret_cast<typename TInt::Type *>(&target), 
+                   &offset) == 1) &&
            (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
 
@@ -233,10 +246,15 @@ template <typename TInteger, typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(Is<UnsignedIntegerConcept<TInteger> >, bool)
 lexicalCast(TInteger & target, TSource const & source)
 {
+    typedef IntegerFormatString_<True, sizeof(TInteger)> TInt;
+
     if (!empty(source) && front(source) == '-') return false;
 
     int offset;
-    return (sscanf(toCString(source), IntegerFormatString_<True, sizeof(TInteger)>::VALUE, &target, &offset) == 1) &&
+    return (sscanf(toCString(source), 
+                   TInt::VALUE, 
+                   reinterpret_cast<typename TInt::Type *>(&target), 
+                   &offset) == 1) &&
            (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
 
@@ -360,12 +378,14 @@ template <typename TTarget, typename TInteger>
 inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
 appendNumber(TTarget & target, TInteger i)
 {
+    typedef IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
+                          sizeof(TInteger)> TInt;
+
     // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
     char buffer[sizeof(TInteger) * 3 + 2];
     int offset;
     size_t len = snprintf(buffer, sizeof(buffer),
-                          IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
-                          sizeof(TInteger)>::VALUE, i, &offset);
+                          TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
 
     Range<char *> range = toRange(buffer + 0, buffer + len);
     write(target, range);

@@ -144,7 +144,7 @@ const std::string ExceptionMessage<EqualsChar<CHAR>, TContext>::VALUE = std::str
 
 typedef EqualsChar<'\t'>                                        IsTab;
 typedef EqualsChar<' '>                                         IsSpace;
-typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
+typedef OrFunctor<IsSpace, IsTab>                               IsBlank;
 typedef OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >          IsNewline;
 typedef OrFunctor<IsBlank, IsNewline>                           IsWhitespace;
 typedef IsInRange<'!', '~'>                                     IsGraph;
@@ -223,7 +223,7 @@ inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 template <typename TFwdIterator, typename TFunctor>
 inline void skipOne(TFwdIterator &iter, TFunctor &functor)
 {
-    Asserter<TFunctor, ParseError> asserter(functor);
+    AssertFunctor<TFunctor, ParseError> asserter(functor);
 
     if (atEnd(iter))
         throw UnexpectedEnd();
@@ -285,7 +285,7 @@ inline void _readUntil(TTarget &target,
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, length(ichunk));
 
-        Range<TOValue*> const ochunk = getChunk(end(target, Rooted()), Output());
+        Range<TOValue*> const ochunk = getChunk(target, Output());
         SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
         register const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
@@ -356,27 +356,29 @@ inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFun
 // Function readOne()
 // ----------------------------------------------------------------------------
 
-//TODO(singer): implement a chunked version!
-//TODO(singer): write test
-template <typename TTarget, typename TFwdIterator, typename TIgnoreFunctor>
-inline void readOne(TTarget & target, TFwdIterator &iter, TIgnoreFunctor const &ignoreFunctor)
+template <typename TTarget, typename TFwdIterator, typename TFunctor>
+inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor &functor)
 {
-    //readUntil(target, iter, CountDownFunctor<>(1), ignoreFunctor);
     if (atEnd(iter))
         throw UnexpectedEnd();
 
-    Asserter<TIgnoreFunctor, ParseError> asserter(ignoreFunctor);
+    AssertFunctor<TFunctor, ParseError> asserter(functor);
 
     asserter(*iter);
     target = *iter;
     ++iter;
 }
 
+template <typename TTarget, typename TFwdIterator, typename TFunctor>
+inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor const &functor)
+{
+    TFunctor func(functor);
+    readOne(target, iter, func);
+}
+
 template <typename TTarget, typename TFwdIterator>
 inline void readOne(TTarget & target, TFwdIterator &iter)
 {
-    //readUntil(target, iter, CountDownFunctor<>(1));
-
     if (atEnd(iter))
         throw UnexpectedEnd();
 
@@ -384,22 +386,16 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
     ++iter;
 }
 
+// ----------------------------------------------------------------------------
+// Function readRawByte()
+// ----------------------------------------------------------------------------
+
 template <typename TTarget, typename TFwdIterator, typename TNumber>
 inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBytes)
 {
-    /*typename Value<TFwdIterator>::Type val;
-    for (; !atEnd(iter); ++iter)
-    {
-        if (stopFunctor(val = *iter))
-            return;
-        if (!ignoreFunctor(val))
-            writeValue(target, val);
-    }
-    */
     char * buffer = reinterpret_cast<char *>(&target);
     for (; !numberOfBytes(*iter); ++buffer, ++iter)
         *buffer = *iter;
-    //readUntil(buffer, iter, CountDownFunctor<>(numberOfBytes));
 }
 
 // ----------------------------------------------------------------------------

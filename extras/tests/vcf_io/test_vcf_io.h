@@ -41,19 +41,20 @@
 #include <seqan/sequence.h>
 #include <seqan/vcf_io.h>
 
+
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
     append(vcfPath, "/extras/tests/vcf_io/example.vcf");
 
-    std::fstream inF(toCString(vcfPath), std::ios::in | std::ios::binary);
-    SEQAN_ASSERT(inF.good());
+    seqan::String<char, seqan::MMap<> > mmapString;
+    open(mmapString, toCString(vcfPath));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
 
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
     seqan::VcfHeader vcfHeader;
     seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
-    SEQAN_ASSERT_EQ(read(vcfHeader, reader, vcfIOContext, seqan::Vcf()), 0);
+    read(vcfHeader, iter, vcfIOContext, seqan::Vcf());
 
     SEQAN_ASSERT_EQ(length(vcfHeader.headerRecords), 18u);
     SEQAN_ASSERT_EQ(vcfHeader.headerRecords[0].key, "fileformat");
@@ -102,25 +103,25 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
     SEQAN_ASSERT_EQ(vcfHeader.sampleNames[2], "NA00003");
 }
 
+
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example.vcf");
+    append(vcfPath, "/extras/tests/vcf_io/example_records_with_errors.vcf");
 
-    std::fstream inF(toCString(vcfPath), std::ios::in | std::ios::binary);
-    SEQAN_ASSERT(inF.good());
+    seqan::String<char, seqan::MMap<> > mmapString;
+    open(mmapString, toCString(vcfPath));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
 
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
     seqan::VcfHeader vcfHeader;
+    resize(vcfHeader.sampleNames, 3);
     seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
-    SEQAN_ASSERT_EQ(read(vcfHeader, reader, vcfIOContext, seqan::Vcf()), 0);
-
     seqan::String<seqan::VcfRecord> records;
-    while (!atEnd(reader))
+    seqan::VcfRecord record;
+    for (unsigned i = 0; i < 3; ++i)
     {
-        seqan::VcfRecord record;
-        SEQAN_ASSERT_EQ(readRecord(record, reader, vcfIOContext, seqan::Vcf()), 0);
+        readRecord(record, iter, vcfIOContext, seqan::Vcf());
         appendValue(records, record);
     }
 
@@ -158,8 +159,16 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
+
+    for (unsigned i = 0; i < 15; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(seqan::ParseError,
+                             seqan::readRecord(record, iter, vcfIOContext, seqan::Vcf()));
+        seqan::skipLine(iter);
+    }
 }
 
+/*
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_read_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
@@ -257,13 +266,10 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_read_record)
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
 }
+*/
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    std::fstream outF(toCString(tmpPath), std::ios::out | std::ios::binary);
-    SEQAN_ASSERT(outF.good());
-
     seqan::VcfHeader vcfHeader;
     appendValue(vcfHeader.sequenceNames, "20");
     appendValue(vcfHeader.sampleNames, "NA00001");
@@ -309,87 +315,47 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     vcfHeader.headerRecords[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
 
     seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
-    SEQAN_ASSERT_EQ(write(outF, vcfHeader, vcfIOContext, seqan::Vcf()), 0);
-    outF.close();
+    seqan::String<char> outString;
+    write(outString, vcfHeader, vcfIOContext, seqan::Vcf());
 
+    seqan::VcfHeader vcfHeaderIn;
+    seqan::VcfIOContext vcfIOContextIn(vcfHeaderIn.sequenceNames, vcfHeaderIn.sampleNames);
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
     append(goldPath, "/extras/tests/vcf_io/vcf_header.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    seqan::String<char, seqan::MMap<> > inString;
+    open(inString, toCString(goldPath));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(inString);
+    read(vcfHeader, iter, vcfIOContextIn, seqan::Vcf());
+
+    SEQAN_ASSERT_EQ(outString, inString);
 }
+
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    std::fstream outF(toCString(tmpPath), std::ios::out | std::ios::binary);
-    SEQAN_ASSERT(outF.good());
+    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
+    append(vcfPath, "/extras/tests/vcf_io/example_records.vcf");
+
+    seqan::String<char, seqan::MMap<> > mmapString;
+    open(mmapString, toCString(vcfPath));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
 
     seqan::VcfHeader vcfHeader;
-    appendValue(vcfHeader.sequenceNames, "20");
-    appendValue(vcfHeader.sampleNames, "NA00001");
-    appendValue(vcfHeader.sampleNames, "NA00002");
-    appendValue(vcfHeader.sampleNames, "NA00003");
-
-    resize(vcfHeader.headerRecords, 18);
-    vcfHeader.headerRecords[0].key = "fileformat";
-    vcfHeader.headerRecords[0].value = "VCFv4.1";
-    vcfHeader.headerRecords[1].key = "fileDate";
-    vcfHeader.headerRecords[1].value = "20090805";
-    vcfHeader.headerRecords[2].key = "source";
-    vcfHeader.headerRecords[2].value = "myImputationProgramV3.1";
-    vcfHeader.headerRecords[3].key = "reference";
-    vcfHeader.headerRecords[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
-    vcfHeader.headerRecords[4].key = "contig";
-    vcfHeader.headerRecords[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
-    vcfHeader.headerRecords[5].key = "phasing";
-    vcfHeader.headerRecords[5].value = "partial";
-    vcfHeader.headerRecords[6].key = "INFO";
-    vcfHeader.headerRecords[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
-    vcfHeader.headerRecords[7].key = "INFO";
-    vcfHeader.headerRecords[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
-    vcfHeader.headerRecords[8].key = "INFO";
-    vcfHeader.headerRecords[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
-    vcfHeader.headerRecords[9].key = "INFO";
-    vcfHeader.headerRecords[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
-    vcfHeader.headerRecords[10].key = "INFO";
-    vcfHeader.headerRecords[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
-    vcfHeader.headerRecords[11].key = "INFO";
-    vcfHeader.headerRecords[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
-    vcfHeader.headerRecords[12].key = "FILTER";
-    vcfHeader.headerRecords[12].value = "<ID=q10,Description=\"Quality below 10\">";
-    vcfHeader.headerRecords[13].key = "FILTER";
-    vcfHeader.headerRecords[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
-    vcfHeader.headerRecords[14].key = "FORMAT";
-    vcfHeader.headerRecords[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
-    vcfHeader.headerRecords[15].key = "FORMAT";
-    vcfHeader.headerRecords[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
-    vcfHeader.headerRecords[16].key = "FORMAT";
-    vcfHeader.headerRecords[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
-    vcfHeader.headerRecords[17].key = "FORMAT";
-    vcfHeader.headerRecords[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
-
+    resize(vcfHeader.sampleNames, 3);
     seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
-    seqan::VcfRecord vcfRecord;
-    vcfRecord.rID = 0;
-    vcfRecord.beginPos = 14369;
-    vcfRecord.id = "rs6054257";
-    vcfRecord.ref = "G";
-    vcfRecord.alt = "A";
-    vcfRecord.qual = 29;
-    vcfRecord.filter = "PASS";
-    vcfRecord.info = "NS=3;DP=14;AF=0.5;DB;H2";
-    vcfRecord.format = "GT:GQ:DP:HQ";
-    appendValue(vcfRecord.genotypeInfos, "0|0:48:1:51,51");
-    appendValue(vcfRecord.genotypeInfos, "1|0:48:8:51,51");
-    appendValue(vcfRecord.genotypeInfos, "1/1:43:5:.,.");
-    SEQAN_ASSERT_EQ(writeRecord(outF, vcfRecord, vcfIOContext, seqan::Vcf()), 0);
-    outF.close();
+    seqan::String<char> outString;
+    while (!atEnd(iter))
+    {
+        seqan::VcfRecord record;
+        readRecord(record, iter, vcfIOContext, seqan::Vcf());
+        writeRecord(outString, record, vcfIOContext, seqan::Vcf());
+    }
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/vcf_io/vcf_record.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    SEQAN_ASSERT_EQ(outString, mmapString);
 }
 
+/*
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
 {
     seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
@@ -500,5 +466,6 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
     append(goldPath, "/extras/tests/vcf_io/example.vcf");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
+*/
 
 #endif  // SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_

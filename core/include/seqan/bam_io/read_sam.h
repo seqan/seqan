@@ -261,19 +261,19 @@ inline void readRecord(BamAlignmentRecord & record,
     CharString &buffer = context.buffer;
 
     // QNAME
-    readUntil(record.qName, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(record.qName, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     skipOne(iter, IsTab());
 
     // FLAG
     // TODO(holtgrew): Interpret hex and char as c-samtools -X does?
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     record.flag = lexicalCast<__uint16>(buffer);
     skipOne(iter, IsTab());
 
     // RNAME
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
@@ -291,7 +291,7 @@ inline void readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else if (buffer == "0")
@@ -309,7 +309,7 @@ inline void readRecord(BamAlignmentRecord & record,
     }
     else
     {
-        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
         record.mapQ = lexicalCast<__uint16>(buffer);
     }
     skipOne(iter, IsTab());
@@ -323,7 +323,7 @@ inline void readRecord(BamAlignmentRecord & record,
         do
         {
             clear(buffer);
-            readUntil(buffer, iter, OrFunctor<IsAlpha, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+            readUntil(buffer, iter, OrFunctor<IsAlpha, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
             element.count = lexicalCast<__uint32>(buffer);
             element.operation = value(iter);
             skipOne(iter);
@@ -334,7 +334,7 @@ inline void readRecord(BamAlignmentRecord & record,
 
     // RNEXT
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     if (buffer == "*")
     {
         record.rNextId = BamAlignmentRecord::INVALID_REFID;
@@ -359,7 +359,7 @@ inline void readRecord(BamAlignmentRecord & record,
     else
     {
         clear(buffer);
-        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
         if (buffer == "0")
             record.pNext = BamAlignmentRecord::INVALID_POS;
         else
@@ -379,13 +379,13 @@ inline void readRecord(BamAlignmentRecord & record,
         if (value(iter) == '-')
             readOne(buffer, iter);
 
-        readUntil(buffer, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
         record.tLen = lexicalCast<__int32>(buffer);
     }
     skipOne(iter, IsTab());
 
     // SEQ
-    readUntil(record.seq, iter, OrFunctor<IsTab, Asserter<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(record.seq, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
     // Handle case of missing sequence:  Clear seq string as documented.
     if (record.seq == "*")
         clear(record.seq);
