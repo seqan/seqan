@@ -202,42 +202,34 @@ inline void _parseVcfContig(CharString & chromName, CharString const & headerVal
     }
 }
 
-template <typename TStream>
-int read(VcfHeader & header,
-         RecordReader<TStream, SinglePass<> > & reader,
-         VcfIOContext & context,
-         Vcf const & /*tag*/)
+template <typename TForwardIter>
+void 
+read(VcfHeader & header,
+     TForwardIter & iter,
+     VcfIOContext & context,
+     Vcf const & /*tag*/)
 {
     clear(header);
     CharString buffer;
-    int res = 0;
 
-    while (!atEnd(reader) && value(reader) == '#')
+    while (!atEnd(iter) && value(iter) == '#')
     {
-        goNext(reader);
-        if (atEnd(reader))
-            return EOF_BEFORE_SUCCESS;
-        if (value(reader) == '#')
+        skipOne(iter);
+        if (value(iter) == '#')
         {
             // Is header line.
-            goNext(reader);
-            if (atEnd(reader))
-                return EOF_BEFORE_SUCCESS;
+            skipOne(iter);
 
             // Read header key.
             VcfHeaderRecord record;
-            if ((res = readUntilChar(record.key, reader, '=')) != 0)
-                return res;  // Error or EOF.
+            readUntil(record.key, iter, OrFunctor<EqualsChar<'='>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Vcf> >());
 
             // Skip '='.
-            goNext(reader);
-            if (atEnd(reader))
-                return EOF_BEFORE_SUCCESS;
+            skipOne(iter);
 
             // Read header value.
-            if ((res = readLine(record.value, reader)) != 0)
-                return 1;  // Error.
-
+            readUntil(record.value, iter, IsNewline());
+            skipOne(iter); // skip Newlin
             appendValue(header.headerRecords, record);
 
             // Parse out name if headerRecord is a contig field.
@@ -254,15 +246,16 @@ int read(VcfHeader & header,
             clear(buffer);
 
             // Is line "#CHROM\t...".
-            res = readLine(buffer, reader);
+            readUntil(buffer, iter, IsNewline());
+            skipOne(iter); // skip Newlin
             if (!startsWith(buffer, "CHROM"))
-                return 1;  // Invalid line with samples.
+                std::runtime_error("Invalid line with samples.");
 
             // Split line, get sample names.
             StringSet<CharString> fields;
             splitString(fields, buffer);
             if (length(fields) < 9u)
-                return 1;  // Not enough fields.
+                std::runtime_error("Not enough fields.");
 
             // Get sample names.
             for (unsigned i = 9; i < length(fields); ++i)
@@ -270,8 +263,6 @@ int read(VcfHeader & header,
             refresh(context.sampleNamesCache);
         }
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -283,9 +274,9 @@ int read(VcfHeader & header,
  * @headerfile <seqan/vcf_io.h>
  * @brief Read a VcfRecord.
  *
- * @signature int readRecord(header, reader, context, Vcf());
+ * @signature int readRecord(record, reader, context, Vcf());
  *
- * @param[out]    header  The VcfRecord to read into.
+ * @param[out]    record  The VcfRecord to read into.
  * @param[in,out] reader  The SinglePassRecordReader to use for reading.
  * @param[in,out] context VcfIOContext to use.
  *
@@ -307,149 +298,112 @@ int read(VcfHeader & header,
 ..include:seqan/vcf_io.h
 */
 
+struct VcfContext
+{
+    String<char> buffer;
+};
+
 // Read record, updating list of known sequences if new one occurs.
 
-template <typename TStream>
-int readRecord(VcfRecord & record,
-               RecordReader<TStream, SinglePass<> > & reader,
-               VcfIOContext & context,
-               Vcf const & /*tag*/)
+template <typename TForwardIter>
+void
+readRecord(VcfRecord & record,
+           TForwardIter & iter,
+           VcfIOContext & context,
+           VcfContext & vcfContext,
+           Vcf const & /*tag*/)
 {
+    typedef OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Vcf> > NextEntry;
+
     clear(record);
-    CharString buffer;
-    int res = 0;
 
     // CHROM
-    res = readUntilWhitespace(buffer, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-    if (!getIdByName(*context.sequenceNames, buffer, record.rID, context.sequenceNamesCache))
+    readUntil(vcfContext.buffer, iter, NextEntry());
+    if (!getIdByName(*context.sequenceNames, vcfContext.buffer, record.rID, context.sequenceNamesCache))
     {
         record.rID = length(*context.sequenceNames);
-        appendName(*context.sequenceNames, buffer, context.sequenceNamesCache);
+        appendName(*context.sequenceNames, vcfContext.buffer, context.sequenceNamesCache);
     }
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    skipOne(iter);
 
     // POS
-    clear(buffer);
-    res = readUntilWhitespace(buffer, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-    if (!lexicalCast2(record.beginPos, buffer))
-        return 1;  // Could not cast number.
-    record.beginPos -= 1;  // Translate from 1-based to 0-based.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    // TODO(signer): Do we need this clear?
+    clear(vcfContext.buffer);
+    readUntil(vcfContext.buffer, iter, NextEntry());
+    record.beginPos = lexicalCast<__int32>(vcfContext.buffer) - 1; // Translate from 1-based to 0-based.
+    skipOne(iter);
 
     // ID
-    res = readUntilWhitespace(record.id, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.id, iter, NextEntry());
+    skipOne(iter);
 
     // REF
-    res = readUntilWhitespace(record.ref, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.ref, iter, NextEntry());
+    skipOne(iter);
 
     // ALT
-    res = readUntilWhitespace(record.alt, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.alt, iter, NextEntry());
+    skipOne(iter);
 
     // QUAL
-    clear(buffer);
-    res = readUntilWhitespace(buffer, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    clear(vcfContext.buffer);
+    readUntil(vcfContext.buffer, iter, NextEntry());
 
-    if (buffer == ".")
+    if (vcfContext.buffer == ".")
         record.qual = VcfRecord::MISSING_QUAL();
-    else if (!lexicalCast2(record.qual, buffer))
-        return 1;  // Could not cast.
+    else
+        record.qual = lexicalCast<float>(vcfContext.buffer);
 
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    skipOne(iter);
 
     // FILTER
-    res = readUntilWhitespace(record.filter, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.filter, iter, NextEntry());
+    skipOne(iter);
 
     // INFO
-    res = readUntilWhitespace(record.info, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.info, iter, OrFunctor<IsTab, IsNewline>());
+    char c = readOne(iter);
+    if (IsNewline()(c))
+        return;
 
     // FORMAT
-    res = readUntilWhitespace(record.format, reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
-
-    res = skipWhitespaces(reader);
-    if (res != 0)
-        return res;  // Could be EOF_BEFORE_SUCCESS.
+    readUntil(record.format, iter, NextEntry());
+    skipOne(iter);
 
     // The samples.
     for (unsigned i = 0; i < length(*context.sampleNames); ++i)
     {
-        clear(buffer);
-        res = readUntilWhitespace(buffer, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return 1;  // Could not read sample information.
-        appendValue(record.genotypeInfos, buffer);
-        if (atEnd(reader))
+        clear(vcfContext.buffer);
+        readUntil(vcfContext.buffer, iter, IsWhitespace());
+
+        appendValue(record.genotypeInfos, vcfContext.buffer);
+        if (atEnd(iter))
         {
             if ((i + 1) != length(*context.sampleNames))
-                return 1;  // Not enough fields.
+                throw ParseError("No genotype information for all samples.");
             else
                 break;  // Done
         }
-        if (value(reader) == '\r' || value(reader) == '\n')
-        {
-            res = skipLine(reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return res;  // Error skipping beyond the end of the line.
-        }
-        else
-        {
-            res = skipWhitespaces(reader);
-            if (res != 0)
-                return res;  // Could be EOF_BEFORE_SUCCESS.
-        }
+
+        char c = readOne(iter);
+        if (IsNewline()(c))
+            return;
     }
 
-    // Skip empty lines, necessary for getting to EOF if there is an empty line at the ned of the file.
-    while (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
-        if ((res = skipLine(reader)) != 0)
-            return res;
+    // Skip empty lines, necessary for getting to EOF if there is an empty line at the end of the file.
+    while (!atEnd(iter) && IsNewline()(value(iter)))
+        skipOne(iter);
+}
 
-    return 0;
+template <typename TForwardIter>
+void
+readRecord(VcfRecord & record,
+           TForwardIter & iter,
+           VcfIOContext & context,
+           Vcf const & tag)
+{
+    VcfContext vcfContext;
+    readRecord(record, iter, context, vcfContext, tag);
 }
 
 }  // namespace seqan

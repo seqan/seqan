@@ -841,13 +841,23 @@ SEQAN_CHECKPOINT
 // stream operators
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(singer): Remove this forward.
+template <typename TObject, typename TDirection>
+struct DirectionIterator;
+
+struct Input_;
+typedef Tag<Input_> Input;
+
+struct Output_;
+typedef Tag<Output_> Output;
+
 template <typename TStream, typename THost, typename TSpec>
 inline TStream &
 operator << (TStream & target,
              Segment<THost, TSpec> const & source)
 {
-SEQAN_CHECKPOINT
-    //write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it(target);
+    write(it, source);
     return target;
 }
 
@@ -858,8 +868,8 @@ inline TStream &
 operator >> (TStream & source,
              Segment<THost, TSpec> & target)
 {
-SEQAN_CHECKPOINT
-    read(source, target);
+    typename DirectionIterator<TStream, Input>::Type it(source);
+    read(it, target);
     return source;
 }
 template <typename TStream, typename THost, typename TSpec>

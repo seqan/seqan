@@ -275,7 +275,7 @@ value(Range<TIterator> const & range, TPos pos)
 // ----------------------------------------------------------------------------
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Difference<Range<TIterator> >::Type
+SEQAN_HOST_DEVICE inline typename Size<Range<TIterator> >::Type
 length(Range<TIterator> const & range)
 {
     return range.end - range.begin;

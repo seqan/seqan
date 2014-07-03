@@ -80,15 +80,16 @@ namespace seqan {
 ..remarks:This flag is normally set from the outside by your build system using compiler flags.
  */
 
-#if SEQAN_HAS_ZLIB
+// TODO(singer): remove this
+//#if SEQAN_HAS_ZLIB
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
-#endif
+//#endif
 
-#if SEQAN_HAS_BZIP2
+//#if SEQAN_HAS_BZIP2
 struct BZ2File_;
 typedef Tag<BZ2File_> BZ2File;
-#endif
+//#endif
 
 // --------------------------------------------------------------------------
 // Direction Tags
@@ -165,10 +166,18 @@ const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::o
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Concept StreamConcept
+// --------------------------------------------------------------------------
+
+SEQAN_CONCEPT(StreamConcept, (TStream))
+{
+};
+
+// --------------------------------------------------------------------------
 // Concept InputStreamConcept
 // --------------------------------------------------------------------------
 
-SEQAN_CONCEPT(InputStreamConcept, (TStream))
+SEQAN_CONCEPT_REFINE(InputStreamConcept, (TStream), (StreamConcept))
 {
     typedef typename Value<TStream>::Type       TValue;
     typedef typename Size<TStream>::Type        TSize;
@@ -185,7 +194,7 @@ SEQAN_CONCEPT(InputStreamConcept, (TStream))
 // Concept OutputStreamConcept
 // --------------------------------------------------------------------------
 
-SEQAN_CONCEPT(OutputStreamConcept, (TStream))
+SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
 {
     typedef typename Value<TStream>::Type       TValue;
     typedef typename Size<TStream>::Type        TSize;
@@ -291,7 +300,7 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         SEQAN_ASSERT_GT(minChunkSize, 0u);
 
         reserveChunk(target, minChunkSize);
-        ochunk = getChunk(end(target, Rooted()), Output());
+        ochunk = getChunk(target, Output());
 
         typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
 
@@ -371,6 +380,17 @@ inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
         writeValue(target, value(iter));
     return i;
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TContainer)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TContainer>
+inline void write(TTarget &target, TContainer const &cont)
+{
+    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
+    write(target, iter, length(cont));
 }
 
 // ----------------------------------------------------------------------------
