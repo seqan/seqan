@@ -390,12 +390,17 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
 // Function readRawByte()
 // ----------------------------------------------------------------------------
 
+//TODO(singer) to be revised
 template <typename TTarget, typename TFwdIterator, typename TNumber>
 inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBytes)
 {
     char * buffer = reinterpret_cast<char *>(&target);
     for (; !numberOfBytes(*iter); ++buffer, ++iter)
         *buffer = *iter;
+
+    if (numberOfBytes(*iter))
+        throw UnexpectedEnd();
+
 }
 
 // ----------------------------------------------------------------------------

@@ -49,7 +49,6 @@
 // Prerequisites
 // ============================================================================
 
-
 #include <seqan/basic.h>
 #include <seqan/modifier.h>  // ModifiedAlphabet<>.
 #include <seqan/align/align_metafunctions.h>
