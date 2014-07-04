@@ -130,7 +130,7 @@ void readRecord(BamHeader & header,
     clear(magic);
     readUntil(magic, iter, CountDownFunctor<>(4));
     if (magic != "BAM\1")
-        throw std::runtime_error("No correct BAM format.");
+        throw std::runtime_error("Not in BAM format.");
 
     // Read header text, including null padding.
     __int32 lText;
@@ -141,10 +141,10 @@ void readRecord(BamHeader & header,
 
     // Truncate to first position of '\0'.
     Iterator<CharString, Rooted>::Type it = begin(samHeader);
-    for (; it != end(samHeader); ++it)
+    for (; !atEnd(it); ++it)
         if (*it == '\0')
             break;
-    resize(samHeader, static_cast<__uint32>(it - begin(samHeader))); 
+    resize(samHeader, (it - begin(samHeader))); 
 
     // Parse out header records.
     BamHeaderRecord headerRecord;
