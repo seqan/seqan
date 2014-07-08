@@ -187,26 +187,32 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
 // ----------------------------------------------------------------------------
 // Function readRecord(Raw); Qualities inside seq
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): implement it
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & /* iter */, Raw)
+inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
 {
+    typedef typename Value<TSeqString>::Type                            TAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
+    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
+    typedef EqualsChar<'>'>                                             TFastaBegin;
+
     clear(meta);
     clear(seq);
+
+    skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    skipLine(iter);                      // assert and skip '>'
+    readUntil(seq, iter, TFastaBegin(), TIgnoreOrAssert()); // read Fasta sequence
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord(Raw); Qualities inside qual
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): implement it
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & /* iter */, Raw)
+inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Raw const & raw)
 {
-    clear(meta);
-    clear(seq);
     clear(qual);
+    readRecord(meta, seq, iter, raw);
 }
 
 // ----------------------------------------------------------------------------
@@ -216,10 +222,10 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
-    typedef typename Value<TSeqString>::Type                        TAlphabet;
-    typedef Asserter<IsInAlphabet<TAlphabet>, ParseError, Fasta>    TAsserter;
-    typedef OrFunctor<IsWhitespace, TAsserter>                      TIgnoreOrAssert;
-    typedef EqualsChar<'>'>                                         TFastaBegin;
+    typedef typename Value<TSeqString>::Type                            TAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
+    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
+    typedef EqualsChar<'>'>                                             TFastaBegin;
 
     clear(meta);
     clear(seq);
@@ -245,12 +251,29 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 // ----------------------------------------------------------------------------
 // Function readRecord(Fastq); Qualities inside seq
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): implement it
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
 {
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
+    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
+    typedef EqualsChar<'@'>                                                 TFastqBegin;
+    typedef EqualsChar<'+'>                                                 TQualsBegin;
 
+    clear(meta);
+    clear(seq);
+
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    skipOne(iter);                      // skip '@'
+
+    readLine(meta, iter);               // read Fastq id
+
+    readUntil(seq, iter, TQualsBegin(), TSeqIgnoreOrAssert());  // read Fastq sequence
+    skipOne(iter, TQualsBegin());       // assert and skip '+'
+    skipLine(iter);                     // skip optional 2nd Fastq id
+
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
 
 // ----------------------------------------------------------------------------
@@ -260,14 +283,14 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
 {
-    typedef typename Value<TSeqString>::Type                            TSeqAlphabet;
-    typedef typename Value<TQualString>::Type                           TQualAlphabet;
-    typedef Asserter<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>     TSeqAsserter;
-    typedef Asserter<IsInAlphabet<TQualAlphabet>, ParseError, Fastq>    TQualAsserter;
-    typedef OrFunctor<IsWhitespace, TSeqAsserter>                       TSeqIgnoreOrAssert;
-    typedef OrFunctor<IsBlank, TQualAsserter>                           TQualIgnoreOrAssert;
-    typedef EqualsChar<'@'>                                             TFastqBegin;
-    typedef EqualsChar<'+'>                                             TQualsBegin;
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename Value<TQualString>::Type                               TQualAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
+    typedef AssertFunctor<IsInAlphabet<TQualAlphabet>, ParseError, Fastq>   TQualAsserter;
+    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
+    typedef OrFunctor<IsBlank, TQualAsserter>                               TQualIgnoreOrAssert;
+    typedef EqualsChar<'@'>                                                 TFastqBegin;
+    typedef EqualsChar<'+'>                                                 TQualsBegin;
 
     clear(meta);
     clear(seq);

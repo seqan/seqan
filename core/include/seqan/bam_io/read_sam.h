@@ -96,10 +96,9 @@ inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
 
 template <typename TForwardIter, typename TPass>
 inline int skipRecord(TForwardIter & iter,
-                      SamHeader const & tag)
+                      SamHeader const & /*tag*/)
 {
-    if (!nextIs(iter, tag))
-        return SAM_INVALID_RECORD;
+    skipOne(iter, EqualsChar<'@'>());
     skipLine(iter);
     return 0;
 }
@@ -110,10 +109,9 @@ inline int skipRecord(TForwardIter & iter,
 
 template <typename TForwardIter, typename TPass>
 inline int skipRecord(TForwardIter & iter,
-                      SamAlignment const & tag)
+                      SamAlignment const & /*tag*/)
 {
-    if (!nextIs(iter, tag))
-        return SAM_INVALID_RECORD;
+    skipOne(iter, EqualsChar<'@'>());
     skipLine(iter);
     return 0;
 }
@@ -152,7 +150,7 @@ void readRecord(BamHeaderRecord & record,
         record.type = BAM_HEADER_COMMENT;
     else
     {
-        throw std::runtime_error("Invalid Record!");
+        throw ParseError("Unknown header type!");
         return;
     }
 
@@ -257,23 +255,25 @@ inline void readRecord(BamAlignmentRecord & record,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
+
     clear(record);
     CharString &buffer = context.buffer;
 
     // QNAME
-    readUntil(record.qName, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(record.qName, iter, nextEntry);
     skipOne(iter, IsTab());
 
     // FLAG
     // TODO(holtgrew): Interpret hex and char as c-samtools -X does?
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, nextEntry);
     record.flag = lexicalCast<__uint16>(buffer);
     skipOne(iter, IsTab());
 
     // RNAME
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, nextEntry);
     if (buffer == "*")
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
@@ -291,13 +291,13 @@ inline void readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, nextEntry);
     if (buffer == "*")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else if (buffer == "0")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else
-        record.beginPos = lexicalCast<__uint32>(buffer) - 1;
+        record.beginPos = lexicalCast<__int32>(buffer) - 1;
     skipOne(iter, IsTab());
 
     // MAPQ
@@ -309,7 +309,7 @@ inline void readRecord(BamAlignmentRecord & record,
     }
     else
     {
-        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, nextEntry);
         record.mapQ = lexicalCast<__uint16>(buffer);
     }
     skipOne(iter, IsTab());
@@ -334,7 +334,7 @@ inline void readRecord(BamAlignmentRecord & record,
 
     // RNEXT
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(buffer, iter, nextEntry);
     if (buffer == "*")
     {
         record.rNextId = BamAlignmentRecord::INVALID_REFID;
@@ -359,7 +359,7 @@ inline void readRecord(BamAlignmentRecord & record,
     else
     {
         clear(buffer);
-        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, nextEntry);
         if (buffer == "0")
             record.pNext = BamAlignmentRecord::INVALID_POS;
         else
@@ -376,23 +376,19 @@ inline void readRecord(BamAlignmentRecord & record,
     else
     {
         clear(buffer);
-        if (value(iter) == '-')
-            readOne(buffer, iter);
-
-        readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+        readUntil(buffer, iter, nextEntry);
         record.tLen = lexicalCast<__int32>(buffer);
     }
     skipOne(iter, IsTab());
 
     // SEQ
-    readUntil(record.seq, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+    readUntil(record.seq, iter, nextEntry);
     // Handle case of missing sequence:  Clear seq string as documented.
     if (record.seq == "*")
         clear(record.seq);
     skipOne(iter, IsTab());
 
     // QUAL
-    IsNewline isNewline;
     readUntil(record.qual, iter, OrFunctor<IsTab, IsNewline>());
 
     // Handle case of missing quality:  Clear qual string as documented.

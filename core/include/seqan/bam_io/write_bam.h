@@ -139,49 +139,28 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 void write(TTarget & target,
-           BamAlignmentRecord const & record,
+           BamAlignmentRecord & record,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Bam const & /*tag*/)
 {
+    // TODO(singer): Once the MAP tables are gone delete the buffer.
     CharString buffer;
 
     // First, write record to buffer.
 
-    // refID
-    appendRawPod(buffer, record.rID);
-
-    // pos
-    appendRawPod(buffer, record.beginPos);
-
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
-    __uint8 lReadName = length(record.qName) + 1;
+    record._l_qname = length(record.qName) + 1;
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
-    __uint32 bin = _reg2Bin(record.beginPos, record.beginPos + l);
-    __uint32 binMqNl = (bin << 16) | (record.mapQ << 8) | lReadName;
-    appendRawPod(buffer, binMqNl);
+    record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
     // flag_nc
-    __uint16 nCigarOp = length(record.cigar);
-    __uint32 flagNc = (record.flag << 16) | nCigarOp;
-    appendRawPod(buffer, flagNc);
+    record._n_cigar = length(record.cigar);
 
     // l_seq
-    appendRawPod(buffer, (__int32)length(record.seq));
-
-    // next_refID
-    appendRawPod(buffer, record.rNextId);
-
-    // next_pos
-    appendRawPod(buffer, record.pNext);
-
-    // tlen
-    __int32 zero = 0;
-    if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        appendRawPod(buffer, zero);
-    else
-        appendRawPod(buffer, record.tLen);
+    record._l_qseq = (__int32)length(record.seq);
+    appendRawPod(buffer, reinterpret_cast<BamAlignmentRecordCore &>(record));
 
     // read_name
     write(buffer, record.qName);
@@ -235,21 +214,10 @@ void write(TTarget & target,
         15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
         15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
     };
-    __uint8 c = 0;
-    for (unsigned int i = 0; i < length(record.seq); ++i)
-    {
-        c <<= 4;
-        c &= 0xf0;
-        c |= MAP2[static_cast<int>(record.seq[i])];
-        if (i % 2 == 1)
-            writeValue(buffer, (char)c);
-    }
-    if (length(record.seq) % 2 == 1)
-    {
-        c <<= 4;
-        c &= 0xf0;
-        writeValue(buffer, (char)c);
-    }
+    for (size_t i = 0; i < length(record.seq); i+=2)
+        writeValue(buffer, (MAP2[ordValue(record.seq[i])] << 4) | MAP2[ordValue(record.seq[i + 1])]);
+    if ((length(record.seq) & 1) == 1)
+        writeValue(buffer, MAP2[ordValue(back(record.seq))] << 4);
 
     // qual
     if (empty(record.qual))
@@ -265,7 +233,7 @@ void write(TTarget & target,
 
     // tags
     if (length(record.tags) > 0u)
-        appendRawPod(buffer, record.tags);
+        write(buffer, record.tags);
 
     // buffer to stream
     appendRawPod(target, (__uint32)length(buffer));

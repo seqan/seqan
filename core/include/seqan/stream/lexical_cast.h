@@ -428,14 +428,12 @@ appendNumber(TTarget & target, double source)
 // Function appendRawNumber()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNumber>
+template <typename TValue, typename TTarget>
 inline typename Size<TTarget>::Type
-appendRawPod(TTarget & target, TNumber const & number)
+appendRawPod(TTarget & target, TValue const & val)
 {
-    Range<char const *> range = toRange(reinterpret_cast<char const *>(&number),
-                                        reinterpret_cast<char const *>(&number) + sizeof(TNumber));
-    write(target, range);
-    return sizeof(TNumber);
+    write(target, toRange((unsigned char*)&val, (unsigned char*)&val + sizeof(TValue)));
+    return sizeof(TValue);
 }
 
 }
