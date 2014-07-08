@@ -697,31 +697,16 @@ inline bool setSVType(TBreakpoint & bp, bool refOrder)
         if (bp.startSeqPos > bp.endSeqPos)
         {
             std::swap(bp.startSeqPos, bp.endSeqPos);
-            // bp.startSeqPos = bp.startSeqPos - 1;
-            // bp.endSeqPos = bp.endSeqPos + 1;
         }
         setSVType(bp, TBreakpoint::INVERSION);
         return false;
     }
-    /*
-    if (diffOrder)
-    {
-        if (bp.startSeqPos > bp.endSeqPos)
-        {
-            std::swap(bp.startSeqPos, bp.endSeqPos);
-            // bp.startSeqPos = bp.startSeqPos - 1;
-            // bp.endSeqPos = bp.endSeqPos + 1;
-        }
-        setSVType(bp, TBreakpoint::DISPDUPLICATION);
-        return false;
-    }
-    */
     if (bp.startSeqPos < bp.endSeqPos)
     {
+        // Normal order on reverse strand(!) indicates duplication, on forward a deletion
         if (!bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::DISPDUPLICATION);
-            // setSVType(bp, TBreakpoint::TRANSLOCATION);
             return false;
         }
         setSVType(bp, TBreakpoint::DELETION);
@@ -729,21 +714,15 @@ inline bool setSVType(TBreakpoint & bp, bool refOrder)
     }
     if (bp.startSeqPos > bp.endSeqPos)
     {
+        // Different order on forward strand(!) indicates duplication, on reverse deletion
         std::swap(bp.startSeqPos, bp.endSeqPos);
-        // bp.startSeqPos = bp.startSeqPos - 1;
-        // bp.endSeqPos = bp.endSeqPos + 1;
-        //if (bp.startSeqStrand)
         if (!refOrder && !bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::DELETION);
             bp.revStrandDel = true;
-            // setSVType(bp, TBreakpoint::DISPDUPLICATION);
-            // setSVType(bp, TBreakpoint::TRANSLOCATION);
             return false;
         }
         setSVType(bp, TBreakpoint::DISPDUPLICATION);
-        // setSVType(bp, TBreakpoint::DELETION);
-        // bp.revStrandDel = true;
         return false;
     }
     setSVType(bp, TBreakpoint::INSERTION);
