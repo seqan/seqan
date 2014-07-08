@@ -489,6 +489,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
 {
     if (bp.dupMiddlePos != maxValue<unsigned>())
     {
+	// Downstream duplication dup(middlePos, endPos, startPos)
         if (bp.dupTargetPos == bp.startSeqPos)
         {
             begin = bp.dupMiddlePos;
@@ -496,6 +497,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
             target = bp.startSeqPos;
             return true;
         }
+	// Upstream duplication dup(startPos, middlePos, endPos)
         begin = bp.startSeqPos;
         end = bp.dupMiddlePos;
         target = bp.endSeqPos;
