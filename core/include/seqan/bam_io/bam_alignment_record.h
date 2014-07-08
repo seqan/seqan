@@ -302,28 +302,32 @@ enum BamFlags
 ..type:Shortcut.CharString
 */
 
-class BamAlignmentRecord
+struct BamAlignmentRecordCore
 {
-public:
-    static __int32 const INVALID_POS = -1;
-    static __int32 const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
-    static __int32 const INVALID_LEN = 2147483647;
-    static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
-
-    __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
-    CharString qName;
-    __uint16 flag;
     __int32 rID;
     __int32 beginPos;
-    __uint8 mapQ;
-    __uint16 bin;
-    String<CigarElement<> > cigar;
+    __uint32 _l_qname:8, mapQ:8, bin:16;
+    __uint32 _n_cigar:16, flag:16;
+    __int32 _l_qseq;  // _l_qname, _n_cigar and _l_qseq for internal usage
     __int32 rNextId;
     __int32 pNext;
     __int32 tLen;
+};
+
+class BamAlignmentRecord : public BamAlignmentRecordCore
+{
+public:
+    __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
+    String<CigarElement<> > cigar;
+    CharString qName;
     CharString seq;
     CharString qual;
     CharString tags;  // raw tags in BAM format
+
+    static __int32 const INVALID_POS = -1;
+    static __int32 const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
+    static __int32 const INVALID_LEN = 0;
+    static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };

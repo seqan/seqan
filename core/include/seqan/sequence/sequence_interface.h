@@ -1729,9 +1729,6 @@ appendValue(T & me,
             TValue const & _value)
 {
     SEQAN_CHECKPOINT;
-    //static_cast<Nothing>(me);
-    //static_cast<Nothing>(_value);
-    //static_cast<Nothing>(typename DefaultOverflowImplicit<T>::Type());
     appendValue(me, _value, typename DefaultOverflowImplicit<T>::Type());
 }
 

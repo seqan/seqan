@@ -129,7 +129,15 @@ struct CountDownFunctor
     template <typename TValue>
     bool operator() (TValue const &) 
     {
-        return remaining-- == 0;
+        if (remaining == 0)
+            return true;
+        --remaining;
+        return false;
+    }
+    
+    operator bool()
+    {
+        return remaining == 0;
     }
 };
 

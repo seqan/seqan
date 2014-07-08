@@ -75,6 +75,7 @@
 
 #include <seqan/stream/adapt_ios.h>
 #include <seqan/stream/file_stream.h>
+#include <seqan/stream/virtual_stream.h>
 
 //TODO: can this be removed?
 //#include <seqan/stream/virtual_stream.h>

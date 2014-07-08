@@ -85,38 +85,38 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
     /*
     String<char> EXPECTED = "\x42\x41\x4d\x01\x25\x00\x00\x00\x40\x48\x44\x09\x56\x4e\x3a\x31\x2e\x30\x0a\x40\x53\x51\x09\x53\x4e\x3a\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x09\x4c\x4e\x3a\x31\x30\x30\x30\x30\x0a\x01\x00\x00\x00\x0a\x00\x00\x00\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x00\x10\x27\x00\x00";
     */
-    
+
     SEQAN_ASSERT_EQ(text, EXPECTED);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 {
     using namespace seqan;
-    
+
     typedef typename BamHeader::TSequenceInfo TSequenceInfo;
     typedef typename BamHeaderRecord::TTag    TTag;
 
     // Create input.
-    
+
     StringSet<CharString> contigNameStore;
     appendValue(contigNameStore, "REFERENCE");
     NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
-    
+
     BamHeader header;
     appendValue(header.sequenceInfos, TSequenceInfo("REFERENCE", 10000));
-    
+
     BamHeaderRecord firstRecord;
     firstRecord.type = BAM_HEADER_FIRST;
     appendValue(firstRecord.tags, TTag("VN", "1.0"));
     appendValue(header.records, firstRecord);
-    
+
     BamHeaderRecord seqRecord;
     seqRecord.type = BAM_HEADER_REFERENCE;
     appendValue(seqRecord.tags, TTag("SN", "REFERENCE"));
     appendValue(seqRecord.tags, TTag("LN", "10000"));
     appendValue(header.records, seqRecord);
-    
+
     // Call code under test.
     String<char> text;
     write(text, header, bamIOContext, Bam());
@@ -136,14 +136,14 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 
     // Call code under test.
     write(text, record, bamIOContext, Bam());
-    
+
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     append(bamFilename, "/core/tests/bam_io/alignment_uncompressed.bam");
-    
+
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
-    
+
     /*
     // Compare results.
     String<char> EXPECTED =

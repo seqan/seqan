@@ -60,7 +60,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write(TTarget & target,
+inline void write(TTarget & target,
            BamHeaderRecord const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Sam const & /*tag*/)
@@ -85,7 +85,6 @@ int write(TTarget & target,
     }
 
     writeValue(target, '\n');
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -93,7 +92,7 @@ int write(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write(TTarget & target,
+inline void write(TTarget & target,
            BamHeader const & header,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & tag)
@@ -115,9 +114,7 @@ int write(TTarget & target,
             }
         }
 
-        int res = write(target, record, context, tag);
-        if (res != 0)
-            return res;
+        write(target, record, context, tag);
     }
 
     // Write missing @SQ header records.
@@ -130,10 +127,7 @@ int write(TTarget & target,
         write(target, "\tLN:");
         appendNumber(target, header.sequenceInfos[i].i2);
         writeValue(target, '\n');
-        return 0;
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -141,7 +135,7 @@ int write(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-int write(TTarget & target,
+inline void write(TTarget & target,
            BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache> const & context,
            Sam const & /*tag*/)
@@ -225,9 +219,6 @@ int write(TTarget & target,
     }
 
     writeValue(target, '\n');
-
-    return 0;
-
 #undef SEQAN_PUT_TAB
 }
 

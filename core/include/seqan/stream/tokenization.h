@@ -349,7 +349,8 @@ inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor const &s
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor>
 inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor)
 {
-    readUntil(target, iter, stopFunctor, False());
+    False noAssertFunc;
+    readUntil(target, iter, stopFunctor, noAssertFunc);
 }
 
 // ----------------------------------------------------------------------------
@@ -391,6 +392,7 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
 // ----------------------------------------------------------------------------
 
 //TODO(singer) to be revised
+/*
 template <typename TTarget, typename TFwdIterator, typename TNumber>
 inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBytes)
 {
@@ -399,6 +401,25 @@ inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBy
         *buffer = *iter;
 
     if (numberOfBytes(*iter))
+        throw UnexpectedEnd();
+
+}
+*/
+
+//TODO(singer) to be revised
+template <typename TValue, typename TFwdIterator>
+inline void readRawByte(TValue & value, TFwdIterator &iter)
+{
+    CountDownFunctor<> countFunc(sizeof(TValue));
+    unsigned char * buffer = (unsigned char *)(&value);
+    for (; !atEnd(iter) && !countFunc(*iter); ++buffer, ++iter)
+        *buffer = *iter;
+
+/*    CountDownFunctor<> countFunc(sizeof(TValue));
+    Range<unsigned char*> range = toRange((unsigned char*)&value, (unsigned char*)&value + sizeof(TValue));
+    readUntil(begin(range, Rooted()), iter, countFunc);
+*/
+    if (!countFunc)
         throw UnexpectedEnd();
 
 }
