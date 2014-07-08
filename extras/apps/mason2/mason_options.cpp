@@ -685,17 +685,17 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-mean-end",
                                             "Mean PHRED quality for mismatch bases of last base in Illumina sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "QUAL"));
-    setDefaultValue(parser, "illumina-mismatch-quality-mean-end", "39.5");
+    setDefaultValue(parser, "illumina-mismatch-quality-mean-end", "30.0");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-stddev-begin",
                                             "Standard deviation of PHRED quality for mismatch bases of first base "
                                             "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
-    setDefaultValue(parser, "illumina-mismatch-quality-stddev-begin", "0.05");
+    setDefaultValue(parser, "illumina-mismatch-quality-stddev-begin", "3.0");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-stddev-end",
                                             "Standard deviation of PHRED quality for mismatch bases of last base "
                                             "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
-    setDefaultValue(parser, "illumina-mismatch-quality-stddev-end", "10.0");
+    setDefaultValue(parser, "illumina-mismatch-quality-stddev-end", "15.0");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
