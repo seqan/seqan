@@ -136,13 +136,17 @@ SEQAN_TYPED_TEST(VStreamTest, Decompression)
 
 SEQAN_TYPED_TEST(VStreamTest, Compression)
 {
+    CharString buffer;
+    for (unsigned i = 0; i != 10000; ++i)
+        append(buffer, FASTQ_EXAMPLE);
+
     typedef typename TestFixture::Type TCompressionTag;
     CharString fileName = SEQAN_TEMP_FILENAME();
     append(fileName, FileFormatExtensions<TCompressionTag>::VALUE[0]);
     VirtualStream<char, Output> vostream(toCString(fileName), OPEN_WRONLY);
     SEQAN_ASSERT((bool)vostream);
 
-    vostream << FASTQ_EXAMPLE;
+    vostream << buffer;
     close(vostream);
     SEQAN_ASSERT_NOT((bool)vostream);
 
@@ -150,7 +154,7 @@ SEQAN_TYPED_TEST(VStreamTest, Compression)
     SEQAN_ASSERT((bool)vistream);
     std::stringstream sstr;
     sstr << vistream.streamBuf;
-    SEQAN_ASSERT_EQ(CharString(sstr.str()), CharString(FASTQ_EXAMPLE));
+    SEQAN_ASSERT_EQ(CharString(sstr.str()), buffer);
     close(vistream);
 }
 

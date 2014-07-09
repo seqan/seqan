@@ -48,6 +48,12 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+struct Mutex;
+
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -145,6 +151,37 @@ public:
     ReadWriteLock() :
         readers(0),
         writers(0)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Class ScopedLock
+// ----------------------------------------------------------------------------
+
+template <typename TMutex = Mutex, typename TParallel = Parallel>
+struct ScopedLock
+{
+    TMutex & mutex;
+
+    explicit
+    ScopedLock(TMutex & mutex) :
+        mutex(mutex)
+    {
+        lock(mutex);
+    }
+
+    ~ScopedLock()
+    {
+        unlock(mutex);
+    }
+
+};
+
+template <typename TLock>
+struct ScopedLock<TLock, Serial>
+{
+    explicit
+    ScopedLock(TLock &)
     {}
 };
 
