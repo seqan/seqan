@@ -213,7 +213,7 @@ void readRecord(BamAlignmentRecord & record,
     readRawByte(remainingBytes, iter);
 
     SEQAN_ASSERT_GT(remainingBytes, 32);
-    readRawByte(reinterpret_cast<BamAlignmentRecordCore &>(record), iter);
+    readRawByte(static_cast<BamAlignmentRecordCore &>(record), iter);
     remainingBytes -= 32;
 
     // Translate file local rID into a global rID that is compatible with the context nameStore.

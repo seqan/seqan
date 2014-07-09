@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
     
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, iter, Sam()), 0);
+    readRecord(header, bamIOContext, iter, Sam());
 
     // -----------------------------------------------------------------------
     // Check Results.
@@ -124,7 +124,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
     
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, iter, Sam()), 0);
+    readRecord(header, bamIOContext, iter, Sam());
 
     String<BamAlignmentRecord> alignments;
     while (!atEnd(iter))
