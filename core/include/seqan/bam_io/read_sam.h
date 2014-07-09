@@ -90,31 +90,31 @@ inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
     return value(iter) == '@';
 }
 
-// ----------------------------------------------------------------------------
-// Function skipRecord()                                              SamHeader
-// ----------------------------------------------------------------------------
-
-template <typename TForwardIter, typename TPass>
-inline int skipRecord(TForwardIter & iter,
-                      SamHeader const & /*tag*/)
-{
-    skipOne(iter, EqualsChar<'@'>());
-    skipLine(iter);
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function skipRecord()                                           SamAlignment
-// ----------------------------------------------------------------------------
-
-template <typename TForwardIter, typename TPass>
-inline int skipRecord(TForwardIter & iter,
-                      SamAlignment const & /*tag*/)
-{
-    skipOne(iter, EqualsChar<'@'>());
-    skipLine(iter);
-    return 0;
-}
+//// ----------------------------------------------------------------------------
+//// Function skipRecord()                                              SamHeader
+//// ----------------------------------------------------------------------------
+//
+//template <typename TForwardIter, typename TPass>
+//inline void skipRecord(TForwardIter & iter,
+//                      SamHeader const & /*tag*/)
+//{
+//    skipOne(iter, EqualsChar<'@'>());
+//    skipLine(iter);
+//    return 0;
+//}
+//
+//// ----------------------------------------------------------------------------
+//// Function skipRecord()                                           SamAlignment
+//// ----------------------------------------------------------------------------
+//
+//template <typename TForwardIter, typename TPass>
+//inline void skipRecord(TForwardIter & iter,
+//                      SamAlignment const & /*tag*/)
+//{
+//    skipOne(iter, EqualsChar<'@'>());
+//    skipLine(iter);
+//    return 0;
+//}
 
 // ----------------------------------------------------------------------------
 // Function readRecord()                                        BamHeaderRecord
@@ -197,7 +197,7 @@ void readRecord(BamHeaderRecord & record,
 */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
-int readRecord(BamHeader & header,
+inline void readRecord(BamHeader & header,
                BamIOContext<TNameStore, TNameStoreCache> & context,
                TForwardIter & iter,
                Sam const & tag)
@@ -236,8 +236,6 @@ int readRecord(BamHeader & header,
                 appendName(nameStore(context), sn, nameStoreCache(context));
         }
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -278,10 +276,6 @@ inline void readRecord(BamAlignmentRecord & record,
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
     }
-    else if (buffer == "0")
-    {
-        record.rID = BamAlignmentRecord::INVALID_REFID;
-    }
     else if (!getIdByName(nameStore(context), buffer, record.rID, nameStoreCache(context)))
     {
         record.rID = length(nameStore(context));
@@ -292,12 +286,7 @@ inline void readRecord(BamAlignmentRecord & record,
     // POS
     clear(buffer);
     readUntil(buffer, iter, nextEntry);
-    if (buffer == "*")
-        record.beginPos = BamAlignmentRecord::INVALID_POS;
-    else if (buffer == "0")
-        record.beginPos = BamAlignmentRecord::INVALID_POS;
-    else
-        record.beginPos = lexicalCast<__int32>(buffer) - 1;
+    record.beginPos = lexicalCast<__uint32>(buffer) - 1;
     skipOne(iter, IsTab());
 
     // MAPQ
