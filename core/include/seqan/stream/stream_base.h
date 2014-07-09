@@ -49,7 +49,7 @@ namespace seqan {
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
-struct BasicStream:
+struct BasicStream :
     If<
         IsSameType<TDirection, Input>,
         std::basic_istream<TValue>,
@@ -57,8 +57,8 @@ struct BasicStream:
             IsSameType<TDirection, Output>,
             std::basic_ostream<TValue>,
             std::basic_iostream<TValue>
-        >::Type
-    >
+            >::Type
+        >
 {};
 
 template <typename TDirection, typename TDummy = void>
@@ -94,25 +94,158 @@ template <typename TDummy>
 const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
 
 // --------------------------------------------------------------------------
+// Sequence Format Tags
+// --------------------------------------------------------------------------
+
+struct TagFasta_;
+typedef Tag<TagFasta_> Fasta;
+
+struct TagFastq_;
+typedef Tag<TagFastq_> Fastq;
+
+// --------------------------------------------------------------------------
+// Compression Type Tags
+// --------------------------------------------------------------------------
+
+struct GZFile_;
+typedef Tag<GZFile_> GZFile;
+
+struct BgzfFile_;
+typedef Tag<BgzfFile_> BgzfFile;
+
+struct BZ2File_;
+typedef Tag<BZ2File_> BZ2File;
+
+// --------------------------------------------------------------------------
 // Metafunction MagicHeader
 // --------------------------------------------------------------------------
 
 template <typename TTag, typename T = void>
 struct MagicHeader;
 
+template <typename T>
+struct MagicHeader<Nothing, T>
+{
+    static unsigned char const * VALUE;
+};
+
+template <typename T>
+unsigned char const * MagicHeader<Nothing, T>::VALUE = NULL;
+
+
+template <typename T>
+struct MagicHeader<GZFile, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+
+
+template <typename T>
+struct MagicHeader<BgzfFile, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+
+
+template <typename T>
+struct MagicHeader<BZ2File, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+
+
+
+// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
+template <typename T>
+struct MagicHeader<Fasta, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+
+
+template <typename T>
+struct MagicHeader<Fastq, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+
 // --------------------------------------------------------------------------
-// Compression Type Tags
+// Metafunction FileFormatExtensions
 // --------------------------------------------------------------------------
 
-#if SEQAN_HAS_ZLIB
-struct GZFile_;
-typedef Tag<GZFile_> GZFile;
-#endif
+// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
+template <typename TFormat, typename T = void>
+struct FileFormatExtensions;
 
-#if SEQAN_HAS_BZIP2
-struct BZ2File_;
-typedef Tag<BZ2File_> BZ2File;
-#endif
+template <typename T>
+struct FileFormatExtensions<Nothing, T>
+{
+    static char const * VALUE[1];
+};
+
+template <typename T>
+char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
+{
+    ""
+};              // default output extension
+
+
+template <typename T>
+struct FileFormatExtensions<GZFile, T>
+{
+    static char const * VALUE[3];
+};
+
+template <typename T>
+char const * FileFormatExtensions<GZFile, T>::VALUE[3] =
+{
+    ".gz",      // default output extension
+    ".Z",
+    ".zip"
+};
+
+
+template <typename T>
+struct FileFormatExtensions<BgzfFile, T>
+{
+    static char const * VALUE[1];
+};
+
+template <typename T>
+char const * FileFormatExtensions<BgzfFile, T>::VALUE[1] =
+{
+    ".bgzf"       // default output extension
+};
+
+
+template <typename T>
+struct FileFormatExtensions<BZ2File, T>
+{
+    static char const * VALUE[2];
+};
+
+template <typename T>
+char const * FileFormatExtensions<BZ2File, T>::VALUE[2] =
+{
+    ".bz2",      // default output extension
+    ".bz"
+};
+
 
 // --------------------------------------------------------------------------
 // Metafunction Chunk
@@ -138,8 +271,7 @@ SEQAN_CONCEPT(InputStreamConcept, (TStream))
     SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
 
     SEQAN_CONCEPT_USAGE(InputStreamConcept)
-    {
-    }
+    {}
 };
 
 // --------------------------------------------------------------------------
@@ -155,8 +287,7 @@ SEQAN_CONCEPT(OutputStreamConcept, (TStream))
     SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
 
     SEQAN_CONCEPT_USAGE(OutputStreamConcept)
-    {
-    }
+    {}
 };
 
 // --------------------------------------------------------------------------
@@ -164,9 +295,8 @@ SEQAN_CONCEPT(OutputStreamConcept, (TStream))
 // --------------------------------------------------------------------------
 
 SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)(OutputStreamConcept))
-{
-};
+{};
 
-}  // namespace seqean
+}  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_STREAM_BASE_H_

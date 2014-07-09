@@ -62,9 +62,8 @@ public:
 
 typedef
     TagList<Async<>,
-    TagList<MMap<>,
-    TagList<Bgzf<>
-    > > >
+    TagList<MMap<>
+    > >
     FileStreamSpecs;
 
 SEQAN_TYPED_TEST_CASE(FileStreamTest, FileStreamSpecs);
@@ -207,9 +206,6 @@ SEQAN_TYPED_TEST(FileStreamTest, Eof)
 // Test of seek()
 SEQAN_TYPED_TEST(FileStreamTest, Seek)
 {
-    if (IsSameType<typename TestFixture::TSpec, Bgzf<> >::VALUE)
-        return;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
@@ -260,23 +256,12 @@ SEQAN_TYPED_TEST(FileStreamTest, ReadLarge)
     CharString tempFilename = SEQAN_TEMP_FILENAME();
     unsigned FILE_SIZE = 5 * 1000 * 1000;
 
-    if (IsSameType<typename TestFixture::TSpec, Bgzf<> >::VALUE)
-    {
-        FileStream<char, Output, typename TestFixture::TSpec> f(toCString(tempFilename));
-        f.exceptions(std::ios::failbit | std::ios::badbit);
-        for (unsigned i = 0; i < FILE_SIZE; ++i)
-            f.put('!' + i % 53);  // 53 is prime
-        f.close();
-    }
-    else
-    {
-        // Write out test data.
-        std::fstream f(toCString(tempFilename), std::ios::binary | std::ios::out);
-        f.exceptions(std::ios::failbit | std::ios::badbit);
-        for (unsigned i = 0; i < FILE_SIZE; ++i)
-            f.put('!' + i % 53);  // 53 is prime
-        f.close();
-    }
+    // Write out test data.
+    std::fstream f(toCString(tempFilename), std::ios::binary | std::ios::out);
+    f.exceptions(std::ios::failbit | std::ios::badbit);
+    for (unsigned i = 0; i < FILE_SIZE; ++i)
+        f.put('!' + i % 53);  // 53 is prime
+    f.close();
 
     // Test reading of 5MB file.
     FileStream<char, Input, typename TestFixture::TSpec> stream;

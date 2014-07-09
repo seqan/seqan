@@ -86,7 +86,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	typedef Tag<QSeq_> QSeq; //IOREV
 
 
-    template <typename TFormat, typename T = void>
+    template <typename TFormat, typename T>
     struct FileFormatExtensions;
     
 

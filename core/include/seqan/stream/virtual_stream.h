@@ -41,6 +41,7 @@
 
 #if SEQAN_HAS_ZLIB
 #include "zipstream/zipstream.hpp"
+#include "zipstream/bgzfstream.hpp"
 #endif
 
 #if SEQAN_HAS_BZIP2
@@ -60,6 +61,7 @@ namespace seqan {
 typedef
 #if SEQAN_HAS_ZLIB
     TagList<GZFile,
+    TagList<BgzfFile,
 #endif
 #if SEQAN_HAS_BZIP2
     TagList<BZ2File,
@@ -70,112 +72,13 @@ typedef
 #endif
 #if SEQAN_HAS_ZLIB
     >
+    >
 #endif
     CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
-
-// --------------------------------------------------------------------------
-// Metafunction MagicHeader
-// --------------------------------------------------------------------------
-
-
-template <typename T>
-struct MagicHeader<GZFile, T>
-{
-    static unsigned char const VALUE[3];
-};
-
-template <typename T>
-unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
-
-
-template <typename T>
-struct MagicHeader<BZ2File, T>
-{
-    static unsigned char const VALUE[3];
-};
-
-template <typename T>
-unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
-
-
-template <typename T>
-struct MagicHeader<Nothing, T>
-{
-    static unsigned char const *VALUE;
-};
-
-template <typename T>
-unsigned char const *MagicHeader<Nothing, T>::VALUE = NULL;
-
-
-// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
-template <typename T>
-struct MagicHeader<Fasta, T>
-{
-    static unsigned char const VALUE[1];
-};
-
-template <typename T>
-unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' }; // Fasta's first character
-
-
-template <typename T>
-struct MagicHeader<Fastq, T>
-{
-    static unsigned char const VALUE[1];
-};
-
-template <typename T>
-unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
-
-
-// --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
-// --------------------------------------------------------------------------
-
-// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
-
-template <typename T>
-struct FileFormatExtensions<GZFile, T>
-{
-    static char const * VALUE[3];
-};
-
-template <typename T>
-char const * FileFormatExtensions<GZFile, T>::VALUE[3] = {
-    ".gz",      // default output extension
-    ".Z",
-    ".zip" };
-
-
-template <typename TTag, typename T>
-struct FileFormatExtensions;
-
-template <typename T>
-struct FileFormatExtensions<BZ2File, T>
-{
-    static char const * VALUE[2];
-};
-
-template <typename T>
-char const * FileFormatExtensions<BZ2File, T>::VALUE[2] = {
-    ".bz2",      // default output extension
-    ".bz" };
-
-
-template <typename T>
-struct FileFormatExtensions<Nothing, T>
-{
-    static char const * VALUE[1];
-};
-
-template <typename T>
-char const * FileFormatExtensions<Nothing, T>::VALUE[1] = {
-    "" };       // default output extension
 
 // --------------------------------------------------------------------------
 // Metafunction VirtualStreamSwitch_
@@ -197,6 +100,18 @@ template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Output, GZFile>
 {
     typedef zlib_stream::basic_zip_ostream<TValue> Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Input, BgzfFile>
+{
+    typedef basic_bgzf_istream<TValue> Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Output, BgzfFile>
+{
+    typedef basic_bgzf_ostream<TValue> Type;
 };
 
 template <typename TValue>
@@ -489,6 +404,28 @@ template<
     typename ByteAT >
 inline void
 flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
+{
+    stream.zflush();
+}
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(basic_bgzf_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
+{}
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(basic_bgzf_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }

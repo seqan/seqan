@@ -63,8 +63,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..include:seqan/file.h
 */
 struct TagFasta_;
-//IOREV
-typedef Tag<TagFasta_> Fasta; //IOREV
+typedef Tag<TagFasta_> Fasta;
 
 //////////////////////////////////////////////////////////////////////////////
 // Filereader

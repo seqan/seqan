@@ -102,7 +102,8 @@
 
 #include <seqan/stream/adapt_ios.h>
 #include <seqan/stream/file_stream.h>
-#include <seqan/stream/file_bgzf.h>
+#include <seqan/stream/stream_compressor.h>
+//#include <seqan/stream/file_bgzf.h>
 #include <seqan/stream/virtual_stream.h>
 
 // ===========================================================================
