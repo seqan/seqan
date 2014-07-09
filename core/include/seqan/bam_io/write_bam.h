@@ -160,7 +160,7 @@ void write(TTarget & target,
 
     // l_seq
     record._l_qseq = (__int32)length(record.seq);
-    appendRawPod(buffer, reinterpret_cast<BamAlignmentRecordCore &>(record));
+    appendRawPod(buffer, static_cast<BamAlignmentRecordCore &>(record));
 
     // read_name
     write(buffer, record.qName);
