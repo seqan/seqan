@@ -323,9 +323,11 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 // ----------------------------------------------------------------------------
 // Function write(TValue *)
 // ----------------------------------------------------------------------------
+// NOTE(esiragusa): should it be defined for Streams and Containers?
 
 template <typename TTarget, typename TValue, typename TSize>
-inline void write(TTarget &target, TValue *ptr, TSize n)
+inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+write(TTarget &target, TValue *ptr, TSize n)
 {
     typedef Range<TValue*>                          TRange;
     typedef typename Iterator<TRange, Rooted>::Type TIterator;
@@ -341,13 +343,30 @@ inline void write(TTarget &target, TValue *ptr, TSize n)
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
+//TODO(singer): Enable this!
 template <typename TTarget, typename TFwdIterator, typename TSize>
-inline void write(TTarget &target, TFwdIterator &iter, TSize n)
+//inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+inline void
+write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
     typedef typename Chunk<TTarget>::Type*      TOChunk;
 
     _write(target, iter, n, TIChunk(), TOChunk());
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TContainer)
+// ----------------------------------------------------------------------------
+
+//TODO(singer): Enable this!
+template <typename TTarget, typename TContainer>
+//inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TTarget> >, void)
+inline void
+write(TTarget &target, TContainer &cont)
+{
+    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
+    write(target, iter, length(cont));
 }
 
 // ----------------------------------------------------------------------------

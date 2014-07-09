@@ -369,18 +369,10 @@ struct Position<VirtualStream<TValue, TDirection> >:
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
-struct Iterator<VirtualStream<TValue, TDirection>, Standard>
+struct Iterator<VirtualStream<TValue, TDirection>, TDirection>
 {
-    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> >    Type;
+    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> > Type;
 };
-
-// ----------------------------------------------------------------------------
-// Metafunction Iterator<Rooted>
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TDirection>
-struct Iterator<VirtualStream<TValue, TDirection>, Rooted> :
-    Iterator<VirtualStream<TValue, TDirection>, Standard> {};
 
 // --------------------------------------------------------------------------
 // Metafunction DefaultOpenMode<Input>
