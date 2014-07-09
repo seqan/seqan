@@ -36,6 +36,7 @@
 #include <seqan/pipe.h>
 #include <seqan/parallel.h>
 #include <seqan/seq_io.h>
+#include <seqan/stream.h>
 
 #ifdef RAZERS_PROFILE
 #include "profile_timeline.h"

@@ -61,19 +61,6 @@ template <typename TString, typename TSpec, typename TTag> inline typename Itera
 template <typename TString, typename TSpec, typename TTag> inline typename Iterator< StringSet< TString, TSpec > const, Tag<TTag> const>::Type end(StringSet< TString, TSpec > const & me, Tag<TTag> const tag);        // "core/include/seqan/sequence\sequence_multiple.h"(1405)
 #endif  // defined(_MSC_VER) && (_MSC_VER < 1400)
 
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TFile, typename TData>
-void read(TFile & file, TData & data);          // "core/include/seqan/file/file_format_raw.h"(307)
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TFile, typename TData>
-void write(TFile & file, TData & data);         // "core/include/seqan/file/file_format_raw.h"(327)
-
-template <typename TFile, typename TData>
-void write(TFile & file, TData const & data);   // "core/include/seqan/file/file_format_raw.h"(335)
-
 // ==========================================================================
 // Adaption Forwards
 // ==========================================================================

@@ -96,191 +96,127 @@ When $context$ is given, the first field is written from the sequence with index
 
 // Similar to readRecord() for BedRecord, we have various overloads of _writeBedRecord().
 
-template <typename TStream>
-int _writeBedRecord(TStream & out, BedRecord<Bed3> const & record, CharString const & ref)
+template <typename TTarget>
+inline void
+_writeBedRecord(TTarget & target, BedRecord<Bed3> const & record, CharString const & ref)
 {
-    if (streamPut(out, ref) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.beginPos + 1) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.endPos) != 0)
-        return 1;
-
-    return 0;
+    write(target, ref);
+    writeValue(target, '\t');
+    // TODO(singer): Why + 1?
+    // "chromStart - The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0." from UCSC
+    appendNumber(target, record.beginPos + 1);
+    writeValue(target, '\t');
+    appendNumber(target, record.endPos);
 }
 
-template <typename TStream>
-int _writeBedRecord(TStream & out, BedRecord<Bed4> const & record, CharString const & ref)
+template <typename TTarget>
+inline void
+_writeBedRecord(TTarget & target, BedRecord<Bed4> const & record, CharString const & ref)
 {
-    if (_writeBedRecord(out, static_cast<BedRecord<Bed3> const &>(record), ref) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.name) != 0)
-        return 1;
-
-    return 0;
+    _writeBedRecord(target, static_cast<BedRecord<Bed3> const &>(record), ref);
+    writeValue(target, '\t');
+    write(target, record.name);
 }
 
-template <typename TStream>
-int _writeBedRecord(TStream & out, BedRecord<Bed5> const & record, CharString const & ref)
+template <typename TTarget>
+inline void
+_writeBedRecord(TTarget & target, BedRecord<Bed5> const & record, CharString const & ref)
 {
-    if (_writeBedRecord(out, static_cast<BedRecord<Bed4> const &>(record), ref) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.score) != 0)
-        return 1;
-
-    return 0;
+    _writeBedRecord(target, static_cast<BedRecord<Bed4> const &>(record), ref);
+    writeValue(target, '\t');
+    write(target, record.score);
 }
 
-template <typename TStream>
-int _writeBedRecord(TStream & out, BedRecord<Bed6> const & record, CharString const & ref)
+template <typename TTarget>
+inline void
+_writeBedRecord(TTarget & target, BedRecord<Bed6> const & record, CharString const & ref)
 {
-    if (_writeBedRecord(out, static_cast<BedRecord<Bed5> const &>(record), ref) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamWriteChar(out, record.strand) != 0)
-        return 1;
-
-    return 0;
+    _writeBedRecord(target, static_cast<BedRecord<Bed5> const &>(record), ref);
+    writeValue(target, '\t');
+    writeValue(target, record.strand);
 }
 
-template <typename TStream>
-int _writeBedRecord(TStream & out, BedRecord<Bed12> const & record, CharString const & ref)
+template <typename TTarget>
+inline void
+_writeBedRecord(TTarget & target, BedRecord<Bed12> const & record, CharString const & ref)
 {
-    if (_writeBedRecord(out, static_cast<BedRecord<Bed6> const &>(record), ref) != 0)
-        return 1;
+    _writeBedRecord(target, static_cast<BedRecord<Bed6> const &>(record), ref);
+    writeValue(target, '\t');
 
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
+    appendNumber(target, record.thickBegin + 1);
+    writeValue(target, '\t');
 
-    if (streamPut(out, record.thickBegin + 1) != 0)
-        return 1;
+    appendNumber(target, record.thickEnd);
+    writeValue(target, '\t');
 
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
+    appendNumber(target, record.itemRgb.red);
+    writeValue(target, ',');
+    appendNumber(target, record.itemRgb.green);
+    writeValue(target, ',');
+    appendNumber(target, record.itemRgb.blue);
+    writeValue(target, '\t');
 
-    if (streamPut(out, record.thickEnd) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.itemRgb.red) != 0)
-        return 1;
-    if (streamWriteChar(out, ',') != 0)
-        return 1;
-    if (streamPut(out, record.itemRgb.green) != 0)
-        return 1;
-    if (streamWriteChar(out, ',') != 0)
-        return 1;
-    if (streamPut(out, record.itemRgb.blue) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.blockCount) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
+    appendNumber(target, record.blockCount);
+    writeValue(target, '\t');
 
     for (unsigned i = 0; i < length(record.blockSizes); ++i)
     {
-        if (i > 0 && streamWriteChar(out, ',') != 0)
-            return 1;
-        if (streamPut(out, record.blockSizes[i]) != 0)
-            return 1;
+        if (i > 0)
+            writeValue(target, ',');
+        appendNumber(target, record.blockSizes[i]);
     }
 
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
+    writeValue(target, '\t');
 
     for (unsigned i = 0; i < length(record.blockBegins); ++i)
     {
-        if (i > 0 && streamWriteChar(out, ',') != 0)
-            return 1;
-        if (streamPut(out, record.blockBegins[i] - 1) != 0)
-            return 1;
+        if (i > 0)
+            writeValue(target, ',');
+        appendNumber(target, record.blockBegins[i] + 1);
     }
-
-    return 0;
 }
 
-template <typename TStream, typename TRecordSpec>
-int writeRecord(TStream & out, BedRecord<TRecordSpec> const & record, Bed const & /*tag*/)
+template <typename TTarget, typename TRecordSpec>
+inline void 
+writeRecord(TTarget & target, BedRecord<TRecordSpec> const & record, Bed const & /*tag*/)
 {
-    if (_writeBedRecord(out, record, record.ref) != 0)
-        return 1;
+    _writeBedRecord(target, record, record.ref);
 
     if (empty(record.data))
     {
-        streamWriteChar(out, '\n');
-        return 0;
+        writeValue(target, '\n');
+        return;
     }
 
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.data) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\n') != 0)
-        return 1;
-
-    return 0;
+    writeValue(target, '\t');
+    write(target, record.data);
+    writeValue(target, '\n');
 }
 
-template <typename TStream, typename TRecordSpec, typename TNameStore, typename TNameStoreCache>
-int writeRecord(TStream & out, BedRecord<TRecordSpec> const & record,
+template <typename TTarget, typename TRecordSpec, typename TNameStore, typename TNameStoreCache>
+inline void 
+writeRecord(TTarget & target, BedRecord<TRecordSpec> const & record,
                 BedIOContext<TNameStore, TNameStoreCache> const & context, Bed const & /*tag*/)
 {
 
     if (record.rID == BedRecord<TRecordSpec>::INVALID_REFID)
     {
-        if (_writeBedRecord(out, record, record.ref) != 0)
-            return 1;
+        _writeBedRecord(target, record, record.ref);
     }
     else
     {
-        if (_writeBedRecord(out, record, nameStore(context)[record.rID]) != 0)
-            return 1;
+        _writeBedRecord(target, record, nameStore(context)[record.rID]);
     }
 
     if (empty(record.data))
     {
-        streamWriteChar(out, '\n');
-        return 0;
+        writeValue(target, '\n');
+        return;
     }
 
-    if (streamWriteChar(out, '\t') != 0)
-        return 1;
-
-    if (streamPut(out, record.data) != 0)
-        return 1;
-
-    if (streamWriteChar(out, '\n') != 0)
-        return 1;
-
-    return 0;
+    writeValue(target, '\t');
+    write(target, record.data);
+    writeValue(target, '\n');
 }
 
 }  // namespace seqan

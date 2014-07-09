@@ -40,6 +40,8 @@
 #include <memory>
 #include <fstream>
 
+#include <seqan/stream.h>
+
 namespace seqan {
 
 // ============================================================================

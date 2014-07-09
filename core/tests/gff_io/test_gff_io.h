@@ -37,23 +37,23 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
 #include <seqan/gff_io.h>
 
 using namespace seqan;
 
+
 SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
 {
-    seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/gff_io/example_gff.tsv");
+    CharString gffPath = SEQAN_PATH_TO_ROOT();
+    append(gffPath, "/core/tests/gff_io/example_gff_with_errors.tsv");
 
-    std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(gffPath));
 
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
     seqan::GffRecord record;
-    seqan::readRecord(record, reader, seqan::Gff());
+    seqan::readRecord(record, iter, seqan::Gff());
 
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagName[1], "Name");
     SEQAN_ASSERT_EQ(record.tagValue[1], "sonichedgehog;hehe");
 
-    seqan::readRecord(record, reader, seqan::Gff());
+    seqan::readRecord(record, iter, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -82,7 +82,23 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
 
-    seqan::readRecord(record, reader, seqan::Gff());
+    for (unsigned i = 0; i < 12; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(ParseError,
+                             seqan::readRecord(record, iter, seqan::Gff()));
+        skipLine(iter);
+    }
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(ParseError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+
+    seqan::readRecord(record, iter, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -97,6 +113,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "");
     SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
+
+    SEQAN_TEST_EXCEPTION(RuntimeError,
+                         seqan::readRecord(record, iter, seqan::Gff()));
+    skipLine(iter);
+
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
@@ -104,17 +125,16 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
     append(gffPath, "/core/tests/gff_io/example_gff.tsv");
 
-    std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gffPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     StringSet<CharString> nameStore;
     NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
     GffIOContext<StringSet<CharString> > gffIOContext(nameStore, nameStoreCache);
 
     seqan::GffRecord record;
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gff());
 
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
@@ -130,7 +150,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "sonichedgehog;hehe");
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -145,7 +165,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gff());
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -163,31 +183,28 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 }
 
+
 SEQAN_DEFINE_TEST(test_store_io_write_record_gff)
 {
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
     append(gffPath, "/core/tests/gff_io/example_gff.tsv");
 
-    std::fstream fin(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(fin);
+    String<char, MMap<> > mmapString;
+    open(mmapString, toCString(gffPath), OPEN_RDWR | OPEN_APPEND);
+    Iterator<String<char, MMap<> >, Rooted>::Type inIter = begin(mmapString);
 
     seqan::GffRecord record;
-
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
 
-    while (!atEnd(reader))
+    String<char> outString;
+    while (!atEnd(inIter))
     {
-        seqan::readRecord(record, reader, seqan::Gff());
-        seqan::writeRecord(fout, record, seqan::Gff());
+        seqan::readRecord(record, inIter, seqan::Gff());
+        seqan::writeRecord(outString, record, seqan::Gff());
     }
 
-    fout.close();
-
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gffPath)));
+    SEQAN_ASSERT_EQ(mmapString, outString);
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
@@ -195,10 +212,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
     append(gffPath, "/core/tests/gff_io/example_gff.tsv");
 
-    std::fstream fin(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(fin);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gffPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     seqan::GffRecord record;
 
@@ -206,43 +222,38 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     NameStoreCache<StringSet<CharString> > _nameStoreCache(_nameStore);
     GffIOContext<StringSet<CharString> > gffIOContext(_nameStore, _nameStoreCache);
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
+    String<char> compare;
 
     String<char> temp = "A";
     unsigned count = 0;
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
-        seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
+        seqan::readRecord(record, iter, gffIOContext, seqan::Gff());
         nameStore(gffIOContext)[count] = temp;
-        seqan::writeRecord(fout, record, gffIOContext, seqan::Gff());
+        seqan::writeRecord(compare, record, gffIOContext, seqan::Gff());
         ++count;
         appendValue(temp, 'A');
     }
 
-    fout.close();
-
     String<char> goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/gff_io/example_gff_context.tsv");
+    String<char, MMap<> > goldString;
+    open(goldString, toCString(goldPath));
 
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT_EQ(goldString, compare);
 }
-
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
 {
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
     append(gtfPath, "/core/tests/gff_io/example_gtf.tsv");
 
-    std::fstream f(toCString(gtfPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gtfPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     seqan::GffRecord record;
-    seqan::readRecord(record, reader, seqan::Gtf());
-
+    seqan::readRecord(record, iter, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
@@ -258,7 +269,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagName[2], "position");
     SEQAN_ASSERT_EQ(record.tagValue[2], "43");
 
-    seqan::readRecord(record, reader, seqan::Gtf());
+    seqan::readRecord(record, iter, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
@@ -272,7 +283,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.1");
 
-    seqan::readRecord(record, reader, seqan::Gtf());
+    seqan::readRecord(record, iter, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
@@ -288,20 +299,17 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
 }
 
 // Complex GTF format, from pseudogenes.org
-
 SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
 {
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
     append(gtfPath, "/core/tests/gff_io/example_gtf_pseudogenes.tsv");
 
-    std::fstream f(toCString(gtfPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gtfPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     seqan::GffRecord record;
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
-
+    readRecord(record, iter, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
@@ -327,7 +335,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
+    readRecord(record, iter, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
@@ -353,7 +361,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:2");
 
-    SEQAN_ASSERT(atEnd(reader));
+    SEQAN_ASSERT(atEnd(iter));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
@@ -361,18 +369,16 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
     append(gtfPath, "/core/tests/gff_io/example_gtf.tsv");
 
-    std::fstream f(toCString(gtfPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gtfPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     StringSet<CharString> nameStore;
     NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
     GffIOContext<StringSet<CharString> > gffIOContext(nameStore, nameStoreCache);
 
     seqan::GffRecord record;
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
-
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
@@ -389,7 +395,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(record.tagValue[2], "43");
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
@@ -404,7 +410,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.1");
     SEQAN_ASSERT_EQ(length(nameStore), 2u);
 
-    seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
+    seqan::readRecord(record, iter, gffIOContext, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
@@ -425,26 +431,19 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_gtf)
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
     append(gtfPath, "/core/tests/gff_io/example_gtf.tsv");
 
-    std::fstream fin(toCString(gtfPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(fin);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gtfPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     seqan::GffRecord record;
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
-
-    while (!atEnd(reader))
+    String<char> outString;
+    while (!atEnd(iter))
     {
-        seqan::readRecord(record, reader, seqan::Gtf());
-        seqan::writeRecord(fout, record, seqan::Gtf());
+        seqan::readRecord(record, iter, seqan::Gtf());
+        seqan::writeRecord(outString, record, seqan::Gtf());
     }
-
-    fout.close();
-
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
+    SEQAN_ASSERT_EQ(inString, outString);
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
@@ -452,10 +451,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
     append(gtfPath, "/core/tests/gff_io/example_gtf.tsv");
 
-    std::fstream fin(toCString(gtfPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(fin);
+    String<char, MMap<> > inString;
+    open(inString, toCString(gtfPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
 
     seqan::GffRecord record;
 
@@ -463,31 +461,28 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
     NameStoreCache<StringSet<CharString> > _nameStoreCache(_nameStore);
     GffIOContext<StringSet<CharString> > gffIOContext(_nameStore, _nameStoreCache);
 
-    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
+    String<char> outString;
 
     String<char> temp = "A";
     unsigned count = 0;
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
-        seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
+        seqan::readRecord(record, iter, gffIOContext, seqan::Gtf());
         nameStore(gffIOContext)[count] = temp;
-        seqan::writeRecord(fout, record, gffIOContext, seqan::Gtf());
+        seqan::writeRecord(outString, record, gffIOContext, seqan::Gtf());
         ++count;
         appendValue(temp, 'A');
     }
 
-    fout.close();
-
     String<char> goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/gff_io/example_gtf_context.tsv");
+    String<char, MMap<> > goldString;
+    open(goldString, toCString(goldPath));
 
-    // std::cerr << toCString(outPath) << std::endl;
-
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT_EQ(goldString, outString);
 }
 
+/*
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
 {
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
@@ -659,5 +654,6 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
 }
+*/
 
 #endif  // CORE_TESTS_GFF_IO_TEST_GFF_IO_H_

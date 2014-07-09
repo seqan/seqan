@@ -44,7 +44,7 @@
 #include <seqan/score/score_base.h>
 #include <seqan/score/score_edit.h>
 #include <seqan/score/score_matrix.h>
-#include <seqan/score/score_matrix_io.h>
+//#include <seqan/score/score_matrix_io.h>
 #include <seqan/score/score_matrix_data.h>
 #include <seqan/score/score_simple.h>
 

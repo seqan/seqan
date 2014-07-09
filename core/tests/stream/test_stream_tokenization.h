@@ -185,14 +185,14 @@ struct TokenizationContext<String<TValue, TSpec> >
 // ==========================================================================
 
 // readNChars
-SEQAN_TYPED_TEST(TokenizationTest, ReadN)
+SEQAN_TYPED_TEST(TokenizationTest, read)
 {
     TokenizationContext<typename TestFixture::TStream> ctx(EXAMPLE_STR1);
     SEQAN_ASSERT_NOT(atEnd(ctx.iter));
 
     CharString buf;
 
-    SEQAN_ASSERT_EQ(readN(buf, ctx.iter, 16), 16);
+    SEQAN_ASSERT_EQ(read(buf, ctx.iter, 16), 16);
     SEQAN_ASSERT_EQ(buf, "This is a string");
 
     // check EOF-handling
@@ -201,7 +201,7 @@ SEQAN_TYPED_TEST(TokenizationTest, ReadN)
     SEQAN_ASSERT_EQ(value(ctx.iter), '*');
 
     clear(buf);
-    SEQAN_ASSERT_EQ(readN(buf,ctx.iter, 3), 1);
+    SEQAN_ASSERT_EQ(read(buf,ctx.iter, 3), 1);
     SEQAN_ASSERT_EQ(buf, "*");
 }
 
