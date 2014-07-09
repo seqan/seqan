@@ -55,6 +55,6 @@
 #include <seqan/bed_io/read_bed.h>
 #include <seqan/bed_io/write_bed.h>
 
-#include <seqan/bed_io/bed_stream.h>
+//#include <seqan/bed_io/bed_stream.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_BED_IO_H_

@@ -64,24 +64,20 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 
     BamHeaderRecord seqRecord;
     seqRecord.type = BAM_HEADER_REFERENCE;
-    appendValue(firstRecord.tags, TTag("SN", "REF"));
-    appendValue(firstRecord.tags, TTag("LN", "10000"));
+    appendValue(seqRecord.tags, TTag("SN", "REF"));
+    appendValue(seqRecord.tags, TTag("LN", "10000"));
     appendValue(header.records, seqRecord);
-    
-    // Call code under test.
 
-    char buffer[1000];
-    Stream<CharArray<char *> > stream(buffer, buffer + 1000);
-    SEQAN_ASSERT_EQ(write2(stream, header, bamIOContext, Sam()), 0);
-    streamWriteChar(stream, '\0');
+    // Call code under test.
+    String<char> buffer;
+    write(buffer, header, bamIOContext, Sam());
 
     // Compare results.
-
     char const * EXPECTED =
             "@HD\tVN:1.0\n"
-            "@SQ\n"
             "@SQ\tSN:REF\tLN:10000\n";
-    SEQAN_ASSERT_EQ(CharString(EXPECTED), CharString(buffer));
+
+    SEQAN_ASSERT_EQ(CharString(EXPECTED), buffer);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
@@ -109,15 +105,13 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
     record.qual = "IIIIIIIIII";
 
     // Call code under test.
-
-    char buffer[1000];
-    Stream<CharArray<char *> > stream(buffer, buffer + 1000);
-    SEQAN_ASSERT_EQ(write2(stream, record, bamIOContext, Sam()), 0);
-    streamWriteChar(stream, '\0');
+    String<char> buffer;
+    write(buffer, record, bamIOContext, Sam());
 
     // Compare results.
     char const * EXPECTED = "READNAME\t18\tREF\t31\t8\t10M\t*\t0\t0\tCGATCGATAA\tIIIIIIIIII\n";
-    SEQAN_ASSERT_EQ(CharString(EXPECTED), CharString(buffer));
+
+    SEQAN_ASSERT_EQ(CharString(EXPECTED), buffer);
 }
 
 #endif  // CORE_TESTS_BAM_IO_TEST_WRITE_SAM_H_

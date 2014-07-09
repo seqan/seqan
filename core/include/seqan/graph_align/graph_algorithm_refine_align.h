@@ -109,6 +109,11 @@ _getSeqBeginAndEnd(Align<TAliSource,TAliSpec> & segment,
 // 50000 _getRefinedMatchScore Functions
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////
+
+//TODO(singer): Remove this forward
+template <typename T>
+struct Row;
+
 //for Align<TAliSource,TAliSpec>
 //get score for alignment of length len starting at pos_i on first sequence
 //and pos_j on second sequence 

@@ -58,6 +58,7 @@ namespace seqan {
 // TagList CompressedFileTypes
 // --------------------------------------------------------------------------
 
+
 typedef
 #if SEQAN_HAS_ZLIB
     TagList<GZFile,
@@ -90,6 +91,7 @@ struct VirtualStreamSwitch_
     typedef Nothing Type;
 };
 
+#if SEQAN_HAS_ZLIB
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, GZFile>
 {
@@ -101,6 +103,9 @@ struct VirtualStreamSwitch_<TValue, Output, GZFile>
 {
     typedef zlib_stream::basic_zip_ostream<TValue> Type;
 };
+#endif
+
+#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BgzfFile>
@@ -125,6 +130,7 @@ struct VirtualStreamSwitch_<TValue, Output, BZ2File>
 {
     typedef bzip2_stream::basic_bzip2_ostream<TValue> Type;
 };
+#endif
 
 // ==========================================================================
 // Classes
@@ -280,18 +286,10 @@ struct Position<VirtualStream<TValue, TDirection> >:
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
-struct Iterator<VirtualStream<TValue, TDirection>, Standard>
+struct Iterator<VirtualStream<TValue, TDirection>, TDirection>
 {
-    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> >    Type;
+    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> > Type;
 };
-
-// ----------------------------------------------------------------------------
-// Metafunction Iterator<Rooted>
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TDirection>
-struct Iterator<VirtualStream<TValue, TDirection>, Rooted> :
-    Iterator<VirtualStream<TValue, TDirection>, Standard> {};
 
 // --------------------------------------------------------------------------
 // Metafunction DefaultOpenMode<Input>
@@ -385,7 +383,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 // --------------------------------------------------------------------------
 // Function flush()
 // --------------------------------------------------------------------------
-
+#if SEQAN_HAS_ZlIB
 template<
 	typename Elem, 
 	typename Tr,
@@ -407,7 +405,9 @@ flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
+#endif
 
+#if SEQAN_HAS_BZIP2
 template<
 	typename Elem, 
 	typename Tr,
@@ -451,7 +451,7 @@ flush(bzip2_stream::basic_bzip2_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
-
+#endif
 // --------------------------------------------------------------------------
 // Function guessFormat()
 // --------------------------------------------------------------------------

@@ -35,6 +35,8 @@
 #ifndef CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_
 #define CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_
 
+#include <iomanip>
+
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
@@ -50,12 +52,12 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
     // Prepare input.
 
     StringSet<CharString> contigNameStore;
-    appendValue(contigNameStore, "REF");
+    appendValue(contigNameStore, "REFERENCE");
     NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
 
     BamHeader header;
-    appendValue(header.sequenceInfos, TSequenceInfo("REF", 10000));
+    appendValue(header.sequenceInfos, TSequenceInfo("REFERENCE", 10000));
 
     BamHeaderRecord firstRecord;
     firstRecord.type = BAM_HEADER_FIRST;
@@ -64,36 +66,60 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
 
     BamHeaderRecord seqRecord;
     seqRecord.type = BAM_HEADER_REFERENCE;
-    appendValue(firstRecord.tags, TTag("SN", "REF"));
-    appendValue(firstRecord.tags, TTag("LN", "10000"));
+    appendValue(seqRecord.tags, TTag("SN", "REFERENCE"));
+    appendValue(seqRecord.tags, TTag("LN", "10000"));
     appendValue(header.records, seqRecord);
 
     // Call code under test.
-
-    char buffer[1000];
-    Stream<CharArray<char *> > stream(buffer, buffer + 1000);
-    SEQAN_ASSERT_EQ(write2(stream, header, bamIOContext, Bam()), 0);
-    unsigned bufLen = streamTell(stream);
-
+    String<char> text;
+    write(text, header, bamIOContext, Bam());
+    
     // Compare results.
+    CharString bamFilename;
+    append(bamFilename, SEQAN_PATH_TO_ROOT());
+    append(bamFilename, "/core/tests/bam_io/header_uncompressed.bam");
+    
+    String<char, MMap<> > EXPECTED;
+    open(EXPECTED, toCString(bamFilename));
+    
+    /*
+    String<char> EXPECTED = "\x42\x41\x4d\x01\x25\x00\x00\x00\x40\x48\x44\x09\x56\x4e\x3a\x31\x2e\x30\x0a\x40\x53\x51\x09\x53\x4e\x3a\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x09\x4c\x4e\x3a\x31\x30\x30\x30\x30\x0a\x01\x00\x00\x00\x0a\x00\x00\x00\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x00\x10\x27\x00\x00";
+    */
 
-    char const * EXPECTED =
-        "\x42\x41\x4d\x01\x0f\x00\x00\x00\x40\x48\x44\x09\x56\x4e\x3a\x31"
-        "\x2e\x30\x0a\x40\x53\x51\x0a\x01\x00\x00\x00\x04\x00\x00\x00\x52"
-        "\x45\x46\x00\x10\x27\x00\x00";
-    SEQAN_ASSERT_EQ(memcmp(&buffer[0], EXPECTED, bufLen), 0);
+    SEQAN_ASSERT_EQ(text, EXPECTED);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 {
     using namespace seqan;
 
+    typedef typename BamHeader::TSequenceInfo TSequenceInfo;
+    typedef typename BamHeaderRecord::TTag    TTag;
+
     // Create input.
 
     StringSet<CharString> contigNameStore;
-    appendValue(contigNameStore, "REF");
+    appendValue(contigNameStore, "REFERENCE");
     NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
+
+    BamHeader header;
+    appendValue(header.sequenceInfos, TSequenceInfo("REFERENCE", 10000));
+
+    BamHeaderRecord firstRecord;
+    firstRecord.type = BAM_HEADER_FIRST;
+    appendValue(firstRecord.tags, TTag("VN", "1.0"));
+    appendValue(header.records, firstRecord);
+
+    BamHeaderRecord seqRecord;
+    seqRecord.type = BAM_HEADER_REFERENCE;
+    appendValue(seqRecord.tags, TTag("SN", "REFERENCE"));
+    appendValue(seqRecord.tags, TTag("LN", "10000"));
+    appendValue(header.records, seqRecord);
+
+    // Call code under test.
+    String<char> text;
+    write(text, header, bamIOContext, Bam());
 
     BamAlignmentRecord record;
     record.qName = "READNAME";
@@ -109,19 +135,24 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     record.qual = "IIIIIIIIII";
 
     // Call code under test.
+    write(text, record, bamIOContext, Bam());
 
-    char buffer[1000];
-    Stream<CharArray<char *> > stream(buffer, buffer + 1000);
-    SEQAN_ASSERT_EQ(write2(stream, record, bamIOContext, Bam()), 0);
-    unsigned bufLen = streamTell(stream);
+    CharString bamFilename;
+    append(bamFilename, SEQAN_PATH_TO_ROOT());
+    append(bamFilename, "/core/tests/bam_io/alignment_uncompressed.bam");
 
+    String<char, MMap<> > EXPECTED;
+    open(EXPECTED, toCString(bamFilename));
+
+    /*
     // Compare results.
-    char const * EXPECTED =
+    String<char> EXPECTED =
         "\x3c\x00\x00\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x09\x08\x49\x12"
         "\x01\x00\x12\x00\x0a\x00\x00\x00\xff\xff\xff\xff\xff\xff\xff\x7f"
         "\x00\x00\x00\x00\x52\x45\x41\x44\x4e\x41\x4d\x45\x00\xa0\x00\x00"
         "\x00\x24\x18\x24\x18\x11\x28\x28\x28\x28\x28\x28\x28\x28\x28\x28";
-    SEQAN_ASSERT_EQ(memcmp(&buffer[0], EXPECTED, bufLen), 0);
+     */
+    SEQAN_ASSERT_EQ(text, EXPECTED);
 }
 
 #endif  // CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_

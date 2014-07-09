@@ -45,6 +45,10 @@
 #include <exception>
 #include <stdexcept>
 
+#ifdef PLATFORM_GCC
+#include <cxxabi.h>
+#endif
+
 // ============================================================================
 // Macros
 // ============================================================================
@@ -158,48 +162,60 @@
 namespace seqan {
 
 // ============================================================================
-// Classes
+// Exceptions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Exception
+// Basic Exception
 // ----------------------------------------------------------------------------
 
 /*!
  * @class Exception
  * @headerfile <seqan/basic.h>
  * @brief Generic SeqAn exception.
- * @signature Exception;
+ * @signature Exception();
  */
 
 typedef std::exception          Exception;
 
 // ----------------------------------------------------------------------------
-// Class BadAlloc
+// Exception BadAlloc
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BadAlloc
  * @headerfile <seqan/basic.h>
  * @brief Bad memory allocation exception.
- * @signature BadAlloc;
+ * @signature BadAlloc();
  */
 
 typedef std::bad_alloc          BadAlloc;
 
 // ----------------------------------------------------------------------------
-// Classes Bad*
+// Exception BadCast
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BadCast
+ * @headerfile <seqan/basic.h>
+ * @brief Bad cast exception.
+ * @signature BadCast();
+ */
+
+typedef std::bad_cast           BadCast;
+
+// ----------------------------------------------------------------------------
+// Exceptions Bad*
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): These exceptions can be introduced as long as we need them.
 
 //typedef std::bad_exception      BadException;
-//typedef std::bad_cast           BadCast;
 //typedef std::bad_typeid         BadTypeId;
 //typedef std::bad_function_call  BadFunctionCall;
 //typedef std::bad_weak_ptr       BadWeakPtr;
 
 // ----------------------------------------------------------------------------
-// Class RuntimeError
+// Exception RuntimeError
 // ----------------------------------------------------------------------------
 
 /*!
@@ -212,15 +228,120 @@ typedef std::bad_alloc          BadAlloc;
 typedef std::runtime_error      RuntimeError;
 
 // ----------------------------------------------------------------------------
-// Class LogicError
+// Exception LogicError
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Always prefer SEQAN_ASSERT to logic error exceptions.
 
 //typedef std::logic_error        LogicError;
 
 // ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction ExceptionMessage
+// ----------------------------------------------------------------------------
+
+template <typename T, typename TSpec = void>
+struct ExceptionMessage
+{
+    static const std::string VALUE;
+};
+
+template <typename T, typename TSpec>
+const std::string ExceptionMessage<T, TSpec>::VALUE;
+
+// ============================================================================
+// Functors
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Functor AssertFunctor
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
+struct AssertFunctor
+{
+    TFunctor func;
+
+    AssertFunctor() {}
+
+    AssertFunctor(TFunctor & func) :
+        func(func)
+    {}
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        if (SEQAN_UNLIKELY(!func(val)))
+            throw TException(std::string("Value '") + val + "' produced an error. " +
+                             ExceptionMessage<TFunctor, TContext>::VALUE);
+        return RETURN_VALUE;
+    }
+};
+
+// ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class Demangler
+// ----------------------------------------------------------------------------
+// Holds the name of a given C++ type T.
+// NOTE(esiragusa): this class could become a subclass of CStyle String...
+
+template <typename T>
+struct Demangler
+{
+    char *data_begin;
+
+    Demangler()
+    {
+        T t;
+        _demangle(*this, t);
+    }
+
+    Demangler(T const & t)
+    {
+        _demangle(*this, t);
+    }
+
+    ~Demangler()
+    {
+#ifdef PLATFORM_GCC
+        free(data_begin);
+#endif
+    }
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _demangle(Demangler)
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline void _demangle(Demangler<T> & me, T const & t)
+{
+#ifdef PLATFORM_GCC
+    int status;
+    me.data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
+#else
+    me.data_begin = typeid(t).name();
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// Function toCString(Demangler)
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline char * toCString(Demangler<T> const & me)
+{
+    return me.data_begin;
+}
 
 // ----------------------------------------------------------------------------
 // Function globalExceptionHandler()
@@ -234,7 +355,7 @@ static void globalExceptionHandler()
     }
     SEQAN_CATCH(Exception & e)
     {
-        SEQAN_FAIL("Uncaught exception of type %s: %s", typeid(e).name(), e.what());
+        SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
     }
 }
 

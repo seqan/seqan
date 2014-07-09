@@ -35,8 +35,8 @@
 // Input/Output on FASTA and FASTQ files.
 // ==========================================================================
 
-#ifndef SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
-#define SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
+#ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_
+#define SEQAN_SEQ_IO_FASTA_FASTQ_H_
 
 namespace seqan {
 
@@ -97,7 +97,7 @@ struct SequenceOutputOptions
     SequenceOutputOptions(int lineLength = -1, bool qualMeta = false) :
         lineLength(lineLength),
         qualMeta(qualMeta)
-    {}    
+    {}
 };
 
 // ----------------------------------------------------------------------------
@@ -135,65 +135,182 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
     for (; charsLeft != 0; charsLeft -= charsPerLine)
     {
         charsPerLine = std::min(charsLeft, lineLength_);
-        writeN(target, iter, charsPerLine);
+        write(target, iter, charsPerLine);
         writeValue(target, '\n');
     }
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(Fasta)
+// Function readRecord(TagSelector); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TFwdIterator>
+inline void
+readRecord(TIdString & /* meta */, TSeqString & /* seq */, TFwdIterator & /* iter */,
+           TagSelector<> const & /* format */)
+{}
+
+template <typename TIdString, typename TSeqString, typename TFwdIterator, typename TTagList>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+        readRecord(meta, seq, iter, TFormatTag());
+    else
+        readRecord(meta, seq, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(TagSelector); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void
+readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TFwdIterator & /* iter */,
+           TagSelector<> const & /* format */)
+{}
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator, typename TTagList>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+        readRecord(meta, seq, qual, iter, TFormatTag());
+    else
+        readRecord(meta, seq, qual, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Raw); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TFwdIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
+{
+    typedef typename Value<TSeqString>::Type                            TAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
+    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
+    typedef EqualsChar<'>'>                                             TFastaBegin;
+
+    clear(meta);
+    clear(seq);
+
+    skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    skipLine(iter);                      // assert and skip '>'
+    readUntil(seq, iter, TFastaBegin(), TIgnoreOrAssert()); // read Fasta sequence
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Raw); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Raw const & raw)
+{
+    clear(qual);
+    readRecord(meta, seq, iter, raw);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Fasta); Qualities inside seq
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
-    EqualsChar<'>'> fastaBegin;
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fasta sequence!");
+    typedef typename Value<TSeqString>::Type                            TAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
+    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
+    typedef EqualsChar<'>'>                                             TFastaBegin;
 
     clear(meta);
     clear(seq);
 
-    skipUntil(iter, fastaBegin);    // forward to the next '>'
-    ++iter;                         // skip '>'
-    readLine(meta, iter);           // read Fasta id
-    readUntil(seq, iter, fastaBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fasta sequence
+    skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    skipOne(iter);                      // assert and skip '>'
+
+    readLine(meta, iter);               // read Fasta id
+    readUntil(seq, iter, TFastaBegin(), TIgnoreOrAssert()); // read Fasta sequence
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(Fastq)
+// Function readRecord(Fasta); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fasta)
+{
+    clear(qual);
+    readRecord(meta, seq, iter, Fasta());
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Fastq); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TFwdIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
+{
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
+    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
+    typedef EqualsChar<'@'>                                                 TFastqBegin;
+    typedef EqualsChar<'+'>                                                 TQualsBegin;
+
+    clear(meta);
+    clear(seq);
+
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    skipOne(iter);                      // skip '@'
+
+    readLine(meta, iter);               // read Fastq id
+
+    readUntil(seq, iter, TQualsBegin(), TSeqIgnoreOrAssert());  // read Fastq sequence
+    skipOne(iter, TQualsBegin());       // assert and skip '+'
+    skipLine(iter);                     // skip optional 2nd Fastq id
+
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Fastq); Qualities inside qual
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
 {
-    EqualsChar<'@'> fastqBegin;
-    EqualsChar<'+'> qualsBegin;
-
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid sequence character in Fastq sequence!");
-
-    IgnoreOrAssertFunctor<IsBlank, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
-        ignoreBlankAssertQuality("Invalid quality character in Fastq sequence!");
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename Value<TQualString>::Type                               TQualAlphabet;
+    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
+    typedef AssertFunctor<IsInAlphabet<TQualAlphabet>, ParseError, Fastq>   TQualAsserter;
+    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
+    typedef OrFunctor<IsBlank, TQualAsserter>                               TQualIgnoreOrAssert;
+    typedef EqualsChar<'@'>                                                 TFastqBegin;
+    typedef EqualsChar<'+'>                                                 TQualsBegin;
 
     clear(meta);
     clear(seq);
     clear(qual);
 
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
-    ++iter;                         // skip '@'
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    skipOne(iter);                      // skip '@'
 
-    readLine(meta, iter);           // read Fastq id
+    readLine(meta, iter);               // read Fastq id
 
-    readUntil(seq, iter, qualsBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq sequence
-    skipLine(iter);                 // skip '+' and 2nd Fastq id
+    readUntil(seq, iter, TQualsBegin(), TSeqIgnoreOrAssert());  // read Fastq sequence
+    skipOne(iter, TQualsBegin());       // assert and skip '+'
+    skipLine(iter);                     // skip optional 2nd Fastq id
 
-    readUntil(qual, iter, IsNewline(), ignoreBlankAssertQuality);           // read Fastq qualities
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
+    readUntil(qual, iter, IsNewline(), TQualIgnoreOrAssert());  // read Fastq qualities
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Fasta)
+// Function writeRecord(Fasta); Qualities inside seq
 // ----------------------------------------------------------------------------
 
 /*!
@@ -243,14 +360,14 @@ inline void writeRecord(TTarget & target,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '>');
-    write3(target, meta);
+    write(target, meta);
     writeValue(target, '\n');
 
     writeWrappedString(target, seq, (options.lineLength < 0)? 70 : options.lineLength); // 70bp wrapping, by default
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Fastq)
+// Function writeRecord(Fastq); Qualities inside qual
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
@@ -262,7 +379,7 @@ inline void writeRecord(TTarget & target,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '@');
-    write3(target, meta);
+    write(target, meta);
     writeValue(target, '\n');
 
     int lineLength = (options.lineLength < 0)? 0 : options.lineLength;  // no wrapping, by default
@@ -270,17 +387,16 @@ inline void writeRecord(TTarget & target,
 
     writeValue(target, '+');
     if (options.qualMeta)
-        write3(target, meta);
+        write(target, meta);
     writeValue(target, '\n');
 
     writeWrappedString(target, qual, lineLength);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Fastq)
+// Function writeRecord(Fastq); Qualities inside seq
 // ----------------------------------------------------------------------------
 
-// qualities are inside seq
 template <typename TTarget, typename TIdString, typename TSeqString>
 inline void writeRecord(TTarget & target,
                         TIdString const & meta,
@@ -295,4 +411,4 @@ inline void writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_SEQ_IO_READ_FASTA_FASTQ_H_
+#endif  // #ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_
