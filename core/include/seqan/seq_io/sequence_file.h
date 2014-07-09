@@ -49,22 +49,22 @@ namespace seqan {
 template <typename TDirection, typename TSpec = void>
 struct SequenceFile
 {
-//    typedef VirtualStream<char, TDirection>             TStream;
-//    typedef typename Iterator<TStream, Standard>::Type  TIter;
-
-    typedef std::ofstream                               TStream;
-    typedef Iter<TStream, StreamIterator<Output> >      TIter;
+    typedef VirtualStream<char, TDirection>                 TStream;
+    typedef typename Iterator<TStream, TDirection>::Type    TIter;
 
     AutoSeqFormat   format;
     TStream         stream;
     TIter           iter;
 
-    SequenceFile() {}
+    SequenceFile() :
+        iter(stream)
+    {}
 
-    SequenceFile(const char *fileName, int openMode = DefaultOpenMode<SequenceFile>::VALUE)
+    SequenceFile(const char *fileName, int openMode = DefaultOpenMode<SequenceFile>::VALUE) :
+        iter(stream)
     {
         if (!open(*this, fileName, openMode))
-            throw std::runtime_error(std::string("Could not open file ") + fileName);
+            throw IOError(std::string("Could not open file ") + fileName);
     }
 
     ~SequenceFile()
@@ -150,16 +150,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
 {
-    switch (value(file.format))
-    {
-        case Find<AutoSeqFormat, Fasta>::VALUE:
-            readRecord(meta, seq, file.iter, Fasta());
-            break;
-
-        case Find<AutoSeqFormat, Fastq>::VALUE:
-            readRecord(meta, seq, file.iter, Fastq());
-            break;
-    }
+    readRecord(meta, seq, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -170,7 +161,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
 {
-    readRecord(meta, seq, qual, file.iter, Fastq());
+    readRecord(meta, seq, qual, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -181,16 +172,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
-    switch (value(file.format))
-    {
-        case Find<AutoSeqFormat, Fasta>::VALUE:
-            writeRecord(file.iter, meta, seq, Fasta());
-            break;
-
-        case Find<AutoSeqFormat, Fastq>::VALUE:
-            writeRecord(file.iter, meta, seq, Fastq());
-            break;
-    }
+    writeRecord(file.iter, meta, seq, file.format);
 }
 
 // ----------------------------------------------------------------------------

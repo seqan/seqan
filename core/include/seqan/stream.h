@@ -77,6 +77,9 @@
 #include <seqan/stream/file_stream.h>
 #include <seqan/stream/virtual_stream.h>
 
+//TODO: can this be removed?
+//#include <seqan/stream/virtual_stream.h>
+
 // TODO(esiragusa): This file is deprecated - remove it.
 #include <seqan/stream/mmap_stream_deprecated.h>
 

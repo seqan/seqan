@@ -35,10 +35,7 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-//#include <../../extras/include/seqan/sequence_extras.h>
-
-#include <seqan/stream.h>
-#include <seqan/seq_io/fasta_fastq.h>
+#include <seqan/seq_io.h>
 
 //#include "test_seq_io_generic.h"
 //

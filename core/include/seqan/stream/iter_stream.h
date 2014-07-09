@@ -195,6 +195,10 @@ struct Difference<Iter<TStream, StreamIterator<TDirection> > > : Difference<TStr
 template <typename TStream, typename TDirection>
 struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
 
+// ============================================================================
+// Functions
+// ============================================================================
+
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------

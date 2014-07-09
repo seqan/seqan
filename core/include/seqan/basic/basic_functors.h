@@ -113,6 +113,34 @@ struct NotFunctor
     }
 };
 
+// ----------------------------------------------------------------------------
+// Functor CountDownFunctor
+// ----------------------------------------------------------------------------
+
+template <typename TCounter = __uint64>
+struct CountDownFunctor
+{
+    __uint64 remaining;
+
+    CountDownFunctor(TCounter const & newRemaining):
+        remaining(newRemaining)
+    {}
+
+    template <typename TValue>
+    bool operator() (TValue const &) 
+    {
+        if (remaining == 0)
+            return true;
+        --remaining;
+        return false;
+    }
+    
+    operator bool()
+    {
+        return remaining == 0;
+    }
+};
+
 }   // namespace seqan
 
 #endif // SEQAN_BASIC_FUNCTORS_H_

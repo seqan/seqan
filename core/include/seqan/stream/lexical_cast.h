@@ -424,6 +424,18 @@ appendNumber(TTarget & target, double source)
     return len;
 }
 
+// ----------------------------------------------------------------------------
+// Function appendRawNumber()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTarget>
+inline typename Size<TTarget>::Type
+appendRawPod(TTarget & target, TValue const & val)
+{
+    write(target, toRange((unsigned char*)&val, (unsigned char*)&val + sizeof(TValue)));
+    return sizeof(TValue);
+}
+
 }
 
 #endif //def SEQAN_STREAM_LEXICAL_CAST_H
