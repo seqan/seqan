@@ -200,7 +200,7 @@ private:
     {
         // typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
         typedef typename If<typename IsSameType<TAlgoTag, Gotoh>::Type, AffineGaps, LinearGaps>::Type TGapsType;
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, TGapsType, TracebackConfig_<SingleTrace, GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<DPGlobal, TAlignConfig, TGapsType, TracebackConfig_<SingleTrace, GapsLeft> >::Type TDPProfile;
 
         if (uDiag < -(int)length(seqV))
             uDiag = -(int)length(seqV);
