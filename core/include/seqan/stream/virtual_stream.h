@@ -383,7 +383,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 // --------------------------------------------------------------------------
 // Function flush()
 // --------------------------------------------------------------------------
-#if SEQAN_HAS_ZlIB
+#if SEQAN_HAS_ZLIB
 template<
 	typename Elem, 
 	typename Tr,
@@ -405,9 +405,7 @@ flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
-#endif
 
-#if SEQAN_HAS_BZIP2
 template<
 	typename Elem, 
 	typename Tr,
@@ -429,7 +427,9 @@ flush(basic_bgzf_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
 {
     stream.zflush();
 }
+#endif
 
+#if SEQAN_HAS_BZIP2
 template<
 	typename Elem, 
 	typename Tr,
