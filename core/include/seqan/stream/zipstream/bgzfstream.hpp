@@ -227,6 +227,7 @@ public:
 //        std::streamsize totalWrittenByteSize = compressBuffer();
 		concatter.ostream.flush();
 //		return totalWrittenByteSize;
+        return 0;
     }
 
 	/// returns a reference to the output stream
