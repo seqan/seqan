@@ -2229,7 +2229,10 @@ void printAlignment(
 //		TContigGaps	contigGaps(store.contigStore[contigId].seq, store.contigStore[contigId].gaps);
 		setClippedBeginPosition(contigGaps, posBegin);
 		setClippedEndPosition(contigGaps, posEnd);
-		_printContig(stream, format, layout, contigGaps, store.contigNameStore[contigId]);
+        if (contigId < (TContigId)length(store.contigNameStore))
+            _printContig(stream, format, layout, contigGaps, store.contigNameStore[contigId]);
+        else
+            _printContig(stream, format, layout, contigGaps, "contig");
 		stream << '\n';
 	} else
 		stream << '\n';
