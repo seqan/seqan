@@ -974,6 +974,17 @@ setValue(Holder<TValue, Tristate> & me,
 }
 
 // ----------------------------------------------------------------------------
+// Function swap()
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+void swap(Holder<TValue, Tristate> & lhs, Holder<TValue, Tristate> & rhs)
+{
+    std::swap(lhs.data_value, rhs.data_value);
+    std::swap(lhs.data_state, rhs.data_state);
+}
+
+// ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
 
