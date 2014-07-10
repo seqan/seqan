@@ -67,6 +67,9 @@ public:
     typedef TTraits_ TTraits;
     typedef std::basic_streambuf<TValue, TTraits_> TBase;
 
+    using typename TBase::pos_type;
+    using typename TBase::off_type;
+
     TValue* eback() const   { return TBase::eback(); }
     TValue* gptr()  const   { return TBase::gptr();  }
     TValue* egptr() const   { return TBase::egptr(); }
@@ -75,11 +78,79 @@ public:
     TValue* pptr()  const   { return TBase::pptr();  }
     TValue* epptr() const   { return TBase::epptr(); }
     
-    template <typename TOffset>
-    std::streampos seekoff(TOffset off, std::ios_base::seekdir way, std::ios_base::openmode which)
+    size_t chunkSize(Input)
     {
-        return TBase::seekoff(off, way, which);
+        return egptr() - gptr();
     }
+
+    size_t chunkSize(Output)
+    {
+        return epptr() - pptr();
+    }
+
+    template <typename TOffset>
+    void advanceChunk(TOffset ofs, Input)
+    {
+        TBase::gbump(ofs);
+    }
+
+    template <typename TOffset>
+    void advanceChunk(TOffset ofs, Output)
+    {
+        TBase::pbump(ofs);
+    }
+
+    void reserveChunk(Input)
+    {
+        if (gptr() == egptr())
+            TBase::underflow();
+    }
+
+    void reserveChunk(Output)
+    {
+        if (pptr() == epptr())
+            TBase::overflow();
+    }
+
+    template <typename TOffset>
+    std::streampos seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
+    {
+        return TBase::seekoff(ofs, way, which);
+    }
+
+    template <typename TOffset, typename TDirection>
+    void goFurther(TOffset ofs, TDirection dir)
+    {
+        typedef typename MakeUnsigned<TOffset>::Type TUOffset;
+        while (ofs != 0)
+        {
+            reserveChunk(dir);
+            size_t adv = chunkSize(dir);
+
+            if (SEQAN_UNLIKELY(adv == 0))
+            {
+                // if chunking isn't available try to seek
+                pos_type res = seekoff(ofs,
+                                       std::ios_base::cur,
+                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+
+                // if seek doesn't work manually skip characters (when reading)
+                if (IsSameType<TDirection, Input>::VALUE)
+                    if (res == pos_type(off_type(-1)))
+                        for (; ofs != 0; --ofs)
+                            TBase::sbumpc();
+
+                return;
+            }
+
+            if (adv > (TUOffset)ofs)
+                adv = ofs;
+            ofs -= adv;
+
+            advanceChunk(adv, dir);
+        }
+    }
+
 };
 
 template <typename TStream>
@@ -284,17 +355,12 @@ goNext(Iter<TStream, StreamIterator<Output> > &)
 // Function goFurther()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSize, typename TDirection>
+template <typename TStream, typename TOffset, typename TDirection>
 inline void
-goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
+goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TOffset ofs)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-//    std::ios_base::openmode dir = (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out;
-//    if (SEQAN_UNLIKELY(iter.streamBuf->pubseekoff(steps, std::ios_base::cur, dir) == -1))
-    {
-        for(; steps > (TSize)0; --steps)
-            goNext(iter);
-    }
+    iter.streamBuf->goFurther(ofs, TDirection());
 }
 
 // ----------------------------------------------------------------------------

@@ -81,9 +81,9 @@ struct SequenceFile
 // Metafunction DefaultOpenMode
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec>
-struct DefaultOpenMode<SequenceFile<TDirection, TSpec> > :
-    DefaultOpenMode<typename SequenceFile<TDirection, TSpec>::TStream> {};
+template <typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<SequenceFile<TDirection, TSpec>, TDummy> :
+    DefaultOpenMode<typename SequenceFile<TDirection, TSpec>::TStream, TDummy> {};
 
 // ============================================================================
 // Functions

@@ -194,14 +194,14 @@ struct Chunk<std::basic_streambuf<TValue, TTraits> >
 // Metafunction DefaultOpenMode<std::>
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >
+template <typename TValue, typename TTraits, typename TDummy>
+struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_RDONLY };
 };
 
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >
+template <typename TValue, typename TTraits, typename TDummy>
+struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
 };

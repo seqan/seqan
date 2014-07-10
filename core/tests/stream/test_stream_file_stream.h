@@ -83,7 +83,12 @@ SEQAN_TYPED_TEST(FileStreamTest, ReadSimpleUsage)
     SEQAN_ASSERT(open(stream, toCString(tempFilename)));
     stream.write(STR, strlen(STR));
     SEQAN_ASSERT(stream.good());
-    SEQAN_ASSERT(close(stream));
+    close(stream);
+
+    File<> file;
+    open(file, toCString(tempFilename));
+    SEQAN_ASSERT_GT((size_t)length(file), 0u);
+    close(file);
 
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
@@ -101,7 +106,12 @@ SEQAN_TYPED_TEST(FileStreamTest, ReadComplexUsage)
     SEQAN_ASSERT(open(stream, toCString(tempFilename)));
     stream.write(STR, strlen(STR));
     SEQAN_ASSERT(stream.good());
-    SEQAN_ASSERT(close(stream));
+    close(stream);
+
+    File<> file;
+    open(file, toCString(tempFilename));
+    SEQAN_ASSERT_GT((size_t)length(file), 0u);
+    close(file);
 
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
@@ -120,16 +130,16 @@ SEQAN_TYPED_TEST(FileStreamTest, WriteSimpleUsage)
     SEQAN_ASSERT(stream.good());
     stream.put('2');
     SEQAN_ASSERT(stream.good());
-    SEQAN_ASSERT(close(stream));
+    close(stream);
 
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     char buffer[100] = "__________";
     stream2.read(buffer, 10);
-    SEQAN_ASSERT(stream2.eof());
     SEQAN_ASSERT_EQ(buffer[0], '1');
     SEQAN_ASSERT_EQ(buffer[1], '2');
-    SEQAN_ASSERT(close(stream2));
+    SEQAN_ASSERT(stream2.eof());
+    close(stream2);
 }
 
 // A bit more complex usage of writing to FILE *.
@@ -143,7 +153,7 @@ SEQAN_TYPED_TEST(FileStreamTest, WriteComplexUsage)
     for (char c = '0'; c <= '9'; ++c)
         stream.put(c);
     SEQAN_ASSERT(stream.good());
-    SEQAN_ASSERT(close(stream));
+    close(stream);
 
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
@@ -153,7 +163,7 @@ SEQAN_TYPED_TEST(FileStreamTest, WriteComplexUsage)
     SEQAN_ASSERT(stream.good());
     buffer[10] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "0123456789"), 0);
-    SEQAN_ASSERT(close(stream2));
+    close(stream2);
 }
 
 // Test eof().
@@ -167,7 +177,7 @@ SEQAN_TYPED_TEST(FileStreamTest, Eof)
     stream.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream, toCString(tempFilename)));
     stream.write(STR, strlen(STR));
-    SEQAN_ASSERT(close(stream));
+    close(stream);
 
     char buffer[100];
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
@@ -325,19 +335,19 @@ SEQAN_TYPED_TEST(FileStreamTest, SeekLarge)
     for (unsigned pos = 0; pos + 13 < FILE_SIZE; pos += 1235)
     {
         stream.seekg(pos);
-        if (pos+13>(1<<22))
-            std::cout<<"OK";
         stream.read(buffer, 13);
         SEQAN_ASSERT_NOT(stream.eof());
         for (unsigned i = 0; i < 13; ++i)
             SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + (pos + i) % 53);
     }
 
+    stream.exceptions(std::ios::badbit);
+
     stream.seekg(-5, std::ios::end);
     stream.read(buffer, 13);
     for (unsigned i = 0; i < 5; ++i)
         SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + (FILE_SIZE - 5 + i) % 53);
-
+    SEQAN_ASSERT(stream.fail());
 }
 
 #endif  // TEST_STREAM_TEST_STREAM_FILE_STREAM_H_

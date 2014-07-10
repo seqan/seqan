@@ -113,7 +113,7 @@ typedef Tag<Bidirectional_> Bidirectional;
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
-struct BasicStream:
+struct BasicStream :
     If<
         IsSameType<TDirection, Input>,
         std::basic_istream<TValue>,
@@ -121,8 +121,8 @@ struct BasicStream:
             IsSameType<TDirection, Output>,
             std::basic_ostream<TValue>,
             std::basic_iostream<TValue>
-        >::Type
-    >
+            >::Type
+        >
 {};
 
 // --------------------------------------------------------------------------
@@ -161,6 +161,159 @@ const int IosOpenMode<Output, TDummy>::VALUE = std::ios::out;
 template <typename TDummy>
 const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
 
+// --------------------------------------------------------------------------
+// Sequence Format Tags
+// --------------------------------------------------------------------------
+
+struct TagFasta_;
+typedef Tag<TagFasta_> Fasta;
+
+struct TagFastq_;
+typedef Tag<TagFastq_> Fastq;
+
+// --------------------------------------------------------------------------
+// Compression Type Tags
+// --------------------------------------------------------------------------
+
+struct GZFile_;
+typedef Tag<GZFile_> GZFile;
+
+struct BgzfFile_;
+typedef Tag<BgzfFile_> BgzfFile;
+
+struct BZ2File_;
+typedef Tag<BZ2File_> BZ2File;
+
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+template <typename TTag, typename T = void>
+struct MagicHeader;
+
+template <typename T>
+struct MagicHeader<Nothing, T>
+{
+    static unsigned char const * VALUE;
+};
+
+template <typename T>
+unsigned char const * MagicHeader<Nothing, T>::VALUE = NULL;
+
+
+template <typename T>
+struct MagicHeader<GZFile, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+
+
+template <typename T>
+struct MagicHeader<BgzfFile, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+
+
+template <typename T>
+struct MagicHeader<BZ2File, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+
+
+
+// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
+template <typename T>
+struct MagicHeader<Fasta, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+
+
+template <typename T>
+struct MagicHeader<Fastq, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+
+// --------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// --------------------------------------------------------------------------
+
+// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
+template <typename TFormat, typename T = void>
+struct FileFormatExtensions;
+
+template <typename T>
+struct FileFormatExtensions<Nothing, T>
+{
+    static char const * VALUE[1];
+};
+
+template <typename T>
+char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
+{
+    ""
+};              // default output extension
+
+
+template <typename T>
+struct FileFormatExtensions<GZFile, T>
+{
+    static char const * VALUE[3];
+};
+
+template <typename T>
+char const * FileFormatExtensions<GZFile, T>::VALUE[3] =
+{
+    ".gz",      // default output extension
+    ".Z",
+    ".zip"
+};
+
+
+template <typename T>
+struct FileFormatExtensions<BgzfFile, T>
+{
+    static char const * VALUE[1];
+};
+
+template <typename T>
+char const * FileFormatExtensions<BgzfFile, T>::VALUE[1] =
+{
+    ".bgzf"       // default output extension
+};
+
+
+template <typename T>
+struct FileFormatExtensions<BZ2File, T>
+{
+    static char const * VALUE[2];
+};
+
+template <typename T>
+char const * FileFormatExtensions<BZ2File, T>::VALUE[2] =
+{
+    ".bz2",      // default output extension
+    ".bz"
+};
+
 // ============================================================================
 // Concepts
 // ============================================================================
@@ -186,8 +339,7 @@ SEQAN_CONCEPT_REFINE(InputStreamConcept, (TStream), (StreamConcept))
     SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
 
     SEQAN_CONCEPT_USAGE(InputStreamConcept)
-    {
-    }
+    {}
 };
 
 // --------------------------------------------------------------------------
@@ -203,8 +355,7 @@ SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
     SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
 
     SEQAN_CONCEPT_USAGE(OutputStreamConcept)
-    {
-    }
+    {}
 };
 
 // --------------------------------------------------------------------------
@@ -212,13 +363,15 @@ SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
 // --------------------------------------------------------------------------
 
 SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)(OutputStreamConcept))
-{
-};
+{};
 
 // ============================================================================
 // Forwards
 // ============================================================================
 // TODO(esiragusa): remove this when chunking goes into basic.
+
+template <typename TDirection>
+struct StreamIterator;
 
 template <typename TObject> struct Chunk;
 
@@ -271,6 +424,13 @@ inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
     }
 }
 
+template <typename TContainer, typename TValue>
+inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
+{
+    setValue(iter, val);
+    //goNext(iter);     // implicitly done by setValue above
+}
+
 // ----------------------------------------------------------------------------
 // Function _write(); Element-wise
 // ----------------------------------------------------------------------------
@@ -279,7 +439,7 @@ template <typename TTarget, typename TFwdIterator, typename TSize, typename TICh
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
     for (; n > (TSize)0; --n, ++iter)
-        writeValue(target, value(iter));
+        writeValue(target, getValue(iter));
 }
 
 // ----------------------------------------------------------------------------
@@ -289,6 +449,8 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChun
 template <typename TTarget, typename TFwdIterator, typename TSize, typename TIValue, typename TOValue>
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*> *, Range<TOValue*> *)
 {
+    typedef Nothing* TNoChunking;
+
     Range<TIValue*> ichunk;
     Range<TOValue*> ochunk;
 
@@ -297,7 +459,7 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
     {
         ichunk = getChunk(iter, Input());
         minChunkSize = ichunk.end - ichunk.begin;
-        SEQAN_ASSERT_GT(minChunkSize, 0u);
+//        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
         reserveChunk(target, minChunkSize);
         ochunk = getChunk(target, Output());
@@ -306,6 +468,12 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 
         if (minChunkSize > olen)
             minChunkSize = olen;
+
+        if (SEQAN_UNLIKELY(olen == 0u))
+        {
+            _write(target, iter, n, TNoChunking(), TNoChunking());
+            return;
+        }
 
         if (minChunkSize > n)
             minChunkSize = n;
