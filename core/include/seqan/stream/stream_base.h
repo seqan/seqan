@@ -370,6 +370,9 @@ SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)
 // ============================================================================
 // TODO(esiragusa): remove this when chunking goes into basic.
 
+template <typename TDirection>
+struct StreamIterator;
+
 template <typename TObject> struct Chunk;
 
 template <typename TValue, typename TTraits, typename TValue2>
@@ -421,6 +424,13 @@ inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
     }
 }
 
+template <typename TContainer, typename TValue>
+inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
+{
+    setValue(iter, val);
+    //goNext(iter);     // implicitly done by setValue above
+}
+
 // ----------------------------------------------------------------------------
 // Function _write(); Element-wise
 // ----------------------------------------------------------------------------
@@ -429,7 +439,7 @@ template <typename TTarget, typename TFwdIterator, typename TSize, typename TICh
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
     for (; n > (TSize)0; --n, ++iter)
-        writeValue(target, value(iter));
+        writeValue(target, getValue(iter));
 }
 
 // ----------------------------------------------------------------------------
@@ -439,6 +449,8 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChun
 template <typename TTarget, typename TFwdIterator, typename TSize, typename TIValue, typename TOValue>
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*> *, Range<TOValue*> *)
 {
+    typedef Nothing* TNoChunking;
+
     Range<TIValue*> ichunk;
     Range<TOValue*> ochunk;
 
@@ -447,7 +459,7 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
     {
         ichunk = getChunk(iter, Input());
         minChunkSize = ichunk.end - ichunk.begin;
-        SEQAN_ASSERT_GT(minChunkSize, 0u);
+//        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
         reserveChunk(target, minChunkSize);
         ochunk = getChunk(target, Output());
@@ -456,6 +468,12 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 
         if (minChunkSize > olen)
             minChunkSize = olen;
+
+        if (SEQAN_UNLIKELY(olen == 0u))
+        {
+            _write(target, iter, n, TNoChunking(), TNoChunking());
+            return;
+        }
 
         if (minChunkSize > n)
             minChunkSize = n;

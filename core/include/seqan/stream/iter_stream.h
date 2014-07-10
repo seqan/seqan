@@ -80,6 +80,30 @@ public:
     {
         return TBase::seekoff(off, way, which);
     }
+
+    template <typename TOffset>
+    void advance(TOffset off, Input)
+    {
+        TBase::gbump(off);
+    }
+
+    template <typename TOffset>
+    void advance(TOffset off, Output)
+    {
+        TBase::pbump(off);
+    }
+
+    void reserveChunk(Input)
+    {
+        if (gptr() == egptr())
+            TBase::underflow();
+    }
+
+    void reserveChunk(Output)
+    {
+        if (pptr() == epptr())
+            TBase::overflow();
+    }
 };
 
 template <typename TStream>
@@ -284,17 +308,18 @@ goNext(Iter<TStream, StreamIterator<Output> > &)
 // Function goFurther()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSize, typename TDirection>
+template <typename TStream, typename TOffset, typename TDirection>
 inline void
-goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
+goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TOffset ofs)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-//    std::ios_base::openmode dir = (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out;
-//    if (SEQAN_UNLIKELY(iter.streamBuf->pubseekoff(steps, std::ios_base::cur, dir) == -1))
-    {
-        for(; steps > (TSize)0; --steps)
-            goNext(iter);
-    }
+    std::streampos res = iter.streamBuf->seekoff(
+        ofs,
+        std::ios_base::cur,
+        (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+
+    SEQAN_ASSERT_NEQ(res, std::streampos(std::streamoff(-1)));
+    ignoreUnusedVariableWarning(res);
 }
 
 // ----------------------------------------------------------------------------

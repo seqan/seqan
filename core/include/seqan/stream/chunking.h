@@ -109,8 +109,10 @@ inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
 }
 
 template <typename TStream, typename TDirection, typename TSize>
-inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &, TSize)
-{}
+inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize)
+{
+    iter.streamBuf->reserveChunk(TDirection());
+}
 
 // ----------------------------------------------------------------------------
 // Function advanceChunk()
@@ -138,7 +140,7 @@ inline void advanceChunk(Iter<TContainer, TSpec> &iter, TSize size)
 template <typename TStream, typename TDirection, typename TSize>
 inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
 {
-    iter.streamBuf->seekoff(size, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+    iter.streamBuf->advance(size, TDirection());
 }
 
 // extend target string size
