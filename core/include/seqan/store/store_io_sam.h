@@ -403,7 +403,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template<typename TStreamOrReader, typename TSpec, typename TConfig, typename TTag>
-    inline void 
+    inline int
     _readImpl(TStreamOrReader & streamOrReader,
               FragmentStore<TSpec, TConfig> & fragStore,
               TTag const & tag,
@@ -434,14 +434,15 @@ namespace SEQAN_NAMESPACE_MAIN
         if (readRecord(bamHeader, bamIOContext, streamOrReader, tag) != 0)
         {
             std::cerr << "ERROR: Problem reading header from SAM file.\n";
-            return;
+            return 1;
         }
 
         // fill up contig entries for each contig name that appears in the header
         resize(fragStore.contigStore, length(fragStore.contigNameStore));
 
         // Read in alignments section
-        _readAlignments(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, tag, importFlags);
+        if (_readAlignments(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, tag, importFlags) != 0)
+            return 1;
         
         if (importFlags.importReadAlignment)
         {
@@ -450,10 +451,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
             convertPairWiseToGlobalAlignment(fragStore, contigAnchorGaps);
         }
+        return 0;
     }
 
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void
+    inline int
     read(TFile & file,
          FragmentStore<TSpec, TConfig> & fragStore,
          Sam,
@@ -462,41 +464,41 @@ namespace SEQAN_NAMESPACE_MAIN
         // Construct a RecordReader from the input file.
         RecordReader<TFile, SinglePass<> > reader(file);
         if (atEnd(reader))
-            return;  // Done, file is empty.
-        _readImpl(reader, fragStore, Sam(), importFlags);
+            return 0;  // Done, file is empty.
+        return _readImpl(reader, fragStore, Sam(), importFlags);
     }
 
 #if SEQAN_HAS_ZLIB
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void
+    inline int
     read(TFile & file,
          FragmentStore<TSpec, TConfig> & fragStore,
          Bam,
          FragStoreImportFlags const & importFlags)
     {
-        _readImpl(file, fragStore, Bam(), importFlags);
+        return _readImpl(file, fragStore, Bam(), importFlags);
     }
 #endif  // #if SEQAN_HAS_ZLIB
 
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void
+    inline int
     read(
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
         Sam)
     {
-        read(file, fragStore, Sam(), FragStoreImportFlags());
+        return read(file, fragStore, Sam(), FragStoreImportFlags());
     }
 
 #if SEQAN_HAS_ZLIB
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void
+    inline int
     read(
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
         Bam)
     {
-        read(file, fragStore, Bam(), FragStoreImportFlags());
+        return read(file, fragStore, Bam(), FragStoreImportFlags());
     }
 #endif  // #if SEQAN_HAS_ZLIB
 
@@ -530,7 +532,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template <typename TStreamOrReader, typename TNameStore, typename TNameStoreCache, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TTag>
-    inline void 
+    inline int
     _readAlignments(
         TStreamOrReader & streamOrReader,
         BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
@@ -566,8 +568,9 @@ namespace SEQAN_NAMESPACE_MAIN
         refresh(fragStore.readNameStoreCache);
 
         while (!atEnd(streamOrReader))
-            _readOneAlignment(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, contextSAM,
-                              importFlags, tag);
+            if (_readOneAlignment(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, contextSAM,
+                                  importFlags, tag) != 0)
+                return 1;
 
         if (importFlags.importReadSeq)
         {
@@ -581,6 +584,8 @@ namespace SEQAN_NAMESPACE_MAIN
             if (emptyReads != 0)
                 std::cerr << "Warning: " << emptyReads << " read sequences are empty." << std::endl;
         }
+
+        return 0;
     }
     
         
@@ -657,7 +662,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TMatchMateInfos,
         typename TFragStore,
         typename TTag>
-    inline void
+    inline int
     _readOneAlignment(
         TStreamOrReader & streamOrReader,
         BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
@@ -696,7 +701,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //  TODO(weese:) skipLine would be required to continue reading after an invalid SAM line but is not yet implemented for Bgzf stream
 //            skipLine(streamOrReader);
             std::cerr << "ERROR: Problem reading SAM/BAM record.\n";
-            return;
+            return 1;
         }
         BamAlignmentRecord & record = contextSAM.bamRecord;
 
@@ -738,7 +743,7 @@ namespace SEQAN_NAMESPACE_MAIN
         
         // Stop if read is not aligned.
         if (record.rID == BamAlignmentRecord::INVALID_REFID || record.beginPos == BamAlignmentRecord::INVALID_POS)
-            return;
+            return 0;
 
         // Check if the contig is already in the store.  Get its ID or create a new one otherwise.
         contextSAM.contigId = 0;
@@ -747,7 +752,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // Stop if no alignment in CIGAR string.
         if (empty(record.cigar))
-            return;
+            return 0;
 
         // Handle read alignment import.
         TId pairMatchId = 0;
@@ -832,6 +837,8 @@ namespace SEQAN_NAMESPACE_MAIN
                 back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
             }
         }
+
+        return 0;
     }
 
 
@@ -965,7 +972,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
     clear(record.qName);
     TCharStringIterator it = begin(store.readNameStore[alignedRead.readId], Standard());
     TCharStringIterator itEnd = end(store.readNameStore[alignedRead.readId], Standard());
-    for (; it != itEnd && *it != ' ' && *it != '\t'; ++it)
+    for (; it != itEnd && !isblank(*it); ++it)
         appendValue(record.qName, *it);
 
     // Fill FLAG.
