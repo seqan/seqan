@@ -80,12 +80,12 @@ public:
     
     size_t chunkSize(Input)
     {
-        return gptr() - egptr();
+        return egptr() - gptr();
     }
 
     size_t chunkSize(Output)
     {
-        return pptr() - epptr();
+        return epptr() - pptr();
     }
 
     template <typename TOffset>
@@ -122,19 +122,22 @@ public:
     void goFurther(TOffset ofs, TDirection dir)
     {
         typedef typename MakeUnsigned<TOffset>::Type TUOffset;
-        size_t adv = 0;
         while (ofs != 0)
         {
             reserveChunk(dir);
-            adv = chunkSize(dir);
+            size_t adv = chunkSize(dir);
 
             if (SEQAN_UNLIKELY(adv == 0))
             {
                 // if chunking isn't available try to seek
-                pos_type res = seekoff(ofs, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+                pos_type res = seekoff(ofs,
+                                       std::ios_base::cur,
+                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+
+                // if seek doesn't work manually skip characters (when reading)
                 if (IsSameType<TDirection, Input>::VALUE)
                     if (res == pos_type(off_type(-1)))
-                        while (ofs != 0)
+                        for (; ofs != 0; --ofs)
                             TBase::sbumpc();
 
                 return;
@@ -142,9 +145,9 @@ public:
 
             if (adv > (TUOffset)ofs)
                 adv = ofs;
+            ofs -= adv;
 
             advanceChunk(adv, dir);
-            ofs -= adv;
         }
     }
 
