@@ -64,12 +64,12 @@ template <typename TAlgTag>
 struct DefaultPageSize;
 
 #if SEQAN_HAS_ZLIB
+
 template <>
 struct CompressionContext<GZFile>
 {
     z_stream strm;
 };
-#endif
 
 template <>
 struct CompressionContext<BgzfFile>:
@@ -435,6 +435,8 @@ _decompressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
 
     return (dstCapacity - ctx.strm.avail_out) / sizeof(TDestValue);
 }
+
+#endif  // #if SEQAN_HAS_ZLIB
 
 }  // namespace seqan
 
