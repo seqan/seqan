@@ -67,6 +67,9 @@ public:
     typedef TTraits_ TTraits;
     typedef std::basic_streambuf<TValue, TTraits_> TBase;
 
+    using typename TBase::pos_type;
+    using typename TBase::off_type;
+
     TValue* eback() const   { return TBase::eback(); }
     TValue* gptr()  const   { return TBase::gptr();  }
     TValue* egptr() const   { return TBase::egptr(); }
@@ -128,9 +131,9 @@ public:
             if (SEQAN_UNLIKELY(adv == 0))
             {
                 // if chunking isn't available try to seek
-                std::pos_type res = seekoff(ofs, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+                pos_type res = seekoff(ofs, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
                 if (IsSameType<TDirection, Input>::VALUE)
-                    if (res == std::ios_base::pos_type(std::ios_base::off_type(-1)))
+                    if (res == pos_type(off_type(-1)))
                         while (ofs != 0)
                             TBase::sbumpc();
 

@@ -180,7 +180,7 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
         Range<TIValue*> const ichunk = getChunk(iter, Input());
         SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
-        register const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
+        const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
 
         for (; ptr != end(ichunk, Standard()); ++ptr)
         {
@@ -288,8 +288,8 @@ inline void _readUntil(TTarget &target,
         Range<TOValue*> const ochunk = getChunk(target, Output());
         SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
-        register const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
-        register       TOValue* SEQAN_RESTRICT optr = begin(ochunk, Standard());
+        const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
+              TOValue* SEQAN_RESTRICT optr = begin(ochunk, Standard());
 
         for (; iptr != end(ichunk, Standard()); ++iptr)
         {
