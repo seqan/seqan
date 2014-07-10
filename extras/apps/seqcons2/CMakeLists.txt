@@ -75,7 +75,7 @@ install (FILES LICENSE
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (seqcons2)
+seqan_add_app_test (seqcons2)
 
 # ----------------------------------------------------------------------------
 # CPack Install
