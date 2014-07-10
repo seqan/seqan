@@ -140,7 +140,7 @@ inline void advanceChunk(Iter<TContainer, TSpec> &iter, TSize size)
 template <typename TStream, typename TDirection, typename TSize>
 inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
 {
-    iter.streamBuf->advance(size, TDirection());
+    iter.streamBuf->advanceChunk(size, TDirection());
 }
 
 // extend target string size

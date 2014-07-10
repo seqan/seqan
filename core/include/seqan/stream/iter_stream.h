@@ -82,13 +82,13 @@ public:
     }
 
     template <typename TOffset>
-    void advance(TOffset off, Input)
+    void advanceChunk(TOffset off, Input)
     {
         TBase::gbump(off);
     }
 
     template <typename TOffset>
-    void advance(TOffset off, Output)
+    void advanceChunk(TOffset off, Output)
     {
         TBase::pbump(off);
     }
