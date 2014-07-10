@@ -63,12 +63,12 @@ int main(int argc, char const ** argv)
     // Print the command line arguments back to the user.
     if (options.verbosity >= 1)
     {
-        std::cout << "SeqCons\n"
+        std::cerr << "SeqCons\n"
                   << "=======\n"
                   << "\n"
                   << "__OPTIONS____________________________________________________________________\n"
                   << '\n';
-        options.print(std::cout);
+        options.print(std::cerr);
     }
 
     // Perform additional consistency checking of options.

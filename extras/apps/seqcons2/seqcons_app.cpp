@@ -159,7 +159,7 @@ void SeqConsAppImpl::run()
 {
     // Load read or alignment data.
     if (options.verbosity >= 1)
-        std::cout << "\n__LOADING DATA_______________________________________________________________\n"
+        std::cerr << "\n__LOADING DATA_______________________________________________________________\n"
                   << '\n';
     if (endsWithIgnoreCase(options.inputFile, ".sam"))
         loadAlignments(options.inputFile.c_str());
@@ -167,7 +167,7 @@ void SeqConsAppImpl::run()
         loadReads(options.inputFile.c_str());
 
     if (options.verbosity >= 1)
-        std::cout << "\n__COMPUTATION________________________________________________________________\n"
+        std::cerr << "\n__COMPUTATION________________________________________________________________\n"
                   << '\n';
     // Perform the consensus or realignment computation.
     switch (options.operation)
@@ -196,7 +196,7 @@ void SeqConsAppImpl::run()
 
     // Write the consensus and/or the alignments.
     if (options.verbosity >= 1)
-        std::cout << "\n__WRITING RESULT_____________________________________________________________\n"
+        std::cerr << "\n__WRITING RESULT_____________________________________________________________\n"
                   << '\n';
     if (!options.outputFileConsensus.empty())
         writeConsensus();
@@ -208,7 +208,9 @@ void SeqConsAppImpl::loadReads(char const * fileName)
 {
     // Allocate space for one contig in the store.
     resize(store.contigStore, 1);
-
+    std::stringstream ns;
+    ns << "consensus_1";
+    appendValue(store.contigNameStore, ns.str());
     // Load reads from sequence file.
     seqan::SequenceStream in(fileName);
     if (options.verbosity >= 1)

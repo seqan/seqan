@@ -167,7 +167,7 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("oa", "output-alignment-file", "Output file with alignment.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT_ALIGNMENT"));
     setRequired(parser, "output-alignment-file", false);
-    setValidValues(parser, "output-alignment-file", "sam fa fasta txt");
+    setValidValues(parser, "output-alignment-file", "sam txt");
 
     addOption(parser, seqan::ArgParseOption("oc", "output-consensus-file", "Output file with consensus sequence.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT_CONSENSUS"));
