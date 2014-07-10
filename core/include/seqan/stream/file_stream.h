@@ -35,6 +35,12 @@
 // supports async I/O / memory-mapping
 // ==========================================================================
 
+// TODO(weese):
+// * skip reading of a page frame when ptr is EMPTY and not ONDISK
+// * skip writing when page was not modified
+// * cancel writing and reading if page is locked while writing
+
+
 #ifndef SEQAN_FILE_FILE_STREAM_H_
 #define SEQAN_FILE_FILE_STREAM_H_
 
@@ -47,6 +53,115 @@ namespace seqan {
 // ============================================================================
 
 // ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TValue, typename TSpec>
+inline void
+free(Buffer<TValue, TSpec> & me)
+{
+    ::free(me.begin);
+}
+
+template <typename TValue, typename TSpec>
+inline void
+clear(Buffer<TValue, TSpec> & me)
+{
+    me.begin = me.end = NULL;
+    _setCapacity(me, 0);
+}
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void
+reserve(Buffer<TValue, TSpec> & me, TSize newCapacity)
+{
+    typedef typename Size<Buffer<TValue, TSpec> >::Type TBufferSize;
+    if ((TBufferSize)newCapacity <= capacity(me))
+        return;
+
+    free(me);
+    me.begin = me.end = (TValue *) valloc(newCapacity * sizeof(TValue));
+
+    if (me.begin == NULL)
+    {
+        _setCapacity(me, 0);
+        throw std::bad_alloc();
+    }
+
+    _setCapacity(me, newCapacity);
+}
+
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
+
+struct IOException :
+    public std::runtime_error
+{
+    IOException(const std::string & message) :
+        std::runtime_error(message)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Class FilePage
+// ----------------------------------------------------------------------------
+
+enum PageCompletionState
+{
+    IS_READ = 1,            // raw buffer is in sync with disk
+    IS_PREPROCESSED = 2,    // data buffer is in sync (e.g. decompressed) with raw
+    IS_POSTPROCESSED = 4,   //
+    IS_WRITTEN = 8
+};
+
+template <typename TValue, typename TSpec>
+struct FilePage
+{
+    typedef File<Async<> >                          TFile;
+    typedef typename AsyncRequest<FilePage>::Type   TAsyncRequest;
+    typedef typename Position<TFile>::Type          TFilePos;
+    typedef typename Size<TFile>::Type              TFileSize;
+
+    FilePage                * next;
+    unsigned                lockCount;
+
+    Buffer<TValue>          raw;
+    Buffer<TValue>          data;
+    TAsyncRequest           request;
+
+    TFilePos                filePos;
+    TFileSize               size;
+    PageFrameState          state;
+    PageFrameState          targetState;
+    PageCompletionState     completionState;
+};
+
+template <typename TValue, typename TSpec>
+struct AsyncRequest<FilePage<TValue, TSpec> >:
+    AsyncRequest<File<TSpec> > {};
+
+template <typename TValue, typename TConfig>
+struct AsyncRequest<FilePage<TValue, MMap<TConfig> > >
+{
+    typedef AsyncDummyRequest Type;
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TValue, typename TSpec>
+inline void
+clear(FilePage<TValue, TSpec> & me)
+{
+    free(me.raw);
+    free(me.data);
+    clear(me.raw);
+    clear(me.data);
+}
+
+// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -54,57 +169,647 @@ namespace seqan {
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-//template <typename TValue, typename TDirection, typename TSpec = Async<> >
-//struct FilePageTable
-//{
-//    typedef Buffer<TValue>                              TBuffer;
-//    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
-//    typedef PageChain<TPageFrame>                       TPageChain;
-//    typedef short int                                   TPageId;
-//
-//    typedef String<TPageId>                             TPageDir;
-//
-//    
-//};
+template <unsigned PAGE_SIZE = 4 * 1024>
+struct FixedPagingScheme
+{
+    enum { pageSize = PAGE_SIZE };
+
+    static void * EMPTY;
+    static void * ON_DISK;
+
+    String<void *> frameStart;
+};
+
+template <unsigned PAGE_SIZE>
+void * FixedPagingScheme<PAGE_SIZE>::EMPTY = NULL;
+
+template <unsigned PAGE_SIZE>
+void * FixedPagingScheme<PAGE_SIZE>::ON_DISK = (void *)-1;
+
+
+template <typename TFilePageTable>
+struct PagingScheme
+{
+    typedef FixedPagingScheme<> Type;
+};
+
+template <typename TValue, typename TDirection, typename TSpec = Async<> >
+struct FilePageTable;
+
+
+template <typename TValue, typename TDirection, typename TSpec>
+struct Host<FilePageTable<TValue, TDirection, TSpec> >
+{
+    typedef File<TSpec> Type;
+};
+
+template <typename TValue, typename TDirection, typename TSpec>
+struct Host<FilePageTable<TValue, TDirection, MMap<TSpec> > >
+{
+    typedef FileMapping<TSpec> Type;
+};
+
+
+// incoming chain
+// cached chain
+// outgoing chain
+
+template <typename TValue, typename TDirection, typename TSpec>
+struct FilePageTable
+{
+    typedef typename Host<FilePageTable>::Type          TFile;
+    typedef typename Size<TFile>::Type                  TSize;
+
+    typedef FilePage<TValue, TSpec>                     TPageFrame;
+    typedef PageChain<TPageFrame>                       TPageChain;
+    typedef typename PagingScheme<FilePageTable>::Type  TPagingScheme;
+    typedef Buffer<TValue>                              TBuffer;
+    typedef typename Iterator<TBuffer, Standard>::Type  TIterator;
+
+    typedef short int                                   TPageId;
+    typedef String<TPageId>                             TPageDir;
+
+    static const unsigned numPages = 2;                // double-buffering
+
+    TFile           file;
+    TSize           fileSize;
+
+    TPageChain      unused;
+    TPageChain      ready;
+    TPageChain      inProcess;
+
+    TPagingScheme   table;
+
+    inline void _printStats()
+    {
+        std::cout << "unused: " << unused.size() << "\tready:" << ready.size() << "\tinProcess:" << inProcess.size() << std::endl;
+    }
+
+    ~FilePageTable()
+    {
+        flushAndFree(*this);
+    }
+};
+
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+clear(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    pager.fileSize = 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getPageOffsetAndLength()
+// ----------------------------------------------------------------------------
+
+template <unsigned PAGE_SIZE, typename TPos>
+inline Pair<__int64, unsigned>
+_getPageOffsetAndLength(FixedPagingScheme<PAGE_SIZE> const & scheme, TPos pos)
+{
+    SEQAN_ASSERT_EQ(scheme.pageSize & (scheme.pageSize - 1), 0);  // pageSize must be a power of 2
+    return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(scheme.pageSize - 1), scheme.pageSize);
+}
+
+// ----------------------------------------------------------------------------
+// Function _getFrameStart()
+// ----------------------------------------------------------------------------
+
+template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
+inline void *
+_getFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize)
+{
+    register unsigned pageNo = filePos / table.pageSize;
+    if (SEQAN_LIKELY(pageNo < length(table.frameStart)))
+        return table.frameStart[pageNo];
+    else
+        return table.EMPTY;
+}
+
+// ----------------------------------------------------------------------------
+// Function _setFrameStart()
+// ----------------------------------------------------------------------------
+
+template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
+inline void
+_setFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize, void * frameStart)
+{
+    register unsigned pageNo = filePos / table.pageSize;
+    if (length(table.frameStart) <= pageNo)
+        resize(table.frameStart, pageNo + 1, table.EMPTY);
+    table.frameStart[pageNo] = frameStart;
+}
+
+// ----------------------------------------------------------------------------
+// Function _readFilePage()
+// ----------------------------------------------------------------------------
+
+// Variant for POSIX file access
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
+inline bool
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, File<TFileSpec> & file, TPageFrame & page)
+{
+    // allocate required memory
+    reserve(page.raw, page.size);
+
+    // do nothing in output-only mode or when there is nothing to read
+    if (IsSameType<TDirection, Output>::VALUE || page.filePos >= pager.fileSize)
+    {
+        // no valid data read and we return immediately
+        resize(page.raw, 0);
+        return true;    // true = reading completed
+    }
+
+    // shrink read buffer size at the end of file
+    resize(page.raw, std::min(page.size, pager.fileSize - page.filePos));
+
+    // start asynchronous reading
+    bool success = asyncReadAt(file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
+
+    // if an error occurred, throw an I/O exception
+    if (!success)
+        throw IOException((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
+
+    return false;   // false = reading in process
+}
+
+#ifndef PLATFORM_WINDOWS
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
+inline bool
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &, FileMapping<TFileSpec> & file, TPageFrame & page)
+{
+    typedef typename Size<FileMapping<TFileSpec> >::Type TSize;
+
+    TSize endOfs = page.filePos + page.size;
+    TSize dataSize;
+
+    // compute valid readable data
+    if (page.filePos >= length(file))
+        dataSize = 0;   // no valid data to read from behind the end of file
+    else
+        dataSize = std::min(page.size, length(file) - page.filePos);
+
+    // how to handle pages crossing/beyond the end of file
+    if (endOfs > length(file))
+    {
+        if (!IsSameType<TDirection, Input>::VALUE)
+        {
+            // increase file size to next page boundary and map the whole page
+            resize(file, endOfs);
+        }
+        else
+        {
+            // adapt page size to file size and map only the contents of the file
+            page.size = dataSize;
+        }
+    }
+
+    page.raw.begin = (TValue *) mapFileSegment(file, page.filePos, page.size);
+    _setCapacity(page.raw, page.size);
+    resize(page.raw, dataSize);
+    return true;    // true = reading completed
+}
+
+#endif
+
+// ----------------------------------------------------------------------------
+// Function _preprocessFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
+inline bool
+_preprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
+{
+    // not used yet, could be usefull for external sorters/mappers
+    page.data = page.raw;
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _postprocessFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
+inline bool
+_postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
+{
+    // not used yet, could be usefull for external sorters/mappers
+    resize(page.raw, length(page.data));
+    clear(page.data);
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
+inline bool
+_writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec> & file, TPageFrame & page)
+{
+    typedef typename Size<File<TFileSpec> >::Type TSize;
+
+    // only write in write-mode
+    if (IsSameType<TDirection, Input>::VALUE)
+    {
+        page.state = UNUSED;
+        return true;    // true = writing completed
+    }
+
+    // start asynchronous writing
+    page.state = WRITING;
+    bool success = asyncWriteAt(file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
+
+    if (!IsSameType<TDirection, Input>::VALUE)
+        pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
+
+    // if an error occurred, throw an I/O exception
+    if (!success)
+        throw IOException((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
+    return false;   // false = writing in process
+}
+
+#ifndef PLATFORM_WINDOWS
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
+inline bool
+_writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, FileMapping<TFileSpec> & file, TPageFrame & page)
+{
+    typedef typename Size<FileMapping<TFileSpec> >::Type TSize;
+
+    page.state = UNUSED;
+    unmapFileSegment(file, begin(page.raw, Standard()), capacity(page.raw));
+
+    if (!IsSameType<TDirection, Input>::VALUE)
+        pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
+
+    clear(page.raw);
+    return true;    // true = writing completed
+}
+
+#endif
+
+// ----------------------------------------------------------------------------
+// Function _processFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
+inline bool
+_processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & page, TBool const & doWait)
+{
+    bool inProgress;
+    while (page.state != page.targetState)
+    {
+        switch (page.state)
+        {
+        case UNUSED:
+            // page is ready, start reading
+            page.state = (_readFilePage(pager, pager.file, page)) ? READING_DONE : READING;
+            break;
+
+        case READING:
+            inProgress = false;
+            if (doWait)
+                waitFor(page.request);
+            else
+                waitFor(page.request, 0, inProgress);
+
+            // still in operation?
+            if (inProgress)
+                return false;
+
+            // was reading, now preprocessing
+            page.state = READING_DONE;
+            break;
+
+        case READING_DONE:
+            page.state = (_preprocessFilePage(pager, page, doWait)) ? PREPROCESSING_DONE : PREPROCESSING;
+            break;
+
+        case PREPROCESSING:
+            // TODO: fill me
+
+            page.state = PREPROCESSING_DONE;
+            break;
+
+        case PREPROCESSING_DONE:
+            // TODO: put me into ready chain
+            page.state = READY;
+            break;
+
+        case READY:
+            // all done
+            page.state = (_postprocessFilePage(pager, page, doWait)) ? POSTPROCESSING_DONE : POSTPROCESSING;
+            break;
+
+        case POSTPROCESSING:
+            // TODO: fill me
+
+            page.state = PREPROCESSING_DONE;
+            break;
+
+        case POSTPROCESSING_DONE:
+            // page was postprocessed, now write asynchronously
+            page.state = (_writeFilePage(pager, pager.file, page)) ? WRITING_DONE : WRITING;
+            break;
+
+        case WRITING:
+            inProgress = false;
+            if (doWait)
+                waitFor(page.request);
+            else
+                waitFor(page.request, 0, inProgress);
+
+            // still in operation?
+            if (inProgress)
+                return false;
+
+            page.state = WRITING_DONE;
+            break;
+
+        case WRITING_DONE:
+            // TODO: put me into ready chain
+            page.state = UNUSED;
+            break;
+        }
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _houseKeeping()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline bool
+_houseKeeping(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    typedef FilePageTable<TValue, TDirection, TSpec>    TFilePageTable;
+    typedef typename TFilePageTable::TPageFrame         TPageFrame;
+
+    if (!empty(pager.inProcess))
+    {
+        for (TPageFrame * p = pager.inProcess.first; p != NULL; )
+        {
+            TPageFrame & page = *p;
+            p = p->next;
+
+            if (_processFilePage(pager, page, False()))
+            {
+                if (page.state == READY)
+                {
+                    erase(pager.inProcess, page);
+                    pushBack(pager.ready, page);
+                }
+                else if (page.state == UNUSED)
+                {
+                    erase(pager.inProcess, page);
+                    pushBack(pager.unused, page);
+                }
+            }
+        }
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _swapOutFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline FilePage<TValue, TSpec> *
+_swapOutFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    SEQAN_ASSERT_NOT(empty(pager.ready) && empty(pager.inProcess));
+
+    typedef FilePage<TValue, TSpec> TPage;
+
+    if (!empty(pager.ready))
+        for (TPage * p = pager.ready.first; p != NULL; p = p->next)
+            if (p->lockCount == 0)
+            {
+                p->targetState = UNUSED;
+                _processFilePage(pager, *p, True());
+                erase(pager.ready, *p);
+                return p;
+            }
+
+    if (!empty(pager.inProcess))
+        for (TPage * p = pager.inProcess.first; p != NULL; p = p->next)
+            if (p->lockCount == 0)
+            {
+                p->targetState = UNUSED;
+                _processFilePage(pager, *p, True());
+                erase(pager.inProcess, *p);
+                return p;
+            }
+    return NULL;
+}
+
+// ----------------------------------------------------------------------------
+// Function _flush()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+flush(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    typedef FilePage<TValue, TSpec> TPage;
+
+    while (!empty(pager.ready))
+    {
+        TPage &page = popFront(pager.ready);
+        page.targetState = UNUSED;
+        _processFilePage(pager, page, True());
+        pushBack(pager.unused, page);
+    }
+
+    while (!empty(pager.inProcess))
+    {
+        TPage &page = popFront(pager.inProcess);
+        page.targetState = UNUSED;
+        _processFilePage(pager, page, True());
+        pushBack(pager.unused, page);
+    }
+}
+
+template <typename TValue, typename TDirection, typename TSpec, typename TFilePage>
+inline void
+_freeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePage & page)
+{
+    _setFrameStart(pager.table, page.filePos, page.size, pager.table.ON_DISK);
+    clear(page);
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+flushAndFree(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    flush(pager);
+    while (!empty(pager.unused))
+        _freeFilePage(pager, popFront(pager.unused));
+}
+
+// ----------------------------------------------------------------------------
+// Function _newFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline FilePage<TValue, TSpec> *
+_newFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    typedef FilePage<TValue, TSpec> TPage;
+
+    if (empty(pager.unused))
+        _houseKeeping(pager);
+
+    if (!empty(pager.unused))
+        return &popFront(pager.unused);
+
+    // fetch new page
+    if (length(pager.ready) + length(pager.inProcess) < pager.numPages)
+    {
+        // we can afford to create new buffers
+        return new TPage();
+    }
+    else
+    {
+        // all out-chain buffers are in progress (otherwise in-chain would not be empty)
+        // so we take and wait for the first out-chain buffer
+        if (!empty(pager.inProcess))
+        {
+            for (TPage *p = pager.inProcess.first; p != NULL; p = p->next)
+            {
+                if (p->targetState == UNUSED)
+                {
+                    _processFilePage(pager, *p, True());
+                    erase(pager.inProcess, *p);
+                    return p;
+                }
+            }
+        }
+        TPage *p = _swapOutFilePage(pager);
+        if (p != NULL)
+            return p;
+        else
+            return new TPage(); // we can't swap out anything, so we have to allocate more pages
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function _lockFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TFilePos, typename TSize>
+inline FilePage<TValue, TSpec> &
+_lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool &newPage, bool /*readOnly*/)
+{
+    typedef FilePage<TValue, TSpec> TPage;
+    TPage * p;
+
+    SEQAN_OMP_PRAGMA(critical(lockPageTable))
+    {
+        p = static_cast<TPage *>(_getFrameStart(pager.table, filePos, size));
+        if (p == pager.table.EMPTY || p == pager.table.ON_DISK)
+        {
+            p = _newFilePage(pager);
+            p->filePos = filePos;
+            p->size = size;
+            p->lockCount = 1;
+            _setFrameStart(pager.table, filePos, size, p);
+            newPage = true;
+        }
+        else
+        {
+            atomicInc(p->lockCount);
+            newPage = false;
+        }
+    }
+    return *p;
+}
+
+// ----------------------------------------------------------------------------
+// Function fetchFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TFilePos, typename TSize>
+inline FilePage<TValue, TSpec> &
+fetchFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool readOnly = false)
+{
+    typedef FilePage<TValue, TSpec> TPage;
+
+    bool notInList;
+    TPage & page = _lockFilePage(pager, filePos, size, notInList, readOnly);
+
+    // TODO(weese:) multithreading: the first should process, the others should suspend until page is READY
+    if (page.state != READY)
+    {
+        if (!notInList)
+        {
+            if (page.state == UNUSED)
+                erase(pager.unused, page);
+            else if (page.state != UNUSED)
+                erase(pager.inProcess, page);
+            notInList = true;
+        }
+        page.targetState = READY;
+        _processFilePage(pager, page, True());
+        if (notInList)
+            pushBack(pager.ready, page);
+    }
+    return page;
+}
+
+// ----------------------------------------------------------------------------
+// Function releaseFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec, typename TFilePage>
+inline void
+releaseFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TFilePage & page)
+{
+    // we automatically flush the page to disk here,
+    // to speed up the swap-out process
+    if (atomicDec(page.lockCount) == 0)
+    {
+        page.targetState = UNUSED;
+        erase(pager.ready, page);
+        if (_processFilePage(pager, page, False()))
+            pushBack(pager.unused, page);
+        else
+            pushBack(pager.inProcess, page);
+    }
+}
 
 // ----------------------------------------------------------------------------
 // Class FileStreamBuffer
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec = Async<> >
-struct FileStreamBuffer : public std::basic_streambuf<TValue>
+struct FileStreamBuffer :
+    public std::basic_streambuf<TValue>
 {
     typedef std::basic_streambuf<TValue>                TBase;
     typedef std::char_traits<TValue>                    TTraits;
 
+    typedef FilePageTable<TValue, TDirection, TSpec>    TFilePageTable;
+    typedef typename TFilePageTable::TPageFrame         TPageFrame;
+    typedef typename TFilePageTable::TFile              TFile;
+
+    typedef typename Size<TFile>::Type                  TSize;
     typedef typename TBase::int_type                    TIntValue;
     typedef typename TBase::off_type                    TDifference;
     typedef typename TBase::pos_type                    TPosition;
 
-    typedef File<Async<> >                              TFile;
-    typedef typename Size<TFile>::Type                  TSize;
-    typedef Buffer<TValue>                              TBuffer;
-    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
-    typedef PageChain<TPageFrame>                       TPageChain;
-//        typedef String<TPageFrame*>                         TPageChain;
-    typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
+    TFilePageTable  pager;
+    TPageFrame      *readPage;
+    TPageFrame      *writePage;
 
-    static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
-//    static const unsigned pageSize = 4*1024;      // 1M entries per page
-    static const unsigned numPages = 2;                // double-buffering
-
-    TFile       file;
-    TSize       fileSize;
-    TPageFrame  *framePtr;
-    TPageChain  inChain;
-    TPageChain  outChain;
-
-    int         nextReadyPageNo;
-    int         nextFetchPageNo;
-    int         lastPageNo;
-
-    bool        inChainNeedsHousekeeping;
-    bool        outChainNeedsHousekeeping;
+    TPosition       readPagePos;
+    TPosition       writePagePos;
 
     // Iterators to the current position in the page, the end of the page and the end of the page as it is on the disk.
     // itReadEnd is relevant if the file is opened in read+write mode on the last page.  itEnd can point behind the end
@@ -113,221 +818,88 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
 
     FileStreamBuffer()
     {
-        _initialize();
+        clear(*this);
     }
 
     ~FileStreamBuffer()
     {
         close(*this);
     }
-    
-    inline void _initialize()
+
+    inline void _stop()
     {
-        this->setp(NULL, NULL);
+        if (readPage != NULL)
+        {
+            releaseFilePage(pager, *readPage);
+            readPage = NULL;
+        }
+        if (writePage != NULL)
+        {
+            resize(writePage->data, std::max((TSize)length(writePage->data), (TSize)(this->pptr() - this->pbase())));
+            releaseFilePage(pager, *writePage);
+            writePage = NULL;
+        }
         this->setg(NULL, NULL, NULL);
-
-        fileSize = 0;
-        framePtr = NULL;
-        nextReadyPageNo = 0;
-        nextFetchPageNo = 0;
-        lastPageNo = -1;
-        inChainNeedsHousekeeping = false;
-        outChainNeedsHousekeeping = false;
+        this->setp(NULL, NULL);
     }
 
-    inline void _printStats()
+    bool _nextReadPage()
     {
-        std::cout << "in: " << inChain.size() << "\tout:" << outChain.size() << "\tframe:" << (__uint64)framePtr << std::endl;
-    }
+        if (readPage != NULL)
+        {
+            readPagePos += readPage->size;
+            releaseFilePage(pager, *readPage);
+            readPage = NULL;
+        }
 
-    inline int _getNextFetchPageNo()
-    {
-        return nextFetchPageNo++;
-    }
-
-    inline bool _injectUnusedBuffer(TPageFrame &frame)
-    {
-        bool inProgress;
-        frame.status = UNUSED;
-        if (!tryFetchBuffer(*this, frame, inProgress))
+        if (pager.fileSize <= readPagePos)
             return false;
 
-        #ifdef SEQAN_DEBUG_FILESTREAM
-        std::cout << "ADDED INTO IN-CHAIN (" << inChain.frames << "):" << std::endl;
-        std::cout << frame << std::endl;
-        #endif
-        inChain.pushBack(frame);
-        inChainNeedsHousekeeping |= inProgress;
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, readPagePos);
+        readPage = &fetchFilePage(pager, ol.i1, ol.i2);
+        this->setg(readPage->data.begin, readPage->data.begin, readPage->data.end);
         return true;
     }
 
-    inline bool _houseKeeping()
+    bool _nextWritePage()
     {
-        bool inProgress;
-
-        if (outChainNeedsHousekeeping)
+        if (writePage != NULL)
         {
-            bool someAreInProgress = false;
-            for (TPageFrame *p = outChain.first; p != NULL;)
+            resize(writePage->data, std::max((TSize)length(writePage->data), (TSize)(this->pptr() - this->pbase())));
+            if (writePage->size >= 0)
             {
-                TPageFrame &page = *p;
-                p = p->next;
-
-                if (!tryReleaseBuffer(*this, page, inProgress))
-                    return false;
-
-                if (!inProgress)
-                {
-                    outChain.erase(page);
-                    _injectUnusedBuffer(page);
-                }
-                else
-                    someAreInProgress = true;
+                writePagePos += writePage->size;
+                releaseFilePage(pager, *writePage);
             }
-            outChainNeedsHousekeeping = someAreInProgress;
+            else
+            {
+                // for BGZF files we know the block size on disk only after writing the page
+                int count = atomicDec(writePage->lockCount);
+                SEQAN_ASSERT_EQ(count, 0);
+                writePage->targetState = UNUSED;
+                erase(pager.ready, *writePage);
+                _processFilePage(pager, *writePage, True());
+                writePagePos += writePage->size;
+                pushBack(pager.unused, *writePage);
+            }
+            writePage = NULL;
         }
 
-        if (inChainNeedsHousekeeping)
-        {
-            bool someAreInProgress = false;
-            for (TPageFrame *p = inChain.first; p != NULL; p = p->next)
-            {
-                if (!tryFetchBuffer(*this, *p, inProgress))
-                    return false;
-                someAreInProgress |= inProgress;
-            }
-            inChainNeedsHousekeeping = someAreInProgress;
-        }
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, writePagePos);
+        writePage = &fetchFilePage(pager, ol.i1, ol.i2);
+        this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
         return true;
     }
-
-    // ,---, ,---, ,---, ,---, ,---,
-    // | 0 | | 1 | | 2 | | 3 | | 4 |
-    // '---' '---' '---' '---' '---'
-    //
-    //
-
-    inline bool _advanceBuffer()
-    {
-        bool result = true;
-        bool inProgress;
-
-        // release old buffer
-        if (framePtr != NULL)
-        {
-            // shrink current buffer size if it was not fully written (like the last buffer)
-            TPageFrame &oldFrame = *framePtr;
-            resize(oldFrame, this->pptr() - this->pbase());
-
-            // start to release the current buffer
-            result &= tryReleaseBuffer(*this, oldFrame, inProgress);
-            if (inProgress)
-            {
-                // writing is in progress
-                // -> we put the frame into the out-chain
-                #ifdef SEQAN_DEBUG_FILESTREAM
-                std::cout << "ADDED INTO OUT-CHAIN (" << outChain.frames << "):" << std::endl;
-                std::cout << oldFrame << std::endl;
-                #endif
-                outChain.pushBack(oldFrame);
-                outChainNeedsHousekeeping |= inProgress;
-            }
-            else
-                // writing finished immediately
-                // -> we reinject the now unused buffer into the in-chain
-                _injectUnusedBuffer(oldFrame);
-        }
-
-        // watch current progress
-        // initiate next asynchronous task for each buffer
-        // reinject written buffers for prefetching the next ones
-        _houseKeeping();
-
-        // fetch new buffer
-        if (inChain.empty())
-        {
-            // we need more incoming buffers
-            if (inChain.size() + outChain.size() < numPages)
-            {
-                // we can afford to create new buffers
-                _injectUnusedBuffer(*(new TPageFrame()));
-            }
-            else
-            {
-                // all out-chain buffers are in progress (otherwise in-chain would not be empty)
-                // so we take and wait for the first out-chain buffer
-                TPageFrame &anyOutChainBuffer = outChain.popFront();
-                tryReleaseBuffer(*this, anyOutChainBuffer, inProgress, true);
-                _injectUnusedBuffer(anyOutChainBuffer);
-            }
-        }
-
-        // we implicitly assume the front buffer
-        // to be the next in sequence nextReadyPageNo, nextReadyPageNo+1, ...
-        framePtr = &inChain.popFront();
-        SEQAN_ASSERT_EQ((int)framePtr->pageNo, nextReadyPageNo);
-        ++nextReadyPageNo;
-
-        // now fetch-and-wait for new buffer
-        result &= tryFetchBuffer(*this, *framePtr, inProgress, true);
-
-        // framePtr->begin+pageSize always points to the end of the page, whereas framePtr->end can point in the middle.
-        this->setg(framePtr->begin, framePtr->begin, framePtr->end);
-        this->setp(framePtr->begin, framePtr->begin + pageSize);
-
-        return result;
-    }
-
-    // Flush everything to disk.  If preserveFileSize then the file size is preserved.
-    inline bool _stop(bool preserveFileSize = false)
-    {
-        // has anything been written?
-        if (nextReadyPageNo == 0)
-            return true;
-
-        // shrink current buffer size if it was not fully written (like the last buffer)
-        TPageFrame &oldFrame = *framePtr;
-        resize(oldFrame, this->pptr() - this->pbase());
-
-        // start to release the current buffer
-        bool dummy;
-        bool result = tryReleaseBuffer(*this, oldFrame, dummy, true);
-        freePage(oldFrame, file);
-        delete &oldFrame;
-
-        while (!outChain.empty())
-        {
-            result &= tryReleaseBuffer(*this, outChain.front(), dummy, true);
-            freePage(outChain.front(), file);
-            delete &outChain.popFront();
-        }
-
-        while (!inChain.empty())
-        {
-            // cancel(inChain.front(), file);
-            freePage(inChain.front(), file);
-            delete &inChain.popFront();
-        }
-
-        TSize _fileSize = fileSize;
-        _initialize();
-        if (preserveFileSize)
-            fileSize = _fileSize;
-
-        return result;
-    }
-
 
     virtual TIntValue
     overflow(TIntValue val)
     {
-        if (SEQAN_UNLIKELY(!file))
+        if (SEQAN_UNLIKELY(!pager.file))
             return TTraits::eof();
 
-        if (SEQAN_UNLIKELY(this->pptr() >= this->epptr() && !_advanceBuffer()))
+        if (SEQAN_UNLIKELY(this->pptr() >= this->epptr() && !_nextWritePage()))
         {
             this->setp(NULL, NULL);
-            this->setg(NULL, NULL, NULL);
             return TTraits::eof();
         }
 
@@ -342,48 +914,54 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
     virtual TIntValue
     underflow()
     {
-        if (SEQAN_UNLIKELY(!file))
+        if (SEQAN_UNLIKELY(!pager.file))
             return TTraits::eof();
 
-        if (SEQAN_UNLIKELY(this->gptr() >= this->egptr()))
+        if (SEQAN_UNLIKELY(this->gptr() >= this->egptr() && !_nextReadPage()))
         {
-            if (SEQAN_UNLIKELY(nextFetchPageNo > lastPageNo || !_advanceBuffer()))
-            {
-                this->setp(NULL, NULL);
-                this->setg(NULL, NULL, NULL);
-                return TTraits::eof();
-            }
+            this->setg(NULL, NULL, NULL);
+            return TTraits::eof();
         }
 
         return TTraits::to_int_type(*this->gptr());
     }
 
-    TValue* eback() const   { return TBase::eback(); }
-    TValue* gptr()  const   { return TBase::gptr();  }
-    TValue* egptr() const   { return TBase::egptr(); }
+    TValue * eback() const   { return TBase::eback(); }
+    TValue * gptr()  const   { return TBase::gptr();  }
+    TValue * egptr() const   { return TBase::egptr(); }
 
-    TValue* pbase() const   { return TBase::pbase(); }
-    TValue* pptr()  const   { return TBase::pptr();  }
-    TValue* epptr() const   { return TBase::epptr(); }
+    TValue * pbase() const   { return TBase::pbase(); }
+    TValue * pptr()  const   { return TBase::pptr();  }
+    TValue * epptr() const   { return TBase::epptr(); }
 
-    void setg(TValue* new_eback, TValue* new_gptr, TValue* new_egptr)
+    void setg(TValue * new_eback, TValue * new_gptr, TValue * new_egptr)
     {
         TBase::setg(new_eback, new_gptr, new_egptr);
     }
 
-    void setp(TValue* new_pbase, TValue* new_epptr)
+    void setp(TValue * new_pbase, TValue * new_epptr)
     {
         TBase::setp(new_pbase, new_epptr);
     }
 
-    TPosition _tell()
+    TPosition _tell(std::ios::openmode which)
     {
-        if (SEQAN_LIKELY(file))
+        if (SEQAN_LIKELY(pager.file))
         {
-            if (SEQAN_LIKELY(framePtr != NULL))
-                return framePtr->pageNo * pageSize + (gptr() - eback());
+            if (which == std::ios::in)
+            {
+                if (SEQAN_LIKELY(readPage != NULL))
+                    return (TSize)readPagePos + (gptr() - eback());
+                else
+                    return 0;
+            }
             else
-                return 0;
+            {
+                if (SEQAN_LIKELY(writePage != NULL))
+                    return (TSize)writePagePos + (pptr() - pbase());
+                else
+                    return 0;
+            }
         }
         else
         {
@@ -391,38 +969,63 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         }
     }
 
-    TPosition _seek(TPosition pos)
+    TPosition _seek(TPosition pos, Input)
     {
+        if (readPage != NULL)
+        {
+            if (readPage->filePos <= pos && pos < readPage->filePos + readPage->size)
+            {
+                this->setg(readPage->data.begin, readPage->data.begin + (pos - readPage->filePos), readPage->data.end);
+                return pos;
+            }
+
+            // Release former page.
+            releaseFilePage(pager, *readPage);
+            readPage = NULL;
+        }
+
         if (SEQAN_UNLIKELY(pos < (TPosition)0))
             return -1;
 
-        // Compute the page number and offset of target position.
-        unsigned pageNo = pos / pageSize;
-        unsigned offset = pos % pageSize;
 
-        if (framePtr == NULL || framePtr->pageNo != pageNo)
-        {
-            if (framePtr == NULL && pos == 0)
-                return 0;
-
-            _stop(true);
-
-            // Fetch the given buffer and wait for this.
-            nextFetchPageNo = pageNo;
-            nextReadyPageNo = pageNo;
-
-            if (!_advanceBuffer())
-            {
-                this->setg(NULL, NULL, NULL);
-                this->setp(NULL, NULL);
-                return -1;
-            }
-        }
+        // Fetch new page.
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
+        readPage = &fetchFilePage(pager, ol.i1, ol.i2);
+        readPagePos = readPage->filePos;
 
         // Seek to correct position in page.
-        this->setg(framePtr->begin, framePtr->begin + offset, framePtr->end);
-        this->setp(framePtr->begin, framePtr->begin + pageSize);
-        this->pbump(offset);
+        this->setg(readPage->data.begin, readPage->data.begin + (pos - readPage->filePos), readPage->data.end);
+
+        return pos;
+    }
+
+    TPosition _seek(TPosition pos, Output)
+    {
+        if (writePage != NULL)
+        {
+            if (writePage->filePos <= pos && pos < writePage->filePos + writePage->size)
+            {
+                this->setg(writePage->data.begin, writePage->data.begin + (pos - writePage->filePos), writePage->data.end);
+                return pos;
+            }
+
+            // Release former page.
+            releaseFilePage(pager, *writePage);
+            writePage = NULL;
+        }
+
+        if (SEQAN_UNLIKELY(pos < (TPosition)0))
+            return -1;
+
+
+        // Fetch new page.
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
+        writePage = &fetchFilePage(pager, ol.i1, ol.i2);
+        writePagePos = writePage->filePos;
+
+        // Seek to correct position in page.
+        this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
+        this->pbump(pos - writePage->filePos);
 
         return pos;
     }
@@ -432,12 +1035,15 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         TPosition pos,
         std::ios::openmode which)
     {
-        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
+        SEQAN_ASSERT_NEQ((int)(which & IosOpenMode<TDirection>::VALUE), 0);
 
-        if (SEQAN_UNLIKELY(!file))
+        if (SEQAN_UNLIKELY(!pager.file))
             return -1;
 
-        return _seek(pos);
+        if (which == std::ios::in)
+            return _seek(pos, Input());
+        else
+            return _seek(pos, Output());
     }
 
     virtual TPosition
@@ -446,9 +1052,9 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         std::ios::seekdir dir,
         std::ios::openmode which)
     {
-        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
+        SEQAN_ASSERT_NEQ((int)(which & IosOpenMode<TDirection>::VALUE), 0);
 
-        if (SEQAN_UNLIKELY(!file))
+        if (SEQAN_UNLIKELY(!pager.file))
             return -1;
 
         TPosition pos;
@@ -456,49 +1062,59 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         if (dir == std::ios::beg)
             pos = off;
         else if (dir == std::ios::cur)
-            pos = _tell() + off;
+            pos = _tell(which) + off;
         else
-            pos = fileSize + off;
+        {
+            if (IsSameType<TDirection, Input>::VALUE || writePage == NULL)
+                pos = pager.fileSize;
+            else
+                pos = std::max(pager.fileSize, writePage->filePos + (TSize)(pptr() - pbase()));
+            pos += off;
+        }
 
-        return _seek(pos);
+        if (which == std::ios::in)
+            return _seek(pos, Input());
+        else
+            return _seek(pos, Output());
     }
+
 };
 
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+clear(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
+{
+    buffer.setp(NULL, NULL);
+    buffer.setg(NULL, NULL, NULL);
+
+    buffer.readPage = NULL;
+    buffer.writePage = NULL;
+    buffer.readPagePos = 0;
+    buffer.writePagePos = 0;
+}
 
 template <typename TValue, typename TDirection, typename TSpec>
 class FileStream;
 
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// --------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Input, TSpec> >
-{
-    enum { VALUE = OPEN_RDONLY };
-};
+template <typename TValue, typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<FilePageTable<TValue, TDirection, TSpec>, TDummy>:
+    DefaultOpenMode<typename Host<FilePageTable<TValue, TDirection, TSpec> >::Type, TDirection> {};
 
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Output, TSpec> >
-{
-    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
-};
+template <typename TValue, typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<FileStream<TValue, TDirection, TSpec>, TDummy>:
+    DefaultOpenMode<FilePageTable<TValue, TDirection, TSpec>, TDummy> {};
 
-
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Input, MMap<TSpec> > >
-{
-    enum { VALUE = OPEN_RDWR | OPEN_APPEND };
-};
-
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Output, MMap<TSpec> > >
-{
-    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
-};
-
-
-
+// --------------------------------------------------------------------------
+// Class FileStream
+// --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec>
-class FileStream : public BasicStream<TValue, TDirection>::Type
+class FileStream :
+    public BasicStream<TValue, TDirection>::Type
 {
 public:
     typedef FileStreamBuffer<TValue, TDirection, TSpec>     TStreamBuffer;
@@ -506,11 +1122,11 @@ public:
 
     TStreamBuffer buffer;
 
-    FileStream():
+    FileStream() :
         TBasicStream(&buffer)
     {}
 
-    FileStream(const char *fileName, int openMode = DefaultOpenMode<FileStream>::VALUE):
+    FileStream(const char * fileName, int openMode = DefaultOpenMode<FileStream>::VALUE) :
         TBasicStream(&buffer)
     {
         open(*this, fileName, openMode);
@@ -518,23 +1134,14 @@ public:
 
     ~FileStream()
     {
-        close(*this);
+        ::close(*this);
+    }
+
+    void close()
+    {
+        ::close(*this);
     }
 };
-
-template <typename TValue, typename TDirection, typename TSpec>
-inline bool
-open(FileStream<TValue, TDirection, TSpec> &stream, const char *fileName, int openMode = DefaultOpenMode<FileStream<TValue, TDirection, TSpec> >::VALUE)
-{
-    return open(stream.buffer, fileName, openMode);
-}
-
-template <typename TValue, typename TDirection, typename TSpec>
-inline bool
-close(FileStream<TValue, TDirection, TSpec> &stream)
-{
-    return close(stream.buffer);
-}
 
 // ============================================================================
 // Metafunctions
@@ -552,7 +1159,7 @@ struct Value<FileStreamBuffer<TValue, TDirection, TSpec> >
 
 template <typename TValue, typename TDirection, typename TSpec>
 struct Value<FileStream<TValue, TDirection, TSpec> >:
-    Value<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+    Value<FileStreamBuffer<TValue, TDirection, TSpec> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
@@ -569,7 +1176,7 @@ struct Position<FileStreamBuffer<TValue, TDirection, TSpec> >
 
 template <typename TValue, typename TDirection, typename TSpec>
 struct Position<FileStream<TValue, TDirection, TSpec> >:
-    Position<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+    Position<FileStreamBuffer<TValue, TDirection, TSpec> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
@@ -586,7 +1193,7 @@ struct Size<FileStreamBuffer<TValue, TDirection, TSpec> >
 
 template <typename TValue, typename TDirection, typename TSpec>
 struct Size<FileStream<TValue, TDirection, TSpec> >:
-    Size<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+    Size<FileStreamBuffer<TValue, TDirection, TSpec> >{};
 
 // ----------------------------------------------------------------------------
 // Concepts
@@ -602,341 +1209,69 @@ template <typename TValue, typename TSpec>
 SEQAN_CONCEPT_IMPL((FileStream<TValue, Bidirectional, TSpec>), (BidirectionalStreamConcept));
 
 
-// ============================================================================
-// Functions
-// ============================================================================
-
-// Variant for File<TFileSpec> (fallback if MMap<> not available as on Windows).
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-_readBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf)
-{
-    // allocate page memory if not done already
-    if (pf.begin == NULL)
-        if (!allocPage(pf, buffer.pageSize, buffer.file))
-            SEQAN_FAIL("ERROR: Could not allocate page of size %u.", (unsigned)buffer.pageSize);
-
-    // only read in read-mode
-    if (IsSameType<TDirection, Output>::VALUE || (int)pf.pageNo > buffer.lastPageNo)
-    {
-        resize(pf, 0);
-        pf.status = READY;
-        return true;
-    }
-
-    // shrink buffer size at the end of file
-    if ((int)pf.pageNo < buffer.lastPageNo)
-        resize(pf, buffer.pageSize);
-    else
-        resize(pf, buffer.fileSize - buffer.lastPageNo * buffer.pageSize);
-
-    buffer.setg(pf.begin, pf.begin, pf.end);
-
-    // read next page into memory
-    return readPage(pf, buffer.file);
-}
-
-#ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
-inline bool
-_readBuffer(FileStreamBuffer<TValue, TDirection, MMap<TConfig> > &buffer, TPageFrame &pf)
-{
-    typedef FileStreamBuffer<TValue, TDirection, MMap<TConfig> >   TFileStream;
-    typedef typename TFileStream::TFile                         TFile;
-    typedef typename Size<TFile>::Type                          TSize;
-
-    _setCapacity(pf, buffer.pageSize);
-    TSize size = buffer.pageSize;
-
-    // Get the page size on the disk, adjusted for last page; required for setting itReadEnd.
-    unsigned pageSizeOnDisk = size;
-
-    // how to handle pages crossing/beyond the end of file
-    if ((int)pf.pageNo >= buffer.lastPageNo)
-    {
-        if (!IsSameType<TDirection, Input>::VALUE)
-        {
-            pageSizeOnDisk = buffer.fileSize - pf.pageNo * buffer.pageSize;
-
-            // 1. buffer is writable:
-            //
-            // increase file size to next page boundary
-            // and map the whole page
-            buffer.lastPageNo = pf.pageNo;
-            buffer.fileSize = (TSize)(buffer.lastPageNo + 1) * (TSize)buffer.pageSize;
-            resize(buffer.file, buffer.fileSize);
-        }
-        else
-        {
-            // 2. buffer is read-only:
-            //
-            // adapt buffer to file size
-            // map only the contents of the file
-            if ((int)pf.pageNo == buffer.lastPageNo)
-            {
-                pageSizeOnDisk = size;
-                size = buffer.fileSize - (TSize)buffer.lastPageNo * (TSize)buffer.pageSize;
-            }
-            else
-            {
-                pageSizeOnDisk = 0;
-                // don't try to read pages behind the end the file
-                resize(pf, 0);
-                pf.status = READY;
-                return true;
-            }
-        }
-    }
-
-    bool res = false;
-    if (!IsSameType<TDirection, Input>::VALUE)
-        res = mapWritePage(pf, buffer.file, size);
-    else
-        res = mapReadPage(pf, buffer.file, size);
-
-    buffer.setg(pf.begin, pf.begin, pf.begin + pageSizeOnDisk);
-
-    return res;
-}
-#endif
-
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-_preprocessBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
-{
-    // not used yet, could be usefull for external sorters/mappers
-    pf.status = READY;
-    return true;
-}
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-_postprocessBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
-{
-    // not used yet, could be usefull for external sorters/mappers
-    pf.status = POSTPROCESSED;
-    return true;
-}
-
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-_writeBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf)
-{
-    // only write in write-mode
-    if (IsSameType<TDirection, Input>::VALUE)
-    {
-        pf.status = UNUSED;
-        return true;
-    }
-
-    // shrink buffer size if it was not fully written (like the last buffer)
-    if (buffer.pptr() != buffer.epptr())
-        resize(pf, buffer.pptr() - pf.begin);
-
-    return writePage(pf, buffer.file);
-}
-
-#ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
-inline bool
-_writeBuffer(FileStreamBuffer<TValue, TDirection, MMap<TConfig> > &buffer, TPageFrame &pf)
-{
-    typedef FileStreamBuffer<TValue, TDirection, MMap<TConfig> >   TFileStream;
-    typedef typename TFileStream::TFile                         TFile;
-    typedef typename Size<TFile>::Type                          TSize;
-
-    TSize pageLen = length(pf);
-    pf.status = UNUSED;
-    unmapPage(pf, buffer.file);
-
-    if (!IsSameType<TDirection, Input>::VALUE && (pageLen < buffer.pageSize))
-    {
-        // shrink the file again, it was enlarged earlier (in _readBuffer)
-        buffer.lastPageNo = pf.pageNo;
-        buffer.fileSize = (TSize)pf.pageNo * (TSize)buffer.pageSize + pageLen;
-        resize(buffer.file, buffer.fileSize);
-    }
-    return true;
-}
-#endif
-
-// ----------------------------------------------------------------------------
-// Function tryFetchBuffer()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-tryFetchBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf, bool &inProgress, bool doWait = false)
-{
-    inProgress = true;
-    if (pf.status == UNUSED)
-    {
-        // buffer is idle, now read asynchronously
-        pf.pageNo = buffer._getNextFetchPageNo();
-        if (!_readBuffer(buffer, pf))
-            return false;
-    }
-
-    if (pf.status == READING)
-    {
-        bool inProgress = false;
-        if (doWait)
-        {
-            if (!waitFor(pf))
-                return false;
-        }
-        else
-        {
-            if (!waitFor(pf, 0, inProgress))
-                return false;
-        }
-
-        // still in operation?
-        if (inProgress)
-            return true;
-
-        // was reading, now preprocessing
-        pf.status = PREPROCESSING;
-        if (!_preprocessBuffer(buffer, pf, doWait))
-            return false;
-    }
-
-    if (pf.status == PREPROCESSING)
-    {
-        // we get here only if doWait==false and the
-        // asynchronous postprocessing is in progress
-        SEQAN_ASSERT_NOT(doWait);
-        return true;
-    }
-
-    if (pf.status == READY)
-    {
-        // if in write mode, extend half-read buffer to page size
-        if (!IsSameType<TDirection, Input>::VALUE)
-            resize(pf, capacity(pf));
-
-        // all done
-        inProgress = false;
-        return true;
-    }
-
-    SEQAN_FAIL("PageFrame has inconsistent state.");
-    return false;
-}
-
-// ----------------------------------------------------------------------------
-// Function tryReleaseBuffer()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-tryReleaseBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf, bool &inProgress, bool doWait = false)
-{
-    inProgress = true;
-    #ifdef SEQAN_DEBUG_FILESTREAM
-    std::cout << "Release:" << std::endl;
-    #endif
-    if (pf.status == READY)
-    {
-        pf.status = POSTPROCESSING;
-        _postprocessBuffer(buffer, pf, doWait);
-    }
-
-    if (pf.status == POSTPROCESSING)
-    {
-        #ifdef SEQAN_DEBUG_FILESTREAM
-        std::cout<<pf<<std::endl;
-        #endif
-        // we get here only if doWait==false and the
-        // asynchronous postprocessing is in progress
-        SEQAN_ASSERT_NOT(doWait);
-        return true;
-    }
-
-    if (pf.status == POSTPROCESSED)
-    {
-        #ifdef SEQAN_DEBUG_FILESTREAM
-        std::cout<<pf<<std::endl;
-        #endif
-        // buffer was postprocessed, now write asynchronously
-        if (!_writeBuffer(buffer, pf))
-            return false;
-    }
-
-    if (pf.status == WRITING)
-    {
-        #ifdef SEQAN_DEBUG_FILESTREAM
-        std::cout<<pf<<std::endl;
-        #endif
-        bool inProgress = false;
-        if (doWait)
-        {
-            if (!waitFor(pf))
-                return false;
-        }
-        else
-        {
-            if (!waitFor(pf, 0, inProgress))
-                return false;
-        }
-
-        // still in operation?
-        if (inProgress)
-            return true;
-    }
-
-    // transform ready after write into unused
-    if (pf.status == READY)
-        pf.status = UNUSED;
-
-    if (pf.status == UNUSED)
-    {
-        #ifdef SEQAN_DEBUG_FILESTREAM
-        std::cout<<pf<<std::endl;
-        #endif
-        // all done
-        inProgress = false;
-        return true;
-    }
-
-    SEQAN_FAIL("PageFrame has inconsistent state.");
-    return false;
-}
-
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec, typename TFilename, typename TFlags>
 inline bool
-open(FileStreamBuffer<TValue, TDirection, TSpec> & buffer, TFilename const &filename, TFlags const &flags)
+open(FilePageTable<TValue, TDirection, TSpec> & pager, TFilename const & filename, TFlags const & flags)
 {
-    buffer._initialize();
-    bool result = open(buffer.file, filename, flags);
-    buffer.fileSize = (result)? size(buffer.file) / sizeof(TValue) : 0ul;
-    if (buffer.fileSize != 0)
-        buffer.lastPageNo = (buffer.fileSize - 1) / buffer.pageSize;
-    else
-        buffer.lastPageNo = -1;
+    clear(pager);
+    bool result = open(pager.file, filename, flags);
+    pager.fileSize = (result) ? length(pager.file) / sizeof(TValue) : 0ul;
     return result;
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline bool
+open(FileStream<TValue, TDirection, TSpec> & stream, const char * fileName, int openMode = DefaultOpenMode<FileStream<TValue, TDirection, TSpec> >::VALUE)
+{
+    return open(stream.buffer.pager, fileName, openMode);
 }
 
 // ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
 
+template <typename TFile, typename TSize>
+inline void
+_updateFileSize(TFile &, TSize)
+{
+}
+
+template <typename TFileSpec, typename TSize>
+inline void
+_updateFileSize(FileMapping<TFileSpec> & file, TSize size)
+{
+    resize(file, size);
+}
+
 template <typename TValue, typename TDirection, typename TSpec>
-inline int
+inline void
+close(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    if (pager.file)
+    {
+        flushAndFree(pager);
+        _updateFileSize(pager.file, pager.fileSize);
+        close(pager.file);
+    }
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
 close(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
 {
-    if (buffer.file)
-    {
-        buffer._stop();
-        return close(buffer.file);
-    }
-    return true;
+    buffer._stop();
+    close(buffer.pager);
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+close(FileStream<TValue, TDirection, TSpec> & stream)
+{
+    close(stream.buffer);
 }
 
 } // namespace seqan

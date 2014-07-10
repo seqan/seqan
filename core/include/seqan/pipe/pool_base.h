@@ -1110,14 +1110,6 @@ namespace SEQAN_NAMESPACE_MAIN
         return me.clear();
     }
 
-	// deprecated
-    template < typename TValue, typename TSpec >
-    inline typename Size< Pool<TValue, TSpec> >::Type
-    size(Pool<TValue, TSpec> const &me)
-    {
-        return me.size();
-    }
-
 ///.Function.length.param.object.type:Class.Pool
 ///.Function.length.class:Class.Pool
 

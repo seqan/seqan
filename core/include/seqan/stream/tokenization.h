@@ -180,7 +180,7 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
         Range<TIValue*> const ichunk = getChunk(iter, Input());
         SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
-        register const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
+        const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
 
         for (; ptr != end(ichunk, Standard()); ++ptr)
         {
@@ -225,7 +225,7 @@ inline void skipOne(TFwdIterator &iter, TFunctor &functor)
 {
     AssertFunctor<TFunctor, ParseError> asserter(functor);
 
-    if (atEnd(iter))
+    if (SEQAN_UNLIKELY(atEnd(iter)))
         throw UnexpectedEnd();
 
     asserter(*iter);
@@ -257,9 +257,9 @@ _readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgno
     typename Value<TFwdIterator>::Type val;
     for (; !atEnd(iter); ++iter)
     {
-        if (stopFunctor(val = *iter))
+        if (SEQAN_UNLIKELY(stopFunctor(val = *iter)))
             return;
-        if (!ignoreFunctor(val))
+        if (SEQAN_LIKELY(!ignoreFunctor(val)))
             writeValue(target, val);
     }
 }
@@ -288,8 +288,8 @@ inline void _readUntil(TTarget &target,
         Range<TOValue*> const ochunk = getChunk(target, Output());
         SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
-        register const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
-        register       TOValue* SEQAN_RESTRICT optr = begin(ochunk, Standard());
+        const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
+              TOValue* SEQAN_RESTRICT optr = begin(ochunk, Standard());
 
         for (; iptr != end(ichunk, Standard()); ++iptr)
         {
@@ -303,7 +303,7 @@ inline void _readUntil(TTarget &target,
             {
                 // construct values in reserved memory
                 *optr = *iptr;
-                if (++optr == end(ochunk, Standard()))
+                if (SEQAN_UNLIKELY(++optr == end(ochunk, Standard())))
                     break;
             }
         }
@@ -360,7 +360,7 @@ inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFun
 template <typename TTarget, typename TFwdIterator, typename TFunctor>
 inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor &functor)
 {
-    if (atEnd(iter))
+    if (SEQAN_UNLIKELY(atEnd(iter)))
         throw UnexpectedEnd();
 
     AssertFunctor<TFunctor, ParseError> asserter(functor);
@@ -380,7 +380,7 @@ inline void readOne(TTarget & target, TFwdIterator &iter, TFunctor const &functo
 template <typename TTarget, typename TFwdIterator>
 inline void readOne(TTarget & target, TFwdIterator &iter)
 {
-    if (atEnd(iter))
+    if (SEQAN_UNLIKELY(atEnd(iter)))
         throw UnexpectedEnd();
 
     target = *iter;
@@ -435,14 +435,14 @@ inline void readLine(TTarget &target, TFwdIterator &iter)
 
     // consume "\r\n.", "\r[!\n]" or "\n."
 
-    if (atEnd(iter))
+    if (SEQAN_UNLIKELY(atEnd(iter)))
         return;
 
     // If the current character is Line Feed ('\r') then this can be an ANSI or a Mac line ending.
     if (*iter == '\r')
     {
         ++iter;     // consume the found newline
-        if (atEnd(iter))
+        if (SEQAN_UNLIKELY(atEnd(iter)))
             return;
     }
 
@@ -462,14 +462,14 @@ inline void skipLine(TFwdIterator &iter)
 
     // consume "\r\n.", "\r[!\n]" or "\n."
 
-    if (atEnd(iter))
+    if (SEQAN_UNLIKELY(atEnd(iter)))
         return;
 
     // If the current character is Line Feed ('\r') then this can be an ANSI or a Mac line ending.
     if (*iter == '\r')
     {
         ++iter;     // consume the found newline
-        if (atEnd(iter))
+        if (SEQAN_UNLIKELY(atEnd(iter)))
             return;
     }
 

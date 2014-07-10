@@ -51,17 +51,17 @@
 #include <seqan/sequence.h>
 
 // ===========================================================================
-// File Format and Type Guessing.
-// ===========================================================================
-
-#include <seqan/stream/guess_format.h>
-
-// ===========================================================================
 // Stream Concept.
 // ===========================================================================
 
 #include <seqan/stream/concept_stream.h>
 #include <seqan/stream/stream_base.h>
+
+// ===========================================================================
+// File Format and Type Guessing.
+// ===========================================================================
+
+#include <seqan/stream/guess_format.h>
 
 // ===========================================================================
 // Stream Iterators.
@@ -70,18 +70,13 @@
 #include <seqan/stream/iter_stream.h>
 
 // ===========================================================================
-// Stream Implemetations and Adaptions.
+// Stream Implementations and Adaptions.
 // ===========================================================================
 
 #include <seqan/stream/adapt_ios.h>
 #include <seqan/stream/file_stream.h>
+#include <seqan/stream/stream_compressor.h>
 #include <seqan/stream/virtual_stream.h>
-
-//TODO: can this be removed?
-//#include <seqan/stream/virtual_stream.h>
-
-// TODO(esiragusa): This file is deprecated - remove it.
-#include <seqan/stream/mmap_stream_deprecated.h>
 
 // ===========================================================================
 // Tokenization and Lexical Cast.

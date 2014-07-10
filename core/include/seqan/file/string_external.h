@@ -1440,7 +1440,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			inline bool operator() (TPageFrame &pf)
             {
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
                 bool inProgress;
                 bool waitResult = waitFor(pf, 0, inProgress);
 
@@ -1471,7 +1471,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                     pf, 
                     _max(pf.priority, newLevel));    		// update lru order
 
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
 				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
 
                 // TODO(weese): Throw an I/O exception
@@ -1906,7 +1906,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 		me._temporary = false;
 		if ((me._ownFile = open(me.file, fileName, openMode)))
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 
@@ -1943,7 +1943,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
         me._temporary = false;
         me._ownFile = false;
         if (me.file)
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 
@@ -2170,16 +2170,15 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     }
 //____________________________________________________________________________
 
-	template < typename TValue, typename TConfig, typename TExpand >
-	inline void
-	appendValue(String<TValue, External<TConfig> > &me, 
-				TValue const &Val_,
-				Tag<TExpand> expand)
-	{
-//IOREV
-		resize(me, me.data_size + 1, expand);
-		back(me) = Val_;
-	}
+    template < typename TTargetValue, typename TConfig, typename TValue, typename TExpand >
+    inline void
+    appendValue(String<TTargetValue, External<TConfig> > &me,
+                TValue SEQAN_FORWARD_CARG value,
+                Tag<TExpand> expand)
+    {
+        resize(me, me.data_size + 1, expand);
+        back(me) = SEQAN_FORWARD(TValue, value);
+    }
 
 //____________________________________________________________________________
 

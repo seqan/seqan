@@ -90,7 +90,7 @@ typedef Tag<Raw_> Raw;
 // Tag FileFormatExtensions
 // --------------------------------------------------------------------------
 
-template <typename TFormat, typename T = void>
+template <typename TFormat, typename T>
 struct FileFormatExtensions;
 
 

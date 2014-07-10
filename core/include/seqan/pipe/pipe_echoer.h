@@ -158,7 +158,7 @@ namespace SEQAN_NAMESPACE_MAIN
     
     template < typename TInput, unsigned echoRepeats >
     inline bool control(Pipe< TInput, Echoer< echoRepeats, true > > &me, ControlBeginRead const &command) {
-        if (!control(me.in, command) || size(me.in) < echoRepeats - 1) return false;
+        if (!control(me.in, command) || length(me.in) < echoRepeats - 1) return false;
         me.tmp.i1 = 0;
         LoopReverse<EchoerFillWorker_, echoRepeats - 1>::run(me);
         if (!eof(me.in)) me.tmp.i2[0] = *me.in;

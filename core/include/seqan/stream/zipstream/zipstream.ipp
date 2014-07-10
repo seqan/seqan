@@ -141,7 +141,7 @@ namespace detail{
              ++w;
          }
          if ( zip_to_stream( this->pbase(), w)) {
-             this->setp( this->pbase(), this->epptr() - 1);
+             this->setp( this->pbase(), this->epptr());
              return c;
          } else
              return EOF;
