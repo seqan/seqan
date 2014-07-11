@@ -50,6 +50,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 // Class VcfHeaderRecord
 // ----------------------------------------------------------------------------
+
 /*!
  * @class VcfHeaderRecord
  * @headerfile <seqan/vcf_io.h>
@@ -57,10 +58,10 @@ namespace seqan {
  * 
  * @signature class VcfHeaderRecord;
  * 
- * @var CharString VcfHeaderRecord::key
+ * @var CharString VcfHeaderRecord::key;
  * @brief Key of the header record.
  * 
- * @var CharString VcfHeaderRecord::value
+ * @var CharString VcfHeaderRecord::value;
  * @brief Value of the header record.
  */
 
@@ -71,8 +72,8 @@ namespace seqan {
  * @signature VcfHeaderRecord::VcfHeaderRecord();
  * @signature VcfHeaderRecord::VcfHeaderRecord(key, value);
  * 
- * @param[in] key   Key of the header record, CharString.
- * @param[in] value Key of the header record, CharString.
+ * @param[in] key   Key of the header record, @link CharString @endlink.
+ * @param[in] value Key of the header record, @link CharString @endlink.
  */
 
 /*!

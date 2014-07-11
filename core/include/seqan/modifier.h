@@ -62,6 +62,12 @@
 #include <seqan/modifier/modifier_string.h>
 
 // --------------------------------------------------------------------------
+// Auxiliary header for special modifiers
+// --------------------------------------------------------------------------
+
+#include <seqan/modifier/cyclic_shape.h>
+
+// --------------------------------------------------------------------------
 // Applications of Base Classes
 // --------------------------------------------------------------------------
 
@@ -69,5 +75,6 @@
 #include <seqan/modifier/modifier_view.h>
 #include <seqan/modifier/modifier_reverse.h>
 #include <seqan/modifier/modifier_shortcuts.h>
+#include <seqan/modifier/modifier_cyclic_shape.h>
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_

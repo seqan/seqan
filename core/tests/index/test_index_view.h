@@ -50,13 +50,20 @@ using namespace seqan;
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Copied from test_stree_iterators.h
 
-template <typename TIndex1, typename TIndex2>
-void compareTreeIterators(TIndex1 &index1, TIndex2 &index2)
+template <typename TIndex, typename TIndexView>
+void compareTreeIterators(TIndex &index, TIndexView & /*indexView */)
 {
-	Iter<TIndex1, VSTree< TopDown< ParentLinks<Preorder> > > > it1(index1);
-	Iter<TIndex2, VSTree< TopDown< ParentLinks<Preorder> > > > it2(index2);
+    typedef typename Iterator<TIndex, TopDown<ParentLinks<> > >::Type       TIter;
+    typedef typename Iterator<TIndexView, TopDown<ParentLinks<> > >::Type   TIterView;
+    typedef Factory<TIter>                                                  TFactory;
+    typedef typename View<TFactory>::Type                                   TTFactoryView;
 
-	while (!atEnd(it1) && !atEnd(it2)) 
+    TFactory factory(index, 1u, length(index));
+    TTFactoryView factoryView = view(factory);
+    TIterView it2 = getObject(factoryView, 0u);
+	TIter it1(index);
+
+	while (!atEnd(it1) && !atEnd(it2))
 	{
 		SEQAN_ASSERT_EQ(representative(it1), representative(it2));
 		SEQAN_ASSERT_EQ(parentEdgeLabel(it1), parentEdgeLabel(it2));

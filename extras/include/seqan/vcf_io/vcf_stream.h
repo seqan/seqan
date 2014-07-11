@@ -64,6 +64,9 @@ namespace seqan {
  * The output is as follows:
  *
  * @include demos/vcf_io/vcf_stream_read.cpp.stdout
+ *
+ * @var VcfHeader VcfStream::header
+ * @brief Member to store header information.
  */
 
 /*!
@@ -82,15 +85,15 @@ namespace seqan {
  * @headerfile <seqan/vcf_io.h>
  * @brief Open mode for the class @link VcfStream @endlink.
  *
- * @signature enum Mode;
+ * @signature enum VcfStream::Mode;
  *
- * @var VcfStream::Mode VcfStream::INVALID;
+ * @val VcfStream::Mode VcfStream::INVALID;
  * @brief Invalid open mode.
  *
- * @var VcfStream::Mode VcfStream::READ;
+ * @val VcfStream::Mode VcfStream::READ;
  * @brief Open file for reading.
  *
- * @var VcfStream::Mode VcfStream::WRITE;
+ * @val VcfStream::Mode VcfStream::WRITE;
  * @brief Open file for writing.
  */
 

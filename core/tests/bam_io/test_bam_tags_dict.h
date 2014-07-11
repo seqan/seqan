@@ -185,7 +185,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_A)
 
     CharString str("XXAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("Aa"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("Aa"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_c)
@@ -194,7 +194,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_c)
 
     CharString str("XXc\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("c\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("c\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_C)
@@ -203,7 +203,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_C)
 
     CharString str("XXC\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("C\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("C\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_s)
@@ -212,7 +212,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_s)
 
     CharString str("XXs\xff\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("s\xff\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("s\xff\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_S)
@@ -221,7 +221,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_S)
 
     CharString str("XXS\xff\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("S\xff\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("S\xff\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_i)
@@ -230,7 +230,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_i)
 
     CharString str("XXi\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("i\xff\xff\xff\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("i\xff\xff\xff\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_I)
@@ -239,7 +239,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_I)
 
     CharString str("XXI\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("I\xff\xff\xff\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("I\xff\xff\xff\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_f)
@@ -248,7 +248,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_f)
 
     CharString str("XXf\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
-    SEQAN_ASSERT_EQ(CharString("f\xff\xff\xff\xff"), getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(CharString("f\xff\xff\xff\xff"), suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Z)
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Z)
     BamTagsDict bamTags(str);
     CharString expected("Zthis is a test");
     appendValue(expected, '\0');
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -275,7 +275,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_H)
     BamTagsDict bamTags(str);
     CharString expected("ZFFFF");
     appendValue(expected, '\0');
-    SEQAN_ASSERT_EQ(expected, getTagValue(bamTags, 0));
+    SEQAN_ASSERT_EQ(expected, suffix(bamTags[0], 2));
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bc)
@@ -292,7 +292,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bc)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -310,7 +310,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BC)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -328,7 +328,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bs)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -346,7 +346,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BS)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -364,7 +364,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bi)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff\xff\xff\xff\xff\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -382,7 +382,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BI)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff\xff\xff\xff\xff\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -400,7 +400,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bf)
     appendValue(expected, '\0');
     appendValue(expected, '\0');
     append(expected, "\xff\xff\xff\xff\xff\xff\xff\xff");
-    CharString result = getTagValue(bamTags, 0);
+    CharString result = suffix(bamTags[0], 2);
     SEQAN_ASSERT_EQ(expected, result);
 }
 
@@ -486,6 +486,42 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_set_tag_value)
         assignTagsSamToBam(bamTags, samTags);
         BamTagsDict tags(bamTags);
         setTagValue(tags, "XA", "Example string", 'Z');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:z\tXA:Z:Example string"), CharString(samTags));
+    }
+}
+
+SEQAN_DEFINE_TEST(test_bam_tags_dict_append_tag_value)
+{
+    using namespace seqan;
+
+    // No tag.
+    {
+        CharString bamTags;
+        CharString samTags = "";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XX", 'o', 'A');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:o"), CharString(samTags));
+    }
+    // 2 tags.
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:A:y";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XZ", 'o', 'A');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:o"), CharString(samTags));
+    }
+    // String value (append).
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:A:y\tXZ:A:z";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        appendTagValue(tags, "XA", "Example string", 'Z');
         assignTagsBamToSam(samTags, bamTags);
         SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:z\tXA:Z:Example string"), CharString(samTags));
     }

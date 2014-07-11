@@ -157,7 +157,7 @@ struct DisableIf<False, T>
  * @deprecated Will be renamed to EnableIfC.
  * @brief Metafunction to use for conditionally enabling code, bool version.
  *
- * @signature EnableIf<BOOL, T = void>::Type
+ * @signature EnableIf2<BOOL, T = void>::Type
  *
  * @tparam BOOL The <tt>bool</tt> constant to evaluate for enabling/disabling.
  * @tparam T    Dummy, do not set.
@@ -208,7 +208,7 @@ struct EnableIf2<false, T> {};
  * @deprecated Will be renamed to DisableIfC.
  * @brief Metafunction to use for conditionally disabling code, bool version.
  *
- * @signature DisableIf<BOOL, T = void>::Type
+ * @signature DisableIf2<BOOL, T = void>::Type
  *
  * @tparam BOOL The <tt>bool</tt> constant to evaluate for enabling/disabling.
  * @tparam T    Dummy, do not set.

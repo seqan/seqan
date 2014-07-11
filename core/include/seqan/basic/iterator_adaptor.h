@@ -238,20 +238,34 @@ struct IteratorDefaultImp_<T, Rooted>
 // Function container()
 // ----------------------------------------------------------------------------
 
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+//container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
+//{
+//    SEQAN_CHECKPOINT;
+//    return _toParameter<TContainer>(me.data_container);
+//}
+//
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+//container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
+//{
+//    SEQAN_CHECKPOINT;
+//    return _toParameter<TContainer>(me.data_container);
+//}
+
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+inline SEQAN_HOST_DEVICE TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
-    return _toParameter<TContainer>(me.data_container);
+    return _dereference<TContainer &>(me.data_container);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+inline SEQAN_HOST_DEVICE TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
-    return _toParameter<TContainer>(me.data_container);
+    return container(const_cast<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &>(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -463,19 +477,41 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
     return hostIterator(left) == hostIterator(right);
 }
 
+// TODO(weese:) Why would we need IterComplementConst here? Disabled it.
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
+//           typename IterComplementConst<TIterator>::Type const & right)
+//{
+//    SEQAN_CHECKPOINT;
+//    return hostIterator(left) == right;
+//}
+
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
 operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
-           typename IterComplementConst<TIterator>::Type const & right)
+           TIterator const & right)
 {
     SEQAN_CHECKPOINT;
     return hostIterator(left) == right;
 }
 
+// TODO(weese:) Why would we need IterComplementConst here? Disabled it.
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//operator==(typename IterComplementConst<TIterator>::Type const & left,
+//             Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
+//{
+//    SEQAN_CHECKPOINT;
+//    return left == hostIterator(right);
+//}
+
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
-operator==(typename IterComplementConst<TIterator>::Type const & left,
-             Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
+operator==(TIterator const & left,
+           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return left == hostIterator(right);
@@ -494,18 +530,40 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
     return hostIterator(left) != hostIterator(right);
 }
 
+// TODO(weese:) Why would we need IterComplementConst here? Disabled it.
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
+//           typename IterComplementConst<TIterator>::Type const & right)
+//{
+//    SEQAN_CHECKPOINT;
+//    return hostIterator(left) != right;
+//}
+
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
 operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
-           typename IterComplementConst<TIterator>::Type const & right)
+           TIterator const & right)
 {
     SEQAN_CHECKPOINT;
     return hostIterator(left) != right;
 }
 
+// TODO(weese:) Why would we need IterComplementConst here? Disabled it.
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//operator!=(typename IterComplementConst<TIterator>::Type const & left,
+//           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
+//{
+//    SEQAN_CHECKPOINT;
+//    return left != hostIterator(right);
+//}
+
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
-operator!=(typename IterComplementConst<TIterator>::Type const & left,
+operator!=(TIterator const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
     SEQAN_CHECKPOINT;

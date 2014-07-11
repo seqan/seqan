@@ -64,6 +64,15 @@ namespace seqan
  *
  * @tparam TInType The parameter/input type.
  * @tparam TResult The return/result type, defaults to TInType.
+ *
+ *
+ * @fn FunctorUpcase::operator()
+ * @brief Function call operator.
+ * @signature TResult FunctorUpcase::operator()(in);
+ *
+ * @param[in] in The value to convert (<tt>in</tt>).
+ *
+ * @return TResult The converted value (<tt>TResult</tt>).
  */
 
 /**
@@ -99,6 +108,15 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
  *
  * @tparam TInType The parameter/input type.
  * @tparam TResult The return/result type, defaults to TInType.
+ *
+ *
+ * @fn FunctorLowcase::operator()
+ * @brief Function call operator.
+ * @signature TResult FunctorLowcase::operator()(in);
+ *
+ * @param[in] in The value to convert (<tt>in</tt>).
+ *
+ * @return TResult The converted value (<tt>TResult</tt>).
  */
 
 /**
@@ -134,6 +152,15 @@ struct FunctorLowcase : public std::unary_function<InType, Result>
  *
  * @tparam TInType  The parameter/input type.
  * @tparam TOutType The return/result type, defaults to TInType.
+ *
+ *
+ * @fn FunctorConvert::operator()
+ * @brief Function call operator.
+ * @signature TOutType FunctorLowcase::operator()(in);
+ *
+ * @param[in] in The value to convert (<tt>in</tt>).
+ *
+ * @return TOutType The converted value (<tt>TOutType</tt>).
  */
 
 /**
@@ -200,6 +227,15 @@ char const TranslateTableRna5ToRna5Complement_<T>::VALUE[5] = {'U', 'G', 'C', 'A
  * @section Remarks
  *
  * If TValue is char, then the characters are complemented as Dna5.
+ *
+ *
+ * @fn FunctorComplement::operator()
+ * @brief Function call operator.
+ * @signature TValue FunctorComplement::operator()(in);
+ *
+ * @param[in] in The value to convert (<tt>in</tt>).
+ *
+ * @return TValue The converted value (<tt>TValue</tt>).
  */
 
 /**

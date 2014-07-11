@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class EdgeIterator
+ * @extends Iter
  * @headerfile <seqan/graph_types.h>
  * @brief Edge iterator for @link Graph @endlink.
  *

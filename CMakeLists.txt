@@ -138,6 +138,8 @@ message (STATUS "Configuring docs")
 add_subdirectory (docs)
 message (STATUS "Configuring sandbox")
 add_subdirectory (sandbox)
+message (STATUS "Configuring dox")
+add_subdirectory (dox)
 
 # ===========================================================================
 # Include CPack

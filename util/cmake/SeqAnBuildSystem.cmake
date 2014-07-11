@@ -67,8 +67,9 @@ include (SeqAnUsabilityAnalyzer)
 # ---------------------------------------------------------------------------
 
 # We need the /bigobj switch on windows (for 64 bit builds only actually).
+# Set target system to be Windows XP and later.
 if (MSVC)
-  add_definitions (/bigobj)
+  add_definitions (/bigobj /D_WIN32_WINNT=0x0501 /DWINVER=0x0501)
 endif (MSVC)
 
 # ---------------------------------------------------------------------------
@@ -143,6 +144,12 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
+    # enable static linkage for seqan apps
+    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG AND NOT MINGW)
+      set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+    endif ()
+
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -209,11 +216,17 @@ endmacro (seqan_build_system_init)
 # Python interpreter could be found.
 
 macro (seqan_add_app_test APP_NAME)
+    if (MODEL MATCHES ".*MemCheck.*")
+        set (_VALGRIND_FLAG --valgrind)
+    else ()
+        set (_VALGRIND_FLAG)
+    endif ()
     find_package (PythonInterp)
     if (PYTHONINTERP_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
                 COMMAND ${PYTHON_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests${ARGV1}.py
+                        ${_VALGRIND_FLAG}
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
     endif (PYTHONINTERP_FOUND)
 endmacro (seqan_add_app_test APP_NAME)
@@ -368,6 +381,65 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
 
   include (CPack)
 endmacro (seqan_configure_cpack_app)
+
+
+# ---------------------------------------------------------------------------
+# Macro seqan_setup_cuda_vars ([DISABLE_WARNINGS] [DEBUG_DEVICE]
+#                              [ARCH sm_xx] [FLAGS flags ...])
+#
+# Setup CUDA variables.
+# ---------------------------------------------------------------------------
+
+macro (seqan_setup_cuda_vars)
+  cmake_parse_arguments(_SEQAN_CUDA
+                        "DISABLE_WARNINGS;DEBUG_DEVICE"
+                        "ARCH"
+                        "FLAGS"
+                        ${ARGN})
+  if (SEQAN_HAS_CUDA)
+    # Wrap nvcc to make cudafe output gcc-like.
+    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/misc NO_DEFAULT_PATH)
+    set (CUDA_NVCC_EXECUTABLE ${COLOR_NVCC})
+
+    # Build CUDA targets from the given architecture upwards.
+    set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch ${_SEQAN_CUDA_ARCH} ${_SEQAN_CUDA_FLAGS}")
+
+    # Add debug symbols to device code.
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -G")
+    endif ()
+
+    # Add flags for the CUDA compiler.
+    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
+    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
+
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      # Disable all CUDA warnings.
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --disable-warnings")
+    else ()
+      # Disable only Thrust warnings.
+      string (REGEX REPLACE "-Wall" ""
+              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+      string (REGEX REPLACE "-pedantic" ""
+              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+      if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
+      endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+    endif ()
+
+    # Fix CUDA on OSX.
+    if (APPLE AND COMPILER_IS_CLANG)
+      # (weese:) I had to deactivate the C compiler override to make it compile again
+      # NVCC mistakes /usr/bin/cc as gcc.
+      #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
+      # NVCC does not support libc++.
+      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+    endif ()
+  endif ()
+endmacro (seqan_setup_cuda_vars)
+
 
 # ---------------------------------------------------------------------------
 # Function seqan_get_version()
@@ -535,6 +607,7 @@ macro (seqan_build_demos_develop PREFIX)
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
+    # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
@@ -543,12 +616,11 @@ macro (seqan_build_demos_develop PREFIX)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
-    # Supress all warnings for CUDA demos.
-    set (SEQAN_NVCC_FLAGS "${SEQAN_NVCC_FLAGS} --disable-warnings")
+    # Setup flags for CUDA demos.
+    seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
-    list (APPEND CUDA_NVCC_FLAGS "${SEQAN_NVCC_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -561,6 +633,9 @@ macro (seqan_build_demos_develop PREFIX)
             if (SEQAN_HAS_CUDA)
                 cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
                 target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                if (APPLE AND COMPILER_IS_CLANG)
+                    set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+                endif ()
                 _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
             endif ()
         else ()
@@ -607,6 +682,12 @@ macro (seqan_register_tests)
     set (SEQAN_FIND_ENABLE_DEBUG TRUE)
     set (SEQAN_FIND_ENABLE_TESTING TRUE)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+    # Remove NDEBUG definition for tests.
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")

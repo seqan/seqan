@@ -56,6 +56,7 @@
 #include "test_alignment_algorithms_global_banded.h"
 #include "test_alignment_algorithms_local.h"
 #include "test_alignment_algorithms_local_banded.h"
+#include "test_alignment_algorithms_dynamic_gap.h"
 #include "test_align_global_alignment_specialized.h"
 
 #include "test_align_alignment_operations.h"
@@ -109,6 +110,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_copy_gaps);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_copy_clipping);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_source_is_nothing);
+    SEQAN_CALL_TEST(test_align_gaps_array_gaps_clear);
 
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_metafunctions);
     SEQAN_CALL_TEST(test_align_gaps_anchor_constructor_and_source);
@@ -137,6 +139,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_copy_clipping);
     // TODO(holtgrew): Extend anchor gaps such that this works.
     // SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_source_is_nothing);
+    SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clear);
 
     // -----------------------------------------------------------------------
     // Test Gaps Iterators.
@@ -180,7 +183,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_profile_is_free_end_gaps);
 
     // ----------------------------------------------------------------------------
-    // Test DPBand.
+    // Test DPBandConfig.
     // ----------------------------------------------------------------------------
 
     SEQAN_CALL_TEST(test_dp_band_on_constructor);
@@ -210,6 +213,11 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_dp_cell_affine_score);
     SEQAN_CALL_TEST(test_dp_cell_affine_vertical_score);
     SEQAN_CALL_TEST(test_dp_cell_affine_horizontal_score);
+
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_copy_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_assignment);
+    SEQAN_CALL_TEST(test_dp_cell_dynamic_score);
 
     // ----------------------------------------------------------------------------
     // Test DPMatrix.
@@ -328,6 +336,13 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_lower_band_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_all_direction);
 
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_dynamic_all_direction);
+
     SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_diagonal_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_horizontal_direction);
     SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_vertical_direction);
@@ -390,7 +405,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align2_traceback_affine);
     SEQAN_CALL_TEST(test_align2_traceback_gaps_left_linear_gaps);
     SEQAN_CALL_TEST(test_align2_traceback_gaps_right_linear_gaps);
-        SEQAN_CALL_TEST(test_align2_traceback_gaps_left_affine_gaps);
+    SEQAN_CALL_TEST(test_align2_traceback_gaps_left_affine_gaps);
     SEQAN_CALL_TEST(test_align2_traceback_gaps_right_affine_gaps);
 
     // ----------------------------------------------------------------------------
@@ -490,6 +505,10 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_affine);
     SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_affine);
 
+    // Dynamic Gaps.
+    SEQAN_CALL_TEST(test_alignment_algorithms_global_dynamic_cost);
+    SEQAN_CALL_TEST(test_alignment_algorithms_local_dynamic_cost);
+
     // Suboptimal Alignment.
 
     // This is working on the old  module - should be replaced by the new module at some stage.
@@ -561,6 +580,10 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_affine_banded);
     SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_affine_banded);
     SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_affine_banded);
+
+    // Dynamic Gaps.
+    SEQAN_CALL_TEST(test_alignment_algorithms_global_dynamic_cost_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_local_dynamic_cost_banded);
 
     // Suboptimal Alignment.
     SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_align);

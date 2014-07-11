@@ -19,12 +19,12 @@ set (SEQAN_FIND_DEPENDENCIES ZLIB)
 find_package (SeqAn REQUIRED)
 
 # Search BOOST, snp_store is not built if Boost is not found.
-find_package (Boost)
+find_package (Boost)	
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     message (STATUS "  Boost or zlib not found: Not building snp_store.")
     return ()
-endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -37,6 +37,10 @@ include_directories (${Boost_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # Update the list of file names below if you add source files to your application.
 add_executable (snp_store snp_store.cpp snp_store.h)
 
@@ -45,6 +49,13 @@ target_link_libraries (snp_store ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable snp_store in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} snp_store CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # Installation

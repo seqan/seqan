@@ -19,7 +19,7 @@ int main()
     THost seq2 = "DPKKPRGKMSSYAFFVQTSREEHKKKHPKKCDEFSKKCSERWKTMSAKEKGKFEDARYEREMKTYIPPKGE";
 
     // FRAGMENT(init)
-    setGlobalReference(journaledSet, reference);
+    setHost(journaledSet, reference);
     appendValue(journaledSet, TJournalString(seq0));
     appendValue(journaledSet, TJournalString(seq1));
     appendValue(journaledSet, TJournalString(seq2));
@@ -31,7 +31,7 @@ int main()
     setScoringScheme(joinConfig, Score<int, BiAffine>(0,-1,-1));    // Note the mismatch score is forbidden internally when used in the context of journaling.
     join(journaledSet, 2, joinConfig);  // Compute journal using Levenshtein distance.
 
-    std::cout << "Reference: " << globalReference(journaledSet) << std::endl;
+    std::cout << "Reference: " << host(journaledSet) << std::endl;
     for(unsigned i = 0; i < length(journaledSet); ++i)
         std::cout << "Journaled Sequence " << i << ": " << value(journaledSet,i) << std::endl;
 

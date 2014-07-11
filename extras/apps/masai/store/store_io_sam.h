@@ -186,20 +186,18 @@ _alignRead(FragmentStore<TSpec, TConfig> & store,
 
     resize(rows(align), 2);
 
-    // TODO(esiragusa):Pass read as argument, already revComplemented
-    TReadSeq readSeq = store.readSeqStore[alignedRead.readId];
-
     if (alignedRead.beginPos > alignedRead.endPos)
     {
-        reverseComplement(readSeq);
         assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.endPos, alignedRead.beginPos));
+        assignSource(row(align, 1), store.readSeqStore[alignedRead.readId]);
+        reverseComplement(row(align, 1));
     }
     else
     {
         assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.beginPos, alignedRead.endPos));
+        assignSource(row(align, 1), store.readSeqStore[alignedRead.readId]);
     }
 
-    assignSource(row(align, 1), readSeq);
 
     if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
     {

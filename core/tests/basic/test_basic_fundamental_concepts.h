@@ -91,4 +91,47 @@ inline void testIntegers()
 //  testSignedInteger<unsigned long>();   // <== this should fail
 }
 
+namespace seqan
+{
+
+    SEQAN_CONCEPT(TestConceptA_, (T)){};
+
+    SEQAN_CONCEPT(TestConceptB_, (T)){};
+
+    struct TestConceptModelA_ {};
+
+    template <>
+    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelA_);
+
+    template <typename T1, typename T2>
+    struct TestConceptModelBSpec_{};
+
+    template <typename T, typename TSpec>
+    struct TestConceptModelB_{};
+
+    template <typename T, typename TSpec1, typename TSpec2>
+    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelB_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >);
+}
+
+SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)
+{
+    using namespace seqan;
+
+    typedef TestConceptModelA_ TModelA;
+    typedef TestConceptModelB_<int, TestConceptModelBSpec_<void, void> > TModelB;
+
+    SEQAN_CONCEPT_ASSERT((TestConceptA_<TModelA>));
+    SEQAN_CONCEPT_ASSERT((TestConceptB_<TModelA>));
+
+    SEQAN_STATIC_ASSERT_MSG(Is< TestConceptA_<TModelA> >::VALUE, "Type is not marked to be a TestConceptA_");
+    SEQAN_STATIC_ASSERT_MSG(Is< TestConceptB_<TModelA> >::VALUE, "Type is not marked to be a TestConceptB_");
+
+    SEQAN_CONCEPT_ASSERT((TestConceptA_<TModelB>));
+    SEQAN_CONCEPT_ASSERT((TestConceptB_<TModelB>));
+
+    SEQAN_STATIC_ASSERT_MSG(Is< TestConceptA_<TModelB> >::VALUE, "Type is not marked to be a TestConceptA_");
+    SEQAN_STATIC_ASSERT_MSG(Is< TestConceptB_<TModelB> >::VALUE, "Type is not marked to be a TestConceptB_");
+
+}
+
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_

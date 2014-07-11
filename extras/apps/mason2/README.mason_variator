@@ -2,8 +2,8 @@
                          Genomic Variation Simulator
 
                       http://www.seqan.de/projects/mason
-                              Version 2.0alpha2
-                                 August, 2013
+                              Version 2.0.0-beta1
+                                February, 2014
 
                                Manuel Holtgrewe
 
@@ -57,6 +57,9 @@ from a TSV file (sv_sizes.tsv, see Section 4.2) into a small genome
 (see Section 4.1), the simulated sequence into the FASTA file adeno_out.fa,
 and the positions of the breakpoints in adeno_out.fa into the TSV file
 adeno_out.tsv (see Section 4.3).
+
+Note that for the human genome, you will want to use the option -n /
+--num-haplotypes to select the number of haplotypes/allelles to simulate.
 
   $ mason_variator -ir adeno_virus.fa -ov adeno_out.vcf -of adeno_out.fa \
       -it sv_sizes.tsv --out-breakpoints adeno_out.tsv
@@ -143,9 +146,12 @@ breakend BND entries, 2 for each of the breakpoints.
 ------------------------------------------------------------------------------
 
 The user can give the path to a TSV file with the --in-variant-tsv option.
-The first two columns are interpreted.  The first column gives the variation
+The first two columns are mandatory.  The first column gives the variation
 type to simulate and the second column gives the length of the variant.
-Comment lines begin with a hash (#).
+Comment lines begin with a hash (#).  For insertions, you can also give a
+third column with the sequence to insert.  Note that if this sequence is given
+then the length of the sequence takes precedence over the the length in the
+second column.
 
 The following variation types are interpreted:
 
@@ -161,9 +167,11 @@ An example for the content of such a file is given below:
   INS   100
   DEL   1000
   CTR   400
+  INS   20     CGATTTAGATATACGTATAC
 
-This file makes the program simulate a 100bp insertion, a 1000bp deletion, and
-a 400bp intra-chromosomal transloction.  Note that when the --in-variant-tsv
+This file makes the program simulate a 100bp insertion with random characters,
+a 1000bp deletion, a 400bp intra-chromosomal translocation, and a 20bp
+insertion with specified sequence.  Note that when the --in-variant-tsv
 parameter is given, structural variants are not simulated on a per-position
 rate.
 
@@ -176,14 +184,18 @@ However, it might also be of interest to easily retrieve the coordinates of
 breakpoints on the haplotypes with variants.
 
 For this, you can give the parameter --out-breakpoints with a path to a TSV
-file to write.  This file contains two columns, one for the contig/reference
-name and one for the (1-based) position on the contig.
+file to write.  This file contains three columns, one for the contig/reference
+name, one for the variant id, and one for the (1-based) position on the
+contig.
 
 The following shows an example with 4 breakpoints, two on each haplotype,
-spread over three chromosomes.
+spread over three chromosomes.  Note that there are two breakpoints for the
+insertion on chrI, also two for the inversion on chrII and one breakpoint for
+the deletion on chrIII.  Missing variant names are given with dots (".").
 
-  #ref     pos
-  chrI/1   2051
-  chrII/0  2451
-  chrII/0  3573
-  chrIII/1 9297
+  #ref     id             pos
+  chrI/1   sim_sv_indel_1 2051
+  chrI/1   sim_sv_indel_1 2351
+  chrII/0  sim_inv_1      2451
+  chrII/0  sim_inv_2      3573
+  chrIII/1 sim_sv_indel_2 9297

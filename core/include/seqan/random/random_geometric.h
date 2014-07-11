@@ -54,6 +54,8 @@ struct GeometricFairCoin {};
  * @class GeometricPdf
  * @headerfile <seqan/random.h>
  * @extends Pdf
+ * @signature template <>
+ *            class Pdf<Geometric>;
  * @brief Geometric probability density function with <i>p = 0.5</i>.
  *
  * The PDF is implemented efficiently without using any floating point arithmetics, just some bit operations.

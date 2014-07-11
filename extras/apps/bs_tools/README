@@ -1,0 +1,67 @@
+                                    Bisar
+            Pairwise four-letter realignment computation for bisulfite reads
+
+                     http://www.seqan.de/projects/
+                                Version 0.1
+                                 May, 2014
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  3.   Usage
+  4.   Output Format
+  5.   Example
+  6.   Contact
+  7.   References
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+This program reads three-letter mappings of bisulfite reads and computes 
+local pairwise four-letter realignments using an advanced statistical 
+alignment model.
+
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of Bisar, you can execute bisar -h or 
+bisar --help.
+
+Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
+       bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <PE-READS FILE1> <PE-READS FILE2>
+
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+
+
+
+---------------------------------------------------------------------------
+4. Output Formats
+---------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
+5. Example
+---------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------
+6. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Sabrina Krakau <sabrina.krakau@fu-berlin.de>
+
+---------------------------------------------------------------------------
+7. References
+---------------------------------------------------------------------------
+
+

@@ -29,7 +29,8 @@
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
+#ifndef SEQAN_PLATFORM_WINDOWS_STDINT_H_
+#define SEQAN_PLATFORM_WINDOWS_STDINT_H_
 
 #ifndef _MSC_VER // [
 #error "Use this header only with Microsoft Visual C++ compilers!"
@@ -243,7 +244,9 @@ typedef uint64_t  uintmax_t;
 #define INTMAX_C   INT64_C
 #define UINTMAX_C  UINT64_C
 
-#endif // __STDC_CONSTANT_MACROS ]
+#endif  // __STDC_CONSTANT_MACROS ]
 
 
-#endif // _MSC_STDINT_H_ ]
+#endif  // _MSC_STDINT_H_ ]
+
+#endif  // #ifndef SEQAN_PLATFORM_WINDOWS_STDINT_H_

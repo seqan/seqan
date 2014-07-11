@@ -202,7 +202,7 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn getDistanceMatrix
+ * @fn AlignmentGraph#getDistanceMatrix
  * @headerfile <seqan/graph_msa.h>
  * @brief Computes a pairwise distance matrix from an @link AlignmentGraph @endlink.
  *

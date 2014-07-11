@@ -336,6 +336,62 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_view_segment)
     }
 }
 
+SEQAN_DEFINE_TEST(test_modifier_modified_string_literal)
+{
+    // Host a literal.
+    {
+        typedef seqan::ModifiedString<char[5]> TModifiedString;
+        
+        char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "CGAT");
+    }
+    // Reverse a literal.
+    {
+        typedef seqan::ModifiedString<char[5], seqan::ModReverse> TModifiedString;
+        
+        char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "TAGC");
+    }
+    // Lowercase a literal.
+    {
+        typedef seqan::ModifiedString<char[5], seqan::ModView<LowerFunctor> > TModifiedString;
+        
+        char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "cgat");
+    }
+}
+
+SEQAN_DEFINE_TEST(test_modifier_modified_string_const_literal)
+{
+    // Host a literal.
+    {
+        typedef seqan::ModifiedString<const char[5]> TModifiedString;
+        
+        const char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "CGAT");
+    }
+    // Reverse a literal.
+    {
+        typedef seqan::ModifiedString<const char[5], seqan::ModReverse> TModifiedString;
+        
+        const char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "TAGC");
+    }
+    // Lowercase a literal.
+    {
+        typedef seqan::ModifiedString<const char[5], seqan::ModView<LowerFunctor> > TModifiedString;
+        
+        const char str[] = "CGAT";
+        TModifiedString modStr(str);
+        SEQAN_ASSERT_EQ(modStr, "cgat");
+    }
+}
+
 SEQAN_DEFINE_TEST(test_modifier_modified_string_reverse_segment)
 {
     // Inner is lower, outer is reverse.

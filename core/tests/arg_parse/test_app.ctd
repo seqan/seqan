@@ -42,6 +42,9 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--hidden" isList="false">
 			<mapping referenceName="test_app.hidden" />
 		</clielement>
+		<clielement optionIdentifier="--arg-4-file-ext" isList="false">
+			<mapping referenceName="test_app.arg-4-file-ext" />
+		</clielement>
 		<!-- Following clielements are arguments. You should consider providing a help text to ease understanding. -->
 		<clielement optionIdentifier="" isList="false">
 			<mapping referenceName="test_app.argument-0" />
@@ -51,6 +54,9 @@ The second one contains formating &lt;bla&gt;.
 		</clielement>
 		<clielement optionIdentifier="" isList="false">
 			<mapping referenceName="test_app.argument-2" />
+		</clielement>
+		<clielement optionIdentifier="" isList="false">
+			<mapping referenceName="test_app.argument-3" />
 		</clielement>
 	</cli>
 	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -68,9 +74,11 @@ The second one contains formating &lt;bla&gt;.
 			<ITEM name="input-prefix-option" value="" type="input-prefix" description="set an input prefix" supported_formats="*.btx" required="false" advanced="false" />
 			<ITEM name="output-prefix-option" value="" type="output-prefix" description="set an output prefix" supported_formats="*.blub" required="false" advanced="false" />
 			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" required="false" advanced="true" />
+			<ITEM name="arg-4-file-ext" value="" type="string" description="Override file extension for argument 4" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
 			<ITEM name="argument-0" value="" type="double" description="Double Argument" required="true" advanced="false" />
-			<ITEM name="argument-1" value="" type="string" description="Documentated Argument with formating" required="true" advanced="false" />
-			<ITEM name="argument-2" value="" type="string" description="" required="true" advanced="false" />
+			<ITEM name="argument-1" value="" type="string" description="String Argument" required="true" advanced="false" />
+			<ITEM name="argument-2" value="" type="string" description="Documentated Argument with formating" required="true" advanced="false" />
+			<ITEM name="argument-3" value="" type="output-file" description="Testing output file arguments" required="true" advanced="false" />
 		</NODE>
 	</PARAMETERS>
 </tool>

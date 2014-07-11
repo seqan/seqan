@@ -7,7 +7,7 @@ using namespace seqan;
 int main ()
 {
     StringSet<String<char> > text;
-    appendValue(text, "How many");
+    appendValue(text, "How much");
     appendValue(text, " wood would");
     appendValue(text, " a woodchuck chuck?");
 

@@ -91,8 +91,6 @@ namespace seqan {
  * @param[in] other Other Holder to copy from.
  * @param[in] value The value to hold.
  *
- * @section Remarks
- *
  * The main purpose of this class is to facilitate the handling of member objects.  If we want a class <tt>A</tt> to be
  * dependent on or the owner or another object of class <tt>B</tt> then we add a data member of type
  * <tt>Holder&lt;B&gt;</tt> to <tt>A</tt>.  Holder offers some useful access functions and stores the kind of
@@ -274,10 +272,8 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @signature void create(holder[, object]);
  * 
- * @param holder The Holder to create the object of.
- * @param object Object from which a copy is made and stored in <tt>holder</tt>.
- * 
- * @section Remarks
+ * @param[in,out] holder The Holder to create the object of.
+ * @param[in]     object Object from which a copy is made and stored in <tt>holder</tt>.
  * 
  * After this operation, <tt>holder</tt> will be in state 'owner'.  If <tt>object</tt> is specified, <tt>holder</tt>
  * will hold a copy of <tt>object</tt> at the end of this function.  If <tt>object</tt> is not specified, the action
@@ -322,10 +318,8 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @signature void setValue(holder, object);
  * 
- * @param holder A holder object. Types: Holder
- * @param object Object from which <tt>holder</tt> will be dependent.
- * 
- * @section Remarks
+ * @param[in,out] holder A holder object. Types: Holder
+ * @param[in]     object Object from which <tt>holder</tt> will be dependent.
  * 
  * After this operation, <tt>holder</tt> will be dependent in state 'dependent'.
  */
@@ -340,7 +334,8 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @signature bool empty(holder);
  * 
- * @param holder A Holder.
+ * @param[in] holder A Holder.
+ *
  * @return bool <tt>true</tt> if <tt>holder</tt> contains no elements, otherwise <tt>false</tt>.
  * 
  * @section Remarks
@@ -348,7 +343,6 @@ struct Reference<Holder<TValue *, TSpec> const>
  * <tt>empty(x)</tt> is guaranteed to be at least as fast as <tt>length(me) == 0</tt>, but can be significantly faster
  * in some cases.
  * 
- * @see length
  * @see HostedConcept#emptyHost
  */
 
@@ -364,34 +358,26 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @brief Assigns value to item.
  * 
- * @signature assignValue(object, value)
- * @signature assignValue(container, pos, value)
+ * @signature void assignValue(object, value);
  * 
- * @param object An object that holds a value or points to a value. Types:
- *               Holder, Iter Concepts: Concept.BasicOutputIteratorConcept
- * @param container A container. Types: SparseString, char array Concepts:
- *                  Concept.ContainerConcept
- * @param pos Position of the item in <tt>container</tt> to that <tt>value</tt>
- *            is assigned.
- * @param value A value that is assigned to the item <tt>object</tt> holds or
- *              points to.
+ * @param[in,out] object An object that holds a value or points to a value. Types:
+ *                       Holder, Iter Concepts: Concept.BasicOutputIteratorConcept
+ * @param[in]     value  A value that is assigned to the item <tt>object</tt> holds or points to.
  * 
- * @section Remarks
- * 
- * This function is similar to @link assign @endlink. The difference is, that
+ * This function is similar to @link AssignableConcept#assign @endlink. The difference is, that
  * <tt>assignValue</tt> just changes a value stored in <tt>object</tt> or the
- * value <tt>object</tt> points to, while @link assign @endlink changes the
+ * value <tt>object</tt> points to, while @link AssignableConcept#assign @endlink changes the
  * whole object.
  * 
  * If <tt>object</tt> is a container (that is <tt>pos</tt> is not specified),
  * the whole content of <tt>object</tt> is replaced by <tt>value</tt>.
  * 
  * If <tt>value</tt> is not used again after calling this function,     then
- * consider to use @link moveValue @endlink that could be faster in some cases
+ * consider to use @link Holder#moveValue @endlink that could be faster in some cases
  * instead.
  * 
- * @see assign
- * @see moveValue
+ * @see AssignableConcept#assign
+ * @see Holder#moveValue
  */
 
 // ----------------------------------------------------------------------------
@@ -405,11 +391,9 @@ struct Reference<Holder<TValue *, TSpec> const>
  * 
  * @signature bool dependent(holder);
  * 
- * @param holder The Holder to query;
+ * @param[in] holder The Holder to query;
  * 
  * @return bool <tt>true</tt> if <tt>object</tt> depends one some other object, <tt>false</tt> otherwise.
- * 
- * @section Remarks
  * 
  * An object "<tt>a</tt>" depends on another object "<tt>b</tt>", if changing "<tt>b</tt>" can invalidate "<tt>a</tt>";
  * especially the destruction of "<tt>b</tt>" invalidates "<tt>a</tt>".
@@ -425,7 +409,7 @@ struct Reference<Holder<TValue *, TSpec> const>
  *
  * @signature void clear(holder);
  *
- * @param[in] holder The Holder to clear.
+ * @param[in,out] holder The Holder to clear.
  */
 
 // ----------------------------------------------------------------------------
@@ -441,6 +425,23 @@ struct Reference<Holder<TValue *, TSpec> const>
  * @param[in] holder The Holder to query for its reference.
  *
  * @return TReference The reference of the Holder's value.
+ */
+
+// ----------------------------------------------------------------------------
+// Function moveValue()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#moveValue
+ * 
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @brief Move a value of into a holder.
+ * 
+ * @signature void moveValue(holder, value);
+ * 
+ * @param[in,out] holder  The Holder to manipulate. 
+ * @param[in,out] value   The value to move into <tt>holder</tt>.
  */
 
 // ----------------------------------------------------------------------------

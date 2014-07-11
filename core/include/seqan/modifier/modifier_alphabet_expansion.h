@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *                   example, do not use <tt>'A'</tt> or <tt>'a'</tt> as <tt>CHAR</tt> when expanding Dna.
  * @tparam TSpec     Optional specialization tag.  This modifier is intended to expand SimpleType classes, default is <tt>Default</tt>.
  *
- * @section Remarks
+ * @section Special Characters
  *
  * Some values of <tt>CHAR</tt> have special meaning:
  *

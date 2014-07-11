@@ -521,7 +521,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TSAIter it = begin(s124, Standard());
         TSAIter itEnd = end(s124, Standard());
 
-		register TSize n = length(s);
+		TSize n = length(s);
         for(; it != itEnd; ++it)
             ++cnt[hash2(shape, textBegin + *it, n - *it)];
 

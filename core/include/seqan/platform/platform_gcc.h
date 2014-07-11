@@ -31,8 +31,6 @@
 //
 // ==========================================================================
 
-//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
-
 /*!
  * @macro PLATFORM_GCC
  * @headerfile <seqan/platform.h>
@@ -42,8 +40,7 @@
  */
 
 #ifndef PLATFORM_GCC
-  #define PLATFORM_GCC
-#endif
+#define PLATFORM_GCC
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS
@@ -65,7 +62,7 @@
  * @headerfile <seqan/platform.h>
  * @brief Defined when compiling in 32 bit mode.
  *
- * @signature @define SEQAN_IS_32_BIT
+ * @signature #define SEQAN_IS_32_BIT
  */
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
@@ -161,9 +158,7 @@ typedef uint8_t __uint8;   // nolint
  *
  * @signature #define SEQAN_CXX_STANDARD
  *
- * @section Remarks
- *
- * Note that this auto-detection is not perfect and support differs.
+ * @note This this auto-detection is not perfect and support differs.
  */
 
 // detect gcc C++11 support
@@ -182,3 +177,5 @@ typedef uint8_t __uint8;   // nolint
 #define SEQAN_UNLIKELY(expr)  __builtin_expect((expr), 0)
 
 #define SEQAN_RESTRICT  __restrict__
+
+#endif  // #ifndef PLATFORM_GCC

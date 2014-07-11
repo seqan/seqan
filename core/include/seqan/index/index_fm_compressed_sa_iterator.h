@@ -75,7 +75,20 @@ struct Iterator<CompressedSA<TText, TSpec, TConfig> const, Rooted>:
 // ----------------------------------------------------------------------------
 // Function begin()
 // ----------------------------------------------------------------------------
-
+/*!
+ * @fn CompressedSA#begin
+ * @headerfile seqan/index.h
+ * @brief Returns an iterator pointing to the first position of a compresses suffix array.
+ * 
+ * @signature TIterator begin(compressedSA, tag);
+ * 
+ * @param[in] compressedSA The compresses suffix array to be traversed.
+ * @param[in] tag The specialisation of the iterator to be returned by the function. Types: @link
+ *                ContainerIteratorTags#Standard @endlink, @link ContainerIteratorTags#Rooted @endlink
+ * 
+ * @return TIterator Returns an iterator pointing to the first position of a compresses suffix array.  Types: <tt>The
+ *                   result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;, TSpec&gt;::Type</tt>
+ */
 ///.Function.begin.param.object.type:Class.CompressedSA
 template <typename TText, typename TSpec, typename TConfig>
 inline typename Iterator<CompressedSA<TText, TSpec, TConfig>, Standard>::Type
@@ -108,6 +121,20 @@ begin(CompressedSA<TText, TSpec, TConfig> const & compressedSA, Rooted const & /
 // ----------------------------------------------------------------------------
 // Function end()
 // ----------------------------------------------------------------------------
+/*!
+ * @fn CompressedSA#end
+ * @headerfile seqan/index.h
+ * @brief Returns an iterator pointing to the position behind the last element of a compresses suffix array.
+ * 
+ * @signature TIterator end(compressedSA, tag);
+ * 
+ * @param[in] compressedSA The compresses suffix array to be traversed.
+ * @param[in] tag The specialisation of the iterator to be returned by the function. Types: @link
+ *                ContainerIteratorTags#Standard @endlink, @link ContainerIteratorTags#Rooted @endlink
+ * 
+ * @return TIterator Returns an iterator pointing to the position behind the last element of a compresses suffix array.
+ *                   Types: <tt>The result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;, TSpec&gt;::Type</tt>
+ */
 
 ///.Function.end.param.object.type:Class.CompressedSA
 template <typename TText, typename TSpec, typename TConfig>

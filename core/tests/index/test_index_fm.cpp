@@ -44,15 +44,37 @@ using namespace seqan;
 // ========================================================================== 
 
 // --------------------------------------------------------------------------
+// FMIndex Configs
+// --------------------------------------------------------------------------
+
+struct WTFMIndexConfig : FMIndexConfig<void> {};
+
+struct NaiveWTFMIndexConfig : FMIndexConfig<void>
+{
+    typedef Naive<void>             TSentinelsSpec;
+};
+
+struct NaiveTLFMIndexConfig : FMIndexConfig<void>
+{
+    typedef TwoLevels<void>         TValuesSpec;
+    typedef Naive<void>             TSentinelsSpec;
+};
+
+typedef FMIndex<void, WTFMIndexConfig>          WTFMIndex;
+typedef FMIndex<void, NaiveWTFMIndexConfig>     NaiveWTFMIndex;
+typedef FMIndex<void, NaiveTLFMIndexConfig>     NaiveTLFMIndex;
+
+// --------------------------------------------------------------------------
 // FMIndex Types
 // --------------------------------------------------------------------------
 
 typedef
-    TagList<Index<DnaString, FMIndex<> >,
-    TagList<Index<CharString, FMIndex<> >,
-    TagList<Index<StringSet<DnaString>, FMIndex<> >,
-    TagList<Index<StringSet<CharString>, FMIndex<> >
-    > > > >
+    TagList<Index<DnaString, WTFMIndex>,
+    TagList<Index<CharString, WTFMIndex>,
+    TagList<Index<StringSet<CharString>, WTFMIndex>,
+    TagList<Index<StringSet<CharString>, NaiveWTFMIndex>,
+    TagList<Index<StringSet<DnaString>,  NaiveTLFMIndex>
+    > > > > >
     FMIndexTypes;
 
 // ========================================================================== 

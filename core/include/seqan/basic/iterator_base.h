@@ -51,7 +51,7 @@ namespace seqan {
 
 /*!
  * @class Iter
- * @extends IteratorAssociatedTypesConcept
+ * @implements IteratorAssociatedTypesConcept
  * @headerfile <seqan/basic.h>
  * @brief Base class for iterators to traverse containers.
  *

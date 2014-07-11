@@ -91,8 +91,6 @@ struct BitsPerValue<bool>
  * 
  * @tparam T Type to check type of.
  * 
- * @section Remarks
- * 
  * This metafunction is used to enable and disable templated adaptions of arrays to sequences for builtin character
  * types only.
  * 

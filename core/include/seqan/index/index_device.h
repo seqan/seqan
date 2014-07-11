@@ -315,8 +315,11 @@ inline void
 assign(Index<TText, FMIndex<TSpec, TConfig> > & index, Index<TText2, FMIndex<TOccSpec2, TSpec2> > const & source)
 {
     assign(indexText(index), indexText(source));
-    assign(indexSA(index), indexSA(source));
     assign(indexLF(index), indexLF(source));
+    assign(indexSA(index), indexSA(source));
+
+    // Set the pointer.
+    setFibre(indexSA(index), indexLF(index), FibreLF());
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TText2, typename TOccSpec2, typename TSpec2>
@@ -393,14 +396,13 @@ inline void
 assign(CompressedSA<TText, TSpec, TConfig> & sa, CompressedSA<TText2, TSpec2, TConfig> const & source)
 {
     assign(getFibre(sa, FibreSparseString()), getFibre(source, FibreSparseString()));
-    assign(getFibre(sa, FibreLF()), getFibre(source, FibreLF()));
 }
 
 template <typename TText, typename TSpec, typename TText2, typename TSpec2, typename TConfig>
 inline void
 assign(CompressedSA<TText, TSpec, TConfig> & sa, CompressedSA<TText2, TSpec2, TConfig> & source)
 {
-    assign(sa, reinterpret_cast<CompressedSA<TText2, TSpec2, TConfig> const &>(source));
+    assign(getFibre(sa, FibreSparseString()), getFibre(source, FibreSparseString()));
 }
 
 // ----------------------------------------------------------------------------

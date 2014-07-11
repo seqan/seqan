@@ -53,7 +53,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
  *
  *
- * @fn ReadStoreElement::ReadStoreElement();
+ * @fn ReadStoreElement::ReadStoreElement
+ * @signature ReadStoreElement::ReadStoreElement();
  * @brief Constructor.
  *
  * Sets ReadStoreElement::matePairId to ReadStoreElement::INVALID_ID.

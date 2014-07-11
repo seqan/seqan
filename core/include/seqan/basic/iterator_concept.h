@@ -59,8 +59,6 @@ template <typename T> struct Pointer;
  * 
  * @signature IteratorAssociatedTypesConcept<T>
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
@@ -126,7 +124,7 @@ template <typename T> struct Pointer;
  * 
  * @signature TReference operator*(it);
  * 
- * @param it The iterator to dereference.
+ * @param[in] it The iterator to dereference.
  * 
  * @return TReference The reference type.
  */
@@ -138,7 +136,7 @@ template <typename T> struct Pointer;
  * 
  * @signature TReference value(it);
  * 
- * @param it The iterator to dereference.
+ * @param[in] it The iterator to dereference.
  * 
  * @return TReference The reference type.
  */
@@ -150,7 +148,7 @@ template <typename T> struct Pointer;
  * 
  * @signature TGetValue getValue(it);
  * 
- * @param it The iterator to get get-value from.
+ * @param[in] it The iterator to get get-value from.
  * 
  * @return TGetValue The get-value that is pointed to.
  */
@@ -195,8 +193,6 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * 
  * @signature InputIteratorConcept<T>
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  * 
  * @see BasicOutputIteratorConcept
@@ -206,10 +202,10 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * @fn InputIteratorConcept#operator++(suffix)
  * @brief C++ built-in suffix increment operator.
  *
- * @signature TIterator operator++(it, i)
+ * @signature TIterator operator++(it, i);
  *
- * @param it The iterator to increment.
- * @param i  An integer, used to mark suffix decrement.
+ * @param[in,out] it The iterator to increment.
+ * @param[in]     i  An integer, used to mark suffix decrement.
  *
  * @return TIterator A copy of the original iterator.
  */
@@ -218,9 +214,9 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * @fn InputIteratorConcept#operator++(prefix)
  * @brief C++ built-in prefix increment operator.
  *
- * @signature TIterator operator++(it)
+ * @signature TIterator operator++(it);
  *
- * @param it The iterator to increment.
+ * @param[in] it The iterator to increment.
  *
  * @return TIterator A copy of the original iterator.
  */
@@ -229,9 +225,9 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * @fn InputIteratorConcept#operator->
  * @brief C++ built-in structure dereference operator.
  *
- * @signature TResult operator->(it)
+ * @signature TResult operator->(it);
  *
- * @param it The iterator to structure-dereference.
+ * @param[in] it The iterator to structure-dereference.
  *
  * @return TResult Either a pointer or another type.  If it is another type, the <tt>operator-></tt> is called
  *                 recursively.
@@ -243,9 +239,7 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  *
  * @signature void goNext(it);
  * 
- * @param it The iterator to increment.
- * 
- * @section Remarks
+ * @param[in,out] it The iterator to increment.
  * 
  * This function is equivalent to <tt>++iterator</tt>.
  */
@@ -315,8 +309,6 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * 
  * @signature OutputIteratorConcept<T>
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>. * 
  *
  * @section Examples
@@ -344,10 +336,9 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * @deprecated Use dereferencement and assignment instead.
  * 
  * @signature void assignValue(it, value);
- * @signature assignValue(container, pos, value)
  * 
- * @param it The iterator to assign value to.
- * @param value A value that is assigned to the item <tt>it</tt> points to.
+ * @param[in,out] it    The iterator to assign value to.
+ * @param[in]     value A value that is assigned to the item <tt>it</tt> points to.
  */
 
 /*!
@@ -356,8 +347,8 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * 
  * @signature TIterator operator++(it, i)
  * 
- * @param it The iterator to increment.
- * @param i An integer, used to mark suffix decrement.
+ * @param[in,out] it The iterator to increment.
+ * @param[in]     i  An integer, used to mark suffix decrement.
  * 
  * @return TIterator A copy of the original iterator.
  */
@@ -368,7 +359,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * 
  * @signature TIterator operator++(it)
  * 
- * @param it The iterator to increment.
+ * @param[in,out] it The iterator to increment.
  * 
  * @return TIterator A copy of the original iterator.
  */
@@ -379,9 +370,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * 
  * @signature void goNext(it);
  * 
- * @param it The iterator to increment.
- * 
- * @section Remarks
+ * @param[in,out] it The iterator to increment.
  * 
  * This function is equivalent to <tt>++iterator</tt>.
  */
@@ -445,8 +434,6 @@ SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
  * 
  * @signature ForwardIteratorConcept<T>
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  * 
  * @section Examples
@@ -498,8 +485,6 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
  * 
  * @brief A @link ForwardIteratorConcept Forward Iterator @endlink that allows dereferenced assignment.
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
@@ -537,8 +522,6 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  * 
  * @signature BidirectionalIteratorConcept<T>
  * 
- * @section Remarks
- * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  * 
  * @section Examples
@@ -559,7 +542,7 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  *
  * @signature TIterator operator--(it);
  *
- * @param it The iterator to increment.
+ * @param[in,out] it The iterator to increment.
  *
  * @return TIterator Reference to the incremented iterator.
  */
@@ -570,8 +553,8 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  *
  * @signature TIterator operator--(it, i);
  *
- * @param it The iterator to increment.
- * @param i  An int value to mark the operator as suffix decrement.
+ * @param[in,out] it The iterator to increment.
+ * @param[in]     i  An int value to mark the operator as suffix decrement.
  *
  * @return TIterator Reference to the incremented iterator.
  */
@@ -582,9 +565,7 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  * 
  * @signature void goPrevious(it);
  * 
- * @param it Iterator to move to previous position.
- * 
- * @section Remarks
+ * @param[in,out] it Iterator to move to previous position.
  * 
  * This function is equivalent to <tt>--iterator</tt>.
  */
@@ -660,8 +641,6 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  *
  * @signature RandomAccessIteratorConcept<T>
  *
- * @section Remarks
- * 
  * This function is equivalent to <tt>--iterator</tt>.
  *
  * @section Examples
@@ -692,8 +671,6 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * 
  * @return Type The difference type.
  * 
- * @section Remarks
- * 
  * In most cases this type is <tt>ptrdiff_t</tt>.
  */
 
@@ -703,12 +680,10 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * 
  * @signature TDifference difference(begin, end);
  * 
- * @param begin Iterator to the first position of a range.
- * @param end  Iterator behind the last position of a range.
+ * @param[in] begin Iterator to the first position of a range.
+ * @param[in] end   Iterator behind the last position of a range.
  * 
  * @return TDifference Length of the range between <tt>begin</tt> and <tt>end</tt>, type from 
- * 
- * @section Remarks
  * 
  * This function is equivalent to <tt>end - begin</tt>.
  * 
@@ -742,11 +717,8 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * 
  * @signature void goNil(it);
  * 
- * @param it The iterator that will be moved.
+ * @param[in,out] it The iterator that will be moved.
  *
- * 
- * @section Remarks
- * 
  * <tt>it</tt> is set to an invalid position, e.g. <tt>NULL</tt> for pointer types.
  */
 
@@ -756,10 +728,8 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * 
  * @signature void goFurther(iterator, steps);
  * 
- * @param it    The iterator to move.
- * @param steps Number of steps <tt>iterator</tt> should be moved further.
- * 
- * @section Remarks
+ * @param[in,out] it    The iterator to move.
+ * @param[in]     steps Number of steps <tt>iterator</tt> should be moved further.
  * 
  * This function is equivalent to <tt>iterator += steps</tt>.
  */
@@ -771,9 +741,8 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * @signature TReference TIterator::operator[](pos);
  *
  * @tparam TReference The referenced element.
- * @tparam TIterator  The iterator to subscript.
  *
- * @param pos Position to get element at.
+ * @param[in] pos Position to get element at.
  */
 
 /*!
@@ -782,7 +751,7 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * 
  * @signature bool atNil(it);
  * 
- * @param it The iterator to query.
+ * @param[in] it The iterator to query.
  *
  * @return bool Whether or not the iterator is at the nil positions (NULL for pointers).
  */
@@ -913,12 +882,11 @@ SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessItera
  *
  * @signature TContainer container(it);
  *
- * @param it The iterator to get the container of.
+ * @param[in] it The iterator to get the container of.
  *
  * @return TContainer The container of the iterat.r
- *
- * TODO(holtgrew): Need to document Reference_ and Parameter_.
  */
+// TODO(holtgrew): Need to document Reference_ and Parameter_.
 
 /*!
  * @fn RootedIteratorConcept#atBegin
@@ -926,7 +894,7 @@ SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessItera
  *
  * @signature bool atBegin(it);
  *
- * @param it The rooted iterator to query.
+ * @param[in] it The rooted iterator to query.
  *
  * @return bool Whether or not the iterator is at the beginning.
  */
@@ -937,7 +905,7 @@ SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessItera
  *
  * @signature bool atEnd(it);
  *
- * @param it The rooted iterator to query.
+ * @param[in] it The rooted iterator to query.
  *
  * @return bool Whether or not the iterator is at the end.
  */
@@ -1028,7 +996,7 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  *
  * @signature TPosition position(it);
  *
- * @param it The iterator to query for its position.
+ * @param[in] it The iterator to query for its position.
  *
  * @return TPosition The position of <tt>it</tt>
  */
@@ -1039,8 +1007,8 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  *
  * @signature void setPosition(it, pos);
  *
- * @param it  The iterator to set the position of.
- * @param pos The position to set <tt>it</tt> to.
+ * @param[in,out] it  The iterator to set the position of.
+ * @param[in]     pos The position to set <tt>it</tt> to.
  */
 
 /*!
@@ -1049,7 +1017,7 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  *
  * @signature void goBegin(it);
  *
- * @param it  The iterator to set the position of.
+ * @param[in,out] it  The iterator to set the position of.
  */
 
 /*!
@@ -1058,7 +1026,7 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  *
  * @signature void goEnd(it, pos);
  *
- * @param it  The iterator to set the position of.
+ * @param[in,out] it  The iterator to set the position of.
  */
 
 /**

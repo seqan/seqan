@@ -3,8 +3,8 @@
 # We slice and dice the file "adeno.fasta".
 
 # sak build from 2010-05-25
-#SAK=../../seqan-trunk-build/Debug/core/apps/sak/sak -ll 1000
-SAK=../../../../../seqan-trunk-build/Debug/core/apps/sak/sak
+#SAK=../../seqan-trunk-build/Debug/core/bin/sak -ll 1000
+SAK=../../../../../seqan-git-build/debug/bin/sak
 
 # ============================================================
 # Run on DNA (Adenoviruses).

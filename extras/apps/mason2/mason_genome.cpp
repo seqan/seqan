@@ -86,8 +86,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("mason_genome");
     // Set short description, version, and date.
     setShortDescription(parser, "Random Genome Simulation");
-    setVersion(parser, "2.1");
-    setDate(parser, "March 2013");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.

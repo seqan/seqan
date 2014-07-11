@@ -61,8 +61,7 @@ parseCommandLine(MasonMethylationOptions & options, int argc, char const ** argv
     seqan::ArgumentParser parser("mason_methylation");
     // Set short description, version, and date.
     setShortDescription(parser, "Methylation Level Simulation");
-    setVersion(parser, "2.1");
-    setDate(parser, "March 2013");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.
