@@ -846,12 +846,10 @@ SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));
 # define SEQAN_CONCEPT_IMPL(model, implementedConcepts)                                                 \
     struct Implements<SEQAN_STRIP_PARENS(model)>                                                        \
     {                                                                                                   \
-        typedef __VA_ARGS__ TModel;                                                                     \
         typedef                                                                                         \
             SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,model,implementedConcepts)                \
             SEQAN_PP_REPEAT(SEQAN_PP_SEQ_SIZE(implementedConcepts),SEQAN_CONCEPT_LIST_suffix,~) Type;   \
     }
-
 
 // helper for the SEQAN_CONCEPT, above.
 # define SEQAN_CONCEPT_typename(r, ignored, index, t) \

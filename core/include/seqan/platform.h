@@ -86,5 +86,6 @@
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT
 #define SEQAN_RESTRICT
+#endif
 
 #endif

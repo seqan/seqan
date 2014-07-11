@@ -144,7 +144,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             // Write out array values.
             typedef typename Infix<CharString>::Type TBufferInfix;
             size_t startPos = 0;
-            for (unsigned i = 0; i < tmp.nEntries; ++i)
+            for (unsigned i = 0; i < nEntries; ++i)
             {
                 SEQAN_ASSERT_LT(startPos, len);
                 if (buffer[startPos] == ',')
@@ -171,8 +171,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
         {
             // BAM simple value
             clear(buffer);
-            res = readUntilTabOrLineBreak(buffer, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
+            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
 
             AssignTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
             if (!tagApply(func, BamTagTypes()))
@@ -214,7 +213,7 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
     if (empty(source))
         return;
 
-    typedef typename Iterator<TSource, Rooted>::Type TSourceIter;
+    typedef typename Iterator<TSource const, Rooted>::Type TSourceIter;
     TSourceIter it = begin(source, Rooted());
 
     CharString buffer;
@@ -254,24 +253,24 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        union {
-            char raw[sizeof(Type)];
-            Type i;
-        } tmp;
-        
-        for (unsigned i = 0; i < sizeof(Type); ++i)
-        {
-            SEQAN_ASSERT_NOT(atEnd(it));
-            tmp.raw[i] = *it++;
-        }
-        clear(buffer);
-        if (IsSignedInteger<Type>::VALUE)
-            lexicalCast2(buffer, static_cast<__int64>(tmp.i));    // avoid textual interpretation of char types
-        else if (IsUnsignedInteger<Type>::VALUE)
-            lexicalCast2(buffer, static_cast<__uint64>(tmp.i));
-        else
-            lexicalCast2(buffer, tmp.i);
-        append(target, buffer);
+//        union {
+//            char raw[sizeof(Type)];
+//            Type i;
+//        } tmp;
+//        
+//        for (unsigned i = 0; i < sizeof(Type); ++i)
+//        {
+//            SEQAN_ASSERT_NOT(atEnd(it));
+//            tmp.raw[i] = *it++;
+//        }
+//        if (IsSignedInteger<Type>::VALUE)
+//            appendNumber(target, static_cast<__int64>(tmp.i));    // avoid textual interpretation of char types
+//        else if (IsUnsignedInteger<Type>::VALUE)
+//            appendNumber(target, static_cast<__uint64>(tmp.i));
+//        else
+//            appendNumber(target, tmp.i);
+        appendNumber(target, *reinterpret_cast<Type *>(&it));
+        it += sizeof(Type);
         return true;
     }
 };
