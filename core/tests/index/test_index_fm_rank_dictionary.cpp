@@ -165,7 +165,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     typename TestFixture::TRankDict dict(this->text);
 
     for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
-        SEQAN_ASSERT_EQ(getValue(dict, textIt - this->textBegin), value(textIt));
+        SEQAN_ASSERT_EQ(getValue(dict, (unsigned long)(textIt - this->textBegin)), value(textIt));
 }
 
 // ----------------------------------------------------------------------------
@@ -194,7 +194,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
-            SEQAN_ASSERT_EQ(getRank(dict, textIt - this->textBegin, c), prefixSum[c]);
+            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
     }
 }
 

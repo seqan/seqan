@@ -193,6 +193,12 @@ struct DefaultOverflowImplicit< std::basic_string<TChar, TCharTraits, TAlloc> >
     typedef Generous Type;
 };
 
+///.Metafunction.IsSequence.param.T.type:Adaption.std::basic_string
+///.Metafunction.IsSequence.class:Adaption.std::basic_string
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
+
 // ===========================================================================
 // Functions
 // ===========================================================================

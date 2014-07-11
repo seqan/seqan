@@ -48,14 +48,14 @@ namespace seqan {
  * 
  * @signature void alignmentFreeComparison(scoreMatrix, sequenceSet, score);
  * 
- * @param[in] sequenceSet  @link StringSet @endlink containing all sequences for which pairwise scores will be
- *                         computed.
- * @param[in]  score       The score to be used for computing the alignment (type @link AFScore @endlink).
  * @param[out] scoreMatrix A two-dimensional @link Matrix @endlink, used to store all pairwise scores.
- * 
+ * @param[in]  sequenceSet @link StringSet @endlink containing all sequences for which pairwise scores will be
+ *                         computed.
+ * @param[in]  score       The @link AFScore @endlink object to be used for computing the alignment.
+ *
  * @section Examples
  * 
- * Calculate the alignment free sequence similarity o two masked DNA sequences.
+ * Calculate the alignment free sequence similarity of two masked DNA sequences.
  * 
  * @code{.cpp}
  * using namespace seqan;

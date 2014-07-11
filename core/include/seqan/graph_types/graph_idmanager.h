@@ -68,7 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...default:$Default$, see @Tag.Default@.
 ..include:seqan/graph_types.h
 */
-template<typename TIdType, typename TSpec>
+template <typename TIdType, typename TSpec>
 class IdManager 
 {
 	public:
@@ -368,6 +368,7 @@ getIdLowerBound(IdManager<TIdType, TSpec> const& idm)
 
 /*!
  * @fn IdManager#idCount
+ * @brief Return the number of obtained ids.
  *
  * @signature TId idCount(manager);
  *
@@ -401,6 +402,7 @@ idCount(IdManager<TIdType, TSpec> const& idm)
 
 /*!
  * @fn IdManager#idInUse
+ * @brief Return whether an id is in use.
  *
  * @signature bool idInUse(manager, id);
  *

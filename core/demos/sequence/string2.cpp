@@ -34,7 +34,7 @@ int main()
 
     std::cout << "hit at ";
     for (unsigned i = 0; i < length(score); ++i)
-        if (score[i] == length(pattern))
+        if (score[i] == (int)length(pattern))
             std::cout << i << " ";
     std::cout << std::endl;	
 

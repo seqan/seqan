@@ -246,6 +246,26 @@ host(AlignCols<TAlign> const & me)
 // Function iter()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn AlignCols#iter
+ * @headerfile <seqan/align.h>
+ * @brief Iterator to the item at the given position in the alignment columns.
+ *
+ * @signature TIterator iter(cols, pos[, tag]);
+ *
+ * @param[in] cols   The AlignCols object to get the iterator for.
+ * @param[in] pos    The position to get the iterator for.
+ * @param[in] tag    The tag to pick the type of the iterator.
+ *
+ * @return TIterator The resulting iterator.  If <tt>TTag</tt> is the type of <tt>tag</tt> and <tt>TAlignCols</tt> the
+ *                   type of <tt>cols</tt> then TIterator is of the type <tt>Iterator&lt;TAlignCols,
+ *                   TTag&gt;::Type</tt>.
+ *
+ * @section Remarks
+ *
+ * If <tt>pos</tt> is out of range then the iterator is invalid.
+ */
+
 ///.Function.iter.param.object.type:Class.AlignCols
 
 template <typename TAlign, typename TPosition, typename TTag>
@@ -269,6 +289,16 @@ iter(AlignCols<TAlign> const & me,
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn AlignCols#value
+ * @headerfile <seqan/align.h>
+ * @brief Returns AlignCols value at a position.
+ *
+ * @signature TColumn value(alignCols, pos);
+ *
+ * @return TColumn The column, as determined by Value metafunction.
+ */
 
 ///.Function.value.param.container.type:Class.AlignCols
 

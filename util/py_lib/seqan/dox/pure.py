@@ -23,7 +23,7 @@ import migration
 EXPECTED_TAGS = ['a', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'em', 'i', 'b',
                  'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'tt',
                  'table', 'tbody', 'tr', 'th', 'td', 'caption', 'sup', 'img',
-                 'p', 'br', 'div', 'span']
+                 'p', 'br', 'div', 'span', 'code', 'small', 'acronym', 'u']
 
 # Default colors to use.
 DEFAULT_COLORS = {
@@ -39,10 +39,10 @@ DEFAULT_COLORS = {
 # The known language entities.
 KNOWN_LANGUAGE_ENTITIES = [
     'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
-    'concept', 'class', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
+    'concept', 'class', 'specialization', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
     'function', 'global_function', 'interface_function', 'member_function',
     'tag', 'grouped_tag', 'variable', 'global_variable', 'member_variable',
-    'adaption', 'macro', 'group', 'page', 'generic', 'tutorial', 'unknown']
+    'adaption', 'macro', 'group', 'page', 'template_parameter', 'tutorial', 'unknown']
 
 # Properties of language entities.
 LANGUAGE_ENTITIES_PROPERTIES = ['name', 'ideogram', 'color', 'description', 'belongsTo']
@@ -152,12 +152,15 @@ def doMain(args):
     except dox_parser.ParserError, e:
         msg_printer.printParserError(e)
         return 1
+
+    # Validate documentation.
+        
+    # Generate resulting HTML
     html_writer = write_html.HtmlWriter(doc_proc, args, config)
     html_writer.generateFor()
 
-
     msg_printer.printStats()
-    return 0
+    return (msg_printer.numWarnings() + msg_printer.numErrors() > 0)
 
 
 def main():

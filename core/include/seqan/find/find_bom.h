@@ -54,8 +54,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TAutomaton A tag that specifies the used automaton. Default: <tt>Bfam&lt;Oracle&gt;.
  * @tparam TNeedle    The needle type. Types: String
  * 
- * @section Remarks
- * 
  * To be used in combination with the default specialization of @link Finder @endlink.
  * 
  * @see MultiBfamPattern
@@ -71,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class Pattern<TNeedle, Bfam<Oracle> >;
  * 
  * @tparam TNeedle The needle type. Types: String
- * 
- * @section Remarks
  * 
  * To be used in combination with the default specialization of @link Finder @endlink.
  * 
@@ -90,8 +86,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class Pattern<TNeedle, Bfam<Trie> >;
  * 
  * @tparam TNeedle The needle type. Types: String
- * 
- * @section Remarks
  * 
  * To be used in combination with the default specialization of @link Finder @endlink.
  * 
@@ -140,7 +134,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ///.Class.Pattern.param.TSpec.type:Spec.Bfam
 
 struct Oracle; //Oracle Tag => "BOM"
-struct Trie; //Trie Tag => "BTM"
+struct Trie {}; //Trie Tag => "BTM"
 
 template <typename TSpec = Oracle>
 struct Bfam; //backward factor automaton searching

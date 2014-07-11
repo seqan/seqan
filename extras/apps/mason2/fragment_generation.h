@@ -91,8 +91,10 @@ public:
 class FragmentSamplerImpl
 {
 public:
-    virtual void generate(Fragment & frag, int rId, unsigned contigLength) = 0;
+    virtual void generate(Fragment & frag, int rId, unsigned contigLength,
+                          std::vector<std::pair<int, int> > const & gapIntervals) = 0;
     virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                              std::vector<std::pair<int, int> > const & gapIntervals,
                               unsigned count) = 0;
 };
 
@@ -119,11 +121,15 @@ public:
             minLength(minLength), maxLength(maxLength), rng(rng), pdf(minLength, maxLength)
     {}
 
-    virtual void generate(Fragment & frag, int rId, unsigned contigLength);
+    virtual void generate(Fragment & frag, int rId, unsigned contigLength,
+                          std::vector<std::pair<int, int> > const & gapIntervals);
 
-    virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength, unsigned count);
+    virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                              std::vector<std::pair<int, int> > const & gapIntervals,
+                              unsigned count);
 
-    void _generate(Fragment & frag, int rId, unsigned contigLength);
+    void _generate(Fragment & frag, int rId, unsigned contigLength,
+                   std::vector<std::pair<int, int> > const & gapIntervals);
 };
 
 // ----------------------------------------------------------------------------
@@ -148,11 +154,14 @@ public:
             meanLength(meanLength), stdDevLength(stdDevLength), rng(rng), pdf(meanLength, stdDevLength)
     {}
 
-    virtual void generate(Fragment & frag, int rId, unsigned contigLength);
+    virtual void generate(Fragment & frag, int rId, unsigned contigLength,
+                          std::vector<std::pair<int, int> > const & gapIntervals);
 
-    virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength, unsigned count);
+    virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                              std::vector<std::pair<int, int> > const & gapIntervals, unsigned count);
 
-    void _generate(Fragment & frag, int rId, unsigned contigLength);
+    void _generate(Fragment & frag, int rId, unsigned contigLength,
+                   std::vector<std::pair<int, int> > const & gapIntervals);
 };
 
 // ----------------------------------------------------------------------------
@@ -181,15 +190,17 @@ public:
     }
 
     // Generate a fragment given a contig id and the length of the contig.
-    void generate(Fragment & frag, int rId, unsigned contigLength)
+    void generate(Fragment & frag, int rId, unsigned contigLength,
+                  std::vector<std::pair<int, int> > const & gapIntervals)
     {
-        impl->generate(frag, rId, contigLength);
+        impl->generate(frag, rId, contigLength, gapIntervals);
     }
 
     // Generate multiple fragments.
-    void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength, unsigned count)
+    void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                  std::vector<std::pair<int, int> > const & gapIntervals, unsigned count)
     {
-        impl->generateMany(frags, rId, contigLength, count);
+        impl->generateMany(frags, rId, contigLength, gapIntervals, count);
     }
 };
 
@@ -200,6 +211,74 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// --------------------------------------------------------------------------
+// Function overlapsWithInterval()
+// --------------------------------------------------------------------------
+
+template <class TIter, class T>
+TIter _intervalLowerBound (TIter first, TIter last, const T & val)
+{
+    TIter it;
+    typename std::iterator_traits<TIter>::difference_type count, step;
+    count = std::distance(first,last);
+    while (count>0)
+    {
+        it = first;
+        step=count / 2;
+        std::advance(it, step);
+        if (it->first < val)
+        {
+            first=++it;
+            count-=step+1;
+        }
+        else count=step;
+    }
+    return first;
+}
+
+template <class TIter, class T>
+TIter _intervalUpperBound (TIter first, TIter last, const T & val)
+{
+    TIter it;
+    typename std::iterator_traits<TIter>::difference_type count, step;
+    count = std::distance(first,last);
+    while (count > 0)
+    {
+        it = first;
+        step = count / 2;
+        std::advance(it, step);
+        if (!(val < it->second))
+        {
+            first = ++it;
+            count -= step + 1;
+        }
+        else count=step;
+    }
+    return first;
+}
+
+inline bool overlaps(int begin0, int end0, int begin1, int end1)
+{ return (begin1 < end0 && begin0 < end1); }
+
+// Returns whether the given interval overlaps with another interval.
+
+inline bool overlapsWithInterval(std::vector<std::pair<int, int> > const & intervals,
+                                 int beginPos, int endPos)
+{
+    typedef std::vector<std::pair<int, int> >::const_iterator TIter;
+    TIter itL = _intervalLowerBound(intervals.begin(), intervals.end(), beginPos);
+    if (itL != intervals.begin())
+        --itL;
+    TIter itU = _intervalUpperBound(intervals.begin(), intervals.end(), endPos);
+    if (itU != intervals.end())
+        ++itU;
+    for (TIter it = itL; it != itU; ++it)
+        if (overlaps(it->first, it->second, beginPos, endPos))
+            return true;
+    return false;
+}
+
 
 // --------------------------------------------------------------------------
 // Function trimAfterSpace()
@@ -220,20 +299,23 @@ void trimAfterSpace(seqan::CharString & s)
 
 // TODO(holtgrew): Too much redundancy here.
 
-void UniformFragmentSamplerImpl::generate(Fragment & frag, int rId, unsigned contigLength)
+void UniformFragmentSamplerImpl::generate(Fragment & frag, int rId, unsigned contigLength,
+                                          std::vector<std::pair<int, int> > const & gapIntervals)
 {
-    _generate(frag, rId, contigLength);
+    _generate(frag, rId, contigLength, gapIntervals);
 }
 
-void UniformFragmentSamplerImpl::generateMany(std::vector<Fragment> & frags, int rId,
-                                                unsigned contigLength, unsigned count)
+void UniformFragmentSamplerImpl::generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                                              std::vector<std::pair<int, int> > const & gapIntervals,
+                                              unsigned count)
 {
     frags.resize(count);
     for (unsigned i = 0; i < count; ++i)
-        _generate(frags[0], rId, contigLength);
+        _generate(frags[0], rId, contigLength, gapIntervals);
 }
 
-void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned contigLength)
+void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned contigLength,
+                                           std::vector<std::pair<int, int> > const & gapIntervals)
 {
     int fragLength = 0;
     unsigned const MAX_TRIES = 1000;
@@ -249,25 +331,31 @@ void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned co
         frag.rId = rId;
         frag.beginPos = beginPos;
         frag.endPos = beginPos + fragLength;
+
+        if (overlapsWithInterval(gapIntervals, frag.beginPos, frag.endPos))
+            continue;  // overlaps with a gap
+
         SEQAN_ASSERT_LEQ(frag.endPos, (int)contigLength);
         break;
     }
 }
 
-void NormalFragmentSamplerImpl::generate(Fragment & frag, int rId, unsigned contigLength)
+void NormalFragmentSamplerImpl::generate(Fragment & frag, int rId, unsigned contigLength,
+                                         std::vector<std::pair<int, int> > const & gapIntervals)
 {
-    _generate(frag, rId, contigLength);
+    _generate(frag, rId, contigLength, gapIntervals);
 }
 
-void NormalFragmentSamplerImpl::generateMany(std::vector<Fragment> & frags, int rId,
-                                               unsigned contigLength, unsigned count)
+void NormalFragmentSamplerImpl::generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
+                                             std::vector<std::pair<int, int> > const & gapIntervals, unsigned count)
 {
     frags.resize(count);
     for (unsigned i = 0; i < count; ++i)
-        _generate(frags[i], rId, contigLength);
+        _generate(frags[i], rId, contigLength, gapIntervals);
 }
 
-void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned contigLength)
+void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned contigLength,
+                                          std::vector<std::pair<int, int> > const & gapIntervals)
 {
     int fragLength = 0;
     unsigned const MAX_TRIES = 1000;
@@ -284,6 +372,10 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
         frag.rId = rId;
         frag.beginPos = beginPos;
         frag.endPos = beginPos + fragLength;
+
+        if (overlapsWithInterval(gapIntervals, frag.beginPos, frag.endPos))
+            continue;  // overlaps with a gap
+
         SEQAN_ASSERT_LEQ(frag.endPos, (int)contigLength);
         break;
     }

@@ -49,7 +49,7 @@ def md5ForFile(f, block_size=2**20):
 
 
 # Valgrind flags, taken from CMake output, ideally given to test script by CMake?
-SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..', '..', 'seqan.supp')
+SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..', '..', '..', 'misc', 'seqan.supp')
 VALGRIND_FLAGS = [SUPPRESSIONS] + '--error-exitcode=1 -q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50 --'.split()
 VALGRIND_PATH = '/usr/bin/valgrind'
 
@@ -90,6 +90,14 @@ class TestConf(object):
         fmt = 'TestConf(%s, %s, %s, %s, %s, %s)'
         return fmt % (repr(self.program), self.args, self.to_diff, self.name,
                       self.redir_stdout, self.redir_stderr)
+
+    def commandLineArgs(self):
+        """Returns the command line."""
+        args = [x for x in self.args if x != '']
+        args = [self.program] + args
+        if self.valgrind:
+            args = [VALGRIND_PATH] + VALGRIND_FLAGS + args
+        return args
 
 
 class TestPathHelper(object):
@@ -211,12 +219,7 @@ def runTest(test_conf):
     """
     # Execute the program.
     logging.debug('runTest(%s)', test_conf)
-    args = [x for x in test_conf.args if x != '']
-    args = [test_conf.program] + args
-    if test_conf.valgrind:
-        # Call through valgrind.
-        args = [VALGRIND_PATH] + VALGRIND_FLAGS
-    logging.debug('Executing "%s"', ' '.join(args))
+    logging.debug('Executing "%s"', ' '.join(test_conf.commandLineArgs()))
     stdout_file = subprocess.PIPE
     if test_conf.redir_stdout:
         logging.debug('  Redirecting stdout to "%s".' % test_conf.redir_stdout)
@@ -226,14 +229,14 @@ def runTest(test_conf):
         logging.debug('  Redirecting stderr to "%s".' % test_conf.redir_stderr)
         stderr_file = open(test_conf.redir_stderr, 'w+')
     try:
-        process = subprocess.Popen(args, stdout=stdout_file,
+        process = subprocess.Popen(test_conf.commandLineArgs(), stdout=stdout_file,
                                    stderr=stderr_file)
         retcode = process.wait()
         logging.debug('  return code is %d', retcode)
         if retcode != 0:
             fmt = 'Return code of command "%s" was %d.'
             print >>sys.stderr, '--- stdout begin --'
-            print >>sys.stderr, fmt % (' '.join(args), retcode)
+            print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), retcode)
             print >>sys.stderr, stdout_file.read()
             print >>sys.stderr, '--- stdout end --'
             stdout_file.close()
@@ -253,11 +256,11 @@ def runTest(test_conf):
         fmt = 'ERROR (when executing "%s"): %s'
         if stdout_file is not subprocess.PIPE:
             stdout_file.close()
-        print >>sys.stderr, fmt % (' '.join(args), e)
+        print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), e)
         return False
     # Handle error of program, indicated by return code != 0.
     if retcode != 0:
-        print >>sys.stderr, 'Error when executing "%s".' % ' '.join(args)
+        print >>sys.stderr, 'Error when executing "%s".' % ' '.join(test_conf.commandLineArgs())
         print >>sys.stderr, 'Return code is %d' % retcode
         if stdout_file is not subprocess.PIPE:
             stdout_file.seek(0)
@@ -284,7 +287,7 @@ def runTest(test_conf):
     for tuple_ in test_conf.to_diff:
         expected_path, result_path = tuple_[:2]
         binary = False
-        transforms = []
+        transforms = [NormalizeLineEndingsTransform()]
         if len(tuple_) >= 3:
             if tuple_[2] == 'md5':
                 binary = True
@@ -292,9 +295,9 @@ def runTest(test_conf):
                 transforms += tuple_[2]
         try:
             if binary:
-                with open(expected_path, 'r') as f:
+                with open(expected_path, 'rb') as f:
                     expected_md5 = md5ForFile(f)
-                with open(result_path, 'r') as f:
+                with open(result_path, 'rb') as f:
                     result_md5 = md5ForFile(f)
                 if expected_md5 == result_md5:
                     continue
@@ -303,11 +306,11 @@ def runTest(test_conf):
                     print >>sys.stderr, 'md5(%s) == %s != %s == md5(%s)' % tpl
                     result = False
             else:
-                with open(expected_path, 'r') as f:
+                with open(expected_path, 'rb') as f:
                     expected_str = f.read()
                 for t in transforms:
                     expected_str = t.apply(expected_str, True)
-                with open(result_path, 'r') as f:
+                with open(result_path, 'rb') as f:
                     result_str = f.read()
                 for t in transforms:
                     result_str = t.apply(result_str, False)
@@ -342,35 +345,48 @@ class ReplaceTransform(object):
         return text.replace(self.needle, self.replacement)
 
 
+class NormalizeLineEndingsTransform(object):
+    """Normalizes line endings to '\n'."""
+
+    def __init__(self, left=True, right=True):
+        self.left = left
+        self.right = right
+
+    def apply(self, text, is_left):
+        if (is_left and not self.left) or (not is_left and not self.right):
+            return text  # Skip if no transform is to be applied.
+        return text.replace('\r\n', '\n')
+
+
 class NormalizeScientificExponentsTransform(object):
-	"""Transformation that normalized scientific notation exponents.
-	
-	On Windows, scientific numbers are printed with an exponent padded to
-	a width of three with zeros, e.g. 1e003 instead of 1e03 as on Unix.
-	
-	This transform normalizes to Unix or Windows.
-	"""
-	
-	def __init__(self, normalize_to_unix=True):
-		self.normalize_to_unix = normalize_to_unix
-	
-	def apply(self, text, is_left):
-		"""Apply the transform."""
-		if self.normalize_to_unix:
-			return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)0([0-9]{2})', r'\1\2', text)
-		else:
-			return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)([0-9]{2})', r'\10\2', text)
+    """Transformation that normalized scientific notation exponents.
+
+    On Windows, scientific numbers are printed with an exponent padded to
+    a width of three with zeros, e.g. 1e003 instead of 1e03 as on Unix.
+
+    This transform normalizes to Unix or Windows.
+    """
+
+    def __init__(self, normalize_to_unix=True):
+        self.normalize_to_unix = normalize_to_unix
+
+    def apply(self, text, is_left):
+        """Apply the transform."""
+        if self.normalize_to_unix:
+            return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)0([0-9]{2})', r'\1\2', text)
+        else:
+            return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)([0-9]{2})', r'\10\2', text)
 
 
 class RegexpReplaceTransform(object):
     """Transformation that applies regular expression replacement."""
-    
+
     def __init__(self, needle, replacement, left=True, right=True):
         self.needle = needle
         self.replacement = replacement
         self.left = left
         self.right = right
-    
+
     def apply(self, text, is_left):
         """Apply the transform."""
         if (is_left and not self.left) or (not is_left and not self.right):
@@ -392,7 +408,7 @@ class UniqueTransform(object):
 
 
 def main(main_func, **kwargs):
-    """Run main_func with the first and second positional parameter.""" 
+    """Run main_func with the first and second positional parameter."""
     parser = optparse.OptionParser("usage: run_tests [options] SOURCE_ROOT_PATH BINARY_ROOT_PATH")
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true')
     parser.add_option('--valgrind', dest='valgrind', action='store_true')

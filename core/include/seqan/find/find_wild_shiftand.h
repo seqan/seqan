@@ -47,6 +47,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class WildShiftAndPattern
+ * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief Exact string matching with wildcards using bit parallelism.
  *
@@ -56,8 +57,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class Pattern<TNeedle, WildShiftAnd>;
  *
  * @tparam TNeedle The needle type.  Type: @link SequenceConcept @endlink.
- *
- * @section Remarks
  *
  * The supported wildcards are <tt>*</tt> (zero or more occurrence), <tt>+</tt> (one or more occurrences), <tt>?</tt>
  * (optional character), <tt>.</tt> (every character), character classes (e.g. <tt>[a-z]</tt>) and bounded repeats (e.g.

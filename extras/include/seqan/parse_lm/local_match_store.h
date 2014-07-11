@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                  parse_lm
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -32,8 +32,6 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-// SEQAN_NO_GENERATED_FORWARDS
-
 // TODO(holtgrew): Allow the storage of additional fields.
 /* This could look as follows:
 
@@ -65,8 +63,6 @@ namespace seqan {
  * 
  * @tparam TId       Type to use for subject/query id.
  * @tparam TPosition Type to use for storing positions.
- * 
- * @section Remarks
  * 
  * Matches on the reverse-complement are encoded by the begin position being greater than the end position.
  * 
@@ -178,6 +174,17 @@ public:
  * 
  * @signature template <typename TSpec>
  *            struct LocalMatchStoreConfig;
+ *
+ * @tparam TSpec Specializing type.
+ *
+ *
+ * @typedef LocalMatchStoreConfig::TId;
+ * @brief Type to use for ids.
+ * @signature typedef unsigned LocalMatchStoreConfig::TId;
+ *
+ * @typedef LocalMatchStoreConfig::TPosition;
+ * @brief The type to use for positions.
+ * @signature typedef (...) LocalMatchStoreConfig::TPosition;
  */
 
 /**
@@ -205,8 +212,6 @@ struct LocalMatchStoreConfig
  * 
  * @tparam TSpec   Specialization tag.
  * @tparam TConfig Configuration class.
- * 
- * @section Remarks
  * 
  * The LocalMatchStore provides information about matches.  Similar to the @link FragmentStore @endlink, the
  * information is split into multiple sub stores.  Each sub store stores a part of the information.
@@ -389,18 +394,16 @@ registerSequenceName(TLocalMatchStore & store,
  * @signature void appendLocalMatchStore(store, subjectId, subjectBeginPos, subjectEndPos, queryId, queryBeginPos, queryEndPos);
  * @signature void appendLocalMatchStore(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos, cigarStringBuffer);
  * 
- * @param store             The store to add the local match to, LocalMatchStore
- * @param subjectId         Numeric subject sequence identifier.
- * @param subjectName       The textual name of the query sequence, CharString
- * @param subjectBegin      The begin position of the match in the subject.
- * @param subjectEnd        The end position of the match in the subject.
- * @param queryId           Numeric query sequence identifier.
- * @param queryName         The textual name of the query sequence, CharString
- * @param queryBegin        The begin position of the match in the query.
- * @param queryEnd          The end position of the match in the query.
- * @param cigarStringBuffer Buffer with the cigar string of the local alignment,  CharString
- * 
- * @section Remarks
+ * @param[in,out] store             The LocalMatchStore to add the local match to.
+ * @param[in]     subjectId         Numeric subject sequence identifier, @link IntegerConcept @endlink.
+ * @param[in]     subjectName       The textual name of the query sequence, @link CharString @endlink.
+ * @param[in]     subjectBegin      The begin position of the match in the subject, @link IntegerConcept @endlink.
+ * @param[in]     subjectEnd        The end position of the match in the subject, @link IntegerConcept @endlink.
+ * @param[in]     queryId           Numeric query sequence identifier, @link IntegerConcept @endlink.
+ * @param[in]     queryName         The textual name of the query sequence, @link CharString @endlink.
+ * @param[in]     queryBegin        The begin position of the match in the query, @link IntegerConcept @endlink.
+ * @param[in]     queryEnd          The end position of the match in the query, @link IntegerConcept @endlink.
+ * @param[in]     cigarStringBuffer Buffer with the cigar string of the local alignment,  @link CharString @endlink.
  * 
  * Matches on the reverse-complement are encoded by the begin position being greater than the begin position.
  */

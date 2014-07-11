@@ -393,8 +393,6 @@ typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
  * @param[in,out] stringSet The StringSet to complement.
  * @param[in,out] sequence  The SequenceConcept to complement.
  *
- * @section Remarks
- *
  * Complementing only works for alphabets where a <tt>FunctorComplement&lt;T&gt;</tt> is implemented.  SeqAn comes with
  * such definitions for Dna, Dna5, Rna, Rna5.
  */
@@ -485,8 +483,6 @@ complementString(THost const & host)
  * 
  * @param[in,out] stringSet The StringSet to complement.
  * @param[in,out] sequence  The SequenceConcept to complement.
- *
- * @section Remarks
  *
  * StringSet objects are reverse-complemented element-wise, i.e. the order of the sequences stays the same but the
  * sequences in the StringSet themselves are reverse-complemented.

@@ -39,10 +39,17 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-// Manual Forwards
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER <= 1600
+
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline typename Cargo< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
 cargo(::std::map<TKey,TCargo, TCompare, TAlloc> & me, TKey2 const & _key);
+
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1600
 
 //////////////////////////////////////////////////////////////////////////////
 //insertion tags
@@ -79,6 +86,16 @@ struct Skiplist;
 template <typename TElement, typename TSpec = Skiplist<> >
 class Map;
 
+/*!
+ * @fn Map#length
+ * @headerfile <seqan/map.h>
+ * @brief Return number of elements in map.
+ *
+ * @signature TSize length(map);
+ *
+ * @param[in] map The Map to query for its size.
+ * @return TSize The number of elements in the map.
+ */
 
 //////////////////////////////////////////////////////////////////////////////
 // In SeqAn sets and maps store elements as pairs of (key,cargo) 
@@ -169,12 +186,12 @@ struct ImplMapValue_<Nothing>
 
 /*!
  * @fn Map#mapValue
- * @brief Subscript operator <tt>[ ]</tt> of maps.
+ * @brief Subscript <tt>operator[]</tt> of maps.
  * 
  * @signature TMapValue mapValue(map, key);
  * 
- * @param map A map. Types: Map
- * @param key A key.
+ * @param[in,out] map A map. Types: Map
+ * @param[in]     key A key.
  * 
  * @return TMapValue If <tt>map</tt> is a set: The same as Map#hasKey.  If <tt>map</tt> is a dictionary: The same as
  *                   Map#value.

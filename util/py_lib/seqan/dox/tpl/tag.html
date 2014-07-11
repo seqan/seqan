@@ -3,13 +3,11 @@
 {% block title %}{{ tag.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="tag" data-pimped="true"><a href="page_LanguageEntities.html#tag">Tag</a> <span>{{ tag.title|e }}<div>{{ sections.brief(tag) }}</div></span></h1>
+<h1 data-lang-entity="tag" data-pimped="true">
+  <a href="page_LanguageEntities.html#tag">Tag</a> <span>{{ tag.title|e }}<div>{{ sections.brief(tag) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(tag) }}
-
-	{{ sections.signatures(tag) }}
-</div>
+{{ sections.top_box(tag) }}
 
 <!-- Template Parameters -->
 {{ sections.tparams_ov(tag) }}
@@ -20,6 +18,7 @@
  =============================================================================
 -->
 
+{% if tag.internals or tag.deprecation_msgs or tag.warnings or tag.notes or tag.akas or not tag.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -68,6 +67,7 @@
     {{ sections.body(tag) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(tag) }}

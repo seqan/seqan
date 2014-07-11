@@ -82,12 +82,13 @@ void sparseStringGetValue(TSparseString & /*tag*/)
     assignValue(getFibre(sparseString, FibreValues()), 1, 2);
     assignValue(getFibre(sparseString, FibreValues()), 2, 3);
 
-    resize(getFibre(sparseString, FibreIndicators()), 30);
-    setValue(getFibre(sparseString, FibreIndicators()), 0, true);
-    setValue(getFibre(sparseString, FibreIndicators()), 10, true);
-    setValue(getFibre(sparseString, FibreIndicators()), 20, true);
-    updateRanks(getFibre(sparseString, FibreIndicators()));
-
+    String<bool> ind;
+    resize(ind, 30, false);
+    ind[0] = true;
+    ind[10] = true;
+    ind[20] = true;
+    createRankDictionary(getFibre(sparseString, FibreIndicators()), ind);
+    
     SEQAN_ASSERT_EQ(getValue(sparseString, 0), 0u);
     SEQAN_ASSERT_EQ(getValue(sparseString, 10), 2u);
     SEQAN_ASSERT_EQ(getValue(sparseString, 20), 3u);

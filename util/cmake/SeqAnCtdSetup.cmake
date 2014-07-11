@@ -200,6 +200,7 @@ add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                     COMMAND ${CMAKE_COMMAND} "-DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
                                              "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
                                              "-DSEQAN_VERSION_STRING=${SEQAN_VERSION_STRING}"
+                                             "-DSEQAN_DATE=${SEQAN_DATE}"
                                              -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake"
                     DEPENDS ${WORKFLOW_PLUGIN_DIR}
                             ${CMAKE_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in)

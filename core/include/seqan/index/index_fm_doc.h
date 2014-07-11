@@ -198,10 +198,10 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..include:seqan/index.h
 */
 /**
-.Function.setLfTable
+.Function.setFibre
 ..class:Class.CompressedSA
 ..summary:Set the LF of the compressed suffix array.
-..signature:setLfTable(CompressedSA<TSparseString, TLF, TSpec> compressedSa, TLF & lf)
+..signature:setFibre(CompressedSA<TSparseString, TLF, TSpec> compressedSa, TLF & lf, FibreLF)
 ..param.CompressedSA<TSparseString, TLF, TSpec>:The compressed suffix array.
 ...type:Class.CompressedSA
 ..param.lf

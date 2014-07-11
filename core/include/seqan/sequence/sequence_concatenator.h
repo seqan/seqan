@@ -66,8 +66,6 @@ struct StringSetLimits;
  * 
  * @tparam TStringSet The @link StringSet @endlink type.
  * 
- * @section Remarks
- * 
  * This container can be iterated like the concatenation string of all sequences in a @link StringSet @endlink.
  * 
  * This container only is a lightweight hull around a @link StringSet @endlink.  The iteration is handled by @link

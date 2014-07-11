@@ -59,10 +59,8 @@ namespace seqan {
  *            class ToStdAllocator;
  * 
  * @tparam TValue Type of allocated items.
- * @tparam THost  Type of the host allocator object.This object is used to call @link allocate @endlink and
- *                @link deallocate @endlink.
- * 
- * @section Remarks
+ * @tparam THost  Type of the host allocator object.This object is used to call @link Allocator#allocate @endlink and
+ *                @link Allocator#deallocate @endlink.
  * 
  * The member functions <tt>allocate</tt> and <tt>deallocate</tt> of <tt>ToStdAllocator</tt> call the (globale)
  * functions @link Allocator#allocate @endlink and @link Allocator#deallocate @endlink, respectively. The globale
@@ -70,13 +68,12 @@ namespace seqan {
  * object itself, but the host object that was given to the constructor.
  * 
  * @fn ToStdAllocator#ToStdAllocator
- * 
  * @brief Constructor
  * 
  * @signature ToStdAllocator::ToStdAllocator(host);
  * 
- * @param host The host object that is used as allocator for @link Allocator#allocate @endlink and @link
- * Allocator#deallocate @endlink.
+ * @param[in] host The host object that is used as allocator for @link Allocator#allocate @endlink and @link
+ *                 Allocator#deallocate @endlink.
  */
 
 /**
@@ -216,7 +213,7 @@ struct StdAllocator
  * 
  * @signature THost host(allocator);
  * 
- * @param allocator The allocator to query.
+ * @param[in] allocator The allocator to query.
  * 
  * @return THost The host object.
  */

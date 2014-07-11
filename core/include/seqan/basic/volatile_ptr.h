@@ -216,7 +216,7 @@ struct VolatilePtr
  *
  * @signature void nukeCopies(ptr);
  *
- * @param ptr One pointer of the connected component to reset.
+ * @param[in] ptr One pointer of the connected component to reset.
  */
  
 /**

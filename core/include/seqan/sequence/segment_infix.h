@@ -879,7 +879,7 @@ SEQAN_HOST_DEVICE inline typename Infix<T>::Type
 infixWithLength(T & t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
-    return typename Infix<T>::Type(t, pos_begin, pos_begin + length);
+    return infix(t, pos_begin, pos_begin + length);
 }
 
 template <typename T, typename TPosBegin, typename TSize>
@@ -887,7 +887,7 @@ SEQAN_HOST_DEVICE inline typename Infix<T *>::Type
 infixWithLength(T * t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
-    return typename Infix<T *>::Type (t, pos_begin, pos_begin + length);
+    return infix(*t, pos_begin, pos_begin + length);
 }
 
 template <typename T, typename TSpec, typename TPosBegin, typename TSize>
@@ -895,10 +895,7 @@ SEQAN_HOST_DEVICE inline typename Infix<Segment<T, TSpec> >::Type
 infixWithLength(Segment<T, TSpec> & t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
-    return typename Infix<Segment<T, TSpec> >::Type (
-        host(t),
-        beginPosition(t) + pos_begin,
-        beginPosition(t) + pos_begin + length);
+    return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);
 }
 
 template <typename T, typename TSpec, typename TPosBegin, typename TSize>
@@ -906,10 +903,7 @@ SEQAN_HOST_DEVICE inline typename Infix<Segment<T, TSpec> const>::Type
 infixWithLength(Segment<T, TSpec> const & t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
-    return typename Infix<Segment<T, TSpec> const>::Type (
-        host(t),
-        beginPosition(t) + pos_begin,
-        beginPosition(t) + pos_begin + length);
+    return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);
 }
 
 //////////////////////////////////////////////////////////////////////////////

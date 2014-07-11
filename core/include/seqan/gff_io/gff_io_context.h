@@ -52,7 +52,7 @@ namespace seqan {
  * @headerfile <seqan/bam_io.h>
  * @brief The I/O context to use for GFF I/O.
  * 
- * @signature template <typename TNameStore, typename TNameStoreCache = NameStoreCache<TNameStore> >
+ * @signature template <typename TNameStore[, typename TNameStoreCache]>
  *            class GffIOContext;
  * 
  * @tparam TNameStore      The name store class.
@@ -185,7 +185,7 @@ public:
  * 
  * @param[in] context The GffIOContext to query.
  * 
- * @return Reference to the name store of the context (TNameStore).
+ * @return TNameStore Reference to the name store of the context (type <tt>TNameStore</tt>).
  *
  * @see GffIOContext::TNameStore
  * @see GffIOContext#nameStoreCache

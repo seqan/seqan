@@ -457,7 +457,7 @@ sequenceId(Fragment<TSize, TSpec> const& f,
 
 /*!
  * @fn Fragment#fragmentBegin
- * @label Return fragment begin.
+ * @brief Return fragment begin.
  *
  * @signature TSize fragmentBegin(frag, seqId);
  *

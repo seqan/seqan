@@ -47,10 +47,10 @@ void _numOccurrences(TFloat &nW, String<TAlphabet>& haystack, StringSet<String<T
  * 
  * @signature TFloat _zscore(W, X, M, tag);
  *
- * @param W   The StringSet to use as the words.
- * @param X   The StringSet to use as the text.
- * @param M   The MarkovModel to use.
- * @param tag The tag to select the algorithm.
+ * @param[in] W   The StringSet to use as the words.
+ * @param[in] X   The StringSet to use as the text.
+ * @param[in] M   The MarkovModel to use.
+ * @param[in] tag The tag to select the algorithm.
  *
  * @return TFloat The z-score, TFloat is the TFloat from the MarkovModel M.
  */
@@ -149,9 +149,9 @@ void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<T
  *
  * @signature TFloat _computeExpectation(mm, W, n);
  *
- * @param mm The MarkovModel.
- * @param W  The set of patterns, StringSet.
- * @param n  The length of the string, unsigned.
+ * @param[in] mm The MarkovModel.
+ * @param[in] W  The set of patterns, StringSet.
+ * @param[in] n  The length of the string, unsigned.
  *
  * @return TFloat the expectation valuefor W w.r.t. a string and M.
  */
@@ -320,9 +320,9 @@ TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlp
  *
  * @signature TFloat _overlapExpectation(W, M, n);
  *
- * @param W The set of words.
- * @param M The MarkovModel to use for the computation.
- * @param n The length of the text.
+ * @param[in] W The set of words.
+ * @param[in] M The MarkovModel to use for the computation.
+ * @param[in] n The length of the text.
  *
  * @return TFloat The expectation value for overlapping, TFloat is the TFloat from the type of M.
  */
@@ -383,7 +383,7 @@ TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabe
  * 
  * @signature void _addReverseComplements(ss);
  *
- * @param ss A String set to expand.
+ * @param[in,out] ss A String set to expand.
  */
 
 /*
@@ -420,11 +420,11 @@ typedef String<TDnaAlphabet> TDnaSequence;
  *
  * @signature TFloat zscore(W, X, M, algoTag);
  *
- * @param W       The StringSet of pattern strings.
- * @param X       The StringSet of text strings.
- * @param M       The MarkovModel object.
- * @param algoTag The algorithm to exploit to compute the number of occurrences of patterns in the text strings
- *                (see @link AhoCorasickPattern @endlink etc.).
+ * @param[in] W       The StringSet of pattern strings.
+ * @param[in] X       The StringSet of text strings.
+ * @param[in] M       The MarkovModel object.
+ * @param[in] algoTag The algorithm to exploit to compute the number of occurrences of patterns in the text strings
+ *                    (see @link AhoCorasickPattern @endlink etc.).
  *
  * @return TFloat The z-score for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
@@ -515,9 +515,9 @@ TFloat zscore(StringSet<TDnaSequence> W,  StringSet<TDnaSequence> &X, MarkovMode
  *
  * @signature TFloat variance(W, X, M);
  *
- * @param W The StringSet of word strings.
- * @param X The StringSet of text strings.
- * @param M The MarkovModel to use.
+ * @param[in] W The StringSet of word strings.
+ * @param[in] X The StringSet of text strings.
+ * @param[in] M The MarkovModel to use.
  *
  * @return TFloat The variance for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
@@ -593,9 +593,9 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
  *
  * @signature TFloat expectation(W, X, M);
  *
- * @param W The StringSet of word strings.
- * @param X The StringSet of text strings.
- * @param M The MarkovModel to use.
+ * @param[in] W The StringSet of word strings.
+ * @param[in] X The StringSet of text strings.
+ * @param[in] M The MarkovModel to use.
  *
  * @return TFloat The expectation for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
@@ -615,6 +615,8 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
 ..returns:The expectation for W w.r.t. X and M.
 ..include:seqan/statistics.h
 */
+
+// TODO(holtgrew): Add const?
 
 template <typename TAlphabet, typename TFloat, typename TSpec>
 TFloat expectation(StringSet<String<TAlphabet> > & W, StringSet<String<TAlphabet> > &X, MarkovModel<TAlphabet, TFloat, TSpec> &M)

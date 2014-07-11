@@ -40,6 +40,7 @@
 
 /*!
  * @macro SEQAN_OMP_PRAGMA
+ * @headerfile <seqan/parallel.h>
  * @brief Portable conditional <tt>#pragma</tt> issuing if OpenMP is enabled.
  *
  * @signature SEQAN_OMP_PRAGMA(x)

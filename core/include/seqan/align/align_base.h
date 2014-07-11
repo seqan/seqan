@@ -293,7 +293,7 @@ struct Rows<Align<TSource, TSpec> const>
  * @mfn Align#Source
  * @brief Return the type of the underlying sequence.
  *
- * @signature Rows<TAlign>::Type
+ * @signature Rows<TAlign>::Type;
  *
  * @tparam TAlign The Align object to get the underlying sequence type for.
  *
@@ -365,9 +365,9 @@ void move(Align<TSource, TSpec> & target, Align<TSource, TSpec> & source)
  *
  * @signature TRows rows(align);
  *
- * @param align The Align object to get the rows for.
+ * @param[in] align The Align object to get the rows for.
  *
- * @signature TRows A container with the Gaps of the Align object.
+ * @return TRows A container with the Gaps of the Align object.
  */
 
 /**
@@ -408,10 +408,10 @@ rows(Align<TSource, TSpec> const & me)
  *
  * @signature TRow row(align, pos);
  *
- * @param align The Align object to get the row of.
- * @param pos   The number of the row to get.
+ * @param[in] align The Align object to get the row of.
+ * @param[in] pos   The number of the row to get.
  *
- * @signature TRow Reference to the given row of align  (Type: @link Gap#Row @endlink).
+ * @return TRow Reference to the given row of align  (Metafunction: @link Align#Row @endlink).
  */
 
 /**
@@ -457,9 +457,9 @@ row(Align<TSource, TSpec> const & me,
  *
  * @signature TCols cols(align);
  *
- * @param align The Align object to get the cols of.
+ * @param[in] align The Align object to get the cols of.
  *
- * @signature TCols The columns of the Align object (type @link Align#Cols @endlink).
+ * @return TCols The columns of the Align object (Metafunction: @link Align#Cols @endlink).
  */
 
 /**
@@ -499,9 +499,9 @@ cols(Align<TSource, TSpec> const & me)
  *
  * @signature TCol col(align);
  *
- * @param align The Align object to get the cols of.
+ * @param[in] align The Align object to get the cols of.
  *
- * @signature TCol The column of the Align object (type @link Align#Col @endlink).
+ * @return TCol The column of the Align object (Metafunction: @link Align#Col @endlink).
  */
 
 /**
@@ -571,9 +571,9 @@ detach(Align<TSource, TSpec> & me)
  *
  * @signature void write(stream, align, id, Raw());
  *
- * @param stream The Stream to write to.
- * @param align  The Align object to write out.
- * @param id     ID string (ignored).
+ * @param[in,out] stream The Stream to write to.
+ * @param[in]     align  The Align object to write out.
+ * @param[in]     id     ID string (ignored).
  */
 
 // TODO(holtgrew): Part of the old I/O system. Undocumented. Rename Raw() to HumanReadable() or OnScreen()?
@@ -673,7 +673,7 @@ write(TFile & target,
  *
  * @signature void clearClipping(align);
  *
- * @param align Align object to clear clippings of.
+ * @param[in,out] align Align object to clear clippings of.
  */
 
 // TODO(holtgrew): Undocumented.
@@ -699,8 +699,8 @@ clearClipping(Align<TSource, TSpec> & align_)
  *
  * @signature TStream operator<<(stream, align);
  *
- * @param stream std::ostream to write to.
- * @param align  Align object to write out.
+ * @param[in,out] stream <tt>std::ostream</tt> to write to.
+ * @param[in]     align  Align object to write out.
  *
  * @return TStream Reference to stream after output of align.
  */
@@ -726,8 +726,8 @@ operator<<(TStream & target,
  *
  * @signature void setStrings(align, stringSet);
  *
- * @param align     Align object to set underlying sequence of.
- * @param stringSet The source of the data.
+ * @param[in,out] align     Align object to set underlying sequence of.
+ * @param[in]     stringSet The @link StringSet @endlink with the data.
  */
 
 /**
@@ -777,7 +777,7 @@ setStrings(Align<TSource, TSpec> & me,
  *
  * @signature void clearGaps(align);
  *
- * @param align The Align object to clear all all gaps from.
+ * @param[in] align The Align object to clear all all gaps from.
  */
 
 template <typename TSource, typename TSpec>
@@ -802,9 +802,9 @@ clearGaps(Align<TSource, TSpec> & me)
  *
  * @signature TStringSet stringSet(align);
  *
- * @param align Align object to get sequences of.
+ * @param[in] align Align object to get sequences of.
  *
- * @return TStringSet The set of ungapped sequences.  Get type with Gaps#StringSetType.
+ * @return TStringSet The set of ungapped sequences (Metafunction: @link Align#StringSetType @endlink).
  */
 
 /**
