@@ -42,8 +42,10 @@ namespace {  // anonymous namespace
 
 SeqConsOptions::Operation strToMethod(std::string opStr)
 {
-    if (opStr == "msa_consensus")
-        return SeqConsOptions::MSA_CONSENSUS;
+    if (opStr == "align_consensus")
+        return SeqConsOptions::ALN_CONSENSUS;
+    else if (opStr == "overlap_consensus")
+        return SeqConsOptions::OVL_CONSENSUS;
     else if (opStr == "contig_consensus")
         return SeqConsOptions::CTG_CONSENSUS;
     else if (opStr == "pos_consensus")
@@ -65,7 +67,8 @@ char const * operationStr(SeqConsOptions::Operation op)
         "realign only",
         "consensus with positions",
         "contig-wise MSA + consensus",
-        "MSA + consensus"
+        "overlap MSA + consensus",
+        "global MSA + consensus"
     };
     return labels[op];
 }
@@ -101,7 +104,7 @@ void SeqConsOptions::checkConsistency()
     if ((operation == POS_CONSENSUS || operation == CTG_CONSENSUS || operation == REALIGN) &&
         (!endsWith(inFileLowerCase, ".sam")))
         throw std::runtime_error("SAM input required for coordinates.  Either specify SAM file for the "
-                                 "input or use \"--method msa_consensus\".");
+                                 "input or use \"--method overlap_consensus\" or \"--method align_consensus\".");
 }
 
 void SeqConsOptions::print(std::ostream & out) const
@@ -153,7 +156,7 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("m", "method", "Method to perform.  See section \\fIMethods\\fP "
                                             "below for details.", seqan::ArgParseOption::STRING, "METHOD"));
-    setValidValues(parser, "method", "nop realign msa_consensus contig_consensus pos_consensus");
+    setValidValues(parser, "method", "nop realign align_consensus overlap_consensus contig_consensus pos_consensus");
     setDefaultValue(parser, "method", "pos_consensus");
 
     // I/O Options
@@ -232,8 +235,16 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     addListItem(parser, "\\fBrealign\\fP",
                 "Perform realignment, requires input to be a SAM file to provide approximate position "
                 "information, creates consensus sequence after realignment.");
-    addListItem(parser, "\\fBmsa_consensus\\fP",
-                "Perform MSA of the input ignoring any given coordinates, then realign.");
+    addListItem(parser, "\\fBoverlap_consensus\\fP",
+                "Perform MSA with overlap alignments of the input ignoring any given coordinates, then realign. "
+                "This is most suited when computing the consensus of reads where the underlying sequence is very "
+                "similar and most differences stem from sequencing errors and not genomic variation. All "
+                "pairwise alignments computed here are banded.");
+    addListItem(parser, "\\fBalign_consensus\\fP",
+                "Perform MSA with global alignments of the input ignoring any given coordinates, then realign. "
+                "This will computed unbanded global ends-gap free pairwise alignments.  This is also suitable "
+                "when aligning different sequences, e.g. clustered transcripts.  Using this method, seqcons "
+                "will be similar to calling SeqAn::T-Coffee, followed by realignment and consensus computation.");
     addListItem(parser, "\\fBcontig_consensus\\fP",
                 "Perform MSA of the input, contig by contig, requires contig information, then realign. Input "
                 "must be SAM.");
@@ -251,7 +262,7 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     // Add Examples Section
     addTextSection(parser, "Examples");
     addListItem(parser,
-                "\\fBseqcons\\fP \\fB-m\\fP \\fImsa_consensus\\fP \\fB-i\\fP \\fIreads.fa\\fP \\fB-oa\\fP "
+                "\\fBseqcons\\fP \\fB-m\\fP \\fIovl_consensus\\fP \\fB-i\\fP \\fIreads.fa\\fP \\fB-oa\\fP "
                 "\\fIout.sam\\fP \\fB-oc\\fP \\fIcons.fa\\fP",
                 "Compute MSA of the sequences in \\fIreads.fa\\fP.  The consensus sequence is written to "
                 "\\fIcons.fa\\fP and the alignment of the sequences in \\fIreads.fa\\fP is written to "

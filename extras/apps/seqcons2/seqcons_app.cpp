@@ -92,7 +92,7 @@ private:
     void loadAlignments(char const * fileName);
 
     // Perform the consensus alignment, optionally interpreting coordinates.
-    void performConsensusAlignment(bool useContigID, bool usePositions);
+    void performConsensusAlignment(bool useContigID, bool usePositions, bool useGlobalAlignment);
     // Perform realignment on store only.
     void performRealignment();
 
@@ -172,16 +172,20 @@ void SeqConsAppImpl::run()
     // Perform the consensus or realignment computation.
     switch (options.operation)
     {
-        case SeqConsOptions::MSA_CONSENSUS:
-            performConsensusAlignment(false, false);
+        case SeqConsOptions::ALN_CONSENSUS:
+            performConsensusAlignment(false, false, true);
+            break;
+
+        case SeqConsOptions::OVL_CONSENSUS:
+            performConsensusAlignment(false, false, false);
             break;
 
         case SeqConsOptions::CTG_CONSENSUS:
-            performConsensusAlignment(true, false);
+            performConsensusAlignment(true, false, false);
             break;
 
         case SeqConsOptions::POS_CONSENSUS:
-            performConsensusAlignment(true, true);
+            performConsensusAlignment(true, true, false);
             break;
 
         case SeqConsOptions::REALIGN:
@@ -250,12 +254,13 @@ void SeqConsAppImpl::loadAlignments(char const * fileName)
         std::cerr << "OK\n";
 }
 
-void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositions)
+void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositions, bool useGlobalAlignment)
 {
     // Setup the consensus alignment options.
     seqan::ConsensusAlignmentOptions caOptions;
     caOptions.useContigID = useContigID;
     caOptions.usePositions = usePositions;
+    caOptions.useGlobalAlignment = useGlobalAlignment;
     caOptions.runRealignment = false;  // will run manually.
     if (options.verbosity >= 3)
         caOptions.verbosity = 3;
