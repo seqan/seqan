@@ -94,14 +94,16 @@ struct ConsensusAlignmentOptions
     static const unsigned INVALID = (unsigned)-1;
 
     ConsensusAlignmentOptions() :
-            contigID(INVALID), useContigID(true), usePositions(true), posDelta(30),
-            runRealignment(true), verbosity(0), overlapMaxErrorRate(5), overlapMinLength(20),
-            overlapMinCount(3), kMerSize(20), kMerMaxOcc(200)
+            contigID(INVALID), useContigID(true), usePositions(true), useGlobalAlignment(false),
+            posDelta(30), runRealignment(true), verbosity(0), overlapMaxErrorRate(5), overlapMinLength(20),
+            overlapMinCount(3), kMerSize(20), kMerMaxOcc(200),
+            scoreMatch(5), scoreMismatch(-5), scoreGapOpen(-5), scoreGapExtend(-1)
     {}
 
     unsigned contigID;
     bool useContigID;
     bool usePositions;
+    bool useGlobalAlignment;
     unsigned posDelta;  // TODO(holtgrew): Rename to overlapWindowSize
     bool runRealignment;
 
@@ -112,6 +114,11 @@ struct ConsensusAlignmentOptions
     int overlapMinCount;
     int kMerSize;
     int kMerMaxOcc;
+
+    int scoreMatch;
+    int scoreMismatch;
+    int scoreGapOpen;
+    int scoreGapExtend;
 };
 
 // ============================================================================
