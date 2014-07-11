@@ -106,6 +106,8 @@ private:
     // Compute overlap info using banded alignment.
     OverlapInfo_ computeOverlapInfo(unsigned lhs, unsigned rhs, int lDiag, int uDiag) const;
 
+    // Build overlap infos through global alignment.
+    void buildGlobalAlignmentOverlapInfos(std::vector<OverlapInfo_> & infos) const;
     // Build position-based all-to-all overlap infos.
     void buildPositionBasedOverlapInfos(std::vector<OverlapInfo_> & infos) const;
     // Build contig-wise all-to-all overlap infos.
@@ -155,7 +157,9 @@ private:
 template <typename TFragmentStore>
 inline void OverlapInfoComputation_<TFragmentStore>::run(std::vector<OverlapInfo_> & overlapInfos) const
 {
-    if (!options.useContigID)
+    if (options.useGlobalAlignment)
+        buildGlobalAlignmentOverlapInfos(overlapInfos);
+    else if (!options.useContigID)
         buildAllToAllOverlapInfos(overlapInfos);
     else if (!options.usePositions)
         buildContigAllToAllOverlapInfos(overlapInfos);
@@ -175,15 +179,22 @@ inline OverlapInfo_ OverlapInfoComputation_<TFragmentStore>::computeOverlapInfo(
     assignSource(row(align, 0), store.readSeqStore[lhs]);  // TODO(holtgrew): setSource cannot use infix!
     assignSource(row(align, 1), store.readSeqStore[rhs]);
 
-    Score<int, Simple> scoringScheme(1, -1, -1);
+    Score<int, Simple> scoringScheme(options.scoreMatch, options.scoreMismatch,
+                                     options.scoreGapExtend, options.scoreGapOpen);
 
     AlignConfig<true, true, true, true> alignConfig;
 
-    // TODO(holtgrew): Fix bands, add bands.
-    if (options.verbosity >= 2)
-        std::cerr << "global alignment with bands " << lDiag << ", " << uDiag << "\n";
-    _fixBandSize(lDiag, uDiag, store.readSeqStore[lhs], store.readSeqStore[rhs], alignConfig, NeedlemanWunsch());
-    globalAlignment(align, scoringScheme, alignConfig, lDiag, uDiag);
+    if (lDiag != seqan::minValue<int>() && uDiag != seqan::minValue<int>())
+    {
+        if (options.verbosity >= 2)
+            std::cerr << "global alignment with bands " << lDiag << ", " << uDiag << "\n";
+        _fixBandSize(lDiag, uDiag, store.readSeqStore[lhs], store.readSeqStore[rhs], alignConfig, NeedlemanWunsch());
+        globalAlignment(align, scoringScheme, alignConfig, lDiag, uDiag);
+    }
+    else
+    {
+        globalAlignment(align, scoringScheme, alignConfig);
+    }
 
     if (options.verbosity >= 2)
         std::cerr << "before swapping\n" << align << "\n";
@@ -225,6 +236,35 @@ inline OverlapInfo_ OverlapInfoComputation_<TFragmentStore>::computeOverlapInfo(
 }
 
 template <typename TFragmentStore>
+inline void OverlapInfoComputation_<TFragmentStore>::buildGlobalAlignmentOverlapInfos(
+        std::vector<OverlapInfo_> & infos) const
+{
+    for (unsigned i = 0; i < length(store.readStore); ++i)
+        for (unsigned j = i + 1; j < length(store.readStore); ++j)
+        {
+            OverlapInfo_ info = computeOverlapInfo(i, j,
+                                                   seqan::minValue<int>(), seqan::minValue<int>());
+            int ovlLen = length(store.readSeqStore[info.seq0]) - info.pos1;
+            // if (ovlLen < options.overlapMinLength || 100.0 * info.numErrors / ovlLen > options.overlapMaxErrorRate)
+            // {
+            //     if (options.verbosity >= 2)
+            //         std::cerr << "DISCARDING OVL\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
+            //                   << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
+            //                   << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
+            //                   << "\tnumErrors=" << info.numErrors << "\tovlLen=" << ovlLen << "\n";
+            //     continue;  // skip, does not pass quality control
+            // }
+
+            infos.push_back(info);
+            if (options.verbosity >= 2)
+                std::cerr << "OVERLAP\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
+                          << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
+                          << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
+                          << "\tnumErrors=" << info.numErrors << "\tovlLen=" << ovlLen << "\n";
+        }
+}
+
+template <typename TFragmentStore>
 inline void OverlapInfoComputation_<TFragmentStore>::buildPositionBasedOverlapInfos(
         std::vector<OverlapInfo_> & infos) const
 {
@@ -256,7 +296,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildPositionBasedOverlapIn
             {
                 if (options.verbosity >= 2)
                     std::cerr << "DISCARDING OVL\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
-                              << "\t" << store.readSeqStore[info.seq0] << "\tseq1=" << info.seq1
+                              << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
                               << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
                               << "\tnumErrors=" << info.numErrors << "\tovlLen=" << ovlLen << "\n";
                 continue;  // skip, does not pass quality control
@@ -265,7 +305,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildPositionBasedOverlapIn
             infos.push_back(info);
             if (options.verbosity >= 2)
                 std::cerr << "OVERLAP\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
-                          << "\t" << store.readSeqStore[info.seq0] << "\tseq1=" << info.seq1
+                          << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
                           << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
                           << "\tnumErrors=" << info.numErrors << "\tovlLen=" << ovlLen << "\n";
         }
@@ -355,7 +395,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildAllToAllOverlapInfos(
             {
                 if (options.verbosity >= 2)
                     std::cerr << "DISCARDING OVL\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
-                              << "\t" << store.readSeqStore[info.seq0] << "\tseq1=" << info.seq1
+                              << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
                               << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
                               << "\tnumErrors=" << info.numErrors << "\tovlLen=" << ovlLen << "\n";
                 continue;  // skip, does not pass quality control
@@ -364,7 +404,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildAllToAllOverlapInfos(
             infos.push_back(info);
             if (options.verbosity >= 2)
                 std::cerr << "OVERLAP\t" << store.readSeqStore[info.seq0] << "\tseq0=" << info.seq0
-                          << "\t" << store.readSeqStore[info.seq0] << "\tseq1=" << info.seq1
+                          << "\t" << store.readSeqStore[info.seq1] << "\tseq1=" << info.seq1
                           << "\tlen0=" << info.len0 << "\tpos1=" << info.pos1
                           << "\tnumErrors=" << info.numErrors << "\n";
         }

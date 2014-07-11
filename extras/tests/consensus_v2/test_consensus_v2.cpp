@@ -251,10 +251,58 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
 }
 
+// A test for consensusAlignment() without using global alignments.
+
+SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_global_alignment)
+{
+    // -----------------------------------------------------------------------
+    // Prepare Input
+    // -----------------------------------------------------------------------
+
+    // Build a FragmentStore with infixes from a reference sequence.
+    seqan::Dna5String ref = 
+            "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
+
+    seqan::FragmentStore<> store;
+    appendRead(store, "GAATACATCTCTAAAGAGCTTGATGCTAATTTGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTT");
+    appendRead(store, "TCTAAAGAGCTTGGATGCTAAAATAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAA");
+    appendRead(store, "ACATCTCTAAAGAGCTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCT");
+
+    // -----------------------------------------------------------------------
+    // Compute Consensus Alignment
+    // -----------------------------------------------------------------------
+
+    // Compute consensus alignment.
+    seqan::ConsensusAlignmentOptions options;
+    options.useGlobalAlignment = true;
+    consensusAlignment(store, options);
+
+    // -----------------------------------------------------------------------
+    // Check Results
+    // -----------------------------------------------------------------------
+
+    SEQAN_ASSERT_EQ(length(store.contigStore), 1u);
+
+    // Print final consensus alignment into buffer.
+    seqan::AlignedReadLayout layout;
+    layoutAlignment(layout, store);
+    std::stringstream ss;
+    printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/0,
+                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    
+    char const * EXPECTED =
+            "GAATACATCTCTAAAGAGCTT-GATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCT---------------------------------------------\n"
+            ".....................*...........*...........................................................\n"
+            "    ................**.........................................................................\n"
+            "         ............G........AA.......................................................\n";
+    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+}
+
 SEQAN_BEGIN_TESTSUITE(test_consensus)
 {
     SEQAN_CALL_TEST(test_consensus_consensus_alignment_coordinates);
     SEQAN_CALL_TEST(test_consensus_consensus_alignment_contig_ids);
     SEQAN_CALL_TEST(test_consensus_consensus_alignment_no_contig_ids);
+    SEQAN_CALL_TEST(test_consensus_consensus_alignment_global_alignment);
 }
 SEQAN_END_TESTSUITE
