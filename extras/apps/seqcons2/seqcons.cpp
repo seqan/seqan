@@ -84,6 +84,7 @@ int main(int argc, char const ** argv)
     }
 
     // Run aplication.
+    double startTime = seqan::sysTime();
     try
     {
         SeqConsApp app(options);
@@ -97,6 +98,10 @@ int main(int argc, char const ** argv)
     }
 
     if (options.verbosity >= 1)
-        std::cerr << "\nDone.  Have a nice day.\n";
+    {
+        std::cerr << "\nOverall time: " << seqan::sysTime() - startTime << " s\n"
+                  << "\n"
+                  << "Done.  Have a nice day.\n";
+    }
     return 0;
 }

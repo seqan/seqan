@@ -64,7 +64,8 @@ struct SeqConsOptions
         REALIGN = 1,        // just realign, only works with SAM input
         POS_CONSENSUS = 2,  // consensus, interpreting positions
         CTG_CONSENSUS = 3,  // consensus, interpreting contig information
-        MSA_CONSENSUS = 4   // "de novo" consensus, just MSA and consensus
+        OVL_CONSENSUS = 4,  // "de novo" consensus, just overlap MSA and consensus
+        ALN_CONSENSUS = 5   // "de novo" consensus, just global MSA and consensus
     };
 
     // The operation to perform.
