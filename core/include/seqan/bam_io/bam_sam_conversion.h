@@ -66,6 +66,7 @@ struct AssignTagsSamToBamOneTagHelper_
     TTarget     &target;
     TBuffer     buffer;
     char        typeC;
+    std::string tmpBuffer;
 
     AssignTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
         target(target),
@@ -84,13 +85,25 @@ struct AssignTagsSamToBamOneTagHelper_
             Type i;
         } tmp;
 
-        if (IsSignedInteger<Type>::VALUE)
-            tmp.i = static_cast<Type>(lexicalCast<__int64>(buffer));    // avoid textual interpretation of char types
-        else if (IsUnsignedInteger<Type>::VALUE)
-            tmp.i = static_cast<Type>(lexicalCast<__uint64>(buffer));
-        else
-            tmp.i = lexicalCast<Type>(buffer);
+        tmp.i = lexicalCast<Type>(buffer);
         append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
+        return true;
+    }
+
+    // we have to make this workaround until lexical_cast<float|double> can cope with Segments
+    bool operator() (float)
+    {
+        if (BamTypeChar<float>::VALUE != typeC)
+            return false;
+
+        union {
+            char raw[sizeof(float)];
+            float i;
+        } tmp;
+
+        assign(tmpBuffer, buffer);
+        tmp.i = lexicalCast<float>(tmpBuffer);
+        append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(float)]));
         return true;
     }
 };
@@ -234,13 +247,10 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
 template <typename TTarget, typename TSourceIter>
 struct AssignTagsBamToSamOneTagHelper_
 {
-    typedef String<char, Array<32> > TBuffer;
-
     TTarget     &target;
     TSourceIter &it;
     char        typeC;
-    TBuffer     buffer;
-    
+
     AssignTagsBamToSamOneTagHelper_(TTarget &target, TSourceIter &it, char typeC):
         target(target),
         it(it),
@@ -253,24 +263,18 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-//        union {
-//            char raw[sizeof(Type)];
-//            Type i;
-//        } tmp;
-//        
-//        for (unsigned i = 0; i < sizeof(Type); ++i)
-//        {
-//            SEQAN_ASSERT_NOT(atEnd(it));
-//            tmp.raw[i] = *it++;
-//        }
-//        if (IsSignedInteger<Type>::VALUE)
-//            appendNumber(target, static_cast<__int64>(tmp.i));    // avoid textual interpretation of char types
-//        else if (IsUnsignedInteger<Type>::VALUE)
-//            appendNumber(target, static_cast<__uint64>(tmp.i));
-//        else
-//            appendNumber(target, tmp.i);
-        appendNumber(target, *reinterpret_cast<Type *>(&it));
+        appendNumber(target, reinterpret_cast<Type const &>(*it));
         it += sizeof(Type);
+        return true;
+    }
+
+    bool operator() (char)
+    {
+        if (BamTypeChar<char>::VALUE != typeC)
+            return false;
+
+        appendValue(target, getValue(it));
+        ++it;
         return true;
     }
 };

@@ -52,7 +52,9 @@ struct BadLexicalCast : ParseError
 {
     template <typename TTarget, typename TSource>
     BadLexicalCast(TTarget const & target, TSource const & source) :
-        ParseError(std::string("Unable to convert '") + toCString(source) + "' into " + toCString(Demangler<TTarget>(target)) + ".")
+        ParseError(std::string("Unable to convert '") +
+                   std::string(begin(source, Standard()), end(source, Standard())) +
+                   "' into " + toCString(Demangler<TTarget>(target)) + ".")
     {}
 };
 
@@ -224,36 +226,120 @@ success = lexicalCast2(d, "-3.99");  // => success is true, d is -3.99.
 // ----------------------------------------------------------------------------
 // Function lexicalCast()
 // ----------------------------------------------------------------------------
-// Generic version for integers.
 
-template <typename TInteger, typename TSource>
-inline SEQAN_FUNC_ENABLE_IF(Is<SignedIntegerConcept<TInteger> >, bool)
-lexicalCast(TInteger & target, TSource const & source)
+// single char
+template <typename TSource>
+inline bool
+lexicalCast(char & target, TSource const & source)
 {
-    typedef IntegerFormatString_<False, sizeof(TInteger)> TInt;
-
-    int offset;
-    return (sscanf(toCString(source), 
-                   TInt::VALUE, 
-                   reinterpret_cast<typename TInt::Type *>(&target), 
-                   &offset) == 1) &&
-           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
+    if (SEQAN_UNLIKELY(length(source) != 1))
+        return false;
+    target = getValue(begin(source, Standard()));
+    return true;
 }
 
+// (weese:) we have to implement our own cast functions as not all sources support toCString()
+
+// Generic version for unsigned integers.
 template <typename TInteger, typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(Is<UnsignedIntegerConcept<TInteger> >, bool)
 lexicalCast(TInteger & target, TSource const & source)
 {
-    typedef IntegerFormatString_<True, sizeof(TInteger)> TInt;
+    typedef typename Iterator<TSource const, Standard>::Type TIter;
 
-    if (!empty(source) && front(source) == '-') return false;
+    TIter it = begin(source, Standard());
+    TIter itEnd = end(source, Standard());
 
-    int offset;
-    return (sscanf(toCString(source), 
-                   TInt::VALUE, 
-                   reinterpret_cast<typename TInt::Type *>(&target), 
-                   &offset) == 1) &&
-           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
+    if (SEQAN_UNLIKELY(it == itEnd))
+        return false;
+
+    TInteger val = 0;
+    do
+    {
+        unsigned char digit = *it++ - '0';
+
+        // invalid digit detection
+        if (SEQAN_UNLIKELY(digit > 9))
+            return false;
+
+        // overflow detection
+        if (SEQAN_UNLIKELY(val > MaxValue<TInteger>::VALUE / 10))
+            return false;
+        val *= 10;
+
+        // overflow detection
+        val += digit;
+        if (SEQAN_UNLIKELY(val < digit))
+            return false;
+    }
+    while (it != itEnd);
+    target = val;
+    return true;
+}
+
+// Generic version for signed integers.
+template <typename TInteger, typename TSource>
+inline SEQAN_FUNC_ENABLE_IF(Is<SignedIntegerConcept<TInteger> >, bool)
+lexicalCast(TInteger & target, TSource const & source)
+{
+    typedef typename Iterator<TSource const, Standard>::Type TIter;
+
+    TIter it = begin(source, Standard());
+    TIter itEnd = end(source, Standard());
+
+    if (SEQAN_UNLIKELY(it == itEnd))
+        return false;
+
+    TInteger val = 0;
+
+    if (*it != '-')
+    {
+        do
+        {
+            unsigned char digit = *it++ - '0';
+
+            // invalid digit detection
+            if (SEQAN_UNLIKELY(digit > 9))
+                return false;
+
+            // overflow detection
+            if (SEQAN_UNLIKELY(val > MaxValue<TInteger>::VALUE / 10))
+                return false;
+            val *= 10;
+
+            // overflow detection
+            val += digit;
+            if (SEQAN_UNLIKELY(val < digit))
+                return false;
+        }
+        while (it != itEnd);
+    }
+    else
+    {
+        if (SEQAN_UNLIKELY(++it == itEnd))
+            return false;
+        do
+        {
+            unsigned char digit = *it++ - '0';
+
+            // invalid digit detection
+            if (SEQAN_UNLIKELY(digit > 9))
+                return false;
+
+            // overflow detection
+            if (SEQAN_UNLIKELY(val < MinValue<TInteger>::VALUE / 10))
+                return false;
+            val *= 10;
+
+            // overflow detection
+            if (SEQAN_UNLIKELY(MinValue<TInteger>::VALUE - val > -(TInteger)digit))
+                return false;
+            val -= digit;
+        }
+        while (it != itEnd);
+    }
+    target = val;
+    return true;
 }
 
 // ----------------------------------------------------------------------------
