@@ -103,9 +103,6 @@ struct VirtualStreamSwitch_<TValue, Output, GZFile>
 {
     typedef zlib_stream::basic_zip_ostream<TValue> Type;
 };
-#endif
-
-#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BgzfFile>
@@ -118,6 +115,10 @@ struct VirtualStreamSwitch_<TValue, Output, BgzfFile>
 {
     typedef basic_bgzf_ostream<TValue> Type;
 };
+
+#endif
+
+#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BZ2File>

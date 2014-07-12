@@ -72,15 +72,18 @@ namespace seqan {
 struct Bam_;
 typedef Tag<Bam_> Bam;
 
+
 template <typename T>
 struct FileFormatExtensions<Bam, T>
 {
-    static char const * VALUE[1];
+    static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Bam, T>::VALUE[1] = {
-    ".bam" };
+char const * FileFormatExtensions<Bam, T>::VALUE[1] =
+{
+    ".bam"     // default output extension
+};
 
 
 // ============================================================================

@@ -60,8 +60,8 @@ using namespace seqan;
 
 struct AppOptions
 {
-    std::vector<std::string> inFiles;
-    std::string outFile;
+    StringSet<CharString> inFiles;
+    CharString outFile;
 };
 
 // ==========================================================================
@@ -72,136 +72,36 @@ struct AppOptions
 // Function mergeBamFiles()
 // --------------------------------------------------------------------------
 
-template <typename TWriter, typename TFormat>
-int mergeBamFiles(TWriter &writer, Tag<TFormat> writeFormat, std::vector<std::string> &inFiles)
+template <typename TWriter>
+void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
 {
-    typedef StringSet<CharString>       TNameStore;
-    typedef NameStoreCache<TNameStore>  TNameStoreCache;
-
-    TNameStore contigNameStore;
-    TNameStoreCache contigNameStoreCache(contigNameStore);
-
-    BamIOContext<TNameStore> bamIOContext(contigNameStore, contigNameStoreCache);
-    int returnedError = 0;
-    int error;
-
-
     // Step 1: Merge all headers (if available)
     BamHeader header;
     for (unsigned i = 0; i < length(inFiles); ++i)
     {
-        if (guessFormatFromFilename(inFiles[i], Bam()))
-        {
-            Stream<Bgzf> reader;
-            if (!open(reader, inFiles[i].c_str(), "r"))
-            {
-                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
-                inFiles[i].clear();
-                returnedError = -1;
-                continue;
-            }
-
-            error = readRecord(header, bamIOContext, reader, Bam());
-        }
-        else
-        {
-            // Construct a RecordReader from the input file.
-            std::ifstream inStream(inFiles[i].c_str());
-            if (!inStream.is_open())
-            {
-                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
-                clear(inFiles[i]);
-                returnedError = -1;
-                continue;
-            }
-
-            RecordReader<std::ifstream, SinglePass<> > reader(inStream);
-            if (atEnd(reader))
-                continue;
-
-            error = readRecord(header, bamIOContext, reader, Sam());
-        }
-
-        if (error != 0)
-        {
-            std::cerr << "ERROR: Problem reading header from file " << inFiles[i] << std::endl;
-            returnedError = -1;
-        }
+        BamFile<Input> reader(writer, toCString(inFiles[i]));
+        readRecord(header, reader);
     }
-
 
     // Step 2: Remove duplicate header entries and write merged header
     removeDuplicates(header);
-    write2(writer, header, bamIOContext, writeFormat);
-
+    write(writer, header);
 
     // Step 3: Read
     BamAlignmentRecord record;
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
-        // avoid to open failed files twice
-        if (inFiles[i].empty())
-            continue;
+        BamFile<Input> reader(writer, toCString(inFiles[i]));
 
-        if (guessFormatFromFilename(inFiles[i], Bam()))
+        // skip header
+        readRecord(header, reader);
+
+        while (!atEnd(reader))
         {
-            Stream<Bgzf> reader;
-            if (!open(reader, inFiles[i].c_str(), "r"))
-            {
-                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
-                returnedError = -1;
-                continue;
-            }
-
-            // skip header
-            BamHeader tmp;
-            readRecord(tmp, bamIOContext, reader, Bam());
-
-            while (!atEnd(reader))
-            {
-                error = readRecord(record, bamIOContext, reader, Bam());
-                if (error)
-                {
-                    std::cerr << "ERROR: Problem reading record from file " << inFiles[i] << std::endl;
-                    returnedError = -1;
-                    break;
-                }
-                write2(writer, record, bamIOContext, writeFormat);
-            }
-        }
-        else
-        {
-            // Construct a RecordReader from the input file.
-            std::ifstream inStream(inFiles[i].c_str());
-            if (!inStream.is_open())
-            {
-                std::cerr << "ERROR: Couldn't open " << inFiles[i] << " for reading." << std::endl;
-                returnedError = -1;
-                continue;
-            }
-
-            RecordReader<std::ifstream, SinglePass<> > reader(inStream);
-            if (atEnd(reader))
-                continue;
-
-            // skip header
-            BamHeader tmp;
-            readRecord(tmp, bamIOContext, reader, Sam());
-
-            while (!atEnd(reader))
-            {
-                error = readRecord(record, bamIOContext, reader, Sam());
-                if (error)
-                {
-                    std::cerr << "ERROR: Problem reading record from file " << inFiles[i] << std::endl;
-                    returnedError = -1;
-                    break;
-                }
-                write2(writer, record, bamIOContext, writeFormat);
-            }
+            readRecord(record, reader);
+            write(writer, record);
         }
     }
-    return returnedError;
 }
 
 
@@ -276,27 +176,12 @@ int main(int argc, char const ** argv)
 
     if (guessFormatFromFilename(options.outFile, Bam()))
     {
-        Stream<Bgzf> writer;
-        if (!open(writer, options.outFile.c_str(), "w"))
-        {
-            std::cerr << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
-            return -1;
-        }
-        return mergeBamFiles(writer, Bam(), options.inFiles);
+        BamFile<Output> writer(toCString(options.outFile));
+        mergeBamFiles(writer, options.inFiles);
     }
-    else if (!options.outFile.empty())
-    {
-        std::ofstream writer(options.outFile.c_str());
-        if (!writer.is_open())
-        {
-            std::cerr << "ERROR: Couldn't open " << options.outFile << " for writing." << std::endl;
-            return -1;
-        }
-        return mergeBamFiles(writer, Sam(), options.inFiles);
-    }
-    else
-    {
-        // dump to standard out stream
-        return mergeBamFiles(std::cout, Sam(), options.inFiles);
-    }
+//    else
+//    {
+//        // dump to standard out stream
+//        return mergeBamFiles(std::cout, Sam(), options.inFiles);
+//    }
 }
