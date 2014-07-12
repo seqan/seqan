@@ -92,6 +92,8 @@
 // Easy BAM / SAM I/O.
 // ===========================================================================
 
+#include <seqan/bam_io/bam_file.h>
+
 #include <seqan/bam_io/xam_reader.h>
 #if SEQAN_HAS_ZLIB
 //TODO(singer): #include <seqan/bam_io/bam_reader.h>
