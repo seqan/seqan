@@ -83,19 +83,39 @@ struct BamFile
 
     TNameStore      nameStore;
     TNameStoreCache nameStoreCache;
-    TBamIOContext   ctx;
+    TBamIOContext   bamIOCtx;
+    TBamIOContext   *ctx;
 
     TStream         stream;
     TIter           iter;
     TBamFileFormats format;
 
     BamFile() :
-        iter(stream),
         nameStoreCache(nameStore),
-        ctx(nameStore, nameStoreCache)
+        bamIOCtx(nameStore, nameStoreCache),
+        ctx(&bamIOCtx),
+        iter(stream)
+    {}
+
+    BamFile(TBamIOContext &_ctx) :
+        nameStoreCache(nameStore),
+        ctx(&_ctx),
+        iter(stream)
     {}
 
     BamFile(const char *fileName, int openMode = DefaultOpenMode<BamFile>::VALUE) :
+        nameStoreCache(nameStore),
+        bamIOCtx(nameStore, nameStoreCache),
+        ctx(&bamIOCtx),
+        iter(stream)
+    {
+        if (!open(*this, fileName, openMode))
+            throw IOError(std::string("Could not open file ") + fileName);
+    }
+
+    BamFile(TBamIOContext &_ctx, const char *fileName, int openMode = DefaultOpenMode<BamFile>::VALUE) :
+        nameStoreCache(nameStore),
+        ctx(&_ctx),
         iter(stream)
     {
         if (!open(*this, fileName, openMode))
@@ -105,6 +125,11 @@ struct BamFile
     ~BamFile()
     {
         close(*this);
+    }
+
+    operator TBamIOContext & ()
+    {
+        return *ctx;
     }
 };
 
@@ -184,7 +209,7 @@ atEnd(BamFile<TDirection, TSpec> const & file)
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
 inline void
-readRecord(BamHeaderRecord & /* header */,
+readRecord(BamHeader & /* header */,
            BamIOContext<TNameStore, TNameStoreCache> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
@@ -192,7 +217,7 @@ readRecord(BamHeaderRecord & /* header */,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
 inline void
-readRecord(BamHeaderRecord & header,
+readRecord(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
@@ -210,7 +235,7 @@ template <typename TDirection, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
 readRecord(BamHeader & header, BamFile<TDirection, TSpec> & file)
 {
-    readRecord(header, file.ctx, file.iter, file.format);
+    readRecord(header, *file.ctx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -246,7 +271,7 @@ template <typename TDirection, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
 readRecord(BamAlignmentRecord & record, BamFile<TDirection, TSpec> & file)
 {
-    readRecord(record, file.ctx, file.iter, file.format);
+    readRecord(record, *file.ctx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -258,7 +283,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 inline void
 write(TTarget & /* target */,
       BamHeader const & /* header */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache> const & /* context */,
       TagSelector<> const & /* format */)
 {}
 
@@ -266,7 +291,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache, typen
 inline void
 write(TTarget & target,
       BamHeader const & header,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
+      BamIOContext<TNameStore, TNameStoreCache> const & context,
       TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormatTag;
@@ -280,9 +305,9 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TDirection, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-writeRecord(BamFile<TDirection, TSpec> & file, BamHeader & header)
+write(BamFile<TDirection, TSpec> & file, BamHeader & header)
 {
-    writeRecord(file.iter, header, file.ctx, file.format);
+    write(file.iter, header, *file.ctx, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -293,16 +318,16 @@ writeRecord(BamFile<TDirection, TSpec> & file, BamHeader & header)
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 inline void
 write(TTarget & /* target */,
-      BamAlignmentRecord const & /* record */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamAlignmentRecord & /* record */,
+      BamIOContext<TNameStore, TNameStoreCache> const & /* context */,
       TagSelector<> const & /* format */)
 {}
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
 inline void
 write(TTarget & target,
-      BamAlignmentRecord const & record,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
+      BamAlignmentRecord & record,
+      BamIOContext<TNameStore, TNameStoreCache> const & context,
       TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormatTag;
@@ -315,9 +340,9 @@ write(TTarget & target,
 
 template <typename TDirection, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-writeRecord(BamFile<TDirection, TSpec> & file, BamAlignmentRecord & record)
+write(BamFile<TDirection, TSpec> & file, BamAlignmentRecord & record)
 {
-    write(file.iter, record, file.ctx, file.format);
+    write(file.iter, record, *file.ctx, file.format);
 }
 
 }  // namespace seqan
