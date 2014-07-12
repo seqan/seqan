@@ -93,19 +93,6 @@
 // ===========================================================================
 
 #include <seqan/bam_io/bam_file.h>
-
-#include <seqan/bam_io/xam_reader.h>
-#if SEQAN_HAS_ZLIB
-//TODO(singer): #include <seqan/bam_io/bam_reader.h>
-#endif  // #if SEQAN_HAS_ZLIB
-//TODO(singer): #include <seqan/bam_io/sam_reader.h>
-
-#include <seqan/bam_io/xam_writer.h>
-#if SEQAN_HAS_ZLIB
-//TODO(singer): #include <seqan/bam_io/bam_writer.h>
-#endif  // #if SEQAN_HAS_ZLIB
-//TODO(singer): #include <seqan/bam_io/sam_writer.h>
-
 //TODO(singer): #include <seqan/bam_io/bam_stream.h>
 
 #endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_
