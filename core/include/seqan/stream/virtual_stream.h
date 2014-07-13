@@ -183,6 +183,7 @@ struct VirtualStreamContext_<TValue, TDirection>
 {
     std::basic_streambuf<TValue> *streamBuf;
     VirtualStreamContext_(): streamBuf() {}
+    virtual ~VirtualStreamContext_() {}
 };
 
 // --------------------------------------------------------------------------
