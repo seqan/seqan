@@ -8,7 +8,7 @@ SeqAn is an open source C++ library of efficient algorithms and data structures 
 <ol>
 <li><b>Install SeqAn.</b> It's as easy as following the <a href="http://trac.seqan.de/wiki/Tutorial/GettingStarted" target="_top">installation instructions</a>.</li>
 <li><b>Learn SeqAn.</b> The <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorials</a> in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki" target="_top">SeqAn Wiki</a> will introduce you into SeqAn's basic concepts and show you how to use its data structures and functions.</li>
-<li><b>Think SeqAn.</b> Since our library uses advanced C++ template programming techniques, we recommend you to read our glossary of <a href="page_languageEntities.html">language entity types</a> for a quick introduction.</li>
+<li><b>Think SeqAn.</b> Since our library uses advanced C++ template programming techniques, we recommend you to read our glossary of <a href="page_LanguageEntities.html">language entity types</a> for a quick introduction.</li>
 <li><b>Use SeqAn.</b> Search the library for classes, functions, etc. using the search bar to the left. Need some orientation? Check the <a href="#typical_tasks">typical tasks</a> below.</li>
 </ol>
 
@@ -23,7 +23,7 @@ Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/s
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <table>
-            <tr><td><ul><li><a href="https://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>

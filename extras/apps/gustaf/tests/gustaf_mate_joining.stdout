@@ -1,0 +1,8 @@
+__OPTIONS____________________________________________________________________
+
+VERBOSITY     		1
+INPUT FILE 1     	reads_simulated_joined_gold.fa
+OUTPUT FILE     	reads_simulated_mates1.fa
+OUTPUT FILE 2     	reads_simulated_mates2.fa
+OPTION REV COMPL     	1
+

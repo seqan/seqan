@@ -1,5 +1,5 @@
 // ==========================================================================
-//                              bam_index_base.h
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -54,9 +54,7 @@ namespace seqan {
  * @signature template <typename TSpec>
  *            class BamIndex;
  *
- * @section Remarks
- *
- * This is an abstract class, don't use it itself but its specializations.
+ * This is an abstract class; don't use it itself but its specializations.
  */
 
 /**
@@ -98,13 +96,11 @@ class BamIndex;
  *                              alignments.
  * @param[in,out] bamIOContext  The @link BamIOContext @endlink to use for jumping.
  * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
- * @param[in]     pos           The begin of the region to jump to.
- * @param[in]     posEnd        The end of the region to jump to.
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
  * @return bool true if seeking was successful, false if not.
- *
- * @section Remarks
  *
  * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
  */
@@ -120,9 +116,11 @@ class BamIndex;
  * @signature bool jumpToOrphans(stream, hasAlignments, bamIOContext, index);
  *
  * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
- * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[out]    hasAlignments  A reference to <tt>bool</tt> that is set to true if there are any orphans.
  * @param[in,out] bamIOContext   The @link BamIOContext @endlink to use for the state.
- * @param[in]     index          The index to use for jumping.
+ * @param[in]     index          The BamIndex to use for jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
  */
 
 }  // namespace seqan

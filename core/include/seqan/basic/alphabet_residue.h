@@ -79,8 +79,6 @@ template <typename T> struct BaseAlphabet;
  * 
  * @signature typedef SimpleType<unsigned char, Dna_> Dna;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Dna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
  * 
@@ -138,8 +136,6 @@ struct BitsPerValue< Dna >
  * @brief Alphabet for DNA including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Dna5_> Dna5;
- * 
- * @section Remarks
  * 
  * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this
  * way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
@@ -206,8 +202,6 @@ unknownValueImpl(Dna5 *)
  * @brief Alphabet for DNA plus PHRED quality.
  * 
  * @signature typedef SimpleType<unsigned char, DnaQ_> DnaQ;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>DnaQ</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
@@ -325,8 +319,6 @@ void assignQualityValue(char & q, DnaQ c)
  * @brief Alphabet for DNA plus PHRED quality including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Dna5Q_> Dna5Q;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>Dna5Q</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>. The 'N' character ("unknown nucleotide") is encoded by 4.
@@ -474,8 +466,6 @@ void assignQualityValue(char & q, Dna5Q c)
  * 
  * @signature typedef SimpleType<unsigned char, Rna_> Rna;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Rna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.
  * 
@@ -535,8 +525,6 @@ struct BitsPerValue<Rna>
  * @brief Alphabet for RNA including 'N' character.
  * 
  * @signature typedef SimpleType<unsigned char, Rna5_> Rna5;
- * 
- * @section Remarks
  * 
  * The ValueSize of <tt>Rna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
@@ -604,8 +592,6 @@ unknownValueImpl(Rna5 *)
  * 
  * @signature typedef SimpleType<unsigned char, Iupac_> Iupac;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 19 in this order: 'U'=0, 'T', 'A',
  * 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15.
  * 
@@ -667,11 +653,9 @@ unknownValueImpl(Iupac *)
  * @brief IUPAC code for amino acids.
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
  * 
- * @section Remarks
- * 
  * The ValueSize of <tt>AminoAcid</tt> is 24.
  * 
- * The amino acids are enumerated from 0 to 15 in this order:
+ * The amino acids are enumerated from 0 to 19 in this order:
  * 
  * 'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
  * 
@@ -824,7 +808,7 @@ inline void assign(char & c_target, AminoAcid const & source)
 // ----------------------------------------------------------------------------
 
 template <>
-struct CompareType<Dna, __uint8>
+struct CompareTypeImpl<Dna, __uint8>
 {
     typedef Dna Type;
 };
@@ -835,7 +819,7 @@ inline void assign(Dna & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Dna, char>
+struct CompareTypeImpl<Dna, char>
 {
     typedef Dna Type;
 };
@@ -850,7 +834,7 @@ inline void assign(Dna & target, char c_source)
 }
 
 template <>
-struct CompareType<Dna, Unicode>
+struct CompareTypeImpl<Dna, Unicode>
 {
     typedef Dna Type;
 };
@@ -865,7 +849,7 @@ inline void assign(Dna & target, Unicode c_source)
 }
 
 template <>
-struct CompareType<Dna, Dna5>
+struct CompareTypeImpl<Dna, Dna5>
 {
     typedef Dna Type;
 };
@@ -876,7 +860,7 @@ inline void assign(Dna & target, Dna5 const & c_source)
 }
 
 template <>
-struct CompareType<Dna, Iupac>
+struct CompareTypeImpl<Dna, Iupac>
 {
     typedef Dna Type;
 };
@@ -891,7 +875,7 @@ inline void assign(Dna & target, Iupac const & source)
 // ----------------------------------------------------------------------------
 
 template <>
-struct CompareType<Dna5, __uint8>
+struct CompareTypeImpl<Dna5, __uint8>
 {
     typedef Dna5 Type;
 };
@@ -902,29 +886,37 @@ inline void assign(Dna5 & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Dna5, char>
+struct CompareTypeImpl<Dna5, char>
 {
     typedef Dna5 Type;
 };
 
 inline void assign(Dna5 & target, char c_source)
 {
+#ifdef __CUDA_ARCH__
+    target.value = _translateAsciiToDna5<void>((unsigned char)c_source);
+#else
     target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char) c_source];
+#endif
 }
 
 template <>
-struct CompareType<Dna5, Unicode>
+struct CompareTypeImpl<Dna5, Unicode>
 {
     typedef Dna5 Type;
 };
 
 inline void assign(Dna5 & target, Unicode c_source)
 {
+#ifdef __CUDA_ARCH__
+    target.value = _translateAsciiToDna5<void>((unsigned char)c_source);
+#else
     target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char) c_source];
+#endif
 }
 
 template <>
-struct CompareType<Dna5, Iupac>
+struct CompareTypeImpl<Dna5, Iupac>
 {
     typedef Dna5 Type;
 };
@@ -935,7 +927,7 @@ inline void assign(Dna5 & target, Iupac const & source)
 }
 
 template <>
-struct CompareType<Dna5, Dna>
+struct CompareTypeImpl<Dna5, Dna>
 {
     typedef Dna Type;
 };
@@ -950,7 +942,7 @@ inline void assign(Dna5 & target, Dna const & c_source)
 // ----------------------------------------------------------------------------
 
 template <>
-struct CompareType<Rna, __uint8>
+struct CompareTypeImpl<Rna, __uint8>
 {
     typedef Rna Type;
 };
@@ -961,7 +953,7 @@ inline void assign(Rna & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Rna, char>
+struct CompareTypeImpl<Rna, char>
 {
     typedef Rna Type;
 };
@@ -972,7 +964,7 @@ inline void assign(Rna & target, char c_source)
 }
 
 template <>
-struct CompareType<Rna, Unicode>
+struct CompareTypeImpl<Rna, Unicode>
 {
     typedef Rna Type;
 };
@@ -983,7 +975,7 @@ inline void assign(Rna & target, Unicode c_source)
 }
 
 template <>
-struct CompareType<Rna, Rna5>
+struct CompareTypeImpl<Rna, Rna5>
 {
     typedef Rna Type;
 };
@@ -998,7 +990,7 @@ inline void assign(Rna & target, Rna5 const & c_source)
 // ---------------------------------------------------------------------------
 
 template <>
-struct CompareType<Rna5, __uint8>
+struct CompareTypeImpl<Rna5, __uint8>
 {
     typedef Rna5 Type;
 };
@@ -1009,7 +1001,7 @@ inline void assign(Rna5 & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Rna5, char>
+struct CompareTypeImpl<Rna5, char>
 {
     typedef Rna5 Type;
 };
@@ -1020,7 +1012,7 @@ inline void assign(Rna5 & target, char c_source)
 }
 
 template <>
-struct CompareType<Rna5, Unicode>
+struct CompareTypeImpl<Rna5, Unicode>
 {
     typedef Rna5 Type;
 };
@@ -1031,7 +1023,7 @@ inline void assign(Rna5 & target, Unicode c_source)
 }
 
 template <>
-struct CompareType<Rna5, Rna>
+struct CompareTypeImpl<Rna5, Rna>
 {
     typedef Dna Type;
 };
@@ -1046,7 +1038,7 @@ inline void assign(Rna5 & target, Rna const & c_source)
 // ---------------------------------------------------------------------------
 
 template <>
-struct CompareType<Iupac, __uint8>
+struct CompareTypeImpl<Iupac, __uint8>
 {
     typedef Iupac Type;
 };
@@ -1057,7 +1049,7 @@ inline void assign(Iupac & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Iupac, char>
+struct CompareTypeImpl<Iupac, char>
 {
     typedef Iupac Type;
 };
@@ -1068,7 +1060,7 @@ inline void assign(Iupac & target, char c_source)
 }
 
 template <>
-struct CompareType<Iupac, Unicode>
+struct CompareTypeImpl<Iupac, Unicode>
 {
     typedef Iupac Type;
 };
@@ -1093,7 +1085,7 @@ inline void assign(Iupac & target, Dna5 const & source)
 // ---------------------------------------------------------------------------
 
 template <>
-struct CompareType<AminoAcid, __uint8>
+struct CompareTypeImpl<AminoAcid, __uint8>
 {
     typedef AminoAcid Type;
 };
@@ -1104,7 +1096,7 @@ inline void assign(AminoAcid & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<AminoAcid, char>
+struct CompareTypeImpl<AminoAcid, char>
 {
     typedef AminoAcid Type;
 };
@@ -1115,7 +1107,7 @@ inline void assign(AminoAcid & target, char c_source)
 }
 
 template <>
-struct CompareType<AminoAcid, Unicode>
+struct CompareTypeImpl<AminoAcid, Unicode>
 {
     typedef AminoAcid Type;
 };
@@ -1130,25 +1122,25 @@ inline void assign(AminoAcid & target, Unicode c_source)
 // ---------------------------------------------------------------------------
 
 // template <typename TValue, typename TValue2>
-// struct CompareType<SimpleType<TValue,DnaQ_>, SimpleType<TValue2,Dna_> >
+// struct CompareTypeImpl<SimpleType<TValue,DnaQ_>, SimpleType<TValue2,Dna_> >
 // {
 //  typedef SimpleType<TValue2,Dna_> Type;
 // };
 // 
 // template <typename TValue, typename TValue2>
-// struct CompareType<SimpleType<TValue,Dna_>, SimpleType<TValue2,DnaQ_> >
+// struct CompareTypeImpl<SimpleType<TValue,Dna_>, SimpleType<TValue2,DnaQ_> >
 // {
 //  typedef SimpleType<TValue,Dna_> Type;
 // };
 
 template <>
-struct CompareType<DnaQ, DnaQ>
+struct CompareTypeImpl<DnaQ, DnaQ>
 {
     typedef Dna Type;
 };
 
 template <>
-struct CompareType<DnaQ, Dna>
+struct CompareTypeImpl<DnaQ, Dna>
 {
     typedef Dna Type;
 };
@@ -1159,7 +1151,7 @@ inline void assign(DnaQ & target, Dna const & source)
 }
 
 template <>
-struct CompareType<Dna, DnaQ>
+struct CompareTypeImpl<Dna, DnaQ>
 {
     typedef Dna Type;
 };
@@ -1170,7 +1162,7 @@ inline void assign(Dna & target, DnaQ const & source)
 }
 
 template <>
-struct CompareType<DnaQ, Iupac>
+struct CompareTypeImpl<DnaQ, Iupac>
 {
     typedef Dna Type;
 };
@@ -1181,7 +1173,7 @@ inline void assign(DnaQ & target, Iupac const & source)
 }
 
 template <>
-struct CompareType<DnaQ, Dna5>
+struct CompareTypeImpl<DnaQ, Dna5>
 {
     typedef Dna Type;
 };
@@ -1192,7 +1184,7 @@ inline void assign(DnaQ & target, Dna5 const & source)
 }
 
 template <>
-struct CompareType<DnaQ, __uint8>
+struct CompareTypeImpl<DnaQ, __uint8>
 {
     typedef Dna Type;
 };
@@ -1203,7 +1195,7 @@ inline void assign(DnaQ & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<DnaQ, char>
+struct CompareTypeImpl<DnaQ, char>
 {
     typedef Dna Type;
 };
@@ -1214,7 +1206,7 @@ inline void assign(DnaQ & target, char c_source)
 }
 
 template <>
-struct CompareType<DnaQ, Unicode>
+struct CompareTypeImpl<DnaQ, Unicode>
 {
     typedef Dna Type;
 };
@@ -1384,26 +1376,26 @@ assign(unsigned char & c_target,
 // ---------------------------------------------------------------------------
 
 // template <typename TValue, typename TValue2>
-// struct CompareType<SimpleType<TValue,Dna5Q_>, SimpleType<TValue2,Dna5_> >
+// struct CompareTypeImpl<SimpleType<TValue,Dna5Q_>, SimpleType<TValue2,Dna5_> >
 // {
 //  typedef SimpleType<TValue2,Dna5_> Type;
 // };
 // 
 // template <typename TValue, typename TValue2>
-// struct CompareType<SimpleType<TValue,Dna5_>, SimpleType<TValue2,Dna5Q_> >
+// struct CompareTypeImpl<SimpleType<TValue,Dna5_>, SimpleType<TValue2,Dna5Q_> >
 // {
 //  typedef SimpleType<TValue,Dna5_> Type;
 // };
 
 
 template <>
-struct CompareType<Dna5Q, Dna5Q>
+struct CompareTypeImpl<Dna5Q, Dna5Q>
 {
     typedef Dna5 Type;
 };
 
 template <>
-struct CompareType<DnaQ, Dna5Q>
+struct CompareTypeImpl<DnaQ, Dna5Q>
 {
     typedef Dna Type;
 };
@@ -1437,7 +1429,7 @@ inline void assign(DnaQ & target, Dna5Q const & source)
 }
 
 template <>
-struct CompareType<Dna5Q, DnaQ>
+struct CompareTypeImpl<Dna5Q, DnaQ>
 {
     typedef Dna Type;
 };
@@ -1449,7 +1441,7 @@ inline void assign(Dna5Q & target, DnaQ const & source)
 
 
 template <>
-struct CompareType<Dna5, Dna5Q>
+struct CompareTypeImpl<Dna5, Dna5Q>
 {
     typedef Dna5 Type;
 };
@@ -1482,7 +1474,7 @@ inline void assign(Dna5 & target, Dna5Q const & source)
 }
 
 template <>
-struct CompareType<Dna5Q, Dna5>
+struct CompareTypeImpl<Dna5Q, Dna5>
 {
     typedef Dna5 Type;
 };
@@ -1502,7 +1494,7 @@ inline void assign(Dna5Q & target, Dna5 const & source)
 }
 
 template <>
-struct CompareType<Dna5Q, Dna>
+struct CompareTypeImpl<Dna5Q, Dna>
 {
     typedef Dna Type;
 };
@@ -1513,7 +1505,7 @@ inline void assign(Dna5Q & target, Dna const & source)
 }
 
 template <>
-struct CompareType<Dna, Dna5Q>
+struct CompareTypeImpl<Dna, Dna5Q>
 {
     typedef Dna Type;
 };
@@ -1524,7 +1516,7 @@ inline void assign(Dna & target, Dna5Q const & source)
 }
 
 template <>
-struct CompareType<Dna5, DnaQ>
+struct CompareTypeImpl<Dna5, DnaQ>
 {
     typedef Dna5 Type;
 };
@@ -1535,7 +1527,7 @@ inline void assign(Dna5 & target, DnaQ const & source)
 }
 
 template <>
-struct CompareType<Dna5Q, __uint8>
+struct CompareTypeImpl<Dna5Q, __uint8>
 {
     typedef Dna5 Type;
 };
@@ -1546,7 +1538,7 @@ inline void assign(Dna5Q & target, __uint8 c_source)
 }
 
 template <>
-struct CompareType<Dna5Q, char>
+struct CompareTypeImpl<Dna5Q, char>
 {
     typedef Dna5 Type;
 };
@@ -1557,7 +1549,7 @@ inline void assign(Dna5Q & target, char c_source)
 }
 
 template <>
-struct CompareType<Dna5Q, Unicode>
+struct CompareTypeImpl<Dna5Q, Unicode>
 {
     typedef Dna5 Type;
 };
@@ -1568,7 +1560,7 @@ inline void assign(Dna5Q & target, Unicode c_source)
 }
 
 template <>
-struct CompareType<Dna5Q, Iupac>
+struct CompareTypeImpl<Dna5Q, Iupac>
 {
     typedef Dna5 Type;
 };

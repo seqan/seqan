@@ -9,7 +9,8 @@ VCF OUT              	random_var3.vcf
 FASTA OUT            	random_var3.fasta
 BREAKPOINT TSV OUT   	random_var3_bp.txt
 METHYLATION IN FILE  	
-METHYLATION OUT FILE 	
+
+GENERATE VAR IDS     	YES
 
 NUM HAPLOTYPES       	2
 HAPLOTYPE SEP        	"/"

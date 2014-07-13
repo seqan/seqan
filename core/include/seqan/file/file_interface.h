@@ -41,6 +41,7 @@ namespace seqan {
 
 /*!
  * @class SyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting synchronous input/output access.
  *
@@ -48,8 +49,6 @@ namespace seqan {
  *            class File<Sync<TSpec> >;
  *
  * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
- *
- * @section Remarks
  *
  * This class supports pseudo-asynchronous access methods, i.e. the method to initiate an I/O request blocks until the
  * request completion.
@@ -70,6 +69,7 @@ struct Sync;
 
 /*!
  * @class AsyncFile
+ * @extends File
  * @headerfile <seqan/file.h>
  * @brief File structure supporting asynchronous input/output access.
  *
@@ -97,7 +97,7 @@ struct Async;
  * @brief Represents a file.
  *
  * @signature template <[typename TSpec]>
- *            class File;
+ *            class File<TSpec>;
  *
  * @tparam TSpec Specializing type.  Default: <tt>Async&lt;&gt;</tt>.
  */
@@ -120,33 +120,10 @@ class File;
  * @headerfile <seqan/file.h>
  * @brief Flags to select th eopen mode of a @link File @endlink or external string.
  *
- * @section Remarks
- *
- * These flags can be comined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
+ * These flags can be combined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
  * OPEN_CREATE | OPEN_APPEND</tt>.
  *
  * If you omit the <tt>OPEN_APPEND</tt> flag in write mode, the file will be truncated to size 0 when opened.
- *
- * @var FileOpenMode OPEN_RDONLY
- * @brief Open in read-only mode.
- *
- * @var FileOpenMode OPEN_WRONLY
- * @brief Open in write-only mode.
- *
- * @var FileOpenMode OPEN_RDWR
- * @brief Open for reading and writing.
- *
- * @var FileOpenMode OPEN_CREATE
- * @brief Create the file if it does not yet exists.
- *
- * @var FileOpenMode OPEN_APPEND
- * @brief Keep the existing data.  If this flag is not given then the file is cleared in write mode.
- *
- * @var FileOpenMode OPEN_QUIET
- * @brief Don't print any warning message if the file could not be opened.
- *
- * @var FileOpenMode OPEN_MASK
- * @brief (Internal) Bitmask to extract the read/write open mode.
  *
  * @section Examples
  *
@@ -157,11 +134,32 @@ class File;
  *     // do something if opened in read-only mode
  * @endlink
  *
- * @var FileOpenMode OPEN_ASYNC
+ * @val FileOpenMode OPEN_RDONLY
+ * @brief Open in read-only mode.
+ *
+ * @val FileOpenMode OPEN_WRONLY
+ * @brief Open in write-only mode.
+ *
+ * @val FileOpenMode OPEN_RDWR
+ * @brief Open for reading and writing.
+ *
+ * @val FileOpenMode OPEN_CREATE
+ * @brief Create the file if it does not yet exists.
+ *
+ * @val FileOpenMode OPEN_APPEND
+ * @brief Keep the existing data.  If this flag is not given then the file is cleared in write mode.
+ *
+ * @val FileOpenMode OPEN_QUIET
+ * @brief Don't print any warning message if the file could not be opened.
+ *
+ * @val FileOpenMode OPEN_MASK
+ * @brief (Internal) Bitmask to extract the read/write open mode.
+ *
+ * @val FileOpenMode OPEN_ASYNC
  * @brief (Internal) Open the file for asynchronous file access.  For asynchronous file access, use the @link AsyncFile
  *                   @endlink.
  *
- * @var FileOpenMode OPEN_TEMPORARY
+ * @val FileOpenMode OPEN_TEMPORARY
  * @brief (Internal) Open automatically delete the file after close.  Use the <tt>openTemp</tt> methods to open
  *        temporary files.
  */
@@ -277,8 +275,6 @@ struct AsyncDummyRequest {};
  *
  * @tparam TFile The file type.
  *
- * @section Remarks
- *
  * This structure is used to identify asynchronous requests after their initiation.
  */
 
@@ -312,7 +308,17 @@ struct AsyncDummyRequest {};
  * @class IOError
  * @headerfile <seqan/basic.h>
  * @brief Input/Output error exception.
- * @signature IOError("Message", errorCode);
+ *
+ * @signature typedef std::ios_base::failure IOError;
+ *
+ *
+ * @fn IOError::IOError
+ * @brief Constructor
+ *
+ * @signature IOError::IOError(msg, errorCode);
+ *
+ * @param[in] msg       Message as <tt>std::string</tt>.
+ * @param[in] errorCode The error code as an <tt>int</tt>.
  */
 
 typedef std::ios_base::failure  IOError;

@@ -111,16 +111,17 @@ struct Value<Score<TValue, TSpec> > {
 /*!
  * @mfn Score#SequenceEntryForScore
  * @headerfile <seqan/score.h>
+ *
+ * @note This is used for unified interfaces for position dependent and independent scores.
  * @brief Returns representation type for a character of a position in a sequence.
  * 
- * @signature SequenceEntryForScore<TScore, TSequence>::Type
+ * @signature SequenceEntryForScore<TScore, TSequence>::Type;
  * 
  * @tparam TScore    The score type to use. Types: Score
  * @tparam TSequence The underlying sequence of the alignments or gaps. Types: SequenceConcept
  * 
  * @return Type The type to use for representing a character in a sequence over its position.
  * 
- * This is used for unified interfaces for position dependent and independent scores.
  * 
  * @see Score#SequenceEntryForScore
  * @see Score#sequenceEntryForScore
@@ -282,7 +283,7 @@ scoreGapOpenVertical(
 
 /*!
  * @fn Score#scoreGapExtendHorizontal
- * @brief The score for extending a gap in the horizontal direction at the given position.
+ * @brief Returns the score for extending a gap in horizontal direction.
  *
  * @signature TValue scoreGapExtendHorizontal(score, entryH, entryV);
  *
@@ -326,7 +327,7 @@ scoreGapExtendHorizontal(
 
 /*!
  * @fn Score#scoreGapExtendVertical
- * @brief The score for extending a gap in the vertical direction at the given position.
+ * @brief Returns the score for extending a gap in vertical direction.
  *
  * @signature TValue scoreGapExtendVertical(score, entryH, entryV);
  *
@@ -370,7 +371,7 @@ scoreGapExtendVertical(
 
 /*!
  * @fn Score#scoreGapHorizontal
- * @brief Return the score value for one gap in the horizontal position.
+ * @brief Returns the score for a gap in horizontal direction.
  *
  * @signature TValue scoreGapHorizontal(score, entryH, entryV);
  *
@@ -414,7 +415,7 @@ scoreGapHorizontal(
 
 /*!
  * @fn Score#scoreGapVertical
- * @brief Return the score value for one gap in the vertical position.
+ * @brief Returns the score for a gap in vertical direction.
  *
  * @signature TValue scoreGapVertical(score, entryH, entryV);
  *
@@ -458,7 +459,7 @@ scoreGapVertical(
 
 /*!
  * @fn Score#score
- * @brief Return similarity score of two sequence entries.
+ * @brief Returns similarity score for two sequence entries.
  *
  * @signature TValue score(score, entryH, entryV);
  *

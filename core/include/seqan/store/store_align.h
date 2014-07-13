@@ -80,18 +80,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
  /*!
  * @typedef AlignedReadStoreElement::TId
+ * @signature typedef (..) TAlignedReadStoreElement::TId;
  * @brief Type of all store ids.
  *
  * <tt>TId</tt> is the result of <tt>Id&lg;AlignedReadStoreElement&lgt;&gt; &gt;::Type</tt>, see @link Id @endlink.
  *
  * @typedef AlignedReadStoreElement::TPos
+ * @signature typedef (..) TAlignedReadStoreElement::TPos;
  * @brief Type of the @link AlignedReadStoreElement::beginPos @endlink and @link AlignedReadStoreElement::endPos
  *        @endlink.
  *
  * @typedef AlignedReadStoreElement::TGapAnchors
+ * @signature typedef (..) TAlignedReadStoreElement::TGapAnchors;
  * @brief Type of the @link AlignedReadStoreElement::gaps @endlink member.
  *
  * @typedef AlignedReadStoreElement::TSpec
+ * @signature typedef (..) TAlignedReadStoreElement::TSpec;
  * @brief The specializing type.
  */
 
@@ -345,7 +349,7 @@ struct AlignQualityStoreElement
 	AlignQualityStoreElement():
 		pairScore(0),
 		score(0),
-		errors(0) {}
+		errors(MaxValue<unsigned char>::VALUE) {}
 
 	AlignQualityStoreElement(TScore _pairScore, TScore _score, unsigned char _errors):
 		pairScore(_pairScore),

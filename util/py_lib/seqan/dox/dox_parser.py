@@ -69,6 +69,12 @@ class MessagePrinter(object):
     def printStats(self):
         print >>sys.stderr, 'Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning'])
 
+    def numWarnings(self):
+        return self.counts['warning']
+
+    def numErrors(self):
+        return self.counts['error']
+
 
 class ParserError(Exception):
     """Raised when there is a parser error."""
@@ -116,17 +122,25 @@ class GenericSimpleClauseState(object):
         self.parser = parser
         self.parent = parent
         self.tokens = []
+        # The first token, usually starting the clause at all, set outside.
+        self.first_token = None
         self.entry_class = None
         # Whether or not to strip leading and trailing breaks.
         self.strip_lt_breaks = False
         # Whether to normalize whitespace tokens in getEntry().
         self.normalize_tokens = True
 
+    def entered(self, token):
+        self.first_token = token
+
+    def left(self):
+        pass
+
     def getEntry(self):
         """Returns the Entry for the brief clause."""
         if self.normalize_tokens:
             normalizeWhitespaceTokens(self.tokens, self.strip_lt_breaks)
-        return self.entry_class(raw_doc.RawText(self.tokens))
+        return self.entry_class(self.first_token, raw_doc.RawText(self.tokens))
 
     def handle(self, token):
         # One or more empty lines end such a clause as well as another
@@ -283,16 +297,16 @@ class ParamState(GenericSimpleClauseState):
         self.entry_class = raw_doc.RawParam
         # Parameters need more than one token list.
         self.in_out = None
-        self.name = None
+        self.name = []
 
     def handle(self, token):
         # Special handling of the in/out token and the name, if any.
         #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
         if token.type == 'PARAM_IN_OUT':
             self.in_out = token
-        elif self.name is None:
+        elif not self.name:
             if token.type != 'SPACE':
-                self.name = token
+                self.name.append(token)
             # Skipping whitespace.
         else:
             GenericSimpleClauseState.handle(self, token)
@@ -300,7 +314,7 @@ class ParamState(GenericSimpleClauseState):
     def getEntry(self):
         """Returns the Entry for the parameter."""
         normalizeWhitespaceTokens(self.tokens)
-        return self.entry_class(raw_doc.RawText([self.name]),
+        return self.entry_class(self.first_token, raw_doc.RawText(self.name),
                                 raw_doc.RawText(self.tokens), self.in_out)
 
 
@@ -320,6 +334,18 @@ class ReturnState(ParamState):
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawReturn
+        self.type_read = False
+
+    def handle(self, token):
+        # Special handling of the in/out token and the name, if any.
+        #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
+        if self.type_read:
+            GenericSimpleClauseState.handle(self, token)
+        else:
+            if self.name and token.type in dox_tokens.WHITESPACE:
+                self.type_read = True
+            else:
+                self.name.append(token)
 
 
 class SectionState(object):
@@ -327,6 +353,7 @@ class SectionState(object):
     """
     
     def __init__(self, parser, parent):
+        self.first_token = None
         self.parser = parser
         self.parent = parent
         self.tokens = []
@@ -334,7 +361,13 @@ class SectionState(object):
 
     def getEntry(self):
         """Returns the Entry for the template parameter."""
-        return raw_doc.RawSection(raw_doc.RawText(self.tokens), self.level)
+        return raw_doc.RawSection(self.first_token, raw_doc.RawText(self.tokens), self.level)
+
+    def entered(self, token):
+        self.first_token = token
+
+    def left(self):
+        pass
 
     def handle(self, token):
         # One or more empty lines end a @section raw_doc.Raw
@@ -360,12 +393,19 @@ class IncludeState(object):
     """
     
     def __init__(self, parser, parent):
+        self.first_token = None
         self.parser = parser
         self.parent = parent
         self.tokens = []
 
     def getEntry(self):
-        return raw_doc.RawInclude(self.tokens)
+        return raw_doc.RawInclude(self.first_token, self.tokens)
+
+    def entered(self, token):
+        self.first_token = token
+
+    def left(self):
+        pass
 
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
@@ -382,6 +422,7 @@ class SnippetState(object):
     """
     
     def __init__(self, parser, parent):
+        self.first_token = None
         self.parser = parser
         self.parent = parent
         self.path_done = False  # True after first space after path
@@ -389,7 +430,13 @@ class SnippetState(object):
         self.name_tokens = []
 
     def getEntry(self):
-        return raw_doc.RawSnippet(self.path_tokens, self.name_tokens)
+        return raw_doc.RawSnippet(self.first_token, self.path_tokens, self.name_tokens)
+
+    def entered(self, token):
+        self.first_token = token
+
+    def left(self):
+        pass
 
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
@@ -435,11 +482,12 @@ class TopLevelState(object):
                          'COMMAND_MAINPAGE':     'mainpage',
                          'COMMAND_DEFGROUP':     'group',
                          'COMMAND_VARIABLE':     'var',
+                         'COMMAND_VALUE':        'val',
                          'COMMAND_TAG':          'tag',
                          'COMMAND_TYPEDEF':      'typedef',
                          'COMMAND_ADAPTION':     'adaption',
                          'COMMAND_ENUM':         'enum',}
-            self.parser.enterState(state_map[token.type])
+            self.parser.enterState(state_map[token.type], token)
             return
         msg = 'Expecting one of {%s.} but is %s' % (", ".join(dox_tokens.ITEM_STARTING), token.type)
         raise ParserError(token, msg)
@@ -462,17 +510,21 @@ class GenericDocState(object):
     def getEntry(self):
         return self.entry
 
-    def entered(self):
+    def entered(self, first_token):
         """Called when the state is entered successfully with @class etc.
         """
         #print >>sys.stderr, ">>>>ENTERING CLASS STATE"
+        self.first_token = first_token
         self.first_line_tokens = []
         self.substate = 'first_line'
-        self.entry = self.entry_class()
+        self.entry = self.entry_class(first_token)
         # Variables for name/title separation.
         self.name_read = False
         self.name_tokens = []
         self.title_tokens = []
+
+    def left(self):
+        pass
 
     def handle(self, token):
         #print 'state = class, substate = %s, clause_state %s' % (self.substate, self.clause_state)
@@ -541,7 +593,10 @@ class GenericDocState(object):
                     msg = 'Invalid command %s, expecting one of %s.'
                     args = (repr(token.val), map(dox_tokens.transToken, self.allowed_commands))
                     raise ParserError(token, msg % args)
+                if self.clause_state:
+                    self.clause_state.left()
                 self.clause_state = state_map[token.type]
+                self.clause_state.entered(token)
                 #print '>>> SWITCHING TO CLAUSE STATE %s' % self.clause_state
                 return
             # Some commands are explicitely marked as non-paragraph, such as
@@ -684,8 +739,8 @@ class MainPageState(GenericDocState):
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
 
-    def entered(self):
-        GenericDocState.entered(self)
+    def entered(self, first_token):
+        GenericDocState.entered(self, first_token)
         self.name_read = True
         self.name_tokens = [lexer.Token('IDENTIFIER', 'mainpage', 0, 0, 0)]
 
@@ -702,8 +757,8 @@ class GroupState(GenericDocState):
 class VariableState(GenericDocState):
     """State for a variable."""
         
-    def __init__(self, parser):
-        GenericDocState.__init__(self, parser, raw_doc.RawVariable, 'var')
+    def __init__(self, parser, entry_class=raw_doc.RawVariable, state_name='var'):
+        GenericDocState.__init__(self, parser, entry_class, state_name)
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
@@ -711,11 +766,17 @@ class VariableState(GenericDocState):
                                      'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
                                      'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
-    def entered(self):
-        GenericDocState.entered(self)
+    def entered(self, first_token):
+        GenericDocState.entered(self, first_token)
         self.type_read = False
         self.type_tokens = []
         self.name_tokens = []
+
+    def left(self):
+        if not self.type_tokens or not self.name_tokens:
+            msg = ('Missing variable type or name! Must be given as "@var '
+                   '<type> <name>".')
+            raise ParserError(self.first_token, msg)
 
     def handle(self, token):
         # Handle first state here and the remaining in the parent class.
@@ -728,6 +789,8 @@ class VariableState(GenericDocState):
                 normalizeWhitespaceTokens(self.name_tokens)
                 normalizeWhitespaceTokens(self.type_tokens)
                 self.entry.name = raw_doc.RawText(self.name_tokens)
+                if self.entry.name.tokens[-1].val.endswith(';'):  # remove semicolon
+                    self.entry.name.tokens[-1].val = self.entry.name.tokens[-1].val[:-1]
                 self.entry.type = raw_doc.RawText(self.type_tokens)
                 self.substate = 'body'
                 return
@@ -746,6 +809,14 @@ class VariableState(GenericDocState):
                     self.type_tokens.append(token)
         else:
             GenericDocState.handle(self, token)
+
+
+
+class EnumValueState(VariableState):
+    """State for an enum value."""
+
+    def __init__(self, parser):
+        VariableState.__init__(self, parser, raw_doc.RawEnumValue, 'val')
 
 
 
@@ -819,6 +890,7 @@ class Parser(object):
             'mainpage':     MainPageState(self),
             'group':        GroupState(self),
             'var':          VariableState(self),
+            'val':          EnumValueState(self),
             'tag':          TagState(self),
             'enum':         EnumState(self),
             'adaption':     AdaptionState(self),
@@ -836,14 +908,15 @@ class Parser(object):
         #print 'Handling %s in states %s' % (token, self.states)
         self.handlers[self.states[-1]].handle(token)
 
-    def enterState(self, state):
+    def enterState(self, state, first_token):
         #print 'entering state %s' % state
         self.states.append(state)
-        self.handlers[state].entered()
+        self.handlers[state].entered(first_token)
 
     def leaveState(self, state):
         #print 'leaving state %s' % state
         if self.states[-1] == state:
+            self.handlers[state].left()
             if self.handlers[state].getEntry():
                 self.documentation.addEntry(self.handlers[state].getEntry())
             return self.states.pop()

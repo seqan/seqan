@@ -245,14 +245,17 @@ int mapReads(
 
 void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & options, ParamChooserOptions const & pm_options)
 {
-	string rev = "$Revision$";
-    string date = "$Date$";
-
     setAppName(parser, "razers");
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "1.2 [" + rev.substr(11, rev.size() - 13) + "]");
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+#ifdef SEQAN_REVISION
+	setVersion(parser, "1.2 [" + std::string(SEQAN_REVISION) + "]");
+#else
+	setVersion(parser, "1.2");
+#endif
+#ifdef SEQAN_DATE
+	setDate(parser, SEQAN_DATE);
+#endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
     setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqFormat()));

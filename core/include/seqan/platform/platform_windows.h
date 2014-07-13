@@ -31,7 +31,9 @@
 //
 // ==========================================================================
 
+#ifndef PLATFORM_WINDOWS
 #define PLATFORM_WINDOWS
+
 #define PLATFORM_WINDOWS_VS
 
 // ==========================================================================
@@ -137,3 +139,5 @@ inline T round(T const & x)
 
 #define SEQAN_RESTRICT  __restrict
 //#define SEQAN_RESTRICT  __declspec(restrict)
+
+#endif  // #ifndef PLATFORM_WINDOWS

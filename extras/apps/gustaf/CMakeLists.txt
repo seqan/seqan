@@ -31,8 +31,11 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your application.
 add_executable (gustaf gustaf.cpp)
 
+add_executable (gustaf_mate_joining join_mates.cpp)
+
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (gustaf ${SEQAN_LIBRARIES})
+target_link_libraries (gustaf_mate_joining ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -47,7 +50,7 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install gustaf in ${PREFIX}/bin directory
-install (TARGETS gustaf
+install (TARGETS gustaf gustaf_mate_joining
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
@@ -74,7 +77,7 @@ seqan_add_app_test (gustaf)
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
   set (CPACK_PACKAGE_NAME "gustaf")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "gustaf")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Gustaf - Generic multi-split alignment finder")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
 

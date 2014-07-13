@@ -455,8 +455,8 @@ namespace SEQAN_NAMESPACE_MAIN
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;	// for lcpMax, lcpMean, |Sigma|
         #endif
 
-		TSize mark = ~(~0u>>1);
-		TSize mask =   ~0u>>1;
+		TSize mark = ~(~(TSize)0ul >> 1);
+		TSize mask =   ~(TSize)0ul >> 1;
 
 		TLimitsString const &limits = stringSetLimits(sset);
 		{

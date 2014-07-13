@@ -92,7 +92,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
      JoinConfig<GlobalAlign<TSpec> > const & joinConfig)
 {
    SEQAN_ASSERT_LT(journalIdx, static_cast<TPosition>(length(journalSet)));
-   if (empty(globalReference(journalSet)))
+   if (empty(host(journalSet)))
    {
        ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
    }
@@ -111,7 +111,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
 {
    SEQAN_ASSERT_LT(journalIdx, static_cast<TPosition>(length(journalSet)));
 
-   if (empty(globalReference(journalSet)))
+   if (empty(host(journalSet)))
    {
        ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
    }

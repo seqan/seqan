@@ -101,7 +101,7 @@ resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix)
 
     TSize _dimVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
 
-    if (_dimVertical > 0)
+    if (_dimVertical >= length(dpMatrix))
         resize(host(dpMatrix), _dimVertical, Exact());
 }
 
@@ -115,7 +115,7 @@ resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
 
     TSize _dimVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
 
-    if (_dimVertical > 0)
+    if (_dimVertical > length(dpMatrix))
         resize(host(dpMatrix), _dimVertical, fillValue, Exact());
 }
 

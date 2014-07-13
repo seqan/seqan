@@ -9,7 +9,7 @@ using namespace seqan;
 template <typename TAlphabet>
 void showAllLettersOfMyAlphabet(TAlphabet const &)
 {
-    typedef typename Size<TAlphabet>::Type TSize;
+    typedef typename ValueSize<TAlphabet>::Type TSize;
     // We need to determine the alphabet size 
     // using the metafunction ValueSize
     TSize alphSize = ValueSize<TAlphabet>::VALUE;

@@ -108,9 +108,9 @@ struct Convert
  * 
  * @signature T convertImpl(convert, source);
  * 
- * @param convert Object that specifies the conversion.  A constant instance of Convert is used to specify the
- *                conversion target.
- * @param source  An object that should be converted.
+ * @param[in] convert Object that specifies the conversion.  A constant instance of Convert is used to specify the
+ *                    conversion target.
+ * @param[in] source  An object that should be converted.
  * 
  * @return T <tt>source</tt> converted to the type specified by convert.
  * 
@@ -164,13 +164,11 @@ convertImpl(Convert<TTarget, T> const,
  *
  * @tparam Target The type <tt>source</tt> is converted to.
  * 
- * @param source An object that is converted to <tt>Target</tt>.
+ * @param[in] source An object that is converted to <tt>Target</tt>.
  * 
  * @return TReturn <tt>source</tt> converted to <tt>Target</tt>.  If <tt>source</tt> can be re-interpreted as instance
  *                 of <tt>Target</tt>, then a reference is returned.  Otherwise the function returns a temporary
  *                 object.
- * 
- * @section Remarks
  * 
  * This function is implemented in convertImpl. Do not specialize <tt>convert</tt>, specialize convertImpl instead.
  * 

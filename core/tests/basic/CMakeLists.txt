@@ -142,4 +142,3 @@ add_test (NAME test_test_basic_smart_pointer COMMAND $<TARGET_FILE:test_basic_sm
 add_test (NAME test_test_basic_container COMMAND $<TARGET_FILE:test_basic_container>)
 add_test (NAME test_test_basic_proxy COMMAND $<TARGET_FILE:test_basic_proxy>)
 add_test (NAME test_test_basic_iterator COMMAND $<TARGET_FILE:test_basic_iterator>)
-

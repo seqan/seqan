@@ -87,6 +87,18 @@ SEQAN_DEFINE_TEST(testMultiIndex)
 		//t[4] = "ill";
 		//t[5] = "wow";
 
+        // test empty stringsets
+        {
+            typedef Index<TMulti> TIndex;
+            TMulti emptyStringSet;
+
+            TIndex index(emptyStringSet);
+            Iterator<
+                TIndex,
+                TopDown<>
+            >::Type iterator(index);
+        }
+
 		t[0] = "caggctcgcgt";
 		t[1] = "caggaacg";
 		t[2] = "tcgttg";
@@ -271,7 +283,7 @@ void compareIndices()
 		t[4] = "agg";
 		t[5] = "ctg";
 		Index<StringSet<DnaString>, TIndexSpec1> index1(t);
-		Index<StringSet<DnaString>, TIndexSpec2 > index2(t);
+		Index<StringSet<DnaString>, TIndexSpec2> index2(t);
 		compareTreeIterators(index1, index2);
 	}
 }
@@ -298,7 +310,7 @@ void testSTreeIterators()
         SEQAN_ASSERT_NOT(goRight(iter));
         SEQAN_ASSERT_NOT(goUp(piter));
     }
-    
+
     {
         String<char> text("acaaacatatz");
 //		String<char> text("AAAAAGGGGG");

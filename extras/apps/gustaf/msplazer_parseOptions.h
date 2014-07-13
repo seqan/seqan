@@ -75,9 +75,15 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.simThresh, parser, "oth");
     getOptionValue(msplazerOptions.gapThresh, parser, "gth");
     getOptionValue(msplazerOptions.initGapThresh, parser, "ith");
+    getOptionValue(msplazerOptions.breakendThresh, parser, "bth");
+    getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
+    getOptionValue(msplazerOptions.breakpointPosRange, parser, "pth");
     getOptionValue(msplazerOptions.support, parser, "st");
+    getOptionValue(msplazerOptions.mateSupport, parser, "mst");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
     getOptionValue(msplazerOptions.libError, parser, "le");
+    if (isSet(parser, "rc"))
+        msplazerOptions.revCompl = false;
 
     if (length(msplazerOptions.queryFile) > 1)
         msplazerOptions.pairedEndMode = true;
@@ -149,18 +155,11 @@ void _setupArgumentParser(ArgumentParser & parser)
     addSection(parser, "GUSTAF Options");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
-    setValidValues(parser, 0, "fa fasta fq fastq");  // allow only fasta files as input
+    setValidValues(parser, 0, "fa fasta fq fastq");  // allow only fasta/q files as input
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2", true));
-    setValidValues(parser, 1, "fa fasta fq fastq");  // allow only fasta files as input
+    setValidValues(parser, 1, "fa fasta fq fastq");  // allow only fasta/q files as input
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
-    // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 3"));
-    // setValidValues(parser, 2, "fa fasta");  // allow only fasta files as input
 
-    /*
-    addOption(parser, ArgParseOption("q2", "query2", "Second Fasta file containing query sequences (mate pairs)",
-                                        ArgParseArgument::INPUTFILE, "FILE"));
-    setValidValues(parser, "q2", "fa FASTA");
-    */
 
     addSection(parser, "Main Options");  // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 3"));
     // setValidValues(parser, 2, "fa fasta");  // allow only fasta files as input
@@ -180,25 +179,37 @@ void _setupArgumentParser(ArgumentParser & parser)
                              "DOUBLE"));
     setDefaultValue(parser, "oth", "0.5");
     addOption(parser,
-              ArgParseOption("gth", "gapThresh", "Allowed gap length between matches", ArgParseArgument::INTEGER, "INT"));
-    setDefaultValue(parser, "gth", "10");
+              ArgParseOption("gth", "gapThresh", "Allowed gap length between matches, default value corresponse to expected size of microindels (5 bp)", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "gth", "5");
     addOption(parser, ArgParseOption(
-                  "ith", "initGapThresh", "Allowed initial or ending gap length at begin and end of read",
+                  "ith", "initGapThresh", "Allowed initial or ending gap length at begin and end of read with no breakpoint (e.g. due to sequencing errors at the end)",
                   ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "ith", "15");
+    addOption(parser, ArgParseOption(
+                  "bth", "breakendThresh", "Allowed initial or ending gap length at begin and end of read that creates a breakend/breakpoint (e.g. for reads extending into insertions)",
+                  ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "bth", "30");
+    addOption(parser, ArgParseOption(
+                  "tth", "tandemThresh", "Minimal length of (small) insertion/duplication with double overlap to be considered tandem repeat",
+                  ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "tth", "50");
+    addOption(parser, ArgParseOption(
+                  "pth", "breakpoint-pos-range", "Allowed difference in breakpoint position", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "pth", "5");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
+    addOption(parser, ArgParseOption("mst", "mate-support", "Number of supporting concordant mates", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "mst", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "ll", "220");
     addOption(parser, ArgParseOption("le", "library-error", "Library error (sd) of paired-end reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "le", "50");
+    addOption(parser, ArgParseOption("rc", "revcompl", "Disable reverse complementing second mate pair input file."));
     // set min values?
 
     addSection(parser, "Input Options");
     addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUTFILE, "FILE"));
     setValidValues(parser, "m", "gff GFF");
-    // addOption(parser, ArgParseOption("rm", "readmates", "Second file of reads for paired-end", ArgParseArgument::INPUTFILE, "FILE"));
-    // setValidValues(parser, "rm", "fa fasta");
 
     addSection(parser, "Output Options");
     addOption(parser,

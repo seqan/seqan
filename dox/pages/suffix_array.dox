@@ -1,0 +1,28 @@
+/*!
+ * @page DemoSuffixArray Demo Suffix Array 
+ * @brief Example for how to create a suffix array and use it as a dictionary.
+ *
+ * Given a sequence $s$, a suffix array is an array containing start positions of all suffices of $s$ in
+ * lexicographical order. A suffix array can simply be used to find all occurrences of an arbitrary substring $t$ in $s$ in
+ * O(|t|*log(|s|)).
+ * 
+ * SeqAn contains various suffix array construction algorithms like the Skew algorithm (J. Karkkainen and P. Sanders,
+ * "Simple Linear Work Suffix Array Construction", 2003), a more efficient modification of the Skew algorithm (difference
+ * cover of 7), external memory Skew algorithms, the prefix-doubling algorithm (U. Manber and G. Myers, "Suffix arrays: A
+ * new method for online string searching", 1993), the algorithm of Larsson and Sadakane (N.J. Larsson and K. Sadakane,
+ * "Faster Suffix Sorting", 1999), and a quicksort based algorithm.
+ * 
+ * The following example constructs a suffix array using the modified Skew algorithm and searches the interval of suffices
+ * beginning with $t="l"$. The start positions of these suffices are the occurences of $t$, which are outputted at last.
+ * This is only an example for @link createSuffixArray @endlink and similar functions. For an index based substring search
+ * better use the more generic @link Finder @endlink class (see @Demo.Index Finder@ demo).
+ *
+ * @include demos/index/index_sufarray.cpp
+ *
+ * @code{.console}
+ * weese@tanne:~/seqan$ cd demos
+ * weese@tanne:~/seqan/demos$ make index_sufarray
+ * weese@tanne:~/seqan/demos$ ./index_sufarray
+ * 9 2 3
+ * @endcode
+ */

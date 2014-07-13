@@ -48,7 +48,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature EdgeDescriptor<T>::Type;
  *
- * @tparam The @link Graph @endlink type to query.
+ * @tparam T The @link Graph @endlink type to query.
  *
  * @return Type The resulting edge descriptor type.
  *
@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * remove edges, to assign cargo to an edge or to get the end points of an edge.  It is also used to attache properties
  * to edges via property maps.
  *
- * @examples
+ * @section Examples
  *
  * @code{.cpp}
  * EdgeDescriptor<Graph<> >::Type ed;  // eD is an edge descriptor

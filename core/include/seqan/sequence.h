@@ -49,6 +49,8 @@
 // ===========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/misc/misc_bit_twiddling_functors.h>
+#include <seqan/misc/misc_bit_twiddling.h>
 
 // ----------------------------------------------------------------------------
 // STL prerequisites.
@@ -94,6 +96,7 @@
 #include <seqan/sequence/segment_infix.h>
 #include <seqan/sequence/segment_suffix.h>
 #include <seqan/sequence/segment_prefix.h>
+#include <seqan/sequence/segment_utils.h>
 
 // ===========================================================================
 // Strings.
@@ -134,19 +137,14 @@
 #include <seqan/sequence/iter_concat_virtual.h>
 #include <seqan/sequence/sequence_concatenator.h>
 #include <seqan/sequence/string_set_base.h>
-#include <seqan/sequence/string_set_concat_direct.h>
-#include <seqan/sequence/string_set_concat_direct_view.h>
+#include <seqan/sequence/string_set_view.h>
 #ifdef PLATFORM_CUDA
-#include <seqan/sequence/string_set_concat_direct_device.h>
+#include <seqan/sequence/string_set_device.h>
 #endif
+#include <seqan/sequence/string_set_concat_direct.h>
 #include <seqan/sequence/string_set_dependent_tight.h>
 #include <seqan/sequence/string_set_dependent_generous.h>
 #include <seqan/sequence/string_set_owner.h>
-
-// ===========================================================================
-// Utilities.
-// ===========================================================================
-
-#include <seqan/sequence/segment_utils.h>
+#include <seqan/sequence/string_set_segment.h>
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -56,7 +56,7 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
 
 template <typename T>
 struct Atomic
@@ -69,7 +69,7 @@ struct Atomic
 template <typename T>
 struct Atomic
 {
-    typedef volatile T Type;
+    typedef T Type;
 };
 
 #endif
@@ -556,7 +556,7 @@ template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y,
 
 // C++11 atomic wrappers
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STL
 template <typename T>   inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
 template <typename T>   inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
 template <typename T>   inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
@@ -567,7 +567,7 @@ template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y
 template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Parallel) { x.compare_exchange_weak(cmp, y); return cmp; }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y, Parallel) { return x.compare_exchange_weak(cmp, y);      }
-#endif
+#endif  // #ifdef SEQAN_CXX11_STL
 
 } // namespace seqan
 

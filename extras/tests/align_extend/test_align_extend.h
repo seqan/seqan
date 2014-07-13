@@ -557,15 +557,17 @@ SEQAN_DEFINE_TEST(test_align_extend_semiglobal)
     {
         TAlign align(alignOrig);
 
-        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+        Tuple<unsigned, 4> positions = { { (unsigned)(beginPosition(seg1)+beginPosition(row(align, 0))),
+                                           (unsigned)(beginPosition(seg2)+beginPosition(row(align, 1))),
+                                           92u, 28u } };
 
         extendAlignment(align,
                 s1,
                 s2,
-                positions, 
-                EXTEND_RIGHT, 
+                positions,
+                EXTEND_RIGHT,
                 -2,
-                2, 
+                2,
                 sc);
 
         SEQAN_ASSERT_EQ(CharString("CACGTACGAGCAGTACTTCGGGCCAGGCAC"),
@@ -586,15 +588,17 @@ SEQAN_DEFINE_TEST(test_align_extend_semiglobal)
         setClippedBeginPosition(row(align, 0), 14);
         setClippedBeginPosition(row(align, 1), 14);
 
-        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+        Tuple<unsigned, 4> positions = { { (unsigned)(beginPosition(seg1)+beginPosition(row(align, 0))),
+                                           (unsigned)(beginPosition(seg2)+beginPosition(row(align, 1))),
+                                           92u, 28u } };
 
         extendAlignment(align,
                 s1,
                 s2,
-                positions, 
-                EXTEND_RIGHT, 
+                positions,
+                EXTEND_RIGHT,
                 -2,
-                2, 
+                2,
                 sc);
 
         SEQAN_ASSERT_EQ(CharString("ACTTCGGGCCAGGCAC"),
@@ -618,15 +622,17 @@ SEQAN_DEFINE_TEST(test_align_extend_semiglobal)
         setClippedBeginPosition(row(align, 0), 14);
         setClippedBeginPosition(row(align, 1), 14);
 
-        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+        Tuple<unsigned, 4> positions = { { (unsigned)(beginPosition(seg1)+beginPosition(row(align, 0))),
+                                           (unsigned)(beginPosition(seg2)+beginPosition(row(align, 1))),
+                                           92u, 28u } };
 
         extendAlignment(align,
                 s1,
                 s2,
-                positions, 
-                EXTEND_BOTH, 
+                positions,
+                EXTEND_BOTH,
                 -2,
-                2, 
+                2,
                 sc);
 
         SEQAN_ASSERT_EQ(CharString("TACGAGCAGT--ACTTCGGGCCAGGCAC"),

@@ -53,8 +53,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TNeedle The needle type.  Types: String
  * 
- * @section Remarks
- * 
  * The types of the needle and the haystack have to match.
  */
 

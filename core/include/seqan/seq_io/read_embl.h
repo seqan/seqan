@@ -77,7 +77,7 @@ enum EmblErrorCodes_
 
 /*!
  * @fn splitEmblHeader
- * @header <seqan/seq_io.h>
+ * @headerfile <seqan/seq_io.h>
  * @brief Split an EMBL header line.
  *
  * @signature void splitEmblHeader(key, value, line);

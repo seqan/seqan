@@ -169,10 +169,11 @@ void searchPattern(StringSet<String<int> > & hitSet,
                    StringSet<TString, Owner<JournaledSet> > const & journalSet,
                    TPattern const & pattern)
 {
-    typedef typename Host<TString>::Type THost;
+    typedef StringSet<TString, Owner<JournaledSet> > TJournalSet;
+    typedef typename Host<TJournalSet const>::Type THost;
 
     // Check for valid initial state.
-    if (empty(globalReference(journalSet)))
+    if (empty(host(journalSet)))
     {
         std::cout << "No reference set. Aborted search!" << std::endl;
         return;
@@ -182,7 +183,7 @@ void searchPattern(StringSet<String<int> > & hitSet,
     clear(hitSet);
     resize(hitSet, length(journalSet) + 1);
     // Access the reference sequence.
-    THost & globalRef = globalReference(journalSet);
+    THost & globalRef = host(journalSet);
     // Search for pattern in the reference sequence.
     findPatternInReference(hitSet[0], globalRef, pattern);
 
@@ -220,7 +221,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         return 1;
     }
     // We have to create the global reference sequence otherwise we loose the information after this function terminates.
-    createGlobalReference(journalSet, sequence);
+    createHost(journalSet, sequence);
 
     // If there are more
     while (!atEnd(reader))
@@ -275,7 +276,7 @@ int main()
     {
         std::cout << "Hit in reference " << " at ";
         for (unsigned j = 0; j < length(hitSet[0]); ++j)
-            std::cout << hitSet[0][j] << ": " << infix(globalReference(journalSet), hitSet[0][j],hitSet[0][j] + length(pattern)) << "\t";
+            std::cout << hitSet[0][j] << ": " << infix(host(journalSet), hitSet[0][j],hitSet[0][j] + length(pattern)) << "\t";
     }
     std::cout << std::endl;
 

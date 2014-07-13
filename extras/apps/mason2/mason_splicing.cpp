@@ -216,7 +216,9 @@ public:
             rID = idx;
 
             vcfMat.currRID = rID - 1;
-            while (vcfMat.materializeNext(seq, rID, hID))
+            std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
+            std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
+            while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
             {
                 std::cerr << " (allele " << (hID + 1) << ")";
                 if (rID != (int)idx)
@@ -386,8 +388,7 @@ parseCommandLine(MasonSplicingOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("mason_splicing");
     // Set short description, version, and date.
     setShortDescription(parser, "Generating Transcripts");
-    setVersion(parser, "2.0");
-    setDate(parser, "July 2012");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.

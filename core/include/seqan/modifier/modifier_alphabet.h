@@ -42,6 +42,7 @@ namespace seqan
 
 /*!
  * @class ModifiedAlphabet
+ * @implements AlphabetConcept
  * @headerfile <seqan/modifier.h>
  * @brief Modifies value types.
  *

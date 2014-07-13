@@ -542,6 +542,19 @@ end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 ..include:seqan/modifier.h
 */
 
+template <typename TValue>
+inline bool
+_reverseDoSequential(TValue size)
+{
+    return size < (TValue)10000;
+}
+
+inline bool
+_reverseDoSequential(unsigned char)
+{
+    return true;
+}
+
 template < typename TSequence, typename TParallelTag >
 inline void
 reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
@@ -554,7 +567,8 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
     // disable multi-threading if sequence is too small
-    if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && length(sequence) < 10000)
+    // __uint64 cast is for 8bit size types for which comparison would be always true
+    if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && _reverseDoSequential(length(sequence)))
         resize(splitter, 1);
 
     // (weese:) We have to cast the result of length to int to circumvent an internal gcc compiler error
