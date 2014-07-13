@@ -283,7 +283,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 inline void
 write(TTarget & /* target */,
       BamHeader const & /* header */,
-      BamIOContext<TNameStore, TNameStoreCache> const & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
       TagSelector<> const & /* format */)
 {}
 
@@ -291,7 +291,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache, typen
 inline void
 write(TTarget & target,
       BamHeader const & header,
-      BamIOContext<TNameStore, TNameStoreCache> const & context,
+      BamIOContext<TNameStore, TNameStoreCache> & context,
       TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormatTag;
@@ -319,7 +319,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 inline void
 write(TTarget & /* target */,
       BamAlignmentRecord & /* record */,
-      BamIOContext<TNameStore, TNameStoreCache> const & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
       TagSelector<> const & /* format */)
 {}
 
@@ -327,7 +327,7 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache, typen
 inline void
 write(TTarget & target,
       BamAlignmentRecord & record,
-      BamIOContext<TNameStore, TNameStoreCache> const & context,
+      BamIOContext<TNameStore, TNameStoreCache> & context,
       TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormatTag;

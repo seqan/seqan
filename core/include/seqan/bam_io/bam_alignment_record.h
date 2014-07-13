@@ -353,7 +353,7 @@ public:
     __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
     String<CigarElement<> > cigar;
     CharString qName;
-    CharString seq;
+    IupacString seq;
     CharString qual;
     CharString tags;  // raw tags in BAM format
     CharString _buffer; // reusable internal buffer (used for I/O)

@@ -462,7 +462,10 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         minChunkSize = ichunk.end - ichunk.begin;
 //        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
-        reserveChunk(target, minChunkSize);
+        if (minChunkSize > n)
+            minChunkSize = n;
+
+        reserveChunk(target, n);
         ochunk = getChunk(target, Output());
 
         typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
@@ -476,8 +479,6 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         if (minChunkSize > olen)
             minChunkSize = olen;
 
-        if (minChunkSize > n)
-            minChunkSize = n;
 
         ichunk.end = ichunk.begin + minChunkSize;
 
