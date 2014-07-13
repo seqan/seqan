@@ -467,14 +467,14 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 
         typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
 
-        if (minChunkSize > olen)
-            minChunkSize = olen;
-
         if (SEQAN_UNLIKELY(olen == 0u))
         {
             _write(target, iter, n, TNoChunking(), TNoChunking());
             return;
         }
+
+        if (minChunkSize > olen)
+            minChunkSize = olen;
 
         if (minChunkSize > n)
             minChunkSize = n;
