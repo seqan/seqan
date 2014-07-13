@@ -81,23 +81,23 @@ namespace seqan {
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 void write(TTarget & target,
            BamHeader const & header,
-           BamIOContext<TNameStore, TNameStoreCache> const & context,
+           BamIOContext<TNameStore, TNameStoreCache> & context,
            Bam const & /*tag*/)
 {
     write(target, "BAM\1");
+    clear(context.buffer);
 
     // Create text of header.
-    CharString headerBuffer;
     for (unsigned i = 0; i < length(header.records); ++i)
-        write(headerBuffer, header.records[i], context, Sam());
+        write(context.buffer, header.records[i], context, Sam());
     
     // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
     // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
-    // appendValue(headerBuffer, '\0');
+    // appendValue(context.buffer, '\0');
 
     // Write text header.
-    appendRawPod(target, (__int32)length(headerBuffer));
-    write(target, headerBuffer);
+    appendRawPod(target, (__int32)length(context.buffer));
+    write(target, context.buffer);
 
     // Write references.
     appendRawPod(target, (__int32)_max(length(header.sequenceInfos), length(nameStore(context))));
@@ -139,13 +139,11 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 void write(TTarget & target,
            BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
+           BamIOContext<TNameStore, TNameStoreCache> & context,
            Bam const & /*tag*/)
 {
-    // TODO(singer): Once the MAP tables are gone delete the buffer.
-    CharString buffer;
-
     // First, write record to buffer.
+    clear(context.buffer);
 
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
@@ -159,11 +157,11 @@ void write(TTarget & target,
 
     // l_seq
     record._l_qseq = (__int32)length(record.seq);
-    appendRawPod(buffer, static_cast<BamAlignmentRecordCore &>(record));
+    appendRawPod(context.buffer, static_cast<BamAlignmentRecordCore &>(record));
 
     // read_name
-    write(buffer, record.qName);
-    writeValue(buffer, '\0');
+    write(context.buffer, record.qName);
+    writeValue(context.buffer, '\0');
 
     // cigar
     static __uint8 const MAP[256] =
@@ -190,54 +188,36 @@ void write(TTarget & target,
         __uint32 x = record.cigar[i].count;
         x <<= 4;
         x |= MAP[static_cast<int>(record.cigar[i].operation)];
-        appendRawPod(buffer, x);
+        appendRawPod(context.buffer, x);
     }
 
     // seq
-    static __uint8 const MAP2[256] =
-    {
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0, 15, 15,
-        15, 1, 14, 2, 13, 15, 15, 4, 11, 15, 15, 12, 15, 3, 15, 15,
-        15, 15, 5, 6, 8, 15, 7, 9, 15, 10, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
-    };
     for (size_t i = 1; i < length(record.seq); i+=2)
-        writeValue(buffer, (MAP2[ordValue(record.seq[i - 1])] << 4) | MAP2[ordValue(record.seq[i])]);
+        writeValue(context.buffer, (ordValue(record.seq[i - 1]) << 4) | ordValue(record.seq[i]));
     if ((length(record.seq) & 1) == 1)
-        writeValue(buffer, MAP2[ordValue(back(record.seq))] << 4);
+        writeValue(context.buffer, ordValue(back(record.seq)) << 4);
 
     // qual
     if (empty(record.qual))
     {
         for (unsigned i = 0; i < length(record.qual); ++i)
-            writeValue(buffer, (unsigned char)(0xff));
+            writeValue(context.buffer, (unsigned char)(0xff));
     }
     else
     {
         for (unsigned i = 0; i < length(record.qual); ++i)
-            writeValue(buffer, (char)(record.qual[i] - '!'));
+            writeValue(context.buffer, (char)(record.qual[i] - '!'));
     }
 
     // tags
     if (length(record.tags) > 0u)
-        write(buffer, record.tags);
+        write(context.buffer, record.tags);
 
     // buffer to stream
-    appendRawPod(target, (__uint32)length(buffer));
-    write(target, buffer);
+    appendRawPod(target, (__uint32)length(context.buffer));
+    write(target, context.buffer);
 }
+
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_

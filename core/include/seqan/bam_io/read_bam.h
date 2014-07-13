@@ -255,26 +255,26 @@ void readRecord(BamAlignmentRecord & record,
     }
     remainingBytes -= record._n_cigar * 4;
 
-    // sequence, 4-bit encoded "=ACMGRSVTWYHKDBN".
     SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 2) / 2);
-    resize(record.seq, record._l_qseq + 1, Exact());
-    static char const * SEQ_MAPPING = "=ACMGRSVTWYHKDBN";
-
-    typedef typename Iterator<CharString, Rooted>::Type TSeqIter;
-    {
-        // Note: Yes, we need separate index i and iterator.  The iterator allows the fast iteration and i is for
-        // book-keeping since we potentially create too long seq records.
-        TSeqIter it = begin(record.seq, Rooted());
-        for (__int32 i = 0; i < record._l_qseq; i += 2)
-        {
-            __uint8 ui;
-            readRawByte(ui, iter);
-            *it++ = SEQ_MAPPING[ui >> 4];
-            *it++ = SEQ_MAPPING[ui & 0x0f];
-        }
-    }
-    resize(record.seq, record._l_qseq);  // Possibly trim last, overlap base.
+    clear(context.buffer);
+    readUntil(context.buffer, iter, CountDownFunctor<>((record._l_qseq + 1) / 2));
     remainingBytes -= (record._l_qseq + 1) / 2;
+
+    typedef typename Iterator<CharString, Standard>::Type  TSrcIter;
+    typedef typename Iterator<IupacString, Standard>::Type TDestIter;
+
+    resize(record.seq, record._l_qseq, Exact());
+    TSrcIter sit = begin(context.buffer, Standard());
+    TSrcIter sitEnd = begin(context.buffer, Standard()) + record._l_qseq / 2;
+    TDestIter dit = begin(record.seq, Standard());
+    for (; sit != sitEnd; ++sit)
+    {
+        __uint8 ui = *sit;
+        *dit++ = Iupac(ui >> 4);
+        *dit++ = Iupac(ui & 0x0f);
+    }
+    if (record._l_qseq & 1)
+        *dit++ = Iupac(*sit >> 4);
 
     // phred quality
     SEQAN_ASSERT_GEQ(remainingBytes, record._l_qseq);

@@ -87,7 +87,7 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     removeDuplicates(header);
     write(writer, header);
 
-    // Step 3: Read
+    // Step 3: Read and output alignment records
     BamAlignmentRecord record;
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
