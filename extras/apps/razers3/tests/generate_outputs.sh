@@ -3,7 +3,7 @@
 # Currently, we run RazerS only on
 
 # We use revision 13816 for building the gold standard.
-RAZERS=../../../../../seqan-trunk-build/release/bin/razers3
+RAZERS=${RAZERS:-../../../../../seqan-trunk-build/release/bin/razers3}
 
 for tc in 0 1; do  # number of threads, 0 and >0 have different code paths
 

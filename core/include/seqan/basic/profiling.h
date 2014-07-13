@@ -186,8 +186,6 @@ namespace seqan
  * 
  * @return double CPU time stamp in seconds.
  * 
- * @section Remarks
- * 
  * Calls <tt>clock</tt> to retrieve the processor time used by the running thread. This implies that the thread's
  * processor time does not tick if the thread is suspended. While this has its advantages, benchmarks should generally
  * focus on wall clock time, not processor time. Wall clock time is returned by sysTime.
@@ -233,10 +231,8 @@ Wall clock time is returned by @Function.sysTime@.
  * 
  * @return double A <tt>double</tt>, system time stamp in seconds. Types: nolink:double
  * 
- * @section Remarks
- * 
- * In contrast to cpuTime, the system time corresponds to the wall clock time under Linux and Mac OS X.  Under Windows
- * sysTime returns the result of cpuTime.
+ * In contrast to @link cpuTime @endlink, the system time corresponds to the wall clock time under Linux and Mac OS X.
+ * Under Windows sysTime returns the result of cpuTime.
  * 
  * Use this for benchmarking uner Linux and Mac Os X.
  * 

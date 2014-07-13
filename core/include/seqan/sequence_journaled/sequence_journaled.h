@@ -59,9 +59,10 @@ namespace seqan {
  * @headerfile <seqan/sequence_journaled.h>
  * @brief Journaled versions of arbitrary underlying strings.
  *
- * @signature <typename THostSpec[, typename TJournalSpec[, typename TBufferSpec]]>
- *            class String<Journaled<THostSpec, TJournalSpec, TBufferSpec> >;
+ * @signature template <typename TValue, typename THostSpec[, typename TJournalSpec[, typename TBufferSpec]]>
+ *            class String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >;
  *
+ * @tparam TValue       The element type of the string.
  * @tparam THostSpec    Specialization type for the host string.
  * @tparam TJournalSpec Specialization type for the journal.  Default: <tt>SortedArray</tt>.
  * @tparam TBufferSpec  Specialization type for the buffer string.  Default: <tt>Alloc&lt;&gt;</tt>.
@@ -388,6 +389,20 @@ struct JournalType<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline bool
+empty(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & target)
+{
+    if (empty(target._holder) || empty(target._journalEntries))
+        return true;
+
+    return begin(target, Standard()) == end(target, Standard());
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<<
 // ----------------------------------------------------------------------------
 
@@ -434,7 +449,7 @@ assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target
        String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TTarget;
-    assign(target, source, DefaultOverflowImplicit<TTarget>::Type());
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec,
@@ -528,8 +543,8 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
  *
  * @signature void setHost(js, str);
  *
- * @param js  The JournaledString to set the host for.
- * @param str The string to set as the host.
+ * @param[in,out] js  The JournaledString to set the host for.
+ * @param[in]     str The string to set as the host.
  */
 
 /**
@@ -657,7 +672,6 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
 ..include:seqan/sequence_journaled.h
  */
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
-// TODO(rmaerker): Only supported by SortedArray, since there is a bug in the UnbalancedTree iterator. Is not fixed since UT is deprecated.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
 flatten(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString)
@@ -934,8 +948,8 @@ getValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const 
  *
  * @signature TPos virtualToHostPosition(js, pos);
  *
- * @param js  The JournaledString to translate the position for.
- * @param pos The virtual position to translate.
+ * @param[in] js  The JournaledString to translate the position for.
+ * @param[in] pos The virtual position to translate.
  *
  * @return TPos Position in the host.
  */
@@ -973,10 +987,10 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  * @fn JournaledString#hostToVirtualPosition
  * @brief Translates host position to virtual position.
  *
- * @signature TPos virtualToHostPosition(js, pos);
+ * @signature TPos hostToVirtualPosition(js, pos);
  *
- * @param js  The JournaledString to translate the position for.
- * @param pos The host position to translate.
+ * @param[in] js  The JournaledString to translate the position for.
+ * @param[in] pos The host position to translate.
  *
  * @return TPos The virtual view position.
  */
@@ -1145,6 +1159,16 @@ getObjectId(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 // --------------------------------------------------------------------------
 // Function isFlat()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledString#isFlat
+ * @brief Returns whether a JournaledString has modifications.
+ * @signature bool isFlat(js);
+ *
+ * @param[in] js The JournaledString to query.
+ *
+ * @return bool Indicates whether the string has been modified.
+ */
 
 /**
 .Function.Journaled String#isFlat

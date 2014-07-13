@@ -71,10 +71,10 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     // Check Result.
     char const * expected =
             "TTCTATCTCCTATAGTCTGATATTACTGTAGGTACAGTAGCTTTTCTTCATTAATGTTTGCATAATATAGCTTCTTCCATGCTTTTACTTCCAATTATTTTGGTATGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTATATATATATA-------------\n"
-            "TTCTATCTCCTATAGTCTGATATTACTGTAGGTACAGTAGCTTTTCTTCATTAATGTTTGCATAATATAGCTTCTTCCATGCTTTTACTTCCAATTATTTT\n"
-            "  CTATCTCCTATAGTCTGATATTACTGTAGGTACAGTAGCTTTTCTTCATTAATGTTTGCATAATATAGCTTCTTCCATGCTTTTACTTCCAATTATTTTGG\n"
-            "                                   AGTAGCTTTTCTTCATTAATGTTTGCATAATATAGCTTCTTCCATGCTTTTACTTCCAATTATTTTGGTA--TGTGTGTGTGTGTGTGTGTGTGTGTGTGTAT\n"
-            "                                              TTCATTAATGTTTGCATAATATAGCTTCTTCCATGCTTTTACTTCCAATTATTTTGGTATGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTATATATATATA\n";
+            ".....................................................................................................\n"
+            "  .....................................................................................................\n"
+            "                                   ......................................................................**...............................\n"
+            "                                              .....................................................................................................\n";
 
     SEQAN_ASSERT_EQ(ss.str(), expected);
     // SEQAN_ASSERT_EQ(length(store.alignedReadStore), 4u);

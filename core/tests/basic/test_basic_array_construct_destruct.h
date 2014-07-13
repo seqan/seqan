@@ -218,6 +218,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_construct_value_pointer)
         SEQAN_ASSERT_EQ(CDStruct::assignments, 0);
     }
 
+#ifndef SEQAN_CXX11_STANDARD
     // Move construction.
     {
         char space[sizeof(CDStruct)];
@@ -238,6 +239,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_construct_value_pointer)
         SEQAN_ASSERT_EQ(CDStruct::destructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::assignments, 0);
     }
+#endif
 }
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_destruct_value_pointer)

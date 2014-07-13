@@ -62,8 +62,6 @@ namespace seqan {
  * @tparam SIZE             The size of the blocks.
  * @tparam TParentAllocator The parent allocator to use.
  *
- * @section Remarks
- *
  * A pool allocator allocates several memory blocks at once.  Freed blocks are not immediately deallocated but
  * recycled in subsequential allocations.  This way, the number of calls to the heap manager is reduced, and that
  * might speed up memory management.

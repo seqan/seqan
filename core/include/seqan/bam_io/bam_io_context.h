@@ -52,7 +52,7 @@ namespace seqan {
  * @headerfile <seqan/bam_io.h>
  * @brief The I/O context to use for BAM I/O.
  *
- * @signature template <typename TNameStore, typename TNameStoreCache = NameStoreCache<TNameStore> >
+ * @signature template <typename TNameStore[, typename TNameStoreCache]>
  *            class BamIOContext;
  *
  * @tparam TNameStore      The name store class.
@@ -88,8 +88,6 @@ namespace seqan {
  * @brief Constructor.
  *
  * @signature BamIOContext::BamIOContext();
- *
- * @section Remarks
  *
  * Only the default constructor is provided.
  */
@@ -187,9 +185,9 @@ public:
  *
  * @signature TNameStoreRef nameStoreCache(context);
  *
- * @param context The @link BamIOContext @endlink to query.
+ * @param[in] context The @link BamIOContext @endlink to query.
  *
- * @return TNameStoreRef A reference to the TNameStore of the context.
+ * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
  */
 
 /**
@@ -225,16 +223,16 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 // Function nameStoreCache()
 // ----------------------------------------------------------------------------
 
-/*
+/*!
  * @fn BamIOContext#nameStore
  * @headerfile <seqan/bam_io.h>
  * @brief Return reference to name store from @link BamIOContext @endlink.
  *
  * @signature TNameStoreCacheRef nameStore(context);
  *
- * @param context The @link BamIOContext @endlink to query.
+ * @param[in] context The @link BamIOContext @endlink to query.
  *
- * @return TNameStoreCacheRef A reference to the TNameStoreCache of the context.
+ * @return TNameStoreCacheRef A reference to the <tt>TNameStoreCache</tt> of the context.
  */
 
 /**

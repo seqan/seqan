@@ -71,7 +71,7 @@ typedef Tag<Bed_> Bed;
  * @signature int readRecord(record, reader[, context], Bed());
  * 
  * @param[out]    record  BedRecord object to write to. Types: BedRecord
- * @param[in,out] context The optional BedIOContext to use.
+ * @param[in,out] context The optional @link BedIOContext @endlink to use.
  * @param[in,out] reader  The SinglePassRecordReader to use.
  * 
  * @return int Status code, 0 on success, other value on errors.

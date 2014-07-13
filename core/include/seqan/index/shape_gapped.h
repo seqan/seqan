@@ -57,26 +57,23 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*!
  * @class HardwiredShape
- * 
- * @headerfile seqan/index.h
- * 
+ * @extends GappedShape
+ * @headerfile <seqan/index.h>
  * @brief A structure to define a fixed gapped shape.
  * 
- * @signature HardwiredShape<P1, P2, ..., Pn>
- * 
- * @tparam Pi Pi is the distance of the i'th '1' to the next '1' in the shape.At
- *            most 20 parameters are allowed, so the maximal shape weight is 21.
- * 
- * @section Remarks
+ * @signature template <typename TValue, typename P1[, typename P2[, ..., typename Pn]]>
+ *            class Shape<TValue, HardwiredShape<P1[, P2[, ..., Pn]]> >;
+ *
+ * @tparam TValue The type to use for the values.
+ * @tparam Pi     Pi is the distance of the i'th '1' to the next '1' in the shape.At
+ *                most 20 parameters are allowed, so the maximal shape weight is 21.
  * 
  * You can use this structure to define your one gapped shapes in conjunction
  * with @link GappedShape @endlink.
  * 
- * @section Note The shape <tt>1100101</tt> corresponds to
- * <tt>HardwiredShape<1,3,2></tt>.
+ * The shape <tt>1100101</tt> corresponds to <tt>HardwiredShape<1,3,2></tt>.
  * 
- * @section Note The following predefined shapes are already available in
- * <tt>seqan/index/shape_predefined.h</tt>:
+ * Note The following predefined shapes are already available in <tt>seqan/index/shape_predefined.h</tt>:
  * 
  * @include include/seqan/index/shape_predefined.h
  * 
@@ -235,21 +232,17 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /*!
  * @class GenericShape
- * 
  * @extends Shape
- * 
- * @headerfile seqan/index.h
- * 
+ * @headerfile <seqan/index.h>
  * @brief A variable gapped shape.
  * 
- * @signature Shape<TValue, GenericShape>
+ * @signature template <typename TValue>
+ *            class Shape<TValue, GenericShape>;
  * 
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
  * 
- * @section Remarks
- * 
- * A GenericShape must be initialized first with a valid shape. To do so, call
+ * A GenericShape must be initialized first with a valid shape.  To do so, call
  * @link Shape#stringToShape @endlink.
  * 
  * @see GappedShape
@@ -293,11 +286,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @brief Constructor
  * 
- * @signature Shape<TValue, GenericShape> ()
- * @signature Shape<TValue, GenericShape> (q)
- * @signature Shape<TValue, GenericShape> (shape)
- * @signature Shape<TValue, GenericShape> (bitmap)
- * @signature Shape<TValue, GenericShape> (predefined)
+ * @signature Shape::Shape();
+ * @signature Shape::Shape(q);
+ * @signature Shape::Shape(shape);
+ * @signature Shape::Shape(bitmap);
+ * @signature Shape::Shape(predefined);
  * 
  * @param predefined Any instance of a predefined shape spec (e.g.
  *                   <tt>ShapePatternHunter</tt>).
@@ -418,21 +411,18 @@ You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
 */
 /*!
  * @class GappedShape
- * 
  * @extends Shape
- * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief A fixed gapped shape.
  * 
- * @signature Shape<TValue, GappedShape<TSpec> >
+ * @signature template <typename TValue, typename TSpec>
+ *            class Shape<TValue, GappedShape<TSpec> >;
  * 
  * @tparam TSpec A structure to store the shape at compile-time. Types:
  *               @link HardwiredShape @endlink
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
- * @section Remarks
  * 
  * There are predefined shapes in <tt>index/shape_predefined.h</tt>. You can
  * simply use them with <tt>Shape<TValue, ShapePatternHunter></tt> for example.

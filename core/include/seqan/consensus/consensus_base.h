@@ -62,6 +62,7 @@ typedef Tag<OverlapLibrary_> const OverlapLibrary;
 
 /*!
  * @defgroup ConsensusCallingTags Consensus Calling Tags
+ * @brief Tags for consensus calling.
  *
  * @tag ConsensusCallingTags#MajorityVote
  * @headerfile <seqan/consensus.h>
@@ -442,7 +443,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
 //////////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn consensusAligment
+ * @fn consensusAlignment
  * @headerfile <seqan/consensus.h>
  * @brief Compute consensus alignment.
  * 

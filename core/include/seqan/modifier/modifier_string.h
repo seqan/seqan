@@ -67,9 +67,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * @tparam THost The host sequence.
  * @tparam TSpec The specialization tag, defaults to <tt>void</tt>.
  *
- * @section Remarks
- *
- * THost can also be a modified string, so you can create nest modified strings to create custom combinations.
+ * <tt>THost</tt> can also be a modified string, so you can create nest modified strings to create custom combinations.
  *
  * @section Examples
  *
@@ -527,10 +525,10 @@ host(ModifiedString<THost, TSpec> & me)
 }
 
 template <typename THost, typename TSpec>
-inline typename Host<ModifiedString<THost, TSpec> >::Type &
+inline typename Host<ModifiedString<THost, TSpec> const>::Type &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
+    return _dereference<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
 }
 
 // --------------------------------------------------------------------------

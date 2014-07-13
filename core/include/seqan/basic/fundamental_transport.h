@@ -94,7 +94,7 @@ struct HasMoveConstructor
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn assign
+ * @fn AssignableConcept#assign
  * @headerfile <seqan/basic.h>
  * @brief Assigns one object to another object.
  *
@@ -169,7 +169,7 @@ assign(Proxy<TTargetSpec> & target,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn set
+ * @fn AssignableConcept#set
  * @headerfile <seqan/basic.h>
  * @brief Assigns one object to another object avoiding to copy contents.
  *
@@ -177,6 +177,8 @@ assign(Proxy<TTargetSpec> & target,
  *
  * @param[out] target Reference to the set to source.
  * @param[in]  source Value to set to target.
+ *
+ * The default implementation copies.  Types implementing AssignableConcept can implement more efficient variants.
  */
 
 /**
@@ -233,14 +235,17 @@ set(TTarget const & target,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn move
+ * @fn AssignableConcept#move
  * @headerfile <seqan/basic.h>
  * @brief Hands over content from one object to another object.
  *
  * @signature void move(target, source);
  *
- * @param[out] target Where to move source to.
- * @param[in]  source What to move to target.
+ * @param[out]     target Where to move source to.
+ * @param[in,out]  source What to move to target.
+ *
+ * The default implementation will call @link AssignableConcept#assign @endlink and classes implementing
+ * AssignableConcept can override move to provide a more efficient implementation.
  */
 
 /**

@@ -1,0 +1,28 @@
+samcat - SAM/BAM file concatenation and conversion
+==================================================
+
+SYNOPSIS
+    samcat [OPTIONS] <INFILE> [<INFILE> ...] [-o <OUTFILE>]
+
+DESCRIPTION
+    This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. If the output
+    file name is ommitted the result is written to standard output in SAM format.
+
+    (c) Copyright 2014 by David Weese.
+
+    -h, --help
+          Displays this help message.
+    --version
+          Display version information
+    -o, --output FILE
+          Output file name Valid filetypes are: .sam and .bam.
+
+EXAMPLES
+    samcat mapped1.sam mapped2.sam -o merged.sam
+          Merge two SAM files.
+    samcat input.sam -o ouput.bam
+          Convert a SAM file into BAM format.
+
+VERSION
+    samcat version: 0.1
+    Last update May 2014

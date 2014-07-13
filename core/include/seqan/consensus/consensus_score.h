@@ -145,7 +145,7 @@ public:
  * 
  * @signature TSequence host(entry);
  * 
- * @param[in] entry The entry to query for its host.
+ * @param[in] entry The ConsensusScoreSequenceEntry to query for its host.
  * 
  * @return TSequence A reference to the underlying sequence.
  */
@@ -182,7 +182,7 @@ host(ConsensusScoreSequenceEntry<TSequence> const & entry)
  * 
  * @signature TPosition position(entry);
  * 
- * @param[in] entry The entry to query.
+ * @param[in] entry The ConsensusScoreSequenceEntry to query.
  * 
  * @return TPosition The position of the entry.  The type is
  *                   <tt>ConsensusScoreSequenceEntry&lt;TSequence&gt;::TPosition</tt>.
@@ -212,7 +212,7 @@ position(ConsensusScoreSequenceEntry<TSequence> const & entry)
  * 
  * @signature TValue value(entry);
  *
- * @param entry The entry to query.
+ * @param[in] entry The ConsensusScoreSequenceEntry to query.
  *
  * @return TValue The value of the sequence at the current position.
  */

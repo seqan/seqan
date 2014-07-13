@@ -134,6 +134,18 @@ struct MatePairStoreElement
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn MatePairStoreElement#Id
+ * @headerfile <seqan/store.h>
+ * @brief Returns the id type to use for <tt>MatePairStoreElement</tt>.
+ *
+ * @signature Id<TMatePairStoreElement>::Type;
+ *
+ * @tparam TMatePairStoreElement The MatePairStoreElement specialization to get the id type for.
+ *
+ * @return Type The resulting id type.
+ */
+
 template <typename TSpec>
 const typename Id<MatePairStoreElement<TSpec> >::Type
 MatePairStoreElement<TSpec>::INVALID_ID = MaxValue<typename Id<MatePairStoreElement<TSpec> >::Type>::VALUE;

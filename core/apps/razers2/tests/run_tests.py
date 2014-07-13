@@ -111,18 +111,18 @@ def main(source_base, binary_base):
             conf_list.append(conf)
 
         # Compute with different output formats.
-        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff', 'sam', 'afg']):
+        for suffix in ['razers', 'fa', 'eland', 'gff', 'sam', 'afg']:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
+                redir_stdout=ph.outFile('se-adeno-reads%d_1-id.%s.stdout' % (rl, suffix)),
                 args=['--low-memory', '-id',
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix))),
-                         (ph.inFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
-                          ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)))])
+                      '-o', ph.outFile('se-adeno-reads%d_1-id.%s' % (rl, suffix))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-id.%s' % (rl, suffix)),
+                          ph.outFile('se-adeno-reads%d_1-id.%s' % (rl, suffix))),
+                         (ph.inFile('se-adeno-reads%d_1-id.%s.stdout' % (rl, suffix)),
+                          ph.outFile('se-adeno-reads%d_1-id.%s.stdout' % (rl, suffix)))])
             conf_list.append(conf)
 
         # Compute with different sort orders.
@@ -209,19 +209,19 @@ def main(source_base, binary_base):
             conf_list.append(conf)
 
         # Compute with different output formats.
-        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff']):
+        for suffix in ['razers', 'fa', 'eland', 'gff', 'sam', 'afg']:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
+                redir_stdout=ph.outFile('pe-adeno-reads%d_2-id.%s.stdout' % (rl, suffix)),
                 args=['--low-memory', '-id',
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix))),
-                         (ph.inFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
-                          ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)))])
+                      '-o', ph.outFile('pe-adeno-reads%d_2-id.%s' % (rl, suffix))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id.%s' % (rl, suffix)),
+                          ph.outFile('pe-adeno-reads%d_2-id.%s' % (rl, suffix))),
+                         (ph.inFile('pe-adeno-reads%d_2-id.%s.stdout' % (rl, suffix)),
+                          ph.outFile('pe-adeno-reads%d_2-id.%s.stdout' % (rl, suffix)))])
             conf_list.append(conf)
 
         # Compute with different sort orders.

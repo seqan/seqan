@@ -243,6 +243,22 @@ struct Difference<Proxy<IteratorProxy<TIterator> > const>
 {
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction CompareType
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename T>
+struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator> >, T>:
+    CompareTypeRemoveProxy<typename Value<TIterator>::Type, T> {};
+
+template <typename TIterator, typename T>
+struct CompareTypeRemoveProxy<T, Proxy<IteratorProxy<TIterator> > >:
+    CompareTypeRemoveProxy<T, typename Value<TIterator>::Type> {};
+
+template <typename TIterator1, typename TIterator2>
+struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator1> >, Proxy<IteratorProxy<TIterator2> > >:
+    CompareTypeRemoveProxy<typename Value<TIterator1>::Type, typename Value<TIterator2>::Type> {};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -320,6 +336,29 @@ operator<<(TStream & stream, Proxy<IteratorProxy<TIterator> > const & it)
 }
 
 }  // namespace seqan
+
+
+
+namespace std {
+
+// ------------------------------------------------------------------------
+// Function swap()
+// ------------------------------------------------------------------------
+
+// std::swap doesn't cover the case of const-ref proxies, so we provide it here
+template <typename TIterator>
+inline void
+swap(seqan::Proxy<seqan::IteratorProxy<TIterator> > const & left, seqan::Proxy<seqan::IteratorProxy<TIterator> > const & right)
+{
+    typedef seqan::Proxy<seqan::IteratorProxy<TIterator> >  TProxy;
+    typedef typename seqan::GetValue<TProxy>::Type          TGetValue;
+
+    TGetValue tmp = getValue(iter(left));
+    assignValue(iter(left), getValue(iter(right)));
+    assignValue(iter(right), tmp);
+}
+
+}  // namespace std
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
 

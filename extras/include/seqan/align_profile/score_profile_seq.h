@@ -101,6 +101,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  * @tparam TValue The integer type to use for representing scores.
  *
  * @section Examples
+ *
  * The following example uses the ProfileSeq Score to align a sequence against a profile.
  * Note that we print the gap state for each position since profiles cannot be printed to one stdout character.
  * 
@@ -108,7 +109,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  *
  * The output is as follows:
  *
- * @code
+ * @code{.output}
  * score value = -2097152
  * gaps in profile/sequence
  * pos G   S
@@ -128,7 +129,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  * @signature Score::Score();
  * @signature Score::Score(profile);
  *
- * @param profile The profile to copy from (@link AllocString @endlink of @link ProfileChar @endlink objects).
+ * @param[in] profile The profile to copy from (@link AllocString @endlink of @link ProfileChar @endlink objects).
  *
  * When providing <tt>profile</tt>, the function @link ProfileSeqScore#assignProfile @endlink is automatically used to
  * assign the profile to this class.
@@ -254,7 +255,7 @@ typedef Tag<ProfileSeqFracScore_> ProfileSeqFracScore;
  * @signature Score::Score();
  * @signature Score::Score(profile);
  *
- * @param profile The profile to copy from (@link AllocString @endlink of @link ProfileChar @endlink objects).
+ * @param[in] profile The profile to copy from (@link AllocString @endlink of @link ProfileChar @endlink objects).
  *
  * When providing <tt>profile</tt>, the function @link ProfileSeqFracScore#assignProfile @endlink is automatically used to
  * assign the profile to this class.

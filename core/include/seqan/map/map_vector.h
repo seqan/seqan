@@ -45,13 +45,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief A fast map for small key types.
  * 
  * @signature template <typename TValue[, typename TSpec]>
- *            class Map;
+ *            class Map<TValue, VectorSet<TSpec> >;
  * 
  * @tparam TValue The type of value stored in the map.
  * @tparam TSpec  The specializing type.  <tt>TSpec</tt> is used as specialization for the String type that is
  *                used to store the values, defaults to <tt>Alloc&lt;&gt;</tt>.
- * 
- * @section Remarks
  * 
  * The memory needed is linear to the number different values the Key type of <tt>TValue</tt> can
  * get.  So do not use this map for large key types.

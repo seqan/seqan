@@ -60,7 +60,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @mfn IsSamEtype
+ * @mfn IsSameType
  * @headerfile <seqan/basic.h>
  * @brief Metaprogramming type comparison.
  *

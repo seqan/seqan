@@ -54,8 +54,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @tparam TNeedle The needle type, a string of keywords.  Types: @link SequenceConcept @endlink.
  * 
- * @section Remarks
- * 
  * The types of all keywords in the needle and the haystack have to match.
  */
 

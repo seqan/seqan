@@ -3,7 +3,10 @@
 {% block title %}{{ group.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="group" data-pimped="true"><a href="page_LanguageEntities.html#group">Group</a> <span>{{ group.title|e }}</span></h1>
+<h1 data-lang-entity="group" data-pimped="true">
+  <a href="page_LanguageEntities.html#group">Group</a> <span>{{ group.title|e }}
+  <div>{{ sections.brief(group) }}</div></span>
+</h1>
 
 <!--
  =============================================================================
@@ -29,12 +32,10 @@
  =============================================================================
 -->
 
+{% if group.internals or group.deprecation_msgs or group.warnings or group.notes or group.akas or not group.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @brief -->
-    {{ sections.brief(group) }}
-
     <!-- @internal -->
     {% if group.internals %}
     <div class="note internal"><strong>Internal:</strong> <div class='inline'>
@@ -80,6 +81,8 @@
     {{ sections.body(group) }}
   </div>
 </div>
+
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(group) }}

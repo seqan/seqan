@@ -51,76 +51,87 @@ namespace seqan {
  * @defgroup GeneticCodeSpecs GeneticCode Specs
  * @brief Specialization tags for @link GeneticCode @endlink
  *
- * @tag GeneticCodeSpecs#Canonical
- * @brief The Standard Genetic Code (genbank transl_table=1)
- *
- * @tag GeneticCodeSpecs#VertMitochondrial
- * @brief The Vertebrate Mitochondrial Code (genbank transl_table=2)
- *
- * @tag GeneticCodeSpecs#YeastMitochondrial
- * @brief The Yeast Mitochondrial Code (genbank transl_table=3)
- *
- * @tag GeneticCodeSpecs#MoldMitochondrial
- * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the
- * Mycoplasma/Spiroplasma Code (genbank transl_table=4)
- *
- * @tag GeneticCodeSpecs#InvertMitchondrial
- * @brief The Invertebrate Mitochondrial Code (genbank transl_table=5)
- *
- * @tag GeneticCodeSpecs#Ciliate
- * @brief The Ciliate, Dasycladacean and Hexamita Nuclear Code
- * (genbank transl_table=6)
- *
- * @tag GeneticCodeSpecs#FlatwormMitochondrial
- * @brief The Echinoderm and Flatworm Mitochondrial Code (genbank transl_table=9)
- *
- * @tag GeneticCodeSpecs#Euplotid
- * @brief The Euplotid Nuclear Code (genbank transl_table=10)
- *
- * @tag GeneticCodeSpecs#Prokaryote
- * @brief The Bacterial, Archaeal and Plant Plastid Code (genbank
- * transl_table=11)
- *
- * @tag GeneticCodeSpecs#AltYeast
- * @brief The Alternative Yeast Nuclear Code (genbank transl_table=12)
- *
- * @tag GeneticCodeSpecs#AscidianMitochondrial
- * @brief The Ascidian Mitochondrial Code (genbank transl_table=13)
- *
- * @tag GeneticCodeSpecs#AltFlatwormMitochondrial
- * @brief The Alternative Flatworm Mitochondrial Code (genbank transl_table=14)
- *
- * @tag GeneticCodeSpecs#Blepharisma
- * @brief Blepharisma Nuclear Code (genbank genbank transl_table=15)
- *
- * @tag GeneticCodeSpecs#ChlorophyceanMitochondrial
- * @brief Chlorophycean Mitochondrial Code (genbank genbank transl_table=16)
- *
- * @tag GeneticCodeSpecs#TrematodeMitochondrial
- * @brief Trematode Mitochondrial Code (genbank transl_table=21)
- *
- * @tag GeneticCodeSpecs#ScenedesmusMitochondrial
- * @brief Scenedesmus obliquus mitochondrial Code (genbank transl_table=22)
- *
- * @tag GeneticCodeSpecs#ThraustochytriumMitochondrial
- * @brief Thraustochytrium Mitochondrial Code (genbank transl_table=23)
- *
- * @tag GeneticCodeSpecs#PterobranchiaMitochondrial
- * @brief Pterobranchia mitochondrial code (genbank transl_table=24)
- *
- * @tag GeneticCodeSpecs#Gracilibacteria
- * @brief Candidate Division SR1 and Gracilibacteria Code (genbank
- * transl_table=25)
- *
- * @headerfile seqan/translation.h
- *
  * @see translate
  * @see GeneticCode
  *
- * @section Remarks
+ * Some genetic codes have been deprecated, so not all transl_table-numbers are present.
  *
- * Some genetic codes have been deprecated, so not all transl_table-numbers
- * are present.
+ * @tag GeneticCodeSpecs#Canonical
+ * @headerfile seqan/translation.h
+ * @brief The Standard Genetic Code (genbank transl_table=1)
+ *
+ * @tag GeneticCodeSpecs#VertMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Vertebrate Mitochondrial Code (genbank transl_table=2)
+ *
+ * @tag GeneticCodeSpecs#YeastMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Yeast Mitochondrial Code (genbank transl_table=3)
+ *
+ * @tag GeneticCodeSpecs#MoldMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
+ *        (genbank transl_table=4).
+ *
+ * @tag GeneticCodeSpecs#InvertMitchondrial
+ * @headerfile seqan/translation.h
+ * @brief The Invertebrate Mitochondrial Code (genbank transl_table=5)
+ *
+ * @tag GeneticCodeSpecs#Ciliate
+ * @headerfile seqan/translation.h
+ * @brief The Ciliate, Dasycladacean and Hexamita Nuclear Code (genbank transl_table=6).
+ *
+ * @tag GeneticCodeSpecs#FlatwormMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Echinoderm and Flatworm Mitochondrial Code (genbank transl_table=9).
+ *
+ * @tag GeneticCodeSpecs#Euplotid
+ * @headerfile seqan/translation.h
+ * @brief The Euplotid Nuclear Code (genbank transl_table=10).
+ *
+ * @tag GeneticCodeSpecs#Prokaryote
+ * @headerfile seqan/translation.h
+ * @brief The Bacterial, Archaeal and Plant Plastid Code (genbank transl_table=11).
+ *
+ * @tag GeneticCodeSpecs#AltYeast
+ * @headerfile seqan/translation.h
+ * @brief The Alternative Yeast Nuclear Code (genbank transl_table=12).
+ *
+ * @tag GeneticCodeSpecs#AscidianMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Ascidian Mitochondrial Code (genbank transl_table=13).
+ *
+ * @tag GeneticCodeSpecs#AltFlatwormMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief The Alternative Flatworm Mitochondrial Code (genbank transl_table=14).
+ *
+ * @tag GeneticCodeSpecs#Blepharisma
+ * @headerfile seqan/translation.h
+ * @brief Blepharisma Nuclear Code (genbank genbank transl_table=15).
+ *
+ * @tag GeneticCodeSpecs#ChlorophyceanMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief Chlorophycean Mitochondrial Code (genbank genbank transl_table=16).
+ *
+ * @tag GeneticCodeSpecs#TrematodeMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief Trematode Mitochondrial Code (genbank transl_table=21).
+ *
+ * @tag GeneticCodeSpecs#ScenedesmusMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief Scenedesmus obliquus mitochondrial Code (genbank transl_table=22).
+ *
+ * @tag GeneticCodeSpecs#ThraustochytriumMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief Thraustochytrium Mitochondrial Code (genbank transl_table=23).
+ *
+ * @tag GeneticCodeSpecs#PterobranchiaMitochondrial
+ * @headerfile seqan/translation.h
+ * @brief Pterobranchia mitochondrial code (genbank transl_table=24).
+ *
+ * @tag GeneticCodeSpecs#Gracilibacteria
+ * @headerfile seqan/translation.h
+ * @brief Candidate Division SR1 and Gracilibacteria Code (genbank transl_table=25).
  */
 
 // -----------------------------------------------------------------------
@@ -301,8 +312,8 @@ typedef Tag<Gracilibacteria_> Gracilibacteria;
 
 /*!
  * @tag GeneticCode
- * @brief Dna to AminoAcid translation code, needs to be spec'ed by
- * one of @link GeneticCodeSpecs @endlink
+ * @headerfile seqan/translation.h
+ * @brief Dna to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpecs @endlink.
  * @signature GeneticCode<GeneticCodeSpec>
  *
  * @see translate

@@ -45,6 +45,8 @@ namespace SEQAN_NAMESPACE_MAIN
 // TODO(holtgrew): Extend class Iter?
 /*!
  * @class AlignColIterator
+ * @extends Iter
+ * @headerfile <seqan/align.h>
  * @brief Iterator for alignment columns.
  *
  * @signature template <typename TAlign, typename TSpec>

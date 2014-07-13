@@ -55,6 +55,7 @@ class LocalAlignmentEnumerator;
 /*!
  * @class LocalAlignmentEnumerator
  * @headerfile <seqan/align.h>
+ * @brief Enumeration of local alignments.
  *
  * @signature template <typename TScore, typename TSpec>
  *            class LocalAlignmentEnumerator;
@@ -83,7 +84,7 @@ class LocalAlignmentEnumerator;
  *
  * @tparam TScore The @link Score @endlink type.
  *
- * @section Example
+ * @section Examples
  *
  * Enumerate all alignments into a @link Align @endlink object.
  *
@@ -95,7 +96,7 @@ class LocalAlignmentEnumerator;
  * Dna5String seqV = "TTCTGAGATCCGTTTTT";
  * 
  * Align<Dna5String> align;
- * resize(rows(align), 2);
+ * resize(rows(align), 2);@s
  * assignSource(row(align), 0, seqH);
  * assignSource(row(align), 1, seqV);
  * 
@@ -115,8 +116,8 @@ class LocalAlignmentEnumerator;
  *
  * @signature LocalAlignmentEnumerator::LocalAlignmentEnumerator(scheme[, cutoff]);
  *
- * @param scheme    The @link Score @endlink object to use for the alignment score.
- * @param cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
+ * @param[in] scheme    The @link Score @endlink object to use for the alignment score.
+ * @param[in] cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
  */
 
 /*!
@@ -130,7 +131,7 @@ class LocalAlignmentEnumerator;
  *
  * @tparam TScore The @link Score @endlink type.
  *
- * @section Example
+ * @section Examples
  *
  * Enumerate all alignments in the band between -3 and 0 into an @link Align @endlink object.
  *
@@ -162,10 +163,10 @@ class LocalAlignmentEnumerator;
  *
  * @signature LocalAlignmentEnumerator::LocalAlignmentEnumerator(scheme, upperDiag, lowerDiag[, cutoff]);
  *
- * @param scheme    The @link Score @endlink object to use for the alignment score.
- * @param upperDiag An <tt>int</tt> with the upper diagonal.
- * @param lowerDiag An <tt>int</tt> with the lower diagonal.
- * @param cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
+ * @param[in] scheme    The @link Score @endlink object to use for the alignment score.
+ * @param[in] upperDiag An <tt>int</tt> with the upper diagonal.
+ * @param[in] lowerDiag An <tt>int</tt> with the lower diagonal.
+ * @param[in] cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
  */
 
 /**
@@ -279,9 +280,9 @@ while (nextLocalAlignment(align, enumerator))
  *
  * @signature TScoreVal getScore(enumerator);
  *
- * @param enumerator The LocalAlignmentEnumerator to query.
+ * @param[in] enumerator The LocalAlignmentEnumerator to query.
  * 
- * @return TScoreVal The current alignment score.
+ * @return TScoreVal The current alignment score (@link Score#Value @endlink of <tt>TScore</tt>).
  */
 
 /**
@@ -309,10 +310,10 @@ The score of the previously computed alignment.
  * @signature bool nextLocalAlignment(align,        enumerator);
  * @signature bool nextLocalAlignment(gapsH, gapsV, enumerator);
  *
- * @param align      @link Align @endlink object to use for the alignment representation.
- * @param gapsH      @link Gaps @endlink object to use for the first/horizontal sequence in the alignment matrix.
- * @param gapsV      @link Gaps @endlink object to use for the second/vertical sequence in the alignment matrix.
- * @param enumerator The LocalAlignmentEnumerator to advance.
+ * @param[in] align      @link Align @endlink object to use for the alignment representation.
+ * @param[in] gapsH      @link Gaps @endlink object to use for the first/horizontal sequence in the alignment matrix.
+ * @param[in] gapsV      @link Gaps @endlink object to use for the second/vertical sequence in the alignment matrix.
+ * @param[in] enumerator The LocalAlignmentEnumerator to advance.
  * 
  * @return bool <tt>true</tt> if another suboptimal alignment above the given threshold was found and <tt> false
  *              otherwise.

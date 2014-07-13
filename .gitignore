@@ -1,5 +1,8 @@
-build/
+build
+dox/html
 docs/html
 docs2/html
-dox/html
+sandbox
+!sandbox/CMakeLists.txt
 *.pyc
+*~

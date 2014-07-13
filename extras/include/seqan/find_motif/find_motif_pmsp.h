@@ -31,7 +31,7 @@
 // ==========================================================================
 
 #ifndef SEQAN_HEADER_FIND_PMSP_H
-#define SEQAN_HEADER_FIND_PMSM_H
+#define SEQAN_HEADER_FIND_PMSP_H
 
 namespace SEQAN_NAMESPACE_MAIN
 {

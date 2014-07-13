@@ -85,7 +85,7 @@ inline TValue _intPow(TValue a, TExponent b)
  * 
  * @signature unsigned log2(i);
  * 
- * @param i An integer type.
+ * @param[in] i An integer type.
  * 
  * @return unsigned The largest integer smaller or equal than the logarithm of <tt>i</tt>.
  */

@@ -71,7 +71,6 @@ struct EditEnvironment;
  *
  *
  * @fn StringEnumerator::StringEnumerator
- *
  * @brief Constructor
  *
  * @signature StringEnumerator::StringEnumerator(string[, minDist]);
@@ -81,16 +80,13 @@ struct EditEnvironment;
  *
  *
  * @var bool StringEnumerator::trim
- *
  * @brief Indicate whether to ignore substitutions in first or last character of string in Levenshtein mode
  *        (optimization for approximate search).
- *
- * @section Remarks
  *
  * This is useful when searching for such enumerated strings in large texts.  Patterns with substitutions in the first
  * base would also be found.
  *
- * @section Example
+ * @section Examples
  *
  * @include demos/misc/enumerate_strings.cpp
  *
@@ -109,8 +105,6 @@ struct EditEnvironment;
  * @tparam TString  Type of the string to enumerate the environment of.
  * @tparam DISTANCE The maximal distance to generate strings with.
  *
- * @section Remarks
- *
  * See @link StringEnumerator @endlink for examples.
  */
 
@@ -118,7 +112,7 @@ struct EditEnvironment;
  * @class LevenshteinStringEnumerator
  * @extends StringEnumerator
  * @headerfile <seqan/misc/edit_environment.h>
- * @brief Enumerate all strings within a given edit distance of a "center string".
+ * @brief Enumerate all strings within a given edit distance of a "center string" (of edit distance &lt; 3).
  * 
  * @signature template <typename TString, unsigned DISTANCE>
  *            class StringEnumerator<TString, EditEnvironment<LevenshteinDistance, DISTANCE> >;
@@ -126,12 +120,10 @@ struct EditEnvironment;
  * @tparam TString  Type of the string to enumerate the environment of.
  * @tparam DISTANCE The maximal distance to generate strings with.
  * 
- * @section Remarks
- * 
  * See @link StringEnumerator @endlink for examples.
  * 
- * Note that the @link StringEnumerator#length LevenshteinStringEnumerator#length @endlink function does not work for
- * <tt>DISTANCE &gt; 2</tt>.
+ * @note The @link StringEnumerator#length LevenshteinStringEnumerator#length @endlink function does not work for
+ *       <tt>DISTANCE &gt; 2</tt>.
  */
 
 /**
@@ -624,6 +616,11 @@ _dataHost(StringEnumerator<TText, TSpec> const & enumerator)
  * @brief Return begin iterator.
  *
  * @signature TIter begin(stringEnum[, tag]);
+ *
+ * @param[in] stringEnum StringEnumerator to query.
+ * @param[in] tag        Iterator tag to use.
+ *
+ * @return TIter Iterator to the first string in the enumerator.
  */
 
 ///.Function.begin.param.object.type:Class.StringEnumerator
@@ -652,6 +649,11 @@ begin(StringEnumerator<TObject, TSpec> const & enumerator, Standard)
  * @brief Return end iterator.
  *
  * @signature TIter end(stringEnum[, tag]);
+ *
+ * @param[in] stringEnum StringEnumerator to query.
+ * @param[in] tag        Iterator tag to use.
+ *
+ * @return TIter End iterator for the string enumerator.
  */
 
 ///.Function.end.param.object.type:Class.StringEnumerator
@@ -684,6 +686,10 @@ end(StringEnumerator<TObject, TSpec> const & enumerator, Standard)
  * @brief Return number of strings that will be enumerated.
  *
  * @signature TSize length(stringEnum);
+ *
+ * @param[in] stringEnum StringEnumerator to query.
+ *
+ * @return TSize The number of elements in the enumerator  (Metafunction: @link StringEnumerator#Size @endlink).
  */
 
 ///.Function.length.param.object.type:Class.StringEnumerator
