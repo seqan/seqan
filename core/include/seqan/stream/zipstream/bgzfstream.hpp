@@ -167,19 +167,9 @@ public:
 	
 	~basic_bgzf_streambuf()
     {
-		flush();
+        // the buffer is now (after addFooter()) and flush will append the empty EOF marker
+		flush(true);
         delete[] threadCtx;
-    }
-
-	int sync()
-    {
-		if (this->pptr() > this->pbase())
-		{
-			int c = overflow(EOF);
-			if (c == EOF)
-				return -1;
-        }
-        return 0;
     }
 
     bool compressBuffer(size_t size)
@@ -218,15 +208,38 @@ public:
 	This method should be called at the end of the compression. Calling flush multiple times, will lower the
 	compression ratio.
 	*/
-	std::streamsize flush()
+	std::streamsize flush(bool flushEmptyBuffer = false)
     {
+        int w = static_cast<int>(this->pptr() - this->pbase());
+        if ((w != 0 || flushEmptyBuffer) && compressBuffer(w))
+            this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+        else
+            w = 0;
+
         // wait for running compressor threads (in the correct order)
         for (unsigned i = 1; i <= threads; ++i)
             waitFor(threadCtx[(thread + i) % threads].compressor);
 
-//        std::streamsize totalWrittenByteSize = compressBuffer();
 		concatter.ostream.flush();
-//		return totalWrittenByteSize;
+		return w;
+    }
+
+	int sync()
+    {
+		if (this->pptr() != this->pbase())
+		{
+			int c = overflow(EOF);
+			if (c == EOF)
+				return -1;
+        }
+        return 0;
+    }
+
+    void addFooter()
+    {
+        // we flush the filled buffer here, so that an empty (EOF) buffer is flushed in the d'tor
+        if (this->pptr() != this->pbase())
+            overflow(EOF);
     }
 
 	/// returns a reference to the output stream
@@ -336,7 +349,7 @@ public:
 
         byte_vector_type                inputBuffer;
         char_vector_type                buffer;
-        size_t                          size;
+        int                             size;
         CompressionContext<BgzfFile>    ctx;
         Thread<BgzfDecompressor>        decompressor;
 
@@ -403,7 +416,7 @@ public:
         ctx = &threadCtx[nextThread];
 
         do {
-            threadCtx[nextRunThread].size = 0;
+            threadCtx[nextRunThread].size = -1;
             threadCtx[nextRunThread].waitForKey = serializer.nextKey++;
             run(threadCtx[nextRunThread].decompressor);
             nextRunThread = (nextRunThread + 1) % threads;
@@ -420,7 +433,7 @@ public:
 
         waitFor(ctx->decompressor);
 
-        if (ctx->size == 0) // EOF
+        if (ctx->size == -1) // EOF
            return EOF;
 
         // reset buffer pointers
@@ -585,6 +598,12 @@ public:
 	{	
 		this->flush(); this->rdbuf()->flush(); return *this;
 	};
+
+    ~basic_bgzf_ostream()
+    {
+        this->rdbuf()->addFooter();
+    }
+
 
 private:
     static void put_long(ostream_reference out_, unsigned long x_);

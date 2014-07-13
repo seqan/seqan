@@ -163,8 +163,6 @@ struct VirtualStreamContext_:
     {
         this->streamBuf = stream.rdbuf();
     }
-
-    ~VirtualStreamContext_();
 };
 
 // special case: no compression, we simply forward the file stream
@@ -185,7 +183,6 @@ struct VirtualStreamContext_<TValue, TDirection>
 {
     std::basic_streambuf<TValue> *streamBuf;
     VirtualStreamContext_(): streamBuf() {}
-    virtual ~VirtualStreamContext_() {}
 };
 
 // --------------------------------------------------------------------------
@@ -382,78 +379,6 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 }
 
 // --------------------------------------------------------------------------
-// Function flush()
-// --------------------------------------------------------------------------
-#if SEQAN_HAS_ZLIB
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(zlib_stream::basic_zip_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(basic_bgzf_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(basic_bgzf_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-#endif
-
-#if SEQAN_HAS_BZIP2
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(bzip2_stream::basic_bzip2_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(bzip2_stream::basic_bzip2_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-#endif
-// --------------------------------------------------------------------------
 // Function guessFormat()
 // --------------------------------------------------------------------------
 
@@ -548,12 +473,6 @@ open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMo
     // reset our outer stream interface
     stream._init();
     return true;
-}
-
-template <typename TValue, typename TDirection, typename TFormatTag>
-VirtualStreamContext_<TValue, TDirection, TFormatTag>::~VirtualStreamContext_()
-{
-    flush(this->stream);
 }
 
 // --------------------------------------------------------------------------

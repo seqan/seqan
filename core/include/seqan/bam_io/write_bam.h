@@ -213,8 +213,8 @@ void write(TTarget & target,
         15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
         15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
     };
-    for (size_t i = 0; i < length(record.seq); i+=2)
-        writeValue(buffer, (MAP2[ordValue(record.seq[i])] << 4) | MAP2[ordValue(record.seq[i + 1])]);
+    for (size_t i = 1; i < length(record.seq); i+=2)
+        writeValue(buffer, (MAP2[ordValue(record.seq[i - 1])] << 4) | MAP2[ordValue(record.seq[i])]);
     if ((length(record.seq) & 1) == 1)
         writeValue(buffer, MAP2[ordValue(back(record.seq))] << 4);
 

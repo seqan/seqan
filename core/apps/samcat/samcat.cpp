@@ -174,11 +174,8 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
-    if (guessFormatFromFilename(options.outFile, Bam()))
-    {
-        BamFile<Output> writer(toCString(options.outFile));
-        mergeBamFiles(writer, options.inFiles);
-    }
+    BamFile<Output> writer(toCString(options.outFile));
+    mergeBamFiles(writer, options.inFiles);
 //    else
 //    {
 //        // dump to standard out stream
