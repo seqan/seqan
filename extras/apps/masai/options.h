@@ -376,4 +376,17 @@ void getTmpFolder(TOptions const & options, ArgumentParser const & parser)
     setEnv("TMPDIR", tmpFolder);
 }
 
+// ----------------------------------------------------------------------------
+// Function warnDeprecated()
+// ----------------------------------------------------------------------------
+
+void warnDeprecated()
+{
+    std::cerr << "****************************** WARNING ********************************" << std::endl;
+    std::cerr << "* Masai is not maintained anymore. Please, use Yara instead of Masai. *" << std::endl;
+    std::cerr << "* See http://www.seqan.de/projects/yara for more information.         *" << std::endl;
+    std::cerr << "***********************************************************************" << std::endl;
+    std::cerr << std::endl;
+}
+
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_OPTIONS_H_
