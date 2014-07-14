@@ -257,7 +257,13 @@ macro (seqan_setup_library NAME)
 
     # Get list of header and super header files.
     file (GLOB SUPER_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*.h)
-    file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*/[A-z]*.h)
+    file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h)
+    file (GLOB SUB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*/[A-z]*.h)
+
+    # Sort headers for Xcode, ...
+    if (SUB_HEADERS)
+        list (SORT SUB_HEADERS)
+    endif (SUB_HEADERS)
 
     # Sort headers for Xcode, ...
     if (HEADERS)
@@ -289,7 +295,7 @@ macro (seqan_setup_library NAME)
     # variable includes the "SOURCES" argument for add_custom_target when
     # building with a generator for an IDE.
     set (TARGET_NAME seqan_${NAME})
-    add_custom_target (${TARGET_NAME} SOURCES ${HEADERS} ${SUPER_HEADERS})
+    add_custom_target (${TARGET_NAME} SOURCES ${SUB_HEADERS} ${HEADERS} ${SUPER_HEADERS})
 
     # Register the SeqAn library part (e.g. core, extras) as a target name.
     foreach (PART_NAME ${ARGV})

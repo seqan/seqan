@@ -73,6 +73,16 @@ char const * FileFormatExtensions<Sam, T>::VALUE[1] =
 };
 
 
+template <typename T>
+struct MagicHeader<Sam, T>
+{
+    static unsigned char const * VALUE;
+};
+
+template <typename T>
+unsigned char const * MagicHeader<Sam, T>::VALUE = NULL;  // SAM has no magic header
+
+
 enum SamTokenizeErrors_
 {
     SAM_INVALID_RECORD = 2048
