@@ -88,14 +88,22 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     write(writer, header);
 
     // Step 3: Read
+    BamFile<Input> reader(writer);
     BamAlignmentRecord record;
+
+    // open each input file
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
-        BamFile<Input> reader(writer, toCString(inFiles[i]));
+        if (inFiles[i] != "-")
+            open(reader, toCString(inFiles[i]));
+        else
+            // read from stdin (autodetect format from stream)
+            open(reader, std::cin);
 
         // skip header
         readRecord(header, reader);
 
+        // copy all alignment records
         while (!atEnd(reader))
         {
             readRecord(record, reader);
@@ -103,7 +111,6 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
         }
     }
 }
-
 
 // --------------------------------------------------------------------------
 // Function parseCommandLine()
@@ -164,7 +171,6 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    ArgumentParser parser;
     AppOptions options;
     ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
@@ -174,11 +180,13 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
-    BamFile<Output> writer(toCString(options.outFile));
+    BamFile<Output> writer;
+    if (!empty(options.outFile))
+        open(writer, toCString(options.outFile));
+    else
+        // read write to stdout
+        open(writer, std::cout, Sam());
     mergeBamFiles(writer, options.inFiles);
-//    else
-//    {
-//        // dump to standard out stream
-//        return mergeBamFiles(std::cout, Sam(), options.inFiles);
-//    }
+
+    return 0;
 }

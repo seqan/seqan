@@ -420,22 +420,16 @@ guessFormat(TStream &istream, Tag<TFormat_>)
 // Function open()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TStream>
+template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream)
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType compressionType)
 {
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
-    typedef typename TVirtualStream::TFile TFile;
-    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
-
-    // detect compression type from file extension
-    TagSelector<CompressedFileTypes> fileType;
-    guessFormat(fileStream, fileType);
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);
 
     // create a new (un)zipper buffer
-    stream.context = tagApply(ctx, fileType);
+    stream.context = tagApply(ctx, compressionType);
     if (stream.context == NULL)
         return false;
     stream.streamBuf = stream.context->streamBuf;
@@ -445,14 +439,23 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream)
     return true;
 }
 
+template <typename TValue, typename TStream>
+inline bool
+open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
+{
+    // detect compression type from file extension
+    TagSelector<CompressedFileTypes> compressionType;
+    guessFormat(fileStream, compressionType);
+
+    return open(stream, fileStream, compressionType);
+}
+
 template <typename TValue, typename TDirection>
 inline bool
 open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
 {
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
-    typedef typename TVirtualStream::TFile TFile;
-    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
-    
+
     if (!open(stream.file, fileName, openMode))
         return false;
 
@@ -484,6 +487,7 @@ template <typename TValue, typename TDirection>
 inline bool
 close(VirtualStream<TValue, TDirection> &stream)
 {
+//    (reinterpret_cast<VirtualStreamContext_<TValue, Output,GZFile>*>(stream.context))->stream.zflush();
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
