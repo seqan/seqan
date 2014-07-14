@@ -487,7 +487,6 @@ template <typename TValue, typename TDirection>
 inline bool
 close(VirtualStream<TValue, TDirection> &stream)
 {
-//    (reinterpret_cast<VirtualStreamContext_<TValue, Output,GZFile>*>(stream.context))->stream.zflush();
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
