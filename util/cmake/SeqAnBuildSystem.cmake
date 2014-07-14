@@ -246,6 +246,7 @@ macro (seqan_setup_library NAME)
         ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
         file (GLOB HEADERS
               RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+              include/seqan/[A-z]*/[A-z]/[A-z]*.h
               include/seqan/[A-z]*/[A-z]*.h
               include/seqan/[A-z]*.h)
         foreach (HEADER ${HEADERS})
@@ -256,7 +257,7 @@ macro (seqan_setup_library NAME)
 
     # Get list of header and super header files.
     file (GLOB SUPER_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*.h)
-    file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h)
+    file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*/[A-z]*.h)
 
     # Sort headers for Xcode, ...
     if (HEADERS)
