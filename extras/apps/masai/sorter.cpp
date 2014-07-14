@@ -312,6 +312,7 @@ int main(int argc, char const ** argv)
     ArgumentParser parser;
     Options options;
     setupArgumentParser(parser, options);
+    warnDeprecated();
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
