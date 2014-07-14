@@ -164,11 +164,11 @@ public:
         ctx = &threadCtx[thread];
 		this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
     }
-	
-	~basic_bgzf_streambuf()
+
+    ~basic_bgzf_streambuf()
     {
         // the buffer is now (after addFooter()) and flush will append the empty EOF marker
-		flush(true);
+        flush(true);
         delete[] threadCtx;
     }
 
@@ -685,7 +685,7 @@ typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 
 }  // namespace seqan
 
-#include "bgzfstream.ipp"
+#include "bgzfstream_impl.h"
 
 #endif
 

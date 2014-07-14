@@ -86,6 +86,15 @@ char const * FileFormatExtensions<Bam, T>::VALUE[1] =
 };
 
 
+template <typename T>
+struct MagicHeader<Bam, T>
+{
+    static unsigned char const VALUE[4];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  // BAM's magic header
+
 // ============================================================================
 // Metafunctions
 // ============================================================================

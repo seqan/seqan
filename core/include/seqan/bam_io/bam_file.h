@@ -154,9 +154,87 @@ struct DefaultOpenMode<BamFile<TDirection, TSpec>, TDummy> :
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TFormat>
-inline void setFormat(BamFile<TDirection, TSpec> & file, TFormat)
+inline void setFormat(BamFile<TDirection, TSpec> & file, TFormat format)
 {
-    assign(file.format, TFormat());
+    assign(file.format, format);
+}
+
+// ----------------------------------------------------------------------------
+// Function guessFormat()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline bool guessFormat(BamFile<Input, TSpec> & file)
+{
+    return guessFormat(file.stream, file.format);
+}
+
+template <typename TSpec>
+inline bool guessFormat(BamFile<Output, TSpec> &)
+{
+    return true;
+}
+
+// --------------------------------------------------------------------------
+// _mapBamFormatToCompressionFormat
+// --------------------------------------------------------------------------
+
+inline BgzfFile
+_mapBamFormatToCompressionFormat(Bam)
+{
+    return BgzfFile();
+}
+
+inline Nothing
+_mapBamFormatToCompressionFormat(Sam)
+{
+    return Nothing();
+}
+
+template <typename TBamFileFormats>
+inline TagSelector<CompressedFileTypes>
+_mapBamFormatToCompressionFormat(TagSelector<TBamFileFormats> format)
+{
+    TagSelector<CompressedFileTypes> compressionType;
+
+    if (isEqual(format, Sam()))
+        assign(compressionType, Nothing());
+    if (isEqual(format, Bam()))
+        assign(compressionType, BgzfFile());
+
+    return compressionType;
+}
+
+
+
+// --------------------------------------------------------------------------
+// Function open(stream)
+// --------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec, typename TStream>
+inline bool open(BamFile<TDirection, TSpec> & file,
+                 TStream &stream)
+{
+    typedef typename BamFile<TDirection, TSpec>::TIter TIter;
+
+    if (!open(file.stream, stream, _mapBamFormatToCompressionFormat(file.format)))
+        return false;
+
+    if (!guessFormat(file))
+        return false;
+
+    file.iter = TIter(file.stream);
+
+    return true;
+}
+
+template <typename TSpec, typename TStream, typename TFormat>
+inline bool open(BamFile<Output, TSpec> & file,
+                 TStream &stream,
+                 TFormat format)
+{
+    setFormat(file, format);
+    return open(file, stream);
 }
 
 // ----------------------------------------------------------------------------
