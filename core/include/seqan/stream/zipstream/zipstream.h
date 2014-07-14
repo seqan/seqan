@@ -420,7 +420,7 @@ public:
 	basic_zip_ostream(
 		ostream_reference ostream_,
 		// int open_mode = std::ios::out,
-		bool is_gzip_ = false,
+		bool is_gzip_ = true,
 		size_t level_ = Z_DEFAULT_COMPRESSION,
 		EStrategy strategy_ = DefaultStrategy,
 		size_t window_size_ = 15,
@@ -447,6 +447,7 @@ public:
 		// adding a footer is not necessary here, as it will be
 		// taken care of during the last zflush_finalize()
 		// called by the higher level close() routines
+        zflush_finalize();
 	}
 
 	/// @brief returns true if it is a gzip
