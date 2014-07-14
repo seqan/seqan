@@ -40,12 +40,12 @@
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
 #if SEQAN_HAS_ZLIB
-#include "zipstream/zipstream.hpp"
-#include "zipstream/bgzfstream.hpp"
+#include "zipstream/zipstream.h"
+#include "zipstream/bgzfstream.h"
 #endif
 
 #if SEQAN_HAS_BZIP2
-#include "zipstream/bzip2stream.hpp"
+#include "zipstream/bzip2stream.h"
 #endif
 
 namespace seqan {
