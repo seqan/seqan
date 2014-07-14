@@ -413,34 +413,37 @@ public:
                 this->gptr(),
                 &putbackBuffer[0]);
 
-        ctx = &threadCtx[nextThread];
+        do
+        {
+            ctx = &threadCtx[nextThread];
 
-        do {
-            threadCtx[nextRunThread].size = -1;
-            threadCtx[nextRunThread].waitForKey = serializer.nextKey++;
-            run(threadCtx[nextRunThread].decompressor);
-            nextRunThread = (nextRunThread + 1) % threads;
-        } while (nextRunThread != nextThread);
+            do {
+                threadCtx[nextRunThread].size = -1;
+                threadCtx[nextRunThread].waitForKey = serializer.nextKey++;
+                run(threadCtx[nextRunThread].decompressor);
+                nextRunThread = (nextRunThread + 1) % threads;
+            } while (nextRunThread != nextThread);
 
-        nextThread = (nextThread + 1) % threads;
+            nextThread = (nextThread + 1) % threads;
 
-        // restore putback buffer
-        if (putback != 0)
-            std::copy(
-                &putbackBuffer[0],
-                &putbackBuffer[putback],
-                &ctx->buffer[MAX_PUTBACK - putback]);
+            // restore putback buffer
+            if (putback != 0)
+                std::copy(
+                    &putbackBuffer[0],
+                    &putbackBuffer[putback],
+                    &ctx->buffer[MAX_PUTBACK - putback]);
 
-        waitFor(ctx->decompressor);
+            waitFor(ctx->decompressor);
 
-        if (ctx->size == -1) // EOF
-           return EOF;
+            if (ctx->size == -1) // EOF
+               return EOF;
 
-        // reset buffer pointers
-        this->setg( 
-              &ctx->buffer[MAX_PUTBACK - putback],      // beginning of putback area
-              &ctx->buffer[MAX_PUTBACK],                // read position
-              &ctx->buffer[MAX_PUTBACK + ctx->size]);   // end of buffer
+            // reset buffer pointers
+            this->setg( 
+                  &ctx->buffer[MAX_PUTBACK - putback],      // beginning of putback area
+                  &ctx->buffer[MAX_PUTBACK],                // read position
+                  &ctx->buffer[MAX_PUTBACK + ctx->size]);   // end of buffer
+        } while (ctx->size == 0);
 
         // return next character
         return *this->gptr();
