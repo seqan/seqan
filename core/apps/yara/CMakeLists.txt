@@ -6,7 +6,7 @@
 # CMakeLists.txt file for yara.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.9)
+cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_apps_yara)
 message (STATUS "Configuring core/apps/yara")
 
