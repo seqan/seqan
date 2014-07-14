@@ -190,7 +190,7 @@ install (FILES LICENSE README
 # App Test
 # ----------------------------------------------------------------------------
 
-seqan_add_app_test (yara_mapper)
+seqan_add_app_test (yara)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
