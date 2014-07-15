@@ -152,7 +152,7 @@ namespace detail {
 			++w;
 		}
 		if ( zip_to_stream( pbase(), w ) ) {
-			this->setp( pbase(), epptr() - 1 );
+			this->setp( pbase(), epptr() );
 			return traits_type::not_eof( c );
 		} else {
 			return traits_type::eof();
@@ -281,7 +281,7 @@ namespace detail {
 				m_zip_stream.avail_out = static_cast< uInt >( m_output_buffer.size() - remainder );
 				m_zip_stream.next_out = &m_output_buffer[remainder];
 			}
-		} while ( m_zip_stream.avail_in != 0 && m_err == Z_OK );
+		} while (m_err == Z_OK);
 
 		m_ostream.flush();
 		//		std::cerr << "flush() -- done" << std::endl;

@@ -29,6 +29,7 @@ Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003
 
 namespace bzip2_stream{
 
+const size_t default_buffer_size = 4096;
 
 template<
 	typename Elem, 
@@ -41,6 +42,7 @@ class basic_bzip2_streambuf :
 	public std::basic_streambuf<Elem, Tr> 
 {
 public:
+	typedef std::basic_streambuf< Elem, Tr > basic_streambuf_type;
 	typedef std::basic_ostream<Elem, Tr>& ostream_reference;
     typedef ElemA char_allocator_type;
 	typedef ByteT byte_type;
@@ -50,6 +52,10 @@ public:
 	typedef typename Tr::int_type int_type;
 	typedef std::vector<byte_type, byte_allocator_type > byte_vector_type;
 	typedef std::vector<char_type, char_allocator_type > char_vector_type;
+
+	using basic_streambuf_type::epptr;
+	using basic_streambuf_type::pbase;
+	using basic_streambuf_type::pptr;
 
     basic_bzip2_streambuf(
 		ostream_reference ostream_,
@@ -64,7 +70,7 @@ public:
 	int sync ();
     int_type overflow (int_type c);
 
-	std::streamsize flush();
+	std::streamsize flush(int flush_mode);
 	int get_zerr() const					
     {	return m_err;};
 	long get_in_size() const				
@@ -228,7 +234,7 @@ public:
 		size_t block_size_100k_ = 9, 
         size_t verbosity_ = 0,
         size_t work_factor_ = 30,
-		size_t buffer_size_ = 32
+		size_t buffer_size_ = default_buffer_size
 		)
 	: 
 		bzip2_ostreambase_type(ostream_,block_size_100k_, verbosity_, work_factor_,buffer_size_), 
@@ -266,8 +272,8 @@ public:
 		istream_reference istream_, 
 		size_t verbosity_ = 0, 
 		bool small_ = false,
-		size_t read_buffer_size_ = 1024,
-		size_t input_buffer_size_ = 1024
+		size_t read_buffer_size_ = default_buffer_size,
+		size_t input_buffer_size_ = default_buffer_size
 		)
 	  : 
 		bzip2_istreambase_type(istream_,verbosity_, small_, read_buffer_size_, input_buffer_size_), 

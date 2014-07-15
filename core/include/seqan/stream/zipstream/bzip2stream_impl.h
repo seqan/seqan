@@ -73,7 +73,7 @@ namespace bzip2_stream{
 		Elem,Tr,ElemA,ByteT,ByteAT
 		>::~basic_bzip2_streambuf()
 	{
-		flush();
+		flush(BZ_FINISH);
 		m_ostream.flush();
 		m_err=BZ2_bzCompressEnd(&m_bzip2_stream);
 	}
@@ -197,19 +197,25 @@ namespace bzip2_stream{
 	>
 	std::streamsize basic_bzip2_streambuf<
 		Elem,Tr,ElemA,ByteT,ByteAT
-		>::flush()
+		>::flush(int flush_mode)
 	{
 		std::streamsize written_byte_size=0, total_written_byte_size=0;
 
+		int const buffer_size = static_cast< int >( pptr() - pbase() ); // amount of data currently in buffer
+
+		m_bzip2_stream.next_in=(byte_buffer_type)pbase();
+		m_bzip2_stream.avail_in=static_cast< uInt >(buffer_size*sizeof(char_type));
+		m_bzip2_stream.avail_out=static_cast< uInt >(m_output_buffer.size());
+		m_bzip2_stream.next_out=&(m_output_buffer[0]);
 		size_t remainder=0;
 
 		do
 		{
-			m_err = BZ2_bzCompress (&m_bzip2_stream, BZ_FINISH);
+			m_err = BZ2_bzCompress (&m_bzip2_stream, flush_mode);
 			if (m_err == BZ_FINISH_OK || m_err == BZ_STREAM_END)
 			{
 				written_byte_size=
-					static_cast<std::streamsize>(m_output_buffer.size()) 
+					static_cast<std::streamsize>(m_output_buffer.size())
 					- m_bzip2_stream.avail_out;
 				total_written_byte_size+=written_byte_size;
 				// ouput buffer is full, dumping to ostream
@@ -229,8 +235,7 @@ namespace bzip2_stream{
 					
 				}
 				
-				m_bzip2_stream.avail_out=
-					static_cast<unsigned int>(m_output_buffer.size()-remainder);
+				m_bzip2_stream.avail_out=static_cast<unsigned int>(m_output_buffer.size()-remainder);
 				m_bzip2_stream.next_out=&(m_output_buffer[remainder]);
 			}
 		} while (m_err == BZ_FINISH_OK);
