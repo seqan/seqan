@@ -1,0 +1,139 @@
+==============================================================================
+Yara - Yet another read aligner
+==============================================================================
+
+------------------------------------------------------------------------------
+Table of Contents
+------------------------------------------------------------------------------
+
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Contact
+
+------------------------------------------------------------------------------
+1. Overview
+------------------------------------------------------------------------------
+
+Yara is yet another read aligner, that:
+
+* reports optimal end-to-end alignments under the edit distance,
+* provides multi-core parallelization,
+* runs with a low memory footprint (5 GB for the human reference genome),
+* outputs results directly in SAM or BAM format.
+
+Yara supports the following sequencing platforms:
+
+* Illumina HiSeq and MiSeq,
+* Life Technologies Ion Torrent Proton and PGM.
+
+Always perform reads quality control and trimming before running Yara.
+Quality trimming is necessary to align Ion Torrent reads.
+
+Yara has been designed to report end-to-end alignments. For this reason, it 
+supports DNA-seq, Exome-seq or ChIP-seq reads, but it does not support split 
+reads eg. RNA-seq reads.
+
+The following sequencing platforms are not supported:
+
+* Life Technologies SOLiD,
+* Roche 454 GS,
+* Pacific Biosciences RS II.
+
+------------------------------------------------------------------------------
+2. Installation
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+2.1. Precompiled binaries
+------------------------------------------------------------------------------
+
+Precompiled binaries for Linux, MacOS X, and Windows are located under 
+http://packages.seqan.de/yara/
+
+------------------------------------------------------------------------------
+2.2. Compilation from source code
+------------------------------------------------------------------------------
+
+The following instructions refer to Linux and MacOS X. For more detailed 
+information, including setup under Visual Studio, refer to the SeqAn tutorial 
+at http://trac.seqan.de/wiki/Tutorial/GettingStarted.
+
+First download the latest SeqAn sources from GitHub:
+
+  $ git clone https://github.com/seqan/seqan.git -b develop
+
+Create a SeqAn build project in Release mode:
+
+  $ mkdir seqan-build
+  $ cd seqan-build
+  $ cmake ../seqan -DCMAKE_BUILD_TYPE=Release
+
+Compile Yara binaries:
+
+  $ make yara_indexer yara_mapper
+
+After compilation, you can copy the binaries to a folder in your PATH, eg.:
+
+  $ sudo cp bin/yara_* /usr/local/bin
+
+------------------------------------------------------------------------------
+3. Usage
+------------------------------------------------------------------------------
+
+Yara consists of two executables:
+
+* yara_indexer: builds an index for a given reference genome;
+* yara_mapper:  maps reads on an indexed reference genome.
+
+To get a complete usage description, call each program with -h or --help.
+The basic workflow is explained below.
+
+------------------------------------------------------------------------------
+3.1 Indexer
+------------------------------------------------------------------------------
+
+First build an index for a reference genome, e.g. by executing:
+
+  $ yara_indexer REF.fasta
+
+The reference genome must be stored inside a DNA (multi-)Fasta file.
+On mammal reference genomes the indexer runs in about one-two hours.
+
+*** WARNING ***
+
+The indexer might need a considerable amount of temporary disk storage!
+
+Let your system temporary folder point to a disk with adequate capacity, 
+either by setting the environment variable TMPDIR:
+
+  $ TMPDIR=/big/folder/
+
+or by passing the working temporary folder to the indexer as:
+
+  $ yara_indexer --tmp-folder /big/folder/ REF.fasta
+
+------------------------------------------------------------------------------
+3.2 Mapper
+------------------------------------------------------------------------------
+
+Map genomic reads on an indexed reference genome by executing:
+
+  $ yara_mapper REF.fasta READS.fastq
+
+The mapper will report all co-optimal mapping locations per read within an 
+error rate of 5%. Results will be stored in a SAM file called READS.sam.
+
+To map paired-end reads, pass both paired-end reads files to the mapper:
+
+  $ yara_mapper REF.fasta READS_1.fastq READS_2.fastq
+
+To map more reads you can increase the error rate e.g. to 6%:
+
+  $ yara_mapper --error-rate 6 REF.fasta READS.fastq
+
+------------------------------------------------------------------------------
+4. Contact
+------------------------------------------------------------------------------
+
+Enrico Siragusa <enrico.siragusa@fu-berlin.de>
