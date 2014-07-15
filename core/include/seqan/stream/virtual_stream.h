@@ -390,6 +390,8 @@ guessFormat(TStream &istream, Tag<TFormat_>)
 {
     typedef Tag<TFormat_> TFormat;
 
+    SEQAN_ASSERT(istream.good());
+
     if (MagicHeader<TFormat>::VALUE == NULL)
         return true;
 
@@ -413,7 +415,25 @@ guessFormat(TStream &istream, Tag<TFormat_>)
     for (; i > 0; --i)
         istream.unget();
 
+    SEQAN_ASSERT(istream.good());
+
     return match;
+}
+
+// ----------------------------------------------------------------------------
+// _guessFormat wrapper
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TStream, typename TCompressionType>
+inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
+{
+    return guessFormat(fileStream, compressionType);
+}
+
+template <typename TValue, typename TStream, typename TCompressionType>
+inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressionType &)
+{
+    return true;
 }
 
 // --------------------------------------------------------------------------
@@ -427,6 +447,10 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);
+
+    // try to detect/verify format
+    if (!_guessFormat(stream, fileStream, compressionType))
+        return false;
 
     // create a new (un)zipper buffer
     stream.context = tagApply(ctx, compressionType);
@@ -445,8 +469,6 @@ open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension
     TagSelector<CompressedFileTypes> compressionType;
-    guessFormat(fileStream, compressionType);
-
     return open(stream, fileStream, compressionType);
 }
 

@@ -75,12 +75,22 @@ struct AppOptions
 template <typename TWriter>
 void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
 {
+    String<BamFile<Input> *> readerPtr;
+    resize(readerPtr, length(inFiles));
+
     // Step 1: Merge all headers (if available)
     BamHeader header;
     for (unsigned i = 0; i < length(inFiles); ++i)
     {
-        BamFile<Input> reader(writer, toCString(inFiles[i]));
-        readRecord(header, reader);
+        readerPtr[i] = new BamFile<Input>(writer);
+
+        if (inFiles[i] != "-")
+            open(*readerPtr[i], toCString(inFiles[i]));
+        else
+            // read from stdin (autodetect format from stream)
+            open(*readerPtr[i], std::cin);
+
+        readRecord(header, *(readerPtr[i]));
     }
 
     // Step 2: Remove duplicate header entries and write merged header
@@ -88,27 +98,17 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     write(writer, header);
 
     // Step 3: Read and output alignment records
-    BamFile<Input> reader(writer);
     BamAlignmentRecord record;
-
-    // open each input file
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
-        if (inFiles[i] != "-")
-            open(reader, toCString(inFiles[i]));
-        else
-            // read from stdin (autodetect format from stream)
-            open(reader, std::cin);
-
-        // skip header
-        readRecord(header, reader);
-
         // copy all alignment records
-        while (!atEnd(reader))
+        while (!atEnd(*readerPtr[i]))
         {
-            readRecord(record, reader);
+            readRecord(record, *readerPtr[i]);
             write(writer, record);
         }
+        close(*readerPtr[i]);
+        delete readerPtr[i];
     }
 }
 
@@ -152,7 +152,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Parse command line.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    // Only extract  options if the program will continue after parseCommandLine()
+    // Only extract options if the program will continue after parseCommandLine()
     if (res != ArgumentParser::PARSE_OK)
         return res;
 
