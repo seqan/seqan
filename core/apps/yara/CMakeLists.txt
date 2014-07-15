@@ -27,12 +27,6 @@ endif (NOT CXX11_FOUND)
 set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZIP2) #CUDA
 find_package (SeqAn REQUIRED)
 
-# Disable CUDA acceleration if CUDA was not found.
-#if (NOT SEQAN_HAS_CUDA)
-#  add_definitions (-DCUDA_DISABLED=1)
-#  message (STATUS "  CUDA disabled: building yara without CUDA acceleration.")
-#endif (NOT SEQAN_HAS_CUDA)
-
 # Warn if OpenMP was not found.
 if (NOT SEQAN_HAS_OPENMP)
   message (STATUS "  OpenMP not found: building yara without multi-threading.")
@@ -47,27 +41,6 @@ endif (NOT SEQAN_HAS_ZLIB)
 if (NOT SEQAN_HAS_BZIP2)
   message (STATUS "  Bzip2 not found: building yara without bzipped input.")
 endif (NOT SEQAN_HAS_BZIP2)
-
-# ----------------------------------------------------------------------------
-# CUDA Setup
-# ----------------------------------------------------------------------------
-
-# Setup CUDA flags.
-#seqan_setup_cuda_vars (ARCH sm_35)
-
-# Enforce nvcc to use at most 32 registers per thread.
-#list (APPEND CUDA_NVCC_FLAGS --maxrregcount 32)
-
-# Activate verbose flag in ptxas to show register usage.
-#list (APPEND CUDA_NVCC_FLAGS -Xptxas --verbose)
-
-# Output PTX.
-#list (APPEND CUDA_NVCC_FLAGS --keep --source-in-ptx)
-
-# Workaround for Xcode 4.6 / CUDA 5.x which doesn't find CUDA framework (@rpath).
-#if (APPLE)
-#    set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "-F /Library/Frameworks/")
-#endif (APPLE)
 
 # ----------------------------------------------------------------------------
 # Arch Setup
@@ -110,59 +83,30 @@ add_executable(yara_indexer indexer.cpp
                             misc_types.h
                             index_fm.h)
 
-#if (SEQAN_HAS_CUDA)
-#  cuda_add_executable(yara_mapper mapper.cpp
-#                                  mapper.h
-#                                  mapper.cu
-#                                  mapper.cuh
-#                                  mapper_collector.h
-#                                  mapper_classifier.h
-#                                  mapper_ranker.h
-#                                  mapper_filter.h
-#                                  mapper_extender.h
-#                                  mapper_verifier.h
-#                                  mapper_selector.h
-#                                  mapper_aligner.h
-#                                  mapper_writer.h
-#                                  store_reads.h
-#                                  store_genome.h
-#                                  misc_tags.h
-#                                  misc_timer.h
-#                                  misc_options.h
-#                                  misc_types.h
-#                                  bits_hits.h
-#                                  bits_matches.h
-#                                  bits_context.h
-#                                  bits_seeds.h
-#                                  find_extender.h
-#                                  find_verifier.h
-#                                  index_fm.h)
-#else ()
-  add_executable(yara_mapper      mapper.cpp
-                                  mapper.h
-                                  mapper_collector.h
-                                  mapper_classifier.h
-                                  mapper_ranker.h
-                                  mapper_filter.h
-                                  mapper_extender.h
-                                  mapper_verifier.h
-                                  mapper_selector.h
-                                  mapper_aligner.h
-                                  mapper_writer.h
-                                  store_reads.h
-                                  store_genome.h
-                                  misc_tags.h
-                                  misc_timer.h
-                                  misc_options.h
-                                  misc_types.h
-                                  bits_hits.h
-                                  bits_matches.h
-                                  bits_context.h
-                                  bits_seeds.h
-                                  find_extender.h
-                                  find_verifier.h
-                                  index_fm.h)
-#endif ()
+add_executable(yara_mapper    mapper.cpp
+                              mapper.h
+                              mapper_collector.h
+                              mapper_classifier.h
+                              mapper_ranker.h
+                              mapper_filter.h
+                              mapper_extender.h
+                              mapper_verifier.h
+                              mapper_selector.h
+                              mapper_aligner.h
+                              mapper_writer.h
+                              store_reads.h
+                              store_genome.h
+                              misc_tags.h
+                              misc_timer.h
+                              misc_options.h
+                              misc_types.h
+                              bits_hits.h
+                              bits_matches.h
+                              bits_context.h
+                              bits_seeds.h
+                              find_extender.h
+                              find_verifier.h
+                              index_fm.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (yara_indexer ${SEQAN_LIBRARIES})
