@@ -1,5 +1,5 @@
 @HD	VN:1.4	SO:unsorted
-@PG	ID:SeqAn	PN:Yara	VN:0.8.0 [b163a89]	CL:input/adeno-genome.fa -xp gold/adeno-genome input/adeno-reads_1.fa -o gold/adeno-reads_1.t1.sam --threads 1
+@PG	ID:SeqAn	PN:Yara	VN:0.8.0 [89a28cf]	CL:input/adeno-genome.fa -xp gold/adeno-genome input/adeno-reads_1.fa -o gold/adeno-reads_1.t1.sam --threads 1
 @SQ	SN:gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	LN:4718
 adeno-reads100.fasta.000000000	16	gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	4411	40	100M	*	0	0	GTTACCTTACCCGTCCCCTGTAATTACGTGTTAATCAATAAACCGGTTGATTCGTTTCAGTTGAACTTTGGTCTCCTGTCCTTCTTATCTTATCGGTTAC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	X0:i:1	XT:A:U
 adeno-reads100.fasta.000000001	16	gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	4567	40	100M	*	0	0	GTCATCGGGTTACCCCTAGTGATGGAGTTGCCCACTCCCTCTCTGCGCGCTCGCTCGCTCGGTGGGGCCTGCGGACCAAAGGTCCGCAGACGGCAGAGCT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	X0:i:1	XT:A:U
