@@ -118,7 +118,7 @@ target_link_libraries (yara_mapper ${SEQAN_LIBRARIES})
 
 # Set variables for installing, depending on the selected build type.
 if (NOT SEQAN_PREFIX_SHARE_DOC)
-  seqan_setup_install_vars (yara_indexer yara_mapper)
+  seqan_setup_install_vars (yara)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install yara in ${PREFIX}/bin directory
