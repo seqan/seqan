@@ -78,10 +78,7 @@ template <typename TString, typename TValue>
 bool setEnv(TString & key, TValue & value)
 {
 #ifdef PLATFORM_WINDOWS
-    CharString env(key);
-    appendValue(env, '=');
-    append(env, value);
-    return !putenv(toCString(env));
+    return !_putenv_s(toCString(key), toCString(value));
 #else
     return !setenv(toCString(key), toCString(value), true);
 #endif

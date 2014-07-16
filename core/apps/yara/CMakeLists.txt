@@ -23,13 +23,19 @@ if (NOT CXX11_FOUND)
     return ()
 endif (NOT CXX11_FOUND)
 
+# Disable OpenMP 2.0 in MSVC.
+if (MSVC)
+  set (SEQAN_FIND_DEPENDENCIES ZLIB BZIP2)
+else ()
+  set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZIP2)
+endif ()
+
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZIP2) #CUDA
 find_package (SeqAn REQUIRED)
 
 # Warn if OpenMP was not found.
 if (NOT SEQAN_HAS_OPENMP)
-  message (STATUS "  OpenMP not found: building yara without multi-threading.")
+  message (STATUS "  OpenMP 3.0 not found: building yara without multi-threading.")
 endif (NOT SEQAN_HAS_OPENMP)
 
 # Warn if Zlib was not found.
@@ -141,7 +147,8 @@ seqan_add_app_test (yara)
 # ----------------------------------------------------------------------------
 
 # Include executable yara_mapper in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} yara_mapper CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES}
+                           yara_indexer yara_mapper CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
