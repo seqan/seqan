@@ -197,15 +197,18 @@ template <typename TValue, typename TDirection>
 class VirtualStream: public BasicStream<TValue, TDirection>::Type
 {
 public:
-    typedef std::fstream                                    TFile;
-    typedef typename BasicStream<TValue, TDirection>::Type  TBasicStream;
-    typedef std::basic_streambuf<TValue>                    TStreamBuffer;
-    typedef typename BasicStream<TValue, TDirection>::Type  TStream;
-    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;
+    typedef std::fstream                                        TFile;
+    typedef typename BasicStream<TValue, TDirection>::Type      TBasicStream;
+    typedef std::basic_streambuf<TValue>                        TStreamBuffer;
+    typedef typename BasicStream<TValue, TDirection>::Type      TStream;
+    typedef VirtualStreamContext_<TValue, TDirection>           TVirtualStreamContext;
+    typedef BufferedStreamBuf<TStreamBuffer>                    TBufferedStreamBuf;
 
     TFile                   file;
     TStreamBuffer           *streamBuf;
+
     TVirtualStreamContext   *context;
+    TBufferedStreamBuf      bufferedStreamBuf;
 
     VirtualStream():
         TBasicStream(NULL),
@@ -456,7 +459,21 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
     stream.context = tagApply(ctx, compressionType);
     if (stream.context == NULL)
         return false;
-    stream.streamBuf = stream.context->streamBuf;
+
+    SEQAN_ASSERT(stream.context->streamBuf != NULL);
+
+    // test whether input stream is buffered
+    if (IsSameType<TDirection, Output>::VALUE || stream.context->streamBuf->in_avail() > 1)
+    {
+        // stream is buffered
+        stream.streamBuf = stream.context->streamBuf;
+    }
+    else
+    {
+        // stream is unbuffered -> we insert our own buffer
+        stream.bufferedStreamBuf.setStreamBuf(*stream.context->streamBuf);
+        stream.streamBuf = &stream.bufferedStreamBuf;
+    }
 
     // reset our outer stream interface
     stream._init();
