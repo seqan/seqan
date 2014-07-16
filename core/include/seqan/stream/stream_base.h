@@ -112,15 +112,15 @@ typedef Tag<Bidirectional_> Bidirectional;
 // Metafunction BasicStream
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
 struct BasicStream :
     If<
         IsSameType<TDirection, Input>,
-        std::basic_istream<TValue>,
+        std::basic_istream<TValue, TTraits>,
         typename If<
             IsSameType<TDirection, Output>,
-            std::basic_ostream<TValue>,
-            std::basic_iostream<TValue>
+            std::basic_ostream<TValue, TTraits>,
+            std::basic_iostream<TValue, TTraits>
             >::Type
         >
 {};
