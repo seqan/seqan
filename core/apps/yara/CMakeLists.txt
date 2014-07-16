@@ -141,7 +141,8 @@ seqan_add_app_test (yara)
 # ----------------------------------------------------------------------------
 
 # Include executable yara_mapper in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} yara_mapper CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES}
+                           yara_indexer yara_mapper CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
