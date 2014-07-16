@@ -202,13 +202,11 @@ public:
     typedef std::basic_streambuf<TValue>                        TStreamBuffer;
     typedef typename BasicStream<TValue, TDirection>::Type      TStream;
     typedef VirtualStreamContext_<TValue, TDirection>           TVirtualStreamContext;
-    typedef BufferedStreamBuf<TStreamBuffer>                    TBufferedStreamBuf;
 
     TFile                   file;
     TStreamBuffer           *streamBuf;
 
     TVirtualStreamContext   *context;
-    TBufferedStreamBuf      bufferedStreamBuf;
 
     VirtualStream():
         TBasicStream(NULL),
@@ -461,19 +459,7 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
         return false;
 
     SEQAN_ASSERT(stream.context->streamBuf != NULL);
-
-    // test whether input stream is buffered
-    if (IsSameType<TDirection, Output>::VALUE || stream.context->streamBuf->in_avail() > 1)
-    {
-        // stream is buffered
-        stream.streamBuf = stream.context->streamBuf;
-    }
-    else
-    {
-        // stream is unbuffered -> we insert our own buffer
-        stream.bufferedStreamBuf.setStreamBuf(*stream.context->streamBuf);
-        stream.streamBuf = &stream.bufferedStreamBuf;
-    }
+    stream.streamBuf = stream.context->streamBuf;
 
     // reset our outer stream interface
     stream._init();

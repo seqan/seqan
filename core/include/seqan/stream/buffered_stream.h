@@ -52,16 +52,42 @@ namespace seqan {
 // Classes
 // ============================================================================
 
-template <typename TUnbufferedStreamBuf>
+template <typename TUnbufferedStream, typename TDirection>
 class BufferedStreamBuf;
 
-template <typename TValue, typename TTraits>
-class BufferedStreamBuf<std::basic_streambuf<TValue, TTraits> > :
-	public std::basic_streambuf<TValue, TTraits>
+
+template <typename TUnbufferedStream, typename TDirection>
+class BufferedStream :
+    public BasicStream<
+        typename TUnbufferedStream::char_type,
+        TDirection,
+        typename TUnbufferedStream::traits_type>::Type
 {
 protected:
-    typedef std::basic_streambuf<TValue, TTraits> TStreamBuf;
-	typedef typename TTraits::int_type TInt;
+    typedef typename TUnbufferedStream::char_type                   TValue;
+    typedef typename TUnbufferedStream::traits_type                 TTraits;
+    typedef typename BasicStream<TValue, TDirection, TTraits>::Type TBasicStream;
+
+    BufferedStreamBuf<TUnbufferedStream, TDirection > buf;
+
+
+    BufferedStream()
+    {
+    }
+};
+
+
+template <typename TUnbufferedStreamBuf, typename TDirection>
+class BufferedStreamBuf :
+    public std::basic_streambuf<
+        typename TUnbufferedStream::char_type,
+        typename TUnbufferedStream::traits_type>
+{
+protected:
+    typedef typename TUnbufferedStream::char_type                   TValue;
+    typedef typename TUnbufferedStream::traits_type                 TTraits;
+    typedef std::basic_streambuf<TValue, TTraits>                   TStreamBuf;
+	typedef typename TTraits::int_type                              TInt;
 
     static const size_t defaultBufferSize = 1024;   // size of the data buffer
     static const size_t defaultPutbackSize = 256;   // size of the buffer that should be used as putback area
@@ -69,12 +95,12 @@ protected:
     size_t bufferSize;
     size_t putbackSize;
 
-public:
     using TStreamBuf::eback;
     using TStreamBuf::gptr;
     using TStreamBuf::egptr;
     using TStreamBuf::setg;
 
+public:
     TStreamBuf *streamBufPtr;
 
     /* constructor
@@ -86,7 +112,7 @@ public:
                       size_t putbackSize = defaultPutbackSize) :
         bufferSize(bufferSize),
         putbackSize(putbackSize),
-        streamBufPtr()
+        streamBufPtr(NULL)
     {
         clear();
     }
