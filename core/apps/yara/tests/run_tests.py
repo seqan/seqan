@@ -75,7 +75,7 @@ def main(source_base, binary_base):
                   '-xp', ph.outFile('%s-genome' % organism)],
             to_diff=[(ph.inFile('gold/%s-genome.%s' % (organism, ext)),
                      ph.outFile('%s-genome.%s' % (organism, ext)), 'md5') for ext in exts])
-#        conf_list.append(conf)
+        conf_list.append(conf)
 
     # ============================================================
     # Run Single-End Mapper Tests
