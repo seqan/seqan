@@ -104,7 +104,7 @@ struct ContigsLoader
     TStream                         _file;
     unsigned long                   _fileSize;
     AutoSeqStreamFormat             _fileFormat;
-    std::auto_ptr<TRecordReader>    _reader;
+    std::unique_ptr<TRecordReader>  _reader;
 
     ContigsLoader() :
         _fileSize(0)
