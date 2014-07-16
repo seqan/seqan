@@ -206,7 +206,7 @@ namespace detail {
 				if ( ( remainder = written_byte_size%sizeof( char_type ) ) != 0 ) {
 					// copy to the beginning of the stream
 					//					std::cerr << "before memcopy in zipstream.ipp: 206" << std::endl;
-					memcpy(
+					std::memmove(
 						&(m_output_buffer[0]),
 						&(m_output_buffer[written_byte_size-remainder]),
 						remainder
@@ -270,7 +270,7 @@ namespace detail {
 				// checking if some bytes were not written.
 				if ( ( remainder = written_byte_size%sizeof( char_type ) ) != 0 ) {
 					// copy to the beginning of the stream
-					memcpy(
+					std::memmove(
 						&(m_output_buffer[0]),
 						&(m_output_buffer[written_byte_size-remainder]),
 						remainder
@@ -418,7 +418,7 @@ namespace detail {
 
 		int n_putback = static_cast< int >( gptr() - eback() );
 		if ( n_putback > 4 ) n_putback = 4;
-		memcpy(
+		std::memmove(
 			&( m_buffer[0] ) + ( 4 - n_putback ),
 			gptr() - n_putback,
 			n_putback * sizeof( char_type )

@@ -172,7 +172,7 @@ namespace bzip2_stream{
 				if ( (remainder = written_byte_size%sizeof(char_type))!=0)
 				{
 					// copy to the beginning of the stream
-					memcpy(
+					std::memmove(
 						&(m_output_buffer[0]), 
 						&(m_output_buffer[written_byte_size-remainder]),
 						remainder);
@@ -228,7 +228,7 @@ namespace bzip2_stream{
 				if ( (remainder = written_byte_size%sizeof(char_type))!=0)
 				{
 					// copy to the beginning of the stream
-					memcpy(
+					std::memmove(
 						&(m_output_buffer[0]), 
 						&(m_output_buffer[written_byte_size-remainder]),
 						remainder);
@@ -365,7 +365,7 @@ namespace bzip2_stream{
        int n_putback = static_cast<int>(this->gptr() - this->eback());
        if ( n_putback > 4)
           n_putback = 4;
-       memcpy( 
+       std::memmove( 
 			&(m_buffer[0]) + (4 - n_putback), 
 			this->gptr() - n_putback,
 			n_putback*sizeof(char_type)
