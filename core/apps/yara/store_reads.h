@@ -125,7 +125,7 @@ struct ReadsLoader
 
     TStream                         _file;
     AutoSeqStreamFormat             _fileFormat;
-    std::auto_ptr<TRecordReader>    _reader;
+    std::unique_ptr<TRecordReader>  _reader;
 };
 
 // ----------------------------------------------------------------------------
@@ -139,10 +139,10 @@ struct ReadsLoader<PairedEnd, TConfig>
     typedef typename InputStream<TInputType>::Type  TStream;
     typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
 
-    TStream                             _file1;
-    TStream                             _file2;
-    Pair<AutoSeqStreamFormat>           _fileFormat;
-    Pair<std::auto_ptr<TRecordReader> > _reader;
+    TStream                                 _file1;
+    TStream                                 _file2;
+    Pair<AutoSeqStreamFormat>               _fileFormat;
+    Pair<std::unique_ptr<TRecordReader> >   _reader;
 };
 
 // ----------------------------------------------------------------------------
