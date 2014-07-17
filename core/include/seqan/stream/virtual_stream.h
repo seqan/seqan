@@ -448,6 +448,9 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
+    // peek the first character to initialize the underlying streambuf (for in_avail)
+    fileStream.rdbuf()->sgetc();
+
     if (IsSameType<TDirection, Input>::VALUE &&
         !IsSameType<TStream, TBufferedStream>::VALUE &&
         fileStream.rdbuf()->in_avail() < 2)
