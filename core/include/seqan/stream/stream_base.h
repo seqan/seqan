@@ -112,15 +112,15 @@ typedef Tag<Bidirectional_> Bidirectional;
 // Metafunction BasicStream
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
 struct BasicStream :
     If<
         IsSameType<TDirection, Input>,
-        std::basic_istream<TValue>,
+        std::basic_istream<TValue, TTraits>,
         typename If<
             IsSameType<TDirection, Output>,
-            std::basic_ostream<TValue>,
-            std::basic_iostream<TValue>
+            std::basic_ostream<TValue, TTraits>,
+            std::basic_iostream<TValue, TTraits>
             >::Type
         >
 {};
@@ -194,41 +194,41 @@ struct MagicHeader;
 template <typename T>
 struct MagicHeader<Nothing, T>
 {
-    static unsigned char const * VALUE;
+    static char const * VALUE;
 };
 
 template <typename T>
-unsigned char const * MagicHeader<Nothing, T>::VALUE = NULL;
+char const * MagicHeader<Nothing, T>::VALUE = NULL;
 
 
 template <typename T>
 struct MagicHeader<GZFile, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
 template <typename T>
 struct MagicHeader<BgzfFile, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
 template <typename T>
 struct MagicHeader<BZ2File, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
 
 
 
@@ -236,21 +236,21 @@ unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  /
 template <typename T>
 struct MagicHeader<Fasta, T>
 {
-    static unsigned char const VALUE[1];
+    static char const VALUE[1];
 };
 
 template <typename T>
-unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
 
 
 template <typename T>
 struct MagicHeader<Fastq, T>
 {
-    static unsigned char const VALUE[1];
+    static char const VALUE[1];
 };
 
 template <typename T>
-unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
 
 // --------------------------------------------------------------------------
 // Metafunction FileFormatExtensions
@@ -291,13 +291,14 @@ char const * FileFormatExtensions<GZFile, T>::VALUE[3] =
 template <typename T>
 struct FileFormatExtensions<BgzfFile, T>
 {
-    static char const * VALUE[1];
+    static char const * VALUE[2];
 };
 
 template <typename T>
-char const * FileFormatExtensions<BgzfFile, T>::VALUE[1] =
+char const * FileFormatExtensions<BgzfFile, T>::VALUE[2] =
 {
-    ".bgzf"       // default output extension
+    ".bgzf",      // default output extension
+    ".bam"        // BAM files are bgzf compressed
 };
 
 
@@ -461,13 +462,13 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         minChunkSize = ichunk.end - ichunk.begin;
 //        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
-        reserveChunk(target, minChunkSize);
+        if (minChunkSize > n)
+            minChunkSize = n;
+
+        reserveChunk(target, n);
         ochunk = getChunk(target, Output());
 
         typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
-
-        if (minChunkSize > olen)
-            minChunkSize = olen;
 
         if (SEQAN_UNLIKELY(olen == 0u))
         {
@@ -475,8 +476,9 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
             return;
         }
 
-        if (minChunkSize > n)
-            minChunkSize = n;
+        if (minChunkSize > olen)
+            minChunkSize = olen;
+
 
         ichunk.end = ichunk.begin + minChunkSize;
 

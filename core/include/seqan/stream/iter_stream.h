@@ -70,14 +70,14 @@ public:
     using typename TBase::pos_type;
     using typename TBase::off_type;
 
-    TValue* eback() const   { return TBase::eback(); }
-    TValue* gptr()  const   { return TBase::gptr();  }
-    TValue* egptr() const   { return TBase::egptr(); }
+    using TBase::eback;
+    using TBase::gptr;
+    using TBase::egptr;
 
-    TValue* pbase() const   { return TBase::pbase(); }
-    TValue* pptr()  const   { return TBase::pptr();  }
-    TValue* epptr() const   { return TBase::epptr(); }
-    
+    using TBase::pbase;
+    using TBase::pptr;
+    using TBase::epptr;
+
     size_t chunkSize(Input)
     {
         return egptr() - gptr();
@@ -91,31 +91,31 @@ public:
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Input)
     {
-        TBase::gbump(ofs);
+        this->gbump(ofs);
     }
 
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Output)
     {
-        TBase::pbump(ofs);
+        this->pbump(ofs);
     }
 
     void reserveChunk(Input)
     {
         if (gptr() == egptr())
-            TBase::underflow();
+            this->underflow();
     }
 
     void reserveChunk(Output)
     {
         if (pptr() == epptr())
-            TBase::overflow();
+            this->overflow(EOF);
     }
 
     template <typename TOffset>
     std::streampos seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
     {
-        return TBase::seekoff(ofs, way, which);
+        return this->seekoff(ofs, way, which);
     }
 
     template <typename TOffset, typename TDirection>
@@ -138,7 +138,7 @@ public:
                 if (IsSameType<TDirection, Input>::VALUE)
                     if (res == pos_type(off_type(-1)))
                         for (; ofs != 0; --ofs)
-                            TBase::sbumpc();
+                            this->sbumpc();
 
                 return;
             }

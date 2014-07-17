@@ -72,16 +72,28 @@ namespace seqan {
 struct Bam_;
 typedef Tag<Bam_> Bam;
 
+
 template <typename T>
 struct FileFormatExtensions<Bam, T>
 {
-    static char const * VALUE[1];
+    static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Bam, T>::VALUE[1] = {
-    ".bam" };
+char const * FileFormatExtensions<Bam, T>::VALUE[1] =
+{
+    ".bam"     // default output extension
+};
 
+
+template <typename T>
+struct MagicHeader<Bam, T>
+{
+    static unsigned char const VALUE[4];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  // BAM's magic header
 
 // ============================================================================
 // Metafunctions
@@ -214,7 +226,9 @@ void readRecord(BamAlignmentRecord & record,
                 TForwardIter & iter,
                 Bam const & /*tag*/)
 {
-    (void)context;  // Only used for assertions.
+    clear(record.qName);
+    clear(record.qual);
+    clear(record.tags);
 
     // Read size of the remaining block.
     __int32 remainingBytes = 0;
@@ -233,7 +247,6 @@ void readRecord(BamAlignmentRecord & record,
 
     // read name.
     SEQAN_ASSERT_GT(remainingBytes, (int)record._l_qname);
-    //resize(record.qName);
     readUntil(record.qName, iter, CountDownFunctor<>(record._l_qname));
     resize(record.qName, record._l_qname - 1);
     remainingBytes -= record._l_qname;
@@ -252,34 +265,32 @@ void readRecord(BamAlignmentRecord & record,
     }
     remainingBytes -= record._n_cigar * 4;
 
-    // sequence, 4-bit encoded "=ACMGRSVTWYHKDBN".
-    SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 2) / 2);
-    resize(record.seq, record._l_qseq + 1, Exact());
-    static char const * SEQ_MAPPING = "=ACMGRSVTWYHKDBN";
-
-    typedef typename Iterator<CharString, Rooted>::Type TSeqIter;
-    {
-        // Note: Yes, we need separate index i and iterator.  The iterator allows the fast iteration and i is for
-        // book-keeping since we potentially create too long seq records.
-        TSeqIter it = begin(record.seq, Rooted());
-        for (__int32 i = 0; i < record._l_qseq; i += 2)
-        {
-            __uint8 ui;
-            readRawByte(ui, iter);
-            *it++ = SEQ_MAPPING[ui >> 4];
-            *it++ = SEQ_MAPPING[ui & 0x0f];
-        }
-    }
-    resize(record.seq, record._l_qseq);  // Possibly trim last, overlap base.
+    SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 1) / 2);
+    clear(context.buffer);
+    readUntil(context.buffer, iter, CountDownFunctor<>((record._l_qseq + 1) / 2));
     remainingBytes -= (record._l_qseq + 1) / 2;
+
+    typedef typename Iterator<CharString, Standard>::Type  TSrcIter;
+    typedef typename Iterator<IupacString, Standard>::Type TDestIter;
+
+    resize(record.seq, record._l_qseq, Exact());
+    TSrcIter sit = begin(context.buffer, Standard());
+    TSrcIter sitEnd = begin(context.buffer, Standard()) + record._l_qseq / 2;
+    TDestIter dit = begin(record.seq, Standard());
+    for (; sit != sitEnd; ++sit)
+    {
+        __uint8 ui = *sit;
+        *dit++ = Iupac(ui >> 4);
+        *dit++ = Iupac(ui & 0x0f);
+    }
+    if (record._l_qseq & 1)
+        *dit++ = Iupac((__uint8)*sit >> 4);
 
     // phred quality
     SEQAN_ASSERT_GEQ(remainingBytes, record._l_qseq);
     if (record._l_qseq > 0)
-    {
-        clear(record.qual);
         readUntil(record.qual, iter, CountDownFunctor<>(record._l_qseq));
-    }
+
     // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
     // representation of '*';
     if (!empty(record.qual) && record.qual[0] == '\xFF')
@@ -291,15 +302,9 @@ void readRecord(BamAlignmentRecord & record,
 
     // tags
     if (remainingBytes > 0)
-    {
-        //resize(record.tags, remainingBytes);
         readUntil(record.tags, iter, CountDownFunctor<>(remainingBytes));
-    }
-    else
-    {
-        clear(record.tags);
-    }
 }
+
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_BAM_H_
