@@ -193,35 +193,35 @@ struct VirtualStreamContext_<TValue, TDirection>
 // The VirtualStream class handles a file or input stream and auto-detects data
 // compression from file name or stream.
 // We inherit from std::basic_Xstream to provide the convenient stream interface.
-template <typename TValue, typename TDirection>
-class VirtualStream: public BasicStream<TValue, TDirection>::Type
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
+class VirtualStream: public BasicStream<TValue, TDirection, TTraits>::Type
 {
 public:
-    typedef std::fstream                                        TFile;
-    typedef typename BasicStream<TValue, TDirection>::Type      TBasicStream;
-    typedef std::basic_streambuf<TValue>                        TStreamBuffer;
-    typedef typename BasicStream<TValue, TDirection>::Type      TStream;
-    typedef VirtualStreamContext_<TValue, TDirection>           TVirtualStreamContext;
+    typedef typename BasicStream<TValue, TDirection, TTraits>::Type  TStream;      // the stream base class we expose
+    typedef std::fstream                                    TFile;                  // if a real file should be opened
+    typedef BufferedStream<TStream, TDirection>             TBufferedStream;        // if input stream is not buffered
+    typedef std::basic_streambuf<TValue>                    TStreamBuffer;          // the streambuf to use
+    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;  // the owner of the streambuf
 
     TFile                   file;
+    TBufferedStream         bufferedStream;
     TStreamBuffer           *streamBuf;
-
     TVirtualStreamContext   *context;
 
     VirtualStream():
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {}
 
     VirtualStream(TStreamBuffer &streamBuf):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(streamBuf),
         context()
     {}
 
     VirtualStream(TStream &stream):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {
@@ -229,7 +229,7 @@ public:
     }
 
     VirtualStream(const char *fileName, int openMode):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {
@@ -443,9 +443,18 @@ inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressio
 
 template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType compressionType)
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
+    typedef typename TVirtualStream::TBufferedStream TBufferedStream;
+
+    if (IsSameType<TDirection, Input>::VALUE &&
+        !IsSameType<TStream, TBufferedStream>::VALUE &&
+        fileStream.rdbuf()->in_avail() < 2)
+    {
+        stream.bufferedStream.setStream(fileStream);
+        return open(stream, stream.bufferedStream, compressionType);
+    }
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);
 
@@ -464,6 +473,14 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
     // reset our outer stream interface
     stream._init();
     return true;
+}
+
+template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
+inline bool
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType const & compressionType)
+{
+    TCompressionType ct = compressionType;
+    return open(stream, fileStream, ct);
 }
 
 template <typename TValue, typename TStream>

@@ -52,7 +52,7 @@ namespace seqan {
 // Classes
 // ============================================================================
 
-template <typename TUnbufferedStream, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
 class BufferedStreamBuf;
 
 
@@ -67,25 +67,38 @@ protected:
     typedef typename TUnbufferedStream::char_type                   TValue;
     typedef typename TUnbufferedStream::traits_type                 TTraits;
     typedef typename BasicStream<TValue, TDirection, TTraits>::Type TBasicStream;
+    typedef std::basic_streambuf<TValue, TTraits>                   TStreamBuf;
 
-    BufferedStreamBuf<TUnbufferedStream, TDirection > buf;
+    BufferedStreamBuf<TValue, TDirection, TTraits> buf;
 
+public:
+    BufferedStream() :
+        TBasicStream(&buf)
+    {}
 
-    BufferedStream()
+    explicit
+    BufferedStream(TUnbufferedStream &stream) :
+        TBasicStream(&buf),
+        buf(stream.rdbuf())
+    {}
+
+    void setStreamBuf(TStreamBuf &streamBuf)
     {
+        buf.setStreamBuf(streamBuf);
+    }
+
+    void setStream(TUnbufferedStream &stream)
+    {
+        setStreamBuf(*stream.rdbuf());
     }
 };
 
 
-template <typename TUnbufferedStreamBuf, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits>
 class BufferedStreamBuf :
-    public std::basic_streambuf<
-        typename TUnbufferedStream::char_type,
-        typename TUnbufferedStream::traits_type>
+    public std::basic_streambuf<TValue, TTraits>
 {
 protected:
-    typedef typename TUnbufferedStream::char_type                   TValue;
-    typedef typename TUnbufferedStream::traits_type                 TTraits;
     typedef std::basic_streambuf<TValue, TTraits>                   TStreamBuf;
 	typedef typename TTraits::int_type                              TInt;
 
@@ -168,7 +181,9 @@ protected:
             numPutback * sizeof(TValue));
 
         // read new characters
-        size_t numRead = streamBufPtr->sgetn(&buffer[numPutback], buffer.size() - numPutback);
+        size_t numRead = streamBufPtr->sgetn(
+                            &buffer[putbackSize],
+                            buffer.size() - putbackSize);
 
         // reset buffer pointers
         setg(&buffer[putbackSize - numPutback],     // beginning of putback area
