@@ -86,11 +86,7 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
         readerPtr[i] = new BamFile<Input>(writer);
 
         if (inFiles[i] != "-")
-        {
-            fin.open(toCString(inFiles[i]));
-            open(*readerPtr[i], std::cin);
-//            open(*readerPtr[i], toCString(inFiles[i]));
-            }
+            open(*readerPtr[i], toCString(inFiles[i]));
         else
             // read from stdin (autodetect format from stream)
             open(*readerPtr[i], std::cin);
