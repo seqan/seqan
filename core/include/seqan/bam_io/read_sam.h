@@ -57,7 +57,31 @@ namespace seqan {
 */
 
 struct Sam_;
-typedef Tag<Sam_> const Sam;
+typedef Tag<Sam_> Sam;
+
+
+template <typename T>
+struct FileFormatExtensions<Sam, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Sam, T>::VALUE[1] =
+{
+    ".sam"     // default output extension
+};
+
+
+template <typename T>
+struct MagicHeader<Sam, T>
+{
+    static unsigned char const * VALUE;
+};
+
+template <typename T>
+unsigned char const * MagicHeader<Sam, T>::VALUE = NULL;  // SAM has no magic header
+
 
 enum SamTokenizeErrors_
 {

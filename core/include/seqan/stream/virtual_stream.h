@@ -40,12 +40,12 @@
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
 #if SEQAN_HAS_ZLIB
-#include "zipstream/zipstream.hpp"
-#include "zipstream/bgzfstream.hpp"
+#include "zipstream/zipstream.h"
+#include "zipstream/bgzfstream.h"
 #endif
 
 #if SEQAN_HAS_BZIP2
-#include "zipstream/bzip2stream.hpp"
+#include "zipstream/bzip2stream.h"
 #endif
 
 namespace seqan {
@@ -61,8 +61,8 @@ namespace seqan {
 
 typedef
 #if SEQAN_HAS_ZLIB
-    TagList<GZFile,
     TagList<BgzfFile,
+    TagList<GZFile,
 #endif
 #if SEQAN_HAS_BZIP2
     TagList<BZ2File,
@@ -103,9 +103,6 @@ struct VirtualStreamSwitch_<TValue, Output, GZFile>
 {
     typedef zlib_stream::basic_zip_ostream<TValue> Type;
 };
-#endif
-
-#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BgzfFile>
@@ -118,6 +115,10 @@ struct VirtualStreamSwitch_<TValue, Output, BgzfFile>
 {
     typedef basic_bgzf_ostream<TValue> Type;
 };
+
+#endif
+
+#if SEQAN_HAS_BZIP2
 
 template <typename TValue>
 struct VirtualStreamSwitch_<TValue, Input, BZ2File>
@@ -162,8 +163,6 @@ struct VirtualStreamContext_:
     {
         this->streamBuf = stream.rdbuf();
     }
-
-    ~VirtualStreamContext_();
 };
 
 // special case: no compression, we simply forward the file stream
@@ -194,34 +193,35 @@ struct VirtualStreamContext_<TValue, TDirection>
 // The VirtualStream class handles a file or input stream and auto-detects data
 // compression from file name or stream.
 // We inherit from std::basic_Xstream to provide the convenient stream interface.
-template <typename TValue, typename TDirection>
-class VirtualStream: public BasicStream<TValue, TDirection>::Type
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
+class VirtualStream: public BasicStream<TValue, TDirection, TTraits>::Type
 {
 public:
-    typedef std::fstream                                    TFile;
-    typedef typename BasicStream<TValue, TDirection>::Type  TBasicStream;
-    typedef std::basic_streambuf<TValue>                    TStreamBuffer;
-    typedef typename BasicStream<TValue, TDirection>::Type  TStream;
-    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;
+    typedef typename BasicStream<TValue, TDirection, TTraits>::Type  TStream;      // the stream base class we expose
+    typedef std::fstream                                    TFile;                  // if a real file should be opened
+    typedef BufferedStream<TStream, TDirection>             TBufferedStream;        // if input stream is not buffered
+    typedef std::basic_streambuf<TValue>                    TStreamBuffer;          // the streambuf to use
+    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;  // the owner of the streambuf
 
     TFile                   file;
+    TBufferedStream         bufferedStream;
     TStreamBuffer           *streamBuf;
     TVirtualStreamContext   *context;
 
     VirtualStream():
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {}
 
     VirtualStream(TStreamBuffer &streamBuf):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(streamBuf),
         context()
     {}
 
     VirtualStream(TStream &stream):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {
@@ -229,7 +229,7 @@ public:
     }
 
     VirtualStream(const char *fileName, int openMode):
-        TBasicStream(NULL),
+        TStream(NULL),
         streamBuf(),
         context()
     {
@@ -381,78 +381,6 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 }
 
 // --------------------------------------------------------------------------
-// Function flush()
-// --------------------------------------------------------------------------
-#if SEQAN_HAS_ZLIB
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(zlib_stream::basic_zip_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(basic_bgzf_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(basic_bgzf_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-#endif
-
-#if SEQAN_HAS_BZIP2
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(bzip2_stream::basic_bzip2_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
-{}
-
-template<
-	typename Elem, 
-	typename Tr,
-    typename ElemA,
-    typename ByteT,
-    typename ByteAT >
-inline void
-flush(bzip2_stream::basic_bzip2_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
-{
-    stream.zflush();
-}
-#endif
-// --------------------------------------------------------------------------
 // Function guessFormat()
 // --------------------------------------------------------------------------
 
@@ -462,6 +390,8 @@ inline bool
 guessFormat(TStream &istream, Tag<TFormat_>)
 {
     typedef Tag<TFormat_> TFormat;
+
+    SEQAN_ASSERT(istream.good());
 
     if (MagicHeader<TFormat>::VALUE == NULL)
         return true;
@@ -486,31 +416,61 @@ guessFormat(TStream &istream, Tag<TFormat_>)
     for (; i > 0; --i)
         istream.unget();
 
+    SEQAN_ASSERT(istream.good());
+
     return match;
+}
+
+// ----------------------------------------------------------------------------
+// _guessFormat wrapper
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TStream, typename TCompressionType>
+inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
+{
+    return guessFormat(fileStream, compressionType);
+}
+
+template <typename TValue, typename TStream, typename TCompressionType>
+inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressionType &)
+{
+    return true;
 }
 
 // --------------------------------------------------------------------------
 // Function open()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TStream>
+template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream)
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
-    typedef typename TVirtualStream::TFile TFile;
-    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
+    typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
-    // detect compression type from file extension
-    TagSelector<CompressedFileTypes> fileType;
-    guessFormat(fileStream, fileType);
+    // peek the first character to initialize the underlying streambuf (for in_avail)
+    fileStream.rdbuf()->sgetc();
+
+    if (IsSameType<TDirection, Input>::VALUE &&
+        !IsSameType<TStream, TBufferedStream>::VALUE &&
+        fileStream.rdbuf()->in_avail() < 2)
+    {
+        stream.bufferedStream.setStream(fileStream);
+        return open(stream, stream.bufferedStream, compressionType);
+    }
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);
 
+    // try to detect/verify format
+    if (!_guessFormat(stream, fileStream, compressionType))
+        return false;
+
     // create a new (un)zipper buffer
-    stream.context = tagApply(ctx, fileType);
+    stream.context = tagApply(ctx, compressionType);
     if (stream.context == NULL)
         return false;
+
+    SEQAN_ASSERT(stream.context->streamBuf != NULL);
     stream.streamBuf = stream.context->streamBuf;
 
     // reset our outer stream interface
@@ -518,14 +478,29 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream)
     return true;
 }
 
+template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
+inline bool
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType const & compressionType)
+{
+    TCompressionType ct = compressionType;
+    return open(stream, fileStream, ct);
+}
+
+template <typename TValue, typename TStream>
+inline bool
+open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
+{
+    // detect compression type from file extension
+    TagSelector<CompressedFileTypes> compressionType;
+    return open(stream, fileStream, compressionType);
+}
+
 template <typename TValue, typename TDirection>
 inline bool
 open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
 {
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
-    typedef typename TVirtualStream::TFile TFile;
-    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
-    
+
     if (!open(stream.file, fileName, openMode))
         return false;
 
@@ -547,12 +522,6 @@ open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMo
     // reset our outer stream interface
     stream._init();
     return true;
-}
-
-template <typename TValue, typename TDirection, typename TFormatTag>
-VirtualStreamContext_<TValue, TDirection, TFormatTag>::~VirtualStreamContext_()
-{
-    flush(this->stream);
 }
 
 // --------------------------------------------------------------------------

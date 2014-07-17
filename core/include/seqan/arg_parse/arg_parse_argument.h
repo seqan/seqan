@@ -974,7 +974,7 @@ inline bool _compareExtension(std::string const & str, std::string const & ext)
 
 // The parameter i gives the index of the value in the argument.
 
-inline void _checkStringRestrictions(ArgParseArgument const & me, std::string value,
+inline void _checkStringRestrictions(ArgParseArgument const & me, std::string const &value,
                                      unsigned i)
 {
     typedef std::vector<std::string>::const_iterator TVectorIterator;
@@ -982,6 +982,10 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string va
     // we only check valid values for files and string arguments, but not for prefix arguments
     if (!empty(me.validValues) && !(isInputPrefixArgument(me) || isOutputPrefixArgument(me)))
     {
+        // The file name "-" is reserved for stdin or stdout
+        if ((isInputFileArgument(me) || isOutputFileArgument(me)) && value == "-")
+            return;
+
         bool isContained = false;
         for (TVectorIterator validValue = me.validValues.begin();
              validValue != me.validValues.end();

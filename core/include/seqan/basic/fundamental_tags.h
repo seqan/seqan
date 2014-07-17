@@ -694,16 +694,30 @@ inline int find(TagSelector<TTagList> const &, TSearchTag const &)
 // Functions
 // ============================================================================
 
+// isEqual()
 template <typename TTagList, typename TTag>
 inline bool isEqual(TagSelector<TTagList> const &selector, TTag const &)
 {
     return selector.tagId == Find<TTagList, TTag>::VALUE;
 }
 
+// assign()
+template <typename TTagList, typename TTag>
+inline void assign(TagSelector<TTagList> &selector, TTag &)
+{
+    selector.tagId = Find<TTagList, TTag>::VALUE;
+}
+
 template <typename TTagList, typename TTag>
 inline void assign(TagSelector<TTagList> &selector, TTag const &)
 {
     selector.tagId = Find<TTagList, TTag>::VALUE;
+}
+
+template <typename TTagList, typename TTag>
+inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> const &other)
+{
+    selector.tagId = other.tagId;
 }
 
 // tagApply()
