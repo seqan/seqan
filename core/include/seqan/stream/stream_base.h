@@ -194,41 +194,41 @@ struct MagicHeader;
 template <typename T>
 struct MagicHeader<Nothing, T>
 {
-    static unsigned char const * VALUE;
+    static char const * VALUE;
 };
 
 template <typename T>
-unsigned char const * MagicHeader<Nothing, T>::VALUE = NULL;
+char const * MagicHeader<Nothing, T>::VALUE = NULL;
 
 
 template <typename T>
 struct MagicHeader<GZFile, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
 template <typename T>
 struct MagicHeader<BgzfFile, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
 template <typename T>
 struct MagicHeader<BZ2File, T>
 {
-    static unsigned char const VALUE[3];
+    static char const VALUE[3];
 };
 
 template <typename T>
-unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
 
 
 
@@ -236,21 +236,21 @@ unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  /
 template <typename T>
 struct MagicHeader<Fasta, T>
 {
-    static unsigned char const VALUE[1];
+    static char const VALUE[1];
 };
 
 template <typename T>
-unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
 
 
 template <typename T>
 struct MagicHeader<Fastq, T>
 {
-    static unsigned char const VALUE[1];
+    static char const VALUE[1];
 };
 
 template <typename T>
-unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
 
 // --------------------------------------------------------------------------
 // Metafunction FileFormatExtensions

@@ -59,7 +59,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >	
 class basic_bgzf_streambuf : public std::basic_streambuf<Elem, Tr> 
@@ -254,7 +254,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >	
 class basic_unbgzf_streambuf : 
@@ -461,7 +461,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >	
 class basic_bgzf_ostreambase : virtual public std::basic_ios<Elem,Tr>
@@ -508,7 +508,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >
 class basic_bgzf_istreambase : virtual public std::basic_ios<Elem,Tr>
@@ -571,7 +571,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >	
 class basic_bgzf_ostream : 
@@ -633,7 +633,7 @@ template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
-    typename ByteT = unsigned char,
+    typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >
 class basic_bgzf_istream : 
@@ -645,7 +645,7 @@ public:
         Elem,Tr,ElemA,ByteT,ByteAT> bgzf_istreambase_type;
 	typedef std::basic_istream<Elem,Tr> istream_type;
     typedef istream_type& istream_reference;
-	typedef unsigned char byte_type;
+	typedef char byte_type;
 
 	/** Construct a unzipper stream
 	 *

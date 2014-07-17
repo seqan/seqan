@@ -226,7 +226,9 @@ void readRecord(BamAlignmentRecord & record,
                 TForwardIter & iter,
                 Bam const & /*tag*/)
 {
-    (void)context;  // Only used for assertions.
+    clear(record.qName);
+    clear(record.qual);
+    clear(record.tags);
 
     // Read size of the remaining block.
     __int32 remainingBytes = 0;
@@ -245,7 +247,6 @@ void readRecord(BamAlignmentRecord & record,
 
     // read name.
     SEQAN_ASSERT_GT(remainingBytes, (int)record._l_qname);
-    //resize(record.qName);
     readUntil(record.qName, iter, CountDownFunctor<>(record._l_qname));
     resize(record.qName, record._l_qname - 1);
     remainingBytes -= record._l_qname;
@@ -264,7 +265,7 @@ void readRecord(BamAlignmentRecord & record,
     }
     remainingBytes -= record._n_cigar * 4;
 
-    SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 2) / 2);
+    SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 1) / 2);
     clear(context.buffer);
     readUntil(context.buffer, iter, CountDownFunctor<>((record._l_qseq + 1) / 2));
     remainingBytes -= (record._l_qseq + 1) / 2;
@@ -283,15 +284,13 @@ void readRecord(BamAlignmentRecord & record,
         *dit++ = Iupac(ui & 0x0f);
     }
     if (record._l_qseq & 1)
-        *dit++ = Iupac(*sit >> 4);
+        *dit++ = Iupac((__uint8)*sit >> 4);
 
     // phred quality
     SEQAN_ASSERT_GEQ(remainingBytes, record._l_qseq);
     if (record._l_qseq > 0)
-    {
-        clear(record.qual);
         readUntil(record.qual, iter, CountDownFunctor<>(record._l_qseq));
-    }
+
     // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
     // representation of '*';
     if (!empty(record.qual) && record.qual[0] == '\xFF')
@@ -303,15 +302,9 @@ void readRecord(BamAlignmentRecord & record,
 
     // tags
     if (remainingBytes > 0)
-    {
-        //resize(record.tags, remainingBytes);
         readUntil(record.tags, iter, CountDownFunctor<>(remainingBytes));
-    }
-    else
-    {
-        clear(record.tags);
-    }
 }
+
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_BAM_H_

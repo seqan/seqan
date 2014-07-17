@@ -61,8 +61,8 @@ namespace seqan {
 
 typedef
 #if SEQAN_HAS_ZLIB
-    TagList<GZFile,
     TagList<BgzfFile,
+    TagList<GZFile,
 #endif
 #if SEQAN_HAS_BZIP2
     TagList<BZ2File,
