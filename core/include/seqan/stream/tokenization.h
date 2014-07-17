@@ -411,7 +411,7 @@ template <typename TValue, typename TFwdIterator>
 inline void readRawByte(TValue & value, TFwdIterator &iter)
 {
     CountDownFunctor<> countFunc(sizeof(TValue));
-    unsigned char * buffer = (unsigned char *)(&value);
+    char * buffer = (char *)(&value);
     for (; !atEnd(iter) && !countFunc(*iter); ++buffer, ++iter)
         *buffer = *iter;
 

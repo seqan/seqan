@@ -76,11 +76,11 @@ struct CompressionContext<BgzfFile>:
     CompressionContext<GZFile>
 {
     enum { BLOCK_HEADER_LENGTH = 18 };
-    static const unsigned char header[BLOCK_HEADER_LENGTH];
+    static const char header[BLOCK_HEADER_LENGTH];
     unsigned char headerPos;
 };
 
-const unsigned char CompressionContext<BgzfFile>::header[18] =
+const char CompressionContext<BgzfFile>::header[18] =
 {
     MagicHeader<BgzfFile>::VALUE[0], MagicHeader<BgzfFile>::VALUE[1], MagicHeader<BgzfFile>::VALUE[2],
     4, 0, 0, 0, 0, 0, 0xff, 6, 0, 'B', 'C', 2, 0, 0, 0
@@ -255,13 +255,13 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 // ----------------------------------------------------------------------------
 
 inline unsigned short
-_bgzfUnpack16(unsigned char const * buffer)
+_bgzfUnpack16(char const * buffer)
 {
     return *reinterpret_cast<unsigned short const *>(buffer);
 }
 
 inline unsigned
-_bgzfUnpack32(unsigned char const * buffer)
+_bgzfUnpack32(char const * buffer)
 {
     return *reinterpret_cast<unsigned const *>(buffer);
 }
@@ -271,13 +271,13 @@ _bgzfUnpack32(unsigned char const * buffer)
 // ----------------------------------------------------------------------------
 
 inline void
-_bgzfPack16(unsigned char * buffer, unsigned short value)
+_bgzfPack16(char * buffer, unsigned short value)
 {
     *reinterpret_cast<unsigned short *>(buffer) = value;
 }
 
 inline void
-_bgzfPack32(unsigned char * buffer, unsigned value)
+_bgzfPack32(char * buffer, unsigned value)
 {
     *reinterpret_cast<unsigned *>(buffer) = value;
 }
@@ -354,7 +354,7 @@ decompressInit(CompressionContext<BgzfFile> & ctx)
 }
 
 inline bool
-_bgzfCheckHeader(unsigned char const * header)
+_bgzfCheckHeader(char const * header)
 {
     const char FLG_FEXTRA = 4;
     const char BGZF_ID1 = 'B';
@@ -370,6 +370,30 @@ _bgzfCheckHeader(unsigned char const * header)
             header[12] == BGZF_ID1 &&
             header[13] == BGZF_ID2 &&
             _bgzfUnpack16(header + 14) == BGZF_LEN);
+}
+
+// read first bytes of a file/stream and compare with file format's magic header
+template <typename TStream>
+inline bool
+guessFormat(TStream &istream, BgzfFile)
+{
+    char putbackBuf[18];
+    bool match = false;
+
+    SEQAN_ASSERT(istream.good());
+
+    // try to read and check header
+    size_t numRead = istream.readsome(&putbackBuf[0], sizeof(putbackBuf));
+    if (numRead == sizeof(putbackBuf) && _bgzfCheckHeader(putbackBuf))
+        match = true;
+
+    // unget all read characters
+    for (; numRead > 0; --numRead)
+        istream.unget();
+
+    SEQAN_ASSERT(istream.good());
+
+    return match;
 }
 
 // ----------------------------------------------------------------------------

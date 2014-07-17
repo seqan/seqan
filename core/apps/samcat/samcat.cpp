@@ -80,7 +80,6 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
 
     // Step 1: Merge all headers (if available)
     BamHeader header;
-    std::ifstream fin;
     for (unsigned i = 0; i < length(inFiles); ++i)
     {
         readerPtr[i] = new BamFile<Input>(writer);
