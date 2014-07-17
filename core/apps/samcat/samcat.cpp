@@ -137,7 +137,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // We require one argument.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE", true));
     setValidValues(parser, 0, ".sam .bam");
-    setHelpText(parser, 0, "Input SAM or BAM file.");
+    setHelpText(parser, 0, "Input SAM or BAM file (or - for stdin).");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", ".sam .bam");
