@@ -51,18 +51,13 @@
 #include <seqan/index.h>
 
 // ----------------------------------------------------------------------------
-// I/O and options
-// ----------------------------------------------------------------------------
-
-#include "store_genome.h"
-
-// ----------------------------------------------------------------------------
 // App headers
 // ----------------------------------------------------------------------------
 
 #include "misc_timer.h"
-#include "misc_options.h"
 #include "misc_types.h"
+#include "misc_options.h"
+#include "store_genome.h"
 #include "index_fm.h"
 
 using namespace seqan;
