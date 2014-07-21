@@ -145,7 +145,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
     addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report only cooptimal alignments."));
-    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+
+    addOption(parser, ArgParseOption("", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+    hideOption(getOption(parser, "quick"));
 
 //    addOption(parser, ArgParseOption("s", "strata-rate", "Report found suboptimal alignments within this error rate from the optimal one.
 //                                                            Note that strata-rate << error-rate.", ArgParseOption::STRING));
