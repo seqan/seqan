@@ -223,14 +223,14 @@ struct RankDictionaryFibreSpec<RankDictionary<bool, Naive<TSpec> > >
 // ----------------------------------------------------------------------------
 // CSA Size
 // ----------------------------------------------------------------------------
+// TODO(esiragusa): Overload Size<CSA> instead of Size<SparseString>
 
-//namespace seqan {
-//// TODO(esiragusa): Overload Size<CSA> instead of Size<SparseString>
-//template <typename TValueString>
-//struct Size<SparseString<TValueString, void> >
-//{
-//    typedef __uint32    Type;
-//};
-//}
+namespace seqan {
+template <typename TValueString>
+struct Size<SparseString<TValueString, void> >
+{
+    typedef __uint32    Type;
+};
+}
 
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_
