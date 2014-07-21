@@ -55,20 +55,15 @@ struct Options;
 #include <seqan/parallel.h>
 
 // ----------------------------------------------------------------------------
-// I/O and options
-// ----------------------------------------------------------------------------
-
-#include "misc_tags.h"
-#include "misc_options.h"
-#include "store_reads.h"
-#include "store_genome.h"
-
-// ----------------------------------------------------------------------------
 // App headers
 // ----------------------------------------------------------------------------
 
 #include "misc_timer.h"
+#include "misc_tags.h"
 #include "misc_types.h"
+#include "misc_options.h"
+#include "store_reads.h"
+#include "store_genome.h"
 #include "index_fm.h"
 #include "bits_hits.h"
 #include "bits_context.h"
