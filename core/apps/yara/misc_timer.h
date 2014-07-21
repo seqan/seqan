@@ -68,10 +68,6 @@ struct Timer
 template <typename TValue, typename TSpec>
 inline void start(Timer<TValue, TSpec> & timer)
 {
-#ifdef PLATFORM_CUDA
-    cudaDeviceSynchronize();
-#endif
-
     timer._begin = sysTime();
 }
 
@@ -82,10 +78,6 @@ inline void start(Timer<TValue, TSpec> & timer)
 template <typename TValue, typename TSpec>
 inline void stop(Timer<TValue, TSpec> & timer)
 {
-#ifdef PLATFORM_CUDA
-    cudaDeviceSynchronize();
-#endif
-
     timer._end = sysTime();
 }
 
