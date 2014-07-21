@@ -79,7 +79,6 @@ struct Options
 //    bool                anchorOne;
 
     unsigned            readsCount;
-    bool                noCuda;
     unsigned            threadsCount;
     unsigned            hitsThreshold;
     unsigned            verbose;
@@ -102,7 +101,6 @@ struct Options
         libraryOrientation(FWD_REV),
 //        anchorOne(false),
         readsCount(100000),
-        noCuda(false),
         threadsCount(1),
         hitsThreshold(300),
         verbose(0)
