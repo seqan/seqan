@@ -640,7 +640,7 @@ inline void removeSuboptimal(TMatchesSet & matchesSet, TThreading const & thread
 
     TLimits newLimits;
     resize(newLimits, length(stringSetLimits(matchesSet)), Exact());
-    SEQAN_ASSERT_GT(length(stringSetLimits(matchesSet)), 0);
+    SEQAN_ASSERT_GT(length(stringSetLimits(matchesSet)), 0u);
     front(newLimits) = 0;
 
     // Count co-optimal matches.
