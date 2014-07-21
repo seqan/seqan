@@ -202,9 +202,9 @@ void setDateAndVersion(ArgumentParser & parser)
     setCategory(parser, "Read Mapping");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.8.0 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.8.1 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.8.0");
+    setVersion(parser, "0.8.1");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
