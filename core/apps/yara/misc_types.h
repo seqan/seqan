@@ -86,68 +86,6 @@ struct YaraLimits
 typedef Alloc<> YaraStringSpec;
 //#endif
 
-// ----------------------------------------------------------------------------
-// ReadSeqs Size
-// ----------------------------------------------------------------------------
-// NOTE(esiragusa): Register usage does not decrease.
-
-//typedef StringSet<String<Dna5Q>, Owner<ConcatDirect<> > >       TReadSeqs;
-
-//namespace seqan {
-//template <>
-//struct Size<TReadSeqs>
-//{
-//    typedef __uint32 Type;
-//};
-//
-//#ifdef PLATFORM_CUDA
-//template <>
-//struct Size<typename Device<TReadSeqs>::Type>
-//{
-//    typedef __uint32 Type;
-//};
-//
-//template <>
-//struct Size<typename View<typename Device<TReadSeqs>::Type>::Type>
-//{
-//    typedef __uint32 Type;
-//};
-//#endif
-//}
-
-// ----------------------------------------------------------------------------
-// ContainerView Size
-// ----------------------------------------------------------------------------
-// NOTE(esiragusa): Register usage does not decrease.
-
-//#ifdef PLATFORM_CUDA
-//namespace seqan {
-//template <typename TAlloc>
-//struct Size<thrust::device_vector<Dna, TAlloc> >
-//{
-//    typedef __uint32 Type;
-//};
-//
-//template <typename TAlloc>
-//struct Size<thrust::device_vector<bool, TAlloc> >
-//{
-//    typedef __uint32 Type;
-//};
-//
-//template <typename TValue, typename TAlloc, typename TViewSpec>
-//struct Size<ContainerView<thrust::device_vector<TValue, TAlloc>, TViewSpec> >
-//{
-//    typedef __uint32 Type;
-//};
-//
-//template <typename TValue, typename TAlloc, typename TViewSpec, typename TSSetSpec>
-//struct Size<StringSet<ContainerView<thrust::device_vector<TValue, TAlloc>, TViewSpec>, TSSetSpec> >
-//{
-//    typedef __uint32 Type;
-//};
-//}
-//#endif
-
 // ============================================================================
 // Index Types
 // ============================================================================
@@ -184,26 +122,6 @@ struct Size<YaraIndex>
 {
     typedef __uint32 Type;
 };
-
-template <>
-struct Size<View<YaraIndex>::Type>
-{
-    typedef __uint32 Type;
-};
-
-#ifdef PLATFORM_CUDA
-template <>
-struct Size<Device<YaraIndex>::Type>
-{
-    typedef __uint32 Type;
-};
-
-template <>
-struct Size<View<Device<YaraIndex>::Type>::Type>
-{
-    typedef __uint32 Type;
-};
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -240,20 +158,6 @@ struct StringSetPosition<YaraContigsFM>
 {
     typedef Pair<__uint8, __uint32, Pack> Type;
 };
-
-template <>
-struct StringSetPosition<View<YaraContigsFM>::Type>
-{
-    typedef Pair<__uint8, __uint32, Pack> Type;
-};
-
-#ifdef PLATFORM_CUDA
-template <>
-struct StringSetPosition<Device<YaraContigsFM>::Type>
-{
-    typedef Pair<__uint8, __uint32, Pack> Type;
-};
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -328,41 +232,5 @@ struct RankDictionaryFibreSpec<RankDictionary<bool, Naive<TSpec> > >
 //    typedef __uint32    Type;
 //};
 //}
-
-// ----------------------------------------------------------------------------
-// Shape Size
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <typename TValue, unsigned q>
-struct Value<Shape<TValue, UngappedShape<q> > >
-{
-    typedef __uint32    Type;
-};
-
-// ----------------------------------------------------------------------------
-// StringSet MinLength
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TSpec>
-struct MinLength<StringSet<TString, TSpec> >
-{
-    static const unsigned VALUE = 10;
-};
-
-#ifdef PLATFORM_CUDA
-template <typename TValue, typename TSpec>
-struct MinLength<thrust::device_vector<TValue, TSpec> >
-{
-    static const unsigned VALUE = 10;
-};
-#endif
-
-template <typename TContainer, typename TSpec>
-struct MinLength<ContainerView<TContainer, TSpec> >
-{
-    static const unsigned VALUE = 10;
-};
-}
 
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_
