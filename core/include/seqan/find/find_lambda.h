@@ -194,8 +194,8 @@ inline void find(TText & text,
                  TThreading)
 {
     typedef StringSet<TNeedle_, TSSetSpec> const                    TNeedles;
-    typedef typename Value<TNeedles>::Type                          TNeedle;
-    typedef typename Iterator<TNeedles, Rooted>::Type               TNeedlesIt;
+    typedef typename Value<TNeedles const>::Type                    TNeedle;
+    typedef typename Iterator<TNeedles const, Rooted>::Type         TNeedlesIt;
 
     typedef typename FindState_<TText, TNeedle, TAlgorithm>::Type  TState;
     typedef typename StatesPool_<TState, TThreading>::Type          TStatesPool;

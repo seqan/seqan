@@ -86,9 +86,6 @@ struct Options;
 #include "mapper_aligner.h"
 #include "mapper_writer.h"
 #include "mapper.h"
-#ifndef CUDA_DISABLED
-#include "mapper.cuh"
-#endif
 
 using namespace seqan;
 
@@ -148,7 +145,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
     addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report only cooptimal alignments."));
-    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+
+    addOption(parser, ArgParseOption("", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+    hideOption(getOption(parser, "quick"));
 
 //    addOption(parser, ArgParseOption("s", "strata-rate", "Report found suboptimal alignments within this error rate from the optimal one.
 //                                                            Note that strata-rate << error-rate.", ArgParseOption::STRING));
@@ -182,10 +181,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMinValue(parser, "threads", "1");
     setMaxValue(parser, "threads", "2048");
     setDefaultValue(parser, "threads", options.threadsCount);
-#endif
-
-#ifndef CUDA_DISABLED
-    addOption(parser, ArgParseOption("nc", "no-cuda", "Do not use CUDA accelerated code."));
 #endif
 
     addOption(parser, ArgParseOption("r", "reads-batch", "Number of reads to process in one batch.", ArgParseOption::INTEGER));
@@ -258,11 +253,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
 #ifdef _OPENMP
     getOptionValue(options.threadsCount, parser, "threads");
-#endif
-
-    // Parse CUDA options.
-#ifndef CUDA_DISABLED
-    getOptionValue(options.noCuda, parser, "no-cuda");
 #endif
 
     getOptionValue(options.readsCount, parser, "reads-batch");
@@ -406,14 +396,7 @@ void configureThreading(Options const & options, TExecSpace const & execSpace)
 
 void configureMapper(Options const & options)
 {
-#ifndef CUDA_DISABLED
-    if (options.noCuda)
-#endif
-        configureThreading(options, ExecHost());
-#ifndef CUDA_DISABLED
-    else
-        configureThreading(options, ExecDevice());
-#endif
+    configureThreading(options, ExecHost());
 }
 
 // ----------------------------------------------------------------------------
