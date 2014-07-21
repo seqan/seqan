@@ -233,4 +233,36 @@ struct Size<SparseString<TValueString, void> >
 };
 }
 
+// ----------------------------------------------------------------------------
+// ContigSeqs StringSetLimits
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <>
+struct StringSetLimits<YaraContigs>
+{
+    typedef String<__uint32>    Type;
+};
+}
+
+// ----------------------------------------------------------------------------
+// ContigNames StringSetLimits
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <typename TString>
+struct StringSetLimits<StringSet<TString, Owner<ConcatDirect<__uint32> > > >
+{
+    typedef String<__uint32>    Type;
+};
+
+template <typename TString, typename TSource, typename TExpand>
+inline void
+appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource const & obj, Tag<TExpand> tag)
+{
+    appendValue(me.limits, lengthSum(me) + length(obj), tag);
+    append(me.concat, obj, tag);
+}
+}
+
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_
