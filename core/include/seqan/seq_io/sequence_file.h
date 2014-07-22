@@ -39,6 +39,20 @@
 namespace seqan {
 
 // ============================================================================
+// Typedefs
+// ============================================================================
+
+template <typename TSequenceFile>
+struct SequenceFileFormats
+{
+    typedef TagSelector<
+                TagList<Fasta,
+                TagList<Fastq
+                > >
+            > Type;
+};
+
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -100,6 +114,28 @@ inline void setFormat(SequenceFile<TDirection, TSpec> & file, TFormat)
 }
 
 // ----------------------------------------------------------------------------
+// Function guessFormat()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline bool guessFormat(SequenceFile<Input, TSpec> & file)
+{
+    return guessFormat(file.stream, file.format);
+}
+
+template <typename TSpec>
+inline bool guessFormat(SequenceFile<Output, TSpec> &)
+{
+    return true;
+}
+
+// --------------------------------------------------------------------------
+// Function open(stream)
+// --------------------------------------------------------------------------
+
+// TODO(singer): implement this!
+
+// ----------------------------------------------------------------------------
 // Function open(fileName)
 // ----------------------------------------------------------------------------
 
@@ -150,7 +186,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
 {
-    readRecord(meta, seq, file.iter, file.format);
+    read(meta, seq, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -161,7 +197,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
 {
-    readRecord(meta, seq, qual, file.iter, file.format);
+    read(meta, seq, qual, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -172,7 +208,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
-    writeRecord(file.iter, meta, seq, file.format);
+    write(file.iter, meta, seq, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -183,7 +219,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
 {
-    writeRecord(meta, seq, qual, file.iter, Fastq());
+    write(meta, seq, qual, file.iter, Fastq());
 }
 
 }  // namespace seqan
