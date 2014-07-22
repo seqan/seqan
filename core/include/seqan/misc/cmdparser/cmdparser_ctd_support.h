@@ -191,7 +191,8 @@ writeCTD(CommandLineParser const & me)
     ctdfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     ctdfile << "<tool status=\"external\">\n";
     ctdfile << "\t<name>" << _xmlEscape(me._appName) << "</name>\n";
-    ctdfile << "\t<version>" << _xmlEscape(me._versionText) << "</version>\n";
+    ctdfile << "\t<version>";
+    ctdfile << _xmlEscape(me._versionText) << "</version>\n";
     ctdfile << "\t<description><![CDATA[" << _xmlEscape(me._appName) << ".]]></description>\n";
     ctdfile << "\t<manual><![CDATA[" << _xmlEscape(me._appName) << ".]]></manual>\n"; // TODO: as soon as we have a more sophisticated documentation embedded into the CmdParser, we should at this here
     ctdfile << "\t<docurl>Direct links in docs</docurl>\n";

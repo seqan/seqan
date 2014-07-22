@@ -52,6 +52,13 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TValue, typename TDirection, typename TSpec>
+class FileStream;
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+close(FileStream<TValue, TDirection, TSpec> & stream);
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -1093,9 +1100,6 @@ clear(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
     buffer.writePagePos = 0;
 }
 
-template <typename TValue, typename TDirection, typename TSpec>
-class FileStream;
-
 // --------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
 // --------------------------------------------------------------------------
@@ -1132,14 +1136,14 @@ public:
         open(*this, fileName, openMode);
     }
 
-    ~FileStream()
-    {
-        ::close(*this);
-    }
-
     void close()
     {
-        ::close(*this);
+        seqan::close(*this);
+    }
+
+    ~FileStream()
+    {
+        close();
     }
 };
 
