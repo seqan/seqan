@@ -57,10 +57,10 @@ using namespace seqan;
 template <typename TSpec = Alloc<> >
 struct ContigsConfig
 {
-    typedef Dna5                        TContigValue;
-    typedef Packed<TSpec>               TContigSpec;
-    typedef Owner<ConcatDirect<> >      TContigsSpec;
-    typedef Owner<ConcatDirect<> >      TContigNameSpec;
+    typedef Dna5                            TContigValue;
+    typedef Packed<TSpec>                   TContigSpec;
+    typedef Owner<ConcatDirect<> >          TContigsSpec;
+    typedef Owner<ConcatDirect<__uint32> >  TContigNameSpec;
 };
 
 // ----------------------------------------------------------------------------
