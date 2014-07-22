@@ -103,31 +103,6 @@ inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & 
 }
 
 // ----------------------------------------------------------------------------
-// Function open()
-// ----------------------------------------------------------------------------
-// This function is overloaded to load a CUDA index.
-// TODO(esiragusa): remove this as soon as open() works on thrust::device_vector
-
-#ifdef PLATFORM_CUDA
-namespace seqan {
-template <typename TValue, typename TTraits, typename TSSetSpec, typename TSpec, typename TConfig>
-inline bool open(Index<StringSet<thrust::device_vector<TValue, TTraits>, TSSetSpec>, FMIndex<TSpec, TConfig> > & index,
-                 const char * fileName, int openMode)
-{
-    typedef StringSet<String<TValue>, TSSetSpec>    TText;
-    typedef Index<TText, FMIndex<TSpec, TConfig> >  THostIndex;
-
-    THostIndex hindex;
-    if (!open(hindex, fileName, openMode)) return false;
-
-    assign(index, hindex);
-
-    return true;
-}
-}
-#endif
-
-// ----------------------------------------------------------------------------
 // Function assign()                                                  [FMIndex]
 // ----------------------------------------------------------------------------
 // This function is overloaded to avoid the text.

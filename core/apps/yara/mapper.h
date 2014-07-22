@@ -379,10 +379,6 @@ inline void loadGenome(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void loadGenomeIndex(Mapper<TSpec, TConfig> & me)
 {
-#ifdef PLATFORM_CUDA
-    cudaPrintFreeMemory();
-#endif
-
     start(me.timer);
     try
     {
@@ -398,10 +394,6 @@ inline void loadGenomeIndex(Mapper<TSpec, TConfig> & me)
 
     if (me.options.verbose > 1)
         std::cout << "Loading reference index:\t\t" << me.timer << std::endl;
-
-#ifdef PLATFORM_CUDA
-    cudaPrintFreeMemory();
-#endif
 }
 
 // ----------------------------------------------------------------------------
