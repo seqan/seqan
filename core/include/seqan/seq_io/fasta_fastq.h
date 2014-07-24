@@ -390,6 +390,73 @@ read(StringSet<TIdString, TMetaSetSpec> & meta, StringSet<TSeqString, TSeqSetSpe
 ..include:seqan/seq_io.h
 */
 
+// ----------------------------------------------------------------------------
+// Function write(TagSelector); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString>
+inline void
+write(TFwdIterator & /* iter */, TIdString & /* meta */, TSeqString & /* seq */,
+      TagSelector<> const & /* format */)
+{}
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TTagList>
+inline void
+write(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+        write(iter, meta, seq, TFormatTag());
+    else
+        write(iter, meta, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// ----------------------------------------------------------------------------
+// Function write(Raw); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString>
+inline void write(TFwdIterator & iter, TIdString & /*tag*/, TSeqString & seq, Raw)
+{
+    write(iter, seq);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(Raw); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
+inline void write(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TQualString & /*tag*/ , Raw const & raw)
+{
+    write(iter, meta, seq, raw);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TagSelector); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
+inline void
+write(TFwdIterator & /* iter */, TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */,
+      TagSelector<> const & /* format */)
+{}
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString, typename TTagList>
+inline void
+write(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TQualString & qual, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+        write(iter, meta, seq, qual, TFormatTag());
+    else
+        write(iter, meta, seq, qual, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// ----------------------------------------------------------------------------
+// Function write(Fasta);
+// ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString>
 inline void write(TTarget & target,
@@ -403,6 +470,17 @@ inline void write(TTarget & target,
     writeValue(target, '\n');
 
     writeWrappedString(target, seq, (options.lineLength < 0)? 70 : options.lineLength); // 70bp wrapping, by default
+}
+
+template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
+inline void write(TTarget & target,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        TQualString const & /*tag*/,
+                        Fasta const & fasta,
+                        SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    write(target, meta, seq, fasta, options);
 }
 
 // ----------------------------------------------------------------------------

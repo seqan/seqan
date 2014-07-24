@@ -219,7 +219,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
 {
-    write(meta, seq, qual, file.iter, Fastq());
+    write(file.iter, meta, seq, qual, file.format);
 }
 
 }  // namespace seqan
