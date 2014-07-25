@@ -66,74 +66,75 @@ typedef Tag<Roi_> Roi;
 
 // Variant without I/O Context.
 
-template <typename TStream>
-int writeRecord(TStream & out, RoiRecord const & record, Roi const & /*tag*/)
+template <typename TTarget>
+int writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
 {
-    streamPut(out, record.ref);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.beginPos + 1);  // 0-based to 1-based
-    streamWriteChar(out, '\t');
-    streamPut(out, record.endPos);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.name);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.len);
-    streamWriteChar(out, '\t');
-    streamWriteChar(out, record.strand);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.countMax);
-    streamWriteChar(out, '\t');
+    std::cerr << record.ref << std::endl;
+    write(target, record.ref);
+    writeValue(target, '\t');
+    appendNumber(target, record.beginPos + 1);  // 0-based to 1-based
+    writeValue(target, '\t');
+    appendNumber(target, record.endPos);
+    writeValue(target, '\t');
+    write(target, record.name);
+    writeValue(target, '\t');
+    appendNumber(target, record.len);
+    writeValue(target, '\t');
+    writeValue(target, record.strand);
+    writeValue(target, '\t');
+    appendNumber(target, record.countMax);
+    writeValue(target, '\t');
     for (unsigned i = 0; i < length(record.data); ++i)
     {
-        streamPut(out, record.data[i]);
-        streamWriteChar(out, '\t');
+        write(target, record.data[i]);
+        writeValue(target, '\t');
     }
-    
+
     for (unsigned i = 0; i < length(record.count); ++i)
     {
         if (i > 0)
-            streamWriteChar(out, ',');
-        streamPut(out, record.count[i]);
+            writeValue(target, ',');
+        appendNumber(target, record.count[i]);
     }
-    streamWriteChar(out, '\n');
+    writeValue(target, '\n');
 
     return 0;
 }
 
 // Variant with I/O Context.
 
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int writeRecord(TStream & out, RoiRecord const & record,
+template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+int writeRecord(TTarget & target, RoiRecord const & record,
                 RoiIOContext<TNameStore, TNameStoreCache> const & context,
                 Roi const & /*tag*/)
 {
-    streamPut(out, nameStore(context)[record.rID]);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.beginPos + 1);  // 0-based to 1-based
-    streamWriteChar(out, '\t');
-    streamPut(out, record.endPos);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.name);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.len);
-    streamWriteChar(out, '\t');
-    streamWriteChar(out, record.strand);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.countMax);
-    streamWriteChar(out, '\t');
+    write(target, nameStore(context)[record.rID]);
+    writeValue(target, '\t');
+    appendNumber(target, record.beginPos + 1);  // 0-based to 1-based
+    writeValue(target, '\t');
+    appendNumber(target, record.endPos);
+    writeValue(target, '\t');
+    write(target, record.name);
+    writeValue(target, '\t');
+    appendNumber(target, record.len);
+    writeValue(target, '\t');
+    writeValue(target, record.strand);
+    writeValue(target, '\t');
+    appendNumber(target, record.countMax);
+    writeValue(target, '\t');
     for (unsigned i = 0; i < length(record.data); ++i)
     {
-        streamPut(out, record.data[i]);
-        streamWriteChar(out, '\t');
+        write(target, record.data[i]);
+        writeValue(target, '\t');
     }
-    
+
     for (unsigned i = 0; i < length(record.count); ++i)
     {
         if (i > 0)
-            streamWriteChar(out, ',');
-        streamPut(out, record.count[i]);
+            writeValue(target, ',');
+        appendNumber(target, record.count[i]);
     }
-    streamWriteChar(out, '\n');
+    writeValue(target, '\n');
 
     return 0;
 }

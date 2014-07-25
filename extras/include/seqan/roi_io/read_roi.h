@@ -62,6 +62,8 @@ typedef Tag<Roi_> Roi;
 // Function readRecord()                                            [RoiRecord]
 // ----------------------------------------------------------------------------
 
+// TODO(singer): get rid of internal buffers!
+
 // Variant without NameStoreCache.
 
 template <typename TForwardIter>
@@ -115,7 +117,7 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
     skipOne(iter, IsTab());
 
     // Read strand.
-    readOne(record.strand, iter, AssertFunctor<OrFunctor<OrFunctor<EqualsChar<'.'>, EqualsChar<'+'> >, EqualsChar<'-'> >, ParseError, Roi>());
+    readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'.'>, EqualsChar<'+'> >, EqualsChar<'-'> >());
 
     // Skip TAB.
     skipOne(iter, IsTab());
@@ -129,44 +131,23 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
     // Skip TAB.
     skipOne(iter, IsTab());
 
-    // Buffer until the end of the line.
-    /*
-    seqan::CharString dataBuffer;
-    readLine(datBuffer, iter);
-
-    // Count tabs.
-    int numTabs = 0;
-    for (unsigned i = 0; i < length(dataBuffer); ++i)
-        numTabs += (dataBuffer[i] == '\t');
-    */
-
     // Read data field.
     do
     {
+        clear(buffer);
         readUntil(buffer, iter, TNextEntry());
-        if (!atEnd(iter) && !IsNewline()(value(iter)))
+        if (!atEnd(iter))
         {
-            appendValue(record.data, buffer);
-            skipOne(iter, IsTab());
+            if(!IsNewline()(value(iter)))
+                appendValue(record.data, buffer);
+
+            skipOne(iter);
         }
         else
             break;
 
     }
     while (true);
-
-    /*
-    RecordReader<CharString, SinglePass<StringReader> > stringReader(dataBuffer);
-    for (int tabsRead = 0; !atEnd(stringReader) && tabsRead < numTabs; ++tabsRead)
-    {
-        clear(buffer);
-        if ((res = readGraphs(buffer, stringReader)) != 0)
-            return res;
-        appendValue(record.data, buffer);
-
-        goNext(stringReader);
-    }
-    */
 
     // TODO(holtgrew): Read additional information.
 
@@ -187,39 +168,9 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
             appendValue(record.count, count);
             record.countMax = std::max(record.countMax, back(record.count));
         }
-        skipOne(castIter);
+        if (!atEnd(castIter))
+            skipOne(castIter);
     }
-    //clear(buffer);
-    /*
-    for (; !atEnd(stringReader) && value(stringReader) != '\r' && value(stringReader) != '\n'; goNext(stringReader))
-    {
-        if (value(stringReader) != ',')
-        {
-            if (!isdigit(value(stringReader)))
-                return 1;  // Error parsing.
-            appendValue(buffer, value(stringReader));
-        }
-        else
-        {
-            if (empty(buffer))
-                continue;
-            unsigned count = 0;
-            if (!lexicalCast2(count, buffer))
-                return 1;  // Error parsing.
-            appendValue(record.count, count);
-            record.countMax = std::max(record.countMax, back(record.count));
-            clear(buffer);
-        }
-    }
-    if (!empty(buffer))
-    {
-        unsigned count = 0;
-        if (!lexicalCast2(count, buffer))
-            return 1;  // Error parsing.
-        appendValue(record.count, count);
-        record.countMax = std::max(record.countMax, back(record.count));
-    }
-    */
 }
 
 // Variant with NameStoreCache.

@@ -91,7 +91,6 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record_context)
 
 SEQAN_DEFINE_TEST(test_roi_write_roi_record)
 {
-    /*
     seqan::RoiRecord record;
     record.ref = "I";
     record.beginPos = 0;
@@ -104,19 +103,19 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     appendValue(record.count, 2);
     appendValue(record.count, 4);
 
-    String<char> outString;
-    DirectionIterator<String<char> >, Output> iter = begin outString;
-    writeRecord(iter, record, seqan::Roi());
+    seqan::String<char> outString;
+    writeRecord(outString, record, seqan::Roi());
 
-    String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+
+    std::cerr << outString << std::endl;
 
     SEQAN_ASSERT_EQ(expected, outString);
-    */
+
 }
 
 SEQAN_DEFINE_TEST(test_roi_write_roi_record_context)
 {
-    /*
     seqan::RoiRecord record;
     // NO record.ref = "I", comes from cache!
     record.rID = 0;
@@ -137,14 +136,12 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record_context)
     seqan::NameStoreCache<TNameStore> refNamesCache(refNames);
     seqan::RoiIOContext<TNameStore> roiIOContext(refNames, refNamesCache);
 
-    String<char> outString;
-    DirectionIterator<String<char> >, Output> iter = begin outString;
-    writeRecord(iter, record, roiIOContext, seqan::Roi());
+    seqan::String<char> outString;
+    writeRecord(outString, record, roiIOContext, seqan::Roi());
 
-    String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
 
     SEQAN_ASSERT_EQ(expected, outString);
-    */
 }
 
 SEQAN_BEGIN_TESTSUITE(test_roi_io)
