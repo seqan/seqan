@@ -179,11 +179,13 @@ inline bool guessFormat(BamFile<Output, TSpec> &)
 // _mapBamFormatToCompressionFormat
 // --------------------------------------------------------------------------
 
+#if SEQAN_HAS_ZLIB
 inline BgzfFile
 _mapBamFormatToCompressionFormat(Bam)
 {
     return BgzfFile();
 }
+#endif
 
 inline Nothing
 _mapBamFormatToCompressionFormat(Sam)
@@ -199,8 +201,10 @@ _mapBamFormatToCompressionFormat(TagSelector<TBamFileFormats> format)
 
     if (isEqual(format, Sam()))
         assign(compressionType, Nothing());
+#if SEQAN_HAS_ZLIB
     if (isEqual(format, Bam()))
         assign(compressionType, BgzfFile());
+#endif
 
     return compressionType;
 }
