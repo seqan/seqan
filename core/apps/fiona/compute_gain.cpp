@@ -1,8 +1,3 @@
-// USAGE: compute_gain GENOME.fa PRE.sam POST.{sam,fq,fa}
-//
-// Where PRE.sam are the mapped reads before mapping, POST.sam are the mapped reads after mapping, and GENOME.fa is the
-// used FASTA file with the genome.
-
 #include <cctype>
 #include <iostream>
 #include <map>
@@ -389,7 +384,7 @@ void updateStats(Stats & stats,
     typedef Align<Dna5String> TAlign;
     TAlign & preAlign = stats._preAlign;
     TAlign & postAlign = stats._postAlign;
-    
+
     resize(rows(preAlign), 2);
     setSource(row(preAlign, 0), genomeInfixPre);
     setSource(row(preAlign, 1), preRead);
@@ -762,7 +757,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setDate(parser, "August 2012");
 
     addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB-g\\fP GENOME.fa \\fB--pre\\fP \\fIPRE.sam\\fP \\fB--post\\fP "
+                 "[\\fIOPTIONS\\fP] \\fB-g\\fP GENOME.fa \\fB--pre\\fP \\fIPRE.{sam,bam}\\fP \\fB--post\\fP "
                  "\\fIPOST.sam\\fP");
 
     addDescription(parser,
@@ -836,9 +831,9 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setValidValues(parser, "genome", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
-                                            "PRE.sam"));
+                                            "PRE.{sam,bam}"));
     setRequired(parser, "pre");
-    setValidValues(parser, "pre", "sam");
+    setValidValues(parser, "pre", "sam bam");
 
     addOption(parser, seqan::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
                                             "POST.sam"));
@@ -915,13 +910,12 @@ int main(int argc, char const ** argv)
 
     // Opening file and record reader.
 
-    std::fstream inPre(toCString(options.pathSamPreCorrection), std::ios::in | std::ios::binary);
-    if (!inPre.good())
+    seqan::BamStream inPre(toCString(options.pathSamPreCorrection));
+    if (!isGood(inPre))
     {
         std::cerr << "ERROR: Could not open pre-correction file.\n";
         return 1;
     }
-    RecordReader<std::fstream, SinglePass<> > readerPre(inPre);
     std::fstream inPost;
     bool postSam = !empty(options.pathSamPostCorrection);  // Whether or not to read post SAM.
     if (postSam)
@@ -940,12 +934,11 @@ int main(int argc, char const ** argv)
     std::cerr << "SAM headers...\n";
 
     TNameStore refNameStore;
+    BamHeader header = inPre.header;
+    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
+        appendValue(refNameStore, header.sequenceInfos[i].i1);
     TNameStoreCache refNameStoreCache(refNameStore);
     BamIOContext<TNameStore> context(refNameStore, refNameStoreCache);
-    BamHeader header;
-    int res = readHeader(header, context, readerPre);
-    if (res != 0)
-        return 1;  // Error message printed above.
 
     // Read post-correction SAM header and forget it immediately. We COULD check for consistency with pre-correction
     // header but this tool is for internal use only...
@@ -1050,10 +1043,10 @@ int main(int argc, char const ** argv)
             clear(recordPre.qName);
             clear(recordPost.qName);
 
-            while (!stop && !error && !atEnd(readerPre) && !atEnd(readerPost))
+            while (!stop && !error && !atEnd(inPre) && !atEnd(readerPost))
             {
                 // Read next record into chunk.
-                if (readRecord(recordPre, context, readerPre, Sam()) != 0)
+                if (readRecord(recordPre, inPre) != 0)
                 {
                     std::cerr << "ERROR: Problem reading from pre correction file. (" << omp_get_thread_num() << ")\n";
                     stop = error = true;  // Stop processing for all.
@@ -1071,7 +1064,6 @@ int main(int argc, char const ** argv)
                 }
                 prevName = recordPre.qName;
 
-                
                 // read post-records as long as they are less than the last pre-record
                 while (!atEnd(readerPost) && (empty(recordPost.qName) || strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0))
                 {
@@ -1121,7 +1113,7 @@ int main(int argc, char const ** argv)
                     break;
             }
 
-            if (atEnd(readerPre) || atEnd(readerPost) || chunksLeftToRead == 0ul)
+            if (atEnd(inPre) || atEnd(readerPost) || chunksLeftToRead == 0ul)
                 stop = true;  // Do not read any more, this thread finishes its computation.
             else
                 --chunksLeftToRead;
@@ -1134,7 +1126,7 @@ int main(int argc, char const ** argv)
             updateStats(stats[tid], correctionLog, chunkPre[i], chunkPost[i], idMap, seqs, options);
     }
 
-    if (!atEnd(readerPre) || !atEnd(readerPost))
+    if (!atEnd(inPre) || !atEnd(readerPost))
         std::cerr << "WARNING: Files not read completely!\n";
     if (error)
     {
@@ -1146,7 +1138,7 @@ int main(int argc, char const ** argv)
 
     if (chunksLeftToRead != 0ul)
     {
-        SEQAN_CHECK(atEnd(readerPre) && atEnd(readerPost), "Both readers must be at end!");
+        SEQAN_CHECK(atEnd(inPre) && atEnd(readerPost), "Both readers must be at end!");
     }
 
     // -----------------------------------------------------------------------
@@ -1181,7 +1173,7 @@ int main(int argc, char const ** argv)
             globalStats.histo[it->first] += it->second;
         for (std::map<int, unsigned>::const_iterator it = stats[i].preErrorHisto.begin(); it != stats[i].preErrorHisto.end(); ++it)
             globalStats.preErrorHisto[it->first] += it->second;
-        
+
         resize(globalStats.preErrorsAtPos, length(stats[i].preErrorsAtPos), globalStats.zeroCounts);
         for (unsigned pos = 0; pos < length(stats[i].preErrorsAtPos); ++pos)
             for (int err = 0; err < 4; ++err)

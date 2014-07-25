@@ -15,7 +15,7 @@ message (STATUS "Configuring core/apps/fiona")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP)
+set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB)
 find_package (SeqAn REQUIRED)
 find_package (Boost)
 
