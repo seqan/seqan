@@ -57,15 +57,19 @@ namespace SEQAN_NAMESPACE_MAIN
         DWORD  hThreadID;
         Worker worker;
 
-        Thread() {}
+        Thread() :
+            hThread()
+        {}
 
         template <typename TArg>
         Thread(TArg &arg):
+            hThread(),
             worker(arg)
         {}
 
         template <typename TArg>
         Thread(TArg const &arg):
+            hThread(),
             worker(arg)
         {}
 
@@ -122,20 +126,23 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename Worker>
     struct Thread
     {
-        typedef pthread_t* Handle;
+        pthread_t   data;
+        pthread_t   *hThread;
+        Worker      worker;
 
-        pthread_t data, *hThread;
-        Worker worker;
-
-        Thread() {}
+        Thread() :
+            hThread()
+        {}
 
         template <typename TArg>
         Thread(TArg &arg):
+            hThread(),
             worker(arg)
         {}
 
         template <typename TArg>
         Thread(TArg const &arg):
+            hThread(),
             worker(arg)
         {}
 
@@ -149,10 +156,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline bool open()
         {
-            if (!pthread_create(&data, NULL, _start, this) && (hThread = &data)) {
-                return true;
-            } else
-                return false;
+            return !pthread_create(&data, NULL, _start, this) && (hThread = &data);
         }
 
         inline bool close() {
