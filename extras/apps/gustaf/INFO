@@ -2,7 +2,7 @@ Name: gustaf
 Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 Maintainer: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 License: GPL v3
-Copyright: 2011-2013, FU Berlin
+Copyright: 2011-2014, FU Berlin
 Status: under development
 Description: Calculates breakpoints of NGS reads having one or multiple split points.
  Given a reference sequence and one or multiple read sequences, Gustaf uses

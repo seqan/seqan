@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2014, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,7 @@
 #include <seqan/sequence.h>
 
 #include "../../../core/apps/stellar/stellar.h"
-#include "msplazer_parseOptions.h"
+#include "msplazer_parse_options.h"
 #include "msplazer.h"
 #include "msplazer_main.h"
 

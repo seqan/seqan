@@ -135,8 +135,8 @@ void _setupArgumentParser(ArgumentParser & parser)
     setShortDescription(
         parser,
         "Gustaf - Generic mUlti-SpliT Alignment Finder: Tool for split-read mapping allowing multiple splits.");
-    setVersion(parser, "1.0");
-    setDate(parser, "July 2012");
+    setVersion(parser, "1.0.0");
+    setDate(parser, "August 2014");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FASTA FILE\\fP> <\\fIREAD FASTA FILE\\fP> \n "
                  );
