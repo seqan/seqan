@@ -105,7 +105,7 @@ _statsBlock(char                      * buffer,
                    " Identities = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n"
                    " Strand=", // no spaces here for whatever reason
-            m.bitScore, unsigned(m.score), m.eVal,
+            m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength, m.identities * 100 / m.aliLength,
             m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength);
     if (m.qFrameShift == 1)
@@ -132,7 +132,7 @@ _statsBlock(char                      * buffer,
                    " Identities = %d/%d (%d%%),"
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n\n",
-            m.bitScore, unsigned(m.score), m.eVal,
+            m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength, m.identities * 100 / m.aliLength,
             m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
             m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength);
@@ -152,7 +152,7 @@ _statsBlock(char                     * buffer,
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
-            m.bitScore, unsigned(m.score), m.eVal,
+            m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength, m.identities * 100 / m.aliLength,
             m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
             m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
@@ -173,7 +173,7 @@ _statsBlock(char                    * buffer,
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
-            m.bitScore, unsigned(m.score), m.eVal,
+            m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength, m.identities * 100 / m.aliLength,
             m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
             m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
@@ -194,7 +194,7 @@ _statsBlock(char                    * buffer,
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d/%+d\n\n",
-            m.bitScore, unsigned(m.score), m.eVal,
+            m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength, m.identities * 100 / m.aliLength,
             m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
             m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
@@ -451,7 +451,7 @@ _writeMatchOneLiner(TStream             & stream,
         return ret;
 
     char buffer[20] = "";
-    sprintf(buffer, "%4li  %.1g\n", long(m.bitScore), m.eVal);
+    sprintf(buffer, "%4li  %.1g\n", long(m.bitScore), m.eValue);
     ret = streamPut(stream, buffer);
 
     return ret;

@@ -163,10 +163,12 @@ enum class BlastFormatProgram : uint8_t
  * @headerfile seqan/blast.h
  *
  * @val BlastFormatGeneration BlastFormatGeneration::BLAST
- * @brief traditional NCBI Blast, written in C ("blastall")
+ * @brief traditional Blast, written in C ("blastall" binary); all behaviour related
+ * to this Format is based on NCBI BLAST-2.2.26
  *
  * @val BlastFormatGeneration BlastFormatGeneration::BLAST_PLUS
- * @brief NCBI Blast+, written in C++
+ * @brief Blast+, written in C++; all behaviour related
+ * to this Format is based on NCBI BLAST-2.2.27+
  *
  */
 
@@ -185,13 +187,23 @@ enum class BlastFormatGeneration : uint8_t
  * @signature template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
  *            struct BlastFormat;
  *
- * @section Blast-I/O
+ * @section Data structures
+ *
+ * The easiest way to use the BLAST module is to organize your data in the
+ * structures provided, i.e. create records (@link BlastRecord @endlink)
+ * that contain all matches (@link BlastMatch @endlink) of one query
+ * sequence. Store some general information of your database in a
+ * @link BlastDbSpecs @endlink object.
+ *
+ *
+ * @section E-Value statistics
+ *
+ * This module provides
+ * 
+ * @section Output
  *
  * When writing Blast(-like) results to a file the easiest way to proceed
- * is to organize your results into records (@link BlastRecord @endlink)
- * that contain all matches (@link BlastMatch @endlink) of one query
- * sequence. Another convenience data structure required for some functions is
- * @link BlastDbSpecs @endlink .
+ * is to organize your results into
  *
  * When writing this data, call @link BlastFormat#writeTop @endlink
  * first, than iterate over the records, calling
@@ -457,7 +469,7 @@ template <>
 constexpr
 const char * _defaultFields<BlastFormatGeneration::BLAST>()
 {
-    return "Fields: Query id, Subject id, % identity, alignment length," \
+    return "Query id, Subject id, % identity, alignment length," \
            " mismatches, gap openings, q. start, q. end, s. start, s." \
            " end, e-value, bit score";
 }
@@ -466,7 +478,7 @@ template <>
 constexpr
 const char * _defaultFields<BlastFormatGeneration::BLAST_PLUS>()
 {
-    return "Fields: query id, subject id, % identity, alignment " \
+    return "query id, subject id, % identity, alignment " \
            "length, mismatches, gap opens, q. start, q. end, s. " \
            "start, s. end, evalue, bit score";
 }

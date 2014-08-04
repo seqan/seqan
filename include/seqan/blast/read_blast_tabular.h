@@ -706,24 +706,9 @@ skipHeader(RecordReader<TFile, TPass > & reader,
     return skipHeader(reader, false, BlastFormat<m,p,g>());
 }
 
-
 // ----------------------------------------------------------------------------
 // Function skipUntilMatch()                           [Single pass]
 // ----------------------------------------------------------------------------
-
-/**
-.Function.BlastFormat#skipUntilMatch
-..cat:Input / Output
-..signature:skipUntilMatch(recordReader, tag)
-..param.recodReader: the RecordReader we are reading from
-...type:Class.RecordReader
-..param.BlastFormat: The format tag, note that BlastFormat must be further specified
-...type:Class.BlastFormat
-..summary: skip arbitrary number of headers and/or comment lines until a record is reached
-..remark: call this function whenever you are on a comment character ('#') in the file and want to jump to the beginning of the next record. If you want skip only a single header (to count skipped headers or verify its conformance
-to standards), use @Function.BlastFormat#skipHeader@ instead.
-..include:seqan/blast.h
-*/
 
 /*!
  * @fn BlastFormat#skipUntilMatch
@@ -851,46 +836,6 @@ _readMatchImplBlastTabDefault(TqId      & qId,
 
     return 0;
 }
-
-
-/**
-.Function.BlastFormat#readMatch
-..cat:Input / Output
-..signature:readMatch(qId, sId, identities, aliLength, numMismatches, gapOpenings, qStart, qEnd, sStart, sEnd, eValue, bitScore, recordReader, BlastFormat)
-..signature:readMatch(fields, recordReader, BlastFormat)
-..param.qId: ID of the query
-...type:Class.String
-...type:nolink:or similar
-..param.sId: ID of the subject (sequence in database)
-...type:Class.String
-...type:nolink:or similar
-..param.identities: number of identies in alignment (not percentage!)
-...type:nolink:double
-..param.aliLength: length of alignment
-...type:nolink:unsigned
-..param.numMismatches: number of mismatches in alignment
-...type:nolink:unsigned
-..param.gapOpenings: number consecutive gaps per alignment
-...type:nolink:unsigned
-..param.qStart: alignment begin position on query
-...type:nolink:unsigned long
-..param.qEnd: alignment end position on query
-...type:nolink:unsigned long
-..param.sStart: alignment begin position on subject
-...type:nolink:unsigned long
-..param.sEnd: alignment end position on subject
-...type:nolink:unsigned long
-..param.eValue: alignment e-Value
-...type:nolink:double
-..param.bitScore: alignment bit-Score
-...type:nolink:double
-..param.recodReader: the RecordReader we are reading from
-...type:Class.RecordReader
-..param.BlastFormat: The format tag, note that BlastFormat must be further specified
-...type:Class.BlastFormat
-
-..include:seqan/blast.h
-*/
 
 /*!
  * @fn BlastFormat#readMatch

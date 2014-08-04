@@ -46,6 +46,15 @@ namespace seqan {
  * @signature struct BlastMatch<TQId, TSId, TPos, TAlign> { ... };
  * @brief An object to hold data members of a blast-match.
  *
+ * You should set the following members manually: @link BlastMatch::qId @endlink, @link BlastMatch::sId @endlink,
+ * @link BlastMatch::qLength @endlink, @link BlastMatch::sLength @endlink,
+ * @link BlastMatch::qFrameShift @endlink and @link BlastMatch::sFrameShift @endlink .
+ *
+ * If you then also set a valid @link BlastMatch::align @endlink you can
+ * let the other members be computed by
+ * @link BlastMatch#calcStatsAndScore @endlink and
+ * @link BlastMatch#calcBitScoreAndEValue @endlink.
+ *
  * @tparam TQId  Type of qId, defaults to @link CharString @endlink
  * @tparam TSId  Type of sId, defaults to @link CharString @endlink
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
@@ -73,6 +82,9 @@ namespace seqan {
  * @var TPos BlastMatch::sEnd;
  * @brief start of the subject sequence
  *
+ * @var TPos BlastMatch::qLength;
+ * @brief length of the query sequences
+ *
  * @var TPos BlastMatch::sLength;
  * @brief length of the subject sequence
  *
@@ -94,7 +106,7 @@ namespace seqan {
  * @var TPos BlastMatch::gapOpenings;
  * @brief number of contiguous gap stretches in alignment
  *
- * @var double BlastMatch::eVal;
+ * @var double BlastMatch::eValue;
  * @brief e-value of the alignment
  *
  * @var double BlastMatch::bitScore;
@@ -103,12 +115,14 @@ namespace seqan {
  * @var char BlastMatch::qFrameShift;
  * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
  * shift of the translation frame and a negative sign indicates the reverse
- * complement strand [query sequence]
+ * complement strand [query sequence, only applies for BlastFormatProgram ==
+ * TBLASTN | TBLASTX]
  *
  * @var char BlastMatch::sFrameShift;
  * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
  * shift of the translation frame and a negative sign indicates the reverse
- * complement strand [subject sequence]
+ * complement strand [subject sequence, only applies for BlastFormatProgram ==
+ * BLASTX | TBLASTX]
  *
  * @var TAlign BlastMatch::align;
  * @brief @link Align @endlink object of the alignment
@@ -131,49 +145,41 @@ struct BlastMatch
     TQId            qId;
     TSId            sId;
 
-    long            score;
+    long            score         = 0;
 
-    TPos            qStart;
-    TPos            qEnd;
-    TPos            sStart;
-    TPos            sEnd;
+    TPos            qStart        = 0;
+    TPos            qEnd          = 0;
+    TPos            sStart        = 0;
+    TPos            sEnd          = 0;
 
-    TPos            sLength;
+    TPos            qLength       = 0;
+    TPos            sLength       = 0;
 
-    TPos            aliLength;
-    TPos            identities;
-    TPos            positives;
-    TPos            mismatches;
-    TPos            gaps;
-    TPos            gapOpenings;
+    TPos            aliLength     = 0;
+    TPos            identities    = 0;
+    TPos            positives     = 0;
+    TPos            mismatches    = 0;
+    TPos            gaps          = 0;
+    TPos            gapOpenings   = 0;
 
-    double          eVal;
-    double          bitScore;
+    double          eValue        = 0;
+    double          bitScore      = 0;
 
-    signed char     qFrameShift;
-    signed char     sFrameShift;
+    signed char     qFrameShift   = 1;
+    signed char     sFrameShift   = 1;
 
     TAlign          align;
 
     BlastMatch() :
-        qId(TQId()), sId(TSId()), score(0), qStart(0), qEnd(0), sStart(0),
-        sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
-        mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
-        qFrameShift(1), sFrameShift(1)
+        qId(TQId()), sId(TSId())
     {}
 
     BlastMatch(TQId const & _qId, TSId const & _sId) :
-        qId(_qId), sId(_sId), score(0), qStart(0), qEnd(0), sStart(0),
-        sEnd(0), sLength(0),  aliLength(0), identities(0), positives(0),
-        mismatches(0), gaps(0), gapOpenings(0), eVal(0), bitScore(0),
-        qFrameShift(1), sFrameShift(1)
+        qId(_qId), sId(_sId)
     {}
 
     BlastMatch(TQId && _qId, TSId && _sId) :
-        qId(std::move(_qId)), sId(std::move(_sId)), score(0), qStart(0),
-        qEnd(0), sStart(0), sEnd(0), sLength(0),  aliLength(0), identities(0),
-        positives(0), mismatches(0), gaps(0), gapOpenings(0), eVal(0),
-        bitScore(0), qFrameShift(1), sFrameShift(1)
+        qId(std::move(_qId)), sId(std::move(_sId))
     {}
 
     inline bool operator==(BlastMatch const & bm2) const
@@ -184,6 +190,8 @@ struct BlastMatch
                         qEnd,
                         sStart,
                         sEnd,
+                        qLength,
+                        sLength,
 //                         align,
                         qFrameShift,
                         sFrameShift,
@@ -194,7 +202,7 @@ struct BlastMatch
                         mismatches,
                         gaps,
                         gapOpenings,
-                        eVal,
+                        eValue,
                         bitScore)
             == std::tie(bm2.qId,
                         bm2.sId,
@@ -202,6 +210,8 @@ struct BlastMatch
                         bm2.qEnd,
                         bm2.sStart,
                         bm2.sEnd,
+                        bm2.qLength,
+                        bm2.sLength,
                         bm2.qFrameShift,
                         bm2.sFrameShift,
 //                         bm2.align,
@@ -212,7 +222,7 @@ struct BlastMatch
                         bm2.mismatches,
                         bm2.gaps,
                         bm2.gapOpenings,
-                        bm2.eVal,
+                        bm2.eValue,
                         bm2.bitScore);
     }
 
@@ -286,13 +296,13 @@ struct BlastRecord
  *
  * @tparam TDbName  Type of dbName, defaults to @link CharString @endlink
  *
- * @var TDbName BlastRecord::dbName;
+ * @var TDbName BlastDbSpecs::dbName;
  * @brief verbose name of the database
  *
- * @var uint64_t BlastRecord::dbTotalLength;
+ * @var uint64_t BlastDbSpecs::dbTotalLength;
  * @brief summed sequence length of the database
  *
- * @var uint32_t BlastRecord::dbNumberOfSeqs;
+ * @var uint32_t BlastDbSpecs::dbNumberOfSeqs;
  * @brief number of sequences in the database
  */
 
