@@ -275,13 +275,13 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
     BlastScoringAdapter<TScheme> adapter(scheme);
     SEQAN_ASSERT(isValid(adapter));
 
-    calcBitScoreAndEValue(m.bitScore, m.eVal, m.score, length(src0),
+    calcBitScoreAndEValue(m.bitScore, m.eValue, m.score, length(src0),
                           length(src1), adapter);
 
     double epsilon = 1e-4;
     SEQAN_ASSERT_LEQ(std::abs(m.bitScore - 23.0978), epsilon);
     epsilon = 1e-8; // more important on evalue
-    SEQAN_ASSERT_LEQ(std::abs(m.eVal - 0.000267348), epsilon);
+    SEQAN_ASSERT_LEQ(std::abs(m.eValue - 0.000267348), epsilon);
 }
 
 template <typename TFile, typename TDbSpecs, typename TRecords, typename TFormat>
@@ -297,6 +297,7 @@ _writeCustomFieldsImpl(TFile & file,
         res = writeHeader(file,
                           r.qId,
                           dbSpecs.dbName,
+                          r.matches.size(),
                           TFormat(),
                           "Query id",
                           "Subject id",
@@ -315,7 +316,7 @@ _writeCustomFieldsImpl(TFile & file,
                               m.aliLength,
                               m.mismatches,
                               m.gaps,
-                              m.eVal,
+                              m.eValue,
                               m.bitScore);
             SEQAN_ASSERT_EQ(res, 0);
         }
@@ -433,10 +434,11 @@ test_blast_write_record_match(TFile & file,
             m.qStart = beginPosition(row(m.align, 1));
             m.qEnd   = endPosition(row(m.align, 1));
 
+            m.qLength = length(queries[q]);
+
             calcStatsAndScore(m, scheme);
 
-            calcBitScoreAndEValue(m, dbSpecs.dbTotalLength,
-                                  records[q].qLength, adapter);
+            calcBitScoreAndEValue(m, dbSpecs, adapter);
         }
     }
 
@@ -487,12 +489,15 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         header.append(std::to_string(SEQAN_VERSION_PATCH));
         header.append(" (http://www.seqan.de)\n"
         "# Query: Query_Numero_Uno\n"
-        "# Database: The Foo Database\n# ");
+        "# Database: The Foo Database\n"
+        "# Fields: ");
         if (customFields)
-            header.append("Fields: Query id, Subject id, alignment length, mismatches, gaps, e-value, bit score");
+            header.append("Query id, Subject id, alignment length, mismatches, gaps, e-value, bit score");
         else
             header.append(_defaultFields(TFormat()));
         header.append("\n");
+        if (g == BlastFormatGeneration::BLAST_PLUS)
+            header.append("# 2 hits found\n");
         compString.append(header);
     }
 
@@ -514,14 +519,18 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         header.append(".");
         header.append(std::to_string(SEQAN_VERSION_PATCH));
         header.append(" (http://www.seqan.de)\n"
-        "# Query: Query_Numero_Dos\n"
-        "# Database: The Foo Database\n# ");
+        "# Query: Query_Numero_Dos\n" // <--- the only line different to above
+        "# Database: The Foo Database\n"
+        "# Fields: ");
         if (customFields)
-            header.append("Fields: Query id, Subject id, alignment length, mismatches, gaps, e-value, bit score");
+            header.append("Query id, Subject id, alignment length, mismatches, gaps, e-value, bit score");
         else
             header.append(_defaultFields(TFormat()));
         header.append("\n");
+        if (g == BlastFormatGeneration::BLAST_PLUS)
+            header.append("# 2 hits found\n");
         compString.append(header);
+
     }
     if (customFields)
         compString.append(
@@ -532,17 +541,19 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         "Query_Numero_Dos\tSubject_Numero_Uno\t87.5\t8\t1\t0\t1\t8\t184\t191\t0.0255459\t16.9346\n"
         "Query_Numero_Dos\tSubject_Numero_Dos\t100\t8\t0\t0\t1\t8\t10\t17\t0.00672262\t18.8606\n");
 
-//     if (contents != compString)
-//     {
-//         for (uint32_t i = 0; i < length(contents); ++i)
-//         {
-//             if (contents[i] != compString[i])
-//             {
-//                 std::cout << contents.substr(0,i) << "\n";
-//                 break;
-//             }
-//         }
-//     }
+    if (contents != compString)
+    {
+        for (uint32_t i = 0; i < length(contents); ++i)
+        {
+            if (contents[i] != compString[i])
+            {
+                std::cout << contents.substr(0,i) << "\n";
+                std::cout << "CONT: \"" << contents[i] << "\"\n";
+                std::cout << "COMP: \"" << compString[i] << "\"\n";
+                break;
+            }
+        }
+    }
     SEQAN_ASSERT_EQ(contents, compString);
 }
 
