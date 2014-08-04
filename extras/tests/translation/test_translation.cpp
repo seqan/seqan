@@ -42,9 +42,13 @@
 SEQAN_BEGIN_TESTSUITE(test_translation)
 {
     SEQAN_CALL_TEST(test_translation_onestring_singleframe_allcodes);
-    SEQAN_CALL_TEST(test_translation_onestring_multiframe);
-    SEQAN_CALL_TEST(test_translation_onestring_multiframe_concatdirect);
-    SEQAN_CALL_TEST(test_translation_stringset_multiframe);
-    SEQAN_CALL_TEST(test_translation_stringset_multiframe_concatdirect);
+    SEQAN_CALL_TEST(test_translation_onestring_multiframe_serial);
+    SEQAN_CALL_TEST(test_translation_onestring_multiframe_concatdirect_serial);
+    SEQAN_CALL_TEST(test_translation_stringset_multiframe_serial);
+    SEQAN_CALL_TEST(test_translation_stringset_multiframe_concatdirect_serial);
+    SEQAN_CALL_TEST(test_translation_onestring_multiframe_parallel);
+    SEQAN_CALL_TEST(test_translation_onestring_multiframe_concatdirect_parallel);
+    SEQAN_CALL_TEST(test_translation_stringset_multiframe_parallel);
+    SEQAN_CALL_TEST(test_translation_stringset_multiframe_concatdirect_parallel);
 }
 SEQAN_END_TESTSUITE
