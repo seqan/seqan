@@ -91,11 +91,11 @@ SEQAN_DEFINE_TEST(testUngappedShapes)
 template <typename TIndex>
 void testStepSize()
 {
-    TIndex pos("CATGATTACATA");
-    setStepSize(pos, 2);
-    hash(indexShape(pos), "CAT");
+    TIndex index("CATGATTACATA");
+    setStepSize(index, 2);
+    hash(indexShape(index), "CAT");
     String<typename Position<DnaString>::Type> occs;
-    occs = getOccurrences(pos, indexShape(pos));
+    occs = getOccurrences(index, indexShape(index));
     SEQAN_ASSERT_EQ(length(occs), 2u);
     SEQAN_ASSERT_EQ(occs[0], 0u);
     SEQAN_ASSERT_EQ(occs[1], 8u);

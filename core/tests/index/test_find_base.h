@@ -38,6 +38,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
+#include <seqan/parallel.h>
 
 using namespace seqan;
 
@@ -98,6 +99,12 @@ struct FinderTester
 
     String<TMatch>   solution;
     String<TMatch>   results;
+
+    template <typename TFinder>
+    void operator() (TFinder const & finder)
+    {
+        testFinder(*this, finder);
+    }
 };
 
 // ============================================================================
@@ -140,38 +147,10 @@ template <typename TText, typename TPattern, typename TSpec>
 inline void
 test(FinderTester<TText, TPattern, TSpec> & tester)
 {
-    std::sort(begin(tester.solution, Standard()), end(tester.solution, Standard()));
-    std::sort(begin(tester.results, Standard()), end(tester.results, Standard()));
+    sort(tester.solution);
+    sort(tester.results);
 
     SEQAN_ASSERT(isEqual(tester.solution, tester.results));
-}
-
-// ----------------------------------------------------------------------------
-// Function buildTrie()
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): move this into a Pattern class.
-
-template <typename TIndex, typename TText>
-void buildTrie(TIndex & index, TText const & text)
-{
-    typedef typename Iterator<TText const>::Type    TIterator;
-    typedef typename Fibre<TIndex, FibreSA>::Type   TIndexSAFibre;
-    typedef typename Value<TIndexSAFibre>::Type     TIndexSAPos;
-    typedef typename Size<TText>::Type              TTextSize;
-    
-    TIndexSAFibre & sa = indexSA(index);
-    reserve(sa, length(text), Exact());
-    
-    for (TIterator it = begin(text); it != end(text); it++)
-    {
-        TIndexSAPos localPos;
-        assignValueI1(localPos, position(it));
-        assignValueI2(localPos, 0);
-        appendValue(sa, localPos, Exact());
-    }
-
-    QGramLess_<TIndexSAPos, TText const> less(text, MaxValue<TTextSize>::VALUE);
-    std::sort(begin(sa, Standard()), end(sa, Standard()), less);
 }
 
 #endif  // EXTRAS_TESTS_FIND_BASE_H_

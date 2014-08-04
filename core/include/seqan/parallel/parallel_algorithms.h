@@ -342,6 +342,28 @@ inline void transform(TContainer & c, TUnaryOperator o, Tag<TParallelTag> const 
 }
 
 // ----------------------------------------------------------------------------
+// Function generate()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator, typename TParallelTag>
+inline void generate(TTarget & target, TGenerator g, Tag<TParallelTag> const & /* tag */)
+{
+    std::generate(begin(target, Standard()), end(target, Standard()), g);
+}
+
+// ----------------------------------------------------------------------------
+// Function iota()
+// ----------------------------------------------------------------------------
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TTarget, typename TValue, typename TParallelTag>
+inline void iota(TTarget & target, TValue val, Tag<TParallelTag> const & /* tag */)
+{
+    std::iota(begin(target, Standard()), end(target, Standard()), val);
+}
+#endif
+
+// ----------------------------------------------------------------------------
 // Function count()
 // ----------------------------------------------------------------------------
 
@@ -371,6 +393,7 @@ template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::max_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -378,6 +401,7 @@ template <typename TContainer, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::max_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -389,6 +413,7 @@ template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::min_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -396,6 +421,7 @@ template <typename TContainer, typename TParallelTag>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, Tag<TParallelTag> const & /* tag */)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(std::min_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -466,6 +492,16 @@ inline void transform(TTarget & target, TSource & source, TUnaryOperator o, Para
 }
 
 // ----------------------------------------------------------------------------
+// Function generate(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator>
+inline void generate(TTarget & target, TGenerator g, Parallel)
+{
+    __gnu_parallel::generate(begin(target, Standard()), end(target, Standard()), g);
+}
+
+// ----------------------------------------------------------------------------
 // Function count(Parallel)
 // ----------------------------------------------------------------------------
 
@@ -495,6 +531,7 @@ template <typename TContainer, typename TUnaryPredicate>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, TUnaryPredicate p, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::max_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -502,6 +539,7 @@ template <typename TContainer>
 inline typename Reference<TContainer const>::Type
 maxElement(TContainer const & c, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::max_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -513,6 +551,7 @@ template <typename TContainer, typename TUnaryPredicate>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, TUnaryPredicate p, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::min_element(begin(c, Standard()), end(c, Standard()), p));
 }
 
@@ -520,6 +559,7 @@ template <typename TContainer>
 inline typename Reference<TContainer const>::Type
 minElement(TContainer const & c, Parallel)
 {
+    SEQAN_ASSERT_NOT(empty(c));
     return value(__gnu_parallel::min_element(begin(c, Standard()), end(c, Standard())));
 }
 
@@ -592,6 +632,28 @@ inline void transform(TContainer & c, TUnaryOperator o)
 {
     transform(c, o, Serial());
 }
+
+// ----------------------------------------------------------------------------
+// Function generate()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TGenerator>
+inline void generate(TTarget & target, TGenerator g)
+{
+    generate(target, g, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function iota()
+// ----------------------------------------------------------------------------
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TTarget, typename TValue>
+inline void iota(TTarget & target, TValue val)
+{
+    iota(target, val, Serial());
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Function count()

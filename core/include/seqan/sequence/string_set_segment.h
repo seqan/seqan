@@ -396,7 +396,7 @@ appendInfixWithLength(StringSet<THost, Segment<TSpec> > & me,
 // Function appendInfix()
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TSpec, typename TPos, typename TSize, typename TExpand>
+template <typename THost, typename TSpec, typename TPos, typename TExpand>
 SEQAN_HOST_DEVICE inline void
 appendInfix(StringSet<THost, Segment<TSpec> > & me,
             TPos posBegin, TPos posEnd, Tag<TExpand> tag)

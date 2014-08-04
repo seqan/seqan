@@ -1776,7 +1776,8 @@ template <typename TFinder, typename TNeedle, typename TSpec, typename TFindBegi
 inline bool find (TFinder & finder,
 				  Pattern<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > & pattern)
 {
-	return find(finder, pattern, pattern);
+	typedef typename Pattern<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> >::TPatternState TPatternState;
+	return find(finder, pattern, static_cast<TPatternState&>(pattern));
 }
 
 

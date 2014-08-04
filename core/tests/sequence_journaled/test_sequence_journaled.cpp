@@ -47,6 +47,7 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_set);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_host);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_clear);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_empty);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_erase_position);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_erase_begin_end);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_insert);

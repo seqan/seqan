@@ -194,6 +194,12 @@ struct StdContainerIterator< std::vector<TChar, TAlloc> const>
     typedef typename TContainer_::const_iterator Type;
 };
 
+///.Metafunction.IsSequence.param.T.type:Adaption.std::vector
+///.Metafunction.IsSequence.class:Adaption.std::vector
+
+template <typename TChar, typename TAlloc>
+struct IsSequence<std::vector<TChar, TAlloc> > : True {};
+
 // ===========================================================================
 // Functions
 // ===========================================================================

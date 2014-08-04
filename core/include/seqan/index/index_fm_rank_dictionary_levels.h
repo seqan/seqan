@@ -865,8 +865,8 @@ template <typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 reserve(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newCapacity, Tag<TExpand> const tag)
 {
-    return reserve(dict.ranks, std::ceil(newCapacity /
-                   static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
+    return reserve(dict.ranks, (newCapacity + RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK - 1) /
+                               RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -878,8 +878,8 @@ inline typename Size<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
 resize(RankDictionary<TValue, TwoLevels<TSpec> > & dict, TSize newLength, Tag<TExpand> const tag)
 {
     dict._length = newLength;
-    return resize(dict.ranks, std::ceil(newLength /
-                  static_cast<double>(RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK)), tag);
+    return resize(dict.ranks, (newLength + RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK - 1) /
+                              RankDictionary<TValue, TwoLevels<TSpec> >::_VALUES_PER_BLOCK, tag);
 }
 
 }

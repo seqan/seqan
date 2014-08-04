@@ -134,7 +134,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ///.Class.Pattern.param.TSpec.type:Spec.Bfam
 
 struct Oracle; //Oracle Tag => "BOM"
-struct Trie; //Trie Tag => "BTM"
+struct Trie {}; //Trie Tag => "BTM"
 
 template <typename TSpec = Oracle>
 struct Bfam; //backward factor automaton searching

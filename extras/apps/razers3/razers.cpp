@@ -304,7 +304,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setCategory(parser, "Read Mapping");
     options.version = "3.2";
 #ifdef SEQAN_REVISION
-    options.version += std::string("[") + std::string(SEQAN_REVISION) + "]";
+    options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);

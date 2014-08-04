@@ -259,7 +259,7 @@ struct LF
 // This function returns the length of the BWT of a text or a text collection.
 
 template <typename TText>
-inline typename Size<TText>::Type
+inline typename LengthSum<TText>::Type
 bwtLength(TText const & text)
 {
     return lengthSum(text) + countSequences(text);

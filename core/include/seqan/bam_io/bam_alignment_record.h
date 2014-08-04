@@ -126,6 +126,39 @@ enum BamFlags
     BAM_FLAG_DUPLICATE     = 0x0400
 };
 
+template <typename TValue>
+struct BamTypeChar
+{
+    enum
+    {
+        VALUE =
+            (IsSameType<TValue, char>::VALUE)?              'A':
+            (IsSameType<TValue, signed char>::VALUE)?       'c':
+            (IsSameType<TValue, unsigned char>::VALUE)?     'C':
+            (IsSameType<TValue, short>::VALUE)?             's':
+            (IsSameType<TValue, unsigned short>::VALUE)?    'S':
+            (IsSameType<TValue, int>::VALUE)?               'i':
+            (IsSameType<TValue, unsigned int>::VALUE)?      'I':
+            (IsSameType<TValue, float>::VALUE)?             'f':
+//          (IsSameType<TValue, double>::VALUE)?            'd':
+            (IsSequence<TValue>::VALUE)?                    'Z':
+                                                            '?'
+    };
+};
+
+// List of primitive BAM types (ordered by expected usage frequency)
+typedef TagList<int,
+        TagList<unsigned int,
+        TagList<float,
+        TagList<short,
+        TagList<unsigned short,
+        TagList<char,
+        TagList<unsigned char,
+        TagList<signed char
+//      TagList<double
+        > > > > > > > > BamTagTypes;
+
+
 /*!
  * @class BamAlignmentRecord
  * @headerfile <seqan/bam_io.h>

@@ -24,7 +24,7 @@ Calculated parameters:
   delta        : 16
   overlap      : 2
 
-Loaded 2 query sequences.
+Loaded 1 query sequence.
 Loaded 1 database sequence.
 
 All matches matches resulting from your search have an E-value of: 
@@ -36,4 +36,4 @@ Aligning all query sequences to database sequence...
   gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome
   gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome, complement
 
-# Eps-matches     : 8
+# Eps-matches     : 6

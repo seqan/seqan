@@ -96,23 +96,45 @@ i += 1;
  */
 
 #ifdef _OPENMP
-  #include <omp.h>
-  #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
-    // GCC _Pragma operator
-    #define SEQAN_DO_PRAGMA(x) _Pragma(#x)
-    #define SEQAN_OMP_PRAGMA(x) SEQAN_DO_PRAGMA(omp x)
-  #else  // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
-    // MSVC __pragma-operator
-    #define SEQAN_OMP_PRAGMA(x) __pragma (omp x)
-  #endif // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
-#else  // #ifdef _OPENMP
-  #define SEQAN_OMP_PRAGMA(x)
 
-  // low-level OpenMP runtime compatibility
-  inline void omp_set_num_threads(int) {}
-  inline int  omp_get_num_threads()    { return 1; }
-  inline int  omp_get_max_threads()    { return 1; }
-  inline int  omp_get_thread_num()     { return 0; }
+#include <omp.h>
+
+#if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+  // GCC _Pragma operator
+  #define SEQAN_DO_PRAGMA(x) _Pragma(# x)
+  #define SEQAN_OMP_PRAGMA(x) SEQAN_DO_PRAGMA(omp x)
+#else  // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+  // MSVC __pragma-operator
+  #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
+#endif // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+
+#else  // #ifdef _OPENMP
+
+#define SEQAN_OMP_PRAGMA(x)
+
+// low-level OpenMP runtime compatibility
+inline void omp_set_num_threads(int)
+{}
+
+inline int omp_get_num_threads()
+{
+    return 1;
+}
+
+inline int omp_get_max_threads()
+{
+    return 1;
+}
+
+inline int omp_get_thread_num()
+{
+    return 0;
+}
+
+inline double omp_get_wtime()
+{
+    return seqan::sysTime();
+}
 
 #endif  // #ifdef _OPENMP
 
@@ -124,10 +146,13 @@ SEQAN_HOST_DEVICE inline unsigned getThreadId()
 {
 #ifdef __CUDA_ARCH__
     return blockIdx.x * blockDim.x + threadIdx.x;
+
 #elif _OPENMP
     return omp_get_thread_num();
+
 #else
     return 0;
+
 #endif
 }
 

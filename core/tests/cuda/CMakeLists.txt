@@ -23,7 +23,7 @@ find_package (SeqAn REQUIRED)
 # ----------------------------------------------------------------------------
 
 # Setup CUDA flags.
-seqan_setup_cuda_vars (ARCH sm_20 DEBUG_DEVICE)
+seqan_setup_cuda_vars (ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")

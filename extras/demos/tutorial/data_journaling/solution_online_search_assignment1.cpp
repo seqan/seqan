@@ -34,7 +34,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         return 1;
     }
     // [B]
-    createGlobalReference(journalSet, sequence);  // When using create we copy the reference instead of storing a pointer.
+    createHost(journalSet, sequence);  // When using create we copy the reference instead of storing a pointer.
 
     // Read remaining sequences.
     while (!atEnd(reader))

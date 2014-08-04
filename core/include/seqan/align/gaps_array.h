@@ -684,6 +684,24 @@ clearGaps(Gaps<TSequence, ArrayGaps> & gaps)
 }
 
 // ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence>
+inline void
+clear(Gaps<TSequence, ArrayGaps> & gaps)
+{
+    clear(gaps._source);
+    clear(gaps._array);
+    gaps._sourceBeginPos     = 0;
+    gaps._sourceEndPos       = 0;
+    gaps._clippingBeginPos   = 0;
+    gaps._clippingEndPos     = 0;
+    // cannot use clearGaps() here, since that calls value() on _source
+    // which instates the Holder to Owner; we want it to be empty
+}
+
+// ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
 

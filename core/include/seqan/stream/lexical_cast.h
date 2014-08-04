@@ -202,17 +202,6 @@ lexicalCast(TSource const & source)
     return dest;
 }
 
-template < typename TTarget, typename TValue, typename TSpec>
-inline TTarget
-lexicalCast(String<TValue, TSpec> const & source)
-{
-    TTarget dest;
-    bool b = lexicalCast2(dest, source);
-    SEQAN_ASSERT(b);
-    (void)b;
-    return dest;
-}
-
 }
 
 #endif //def SEQAN_STREAM_LEXICAL_CAST_H

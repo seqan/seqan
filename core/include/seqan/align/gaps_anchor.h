@@ -440,6 +440,24 @@ clearGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps)
 }
 
 // ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TGapAnchors>
+inline void
+clear(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps)
+{
+    clear(gaps.data_source); // clear source holder
+
+    // clear gaps, but on holder level
+    clear(gaps.data_gaps);
+    gaps.data_cutBegin = 0;
+    gaps.data_cutEnd = 0;
+    gaps.data_viewCutBegin = 0;
+    gaps.data_viewCutEnd = 0;
+}
+
+// ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
 

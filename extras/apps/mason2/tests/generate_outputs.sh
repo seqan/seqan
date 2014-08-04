@@ -2,11 +2,11 @@
 #
 # We create variants from a randomly generated genome.
 
-GENOME=../../../../../seqan-git-build/release/bin/mason_genome
-METHYLATION=../../../../../seqan-git-build/release/bin/mason_methylation
-VARIATOR=../../../../../seqan-git-build/release/bin/mason_variator
-MATERIALIZER=../../../../../seqan-git-build/release/bin/mason_materializer
-SIMULATOR=../../../../../seqan-git-build/release/bin/mason_simulator
+GENOME=../../../../../seqan-git-build/relwithdebinfo/bin/mason_genome
+METHYLATION=../../../../../seqan-git-build/relwithdebinfo/bin/mason_methylation
+VARIATOR=../../../../../seqan-git-build/relwithdebinfo/bin/mason_variator
+MATERIALIZER=../../../../../seqan-git-build/relwithdebinfo/bin/mason_materializer
+SIMULATOR=../../../../../seqan-git-build/relwithdebinfo/bin/mason_simulator
 
 # ============================================================
 # mason_genome

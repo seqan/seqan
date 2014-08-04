@@ -38,13 +38,8 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_TRANSLATION_H_
 #define EXTRAS_INCLUDE_SEQAN_TRANSLATION_H_
 
-#ifdef SEQAN_CXX11_STANDARD
-
-#include <type_traits>
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/parallel.h>
 
 #include <seqan/translation/translation_tables.h>
 
@@ -55,12 +50,5 @@
 #endif
 
 #include <seqan/translation/translation.h>
-
-#else //SEQAN_C++11_STANDARD
-
-#error The translation module requires C++11 support. \
-If your compiler supports C++11, please define SEQAN_C++11_STANDARD
-
-#endif //SEQAN_C++11_STANDARD
 
 #endif

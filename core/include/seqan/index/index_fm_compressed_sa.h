@@ -150,6 +150,12 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
     typedef typename Value<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type   Type;
 };
 
+template <typename TText, typename TSpec, typename TConfig>
+struct Value<CompressedSA<TText, TSpec, TConfig> const>
+{
+    typedef typename Value<typename Fibre<CompressedSA<TText, TSpec, TConfig> const, FibreSparseString>::Type>::Type    Type;
+};
+
 // ============================================================================
 // Classes
 // ============================================================================

@@ -71,7 +71,7 @@ out="st1_l30_m"
 # ============================================================
 
 out="st1_l30_ith5"
-    ${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+    ${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -bth 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
 # ============================================================
 # -st 1 -l 30 -gth 3
@@ -88,3 +88,13 @@ out="st1_l30_gth3"
 out="pairedEnd_st1_l30"
     ${GUSTAF} adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa -m stellar_joinedMates_l30.gff -st 1 \
     -ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+
+# ============================================================
+# paired-end no artificial breakpoint
+# -st 1 -m stellar_joinedMates_l30.gff -ll 800 -le 30 -rc
+# ============================================================
+#
+#out="pairedEnd_st1_l30_ll800_gold"
+#    ${GUSTAF} adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa -m stellar_joinedMates_l30.gff -st 1 \
+#    -ll 800 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf -do -j ${out} > ${out}.stdout 2> ${out}.stderr
+#

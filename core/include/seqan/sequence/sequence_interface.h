@@ -55,7 +55,7 @@ namespace seqan {
 /*!
  * @defgroup OverflowStrategyTags Overflow Strategy Tags
  * @brief The strategy for resizing containers.
- * 
+ *
  * Changing the capacity of a container can invalidate the iterators of this container.
  * 
  * If no overflow tag is specified, most operations use the default overflow strategy given by @link
@@ -72,12 +72,9 @@ namespace seqan {
  * @signature typedef Tag<TagLimit_> Limit;
  *
  * All entries that exceed the capacity are lost.
- * @headerfile <seqan/sequence.h> 
  *
  * @tag OverflowStrategyTags#Generous
- * @signature struct TagGenerous_;
- * @signature typedef Tag<TagGenerous_> Generous;
- * 
+ * @headerfile <seqan/sequence.h> 
  * @brief Expand if needed, get precautionary extra space.
  * 
  * @signature typedef Tag<TagGenerous_> Generous;
@@ -1159,7 +1156,7 @@ length(T const & /*me*/)
 /*!
  * @fn SequenceConcept#capacity
  * @headerfile <seqan/sequence.h>
- * @brief Return the capacity of a sequence.
+ * @brief Returns the capacity of a sequence.
  *
  * @signature TSize capacity(seq);
  *
@@ -1506,21 +1503,23 @@ append(TTarget const & target,
 
 template <typename T, typename TValue>
 inline void
-appendValue(T & me,
-            TValue const & _value)
+appendValue(T SEQAN_FORWARD_ARG me,
+            TValue SEQAN_FORWARD_CARG _value)
 {
-    SEQAN_CHECKPOINT;
-    appendValue(me, _value, typename DefaultOverflowImplicit<T>::Type());
+    appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
 }
+
+#ifndef SEQAN_CXX11_STANDARD
 
 template <typename T, typename TValue>
 inline void
 appendValue(T const & me,
             TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     appendValue(me, _value, typename DefaultOverflowImplicit<T const>::Type());
 }
+
+#endif  // #ifndef SEQAN_CXX11_STANDARD
 
 // --------------------------------------------------------------------------
 // Function insert()

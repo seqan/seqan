@@ -38,6 +38,8 @@
 #ifndef SEQAN_HEADER_SEQUENCE_FORWARDS_H
 #define SEQAN_HEADER_SEQUENCE_FORWARDS_H
 
+#if !defined(_MSC_VER) || _MSC_VER <= 1600
+
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
 //////////////////////////////////////////////////////////////////////////////
@@ -132,8 +134,10 @@ template <typename TTarget, typename TSource> inline void append(TTarget & targe
 template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename T, typename TValue> inline void appendValue(T & me, TValue const & _value);
+template <typename T, typename TValue> inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG _value);
+#ifndef SEQAN_CXX11_STANDARD
 template <typename T, typename TValue> inline void appendValue(T const & me, TValue const & _value);
+#endif
 template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
 template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
@@ -396,6 +400,8 @@ template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inl
 #endif
 
 }  // namespace SEQAN_NAMESPACE_MAIN
+
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1600
 
 #endif
 

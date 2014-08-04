@@ -243,11 +243,10 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
 // Metafunction SetupAlignmentProfile_
 // ----------------------------------------------------------------------------
 
-template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
-struct SetupAlignmentProfile_<SplitAlignmentAlgo, TAlignConfig, TGapCosts, TTraceSwitch>
+template <typename TFreeEndGaps, typename TGapCosts, typename TTraceSwitch>
+struct SetupAlignmentProfile_<SplitAlignmentAlgo, TFreeEndGaps, TGapCosts, TTraceSwitch>
 {
-    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
-    typedef DPProfile_<SplitAlignment_<TFreeEndGaps_>, TGapCosts, TTraceSwitch> Type;
+    typedef DPProfile_<SplitAlignment_<TFreeEndGaps>, TGapCosts, TTraceSwitch> Type;
 };
 
 // ============================================================================
@@ -298,7 +297,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     typedef typename Position<TGaps>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-    AlignConfig<false, false, true, true> alignConfig;
+    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    //alignConfig;
 
     // Check whether we need to run the banded versions.
     bool banded = (lowerDiagonal != minValue<int>() && upperDiagonal != maxValue<int>());
@@ -310,11 +310,16 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     String<TTraceSegment> traceL;
     if (!banded)
-        _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
+        _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme, TAlignConfig());
+    }
     else
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
+                              TAlignConfig(lowerDiagonal, upperDiagonal));
+    }
     _adaptTraceSegmentsTo(gapsContigL, gapsReadL, traceL);
 
     // Get reversed versions of the right contig and read sequence.
@@ -328,12 +333,16 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     String<TTraceSegment> traceR;
     if (!banded)
-        _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
+        _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme, TAlignConfig());
+    }
     else
+    {
+        typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TAlignConfig;
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(),
-                              TracebackConfig_<CompleteTrace, GapsRight>());
+                              TAlignConfig(lowerDiagonal, upperDiagonal));
+    }
     // Reverse trace so it fits to the forward right sequences.  Also reverse the trace such that we can directly apply
     // it for the right alignment.
     _reverseTrace(traceR);
@@ -395,10 +404,10 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * @fn splitAlignment
  * @headerfile <seqan/align_split.h>
  * @brief Compute split alignments.
- * 
+ *
  * @signature TScoreValue splitAlignment(alignL,         alignR,         scoringScheme[, lowerDiag, upperDiag]);
  * @signature TScoreValue splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme[, lowerDiag, upperDiag]);
- * 
+ *
  * @param[in,out] alignL @link Align @endlink object with two rows for the left alignment.
  * @param[in,out] alignR @link Align @endlink object with two rows for the right alignment.
  * @param[in,out] gapsHL @link Gaps @endlink object with the horizontal/contig row for the left alignment.
@@ -410,10 +419,10 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *                          alignment.  For the right alignment, the corresponding diagonals are chosen for the
  *                          lower right part of the DP matrix, <tt>int</tt>.
  * @param[in]     upperDiag The lower diagonal.  Also see remark for <tt>lowerDiag</tt>, <tt>int</tt>.
- * 
+ *
  * @return TScoreValue The sum of the alignment scores of both alignments (Metafunction: @link Score#Value @endlink
  *                     of the type of <tt>scoringScheme</tt>).
- * 
+ *
  * There are two variants of the split alignment problem.  In the first variant, we wan to align two sequences where the
  * first (say the reference) one is shorter than the second (say a read) and the read contains an insertion with respect
  * to the reference.  We now want to align the read agains the reference such that the left part of the read aligns well
@@ -427,11 +436,11 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *            ||||||||||||||||||||           |||||||||||||||||||||||||
  * read       AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT
  * @endcode
- * 
+ *
  * The second variant is to align two sequences A and B against a reference such that the left part of A aligns well to
  * the left part of the reference and the right part of B aligns well to the right part of the reference.  Together,
  * both reads span the whole reference and overlap with an insertion in the reference.
- * 
+ *
  * @code{.console}
  * reference  AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT
  *            |||||||||||||||||| | ||
@@ -441,9 +450,9 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *                            CCGCTATGCTAGTAGGCAGTCAGCGCCAT
  *                                                   read 2
  * @endcode
- * 
+ *
  * The resulting alignment of the left/right parts is depicted below. The square brackets indicate clipping positions.
- * 
+ *
  * @code{.console}
  * reference  AGCATGTTAGATAAGATA    [GCTGTGCTAGTAGGCAGTCAGCGCCAT
  *            ||||||||||||||||||    [ | ||
@@ -454,22 +463,33 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *                         CCGCT]    ATGCTAGTAGGCAGTCAGCGCCAT
  *                                                     read 2
  * @endcode
- * 
+ *
  * In the first case, we want to find the one breakpoint in the reference and the two breakpoints in the reads and the
  * alignment of the left and right well-aligning read parts.  In the second case, we want to find the one breakpoint in
  * the reference and the breakpoint/clipping position in each read.
- * 
+ *
  * The <tt>splitAlignment()</tt> function takes as the input two alignments.  The sequence in each alignment's first row
  * is the reference and the sequence of the second row is the read.  The sequence has to be the same sequence whereas
  * the reads might differ.  If the reads are the same then this is the same as the first case and if the reads differ
  * then this is the second case.
- * 
+ *
  * The result is two alignments of the left and right contig path clipped appropriately.  The resulting score is the sum
  * of the scores of both alignments.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The DP algorithm is chosen automatically depending on whether the gap open and extension costs are equal.
+ *
+ * @section Example
+ *
+ * The following example demonstrates the usage of <tt>splitAlignment</tt> in the first case.  The second case
+ * works accordingly.
+ *
+ * @include demos/align_split/split_alignment.cpp
+ *
+ * The output is as follows.
+ *
+ * @include demos/align_split/split_alignment.cpp.stdout
  */
 
 /**

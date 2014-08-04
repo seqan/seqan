@@ -472,7 +472,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 //    };
 //    
 //    template <typename TIndex, class TSpec>
-//    SEQAN_CONCEPT_IMPL(Iter<TIndex,VSTree<TopDown<ParentLinks<TSpec> > > >, (ParentLinksConcepts));
+//    SEQAN_CONCEPT_IMPL((ParentLinksConcepts), Iter<TIndex,VSTree<TopDown<ParentLinks<TSpec> > > >);
 
 /**
 .Spec.BottomUp Iterator:
