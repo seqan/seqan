@@ -47,6 +47,11 @@
 #include <seqan/parallel.h>
 
 #include <seqan/translation/translation_tables.h>
+#ifdef _MSC_VER
+#include <seqan/translation/translation_tables_impl_cxx98.h>
+#else
+#include <seqan/translation/translation_tables_impl_cxx11.h>
+#endif
 #include <seqan/translation/translation.h>
 
 #else //SEQAN_C++11_STANDARD
