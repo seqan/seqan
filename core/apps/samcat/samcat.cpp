@@ -84,11 +84,20 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     {
         readerPtr[i] = new BamFile<Input>(writer);
 
+        bool success;
         if (inFiles[i] != "-")
-            open(*readerPtr[i], toCString(inFiles[i]));
+            success = open(*readerPtr[i], toCString(inFiles[i]));
         else
             // read from stdin (autodetect format from stream)
-            open(*readerPtr[i], std::cin);
+            success = open(*readerPtr[i], std::cin);
+        if (!success)
+        {
+            std::cerr << "Couldn't open " << toCString(inFiles[i]) << " for reading." << std::endl;
+            close(*readerPtr[i]);
+            delete readerPtr[i];
+            readerPtr[i] = NULL;
+            continue;
+        }
 
         readRecord(header, *(readerPtr[i]));
     }
@@ -101,6 +110,9 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     BamAlignmentRecord record;
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
+        if (readerPtr[i] == NULL)
+            continue;
+        
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
@@ -180,12 +192,20 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
+    bool success;
     BamFile<Output> writer;
     if (!empty(options.outFile))
-        open(writer, toCString(options.outFile));
+        success = open(writer, toCString(options.outFile));
     else
         // read write to stdout
-        open(writer, std::cout, Sam());
+        success = open(writer, std::cout, Sam());
+
+    if (!success)
+    {
+        std::cerr << "Couldn't open " << options.outFile << " for writing." << std::endl;
+        return 1;
+    }
+
     mergeBamFiles(writer, options.inFiles);
 
     return 0;

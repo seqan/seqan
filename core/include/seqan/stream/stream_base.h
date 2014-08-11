@@ -212,16 +212,6 @@ char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's m
 
 
 template <typename T>
-struct MagicHeader<BgzfFile, T>
-{
-    static char const VALUE[3];
-};
-
-template <typename T>
-char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
-
-
-template <typename T>
 struct MagicHeader<BZ2File, T>
 {
     static char const VALUE[3];
@@ -392,22 +382,36 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 // Function writeValue()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TValue>
-inline void writeValue(TContainer &cont, TValue val)
+// resizable containers
+template <typename TSequence, typename TValue>
+//inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+void
+writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);
+}
+
+// Range
+template <typename TIterator, typename TValue>
+inline void
+writeValue(Range<TIterator> &range, TValue val)
+{
+    assignValue(range.begin, val);
+    ++range.begin;
 }
 
 // ----------------------------------------------------------------------------
 // Function writeValue(Iter)
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TSpec, typename TValue>
-inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
+// resizable containers
+template <typename TSequence, typename TSpec, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+writeValue(Iter<TSequence, TSpec> &iter, TValue val)
 {
-    typedef Iter<TContainer, TSpec> TIter;
+    typedef Iter<TSequence, TSpec> TIter;
 
-    TContainer &cont = container(iter);
+    TSequence &cont = container(iter);
     typename Position<TIter>::Type pos = position(iter);
     typename Size<TIter>::Type len = length(cont);
 
@@ -425,6 +429,18 @@ inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
     }
 }
 
+// non-resizable containers
+template <typename TNoSequence, typename TSpec, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<SequenceConcept<TNoSequence> >, void)
+writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
+{
+    SEQAN_ASSERT_LT(position(iter), length(container(iter)));
+
+    assignValue(iter, val);
+    ++iter;
+}
+
+// streams
 template <typename TContainer, typename TValue>
 inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
 {

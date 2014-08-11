@@ -101,24 +101,37 @@ public:
 
             void operator()()
             {
-                size_t outputLen = _compressBlock(
-                    &threadCtx->outputBuffer[0], capacity(threadCtx->outputBuffer),
-                    &threadCtx->buffer[0], threadCtx->size, threadCtx->ctx);
                 while (true)
                 {
-                    ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
-                    if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
+                    // wait for a new job to become available
+                    ScopedLock<Mutex> lock(threadCtx->jobAvailable);
+                    if (threadCtx->waitForKey == 0)
+                        waitFor(threadCtx->jobAvailable);
+
+                    if (threadCtx->waitForKey == 0)
+                        return;
+
+                    // compress block with zlib
+                    size_t outputLen = _compressBlock(
+                        &threadCtx->outputBuffer[0], capacity(threadCtx->outputBuffer),
+                        &threadCtx->buffer[0], threadCtx->size, threadCtx->ctx);
+
+                    while (true)
                     {
-                        threadCtx->concatter->ostream.write(
-                            (const char_type*) &(threadCtx->outputBuffer[0]),
-                            outputLen);
-                        if (!threadCtx->concatter->ostream.good())
+                        ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
+                        if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
                         {
-                            threadCtx->concatter->stop = false;
-                            return;
+                            threadCtx->concatter->ostream.write(
+                                (const char_type*) &(threadCtx->outputBuffer[0]),
+                                outputLen);
+                            if (!threadCtx->concatter->ostream.good())
+                            {
+                                threadCtx->concatter->stop = false;
+                                return;
+                            }
+                            threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
+                            break;
                         }
-                        threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
-                        break;
                     }
                 }
             }
@@ -129,13 +142,16 @@ public:
         size_t                          size;
         CompressionContext<BgzfFile>    ctx;
         Thread<BgzfCompressor>          compressor;
+        Event                           jobAvailable;
 
         Concatter *concatter;
         unsigned waitForKey;
 
         BgzfThreadContext():
             outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0)
+            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
+            jobAvailable(false),
+            waitForKey(0)
         {}
     };
 
@@ -153,8 +169,8 @@ public:
         thread(0),
         threads(threads)
     {
-        concatter.waitForKey = 0;
-        concatter.nextKey = 0;
+        concatter.waitForKey = 1;
+        concatter.nextKey = 1;
         threadCtx = new BgzfThreadContext[threads];
         for (unsigned i = 0; i < threads; ++i)
         {
@@ -174,13 +190,20 @@ public:
 
     bool compressBuffer(size_t size)
     {
-        ctx->size = size;
-        ctx->waitForKey = concatter.nextKey++;
-        run(ctx->compressor);
+        {
+            ScopedLock<Mutex> lock(ctx->jobAvailable);
+
+            // start thread if neccessary
+            if (ctx->waitForKey == 0)
+                run(ctx->compressor);
+
+            ctx->size = size;
+            ctx->waitForKey = concatter.nextKey++;
+            signal(ctx->jobAvailable);
+        }
 
         thread = (thread + 1) % threads;
         ctx = &threadCtx[thread];
-        waitFor(ctx->compressor);
         return !concatter.stop;
     }
 
@@ -218,7 +241,13 @@ public:
 
         // wait for running compressor threads (in the correct order)
         for (unsigned i = 1; i <= threads; ++i)
-            waitFor(threadCtx[(thread + i) % threads].compressor);
+        {
+            ctx = &threadCtx[(thread + i) % threads];
+            ScopedLock<Mutex> lock(ctx->jobAvailable);
+            ctx->waitForKey = 0;
+            signal(ctx->jobAvailable);
+            waitFor(ctx->compressor);
+        }
 
 		concatter.ostream.flush();
 		return w;
@@ -299,16 +328,18 @@ public:
 
             void operator()()
             {
-                size_t tailLen;
                 while (true)
                 {
-                    ScopedLock<Mutex> scopedLock(threadCtx->serializer->lock);
-
-                    if (threadCtx->serializer->stop)
-                        return;
-
-                    if (threadCtx->serializer->waitForKey == threadCtx->waitForKey)
+                    size_t tailLen;
                     {
+                        ScopedLock<Mutex> scopedLock(threadCtx->serializer->lock);
+
+                        if (threadCtx->serializer->stop)
+                            return;
+
+                        if (threadCtx->serializer->waitForKey != threadCtx->waitForKey)
+                            continue;
+
                         // read header
                         threadCtx->serializer->istream.read(
                             (char*)&(threadCtx->inputBuffer[0]),
@@ -336,14 +367,13 @@ public:
                         }
 
                         threadCtx->serializer->waitForKey = threadCtx->waitForKey + 1;
-                        break;
                     }
-                }
 
-                // decompress block
-                threadCtx->size = _decompressBlock(
-                    &threadCtx->buffer[MAX_PUTBACK], capacity(threadCtx->buffer),
-                    &threadCtx->inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, threadCtx->ctx);
+                    // decompress block
+                    threadCtx->size = _decompressBlock(
+                        &threadCtx->buffer[MAX_PUTBACK], capacity(threadCtx->buffer),
+                        &threadCtx->inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, threadCtx->ctx);
+                }
             }
         };
 
@@ -380,8 +410,8 @@ public:
         threads(threads),
         putbackBuffer(MAX_PUTBACK)
     {
-        serializer.waitForKey = 0;
-        serializer.nextKey = 0;
+        serializer.waitForKey = 1;
+        serializer.nextKey = 1;
         threadCtx = new BgzfThreadContext[threads];
         for (unsigned i = 0; i < threads; ++i)
         {
