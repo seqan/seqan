@@ -2535,7 +2535,12 @@ traverse(TOperator & traversalCaller,
          JstTraverser<TContainer, TState, TSpec> & traverser,
          Tag<TParallelSpec> const & tag)
 {
-    while(journalNextBlock(container(traverser), contextSize(traverser), tag))
+    create(container(traverser), contextSize(traverser), tag);
+
+    _reinitBlockEnd(traverser);
+    _execTraversal(traverser, traversalCaller, delegate, False(), tag);
+
+    while(createNext(container(traverser), contextSize(traverser), tag))
     {
         _reinitBlockEnd(traverser);
         _execTraversal(traverser, traversalCaller, delegate, False(), tag);
