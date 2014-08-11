@@ -124,9 +124,10 @@ inline void advanceChunk(TIterator &iter, TSize size)
     iter += size;
 }
 
-template <typename TContainer, typename TSpec, typename TSize>
-inline void advanceChunk(Iter<TContainer, TSpec> &iter, TSize size)
+template <typename TValue, typename TStringSpec, typename TSpec, typename TSize>
+inline void advanceChunk(Iter<String<TValue, TStringSpec>, TSpec> &iter, TSize size)
 {
+    typedef String<TValue, TStringSpec> TContainer;
     typedef Iter<TContainer, TSpec> TIter;
 
     TContainer &cont = container(iter);

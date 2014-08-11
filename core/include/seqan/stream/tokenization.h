@@ -276,20 +276,14 @@ inline void _readUntil(TTarget &target,
                        Range<TIValue*> *,
                        Range<TOValue*> *)
 {
+    Range<TOValue*> ochunk = Range<TOValue*>(NULL, NULL);
+    TOValue* SEQAN_RESTRICT optr = NULL;
+
     for (; !atEnd(iter); )
     {
         Range<TIValue*> const ichunk = getChunk(iter, Input());
-        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
-
-        // reserve memory for the worst-case
-        // TODO(weese):Document worst-case behavior
-        reserveChunk(target, length(ichunk));
-
-        Range<TOValue*> const ochunk = getChunk(target, Output());
-        SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
-
         const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
-              TOValue* SEQAN_RESTRICT optr = begin(ochunk, Standard());
+        SEQAN_ASSERT(iptr < end(ichunk, Standard()));
 
         for (; iptr != end(ichunk, Standard()); ++iptr)
         {
@@ -302,15 +296,22 @@ inline void _readUntil(TTarget &target,
             if (SEQAN_LIKELY(!ignoreFunctor(*iptr)))
             {
                 // construct values in reserved memory
-                *optr = *iptr;
-                if (SEQAN_UNLIKELY(++optr == end(ochunk, Standard())))
-                    break;
+                if (SEQAN_UNLIKELY(optr == end(ochunk, Standard())))
+                {
+                    advanceChunk(target, optr - begin(ochunk, Standard()));
+                    // reserve memory for the worst-case
+                    // TODO(weese):Document worst-case behavior
+                    reserveChunk(target, length(ichunk));
+                    ochunk = getChunk(target, Output());
+                    optr = begin(ochunk, Standard());
+                    SEQAN_ASSERT(optr < end(ochunk, Standard()));
+                }
+                *optr++ = *iptr;
             }
         }
-
         iter += iptr - begin(ichunk, Standard());                       // advance input iterator
-        advanceChunk(target, optr - begin(ochunk, Standard()));
     }
+    advanceChunk(target, optr - begin(ochunk, Standard()));
 }
 
 // ----------------------------------------------------------------------------
@@ -408,19 +409,20 @@ inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBy
 
 //TODO(singer) to be revised
 template <typename TValue, typename TFwdIterator>
-inline void readRawByte(TValue & value, TFwdIterator &iter)
+inline void readRawByte(TValue & value, TFwdIterator &srcIter)
 {
-    CountDownFunctor<> countFunc(sizeof(TValue));
-    char * buffer = (char *)(&value);
-    for (; !atEnd(iter) && !countFunc(*iter); ++buffer, ++iter)
-        *buffer = *iter;
+//    CountDownFunctor<> countFunc(sizeof(TValue));
+//    char * buffer = (char *)(&value);
+//    for (; !atEnd(iter) && !countFunc(*iter); ++buffer, ++iter)
+//        *buffer = *iter;
 
-/*    CountDownFunctor<> countFunc(sizeof(TValue));
-    Range<unsigned char*> range = toRange((unsigned char*)&value, (unsigned char*)&value + sizeof(TValue));
-    readUntil(begin(range, Rooted()), iter, countFunc);
-*/
-    if (!countFunc)
-        throw UnexpectedEnd();
+//    CountDownFunctor<> countFunc(sizeof(TValue));
+    Range<char*> range = toRange((char*)&value, (char*)&value + sizeof(TValue));
+//    readUntil(trgIter, srcIter, countFunc);
+    write(range, srcIter, sizeof(TValue));
+
+//    if (!countFunc)
+//        throw UnexpectedEnd();
 
 }
 

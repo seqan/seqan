@@ -145,9 +145,7 @@ void readRecord(BamHeader & header,
                Bam const & /*tag*/)
 {
     // Read BAM magic string.
-    // char magic[5] = "\0\0\0\0";
-    String<char> magic;// = "0000";
-    clear(magic);
+    String<char, Array<4> > magic;
     readUntil(magic, iter, CountDownFunctor<>(4));
     if (magic != "BAM\1")
         throw std::runtime_error("Not in BAM format.");

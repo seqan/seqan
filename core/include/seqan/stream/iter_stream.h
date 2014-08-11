@@ -239,6 +239,14 @@ struct Reference<Iter<TStream, StreamIterator<Output> > >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction GetValue
+// ----------------------------------------------------------------------------
+
+template <typename TStream>
+struct GetValue<Iter<TStream, StreamIterator<Input> > >:
+    Reference<Iter<TStream, StreamIterator<Input> > const> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
