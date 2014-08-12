@@ -63,65 +63,65 @@ namespace seqan {
  *
  * Please not that this is part of the translation module which requires C++11.
  *
- * @val GeneticCodeSpec GeneticCodeSpec::CANONICAL = 1
+ * @val GeneticCodeSpec CANONICAL = 1
  * @brief The Standard Genetic Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::VERT_MITOCHONDRIAL = 2
+ * @val GeneticCodeSpec VERT_MITOCHONDRIAL = 2
  * @brief The Vertebrate Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::YEAST_MITOCHONDRIAL = 3
+ * @val GeneticCodeSpec YEAST_MITOCHONDRIAL = 3
  * @brief The Yeast Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::MOLD_MITOCHONDRIAL = 4
+ * @val GeneticCodeSpec MOLD_MITOCHONDRIAL = 4
  * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::INVERT_MITOCHONDRIAL = 5
+ * @val GeneticCodeSpec INVERT_MITOCHONDRIAL = 5
  * @brief The Invertebrate Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::CILIATE = 6
+ * @val GeneticCodeSpec CILIATE = 6
  * @brief The CILIATE, Dasycladacean and Hexamita Nuclear Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::FLATWORM_MITOCHONDRIAL = 9
+ * @val GeneticCodeSpec FLATWORM_MITOCHONDRIAL = 9
  * @brief The Echinoderm and Flatworm Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::EUPLOTID = 10
+ * @val GeneticCodeSpec EUPLOTID = 10
  * @brief The EUPLOTID Nuclear Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::PROKARYOTE = 11
+ * @val GeneticCodeSpec PROKARYOTE = 11
  * @brief The Bacterial, Archaeal and Plant Plastid Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::ALT_YEAST = 12
+ * @val GeneticCodeSpec ALT_YEAST = 12
  * @brief The Alternative Yeast Nuclear Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL = 13
+ * @val GeneticCodeSpec ASCIDIAN_MITOCHONDRIAL = 13
  * @brief The Ascidian Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::ALT_FLATWORM_MITOCHONDRIAL = 14
+ * @val GeneticCodeSpec ALT_FLATWORM_MITOCHONDRIAL = 14
  * @brief The Alternative Flatworm Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::BLEPHARISMA = 15
+ * @val GeneticCodeSpec BLEPHARISMA = 15
  * @brief BLEPHARISMA Nuclear Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL = 16
+ * @val GeneticCodeSpec CHLOROPHYCEAN_MITOCHONDRIAL = 16
  * @brief Chlorophycean Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::TREMATODE_MITOCHONDRIAL = 21
+ * @val GeneticCodeSpec TREMATODE_MITOCHONDRIAL = 21
  * @brief Trematode Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL = 22
+ * @val GeneticCodeSpec SCENEDESMUS_MITOCHONDRIAL = 22
  * @brief Scenedesmus obliquus mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL = 23
+ * @val GeneticCodeSpec THRAUSTOCHYTRIUM_MITOCHONDRIAL = 23
  * @brief Thraustochytrium Mitochondrial Code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL = 24
+ * @val GeneticCodeSpec PTEROBRANCHIA_MITOCHONDRIAL = 24
  * @brief Pterobranchia mitochondrial code
  *
- * @val GeneticCodeSpec GeneticCodeSpec::GRACILIBACTERIA = 25
+ * @val GeneticCodeSpec GRACILIBACTERIA = 25
  * @brief Candidate Division SR1 and GRACILIBACTERIA Code
  */
 
-enum class GeneticCodeSpec : uint8_t
+enum GeneticCodeSpec
 {
     CANONICAL=1,
     VERT_MITOCHONDRIAL,
@@ -153,14 +153,14 @@ enum class GeneticCodeSpec : uint8_t
  * @tag GeneticCode
  * @brief DNA/RNA to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpec @endlink.
  * @headerfile seqan/translation.h
- * @signature GeneticCode<GeneticCodeSpec::value>
+ * @signature GeneticCode<value>
  *
  * @see translate
  * @see GeneticCodeSpec
  *
  */
 
-template <GeneticCodeSpec = GeneticCodeSpec::CANONICAL>
+template <GeneticCodeSpec spec = CANONICAL>
 struct GeneticCode
 {};
 
@@ -168,26 +168,716 @@ struct GeneticCode
 // TagList GeneticCodes_
 // -----------------------------------------------------------------------
 
-typedef TagList<GeneticCode<GeneticCodeSpec::CANONICAL>,
-        TagList<GeneticCode<GeneticCodeSpec::VERT_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::YEAST_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::MOLD_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::INVERT_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::CILIATE>,
-        TagList<GeneticCode<GeneticCodeSpec::FLATWORM_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::EUPLOTID>,
-        TagList<GeneticCode<GeneticCodeSpec::PROKARYOTE>,
-        TagList<GeneticCode<GeneticCodeSpec::ALT_YEAST>,
-        TagList<GeneticCode<GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::ALT_FLATWORM_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::BLEPHARISMA>,
-        TagList<GeneticCode<GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::TREMATODE_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL>,
-        TagList<GeneticCode<GeneticCodeSpec::GRACILIBACTERIA>
+typedef TagList<GeneticCode<CANONICAL>,
+        TagList<GeneticCode<VERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<YEAST_MITOCHONDRIAL>,
+        TagList<GeneticCode<MOLD_MITOCHONDRIAL>,
+        TagList<GeneticCode<INVERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<CILIATE>,
+        TagList<GeneticCode<FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<EUPLOTID>,
+        TagList<GeneticCode<PROKARYOTE>,
+        TagList<GeneticCode<ALT_YEAST>,
+        TagList<GeneticCode<ASCIDIAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<ALT_FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<BLEPHARISMA>,
+        TagList<GeneticCode<CHLOROPHYCEAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<TREMATODE_MITOCHONDRIAL>,
+        TagList<GeneticCode<SCENEDESMUS_MITOCHONDRIAL>,
+        TagList<GeneticCode<THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
+        TagList<GeneticCode<PTEROBRANCHIA_MITOCHONDRIAL>,
+        TagList<GeneticCode<GRACILIBACTERIA>
         > > > > > > > > > > > > > > > > > > >  GeneticCodes_;
+
+// -----------------------------------------------------------------------
+// struct TranslateTableDnaToAminoAcid_
+// -----------------------------------------------------------------------
+
+template <typename TCodeSpec = GeneticCode<CANONICAL>,
+          typename TVoidSpec = void>
+struct TranslateTableDnaToAminoAcid_
+{
+    static char const VALUE[4][4][4];
+};
+
+/* Tables according to:
+ * http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
+ */
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CANONICAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        CANONICAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<VERT_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        VERT_MITOCHONDRIAL>, TVoidSpec>::VALUE [4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { '*', 'S', '*', 'S' }, // ag?
+        { 'M', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<YEAST_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        YEAST_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'M', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'T', 'T', 'T', 'T' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<MOLD_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        MOLD_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<INVERT_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        INVERT_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'S', 'S', 'S', 'S' }, // ag?
+        { 'M', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CILIATE>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        CILIATE>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { 'Q', 'Y', 'Q', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<FLATWORM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        FLATWORM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'N', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'S', 'S', 'S', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<EUPLOTID>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        EUPLOTID>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'C', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<PROKARYOTE>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        PROKARYOTE>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ALT_YEAST>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        ALT_YEAST>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'S', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ASCIDIAN_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        ASCIDIAN_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'G', 'S', 'G', 'S' }, // ag?
+        { 'M', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ALT_FLATWORM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        ALT_FLATWORM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'N', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'S', 'S', 'S', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { 'Y', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<BLEPHARISMA>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        BLEPHARISMA>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', 'Q', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CHLOROPHYCEAN_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        CHLOROPHYCEAN_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', 'L', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<TREMATODE_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        TREMATODE_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'N', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'S', 'S', 'S', 'S' }, // ag?
+        { 'M', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<SCENEDESMUS_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        SCENEDESMUS_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', 'L', 'Y' }, // ua?
+        { '*', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        THRAUSTOCHYTRIUM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { '*', 'C', 'W', 'C' }, // ug?
+        { '*', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<PTEROBRANCHIA_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        PTEROBRANCHIA_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'S', 'S', 'K', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'W', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
+
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<GRACILIBACTERIA>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
+char const TranslateTableDnaToAminoAcid_<
+    GeneticCode<
+        GRACILIBACTERIA>, TVoidSpec>::VALUE[4][4][4] =
+{
+    { // a??
+        { 'K', 'N', 'K', 'N' }, // aa?
+        { 'T', 'T', 'T', 'T' }, // ac?
+        { 'R', 'S', 'R', 'S' }, // ag?
+        { 'I', 'I', 'M', 'I' }  // au?
+    }, { // c??
+        { 'Q', 'H', 'Q', 'H' }, // ca?
+        { 'P', 'P', 'P', 'P' }, // cc?
+        { 'R', 'R', 'R', 'R' }, // cg?
+        { 'L', 'L', 'L', 'L' }  // cu?
+    }, { // g??
+        { 'E', 'D', 'E', 'D' }, // ga?
+        { 'A', 'A', 'A', 'A' }, // gc?
+        { 'G', 'G', 'G', 'G' }, // gg?
+        { 'V', 'V', 'V', 'V' }  // gu?
+    }, { // u??
+        { '*', 'Y', '*', 'Y' }, // ua?
+        { 'S', 'S', 'S', 'S' }, // uc?
+        { 'G', 'C', 'W', 'C' }, // ug?
+        { 'L', 'F', 'L', 'F' }  // uu?
+    }
+    //     a    c    g    u
+};
 
 }
 
