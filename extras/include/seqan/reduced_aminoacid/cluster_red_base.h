@@ -57,7 +57,7 @@ namespace seqan {
  * @headerfile seqan/reduced_aminoacid.h
  *
  * @signature template <unsigned char n, unsigned char m = 24, typename TMatrix = Blosum62>
- * using ClusterReduction = Tag<ClusterReduction_<n, m, TMatrix> >;
+ * struct ClusterReduction;
  *
  * @tparam n the size of the reduced alphabet (between 2 and m-1)
  * @tparam m size to truncate alphabet to, <b>before</b> clustering
@@ -88,15 +88,10 @@ namespace seqan {
  *
  * The exact clustering for m = 24.
  *
- * TODO change the definition to be "tag" as soon as dox can cope with templated tags.
- * This should work (http://trac.seqan.de/changeset/14497), but it doesn't.
  */
 
-template <unsigned char n, unsigned char m, typename TMatrix>
-struct ClusterReduction_;
-
 template <unsigned char n, unsigned char m = 24, typename TMatrix = Blosum62>
-using ClusterReduction = Tag<ClusterReduction_<n, m, TMatrix> >;
+struct ClusterReduction;
 
 // ============================================================================
 // Metafunctions

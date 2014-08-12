@@ -72,7 +72,7 @@ namespace seqan {
  */
 
 template <typename TRedSpec>
-struct ReducedAminoAcid_ {};
+struct ReducedAminoAcid_;
 
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
