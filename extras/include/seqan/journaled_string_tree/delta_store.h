@@ -72,7 +72,7 @@ namespace seqan
 
 struct DeltaType
 {
-    typedef size_t TValue;
+    typedef __uint64 TValue;
 
     static const TValue MASK_DELTA_TYPE;
     static const TValue MASK_DELTA_POSITION;
@@ -87,12 +87,12 @@ struct DeltaType
 //          01 = DEL
 //          10 = INS
 //          11 = INS_DEL -> INS_SNP can be replaced by INS_DEL.
-const size_t DeltaType::MASK_DELTA_TYPE = 3ull << (BitsPerValue<size_t>::VALUE - 2);
-const size_t DeltaType::MASK_DELTA_POSITION = ~MASK_DELTA_TYPE;
-const size_t DeltaType::DELTA_TYPE_SNP = 0ull;
-const size_t DeltaType::DELTA_TYPE_DEL = 1ull << (BitsPerValue<size_t>::VALUE - 2);
-const size_t DeltaType::DELTA_TYPE_INS = 2ull << (BitsPerValue<size_t>::VALUE - 2);
-const size_t DeltaType::DELTA_TYPE_INDEL = 3ull << (BitsPerValue<size_t>::VALUE - 2);
+const __uint64 DeltaType::MASK_DELTA_TYPE = 3ull << (BitsPerValue<__uint64>::VALUE - 2);
+const __uint64 DeltaType::MASK_DELTA_POSITION = ~MASK_DELTA_TYPE;
+const __uint64 DeltaType::DELTA_TYPE_SNP = 0ull;
+const __uint64 DeltaType::DELTA_TYPE_DEL = 1ull << (BitsPerValue<__uint64>::VALUE - 2);
+const __uint64 DeltaType::DELTA_TYPE_INS = 2ull << (BitsPerValue<__uint64>::VALUE - 2);
+const __uint64 DeltaType::DELTA_TYPE_INDEL = 3ull << (BitsPerValue<__uint64>::VALUE - 2);
 
 template <typename T>
 struct GetDataMap_;

@@ -58,6 +58,15 @@
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
 
 // ===========================================================================
+// GDF I/O.
+// ===========================================================================
+
+#include <seqan/journaled_string_tree/gdf_io_base.h>
+#include <seqan/journaled_string_tree/gdf_io_header.h>
+#include <seqan/journaled_string_tree/gdf_io_read.h>
+#include <seqan/journaled_string_tree/gdf_io_write.h>
+
+// ===========================================================================
 // Journaled String Tree.
 // ===========================================================================
 

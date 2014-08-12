@@ -851,6 +851,227 @@ stringSet(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
     return stringTree._journalSet;
 }
 
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledStringTree#open
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Opens the journaled string tree from a gdf file.
+ *
+ * @signature int load(jst, filename[, refId, refFilename][, seqIds]);
+ *
+ * @param[in,out] jst The journaled string tree to be loaded.
+ * @param[in] filename The name of the file used to load the data from.
+ * @param[out] refId Stores the id of the reference.
+ * @param[out] refFilename Stores the file name of the reference.
+ * @param[out] seqIds Stores the ids of the covered sequences.
+ *
+ * @return int <tt>0<\tt> on success, otherwise some value distinct from <tt>0<\tt> indicating the error.
+ *
+ * @see JournaledStringTree#save
+ */
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
+                TFilename const & filename,
+                CharString & refId,
+                CharString & refFileName,
+                String<CharString> & nameStore)
+{
+    typedef JournaledStringTree<TDeltaMap, TSpec> TJst;
+    typedef typename Host<TJst>::Type THost;
+
+    GdfHeader<> gdfHeader;
+    gdfHeader._nameStorePtr = &nameStore;  // Check if this works.
+
+    std::ifstream inputFile;
+    inputFile.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
+    if (!inputFile.good())
+    {
+        std::cerr << "Cannot open file <" << filename << "> for reading!" << std::endl;
+        return inputFile.rdstate();
+    }
+    int res = read(container(jst), gdfHeader, inputFile, Gdf());
+    if (res != 0)
+    {
+        std::cerr << "An error occurred while reading <" << filename << ">!" << std::endl;
+        return res;
+    }
+    inputFile.close();
+
+    // Read the reference file.
+    refId = gdfHeader._refInfos._refId;
+    refFileName = gdfHeader._refInfos._refFile;
+
+    std::ifstream refFile;
+    refFile.open(toCString(refFileName), std::ios_base::in);
+    if (!refFile.good())
+    {
+        std::cerr << "Cannot open file <" << refFileName << "> for reading!" << std::endl;
+        return refFile.rdstate();
+    }
+    THost tmpHost = "";
+    createHost(stringSet(jst), tmpHost);
+    RecordReader<std::ifstream, SinglePass<> > reader(refFile);
+    res = readRecord(refId, host(jst), reader, Fasta());
+    refFile.close();
+    if (res != 0)
+        std::cerr << "An error occurred while reading <" << refFileName << ">!" << std::endl;
+
+    // Initialize the journaled string tree.
+    resize(stringSet(jst), coverageSize(container(jst)), host(stringSet(jst)), Exact());
+    resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
+    resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
+
+    jst._mapBlockBegin = jst._mapBlockEnd = begin(container(jst), Standard());
+
+    return res;
+}
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
+                TFilename const & filename,
+                CharString & refId,
+                CharString & refFileName)
+{
+    String<CharString> nameStore;
+    return open(jst, filename, refId, refFileName, nameStore);
+}
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
+                TFilename const & filename,
+                String<CharString> & nameStore)
+{
+    CharString refId;
+    CharString refFileName;
+    return open(jst, filename, refId, refFileName, nameStore);
+}
+
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
+                TFilename const & filename)
+{
+    CharString refId;
+    CharString refFileName;
+    return open(jst, filename, refId, refFileName);
+}
+
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledStringTree#save
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Saves the journaled string tree at the given location in gdf format.
+ *
+ * @signature int save(jst, filename[, refId, refFilename][, seqIds]);
+ *
+ * @param[in] jst The journaled string tree to be saved.
+ * @param[out] filename The name of the file used to save the journaled string tree.
+ * @param[in] refId Id of the reference sequence.
+ * @param[in] refFilename File name of the reference.
+ * @param[in] seqIds Ids of the sequences covered by the jst.
+ *
+ * Stores the journaled string tree in gdf format at the specified file location. Please note,
+ * that <tt>refId<\tt> and <tt>refFilename<\tt>, as well as <tt>seqIds<\tt> are optional parameters.
+ * If they are empty, some default values are used instead. If the information regarding the reference are empty,
+ * then the reference file is automatically stored in fasta format at <tt><filename.reference.fa><\tt>.
+ *
+ * @return int <tt>0<\tt> on success, otherwise some value distinct from <tt>0<\tt> indicating the error.
+ *
+ * @see JournaledStringTree#save
+ */
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                TFilename const & filename,
+                CharString const & refId,
+                CharString const & refFileName,
+                String<CharString> const & nameStore)
+{
+    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TSnpType;
+
+    GdfHeader<> gdfHeader;
+    gdfHeader._refInfos._refId = refId;
+    // Write reference if unknown.
+    if (empty(refFileName))
+    {
+        gdfHeader._refInfos._refFile = filename;
+        append(gdfHeader._refInfos._refFile, ".reference.fa");
+        std::ofstream refStream;
+        refStream.open(toCString(gdfHeader._refInfos._refFile), std::ios_base::out);
+        if (!refStream.good())
+        {
+            std::cerr << "Cannot open file <" << gdfHeader._refInfos._refFile << "> for writing!" << std::endl;
+            return refStream.rdstate();
+        }
+        writeRecord(refStream, gdfHeader._refInfos._refId, host(jst), Fasta());
+        refStream.close();
+    }
+    gdfHeader._refInfos._refHash = 0;  // TODO(rmaerker): Compute hash for reference.
+
+    // Enable snp compression if at most 2 bits are needed to store the value.
+    if (BitsPerValue<TSnpType>::VALUE <= 2)
+        gdfHeader._fileInfos._snpCompression = true;
+    else
+        gdfHeader._fileInfos._snpCompression = false;
+
+    // We know that we don't change the names.
+    gdfHeader._nameStorePtr = const_cast<String<CharString>*>(&nameStore);
+
+    std::ofstream fileStream;
+    fileStream.open(toCString(filename), std::ios_base::out | std::ios_base::binary);
+
+    if (!fileStream.good())
+    {
+        std::cerr << "Cannot open file <" << filename << "> for writing!" << std::endl;
+        return fileStream.rdstate();
+    }
+    int res = write(fileStream, container(jst), gdfHeader, Gdf());
+    fileStream.close();
+
+    if (res != 0)
+        std::cerr << "An error occurred while writing!" << std::endl;
+    return res;
+}
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                TFilename const & filename,
+                String<CharString> & nameStore)
+{
+    return save(jst, filename, "NA", "", nameStore);
+}
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                TFilename const & filename,
+                CharString const & refId,
+                CharString const & refFileName)
+{
+    String<CharString> emptyIds;
+    // Default naming of sequences.
+    for (unsigned i = 0; i < coverageSize(container(jst)); ++i)
+    {
+        std::stringstream tmp;
+        tmp << "seq" << i;
+        appendValue(emptyIds, tmp.str());
+    }
+    return save(jst, filename, refId, refFileName, emptyIds);
+}
+
+template <typename TDeltaMap, typename TSpec, typename TFilename>
+inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                TFilename const & filename)
+{
+    return save(jst, filename, "NA", "");
+}
+
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_IMPL_H_

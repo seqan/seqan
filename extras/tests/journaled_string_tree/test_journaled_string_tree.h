@@ -618,4 +618,73 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
     SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 3), 1);
 }
 
+SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
+{
+    typedef DeltaMap<unsigned, Dna> TDeltaMap;
+    typedef JournaledStringTree<TDeltaMap> TJst;
+
+    String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
+    TDeltaMap deltaMap;
+    _testDetlaMapfill(deltaMap);
+    setCoverageSize(deltaMap, 4);
+    deltaMap._deltaCoverageStore[0][0] = true;
+    deltaMap._deltaCoverageStore[0][1] = true;
+    deltaMap._deltaCoverageStore[0][2] = false;
+    deltaMap._deltaCoverageStore[0][3] = true;
+
+    deltaMap._deltaCoverageStore[1][0] = false;
+    deltaMap._deltaCoverageStore[1][1] = false;
+    deltaMap._deltaCoverageStore[1][2] = true;
+    deltaMap._deltaCoverageStore[1][3] = false;
+
+    deltaMap._deltaCoverageStore[2][0] = true;
+    deltaMap._deltaCoverageStore[2][1] = false;
+    deltaMap._deltaCoverageStore[2][2] = false;
+    deltaMap._deltaCoverageStore[2][3] = true;
+
+    deltaMap._deltaCoverageStore[3][0] = false;
+    deltaMap._deltaCoverageStore[3][1] = true;
+    deltaMap._deltaCoverageStore[3][2] = true;
+    deltaMap._deltaCoverageStore[3][3] = true;
+
+    deltaMap._deltaCoverageStore[4][0] = true;
+    deltaMap._deltaCoverageStore[4][1] = false;
+    deltaMap._deltaCoverageStore[4][2] = false;
+    deltaMap._deltaCoverageStore[4][3] = false;
+
+    deltaMap._deltaCoverageStore[5][0] = false;
+    deltaMap._deltaCoverageStore[5][1] = false;
+    deltaMap._deltaCoverageStore[5][2] = true;
+    deltaMap._deltaCoverageStore[5][3] = false;
+
+    deltaMap._deltaCoverageStore[6][0] = false;
+    deltaMap._deltaCoverageStore[6][1] = true;
+    deltaMap._deltaCoverageStore[6][2] = false;
+    deltaMap._deltaCoverageStore[6][3] = true;
+
+    deltaMap._deltaCoverageStore[7][0] = false;
+    deltaMap._deltaCoverageStore[7][1] = true;
+    deltaMap._deltaCoverageStore[7][2] = false;
+    deltaMap._deltaCoverageStore[7][3] = true;
+
+    TJst jst(hostSeq, deltaMap);
+
+    CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/extras/tests/journaled_string_tree/goldGDF.gdf");
+
+    SEQAN_ASSERT_EQ(save(jst, filePath), 0);
+
+    CharString refId;
+    CharString refFilename;
+    String<CharString> seqIds;
+
+    JournaledStringTree<TDeltaMap> jstLoaded;
+    SEQAN_ASSERT_EQ(open(jstLoaded, filePath, refId, refFilename, seqIds), 0);
+
+    CharString testRefFilename = filePath;
+    append(testRefFilename, ".reference.fa");
+    SEQAN_ASSERT_EQ(refFilename, testRefFilename);
+    _testJournaledStringTreeJournalNextBlock(jst);
+}
+
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

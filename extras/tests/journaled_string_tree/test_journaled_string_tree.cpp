@@ -84,6 +84,8 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 
     SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
 
+    SEQAN_CALL_TEST(test_journaled_string_tree_save_open);
+
     // ----------------------------------------------------------------------------
     // Test all variants being SNPs.
     // ----------------------------------------------------------------------------
