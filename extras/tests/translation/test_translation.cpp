@@ -42,6 +42,7 @@
 SEQAN_BEGIN_TESTSUITE(test_translation)
 {
     SEQAN_CALL_TEST(test_translation_onestring_singleframe_allcodes);
+    SEQAN_CALL_TEST(test_translation_onestring_singleframe_allcodes_runtime);
     SEQAN_CALL_TEST(test_translation_onestring_multiframe_serial);
     SEQAN_CALL_TEST(test_translation_onestring_multiframe_concatdirect_serial);
     SEQAN_CALL_TEST(test_translation_stringset_multiframe_serial);

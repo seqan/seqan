@@ -143,6 +143,7 @@ enum class GeneticCodeSpec : uint8_t
     PTEROBRANCHIA_MITOCHONDRIAL,
     GRACILIBACTERIA
 };
+// ALERT When modifying the above, also adapt GeneticCodes_ appropriately
 
 // -----------------------------------------------------------------------
 // Tag GeneticCode
@@ -162,6 +163,31 @@ enum class GeneticCodeSpec : uint8_t
 template <GeneticCodeSpec = GeneticCodeSpec::CANONICAL>
 struct GeneticCode
 {};
+
+// -----------------------------------------------------------------------
+// TagList GeneticCodes_
+// -----------------------------------------------------------------------
+
+typedef TagList<GeneticCode<GeneticCodeSpec::CANONICAL>,
+        TagList<GeneticCode<GeneticCodeSpec::VERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::YEAST_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::MOLD_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::INVERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::CILIATE>,
+        TagList<GeneticCode<GeneticCodeSpec::FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::EUPLOTID>,
+        TagList<GeneticCode<GeneticCodeSpec::PROKARYOTE>,
+        TagList<GeneticCode<GeneticCodeSpec::ALT_YEAST>,
+        TagList<GeneticCode<GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::ALT_FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::BLEPHARISMA>,
+        TagList<GeneticCode<GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::TREMATODE_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL>,
+        TagList<GeneticCode<GeneticCodeSpec::GRACILIBACTERIA>
+        > > > > > > > > > > > > > > > > > > >  GeneticCodes_;
 
 }
 

@@ -169,6 +169,129 @@ test_translation_onestring_singleframe_impl(TString const & str)
     }
 }
 
+template <typename TString>
+inline void
+test_translation_onestring_singleframe_impl_runtime(TString const & str)
+{
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::CANONICAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::VERT_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTT*S*SMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::YEAST_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSMIMIQHQHPPPPRRRRTTTTEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::INVERT_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTSSSSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::CILIATE);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVVQYQYSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::FLATWORM_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "NNKNTTTTSSSSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::EUPLOTID);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSCCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::PROKARYOTE);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::ALT_YEAST);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLSLEDEDAAAAGGGGVVVV*Y*YSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTGSGSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::BLEPHARISMA);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YQYSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YLYSSSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::TREMATODE_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "NNKNTTTTSSSSMIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*YLY*SSS*CWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSS*CWC*FLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTSSKSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSWCWCLFLF");
+    }
+
+    {
+        String<AminoAcid> outStr;
+        translate(outStr, str, TranslationFrames::SINGLE_FRAME, GeneticCodeSpec::GRACILIBACTERIA);
+        SEQAN_ASSERT_EQ(outStr,
+        "KNKNTTTTRSRSIIMIQHQHPPPPRRRRLLLLEDEDAAAAGGGGVVVV*Y*YSSSSGCWCLFLF");
+    }
+}
 
 SEQAN_DEFINE_TEST(test_translation_onestring_singleframe_allcodes)
 {
@@ -178,7 +301,6 @@ SEQAN_DEFINE_TEST(test_translation_onestring_singleframe_allcodes)
     const char * rna = "aaaaacaagaauacaaccacgacuagaagcaggaguauaaucaugauucaacacc"
     "agcauccacccccgccucgacgccggcgucuacuccugcuugaagacgaggaugcagccgcggcuggaggcggg"
     "gguguagucgugguuuaauacuaguauucauccucgucuugaugcugguguuuauucuuguuu";
-
 
     // dna
     {
@@ -221,6 +343,58 @@ SEQAN_DEFINE_TEST(test_translation_onestring_singleframe_allcodes)
         test_translation_onestring_singleframe_impl(str);
     }
 }
+
+SEQAN_DEFINE_TEST(test_translation_onestring_singleframe_allcodes_runtime)
+{
+    const char * dna = "aaaaacaagaatacaaccacgactagaagcaggagtataatcatgattcaacacc"
+    "agcatccacccccgcctcgacgccggcgtctactcctgcttgaagacgaggatgcagccgcggctggaggcggg"
+    "ggtgtagtcgtggtttaatactagtattcatcctcgtcttgatgctggtgtttattcttgttt";
+    const char * rna = "aaaaacaagaauacaaccacgacuagaagcaggaguauaaucaugauucaacacc"
+    "agcauccacccccgccucgacgccggcgucuacuccugcuugaagacgaggaugcagccgcggcuggaggcggg"
+    "gguguagucgugguuuaauacuaguauucauccucgucuugaugcugguguuuauucuuguuu";
+
+    // dna
+    {
+        DnaString str(dna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+
+    // dna5
+    {
+        Dna5String str(dna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+
+    // rna
+    {
+        RnaString str(rna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+
+    // rna5
+    {
+        Rna5String str(rna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+
+    // CharString
+    {
+        CharString str(dna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+
+    // 0-terminated
+    {
+        test_translation_onestring_singleframe_impl_runtime(dna);
+    }
+
+    // std::string
+    {
+        std::string str(dna);
+        test_translation_onestring_singleframe_impl_runtime(str);
+    }
+}
+
 
 template <typename TTargetSet, typename TParallelism>
 inline void
