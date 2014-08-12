@@ -134,7 +134,7 @@ add_custom_command (OUTPUT "${PAYLOAD_TMP_PATH}/binaries.ini"
 # Create the payload binary ZIP file.
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set (SEQAN_PLATFORM "lnx")
-elseif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSd")
   set (SEQAN_PLATFORM "lnx")
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set (SEQAN_PLATFORM "win")
