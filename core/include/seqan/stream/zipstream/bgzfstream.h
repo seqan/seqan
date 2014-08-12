@@ -105,11 +105,12 @@ public:
                 {
                     // wait for a new job to become available
                     ScopedLock<Mutex> lock(threadCtx->jobAvailable);
-                    if (threadCtx->waitForKey == 0)
+                    if (threadCtx->state == KILL)
+                        return;
+
+                    if (threadCtx->state != BUSY)
                         waitFor(threadCtx->jobAvailable);
 
-                    if (threadCtx->waitForKey == 0)
-                        return;
 
                     // compress block with zlib
                     size_t outputLen = _compressBlock(
@@ -129,7 +130,10 @@ public:
                                 threadCtx->concatter->stop = false;
                                 return;
                             }
+                            // move serializer to next packet and reset our job
                             threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
+                            printf("%d\n",threadCtx->concatter->waitForKey);
+                            threadCtx->state = IDLE;
                             break;
                         }
                     }
@@ -146,12 +150,14 @@ public:
 
         Concatter *concatter;
         unsigned waitForKey;
+        enum { UNBORN, KILL, IDLE, BUSY } state;
 
         BgzfThreadContext():
             outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
             jobAvailable(false),
-            waitForKey(0)
+            waitForKey(0),
+            state(UNBORN)
         {}
     };
 
@@ -164,13 +170,13 @@ public:
      * More info on the following parameters can be found in the bgzf documentation.
      */
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t threads = 4) :
+                         size_t threads = 1) :
 		concatter(ostream_),
         thread(0),
         threads(threads)
     {
-        concatter.waitForKey = 1;
-        concatter.nextKey = 1;
+        concatter.waitForKey = 0;
+        concatter.nextKey = 0;
         threadCtx = new BgzfThreadContext[threads];
         for (unsigned i = 0; i < threads; ++i)
         {
@@ -193,12 +199,15 @@ public:
         {
             ScopedLock<Mutex> lock(ctx->jobAvailable);
 
+            SEQAN_ASSERT_NEQ((int)ctx->state, (int)ctx->BUSY);
+
             // start thread if neccessary
-            if (ctx->waitForKey == 0)
+            if (ctx->state == ctx->UNBORN)
                 run(ctx->compressor);
 
             ctx->size = size;
             ctx->waitForKey = concatter.nextKey++;
+            ctx->state = ctx->BUSY;
             signal(ctx->jobAvailable);
         }
 
@@ -243,9 +252,12 @@ public:
         for (unsigned i = 1; i <= threads; ++i)
         {
             ctx = &threadCtx[(thread + i) % threads];
-            ScopedLock<Mutex> lock(ctx->jobAvailable);
-            ctx->waitForKey = 0;
-            signal(ctx->jobAvailable);
+            {
+                ScopedLock<Mutex> lock(ctx->jobAvailable);
+                SEQAN_ASSERT_NEQ((int)ctx->state, (int)ctx->BUSY);
+                ctx->state = ctx->KILL;
+                signal(ctx->jobAvailable);
+            }
             waitFor(ctx->compressor);
         }
 
