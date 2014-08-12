@@ -61,25 +61,25 @@ namespace seqan {
  *
  * Please not that this is part of the translation module which requires C++11.
  *
- * @val TranslationFrames TranslationFrames::SINGLE_FRAME = 0;
+ * @val TranslationFrames SINGLE_FRAME = 0;
  * @brief Translate the sequence(s) "as is", n input sequences result in n output sequences.
  *
- * @val TranslationFrames TranslationFrames::WITH_REVERSE_COMPLEMENT = 1;
+ * @val TranslationFrames WITH_REVERSE_COMPLEMENT = 1;
  * @brief Translate the sequence(s) as well as their reverse complements (n -> * 2n).
  *
- * @val TranslationFrames TranslationFrames::WITH_FRAME_SHIFTS = 2;
+ * @val TranslationFrames WITH_FRAME_SHIFTS = 2;
  * @brief Translate the sequence(s) as well as their shifted frames (n -> 3n).
  *
- * @val TranslationFrames TranslationFrames::SIX_FRAME = 3;
- * @brief Equals (TranslationFrames::WITH_REVERSE_COMPLEMENT | TranslationFrames::WITH_FRAME_SHIFTS); shifted frames of original and reverse complement are
+ * @val TranslationFrames SIX_FRAME = 3;
+ * @brief Equals (WITH_REVERSE_COMPLEMENT | WITH_FRAME_SHIFTS); shifted frames of original and reverse complement are
  *        translated (n -> 6n).
  */
 
-enum class TranslationFrames : uint8_t
+enum TranslationFrames
 {
     SINGLE_FRAME             = 0,
-    WITH_REVERSE_COMPLEMENT   = 1,
-    WITH_FRAME_SHIFTS         = 2,
+    WITH_REVERSE_COMPLEMENT  = 1,
+    WITH_FRAME_SHIFTS        = 2,
     SIX_FRAME                = 3
 };
 
@@ -195,7 +195,7 @@ _translateString(TOutString & target,
 
 template <typename TOutString, typename TSpec, typename TInString, GeneticCodeSpec CODE_SPEC>
 inline void
-_translateString(Segment<TOutString, TSpec> && target,
+_translateString(Segment<TOutString, TSpec> /*&&*/ target,
                  TInString const & source,
                  GeneticCode<CODE_SPEC> const & /**/)
 {
@@ -480,7 +480,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *                              to Dna5.
  * @param[in]       frame       The @link TranslationFrames @endlink, defaults to SINGLE_FRAME.
  * @param[in]       geneticCode The @link GeneticCode @endlink to use, defaults
- * to GeneticCode<GeneticCodeSpec::CANONICAL>
+ * to GeneticCode<CANONICAL>
  * (use to specify GeneticCode at compile-time)
  * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use
  * (use to specify GenetiCode at run-time)
@@ -506,7 +506,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *
  * StringSet<String<AminoAcid>, Owner<ConcatDirect<> > > aaSeqs;
  *
- * translate(aaSeqs, dnaSeqs, TranslationFrames::SIX_FRAME);
+ * translate(aaSeqs, dnaSeqs, SIX_FRAME);
  *
  * // do something with the aaSeqs
  * @endcode
@@ -524,23 +524,19 @@ translate(TTarget & target,
           GeneticCode<CODE_SPEC> const & /**/,
           TParallelism const & /**/)
 {
-    static_assert(std::is_same<TParallelism, Parallel>::value or
-                  std::is_same<TParallelism, Serial>::value,
-                  "TParallelism must either be Parallel() or Serial().");
-
     typedef GeneticCode<CODE_SPEC> TCode;
     switch (frames)
     {
-    case TranslationFrames::SINGLE_FRAME:
+    case SINGLE_FRAME:
         return _translateInputWrap(target, source, TCode(), Frames_<1>(),
                                    TParallelism());
-    case TranslationFrames::WITH_REVERSE_COMPLEMENT:
+    case WITH_REVERSE_COMPLEMENT:
         return _translateInputWrap(target, source, TCode(), Frames_<2>(),
                                    TParallelism());
-    case TranslationFrames::WITH_FRAME_SHIFTS:
+    case WITH_FRAME_SHIFTS:
         return _translateInputWrap(target, source, TCode(), Frames_<3>(),
                                    TParallelism());
-    case TranslationFrames::SIX_FRAME:
+    case SIX_FRAME:
         return _translateInputWrap(target, source, TCode(), Frames_<6>(),
                                    TParallelism());
     default:
@@ -566,7 +562,7 @@ translate(TTarget & target,
           TSource const & source,
           GeneticCode<CODE_SPEC> const & /**/)
 {
-    return translate(target, source, TranslationFrames::SINGLE_FRAME,
+    return translate(target, source, SINGLE_FRAME,
                      GeneticCode<CODE_SPEC>(), Parallel());
 }
 
@@ -584,7 +580,7 @@ inline int
 translate(TTarget & target,
           TSource const & source)
 {
-    return translate(target, source, TranslationFrames::SINGLE_FRAME,
+    return translate(target, source, SINGLE_FRAME,
                      GeneticCode<>(), Parallel());
 }
 
@@ -673,10 +669,6 @@ translate(TTarget & target,
           GeneticCodeSpec const & geneticCodeSpec,
           TParallelism const & /**/)
 {
-    static_assert(std::is_same<TParallelism, Parallel>::value or
-                  std::is_same<TParallelism, Serial>::value,
-                  "TParallelism must either be Parallel() or Serial().");
-
     return _translate(target, source, frames, geneticCodeSpec, GeneticCodes_(),
                       TParallelism());
 }
