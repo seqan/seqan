@@ -593,97 +593,95 @@ inline int
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
-          GeneticCodeSpec const & geneticCode,
+          TParallelism const & /**/)
+{
+    return translate(target, source, frames, GeneticCode<>(), TParallelism());
+}
+
+// -----------------------------------------------------------------------
+// Function translate() with run-time spec selection
+// -----------------------------------------------------------------------
+
+template <typename TTarget, typename TSource, typename TParallelism,
+          GeneticCodeSpec currentSpec, typename TRestList>
+inline int
+_translate(TTarget & /**/,
+           TSource const & /**/,
+           TranslationFrames const /**/,
+           GeneticCodeSpec const & /**/,
+           TagList<GeneticCode<currentSpec>, TRestList> const & /**/,
+           TParallelism const & /**/,
+           True const & /**/)
+{
+    std::cerr << "Invalid genetic code translation table selected."
+                << std::endl;
+    return -1;
+}
+
+// forward declare because of double-recursion
+template <typename TTarget, typename TSource, typename TParallelism,
+          GeneticCodeSpec currentSpec, typename TRestList>
+inline int
+_translate(TTarget & target,
+           TSource const & source,
+           TranslationFrames const frames,
+           GeneticCodeSpec const & geneticCodeSpec,
+           TagList<GeneticCode<currentSpec>, TRestList> const & /**/,
+           TParallelism const & /**/);
+
+template <typename TTarget, typename TSource, typename TParallelism,
+          GeneticCodeSpec currentSpec, typename TRestList>
+inline int
+_translate(TTarget & target,
+           TSource const & source,
+           TranslationFrames const frames,
+           GeneticCodeSpec const & geneticCodeSpec,
+           TagList<GeneticCode<currentSpec>, TRestList> const & /**/,
+           TParallelism const & /**/,
+           False const & /**/)
+{
+    return _translate(target, source, frames, geneticCodeSpec, TRestList(),
+                      TParallelism());
+}
+
+template <typename TTarget, typename TSource, typename TParallelism,
+          GeneticCodeSpec currentSpec, typename TRestList>
+inline int
+_translate(TTarget & target,
+           TSource const & source,
+           TranslationFrames const frames,
+           GeneticCodeSpec const & geneticCodeSpec,
+           TagList<GeneticCode<currentSpec>, TRestList> const & /**/,
+           TParallelism const & /**/)
+{
+    typedef TagList<GeneticCode<currentSpec>, TRestList> TTagList;
+
+    if (geneticCodeSpec == currentSpec)
+        return translate(target, source, frames, GeneticCode<currentSpec>(),
+                         TParallelism());
+
+    return _translate(target, source, frames, geneticCodeSpec,
+                             TTagList(), TParallelism(),
+                             typename IsSameType<TRestList, void>::Type());
+}
+
+template <typename TTarget, typename TSource, typename TParallelism>
+inline int
+translate(TTarget & target,
+          TSource const & source,
+          TranslationFrames const frames,
+          GeneticCodeSpec const & geneticCodeSpec,
           TParallelism const & /**/)
 {
     static_assert(std::is_same<TParallelism, Parallel>::value or
                   std::is_same<TParallelism, Serial>::value,
                   "TParallelism must either be Parallel() or Serial().");
-    switch(geneticCode)
-    {
-        case GeneticCodeSpec::CANONICAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::CANONICAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::VERT_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::VERT_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::YEAST_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::YEAST_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::MOLD_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::MOLD_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::INVERT_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::INVERT_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::CILIATE:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::CILIATE>(),
-                             TParallelism());
-        case GeneticCodeSpec::FLATWORM_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::FLATWORM_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::EUPLOTID:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::EUPLOTID>(),
-                             TParallelism());
-        case GeneticCodeSpec::PROKARYOTE:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::PROKARYOTE>(),
-                             TParallelism());
-        case GeneticCodeSpec::ALT_YEAST:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::ALT_YEAST>(),
-                             TParallelism());
-        case GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::ASCIDIAN_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::ALT_FLATWORM_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::ALT_FLATWORM_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::BLEPHARISMA:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::BLEPHARISMA>(),
-                             TParallelism());
-        case GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::CHLOROPHYCEAN_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::TREMATODE_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::TREMATODE_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::SCENEDESMUS_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::THRAUSTOCHYTRIUM_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::PTEROBRANCHIA_MITOCHONDRIAL>(),
-                             TParallelism());
-        case GeneticCodeSpec::GRACILIBACTERIA:
-            return translate(target, source, frames,
-                             GeneticCode<GeneticCodeSpec::GRACILIBACTERIA>(),
-                             TParallelism());
-    }
 
-    std::cerr << "Invalid genetic code translation table selected."
-              << std::endl;
-    return -1;
+    return _translate(target, source, frames, geneticCodeSpec, GeneticCodes_(),
+                      TParallelism());
 }
 
+// convenience
 template <typename TTarget, typename TSource>
 inline int
 translate(TTarget & target,
@@ -692,16 +690,6 @@ translate(TTarget & target,
           GeneticCodeSpec const & geneticCode)
 {
     return translate(target, source, frames, geneticCode, Parallel());
-}
-
-template <typename TTarget, typename TSource, typename TParallelism>
-inline int
-translate(TTarget & target,
-          TSource const & source,
-          TranslationFrames const frames,
-          TParallelism const & /**/)
-{
-    return translate(target, source, frames, GeneticCode<>(), TParallelism());
 }
 
 }
