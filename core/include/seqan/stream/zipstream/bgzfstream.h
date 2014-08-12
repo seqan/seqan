@@ -51,6 +51,191 @@ enum EStrategy
 };
 
 
+// new Event class
+
+struct Event2
+{
+    enum {Infinite = LONG_MAX};
+
+    pthread_cond_t  data_cond;
+    Mutex &         mutex;
+
+    explicit
+    Event2(Mutex &mutex) :
+        mutex(mutex)
+    {
+        int result = pthread_cond_init(&data_cond, NULL);
+        SEQAN_ASSERT_EQ(result, 0);
+    }
+
+    ~Event2()
+    {
+        int result = pthread_cond_destroy(&data_cond);
+        SEQAN_ASSERT_EQ(result, 0);
+    }
+};
+
+inline void
+waitFor(Event2 &event)
+{
+    int result = pthread_cond_wait(&event.data_cond, event.mutex.hMutex);
+    SEQAN_ASSERT_EQ(result, 0);
+}
+
+inline void
+waitFor(Event2 &event, long timeoutMilliSec, bool & inProgress)
+{
+    if (timeoutMilliSec != Event2::Infinite)
+    {
+        timespec ts;
+        ts.tv_sec = timeoutMilliSec / 1000;
+        ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
+        int result = pthread_cond_timedwait(&event.data_cond, event.mutex.hMutex, &ts);
+        inProgress = (result == ETIMEDOUT);
+        SEQAN_ASSERT(result == 0 || inProgress);
+    }
+    else
+    {
+        inProgress = false;
+        waitFor(event);
+    }
+}
+
+inline void
+signal(Event2 &event)
+{
+    int result = pthread_cond_broadcast(&event.data_cond);
+    SEQAN_ASSERT_EQ(result, 0);
+}
+
+
+
+struct Suspendable_;
+typedef Tag<Suspendable_> Suspendable;
+
+template <typename TValue>
+class ConcurrentQueue<TValue, Suspendable>
+{
+public:
+    typedef typename Host<ConcurrentQueue>::Type                TString;
+    typedef typename Size<TString>::Type                        TSize;
+
+    size_t      readerCount;
+    size_t      writerCount;
+
+    TString     data;
+    TSize       occupied;
+    TSize       nextIn;
+    TSize       nextOut;
+
+    Mutex mutex;
+    Event2 more;
+    Event2 less;
+
+    ConcurrentQueue(TSize maxSize):
+        readerCount(0),
+        writerCount(0),
+        more(mutex),
+        less(more),
+        occupied(0),
+        nextIn(0),
+        nextOut(0)
+    {
+        reserve(data, maxSize, Exact());
+    }
+
+    ~ConcurrentQueue()
+    {
+        TValue tmp;
+
+        // wait for all pending readers to finish
+        while (readerCount != 0)
+        {}
+
+        while (popFront(tmp, *this))
+        {}
+    }
+};
+
+template <typename TValue>
+inline void
+unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    if (--me.writerCount == 0)
+        signal(me.more);
+}
+
+template <typename TValue, typename TValue2>
+inline bool
+popFront(TValue & result, ConcurrentQueue<TValue2, Suspendable> & me)
+{
+    typedef ConcurrentQueue<TValue, Suspendable>        TQueue;
+    typedef typename Host<TQueue>::Type                 TString;
+    typedef typename Size<TString>::Type                TSize;
+    typedef typename Iterator<TString, Standard>::Type  TIter;
+
+    ScopedLock<Mutex> lock(me.mutex);
+    TSize cap = capacity(me.data);
+
+    while (me.occupied == 0u && me.writerCount > 0u)
+        waitFor(me.more);
+
+    if (me.writerCount == 0)
+        return false;
+
+    SEQAN_ASSERT_NEQ(me.occupied, 0u);
+
+    // extract value and destruct it in the data string
+    TIter it = begin(me.data, Standard()) + me.nextOut;
+    std::swap(result, *it);
+    valueDestruct(it);
+
+    me.nextOut = (me.nextOut + 1) % cap;
+    me.occupied--;
+
+    /* now: either me.occupied > 0 and me.nextout is the index
+       of the next occupied slot in the buffer, or
+       me.occupied == 0 and me.nextout is the index of the next
+       (empty) slot that will be filled by a producer (such as
+       me.nextout == me.nextin) */
+
+    signal(me.less);
+    return true;
+}
+
+template <typename TValue, typename TValue2>
+inline void
+appendValue(ConcurrentQueue<TValue, Suspendable> & me,
+            TValue2 SEQAN_FORWARD_CARG val)
+{
+    typedef ConcurrentQueue<TValue, Suspendable>        TQueue;
+    typedef typename Host<TQueue>::Type                 TString;
+    typedef typename Size<TString>::Type                TSize;
+
+    ScopedLock<Mutex> lock(me.mutex);
+    TSize cap = capacity(me.data);
+
+    while (me.occupied >= cap)
+        waitFor(me.less);
+
+    SEQAN_ASSERT_LT(me.occupied, cap);
+
+    valueConstruct(begin(me.data, Standard()) + me.nextIn, val);
+    me.nextIn = (me.nextIn + 1) % cap;
+    me.occupied++;
+
+    /* now: either me.occupied < BSIZE and me.nextin is the index
+       of the next empty slot in the buffer, or
+       me.occupied == BSIZE and me.nextin is the index of the
+       next (occupied) slot that will be emptied by a consumer
+       (such as me.nextin == me.nextout) */
+
+    signal(me.more);
+}
+
+
+
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
 
 The class wraps up the inflate method of the bgzf library 1.1.4 http://www.gzip.org/bgzf/
@@ -88,78 +273,81 @@ public:
         {}
     };
 
+    // serialization of output
     Concatter concatter;
 
-    struct BgzfThreadContext
+    struct CompressionJob
     {
-        typedef std::vector<byte_type, byte_allocator_type> byte_vector_type;
-        typedef std::vector<char_type, char_allocator_type> char_vector_type;
+        typedef std::vector<byte_type, byte_allocator_type> TOutputBuffer;
+        typedef std::vector<char_type, char_allocator_type> TBuffer;
 
-        struct BgzfCompressor
+        TOutputBuffer   outputBuffer;
+        TBuffer         buffer;
+        size_t          size;
+        unsigned        waitForKey
+
+        CompressionJob() :
+            outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
+            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
+            waitForKey(0)
+        {}
+    };
+
+    // string of recycable jobs
+    String<CompressionJob>                  jobs;
+    ConcurrentQueue<unsigned, Suspendable>  jobQueue;
+    ConcurrentQueue<unsigned, Suspendable>  idleQueue;
+
+
+    struct CompressionThread
+    {
+        basic_bgzf_streambuf            *streamBuf;
+        CompressionContext<BgzfFile>    compressionCtx;
+
+        void operator()()
         {
-            BgzfThreadContext *threadCtx;
+            size_t jobId;
 
-            void operator()()
+            // wait for a new job to become available
+            while (true)
             {
+                if (!popFront(jobId, streamBuf->jobQueue))
+                    return;
+
+                CompressionJob &job = streamBuf->jobs[jobId];
+
+                // compress block with zlib
+                size_t outputLen = _compressBlock(
+                    job.outputBuffer[0], capacity(job.outputBuffer),
+                    job.buffer[0], job.size, compressionCtx);
+
                 while (true)
                 {
-                    // wait for a new job to become available
-                    ScopedLock<Mutex> lock(threadCtx->jobAvailable);
-                    if (threadCtx->state == KILL)
-                        return;
-
-                    if (threadCtx->state != BUSY)
-                        waitFor(threadCtx->jobAvailable);
-
-
-                    // compress block with zlib
-                    size_t outputLen = _compressBlock(
-                        &threadCtx->outputBuffer[0], capacity(threadCtx->outputBuffer),
-                        &threadCtx->buffer[0], threadCtx->size, threadCtx->ctx);
-
-                    while (true)
+                    ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
+                    if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
                     {
-                        ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
-                        if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
+                        threadCtx->concatter->ostream.write(
+                            (const char_type*) &(threadCtx->outputBuffer[0]),
+                            outputLen);
+                        if (!threadCtx->concatter->ostream.good())
                         {
-                            threadCtx->concatter->ostream.write(
-                                (const char_type*) &(threadCtx->outputBuffer[0]),
-                                outputLen);
-                            if (!threadCtx->concatter->ostream.good())
-                            {
-                                threadCtx->concatter->stop = false;
-                                return;
-                            }
-                            // move serializer to next packet and reset our job
-                            threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
-                            printf("%d\n",threadCtx->concatter->waitForKey);
-                            threadCtx->state = IDLE;
-                            break;
+                            threadCtx->concatter->stop = false;
+                            return;
                         }
+                        // move serializer to next packet and reset our job
+                        threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
+
+                        appendValue(streamBuf->idleQueue, jobId);
+                        break;
                     }
                 }
             }
-        };
-
-        byte_vector_type                outputBuffer;
-        char_vector_type                buffer;
-        size_t                          size;
-        CompressionContext<BgzfFile>    ctx;
-        Thread<BgzfCompressor>          compressor;
-        Event                           jobAvailable;
-
-        Concatter *concatter;
-        unsigned waitForKey;
-        enum { UNBORN, KILL, IDLE, BUSY } state;
-
-        BgzfThreadContext():
-            outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
-            jobAvailable(false),
-            waitForKey(0),
-            state(UNBORN)
-        {}
+        }
     };
+
+    // array of worker threads
+    Thread<CompressionThread>                  *threads;
+
 
     BgzfThreadContext   *threadCtx;
     BgzfThreadContext   *ctx;
@@ -200,6 +388,11 @@ public:
             ScopedLock<Mutex> lock(ctx->jobAvailable);
 
             SEQAN_ASSERT_NEQ((int)ctx->state, (int)ctx->BUSY);
+            {
+                ScopedLock<Mutex> lock(threadCtx->jobReceived);
+                if (threadCtx->state == BUSY)
+                    waitFor(threadCtx->jobReceived);
+            }
 
             // start thread if neccessary
             if (ctx->state == ctx->UNBORN)
