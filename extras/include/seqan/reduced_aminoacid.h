@@ -37,8 +37,6 @@
 #ifndef SEQAN_EXTRAS_REDUCED_AMINOACID_H_
 #define SEQAN_EXTRAS_REDUCED_AMINOACID_H_
 
-#ifdef SEQAN_CXX11_STANDARD
-
 #include <seqan/basic.h>
 #include <seqan/score.h>
 
@@ -53,10 +51,5 @@
 #include <seqan/reduced_aminoacid/cluster_red_tables_24_to_n_b62.h>
 
 #include <seqan/reduced_aminoacid/base_late.h>
-
-#else
-#error Module reduced_aminoacid is only available when SEQAN_CXX11_STANDARD is \
-defined and your compiler supports alias templates.
-#endif
 
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_H_

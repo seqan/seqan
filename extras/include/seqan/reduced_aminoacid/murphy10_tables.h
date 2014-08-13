@@ -54,7 +54,7 @@ namespace seqan {
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<Murphy10, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<Murphy10>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > >::VALUE];
 };
 
 template <typename TSpec>

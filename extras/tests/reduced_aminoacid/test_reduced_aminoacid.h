@@ -47,9 +47,12 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
 {
-    typedef ReducedAminoAcid<ClusterReduction<8> >  ReducedAminoAcid24to8;
-    typedef ReducedAminoAcid<ClusterReduction<10> > ReducedAminoAcid24to10;
-    typedef ReducedAminoAcid<ClusterReduction<12> > ReducedAminoAcid24to12;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<8> > >
+            ReducedAminoAcid24to8;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<10> > >
+            ReducedAminoAcid24to10;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<12> > >
+            ReducedAminoAcid24to12;
 
     CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
     String<AminoAcid> aas = "ARNDCQEGHILKMFPSTWYVBZX*";
@@ -87,7 +90,8 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
 {
-    typedef ReducedAminoAcid<Murphy10> ReducedAminoAcidMurphy10;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >
+            ReducedAminoAcidMurphy10;
 
     CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
     String<AminoAcid> aas = "ARNDCQEGHILKMFPSTWYVBZX*";

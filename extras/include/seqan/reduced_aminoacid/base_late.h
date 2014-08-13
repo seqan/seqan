@@ -60,10 +60,11 @@ namespace seqan {
 // -----------------------------------------------------------------------
 
 template <typename TRedSpec>
-inline ReducedAminoAcid<TRedSpec>
-unknownValueImpl(ReducedAminoAcid<TRedSpec> *)
+inline SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >
+unknownValueImpl(SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > *)
 {
-    static const ReducedAminoAcid<TRedSpec> _result = ReducedAminoAcid<TRedSpec>('X');
+    static const SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >
+      _result = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >('X');
     return _result;
 }
 
@@ -72,31 +73,40 @@ unknownValueImpl(ReducedAminoAcid<TRedSpec> *)
 // -----------------------------------------------------------------------
 
 template <typename TRedSpec>
-inline void assign(char & c_target, ReducedAminoAcid<TRedSpec> const & source)
+inline void assign(char & c_target, SimpleType<unsigned char,
+                   ReducedAminoAcid_<TRedSpec> > const & source)
 {
     c_target = TranslateTableRedAAToAscii_<TRedSpec>::VALUE[source.value];
 }
 
 template <typename TRedSpec>
-inline void assign(ReducedAminoAcid<TRedSpec> & target, __uint8 c_source)
+inline void assign(SimpleType<unsigned char,
+                   ReducedAminoAcid_<TRedSpec> > & target,
+                   __uint8 c_source)
 {
     target.value = TranslateTableByteToRedAA_<TRedSpec>::VALUE[c_source];
 }
 
 template <typename TRedSpec>
-inline void assign(ReducedAminoAcid<TRedSpec> & target, char c_source)
+inline void assign(SimpleType<unsigned char,
+                   ReducedAminoAcid_<TRedSpec> > & target,
+                   char c_source)
 {
     target.value = TranslateTableAsciiToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
 }
 
 template <typename TRedSpec>
-inline void assign(ReducedAminoAcid<TRedSpec> & target, AminoAcid c_source)
+inline void assign(SimpleType<unsigned char,
+                   ReducedAminoAcid_<TRedSpec> > & target,
+                   AminoAcid c_source)
 {
     target.value = TranslateTableAAToRedAA_<TRedSpec>::VALUE[c_source.value];
 }
 
 template <typename TRedSpec>
-inline void assign(ReducedAminoAcid<TRedSpec> & target, Unicode c_source)
+inline void assign(SimpleType<unsigned char,
+                   ReducedAminoAcid_<TRedSpec> > & target,
+                   Unicode c_source)
 {
     target.value = TranslateTableAsciiToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
 }

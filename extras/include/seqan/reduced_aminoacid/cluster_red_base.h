@@ -102,7 +102,9 @@ struct ClusterReduction;
 // -----------------------------------------------------------------------
 
 template <unsigned char n, unsigned char m, typename TMatrix>
-struct ValueSize<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
+struct ValueSize<
+        SimpleType<unsigned char,
+                   ReducedAminoAcid_<ClusterReduction<n,m,TMatrix> > > >
 {
     typedef uint8_t Type;
     static const Type VALUE = n;
@@ -113,7 +115,9 @@ struct ValueSize<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
 // -----------------------------------------------------------------------
 
 template <unsigned char n, unsigned char m, typename TMatrix>
-struct BitsPerValue<ReducedAminoAcid<ClusterReduction<n,m,TMatrix> > >
+struct BitsPerValue<
+         SimpleType<unsigned char,
+                    ReducedAminoAcid_<ClusterReduction<n,m,TMatrix> > > >
 {
     typedef uint8_t Type;
     static const Type VALUE = Log2<n>::VALUE;

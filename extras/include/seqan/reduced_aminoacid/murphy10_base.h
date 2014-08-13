@@ -81,7 +81,7 @@ typedef Tag<Murphy10_> Murphy10;
 // -----------------------------------------------------------------------
 
 template <>
-struct ValueSize<ReducedAminoAcid<Murphy10> >
+struct ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > >
 {
     typedef uint8_t Type;
     static const Type VALUE = 10;
@@ -92,7 +92,7 @@ struct ValueSize<ReducedAminoAcid<Murphy10> >
 // -----------------------------------------------------------------------
 
 template <>
-struct BitsPerValue<ReducedAminoAcid<Murphy10> >
+struct BitsPerValue<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > >
 {
     typedef uint8_t Type;
     static const Type VALUE = 4;
