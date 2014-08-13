@@ -135,11 +135,12 @@ public:
     ConcurrentQueue(TSize maxSize):
         readerCount(0),
         writerCount(0),
-        more(mutex),
-        less(more),
         occupied(0),
         nextIn(0),
-        nextOut(0)
+        nextOut(0),
+        mutex(false),
+        more(mutex),
+        less(more)
     {
         reserve(data, maxSize, Exact());
     }
@@ -166,9 +167,9 @@ unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
         signal(me.more);
 }
 
-template <typename TValue, typename TValue2>
+template <typename TValue>
 inline bool
-popFront(TValue & result, ConcurrentQueue<TValue2, Suspendable> & me)
+popFront(TValue & result, ConcurrentQueue<TValue, Suspendable> & me)
 {
     typedef ConcurrentQueue<TValue, Suspendable>        TQueue;
     typedef typename Host<TQueue>::Type                 TString;
@@ -234,7 +235,15 @@ appendValue(ConcurrentQueue<TValue, Suspendable> & me,
     signal(me.more);
 }
 
-
+template <typename TValue, typename TSize>
+inline bool
+waitForMinSize(ConcurrentQueue<TValue, Suspendable> & me,
+               TSize minSize)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    while (capacity(me.data) < minSize)
+        waitFor(me.more);
+}
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
 
@@ -258,17 +267,19 @@ public:
 	typedef typename Tr::char_type char_type;
 	typedef typename Tr::int_type int_type;
 
+    typedef ConcurrentQueue<size_t, Suspendable>  TJobQueue;
+
     struct Concatter
     {
         ostream_reference ostream;
         Mutex lock;
-        unsigned waitForKey;
-        unsigned nextKey;
+        unsigned nextWritableKey;
         bool stop;
 
         Concatter(ostream_reference ostream) :
             ostream(ostream),
             lock(false),
+            nextWritableKey(0),
             stop(false)
         {}
     };
@@ -284,19 +295,22 @@ public:
         TOutputBuffer   outputBuffer;
         TBuffer         buffer;
         size_t          size;
-        unsigned        waitForKey
+        unsigned        key;
 
         CompressionJob() :
             outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
-            waitForKey(0)
+            key(0)
         {}
     };
 
     // string of recycable jobs
-    String<CompressionJob>                  jobs;
-    ConcurrentQueue<unsigned, Suspendable>  jobQueue;
-    ConcurrentQueue<unsigned, Suspendable>  idleQueue;
+    String<CompressionJob>  jobs;
+    TJobQueue               jobQueue;
+    TJobQueue               idleQueue;
+    unsigned                currentJobKey;
+    size_t                  currentJobId;
+    bool                    currentJobAvail;
 
 
     struct CompressionThread
@@ -306,11 +320,13 @@ public:
 
         void operator()()
         {
-            size_t jobId;
+            ScopedReadLock<TJobQueue> readLock(streamBuf->jobQueue);
+            ScopedWriteLock<TJobQueue> writeLock(streamBuf->idleQueue);
 
             // wait for a new job to become available
             while (true)
             {
+                size_t jobId;
                 if (!popFront(jobId, streamBuf->jobQueue))
                     return;
 
@@ -318,24 +334,24 @@ public:
 
                 // compress block with zlib
                 size_t outputLen = _compressBlock(
-                    job.outputBuffer[0], capacity(job.outputBuffer),
-                    job.buffer[0], job.size, compressionCtx);
+                    &job.outputBuffer[0], capacity(job.outputBuffer),
+                    &job.buffer[0], job.size, compressionCtx);
 
                 while (true)
                 {
-                    ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
-                    if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
+                    ScopedLock<Mutex> scopedLock(streamBuf->concatter.lock);
+                    if (streamBuf->concatter.nextWritableKey == job.key)
                     {
-                        threadCtx->concatter->ostream.write(
-                            (const char_type*) &(threadCtx->outputBuffer[0]),
+                        streamBuf->concatter.ostream.write(
+                            (const char_type*) &(job.outputBuffer[0]),
                             outputLen);
-                        if (!threadCtx->concatter->ostream.good())
+                        if (!streamBuf->concatter.ostream.good())
                         {
-                            threadCtx->concatter->stop = false;
+                            streamBuf->concatter.stop = false;
                             return;
                         }
                         // move serializer to next packet and reset our job
-                        threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
+                        streamBuf->concatter.nextWritableKey++;
 
                         appendValue(streamBuf->idleQueue, jobId);
                         break;
@@ -346,66 +362,73 @@ public:
     };
 
     // array of worker threads
-    Thread<CompressionThread>                  *threads;
-
-
-    BgzfThreadContext   *threadCtx;
-    BgzfThreadContext   *ctx;
-    size_t              thread;
-    size_t              threads;
+    Thread<CompressionThread>   *threads;
+    size_t                      numThreads;
+    size_t                      numJobs;
 
     /** Construct a zip stream
      * More info on the following parameters can be found in the bgzf documentation.
      */
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t threads = 1) :
+                         size_t numThreads = 1,
+                         size_t numJobs = 3) :
 		concatter(ostream_),
-        thread(0),
-        threads(threads)
+        jobQueue(numJobs),
+        idleQueue(numJobs),
+        numThreads(numThreads),
+        numJobs(numJobs)
     {
-        concatter.waitForKey = 0;
-        concatter.nextKey = 0;
-        threadCtx = new BgzfThreadContext[threads];
-        for (unsigned i = 0; i < threads; ++i)
+        resize(jobs, numJobs, Exact());
+        currentJobId = 0;
+        currentJobKey = 0;
+
+        lockWriting(jobQueue);
+//        lockReading(idleQueue);
+
+        for (unsigned i = 0; i < numJobs; ++i)
+            appendValue(idleQueue, i);
+
+        threads = new Thread<CompressionThread>[numThreads];
+        for (unsigned i = 0; i < numThreads; ++i)
         {
-            threadCtx[i].concatter = &concatter;
-            threadCtx[i].compressor.worker.threadCtx = &threadCtx[i];
+            threads[i].worker.streamBuf = this;
+            run(threads[i]);
         }
-        ctx = &threadCtx[thread];
-		this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+
+        currentJobAvail = popFront(currentJobId, idleQueue);
+        SEQAN_ASSERT(currentJobAvail);
+
+        CompressionJob &job = jobs[currentJobId];
+        job.key = currentJobKey++;
+		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
     }
 
     ~basic_bgzf_streambuf()
     {
+        unlockWriting(jobQueue);
+//        unlockReading(idleQueue);
+
         // the buffer is now (after addFooter()) and flush will append the empty EOF marker
         flush(true);
-        delete[] threadCtx;
+        delete[] threads;
     }
 
     bool compressBuffer(size_t size)
     {
+        // submit current job
+        if (currentJobAvail)
         {
-            ScopedLock<Mutex> lock(ctx->jobAvailable);
-
-            SEQAN_ASSERT_NEQ((int)ctx->state, (int)ctx->BUSY);
-            {
-                ScopedLock<Mutex> lock(threadCtx->jobReceived);
-                if (threadCtx->state == BUSY)
-                    waitFor(threadCtx->jobReceived);
-            }
-
-            // start thread if neccessary
-            if (ctx->state == ctx->UNBORN)
-                run(ctx->compressor);
-
-            ctx->size = size;
-            ctx->waitForKey = concatter.nextKey++;
-            ctx->state = ctx->BUSY;
-            signal(ctx->jobAvailable);
+            jobs[currentJobId].size = size;
+            appendValue(jobQueue, currentJobId);
         }
 
-        thread = (thread + 1) % threads;
-        ctx = &threadCtx[thread];
+        // recycle existing idle job
+        if (!(currentJobAvail = popFront(currentJobId, idleQueue)))
+            return false;
+
+        CompressionJob &job = jobs[currentJobId];
+        job.key = currentJobKey++;
+
         return !concatter.stop;
     }
 
@@ -419,7 +442,8 @@ public:
         }
         if (compressBuffer(w))
         {
-            this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+            CompressionJob &job = jobs[currentJobId];
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
             return c;
         }
         else
@@ -437,22 +461,17 @@ public:
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
         if ((w != 0 || flushEmptyBuffer) && compressBuffer(w))
-            this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
-        else
-            w = 0;
-
-        // wait for running compressor threads (in the correct order)
-        for (unsigned i = 1; i <= threads; ++i)
         {
-            ctx = &threadCtx[(thread + i) % threads];
-            {
-                ScopedLock<Mutex> lock(ctx->jobAvailable);
-                SEQAN_ASSERT_NEQ((int)ctx->state, (int)ctx->BUSY);
-                ctx->state = ctx->KILL;
-                signal(ctx->jobAvailable);
-            }
-            waitFor(ctx->compressor);
+            CompressionJob &job = jobs[currentJobId];
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
         }
+        else
+        {
+            w = 0;
+        }
+
+        // wait for running compressor threads
+        waitForMinSize(idleQueue, numJobs - 1);
 
 		concatter.ostream.flush();
 		return w;
