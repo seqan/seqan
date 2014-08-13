@@ -78,7 +78,7 @@ namespace seqan {
 template <typename TRedSpec>
 struct ReducedAminoAcid_ {};
 
-#if defined SEQAN_CXX11_STANDARD && (not defined _MSC_VER || _MSC_VER >= 1800)
+#if defined (SEQAN_CXX11_STANDARD) && ( !defined (_MSC_VER) || _MSC_VER >= 1800 )
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
 #endif
