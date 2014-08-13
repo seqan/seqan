@@ -55,7 +55,7 @@ enum EStrategy
 
 struct Event2
 {
-    enum {Infinite = LONG_MAX};
+    enum { Infinite = LONG_MAX };
 
     pthread_cond_t  data_cond;
     Mutex &         mutex;
@@ -117,8 +117,8 @@ template <typename TValue>
 class ConcurrentQueue<TValue, Suspendable>
 {
 public:
-    typedef typename Host<ConcurrentQueue>::Type                TString;
-    typedef typename Size<TString>::Type                        TSize;
+    typedef typename Host<ConcurrentQueue>::Type    TString;
+    typedef typename Size<TString>::Type            TSize;
 
     size_t      readerCount;
     size_t      writerCount;
@@ -150,7 +150,7 @@ public:
         TValue tmp;
 
         // wait for all pending readers to finish
-        while (readerCount != 0)
+        while (readerCount != 0u)
         {}
 
         while (popFront(tmp, *this))
@@ -163,8 +163,17 @@ inline void
 unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
 {
     ScopedLock<Mutex> lock(me.mutex);
-    if (--me.writerCount == 0)
+    if (--me.writerCount == 0u)
         signal(me.more);
+}
+
+template <typename TValue>
+inline void
+unlockReading(ConcurrentQueue<TValue, Suspendable> & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    if (--me.readerCount == 0u)
+        signal(me.less);
 }
 
 template <typename TValue>
@@ -182,7 +191,7 @@ popFront(TValue & result, ConcurrentQueue<TValue, Suspendable> & me)
     while (me.occupied == 0u && me.writerCount > 0u)
         waitFor(me.more);
 
-    if (me.writerCount == 0)
+    if (me.occupied == 0u)
         return false;
 
     SEQAN_ASSERT_NEQ(me.occupied, 0u);
@@ -206,7 +215,7 @@ popFront(TValue & result, ConcurrentQueue<TValue, Suspendable> & me)
 }
 
 template <typename TValue, typename TValue2>
-inline void
+inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable> & me,
             TValue2 SEQAN_FORWARD_CARG val)
 {
@@ -217,8 +226,11 @@ appendValue(ConcurrentQueue<TValue, Suspendable> & me,
     ScopedLock<Mutex> lock(me.mutex);
     TSize cap = capacity(me.data);
 
-    while (me.occupied >= cap)
+    while (me.occupied >= cap && me.readerCount > 0u)
         waitFor(me.less);
+
+    if (me.occupied >= cap)
+        return false;
 
     SEQAN_ASSERT_LT(me.occupied, cap);
 
@@ -233,6 +245,7 @@ appendValue(ConcurrentQueue<TValue, Suspendable> & me,
        (such as me.nextin == me.nextout) */
 
     signal(me.more);
+    return true;
 }
 
 template <typename TValue, typename TSize>
@@ -241,8 +254,9 @@ waitForMinSize(ConcurrentQueue<TValue, Suspendable> & me,
                TSize minSize)
 {
     ScopedLock<Mutex> lock(me.mutex);
-    while (capacity(me.data) < minSize)
+    while (me.occupied < minSize && me.writerCount > 0u)
         waitFor(me.more);
+    return me.occupied >= minSize;
 }
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
@@ -383,10 +397,13 @@ public:
         currentJobKey = 0;
 
         lockWriting(jobQueue);
-//        lockReading(idleQueue);
+        lockReading(idleQueue);
 
         for (unsigned i = 0; i < numJobs; ++i)
-            appendValue(idleQueue, i);
+        {
+            bool success = appendValue(idleQueue, i);
+            SEQAN_ASSERT(success);
+        }
 
         threads = new Thread<CompressionThread>[numThreads];
         for (unsigned i = 0; i < numThreads; ++i)
@@ -405,11 +422,14 @@ public:
 
     ~basic_bgzf_streambuf()
     {
-        unlockWriting(jobQueue);
-//        unlockReading(idleQueue);
-
         // the buffer is now (after addFooter()) and flush will append the empty EOF marker
         flush(true);
+
+        unlockWriting(jobQueue);
+        unlockReading(idleQueue);
+
+        for (unsigned i = 0; i < numThreads; ++i)
+            waitFor(threads[i]);
         delete[] threads;
     }
 
