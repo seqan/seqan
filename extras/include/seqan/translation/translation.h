@@ -494,9 +494,12 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *
  * The translation process is fastest when using ConcatDirect-StringSets for
  * both input and output StringSets and when not having to convert the alphabet
- * of the source (see below).
+ * of the source, i.e. feeding AminoAcid-Strings, not CharStrings (although
+ * the latter is possible).
  *
- * Please not that the translation module requires C++11.
+ * Please note that specifying the GeneticCode at compile time avoids having
+ * unrequired conversion tables in memory. The implementation profits slightly
+ * from having SEQAN_CXX11_STANDARD defined.
  * @section Example
  *
  * @code{.cpp}
