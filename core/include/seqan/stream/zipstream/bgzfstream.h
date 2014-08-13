@@ -384,8 +384,8 @@ public:
      * More info on the following parameters can be found in the bgzf documentation.
      */
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t numThreads = 1,
-                         size_t numJobs = 3) :
+                         size_t numThreads = 4,
+                         size_t numJobs = 16) :
 		concatter(ostream_),
         jobQueue(numJobs),
         idleQueue(numJobs),
@@ -561,6 +561,66 @@ public:
     };
 
     Serializer serializer;
+
+/*
+    struct DecompressionThread
+    {
+        basic_unbgzf_streambuf          *streamBuf;
+        CompressionContext<BgzfFile>    compressionCtx;
+
+        void operator()()
+        {
+            ScopedReadLock<TJobQueue> readLock(streamBuf->jobQueue);
+            ScopedWriteLock<TJobQueue> writeLock(streamBuf->idleQueue);
+
+            // wait for a new job to become available
+            while (true)
+            {
+                size_t jobId;
+                if (!popFront(jobId, streamBuf->idleQueue))
+                    return;
+
+                {
+                    ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
+
+                    // read header
+                    threadCtx->serializer->istream.read(
+                        (char*)&(threadCtx->inputBuffer[0]),
+                        BGZF_BLOCK_HEADER_LENGTH);
+
+                    // check header
+                    if (!threadCtx->serializer->istream.good() || !_bgzfCheckHeader(&(threadCtx->inputBuffer[0])))
+                    {
+                        threadCtx->serializer->stop = true;
+                        return;
+                    }
+
+                    // extract length of compressed data
+                    tailLen = _bgzfUnpack16(&(threadCtx->inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
+
+                    // read compressed data and tail
+                    threadCtx->serializer->istream.read(
+                        (char*)&(threadCtx->inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
+                        tailLen);
+                    
+                    if (!appendValue(streamBuf->runningQueue, jobId))
+                        return;
+                }
+
+                // decompress block
+                threadCtx->size = _decompressBlock(
+                    &threadCtx->buffer[MAX_PUTBACK], capacity(threadCtx->buffer),
+                    &threadCtx->inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, threadCtx->ctx);
+
+                // move serializer to next packet and reset our job
+                streamBuf->serializer.nextWritableKey++;
+
+                appendValue(streamBuf->idleQueue, jobId);
+                break;
+            }
+        }
+    };
+*/
 
     struct BgzfThreadContext
     {
