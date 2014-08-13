@@ -57,7 +57,7 @@ namespace seqan {
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<23, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<23, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<23, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -82,7 +82,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<23, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<22, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<22, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<22, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -107,7 +107,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<22, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<21, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<21, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<21, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -132,7 +132,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<21, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<20, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<20, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<20, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -157,7 +157,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<20, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<19, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<19, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<19, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -182,7 +182,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<19, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<18, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<18, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<18, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -207,7 +207,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<18, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<17, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<17, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<17, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -232,7 +232,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<17, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<16, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<16, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<16, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -257,7 +257,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<16, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<15, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<15, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<15, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -282,7 +282,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<15, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<14, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<14, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<14, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -307,7 +307,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<14, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<13, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<13, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<13, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -332,7 +332,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<13, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<12, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<12, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<12, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -357,7 +357,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<12, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<11, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<11, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<11, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -382,7 +382,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<11, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<10, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<10, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<10, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -407,7 +407,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<10, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<9, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<9, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<9, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -432,7 +432,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<9, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<8, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<8, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<8, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -457,7 +457,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<8, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<7, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<7, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<7, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -482,7 +482,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<7, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<6, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<6, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<6, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -507,7 +507,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<6, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<5, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<5, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<5, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -532,7 +532,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<5, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<4, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<4, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<4, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -557,7 +557,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<4, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<3, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<3, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<3, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
@@ -582,7 +582,7 @@ struct TranslateTableByteToRedAA_<ClusterReduction<3, 24, Blosum62>, TSpec>
 template <typename TSpec>
 struct TranslateTableRedAAToAscii_<ClusterReduction<2, 24, Blosum62>, TSpec>
 {
-    static const char VALUE[ValueSize<ReducedAminoAcid<ClusterReduction<2, 24, Blosum62>>>::VALUE];
+    static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<2, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>

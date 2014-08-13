@@ -65,17 +65,23 @@ namespace seqan {
  *
  * @section Remarks
  *
- * This module requires C++11
+ * The alias template is only available when SEQAN_CXX11_STANDARD is defined
+ * and your compiler supports alias templates (Visual Studio >= 2013, any fairly
+ * recent Clang, GCC). Otherwise you have to use the underscored type and 
+ * the full definition, i.e.
+ * SimpleType<unsigned char, ReducedAminoAcid_<TReductionSpec> >.
  *
  * @see ClusterReduction
  * @see Murphy10
  */
 
 template <typename TRedSpec>
-struct ReducedAminoAcid_;
+struct ReducedAminoAcid_ {};
 
+#if defined SEQAN_CXX11_STANDARD && (not defined _MSC_VER || _MSC_VER >= 1800)
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
+#endif
 
 // ============================================================================
 // Metafunctions
@@ -86,27 +92,31 @@ using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >
 // -----------------------------------------------------------------------
 
 template <typename TRedSpec>
-struct CompareType<ReducedAminoAcid<TRedSpec>, __uint8>
+struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
+                   __uint8>
 {
-    typedef ReducedAminoAcid<TRedSpec> Type;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
 template <typename TRedSpec>
-struct CompareType<ReducedAminoAcid<TRedSpec>, char>
+struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
+                   char>
 {
-    typedef ReducedAminoAcid<TRedSpec> Type;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
 template <typename TRedSpec>
-struct CompareType<ReducedAminoAcid<TRedSpec>, AminoAcid>
+struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
+                   AminoAcid>
 {
-    typedef ReducedAminoAcid<TRedSpec> Type;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
 template <typename TRedSpec>
-struct CompareType<ReducedAminoAcid<TRedSpec>, Unicode>
+struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
+                   Unicode>
 {
-    typedef ReducedAminoAcid<TRedSpec> Type;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
 // -----------------------------------------------------------------------
