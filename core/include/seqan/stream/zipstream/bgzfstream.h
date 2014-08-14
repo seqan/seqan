@@ -128,9 +128,11 @@ public:
     TSize       nextIn;
     TSize       nextOut;
 
-    Mutex mutex;
-    Event2 more;
-    Event2 less;
+    Mutex       mutex;
+    Event2      more;
+    Event2      less;
+
+    bool        virgin;
 
     ConcurrentQueue(TSize maxSize):
         readerCount(0),
@@ -140,7 +142,8 @@ public:
         nextOut(0),
         mutex(false),
         more(mutex),
-        less(more)
+        less(more),
+        virgin(true)
     {
         reserve(data, maxSize, Exact());
     }
@@ -160,12 +163,8 @@ public:
 
 template <typename TValue>
 inline void
-unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    if (--me.writerCount == 0u)
-        signal(me.more);
-}
+lockReading(ConcurrentQueue<TValue, Suspendable> &)
+{}
 
 template <typename TValue>
 inline void
@@ -175,6 +174,46 @@ unlockReading(ConcurrentQueue<TValue, Suspendable> & me)
     if (--me.readerCount == 0u)
         signal(me.less);
 }
+
+template <typename TValue>
+inline void
+lockWriting(ConcurrentQueue<TValue, Suspendable> &)
+{}
+
+template <typename TValue>
+inline void
+unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    if (--me.writerCount == 0u)
+        signal(me.more);
+}
+
+template <typename TValue, typename TSize>
+inline void
+setReaderCount(ConcurrentQueue<TValue, Suspendable> & me, TSize readerCount)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    me.readerCount = readerCount;
+}
+
+template <typename TValue, typename TSize>
+inline void
+setWriterCount(ConcurrentQueue<TValue, Suspendable> & me, TSize writerCount)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    me.writerCount = writerCount;
+}
+
+template <typename TValue, typename TSize1, typename TSize2>
+inline void
+setReaderWriterCount(ConcurrentQueue<TValue, Suspendable> & me, TSize1 readerCount, TSize2 writerCount)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    me.readerCount = readerCount;
+    me.writerCount = writerCount;
+}
+
 
 template <typename TValue>
 inline bool
@@ -398,6 +437,8 @@ public:
 
         lockWriting(jobQueue);
         lockReading(idleQueue);
+        setReaderWriterCount(jobQueue, numThreads, 1);
+        setReaderWriterCount(idleQueue, 1, numThreads);
 
         for (unsigned i = 0; i < numJobs; ++i)
         {
@@ -551,15 +592,18 @@ public:
     {
         istream_reference istream;
         Mutex lock;
-        unsigned waitForKey;
-        unsigned nextKey;
-        bool stop;
+        std::exception *error;
 
         Serializer(istream_reference istream) :
             istream(istream),
             lock(false),
-            stop(false)
+            error(NULL)
         {}
+
+        ~Serializer()
+        {
+            delete error;
+        }
     };
 
     Serializer serializer;
@@ -573,19 +617,25 @@ public:
         size_t          size;
 
         Mutex           mutex;
-        Event           readyEvent;
+        Event2          readyEvent;
         bool            ready;
 
         DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
-            ready(mutex)
+            size(0),
+            mutex(false),
+            readyEvent(mutex),
+            ready(false)
         {}
 
-        DecompressionJob(DecompressionJob const &) :
-            inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
-            ready(mutex)
+        DecompressionJob(DecompressionJob const &other) :
+            inputBuffer(other.inputBuffer),
+            buffer(other.buffer),
+            size(other.size),
+            mutex(false),
+            readyEvent(mutex),
+            ready(other.ready)
         {}
     };
 
@@ -603,8 +653,8 @@ public:
 
         void operator()()
         {
-            ScopedWriteLock<TJobQueue> readLock(streamBuf->idleQueue);
-            ScopedReadLock<TJobQueue> writeLock(streamBuf->runningQueue);
+            ScopedReadLock<TJobQueue> readLock(streamBuf->idleQueue);
+            ScopedWriteLock<TJobQueue> writeLock(streamBuf->runningQueue);
 
             // wait for a new job to become available
             while (true)
@@ -619,40 +669,60 @@ public:
                 {
                     ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
 
+                    if (streamBuf->serializer.error != NULL)
+                        return;
+
                     // read header
-                    streamBuf->serializer->istream.read(
-                        (char*)&(streamBuf->inputBuffer[0]),
+                    streamBuf->serializer.istream.read(
+                        (char*)&(job.inputBuffer[0]),
                         BGZF_BLOCK_HEADER_LENGTH);
 
-                    // check header
-                    if (!streamBuf->serializer->istream.good() || !_bgzfCheckHeader(&(streamBuf->inputBuffer[0])))
+                    if (!streamBuf->serializer.istream.good())
                     {
-                        streamBuf->serializer->stop = true;
+                        if (!streamBuf->serializer.istream.eof())
+                            streamBuf->serializer.error = new IOException("Stream read error.");
+                        return;
+                    }
+
+                    // check header
+                    if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
+                    {
+                        streamBuf->serializer.error = new IOException("Invalid BGZF block header.");
                         return;
                     }
 
                     // extract length of compressed data
-                    tailLen = _bgzfUnpack16(&(streamBuf->inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
+                    tailLen = _bgzfUnpack16(&(job.inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
 
                     // read compressed data and tail
-                    streamBuf->serializer->istream.read(
-                        (char*)&(streamBuf->inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
+                    streamBuf->serializer.istream.read(
+                        (char*)&(job.inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
                         tailLen);
                     
+                    if (!streamBuf->serializer.istream.good())
+                    {
+                        if (!streamBuf->serializer.istream.eof())
+                            streamBuf->serializer.error = new IOException("Stream read error.");
+                        return;
+                    }
+
+                    job.ready = false;
+
                     if (!appendValue(streamBuf->runningQueue, jobId))
                         return;
                 }
 
                 // decompress block
-                streamBuf->size = _decompressBlock(
+                job.size = _decompressBlock(
                     &job.buffer[MAX_PUTBACK], capacity(job.buffer),
-                    &streamBuf->inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, streamBuf->ctx);
+                    &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
 
-                // move serializer to next packet and reset our job
-                streamBuf->serializer.nextWritableKey++;
-
-                appendValue(streamBuf->runningQueue, jobId);
-                break;
+                // signal that job is ready
+                {
+                    ScopedLock<Mutex> lock(job.mutex);
+                    job.ready = true;
+                    signal(job.readyEvent);
+                }
             }
         }
     };
@@ -736,9 +806,9 @@ public:
 
     // array of worker threads
     Thread<DecompressionThread> *threads;
-    TBuffer                     putbackBuffer;
     size_t                      numThreads;
     size_t                      numJobs;
+    TBuffer                     putbackBuffer;
 
     /** Construct a unzip stream
     * More info on the following parameters can be found in the bgzf documentation.
@@ -755,9 +825,12 @@ public:
     {
         resize(jobs, numJobs, Exact());
         currentJobId = 0;
+        currentJobAvail = false;
 
         lockReading(runningQueue);
         lockWriting(idleQueue);
+        setReaderWriterCount(runningQueue, 1, numThreads);
+        setReaderWriterCount(idleQueue, numThreads, 1);
 
         for (unsigned i = 0; i < numJobs; ++i)
         {
@@ -766,29 +839,17 @@ public:
         }
 
         threads = new Thread<DecompressionThread>[numThreads];
-        for (unsigned i = 0; i < threads; ++i)
+        for (unsigned i = 0; i < numThreads; ++i)
         {
             threads[i].worker.streamBuf = this;
             run(threads[i]);
         }
-
-        currentJobAvail = popFront(currentJobId, runningQueue);
-        SEQAN_ASSERT(currentJobAvail);
-
-        // wait for first job
-        DecompressionJob &job = jobs[currentJobId];
-        {
-            ScopedLock<Mutex> lock(job.mutex);
-            if (!job.ready)
-                waitFor(job.readyEvent);
-        }
-		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
     }
 
 	~basic_unbgzf_streambuf()
     {
-        unlockWriting(jobQueue);
-        unlockReading(idleQueue);
+        unlockWriting(idleQueue);
+        unlockReading(runningQueue);
 
         for (unsigned i = 0; i < numThreads; ++i)
             waitFor(threads[i]);
@@ -797,24 +858,7 @@ public:
 
     int_type underflow()
     {
-//
-//        // submit current job
-//        if (currentJobAvail)
-//        {
-//            jobs[currentJobId].size = size;
-//            appendValue(jobQueue, currentJobId);
-//        }
-//
-//        // recycle existing idle job
-//        if (!(currentJobAvail = popFront(currentJobId, idleQueue)))
-//            return false;
-//
-//        CompressionJob &job = jobs[currentJobId];
-//        job.key = currentJobKey++;
-//
-//        return !concatter.stop;
-
-
+        // no need to use the next buffer?
         if (this->gptr() && this->gptr() < this->egptr())
             return *this->gptr();
 
@@ -829,51 +873,44 @@ public:
                 this->gptr(),
                 &putbackBuffer[0]);
 
-        appendValue(idleQueue, currentJobId);
+        if (currentJobAvail)
+            appendValue(idleQueue, currentJobId);
 
-        do
+        while (true)
         {
-//            currentJobAvail = popFront(currentJobId, idleQueue);
-//            SEQAN_ASSERT(currentJobAvail);
-//
-//            // wait for first job
-//            DecompressionJob &job = jobs[currentJobId];
-//            {
-//                ScopedLock<Mutex> lock(job.mutex);
-//                if (!job.ready)
-//                    waitFor(job.readyEvent);
-//            }
-//            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
-//
-            ctx = &threadCtx[nextThread];
+            if (!(currentJobAvail = popFront(currentJobId, runningQueue)))
+            {
+                if (serializer.error != NULL)
+                    throw *serializer.error;
+                return EOF;
+            }
 
-            do {
-                threadCtx[nextRunThread].size = -1;
-                threadCtx[nextRunThread].waitForKey = serializer.nextKey++;
-                run(threadCtx[nextRunThread].decompressor);
-                nextRunThread = (nextRunThread + 1) % threads;
-            } while (nextRunThread != nextThread);
-
-            nextThread = (nextThread + 1) % threads;
+            DecompressionJob &job = jobs[currentJobId];
 
             // restore putback buffer
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
             if (putback != 0)
                 std::copy(
                     &putbackBuffer[0],
                     &putbackBuffer[putback],
-                    &ctx->buffer[MAX_PUTBACK - putback]);
+                    &job.buffer[MAX_PUTBACK - putback]);
 
-            waitFor(ctx->decompressor);
-
-            if (ctx->size == -1) // EOF
-               return EOF;
+            // wait for the end of decompression
+            {
+                ScopedLock<Mutex> lock(job.mutex);
+                if (!job.ready)
+                    waitFor(job.readyEvent);
+            }
 
             // reset buffer pointers
             this->setg( 
-                  &ctx->buffer[MAX_PUTBACK - putback],      // beginning of putback area
-                  &ctx->buffer[MAX_PUTBACK],                // read position
-                  &ctx->buffer[MAX_PUTBACK + ctx->size]);   // end of buffer
-        } while (ctx->size == 0);
+                  &job.buffer[MAX_PUTBACK - putback],      // beginning of putback area
+                  &job.buffer[MAX_PUTBACK],                // read position
+                  &job.buffer[MAX_PUTBACK + job.size]);    // end of buffer
+
+            if (job.size != 0)
+                break;
+        }
 
         // return next character
         return *this->gptr();
