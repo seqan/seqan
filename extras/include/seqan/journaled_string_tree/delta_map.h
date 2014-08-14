@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -519,7 +519,7 @@ insert(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
 
     TPosition insPos = std::lower_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), key) -
                        begin(deltaMap, Standard());
-    addCoverage(deltaMap._deltaCoverageStore, deltaCoverage, insPos);
+    insert(deltaMap._deltaCoverageStore, insPos, deltaCoverage);
     _insert(deltaMap, key, insPos, delta);
     return iter(deltaMap, insPos, Standard());
 }

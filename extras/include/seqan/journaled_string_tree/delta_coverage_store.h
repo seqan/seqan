@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,9 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+struct DeltaCoverageString_;
+typedef Tag<DeltaCoverageString_> DeltaCoverageString;
+
 // ----------------------------------------------------------------------------
 // Class DeltaCoverageStore
 // ----------------------------------------------------------------------------
@@ -56,29 +59,30 @@ template <typename TSpec = void>
 class DeltaCoverageStore
 {
 public:
+    typedef typename Member<DeltaCoverageStore, DeltaCoverageString>::Type TCoverageString;
     typedef typename Value<DeltaCoverageStore>::Type TBitVector;
-    typedef typename Size<TBitVector>::Type TSize;
+    typedef typename Size<DeltaCoverageStore>::Type TSize;
 
-    TSize              _coverageSize;
-    String<TBitVector> _coverageData;
+    TSize           _coverageSize;
+    TCoverageString _coverageData;
 
     DeltaCoverageStore() : _coverageSize(0)
     {}
 
     template <typename TSize>
-    DeltaCoverageStore(TSize const & newSize) : _coverageSize(newSize)
+    DeltaCoverageStore(TSize newSize) : _coverageSize(newSize)
     {}
 
     template <typename TPosition>
     inline TBitVector &
-    operator[](TPosition const & pos)
+    operator[](TPosition pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPosition>
     inline TBitVector const &
-    operator[](TPosition const & pos) const
+    operator[](TPosition pos) const
     {
         return value(*this, pos);
     }
@@ -87,6 +91,17 @@ public:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Member
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct Member<DeltaCoverageStore<TSpec>, DeltaCoverageString>
+{
+    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TValue_;
+    typedef String<TValue_> Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -105,47 +120,15 @@ struct Value<DeltaCoverageStore<TSpec> const>
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction Reference
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-struct Reference<DeltaCoverageStore<TSpec> >
-{
-    typedef String<bool, Packed<> > & Type;
-};
-
-template <typename TSpec>
-struct Reference<DeltaCoverageStore<TSpec> const>
-{
-    typedef String<bool, Packed<> > const & Type;
-};
-
-// ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 struct Size<DeltaCoverageStore<TSpec> >
 {
-    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TValue_;
-    typedef typename Size<TValue_>::Type Type;
+    typedef typename Member<DeltaCoverageStore<TSpec>, DeltaCoverageString>::Type TCoverageString_;
+    typedef typename Size<TCoverageString_>::Type Type;
 };
-
-template <typename TSpec>
-struct Size<DeltaCoverageStore<TSpec> const> :
-    Size<DeltaCoverageStore<TSpec> >{};
-
-// ----------------------------------------------------------------------------
-// Metafunction Position
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-struct Position<DeltaCoverageStore<TSpec> > :
-    Size<DeltaCoverageStore<TSpec> >{};
-
-template <typename TSpec>
-struct Position<DeltaCoverageStore<TSpec> const> :
-    Size<DeltaCoverageStore<TSpec> const>{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
@@ -154,22 +137,33 @@ struct Position<DeltaCoverageStore<TSpec> const> :
 template <typename TSpec>
 struct Iterator<DeltaCoverageStore<TSpec>, Standard>
 {
-    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TBitVector;
-    typedef String<TBitVector> TCoverage;
-    typedef typename Iterator<TCoverage, Standard>::Type Type;
+    typedef typename Member<DeltaCoverageStore<TSpec>, DeltaCoverageString>::Type TCoverageString_;
+    typedef typename Iterator<TCoverageString_, Standard>::Type Type;
 };
 
 template <typename TSpec>
 struct Iterator<DeltaCoverageStore<TSpec> const, Standard>
 {
-    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TBitVector;
-    typedef String<TBitVector> TCoverage;
-    typedef typename Iterator<TCoverage const, Standard>::Type Type;
+    typedef typename Member<DeltaCoverageStore<TSpec>, DeltaCoverageString>::Type const TCoverageString_;
+    typedef typename Iterator<TCoverageString_, Standard>::Type Type;
 };
 
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _syncCoverageSizes()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void _syncCoverageSize(DeltaCoverageStore<TSpec> & store)
+{
+    typedef typename Iterator<DeltaCoverageStore<TSpec>, Standard>::Type TIter;
+
+    for (TIter it = begin(store, Standard()); it != end(store, Standard()); ++it)
+        resize(*it, store._coverageSize, false, Exact());
+}
 
 // ----------------------------------------------------------------------------
 // Function begin()
@@ -181,6 +175,7 @@ begin(DeltaCoverageStore<TSpec> & store, Standard const & /*tag*/)
 {
     return begin(store._coverageData, Standard());
 }
+
 template <typename TSpec>
 inline typename Iterator<DeltaCoverageStore<TSpec> const, Standard>::Type
 begin(DeltaCoverageStore<TSpec> const & store, Standard const & /*tag*/)
@@ -217,14 +212,7 @@ setCoverageSize(DeltaCoverageStore<TSpec> & store, TSize newSize)
     typedef typename Iterator<DeltaCoverageStore<TSpec>, Standard>::Type TIter;
 
     store._coverageSize = newSize;
-
-    // Update all coverages to the new size.
-    if (empty(store._coverageData))
-        return;
-
-    for (TIter it = begin(store, Standard()); it != end(store, Standard()); ++it)
-        if (length(*it) != store._coverageSize)
-            resize(*it, store._coverageSize, false, Exact());
+    _syncCoverageSize(store);
 }
 
 // ----------------------------------------------------------------------------
@@ -239,27 +227,26 @@ coverageSize(DeltaCoverageStore<TSpec> const & store)
 }
 
 // ----------------------------------------------------------------------------
-// Function addCoverage()
+// Function insert()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TPosition>
 inline void
-addCoverage(DeltaCoverageStore<TSpec> & store,
-            typename Value<DeltaCoverageStore<TSpec> >::Type const & coverage,
-            TPosition const & pos)
+insert(DeltaCoverageStore<TSpec> & store,
+       TPosition pos,
+       typename Value<DeltaCoverageStore<TSpec> >::Type const & coverage)
 {
-    if (length(coverage) != coverageSize(store))
-        setCoverageSize(store, _max(length(coverage), coverageSize(store)));
-
+    // Adapt to coverage size of store.
+    if (length(coverage) < coverageSize(store))
+    {
+        typename Value<DeltaCoverageStore<TSpec> >::Type tmp(coverage);
+        resize(tmp, coverageSize(store), false, Exact());
+        insertValue(store._coverageData, pos, tmp);
+    }
+    // Set new coverage size if necessary.
+    if (length(coverage) > coverageSize(store))
+        setCoverageSize(store, length(coverage));
     insertValue(store._coverageData, pos, coverage);
-}
-
-template <typename TSpec>
-inline void
-addCoverage(DeltaCoverageStore<TSpec> & store,
-            typename Value<DeltaCoverageStore<TSpec> >::Type const & coverage)
-{
-    addCoverage(store, coverage, length(store._coverageData));
 }
 
 // ----------------------------------------------------------------------------
@@ -300,17 +287,10 @@ template <typename TSpec, typename TSize, typename TExpand>
 inline void
 resize(DeltaCoverageStore<TSpec> & store, TSize const & newSize, Tag<TExpand> const & tag)
 {
-    resize(store._coverageData, newSize, tag);
-}
-
-template <typename TSpec, typename TSize>
-inline void
-resize(DeltaCoverageStore<TSpec> const & store, TSize const & newSize)
-{
-    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TValue;
-    typedef String<TValue> TData;
-
-    resize(store, newSize, typename DefaultOverflowExplicit<TData>::Type());
+    typedef typename Value<DeltaCoverageStore<TSpec> >::Type TCoverage;
+    TCoverage tmp;
+    resize(tmp, store._coverageSize, false, Exact());
+    resize(store._coverageData, newSize, tmp, tag);
 }
 
 // ----------------------------------------------------------------------------
