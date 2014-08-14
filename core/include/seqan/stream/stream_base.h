@@ -194,31 +194,31 @@ struct MagicHeader;
 template <typename T>
 struct MagicHeader<Nothing, T>
 {
-    static char const * VALUE;
+    static unsigned char const * VALUE;
 };
 
 template <typename T>
-char const * MagicHeader<Nothing, T>::VALUE = NULL;
+unsigned char const * MagicHeader<Nothing, T>::VALUE = NULL;
 
 
 template <typename T>
 struct MagicHeader<GZFile, T>
 {
-    static char const VALUE[3];
+    static unsigned char const VALUE[3];
 };
 
 template <typename T>
-char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
 template <typename T>
 struct MagicHeader<BZ2File, T>
 {
-    static char const VALUE[3];
+    static unsigned char const VALUE[3];
 };
 
 template <typename T>
-char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
 
 
 
@@ -226,21 +226,21 @@ char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's
 template <typename T>
 struct MagicHeader<Fasta, T>
 {
-    static char const VALUE[1];
+    static unsigned char const VALUE[1];
 };
 
 template <typename T>
-char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
 
 
 template <typename T>
 struct MagicHeader<Fastq, T>
 {
-    static char const VALUE[1];
+    static unsigned char const VALUE[1];
 };
 
 template <typename T>
-char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
 
 // --------------------------------------------------------------------------
 // Metafunction FileFormatExtensions

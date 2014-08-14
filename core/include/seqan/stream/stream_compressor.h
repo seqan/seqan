@@ -362,9 +362,9 @@ _bgzfCheckHeader(char const * header)
     const char BGZF_LEN = 2;
     const char BGZF_XLEN = 6;  // BGZF_LEN+4
 
-    return (header[0] == MagicHeader<GZFile>::VALUE[0] &&
-            header[1] == MagicHeader<GZFile>::VALUE[1] &&
-            header[2] == MagicHeader<GZFile>::VALUE[2] &&
+    return (header[0] == (char)MagicHeader<GZFile>::VALUE[0] &&
+            header[1] == (char)MagicHeader<GZFile>::VALUE[1] &&
+            header[2] == (char)MagicHeader<GZFile>::VALUE[2] &&
             (header[3] & FLG_FEXTRA) != 0 &&
             _bgzfUnpack16(header + 10) == BGZF_XLEN &&
             header[12] == BGZF_ID1 &&
