@@ -254,6 +254,10 @@ struct Value<Triple<T1, T2, T3, TSpec>, 3 >
     typedef T3 Type;
 };
 
+template <typename T1, typename T2, typename T3, typename TSpec, unsigned INDEX>
+struct Value<Triple<T1, T2, T3, TSpec> const, INDEX> :
+    Value<Triple<T1 const, T2 const, T3 const, TSpec>, INDEX>{};
+
 // -----------------------------------------------------------------------
 // Metafunction Spec
 // -----------------------------------------------------------------------
