@@ -34,6 +34,13 @@
 // Tests for align_extend
 // ==========================================================================
 
+// work around obscure FreeBSD issue
+#ifndef _GLIBCXX_USE_C99
+#define _GLIBCXX_USE_C99 1
+#define _GLIBCXX_USE_C99_UNDEF 1
+#endif
+#include <string>
+
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
@@ -56,3 +63,8 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
 }
 SEQAN_END_TESTSUITE
+
+#ifdef _GLIBCXX_USE_C99_UNDEF
+#undefine _GLIBCXX_USE_C99_UNDEF
+#undefine _GLIBCXX_USE_C99
+#endif
