@@ -48,9 +48,30 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO(rmaerker): Rename the tag.
 struct Gdf_;
 typedef Tag<Gdf_> Gdf;
+
+struct GdfIOException : public Exception
+{
+    std::string message;
+
+    const char* what() const noexcept
+    {
+        return message.c_str();
+    }
+
+    GdfIOException(std::string const & errMessage)
+    {
+        message = "Gdf_IO_Exception: (" + errMessage + ")";
+    }
+};
+
+struct GdfIOWrongReferenceException : public GdfIOException
+{
+
+    GdfIOWrongReferenceException() : GdfIOException("Wrong reference")
+    {}
+};
 
 // ----------------------------------------------------------------------------
 // Class GdfIO
@@ -58,12 +79,7 @@ typedef Tag<Gdf_> Gdf;
 
 struct GdfIO
 {
-    enum FILE_VERSION
-    {
-        FILE_VERSION_BIG = 0,
-        FILE_VERSION_LITTLE = 1
-    };
-
+    // TODO(rmaerker): Replace by exceptions.
     enum ERROR
     {
         PARSE_OK = 0,
@@ -73,47 +89,80 @@ struct GdfIO
         UNSUPPORTED_REFERNCE_INFORMATION_ERROR = 4
     };
 
-    static const CharString FILE_VERSION_VALUE_PREFIX;// = "GDFv";
-    static const CharString FILE_VERSION_VALUE_SEPARATOR;// = ".";
-    static const CharString FILE_VERSION_KEY; //"FileVersion";
-    static const CharString FILE_ENDIANNESS_KEY;  //"Endianness";
-    static const CharString FILE_ENDIANNESS_LITTLE;  //"littleEndian";
-    static const CharString FILE_ENDIANNESS_BIG;  //"bigEndian";
-    static const CharString FILE_SNP_COMPRESSION_KEY;
-    static const CharString FILE_SNP_COMPRESSION_2BIT;
-    static const CharString FILE_SNP_COMPRESSION_GENERIC;
-    static const CharString FILE_BLOCKSIZE_KEY;
-    static const CharString REFERENCE_ID_KEY; //"Reference";
-    static const CharString REFERENCE_FILE_KEY; //"ReferenceLocation";
-    static const CharString REFERENCE_HASH_KEY; //"ReferenceHash";
-    static const CharString HEADER_PREFIX;// = "##";
-    static const CharString SEQ_NAMES_PREFIX;// = "!!";
-    static const CharString SEQ_NAMES_SEPARATOR;// = ",";
-    static const CharString KEY_VALUE_SEPARATOR;// = "=";
+    enum CompressionMode
+    {
+        COMPRESSION_MODE_2_BIT_SNP_COMPRESSION,
+        COMPRESSION_MODE_NO_SNP_COMPRESSION
+    };
+
+    enum ReferenceMode
+    {
+        REFERENCE_MODE_WRITE_ENABLED,  // Writes the reference under the given filename.
+        REFERENCE_MODE_WRITE_DISABLED  // Dosen't write the reference.
+    };
+
+//    static const TKeyType FILE_VERSION_VALUE_PREFIX;// = "GDFv";
+//    static const TKeyType FILE_VERSION_VALUE_SEPARATOR;// = ".";
+//    static const TKeyType FILE_VERSION_KEY;// = "file version";
+//    static const TKeyType FILE_ENDIANNESS_KEY;// = "endianness";
+//    static const TKeyType FILE_ENDIANNESS_LITTLE;// = "little endian";
+//    static const TKeyType FILE_ENDIANNESS_BIG;// = "big endian";
+//    static const TKeyType FILE_SNP_COMPRESSION_KEY;// = "compression alphabet";
+//    static const TKeyType FILE_SNP_COMPRESSION_2BIT;// = "2bit";
+//    static const TKeyType FILE_SNP_COMPRESSION_GENERIC;// = "generic";
+//    static const TKeyType FILE_BLOCKSIZE_KEY;// = "block size";
+//    static const TKeyType REFERENCE_ID_KEY;// = "reference ID";
+//    static const TKeyType REFERENCE_FILE_KEY;// = "reference filename";
+//    static const TKeyType REFERENCE_HASH_KEY;// = "reference hash";
+//    static const TKeyType HEADER_PREFIX;// = "##";
+//    static const TKeyType SEQ_NAMES_PREFIX;// = "!!";
+//    static const TKeyType SEQ_NAMES_SEPARATOR;// = ",";
+//    static const TKeyType KEY_VALUE_SEPARATOR;// = "=";
 };
 
-const CharString GdfIO::FILE_VERSION_VALUE_PREFIX = "GDFv";
-const CharString GdfIO::FILE_VERSION_VALUE_SEPARATOR = ".";
-const CharString GdfIO::FILE_VERSION_KEY = "file version";
-const CharString GdfIO::FILE_ENDIANNESS_KEY = "endianness";
-const CharString GdfIO::FILE_ENDIANNESS_LITTLE = "little endian";
-const CharString GdfIO::FILE_ENDIANNESS_BIG = "big endian";
-const CharString GdfIO::FILE_SNP_COMPRESSION_KEY = "compression alphabet";
-const CharString GdfIO::FILE_SNP_COMPRESSION_2BIT = "2bit";
-const CharString GdfIO::FILE_SNP_COMPRESSION_GENERIC = "generic";
-const CharString GdfIO::FILE_BLOCKSIZE_KEY = "block size";
-const CharString GdfIO::REFERENCE_ID_KEY = "reference ID";
-const CharString GdfIO::REFERENCE_FILE_KEY = "reference filename";
-const CharString GdfIO::REFERENCE_HASH_KEY = "reference hash";
-const CharString GdfIO::HEADER_PREFIX = "##";
-const CharString GdfIO::KEY_VALUE_SEPARATOR = "=";
-const CharString GdfIO::SEQ_NAMES_PREFIX = "!!";
-const CharString GdfIO::SEQ_NAMES_SEPARATOR = ",";
+#define GDF_IO_FILE_VERSION_VALUE_PREFIX "GDFv"
+#define GDF_IO_FILE_VERSION_VALUE_SEPARATOR "."
+#define GDF_IO_FILE_VERSION_KEY "file version"
+#define GDF_IO_FILE_ENDIANNESS_KEY "endianness"
+#define GDF_IO_FILE_ENDIANNESS_LITTLE "little endian"
+#define GDF_IO_FILE_ENDIANNESS_BIG "big endian"
+#define GDF_IO_FILE_SNP_COMPRESSION_KEY "compression alphabet"
+#define GDF_IO_FILE_SNP_COMPRESSION_2BIT "2bit"
+#define GDF_IO_FILE_SNP_COMPRESSION_GENERIC "generic"
+#define GDF_IO_FILE_BLOCKSIZE_KEY "block size"
+#define GDF_IO_REFERENCE_ID_KEY "reference ID"
+#define GDF_IO_REFERENCE_FILE_KEY "reference filename"
+#define GDF_IO_REFERENCE_HASH_KEY "reference hash"
+#define GDF_IO_HEADER_PREFIX "##"
+#define GDF_IO_KEY_VALUE_SEPARATOR "="
+#define GDF_IO_SEQ_NAMES_PREFIX "!!"
+#define GDF_IO_SEQ_NAMES_SEPARATOR ","
+#define GDF_IO_FILE_VERSION_BIG 0
+#define GDF_IO_FILE_VERSION_LITTLE 1
+
+//const GdfIO::TKeyType GdfIO::FILE_VERSION_VALUE_PREFIX = "GDFv";
+//const GdfIO::TKeyType GdfIO::FILE_VERSION_VALUE_SEPARATOR = ".";
+//const GdfIO::TKeyType GdfIO::FILE_VERSION_KEY = "file version";
+//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_KEY = "endianness";
+//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_LITTLE = "little endian";
+//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_BIG = "big endian";
+//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_KEY = "compression alphabet";
+//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_2BIT = "2bit";
+//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_GENERIC = "generic";
+//const GdfIO::TKeyType GdfIO::FILE_BLOCKSIZE_KEY = "block size";
+//const GdfIO::TKeyType GdfIO::REFERENCE_ID_KEY = "reference ID";
+//const GdfIO::TKeyType GdfIO::REFERENCE_FILE_KEY = "reference filename";
+//const GdfIO::TKeyType GdfIO::REFERENCE_HASH_KEY = "reference hash";
+//const GdfIO::TKeyType GdfIO::HEADER_PREFIX = "##";
+//const GdfIO::TKeyType GdfIO::KEY_VALUE_SEPARATOR = "=";
+//const GdfIO::TKeyType GdfIO::SEQ_NAMES_PREFIX = "!!";
+//const GdfIO::TKeyType GdfIO::SEQ_NAMES_SEPARATOR = ",";
 
 // ----------------------------------------------------------------------------
 // Struct SystemByteOrder
 // ----------------------------------------------------------------------------
 
+// TODO(rmaerker): No compile time check possible with C'98 & C'11
 // Checks the byte order of the running system.
 struct SystemByteOrder
 {
@@ -132,46 +181,46 @@ struct SystemByteOrder
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Struct GdfFileBlockSize_
-// ----------------------------------------------------------------------------
-
-// Number of variants before the block ends.
-// Which also means we write the coverage into the blocks.
-
-template <typename T>
-struct GdfFileBlockSize_
-{
-    enum
-    {
-        VALUE = 1000000
-    };
-};
-
-template <typename TValue>
-struct MsbIndex
-{
-    enum MSB_INDEX
-    {
-        VALUE = sizeof(TValue) << 3
-    };
-};
-
-//template <typename T>
-//const T SetHighBit<T>::VALUE = static_cast<T>(1) << (sizeof(T) * 8 - 1);
-
-template <typename TValue>
-struct SetSnpBits
-{
-    static const TValue VALUE;
-};
-
-template <typename T>
-const T SetSnpBits<T>::VALUE = static_cast<T>(1) << (sizeof(T) * 8 - 3);
-
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function computeHash()
+// ----------------------------------------------------------------------------
+
+#ifdef __SSE4_2__
+template <typename TReference>
+inline unsigned int computeReferenceCrc(TReference const & ref)
+{
+    typedef typename Iterator<TReference const, Standard>::Type TIterator;
+
+    unsigned int crc;
+    for (TIterator it = begin(ref, Standard()); it != end(ref, Standard()); ++it)
+        crc = _mm_crc32_u8(crc, static_cast<unsigned char>(*it));
+    return crc;
+}
+#else  //__SSE4_2_
+template <typename TReference>
+inline unsigned int computeReferenceCrc(TReference const & /*ref*/)
+{
+    return 0;
+}
+#endif
+
+#ifdef __SSE4_2__
+template <typename TReference, typename TCrc>
+inline bool checkReferenceCrc(TReference const & ref, TCrc crc)
+{
+    return computeReferenceCrc(ref) == crc;
+}
+#else  //__SSE4_2_
+template <typename TReference, typename TCrc>
+inline bool checkReferenceCrc(TReference const & /*ref*/, TCrc /*crc*/)
+{
+    return true;  // Always return true.
+}
+#endif  //__SSE4_2_
 
 // ----------------------------------------------------------------------------
 // Function _arrayMoveForwarReverse() using pointers
@@ -227,6 +276,29 @@ arrayMoveForwardReverse(TValue * source_begin,
                         TValue * target_begin)
 {
     _arrayMoveForwardReversePointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
+}
+
+
+// ----------------------------------------------------------------------------
+// Function readFromBinary()
+// ----------------------------------------------------------------------------
+
+// TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
+template <typename TStream, typename TValue>
+inline void readFromBinary(TStream & stream, TValue & val)
+{
+    streamWriteBlock(stream, reinterpret_cast<const char *>(&val), sizeof(val));
+}
+
+// ----------------------------------------------------------------------------
+// Function writeToBinary()
+// ----------------------------------------------------------------------------
+
+// TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
+template <typename TStream, typename TValue>
+inline void writeBinary(TStream & stream, TValue const & val)
+{
+    streamWriteBlock(stream, reinterpret_cast<const char *>(&val), sizeof(val));
 }
 
 }

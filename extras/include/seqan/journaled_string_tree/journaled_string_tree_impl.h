@@ -117,27 +117,75 @@ public:
     TSize                           _numBlocks;
     static const TSize REQUIRE_FULL_JOURNAL = MaxValue<TSize>::VALUE;
 
-    JournaledStringTree() : _container(),
-                            _journalSet(),
-                            _activeBlock(0),
-                            _mapBlockBegin(),
-                            _mapBlockEnd(),
-                            _emptyJournal(true),
-                            _blockSize(REQUIRE_FULL_JOURNAL),
-                            _numBlocks(1)
+    JournaledStringTree() :
+        _container(),
+        _journalSet(),
+        _activeBlock(0),
+        _mapBlockBegin(),
+        _mapBlockEnd(),
+        _emptyJournal(true),
+        _blockSize(REQUIRE_FULL_JOURNAL),
+        _numBlocks(1)
     {
         create(_container);
     }
 
     template <typename THost>
-    JournaledStringTree(THost & reference, TDeltaMap & varData) : _activeBlock(0),
-                                                                  _mapBlockBegin(),
-                                                                  _mapBlockEnd(),
-                                                                  _emptyJournal(true),
-                                                                  _blockSize(REQUIRE_FULL_JOURNAL),
-                                                                  _numBlocks(1)
+    JournaledStringTree(THost & reference, TDeltaMap & varData) :
+        _activeBlock(0),
+        _mapBlockBegin(),
+        _mapBlockEnd(),
+        _emptyJournal(true),
+        _blockSize(REQUIRE_FULL_JOURNAL),
+        _numBlocks(1)
     {
         init(*this, reference, varData);
+    }
+};
+
+template <typename TJst, typename TContextSize>
+struct BufferJournaledStringsEndHelper_
+{
+    typedef typename GetStringSet<TJst>::Type TStringSet;
+    typedef typename Position<typename Host<TJst>::Type>::Type THostPos;
+    typedef typename Size<TStringSet>::Type TSetSize;
+
+    typedef typename Container<TJst>::Type TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
+
+
+    TJst &       jst;
+    TContextSize contextSize;
+    TSetSize     jsPos;
+    THostPos     localContextEndPos;
+    TMapIterator mapIter;
+
+    BufferJournaledStringsEndHelper_(TJst & _jst, TContextSize _contextSize) : jst(_jst), contextSize(_contextSize)
+    {}
+
+    template <typename TTag>
+    inline bool operator()(TTag const & deltaTypeTag)
+    {
+        if (isDeltaType(deltaType(mapIter), deltaTypeTag))
+        {
+            if (deltaCoverage(mapIter)[jsPos])
+            {
+                journalDelta(jst._journalSet[jsPos], deltaPosition(mapIter), deltaValue(mapIter, TTag()), TTag());
+                if (IsSameType<TTag, DeltaTypeDel>::VALUE)
+                    localContextEndPos += deltaValue(mapIter, DeltaTypeDel());
+                if (IsSameType<TTag, DeltaTypeIns>::VALUE)
+                    localContextEndPos -= _min(contextSize,
+                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeIns()))));
+                if (IsSameType<TTag, DeltaTypeSV>::VALUE)
+                {
+                    localContextEndPos += deltaValue(mapIter, DeltaTypeSV()).i1;
+                    localContextEndPos -= _min(contextSize,
+                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeSV()).i2)));
+                }
+            }
+            return true;
+        }
+        return false;
     }
 };
 
@@ -297,7 +345,7 @@ struct Container<JournaledStringTree<TDeltaMap, TSpec> const>
 template <typename TDeltaMap, typename TSpec>
 struct GetStringSet<JournaledStringTree<TDeltaMap, TSpec> >
 {
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TAlphabet_;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TAlphabet_;
 
     typedef String<TAlphabet_, Journaled<Alloc<>, SortedArray> > TString_;
     typedef StringSet<TString_, Owner<JournaledSet> > Type;
@@ -306,7 +354,7 @@ struct GetStringSet<JournaledStringTree<TDeltaMap, TSpec> >
 template <typename TDeltaMap, typename TSpec>
 struct GetStringSet<JournaledStringTree<TDeltaMap, TSpec> const>
 {
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TAlphabet_;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TAlphabet_;
 
     typedef String<TAlphabet_, Journaled<Alloc<>, SortedArray> > TString_;
     typedef StringSet<TString_, Owner<JournaledSet> > const Type;
@@ -318,26 +366,42 @@ struct GetStringSet<JournaledStringTree<TDeltaMap, TSpec> const>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _journalNextVariant()
+// Function _bufferJournaledStringEnds()
 // ----------------------------------------------------------------------------
 
-template <typename TJournalString, typename TMapIter>
-void _journalNextVariant(TJournalString & jString, TMapIter const & it)
+template <typename TDeltaMap, typename TSpec, typename TSize, typename TPos>
+inline void
+_bufferJournaledStringEnds(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                           TSize contextSize,
+                           TPos jobBegin,
+                           TPos jobEnd)
 {
-    switch(deltaType(it))
+    typedef JournaledStringTree<TDeltaMap, TSpec> const TJst;
+    typedef typename Iterator<TDeltaMap const, Standard>::Type TMapIterator;
+    typedef BufferJournaledStringsEndHelper_<TJst, TSize> THelper;
+
+    THelper helper(jst, contextSize);
+    // Buffer the next branch nodes depending on the context size.
+    for (helper.jsPos = jobBegin; helper.jsPos < jobEnd; ++helper.jsPos)
     {
-        case DeltaType::DELTA_TYPE_SNP:
-            _journalSnp(jString, *it, deltaSnp(it));
-            break;
-        case DeltaType::DELTA_TYPE_DEL:
-            _journalDel(jString, *it, deltaDel(it));
-            break;
-        case DeltaType::DELTA_TYPE_INS:
-            _journalIns(jString, *it, deltaIns(it));
-            break;
-        case DeltaType::DELTA_TYPE_INDEL:
-            _journalIndel(jString, *it, deltaIndel(it));
-            break;
+        // Step 1: Store the current offset of all virtual positions.
+        jst._activeBlockVPOffset[helper.jsPos] = length(jst._journalSet[helper.jsPos]) - length(host(jst._journalSet));
+
+        // Step 2: Check if deltas need to be buffered at the end of the current block for some j'strings.
+        helper.localContextEndPos =
+            getValue(end(value(stringSet(jst), helper.jsPos)._journalEntries, Standard()) - 1).physicalOriginPosition +
+            contextSize - 1;
+        if (jst._mapBlockEnd != end(container(jst), Standard()) &&
+            helper.localContextEndPos > deltaPosition(jst._mapBlockEnd))
+        {
+            helper.mapIter = jst._mapBlockEnd;
+            while (helper.mapIter != end(container(jst), Standard()) &&
+                   deltaPosition(helper.mapIter) < helper.localContextEndPos)
+            {
+                tagApply(helper, DeltaTypes());
+                ++helper.mapIter;
+            }
+        }
     }
 }
 
@@ -354,13 +418,15 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
     typedef JournaledStringTree<TDeltaMap, TSpec > TJst;
     typedef typename Iterator<TDeltaMap const, Standard>::Type TConstMapIterator;
 
-    typedef typename DeltaCoverage<TDeltaMap>::Type TBitVec;
-    typedef typename Iterator<TBitVec const, Standard>::Type TBitVecIter;
+//    typedef typename DeltaCoverage<TDeltaMap>::Type TBitVec;
+//    typedef typename Iterator<TBitVec const, Standard>::Type TBitVecIter;
 
     typedef typename GetStringSet<TJst>::Type TJournalSet;
     typedef typename Iterator<TJournalSet, Standard>::Type TJournalSetIter;
     typedef typename Size<TJournalSet>::Type TSize;
     typedef typename MakeSigned<TSize>::Type TSignedSize;
+
+    typedef JournalDeltaContext_<TJst const, TConstMapIterator> TJournalDeltaContext;
 
     // Define the block limits.
     if ((jst._activeBlock * jst._blockSize) >= length(container(jst)))
@@ -374,24 +440,24 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
 
     String<int> _lastVisitedNodes;
     if (!fullJournalRequired(jst))
-    {
-        resize(_lastVisitedNodes, length(jst._journalSet), -1, Exact());
         blockJump -= _max(0, (static_cast<TSignedSize>(jst._mapBlockEnd - jst._mapBlockBegin) - static_cast<TSignedSize>(jst._blockSize)));
-    }
 
     TConstMapIterator itMapBegin = begin(variantMap, Standard());
     jst._mapBlockBegin = jst._mapBlockEnd;
     jst._mapBlockEnd += blockJump;
-    for (; jst._mapBlockEnd != end(variantMap, Standard()) && *jst._mapBlockEnd == *(jst._mapBlockEnd - 1); ++jst._mapBlockEnd);
+
+    for (; jst._mapBlockEnd != end(variantMap, Standard()) &&
+           deltaPosition(jst._mapBlockEnd) == deltaPosition(jst._mapBlockEnd - 1); ++jst._mapBlockEnd)
+    {}
+
     if (jst._mapBlockBegin == jst._mapBlockEnd)
         return false;
 
     // Use parallel processing.
-    // TODO(rmaerker): Consider more general Master-Worker design for parallelization?
     Splitter<TJournalSetIter> jSetSplitter(begin(jst._journalSet, Standard()), end(jst._journalSet, Standard()), parallelTag);
 
     SEQAN_OMP_PRAGMA(parallel for)
-    for (unsigned jobId = 0; jobId < length(jSetSplitter); ++jobId)
+    for (int jobId = 0; jobId < static_cast<int>(length(jSetSplitter)); ++jobId)
     {
 //        printf("Thread: %i of %i\n", jobId, omp_get_num_threads());
         unsigned jobBegin = jSetSplitter[jobId] - begin(jst._journalSet, Standard());
@@ -399,74 +465,25 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
 
         // Pre-processing: Update VPs for last block.
         if (!fullJournalRequired(jst))
+        {
             for (unsigned i = jobBegin; i < jobEnd; ++i)
             {
                 clear(jst._journalSet[i]);  // Reinitialize the journal strings.
                 jst._blockVPOffset[i] += jst._activeBlockVPOffset[i];
             }
+        }
 
+        TJournalDeltaContext context(jst, itMapBegin, jobBegin, jobEnd);
 //        printf("Thread %i: jobBegin %i - jobEnd %i\n", jobId, jobBegin, jobEnd);
         for (TConstMapIterator itMap = jst._mapBlockBegin; itMap != jst._mapBlockEnd; ++itMap)
         {
-            TBitVecIter itVecBegin = begin(deltaCoverage(itMap), Standard());
-            TBitVecIter itVec = itVecBegin + jobBegin;
-            TBitVecIter itVecEnd = begin(deltaCoverage(itMap), Standard()) + jobEnd;
-            for (;itVec != itVecEnd; ++itVec)
-            {
-                SEQAN_ASSERT_NOT(empty(host(jst._journalSet[itVec - itVecBegin])));
-
-                if (!(*itVec))
-                    continue;
-
-                // Store last visited node for current journaled string.
-                if (!fullJournalRequired(jst))
-                    _lastVisitedNodes[itVec - itVecBegin] = itMap - itMapBegin;
-                _journalNextVariant(jst._journalSet[itVec - itVecBegin], itMap);
-            }
+            context.deltaIterator = itMap;
+            tagApply(context, DeltaTypes());
         }
 
         // Post-processing: Store VPs for current block.
         if (!fullJournalRequired(jst))
-        {
-            // Buffer the next branch nodes depending on the context size.
-            for (unsigned i = jobBegin; i < jobEnd; ++i)
-            {
-                jst._activeBlockVPOffset[i] = length(jst._journalSet[i]) - length(host(jst._journalSet));
-                if (_lastVisitedNodes[i] == -1)  // skip empty journal strings.
-                    continue;
-
-                TConstMapIterator tmpMapIt = begin(variantMap, Standard()) + _lastVisitedNodes[i];
-                unsigned offset = *tmpMapIt + contextSize;
-                if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_DEL)
-                    offset += deltaDel(tmpMapIt);  // Adds the size of the deletion.
-                if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_INDEL)
-                    offset += deltaIndel(tmpMapIt).i1;
-
-                if (jst._mapBlockEnd != end(variantMap, Standard()) && offset > *jst._mapBlockEnd)
-                {
-                    tmpMapIt = jst._mapBlockEnd;
-                    int localDiff = 0;
-                    while (tmpMapIt != end(variantMap, Standard()) && *tmpMapIt < offset + localDiff)
-                    {
-                        if (deltaCoverage(tmpMapIt)[i])
-                        {
-                            _journalNextVariant(jst._journalSet[i], tmpMapIt);
-
-                            if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_DEL)
-                                localDiff += deltaDel(tmpMapIt);
-                            else if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_INS)
-                                localDiff = _max(0, localDiff - static_cast<int>(length(deltaIns(tmpMapIt))));
-                            else if (deltaType(tmpMapIt) == DeltaType::DELTA_TYPE_INDEL)
-                            {
-                                localDiff += deltaIndel(tmpMapIt).i1;
-                                localDiff = _max(0, localDiff - static_cast<int>(length(deltaIndel(tmpMapIt).i2)));
-                            }
-                        }
-                        ++tmpMapIt;
-                    }
-                }
-            }
-        }
+            _bufferJournaledStringEnds(jst, contextSize, jobBegin, jobEnd);
     }
     return true;
 }
@@ -722,7 +739,7 @@ init(JournaledStringTree<TDeltaMap, TSpec> & jst,
 
     TString tmp;
     setHost(tmp, host(stringSet(jst)));
-    resize(stringSet(jst), coverageSize(varData), tmp, Exact());
+    resize(stringSet(jst), getCoverageSize(varData), tmp, Exact());
     resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
     resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
 
@@ -875,89 +892,61 @@ stringSet(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
 
 template <typename TDeltaMap, typename TSpec, typename TFilename>
 inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
-                TFilename const & filename,
-                CharString & refId,
-                CharString & refFileName,
-                String<CharString> & nameStore)
+                GdfHeader & gdfHeader,
+                TFilename const & filename)
 {
     typedef JournaledStringTree<TDeltaMap, TSpec> TJst;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnp;
     typedef typename Host<TJst>::Type THost;
 
-    GdfHeader<> gdfHeader;
-    gdfHeader._nameStorePtr = &nameStore;  // Check if this works.
+    GdfFileConfiguration<TSnp> config;
 
+    // Step 1) Read the delta map.
     std::ifstream inputFile;
     inputFile.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
     if (!inputFile.good())
     {
-        std::cerr << "Cannot open file <" << filename << "> for reading!" << std::endl;
-        return inputFile.rdstate();
+        inputfile.close();
+        std::stringstream errMessage;
+        errMessage << "Unknown file <" << filename << ">!\n";
+        SEQAN_THROW(GdfIOException(errMessage.str()));
     }
-    int res = read(container(jst), gdfHeader, inputFile, Gdf());
-    if (res != 0)
-    {
-        std::cerr << "An error occurred while reading <" << filename << ">!" << std::endl;
-        return res;
-    }
+    read(container(jst), gdfHeader, config, inputFile, Gdf());
     inputFile.close();
 
-    // Read the reference file.
-    refId = gdfHeader._refInfos._refId;
-    refFileName = gdfHeader._refInfos._refFile;
-
+    // Step 2) Read the reference file.
     std::ifstream refFile;
-    refFile.open(toCString(refFileName), std::ios_base::in);
+    refFile.open(toCString(gdfHeader.referenceFilename), std::ios_base::in);
     if (!refFile.good())
     {
-        std::cerr << "Cannot open file <" << refFileName << "> for reading!" << std::endl;
-        return refFile.rdstate();
+        refFile.close();
+        std::stringstream errMessage;
+        errMessage << "Unknown file <" << gdfHeader.referenceFilename << ">!\n";
+        SEQAN_THROW(GdfIOException(errMessage.str()));
     }
     THost tmpHost = "";
+    CharString refId;
     createHost(stringSet(jst), tmpHost);
     RecordReader<std::ifstream, SinglePass<> > reader(refFile);
-    res = readRecord(refId, host(jst), reader, Fasta());
+    if (readRecord(refId, host(jst), reader, Fasta()) != 0)
+    {
+        refFile.close();
+        std::stringstream errMessage;
+        errMessage << "Error while parsing <" << gdfHeader.referenceFilename << ">!\n";
+        SEQAN_THROW(GdfIOException(errMessage.str()));
+    }
     refFile.close();
-    if (res != 0)
-        std::cerr << "An error occurred while reading <" << refFileName << ">!" << std::endl;
 
-    // Initialize the journaled string tree.
-    resize(stringSet(jst), coverageSize(container(jst)), host(stringSet(jst)), Exact());
+    if (isNotEqual(refId, gdfHeader.referenceId) || !checkReferenceCrc(host(jst), config.refHash))
+        SEQAN_THROW(GdfIOWrongReferenceException());
+
+    resize(stringSet(jst), getCoverageSize(container(jst)), host(stringSet(jst)), Exact());
     resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
     resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
 
     jst._mapBlockBegin = jst._mapBlockEnd = begin(container(jst), Standard());
 
     return res;
-}
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
-                TFilename const & filename,
-                CharString & refId,
-                CharString & refFileName)
-{
-    String<CharString> nameStore;
-    return open(jst, filename, refId, refFileName, nameStore);
-}
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
-                TFilename const & filename,
-                String<CharString> & nameStore)
-{
-    CharString refId;
-    CharString refFileName;
-    return open(jst, filename, refId, refFileName, nameStore);
-}
-
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
-                TFilename const & filename)
-{
-    CharString refId;
-    CharString refFileName;
-    return open(jst, filename, refId, refFileName);
 }
 
 // ----------------------------------------------------------------------------
@@ -984,92 +973,58 @@ inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
  *
  * @return int <tt>0<\tt> on success, otherwise some value distinct from <tt>0<\tt> indicating the error.
  *
- * @see JournaledStringTree#save
+ * @see JournaledStringTree#open
  */
 
 template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
-                TFilename const & filename,
-                CharString const & refId,
-                CharString const & refFileName,
-                String<CharString> const & nameStore)
+inline void save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
+                 GdfHeader const & gdfHeader,
+                 TFilename const & filename)
 {
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TSnpType;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnpType;
 
-    GdfHeader<> gdfHeader;
-    gdfHeader._refInfos._refId = refId;
-    // Write reference if unknown.
-    if (empty(refFileName))
+//    if (!empty(gdfHeader.nameStore))
+
+    // Check if sequence names are available.
+    if (length(gdfHeader.nameStore) < getCoverageSize(container(jst)))
     {
-        gdfHeader._refInfos._refFile = filename;
-        append(gdfHeader._refInfos._refFile, ".reference.fa");
+        std::stringstream errMessage = "Too few sequence names (";
+        errMessage << "Needed " << getCoverageSize(container(jst)) << " but " << length(gdfHeader.nameStore) << " were provided)!";
+        SEQAN_THROW(GdfIOException(errMessage.str()));
+    }
+
+    // Write reference.
+    if (gdfHeader.referenceMode == GdfIO::REFERENCE_MODE_WRITE_ENABLED)
+    {
         std::ofstream refStream;
-        refStream.open(toCString(gdfHeader._refInfos._refFile), std::ios_base::out);
+        refStream.open(toCString(gdfHeader.referenceFilename), std::ios_base::out);
         if (!refStream.good())
         {
-            std::cerr << "Cannot open file <" << gdfHeader._refInfos._refFile << "> for writing!" << std::endl;
-            return refStream.rdstate();
+            std::stringstream errMessage = "Cannot open file: ";
+            errMessage << gdfHeader.referenceFilename << "!";
+            SEQAN_THROW(GdfIOException(errMessage.str()));
         }
-        writeRecord(refStream, gdfHeader._refInfos._refId, host(jst), Fasta());
+
+        if (writeRecord(refStream, gdfHeader.referenceId, host(jst), Fasta()) != 0)
+            SEQAN_THROW(GdfIOException("While writing reference to disk!"));
         refStream.close();
     }
-    gdfHeader._refInfos._refHash = 0;  // TODO(rmaerker): Compute hash for reference.
 
-    // Enable snp compression if at most 2 bits are needed to store the value.
-    if (BitsPerValue<TSnpType>::VALUE <= 2)
-        gdfHeader._fileInfos._snpCompression = true;
-    else
-        gdfHeader._fileInfos._snpCompression = false;
-
-    // We know that we don't change the names.
-    gdfHeader._nameStorePtr = const_cast<String<CharString>*>(&nameStore);
+    // Compute hash for reference sequence.
+    GdfFileConfiguration<TSnpType> gdfConfig;
+    gdfConfig.refHash = computeReferenceCrc(host(jst));
 
     std::ofstream fileStream;
     fileStream.open(toCString(filename), std::ios_base::out | std::ios_base::binary);
 
     if (!fileStream.good())
     {
-        std::cerr << "Cannot open file <" << filename << "> for writing!" << std::endl;
-        return fileStream.rdstate();
+        std::stringstream errMessage = "Cannot open file: ";
+        errMessage << filename << "!";
+        SEQAN_THROW(GdfIOException(errMessage.str()));
     }
-    int res = write(fileStream, container(jst), gdfHeader, Gdf());
+    write(fileStream, container(jst), gdfHeader, gdfConfig, Gdf());
     fileStream.close();
-
-    if (res != 0)
-        std::cerr << "An error occurred while writing!" << std::endl;
-    return res;
-}
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
-                TFilename const & filename,
-                String<CharString> & nameStore)
-{
-    return save(jst, filename, "NA", "", nameStore);
-}
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
-                TFilename const & filename,
-                CharString const & refId,
-                CharString const & refFileName)
-{
-    String<CharString> emptyIds;
-    // Default naming of sequences.
-    for (unsigned i = 0; i < coverageSize(container(jst)); ++i)
-    {
-        std::stringstream tmp;
-        tmp << "seq" << i;
-        appendValue(emptyIds, tmp.str());
-    }
-    return save(jst, filename, refId, refFileName, emptyIds);
-}
-
-template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
-                TFilename const & filename)
-{
-    return save(jst, filename, "NA", "");
 }
 
 }

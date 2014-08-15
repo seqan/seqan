@@ -44,6 +44,9 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+template <typename TDeltaStore, typename TDeltaType>
+struct DeltaValue;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -70,32 +73,32 @@ namespace seqan
  * @brief Id to denote replacement events.
  */
 
-struct DeltaType
+enum DeltaType
 {
-    typedef __uint64 TValue;
-
-    static const TValue MASK_DELTA_TYPE;
-    static const TValue MASK_DELTA_POSITION;
-
-    static const TValue DELTA_TYPE_SNP;
-    static const TValue DELTA_TYPE_DEL;
-    static const TValue DELTA_TYPE_INS;
-    static const TValue DELTA_TYPE_INDEL;
+    DELTA_TYPE_SNP = 0,
+    DELTA_TYPE_DEL = 1,
+    DELTA_TYPE_INS = 2,
+    DELTA_TYPE_SV = 3
 };
 
-// We make: 00 = SNP
-//          01 = DEL
-//          10 = INS
-//          11 = INS_DEL -> INS_SNP can be replaced by INS_DEL.
-const __uint64 DeltaType::MASK_DELTA_TYPE = 3ull << (BitsPerValue<__uint64>::VALUE - 2);
-const __uint64 DeltaType::MASK_DELTA_POSITION = ~MASK_DELTA_TYPE;
-const __uint64 DeltaType::DELTA_TYPE_SNP = 0ull;
-const __uint64 DeltaType::DELTA_TYPE_DEL = 1ull << (BitsPerValue<__uint64>::VALUE - 2);
-const __uint64 DeltaType::DELTA_TYPE_INS = 2ull << (BitsPerValue<__uint64>::VALUE - 2);
-const __uint64 DeltaType::DELTA_TYPE_INDEL = 3ull << (BitsPerValue<__uint64>::VALUE - 2);
+struct DeltaTypeSnp_;
+typedef Tag<DeltaTypeSnp_> DeltaTypeSnp;
 
-template <typename T>
-struct GetDataMap_;
+struct DeltaTypeDel_;
+typedef Tag<DeltaTypeDel_> DeltaTypeDel;
+
+struct DeltaTypeIns_;
+typedef Tag<DeltaTypeIns_> DeltaTypeIns;
+
+struct DeltaTypeSV_;
+typedef Tag<DeltaTypeSV_> DeltaTypeSV;
+
+typedef TagList<DeltaTypeSnp,
+        TagList<DeltaTypeDel,
+        TagList<DeltaTypeIns,
+        TagList<DeltaTypeSV> > > > DeltaTypes;
+
+typedef TagSelector<DeltaTypes> DeltaTypeSelector;
 
 // ----------------------------------------------------------------------------
 // Class DeltaStore
@@ -105,73 +108,23 @@ template <typename TSize, typename TAlphabet>
 class DeltaStore
 {
 public:
-    typedef String<TAlphabet> TSnpData;
-    typedef String<TSize>   TDelData;
-    typedef String<String<TAlphabet> > TInsData;
-    typedef Pair<TSize, String<TAlphabet> > TInsDelDataValue;
-    typedef String<TInsDelDataValue> TInsDelData;
-    typedef typename GetDataMap_<DeltaStore>::Type TMap;
+    typedef typename Member<DeltaStore, DeltaTypeSnp>::Type TSnpData;
+    typedef typename Member<DeltaStore, DeltaTypeDel>::Type TDelData;
+    typedef typename Member<DeltaStore, DeltaTypeIns>::Type TInsData;
+    typedef typename Member<DeltaStore, DeltaTypeSV>::Type  TSVData;
 
     // TODO(rmaerker): Elaborate on these ideas!
     // Idea a) Use ConcatStringSet for insertions. Use as global insertion buffer for all journal sequences.
     // Idea b) Use bit encoding for DNA alphabet.
     // Idea c) Instead of insertion buffer, we append the inserted strings to the reference and only use original nodes.
 
-    TMap _varDataMap;
-
     TSnpData    _snpData;
     TDelData    _delData;
     TInsData    _insData;
-    TInsDelData _indelData;
+    TSVData     _svData;
 
     DeltaStore()
     {}
-};
-
-struct SpecDeltaStoreIterator_;
-
-template <typename TDeltaStore>
-class Iter<TDeltaStore,  SpecDeltaStoreIterator_>
-{
-public:
-    typedef typename GetDataMap_<TDeltaStore>::Type TMap_;
-    typedef typename Iterator<TMap_, Standard>::Type TMapIterator;
-
-    TDeltaStore* _containerPtr;
-    TMapIterator _dataIter;
-
-    Iter() : _containerPtr(NULL), _dataIter()
-    {}
-
-    // Copy Constructor
-    Iter(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & other) : _containerPtr(other._containerPtr),
-                                                                     _dataIter(other._dataIter)
-    {}
-
-    Iter(typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & other) :
-                     _containerPtr(other._containerPtr),
-                     _dataIter(other._dataIter)
-    {}
-
-    // Assignment Operator
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-    operator=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & other)
-    {
-        if (this != &other)
-        {
-            _containerPtr = other._containerPtr;
-            _dataIter = other._dataIter;
-        }
-        return *this;
-    }
-
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-    operator=(typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & other)
-    {
-        _containerPtr = other._containerPtr;
-        _dataIter = other._dataIter;
-        return *this;
-    }
 };
 
 // ============================================================================
@@ -179,87 +132,71 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction Value
+// Metafunction BitsPerValue
 // ----------------------------------------------------------------------------
 
+template <>
+struct BitsPerValue<DeltaType>
+{
+    static const unsigned VALUE = 2;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Member
+// ----------------------------------------------------------------------------
+
+// DeltaTypeSnp.
 template <typename TSize, typename TAlphabet>
-struct Value<DeltaStore<TSize, TAlphabet> >
+struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>
 {
-    typedef typename DeltaType::TValue Type;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>::Type TSnpValue;
+    typedef String<TSnpValue> Type;
 };
 
+// DeltaTypeDel.
 template <typename TSize, typename TAlphabet>
-struct Value<DeltaStore<TSize, TAlphabet> const>
+struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>
 {
-    typedef typename DeltaType::TValue const Type;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDelValue;
+    typedef String<TDelValue> Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction Reference
-// ----------------------------------------------------------------------------
-
+// DeltaTypeIns.
 template <typename TSize, typename TAlphabet>
-struct Reference<DeltaStore<TSize, TAlphabet> >
+struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>
 {
-    typedef typename DeltaType::TValue & Type;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TInsValue;
+    typedef String<TInsValue> Type;
 };
 
+// DeltaTypeSV.
 template <typename TSize, typename TAlphabet>
-struct Reference<DeltaStore<TSize, TAlphabet> const>
+struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>
 {
-    typedef typename DeltaType::TValue const & Type;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>::Type TSVValue;
+    typedef String<TSVValue> Type;
 };
 
-
-// ----------------------------------------------------------------------------
-// Metafunction GetDataMap_
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet>
-struct GetDataMap_<DeltaStore<TSize, TAlphabet> >
+// Generic const version.
+template <typename TSize, typename TAlphabet, typename TDeltaType>
+struct Member<DeltaStore<TSize, TAlphabet> const, TDeltaType>
 {
-    typedef typename DeltaType::TValue TValue_;
-    typedef String<TValue_> Type;
+    typedef DeltaStore<TSize, TAlphabet> TStore_;
+    typedef typename Member<TStore_, TDeltaType>::Type const Type;
 };
-
-template <typename TSize, typename TAlphabet>
-struct GetDataMap_<DeltaStore<TSize, TAlphabet> const>
-{
-    typedef typename DeltaType::TValue TValue_;
-    typedef String<TValue_> const Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Difference
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-struct Difference<Iter<TDeltaStore, SpecDeltaStoreIterator_> >
-{
-    typedef Iter<TDeltaStore, SpecDeltaStoreIterator_> TIter_;
-    typedef typename TIter_::TMapIterator TMapIterator_;
-    typedef typename Difference<TMapIterator_>::Type Type;
-};
-
-template <typename TDeltaStore>
-struct Difference<Iter<TDeltaStore, SpecDeltaStoreIterator_> const> :
-    Difference<Iter<TDeltaStore, SpecDeltaStoreIterator_> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction DeltaValue                                     [DELTA_TYPE_SNP]
 // ----------------------------------------------------------------------------
 
-template <typename TDeltaStore, typename DeltaType::TValue>
-struct DeltaValue;
-
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_SNP>
+struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>
 {
     typedef TAlphabet Type;
 };
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_SNP>
+struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeSnp>
 {
     typedef TAlphabet const Type;
 };
@@ -269,13 +206,13 @@ struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_SNP>
 // ----------------------------------------------------------------------------
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_DEL>
+struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>
 {
     typedef TSize Type;
 };
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_DEL>
+struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeDel>
 {
     typedef TSize const Type;
 };
@@ -285,51 +222,35 @@ struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_DEL>
 // ----------------------------------------------------------------------------
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INS>
+struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>
 {
     typedef String<TAlphabet> Type;
 };
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_INS>
+struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeIns>
 {
     typedef String<TAlphabet> const Type;
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction DeltaValue                                   [DELTA_TYPE_INDEL]
+// Metafunction DeltaValue                                   [DELTA_TYPE_SV]
 // ----------------------------------------------------------------------------
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INDEL>
+struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INS>::Type TIns_;
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_DEL>::Type TDel_;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TIns_;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDel_;
     typedef Pair<TDel_, TIns_> Type;
 };
 
 template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_INDEL>
+struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeSV>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INS>::Type TIns_;
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_DEL>::Type TDel_;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TIns_;
+    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDel_;
     typedef Pair<TDel_, TIns_> const Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Iterator
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet>
-struct Iterator<DeltaStore<TSize, TAlphabet>, Standard>
-{
-    typedef Iter<DeltaStore<TSize, TAlphabet>, SpecDeltaStoreIterator_> Type;
-};
-
-template <typename TAlphabet, typename TSize>
-struct Iterator<DeltaStore<TSize, TAlphabet> const, Standard>
-{
-    typedef Iter<DeltaStore<TSize, TAlphabet> const, SpecDeltaStoreIterator_> Type;
 };
 
 // ============================================================================
@@ -337,398 +258,180 @@ struct Iterator<DeltaStore<TSize, TAlphabet> const, Standard>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function begin()
+// Function isDeltaType()                                        [DeltaTypeSnp]
+// ----------------------------------------------------------------------------
+
+inline bool
+isDeltaType(DeltaType dType, DeltaTypeSnp const & /*tag*/)
+{
+    return dType == DELTA_TYPE_SNP;
+}
+
+// ----------------------------------------------------------------------------
+// Function isDeltaType()                                        [DeltaTypeDel]
+// ----------------------------------------------------------------------------
+
+inline bool
+isDeltaType(DeltaType dType, DeltaTypeIns const & /*tag*/)
+{
+    return dType == DELTA_TYPE_INS;
+}
+
+// ----------------------------------------------------------------------------
+// Function isDeltaType()                                        [DeltaTypeIns]
+// ----------------------------------------------------------------------------
+
+inline bool
+isDeltaType(DeltaType dType, DeltaTypeDel const & /*tag*/)
+{
+    return dType == DELTA_TYPE_DEL;
+}
+
+// ----------------------------------------------------------------------------
+// Function isDeltaType()                                         [DeltaTypeSV]
+// ----------------------------------------------------------------------------
+
+inline bool
+isDeltaType(DeltaType dType, DeltaTypeSV const & /*tag*/)
+{
+    return dType == DELTA_TYPE_SV;
+}
+
+// ----------------------------------------------------------------------------
+// Function isDeltaType()
+// ----------------------------------------------------------------------------
+
+template <typename TTag>
+inline bool
+isDeltaType(DeltaType /*type*/, TTag const & /*tag*/)
+{
+    return false; // Unknown tag.
+}
+
+// ----------------------------------------------------------------------------
+// Function selectDeltaType()                                    [DeltaTypeSnp]
+// ----------------------------------------------------------------------------
+
+inline DeltaType
+selectDeltaType(DeltaTypeSnp /*tag*/)
+{
+    return DELTA_TYPE_SNP;
+}
+
+// ----------------------------------------------------------------------------
+// Function selectDeltaType()                                    [DeltaTypeDel]
+// ----------------------------------------------------------------------------
+
+inline DeltaType
+selectDeltaType(DeltaTypeDel /*tag*/)
+{
+    return DELTA_TYPE_DEL;
+}
+
+// ----------------------------------------------------------------------------
+// Function selectDeltaType()                                    [DeltaTypeIns]
+// ----------------------------------------------------------------------------
+
+inline DeltaType
+selectDeltaType(DeltaTypeIns /*tag*/)
+{
+    return DELTA_TYPE_INS;
+}
+
+// ----------------------------------------------------------------------------
+// Function selectDeltaType()                                     [DeltaTypeSV]
+// ----------------------------------------------------------------------------
+
+inline DeltaType
+selectDeltaType(DeltaTypeSV /*tag*/)
+{
+    return DELTA_TYPE_SV;
+}
+
+// ----------------------------------------------------------------------------
+// Function getDeltaStore()                                     [DeltaTypeSnp]
 // ----------------------------------------------------------------------------
 
 template <typename TSize, typename TAlphabet>
-inline typename Iterator<DeltaStore<TSize, TAlphabet>, Standard>::Type
-begin(DeltaStore<TSize, TAlphabet> & deltaStore, Standard const /*tag*/)
+inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeSnp /*tag*/)
 {
-    typedef typename Iterator<DeltaStore<TSize, TAlphabet>, Standard>::Type TIterator;
-    TIterator tmp;
-    tmp._dataIter = begin(deltaStore._varDataMap, Standard());
-    tmp._containerPtr = &deltaStore;
-    return tmp;
+    return store._snpData;
 }
 
 template <typename TSize, typename TAlphabet>
-inline typename Iterator<DeltaStore<TSize, TAlphabet> const, Standard>::Type
-begin(DeltaStore<TSize, TAlphabet> const & deltaStore, Standard const /*tag*/)
+inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeSnp>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSnp /*tag*/)
 {
-    typedef typename Iterator<DeltaStore<TSize, TAlphabet> const, Standard>::Type TIterator;
-    TIterator tmp;
-    tmp._dataIter = begin(deltaStore._varDataMap, Standard());
-    tmp._containerPtr = &deltaStore;
-    return tmp;
+    return store._snpData;
 }
 
 // ----------------------------------------------------------------------------
-// Function end()
+// Function getDeltaStore()                                     [DeltaTypeDel]
 // ----------------------------------------------------------------------------
 
 template <typename TSize, typename TAlphabet>
-inline typename Iterator<DeltaStore<TSize, TAlphabet>, Standard>::Type
-end(DeltaStore<TSize, TAlphabet> & deltaStore, Standard const /*tag*/)
+inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeDel /*tag*/)
 {
-    typedef typename Iterator<DeltaStore<TSize, TAlphabet>, Standard>::Type TIterator;
-    TIterator tmp;
-    tmp._dataIter = end(deltaStore._varDataMap, Standard());
-    tmp._containerPtr = &deltaStore;
-    return tmp;
+    return store._delData;
 }
 
 template <typename TSize, typename TAlphabet>
-inline typename Iterator<DeltaStore<TSize, TAlphabet> const, Standard>::Type
-end(DeltaStore<TSize, TAlphabet> const & deltaStore, Standard const /*tag*/)
+inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeDel>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeDel /*tag*/)
 {
-    typedef typename Iterator<DeltaStore<TSize, TAlphabet> const, Standard>::Type TIterator;
-    TIterator tmp;
-    tmp._dataIter = end(deltaStore._varDataMap, Standard());
-    tmp._containerPtr = &deltaStore;
-    return tmp;
+    return store._delData;
 }
 
 // ----------------------------------------------------------------------------
-// Function value()
+// Function getDeltaStore()                                     [DeltaTypeIns]
 // ----------------------------------------------------------------------------
 
-template <typename TDeltaStore>
-inline typename Reference<TDeltaStore>::Type
-value(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
+template <typename TSize, typename TAlphabet>
+inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeIns /*tag*/)
 {
-    return value(iter._dataIter);
-}
-
-template <typename TDeltaStore>
-inline typename Reference<TDeltaStore const>::Type
-value(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter)
-{
-    return value(iter._dataIter);
-}
-
-// ----------------------------------------------------------------------------
-// Function operator++()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-operator++(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    ++iter._dataIter;
-    return iter;
-}
-
-template <typename TDeltaStore>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_>
-operator++(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter,  int /*postfix*/)
-{
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> temp(iter);
-    ++iter;
-    return temp;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator+=()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore, typename TSize>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-operator+=(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter,  TSize const & len)
-{
-    iter._dataIter += len;
-    return iter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator+()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore, typename TSize>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_>
-operator+(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter,  TSize const & len)
-{
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> temp(iter);
-    temp += len;
-    return temp;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator--()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-operator--(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    --iter._dataIter;
-    return iter;
-}
-
-template <typename TDeltaStore>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_>
-operator--(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter,  int /*postfix*/)
-{
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> temp(iter);
-    --iter;
-    return temp;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator-=()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore, typename TSize>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_> &
-operator-=(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter,  TSize const & len)
-{
-    iter._dataIter -= len;
-    return iter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator-()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore, typename TSize>
-inline Iter<TDeltaStore, SpecDeltaStoreIterator_>
-operator-(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter,  TSize const & len)
-{
-    Iter<TDeltaStore, SpecDeltaStoreIterator_> temp(iter);
-    temp -= len;
-    return temp;
-}
-
-template <typename TDeltaStore>
-inline typename Difference<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type
-operator-(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & lhs,
-          Iter<TDeltaStore, SpecDeltaStoreIterator_> const & rhs)
-{
-    return lhs._dataIter - rhs._dataIter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator==()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator==(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    if (a._dataIter != b._dataIter)
-        return false;
-    if (a._containerPtr != b._containerPtr)
-        return false;
-    return true;
-}
-
-template <typename TDeltaStore>
-inline bool
-operator==(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    typedef typename IterMakeConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type TConstIter;
-    return static_cast<TConstIter>(a) == static_cast<TConstIter>(b);
-}
-
-// ----------------------------------------------------------------------------
-// Function operator!=()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator!=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    return !(a == b);
-}
-
-template <typename TDeltaStore>
-inline bool
-operator!=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    return !(a == b);
-}
-
-// ----------------------------------------------------------------------------
-// Function operator<()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator<(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    return a._dataIter < b._dataIter;
-}
-
-template <typename TDeltaStore>
-inline bool
-operator<(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-          typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    return a._dataIter < b._dataIter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator<=()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator<=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    return a._dataIter <= b._dataIter;
-}
-
-template <typename TDeltaStore>
-inline bool
-operator<=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    return a._dataIter <= b._dataIter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator>()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator>(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    return a._dataIter > b._dataIter;
-}
-
-template <typename TDeltaStore>
-inline bool
-operator>(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    return a._dataIter > b._dataIter;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator>=()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaStore>
-inline bool
-operator>=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           Iter<TDeltaStore, SpecDeltaStoreIterator_> const & b)
-{
-    return a._dataIter >= b._dataIter;
-}
-
-template <typename TDeltaStore>
-inline bool
-operator>=(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & a,
-           typename IterComplementConst<Iter<TDeltaStore, SpecDeltaStoreIterator_> >::Type const & b)
-{
-    return a._dataIter >= b._dataIter;
-}
-
-// ----------------------------------------------------------------------------
-// Function addSnpDelta()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline void
-addSnpDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            TAlphabet const & delta,
-            TPosition const & insPos)
-{
-    typedef typename DeltaType::TValue TValue SEQAN_TYPEDEF_FOR_DEBUG;
-    SEQAN_ASSERT_LT(length(variantData._snpData), (static_cast<TValue>(1) << (BitsPerValue<TValue>::VALUE - 2)));
-
-    appendValue(variantData._snpData, delta);
-    insertValue(variantData._varDataMap, insPos, ((length(variantData._snpData) - 1) | DeltaType::DELTA_TYPE_SNP));
+    return store._insData;
 }
 
 template <typename TSize, typename TAlphabet>
-inline void
-addSnpDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            TAlphabet const & delta)
+inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeIns>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeIns /*tag*/)
 {
-    addSnpDelta(variantData, delta, length(variantData._varDataMap));
+    return store._insData;
 }
 
 // ----------------------------------------------------------------------------
-// Function addInsDelta()
+// Function getDeltaStore()                                      [DeltaTypeSV]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TStringSpec, typename TPosition>
-inline void
-addInsDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            String<TAlphabet, TStringSpec> const & delta,
-            TPosition const & insPos)
+template <typename TSize, typename TAlphabet>
+inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeSV /*tag*/)
 {
-    typedef typename DeltaType::TValue TValue SEQAN_TYPEDEF_FOR_DEBUG;
-    SEQAN_ASSERT_LT(length(variantData._insData), (static_cast<TValue>(1) << (BitsPerValue<TValue>::VALUE - 2)));
-
-    appendValue(variantData._insData, delta);
-    insertValue(variantData._varDataMap, insPos, ((length(variantData._insData) - 1) | DeltaType::DELTA_TYPE_INS));
+    return store._svData;
 }
 
-template <typename TSize, typename TAlphabet, typename TStringSpec>
-inline void
-addInsDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            String<TAlphabet, TStringSpec> const & delta)
+template <typename TSize, typename TAlphabet>
+inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeSV>::Type &
+getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSV /*tag*/)
 {
-    addInsDelta(variantData, delta, length(variantData._varDataMap));
+    return store._svData;
 }
 
 // ----------------------------------------------------------------------------
-// Function addDelDelta()
+// Function addDeltaValue()
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TSize2, typename TPosition>
-inline void
-addDelDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            TSize2 const & delta,
-            TPosition const & insPos)
+template <typename TSize, typename TAlphabet, typename TTag>
+inline typename Size<DeltaStore<TSize, TAlphabet> >::Type
+addDeltaValue(DeltaStore<TSize, TAlphabet> & store,
+              typename DeltaValue<DeltaStore<TSize, TAlphabet>, TTag>::Type const & value,
+              TTag /*deltaType*/)
 {
-    typedef typename DeltaType::TValue TValue SEQAN_TYPEDEF_FOR_DEBUG;
-    SEQAN_ASSERT_LT(length(variantData._delData), (static_cast<TValue>(1) << (BitsPerValue<TValue>::VALUE - 2)));
-
-    appendValue(variantData._delData, delta);
-    insertValue(variantData._varDataMap, insPos, ((length(variantData._delData) - 1) | DeltaType::DELTA_TYPE_DEL));
-}
-
-template <typename TSize, typename TAlphabet, typename TSize2>
-inline void
-addDelDelta(DeltaStore<TSize, TAlphabet> & variantData,
-            TSize2 const & delta)
-{
-    addDelDelta(variantData, delta, length(variantData._varDataMap));
-}
-
-// ----------------------------------------------------------------------------
-// Function addIndelDelta()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TStringSpec, typename TSize2, typename TPosition>
-inline void
-addIndelDelta(DeltaStore<TSize, TAlphabet> & variantData,
-              Pair<TSize2, String<TAlphabet, TStringSpec> > const & delta,
-              TPosition const & insPos)
-{
-    typedef typename DeltaType::TValue TValue SEQAN_TYPEDEF_FOR_DEBUG;
-    SEQAN_ASSERT_LT(length(variantData._indelData), (static_cast<TValue>(1) << (BitsPerValue<TValue>::VALUE - 2)));
-
-    appendValue(variantData._indelData, delta);
-    insertValue(variantData._varDataMap, insPos, ((length(variantData._indelData) - 1) | DeltaType::DELTA_TYPE_INDEL));
-}
-
-template <typename TSize, typename TAlphabet, typename TStringSpec, typename TSize2>
-inline void
-addIndelDelta(DeltaStore<TSize, TAlphabet> & variantData,
-              Pair<TSize2, String<TAlphabet, TStringSpec> > const & delta)
-{
-    addIndelDelta(variantData, delta, length(variantData._varDataMap));
+    appendValue(getDeltaStore(store, TTag()), value);
+    return length(getDeltaStore(store, TTag())) - 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -759,173 +462,28 @@ template <typename TSize, typename TAlphabet, typename TPosition>
 inline void
 clear(DeltaStore<TSize, TAlphabet> & deltaStore)
 {
-    clear(deltaStore._varDataMap);
     clear(deltaStore._delData);
-    clear(deltaStore._indelData);
+    clear(deltaStore._svData);
     clear(deltaStore._insData);
     clear(deltaStore._snpData);
 }
 
 // ----------------------------------------------------------------------------
-// Function deltaType()
+// Function deltaValue()
 // ----------------------------------------------------------------------------
 
-inline DeltaType::TValue
-deltaType(DeltaType::TValue const& val)
+template <typename TSize, typename TAlphabet, typename TPos, typename TTag>
+inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, TTag>::Type &
+deltaValue(DeltaStore<TSize, TAlphabet> & store, TPos pos, TTag const & tag)
 {
-    return val & DeltaType::MASK_DELTA_TYPE;
+    return value(getDeltaStore(store, tag), pos);
 }
 
-template <typename TDeltaStore>
-inline DeltaType::TValue
-deltaType(Iter<TDeltaStore, SpecDeltaStoreIterator_> const& iter)
+template <typename TSize, typename TAlphabet, typename TPos, typename TTag>
+inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, TTag>::Type &
+deltaValue(DeltaStore<TSize, TAlphabet> const & store, TPos pos, TTag const & tag)
 {
-    return value(iter) & DeltaType::MASK_DELTA_TYPE;
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaPosition()
-// ----------------------------------------------------------------------------
-
-inline DeltaType::TValue
-deltaPosition(DeltaType::TValue const& val)
-{
-    return val & DeltaType::MASK_DELTA_POSITION;
-}
-
-template <typename TDeltaStore>
-inline DeltaType::TValue
-deltaPosition(Iter<TDeltaStore, SpecDeltaStoreIterator_> const& iter)
-{
-    return value(iter) & DeltaType::MASK_DELTA_POSITION;
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaSnp()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_SNP>::Type &
-deltaSnp(DeltaStore<TSize, TAlphabet> & store, TPosition const & pos)
-{
-    return value(store._snpData, pos);
-}
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_SNP>::Type &
-deltaSnp(DeltaStore<TSize, TAlphabet> const & store, TPosition const & pos)
-{
-    return value(store._snpData, pos);
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore, DeltaType::DELTA_TYPE_SNP>::Type &
-deltaSnp(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    return value(iter._containerPtr->_snpData, deltaPosition(iter));
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore const, DeltaType::DELTA_TYPE_SNP>::Type &
-deltaSnp(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter)
-{
-    return value(iter._containerPtr->_snpData, deltaPosition(iter));
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaDel()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_DEL>::Type &
-deltaDel(DeltaStore<TSize, TAlphabet> & store, TPosition const & pos)
-{
-    return value(store._delData, pos);
-}
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_DEL>::Type &
-deltaDel(DeltaStore<TSize, TAlphabet> const & store, TPosition const & pos)
-{
-    return value(store._delData, pos);
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore, DeltaType::DELTA_TYPE_DEL>::Type &
-deltaDel(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    return value(iter._containerPtr->_delData, deltaPosition(iter));
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore const, DeltaType::DELTA_TYPE_DEL>::Type &
-deltaDel(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter)
-{
-    return value(iter._containerPtr->_delData, deltaPosition(iter));
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaIns()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INS>::Type &
-deltaIns(DeltaStore<TSize, TAlphabet> & store, TPosition const & pos)
-{
-    return value(store._insData, pos);
-}
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_INS>::Type &
-deltaIns(DeltaStore<TSize, TAlphabet> const & store, TPosition const & pos)
-{
-    return value(store._insData, pos);
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore, DeltaType::DELTA_TYPE_INS>::Type &
-deltaIns(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    return value(iter._containerPtr->_insData, deltaPosition(iter));
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore const, DeltaType::DELTA_TYPE_INS>::Type &
-deltaIns(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter)
-{
-    return value(iter._containerPtr->_insData, deltaPosition(iter));
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaIndel()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaType::DELTA_TYPE_INDEL>::Type &
-deltaIndel(DeltaStore<TSize, TAlphabet> & store, TPosition const & pos)
-{
-    return value(store._indelData, pos);
-}
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaType::DELTA_TYPE_INDEL>::Type &
-deltaIndel(DeltaStore<TSize, TAlphabet> const & store, TPosition const & pos)
-{
-    return value(store._indelData, pos);
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore, DeltaType::DELTA_TYPE_INDEL>::Type &
-deltaIndel(Iter<TDeltaStore, SpecDeltaStoreIterator_> & iter)
-{
-    return value(iter._containerPtr->_indelData, deltaPosition(iter));
-}
-
-template <typename TDeltaStore>
-inline typename DeltaValue<TDeltaStore const, DeltaType::DELTA_TYPE_INDEL>::Type &
-deltaIndel(Iter<TDeltaStore, SpecDeltaStoreIterator_> const & iter)
-{
-    return value(iter._containerPtr->_indelData, deltaPosition(iter));
+    return value(getDeltaStore(store, tag), pos);
 }
 
 }

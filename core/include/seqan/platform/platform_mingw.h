@@ -80,4 +80,10 @@ typedef unsigned __int8 __uint8;
 #  define SEQAN_CXX11_STANDARD
 #endif
 
+// ==========================================================================
+// Define Endianness.
+// ==========================================================================
+
+#define SEQAN_LITTLE_ENDIAN 1
+
 #endif  // #ifndef PLATFORM_WINDOWS

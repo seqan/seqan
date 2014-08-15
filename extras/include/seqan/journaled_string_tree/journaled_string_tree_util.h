@@ -76,7 +76,7 @@ public:
 
     MergePointMap_(TVariantMap & map) : _varMapPtr(&map), _mergeCoverage(), _mergePoints()
     {
-        resize(_mergeCoverage, coverageSize(map), false, Exact());
+        resize(_mergeCoverage, getCoverageSize(map), false, Exact());
     }
 
     // Copy constructor.
@@ -371,7 +371,7 @@ _mapVirtualToVirtual(TIter & target,
 
     if (source._journalEntriesIterator->segmentSource == SOURCE_PATCH)
     {
-        SEQAN_ASSERT_GEQ(*branchNodeIt, _physicalOriginPosition(source));
+        SEQAN_ASSERT_GEQ(deltaPosition(branchNodeIt), _physicalOriginPosition(source));
         if (_physicalOriginPosition(source) == 0)
         {
             setPosition(target, position(source));
@@ -384,7 +384,7 @@ _mapVirtualToVirtual(TIter & target,
 
         SEQAN_ASSERT_EQ(target._journalEntriesIterator->segmentSource, SOURCE_ORIGINAL);  // TODO(rmaerker): Check end condition!
 
-        if (_physicalOriginPosition(target) >= *branchNodeIt)
+        if (_physicalOriginPosition(target) >= deltaPosition(branchNodeIt))
         {
             while(!atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
                 (--target)._journalEntriesIterator->segmentSource == SOURCE_PATCH);
@@ -405,18 +405,18 @@ _mapVirtualToVirtual(TIter & target,
 
         TBranchNodeIt tmpIt = const_cast<TBranchNodeIt&>(branchNodeIt);  // We are at this position.
         unsigned virtOffset = target._journalEntriesIterator->length - _localEntryPosition(target) - 1;
-        while (!atBegin(tmpIt, variantStore) && *(--tmpIt) > hostPos)
+        while (!atBegin(tmpIt, variantStore) && deltaPosition(--tmpIt) > hostPos)
         {
             if (deltaCoverage(tmpIt)[proxyId] != true)  // Irrelevant variant.
                 continue;
 
             // If between hostPos and breakpoint are any other insertion or deletion, then we keep track of this virtual offset.
-            if (deltaType(tmpIt) == DeltaType::DELTA_TYPE_INS)
-                virtOffset += length(deltaIns(tmpIt));
-            else if (deltaType(tmpIt) == DeltaType::DELTA_TYPE_SNP)
+            if (deltaType(tmpIt) == DELTA_TYPE_INS)
+                virtOffset += length(deltaValue(tmpIt, DeltaTypeIns()));
+            else if (deltaType(tmpIt) == DELTA_TYPE_SNP)
                 ++virtOffset;
-            else if (deltaType(tmpIt) == DeltaType::DELTA_TYPE_INDEL)
-                virtOffset += length(deltaIndel(tmpIt).i2);
+            else if (deltaType(tmpIt) == DELTA_TYPE_SV)
+                virtOffset += length(deltaValue(tmpIt, DeltaTypeSV()).i2);
         }
         target += (1 + virtOffset + _localEntryPosition(source));
     }
@@ -443,6 +443,7 @@ _mapHostToVirtual(TIterator & resultIt,
     typedef typename Iterator<TJournalEntries>::Type TEntriesIterator;
     typedef typename Position<TCargo>::Type TCargoPos;
     typedef typename Size<TCargo>::Type TCargoSize;
+    typedef typename Value<TDeltaMap>::Type TMapEntry;
     typedef JournalEntryLtByPhysicalOriginPos<TCargoPos, TCargoSize> TComp;
 
     typedef typename Iterator<TDeltaMap, Standard>::Type TVarIterator;
@@ -476,11 +477,11 @@ _mapHostToVirtual(TIterator & resultIt,
     if (it->segmentSource == SOURCE_PATCH)  // The iterator has to be at the beginning.
     {
         TVarIterator itVar = begin(variantStore, Standard());
-        SEQAN_ASSERT_LEQ(*itVar, static_cast<unsigned const>(hostPos));
+        SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<unsigned const>(hostPos));
 
         unsigned virtualOffset = 0;
         // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-        while(*itVar != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
+        while(deltaPosition(itVar) != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
         {
             if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
             {
@@ -488,12 +489,12 @@ _mapHostToVirtual(TIterator & resultIt,
                 continue;
             }
 //            TMappedDelta deltaKey = mappedDelta(variantStore, position(itVar));
-            if (deltaType(itVar) == DeltaType::DELTA_TYPE_INS)
-                virtualOffset += length(deltaIns(itVar));
-            else if (deltaType(itVar) == DeltaType::DELTA_TYPE_SNP)
+            if (deltaType(itVar) == DELTA_TYPE_INS)
+                virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
+            else if (deltaType(itVar) == DELTA_TYPE_SNP)
                 ++virtualOffset;
-            else if (deltaType(itVar) == DeltaType::DELTA_TYPE_INDEL)
-                virtualOffset += length(deltaIndel(itVar).i2);
+            else if (deltaType(itVar) == DELTA_TYPE_SV)
+                virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
             ++itVar;
         }
         resultIt += virtualOffset;  // Set the iterator to the beginning of the variant.
@@ -521,15 +522,16 @@ _mapHostToVirtual(TIterator & resultIt,
 
     // TODO(rmaerker): Can remove the binary Search here!
     // Find the first node that is left or equal to the current physical position!
-    TVarIterator itVar = std::upper_bound(begin(variantStore, Standard()),
-                                          end(variantStore, Standard()),
-                                          _physicalPosition(resultIt));
+    TMapEntry tmpEntry;
+    tmpEntry.deltaPosition = _physicalPosition(resultIt);
+    TVarIterator itVar = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), tmpEntry,
+                                          DeltaMapEntryCompareLessByDeltaPosition_());
 
-    SEQAN_ASSERT_LEQ(*itVar, static_cast<unsigned const>(hostPos));
+    SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<unsigned const>(hostPos));
 
     unsigned virtualOffset = 0;
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-    while(*itVar != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
+    while (deltaPosition(itVar) != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
     {
         if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
         {
@@ -538,12 +540,12 @@ _mapHostToVirtual(TIterator & resultIt,
         }
 
 //        TMappedDelta deltaKey = mappedDelta(variantStore, position(itVar));
-        if (deltaType(itVar) == DeltaType::DELTA_TYPE_INS)
-            virtualOffset += length(deltaIns(itVar));
-        else if (deltaType(itVar) == DeltaType::DELTA_TYPE_SNP)
+        if (deltaType(itVar) == DELTA_TYPE_INS)
+            virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
+        else if (deltaType(itVar) == DELTA_TYPE_SNP)
             ++virtualOffset;
-        else if (deltaType(itVar) == DeltaType::DELTA_TYPE_INDEL)
-            virtualOffset += length(deltaIndel(itVar).i2);
+        else if (deltaType(itVar) == DELTA_TYPE_SV)
+            virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
         ++itVar;
     }
     resultIt += virtualOffset + 1;  // Set the iterator to the beginning of the variant.

@@ -56,10 +56,10 @@ struct MockVariantData
 {
     unsigned _hostPos;
     unsigned _delSize;
-    DeltaType::TValue _varType;
+    TValue _varType;
     String<TValue> _insBuff;
 
-    MockVariantData() : _hostPos(0), _delSize(0), _varType(DeltaType::DELTA_TYPE_INDEL)
+    MockVariantData() : _hostPos(0), _delSize(0), _varType(DELTA_TYPE_SV)
     {}
 };
 
@@ -114,8 +114,8 @@ struct MockGenerator_
     typedef typename GetStringSet<TStringTree>::Type TJournalSet;
     typedef typename Value<TJournalSet>::Type TJournalString;
     typedef typename Host<TJournalSet>::Type THost;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_DEL>::Type TDel;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_INDEL>::Type TIndel;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeDel>::Type TDel;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSV>::Type TIndel;
 
     TJournalSet _seqData;
     TDeltaMap _varStore;
@@ -131,7 +131,7 @@ struct MockGenerator_
         SEQAN_ASSERT(!empty(covData));
 
         unsigned numSeq  = length(covData[0]);
-        setCoverageSize(_varStore._deltaCoverageStore, numSeq);
+        setCoverageSize(_varStore, numSeq);
 
         THost ref;
         generateRef(ref, refSize);
@@ -157,18 +157,18 @@ struct MockGenerator_
 
                     switch(varData[j]._varType)
                     {
-                    case DeltaType::DELTA_TYPE_SNP:
+                    case DELTA_TYPE_SNP:
                         assignValue(tmp, virtPos, varData[j]._insBuff[0]);
                         break;
-                    case DeltaType::DELTA_TYPE_DEL:
+                    case DELTA_TYPE_DEL:
                         erase(tmp, virtPos, virtPos + varData[j]._delSize);
                         virtPos -= static_cast<int>(varData[j]._delSize);
                         break;
-                    case DeltaType::DELTA_TYPE_INS:
+                    case DELTA_TYPE_INS:
                         insert(tmp, virtPos, varData[j]._insBuff);
                         virtPos += length(varData[j]._insBuff);
                         break;
-                    case DeltaType::DELTA_TYPE_INDEL:
+                    case DELTA_TYPE_SV:
                         replace(tmp, virtPos, virtPos + varData[j]._delSize,  varData[j]._insBuff);
                         virtPos += static_cast<int>(length(varData[j]._insBuff)) - static_cast<int>(varData[j]._delSize);
                         break;
@@ -183,17 +183,17 @@ struct MockGenerator_
         {
             switch(varData[i]._varType)
             {
-            case DeltaType::DELTA_TYPE_SNP:
-                insert(_varStore, varData[i]._hostPos, varData[i]._insBuff[0], covData[i]);
+            case DELTA_TYPE_SNP:
+                insert(_varStore, varData[i]._hostPos, varData[i]._insBuff[0], covData[i], DeltaTypeSnp());
                 break;
-            case DeltaType::DELTA_TYPE_DEL:
-                insert(_varStore, varData[i]._hostPos, static_cast<TDel>(varData[i]._delSize), covData[i]);
+            case DELTA_TYPE_DEL:
+                insert(_varStore, varData[i]._hostPos, static_cast<TDel>(varData[i]._delSize), covData[i], DeltaTypeDel());
                 break;
-            case DeltaType::DELTA_TYPE_INS:
-                insert(_varStore, varData[i]._hostPos, varData[i]._insBuff, covData[i]);
+            case DELTA_TYPE_INS:
+                insert(_varStore, varData[i]._hostPos, varData[i]._insBuff, covData[i], DeltaTypeIns());
                 break;
-            case DeltaType::DELTA_TYPE_INDEL:
-                insert(_varStore, varData[i]._hostPos, TIndel(varData[i]._delSize, varData[i]._insBuff), covData[i]);
+            case DELTA_TYPE_SV:
+                insert(_varStore, varData[i]._hostPos, TIndel(varData[i]._delSize, varData[i]._insBuff), covData[i], DeltaTypeSV());
                 break;
             }
         }
@@ -279,7 +279,7 @@ int _readConfigFile(DataParallelTestConfig<TValue> & obj)
             {
             case 's':  // Read SNP data.
             {
-                varData._varType = DeltaType::DELTA_TYPE_SNP;
+                varData._varType = DELTA_TYPE_SNP;
                 CharString snpBuff;
                 readUntilChar(snpBuff, reader, ',');
                 unsigned snpSize;
@@ -289,7 +289,7 @@ int _readConfigFile(DataParallelTestConfig<TValue> & obj)
             }
             case 'd':
             {
-                varData._varType = DeltaType::DELTA_TYPE_DEL;
+                varData._varType = DELTA_TYPE_DEL;
                 CharString delBuff;
                 readUntilChar(delBuff, reader, ',');
                 lexicalCast2(varData._delSize, delBuff);
@@ -297,7 +297,7 @@ int _readConfigFile(DataParallelTestConfig<TValue> & obj)
             }
             case 'i':
             {
-                varData._varType = DeltaType::DELTA_TYPE_INS;
+                varData._varType = DELTA_TYPE_INS;
                 CharString insBuff;
                 readUntilChar(insBuff, reader, ',');
                 unsigned insSize;
@@ -307,7 +307,7 @@ int _readConfigFile(DataParallelTestConfig<TValue> & obj)
             }
             case 'r':
             {
-                varData._varType = DeltaType::DELTA_TYPE_INDEL;
+                varData._varType = DELTA_TYPE_SV;
                 CharString buff;
                 readUntilChar(buff, reader, '-');
                 lexicalCast2(varData._delSize, buff);

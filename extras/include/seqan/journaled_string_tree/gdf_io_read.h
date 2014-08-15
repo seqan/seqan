@@ -57,8 +57,10 @@ namespace seqan
 // ============================================================================
 
 template <typename TConfig, typename TStream>
-inline int
-_readGdfHeaderFileInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, SinglePass<> >  & reader)
+inline void
+_readGdfHeaderFileInfo(GdfHeader & gdfHeader,
+                       GdfFileConfiguration<TConfig> & config,
+                       RecordReader<TStream, SinglePass<> > & reader)
 {
     CharString buffer;
 
@@ -66,17 +68,17 @@ _readGdfHeaderFileInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sin
     skipNChars(reader, 2);
     // Read file version.
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::FILE_VERSION_KEY));
-//        streamReadBlock(&buffer[0], stream, length(GdfIO::FILE_VERSION_KEY));
-    if (!startsWith(buffer, GdfIO::FILE_VERSION_KEY))
-        return GdfIO::UNSUPPORTED_FILE_VERSION_ERROR;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_FILE_VERSION_KEY));
+//        streamReadBlock(&buffer[0], stream, length(GDF_IO_FILE_VERSION_KEY));
+    if (!startsWith(buffer, GDF_IO_FILE_VERSION_KEY))
+        SEQAN_THROW(GdfIOException("Unsupported file version key!"));
 
     // Skip = sign
     skipNChars(reader, 1);
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::FILE_VERSION_VALUE_PREFIX));
-    if (!startsWith(buffer, GdfIO::FILE_VERSION_VALUE_PREFIX))
-        return GdfIO::UNSUPPORTED_FILE_VERSION_ERROR;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_FILE_VERSION_VALUE_PREFIX));
+    if (!startsWith(buffer, GDF_IO_FILE_VERSION_VALUE_PREFIX))
+        SEQAN_THROW(GdfIOException("Unsupported file version prefix!"));
     // Read big version number.
 //        readD(buffer[0], stream);
     clear(buffer);
@@ -85,8 +87,8 @@ _readGdfHeaderFileInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sin
     readNChars(buffer, reader, 1);
     lexicalCast2(fileVersionBig, buffer);
 
-    if (fileVersionBig != GdfIO::FILE_VERSION_BIG)
-        return GdfIO::UNSUPPORTED_FILE_VERSION_ERROR;
+    if (fileVersionBig != GDF_IO_FILE_VERSION_BIG)
+        SEQAN_THROW(GdfIOException("Unsupported file version!"));
     // Read version number separator.
     skipNChars(reader, 1);
     // Read little version number.
@@ -96,8 +98,8 @@ _readGdfHeaderFileInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sin
     readNChars(buffer, reader, 1);
     lexicalCast2(fileVersionLittle, buffer);
 
-    if (fileVersionLittle != GdfIO::FILE_VERSION_LITTLE)
-        return GdfIO::UNSUPPORTED_FILE_VERSION_ERROR;
+    if (fileVersionLittle != GDF_IO_FILE_VERSION_LITTLE)
+        SEQAN_THROW(GdfIOException("Unsupported file version!"));
 
     // Skip until next line.
     skipLine(reader);
@@ -105,55 +107,58 @@ _readGdfHeaderFileInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sin
     // Read byte order.
     skipNChars(reader, 2);  // skip prefix.
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::FILE_ENDIANNESS_KEY));
-    if (buffer != GdfIO::FILE_ENDIANNESS_KEY)
-        return -1;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_FILE_ENDIANNESS_KEY));
+    if (buffer != GDF_IO_FILE_ENDIANNESS_KEY)
+        SEQAN_THROW(GdfIOException("Unsupported endianness key!"));
     skipNChars(reader, 1);
     clear(buffer);
     readLine(buffer, reader);
-    gdfHeader._fileInfos._byteOrder = buffer == GdfIO::FILE_ENDIANNESS_LITTLE;
+    config.isLittleEndian = buffer == GDF_IO_FILE_ENDIANNESS_LITTLE;
 
     // Read block size.
-    clear(buffer);
-    skipNChars(reader, 2);  // skip prefix.
-    readNChars(buffer, reader, length(GdfIO::FILE_BLOCKSIZE_KEY));
-    if (buffer != GdfIO::FILE_BLOCKSIZE_KEY)
-        return -1;      // TODO(rmaerker): Either use error codes or use exceptions.
-    skipNChars(reader, 1);
-    clear(buffer);
-    readLine(buffer, reader);
-    lexicalCast2(gdfHeader._fileInfos._blockSize, buffer);
+//    clear(buffer);
+//    skipNChars(reader, 2);  // skip prefix.
+//    readNChars(buffer, reader, length(GDF_IO_FILE_BLOCKSIZE_KEY));
+//    if (buffer != GDF_IO_FILE_BLOCKSIZE_KEY)
+//        return -1;      // TODO(rmaerker): Either use error codes or use exceptions.
+//    skipNChars(reader, 1);
+//    clear(buffer);
+//    readLine(buffer, reader);
+//    lexicalCast2(gdfHeader._fileInfos._blockSize, buffer);
 
     //Read snp compression status.
     clear(buffer);
     skipNChars(reader, 2);  // skip prefix.
-    readNChars(buffer, reader, length(GdfIO::FILE_SNP_COMPRESSION_KEY));
-    if (buffer != GdfIO::FILE_SNP_COMPRESSION_KEY)
-        return -1;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_FILE_SNP_COMPRESSION_KEY));
+    if (buffer != GDF_IO_FILE_SNP_COMPRESSION_KEY)
+        SEQAN_THROW(GdfIOException("Unsupported snp compression key!"));
+
     skipNChars(reader, 1);
     clear(buffer);
     readLine(buffer, reader);
-    if (buffer == GdfIO::FILE_SNP_COMPRESSION_2BIT)
-        gdfHeader._fileInfos._snpCompression = true;
+    if (buffer == GDF_IO_FILE_SNP_COMPRESSION_2BIT)
+        config.compressionMode = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
     else
     {
-        SEQAN_ASSERT_EQ(buffer, GdfIO::FILE_SNP_COMPRESSION_GENERIC);
-        gdfHeader._fileInfos._snpCompression = false;
+        SEQAN_ASSERT_EQ(buffer, GDF_IO_FILE_SNP_COMPRESSION_GENERIC);
+        config.compressionMode = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
     }
     return 0;
 }
 
 template <typename TConfig, typename TStream>
-inline int
-_readGdfHeaderRefInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, SinglePass<> >  & reader)
+inline void
+_readGdfHeaderRefInfo(GdfHeader & gdfHeader,
+                      GdfFileConfiguration<TConfig> & config,
+                      RecordReader<TStream, SinglePass<> >  & reader)
 {
     CharString buffer;
     skipNChars(reader, 2);  // skip prefix.
     // Read refernece ID.
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::REFERENCE_ID_KEY));
-    if (!startsWith(buffer, GdfIO::REFERENCE_ID_KEY))
-        return GdfIO::UNSUPPORTED_REFERNCE_INFORMATION_ERROR;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_REFERENCE_ID_KEY));
+    if (!startsWith(buffer, GDF_IO_REFERENCE_ID_KEY))
+        SEQAN_THROW(GdfIOException("Unsupported reference id key!"));
 
     // Skip = sign
     skipNChars(reader, 1);
@@ -162,9 +167,9 @@ _readGdfHeaderRefInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sing
 
     skipNChars(reader, 2);  // skip prefix.
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::REFERENCE_FILE_KEY));
-    if (!startsWith(buffer, GdfIO::REFERENCE_FILE_KEY))
-        return GdfIO::UNSUPPORTED_REFERNCE_INFORMATION_ERROR;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_REFERENCE_FILE_KEY));
+    if (!startsWith(buffer, GDF_IO_REFERENCE_FILE_KEY))
+        SEQAN_THROW(GdfIOException("Unsupported reference filename key!"));
 
     // Skip = sign
     skipNChars(reader, 1);
@@ -173,25 +178,24 @@ _readGdfHeaderRefInfo(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, Sing
 
     skipNChars(reader, 2);  // skip prefix.
     clear(buffer);
-    readNChars(buffer, reader, length(GdfIO::REFERENCE_HASH_KEY));
-    if (!startsWith(buffer, GdfIO::REFERENCE_HASH_KEY))
-        return GdfIO::UNSUPPORTED_REFERNCE_INFORMATION_ERROR;      // TODO(rmaerker): Either use error codes or use exceptions.
+    readNChars(buffer, reader, length(GDF_IO_REFERENCE_HASH_KEY));
+    if (!startsWith(buffer, GDF_IO_REFERENCE_HASH_KEY))
+        SEQAN_THROW(GdfIOException("Unsupported reference hash key!"));
 
     // Skip = sign
     skipNChars(reader, 1);
     clear(buffer);
     readLine(buffer, reader);  // Read value.
-    lexicalCast2(gdfHeader._refInfos._refHash, buffer);
-    return 0;
+    lexicalCast2(config.refHash, buffer);
 }
 
 // ----------------------------------------------------------------------------
 // Function _readSeqNames()
 // ----------------------------------------------------------------------------
 
-template <typename TConfig, typename TStream>
+template <typename TStream>
 inline int
-_readSeqNames(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, SinglePass<> >  & reader)
+_readSeqNames(GdfHeader & gdfHeader, RecordReader<TStream, SinglePass<> >  & reader)
 {
     CharString buffer;
     // Read the sequence names.
@@ -202,9 +206,9 @@ _readSeqNames(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, SinglePass<>
     while (true)
     {
         goNext(reader);
-        if (value(reader) == GdfIO::SEQ_NAMES_SEPARATOR[0])
+        if (value(reader) == GDF_IO_SEQ_NAMES_SEPARATOR[0])
         {
-            appendValue(*gdfHeader._nameStorePtr, buffer);
+            appendValue(gdfHeader.nameStore, buffer);
             clear(buffer);
             skipNChars(reader, 1);
         }
@@ -213,216 +217,50 @@ _readSeqNames(GdfHeader<TConfig> & gdfHeader, RecordReader<TStream, SinglePass<>
             skipNChars(reader, 1);
             break;
         }
-
         append(buffer, value(reader));
     }
     return GdfIO::PARSE_OK;
 }
 
 template <typename TConfig, typename TStream>
-inline int
-readHeader(GdfHeader<TConfig> & gdfHeader,
+inline void
+readHeader(GdfHeader & gdfHeader,
+           GdfFileConfiguration<TConfig> & config,
            RecordReader<TStream, SinglePass<> > & reader,
            Gdf const & /*tag*/)
 {
-    _readGdfHeaderFileInfo(gdfHeader, reader);
-    _readGdfHeaderRefInfo(gdfHeader, reader);
+    _readGdfHeaderFileInfo(gdfHeader, config, reader);
+    _readGdfHeaderRefInfo(gdfHeader, config, reader);
 
-    // Read variable header informations.
-//    while (value(reader) == '#')
-//    {
-//        skipNChars(reader, 2);
-//        GdfHeaderRecord record;
-//        clear(record._key);
-//        clear(record._value);
-//        readUntilChar(record._key, reader, '=');
-//        skipNChars(reader, 1);
-//        readLine(record._value, reader);
-//        appendValue(jseqHeader._headerRecords, record);
-//    }
-
-    return _readSeqNames(gdfHeader, reader);
+    _readSeqNames(gdfHeader, reader);
 }
 
 // ----------------------------------------------------------------------------
-// Function _readSnp()
+// Function _addDeltaWithoutCoverage()
 // ----------------------------------------------------------------------------
 
-// Writes SNP in separat value after delta pos.
-template <typename TAlphabet, typename TPosition, typename TReader, typename TConfig>
-inline unsigned
-_readSnp(TAlphabet & snp,
-         TPosition & deltaPos,
-         TReader & reader,
-         GdfHeader<TConfig> const & gdfHeader,
-         False /*isDnaCompressed*/)
+template <typename TRefPos, typename TValue, typename TSpec, typename TDeltaPos, typename TDeltaValue, typename TTag>
+inline void _addDeltaWithoutCoverage(DeltaMap<TRefPos, TValue, TSpec> & deltaMap,
+                                     TDeltaPos deltaPos,
+                                     TDeltaValue const & val,
+                                     TTag const & /*deltaType*/)
 {
-    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // The last bit should not be set.
+    typedef DeltaMap<TRefPos, TValue, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TDeltaStore;
+    typedef typename Size<TDeltaStore>::Type TStoreSize;
+    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
 
-    CharString buffer;
-    readNChars(buffer, reader, sizeof(__uint32));
-    // Read the offset for the encoded delta.
-    setBitTo(buffer[0], BitsPerValue<__uint8>::VALUE -1, false);  // Reset the MSB to extract delta.
-    if (SystemByteOrder::IS_LITTLE_ENDIAN())  // Reverse buffer if system is little endian.
-        reverse(buffer);
-    deltaPos += *reinterpret_cast<__uint32*>(&buffer[0]);  // Translate into integer.
-    clear(buffer);
-    readNChars(buffer, reader, sizeof(TAlphabet));
-    // Read the value for the snp.
-    if (gdfHeader._fileInfos._byteOrder != SystemByteOrder::IS_LITTLE_ENDIAN())  // Reverse buffer if byte order between source and target os doesn't match.
-        reverse(buffer);
-    snp = *reinterpret_cast<TAlphabet*>(&buffer[0]);
-    return sizeof(__uint32) + sizeof(TAlphabet);
+    TStoreSize storePos = addDeltaValue(deltaMap._deltaStore, val, TTag());
+    TEntry tmp;
+    tmp.deltaPosition = deltaPos;
+    tmp.deltaRecord = TDeltaRecord(selectDeltaType(TTag()), storePos);
+    appendValue(deltaMap._entries, tmp);
 }
 
 // ----------------------------------------------------------------------------
-// Function _readSnp()                                                    [Dna]
+// Function _readDeltaCoverage()
 // ----------------------------------------------------------------------------
-
-// Encodes SNP in delta position assuming, that 28 bits are sufficient to store the delta to the previous variant.
-template <typename TAlphabet, typename TPosition, typename TReader, typename TConfig>
-inline unsigned
-_readSnp(TAlphabet & snp,
-         TPosition & deltaPos,
-         TReader & reader,
-         GdfHeader<TConfig> const & /*gdfHeader*/,
-         True /*isDnaCompressed*/)
-{
-    CharString buffer;
-    readNChars(buffer, reader, sizeof(__uint32));
-    snp = static_cast<TAlphabet>((buffer[0] >> 5) & 3);  // Extract the SNP;
-    buffer[0] &= static_cast<__uint8>(~0) >> 3;  // Disable leading three bits.
-    if (SystemByteOrder::IS_LITTLE_ENDIAN())  // Reverse buffer to access correct position.
-        reverse(buffer);
-    deltaPos += *reinterpret_cast<__uint32*>(&buffer[0]);  // Translate into integer.
-    return sizeof(__uint32);
-}
-
-template <typename TValue, typename TAlphabet, typename TStream, typename TConfig, typename TBoolFlag>
-inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
-                           RecordReader<TStream, SinglePass<> > & reader,
-                           GdfHeader<TConfig> & gdfHeader,
-                           TBoolFlag isDnaCompressed)
-{
-    typedef DeltaMap<TValue, TAlphabet> TDeltaMap;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TSnp;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_DEL>::Type TDel;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_INS>::Type TIns;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_INDEL>::Type TIndel;
-
-    typedef typename GetDeltaCoverageStore_<TDeltaMap>::Type TDeltaCoverageStore;
-    typedef typename Iterator<TDeltaCoverageStore, Standard>::Type TCoverageStoreIter;
-
-    CharString buffer;
-    readNChars(buffer, reader, sizeof(__uint32));
-    if (gdfHeader._fileInfos._byteOrder != SystemByteOrder::IS_LITTLE_ENDIAN())
-        reverse(buffer);
-    __uint32 blockRef = *reinterpret_cast<__uint32*>(&buffer[0]);
-
-    clear(buffer);
-    readNChars(buffer, reader, sizeof(__uint32));
-    if (gdfHeader._fileInfos._byteOrder != SystemByteOrder::IS_LITTLE_ENDIAN())
-        reverse(buffer);
-    __uint32 blockSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-
-    __uint32 deltaRef = blockRef;
-    unsigned counter = 0;
-    for (; blockSize != 0; ++counter)
-    {
-        if (isBitSet(value(reader), BitsPerValue<char>::VALUE - 1))  // Dealing with a SNP.
-        {
-            TSnp snp;
-            blockSize -= _readSnp(snp, deltaRef, reader, gdfHeader, isDnaCompressed);  // Read alphabet dependent snp value.
-            _insert(deltaMap, deltaRef, length(deltaMap), snp);  // Record the snp.
-        }
-        else  // Is an insertion or deletion.
-        {
-            clear(buffer);
-            readNChars(buffer, reader, sizeof(__uint32));
-            if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                reverse(buffer);
-            deltaRef += *reinterpret_cast<__uint32*>(&buffer[0]);  // Translate into integer.
-            blockSize -= length(buffer);
-            clear(buffer);
-            if(isBitSet(value(reader), BitsPerValue<char>::VALUE - 1))  // Read deletion info.
-            {
-                readNChars(buffer, reader, sizeof(__uint32));
-                if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                    reverse(buffer);
-                __uint32 delSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-                setBitTo(delSize, BitsPerValue<__uint32>::VALUE - 1, false);
-                _insert(deltaMap, deltaRef, length(deltaMap), static_cast<TDel>(delSize));  // Record the deletion.
-                blockSize -= length(buffer);
-            }
-            else
-            {
-                bool isIndel = false;
-                readNChars(buffer, reader, sizeof(__uint32));
-                if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                    reverse(buffer);
-                __uint32 insSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-                blockSize -= length(buffer);
-                if (isBitSet(insSize, BitsPerValue<__uint32>::VALUE - 2))
-                {  // Handle indel.
-                    setBitTo(insSize, BitsPerValue<__uint32>::VALUE - 2, false);
-                    isIndel = true;
-                }
-                clear(buffer);
-                readNChars(buffer, reader, insSize);
-                TIns insSegment = buffer;  // TODO(rmaerker): Do we have to copy the data first?
-                blockSize -= length(buffer);
-                if (!isIndel)
-                    _insert(deltaMap, deltaRef, length(deltaMap), insSegment);
-                else
-                {
-                    clear(buffer);
-                    readNChars(buffer, reader, sizeof(__uint32));
-                    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                        reverse(buffer);
-                    __uint32 delSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-                    _insert(deltaMap, deltaRef, length(deltaMap), TIndel(delSize, insSegment));
-                    blockSize -= length(buffer);
-                }
-            }
-        }
-    }
-
-    unsigned oldLength = length(deltaMap._deltaCoverageStore);
-    resize(deltaMap._deltaCoverageStore, length(deltaMap._deltaCoverageStore) + counter, Exact());
-    TCoverageStoreIter it = begin(deltaMap._deltaCoverageStore, Standard()) + oldLength;
-    TCoverageStoreIter itEnd = end(deltaMap._deltaCoverageStore, Standard());
-
-    for (; it != itEnd; ++it)
-    {
-        resize(*it, coverageSize(deltaMap), Exact());
-        _readDeltaCoverage(*it, reader);
-    }
-}
-
-template <typename TDeltaStore, typename TDeltaCoverageStore, typename TStream, typename TConfig, typename TBoolFlag>
-inline void
-_readGdfData(DeltaMap<TDeltaStore, TDeltaCoverageStore> & varStore,
-             RecordReader<TStream, SinglePass<> > & reader,
-             GdfHeader<TConfig> & gdfHeader,
-             TBoolFlag isDnaCompressed)
-{
-
-//    unsigned lastRefPos = 0;
-    // We need to store the number of blocks in the
-    CharString buffer;
-    readNChars(buffer, reader, sizeof(__uint32));
-
-    // Reverse array if endianness doesn't match.
-    if (gdfHeader._fileInfos._byteOrder != SystemByteOrder::IS_LITTLE_ENDIAN())
-        reverse(buffer);
-    unsigned numOfBlocks = *reinterpret_cast<__uint32*>(&buffer[0]);
-
-    while (numOfBlocks != 0)
-    {
-        _readGdfBlock(varStore, reader, gdfHeader, isDnaCompressed);
-        --numOfBlocks;
-    }
-}
 
 template <typename TSpec, typename TStream>
 inline int
@@ -450,22 +288,234 @@ _readDeltaCoverage(String<bool, Packed<TSpec> > & bitVector,
     return 0;
 }
 
+// ----------------------------------------------------------------------------
+// Function _readSnp()
+// ----------------------------------------------------------------------------
+
+// Writes SNP in separat value after delta pos.
+template <typename TAlphabet, typename TPosition, typename TReader>
+inline unsigned
+_readSnp(TAlphabet & snp,
+         TPosition & deltaPos,
+         TReader & reader,
+         False /*isDnaCompressed*/)
+{
+    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // The last bit should not be set.
+
+    CharString buffer;
+    readNChars(buffer, reader, sizeof(__uint32));
+    // Read the offset for the encoded delta.
+    setBitTo(buffer[0], BitsPerValue<__uint8>::VALUE -1, false);  // Reset the MSB to extract delta.
+    TPosition tmpPos = *reinterpret_cast<__uint32*>(&buffer[0]);
+    endianSwap(tmpPos, BigEndian(), HostByteOrder());
+    deltaPos += tmpPos;
+    clear(buffer);
+    readNChars(buffer, reader, sizeof(TAlphabet));
+    // Read the value for the snp.
+//    if (gdfHeader._fileInfos._byteOrder != SystemByteOrder::IS_LITTLE_ENDIAN())  // Reverse buffer if byte order between source and target os doesn't match.
+//        reverse(buffer);
+    snp = *reinterpret_cast<TAlphabet*>(&buffer[0]);
+    return sizeof(__uint32) + sizeof(TAlphabet);
+}
+
+// ----------------------------------------------------------------------------
+// Function _readSnp()                                                    [Dna]
+// ----------------------------------------------------------------------------
+
+// Encodes SNP in delta position assuming, that 28 bits are sufficient to store the delta to the previous variant.
+template <typename TAlphabet, typename TPosition, typename TReader>
+inline unsigned
+_readSnp(TAlphabet & snp,
+         TPosition & deltaPos,
+         TReader & reader,
+         True /*isDnaCompressed*/)
+{
+    CharString buffer;
+    readNChars(buffer, reader, sizeof(__uint32));
+    snp = static_cast<TAlphabet>((buffer[0] >> 5) & 3);  // Extract the SNP;
+    buffer[0] &= static_cast<__uint8>(~0) >> 3;  // Disable leading three bits.
+    if (SystemByteOrder::IS_LITTLE_ENDIAN())  // Reverse buffer to access correct position.
+        reverse(buffer);
+    TPosition tmp = *reinterpret_cast<__uint32*>(&buffer[0]);
+    endianSwap(tmp, BigEndian(), HostByteOrder());
+    deltaPos += tmp;
+    return sizeof(__uint32);
+}
+
+template <typename TValue, typename TAlphabet, typename TStream, typename TConfig, typename TBoolFlag,
+          typename TByteOrder>
+inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
+                           RecordReader<TStream, SinglePass<> > & reader,
+                           TBoolFlag isDnaCompressed,
+                           TByteOrder byteOrder)
+{
+    typedef DeltaMap<TValue, TAlphabet> TDeltaMap;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnp;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeDel>::Type TDel;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeIns>::Type TIns;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSV>::Type TIndel;
+
+    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIter;
+
+//    typedef typename GetDeltaCoverageStore_<TDeltaMap>::Type TDeltaCoverageStore;
+//    typedef typename Iterator<TDeltaCoverageStore, Standard>::Type TCoverageStoreIter;
+
+    CharString buffer;
+    readNChars(buffer, reader, sizeof(__uint32));
+    __uint32 blockRef = *reinterpret_cast<__uint32*>(&buffer[0]);
+    endianSwap(blockRef, byteOrder, HostByteOrder());
+
+    clear(buffer);
+    readNChars(buffer, reader, sizeof(__uint32));
+    __uint32 blockSize = *reinterpret_cast<__uint32*>(&buffer[0]);
+    endianSwap(blockSize, byteOrder, HostByteOrder());
+
+    // TODO(rmaerker): Rewrite to first load the block.
+    __uint32 deltaRef = blockRef;
+    unsigned oldMapLength = length(deltaMap);
+//    unsigned counter = 0;
+    while (blockSize != 0)
+    {
+        if (isBitSet(value(reader), BitsPerValue<char>::VALUE - 1))  // Dealing with a SNP.
+        {
+            TSnp snp;
+            blockSize -= _readSnp(snp, deltaRef, reader, isDnaCompressed, byteOrder);  // Read alphabet dependent snp value.
+//            _insert(deltaMap, deltaRef, length(deltaMap), snp);  // Record the snp.
+            _addDeltaWithoutCoverage(deltaMap, deltaRef, snp, DeltaTypeSnp());
+        }
+        else  // Is an insertion or deletion.
+        {
+            clear(buffer);
+            readNChars(buffer, reader, sizeof(__uint32));
+//            if (SystemByteOrder::IS_LITTLE_ENDIAN())
+//                reverse(buffer);
+            __uint32 tmp = *reinterpret_cast<__uint32*>(&buffer[0]);
+            endianSwap(tmp, BigEndian(), HostByteOrder());
+            deltaRef += tmp;
+            blockSize -= length(buffer);
+            clear(buffer);
+            if(isBitSet(value(reader), BitsPerValue<char>::VALUE - 1))  // Read deletion info.
+            {
+                readNChars(buffer, reader, sizeof(__uint32));
+//                if (SystemByteOrder::IS_LITTLE_ENDIAN())
+//                    reverse(buffer);
+                __uint32 delSize = *reinterpret_cast<__uint32*>(&buffer[0]);
+                endianSwap(delSize, BigEndian(), HostByteOrder());
+                setBitTo(delSize, BitsPerValue<__uint32>::VALUE - 1, false);
+//                _insert(deltaMap, deltaRef, length(deltaMap), static_cast<TDel>(delSize));  // Record the deletion.
+                _addDeltaWithoutCoverage(deltaMap, deltaRef, static_cast<TDel>(delSize), DeltaTypeDel());
+                blockSize -= length(buffer);
+            }
+            else
+            {
+                bool isIndel = false;
+                readNChars(buffer, reader, sizeof(__uint32));
+//                if (SystemByteOrder::IS_LITTLE_ENDIAN())
+//                    reverse(buffer);
+                __uint32 insSize = *reinterpret_cast<__uint32*>(&buffer[0]);
+                endianSwap(insSize, BigEndian(), HostByteOrder());
+                blockSize -= length(buffer);
+                if (isBitSet(insSize, BitsPerValue<__uint32>::VALUE - 2))
+                {  // Handle indel.
+                    setBitTo(insSize, BitsPerValue<__uint32>::VALUE - 2, false);
+                    isIndel = true;
+                }
+                clear(buffer);
+                readNChars(buffer, reader, insSize);
+                TIns insSegment = buffer;  // TODO(rmaerker): Do we have to copy the data first?
+                blockSize -= length(buffer);
+                if (!isIndel)
+                {
+                    _addDeltaWithoutCoverage(deltaMap, deltaRef, insSegment, DeltaTypeIns());
+//                    _insert(deltaMap, deltaRef, length(deltaMap), insSegment);
+                }
+                else
+                {
+                    clear(buffer);
+                    readNChars(buffer, reader, sizeof(__uint32));
+//                    if (SystemByteOrder::IS_LITTLE_ENDIAN())
+//                        reverse(buffer);
+                    __uint32 delSize = *reinterpret_cast<__uint32*>(&buffer[0]);
+                    endianSwap(delSize, BigEndian(), HostByteOrder());
+                    _addDeltaWithoutCoverage(deltaMap, deltaRef, TIndel(delSize, insSegment), DeltaTypeSV());
+//                    _insert(deltaMap, deltaRef, length(deltaMap), TIndel(delSize, insSegment));
+                    blockSize -= length(buffer);
+                }
+            }
+        }
+    }
+
+    // Afterwards we read the coverages and store them as well.
+//    unsigned oldLength = length(deltaMap._deltaCoverageStore);
+//    resize(deltaMap._deltaCoverageStore, length(deltaMap._deltaCoverageStore) + counter, Exact());
+//    TCoverageStoreIter it = begin(deltaMap._deltaCoverageStore, Standard()) + oldLength;
+//    TCoverageStoreIter itEnd = end(deltaMap._deltaCoverageStore, Standard());
+
+    TMapIter it = begin(deltaMap, Standard()) + oldMapLength;
+    TMapIter itEnd = end(deltaMap, Standard());
+
+    for (; it != itEnd; ++it)
+    {
+        resize(deltaCoverage(it), getCoverageSize(deltaMap), Exact());
+        _readDeltaCoverage(deltaCoverage(it), reader);
+    }
+}
+
+template <typename TDeltaStore, typename TDeltaCoverageStore, typename TStream, typename TConfig, typename TBoolFlag,
+          typename TByteOrder>
+inline void
+_readGdfData(DeltaMap<TDeltaStore, TDeltaCoverageStore> & varStore,
+             RecordReader<TStream, SinglePass<> > & reader,
+             GdfHeader<TConfig> & gdfHeader,
+             TBoolFlag is2BitCompressed,
+             TByteOrder /*byteOrder*/)
+{
+
+//    unsigned lastRefPos = 0;
+    // We need to store the number of blocks in the
+    CharString buffer;
+    readNChars(buffer, reader, sizeof(__uint32));
+
+    __int32 numOfBlocks = *reinterpret_cast<__uint32*>(&buffer[0]);
+    endianSwap(numOfBlocks, TByteOrder(), HostByteOrder());
+
+    while (numOfBlocks != 0)
+    {
+        _readGdfBlock(varStore, reader, gdfHeader, is2BitCompressed);
+        --numOfBlocks;
+    }
+}
+
+template <typename TDeltaStore, typename TDeltaCoverageStore, typename TStream, typename TConfig, typename TBoolFlag>
+inline void
+_readGdfData(DeltaMap<TDeltaStore, TDeltaCoverageStore> & varStore,
+             RecordReader<TStream, SinglePass<> > & reader,
+             GdfHeader & gdfHeader,
+             GdfFileConfiguration<TConfig> const & config,
+             TBoolFlag is2BitCompressed)
+{
+    if (config.isLittleEndian)
+        _readGdfData(varStore, reader, gdfHeader, is2BitCompressed, LittleEndian());
+    else
+        _readGdfData(varStore, reader, gdfHeader, is2BitCompressed, BigEndian());
+}
+
 template <typename TValue, typename TAlphabet, typename TConfig, typename TStream>
-inline int
+inline void
 read(DeltaMap<TValue, TAlphabet> & deltaMap,
-     GdfHeader<TConfig> & gdfHeader,
+     GdfHeader & gdfHeader,
+     GdfFileConfiguration<TConfig> & config,
      TStream  & stream,
      Gdf const & /*tag*/)
 {
     RecordReader<TStream, SinglePass<> > reader(stream);
-    readHeader(gdfHeader, reader, Gdf());
-    setCoverageSize(deltaMap, length(*gdfHeader._nameStorePtr));
+    readHeader(gdfHeader, reader, config, Gdf());
+    setCoverageSize(deltaMap, length(gdfHeader.nameStore));
 
-    if (gdfHeader._fileInfos._snpCompression)
-        _readGdfData(deltaMap, reader, gdfHeader, True());
+    if (config.ompressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+        _readGdfData(deltaMap, reader, gdfHeader, config, True());
     else
-        _readGdfData(deltaMap, reader, gdfHeader, False());
-    return 0;
+        _readGdfData(deltaMap, reader, gdfHeader, config, False());
 }
 
 //template <typename TJournalSeq, typename TStream>

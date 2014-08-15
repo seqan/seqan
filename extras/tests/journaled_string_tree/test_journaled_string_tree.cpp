@@ -44,11 +44,14 @@
 
 SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 {
+//    typedef seqan::IsLittleEndian<seqan::ByteOrder::_Union::VALUE>::Type TCheck;
+
+    if (IsLittleEndian::VALUE)
+        std::cerr << "Is LittleEndian " << std::endl;
+    else
+        std::cerr << "Is BigEndian" << std::endl;
+
     // Tests for delta map.
-    SEQAN_CALL_TEST(test_delta_map_value_mf);
-    SEQAN_CALL_TEST(test_delta_map_reference_mf);
-    SEQAN_CALL_TEST(test_delta_map_delta_value_mf);
-    SEQAN_CALL_TEST(test_delta_map_delta_coverage_mf);
     SEQAN_CALL_TEST(test_delta_map_insert);
     SEQAN_CALL_TEST(test_delta_map_length);
     SEQAN_CALL_TEST(test_delta_map_empty);
@@ -60,10 +63,7 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_delta_map_iterator_value);
     SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
     SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_snp);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_ins);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_del);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_indel);
+    SEQAN_CALL_TEST(test_delta_map_iterator_delta_value);
     SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
 
     // Tests for journaled string tree
@@ -794,6 +794,5 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_3_journaled_string_tree_block_parallel);
     SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_4_journaled_string_tree_block_parallel);
     SEQAN_CALL_TEST(test_journaled_journaled_string_tree_traverse_config_9_5_5_journaled_string_tree_block_parallel);
-
 }
 SEQAN_END_TESTSUITE

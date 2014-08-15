@@ -100,5 +100,8 @@
 // Basic device metafunctions.
 #include <seqan/basic/basic_device.h>
 
+// Basic endianness metafunctions.
+#include <seqan/basic/basic_endianness.h>
+
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_

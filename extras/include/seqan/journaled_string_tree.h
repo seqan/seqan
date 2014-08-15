@@ -53,7 +53,7 @@
 // ===========================================================================
 
 #include <seqan/journaled_string_tree/delta_store.h>
-#include <seqan/journaled_string_tree/delta_coverage_store.h>
+#include <seqan/journaled_string_tree/delta_map_entry.h>
 #include <seqan/journaled_string_tree/delta_map.h>
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
 

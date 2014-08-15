@@ -317,18 +317,18 @@ _createJournalString(TSet & set,
             {
                 switch (deltaType(it - 1))
                 {
-                    case DeltaType::DELTA_TYPE_SNP:
-                        replace(set[i], *(it - 1), *(it - 1) + 1, deltaSnp(it - 1));
+                    case DELTA_TYPE_SNP:
+                        replace(set[i], deltaPosition(it - 1), deltaPosition(it - 1) + 1, deltaValue(it - 1, DeltaTypeSnp()));
                         break;
-                    case DeltaType::DELTA_TYPE_DEL:
-                        erase(set[i], *(it - 1), *(it - 1) + deltaDel(it - 1));
+                    case DELTA_TYPE_DEL:
+                        erase(set[i], deltaPosition(it - 1), deltaPosition(it - 1) + deltaValue(it - 1, DeltaTypeDel()));
                         break;
-                    case DeltaType::DELTA_TYPE_INS:
-                        insert(set[i], *(it - 1), deltaIns(it - 1));
+                    case DELTA_TYPE_INS:
+                        insert(set[i], deltaPosition(it - 1), deltaValue(it - 1, DeltaTypeIns()));
                         break;
-                    case DeltaType::DELTA_TYPE_INDEL:
-                        erase(set[i], *(it - 1), *(it - 1) + deltaIndel(it - 1).i1);
-                        insert(set[i], *(it - 1), deltaIndel(it - 1).i2);
+                    case DELTA_TYPE_SV:
+                        erase(set[i], deltaPosition(it - 1), deltaPosition(it - 1) + deltaValue(it - 1, DeltaTypeSV()).i1);
+                        insert(set[i], deltaPosition(it - 1), deltaValue(it - 1, DeltaTypeSV()).i2);
                         break;
                 }
             }
@@ -375,8 +375,8 @@ void _testJournaledStringTreeJournalNextBlock(TJst & jst)
         set[1] = "CACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 //                012345678901234567890123
         set[2] = "ACGTGGATCTATACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
-//                 01234567890123  47890123
-        set[3] = "CACGTGGATCTGTAAAATCGGCCGGACTTGACGGGAGTACGAGCATCGACT";
+//                 012345678901    47890123
+        set[3] = "CACGTGGATCTGTAAAATCGGACGGACTTGACGGGAGTACGAGCATCGACT";
 
         SEQAN_ASSERT_EQ(stringSet(jst)[0], set[0]);
         SEQAN_ASSERT_EQ(stringSet(jst)[1], set[1]);
@@ -403,7 +403,7 @@ void _testJournaledStringTreeJournalNextBlock(TJst & jst)
 
         SEQAN_ASSERT_EQ(createNext(jst, 5, Serial()), true);
 
-//                012345678901234567890123
+        //                012345678901234567890123
         set[0] = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 //                012345678901234567890    123
         set[1] = "ACGTGGATCTGTACTGACGGAACGTCGGACTTGACGGGAGTACGAGCATCGACT";
@@ -431,45 +431,45 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_journal_next_block)
     TDeltaMap deltaMap;
     _testDetlaMapfill(deltaMap);
     setCoverageSize(deltaMap, 4);
-    deltaMap._deltaCoverageStore[0][0] = true;
-    deltaMap._deltaCoverageStore[0][1] = true;
-    deltaMap._deltaCoverageStore[0][2] = false;
-    deltaMap._deltaCoverageStore[0][3] = true;
+    getDeltaCoverage(deltaMap._entries[0])[0] = true;
+    getDeltaCoverage(deltaMap._entries[0])[1] = true;
+    getDeltaCoverage(deltaMap._entries[0])[2] = false;
+    getDeltaCoverage(deltaMap._entries[0])[3] = true;
 
-    deltaMap._deltaCoverageStore[1][0] = false;
-    deltaMap._deltaCoverageStore[1][1] = false;
-    deltaMap._deltaCoverageStore[1][2] = true;
-    deltaMap._deltaCoverageStore[1][3] = false;
+    getDeltaCoverage(deltaMap._entries[1])[0] = false;
+    getDeltaCoverage(deltaMap._entries[1])[1] = false;
+    getDeltaCoverage(deltaMap._entries[1])[2] = true;
+    getDeltaCoverage(deltaMap._entries[1])[3] = false;
 
-    deltaMap._deltaCoverageStore[2][0] = true;
-    deltaMap._deltaCoverageStore[2][1] = false;
-    deltaMap._deltaCoverageStore[2][2] = false;
-    deltaMap._deltaCoverageStore[2][3] = true;
+    getDeltaCoverage(deltaMap._entries[2])[0] = true;
+    getDeltaCoverage(deltaMap._entries[2])[1] = false;
+    getDeltaCoverage(deltaMap._entries[2])[2] = false;
+    getDeltaCoverage(deltaMap._entries[2])[3] = true;
 
-    deltaMap._deltaCoverageStore[3][0] = false;
-    deltaMap._deltaCoverageStore[3][1] = true;
-    deltaMap._deltaCoverageStore[3][2] = true;
-    deltaMap._deltaCoverageStore[3][3] = true;
+    getDeltaCoverage(deltaMap._entries[3])[0] = false;
+    getDeltaCoverage(deltaMap._entries[3])[1] = true;
+    getDeltaCoverage(deltaMap._entries[3])[2] = true;
+    getDeltaCoverage(deltaMap._entries[3])[3] = true;
 
-    deltaMap._deltaCoverageStore[4][0] = true;
-    deltaMap._deltaCoverageStore[4][1] = false;
-    deltaMap._deltaCoverageStore[4][2] = false;
-    deltaMap._deltaCoverageStore[4][3] = false;
+    getDeltaCoverage(deltaMap._entries[4])[0] = true;
+    getDeltaCoverage(deltaMap._entries[4])[1] = false;
+    getDeltaCoverage(deltaMap._entries[4])[2] = false;
+    getDeltaCoverage(deltaMap._entries[4])[3] = false;
 
-    deltaMap._deltaCoverageStore[5][0] = false;
-    deltaMap._deltaCoverageStore[5][1] = false;
-    deltaMap._deltaCoverageStore[5][2] = true;
-    deltaMap._deltaCoverageStore[5][3] = false;
+    getDeltaCoverage(deltaMap._entries[5])[0] = false;
+    getDeltaCoverage(deltaMap._entries[5])[1] = false;
+    getDeltaCoverage(deltaMap._entries[5])[2] = true;
+    getDeltaCoverage(deltaMap._entries[5])[3] = false;
 
-    deltaMap._deltaCoverageStore[6][0] = false;
-    deltaMap._deltaCoverageStore[6][1] = true;
-    deltaMap._deltaCoverageStore[6][2] = false;
-    deltaMap._deltaCoverageStore[6][3] = true;
+    getDeltaCoverage(deltaMap._entries[6])[0] = false;
+    getDeltaCoverage(deltaMap._entries[6])[1] = true;
+    getDeltaCoverage(deltaMap._entries[6])[2] = false;
+    getDeltaCoverage(deltaMap._entries[6])[3] = true;
 
-    deltaMap._deltaCoverageStore[7][0] = false;
-    deltaMap._deltaCoverageStore[7][1] = true;
-    deltaMap._deltaCoverageStore[7][2] = false;
-    deltaMap._deltaCoverageStore[7][3] = true;
+    getDeltaCoverage(deltaMap._entries[7])[0] = false;
+    getDeltaCoverage(deltaMap._entries[7])[1] = true;
+    getDeltaCoverage(deltaMap._entries[7])[2] = false;
+    getDeltaCoverage(deltaMap._entries[7])[3] = true;
 
     TJst jst(hostSeq, deltaMap);
     _testJournaledStringTreeJournalNextBlock(jst);
@@ -519,45 +519,45 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
     init(jst, hostSeq, deltaMap);
 
     setCoverageSize(deltaMap, 4);
-    deltaMap._deltaCoverageStore[0][0] = true;
-    deltaMap._deltaCoverageStore[0][1] = true;
-    deltaMap._deltaCoverageStore[0][2] = false;
-    deltaMap._deltaCoverageStore[0][3] = true;
+    getDeltaCoverage(deltaMap._entries[0])[0] = true;
+    getDeltaCoverage(deltaMap._entries[0])[1] = true;
+    getDeltaCoverage(deltaMap._entries[0])[2] = false;
+    getDeltaCoverage(deltaMap._entries[0])[3] = true;
 
-    deltaMap._deltaCoverageStore[1][0] = false;
-    deltaMap._deltaCoverageStore[1][1] = false;
-    deltaMap._deltaCoverageStore[1][2] = true;
-    deltaMap._deltaCoverageStore[1][3] = false;
+    getDeltaCoverage(deltaMap._entries[1])[0] = false;
+    getDeltaCoverage(deltaMap._entries[1])[1] = false;
+    getDeltaCoverage(deltaMap._entries[1])[2] = true;
+    getDeltaCoverage(deltaMap._entries[1])[3] = false;
 
-    deltaMap._deltaCoverageStore[2][0] = true;
-    deltaMap._deltaCoverageStore[2][1] = false;
-    deltaMap._deltaCoverageStore[2][2] = false;
-    deltaMap._deltaCoverageStore[2][3] = true;
+    getDeltaCoverage(deltaMap._entries[2])[0] = true;
+    getDeltaCoverage(deltaMap._entries[2])[1] = false;
+    getDeltaCoverage(deltaMap._entries[2])[2] = false;
+    getDeltaCoverage(deltaMap._entries[2])[3] = true;
 
-    deltaMap._deltaCoverageStore[3][0] = false;
-    deltaMap._deltaCoverageStore[3][1] = true;
-    deltaMap._deltaCoverageStore[3][2] = true;
-    deltaMap._deltaCoverageStore[3][3] = true;
+    getDeltaCoverage(deltaMap._entries[3])[0] = false;
+    getDeltaCoverage(deltaMap._entries[3])[1] = true;
+    getDeltaCoverage(deltaMap._entries[3])[2] = true;
+    getDeltaCoverage(deltaMap._entries[3])[3] = true;
 
-    deltaMap._deltaCoverageStore[4][0] = true;
-    deltaMap._deltaCoverageStore[4][1] = false;
-    deltaMap._deltaCoverageStore[4][2] = false;
-    deltaMap._deltaCoverageStore[4][3] = false;
+    getDeltaCoverage(deltaMap._entries[4])[0] = true;
+    getDeltaCoverage(deltaMap._entries[4])[1] = false;
+    getDeltaCoverage(deltaMap._entries[4])[2] = false;
+    getDeltaCoverage(deltaMap._entries[4])[3] = false;
 
-    deltaMap._deltaCoverageStore[5][0] = false;
-    deltaMap._deltaCoverageStore[5][1] = false;
-    deltaMap._deltaCoverageStore[5][2] = true;
-    deltaMap._deltaCoverageStore[5][3] = false;
+    getDeltaCoverage(deltaMap._entries[5])[0] = false;
+    getDeltaCoverage(deltaMap._entries[5])[1] = false;
+    getDeltaCoverage(deltaMap._entries[5])[2] = true;
+    getDeltaCoverage(deltaMap._entries[5])[3] = false;
 
-    deltaMap._deltaCoverageStore[6][0] = false;
-    deltaMap._deltaCoverageStore[6][1] = true;
-    deltaMap._deltaCoverageStore[6][2] = false;
-    deltaMap._deltaCoverageStore[6][3] = true;
+    getDeltaCoverage(deltaMap._entries[6])[0] = false;
+    getDeltaCoverage(deltaMap._entries[6])[1] = true;
+    getDeltaCoverage(deltaMap._entries[6])[2] = false;
+    getDeltaCoverage(deltaMap._entries[6])[3] = true;
 
-    deltaMap._deltaCoverageStore[7][0] = false;
-    deltaMap._deltaCoverageStore[7][1] = true;
-    deltaMap._deltaCoverageStore[7][2] = false;
-    deltaMap._deltaCoverageStore[7][3] = true;
+    getDeltaCoverage(deltaMap._entries[7])[0] = false;
+    getDeltaCoverage(deltaMap._entries[7])[1] = true;
+    getDeltaCoverage(deltaMap._entries[7])[2] = false;
+    getDeltaCoverage(deltaMap._entries[7])[3] = true;
 
     setBlockSize(jst, 3);
     create(jst, 5, Serial());
@@ -627,45 +627,45 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
     TDeltaMap deltaMap;
     _testDetlaMapfill(deltaMap);
     setCoverageSize(deltaMap, 4);
-    deltaMap._deltaCoverageStore[0][0] = true;
-    deltaMap._deltaCoverageStore[0][1] = true;
-    deltaMap._deltaCoverageStore[0][2] = false;
-    deltaMap._deltaCoverageStore[0][3] = true;
+    getDeltaCoverage(deltaMap._entries[0])[0] = true;
+    getDeltaCoverage(deltaMap._entries[0])[1] = true;
+    getDeltaCoverage(deltaMap._entries[0])[2] = false;
+    getDeltaCoverage(deltaMap._entries[0])[3] = true;
 
-    deltaMap._deltaCoverageStore[1][0] = false;
-    deltaMap._deltaCoverageStore[1][1] = false;
-    deltaMap._deltaCoverageStore[1][2] = true;
-    deltaMap._deltaCoverageStore[1][3] = false;
+    getDeltaCoverage(deltaMap._entries[1])[0] = false;
+    getDeltaCoverage(deltaMap._entries[1])[1] = false;
+    getDeltaCoverage(deltaMap._entries[1])[2] = true;
+    getDeltaCoverage(deltaMap._entries[1])[3] = false;
 
-    deltaMap._deltaCoverageStore[2][0] = true;
-    deltaMap._deltaCoverageStore[2][1] = false;
-    deltaMap._deltaCoverageStore[2][2] = false;
-    deltaMap._deltaCoverageStore[2][3] = true;
+    getDeltaCoverage(deltaMap._entries[2])[0] = true;
+    getDeltaCoverage(deltaMap._entries[2])[1] = false;
+    getDeltaCoverage(deltaMap._entries[2])[2] = false;
+    getDeltaCoverage(deltaMap._entries[2])[3] = true;
 
-    deltaMap._deltaCoverageStore[3][0] = false;
-    deltaMap._deltaCoverageStore[3][1] = true;
-    deltaMap._deltaCoverageStore[3][2] = true;
-    deltaMap._deltaCoverageStore[3][3] = true;
+    getDeltaCoverage(deltaMap._entries[3])[0] = false;
+    getDeltaCoverage(deltaMap._entries[3])[1] = true;
+    getDeltaCoverage(deltaMap._entries[3])[2] = true;
+    getDeltaCoverage(deltaMap._entries[3])[3] = true;
 
-    deltaMap._deltaCoverageStore[4][0] = true;
-    deltaMap._deltaCoverageStore[4][1] = false;
-    deltaMap._deltaCoverageStore[4][2] = false;
-    deltaMap._deltaCoverageStore[4][3] = false;
+    getDeltaCoverage(deltaMap._entries[4])[0] = true;
+    getDeltaCoverage(deltaMap._entries[4])[1] = false;
+    getDeltaCoverage(deltaMap._entries[4])[2] = false;
+    getDeltaCoverage(deltaMap._entries[4])[3] = false;
 
-    deltaMap._deltaCoverageStore[5][0] = false;
-    deltaMap._deltaCoverageStore[5][1] = false;
-    deltaMap._deltaCoverageStore[5][2] = true;
-    deltaMap._deltaCoverageStore[5][3] = false;
+    getDeltaCoverage(deltaMap._entries[5])[0] = false;
+    getDeltaCoverage(deltaMap._entries[5])[1] = false;
+    getDeltaCoverage(deltaMap._entries[5])[2] = true;
+    getDeltaCoverage(deltaMap._entries[5])[3] = false;
 
-    deltaMap._deltaCoverageStore[6][0] = false;
-    deltaMap._deltaCoverageStore[6][1] = true;
-    deltaMap._deltaCoverageStore[6][2] = false;
-    deltaMap._deltaCoverageStore[6][3] = true;
+    getDeltaCoverage(deltaMap._entries[6])[0] = false;
+    getDeltaCoverage(deltaMap._entries[6])[1] = true;
+    getDeltaCoverage(deltaMap._entries[6])[2] = false;
+    getDeltaCoverage(deltaMap._entries[6])[3] = true;
 
-    deltaMap._deltaCoverageStore[7][0] = false;
-    deltaMap._deltaCoverageStore[7][1] = true;
-    deltaMap._deltaCoverageStore[7][2] = false;
-    deltaMap._deltaCoverageStore[7][3] = true;
+    getDeltaCoverage(deltaMap._entries[7])[0] = false;
+    getDeltaCoverage(deltaMap._entries[7])[1] = true;
+    getDeltaCoverage(deltaMap._entries[7])[2] = false;
+    getDeltaCoverage(deltaMap._entries[7])[3] = true;
 
     TJst jst(hostSeq, deltaMap);
 

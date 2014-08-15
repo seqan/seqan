@@ -52,24 +52,24 @@ namespace seqan
 template <typename TSize, typename TAlphabet>
 struct CompareType_
 {
-    typedef typename DeltaType::TValue TDeltaType;
+//    typedef typename TValue TDeltaType;
 
-    TDeltaType _deltaType;
+    DeltaType _deltaType;
     TSize      _del;
     String<TAlphabet> _ins;
 
-    CompareType_(TDeltaType const & deltaType, TSize const & del) : _deltaType(deltaType), _del(del)
+    CompareType_(DeltaType const & deltaType, TSize const & del) : _deltaType(deltaType), _del(del)
     {}
 
-    CompareType_(TDeltaType const & deltaType, String<TAlphabet> const & ins) : _deltaType(deltaType), _del(0), _ins(ins)
+    CompareType_(DeltaType const & deltaType, String<TAlphabet> const & ins) : _deltaType(deltaType), _del(0), _ins(ins)
     {}
 
-    CompareType_(TDeltaType const & deltaType, TAlphabet const & snp) : _deltaType(deltaType), _del(0)
+    CompareType_(DeltaType const & deltaType, TAlphabet const & snp) : _deltaType(deltaType), _del(0)
     {
         appendValue(_ins, snp);
     }
 
-    CompareType_(TDeltaType const & deltaType, TSize const & del, String<TAlphabet> const & ins) : _deltaType(deltaType), _del(del), _ins(ins)
+    CompareType_(DeltaType const & deltaType, TSize const & del, String<TAlphabet> const & ins) : _deltaType(deltaType), _del(del), _ins(ins)
     {}
 
     // operator=
@@ -102,6 +102,54 @@ struct MapKeyCompareLessFunctor_
     }
 };
 
+template <typename TJst, typename TIterator>
+struct JournalDeltaContext_
+{
+
+    TJst &          jst;
+    TIterator       deltaIterator;
+    TIterator       deltaIteratorBegin;
+    unsigned        bitVecBegin;
+    unsigned        bitVecEnd;
+
+    JournalDeltaContext_(TJst & _jst,
+                         TIterator & _iter,
+                         unsigned _begin,
+                         unsigned _end) :
+        jst(_jst),
+        deltaIterator(_iter),
+        deltaIteratorBegin(),
+        bitVecBegin(_begin),
+        bitVecEnd(_end)
+    {
+        deltaIteratorBegin = begin(container(jst), Standard());
+    }
+
+    template <typename TTag>
+    inline bool operator()(TTag const & tag)
+    {
+        typedef typename Container<TIterator>::Type TContainer;
+        typedef typename DeltaCoverage<TContainer>::Type TBitVector;
+        typedef typename Iterator<TBitVector, Standard>::Type TBitVecIter;
+
+        if (isDeltaType(deltaType(deltaIterator), tag))
+        {
+            TBitVecIter itVecBegin = begin(deltaCoverage(deltaIterator), Standard());
+            TBitVecIter itVec = itVecBegin + bitVecBegin;
+            TBitVecIter itVecEnd = begin(deltaCoverage(deltaIterator), Standard()) + bitVecEnd;
+            for (;itVec != itVecEnd; ++itVec)
+            {
+                SEQAN_ASSERT_NOT(empty(host(value(stringSet(jst), itVec - itVecBegin))));
+
+                if (getValue(itVec))
+                    journalDelta(jst._journalSet[itVec - itVecBegin], deltaPosition(deltaIterator), deltaValue(deltaIterator, tag), tag);
+            }
+            return true;
+        }
+        return false;
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -116,9 +164,10 @@ struct MapKeyCompareLessFunctor_
 
 template <typename TTarget, typename TPos, typename TSnp>
 inline void
-_journalSnp(TTarget & target,
-           TPos refPos,
-           TSnp const & snp)
+journalDelta(TTarget & target,
+             TPos refPos,
+             TSnp const & snp,
+             DeltaTypeSnp const & /*tag*/)
 {
     typedef typename JournalType<TTarget>::Type TJournalEntries;
     typedef typename Iterator<TJournalEntries, Standard>::Type TEntriesIterator;
@@ -171,9 +220,10 @@ _journalSnp(TTarget & target,
 
 template <typename TTarget, typename TPos, typename TSize>
 inline void
-_journalDel(TTarget & target,
-           TPos refPos,
-           TSize const & delLength)
+journalDelta(TTarget & target,
+             TPos refPos,
+             TSize const & delLength,
+             DeltaTypeDel const & /*tag*/)
 {
     typedef typename JournalType<TTarget>::Type TJournalEntries;
     typedef typename Iterator<TJournalEntries, Standard>::Type TEntryIterator;
@@ -227,9 +277,10 @@ _journalDel(TTarget & target,
 
 template <typename TTarget, typename TPos, typename TInsertion>
 inline void
-_journalIns(TTarget & target,
-           TPos refPos,
-           TInsertion const & insSeq)
+journalDelta(TTarget & target,
+             TPos refPos,
+             TInsertion const & insSeq,
+             DeltaTypeIns const & /*tag*/)
 {
     typedef typename JournalType<TTarget>::Type TJournalEntries;
     typedef typename Iterator<TJournalEntries, Standard>::Type TEntryIterator;
@@ -279,11 +330,12 @@ _journalIns(TTarget & target,
 // Function _journalIns()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TPos, typename TIndel>
+template <typename TTarget, typename TPos, typename TSV>
 inline void
-_journalIndel(TTarget & target,
-              TPos refPos,
-              TIndel const & indel)
+journalDelta(TTarget & target,
+             TPos refPos,
+             TSV const & sv,
+             DeltaTypeSV const & /*tag*/)
 {
     typedef typename JournalType<TTarget>::Type TJournalEntries;
     typedef typename Iterator<TJournalEntries, Standard>::Type TEntryIterator;
@@ -294,15 +346,15 @@ _journalIndel(TTarget & target,
     SEQAN_ASSERT_GEQ(refPos, entryIt->physicalOriginPosition);
     SEQAN_ASSERT_GT(entryIt->physicalOriginPosition + entryIt->length, refPos);
 
-    target._length -= indel.i1;
+    target._length -= sv.i1;
     TEntryPos virtPos = entryIt->virtualPosition + (refPos - entryIt->physicalOriginPosition);
-    _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + indel.i1);
+    _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + sv.i1);
 
     entryIt = end(target._journalEntries, Standard()) - 1;
-    target._length += length(indel.i2);
+    target._length += length(sv.i2);
     TEntryPos physPos = length(target._insertionBuffer);
-    append(target._insertionBuffer, indel.i2);
-    _doRecordInsertion(target._journalEntries, entryIt, virtPos, physPos, length(indel.i2));
+    append(target._insertionBuffer, sv.i2);
+    _doRecordInsertion(target._journalEntries, entryIt, virtPos, physPos, length(sv.i2));
 }
 
 // ----------------------------------------------------------------------------
@@ -409,7 +461,7 @@ adaptTo(StringSet<TJournalSequence, Owner<JournaledSet> > & journalSet,
     typedef typename Size<TJournalSet>::Type TSize;
 
     // Ensure the size of the journal set is sufficient.
-    resize(journalSet, coverageSize(variantMap), Exact());
+    resize(journalSet, getCoverageSize(variantMap), Exact());
 
     // Temporary string keeping track of the last journaled operation.
     String<TSize> _lastVisitedNodes;
@@ -452,14 +504,14 @@ adaptTo(StringSet<TJournalSequence, Owner<JournaledSet> > & journalSet,
 //                _lastVisitedNodes[itVec - itVecBegin] = itMap - itMapBegin;
                 switch(deltaType(itMap))
                 {
-                    case DeltaType::DELTA_TYPE_SNP:
-                        _journalSnp(journalSet[itVec - itVecBegin], *itMap, deltaSnp(itMap));
+                    case DELTA_TYPE_SNP:
+                        _journalSnp(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeSnp()));
                         break;
-                    case DeltaType::DELTA_TYPE_DEL:
-                        _journalDel(journalSet[itVec - itVecBegin], *itMap, deltaDel(itMap));
+                    case DELTA_TYPE_DEL:
+                        _journalDel(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeDel()));
                         break;
-                    case DeltaType::DELTA_TYPE_INS:
-                        _journalIns(journalSet[itVec - itVecBegin], *itMap, deltaIns(itMap));
+                    case DELTA_TYPE_INS:
+                        _journalIns(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeIns()));
                         break;
                         // TODO(rmaerker): Add Case for INDEL
                 }
@@ -494,13 +546,13 @@ adaptTo(StringSet<TJournalSequence, Owner<JournaledSet> > & journalSet,
 //
 //                switch(deltaType(varKey))
 //                {
-//                    case DeltaType::DELTA_TYPE_SNP:
+//                    case DELTA_TYPE_SNP:
 //                        _journalSnp(journalSet[itVec - itVecBegin], *itMap, deltaSnp(variantMap, deltaPosition(varKey)));
 //                        break;
-//                    case DeltaType::DELTA_TYPE_DEL:
+//                    case DELTA_TYPE_DEL:
 //                        _journalDel(journalSet[itVec - itVecBegin], *itMap, deltaDel(variantMap, deltaPosition(varKey)));
 //                        break;
-//                    case DeltaType::DELTA_TYPE_INS:
+//                    case DELTA_TYPE_INS:
 //                        _journalIns(journalSet[itVec - itVecBegin], *itMap, deltaIns(variantMap, deltaPosition(varKey)));
 //                        break;
 //                        // TODO(rmaerker): Add Case for INDEL
@@ -520,8 +572,8 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
 
     typedef typename GetDeltaCoverageStore_<TDeltaMap>::Type TDeltaCoverageStore;
     typedef typename Value<TDeltaCoverageStore>::Type TBitString;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_SNP>::Type TDeltaAlphabet;
-    typedef typename DeltaValue<TDeltaMap, DeltaType::DELTA_TYPE_DEL>::Type TDeltaDel;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TDeltaAlphabet;
+    typedef typename DeltaValue<TDeltaMap, DeltaTypeDel>::Type TDeltaDel;
 
     typedef StringSet<TJournalSequence, Owner<JournaledSet> > const TJournalSet;
     typedef typename Position<TJournalSet>::Type TSetPosition;
@@ -562,7 +614,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                 TInsertionBuff insBuff;
                 for (unsigned j = 0; j < length(tmpInsertionEntries); ++j)
                     append(insBuff, _getInsertion(tmpInsertionEntries[j], journalSeq));
-                TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DeltaType::DELTA_TYPE_INS, insBuff)), tmpValue);
+                TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DELTA_TYPE_INS, insBuff)), tmpValue);
                 TMapInsertResult res = _map.insert(_mapInsValue);
                 if (!res.second)
                     appendValue(res.first->second, seqId);
@@ -580,7 +632,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                     register unsigned k = 0;
                     for (; (k < tmpInsIt->length) && (delSize > 0); ++k, --delSize, ++currPhysBeginPos)
                     {
-                        TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DeltaType::DELTA_TYPE_SNP, journalSeq._insertionBuffer[tmpInsIt->physicalPosition + k])), tmpValue);
+                        TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DELTA_TYPE_SNP, journalSeq._insertionBuffer[tmpInsIt->physicalPosition + k])), tmpValue);
                         TMapInsertResult res = _map.insert(_mapInsValue);
                         if (!res.second)
                             appendValue(res.first->second, seqId);
@@ -589,7 +641,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                     if (k < tmpInsIt->length)  // Deletion was smaller than current insertion, so we need to add the remaining insertion characters.
                     {
                         TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos,
-                                     TCompareType(DeltaType::DELTA_TYPE_INS,
+                                     TCompareType(DELTA_TYPE_INS,
                                                   infix(journalSeq._insertionBuffer,
                                                         tmpInsIt->physicalPosition + k,
                                                         tmpInsIt->physicalPosition + tmpInsIt->length))), tmpValue);
@@ -601,7 +653,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                 }
                 if (delSize > 0)  // Case 1: Add the trailing deletion.
                 {
-                    TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DeltaType::DELTA_TYPE_DEL, delSize)), tmpValue);
+                    TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DELTA_TYPE_DEL, delSize)), tmpValue);
                     TMapInsertResult res = _map.insert(_mapInsValue);
                     if (!res.second)
                         appendValue(res.first->second, seqId);
@@ -611,7 +663,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                     TInsertionBuff insBuff;
                     for (unsigned k = 0; k < length(tmpInsertionEntries); ++k)
                         append(insBuff, _getInsertion(tmpInsertionEntries[k], journalSeq));
-                    TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos,TCompareType(DeltaType::DELTA_TYPE_INS, insBuff)), tmpValue);
+                    TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos,TCompareType(DELTA_TYPE_INS, insBuff)), tmpValue);
                     TMapInsertResult res = _map.insert(_mapInsValue);
                     if (!res.second)  // The element already exists.
                         appendValue(res.first->second, seqId);  // Appends seq id to existing insertion.
@@ -622,7 +674,7 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
                 TInsertionBuff insBuff;
                 for (unsigned j = 0; j < length(tmpInsertionEntries); ++j)
                     append(insBuff, _getInsertion(tmpInsertionEntries[j], journalSeq));
-                TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos,TCompareType(DeltaType::DELTA_TYPE_INS, insBuff)), tmpValue);
+                TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos,TCompareType(DELTA_TYPE_INS, insBuff)), tmpValue);
                 TMapInsertResult res = _map.insert(_mapInsValue);
                 if (!res.second)
                     appendValue(res.first->second, seqId);
@@ -644,19 +696,19 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
     {
         // Transform coverage.
         TBitString cov;
-        resize(cov, coverageSize(deltaMap), false, Exact());
+        resize(cov, getCoverageSize(deltaMap), false, Exact());
         for (unsigned i = 0; i < length(mapIt->second); ++i)
             cov[mapIt->second[i]] = true;
 
         switch(mapIt->first.i2._deltaType)
         {
-            case DeltaType::DELTA_TYPE_SNP:
+            case DELTA_TYPE_SNP:
                 insert(deltaMap, mapIt->first.i1, mapIt->first.i2._ins[0], cov);
                 break;
-            case DeltaType::DELTA_TYPE_DEL:
+            case DELTA_TYPE_DEL:
                 insert(deltaMap, mapIt->first.i1, mapIt->first.i2._del, cov);
                 break;
-            case DeltaType::DELTA_TYPE_INS:
+            case DELTA_TYPE_INS:
                 insert(deltaMap, mapIt->first.i1, mapIt->first.i2._ins, cov);
                 break;
             // TODO(rmaerker): Add Case for INDEL

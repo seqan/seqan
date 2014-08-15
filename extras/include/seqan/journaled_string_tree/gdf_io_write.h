@@ -58,74 +58,90 @@ static const char DIFF_FILE_SEPARATOR = '\t';
 // Functions
 // ============================================================================
 
-template <typename TStream, typename TConfig>
-inline int
-_writeGdfHeaderFileInfo(TStream & stream, GdfHeader<TConfig> const & jseqHeader)
-{
-    // Write the file version information.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::FILE_VERSION_KEY), length(GdfIO::FILE_VERSION_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    streamWriteBlock(stream, toCString(GdfIO::FILE_VERSION_VALUE_PREFIX), length(GdfIO::FILE_VERSION_VALUE_PREFIX));
-    std::stringstream versionNumber;
-    versionNumber << GdfIO::FILE_VERSION_BIG << GdfIO::FILE_VERSION_VALUE_SEPARATOR << GdfIO::FILE_VERSION_LITTLE;
-    streamWriteBlock(stream, versionNumber.str().c_str(), versionNumber.str().size());
-    streamWriteChar(stream, '\n');
-    // Write the endianess.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::FILE_ENDIANNESS_KEY), length(GdfIO::FILE_ENDIANNESS_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-        streamWriteBlock(stream, toCString(GdfIO::FILE_ENDIANNESS_LITTLE), length(GdfIO::FILE_ENDIANNESS_LITTLE));
-    else
-        streamWriteBlock(stream, toCString(GdfIO::FILE_ENDIANNESS_BIG), length(GdfIO::FILE_ENDIANNESS_BIG));
-    streamWriteChar(stream, '\n');
-    // Write the block information.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::FILE_BLOCKSIZE_KEY), length(GdfIO::FILE_BLOCKSIZE_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    std::stringstream blockSize;
-    blockSize << jseqHeader._fileInfos._blockSize;
-    streamWriteBlock(stream, blockSize.str().c_str(), blockSize.str().size());
-    streamWriteChar(stream, '\n');
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::FILE_SNP_COMPRESSION_KEY), length(GdfIO::FILE_SNP_COMPRESSION_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    if (jseqHeader._fileInfos._snpCompression)
-        streamWriteBlock(stream, toCString(GdfIO::FILE_SNP_COMPRESSION_2BIT), length(GdfIO::FILE_SNP_COMPRESSION_2BIT));
-    else
-        streamWriteBlock(stream, toCString(GdfIO::FILE_SNP_COMPRESSION_GENERIC), length(GdfIO::FILE_SNP_COMPRESSION_GENERIC));
-    streamWriteChar(stream, '\n');
+#define GDF_IO_WRITE_KEY_VALUE(stream,key,...) stream << GDF_IO_HEADER_PREFIX << key << GDF_IO_KEY_VALUE_SEPARATOR << (__VA_ARGS__) << '\n'
 
-    return 0;
+template <typename TStream, typename TValue>
+inline void
+_writeGdfHeaderFileInfo(TStream & stream, GdfHeader const & jseqHeader, GdfFileConfiguration<TValue> const & config)
+{
+//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//    streamWriteBlock(stream, toCString(GDF_IO_FILE_VERSION_KEY), length(GDF_IO_FILE_VERSION_KEY));
+//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//    streamWriteBlock(stream, toCString(GDF_IO_FILE_VERSION_VALUE_PREFIX), length(GDF_IO_FILE_VERSION_VALUE_PREFIX));
+//    std::stringstream versionNumber;
+//    versionNumber << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR << GDF_IO_FILE_VERSION_LITTLE;
+//    streamWriteBlock(stream, versionNumber.str().c_str(), versionNumber.str().size());
+//    streamWriteChar(stream, '\n');
+
+    // Write the file version information.
+    GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_VERSION_KEY,
+                           GDF_IO_FILE_VERSION_VALUE_PREFIX << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR << GDF_IO_FILE_VERSION_LITTLE);
+
+    // Write system's endianness.
+    if (IsLittleEndian::VALUE)
+        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_ENDIANNESS_KEY, GDF_IO_FILE_ENDIANNESS_LITTLE);
+    else
+        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_ENDIANNESS_KEY, GDF_IO_FILE_ENDIANNESS_BIG);
+//    stream << GDF_IO_HEADER_PREFIX << GDF_IO_FILE_VERSION_KEY << GDF_IO_KEY_VALUE_SEPARATOR <<
+//              GDF_IO_FILE_VERSION_VALUE_PREFIX << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR <<
+//              GDF_IO_FILE_VERSION_LITTLE << '\n';
+    // Write the endianess.  -> We always write in Network Byte Order (BgEndian)
+//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//    streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_KEY), length(GDF_IO_FILE_ENDIANNESS_KEY));
+//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//    if (SystemByteOrder::IS_LITTLE_ENDIAN())
+//        streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_LITTLE), length(GDF_IO_FILE_ENDIANNESS_LITTLE));
+//    else
+//        streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_BIG), length(GDF_IO_FILE_ENDIANNESS_BIG));
+//    streamWriteChar(stream, '\n');
+
+    // Write the block information.
+//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//    streamWriteBlock(stream, toCString(GDF_IO_FILE_BLOCKSIZE_KEY), length(GDF_IO_FILE_BLOCKSIZE_KEY));
+//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//    std::stringstream blockSize;
+//    blockSize << jseqHeader._fileInfos._blockSize;
+//    streamWriteBlock(stream, blockSize.str().c_str(), blockSize.str().size());
+//    streamWriteChar(stream, '\n');
+
+    // Write Compression mode.
+
+//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//    streamWriteBlock(stream, toCString(GDF_IO_FILE_SNP_COMPRESSION_KEY), length(GDF_IO_FILE_SNP_COMPRESSION_KEY));
+//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+    if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_2BIT);
+    else
+        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_GERNERIC);
 }
 
 template <typename TStream, typename TConfig>
-inline int
-_writeGdfHeaderReferenceInfo(TStream & stream, GdfHeader<TConfig> const & jseqHeader)
+inline void
+_writeGdfHeaderReferenceInfo(TStream & stream, GdfHeader const & jseqHeader, TConfig const & config)
 {
     // Write the reference id.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::REFERENCE_ID_KEY), length(GdfIO::REFERENCE_ID_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    streamWriteBlock(stream, toCString(jseqHeader._refInfos._refId), length(jseqHeader._refInfos._refId));
-    streamWriteChar(stream, '\n');
+      GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_REFERENCE_ID_KEY, jseqHeader.referenceId);
+//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//    streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_ID_KEY), length(GDF_IO_REFERENCE_ID_KEY));
+//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//    streamWriteBlock(stream, toCString(jseqHeader._refInfos._refId), length(jseqHeader._refInfos._refId));
+//    streamWriteChar(stream, '\n');
     // Write the reference file.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::REFERENCE_FILE_KEY), length(GdfIO::REFERENCE_FILE_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    streamWriteBlock(stream, toCString(jseqHeader._refInfos._refFile), length(jseqHeader._refInfos._refFile));
-    streamWriteChar(stream, '\n');
-    // Write the reference hash.
-    streamWriteBlock(stream, toCString(GdfIO::HEADER_PREFIX), length(GdfIO::HEADER_PREFIX));
-    streamWriteBlock(stream, toCString(GdfIO::REFERENCE_HASH_KEY), length(GdfIO::REFERENCE_HASH_KEY));
-    streamWriteBlock(stream, toCString(GdfIO::KEY_VALUE_SEPARATOR), length(GdfIO::KEY_VALUE_SEPARATOR));
-    std::stringstream referenceHash;
-    referenceHash << jseqHeader._refInfos._refHash;
-    streamWriteBlock(stream, referenceHash.str().c_str(), referenceHash.str().size());
-    streamWriteChar(stream, '\n');
-
-    return 0;
+      GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_REFERENCE_FILE_KEY, jseqHeader.referenceFilename);
+//      streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//      streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_FILE_KEY), length(GDF_IO_REFERENCE_FILE_KEY));
+//      streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//      streamWriteBlock(stream, toCString(jseqHeader._refInfos._refFile), length(jseqHeader._refInfos._refFile));
+//      streamWriteChar(stream, '\n');
+      // Write the reference hash.
+      GDF_IO_WRITE_KEY_VALUE(stram, GDF_IO_REFERENCE_HASH_KEY, config.refHash);
+//      streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
+//      streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_HASH_KEY), length(GDF_IO_REFERENCE_HASH_KEY));
+//      streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
+//      std::stringstream referenceHash;
+//      referenceHash << jseqHeader._refInfos._refHash;
+//      streamWriteBlock(stream, referenceHash.str().c_str(), referenceHash.str().size());
+//      streamWriteChar(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------
@@ -150,22 +166,20 @@ _writeBitVector(TStream & stream, String<bool, Packed<TSpec> > const & bitVec)
 }
 
 template <typename TStream, typename TConfig>
-inline int _writeGdfHeader(TStream & stream, GdfHeader<TConfig> const & header)
+inline void _writeGdfHeader(TStream & stream, GdfHeader const & header, TConfig const & config)
 {
     // Write the file information.
-    _writeGdfHeaderFileInfo(stream, header);
+    _writeGdfHeaderFileInfo(stream, header, config);
     // Write reference information.
-    _writeGdfHeaderReferenceInfo(stream, header);
+    _writeGdfHeaderReferenceInfo(stream, header, config);
 
     // Write additional data.
-    streamWriteBlock(stream, toCString(GdfIO::SEQ_NAMES_PREFIX), length(GdfIO::SEQ_NAMES_PREFIX));
-    for (unsigned i = 0; i < length(*header._nameStorePtr); ++i)
-    {
-        streamWriteBlock(stream, toCString((*header._nameStorePtr)[i]), length((*header._nameStorePtr)[i]));
-        streamWriteBlock(stream, toCString(GdfIO::SEQ_NAMES_SEPARATOR), length(GdfIO::SEQ_NAMES_SEPARATOR));
-    }
-    streamWriteChar(stream, '\n');
-    return 0;
+    stream << GDF_IO_SEQ_NAMES_PREFIX;
+    for (unsigned i = 0; i < length(header.nameStore); ++i)
+        stream << header.nameStore)[i] << GDF_IO_SEQ_NAMES_SEPARATOR;
+//        streamWriteBlock(stream, toCString((header.nameStore)[i]), length((header._nameStorePtr)[i]));
+//        streamWriteBlock(stream, toCString(GDF_IO_SEQ_NAMES_SEPARATOR), length(GDF_IO_SEQ_NAMES_SEPARATOR));
+    stream << '\n';
 }
 
 // ----------------------------------------------------------------------------
@@ -181,12 +195,10 @@ _writeSnp(TTarget & blockBuffer, TPosition deltaPos, TAlphabet snp)
 
     setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);  // Set bit to indicate SNP
     register __uint32 offset = sizeof(__uint32) + sizeof(TAlphabet);
-    char* refBuffer = reinterpret_cast<char*>(&deltaPos);
     resize(blockBuffer, length(blockBuffer) + offset);
-    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-        arrayMoveForwardReverse(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
-    else
-        arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
+    endianSwap(deltaPos, HostByteOrder(), BigEndian());  // swaps endianness if HostByteOrder is little endian.
+    char* refBuffer = reinterpret_cast<char*>(&deltaPos);
+    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
     char* snpBuffer = reinterpret_cast<char*>(&snp);
     arrayMoveForward(snpBuffer, snpBuffer + sizeof(TAlphabet), end(blockBuffer, Standard()) - sizeof(TAlphabet));
 }
@@ -207,11 +219,9 @@ _writeSnp(TTarget & blockBuffer, TPosition deltaPos, Dna snp)
     setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);
     deltaPos |= static_cast<__uint32>(snp) << ((sizeof(__uint32) << 3) - 3);
     resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
+    endianSwap(deltaPos, HostByteOrder(), BigEndian());
     char* refBuffer = reinterpret_cast<char*>(&deltaPos);
-    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-        arrayMoveForwardReverse(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
-    else
-        arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
+    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
 }
 
 // ----------------------------------------------------------------------------
@@ -228,111 +238,87 @@ inline int _writeDataBlock(TStream & stream,
 
     CharString blockBuffer;
     typename Iterator<CharString>::Type blockBuffIt;
-    __uint32 lastRefPos = *it;
+    __uint32 lastRefPos = deltaPosition(it);
     // Write the reference offset of the current block.
-    streamWriteBlock(stream, reinterpret_cast<char*>(&lastRefPos), sizeof(lastRefPos));
-
+    writeBinary(stream, lastRefPos);
     TDeltaMapIter itDelta = it;
-
     while(itDelta != itEnd)
     {
         // Store the reference position.
-        __uint32 deltaPos = *itDelta - lastRefPos;
+        __uint32 deltaPos = deltaPosition(itDelta) - lastRefPos;
 
         // Write SNP Data.
-//        TMappedDelta deltaInfo = mappedDelta(deltaMap, itDelta - itBegin);
-        if (deltaType(itDelta) == DeltaType::DELTA_TYPE_SNP)
+        if (deltaType(itDelta) == DELTA_TYPE_SNP)
         {
-//            resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
-//            blockBuffIt = end(blockBuffer) - sizeof(__uint32);
-            _writeSnp(blockBuffer, deltaPos, deltaSnp(itDelta));
-//            setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);
-//            deltaPos |= static_cast<__uint32>(deltaSnp(deltaMap, deltaPosition(deltaInfo))) << (sizeof(__uint32) * 8 - 3);
-//            char* refBuffer = reinterpret_cast<char*>(&deltaPos);
-//
-//            if (SystemByteOrder::IS_LITTLE_ENDIAN())
-//                arrayMoveForwardReverse(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
-//            else
-//                arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
+            _writeSnp(blockBuffer, deltaPos, deltaValue(itDelta, DeltaTypeSnp()));
         }
         else  // Write Indel
         {
-            char * refBuffer = reinterpret_cast<char *>(&deltaPos);
             resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
             blockBuffIt = end(blockBuffer) - sizeof(__uint32);
-            if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                arrayMoveForwardReverse(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
-            else
-                arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
+            endianSwap(deltaPos, HostByteOrder(), BigEndian());
+            char * refBuffer = reinterpret_cast<char *>(&deltaPos);
+            arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
 
-            if (deltaType(itDelta) == DeltaType::DELTA_TYPE_DEL)  // Write deletion.
+            if (deltaType(itDelta) == DELTA_TYPE_DEL)  // Write deletion.
             {
-                __uint32 del = static_cast<__uint32>(deltaDel(itDelta));
+                __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeDel()));
                 setBit(del, BitsPerValue<__uint32>::VALUE - 1);
-                const char * delBuffer = reinterpret_cast<const char *>(&del);
                 resize(blockBuffer, length(blockBuffer) + sizeof(del));
                 blockBuffIt = end(blockBuffer) - sizeof(del);
-                if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                    arrayMoveForwardReverse(delBuffer, delBuffer + sizeof(del), blockBuffIt);
-                else
-                    arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
+                endianSwap(del, HostByteOrder(), BigEndian());
+                const char * delBuffer = reinterpret_cast<const char *>(&del);
+                arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
             }
             else
             {
-                typedef typename DeltaValue<TDeltaMap const, DeltaType::DELTA_TYPE_INS>::Type TIns;
+                typedef typename DeltaValue<TDeltaMap const, DeltaTypeIns>::Type TIns;
 
                 // Handle Indel.
-                if (deltaType(itDelta) == DeltaType::DELTA_TYPE_INDEL)
+                if (deltaType(itDelta) == DELTA_TYPE_SV)
                 {
-                    TIns ins = deltaIndel(itDelta).i2;
+                    TIns ins = deltaValue(itDelta, DeltaTypeSV()).i2;
                     __uint32 insLength = length(ins);
                     setBit(insLength, BitsPerValue<__uint32>::VALUE - 2);
-                    __uint32 del = static_cast<__uint32>(deltaIndel(itDelta).i1);
-                    const char * delBuffer = reinterpret_cast<const char *>(&del);
-                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
                     resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + sizeof(del) + length(ins));
                     blockBuffIt = end(blockBuffer) - sizeof(insLength) - sizeof(del) - length(ins);
                     // Write size of insertion.
-                    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                        arrayMoveForwardReverse(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-                    else
-                        arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
+                    endianSwap(insLength, HostByteOrder(), BigEndian());
+                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
+                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
                     // Write inserted characters.
                     blockBuffIt = end(blockBuffer) - length(ins) - sizeof(del);
                     arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
                     // Write size of deletion
+                    __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeSV()).i1);
+                    endianSwap(del, HostByteOrder(), BigEndian());
+                    const char * delBuffer = reinterpret_cast<const char *>(&del);
                     blockBuffIt = end(blockBuffer) - sizeof(del);
-                    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                        arrayMoveForwardReverse(delBuffer, delBuffer + sizeof(del), blockBuffIt);
-                    else
-                        arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
+                    arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
                 }
                 else  // Handle Insertion.
                 {
-                    SEQAN_ASSERT(deltaType(itDelta) == DeltaType::DELTA_TYPE_INS);
-                    TIns ins = deltaIns(itDelta);
+                    SEQAN_ASSERT(deltaType(itDelta) == DELTA_TYPE_INS);
+                    TIns ins = deltaValue(itDelta, DeltaTypeIns());
                     __uint32 insLength = length(ins);
                     SEQAN_ASSERT_NOT(isBitSet(insLength, BitsPerValue<__uint32>::VALUE - 2));
-
+                    endianSwap(insLength, HostByteOrder(), BigEndian());
                     const char * insBuffer = reinterpret_cast<const char *>(&insLength);
                     resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + length(ins));
                     blockBuffIt = end(blockBuffer) - sizeof(insLength) - length(ins);
-                    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-                        arrayMoveForwardReverse(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-                    else
-                        arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
+                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
                     blockBuffIt = end(blockBuffer) - length(ins);
                     arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
                 }
             }
         }
-        lastRefPos = *itDelta;
+        lastRefPos = deltaPosition(itDelta);
         ++itDelta;
     }
 
     // Write the block Data.
     unsigned blockLength = length(blockBuffer);
-    streamWriteBlock(stream, reinterpret_cast<char*>(&blockLength), sizeof(blockLength));
+    writeBinary(stream, blockLength);
     streamWriteBlock(stream, &blockBuffer[0], blockLength);
 
     // Write the coverage of the block
@@ -343,21 +329,22 @@ inline int _writeDataBlock(TStream & stream,
 }
 
 // Write the io context.
-template <typename TStream, typename TDeltaStore, typename TDeltaCoverageStore, typename TSize>
+template <typename TStream, typename TDeltaStore, typename TDeltaCoverageStore, typename TValue>
 inline int _writeGdfData(TStream & stream,
                           DeltaMap<TDeltaStore, TDeltaCoverageStore> const & deltaMap,
-                          TSize const & blockSize)
+                          GdfFileConfiguration<TValue> const & /*config*/)
 {
     typedef DeltaMap<TDeltaStore, TDeltaCoverageStore> TDeltaMap;
+    typedef typename Size<TDeltaMap>::Type TSize;
     typedef typename Iterator<TDeltaMap const, Standard>::Type TIterator;
+    typedef GdfFileConfiguration<TValue> TConfig;
 
-    unsigned maxNumOfNodes = length(deltaMap);
-    unsigned numOfBlocks = std::ceil(static_cast<double>(maxNumOfNodes)/static_cast<double>(blockSize));
+    TSize maxNumOfNodes = length(deltaMap);
+    TSize numOfBlocks = (maxNumOfNodes + TConfig::BLOCK_SIZE - 1) / TConfig::BLOCK_SIZE;
 
     // Write the block containing the number of blocks to read.
-    streamWriteBlock(stream, reinterpret_cast<char*>(&numOfBlocks), sizeof(numOfBlocks));
-
-    for (unsigned i = 0; i < numOfBlocks; ++i)  // For each block:
+    writeBinary(stream, numOfBlocks);
+    for (TSize i = 0; i < numOfBlocks; ++i)  // For each block:
     {
         TIterator it = begin(deltaMap, Standard()) + (blockSize * i);
         TIterator itEnd = _min(end(deltaMap, Standard()), it + blockSize);
@@ -367,16 +354,15 @@ inline int _writeGdfData(TStream & stream,
 }
 
 template <typename TStream, typename TValue, typename TAlphabet, typename TConfig>
-inline int
+inline void
 write(TStream & stream,
       DeltaMap<TValue, TAlphabet> const & deltaMap,
-      GdfHeader<TConfig> const & gdfHeader,
+      GdfHeader const & gdfHeader,
+      TConfig const & config,
       Gdf const & /*tag*/)
 {
-    int res = _writeGdfHeader(stream, gdfHeader);
-    if (res != 0)
-        return res;
-    return _writeGdfData(stream, deltaMap, gdfHeader._fileInfos._blockSize);
+    _writeGdfHeader(stream, gdfHeader, config);
+    _writeGdfData(stream, deltaMap, config);
 }
 
 ///*!

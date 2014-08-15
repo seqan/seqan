@@ -49,6 +49,23 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Struct GdfFileBlockSize_
+// ----------------------------------------------------------------------------
+
+// Number of variants before the block ends.
+// Which also means we write the coverage into the blocks.
+
+template <typename T>
+struct GdfFileBlockSize_
+{
+    enum
+    {
+        VALUE = 1000000
+    };
+};
+
+
+// ----------------------------------------------------------------------------
 // Class GdfRefInfo
 // ----------------------------------------------------------------------------
 
@@ -57,9 +74,8 @@ struct GdfRefInfo
     unsigned    _refHash;
     CharString  _refId;
     CharString  _refFile;
-    bool        _storeRef;
 
-    GdfRefInfo() : _refHash(0), _storeRef(false)
+    GdfRefInfo() : _refHash(0)
     {}
 };
 
@@ -76,27 +92,56 @@ struct GdfFileInfo
     bool        _byteOrder; // true = little endian; false = big endian.
     bool        _snpCompression;  // true if 2 bit alphabet used.
 
-    GdfFileInfo() : _minorFileId(GdfIO::FILE_VERSION_LITTLE),
-                    _majorFileId(GdfIO::FILE_VERSION_BIG),
+    GdfFileInfo() : _minorFileId(GDF_IO_FILE_VERSION_LITTLE),
+                    _majorFileId(GDF_IO_FILE_VERSION_BIG),
                     _blockSize(GdfFileBlockSize_<TConfig>::VALUE),
                     _byteOrder(SystemByteOrder::IS_LITTLE_ENDIAN()),
                     _snpCompression(false)
     {}
 };
 
+template <unsigned BitsPerValue>
+struct GdfCompressionMode
+{
+    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
+};
+
+template <>
+struct GdfCompressionMode<2>
+{
+    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
+};
+
+template <typename TSnpValue>
+struct GdfFileConfiguration
+{
+    static const unsigned BLOCK_SIZE = 500000;
+
+    bool isLittleEndian;
+    unsigned int refHash;
+    GdfIO::CompressionMode compressionMode;
+
+    GdfFileConfiguration() : isLittleEndian(true), refHash(0)
+    {
+        compressionMode = GdfCompressionMode<BitsPerValue<TSnpValue>::VALUE>::VALUE;
+    }
+
+};
+
 // ----------------------------------------------------------------------------
 // Class GdfHeader
 // ----------------------------------------------------------------------------
 
-template <typename TConfig = void>
 class GdfHeader
 {
 public:
-    String<CharString>*   _nameStorePtr;  // The names of the individuals.
-    GdfFileInfo<TConfig>  _fileInfos;
-    GdfRefInfo            _refInfos;
 
-    GdfHeader() : _nameStorePtr(0), _fileInfos(), _refInfos()
+    GdfIO::ReferenceMode   referenceMode;
+    CharString             referenceFilename;
+    CharString             referenceId;
+    String<CharString>     nameStore;  // The names of the individuals.
+
+    GdfHeader() : referenceMode(GdfIO::REFERENCE_MODE_WRITE_ENABLED)
     {}
 };
 
@@ -107,6 +152,7 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_IO_HEADER_H_
