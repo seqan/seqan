@@ -442,6 +442,51 @@ writeHeader(TStream & /**/,
 // Function writeMatch()
 // ----------------------------------------------------------------------------
 
+template <typename TPos>
+inline void
+_adaptPositions(TPos & effectiveStart,
+                TPos & /**/,
+                signed char const /**/,
+                False const & /*hasReverseComplement*/,
+                False const & /*hasFrames*/)
+{
+    // BLAST is 1-indexed, but end positions are "on" instead of behind
+    // so only the begin positions need adapting
+    ++effectiveStart;
+}
+
+template <typename TPos>
+inline void
+_adaptPositions(TPos & effectiveStart,
+                TPos & effectiveEnd,
+                signed char const frameShift,
+                True const & /*hasReverseComplement*/,
+                False const & /*hasFrames*/)
+{
+    // BLAST is 1-indexed, but end positions are "on" instead of behind
+    // so only the begin positions need adapting
+    ++effectiveStart;
+    // reverse strand symoblized by swapped begin and end
+    if (frameShift < 0)
+        std::swap(effectiveStart, effectiveEnd);
+}
+
+template <typename TPos>
+inline void
+_adaptPositions(TPos & effectiveStart,
+                TPos & effectiveEnd,
+                signed char const frameShift,
+                True const & /*hasReverseComplement*/,
+                True const & /*hasFrames*/)
+{
+    // correct for codon translation and frameshift
+    // subtract 1 because frameshift is 1-indexed
+    effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
+    effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
+
+    _adaptPositions(effectiveStart, effectiveEnd, frameShift, True(), False());
+}
+
 /*!
  * @fn BlastMatch#writeMatch
  * @headerfile seqan/blast.h
@@ -455,7 +500,9 @@ writeHeader(TStream & /**/,
  * here</a>. Please note that BLAST is 1-indexed and considers the last position
  * to be the back, not the end, i.e. last one included in a match/sequence/...,
  * not the one behind it (as SeqAn does); this functions corrects for both
- * these bahaviours, so you don't have to.
+ * these bahaviours, so you don't have to. Additionally, based on your
+ * @link BlastFormat @endlink, positions are transformed back to DNA space, if
+ * translation has taken place.
  * Please note also that query and subject IDs are truncated at the first space
  * character in NCBI BLAST, this is also done by default here.
  *
@@ -488,9 +535,9 @@ template <typename TStream, typename TField, typename... TFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream,
-            BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        g> const & /*tag*/,
+           BlastFormat<BlastFormatFile::TABULAR,
+                       p,
+                       g> const & /*tag*/,
             TField const & field1,
             TFields const & ... fields)
 {
@@ -510,9 +557,9 @@ template <typename TStream, typename TField, typename... TFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       g> const & /*tag*/,
             TField const & field1,
             TFields const & ... fields)
 {
@@ -524,9 +571,28 @@ template <typename TStream, typename TBlastMatch,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream, TBlastMatch const & match,
-            BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+           BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+    typedef decltype(match.qStart) TPos;
+    typedef typename AndC<p==BlastFormatProgram::BLASTN, true>::Type IsBlastN;
+    typedef typename AndC<p==BlastFormatProgram::BLASTX, true>::Type IsBlastX;
+    typedef typename AndC<p==BlastFormatProgram::TBLASTX, true>::Type IsTBlastX;
+    typedef typename AndC<p==BlastFormatProgram::TBLASTN, true>::Type IsTBlastN;
+
+    TPos effectiveQStart    = match.qStart;
+    TPos effectiveQEnd      = match.qEnd;
+    TPos effectiveSStart    = match.sStart;
+    TPos effectiveSEnd      = match.sEnd;
+
+    _adaptPositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
+                    typename Or<typename
+                    Or<IsBlastN, IsBlastX>::Type, IsTBlastX>::Type(),
+                    typename Or<IsBlastX, IsTBlastX>::Type());
+    _adaptPositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
+                    typename Or<IsTBlastX, IsTBlastN>::Type(),
+                    typename Or<IsTBlastX, IsTBlastN>::Type());
+
     return writeMatch(stream,
                       TFormat(),
                       prefix(match.qId, _firstOcc(match.qId, ' ')),
@@ -535,10 +601,10 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       match.aliLength,
                       match.mismatches,
                       match.gapOpenings,
-                      match.qStart + 1u,
-                      match.qEnd,
-                      match.sStart + 1u,
-                      match.sEnd,
+                      effectiveQStart,
+                      effectiveQEnd,
+                      effectiveSStart,
+                      effectiveSEnd,
                       match.eValue,
                       match.bitScore);
 }
@@ -547,23 +613,10 @@ template <typename TStream, typename TBlastMatch,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream, TBlastMatch const & match,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /*tag*/)
+            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &/**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    return writeMatch(stream,
-                      TFormat(),
-                      prefix(match.qId, _firstOcc(match.qId, ' ')),
-                      prefix(match.sId, _firstOcc(match.sId, ' ')),
-                      double(match.identities) * 100 / match.aliLength,
-                      match.aliLength,
-                      match.mismatches,
-                      match.gapOpenings,
-                      match.qStart + 1,
-                      match.qEnd,
-                      match.sStart + 1,
-                      match.sEnd,
-                      match.eValue,
-                      match.bitScore);
+    return writeMatch(stream, match, TFormat());
 }
 
 // ----------------------------------------------------------------------------
