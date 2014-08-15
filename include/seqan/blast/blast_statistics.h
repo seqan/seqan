@@ -40,8 +40,8 @@
 
 /** Karlin-Altschul parameter values taken from blast_stat.c */
 
-#ifndef __BLAST_STATISTICSgetH__
-#define __BLAST_STATISTICSgetH__
+#ifndef __BLAST_STATISTICS_H__
+#define __BLAST_STATISTICS_H__
 
 #ifndef NCBI_INT2_MAX
 #define NCBI_INT2_MAX    32767
@@ -996,4 +996,4 @@ calcBitScoreAndEValue(TBlastMatch                       & match,
 
 }
 
-#endif // ndef __BLAST_STATISTICSgetH__
+#endif // ndef __BLAST_STATISTICS_H__

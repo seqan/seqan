@@ -97,7 +97,7 @@ template <typename TStream, typename TField, typename... TFields, typename TTag>
 inline int
 _writeFields(TStream & stream,
              TTag const & /*tag*/,
-             TField const & field1, const TFields&... fields)
+             TField const & field1, TFields const & ... fields)
 {
     int ret = streamPut(stream, _seperatorString(TTag()));
     if (ret)
@@ -323,7 +323,8 @@ writeHeader(TStream & stream,
 template <typename TStream,
           typename TString1,
           typename TString2,
-          BlastFormatProgram p>
+          BlastFormatProgram p,
+          typename std::enable_if<IsSequence<TString1>::VALUE>::type = 0>
 inline int
 writeHeader(TStream & stream,
             TString1 const & qryId,
@@ -530,7 +531,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       TFormat(),
                       prefix(match.qId, _firstOcc(match.qId, ' ')),
                       prefix(match.sId, _firstOcc(match.sId, ' ')),
-                      double(match.identities) *100 / match.aliLength,
+                      double(match.identities) * 100 / match.aliLength,
                       match.aliLength,
                       match.mismatches,
                       match.gapOpenings,
@@ -553,7 +554,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       TFormat(),
                       prefix(match.qId, _firstOcc(match.qId, ' ')),
                       prefix(match.sId, _firstOcc(match.sId, ' ')),
-                      double(match.identities) *100 / match.aliLength,
+                      double(match.identities) * 100 / match.aliLength,
                       match.aliLength,
                       match.mismatches,
                       match.gapOpenings,
