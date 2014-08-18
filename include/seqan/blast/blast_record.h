@@ -278,7 +278,7 @@ struct BlastRecord
         qId(TQId()), qLength(0), matches()
     {}
 
-    BlastRecord( TQId const &_qId) :
+    BlastRecord(TQId const &_qId) :
         qId(_qId), qLength(0), matches()
     {}
 
