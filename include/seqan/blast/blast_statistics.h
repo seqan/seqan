@@ -145,8 +145,10 @@ struct BlastScoringAdapter<Blosum45, TSpec>
 
     /* members */
     Blosum45 scheme;
-    size_t index = 0; // member signifying the paramSet belonging to scheme
+    size_t index = std::numeric_limits<size_t>::max();
+    // member signifying the paramSet belonging to scheme
 
+    BlastScoringAdapter() {};
     BlastScoringAdapter(Blosum45 const & _scheme)
     {
         assignScoreScheme(*this, _scheme);
@@ -190,8 +192,10 @@ struct BlastScoringAdapter<Blosum62, TSpec>
 
     /* members */
     Blosum62 scheme;
-    size_t index = 0; // member signifying the paramSet belonging to scheme
+    size_t index = std::numeric_limits<size_t>::max();
+    // member signifying the paramSet belonging to scheme
 
+    BlastScoringAdapter() {};
     BlastScoringAdapter(Blosum62 const & _scheme)
     {
         assignScoreScheme<Blosum62>(*this, _scheme);
@@ -230,8 +234,10 @@ struct BlastScoringAdapter<Blosum80, TSpec>
 
     /* members */
     Blosum80 scheme;
-    size_t index = 0; // member signifying the paramSet belonging to scheme
+    size_t index = std::numeric_limits<size_t>::max();
+    // member signifying the paramSet belonging to scheme
 
+    BlastScoringAdapter() {};
     BlastScoringAdapter(Blosum80 const & _scheme)
     {
         assignScoreScheme(*this, _scheme);
@@ -294,8 +300,10 @@ struct BlastScoringAdapter<Pam250, TSpec>
 
     /* members */
     Pam250 scheme;
-    size_t index = 0; // member signifying the paramSet belonging to scheme
+    size_t index = std::numeric_limits<size_t>::max();
+    // member signifying the paramSet belonging to scheme
 
+    BlastScoringAdapter() {};
     BlastScoringAdapter(Pam250 const & _scheme)
     {
         assignScoreScheme(*this, _scheme);
@@ -409,8 +417,9 @@ struct BlastScoringAdapter<Score<int, Simple>, TSpec>
 
     /* members */
     Score<int, Simple> scheme;
-    size_t index = 0; // member signifying the paramSet belonging to scheme
-
+    size_t index = std::numeric_limits<size_t>::max();
+    // member signifying the paramSet belonging to scheme
+    BlastScoringAdapter() {};
     BlastScoringAdapter(Score<int, Simple> const & _scheme)
     {
         assignScoreScheme(*this, _scheme);
@@ -471,7 +480,7 @@ _selectSet(BlastScoringAdapter<
         }
     }
     // no suitable adapter
-    adapter.index =  std::numeric_limits<typename TAdapter::size_t>::max();
+    adapter.index = std::numeric_limits<typename TAdapter::size_t>::max();
     return false;
 }
 
