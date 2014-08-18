@@ -117,7 +117,7 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
         while (!atEnd(*readerPtr[i]))
         {
             readRecord(record, *readerPtr[i]);
-            write(writer, record);
+//            write(writer, record);
         }
         close(*readerPtr[i]);
         delete readerPtr[i];
