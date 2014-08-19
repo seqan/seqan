@@ -437,55 +437,9 @@ writeHeader(TStream & /**/,
     return 0;
 }
 
-
 // ----------------------------------------------------------------------------
 // Function writeMatch()
 // ----------------------------------------------------------------------------
-
-template <typename TPos>
-inline void
-_adaptPositions(TPos & effectiveStart,
-                TPos & /**/,
-                signed char const /**/,
-                False const & /*hasReverseComplement*/,
-                False const & /*hasFrames*/)
-{
-    // BLAST is 1-indexed, but end positions are "on" instead of behind
-    // so only the begin positions need adapting
-    ++effectiveStart;
-}
-
-template <typename TPos>
-inline void
-_adaptPositions(TPos & effectiveStart,
-                TPos & effectiveEnd,
-                signed char const frameShift,
-                True const & /*hasReverseComplement*/,
-                False const & /*hasFrames*/)
-{
-    // BLAST is 1-indexed, but end positions are "on" instead of behind
-    // so only the begin positions need adapting
-    ++effectiveStart;
-    // reverse strand symoblized by swapped begin and end
-    if (frameShift < 0)
-        std::swap(effectiveStart, effectiveEnd);
-}
-
-template <typename TPos>
-inline void
-_adaptPositions(TPos & effectiveStart,
-                TPos & effectiveEnd,
-                signed char const frameShift,
-                True const & /*hasReverseComplement*/,
-                True const & /*hasFrames*/)
-{
-    // correct for codon translation and frameshift
-    // subtract 1 because frameshift is 1-indexed
-    effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
-    effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
-
-    _adaptPositions(effectiveStart, effectiveEnd, frameShift, True(), False());
-}
 
 /*!
  * @fn BlastMatch#writeMatch
@@ -575,23 +529,25 @@ writeMatch(TStream & stream, TBlastMatch const & match,
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
     typedef decltype(match.qStart) TPos;
-    typedef typename AndC<p==BlastFormatProgram::BLASTN, true>::Type IsBlastN;
-    typedef typename AndC<p==BlastFormatProgram::BLASTX, true>::Type IsBlastX;
-    typedef typename AndC<p==BlastFormatProgram::TBLASTX, true>::Type IsTBlastX;
-    typedef typename AndC<p==BlastFormatProgram::TBLASTN, true>::Type IsTBlastN;
+
+    typedef typename NotC<OrC<p==BlastFormatProgram::BLASTP,
+                              p==BlastFormatProgram::TBLASTN>::VALUE
+                              >::Type QHasRC;
+    typedef typename OrC<p==BlastFormatProgram::BLASTX,
+                         p==BlastFormatProgram::TBLASTX>::Type QHasFrames;
+    typedef typename OrC<p==BlastFormatProgram::TBLASTX,
+                         p==BlastFormatProgram::TBLASTN>::Type SHasRC;
+    typedef SHasRC SHasFrames;
 
     TPos effectiveQStart    = match.qStart;
     TPos effectiveQEnd      = match.qEnd;
     TPos effectiveSStart    = match.sStart;
     TPos effectiveSEnd      = match.sEnd;
 
-    _adaptPositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
-                    typename Or<typename
-                    Or<IsBlastN, IsBlastX>::Type, IsTBlastX>::Type(),
-                    typename Or<IsBlastX, IsTBlastX>::Type());
-    _adaptPositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
-                    typename Or<IsTBlastX, IsTBlastN>::Type(),
-                    typename Or<IsTBlastX, IsTBlastN>::Type());
+    _untranslatePositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
+                          QHasRC(), QHasFrames());
+    _untranslatePositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
+                          SHasRC(), SHasFrames());
 
     return writeMatch(stream,
                       TFormat(),

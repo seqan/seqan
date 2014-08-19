@@ -106,8 +106,10 @@ _statsBlock(char                      * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Strand=", // no spaces here for whatever reason
             m.bitScore, unsigned(m.score), m.eValue,
-            m.identities, m.aliLength, m.identities * 100 / m.aliLength,
-            m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength);
+                        m.identities, m.aliLength,
+            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            m.gaps,       m.aliLength,
+            int(std::ceil(double(m.gaps       * 100 / m.aliLength))));
     if (m.qFrameShift == 1)
         strcat(buffer, "Plus/");
     else
@@ -133,9 +135,12 @@ _statsBlock(char                      * buffer,
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
-            m.identities, m.aliLength, m.identities * 100 / m.aliLength,
-            m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
-            m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength);
+            m.identities, m.aliLength,
+            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            m.positives,  m.aliLength,
+            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            m.gaps,       m.aliLength,
+            int(std::ceil(double(m.gaps       * 100 / m.aliLength))));
 }
 
 template <typename TMatch,
@@ -153,9 +158,12 @@ _statsBlock(char                     * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
-            m.identities, m.aliLength, m.identities * 100 / m.aliLength,
-            m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
-            m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
+            m.identities, m.aliLength,
+            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            m.positives,  m.aliLength,
+            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            m.gaps,       m.aliLength,
+            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
             m.qFrameShift);
 }
 
@@ -174,9 +182,12 @@ _statsBlock(char                    * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
-            m.identities, m.aliLength, m.identities * 100 / m.aliLength,
-            m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
-            m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
+            m.identities, m.aliLength,
+            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            m.positives,  m.aliLength,
+            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            m.gaps,       m.aliLength,
+            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
             m.sFrameShift);
 }
 
@@ -195,9 +206,12 @@ _statsBlock(char                    * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d/%+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
-            m.identities, m.aliLength, m.identities * 100 / m.aliLength,
-            m.positives,  m.aliLength, m.positives  * 100 / m.aliLength,
-            m.gaps,       m.aliLength, m.gaps       * 100 / m.aliLength,
+            m.identities, m.aliLength,
+            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            m.positives,  m.aliLength,
+            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            m.gaps,       m.aliLength,
+            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
             m.qFrameShift, m.sFrameShift);
             //TODO verify that the order is actually qFS/sFS and
             // not the other way around
@@ -267,6 +281,15 @@ _writeAlignmentBlock(TStream                 & stream,
     typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
     typedef decltype(m.qStart) TPos;
 
+    typedef typename NotC<OrC<p==BlastFormatProgram::BLASTP,
+                              p==BlastFormatProgram::TBLASTN>::VALUE
+                              >::Type QHasRC;
+    typedef typename OrC<p==BlastFormatProgram::BLASTX,
+                         p==BlastFormatProgram::TBLASTX>::Type QHasFrames;
+    typedef typename OrC<p==BlastFormatProgram::TBLASTX,
+                         p==BlastFormatProgram::TBLASTN>::Type SHasRC;
+    typedef SHasRC SHasFrames;
+
     int             ret         = 0;
     TPos    const   windowSize  = 60;
 
@@ -275,6 +298,19 @@ _writeAlignmentBlock(TStream                 & stream,
     TPos            aPos        = 0; // position in alignment
     TPos            qPos        = 0; // position in query (without gaps)
     TPos            sPos        = 0; // position in subject (without gaps)
+
+    TPos            effQStart   = m.qStart;
+    TPos            effQEnd     = m.qEnd;
+    TPos            effSStart   = m.sStart;
+    TPos            effSEnd     = m.sEnd;
+
+    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, QHasRC(), 
+                          QHasFrames());
+    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, SHasRC(), 
+                          SHasFrames());
+
+    int8_t const     qStep = _step(m.qFrameShift, QHasRC(), QHasFrames());
+    int8_t const     sStep = _step(m.sFrameShift, SHasRC(), SHasFrames());
 
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);
@@ -289,7 +325,7 @@ _writeAlignmentBlock(TStream                 & stream,
     while (aPos < m.aliLength)
     {
         // Query line
-        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + m.qStart + 1);
+        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart + 1);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -298,12 +334,12 @@ _writeAlignmentBlock(TStream                 & stream,
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row0, i))
-                ++qPos;
+                qPos += qStep;
             ret = streamPut(stream, value(row0, i));
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d", numberWidth, qPos + m.qStart);
+        sprintf(buffer, "  %-*d", numberWidth, qPos + effQStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -337,7 +373,7 @@ _writeAlignmentBlock(TStream                 & stream,
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row1, i))
-                ++sPos;
+                sPos += sStep;
             ret = streamPut(stream, value(row1, i));
             if (ret)
                 return ret;

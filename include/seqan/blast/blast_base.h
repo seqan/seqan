@@ -589,6 +589,84 @@ writeBottom(TStream                           & /**/,
     return 0;
 }
 
+// ----------------------------------------------------------------------------
+// Function _untranslatePositions() -- retransform positions
+// ----------------------------------------------------------------------------
+
+template <typename TPos>
+inline void
+_untranslatePositions(TPos & effectiveStart,
+                      TPos & /**/,
+                      signed char const /**/,
+                      False const & /*hasReverseComplement*/,
+                      False const & /*hasFrames*/)
+{
+    // BLAST is 1-indexed, but end positions are "on" instead of behind
+    // so only the begin positions need adapting
+    ++effectiveStart;
+}
+
+template <typename TPos>
+inline void
+_untranslatePositions(TPos & effectiveStart,
+                      TPos & effectiveEnd,
+                      signed char const frameShift,
+                      True const & /*hasReverseComplement*/,
+                      False const & /*hasFrames*/)
+{
+    // BLAST is 1-indexed, but end positions are "on" instead of behind
+    // so only the begin positions need adapting
+    ++effectiveStart;
+    // reverse strand symoblized by swapped begin and end
+    if (frameShift < 0)
+        std::swap(effectiveStart, effectiveEnd);
+}
+
+template <typename TPos>
+inline void
+_untranslatePositions(TPos & effectiveStart,
+                      TPos & effectiveEnd,
+                      signed char const frameShift,
+                      True const & /*hasReverseComplement*/,
+                      True const & /*hasFrames*/)
+{
+    // correct for codon translation and frameshift
+    // subtract 1 because frameshift is 1-indexed
+    effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
+    effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
+
+    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, True(), False());
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextPos() -- increment/decrement position
+// ----------------------------------------------------------------------------
+
+constexpr int8_t
+_step(signed char const /**/,
+      False const & /*hasReverseComplement*/,
+      False const & /*hasFrames*/)
+{
+    return 1;
+}
+
+constexpr int8_t
+_step(signed char const frameShift,
+      True const & /*hasReverseComplement*/,
+      False const & /*hasFrames*/)
+{
+    // iterate backwards for reverse frames
+    return (frameShift < 0) ? -1 : 1;
+}
+
+constexpr int8_t
+_step(signed char const frameShift,
+      True const & /*hasReverseComplement*/,
+      True const & /*hasFrames*/)
+{
+    // iterate three nucleotides per amino acid
+    return (frameShift < 0) ? -3 : 3;
+}
 
 } // namespace seqan
 
