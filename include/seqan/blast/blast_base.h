@@ -630,12 +630,12 @@ _untranslatePositions(TPos & effectiveStart,
                       True const & /*hasReverseComplement*/,
                       True const & /*hasFrames*/)
 {
-    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, True(), False());
-
     // correct for codon translation and frameshift
     // subtract 1 because frameshift is 1-indexed
     effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
     effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
+
+    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, True(), False());
 }
 
 // ----------------------------------------------------------------------------
