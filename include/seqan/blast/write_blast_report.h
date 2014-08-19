@@ -312,6 +312,8 @@ _writeAlignmentBlock(TStream                 & stream,
 
     int8_t const     qStep = _step(m.qFrameShift, QHasRC(), QHasFrames());
     int8_t const     sStep = _step(m.sFrameShift, SHasRC(), SHasFrames());
+    int8_t const  qStepOne = _step(m.qFrameShift, QHasRC(), False());
+    int8_t const  sStepOne = _step(m.sFrameShift, SHasRC(), False());
 
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);
@@ -340,7 +342,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d", numberWidth, qPos + effQStart - qStep);
+        sprintf(buffer, "  %-*d", numberWidth, qPos + effQStart - qStepOne);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -379,7 +381,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + effSStart - qStep);
+        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + effSStart - sStepOne);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
