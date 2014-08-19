@@ -107,9 +107,9 @@ _statsBlock(char                      * buffer,
                    " Strand=", // no spaces here for whatever reason
             m.bitScore, unsigned(m.score), m.eValue,
                         m.identities, m.aliLength,
-            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            int(std::ceil(double(m.identities) * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::ceil(double(m.gaps       * 100 / m.aliLength))));
+            int(std::ceil(double(m.gaps)       * 100 / m.aliLength)));
     if (m.qFrameShift == 1)
         strcat(buffer, "Plus/");
     else
@@ -136,11 +136,11 @@ _statsBlock(char                      * buffer,
                    " Gaps = %d/%d (%d%%)\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            int(std::ceil(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            int(std::ceil(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::ceil(double(m.gaps       * 100 / m.aliLength))));
+            int(std::ceil(double(m.gaps)       * 100 / m.aliLength)));
 }
 
 template <typename TMatch,
@@ -159,11 +159,11 @@ _statsBlock(char                     * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            int(std::ceil(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            int(std::ceil(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
+            int(std::ceil(double(m.gaps)       * 100 / m.aliLength)),
             m.qFrameShift);
 }
 
@@ -183,11 +183,11 @@ _statsBlock(char                    * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            int(std::ceil(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            int(std::ceil(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
+            int(std::ceil(double(m.gaps)       * 100 / m.aliLength)),
             m.sFrameShift);
 }
 
@@ -207,11 +207,11 @@ _statsBlock(char                    * buffer,
                    " Frame = %+d/%+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::ceil(double(m.identities * 100 / m.aliLength))),
+            int(std::ceil(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::ceil(double(m.positives  * 100 / m.aliLength))),
+            int(std::ceil(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::ceil(double(m.gaps       * 100 / m.aliLength))),
+            int(std::ceil(double(m.gaps)       * 100 / m.aliLength)),
             m.qFrameShift, m.sFrameShift);
             //TODO verify that the order is actually qFS/sFS and
             // not the other way around
