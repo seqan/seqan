@@ -296,17 +296,18 @@ _writeAlignmentBlock(TStream                 & stream,
     char            buffer[40]  = "";
 
     TPos            aPos        = 0; // position in alignment
-    TPos            qPos        = 0; // position in query (without gaps)
-    TPos            sPos        = 0; // position in subject (without gaps)
+    int32_t         qPos        = 0; // position in query (without gaps)
+    int32_t         sPos        = 0; // position in subject (without gaps)
+    // the latter two can become negative
 
     TPos            effQStart   = m.qStart;
     TPos            effQEnd     = m.qEnd;
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, QHasRC(), 
+    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, QHasRC(),
                           QHasFrames());
-    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, SHasRC(), 
+    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, SHasRC(),
                           SHasFrames());
 
     int8_t const     qStep = _step(m.qFrameShift, QHasRC(), QHasFrames());
@@ -325,12 +326,12 @@ _writeAlignmentBlock(TStream                 & stream,
     while (aPos < m.aliLength)
     {
         // Query line
-        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart + 1);
+        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
 
-        TPos const end = _min(aPos + windowSize,TPos(m.aliLength));
+        TPos const end = _min(aPos + windowSize, m.aliLength);
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row0, i))
@@ -365,7 +366,7 @@ _writeAlignmentBlock(TStream                 & stream,
         }
 
         // Subject line
-        sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + m.sStart + 1);
+        sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -378,7 +379,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + m.sStart);
+        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + effSStart);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
