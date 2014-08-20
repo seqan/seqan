@@ -1081,6 +1081,75 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
     return false;
 }
 
+// Returns true if a 3rd breakpoint (newDelBP) is inferred.
+template <typename TBreakpoint>
+inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreakpoint & newInvBP, unsigned const & bpPosRange)
+{
+    bool newInv = false;
+    if (bp.svtype != TBreakpoint::INVERSION || tempBP.svtype != TBreakpoint::INVERSION)
+        return false;
+    if (bp.startSeqId != tempBP.startSeqId)
+        return false;
+
+    bool startPosSameRange = _posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange);
+    bool endPosSameRange = _posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange);
+
+    // Case 1: new bp is outer inv inv(v,z), old (tempBP) is inner inv inv(w,z)||inv(v,w)
+    // inv(v,w)
+    if (startPosSameRange && (tempBP.endSeqPos < bp.endSeqPos))
+    {
+        // Change new bp from inv(v,z) to deletion del(w,z)
+        bp.svtype = TBreakpoint::DELETION;
+        bp.startSeqPos = tempBP.endSeqPos;
+        bp.startSeqStrand = bp.endSeqStrand;
+        return false;
+    }
+    // inv(w,z)
+    if (endPosSameRange && (bp.startSeqPos < tempBP.startSeqPos))
+    {
+        // Change new bp from inv(v,z) to deletion del(w,z)
+        bp.svtype = TBreakpoint::DELETION;
+        bp.endSeqPos = tempBP.startSeqPos;
+        bp.endSeqStrand = bp.startSeqStrand;
+        return false;
+    }
+    // Case 2: new bp is inner inv inv(w,z)||inv(v,w), old (tempBP) is outer inv inv(v,z)
+    // inv(v,w)
+    if (startPosSameRange && (bp.endSeqPos < tempBP.endSeqPos))
+    {
+        // Change old bp from inv(v,z) to deletion del(w,z)
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.startSeqPos = bp.endSeqPos;
+        tempBP.startSeqStrand = tempBP.endSeqStrand;
+        return false;
+    }
+    // inv(w,z)
+    if (endPosSameRange && (bp.startSeqPos < tempBP.startSeqPos))
+    {
+        // Change old bp from inv(v,z) to deletion del(w,z)
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.endSeqPos = bp.startSeqPos;
+        tempBP.endSeqStrand = tempBP.startSeqStrand;
+        return false;
+    }
+    // Case 3: new bp inv(v,w) and old bp inv(u,z) are overlapping, i.e. there are 2 adjacent dels
+    // Either i) v < u < w < z, then bp becomes del(v,u), tempBP del(w,z), newInvBP inv(u,w)
+    // or     ii)u < v < z < w, then bp becomes del(u,v), tempBP del(z,w), newInvBP inv(v,z)
+    // i)
+/*
+    if ()
+    {
+        return true;
+    }
+    // ii)
+    if ()
+    {
+        return true;
+    }
+*/
+    return newInv;
+}
+
 template <typename TBreakpoint>
 inline bool _insertBreakend(String<TBreakpoint> & countedBE, TBreakpoint & be, unsigned const & bpPosRange)
 {
@@ -1154,6 +1223,8 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 {
     String<unsigned> toBeErased;
     bool newBP = true;
+    bool newInv = false;
+    TBreakpoint newInvBP = bp;
     // Compare new breakpoint to breakpoints in the set, add supportIDs if similar or create new, more complex
     // breakpoint if supporting breakpoint
     for (unsigned i = 0; i < length(countedBP); ++i)
@@ -1192,6 +1263,15 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 
         else if (_translDelSupport(bp, tempBP, newBP, bpPosRange))
             appendValue(toBeErased, i);
+
+        // Special case: both breakpoints are nested inversions. Then, it is more likely that there is actually a
+        // combination of an inversion with 1 (or 2) adjacent deletion(s).
+        // If one includes the other, we keep the inner inversion and infer an deletion of the remaining region.
+        // If both overlap, then the overlapping region is the inversion, the remaining regions are inferred dels.
+        // In this case, we need to create a third bp
+        else if (_invDelClassification(bp, tempBP, newInvBP, bpPosRange))
+            newInv = true;
+
     }
     // Erase obsolete bps in descending order
     for (unsigned i = 0; i < length(toBeErased); ++i)
@@ -1209,6 +1289,10 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         }
         appendValue(countedBP, bp);
     }
+    // Append new deletion breakpoint if appl./insert new deletion bc. there could be one already in the set?
+    if (newInv)
+        appendValue(countedBP, newInvBP);
+        // _insertBreakpoint(countedBP, newDelbp, bpPosRange, similarBPId++?);
 }
 // Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
 // has been inserted or false if breakpoint was already in the set (and just has been counted).
