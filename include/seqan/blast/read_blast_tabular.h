@@ -37,11 +37,6 @@
 #ifndef SEQAN_EXTRAS_BLAST_READ_BLAST_TABULAR_H_
 #define SEQAN_EXTRAS_BLAST_READ_BLAST_TABULAR_H_
 
-#include <cmath>
-
-#include <seqan/blast/blast_base.h>
-#include <seqan/blast/blast_record.h>
-
 /* IMPLEMENTATION NOTES
 
 BLAST TABULAR example:

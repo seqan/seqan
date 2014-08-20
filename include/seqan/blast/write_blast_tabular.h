@@ -37,13 +37,6 @@
 #ifndef SEQAN_EXTRAS_BLAST_WRITE_BLAST_TABULAR_H_
 #define SEQAN_EXTRAS_BLAST_WRITE_BLAST_TABULAR_H_
 
-#include <sstream>
-
-#include <seqan/basic.h>
-#include <seqan/version.h>
-
-#include <seqan/blast/blast_base.h>
-
 namespace seqan {
 
 // ============================================================================
@@ -545,9 +538,9 @@ writeMatch(TStream & stream, TBlastMatch const & match,
     TPos effectiveSEnd      = match.sEnd;
 
     _untranslatePositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
-                          QHasRC(), QHasFrames());
+                          match.qLength, QHasRC(), QHasFrames());
     _untranslatePositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
-                          SHasRC(), SHasFrames());
+                          match.sLength, SHasRC(), SHasFrames());
 
     return writeMatch(stream,
                       TFormat(),

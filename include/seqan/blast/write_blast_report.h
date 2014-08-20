@@ -37,11 +37,12 @@
 #ifndef SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 #define SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 
-#include <cstdio>
-
-#include <seqan/basic.h>
-#include <seqan/blast/blast_base.h>
-#include <seqan/score.h>
+#ifdef __FreeBSD__
+#include <math.h>
+#define ROUND round
+#else
+#define ROUND std::round
+#endif
 
 namespace seqan {
 
@@ -107,9 +108,9 @@ _statsBlock(char                      * buffer,
                    " Strand=", // no spaces here for whatever reason
             m.bitScore, unsigned(m.score), m.eValue,
                         m.identities, m.aliLength,
-            int(std::round(double(m.identities) * 100 / m.aliLength)),
+            int(ROUND(double(m.identities) * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::round(double(m.gaps)       * 100 / m.aliLength)));
+            int(ROUND(double(m.gaps)       * 100 / m.aliLength)));
     if (m.qFrameShift == 1)
         strcat(buffer, "Plus/");
     else
@@ -136,11 +137,11 @@ _statsBlock(char                      * buffer,
                    " Gaps = %d/%d (%d%%)\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::round(double(m.identities) * 100 / m.aliLength)),
+            int(ROUND(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::round(double(m.positives)  * 100 / m.aliLength)),
+            int(ROUND(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::round(double(m.gaps)       * 100 / m.aliLength)));
+            int(ROUND(double(m.gaps)       * 100 / m.aliLength)));
 }
 
 template <typename TMatch,
@@ -159,11 +160,11 @@ _statsBlock(char                     * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::round(double(m.identities) * 100 / m.aliLength)),
+            int(ROUND(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::round(double(m.positives)  * 100 / m.aliLength)),
+            int(ROUND(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::round(double(m.gaps)       * 100 / m.aliLength)),
+            int(ROUND(double(m.gaps)       * 100 / m.aliLength)),
             m.qFrameShift);
 }
 
@@ -183,11 +184,11 @@ _statsBlock(char                    * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::round(double(m.identities) * 100 / m.aliLength)),
+            int(ROUND(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::round(double(m.positives)  * 100 / m.aliLength)),
+            int(ROUND(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::round(double(m.gaps)       * 100 / m.aliLength)),
+            int(ROUND(double(m.gaps)       * 100 / m.aliLength)),
             m.sFrameShift);
 }
 
@@ -207,11 +208,11 @@ _statsBlock(char                    * buffer,
                    " Frame = %+d/%+d\n\n",
             m.bitScore, unsigned(m.score), m.eValue,
             m.identities, m.aliLength,
-            int(std::round(double(m.identities) * 100 / m.aliLength)),
+            int(ROUND(double(m.identities) * 100 / m.aliLength)),
             m.positives,  m.aliLength,
-            int(std::round(double(m.positives)  * 100 / m.aliLength)),
+            int(ROUND(double(m.positives)  * 100 / m.aliLength)),
             m.gaps,       m.aliLength,
-            int(std::round(double(m.gaps)       * 100 / m.aliLength)),
+            int(ROUND(double(m.gaps)       * 100 / m.aliLength)),
             m.qFrameShift, m.sFrameShift);
             //TODO verify that the order is actually qFS/sFS and
             // not the other way around
@@ -281,15 +282,6 @@ _writeAlignmentBlock(TStream                 & stream,
     typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
     typedef decltype(m.qStart) TPos;
 
-    typedef typename NotC<OrC<p==BlastFormatProgram::BLASTP,
-                              p==BlastFormatProgram::TBLASTN>::VALUE
-                              >::Type QHasRC;
-    typedef typename OrC<p==BlastFormatProgram::BLASTX,
-                         p==BlastFormatProgram::TBLASTX>::Type QHasFrames;
-    typedef typename OrC<p==BlastFormatProgram::TBLASTX,
-                         p==BlastFormatProgram::TBLASTN>::Type SHasRC;
-    typedef SHasRC SHasFrames;
-
     int             ret         = 0;
     TPos    const   windowSize  = 60;
 
@@ -305,15 +297,23 @@ _writeAlignmentBlock(TStream                 & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, QHasRC(),
-                          QHasFrames());
-    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, SHasRC(),
-                          SHasFrames());
+    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, m.qLength,
+                          QHasRevComp<TFormat>(), QHasFrames<TFormat>());
+    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, m.sLength,
+                          SHasRevComp<TFormat>(), SHasFrames<TFormat>());
 
-    int8_t const     qStep = _step(m.qFrameShift, QHasRC(), QHasFrames());
-    int8_t const     sStep = _step(m.sFrameShift, SHasRC(), SHasFrames());
-    int8_t const  qStepOne = _step(m.qFrameShift, QHasRC(), False());
-    int8_t const  sStepOne = _step(m.sFrameShift, SHasRC(), False());
+    int8_t const     qStep = _step(m.qFrameShift,
+                                   QHasRevComp<TFormat>(),
+                                   QHasFrames<TFormat>());
+    int8_t const     sStep = _step(m.sFrameShift,
+                                   SHasRevComp<TFormat>(),
+                                   SHasFrames<TFormat>());
+    int8_t const  qStepOne = _step(m.qFrameShift,
+                                   QHasRevComp<TFormat>(),
+                                   QHasFrames<TFormat>());
+    int8_t const  sStepOne = _step(m.sFrameShift,
+                                   SHasRevComp<TFormat>(),
+                                   SHasFrames<TFormat>());
 
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);

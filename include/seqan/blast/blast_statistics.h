@@ -47,13 +47,8 @@
 #define NCBI_INT2_MAX    32767
 #endif
 
-#include <seqan/align.h>
-#include <seqan/score.h>
-#include <cmath>
-
 namespace SEQAN_NAMESPACE_MAIN
 {
-
 
 // ============================================================================
 // Classes

@@ -37,13 +37,7 @@
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 
-
-#include <cstdlib>
-#include <seqan/version.h>
-#include <seqan/align.h>
-
 namespace seqan {
-
 
 // ============================================================================
 // Forwards
@@ -237,6 +231,113 @@ using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+//TODO document or _
+
+// ----------------------------------------------------------------------------
+// qHasRevComp()
+// ----------------------------------------------------------------------------
+
+constexpr bool
+qHasRevComp(BlastFormatProgram const p)
+{
+    return ((p==BlastFormatProgram::BLASTP) || (p==BlastFormatProgram::TBLASTN))
+            ? false
+            : true;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr bool
+qHasRevComp(BlastFormat<f,p,g> const & /**/)
+{
+    return ((p==BlastFormatProgram::BLASTP) || (p==BlastFormatProgram::TBLASTN))
+            ? false
+            : true;
+}
+
+template <typename TFormat>
+using QHasRevComp = typename std::conditional<qHasRevComp(TFormat()),
+                                              True,
+                                              False>::type;
+
+// ----------------------------------------------------------------------------
+// qHasFrames()
+// ----------------------------------------------------------------------------
+
+constexpr bool
+qHasFrames(BlastFormatProgram const p)
+{
+    return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
+            ? true
+            : false;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr bool
+qHasFrames(BlastFormat<f,p,g> const & /**/)
+{
+    return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
+            ? true
+            : false;
+}
+
+template <typename TFormat>
+using QHasFrames = typename std::conditional<qHasFrames(TFormat()),
+                                             True,
+                                             False>::type;
+
+// ----------------------------------------------------------------------------
+// sHasRevComp()
+// ----------------------------------------------------------------------------
+
+
+constexpr bool
+sHasRevComp(BlastFormatProgram const p)
+{
+    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+            ? true
+            : false;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr bool
+sHasRevComp(BlastFormat<f,p,g> const & /**/)
+{
+    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+            ? true
+            : false;
+}
+
+template <typename TFormat>
+using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
+                                              True,
+                                              False>::type;
+
+// ----------------------------------------------------------------------------
+// sHasFrames()
+// ----------------------------------------------------------------------------
+
+constexpr bool
+sHasFrames(BlastFormatProgram const p)
+{
+    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+            ? true
+            : false;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr bool
+sHasFrames(BlastFormat<f,p,g> const & /**/)
+{
+    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+            ? true
+            : false;
+}
+
+template <typename TFormat>
+using SHasFrames = typename std::conditional<sHasRevComp(TFormat()),
+                                             True,
+                                             False>::type;
 
 // ----------------------------------------------------------------------------
 // getBlastProgramType()
@@ -598,6 +699,7 @@ inline void
 _untranslatePositions(TPos & effectiveStart,
                       TPos & /**/,
                       signed char const /**/,
+                      TPos const & /**/,
                       False const & /*hasReverseComplement*/,
                       False const & /*hasFrames*/)
 {
@@ -611,6 +713,7 @@ inline void
 _untranslatePositions(TPos & effectiveStart,
                       TPos & effectiveEnd,
                       signed char const frameShift,
+                      TPos const & length,
                       True const & /*hasReverseComplement*/,
                       False const & /*hasFrames*/)
 {
@@ -619,7 +722,11 @@ _untranslatePositions(TPos & effectiveStart,
     ++effectiveStart;
     // reverse strand symoblized by swapped begin and end
     if (frameShift < 0)
-        std::swap(effectiveStart, effectiveEnd);
+    {
+        effectiveStart = length - effectiveStart;
+        effectiveEnd = length - effectiveEnd;
+//         std::swap(effectiveStart, effectiveEnd);
+    }
 }
 
 template <typename TPos>
@@ -627,6 +734,7 @@ inline void
 _untranslatePositions(TPos & effectiveStart,
                       TPos & effectiveEnd,
                       signed char const frameShift,
+                      TPos const & length,
                       True const & /*hasReverseComplement*/,
                       True const & /*hasFrames*/)
 {
@@ -635,7 +743,8 @@ _untranslatePositions(TPos & effectiveStart,
     effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
     effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
 
-    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, True(), False());
+    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, 
+                          length, True(), False());
 }
 
 // ----------------------------------------------------------------------------

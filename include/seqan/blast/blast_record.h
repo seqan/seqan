@@ -34,7 +34,6 @@
 // Module for handling NCBI Blast I/O and E-Value computation
 // ==========================================================================
 
-
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_RECORD_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_RECORD_H_
 

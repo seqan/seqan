@@ -39,6 +39,16 @@
 
 #ifdef SEQAN_CXX11_STANDARD
 
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <sstream>
+
+#include <seqan/basic.h>
+#include <seqan/version.h>
+#include <seqan/align.h>
+#include <seqan/score.h>
+
 #include "blast/blast_base.h"
 #include "blast/blast_record.h"
 #include "blast/blast_statistics.h"
