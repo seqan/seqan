@@ -1134,19 +1134,40 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
     }
     // Case 3: new bp inv(v,w) and old bp inv(u,z) are overlapping, i.e. there are 2 adjacent dels
     // Either i) v < u < w < z, then bp becomes del(v,u), tempBP del(w,z), newInvBP inv(u,w)
-    // or     ii)u < v < z < w, then bp becomes del(u,v), tempBP del(z,w), newInvBP inv(v,z)
+    // or     ii)u < v < z < w, then bp becomes del(z,w), tempBP del(u,v), newInvBP inv(v,z)
     // i)
-/*
-    if ()
+    if (_checkMatchOverlap(bp.startSeqPos, bp.endSeqPos, tempBP.startSeqPos, tempBP.endSeqPos))
     {
+        newInvBP.svtype = TBreakpoint::INVERSION;
+        newInvBP.startSeqPos = tempBP.startSeqPos;
+        newInvBP.endSeqPos = bp.endSeqPos;
+        newInvBP.startSeqStrand = tempBP.startSeqStrand;
+        newInvBP.endSeqStrand = bp.endSeqStrand;
+        bp.svtype = TBreakpoint::DELETION;
+        bp.endSeqPos = newInvBP.startSeqPos;
+        bp.endSeqStrand = bp.startSeqStrand;
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.startSeqPos = newInvBP.endSeqPos;
+        tempBP.startSeqStrand = tempBP.endSeqStrand;
         return true;
     }
     // ii)
-    if ()
+    if (_checkMatchOverlap(tempBP.startSeqPos, tempBP.endSeqPos, bp.startSeqPos, bp.endSeqPos))
     {
+        newInvBP.svtype = TBreakpoint::INVERSION;
+        newInvBP.startSeqPos = bp.startSeqPos;
+        newInvBP.endSeqPos = tempBP.endSeqPos;
+        newInvBP.startSeqStrand = bp.startSeqStrand;
+        newInvBP.endSeqStrand = tempBP.endSeqStrand;
+        bp.svtype = TBreakpoint::DELETION;
+        bp.startSeqPos = newInvBP.endSeqPos;
+        bp.startSeqStrand = bp.endSeqStrand;
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.endSeqPos = newInvBP.startSeqPos;
+        tempBP.endSeqStrand = tempBP.startSeqStrand;
         return true;
     }
-*/
+
     return newInv;
 }
 
