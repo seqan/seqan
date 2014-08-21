@@ -70,9 +70,12 @@ namespace seqan {
  * @brief flat master-slave showing identities (blastall -m 3 &amp; blast* -outfmt 3)
  *
  * @val BlastFormatFile BlastFormatFile::FLAT_MASTER_SLAVE_NO_IDENT;
- * @brief master-slave without identities, with blunt ends (blastall -m 5, not available with Blast+)
+ * @brief master-slave without identities, with blunt ends (blastall -m 4, not available with Blast+)
  *
  * @val BlastFormatFile BlastFormatFile::MASTER_SLAVE_BLUNT_ENDS;
+ * @brief flat master-slave without identities, with blunt ends (blastall -m 5, not available with Blast+)
+ *
+ * @val BlastFormatFile BlastFormatFile::FLAT_MASTER_SLAVE_BLUNT_ENDS;
  * @brief flat master-slave without identities, with blunt ends (blastall -m 6, not available with Blast+)
  *
  * @val BlastFormatFile BlastFormatFile::XML;
