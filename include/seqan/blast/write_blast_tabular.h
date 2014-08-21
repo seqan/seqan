@@ -555,7 +555,10 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       effectiveSStart,
                       effectiveSEnd,
                       match.eValue,
-                      match.bitScore);
+                      match.bitScore,
+                      int(match.qFrameShift),// ALERT DEBUG
+                      match.qLength // ALERT DEBUG
+                     ); 
 }
 
 template <typename TStream, typename TBlastMatch,
