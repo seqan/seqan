@@ -191,6 +191,7 @@ struct BlastMatch
                         sEnd,
                         qLength,
                         sLength,
+// align too big to compare
 //                         align,
                         qFrameShift,
                         sFrameShift,
@@ -200,9 +201,11 @@ struct BlastMatch
                         positives,
                         mismatches,
                         gaps,
-                        gapOpenings,
-                        eValue,
-                        bitScore)
+                        gapOpenings
+// scores have rounding errors
+//                         eValue,
+//                         bitScore
+                       )
             == std::tie(bm2.qId,
                         bm2.sId,
                         bm2.qStart,
@@ -220,18 +223,21 @@ struct BlastMatch
                         bm2.positives,
                         bm2.mismatches,
                         bm2.gaps,
-                        bm2.gapOpenings,
-                        bm2.eValue,
-                        bm2.bitScore);
+                        bm2.gapOpenings
+// scores have rounding errors
+//                         bm2.eValue,
+//                         bm2.bitScore
+                       );
     }
 
     inline bool operator< (BlastMatch const & bm2) const
     {
-        if (qId >= bm2.qId)
-            return false;
         if (bitScore >= bm2.bitScore)
-            return false;
-        return true;
+            return true;
+        //TODO check this; comparison should be with numeric id, not strings
+//         if (qId <= bm2.qId)
+//             return true;
+        return false;
     }
 };
 
