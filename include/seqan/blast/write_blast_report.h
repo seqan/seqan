@@ -310,10 +310,10 @@ _writeAlignmentBlock(TStream                 & stream,
                                    SHasFrames<TFormat>());
     int8_t const  qStepOne = _step(m.qFrameShift,
                                    QHasRevComp<TFormat>(),
-                                   QHasFrames<TFormat>());
+                                   False());
     int8_t const  sStepOne = _step(m.sFrameShift,
                                    SHasRevComp<TFormat>(),
-                                   SHasFrames<TFormat>());
+                                   False());
 
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);
