@@ -1,17 +1,17 @@
-adeno_modified_reads.fa
+read_reference2.fa
 Database file   : adeno.fa
-Query file      : adeno_modified_reads.fa
+Query file      : read_reference2.fa
 
 Thresholds:
   overlap threshold (oth)          : 0.5
   gap threshold (gth)              : 5
-  inital gap threshold (ith)       : 5
+  inital gap threshold (ith)       : 15
 Penalties:
   translocation penalty (tp)       : 5
   inversion penalty (ip)           : 5
   order penalty (op)               : 0
   required read support (st)       : 1
-Loading query sequences... Loaded 6 query sequences.
+Loading query sequences... Loaded 1 query sequence.
 done
 Loading reference sequences... Loaded 2 database sequences.
 Loaded db seq with length: 4718
@@ -22,7 +22,7 @@ done
 Calling STELLAR...
 Stellar options:
 Database file   : adeno.fa
-Query file      : adeno_modified_reads.fa
+Query file      : read_reference2.fa
 
 User specified parameters:
   minimal match length             : 30
@@ -45,11 +45,11 @@ Calculated parameters:
 
 Constructing index...
 
-TIME stellar 0.0700989s
+TIME stellar 0.31517s
 done
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
- completed gff writing st1_l30_ith5.gff
- completed vcf writing st1_l30_ith5.vcf
-TIME all 0.290714s
+ completed gff writing reference2_st1_l30.gff
+ completed vcf writing reference2_st1_l30.vcf
+TIME all 1.81999s

@@ -1,0 +1,1 @@
+./generate_outputs.sh: 43: ./generate_outputs.sh: ../../../../../build/debug/bin/stellar: not found
