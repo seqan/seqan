@@ -100,7 +100,7 @@ namespace seqan {
 .Memfunc.Pair#Pair:
 ..class:Class.Pair
 ..summary:Constructor
-..signature:Pair<T1, T2[, TSpec]> ()    
+..signature:Pair<T1, T2[, TSpec]> ()
 ..signature:Pair<T1, T2[, TSpec]> (pair)
 ..signature:Pair<T1, T2[, TSpec]> (i1, i2)
 ..param.pair:Other Pair object. (copy constructor)
@@ -295,7 +295,7 @@ std::ostream & operator<<(std::ostream & out, Pair<T1, T2, TSpec> const & p)
  * @fn Pair#getValueI1
  * @brief The get-value of the Pair's first entry.
  *
- * @signature T1 getValue(pair);
+ * @signature T1 getValueI1(pair);
  *
  * @param[in] pair The pair to get entry from.
  *
@@ -315,7 +315,7 @@ T1 getValueI1(Pair<T1, T2, TSpec> const & pair)
  * @fn Pair#getValueI2
  * @brief The get-value of the Pair's second entry.
  *
- * @signature T2 getValue(pair);
+ * @signature T2 getValueI2(pair);
  *
  * @param[in] pair The pair to get entry from.
  *
@@ -355,7 +355,7 @@ inline void assignValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
  * @fn Pair#assignValueI2
  * @brief Set second entry of a pair.
  *
- * @signature void assignValueI1(pair, val);
+ * @signature void assignValueI2(pair, val);
  *
  * @param[in] pair The pair to get entry from.
  * @param[in] val  Set the value of the Pair's second entry.
@@ -393,7 +393,7 @@ inline void setValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
  * @fn Pair#setValueI2
  * @brief Set second entry of a pair.
  *
- * @signature void setValueI1(pair, val);
+ * @signature void setValueI2(pair, val);
  *
  * @param[in] pair The pair to get entry from.
  * @param[in] val  Set the value of the Pair's second entry.
