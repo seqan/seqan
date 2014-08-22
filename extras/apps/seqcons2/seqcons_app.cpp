@@ -297,7 +297,8 @@ void SeqConsAppImpl::performRealignment()
     if (options.verbosity >= 3)
         std::cerr << "\n";
     for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
-        reAlignment(store, contigID, /*method=*/2, options.reAlignmentBandwidth, /*includeReference=*/false);
+        reAlignment(store, contigID, /*method=*/2, options.reAlignmentBandwidth, /*includeReference=*/false,
+                    /*windowBegin=*/0, /*windowEnd=*/0, /*debug=*/true);
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
     if (options.verbosity >= 2)
