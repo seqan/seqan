@@ -13,9 +13,11 @@ Penalties:
   required read support (st)       : 2
 Loading query sequences... Loaded 6 query sequences.
 done
-Loading reference sequences... Loaded 1 database sequence.
+Loading reference sequences... Loaded 2 database sequences.
 Loaded db seq with length: 4718
 Loaded db ID: gi|9632547|ref|NC_002077.1|
+Loaded db seq with length: 1148
+Loaded db ID: gi|1234567|
 done
 Calling STELLAR...
 Stellar options:
@@ -43,9 +45,9 @@ Calculated parameters:
 
 Constructing index...
 
-TIME stellar 0.0318464s
+TIME stellar 0.204057s
 done
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
-TIME all 0.0335463s
+TIME all 0.212108s
