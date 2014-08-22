@@ -353,7 +353,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = bp.startSeqPos - 1; // In VCF position before event
     record.filter = "PASS";
     std::stringstream ss;
@@ -387,7 +387,7 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
@@ -424,7 +424,7 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
@@ -454,7 +454,7 @@ inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSeque
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
@@ -516,7 +516,7 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
     if (!_setVcfRecordDuplicationPos(bp, begin, end, target))
         ss << "IMPRECISE;";
 
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = begin - 1; // Position before event
     record.filter = "PASS";
     ss << "SVTYPE=DUP";
@@ -549,7 +549,7 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    record.rID = 2*id;
+    record.rID = id;
     record.beginPos = bp.startSeqPos - 1;
     record.filter = "PASS";
     std::stringstream ss;
@@ -635,7 +635,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     TId sId;
     VcfRecord record;
     // Record values shared by (almost) all entries
-    record.rID = 2*id;
+    record.rID = id;
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=BND";
@@ -805,7 +805,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
 
     }
 
-    record.rID = 2*id2;
+    record.rID = id2;
     // 5th entry
     // 5th: pos. before third split (endSeqPos - 1) ALT: startSeqPos
     record.id = "BND_" + toString(bp_id) + "_5";
@@ -929,7 +929,6 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
     // Fill sequence names
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
-        appendValue(vcfStream.header.sequenceNames, databaseIDs[i]);
         seqan::CharString contigStr = "<ID=";
         append(contigStr, databaseIDs[i]);
         append(contigStr, ",length=");
