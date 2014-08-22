@@ -458,26 +458,29 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
         }
     }
 
-    if (options.verbosity >= 2)
-        std::cerr << "realigning...\n";
-    for (unsigned i = 0; i < length(store.contigStore); ++i)
-        reAlignment(store, i, 1, 10, false);
-
-
-    if (options.verbosity >= 2)
+    if (options.runRealignment)
     {
-        std::cerr << "after realignment\n";
-        seqan::AlignedReadLayout layout;
-        layoutAlignment(layout, store);
-        for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
+        if (options.verbosity >= 2)
+            std::cerr << "realigning...\n";
+        for (unsigned i = 0; i < length(store.contigStore); ++i)
+            reAlignment(store, i, 1, 10, false);
+
+
+        if (options.verbosity >= 2)
         {
-            int endPos = 0;
-            for (unsigned i = 0; i < length(store.alignedReadStore); ++i)
-                if (store.alignedReadStore[i].contigId == contigID)
-                    endPos = std::max(endPos, (int)store.alignedReadStore[i].endPos);
-            std::cerr << ">contig_" << contigID << "\n";
-            printAlignment(std::cerr, seqan::Raw(), layout, store, /*contigID=*/contigID,
-                           /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
+            std::cerr << "after realignment\n";
+            seqan::AlignedReadLayout layout;
+            layoutAlignment(layout, store);
+            for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
+            {
+                int endPos = 0;
+                for (unsigned i = 0; i < length(store.alignedReadStore); ++i)
+                    if (store.alignedReadStore[i].contigId == contigID)
+                        endPos = std::max(endPos, (int)store.alignedReadStore[i].endPos);
+                std::cerr << ">contig_" << contigID << "\n";
+                printAlignment(std::cerr, seqan::Raw(), layout, store, /*contigID=*/contigID,
+                               /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
+            }
         }
     }
 }
