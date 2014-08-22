@@ -13,17 +13,19 @@ Penalties:
   required read support (st)       : 1
 Loading query sequences... Loaded 6 query sequences.
 done
-Loading reference sequences... Loaded 1 database sequence.
+Loading reference sequences... Loaded 2 database sequences.
 Loaded db seq with length: 4718
 Loaded db ID: gi|9632547|ref|NC_002077.1|
+Loaded db seq with length: 1148
+Loaded db ID: gi|1234567|
 done
  Getting STELLAR matches from file, not calling STELLAR
 Importing STELLAR matches from file stellar.gff
 done
-TIME importing stellar matches 0.000472191s
+TIME importing stellar matches 0.00103426s
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
  completed gff writing st1_l30_m.gff
  completed vcf writing st1_l30_m.vcf
-TIME all 0.0802295s
+TIME all 0.174012s
