@@ -156,52 +156,52 @@ inline void advanceChunk(String<TValue, TSpec> &str, TSize size)
 // ----------------------------------------------------------------------------
 
 // StreamBuffer
-template <typename TValue, typename TTraits>
-inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> &buf, Input)
+template <typename TChunk, typename TValue, typename TTraits>
+inline void
+getChunk(TChunk &result, StreamBuffer<TValue, TTraits> &buf, Input)
 {
-    return toRange(buf.gptr(), buf.egptr());
+    return assignRange(result, buf.gptr(), buf.egptr());
 }
 
-template <typename TValue, typename TTraits>
-inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> &buf, Output)
+template <typename TChunk, typename TValue, typename TTraits>
+inline void
+getChunk(TChunk &result, StreamBuffer<TValue, TTraits> &buf, Output)
 {
-    return toRange(buf.pptr(), buf.epptr());
+    return assignRange(result, buf.pptr(), buf.epptr());
 }
 
 // StreamIterator
-template <typename TStream, typename TDirection>
-inline typename Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >::Type
-getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
+template <typename TChunk, typename TStream, typename TDirection>
+inline void
+getChunk(TChunk &result, Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
 {
     typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    return getChunk(*iter.streamBuf, Tag<TDirection>());
+    getChunk(result, *iter.streamBuf, Tag<TDirection>());
 }
 
 // AdaptorIterator
-template <typename TContainer, typename TValue, typename TSpec>
-inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Input)
+template <typename TChunk, typename TContainer, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Input)
 {
-    return toRange(hostIterator(rootedIter), end(container(rootedIter), Standard()));
+    return assignRange(result, hostIterator(rootedIter), end(container(rootedIter), Standard()));
 }
 
-template <typename TContainer, typename TValue, typename TSpec>
-inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Output)
+template <typename TChunk, typename TContainer, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Output)
 {
     TContainer &cont = container(rootedIter);
-    return toRange(hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
+    return assignRange(result, hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
 }
 
 // SeqAn's strings
-template <typename TValue, typename TSpec>
-inline typename Chunk<String<TValue, TSpec> >::Type
-getChunk(String<TValue, TSpec> &cont, Output)
+template <typename TChunk, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, String<TValue, TSpec> &cont, Output)
 {
-    return toRange(end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
+    return assignRange(result, end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
 }
 
 }  // namespace seqan

@@ -62,6 +62,7 @@ struct AppOptions
 {
     StringSet<CharString> inFiles;
     CharString outFile;
+    bool bamFormat;
 };
 
 // ==========================================================================
@@ -112,12 +113,12 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     {
         if (readerPtr[i] == NULL)
             continue;
-        
+
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
             readRecord(record, *readerPtr[i]);
-//            write(writer, record);
+            write(writer, record);
         }
         close(*readerPtr[i]);
         delete readerPtr[i];
@@ -142,7 +143,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");
     addDescription(parser, "This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. "
-                           "If the output file name is ommitted the result is written to standard output in SAM format.");
+                           "If the output file name is ommitted the result is written to standard output.");
 
     addDescription(parser, "(c) Copyright 2014 by David Weese.");
 
@@ -153,6 +154,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", ".sam .bam");
+    addOption(parser, ArgParseOption("b", "bam", "Use BAM format for standard output. Default: SAM."));
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
@@ -170,6 +172,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     options.inFiles = getArgumentValues(parser, 0);
     getOptionValue(options.outFile, parser, "output");
+    getOptionValue(options.bamFormat, parser, "bam");
 
     return ArgumentParser::PARSE_OK;
 }
@@ -197,8 +200,13 @@ int main(int argc, char const ** argv)
     if (!empty(options.outFile))
         success = open(writer, toCString(options.outFile));
     else
-        // read write to stdout
-        success = open(writer, std::cout, Sam());
+    {
+        // write to stdout
+        if (options.bamFormat)
+            success = open(writer, std::cout, Bam());
+        else
+            success = open(writer, std::cout, Sam());
+    }
 
     if (!success)
     {

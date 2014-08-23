@@ -65,12 +65,14 @@ struct Event2
         mutex(mutex)
     {
         int result = pthread_cond_init(&data_cond, NULL);
+        ignoreUnusedVariableWarning(result);
         SEQAN_ASSERT_EQ(result, 0);
     }
 
     ~Event2()
     {
         int result = pthread_cond_destroy(&data_cond);
+        ignoreUnusedVariableWarning(result);
         SEQAN_ASSERT_EQ(result, 0);
     }
 };
@@ -79,6 +81,7 @@ inline void
 waitFor(Event2 &event)
 {
     int result = pthread_cond_wait(&event.data_cond, event.mutex.hMutex);
+    ignoreUnusedVariableWarning(result);
     SEQAN_ASSERT_EQ(result, 0);
 }
 
@@ -105,6 +108,7 @@ inline void
 signal(Event2 &event)
 {
     int result = pthread_cond_broadcast(&event.data_cond);
+    ignoreUnusedVariableWarning(result);
     SEQAN_ASSERT_EQ(result, 0);
 }
 
@@ -358,6 +362,8 @@ public:
     };
 
     // string of recycable jobs
+    size_t                  numThreads;
+    size_t                  numJobs;
     String<CompressionJob>  jobs;
     TJobQueue               jobQueue;
     TJobQueue               idleQueue;
@@ -416,20 +422,18 @@ public:
 
     // array of worker threads
     Thread<CompressionThread>   *threads;
-    size_t                      numThreads;
-    size_t                      numJobs;
 
     /** Construct a zip stream
      * More info on the following parameters can be found in the bgzf documentation.
      */
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t numThreads = 4,
-                         size_t numJobs = 16) :
+                         size_t numThreads = 16,
+                         size_t jobsPerThread = 8) :
 		concatter(ostream_),
-        jobQueue(numJobs),
-        idleQueue(numJobs),
         numThreads(numThreads),
-        numJobs(numJobs)
+        numJobs(numThreads * jobsPerThread),
+        jobQueue(numJobs),
+        idleQueue(numJobs)
     {
         resize(jobs, numJobs, Exact());
         currentJobId = 0;
@@ -443,6 +447,7 @@ public:
         for (unsigned i = 0; i < numJobs; ++i)
         {
             bool success = appendValue(idleQueue, i);
+            ignoreUnusedVariableWarning(success);
             SEQAN_ASSERT(success);
         }
 
@@ -582,6 +587,8 @@ public:
 	typedef byte_type* byte_buffer_type;
 	typedef typename Tr::char_type char_type;
 	typedef typename Tr::int_type int_type;
+	typedef typename Tr::off_type off_type;
+	typedef typename Tr::pos_type pos_type;
 
     typedef std::vector<char_type, char_allocator_type> TBuffer;
     typedef ConcurrentQueue<size_t, Suspendable>  TJobQueue;
@@ -590,14 +597,16 @@ public:
 
     struct Serializer
     {
-        istream_reference istream;
-        Mutex lock;
-        std::exception *error;
+        istream_reference   istream;
+        Mutex               lock;
+        std::exception      *error;
+        off_t               fileOfs;
 
         Serializer(istream_reference istream) :
             istream(istream),
             lock(false),
-            error(NULL)
+            error(NULL),
+            fileOfs(0u)
         {}
 
         ~Serializer()
@@ -614,6 +623,7 @@ public:
 
         TInputBuffer    inputBuffer;
         TBuffer         buffer;
+        off_t           fileOfs;
         size_t          size;
 
         Mutex           mutex;
@@ -640,6 +650,8 @@ public:
     };
 
     // string of recycable jobs
+    size_t                      numThreads;
+    size_t                      numJobs;
     String<DecompressionJob>    jobs;
     TJobQueue                   runningQueue;
     TJobQueue                   idleQueue;
@@ -671,6 +683,9 @@ public:
 
                     if (streamBuf->serializer.error != NULL)
                         return;
+
+                    // remember start offset (for tellg later)
+                    job.fileOfs = streamBuf->serializer.fileOfs;
 
                     // read header
                     streamBuf->serializer.istream.read(
@@ -706,6 +721,7 @@ public:
                         return;
                     }
 
+                    streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
                     job.ready = false;
 
                     if (!appendValue(streamBuf->runningQueue, jobId))
@@ -806,21 +822,19 @@ public:
 
     // array of worker threads
     Thread<DecompressionThread> *threads;
-    size_t                      numThreads;
-    size_t                      numJobs;
     TBuffer                     putbackBuffer;
 
     /** Construct a unzip stream
     * More info on the following parameters can be found in the bgzf documentation.
     */
     basic_unbgzf_streambuf(istream_reference istream_,
-                           size_t numThreads = 4,
-                           size_t numJobs = 16) :
+                           size_t numThreads = 16,
+                           size_t jobsPerThread = 8) :
 		serializer(istream_),
+        numThreads(numThreads),
+        numJobs(numThreads * jobsPerThread),
         runningQueue(numJobs),
         idleQueue(numJobs),
-        numThreads(numThreads),
-        numJobs(numJobs),
         putbackBuffer(MAX_PUTBACK)
     {
         resize(jobs, numJobs, Exact());
@@ -835,6 +849,7 @@ public:
         for (unsigned i = 0; i < numJobs; ++i)
         {
             bool success = appendValue(idleQueue, i);
+            ignoreUnusedVariableWarning(success);
             SEQAN_ASSERT(success);
         }
 
@@ -854,13 +869,15 @@ public:
         for (unsigned i = 0; i < numThreads; ++i)
             waitFor(threads[i]);
         delete[] threads;
+        std::cerr << "runnning queue:\t" << (__int64)&runningQueue << std::endl;
+        std::cerr << "idle queue:    \t" << (__int64)&idleQueue << std::endl;
     }
 
     int_type underflow()
     {
         // no need to use the next buffer?
         if (this->gptr() && this->gptr() < this->egptr())
-            return *this->gptr();
+            return Tr::to_int_type(*this->gptr());
 
         size_t putback = this->gptr() - this->eback();
         if (putback > MAX_PUTBACK)
@@ -913,7 +930,23 @@ public:
         }
 
         // return next character
-        return *this->gptr();
+        return Tr::to_int_type(*this->gptr());
+    }
+
+    pos_type seekoff(off_type ofs, std::ios_base::seekdir dir, std::ios_base::openmode openMode)
+    {
+        DecompressionJob &job = jobs[currentJobId];
+        if ((openMode & (std::ios_base::in | std::ios_base::out)) == std::ios_base::in)
+        {
+            if (dir == std::ios_base::cur && ofs == 0)
+                return pos_type((job.fileOfs << 16) + (this->gptr() - this->eback()));
+        }
+        return pos_type(off_type(-1));
+    }
+
+    pos_type seekpos(pos_type pos, std::ios_base::openmode openMode)
+    {
+        return seekoff(off_type(pos), std::ios_base::beg, openMode);
     }
 
 	/// returns the compressed input istream

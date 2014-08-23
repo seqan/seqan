@@ -177,7 +177,8 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
 
     for (; !atEnd(iter); )
     {
-        Range<TIValue*> const ichunk = getChunk(iter, Input());
+        Range<TIValue*> ichunk;
+        getChunk(ichunk, iter, Input());
         SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
         const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
@@ -281,7 +282,8 @@ inline void _readUntil(TTarget &target,
 
     for (; !atEnd(iter); )
     {
-        Range<TIValue*> const ichunk = getChunk(iter, Input());
+        Range<TIValue*> ichunk;
+        getChunk(ichunk, iter, Input());
         const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
         SEQAN_ASSERT(iptr < end(ichunk, Standard()));
 
@@ -302,7 +304,7 @@ inline void _readUntil(TTarget &target,
                     // reserve memory for the worst-case
                     // TODO(weese):Document worst-case behavior
                     reserveChunk(target, length(ichunk));
-                    ochunk = getChunk(target, Output());
+                    getChunk(ochunk, target, Output());
                     optr = begin(ochunk, Standard());
                     SEQAN_ASSERT(optr < end(ochunk, Standard()));
                 }
@@ -411,19 +413,7 @@ inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBy
 template <typename TValue, typename TFwdIterator>
 inline void readRawByte(TValue & value, TFwdIterator &srcIter)
 {
-//    CountDownFunctor<> countFunc(sizeof(TValue));
-//    char * buffer = (char *)(&value);
-//    for (; !atEnd(iter) && !countFunc(*iter); ++buffer, ++iter)
-//        *buffer = *iter;
-
-//    CountDownFunctor<> countFunc(sizeof(TValue));
-    Range<char*> range = toRange((char*)&value, (char*)&value + sizeof(TValue));
-//    readUntil(trgIter, srcIter, countFunc);
-    write(range, srcIter, sizeof(TValue));
-
-//    if (!countFunc)
-//        throw UnexpectedEnd();
-
+    write((char*)&value, srcIter, sizeof(TValue));
 }
 
 // ----------------------------------------------------------------------------

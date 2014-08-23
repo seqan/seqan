@@ -468,8 +468,7 @@ appendNumber(TTarget & target, TInteger i)
     size_t len = snprintf(buffer, sizeof(buffer),
                           TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
 
-    Range<char *> range = toRange(buffer + 0, buffer + len);
-    write(target, range);
+    write(target, buffer, len);
     return len;
 }
 
@@ -484,8 +483,7 @@ appendNumber(TTarget & target, float source)
     char buffer[32];
     int offset;
     size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    Range<char *> range = toRange(buffer + 0, buffer + len);
-    write(target, range);
+    write(target, buffer, len);
     return len;
 }
 
@@ -500,8 +498,7 @@ appendNumber(TTarget & target, double source)
     char buffer[32];
     int offset;
     size_t len = snprintf(buffer, 32, "%lg%n", source, &offset);
-    Range<char *> range = toRange(buffer + 0, buffer + len);
-    write(target, range);
+    write(target, buffer, len);
     return len;
 }
 
@@ -513,7 +510,7 @@ template <typename TValue, typename TTarget>
 inline typename Size<TTarget>::Type
 appendRawPod(TTarget & target, TValue const & val)
 {
-    write(target, toRange((unsigned char*)&val, (unsigned char*)&val + sizeof(TValue)));
+    write(target, (unsigned char*)&val, sizeof(TValue));
     return sizeof(TValue);
 }
 
