@@ -169,7 +169,7 @@ inline void
 compressInit(CompressionContext<GZFile> & ctx)
 {
     const int GZIP_WINDOW_BITS = -15;   // no zlib header
-    const int Z_DEFAULT_MEM_LEVEL = 8;
+//    const int Z_DEFAULT_MEM_LEVEL = 8;
 
     ctx.strm.zalloc = NULL;
     ctx.strm.zfree = NULL;
