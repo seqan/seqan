@@ -124,7 +124,7 @@ public:
         for (int argi = 1; argi < argc; ++argi)
         {
             size_t argLen = strlen(argv[argi]);
-            if (seenDashDash || argLen == 0 || (argv[argi][0] != '-' ^ argLen == 1)) //
+            if (seenDashDash || argLen == 0 || ((argv[argi][0] != '-') ^ (argLen == 1))) //
                 // Handle as position argument if we have seen "--" or does not start with dash.
                 handleArgument(argv[argi]);
             else if (strcmp(argv[argi], "--") == 0)

@@ -142,29 +142,43 @@ void write(TTarget & target,
            BamIOContext<TNameStore, TNameStoreCache> & context,
            Bam const & /*tag*/)
 {
+    typedef typename Iterator<CharString, Standard>::Type                                   TCharIter;
+    typedef typename Iterator<String<CigarElement<> > const, Standard>::Type __restrict__   TCigarIter;
+    typedef typename Iterator<IupacString const, Standard>::Type __restrict__               TSeqIter;
+    typedef typename Iterator<CharString const, Standard>::Type __restrict__                TQualIter;
+
     // First, write record to buffer.
-    clear(context.buffer);
+
+    // set internal lengths.
+    record._l_qname = length(record.qName) + 1;
+    record._n_cigar = length(record.cigar);
+    record._l_qseq = length(record.seq);
+
+    resize(context.buffer, sizeof(BamAlignmentRecordCore) + record._l_qname +
+           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq);
+    TCharIter it = begin(context.buffer, Standard());
 
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
-    record._l_qname = length(record.qName) + 1;
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
     record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
-    // flag_nc
-    record._n_cigar = length(record.cigar);
-
-    // l_seq
-    record._l_qseq = (__int32)length(record.seq);
-    appendRawPod(context.buffer, static_cast<BamAlignmentRecordCore &>(record));
+    // BamAlignmentRecordCore.
+    arrayCopyForward(reinterpret_cast<char*>(&record),
+                     reinterpret_cast<char*>(&record) + sizeof(BamAlignmentRecordCore),
+                     it);
+    it += sizeof(BamAlignmentRecordCore);
 
     // read_name
-    write(context.buffer, record.qName);
-    writeValue(context.buffer, '\0');
+    arrayCopyForward(begin(record.qName, Standard()),
+                     end(record.qName, Standard()),
+                     it);
+    it += length(record.qName);
+    *it++ = 0;
 
     // cigar
-    static __uint8 const MAP[256] =
+    static unsigned char const MAP[256] =
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -183,39 +197,39 @@ void write(TTarget & target,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
-    for (unsigned i = 0; i < length(record.cigar); ++i)
-    {
-        __uint32 x = record.cigar[i].count;
-        x <<= 4;
-        x |= MAP[static_cast<int>(record.cigar[i].operation)];
-        appendRawPod(context.buffer, x);
-    }
+    TCigarIter citEnd = end(record.cigar, Standard());
+    for (TCigarIter cit = begin(record.cigar, Standard()); cit != citEnd; ++cit)
+        *it++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
 
     // seq
-    for (size_t i = 1; i < length(record.seq); i+=2)
-        writeValue(context.buffer, (ordValue(record.seq[i - 1]) << 4) | ordValue(record.seq[i]));
-    if ((length(record.seq) & 1) == 1)
-        writeValue(context.buffer, ordValue(back(record.seq)) << 4);
+    TSeqIter sit = begin(record.seq, Standard());
+    TSeqIter sitEnd = sit + (record._l_qseq & ~1);
+    while (sit != sitEnd)
+    {
+        unsigned char x = (ordValue(getValue(sit++)) << 4);
+        *it++ = x | ordValue(getValue(sit++));
+    }
+    if (record._l_qseq & 1)
+        *it++ = ordValue(getValue(sit++)) << 4;
 
     // qual
-    if (empty(record.qual))
-    {
-        for (unsigned i = 0; i < length(record.qual); ++i)
-            writeValue(context.buffer, (unsigned char)(0xff));
-    }
-    else
-    {
-        for (unsigned i = 0; i < length(record.qual); ++i)
-            writeValue(context.buffer, (char)(record.qual[i] - '!'));
-    }
+    SEQAN_ASSERT_LEQ(length(record.qual), length(record.seq));
+    TCharIter itQEnd = it + record._l_qseq;
+    TQualIter qit = begin(record.qual, Standard());
+    TQualIter qitEnd = end(record.qual, Standard());
+    while (qit != qitEnd)
+        *it++ = *qit++ - '!';
+    while (it != itQEnd)
+        *it++ = '\xff';         // fill with zero qualities
 
     // tags
-    if (length(record.tags) > 0u)
-        write(context.buffer, record.tags);
+    arrayCopyForward(begin(record.tags, Standard()),
+                     end(record.tags, Standard()),
+                     it);
 
     // buffer to stream
     appendRawPod(target, (__uint32)length(context.buffer));
-    write(target, context.buffer);
+    write(target, begin(context.buffer, Standard()), length(context.buffer));
 }
 
 }  // namespace seqan

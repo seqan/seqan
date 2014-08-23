@@ -173,8 +173,10 @@ compressInit(CompressionContext<GZFile> & ctx)
 
     ctx.strm.zalloc = NULL;
     ctx.strm.zfree = NULL;
-    int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
-                              GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+    //int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+    //                          GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+    int status = deflateInit2(&ctx.strm, Z_BEST_SPEED, Z_DEFLATED,
+                              GZIP_WINDOW_BITS, 9, Z_HUFFMAN_ONLY);
     if (status != Z_OK)
         throw IOException("GZFile deflateInit2() failed.");
 }
