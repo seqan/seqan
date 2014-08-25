@@ -46,6 +46,10 @@ class MessagePrinter(object):
         error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
         msg = termcolor.colored(msg, 'white', attrs=['bold'])
         print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
+        # Increase error counter.
+        self.counts[level] += 1
+        if token.file_name == '<mem>':
+            return  # do not attempt to access line below
         # Load line with error and print it with an indicator of the error.
         fcontents = open(token.file_name).read()
         lines = fcontents.splitlines()
@@ -53,7 +57,6 @@ class MessagePrinter(object):
             return  # Invalid line number.
         print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
         print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
-        self.counts[level] += 1
 
     def printParserError(self, e):
         """Print user-friendly error message for ParserError e."""

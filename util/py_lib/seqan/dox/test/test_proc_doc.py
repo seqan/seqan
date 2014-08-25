@@ -2,14 +2,16 @@
 """Tests for the proc_doc module."""
 
 import sys
+import os.path
 import unittest
 
-import lexer
-import os.path
-import dox_tokens
-import dox_parser
-import proc_doc
-import raw_doc
+import seqan.dox.lexer as lexer
+import seqan.dox.dox_tokens as dox_tokens
+import seqan.dox.dox_parser as dox_parser
+import seqan.dox.proc_doc as proc_doc
+import seqan.dox.raw_doc as raw_doc
+import seqan.dox.pure as pure
+
 
 class TextNodeTest(unittest.TestCase):
     def testRenderSimple(self):
@@ -26,22 +28,26 @@ class TextNodeTest(unittest.TestCase):
                          '<a href="http://www.example.com">A word does '
                          'not make a sentence</a>')
 
-        
-class TestTextNodeConverstion(unittest.TestCase):
+
+class TestTextNodeConversion(unittest.TestCase):
     def setUp(self):
+        base_dir = os.path.dirname(os.path.realpath(__file__))
         self.lexer = lexer.Lexer(dox_tokens.LEXER_TOKENS, skip_whitespace=False)
-        self.conv = proc_doc.RawTextToTextNodeConverter()
+        self.doc_proc = proc_doc.DocProcessor(include_dirs=[base_dir],
+                                              expected_tags=pure.EXPECTED_TAGS)
+        self.conv = proc_doc.RawTextToTextNodeConverter(doc_proc=self.doc_proc,
+                                                        expected_tags=pure.EXPECTED_TAGS)
 
     def strToTokens(self, s):
         self.lexer.input(s)
-        tokens = [t for t in self.lexer.tokens() ]
+        tokens = [t for t in self.lexer.tokens()]
         return tokens[:-1]
-    
+
     def testConversionPlain(self):
         r = raw_doc.RawText(self.strToTokens('This is some example.'))
         n = self.conv.run(r)
         self.assertEqual(n.toHtmlLike(), '<div>This is some example.</div>')
-        
+
     def testConversionOneLevel(self):
         r = raw_doc.RawText(self.strToTokens('This <b>is</b> some example.'))
         n = self.conv.run(r)
@@ -61,6 +67,11 @@ class TestTextNodeConverstion(unittest.TestCase):
 
 
 class TestConverterBase(unittest.TestCase):
+    def createDocProcessor(self):
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+        return proc_doc.DocProcessor(include_dirs=[base_dir],
+                                     expected_tags=pure.EXPECTED_TAGS)
+
     def createLexer(self, text):
         """Create a lexer.Lexer object with the given text."""
         lex = lexer.Lexer(dox_tokens.LEXER_TOKENS, skip_whitespace=False)
@@ -81,8 +92,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
     """Tests for @page with @include and @snippet commands."""
 
     def setUp(self):
-        base_dir = os.path.dirname(os.path.realpath(__file__))
-        self.proc = proc_doc.DocProcessor(include_dir=base_dir)
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['page']
 
     def testInclude(self):
@@ -91,7 +101,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@include example.cpp')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h0>Example</h0><code type=".cpp">#include <iostream>\n'
+        txt = ('<div><h1>Example</h1><code source="include" type=".cpp" path="example.cpp">#include <iostream>\n'
                '\n'
                'int main(int arg, char const ** argv)\n'
                '{\n'
@@ -102,25 +112,25 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '}\n'
                '</code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
-        
+
     def testSnippet(self):
         txt = ('@page Page Page Title\n'
                '@section Example\n'
                '@snippet example.cpp Print to stdout')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h0>Example</h0><code type=".cpp">'
+        txt = ('<div><h1>Example</h1><code source="snippet" type=".cpp" path="example.cpp">'
                '    std::cout << "This is an example.\\n";'
                '</code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
-        
+
 
 class TestConvertPageWithLink(TestConverterBase):
     """Tests for @page with @link command."""
 
     def setUp(self):
         base_dir = os.path.dirname(os.path.realpath(__file__))
-        self.proc = proc_doc.DocProcessor(include_dir=base_dir)
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['page']
 
     def testLinkWithTitle(self):
@@ -139,7 +149,7 @@ class TestConvertPageWithLink(TestConverterBase):
                'And a link without a title: @link OtherPage @endlink.\n')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><p>And a link without a title: <a href="seqan:OtherPage" />'
+        txt = ('<div><p>And a link without a title: <a href="seqan:OtherPage">OtherPage</a>'
                '.</p></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
 
@@ -148,8 +158,7 @@ class TestConvertPageWithImage(TestConverterBase):
     """Tests for @page with <img> tag."""
 
     def setUp(self):
-        base_dir = os.path.dirname(os.path.realpath(__file__))
-        self.proc = proc_doc.DocProcessor(include_dir=base_dir)
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['page']
 
     def testLinkWithTitle(self):
@@ -168,14 +177,14 @@ class TestConvertPageWithImage(TestConverterBase):
                'And a link without a title: @link OtherPage @endlink.\n')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><p>And a link without a title: <a href="seqan:OtherPage" />'
-               '.</p></div>')
+        txt = ('<div><p>And a link without a title: <a href="seqan:OtherPage">'
+               'OtherPage</a>.</p></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
 
 
 class TestConvertPage(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['page']
 
     def testConvertMinimal(self):
@@ -184,8 +193,7 @@ class TestConvertPage(TestConverterBase):
         proc_page = self.conv.process(raw_page)
         self.assertEqual(proc_page.name, 'Page')
         self.assertEqual(proc_page.kind, 'page')
-        self.assertEqual(proc_page.title.toHtmlLike(),
-                         '<div>Page Title <i>italic</i>.</div>')
+        self.assertEqual(proc_page.title, 'Page Title <i>italic</i>.')
 
     def testConvertFull(self):
         txt = ('@page Page Page Title\n'
@@ -200,12 +208,12 @@ class TestConvertPage(TestConverterBase):
         proc_page = self.conv.process(raw_page)
         self.assertEqual(proc_page.name, 'Page')
         self.assertEqual(proc_page.kind, 'page')
-        self.assertEqual(proc_page.title.toHtmlLike(), '<div>Page Title</div>')
+        self.assertEqual(proc_page.title, 'Page Title')
         txt = '<div>This is the <i>very important</i> page brief.</div>'
         self.assertEqual(proc_page.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -231,7 +239,7 @@ class TestConvertPage(TestConverterBase):
 
 class TestConvertGroup(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['defgroup']
 
     def testConvertMinimal(self):
@@ -240,8 +248,7 @@ class TestConvertGroup(TestConverterBase):
         proc_group = self.conv.process(raw_group)
         self.assertEqual(proc_group.name, 'Group')
         self.assertEqual(proc_group.kind, 'group')
-        self.assertEqual(proc_group.title.toHtmlLike(),
-                         '<div>Group Title <i>italic</i>.</div>')
+        self.assertEqual(proc_group.title, 'Group Title <i>italic</i>.')
 
     def testConvertFull(self):
         txt = ('@defgroup Group Group Title\n'
@@ -256,12 +263,12 @@ class TestConvertGroup(TestConverterBase):
         proc_group = self.conv.process(raw_group)
         self.assertEqual(proc_group.name, 'Group')
         self.assertEqual(proc_group.kind, 'group')
-        self.assertEqual(proc_group.title.toHtmlLike(), '<div>Group Title</div>')
+        self.assertEqual(proc_group.title, 'Group Title')
         txt = '<div>This is the <i>very important</i> group brief.</div>'
         self.assertEqual(proc_group.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -287,7 +294,7 @@ class TestConvertGroup(TestConverterBase):
 
 class TestConvertEnum(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['enum']
 
     def testConvertMinimal(self):
@@ -295,7 +302,7 @@ class TestConvertEnum(TestConverterBase):
         raw_enum = self.parseText(txt).entries[0]
         proc_enum = self.conv.process(raw_enum)
         self.assertEqual(proc_enum.name, 'MyEnum')
-        self.assertEqual(proc_enum.title.toHtmlLike(), '<div>My Enum</div>')
+        self.assertEqual(proc_enum.title, 'My Enum')
 
     def testConvertFull(self):
         txt = ('@enum EnumName Enum Name\n'
@@ -313,7 +320,7 @@ class TestConvertEnum(TestConverterBase):
         raw_enum = self.parseText(txt).entries[0]
         proc_enum = self.conv.process(raw_enum)
         self.assertEqual(proc_enum.name, 'EnumName')
-        self.assertEqual(proc_enum.title.toHtmlLike(), '<div>Enum Name</div>')
+        self.assertEqual(proc_enum.title, 'Enum Name')
         self.assertEqual(proc_enum.kind, 'enum')
         self.assertEqual(proc_enum.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_enum.signatures), 1)
@@ -324,7 +331,7 @@ class TestConvertEnum(TestConverterBase):
         self.assertEqual(proc_enum.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -336,7 +343,7 @@ class TestConvertEnum(TestConverterBase):
 
 class TestConvertAdaption(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['adaption']
 
     def testConvertMinimal(self):
@@ -344,7 +351,7 @@ class TestConvertAdaption(TestConverterBase):
         raw_adaption = self.parseText(txt).entries[0]
         proc_adaption = self.conv.process(raw_adaption)
         self.assertEqual(proc_adaption.name, 'MyAdaption')
-        self.assertEqual(proc_adaption.title.toHtmlLike(), '<div>My Adaption</div>')
+        self.assertEqual(proc_adaption.title, 'My Adaption')
 
     def testConvertFull(self):
         txt = ('@adaption AdaptionName Adaption Name\n'
@@ -362,7 +369,7 @@ class TestConvertAdaption(TestConverterBase):
         raw_adaption = self.parseText(txt).entries[0]
         proc_adaption = self.conv.process(raw_adaption)
         self.assertEqual(proc_adaption.name, 'AdaptionName')
-        self.assertEqual(proc_adaption.title.toHtmlLike(), '<div>Adaption Name</div>')
+        self.assertEqual(proc_adaption.title, 'Adaption Name')
         self.assertEqual(proc_adaption.kind, 'adaption')
         self.assertEqual(proc_adaption.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_adaption.signatures), 1)
@@ -373,7 +380,7 @@ class TestConvertAdaption(TestConverterBase):
         self.assertEqual(proc_adaption.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -385,7 +392,7 @@ class TestConvertAdaption(TestConverterBase):
 
 class TestConvertTypedef(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['global_typedef']
 
     def testConvertMinimal(self):
@@ -393,7 +400,7 @@ class TestConvertTypedef(TestConverterBase):
         raw_typedef = self.parseText(txt).entries[0]
         proc_typedef = self.conv.process(raw_typedef)
         self.assertEqual(proc_typedef.name, 'MyTypedef')
-        self.assertEqual(proc_typedef.title.toHtmlLike(), '<div>My Typedef</div>')
+        self.assertEqual(proc_typedef.title, 'My Typedef')
 
     def testConvertFull(self):
         txt = ('@typedef TypedefName Typedef Name\n'
@@ -411,7 +418,7 @@ class TestConvertTypedef(TestConverterBase):
         raw_typedef = self.parseText(txt).entries[0]
         proc_typedef = self.conv.process(raw_typedef)
         self.assertEqual(proc_typedef.name, 'TypedefName')
-        self.assertEqual(proc_typedef.title.toHtmlLike(), '<div>Typedef Name</div>')
+        self.assertEqual(proc_typedef.title, 'Typedef Name')
         self.assertEqual(proc_typedef.kind, 'global_typedef')
         self.assertEqual(proc_typedef.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_typedef.signatures), 1)
@@ -422,7 +429,7 @@ class TestConvertTypedef(TestConverterBase):
         self.assertEqual(proc_typedef.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -434,7 +441,7 @@ class TestConvertTypedef(TestConverterBase):
 
 class TestConvertConcept(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['concept']
 
     def testConvertMinimal(self):
@@ -442,7 +449,7 @@ class TestConvertConcept(TestConverterBase):
         raw_concept = self.parseText(txt).entries[0]
         proc_concept = self.conv.process(raw_concept)
         self.assertEqual(proc_concept.name, 'MyConcept')
-        self.assertEqual(proc_concept.title.toHtmlLike(), '<div>My Concept</div>')
+        self.assertEqual(proc_concept.title, 'My Concept')
         self.assertEqual(proc_concept.kind, 'concept')
 
     def testConvertFull(self):
@@ -462,7 +469,7 @@ class TestConvertConcept(TestConverterBase):
         raw_concept = self.parseText(txt).entries[0]
         proc_concept = self.conv.process(raw_concept)
         self.assertEqual(proc_concept.name, 'ConceptName')
-        self.assertEqual(proc_concept.title.toHtmlLike(), '<div>Concept Name</div>')
+        self.assertEqual(proc_concept.title, 'Concept Name')
         self.assertEqual(proc_concept.kind, 'concept')
         self.assertEqual(proc_concept.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_concept.signatures), 1)
@@ -475,7 +482,7 @@ class TestConvertConcept(TestConverterBase):
         self.assertEqual(proc_concept.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -487,7 +494,7 @@ class TestConvertConcept(TestConverterBase):
 
 class TestConvertClass(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['class']
 
     def testConvertMinimal(self):
@@ -495,7 +502,7 @@ class TestConvertClass(TestConverterBase):
         raw_class = self.parseText(txt).entries[0]
         proc_class = self.conv.process(raw_class)
         self.assertEqual(proc_class.name, 'MyClass')
-        self.assertEqual(proc_class.title.toHtmlLike(), '<div>My Class</div>')
+        self.assertEqual(proc_class.title, 'My Class')
         self.assertEqual(proc_class.kind, 'class')
 
     def testConvertFull(self):
@@ -517,7 +524,7 @@ class TestConvertClass(TestConverterBase):
         raw_class = self.parseText(txt).entries[0]
         proc_class = self.conv.process(raw_class)
         self.assertEqual(proc_class.name, 'ClassName')
-        self.assertEqual(proc_class.title.toHtmlLike(), '<div>Class Name</div>')
+        self.assertEqual(proc_class.title, 'Class Name')
         self.assertEqual(proc_class.kind, 'class')
         self.assertEqual(proc_class.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_class.signatures), 1)
@@ -532,7 +539,7 @@ class TestConvertClass(TestConverterBase):
         self.assertEqual(proc_class.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -544,7 +551,7 @@ class TestConvertClass(TestConverterBase):
 
 class TestConvertTag(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['tag']
 
     def testConvertMinimal(self):
@@ -552,7 +559,7 @@ class TestConvertTag(TestConverterBase):
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'MyTag')
-        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>My Tag</div>')
+        self.assertEqual(proc_tag.title, 'My Tag')
         self.assertEqual(proc_tag.kind, 'tag')
 
     def testConvertFull(self):
@@ -571,7 +578,7 @@ class TestConvertTag(TestConverterBase):
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'TagName')
-        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>Tag Name</div>')
+        self.assertEqual(proc_tag.title, 'Tag Name')
         self.assertEqual(proc_tag.kind, 'tag')
         self.assertEqual(proc_tag.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_tag.signatures), 1)
@@ -582,7 +589,7 @@ class TestConvertTag(TestConverterBase):
         self.assertEqual(proc_tag.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -607,7 +614,7 @@ class TestConvertTag(TestConverterBase):
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'Group#TagName')
-        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>Tag Name</div>')
+        self.assertEqual(proc_tag.title, 'Tag Name')
         self.assertEqual(proc_tag.kind, 'grouped_tag')
         self.assertEqual(proc_tag.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_tag.signatures), 1)
@@ -618,7 +625,7 @@ class TestConvertTag(TestConverterBase):
         self.assertEqual(proc_tag.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -630,7 +637,7 @@ class TestConvertTag(TestConverterBase):
 
 class TestConvertFunction(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['global_function']
 
     def testConvertMinimalGlobal(self):
@@ -638,7 +645,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'global_function')
 
     def testConvertMinimalInterface(self):
@@ -646,7 +653,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'interface_function')
 
     def testConvertMinimalMember(self):
@@ -654,7 +661,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'member_function')
 
     def testConvertFullGlobal(self):
@@ -677,7 +684,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'global_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -702,7 +709,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -731,7 +738,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'interface_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -756,7 +763,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -785,7 +792,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myFunction')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
+        self.assertEqual(proc_function.title, 'my Function')
         self.assertEqual(proc_function.kind, 'member_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -810,7 +817,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -819,10 +826,10 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(len(proc_function.sees), 1)
         self.assertEqual(proc_function.sees[0].toHtmlLike(), txt)
 
-        
+
 class TestConvertMacro(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['macro']
 
     def testConvertMinimalGlobal(self):
@@ -830,7 +837,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'MACRO')
-        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
+        self.assertEqual(proc_macro.title, 'macro title')
         self.assertEqual(proc_macro.kind, 'macro')
 
     def testConvertMinimalGrouped(self):
@@ -838,7 +845,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'Group#MACRO')
-        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
+        self.assertEqual(proc_macro.title, 'macro title')
         self.assertEqual(proc_macro.kind, 'grouped_macro')
 
     def testConvertFullGlobal(self):
@@ -860,7 +867,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'MACRO')
-        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
+        self.assertEqual(proc_macro.title, 'macro title')
         self.assertEqual(proc_macro.kind, 'macro')
         self.assertEqual(proc_macro.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -884,7 +891,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -911,7 +918,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'Group#MACRO')
-        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
+        self.assertEqual(proc_macro.title, 'macro title')
         self.assertEqual(proc_macro.kind, 'grouped_macro')
         self.assertEqual(proc_macro.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -931,7 +938,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -940,10 +947,10 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(len(proc_macro.sees), 1)
         self.assertEqual(proc_macro.sees[0].toHtmlLike(), txt)
 
-        
+
 class TestConvertMetafunction(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['global_metafunction']
 
     def testConvertMinimalGlobal(self):
@@ -951,7 +958,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Metafunktion')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>metafunction title</div>')
+        self.assertEqual(proc_function.title, 'metafunction title')
         self.assertEqual(proc_function.kind, 'global_metafunction')
 
     def testConvertMinimalInterface(self):
@@ -959,7 +966,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#Metafunktion')
-        self.assertEqual(proc_function.title.toHtmlLike(), '<div>metafunction title</div>')
+        self.assertEqual(proc_function.title, 'metafunction title')
         self.assertEqual(proc_function.kind, 'interface_metafunction')
 
     def testConvertFullGlobal(self):
@@ -981,7 +988,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_metafunction = self.parseText(txt).entries[0]
         proc_metafunction = self.conv.process(raw_metafunction)
         self.assertEqual(proc_metafunction.name, 'Metafunktion')
-        self.assertEqual(proc_metafunction.title.toHtmlLike(), '<div>metafunction title</div>')
+        self.assertEqual(proc_metafunction.title, 'metafunction title')
         self.assertEqual(proc_metafunction.kind, 'global_metafunction')
         self.assertEqual(proc_metafunction.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # tparams
@@ -1000,7 +1007,7 @@ class TestConvertMetafunction(TestConverterBase):
         self.assertEqual(proc_metafunction.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1028,7 +1035,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_metafunction = self.parseText(txt).entries[0]
         proc_metafunction = self.conv.process(raw_metafunction)
         self.assertEqual(proc_metafunction.name, 'Klass#Metafunktion')
-        self.assertEqual(proc_metafunction.title.toHtmlLike(), '<div>metafunction title</div>')
+        self.assertEqual(proc_metafunction.title, 'metafunction title')
         self.assertEqual(proc_metafunction.kind, 'interface_metafunction')
         # tparams
         self.assertEqual(len(proc_metafunction.tparams), 1)
@@ -1046,7 +1053,7 @@ class TestConvertMetafunction(TestConverterBase):
         self.assertEqual(proc_metafunction.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1058,7 +1065,7 @@ class TestConvertMetafunction(TestConverterBase):
 
 class TestConvertVariable(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
         self.conv = self.proc.converters['variable']
 
     def testConvertMinimalGlobal(self):
@@ -1066,7 +1073,7 @@ class TestConvertVariable(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myVar')
-        self.assertEqual(proc_function.title, None)
+        self.assertEqual(proc_function.title, 'myVar')
         self.assertEqual(proc_function.type, 'Type')
         self.assertEqual(proc_function.kind, 'variable')
 
@@ -1076,7 +1083,7 @@ class TestConvertVariable(TestConverterBase):
         doc = proc_doc.ProcDoc
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myVar')
-        self.assertEqual(proc_function.title, None)
+        self.assertEqual(proc_function.title, 'Klass::myVar')
         self.assertEqual(proc_function.type, 'Type')
         self.assertEqual(proc_function.kind, 'member_variable')
 
@@ -1095,7 +1102,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'myVar')
-        self.assertEqual(proc_variable.title, None)
+        self.assertEqual(proc_variable.title, 'myVar')
         self.assertEqual(proc_variable.type, 'Type')
         self.assertEqual(proc_variable.kind, 'variable')
         # brief
@@ -1103,7 +1110,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1129,7 +1136,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'Klass::myVar')
-        self.assertEqual(proc_variable.title, None)
+        self.assertEqual(proc_variable.title, 'Klass::myVar')
         self.assertEqual(proc_variable.type, 'Type')
         self.assertEqual(proc_variable.kind, 'member_variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
@@ -1140,7 +1147,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1164,7 +1171,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'CONSTANT')
-        self.assertEqual(proc_variable.title, None)
+        self.assertEqual(proc_variable.title, 'CONSTANT')
         self.assertEqual(proc_variable.type, 'Enum')
         self.assertEqual(proc_variable.kind, 'variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
@@ -1175,7 +1182,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1199,7 +1206,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'Klass::CONSTANT')
-        self.assertEqual(proc_variable.title, None)
+        self.assertEqual(proc_variable.title, 'Klass::CONSTANT')
         self.assertEqual(proc_variable.type, 'Klass::Enum')
         self.assertEqual(proc_variable.kind, 'member_variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
@@ -1210,7 +1217,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h0>First <em>heading</em></h0>'
+               '<h1>First <em>heading</em></h1>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1222,7 +1229,7 @@ class TestConvertVariable(TestConverterBase):
 
 class TestDocProcessorInheritance(TestConverterBase):
     def setUp(self):
-        self.proc = proc_doc.DocProcessor()
+        self.proc = self.createDocProcessor()
 
     def testConceptInheritance(self):
         txt = ('@concept ConceptA1\n'
