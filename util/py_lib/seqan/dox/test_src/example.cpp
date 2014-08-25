@@ -1,3 +1,7 @@
+#include <iostream>
+
+int main()
+{
 /*!
  * @class A
  * @brief This is a class.
@@ -11,3 +15,10 @@
  * @class Foo
  * @implements Konzept
  */
+
+    //![Print to stdout]
+    std::cout << "This is an example.\n";
+    //![Print to stdout]
+
+    return 0;
+}

@@ -127,6 +127,8 @@ message (STATUS "Configuring docs")
 add_subdirectory (docs)
 message (STATUS "Configuring sandbox")
 add_subdirectory (sandbox)
+message (STATUS "Configuring util/py_lib")
+add_subdirectory (util/py_lib)
 
 # ===========================================================================
 # Include CPack
