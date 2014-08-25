@@ -347,7 +347,7 @@ class ReturnState(ParamState):
         else:
             if self.name and token.type in dox_tokens.WHITESPACE:
                 self.type_read = True
-            else:
+            elif self.name or token.type not in dox_tokens.WHITESPACE:
                 self.name.append(token)
 
 
