@@ -8,16 +8,16 @@ storing the precise token locations.
 
 import unittest
 
-import lexer
+import seqan.dox.lexer as lexer
 
 
 class TestLexer(unittest.TestCase):
     def testWithoutOffset(self):
         self._testWithOffset(0, 0)
-    
+
     def testWithOffset(self):
         self._testWithOffset(3, 4)
-    
+
     def _testWithOffset(self, line_offset, col_offset):
         rules = (('number', r'[0-9]+'),
                  ('word', r'\w+'))
