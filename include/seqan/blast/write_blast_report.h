@@ -268,6 +268,14 @@ _writeAlignmentBlockIntermediateChar(TStream                 & stream,
     return ret;
 }
 
+template <typename T>
+constexpr typename std::enable_if<std::is_integral<T>::value, T>::type
+_numberOfDigits(T const number)
+{
+    return (number == 0) ? 1 : static_cast<T>(std::floor(std::log10(number))+1);
+}
+
+
 template <typename TStream,
           typename TMatch,
           BlastFormatProgram p,
@@ -288,8 +296,8 @@ _writeAlignmentBlock(TStream                 & stream,
     char            buffer[40]  = "";
 
     TPos            aPos        = 0; // position in alignment
-    int32_t         qPos        = 0; // position in query (without gaps)
-    int32_t         sPos        = 0; // position in subject (without gaps)
+    uint32_t        qPos        = 0; // position in query (without gaps)
+    uint32_t        sPos        = 0; // position in subject (without gaps)
     // the latter two can become negative
 
     TPos            effQStart   = m.qStart;
@@ -318,7 +326,10 @@ _writeAlignmentBlock(TStream                 & stream,
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);
 
-    unsigned char   numberWidth = 5; //TODO get biggest number of digits in pos's
+    TPos    const   maxPos      = std::max({effQStart, effQEnd, effSStart,
+                                            effSEnd});
+    // max # digits in pos's
+    unsigned char const numberWidth = _numberOfDigits(maxPos);
 
 //     std::cout << "m.aliLength: " << m.aliLength
 //               << "\t length(row0): " << length(row0)
@@ -342,7 +353,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d", numberWidth, qPos + effQStart - qStepOne);
+        sprintf(buffer, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;
@@ -381,7 +392,7 @@ _writeAlignmentBlock(TStream                 & stream,
             if (ret)
                 return ret;
         }
-        sprintf(buffer, "  %-*d\n\n", numberWidth, sPos + effSStart - sStepOne);
+        sprintf(buffer, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
         ret = streamPut(stream, buffer);
         if (ret)
             return ret;

@@ -523,24 +523,17 @@ writeMatch(TStream & stream, TBlastMatch const & match,
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
     typedef decltype(match.qStart) TPos;
 
-    typedef typename NotC<OrC<p==BlastFormatProgram::BLASTP,
-                              p==BlastFormatProgram::TBLASTN>::VALUE
-                              >::Type QHasRC;
-    typedef typename OrC<p==BlastFormatProgram::BLASTX,
-                         p==BlastFormatProgram::TBLASTX>::Type QHasFrames;
-    typedef typename OrC<p==BlastFormatProgram::TBLASTX,
-                         p==BlastFormatProgram::TBLASTN>::Type SHasRC;
-    typedef SHasRC SHasFrames;
-
     TPos effectiveQStart    = match.qStart;
     TPos effectiveQEnd      = match.qEnd;
     TPos effectiveSStart    = match.sStart;
     TPos effectiveSEnd      = match.sEnd;
 
     _untranslatePositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
-                          match.qLength, QHasRC(), QHasFrames());
+                          match.qLength, QHasRevComp<TFormat>(),
+                          QHasFrames<TFormat>());
     _untranslatePositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
-                          match.sLength, SHasRC(), SHasFrames());
+                          match.sLength, SHasRevComp<TFormat>(),
+                          SHasFrames<TFormat>());
 
     return writeMatch(stream,
                       TFormat(),
@@ -555,10 +548,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
                       effectiveSStart,
                       effectiveSEnd,
                       match.eValue,
-                      match.bitScore,
-                      int(match.qFrameShift),// ALERT DEBUG
-                      match.qLength // ALERT DEBUG
-                     ); 
+                      match.bitScore);
 }
 
 template <typename TStream, typename TBlastMatch,
