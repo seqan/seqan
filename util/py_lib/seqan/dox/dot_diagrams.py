@@ -45,7 +45,7 @@ class DiagramRenderResult(object):
     @ivar image_path: String with the path to the image.
     @ivar map_path: String with the path to the <map> file.
     """
-    
+
     def __init__(self):
         self.image_path = None
         self.map_path = None
