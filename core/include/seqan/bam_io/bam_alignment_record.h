@@ -89,6 +89,9 @@ inline void clear(BamAlignmentRecord & record);
  *
  * @var BamFlags BAM_FLAG_DUPLICATE = 0x0400;
  * @brief PCR or optical duplicate.
+ *
+ * @var BamFlags BAM_FLAG_SUPPLEMENTARY = 0x0800;
+ * @brief Supplementary alignment.
  */
 
 /**
@@ -123,7 +126,8 @@ enum BamFlags
     BAM_FLAG_LAST          = 0x0080,
     BAM_FLAG_SECONDARY     = 0x0100,
     BAM_FLAG_QC_NO_PASS    = 0x0200,
-    BAM_FLAG_DUPLICATE     = 0x0400
+    BAM_FLAG_DUPLICATE     = 0x0400,
+    BAM_FLAG_SUPPLEMENTARY = 0x0800
 };
 
 /*!
@@ -854,6 +858,28 @@ inline bool
 hasFlagDuplicate(BamAlignmentRecord const & record)
 {
     return (record.flag & BAM_FLAG_DUPLICATE) == BAM_FLAG_DUPLICATE;
+}
+
+// ----------------------------------------------------------------------------
+// Function hasFlagSupplementary()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagSupplementary
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "supplementary" flag set.
+ *
+ * @signature bool hasFlagSupplementary(record);
+ *
+ * @param record The BamAlignmentRecord to query.
+ *
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
+inline bool
+hasFlagSupplementary(BamAlignmentRecord const & record)
+{
+    return (record.flag & BAM_FLAG_SUPPLEMENTARY) == BAM_FLAG_SUPPLEMENTARY;
 }
 
 // ----------------------------------------------------------------------------
