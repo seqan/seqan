@@ -634,7 +634,7 @@ class TestVariableParsing(TestDoxParserBase):
                '@see Other')
         parser = self.parseText(txt)
         doc = parser.documentation
-        expected = ('@var int var\n'
+        expected = ('@var int var;\n'
                     '\n'
                     '@headerfile <seqan/base.h>\n'
                     '@headerfile <seqan/sequence.h>\n'
@@ -661,7 +661,7 @@ class TestVariableParsing(TestDoxParserBase):
         txt = '@var Klass::Type Klass::var'
         parser = self.parseText(txt)
         doc = parser.documentation
-        self.assertMultiLineEqual(doc.getFormatted(), '@var Klass::Type Klass::var\n\n')
+        self.assertMultiLineEqual(doc.getFormatted(), '@var Klass::Type Klass::var;\n\n')
 
     def testMemberFull(self):
         txt = ('@var Klass::Type Klass::var\n'
@@ -679,7 +679,7 @@ class TestVariableParsing(TestDoxParserBase):
                '@see Other')
         parser = self.parseText(txt)
         doc = parser.documentation
-        expected = ('@var Klass::Type Klass::var\n'
+        expected = ('@var Klass::Type Klass::var;\n'
                     '\n'
                     '@brief This is a brief text.\n'
                     '\n'

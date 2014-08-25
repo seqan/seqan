@@ -101,7 +101,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@include example.cpp')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h1>Example</h1><code source="include" type=".cpp" path="example.cpp">#include <iostream>\n'
+        txt = ('<div><h1>Example</h1><dox:code source="include" type=".cpp" path="example.cpp">#include <iostream>\n'
                '\n'
                'int main(int arg, char const ** argv)\n'
                '{\n'
@@ -110,7 +110,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '    //![Print to stdout]\n'
                '    return 0;\n'
                '}\n'
-               '</code></div>')
+               '</dox:code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
 
     def testSnippet(self):
@@ -119,9 +119,9 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@snippet example.cpp Print to stdout')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h1>Example</h1><code source="snippet" type=".cpp" path="example.cpp">'
+        txt = ('<div><h1>Example</h1><dox:code source="snippet" type=".cpp" path="example.cpp">'
                '    std::cout << "This is an example.\\n";'
-               '</code></div>')
+               '</dox:code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
 
 
@@ -230,9 +230,9 @@ class TestConvertPage(TestConverterBase):
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
         txt = ('<div>'
-               '<code type=".cpp">'
+               '<dox:code type=".cpp">'
                'int main(int argc, char const ** argv) {\n    return 0;\n}'
-               '</code>'
+               '</dox:code>'
                '</div>')
         self.assertEqual(proc_page.body.toHtmlLike(), txt)
 
@@ -285,9 +285,9 @@ class TestConvertGroup(TestConverterBase):
         raw_group = self.parseText(txt).entries[0]
         proc_group = self.conv.process(raw_group)
         txt = ('<div>'
-               '<code type=".cpp">'
+               '<dox:code type=".cpp">'
                'int main(int argc, char const ** argv) {\n    return 0;\n}'
-               '</code>'
+               '</dox:code>'
                '</div>')
         self.assertEqual(proc_group.body.toHtmlLike(), txt)
 
@@ -525,7 +525,7 @@ class TestConvertClass(TestConverterBase):
         proc_class = self.conv.process(raw_class)
         self.assertEqual(proc_class.name, 'ClassName')
         self.assertEqual(proc_class.title, 'Class Name')
-        self.assertEqual(proc_class.kind, 'class')
+        self.assertEqual(proc_class.kind, 'specialization')
         self.assertEqual(proc_class.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_class.signatures), 1)
         self.assertEqual(proc_class.signatures[0].toHtmlLike(), '<div>template &lt;typename T&gt;\nclass Name;</div>')
@@ -1233,14 +1233,18 @@ class TestDocProcessorInheritance(TestConverterBase):
 
     def testConceptInheritance(self):
         txt = ('@concept ConceptA1\n'
+               '@brief Concept A1\n'
                '\n'
                '@concept ConceptA2\n'
+               '@brief Concept A2\n'
                '\n'
                '@concept ConceptB\n'
+               '@brief Concept B\n'
                '@extends ConceptA1\n'
                '@extends ConceptA2\n'
                '\n'
                '@concept ConceptC\n'
+               '@brief Concept C\n'
                '@extends ConceptB\n')
         raw_doc = self.parseText(txt)
         proc_doc = self.proc.run(raw_doc)
@@ -1259,11 +1263,17 @@ class TestDocProcessorInheritance(TestConverterBase):
 
     def testClassInheritance(self):
         txt = ('@class ClassA\n'
+               '@brief Brief A\n'
+               '@signature class A\n'
                '\n'
                '@class ClassB\n'
+               '@brief Brief B\n'
+               '@signature class B\n'
                '@extends ClassA\n'
                '\n'
                '@class ClassC\n'
+               '@brief Brief C\n'
+               '@signature class C\n'
                '@extends ClassB\n')
         raw_doc = self.parseText(txt)
         proc_doc = self.proc.run(raw_doc)
@@ -1278,17 +1288,27 @@ class TestDocProcessorInheritance(TestConverterBase):
 
     def testConceptClassInheritance(self):
         txt = ('@concept ConceptA\n'
+               '@brief Concept A\n'
+               '@signature concept A;\n'
                '\n'
                '@concept ConceptB\n'
+               '@brief Concept B\n'
+               '@signature concept B;\n'
                '@extends ConceptA\n'
                '\n'
                '@class ClassA\n'
+               '@brief Class A\n'
+               '@signature class A\n'
                '@implements ConceptB\n'
                '\n'
                '@class ClassB\n'
+               '@brief Class B\n'
+               '@signature class B\n'
                '@extends ClassA\n'
                '\n'
                '@class ClassC\n'
+               '@brief Class C\n'
+               '@signature class C\n'
                '@extends ClassB\n')
         raw_doc = self.parseText(txt)
         proc_doc = self.proc.run(raw_doc)
