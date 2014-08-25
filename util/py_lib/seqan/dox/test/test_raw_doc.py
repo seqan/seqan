@@ -7,8 +7,8 @@ __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
 import unittest
 
-import lexer
-import raw_doc
+import seqan.dox.lexer as lexer
+import seqan.dox.raw_doc as raw_doc
 
 
 class TestDoxFormatter(unittest.TestCase):
@@ -340,7 +340,7 @@ class IncludeTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        include = raw_doc.RawInclude(self.path)
+        include = raw_doc.RawInclude([self.path_t])
         self.assertEqual(include.path, self.path)
         self.assertEqual(include.getFormatted(self.formatter), '@include apath\n')
 
@@ -357,7 +357,7 @@ class SnippetTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        snippet = raw_doc.RawSnippet(self.path, self.snippet)
+        snippet = raw_doc.RawSnippet(self.path.tokens, self.snippet.tokens)
         self.assertEqual(snippet.getFormatted(self.formatter),
                          '@snippet apath The snippet\n')
 
