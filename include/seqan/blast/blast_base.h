@@ -297,7 +297,8 @@ using QHasFrames = typename std::conditional<qHasFrames(TFormat()),
 constexpr bool
 sHasRevComp(BlastFormatProgram const p)
 {
-    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastFormatProgram::TBLASTX) ||
+            (p==BlastFormatProgram::TBLASTN))
             ? true
             : false;
 }
@@ -306,7 +307,8 @@ template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 constexpr bool
 sHasRevComp(BlastFormat<f,p,g> const & /**/)
 {
-    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastFormatProgram::TBLASTX) ||
+            (p==BlastFormatProgram::TBLASTN))
             ? true
             : false;
 }
@@ -323,7 +325,8 @@ using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
 constexpr bool
 sHasFrames(BlastFormatProgram const p)
 {
-    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastFormatProgram::TBLASTX) ||
+            (p==BlastFormatProgram::TBLASTN))
             ? true
             : false;
 }
@@ -332,7 +335,8 @@ template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 constexpr bool
 sHasFrames(BlastFormat<f,p,g> const & /**/)
 {
-    return ((p==BlastFormatProgram::TBLASTX) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastFormatProgram::TBLASTX) ||
+            (p==BlastFormatProgram::TBLASTN))
             ? true
             : false;
 }
@@ -720,15 +724,17 @@ _untranslatePositions(TPos & effectiveStart,
                       True const & /*hasReverseComplement*/,
                       False const & /*hasFrames*/)
 {
-    // BLAST is 1-indexed, but end positions are "on" instead of behind
-    // so only the begin positions need adapting
-    ++effectiveStart;
-    // reverse strand symoblized by swapped begin and end
-    if (frameShift < 0)
+    if (frameShift > 0)
     {
+        // BLAST is 1-indexed, but end positions are "on" instead of behind
+        // so only the begin positions need adapting
+        ++effectiveStart;
+    } else
+    {
+        // reverse strand coordinates have to be transformed
         effectiveStart = length - effectiveStart;
-        effectiveEnd = length - effectiveEnd;
-//         std::swap(effectiveStart, effectiveEnd);
+        effectiveEnd = length - effectiveEnd + 1;
+        // end is incremented instead of start
     }
 }
 
@@ -746,7 +752,7 @@ _untranslatePositions(TPos & effectiveStart,
     effectiveStart = effectiveStart * 3 + std::abs(frameShift) - 1;
     effectiveEnd = effectiveEnd * 3 + std::abs(frameShift) - 1;
 
-    _untranslatePositions(effectiveStart, effectiveEnd, frameShift, 
+    _untranslatePositions(effectiveStart, effectiveEnd, frameShift,
                           length, True(), False());
 }
 
