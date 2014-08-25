@@ -114,11 +114,11 @@ signal(Event2 &event)
 
 
 
-struct Suspendable_;
-typedef Tag<Suspendable_> Suspendable;
+template <typename TSpec = void>
+struct Suspendable;
 
-template <typename TValue>
-class ConcurrentQueue<TValue, Suspendable>
+template <typename TValue, typename TSpec>
+class ConcurrentQueue<TValue, Suspendable<TSpec> >
 {
 public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
@@ -134,11 +134,10 @@ public:
 
     Mutex       mutex;
     Event2      more;
-    Event2      less;
 
     bool        virgin;
 
-    ConcurrentQueue(TSize maxSize):
+    ConcurrentQueue():
         readerCount(0),
         writerCount(0),
         occupied(0),
@@ -146,10 +145,8 @@ public:
         nextOut(0),
         mutex(false),
         more(mutex),
-        less(more),
         virgin(true)
     {
-        reserve(data, maxSize, Exact());
     }
 
     ~ConcurrentQueue()
@@ -166,69 +163,86 @@ public:
 };
 
 template <typename TValue>
+class ConcurrentQueue<TValue, Suspendable<Limit> >:
+    public ConcurrentQueue<TValue, Suspendable<> >
+{
+public:
+    typedef ConcurrentQueue<TValue, Suspendable<> > TBase;
+    typedef typename Host<ConcurrentQueue>::Type    TString;
+    typedef typename Size<TString>::Type            TSize;
+
+    Event2      less;
+
+    ConcurrentQueue(TSize maxSize):
+        TBase(),
+        less(this->mutex)
+    {
+        reserve(this->data, maxSize, Exact());
+    }
+};
+
+template <typename TValue, typename TSpec>
 inline void
-lockReading(ConcurrentQueue<TValue, Suspendable> &)
+lockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > &)
 {}
 
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline void
-unlockReading(ConcurrentQueue<TValue, Suspendable> & me)
+unlockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
     ScopedLock<Mutex> lock(me.mutex);
     if (--me.readerCount == 0u)
         signal(me.less);
 }
 
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline void
-lockWriting(ConcurrentQueue<TValue, Suspendable> &)
+lockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > &)
 {}
 
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline void
-unlockWriting(ConcurrentQueue<TValue, Suspendable> & me)
+unlockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
     ScopedLock<Mutex> lock(me.mutex);
     if (--me.writerCount == 0u)
         signal(me.more);
 }
 
-template <typename TValue, typename TSize>
+template <typename TValue, typename TSize, typename TSpec>
 inline void
-setReaderCount(ConcurrentQueue<TValue, Suspendable> & me, TSize readerCount)
+setReaderCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize readerCount)
 {
     ScopedLock<Mutex> lock(me.mutex);
     me.readerCount = readerCount;
 }
 
-template <typename TValue, typename TSize>
+template <typename TValue, typename TSize, typename TSpec>
 inline void
-setWriterCount(ConcurrentQueue<TValue, Suspendable> & me, TSize writerCount)
+setWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize writerCount)
 {
     ScopedLock<Mutex> lock(me.mutex);
     me.writerCount = writerCount;
 }
 
-template <typename TValue, typename TSize1, typename TSize2>
+template <typename TValue, typename TSize1, typename TSize2, typename TSpec>
 inline void
-setReaderWriterCount(ConcurrentQueue<TValue, Suspendable> & me, TSize1 readerCount, TSize2 writerCount)
+setReaderWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize1 readerCount, TSize2 writerCount)
 {
     ScopedLock<Mutex> lock(me.mutex);
     me.readerCount = readerCount;
     me.writerCount = writerCount;
 }
 
-
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline bool
-popFront(TValue & result, ConcurrentQueue<TValue, Suspendable> & me)
+_popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    typedef ConcurrentQueue<TValue, Suspendable>        TQueue;
-    typedef typename Host<TQueue>::Type                 TString;
-    typedef typename Size<TString>::Type                TSize;
-    typedef typename Iterator<TString, Standard>::Type  TIter;
+    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
+    typedef typename Host<TQueue>::Type                     TString;
+    typedef typename Size<TString>::Type                    TSize;
+    typedef typename Iterator<TString, Standard>::Type      TIter;
 
-    ScopedLock<Mutex> lock(me.mutex);
     TSize cap = capacity(me.data);
 
     while (me.occupied == 0u && me.writerCount > 0u)
@@ -253,18 +267,38 @@ popFront(TValue & result, ConcurrentQueue<TValue, Suspendable> & me)
        (empty) slot that will be filled by a producer (such as
        me.nextout == me.nextin) */
 
-    signal(me.less);
     return true;
 }
 
-template <typename TValue, typename TValue2>
+template <typename TValue, typename TSpec>
 inline bool
-appendValue(ConcurrentQueue<TValue, Suspendable> & me,
+popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    return _popFront(result, me);
+}
+
+template <typename TValue>
+inline bool
+popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    if (_popFront(result, me))
+    {
+        signal(me.less);
+        return true;
+    }
+    return false;
+}
+
+template <typename TValue, typename TValue2, typename TSpec>
+inline bool
+appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
             TValue2 SEQAN_FORWARD_CARG val)
 {
-    typedef ConcurrentQueue<TValue, Suspendable>        TQueue;
-    typedef typename Host<TQueue>::Type                 TString;
-    typedef typename Size<TString>::Type                TSize;
+    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
+    typedef typename Host<TQueue>::Type                     TString;
+    typedef typename Size<TString>::Type                    TSize;
 
     ScopedLock<Mutex> lock(me.mutex);
     TSize cap = capacity(me.data);
@@ -291,9 +325,9 @@ appendValue(ConcurrentQueue<TValue, Suspendable> & me,
     return true;
 }
 
-template <typename TValue, typename TSize>
+template <typename TValue, typename TSize, typename TSpec>
 inline bool
-waitForMinSize(ConcurrentQueue<TValue, Suspendable> & me,
+waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
                TSize minSize)
 {
     ScopedLock<Mutex> lock(me.mutex);
@@ -301,6 +335,68 @@ waitForMinSize(ConcurrentQueue<TValue, Suspendable> & me,
         waitFor(me.more);
     return me.occupied >= minSize;
 }
+
+
+/*
+// writes a sequence of pages linked by keys ... -> prevKey -> key -> ...
+template <typename TKey, typename TValue, typename TWorker>
+struct Serializer
+{
+    typedef std::map<TKey, std::pair<TPage*, TKey> >    TPageMap;
+    typedef ConcurrentResourcePool<TValue, TSpec>       TPagePool;
+
+    TTarget         &target;
+    TKey            waitForKey;
+    ReadWriteLock   lock;
+    TWorker         worker;
+
+    Pager(TTarget &target):
+        target(target),
+        waitForKey(TKey())
+    {}
+
+    Pager(TTarget &target, TKey firstKey):
+        target(target),
+        waitForKey(firstKey)
+    {}
+
+    TPage getPage ()
+    {
+        TPage tmp;
+        tryAquireSwap(tmp, pagePool);
+        return tmp;
+    }
+};
+
+template <typename TValue, typename TValue2, typename TSpec>
+inline void appendValue(TPage &page, TKey key, TKey nextKey)
+{
+    if (key == waitForKey)
+    {
+        writeN(target, page.buffer.begin, length(page.buffer));
+        waitForKey = nextKey;
+        ReleaseSwap(pagePool, page);
+    }
+    else
+    {
+        ScopedWriteLock writeLock(lock);
+        pageMap.insert(std::make_pair(key, std::make_pair(&page, nextKey)));
+
+        typename TPageMap::iterator it;
+        while ((it = pageMap.find(waitForKey)) != pageMap.end())
+        {
+            TPage &writePage = it->second.first;
+            // currently this write is synchronous
+            writeN(target, writePage.buffer.begin, length(writePage.buffer));
+            ReleaseSwap(pagePool, writePage);
+
+            waitForKey = it->second.second;
+            pageMap.erase(it);
+        }
+    }
+}
+};
+*/
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
 
@@ -324,7 +420,7 @@ public:
 	typedef typename Tr::char_type char_type;
 	typedef typename Tr::int_type int_type;
 
-    typedef ConcurrentQueue<size_t, Suspendable>  TJobQueue;
+    typedef ConcurrentQueue<size_t, Suspendable<Limit> > TJobQueue;
 
     struct Concatter
     {
@@ -395,6 +491,8 @@ public:
                 size_t outputLen = _compressBlock(
                     &job.outputBuffer[0], capacity(job.outputBuffer),
                     &job.buffer[0], job.size, compressionCtx);
+
+//                popFront(serializer)
 
                 while (true)
                 {
@@ -591,7 +689,7 @@ public:
 	typedef typename Tr::pos_type pos_type;
 
     typedef std::vector<char_type, char_allocator_type> TBuffer;
-    typedef ConcurrentQueue<size_t, Suspendable>  TJobQueue;
+    typedef ConcurrentQueue<size_t, Suspendable<Limit> >  TJobQueue;
 
     static const size_t MAX_PUTBACK = 4;
 
@@ -1111,4 +1209,3 @@ typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 #include "bgzfstream_impl.h"
 
 #endif
-
