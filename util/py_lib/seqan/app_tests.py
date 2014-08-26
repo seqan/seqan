@@ -53,6 +53,10 @@ SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..',
 VALGRIND_FLAGS = [SUPPRESSIONS] + '--error-exitcode=1 -q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50 --'.split()
 VALGRIND_PATH = '/usr/bin/valgrind'
 
+class BadResultException(Exception):
+    pass
+
+
 class TestConf(object):
     """Configuration for one tests.
 
@@ -70,10 +74,12 @@ class TestConf(object):
                       if the variable is not None.
       redir_stderr -- optional string that gives the path to redirect stderr to
                       if the variable is not None.
+      check_callback -- callable throwing an exception on erorrs.
     """
 
     def __init__(self, program, args, to_diff=[], name=None,
-                 redir_stdout=None, redir_stderr=None):
+                 redir_stdout=None, redir_stderr=None,
+                 check_callback=None):
         """Constructor, args correspond to attrs."""
         self.program = program
         self.args = args
@@ -85,6 +91,7 @@ class TestConf(object):
             self.valgrind = False
         else:
             self.valgrind = TestConf.valgrind
+        self.check_callback = check_callback
 
     def __str__(self):
         fmt = 'TestConf(%s, %s, %s, %s, %s, %s)'
@@ -326,6 +333,16 @@ def runTest(test_conf):
         except Exception, e:
             fmt = 'Error when trying to compare %s to %s: %s ' + str(type(e))
             print >>sys.stderr, fmt % (expected_path, result_path, e)
+            result = False
+    # Call check callable.
+    if test_conf.check_callback:
+        try:
+            test_conf.check_callback()
+        except BadResultException, e:
+            print >>sys.stderr, 'Bad result: ' + str(e)
+            result = False
+        except Exception, e:
+            print >>sys.stderr, 'Error in checker: ' + str(type(e)) + ' ' + str(e)
             result = False
     return result
 
