@@ -353,8 +353,8 @@ struct Reference<Holder<TValue *, TSpec> const>
 /*!
  * @fn Holder#assignValue
  * 
- * @headerfile seqan/basic.h
- * @headerfile seqan/sequence.h
+ * @headerfile <seqan/basic.h>
+ * @headerfile <seqan/sequence.h>
  * 
  * @brief Assigns value to item.
  * 

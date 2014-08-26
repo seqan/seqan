@@ -951,7 +951,7 @@ void AnsonMyersRealigner_<TFragmentStore>::_endContig(unsigned contigID)
 
 /*
  * @fn _fixBandSize
- * @headerfile seqan/align.h
+ * @headerfile <seqan/align.h>
  * @brief Fix a band for alignment given sequences (for their lengths) and an @link AlignConfig @endlink.
  *
  * @signature void fixBand(lowerDiag, upperDiag, seqH, seqV, alignConfig);

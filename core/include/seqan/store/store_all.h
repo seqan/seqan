@@ -365,7 +365,7 @@ struct FragmentStoreConfig
 
 /*!
  * @enum FragmentStore::PredefinedAnnotationTypes
- * @headerfile seqan/store.h
+ * @headerfile <seqan/store.h>
  * @brief The @link FragmentStore @endlink predefines some commonly used @link AnnotationStoreElement::typeId @endlink
  *        values.
  *

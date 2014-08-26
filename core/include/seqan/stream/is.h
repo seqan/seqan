@@ -300,7 +300,7 @@
 
 /*!
  * @fn isblank
- * @headerfile seqan/stream.h
+ * @headerfile <seqan/stream.h>
  * @brief Check if character is either ' ' or '\t'.
  * 
  * @signature bool isblank(c);
