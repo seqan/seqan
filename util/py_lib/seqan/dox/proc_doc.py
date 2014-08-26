@@ -13,6 +13,7 @@ import HTMLParser
 import logging
 import re
 import sys
+import xml.etree.ElementTree
 import xml.sax.saxutils
 
 import inc_mgr
@@ -217,7 +218,12 @@ class TextNode(object):
             return self
         else:
             return self.children[0]
-        
+
+    @property
+    def plainText(self):
+        """Converts to HTML and strips tags."""
+        return ''.join(xml.etree.ElementTree.fromstring(self.toHtmlLike()).itertext())
+
     def toHtmlLike(self, skip_top_tag=False, **kwargs):
         """Returns a string with a HTML-like representation for debuggin.
 
@@ -276,6 +282,9 @@ class ProcEntry(object):
         self.subentries = {}
         self.raw_entry = None
         self._location = None
+
+    def sortedSees(self):
+        return sorted(self.sees, key=lambda x: x.plainText)
 
     def registerSubentry(self, proc_entry):
         self.subentries.setdefault(proc_entry.kind, []).append(proc_entry)
