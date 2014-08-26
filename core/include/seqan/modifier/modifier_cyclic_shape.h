@@ -336,7 +336,7 @@ public:
 
 /*!
  * @mfn ModCyclicShapeModifiedIterator#Cargo
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  * @brief Cargo of ModCyclicShape ModCyclicShape Modified Iterator and ModCyclicShape Modified String.
  * @signature Cargo<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type;
  * @tparam THost Host iterator of ModifiedIterator.
@@ -356,7 +356,7 @@ struct Cargo<ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > >
 
 /*!
  * @mfn ModCyclicShapeModifiedString#Cargo
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  * @brief Cargo of ModCyclicShape ModCyclicShape Modified Iterator and ModCyclicShape Modified String.
  * @signature Cargo<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > >::Type;
  * @tparam THost Host container of ModifiedString.
@@ -440,7 +440,7 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
 
 /*!
  * @fn ModCyclicShapeModifiedString#end
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  * @brief Returns an iterator to the end of the container.
  * @signature TIterator end(modStr[, tag]);
  * @tparam TIterator ModCyclicShape Modified Iterator to be returned.

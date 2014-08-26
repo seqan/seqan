@@ -51,7 +51,7 @@ namespace seqan {
 
 /*!
  * @class FMIndexConfig
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
  * 
  * @signature template <[typename TSpec]>
@@ -237,7 +237,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 /*!
  * @class FMIndex
  * @extends Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief An index based on the Burrows-Wheeler transform.
  * 
  * @signature template <typename TText[, typename TSpec[, typename TConfig]]>
@@ -336,7 +336,7 @@ getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
 // ----------------------------------------------------------------------------
 /*!
  * @fn FMIndex#indexLF
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A shortcut for <tt>getFibre(index, FibreLF())</tt>.
  *
  * @signature TFibre indexLF(index);
@@ -366,7 +366,7 @@ indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 
 /*!
  * @fn FMIndex#toSuffixPosition
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief This function computes the position of a specified position in the compressed suffix array (additionally 
  *        containing entries for the sentinels). The returned position corresponds to the suffix array of the original
  *        text without sentinels.

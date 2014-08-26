@@ -60,7 +60,7 @@
 
 /*!
  * @fn FMIndex#begin
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns an iterator pointing to the root node of the virtual prefix trie of the reversed text of the index.
  * 
  * @signature TIterator begin(index, tag);
@@ -76,7 +76,7 @@
 /*!
  * @fn LF#lfMapping
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the position of an character at a specified position of L in
  *        F. L corresponds to the last column of the sorted cyclic rotations of
@@ -117,7 +117,7 @@
 
 /*!
  * @class RankSupportBitString
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A bit string supporting rank queries in constant time.
  * 
  * @signature template <typename TSpec>
@@ -137,7 +137,7 @@
 /*!
  * @fn RankSupportBitString#appendValue
  * 
- * @headerfile seqan/sequence.h
+ * @headerfile <seqan/sequence.h>
  * 
  * @brief Appends a bit to a @link RankSupportBitString @endlink.
  * 
@@ -151,7 +151,7 @@
 /*!
  * @fn RankSupportBitString#clear
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Resets an rank-support-bit string.
  * 
@@ -163,7 +163,7 @@
 /*!
  * @fn RankSupportBitString#getRank
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the rank (the number of bits set from the start of the bit
  *        string) of a specified position.
@@ -179,7 +179,7 @@
 /*!
  * @fn RankSupportBitString#empty
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Checks whether or not a rank-support-bit string contains any elements.
  * 
@@ -193,7 +193,7 @@
 /*!
  * @fn RankSupportBitString#isBitSet
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns whether the bit with the given index is set to 1.
  * 
@@ -208,7 +208,7 @@
 /*!
  * @fn RankSupportBitString#getFibre
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns a specific fibre of a rank-support-bit string.
  * 
@@ -224,7 +224,7 @@
 /*!
  * @fn RankSupportBitString#length
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the number of bits in the rank-support-bit string.
  * 
@@ -238,7 +238,7 @@
 /*!
  * @fn RankSupportBitString#resize
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Resets the number of bits in the rank-support-bit string.
  * 
@@ -258,7 +258,7 @@
 /*!
  * @fn RankSupportBitString#setBitTo
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Set the bit with the given position to the given value.
  * 
@@ -279,7 +279,7 @@
 /*!
  * @fn RankSupportBitString#open
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions opens a @link RankSupportBitString @endlink from disk.
  * 
@@ -302,7 +302,7 @@
 /*!
  * @fn RankSupportBitString#save
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions saves a @link RankSupportBitString @endlink to disk.
  * 
@@ -387,7 +387,7 @@
 /*!
  * @class SentinelRankDictionary
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief A rank dictionary, additional storing sentinel character which are not
  *        accounted for in a rank query.
@@ -401,7 +401,7 @@
 
 /*!
  * @fn SentinelRankDictionary#clear
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Clears the dictionary.
  * 
@@ -413,7 +413,7 @@
 /*!
  * @fn SentinelRankDictionary#sentinelPosition
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns whether a specified position is a sentinel position.
  * 
@@ -426,7 +426,7 @@
 /*!
  * @fn SentinelRankDictionary#empty
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns whether or not the dictionary is empty.
  * 
@@ -438,7 +438,7 @@
 /*!
  * @fn SentinelRankDictionary#getValue
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the character of a specified position.
  * 
@@ -451,7 +451,7 @@
 /*!
  * @fn SentinelRankDictionary#getFibre
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns a specific fibre of a dictionary.
  * 
@@ -466,7 +466,7 @@
 
 /*!
  * @fn SentinelRankDictionary#countOccurrences
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the number of occurrences of a specified character from the start to a specified position.
  * 
  * @signature TSize countOccurrences(dictionary, character, pos);
@@ -481,7 +481,7 @@
 /*!
  * @fn SentinelRankDictionary#getSentinelSubstitute
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the character used to substitute the sentinel sign.
  * 
@@ -493,7 +493,7 @@
 /*!
  * @fn SentinelRankDictionary#setSentinelSubstitute
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Sets the character used to substitute the sentinel sign.
  * 
@@ -506,7 +506,7 @@
 /*!
  * @fn SentinelRankDictionary#setSentinelPosition
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Sets the sentinel position..
  * 
@@ -519,7 +519,7 @@
 /*!
  * @fn SentinelRankDictionary#createSentinelRankDictionary
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions creates the dictionary structure.
  * 
@@ -532,7 +532,7 @@
 /*!
  * @fn SentinelRankDictionary#save
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions saves a dictionary to disk.
  * 
@@ -555,7 +555,7 @@
 /*!
  * @fn SentinelRankDictionary#open
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions loads a dictionary from disk.
  * 

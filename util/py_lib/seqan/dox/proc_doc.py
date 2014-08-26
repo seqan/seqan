@@ -13,6 +13,7 @@ import HTMLParser
 import logging
 import re
 import sys
+import xml.etree.ElementTree
 import xml.sax.saxutils
 
 import inc_mgr
@@ -59,7 +60,9 @@ def splitSecondLevelEntry(name):
 class ProcDoc(object):
     """Collection of the top-level documentation entries.
 
-    @ivar doc_processor: The DocProcessor that created this ProcDoc.
+    @ivar doc_processor      The DocProcessor that created this ProcDoc.
+    @ivar local_name_counter Number of occurences for local names, used for
+                             shortening @link display to second level entries.
     """
 
     def __init__(self, doc_processor):
@@ -67,6 +70,7 @@ class ProcDoc(object):
         self.top_level_entries = {}
         self.second_level_entries = {}
         self.entries = {}
+        self.local_name_counter = {}
 
     def addTopLevelEntry(self, x):
         """Add a top-level-entry."""
@@ -85,6 +89,9 @@ class ProcDoc(object):
         if first:
 #            print '%s => %s as %s' % (x.name, second, x.kind)
             self.top_level_entries[first].registerSubentry(x)
+        # update local name counter
+        self.local_name_counter.setdefault(second, 0)
+        self.local_name_counter[second] += 1
         
     def addVariable(self, x):
         """Add a variable entry."""
@@ -217,7 +224,27 @@ class TextNode(object):
             return self
         else:
             return self.children[0]
-        
+
+    @property
+    def plainText(self):
+        """Converts to HTML and strips tags."""
+        def remove_html_markup(s):
+            tag = False
+            quote = False
+            out = []
+
+            for c in s:
+                if c == '<' and not quote:
+                    tag = True
+                elif c == '>' and not quote:
+                    tag = False
+                elif (c == '"' or c == "'") and tag:
+                    quote = not quote
+                elif not tag:
+                    out.append(c)
+            return ''.join(out)
+        return remove_html_markup(self.toHtmlLike())
+
     def toHtmlLike(self, skip_top_tag=False, **kwargs):
         """Returns a string with a HTML-like representation for debuggin.
 
@@ -276,6 +303,9 @@ class ProcEntry(object):
         self.subentries = {}
         self.raw_entry = None
         self._location = None
+
+    def sortedSees(self):
+        return sorted(self.sees, key=lambda x: x.plainText)
 
     def registerSubentry(self, proc_entry):
         self.subentries.setdefault(proc_entry.kind, []).append(proc_entry)
@@ -954,7 +984,7 @@ class RawTextToTextNodeConverter(object):
 
     def handleCommandClosing(self):
         """Handle closing of current command."""
-        assert self.current_cmd == 'COMMAND_LINK', 'Only known commandx.'
+        assert self.current_cmd == 'COMMAND_LINK', 'Only known command.'
         if self.current_cmd == 'COMMAND_LINK':
             # Trim leading/trailing whitespace tokens
             def isWhitespace(t):

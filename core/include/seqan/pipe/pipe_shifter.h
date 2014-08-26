@@ -51,7 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @extends Pipe
  * 
- * @headerfile seqan/pipe.h
+ * @headerfile <seqan/pipe.h>
  * 
  * @brief Shifts the input stream by <tt>delta</tt> elements.
  * 

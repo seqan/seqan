@@ -127,7 +127,7 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
 // ----------------------------------------------------------------------------
 /*!
  * @class RightArrayBinaryTree
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A special format to encode the structure of a wavelet tree.  The structure is very space efficient because
  *        only one position is stored which encodes where the left and right subtree of a given node exist.
  * 
@@ -178,7 +178,7 @@ public:
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#clear
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Resets a right-array-binary tree.
  * 
  * @signature void clear(rightArrayBinaryTree);
@@ -202,7 +202,7 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#createRightArrayBinaryTree
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Computes the right-array-binary tree of a text.
  * 
  * @signature void createRightArrayBinaryTree(rightArrayBinaryTree, text);
@@ -284,7 +284,7 @@ createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStruc
 
 /*!
  * @fn RightArrayBinaryTree#empty
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Checks whether or not a right-array-binary tree contains any elements.
  * 
  * @signature bool empty(rightArrayBinaryTree);
@@ -310,7 +310,7 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#getFibre
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns a specific fibre of a right-array-binary tree.
  * 
  * @signature TFibre getFibre(rightArrayBinaryTree, fibreTag);
@@ -399,7 +399,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
 /*!
  * @fn RightArrayBinaryTree#open
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions loads a @link RightArrayBinaryTree @endlink from disk.
  * 
@@ -465,7 +465,7 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
 /*!
  * @fn RightArrayBinaryTree#save
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief This functions saves a @link RightArrayBinaryTree @endlink to disk.
  * 

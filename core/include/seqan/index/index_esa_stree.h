@@ -78,7 +78,7 @@ ttobe
 /*!
  * @class VSTreeIterator VSTree Iterator
  * @extends Iter
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Abstract iterator for string trees, where string trees are trees constructed from a string.
  * 
@@ -160,7 +160,7 @@ ttobe
 
 /*!
  * @mfn VSTreeIterator#EdgeLabel
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Type of a string representing the characters of edges.
  *
  * @signature EdgeLabel<TSpec>::Type;
@@ -209,7 +209,7 @@ The iterator starts in the root node by default.
 /*!
  * @class TopDownIterator Top Down Iterator
  * @extends VSTreeIterator
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Iterator for virtual trees/tries that can go down and right beginning from the root.
  * 
@@ -343,7 +343,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @class TopDownHistoryIterator Top Down History Iterator
  * @implements ForwardIteratorConcept
  * @extends TopDownIterator
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief String tree iterator that can go down, right, and up. Supports depth-
  *        first search.
@@ -502,7 +502,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @class BottomUpIterator Bottom Up Iterator
  * @implements ForwardIteratorConcept
  * @extends VSTreeIterator
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterator for an efficient postorder depth-first search in a virtual string tree.
  * 
  * @signature template <typename TIndex, typename TSpec>
@@ -749,7 +749,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#repLength
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the length of the substring representing the path from root to <tt>iterator</tt> node.
  * 
  * @signature TSize repLength(iterator);
@@ -816,7 +816,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 /*!
  * @fn TopDownHistoryIterator#nodeDepth
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Returns the zero-based node depth of the <tt>iterator</tt> node.
  * 
@@ -851,7 +851,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn TopDownIterator#parentRepLength
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the length of the substring representing the path from root to <tt>iterator</tt>'s parent node.
  * 
  * @signature TSize parentRepLength(iterator);
@@ -885,7 +885,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn TopDownIterator#emptyParentEdge
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns <tt>true</tt> iff the edge label from the <tt>iterator</tt>
  *        node to its parent is empty.
  * 
@@ -927,7 +927,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn TopDownHistoryIterator#lca
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the last common ancestor of two tree nodes.
  * 
  * @signature bool lca(a, b, result);
@@ -998,7 +998,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*! 
  * @fn TopDownHistoryIterator#lcp
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the length of the longest-common-prefix of two suffix tree
  *        nodes.
  * 
@@ -1096,7 +1096,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn Index#resizeVertexMap
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Initializes a vertex map.
  * 
  * @signature void resizeVertexMap(index, pm);
@@ -1160,7 +1160,7 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
 */
 /*!
  * @fn VSTreeIterator#getOccurrence
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns an occurrence of the @link VSTreeIterator#representative @endlink substring in the index text.
  *
  * @signature TSAValue getOccurrence(iterator);
@@ -1195,7 +1195,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
 */
 /*!
  * @fn VSTreeIterator#countOccurrences
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the number of occurrences of @link VSTreeIterator#representative @endlink
  *        substring in the index text.
  *
@@ -1251,7 +1251,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#range
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the suffix array interval borders of occurrences of @link VSTreeIterator#representative @endlink substring in the
  *        index text.
  * 
@@ -1301,7 +1301,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 */
 /*!
  * @fn VSTreeIterator#getOccurrences
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns all occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
  * 
  * @signature TInfix getOccurrences(iterator);
@@ -1448,7 +1448,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 */
 /*!
  * @fn VSTreeIterator#getOccurrencesBwt
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the characters left beside all occurrence of the @link
  *        VSTreeIterator#representative @endlink substring in the index text.
  * 
@@ -1492,7 +1492,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#representative
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns a substring representing the path from root to <tt>iterator</tt> node.
  * 
  * @signature TInfix representative(iterator);
@@ -1553,7 +1553,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 */
 /*!
  * @fn VSTreeIterator#countChildren
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Count the number of children of a tree node.
  * 
  * @signature TSize countChildren(iterator);
@@ -1726,7 +1726,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 //TODO(singer): Why only bottom-up???
 /*!
  * @fn VSTreeIterator#nodePredicate
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief If <tt>false</tt> this node will be skipped during the bottom-up traversal.
  * 
  * @signature bool nodePredicate(iterator);
@@ -1759,7 +1759,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 */
 /*!
  * @fn VSTreeIterator#nodeHullPredicate
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief If <tt>false</tt> this node and its subtree is concealed.
  * 
  * @signature bool nodeHullPredicate(iterator);
@@ -1797,7 +1797,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#goRoot
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Move iterator to the root node.
  * 
  * @signature void goRoot(iterator);
@@ -1901,7 +1901,7 @@ TA
     }
 /*!
  * @fn VSTreeIterator#goBegin
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterates to the first position of a container.
  * 
  * @signature void goBegin(iterator);
@@ -1915,7 +1915,7 @@ TA
 
 /*!
  * @fn BottomUpIterator#goBegin
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterates to the first position of a container.
  * 
  * @signature void goBegin(iterator);
@@ -2067,7 +2067,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 //TODO(singer): The lcp stuff needs to be adapted
 /*!
  * @fn TopDownIterator#goDown
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterates down one edge or a path in a tree.
  * 
  * @signature bool goDown(iterator);
@@ -2411,7 +2411,7 @@ ttobe
 */
 /*!
  * @fn TopDownHistoryIterator#goUp
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterates up one edge to the parent in a tree/trie.
  * 
  * @signature bool goUp(iterator);
@@ -2498,7 +2498,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 */
 /*!
  * @fn TopDownIterator#nodeUp
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the vertex descriptor of the parent node.
  * 
  * @signature TVertexDiscriptor nodeUp(iterator);
@@ -2547,7 +2547,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 */
 /*!
  * @fn TopDownIterator#goRight
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Iterates to the next sibling in a tree.
  * 
  * @signature bool goRight(iterator);
@@ -2609,7 +2609,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 */
 /*!
  * @fn TopDownIterator#parentEdgeLength
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the length of the edge from the <tt>iterator</tt> node to its parent.
  * 
  * @signature TSize parentEdgeLength(iterator);
@@ -2640,7 +2640,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 */
 /*!
  * @fn TopDownIterator#parentEdgeLabel
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
  * 
  * @signature TEdgeLabel parentEdgeLabel(iterator);
@@ -2675,7 +2675,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 //TODO(singer): EsaRawText
 /*!
  * @fn TopDownIterator#parentEdgeFirstChar
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the first character of the edge from an <tt>iterator</tt> node to its parent.
  * 
  * @signature TValue parentEdgeFirstChar(iterator);
@@ -2848,7 +2848,7 @@ TA
 
 /*!
  * @fn VSTreeIterator#atEnd
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Determines whether an virtual string tree iterator is at the end position.
  * 
  * @signature bool atEnd(iterator);
@@ -2883,7 +2883,7 @@ TA
 
 /*!
  * @fn BottomUp#atEnd
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Determines whether an virtual string tree iterator is at the end position.
  * 
  * @signature bool atEnd(iterator);
@@ -2956,7 +2956,7 @@ TA
 */
 /*!
  * @fn VSTreeIterator#isRoot
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether a tree iterator points to the root node.
  * 
  * @signature bool isRoot(iterator);
@@ -3015,7 +3015,7 @@ TA
 //TODO(singer): Note the case for trie or FM Index
 /*!
  * @fn VSTreeIterator#isRightTerminal
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether iterator points to a suffix.
  * 
  * @signature bool isRightTerminal(iterator);
@@ -3055,7 +3055,7 @@ TA
 */
 /*!
  * @fn VSTreeIterator#isLeftMaximal
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether the occurrences of an iterator's @link VSTreeIterator#representative @endlink mutually differ in the character
  *        left of the hits.
  * 
@@ -3120,7 +3120,7 @@ TA
 */
 /*!
  * @fn VSTreeIterator#isPartiallyLeftExtensible
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether the characters left of the two occurrences of @link VSTreeIterator#representative @endlink are equal.
  * 
  * @signature bool isPartiallyLeftExtensible(iterator);
@@ -3188,7 +3188,7 @@ TA
 */
 /*!
  * @fn VSTreeIterator#isUnique
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether the @link VSTreeIterator#representative @endlink occurs only once in every sequence.
  * 
  * @signature bool isUnique(iterator);
@@ -3259,7 +3259,7 @@ Hit in sequence 0 at position 2
 */
 /*!
  * @fn VSTreeIterator#getFrequency
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the number of sequences, which contain the @link
  *        VSTreeIterator#representative @endlink as a substring.
  * 
@@ -3341,7 +3341,7 @@ Hit in sequence 0 at position 2
 */
 /*!
  * @fn VSTreeIterator#childrenAreLeaves
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether iterator points to a node with only leaf-children.
  * 
  * @signature bool childrenAreLeaves(iterator);
@@ -3371,7 +3371,7 @@ Hit in sequence 0 at position 2
 */
 /*!
  * @fn VSTreeIterator#isLeaf
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Test whether a tree iterator points to a leaf.
  * 
  * @signature bool isLeaf(iterator);
