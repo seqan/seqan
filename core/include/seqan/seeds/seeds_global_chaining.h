@@ -43,6 +43,14 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
+/*!
+ * @defgroup GlobalChainingTags Global Chaining Tags
+ * @brief Tags for specifying global chaining method.
+ *
+ * @tag GlobalChainingTags#SparseChaining
+ * @brief Tag for global sparse chaining.
+ */
+
 /**
 .Tag.Global Chaining
 ..summary:Tags for selecting the global chaining algorithm.
@@ -71,8 +79,30 @@ typedef Tag<SparseChaining_> SparseChaining;
  * @signature void chainSeedsGlobally(target, seedSet, tag);
  *
  * @param[out] target  A @link ContainerConcept container @endlink to append the seeds to.
- * @param[in]  seedSet The SeedSet object to get the seeds from.
- * @param[in]  tag     The tag to select the algorithm with (currently only <tt>SparseChaining</tt> is supported).
+ * @param[in]  seedSet The @link SeedSet @endlink object to get the seeds from.
+ * @param[in]  tag     The tag to select the algorithm with (currently only @link GlobalChainingTags#SparseChaining
+ *                     SparseChaining @endlink is supported).
+ *
+ * Chaining of seeds between two sequences can be performed using sparse chaining as defined in (Gusfield, 1997).
+ *
+ * @section Example
+ *
+ * The following example demonstrates how to use the <tt>chainSeedsGlobally()</tt> function.  First, a @link SeedSet
+ * @endlink is built and filled with @link SimpleSeed @endlink object.  Then, a @link String @endlink of @link
+ * SimpleSeed @endlink objects is defined and filled using the <tt>chainSeedsGlobally()</tt> function.
+ *
+ * @include demos/seeds/seeds_chaining.cpp
+ *
+ * The output is as follows.  Only the first and last seeds are written to <tt>std::cout</tt>.
+ *
+ * @include demos/seeds/seeds_chaining.cpp.stdout
+ *
+ * @section References
+ *
+ * <ul>
+ * <li>Dan Gusfield. Algorithms on Strings, Trees, and Sequences:  Computer Science and Computational Biology.
+ *     Cambridge University Press, January 1997.</li>
+ * </ul>
  */
 
 // TODO(holtgrew): Implement scored!
