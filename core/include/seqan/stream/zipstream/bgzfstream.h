@@ -303,6 +303,43 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     ScopedLock<Mutex> lock(me.mutex);
     TSize cap = capacity(me.data);
 
+    if (me.occupied >= cap)
+    {
+        if (me.nextOut >= me.nextIn)
+            ++me.nextOut;
+        insertValue(me.data, me.nextIn, val);
+        ++me.nextIn;
+    }
+    else
+    {
+        valueConstruct(begin(me.data, Standard()) + me.nextIn, val);
+        me.nextIn = (me.nextIn + 1) % cap;
+    }
+
+    me.occupied++;
+
+    /* now: either me.occupied < BSIZE and me.nextin is the index
+       of the next empty slot in the buffer, or
+       me.occupied == BSIZE and me.nextin is the index of the
+       next (occupied) slot that will be emptied by a consumer
+       (such as me.nextin == me.nextout) */
+
+    signal(me.more);
+    return true;
+}
+
+template <typename TValue, typename TValue2>
+inline bool
+appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
+            TValue2 SEQAN_FORWARD_CARG val)
+{
+    typedef ConcurrentQueue<TValue, Suspendable<Limit> >    TQueue;
+    typedef typename Host<TQueue>::Type                     TString;
+    typedef typename Size<TString>::Type                    TSize;
+
+    ScopedLock<Mutex> lock(me.mutex);
+    TSize cap = capacity(me.data);
+
     while (me.occupied >= cap && me.readerCount > 0u)
         waitFor(me.less);
 
@@ -337,66 +374,94 @@ waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
 }
 
 
-/*
-// writes a sequence of pages linked by keys ... -> prevKey -> key -> ...
-template <typename TKey, typename TValue, typename TWorker>
-struct Serializer
+
+
+template <typename TValue>
+struct SerializerItem
 {
-    typedef std::map<TKey, std::pair<TPage*, TKey> >    TPageMap;
-    typedef ConcurrentResourcePool<TValue, TSpec>       TPagePool;
-
-    TTarget         &target;
-    TKey            waitForKey;
-    ReadWriteLock   lock;
-    TWorker         worker;
-
-    Pager(TTarget &target):
-        target(target),
-        waitForKey(TKey())
-    {}
-
-    Pager(TTarget &target, TKey firstKey):
-        target(target),
-        waitForKey(firstKey)
-    {}
-
-    TPage getPage ()
-    {
-        TPage tmp;
-        tryAquireSwap(tmp, pagePool);
-        return tmp;
-    }
+    TValue          val;
+    SerializerItem  next;
+    bool            ready;
 };
 
-template <typename TValue, typename TValue2, typename TSpec>
-inline void appendValue(TPage &page, TKey key, TKey nextKey)
+template <typename TValue, typename TWorker>
+struct Serializer
 {
-    if (key == waitForKey)
+    typedef SerializerItem<TValue> * TItemPtr;
+
+    ReadWriteLock       lock;
+    TWorker             worker;
+    TItemPtr            *first;
+    TItemPtr            *last;
+    String<TItemPtr>    recycled;
+
+    Serializer():
+        first(NULL)
+    {}
+
+    template <typename TArg>
+    Serializer(TArg &arg):
+        worker(arg),
+        first(NULL)
+    {}
+};
+
+template <typename TValue, typename TWorker>
+inline TValue *
+aquireValue(Serializer<TValue, TWorker> & me)
+{
+    typedef SerializerItem<TValue> TItem;
+
+    ScopedLock<Mutex> lock(me.mutex);
+    TItem *item;
+    if (!empty(me.recycled))
     {
-        writeN(target, page.buffer.begin, length(page.buffer));
-        waitForKey = nextKey;
-        ReleaseSwap(pagePool, page);
+        item = back(me.recycled);
+        eraseBack(me.recycled);
     }
     else
     {
-        ScopedWriteLock writeLock(lock);
-        pageMap.insert(std::make_pair(key, std::make_pair(&page, nextKey)));
+        item = new TItem();
+        item->next = NULL;
+        item->ready = false;
+    }
 
-        typename TPageMap::iterator it;
-        while ((it = pageMap.find(waitForKey)) != pageMap.end())
-        {
-            TPage &writePage = it->second.first;
-            // currently this write is synchronous
-            writeN(target, writePage.buffer.begin, length(writePage.buffer));
-            ReleaseSwap(pagePool, writePage);
+    if (me.first != NULL)
+    {
+        SEQAN_ASSERT(me.last != NULL);
+        me.last->next = item;
+    }
+    else
+    {
+        SEQAN_ASSERT(me.last == NULL);
+        me.first = item;
+        me.last = item;
+    }
+    
+    return &item->val;
+}
 
-            waitForKey = it->second.second;
-            pageMap.erase(it);
-        }
+template <typename TValue, typename TWorker>
+inline void
+releaseValue(Serializer<TValue, TWorker> &me, TValue *ptr)
+{
+    typedef SerializerItem<TValue> TItem;
+    
+    SEQAN_ASSERT(me.first != NULL);
+
+    ScopedLock<Mutex> lock(me.mutex);
+    TItem *item = reinterpret_cast<TItem *>(ptr);
+    item->ready = true;
+
+    // work on a sequence of ready items
+    // recycle released items
+    while (me.first != NULL && me.first->ready)
+    {
+        me.worker(me.first->val);
+        appendValue(me.recycled, me.first);
+        me.first = me.first->next;
     }
 }
-};
-*/
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
 
