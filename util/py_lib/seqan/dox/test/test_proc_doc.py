@@ -675,6 +675,7 @@ class TestConvertFunction(TestConverterBase):
                '@param[in] x       The parameter\n'
                '@tparam    T1      The type of the first template parameter.\n'
                '@return    TReturn The return value.\n'
+               '@throw     Exception The exception type.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -702,6 +703,10 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(len(proc_function.returns), 1)
         txt = '<div>The return value.</div>'
         self.assertEqual(proc_function.returns[0].desc.toHtmlLike(), txt)
+        # throws
+        self.assertEqual(len(proc_function.throws), 1)
+        txt = '<div>The exception type.</div>'
+        self.assertEqual(proc_function.throws[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> class brief.</div>'
         self.assertEqual(proc_function.brief.toHtmlLike(), txt)
@@ -729,6 +734,7 @@ class TestConvertFunction(TestConverterBase):
                '@param[in] x       The parameter\n'
                '@tparam    T1      The type of the first template parameter.\n'
                '@return    TReturn The return value.\n'
+               '@throw     Excpetion The exception type.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -756,6 +762,10 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(len(proc_function.returns), 1)
         txt = '<div>The return value.</div>'
         self.assertEqual(proc_function.returns[0].desc.toHtmlLike(), txt)
+        # throws
+        self.assertEqual(len(proc_function.throws), 1)
+        txt = '<div>The exception type.</div>'
+        self.assertEqual(proc_function.throws[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> class brief.</div>'
         self.assertEqual(proc_function.brief.toHtmlLike(), txt)
@@ -783,6 +793,7 @@ class TestConvertFunction(TestConverterBase):
                '@param[in] x       The parameter\n'
                '@tparam    T1      The type of the first template parameter.\n'
                '@return    TReturn The return value.\n'
+               '@throw     Excpetion The exception type.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -810,6 +821,10 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(len(proc_function.returns), 1)
         txt = '<div>The return value.</div>'
         self.assertEqual(proc_function.returns[0].desc.toHtmlLike(), txt)
+        # throws
+        self.assertEqual(len(proc_function.throws), 1)
+        txt = '<div>The exception type.</div>'
+        self.assertEqual(proc_function.throws[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> class brief.</div>'
         self.assertEqual(proc_function.brief.toHtmlLike(), txt)
@@ -858,6 +873,7 @@ class TestConvertMacro(TestConverterBase):
                '@param param  The parameter.\n'
                '@param param2 The second parameter.\n'
                '@return    TReturn The return value.\n'
+               '@throw     Exception The exception type.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -884,6 +900,10 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(len(proc_macro.returns), 1)
         txt = '<div>The return value.</div>'
         self.assertEqual(proc_macro.returns[0].desc.toHtmlLike(), txt)
+        # throws
+        self.assertEqual(len(proc_macro.throws), 1)
+        txt = '<div>The exception type.</div>'
+        self.assertEqual(proc_macro.throws[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> macro brief.</div>'
         self.assertEqual(proc_macro.brief.toHtmlLike(), txt)
@@ -909,6 +929,7 @@ class TestConvertMacro(TestConverterBase):
                '@signature MACRO(param)\n'
                '@param param The parameter\n'
                '@return    TReturn The return value.\n'
+               '@throw     Exception The exception type.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -931,6 +952,10 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(len(proc_macro.returns), 1)
         txt = '<div>The return value.</div>'
         self.assertEqual(proc_macro.returns[0].desc.toHtmlLike(), txt)
+        # throws
+        self.assertEqual(len(proc_macro.throws), 1)
+        txt = '<div>The exception type.</div>'
+        self.assertEqual(proc_macro.throws[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> class brief.</div>'
         self.assertEqual(proc_macro.brief.toHtmlLike(), txt)

@@ -808,6 +808,17 @@ Render the grouped macros details
   {% endfor %}
 {% endif %}
 
+{% if subentry.throws %}
+  <dt>Thrown Exceptions</dt>
+
+  {% for thr in subentry.throws %}
+  <dd>
+    <code>{{ thr.type|e }}</code> -
+    {{ thr.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% endif %}
+
 {% if subentry.sees %}
   <dt>See Also</dt>
   <dd>
@@ -938,6 +949,18 @@ Render the interface functions details
     <tr>
         <th><code>{{ ret.type|e }}</code>&nbsp;</th>
         <td>{{ ret.desc|transtext(False) }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if subentry.throws %}
+  <h4>Thrown Exceptions</h4>
+  <table class="overview">
+    {% for thr in subentry.throws %}
+    <tr>
+        <th><code>{{ thr.type|e }}</code>&nbsp;</th>
+        <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -1270,6 +1293,27 @@ Render the template parameter details.
     <tr>
         <th><code>{{ ret.type|e }}</code>&nbsp;</th>
         <td>{{ ret.desc|transtext(False) }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro throws(entry)
+
+Render the throw details.
+-->
+
+{% macro throws(entry) %}
+{% if entry.throws %}
+<h2>Thrown Exceptions</h2>
+
+<table class="overview">
+{% for thr in entry.throws %}
+    <tr>
+        <th><code>{{ thr.type|e }}</code>&nbsp;</th>
+        <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
 </table>
