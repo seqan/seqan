@@ -70,7 +70,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @class OneGappedShape
  * @extends Shape
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief A variable shape with one optional gap.
  * 

@@ -70,16 +70,20 @@ typedef Tag<Vcf_> Vcf;
  * @fn splitString
  * @headerfile <seqan/vcf_io.h>
  * @brief Split at splitter or whitespace/non-whitespace boundary.
- * 
- * The string is split at whitespace/non-whitespace boundary if splitter == '\xff'.
  *
- * @signature void splitString(result, str, splitter, quoteChar);
+ * @signature void splitString(result, str[, splitter[, quoteChar]]);
  *
- * @param[out] result    A StringSet of CharString for the result.
- * @param[in]  str       A CharString to split.
+ * @param[out] result    A @link StringSet @endlink of @link CharString @endlink for the result.
+ * @param[in]  str       A @link CharString @endlink to split.
  * @param[in]  splitter  A to use as the splitter.  If this is '\xff' then <tt>str</tt> will be split at
- *                       whitespace/non-whitespace boundaries.  Defaults to '\xff'.
- * @param[in]  quoteChar The char to split at, defaults to '"'.
+ *                       whitespace/non-whitespace boundaries.  Defaults to <tt>'\xff'</tt>.
+ * @param[in]  quoteChar The char to split at, defaults to <tt>'"'</tt>.
+ *
+ * The string <tt>str</tt> is split at the given separator <tt>splitter</tt>.  For each such field, an entry is appended
+ * to <tt>result</tt>.  You can use <tt>quoteChar</tt> in <tt>str</tt> to prevent splitting at a <tt>splitter</tt>
+ * character.
+ *
+ * The string is split at whitespace/non-whitespace boundary if <tt>splitter == '\xff'</tt>.
  */
 
 // Split at splitter, split at whitespace/non-whitespace boundary if splitter == '\xff'.

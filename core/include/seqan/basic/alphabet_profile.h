@@ -58,7 +58,7 @@ struct IteratorProxy;
 /*!
  * @class ProfileChar
  * 
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @brief Alphabet type for profiles over another alphabet.
  * 

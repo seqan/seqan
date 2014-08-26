@@ -71,6 +71,9 @@ namespace seqan {
  * @signature bool isTerminal();
  *
  * @return bool true if we are on the terminal, false otherwise.
+ *
+ * @see getTerminalSize
+ * @see isAnsiColorTerminal
  */
 
 /**
@@ -124,6 +127,9 @@ inline bool isTerminal()
  * @section Remarks
  *
  * Currently, we assume that UNIX terminals support color while Windows terminals and non-terminals do not.
+ *
+ * @see isTerminal
+ * @see getTerminalSize
  */
 
 /**
@@ -177,6 +183,9 @@ inline bool isAnsiColorTerminal()
  * The following demonstrates the usage.
  *
  * @include demos/misc/get_terminal_size.cpp
+ *
+ * @see isTerminal
+ * @see isAnsiColorTerminal
  */
 
 /**
