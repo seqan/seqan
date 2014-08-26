@@ -312,7 +312,7 @@ _translateImplLoopOMPWrapper(TTarget & target,
                              Parallel const & /**/)
 {
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
-    for (long int i = 0; i < (long int)length(target); ++i)
+    for (int64_t i = 0; i < static_cast<int64_t>(length(target)); ++i)
         _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(),
                            Frames_<frames>());
 }
@@ -326,7 +326,7 @@ _translateImplLoopOMPWrapper(TTarget & target,
                              Frames_<frames> const & /**/,
                              Serial const & /**/)
 {
-    for (unsigned i = 0; i < length(target); ++i)
+    for (uint32_t i = 0; i < length(target); ++i)
         _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(),
                            Frames_<frames>());
 }
