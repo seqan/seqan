@@ -550,6 +550,33 @@ class ReturnTest(unittest.TestCase):
                          '@return name text\n')
 
 
+class ThrowTest(unittest.TestCase):
+    """Test for the RawThrow class, mostly tests instance variables."""
+
+    def setUp(self):
+        self.tok = lexer.Token('COMMAND_THROW', '@throw', 0, 0, 0)
+        self.tok_type = lexer.Token('WORD', 'type', 0, 0, 0)
+        self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
+        self.txt_type = raw_doc.RawText([self.tok_type])
+        self.txt_text = raw_doc.RawText([self.tok_text])
+        self.formatter = raw_doc.DoxFormatter()
+
+    def testCreation(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.name, self.txt_type)
+        self.assertEqual(ret.text, self.txt_text)
+        self.assertEqual(ret.inout, None)
+
+    def testGetType(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.getType(), 'throw')
+
+    def testGetFormatted(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.getFormatted(self.formatter),
+                         '@throw type text\n')
+
+
 class SignatureTest(unittest.TestCase):
     def setUp(self):
         self.tok = lexer.Token('COMMAND_SIGNATURE', '@signature', 0, 0, 0)

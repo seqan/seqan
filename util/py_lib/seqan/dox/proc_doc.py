@@ -608,6 +608,24 @@ class ProcReturn(object):
         visitor.visit(self.desc)
 
 
+class ProcThrow(object):
+    """Documentation of a @throw entry.
+
+    @ivar raw: The raw version of this ProcThrow (required for location lookup).
+    @ivar type: The exception type. str.
+    @ivar desc: The documentation of the exception. TextNode.
+    """
+
+    def __init__(self, raw):
+        self.raw = raw
+        self.type = None
+        self.desc = TextNode()
+
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        visitor.visit(self.desc)
+
+
 class ProcFunction(ProcCodeEntry):
     """A processed function documentation.
 
@@ -615,6 +633,7 @@ class ProcFunction(ProcCodeEntry):
                   concepts.
     @ivar tparams:
     @ivar returns:
+    @ivar throws: List of ProcThrow objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
@@ -622,6 +641,7 @@ class ProcFunction(ProcCodeEntry):
         self.params = []
         self.tparams = []
         self.returns = []
+        self.throws = []
 
     @property
     def kind(self):
@@ -651,6 +671,8 @@ class ProcFunction(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
+        for t in self.throws:
+            t.visitTextNodes(visitor)
         
     def addParam(self, p):
         self.params.append(p)
@@ -661,19 +683,24 @@ class ProcFunction(ProcCodeEntry):
     def addReturn(self, r):
         self.returns.append(r)
 
+    def addThrow(self, t):
+        self.throws.append(t)
+
 
 class ProcMacro(ProcCodeEntry):
     """A processed macro documentation.
 
     @ivar params: A list of str values with the names of the extended
                   concepts.
-    @ivar returns:
+    @ivar returns: Name displayed for return type.
+    @ivar throws: List of ProcThrow objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
         ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.returns = []
+        self.throws = []
 
     @property
     def local_name(self):
@@ -697,12 +724,17 @@ class ProcMacro(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
-        
+        for t in self.throws:
+            t.visitTextNodes(visitor)
+
     def addParam(self, p):
         self.params.append(p)
 
     def addReturn(self, r):
         self.returns.append(r)
+
+    def addThrow(self, t):
+        self.throws.append(t)
 
 
 class ProcMetafunction(ProcCodeEntry):
@@ -742,7 +774,7 @@ class ProcMetafunction(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
-        
+
     def addTParam(self, t):
         self.tparams.append(t)
 
@@ -1285,6 +1317,11 @@ class FunctionConverter(CodeEntryConverter):
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             function.addReturn(proc_return)
+        for t in raw_entry.throws:
+            proc_throw = ProcThrow(t)
+            proc_throw.type = t.name.text
+            proc_throw.desc = self.rawTextToTextNode(t.text)
+            function.addThrow(proc_throw)
         return function
 
 
@@ -1313,6 +1350,11 @@ class MacroConverter(CodeEntryConverter):
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             macro.addReturn(proc_return)
+        for t in raw_entry.throws:
+            proc_throw = ProcThrow(t)
+            proc_throw.type = t.name.text
+            proc_throw.desc = self.rawTextToTextNode(t.text)
+            macro.addThrow(proc_throw)
         return macro
 
 

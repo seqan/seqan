@@ -332,6 +332,10 @@ class TParamState(ParamState):
 
 class ReturnState(ParamState):
     """Handler used in *DocState for handling @return clauses.
+    
+    Stores return type in self.name (member variable inherited from
+    ParamState).  Sorry for any confusion.  The flag self.type_read
+    is used for storing whether the type has been read.
     """
     
     def __init__(self, parser, parent):
@@ -340,8 +344,29 @@ class ReturnState(ParamState):
         self.type_read = False
 
     def handle(self, token):
-        # Special handling of the in/out token and the name, if any.
-        #print '.... TOKEN', token, token.type == 'PARAM_IN_OUT'
+        if self.type_read:
+            GenericSimpleClauseState.handle(self, token)
+        else:
+            if self.name and token.type in dox_tokens.WHITESPACE:
+                self.type_read = True
+            elif self.name or token.type not in dox_tokens.WHITESPACE:
+                self.name.append(token)
+
+
+class ThrowState(ParamState):
+    """Handler used in *DocState for handling @throw clauses.
+    
+    Stores return type in self.name (member variable inherited from
+    ParamState).  Sorry for any confusion.  The flag self.type_read
+    is used for storing whether the type has been read.
+    """
+    
+    def __init__(self, parser, parent):
+        ParamState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawThrow
+        self.type_read = False
+
+    def handle(self, token):
         if self.type_read:
             GenericSimpleClauseState.handle(self, token)
         else:
@@ -586,6 +611,7 @@ class GenericDocState(object):
                              'COMMAND_IMPLEMENTS' : ImplementsState(self.parser, self),
                              'COMMAND_SEE' : SeeState(self.parser, self),
                              'COMMAND_RETURN' : ReturnState(self.parser, self),
+                             'COMMAND_THROW' : ThrowState(self.parser, self),
                              'COMMAND_PARAM' : ParamState(self.parser, self),
                              'COMMAND_TPARAM' : TParamState(self.parser, self),
                              'COMMAND_SECTION' : SectionState(self.parser, self),
@@ -632,6 +658,8 @@ class GenericDocState(object):
                 self.entry.addSee(entry)
             elif entry.getType() == 'return':
                 self.entry.addReturn(entry)
+            elif entry.getType() == 'throw':
+                self.entry.addThrow(entry)
             elif entry.getType() == 'extends':
                 self.entry.addExtends(entry)
             elif entry.getType() == 'implements':
@@ -678,8 +706,9 @@ class FunctionDocState(GenericDocState):
                                      'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
-                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
+                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED',
+                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA',
+                                     'COMMAND_INTERNAL'])
 
 
 class MacroDocState(GenericDocState):
@@ -691,8 +720,9 @@ class MacroDocState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
-                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
+                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED',
+                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA',
+                                     'COMMAND_INTERNAL'])
 
 
 class MetafunctionDocState(GenericDocState):
