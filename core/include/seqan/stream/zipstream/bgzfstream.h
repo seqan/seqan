@@ -380,7 +380,7 @@ template <typename TValue>
 struct SerializerItem
 {
     TValue          val;
-    SerializerItem  next;
+    SerializerItem  *next;
     bool            ready;
 };
 
@@ -389,22 +389,53 @@ struct Serializer
 {
     typedef SerializerItem<TValue> * TItemPtr;
 
-    ReadWriteLock       lock;
+    Mutex               mutex;
     TWorker             worker;
-    TItemPtr            *first;
-    TItemPtr            *last;
+    TItemPtr            first;
+    TItemPtr            last;
     String<TItemPtr>    recycled;
+    bool                stop;
 
     Serializer():
-        first(NULL)
-    {}
+        first(NULL),
+        stop(false)
+    {
+        clear(*this);
+    }
 
     template <typename TArg>
     Serializer(TArg &arg):
         worker(arg),
-        first(NULL)
+        first(NULL),
+        stop(false)
     {}
+
+    ~Serializer()
+    {
+        typedef typename Iterator<String<TItemPtr>, Standard>::Type TIter;
+        TIter itEnd = end(recycled, Standard());
+        for (TIter it = begin(recycled, Standard()); it != itEnd; ++it)
+            delete *it;
+    }
+
+    operator bool()
+    {
+        return !stop;
+    }
 };
+
+template <typename TValue, typename TWorker>
+inline void
+clear(Serializer<TValue, TWorker> & me)
+{
+    me.stop = false;
+    while (me.first != NULL)
+    {
+        appendValue(me.recycled, me.first);
+        me.first = me.first->next;
+    }
+    me.last = NULL;
+}
 
 template <typename TValue, typename TWorker>
 inline TValue *
@@ -442,8 +473,8 @@ aquireValue(Serializer<TValue, TWorker> & me)
 }
 
 template <typename TValue, typename TWorker>
-inline void
-releaseValue(Serializer<TValue, TWorker> &me, TValue *ptr)
+inline bool
+releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 {
     typedef SerializerItem<TValue> TItem;
     
@@ -455,12 +486,14 @@ releaseValue(Serializer<TValue, TWorker> &me, TValue *ptr)
 
     // work on a sequence of ready items
     // recycle released items
-    while (me.first != NULL && me.first->ready)
+    bool success = true;
+    while (success && me.first != NULL && me.first->ready)
     {
-        me.worker(me.first->val);
+        success = me.worker(me.first->val);
         appendValue(me.recycled, me.first);
         me.first = me.first->next;
     }
+    return success;
 }
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
@@ -487,38 +520,43 @@ public:
 
     typedef ConcurrentQueue<size_t, Suspendable<Limit> > TJobQueue;
 
-    struct Concatter
+    struct OutputBuffer
     {
-        ostream_reference ostream;
-        Mutex lock;
-        unsigned nextWritableKey;
-        bool stop;
+        typedef std::vector<byte_type, byte_allocator_type> TOutputBuffer;
 
-        Concatter(ostream_reference ostream) :
-            ostream(ostream),
-            lock(false),
-            nextWritableKey(0),
-            stop(false)
+        TOutputBuffer   buffer;
+        size_t          size;
+
+        OutputBuffer() :
+            buffer(BGZF_MAX_BLOCK_SIZE, 0)
         {}
     };
 
-    // serialization of output
-    Concatter concatter;
+    struct BufferWriter
+    {
+        ostream_reference ostream;
+
+        BufferWriter(ostream_reference ostream) :
+            ostream(ostream)
+        {}
+
+        bool operator() (OutputBuffer const & outputBuffer)
+        {
+            ostream.write((const char_type*) &(outputBuffer.buffer[0]), outputBuffer.size);
+            return ostream.good();
+        }
+    };
 
     struct CompressionJob
     {
-        typedef std::vector<byte_type, byte_allocator_type> TOutputBuffer;
         typedef std::vector<char_type, char_allocator_type> TBuffer;
 
-        TOutputBuffer   outputBuffer;
         TBuffer         buffer;
         size_t          size;
-        unsigned        key;
+        OutputBuffer    *outputBuffer;
 
         CompressionJob() :
-            outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
-            key(0)
+            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0)
         {}
     };
 
@@ -528,7 +566,10 @@ public:
     String<CompressionJob>  jobs;
     TJobQueue               jobQueue;
     TJobQueue               idleQueue;
-    unsigned                currentJobKey;
+    Serializer<
+        OutputBuffer,
+        BufferWriter>       serializer;
+
     size_t                  currentJobId;
     bool                    currentJobAvail;
 
@@ -544,41 +585,23 @@ public:
             ScopedWriteLock<TJobQueue> writeLock(streamBuf->idleQueue);
 
             // wait for a new job to become available
-            while (true)
+            bool success = true;
+            while (success)
             {
                 size_t jobId;
                 if (!popFront(jobId, streamBuf->jobQueue))
                     return;
 
                 CompressionJob &job = streamBuf->jobs[jobId];
+                OutputBuffer *outputBuffer = aquireValue(streamBuf->serializer);
 
                 // compress block with zlib
-                size_t outputLen = _compressBlock(
-                    &job.outputBuffer[0], capacity(job.outputBuffer),
+                outputBuffer->size = _compressBlock(
+                    &outputBuffer->buffer[0], capacity(outputBuffer->buffer),
                     &job.buffer[0], job.size, compressionCtx);
 
-//                popFront(serializer)
-
-                while (true)
-                {
-                    ScopedLock<Mutex> scopedLock(streamBuf->concatter.lock);
-                    if (streamBuf->concatter.nextWritableKey == job.key)
-                    {
-                        streamBuf->concatter.ostream.write(
-                            (const char_type*) &(job.outputBuffer[0]),
-                            outputLen);
-                        if (!streamBuf->concatter.ostream.good())
-                        {
-                            streamBuf->concatter.stop = false;
-                            return;
-                        }
-                        // move serializer to next packet and reset our job
-                        streamBuf->concatter.nextWritableKey++;
-
-                        appendValue(streamBuf->idleQueue, jobId);
-                        break;
-                    }
-                }
+                success = releaseValue(streamBuf->serializer, outputBuffer);
+                appendValue(streamBuf->idleQueue, jobId);
             }
         }
     };
@@ -592,15 +615,14 @@ public:
     basic_bgzf_streambuf(ostream_reference ostream_,
                          size_t numThreads = 16,
                          size_t jobsPerThread = 8) :
-		concatter(ostream_),
         numThreads(numThreads),
         numJobs(numThreads * jobsPerThread),
         jobQueue(numJobs),
-        idleQueue(numJobs)
+        idleQueue(numJobs),
+		serializer(ostream_)
     {
         resize(jobs, numJobs, Exact());
         currentJobId = 0;
-        currentJobKey = 0;
 
         lockWriting(jobQueue);
         lockReading(idleQueue);
@@ -625,7 +647,6 @@ public:
         SEQAN_ASSERT(currentJobAvail);
 
         CompressionJob &job = jobs[currentJobId];
-        job.key = currentJobKey++;
 		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
     }
 
@@ -655,10 +676,7 @@ public:
         if (!(currentJobAvail = popFront(currentJobId, idleQueue)))
             return false;
 
-        CompressionJob &job = jobs[currentJobId];
-        job.key = currentJobKey++;
-
-        return !concatter.stop;
+        return serializer;
     }
 
     int_type overflow(int_type c)
@@ -702,7 +720,7 @@ public:
         // wait for running compressor threads
         waitForMinSize(idleQueue, numJobs - 1);
 
-		concatter.ostream.flush();
+		serializer.worker.ostream.flush();
 		return w;
     }
 
@@ -725,7 +743,7 @@ public:
     }
 
 	/// returns a reference to the output stream
-	ostream_reference get_ostream() const	{ return concatter.ostream; };
+	ostream_reference get_ostream() const	{ return serializer.worker.ostream; };
 };
 
 /** \brief A stream decorator that takes compressed input and unzips it to a istream.
