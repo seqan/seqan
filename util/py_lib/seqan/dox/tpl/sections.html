@@ -234,7 +234,7 @@ rendered with level h_level.
 {% if entry.sees %}
   <h{{ h_level }} class="clause_header">See Also</h{{ h_level }}>
   <ul class="summary compact">
-  {% for link in entry.sees %}
+  {% for link in entry.sortedSees() %}
   <li>{{ link|transtext(True) }}</li>
   {% endfor %}
   </ul>
@@ -713,7 +713,7 @@ Render the grouped macros details
       {% if subentry.sees %}
       <dt>See Also</dt>
       <dd>
-        {% for link in subentry.sees %}
+        {% for link in subentry.sortedSees() %}
       <dd>{{ link|transtext(False)|translink }}</dd>
       {% endfor %}
       </dd>
@@ -822,7 +822,7 @@ Render the grouped macros details
 {% if subentry.sees %}
   <dt>See Also</dt>
   <dd>
-  {% for link in subentry.sees %}
+  {% for link in subentry.sortedSees() %}
   <dd>{{ link|transtext(False)|translink }}</dd>
   {% endfor %}
   </dd>
@@ -975,7 +975,7 @@ Render the interface functions details
   {% if subentry.sees %}
   <h4>See Also</h4>
   <ul>
-    {% for link in subentry.sees %}
+    {% for link in subentry.sortedSees() %}
     <li>{{ link|transtext(False)|translink }}</li>
     {% endfor %}
   </ul>
@@ -1018,7 +1018,7 @@ Render the member typedef details
       <div class="tags">
         <h4>See Also</h4>
         <ul class="see">
-          {% for link in subentry.sees %}
+          {% for link in subentry.sortedSees() %}
             <li>{{ link|transtext(False)|translink }}</li>
           {% endfor %}
         </ul>
