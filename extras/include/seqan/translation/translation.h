@@ -402,7 +402,7 @@ _translateImpl(StringSet<String<AminoAcid,
 // stringset to stringset
 template <typename TSpec1, typename TSpec2, typename TSpec3, typename TInString,
           typename TParallelism, GeneticCodeSpec CODE_SPEC, unsigned char n>
-inline int
+inline void
 _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                     StringSet<TInString, TSpec3> const & source,
                     GeneticCode<CODE_SPEC> const & /**/,
@@ -411,13 +411,12 @@ _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 {
     _translateImpl(target, source, GeneticCode<CODE_SPEC>(), Frames_<n>(),
                    TParallelism());
-    return 0;
 }
 
 // single string to stringset conversion
 template <typename TSpec1, typename TSpec2, typename TInString,
           typename TParallelism, GeneticCodeSpec CODE_SPEC, unsigned char n>
-inline int
+inline void
 _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
                     TInString const & source,
                     GeneticCode<CODE_SPEC> const & /**/,
@@ -428,27 +427,26 @@ _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
     appendValue(set, source);
     _translateImpl(target, set, GeneticCode<CODE_SPEC>(), Frames_<n>(),
                    TParallelism());
-
-    return 0;
 }
 
-
-// bail out because multiple frames don't fit in one string
+//bail out because multiple frames don't fit in one string
 template <typename TSpec1, typename TInString, typename TParallelism,
           GeneticCodeSpec CODE_SPEC, unsigned char n>
-inline int
+inline void
 _translateInputWrap(String<AminoAcid, TSpec1> & /**/,
                     TInString const & /**/,
                     GeneticCode<CODE_SPEC> const & /**/,
                     Frames_<n> const & /**/,
                     TParallelism const & /**/)
 {
-    return -1;
+    SEQAN_FAIL("Implementation error, multiple frames selected, but only a "
+               "singe target string.");
 }
+
 // single string to single string conversion
 template <typename TSpec1, typename TInString, typename TParallelism,
           GeneticCodeSpec CODE_SPEC>
-inline int
+inline void
 _translateInputWrap(String<AminoAcid, TSpec1> & target,
                     TInString const & source,
                     GeneticCode<CODE_SPEC> const & /**/,
@@ -457,8 +455,6 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
 {
     resize(target, length(source)/3, Exact());
     _translateString(target, source, GeneticCode<CODE_SPEC>());
-
-    return 0;
 }
 
 // --------------------------------------------------------------------------
@@ -520,7 +516,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
 
 template <typename TTarget, typename TSource, typename TParallelism,
           GeneticCodeSpec CODE_SPEC>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
@@ -542,14 +538,11 @@ translate(TTarget & target,
     case SIX_FRAME:
         return _translateInputWrap(target, source, TCode(), Frames_<6>(),
                                    TParallelism());
-    default:
-        return -1;
     }
-    return 0;
 }
 
 template <typename TTarget, typename TSource, GeneticCodeSpec CODE_SPEC>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
@@ -560,7 +553,7 @@ translate(TTarget & target,
 }
 
 template <typename TTarget, typename TSource, GeneticCodeSpec CODE_SPEC>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           GeneticCode<CODE_SPEC> const & /**/)
@@ -570,7 +563,7 @@ translate(TTarget & target,
 }
 
 template <typename TTarget, typename TSource>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames)
@@ -579,7 +572,7 @@ translate(TTarget & target,
 }
 
 template <typename TTarget, typename TSource>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source)
 {
@@ -588,7 +581,7 @@ translate(TTarget & target,
 }
 
 template <typename TTarget, typename TSource, typename TParallelism>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
@@ -603,7 +596,7 @@ translate(TTarget & target,
 
 template <typename TTarget, typename TSource, typename TParallelism,
           GeneticCodeSpec currentSpec, typename TRestList>
-inline int
+inline void
 _translate(TTarget & /**/,
            TSource const & /**/,
            TranslationFrames const /**/,
@@ -612,15 +605,13 @@ _translate(TTarget & /**/,
            TParallelism const & /**/,
            True const & /**/)
 {
-    std::cerr << "Invalid genetic code translation table selected."
-                << std::endl;
-    return -1;
+    SEQAN_FAIL("Invalid genetic code translation table selected.\n");
 }
 
 // forward declare because of double-recursion
 template <typename TTarget, typename TSource, typename TParallelism,
           GeneticCodeSpec currentSpec, typename TRestList>
-inline int
+inline void
 _translate(TTarget & target,
            TSource const & source,
            TranslationFrames const frames,
@@ -630,7 +621,7 @@ _translate(TTarget & target,
 
 template <typename TTarget, typename TSource, typename TParallelism,
           GeneticCodeSpec currentSpec, typename TRestList>
-inline int
+inline void
 _translate(TTarget & target,
            TSource const & source,
            TranslationFrames const frames,
@@ -645,7 +636,7 @@ _translate(TTarget & target,
 
 template <typename TTarget, typename TSource, typename TParallelism,
           GeneticCodeSpec currentSpec, typename TRestList>
-inline int
+inline void
 _translate(TTarget & target,
            TSource const & source,
            TranslationFrames const frames,
@@ -665,7 +656,7 @@ _translate(TTarget & target,
 }
 
 template <typename TTarget, typename TSource, typename TParallelism>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
@@ -678,7 +669,7 @@ translate(TTarget & target,
 
 // convenience
 template <typename TTarget, typename TSource>
-inline int
+inline void
 translate(TTarget & target,
           TSource const & source,
           TranslationFrames const frames,
