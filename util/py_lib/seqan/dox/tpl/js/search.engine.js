@@ -205,18 +205,18 @@ and based on the Tipue Search, http://www.tipue.com
         }
 
         // Returns the n-th LI element of the search results
-        // The returned LI element is not necessarily visible 
+        // The returned LI element is not necessarily visible
         function getNthResultItem(i) {
-            return $(settings.output.find('.result')[i]);
+            return $(settings.output.parent().find('[tabindex=' + i + ']'));
         }
 
         // Returns the focused LI element of the search results
         function getFocusedResultItem() {
-            return settings.output.find(':focus');
+            return settings.output.parent().find(':focus');
         }
 
         function getFocusedResultItemIndex() {
-            return $.inArray(getFocusedResultItem().parents('.result')[0], settings.output.find('.result'));
+            return getFocusedResultItem().attr('tabindex');
         }
 
         return this.each(function() {
@@ -258,6 +258,7 @@ and based on the Tipue Search, http://www.tipue.com
                     search(0, true);
                 }
             });
+
             $(document).keydown(function(event) {
                 if (event.keyCode == '40' || event.keyCode == '38') { // arrow down && arrow up
                     var el = getFocusedResultItem();
@@ -267,7 +268,8 @@ and based on the Tipue Search, http://www.tipue.com
                         var i = 0;
                         do {
                             i += (event.keyCode == '40') ? +1 : -1;
-                            el = getNthResultItem(getFocusedResultItemIndex() + i);
+                            var currIdx = getFocusedResultItemIndex();
+                            el = getNthResultItem(parseInt(currIdx) + i);
                         } while (el.length != 0 && !el.is(':visible'));
 
                         if (el.length == 0 && i < 0) {
@@ -275,10 +277,11 @@ and based on the Tipue Search, http://www.tipue.com
                             return false;
                         }
                     }
-                    el.find('a:nth-child(2)').focus();
+                    el.focus();
                     return false;
                 }
             });
+
             settings.langEntitiesInput.change(function(event) {
                 search(0, true);
             });
@@ -466,8 +469,8 @@ and based on the Tipue Search, http://www.tipue.com
                         var entriesInGroup;
                         var lastLangEntity = false;
                         out += '<ol class="results">';
+                        var tabIndex = 1;
                         for (var i = 0; i < found.length; i++) {
-                        console.log(found[i]);
                             if (settings.numElementsPerPage < 0 || (l_o >= start && l_o < settings.numElementsPerPage + start)) {
                                 var langEntity = found[i].langEntity;
                                 var langEntityEntry = settings.langEntities[langEntity];
@@ -495,8 +498,7 @@ and based on the Tipue Search, http://www.tipue.com
                                 if (entryIsOneTooMuch && !isLastEntryInGroup) {
                                     out += '<li class="more"><a href="#">...</a></li>';
                                 }
-                                
-                                found[i].text = "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ";
+
                                 var description = '';
                                 var description_words = found[i].text.split(' ');
                                 if (description_words.length < settings.descriptiveWords) {
@@ -513,18 +515,18 @@ and based on the Tipue Search, http://www.tipue.com
                                           <span data-lang-entity="' + langEntity + '" data-pimped="true">\
                                             <a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>\
                                             <div>\
-                                              <a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '<br/><small>' + description + '</small>';
+                                              <a href="' + found[i].location + '"' + ankerTarget + ' tabindex="' + (tabIndex++) + '">' + found[i].title + '<br/><small>' + description + '</small>';
 
                                 if (found[i].aka) {
                                     out += '<div class="aka">' + found[i].aka + '</div>';
                                 }
-                                
+
                                 out += '</a>';
 
                                 if (found[i].subentries.length > 0) {
                                     out += '<ul class="subentries">';
                                     for (var j = 0; j < found[i].subentries.length; j++) {
-                                        out += '<li><a href="' + found[i].location + "#" + found[i].subentries[j].id + '" data-lang-entity="' + found[i].subentries[j].type + '">' + found[i].subentries[j].title + '</a></li>';
+                                        out += '<li><a href="' + found[i].location + "#" + found[i].subentries[j].id + '" tabindex="' + (tabIndex++) + '">' + found[i].subentries[j].title + '</a></li>'; // TODO add: data-lang-entity="' + found[i].subentries[j].type + '"
                                     }
                                     out += '</ul>';
                                 }
