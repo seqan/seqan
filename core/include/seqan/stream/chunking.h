@@ -175,7 +175,6 @@ template <typename TChunk, typename TStream, typename TDirection>
 inline void
 getChunk(TChunk &result, Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
 {
-    typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
     SEQAN_ASSERT(iter.streamBuf != NULL);
     getChunk(result, *iter.streamBuf, Tag<TDirection>());
 }

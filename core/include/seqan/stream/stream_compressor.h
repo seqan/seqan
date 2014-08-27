@@ -83,7 +83,7 @@ struct CompressionContext<BgzfFile>:
 const char CompressionContext<BgzfFile>::header[18] =
 {
     MagicHeader<GZFile>::VALUE[0], MagicHeader<GZFile>::VALUE[1], MagicHeader<GZFile>::VALUE[2],
-    4, 0, 0, 0, 0, 0, 0xff, 6, 0, 'B', 'C', 2, 0, 0, 0
+    4, 0, 0, 0, 0, 0, '\xff', 6, 0, 'B', 'C', 2, 0, 0, 0
 };
 
 template <>
@@ -192,7 +192,6 @@ template <typename TTarget, typename TSourceIterator>
 inline typename Size<TTarget>::Type
 compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile> & ctx)
 {
-    typedef typename Size<TTarget>::Type            TSize;
     typedef typename Chunk<TTarget>::Type           TTargetChunk;
     typedef typename Chunk<TSourceIterator>::Type   TSourceChunk;
     typedef typename Value<TSourceChunk>::Type      TSourceValue;
