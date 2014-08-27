@@ -236,12 +236,12 @@ table {
                 @iconWidth: .7em;
                 @inColor: #d43f3a;
                 @outColor: #4cae4c;
-                
+
                 &[data-param-type=in],
                 &[data-param-type=out] {
                     padding-left: @iconWidth + @iconSpacing;
                 }
-                
+
                 &[data-param-type=in_out] {
                     padding-left: 2*@iconWidth + @iconSpacing;
                 }
@@ -297,7 +297,7 @@ table {
             white-space: pre;
             padding-left: 0;
             padding-right: 0;
-        /* makes long lines unnecessarily wrap (problem occurred when switch von definition lists to tables 
+        /* makes long lines unnecessarily wrap (problem occurred when switch von definition lists to tables
         -ms-word-break: break-all;
             word-break: break-all;
             word-break: break-word;
@@ -946,7 +946,7 @@ ul.params {
 
 #results {
     ol {
-        list-style-type: none;
+      list-style-type: none;
         margin-left: 10px;
         margin-right: 10px;
 
@@ -984,28 +984,30 @@ ul.params {
                     word-break: break-all;
                     word-break: break-word;
 
-                    &:before { top: .5em }
+                    &:before { top: .5em } // corrects the arrow pos
 
-                    div { // meta information
-                        color: #000;
+                    .aka { color: #333333; } // bootstrap: @text-color
 
-                        .aka {
-                            &:before {
-                                content: "a.k.a. ";
-                                font-style: italic;
-                            }
-                        }
+                    &:not(:only-child) { // = followed by .subentries
+                        padding-bottom: 0;
+                    }
+                }
 
-                        ul.subentries {
-                            &:before {
-                                content: 'matches:';
-                                font-style: italic;
-                            }
+                .aka {
+                    font-size: 0.9em;
+                    &:before {
+                        content: "synonyms: ";
+                        font-style: italic;
+                    }
+                }
 
-                            li { margin-left: .5em }
-                        }
-
-                        .text { display: none; }
+                .subentries {
+                    font-size: 0.9em;
+                    &:before {
+                        content: 'matches:';
+                        font-style: italic;
+                        display: block;
+                        margin-left: 1.65em;
                     }
                 }
             }
@@ -1567,36 +1569,36 @@ pre {
 
 // modal dialog's backgrop does erroneously get opacity 1 making the whole background black
 .modal-backdrop.in {
-    opacity: 0.5 !important;
+  opacity: 0.5 !important;
 }
 
-html { body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom {
+html {
+  body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom {
     margin-right: auto;
 } }
 
-.modal h4 { font-size: 18px; }
-
-
-
-
-
+.modal h4 {
+  font-size: 18px;
+}
 
 .animation1() {
-    0% {
-        opacity:1;
-    }
-    100% {
-        opacity:0.65;
-    }
+  0% {
+        opacity: 1;
+  }
+
+100% {
+  opacity: 0.65;
+  }
 }
 
 .animation2() {
-    0% {
-        top:1em;
-    }
-    100% {
-        top:1.5em;
-    }
+  0% {
+    top: 1em;
+  }
+
+  100% {
+    top: 1.5em;
+  }
 }
 
 @import '../lib/3L/assets/animations/animation1';

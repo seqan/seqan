@@ -2493,22 +2493,27 @@ ul.params {
 #results ol li.result h2 a:before {
   top: 0.5em;
 }
-#results ol li.result h2 a div {
-  color: #000;
+#results ol li.result h2 a .aka {
+  color: #333333;
 }
-#results ol li.result h2 a div .aka:before {
-  content: "a.k.a. ";
+#results ol li.result h2 a:not(:only-child) {
+  padding-bottom: 0;
+}
+#results ol li.result h2 .aka {
+  font-size: 0.9em;
+}
+#results ol li.result h2 .aka:before {
+  content: "synonyms: ";
   font-style: italic;
 }
-#results ol li.result h2 a div ul.subentries:before {
+#results ol li.result h2 .subentries {
+  font-size: 0.9em;
+}
+#results ol li.result h2 .subentries:before {
   content: 'matches:';
   font-style: italic;
-}
-#results ol li.result h2 a div ul.subentries li {
-  margin-left: 0.5em;
-}
-#results ol li.result h2 a div .text {
-  display: none;
+  display: block;
+  margin-left: 1.65em;
 }
 #results ol li.result.more {
   display: none;
