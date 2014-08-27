@@ -63,6 +63,7 @@ struct AppOptions
     StringSet<CharString> inFiles;
     CharString outFile;
     bool bamFormat;
+    bool verbose;
 };
 
 // ==========================================================================
@@ -74,7 +75,7 @@ struct AppOptions
 // --------------------------------------------------------------------------
 
 template <typename TWriter>
-void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
+void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
     String<BamFile<Input> *> readerPtr;
     resize(readerPtr, length(inFiles));
@@ -109,6 +110,8 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
 
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;
+    __uint64 numRecords = 0;
+    double start = sysTime();
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
         if (readerPtr[i] == NULL)
@@ -119,9 +122,16 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
         {
             readRecord(record, *readerPtr[i]);
             write(writer, record);
+            ++numRecords;
         }
         close(*readerPtr[i]);
         delete readerPtr[i];
+    }
+    double stop = sysTime();
+    if (options.verbose)
+    {
+        std::cerr << "Number of alignments: " << numRecords << std::endl;
+        std::cerr << "Elapsed time:         " << stop - start << " seconds" << std::endl;
     }
 }
 
@@ -155,6 +165,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", ".sam .bam");
     addOption(parser, ArgParseOption("b", "bam", "Use BAM format for standard output. Default: SAM."));
+    addOption(parser, ArgParseOption("v", "verbose", "Print some stats."));
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
@@ -173,6 +184,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     options.inFiles = getArgumentValues(parser, 0);
     getOptionValue(options.outFile, parser, "output");
     getOptionValue(options.bamFormat, parser, "bam");
+    getOptionValue(options.verbose, parser, "verbose");
 
     return ArgumentParser::PARSE_OK;
 }
@@ -214,7 +226,7 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    mergeBamFiles(writer, options.inFiles);
+    mergeBamFiles(writer, options.inFiles, options);
 
     return 0;
 }

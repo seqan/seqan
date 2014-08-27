@@ -159,6 +159,8 @@ public:
 
         while (popFront(tmp, *this))
         {}
+
+        _setLength(data, 0);
     }
 };
 
@@ -272,6 +274,43 @@ _popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 
 template <typename TValue, typename TSpec>
 inline bool
+_popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
+{
+    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
+    typedef typename Host<TQueue>::Type                     TString;
+    typedef typename Size<TString>::Type                    TSize;
+    typedef typename Iterator<TString, Standard>::Type      TIter;
+
+    TSize cap = capacity(me.data);
+
+    while (me.occupied == 0u && me.writerCount > 0u)
+        waitFor(me.more);
+
+    if (me.occupied == 0u)
+        return false;
+
+    SEQAN_ASSERT_NEQ(me.occupied, 0u);
+
+    me.nextIn = (me.nextIn + cap - 1) % cap;
+
+    // extract value and destruct it in the data string
+    TIter it = begin(me.data, Standard()) + me.nextIn;
+    std::swap(result, *it);
+    valueDestruct(it);
+
+    me.occupied--;
+
+    /* now: either me.occupied > 0 and me.nextout is the index
+       of the next occupied slot in the buffer, or
+       me.occupied == 0 and me.nextout is the index of the next
+       (empty) slot that will be filled by a producer (such as
+       me.nextout == me.nextin) */
+
+    return true;
+}
+
+template <typename TValue, typename TSpec>
+inline bool
 popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
     ScopedLock<Mutex> lock(me.mutex);
@@ -291,6 +330,28 @@ popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
     return false;
 }
 
+template <typename TValue, typename TSpec>
+inline bool
+popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    return _popBack(result, me);
+}
+
+template <typename TValue>
+inline bool
+popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
+{
+    ScopedLock<Mutex> lock(me.mutex);
+    if (_popBack(result, me))
+    {
+        signal(me.less);
+        return true;
+    }
+    return false;
+}
+
+
 template <typename TValue, typename TValue2, typename TSpec>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
@@ -307,6 +368,8 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     {
         if (me.nextOut >= me.nextIn)
             ++me.nextOut;
+        
+        _setLength(me.data, cap);
         insertValue(me.data, me.nextIn, val);
         ++me.nextIn;
     }
@@ -377,6 +440,58 @@ waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
 
 
 template <typename TValue>
+struct ResourcePool
+{
+    typedef ConcurrentQueue<TValue *, Suspendable<> >   TStack;
+    typedef typename Size<TStack>::Type                 TSize;
+
+    TStack recycled;
+
+    ResourcePool(TSize maxSize)
+    {
+        setWriterCount(recycled, 1);
+        for (; maxSize != 0; --maxSize)
+            appendValue(recycled, (TValue *)NULL);
+    }
+
+    ~ResourcePool()
+    {
+        unlockWriting(recycled);
+        TValue *ptr;
+        unsigned count =0;
+        while (popBack(ptr, recycled))
+        {
+            if (ptr != NULL)
+            count++;
+            delete ptr;
+        }
+        std::cerr<<"RESOURCES:"<<count<<std::endl;
+    }
+};
+
+template <typename TValue>
+inline TValue *
+aquireValue(ResourcePool<TValue> & me)
+{
+    TValue *ptr;
+    if (!popBack(ptr, me.recycled))
+        return NULL;
+
+    if (ptr == NULL)
+        ptr = new TValue();
+    return ptr;
+}
+
+template <typename TValue>
+inline void
+releaseValue(ResourcePool<TValue> & me, TValue *ptr)
+{
+    appendValue(me.recycled, ptr);
+}
+
+
+
+template <typename TValue>
 struct SerializerItem
 {
     TValue          val;
@@ -387,19 +502,21 @@ struct SerializerItem
 template <typename TValue, typename TWorker>
 struct Serializer
 {
-    typedef SerializerItem<TValue> * TItemPtr;
+    typedef SerializerItem<TValue>  TItem;
+    typedef TItem *                 TItemPtr;
 
     Mutex               mutex;
     TWorker             worker;
     TItemPtr            first;
     TItemPtr            last;
-    String<TItemPtr>    recycled;
+    ResourcePool<TItem> pool;
     bool                stop;
 
     Serializer():
         mutex(false),
         first(NULL),
         last(NULL),
+        pool(1024),
         stop(false)
     {
         clear(*this);
@@ -411,15 +528,20 @@ struct Serializer
         worker(arg),
         first(NULL),
         last(NULL),
+        pool(1024),
         stop(false)
     {}
 
     ~Serializer()
     {
-        typedef typename Iterator<String<TItemPtr>, Standard>::Type TIter;
-        TIter itEnd = end(recycled, Standard());
-        for (TIter it = begin(recycled, Standard()); it != itEnd; ++it)
-            delete *it;
+        while (first != NULL)
+        {
+            TItemPtr item = first;
+            first = first->next;
+            delete item;
+            std::cout << "free"<<std::endl;
+        }
+        std::cerr<<"Serializer:"<<capacity(pool.recycled.data)<<std::endl;
     }
 
     operator bool()
@@ -435,8 +557,9 @@ clear(Serializer<TValue, TWorker> & me)
     me.stop = false;
     while (me.first != NULL)
     {
-        appendValue(me.recycled, me.first);
+        TValue *item = me.first;
         me.first = me.first->next;
+        releaseValue(me.recycled, item);
     }
     me.last = NULL;
 }
@@ -447,31 +570,26 @@ aquireValue(Serializer<TValue, TWorker> & me)
 {
     typedef SerializerItem<TValue> TItem;
 
-    ScopedLock<Mutex> lock(me.mutex);
-    TItem *item;
-    if (!empty(me.recycled))
-    {
-        item = back(me.recycled);
-        eraseBack(me.recycled);
-    }
-    else
-    {
-        item = new TItem();
-    }
+    TItem *item = aquireValue(me.pool);
     item->next = NULL;
     item->ready = false;
 
-    if (me.first != NULL)
+    // add item to the end of our linked list
     {
-        SEQAN_ASSERT(me.last != NULL);
-        me.last->next = item;
+        ScopedLock<Mutex> lock(me.mutex);
+
+        if (me.first != NULL)
+        {
+            SEQAN_ASSERT(me.last != NULL);
+            me.last->next = item;
+        }
+        else
+        {
+            me.first = item;
+            me.last = item;
+        }
     }
-    else
-    {
-        me.first = item;
-        me.last = item;
-    }
-    
+
 //    std::cerr<<"aquire\t"<<(size_t)item<<std::endl;
     return &item->val;
 }
@@ -485,7 +603,21 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
     TItem *item = reinterpret_cast<TItem *>(ptr);
     SEQAN_ASSERT_NOT(item->ready);
 
-//    std::cerr<<"release\t"<<(size_t)ptr<<std::endl;
+//    {
+//            ScopedLock<Mutex> lock(me.mutex);
+//            // recycle released items
+//            appendValue(me.recycled, item);
+//    }
+//    {
+//        ScopedLock<Mutex> lock(me.mutex);
+//        item->ready = true;
+//        if (item != me.first)
+//            return true;
+//    }
+//
+//    return true;
+
+//    std::cerr<<"RELEASE\t"<<(size_t)ptr<<std::endl;
 
 
     // changing me.first or the ready flag must be done synchronized (me.mutex)
@@ -507,14 +639,18 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
     do
     {
         success = me.worker(item->val);
+//        std::cerr<<"WRITE"<<std::endl;
+//success=true;
 
         {
             ScopedLock<Mutex> lock(me.mutex);
             me.first = item->next;
             // recycle released items
-            appendValue(me.recycled, item);
+            releaseValue(me.pool, item);
+//    std::cerr<<"FREE\t"<<(size_t)ptr<<std::endl;
 
             item = me.first;
+
             // can we leave?
             if (item == NULL || !item->ready)
                 return success;
@@ -552,14 +688,8 @@ public:
 
     struct OutputBuffer
     {
-        typedef std::vector<byte_type, byte_allocator_type> TOutputBuffer;
-
-        TOutputBuffer   buffer;
-        size_t          size;
-
-        OutputBuffer() :
-            buffer(BGZF_MAX_BLOCK_SIZE, 0)
-        {}
+        char    buffer[BGZF_MAX_BLOCK_SIZE];
+        size_t  size;
     };
 
     struct BufferWriter
@@ -573,7 +703,7 @@ public:
         bool operator() (OutputBuffer const & outputBuffer)
         {
 //    std::cerr<<"work\t"<<(size_t)&outputBuffer<<std::endl;
-//            ostream.write((const char_type*) &(outputBuffer.buffer[0]), outputBuffer.size);
+            ostream.write(outputBuffer.buffer, outputBuffer.size);
             return ostream.good();
         }
     };
@@ -628,12 +758,13 @@ public:
 
                 // compress block with zlib
                 outputBuffer->size = _compressBlock(
-                    &outputBuffer->buffer[0], capacity(outputBuffer->buffer),
+                    outputBuffer->buffer, sizeof(outputBuffer->buffer),
                     &job.buffer[0], job.size, compressionCtx);
 
                 success = releaseValue(streamBuf->serializer, outputBuffer);
                 appendValue(streamBuf->idleQueue, jobId);
             }
+            std::cerr<<"DAMN"<<std::endl;
         }
     };
 

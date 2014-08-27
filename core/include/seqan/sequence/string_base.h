@@ -813,6 +813,9 @@ struct ClearSpaceExpandStringBase_
         typename Size<T>::Type removed_size = end - start;
         typename Size<T>::Type new_length = old_length - removed_size + size;
 
+        SEQAN_ASSERT_LEQ(start, end);
+        SEQAN_ASSERT_LEQ(start, old_length);
+
         typename Size<T>::Type old_capacity = capacity(seq);
         typename Value<T>::Type * old_array = _reallocateStorage(seq, new_length, TExpand());
         typename Value<T>::Type * seq_array = begin(seq);
@@ -846,6 +849,9 @@ struct ClearSpaceExpandStringBase_
         typename Size<T>::Type old_length = length(seq);
         typename Size<T>::Type removed_size = end - start;
         typename Size<T>::Type need_length = old_length - removed_size + size;
+
+        SEQAN_ASSERT_LEQ(start, end);
+        SEQAN_ASSERT_LEQ(start, old_length);
 
         typename Size<T>::Type new_length = need_length;
         typename Size<T>::Type length_to_copy = old_length;
