@@ -2274,7 +2274,7 @@ readDna5IgnoringWhitespaces(TBuffer & buffer,
 // with special chars
 
 /*!
- * @fn FileFormatTokenization#sipUntilLineBeginsWithChar
+ * @fn FileFormatTokenization#skipUntilLineBeginsWithChar
  * @headerfile <seqan/stream.h>
  * @brief Skip input until the first graphical (see @link isgraph @endlink) character of a line is equal to c.
  *
@@ -2335,7 +2335,7 @@ skipUntilLineBeginsWithChar(RecordReader<TStream, TPass> & reader,
 }
 
 /*!
- * @fn FileFormatTokenization#sipUntilLineBeginsWithStr
+ * @fn FileFormatTokenization#skipUntilLineBeginsWithStr
  * @headerfile <seqan/stream.h>
  * @brief Skip input until a line begins with str (str itself must begin with a printable character).
  *
@@ -2401,7 +2401,7 @@ skipUntilLineBeginsWithStr(RecordReader<TStream, TPass> & reader,
 }
 
 /*!
- * @fn FileFormatTokenization#sipUntilLineBeginsWithOneCharOfStr
+ * @fn FileFormatTokenization#skipUntilLineBeginsWithOneCharOfStr
  * @headerfile <seqan/stream.h>
  * @brief Skip input until a line begins with one of the character in str.
  *
