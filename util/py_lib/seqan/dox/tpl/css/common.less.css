@@ -6574,7 +6574,7 @@ ul.overview > li table tr td {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   vertical-align: top;
-  border-top: 1px dotted #222222;
+  border-top: 1px solid #ccc;
 }
 ul.overview > li table tr td:last-child {
   padding-right: 1rem;
