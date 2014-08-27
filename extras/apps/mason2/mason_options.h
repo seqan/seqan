@@ -223,6 +223,10 @@ struct FragmentSamplerOptions
     };
     */
 
+    // Lower bound on fragment size to simulate, used for requiring minimal size when simulating Illumina reads.  A
+    // value of 0 indicates no bound.
+    int fragSizeLowerBound;
+
     // Smallest fragment size if uniformly distributed.
     int minFragmentSize;
     // Maximal fragment size if uniformly distributed.
@@ -245,8 +249,8 @@ struct FragmentSamplerOptions
     */
 
     FragmentSamplerOptions() :
-            verbosity(1), minFragmentSize(0), maxFragmentSize(0), meanFragmentSize(0), stdDevFragmentSize(0),
-            model(UNIFORM)
+            verbosity(1), fragSizeLowerBound(0), minFragmentSize(0), maxFragmentSize(0), meanFragmentSize(0),
+            stdDevFragmentSize(0), model(UNIFORM)
     {}
 
     // Add options to the argument parser.

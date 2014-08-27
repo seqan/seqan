@@ -111,14 +111,17 @@ public:
     // Minimal and maximal fragment length.
     int minLength;
     int maxLength;
+    // Lower bound on fragment size.
+    int fragSizeLowerBound;
 
     // The random number generator to use.
     TRng & rng;
     // The probability density function for the simulation.
     seqan::Pdf<seqan::Uniform<int> > pdf;
 
-    UniformFragmentSamplerImpl(TRng & rng, int minLength, int maxLength) :
-            minLength(minLength), maxLength(maxLength), rng(rng), pdf(minLength, maxLength)
+    UniformFragmentSamplerImpl(TRng & rng, int minLength, int maxLength, int fragSizeLowerBound) :
+            minLength(minLength), maxLength(maxLength), fragSizeLowerBound(fragSizeLowerBound),
+            rng(rng), pdf(minLength, maxLength)
     {}
 
     virtual void generate(Fragment & frag, int rId, unsigned contigLength,
@@ -144,14 +147,17 @@ public:
     // Mean length and length standard deviation.
     int meanLength;
     int stdDevLength;
+    // Lower bound on fragment size.
+    int fragSizeLowerBound;
 
     // The random number generator to use.
     TRng & rng;
     // The probability density function for the simulation.
     seqan::Pdf<seqan::Normal> pdf;
 
-    NormalFragmentSamplerImpl(TRng & rng, int meanLength, int stdDevLength) :
-            meanLength(meanLength), stdDevLength(stdDevLength), rng(rng), pdf(meanLength, stdDevLength)
+    NormalFragmentSamplerImpl(TRng & rng, int meanLength, int stdDevLength, int fragSizeLowerBound) :
+            meanLength(meanLength), stdDevLength(stdDevLength), fragSizeLowerBound(fragSizeLowerBound),
+            rng(rng), pdf(meanLength, stdDevLength)
     {}
 
     virtual void generate(Fragment & frag, int rId, unsigned contigLength,
@@ -183,10 +189,12 @@ public:
     {
         if (options.model == FragmentSamplerOptions::UNIFORM)
             impl.reset(new UniformFragmentSamplerImpl(rng, options.minFragmentSize,
-                                                        options.maxFragmentSize));
+                                                      options.maxFragmentSize,
+                                                      options.fragSizeLowerBound));
         else
             impl.reset(new NormalFragmentSamplerImpl(rng, options.meanFragmentSize,
-                                                       options.stdDevFragmentSize));
+                                                     options.stdDevFragmentSize,
+                                                     options.fragSizeLowerBound));
     }
 
     // Generate a fragment given a contig id and the length of the contig.
@@ -322,7 +330,8 @@ void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned co
     for (unsigned tryNo = 0; tryNo < MAX_TRIES; ++tryNo)
     {
         fragLength = pickRandomNumber(rng, pdf);
-        if (fragLength <= 0 || fragLength > (int)contigLength)
+        if (fragLength <= 0 || fragLength > (int)contigLength ||
+            (fragSizeLowerBound && fragSizeLowerBound > fragLength))
             continue;  // Try again
 
         seqan::Pdf<seqan::Uniform<int> > posPdf(0, contigLength - fragLength);
@@ -363,7 +372,8 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
     for (; tryNo < MAX_TRIES; ++tryNo)
     {
         fragLength = static_cast<int>(pickRandomNumber(rng, pdf));
-        if (fragLength <= 0 || fragLength > (int)contigLength)
+        if (fragLength <= 0 || fragLength > (int)contigLength ||
+            (fragSizeLowerBound && fragSizeLowerBound > fragLength))
             continue;  // Try again
 
         seqan::Pdf<seqan::Uniform<int> > posPdf(0, contigLength - fragLength);
