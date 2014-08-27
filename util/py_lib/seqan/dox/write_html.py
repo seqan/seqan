@@ -508,10 +508,12 @@ class HtmlWriter(object):
             if hasattr(entry, 'akas'):
                 akas = ','.join(entry.akas)
             if hasattr(entry, 'subentries'):
-                xs = []
-                for lst in entry.subentries.values():
-                    xs += lst
-                subentries = ','.join(['%s %s' % (s.kind, proc_doc.splitSecondLevelEntry(s.title)[1]) for s in xs])
+                subentries = []
+                for t in entry.subentries.values():
+                    for s in t:
+                        sID = s.title
+                        title = proc_doc.splitSecondLevelEntry(s.title)[1]
+                        subentries.append({'type': s.kind, 'title': title, 'id': sID})
             js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
                       (repr(entry.title), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
