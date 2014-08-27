@@ -250,9 +250,11 @@ int readRecord(BamAlignmentRecord & record,
         return res;
     SEQAN_ASSERT_GEQ(record.rID, -1);
 
-    // Translate file local rID into a global rID that is compatible with the context nameStore.
+    // Translate file local rID and rNextId into a global rID that is compatible with the context nameStore.
     if (record.rID >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rID = context.translateFile2GlobalRefId[record.rID];
+    if (record.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+        record.rNextId = context.translateFile2GlobalRefId[record.rNextId];
 
     if (record.rID >= 0)
         SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));

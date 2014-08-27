@@ -1174,6 +1174,10 @@ public:
         std::cerr << "\n____INITIALIZING______________________________________________________________\n"
                   << "\n";
 
+        // Set lower bound on fragment size in case of Illumina reads.
+        if (options.seqOptions.sequencingTechnology == SequencingOptions::ILLUMINA)
+            options.fragSamplerOptions.fragSizeLowerBound = 1.5 * options.illuminaOptions.readLength;
+
         // Initialize VCF materialization (reference FASTA and input VCF).
         std::cerr << "Opening reference and variants file ...";
         vcfMat.init();

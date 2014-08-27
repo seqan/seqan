@@ -85,7 +85,7 @@ sequence.
 */
 /*!
  * @class RankDictionary
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A rank dictionary is a data structure storing the rank of an element in a sequence at every position of
  *        the sequence.
  * 
@@ -145,7 +145,7 @@ struct RankDictionaryFibreSpec
 
 /*!
  * @fn RankDictionary#getFibre
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns a specific fibre of a dictionary.
  * 
  * @signature TFibre getFibre(dictionary, fibreTag);
@@ -177,7 +177,7 @@ getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
 
 /*!
  * @fn RankDictionary#clear
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Resets the rank dictionary.
  * 
  * @signature void clear(dictionary);
@@ -197,7 +197,7 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
 
 /*!
  * @fn RankDictionary#empty
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns whether or not the rank dictionary is empty.
  * 
  * @signature bool empty(dictionary);
@@ -218,7 +218,7 @@ SEQAN_HOST_DEVICE inline bool empty(RankDictionary<TValue, TSpec> const & dict)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RankDictionary#createRankDictionary
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief This functions creates the dictionary.
  * 
  * @signature void createRankDictionary(dictionary, text);
@@ -251,7 +251,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RankDictionary#getRank
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the rank of a specified character up to a specified position.
  * 
  * @signature TSize countOccurrences(dictionary, pos[, character]);
@@ -270,7 +270,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RankDictionary#getValue
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the character of a specified position.
  * 
  * @signature TValue getValue(dictionary, pos);
@@ -288,7 +288,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 
 /*!
  * @fn RankDictionary#setValue
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Sets the character at a specified position.
  * 
  * @signature void setValue(dictionary, pos, character);
@@ -382,7 +382,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 
 /*!
  * @fn RankDictionary#open
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief This functions loads a rank dictionary from disk.
  * 
  * @signature bool open(dictionary, fileName[, openMode]);
@@ -415,7 +415,7 @@ inline bool open(RankDictionary<TValue, TSpec> & dict, const char * fileName)
 // ----------------------------------------------------------------------------
 /*!
  * @fn RankDictionary#save
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief This functions saves a dictionary to disk.
  * 
  * @signature bool save(dictionary, fileName[, openMode]);

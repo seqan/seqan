@@ -106,7 +106,7 @@ struct FixedShape;
 
 /*!
  * @mfn CyclicShape#Size
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  *
  * @brief Size type for parameters used in CyclicShape.
  *
@@ -364,7 +364,7 @@ CyclicShape<FixedShape<L, GappedShape<HardwiredShape
 
 /*!
  * @mfn FixedCyclicShape#WEIGHT
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  *
  * @brief Weight (number of care-positions) of Fixed CyclicShapes
  *
@@ -396,7 +396,7 @@ struct WEIGHT<CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > >
 
 /*!
  * @fn CyclicShape#weight
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  *
  * @brief Return the weight of a CyclicShape
  *
@@ -428,7 +428,7 @@ weight(CyclicShape<FixedShape<L, GappedShape<THardwiredShape>, R> > const &)
 
 /*!
  * @fn GenericCyclicShape#stringToCyclicShape
- * @headerfile seqan/modifier.h
+ * @headerfile <seqan/modifier.h>
  *
  * @brief Converts a 0/1 string to a Generic CyclicShape.
  *

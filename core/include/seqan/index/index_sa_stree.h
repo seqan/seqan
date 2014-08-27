@@ -72,7 +72,7 @@ struct IndexSa {};
 /*!
  * @class IndexSa
  * @extends Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief An index based on a suffix array.
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, IndexSa<TSpec> >;

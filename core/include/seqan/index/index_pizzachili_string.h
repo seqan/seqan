@@ -62,7 +62,7 @@ needed, this string tries to query only a substring.
  * 
  * @extends String
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief String used by the Pizza &amp; Chili indices.
  * 

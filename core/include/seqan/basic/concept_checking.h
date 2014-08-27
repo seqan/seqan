@@ -584,7 +584,7 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
 /*!
  * @macro ConceptChecking#SEQAN_CONCEPT
  * @brief Defines a new concept.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature SEQAN_CONCEPT(name, params)
  * 
@@ -692,7 +692,7 @@ private:
 /*!
  * @macro ConceptChecking#SEQAN_CONCEPT_REFINE
  * @brief Defines a new concept as a refinement of existing concepts.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature SEQAN_CONCEPT_REFINE(name, params, refinedConcepts)
  * 
@@ -778,7 +778,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 /*!
  * @macro ConceptChecking#SEQAN_CONCEPT_IMPL
  * @brief Defines which concepts a model fulfills.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * 
  * @signature template<> SEQAN_CONCEPT_IMPL(implementedConcepts, name)
@@ -886,7 +886,7 @@ void sameType(T, T) { }
 /*!
  * @mfn Is
  * @brief Returns whether a concept is fulfilled.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature Is<TConcept>::Type
  * @signature Is<TConcept>::VALUE

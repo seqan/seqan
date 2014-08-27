@@ -13,6 +13,7 @@ import HTMLParser
 import logging
 import re
 import sys
+import xml.etree.ElementTree
 import xml.sax.saxutils
 
 import inc_mgr
@@ -59,7 +60,9 @@ def splitSecondLevelEntry(name):
 class ProcDoc(object):
     """Collection of the top-level documentation entries.
 
-    @ivar doc_processor: The DocProcessor that created this ProcDoc.
+    @ivar doc_processor      The DocProcessor that created this ProcDoc.
+    @ivar local_name_counter Number of occurences for local names, used for
+                             shortening @link display to second level entries.
     """
 
     def __init__(self, doc_processor):
@@ -67,6 +70,7 @@ class ProcDoc(object):
         self.top_level_entries = {}
         self.second_level_entries = {}
         self.entries = {}
+        self.local_name_counter = {}
 
     def addTopLevelEntry(self, x):
         """Add a top-level-entry."""
@@ -85,6 +89,9 @@ class ProcDoc(object):
         if first:
 #            print '%s => %s as %s' % (x.name, second, x.kind)
             self.top_level_entries[first].registerSubentry(x)
+        # update local name counter
+        self.local_name_counter.setdefault(second, 0)
+        self.local_name_counter[second] += 1
         
     def addVariable(self, x):
         """Add a variable entry."""
@@ -217,7 +224,27 @@ class TextNode(object):
             return self
         else:
             return self.children[0]
-        
+
+    @property
+    def plainText(self):
+        """Converts to HTML and strips tags."""
+        def remove_html_markup(s):
+            tag = False
+            quote = False
+            out = []
+
+            for c in s:
+                if c == '<' and not quote:
+                    tag = True
+                elif c == '>' and not quote:
+                    tag = False
+                elif (c == '"' or c == "'") and tag:
+                    quote = not quote
+                elif not tag:
+                    out.append(c)
+            return ''.join(out)
+        return remove_html_markup(self.toHtmlLike())
+
     def toHtmlLike(self, skip_top_tag=False, **kwargs):
         """Returns a string with a HTML-like representation for debuggin.
 
@@ -276,6 +303,9 @@ class ProcEntry(object):
         self.subentries = {}
         self.raw_entry = None
         self._location = None
+
+    def sortedSees(self):
+        return sorted(self.sees, key=lambda x: x.plainText)
 
     def registerSubentry(self, proc_entry):
         self.subentries.setdefault(proc_entry.kind, []).append(proc_entry)
@@ -608,6 +638,24 @@ class ProcReturn(object):
         visitor.visit(self.desc)
 
 
+class ProcThrow(object):
+    """Documentation of a @throw entry.
+
+    @ivar raw: The raw version of this ProcThrow (required for location lookup).
+    @ivar type: The exception type. str.
+    @ivar desc: The documentation of the exception. TextNode.
+    """
+
+    def __init__(self, raw):
+        self.raw = raw
+        self.type = None
+        self.desc = TextNode()
+
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        visitor.visit(self.desc)
+
+
 class ProcFunction(ProcCodeEntry):
     """A processed function documentation.
 
@@ -615,6 +663,7 @@ class ProcFunction(ProcCodeEntry):
                   concepts.
     @ivar tparams:
     @ivar returns:
+    @ivar throws: List of ProcThrow objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
@@ -622,6 +671,7 @@ class ProcFunction(ProcCodeEntry):
         self.params = []
         self.tparams = []
         self.returns = []
+        self.throws = []
 
     @property
     def kind(self):
@@ -651,6 +701,8 @@ class ProcFunction(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
+        for t in self.throws:
+            t.visitTextNodes(visitor)
         
     def addParam(self, p):
         self.params.append(p)
@@ -661,19 +713,24 @@ class ProcFunction(ProcCodeEntry):
     def addReturn(self, r):
         self.returns.append(r)
 
+    def addThrow(self, t):
+        self.throws.append(t)
+
 
 class ProcMacro(ProcCodeEntry):
     """A processed macro documentation.
 
     @ivar params: A list of str values with the names of the extended
                   concepts.
-    @ivar returns:
+    @ivar returns: Name displayed for return type.
+    @ivar throws: List of ProcThrow objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
         ProcCodeEntry.__init__(self, raw, name, brief, body, sees)
         self.params = []
         self.returns = []
+        self.throws = []
 
     @property
     def local_name(self):
@@ -697,12 +754,17 @@ class ProcMacro(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
-        
+        for t in self.throws:
+            t.visitTextNodes(visitor)
+
     def addParam(self, p):
         self.params.append(p)
 
     def addReturn(self, r):
         self.returns.append(r)
+
+    def addThrow(self, t):
+        self.throws.append(t)
 
 
 class ProcMetafunction(ProcCodeEntry):
@@ -742,7 +804,7 @@ class ProcMetafunction(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for p in self.returns:
             p.visitTextNodes(visitor)
-        
+
     def addTParam(self, t):
         self.tparams.append(t)
 
@@ -922,7 +984,7 @@ class RawTextToTextNodeConverter(object):
 
     def handleCommandClosing(self):
         """Handle closing of current command."""
-        assert self.current_cmd == 'COMMAND_LINK', 'Only known commandx.'
+        assert self.current_cmd == 'COMMAND_LINK', 'Only known command.'
         if self.current_cmd == 'COMMAND_LINK':
             # Trim leading/trailing whitespace tokens
             def isWhitespace(t):
@@ -1285,6 +1347,11 @@ class FunctionConverter(CodeEntryConverter):
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             function.addReturn(proc_return)
+        for t in raw_entry.throws:
+            proc_throw = ProcThrow(t)
+            proc_throw.type = t.name.text
+            proc_throw.desc = self.rawTextToTextNode(t.text)
+            function.addThrow(proc_throw)
         return function
 
 
@@ -1313,6 +1380,11 @@ class MacroConverter(CodeEntryConverter):
             proc_return.type = r.name.text
             proc_return.desc = self.rawTextToTextNode(r.text)
             macro.addReturn(proc_return)
+        for t in raw_entry.throws:
+            proc_throw = ProcThrow(t)
+            proc_throw.type = t.name.text
+            proc_throw.desc = self.rawTextToTextNode(t.text)
+            macro.addThrow(proc_throw)
         return macro
 
 

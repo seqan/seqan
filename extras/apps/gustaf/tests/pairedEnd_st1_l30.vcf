@@ -15,5 +15,6 @@
 ##ALT=<ID=DUP,Description="Duplication">
 ##ALT=<ID=DUP:TANDEM,Description="Tandem Duplication">
 ##contig=<ID=gi|9632547|ref|NC_002077.1|,length=4718>
+##contig=<ID=gi|1234567|,length=1148>
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
 gi|9632547|ref|NC_002077.1|	3569	.	T	<DEL>	.	PASS	SVTYPE=DEL;END=3709;SVLEN=-140;BM=0;DP=1	.	1

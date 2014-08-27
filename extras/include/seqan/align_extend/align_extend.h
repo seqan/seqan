@@ -432,10 +432,10 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  *                           infixes in align.
  * @param[in]      extensionDirection
  *                           The extension direction (@link ExtensionDirection @endlink).
- * @param[in]      lowerDiag Lower alignmetn diagonal to use (<tt>int</tt>).
- * @param[in]      upperDiag Upper alignmetn diagonal to use (<tt>int</tt>).
- * @param[in]      xDrop     The X-drop value to use (integral value). Applies only to vertical direction,
- * diagonals, as well!
+ * @param[in]      lowerDiag Lower alignment diagonal to use (<tt>int</tt>).
+ * @param[in]      upperDiag Upper alignment diagonal to use (<tt>int</tt>).
+ * @param[in]      xDrop     The X-drop value to use (integral value). It only limits computation of new 
+ * columns in the DP-Matrix and has no influence on the diagonals (but can be combined with them).
  * @param[in]      scoringScheme
  *                           The @link Score @endlink to use.
  *
@@ -455,6 +455,14 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  * The output is as follows:
  *
  * @include demos/align_extend/extend_alignment.cpp.stdout
+ *
+ * @section Remarks
+ *
+ * It is necessary to explicitly pass hSeq, vSeq and the positions, because the
+ * original hSeq and vSeq (that Align was created on), might have been infixes,
+ * (especially if they are members of a ConcatDirect set) in which cases their
+ * actual begin and end positions cannot be inferred from the Align object's
+ * rows' source().
  */
 
 // NO BAND, NO XDROP
