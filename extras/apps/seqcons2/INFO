@@ -2,6 +2,6 @@ Name: seqcons2
 Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: 3-clause BSD
-Copyright: 2008-2012, FU Berlin
+Copyright: 2008-2014, FU Berlin
 Status: under development
 Description: Consensus computation from sequences and alignments.
