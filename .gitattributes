@@ -9,15 +9,43 @@
 # Text data file types that are used in the tests.  We force the line endings
 # to LF (Unix) so we can use the same assumptions on Unix and Window.
 [attr]unix_text text eol=lf
+*.amos unix_text
+*.bed unix_text
+*.ctd unix_text
 *.ctd unix_text
 *.fa unix_text
-*.fasta unix_text
-*.fq unix_text
-*.fastq unix_text
 *.fai unix_text
+*.fasta unix_text
+*.fastq unix_text
+*.fq unix_text
 *.gff unix_text
 *.gtf unix_text
-*.amos unix_text
-*.ctd unix_text
-*.tsv unix_text
 *.sam unix_text
+*.tsv unix_text
+# Text files
+*.txt unix_text
+INFO unix_text
+LICENSE unix_text
+README unix_text
+README.* unix_text
+# Build files etc.
+Portfile unix_text
+Makefile* unix_text
+*.cmake unix_text
+*.in unix_text
+# Output for demo tests.
+*.stdout unix_text
+*.stderr unix_text
+# Explicit source files.
+*.R unix_text
+*.c unix_text
+*.cpp unix_text
+*.css unix_text
+*.h unix_text
+*.htm unix_text
+*.html unix_text
+*.js unix_text
+*.less unix_text
+*.php unix_text
+*.py unix_text
+*.sh unix_text
