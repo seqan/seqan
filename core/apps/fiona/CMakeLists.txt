@@ -79,7 +79,7 @@ install (FILES example/reads.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (fiona)
+seqan_add_app_test (fiona)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
