@@ -472,7 +472,7 @@ aquireValue(Serializer<TValue, TWorker> & me)
         me.last = item;
     }
     
-    std::cerr<<"aquire\t"<<(size_t)item<<std::endl;
+//    std::cerr<<"aquire\t"<<(size_t)item<<std::endl;
     return &item->val;
 }
 
@@ -481,26 +481,49 @@ inline bool
 releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 {
     typedef SerializerItem<TValue> TItem;
-    
-    ScopedLock<Mutex> lock(me.mutex);
-    std::cerr<<"release\t"<<(size_t)ptr<<std::endl;
 
     TItem *item = reinterpret_cast<TItem *>(ptr);
     SEQAN_ASSERT_NOT(item->ready);
-    SEQAN_ASSERT(me.first != NULL);
-    item->ready = true;
 
-    // work on a sequence of ready items
-    // recycle released items
-    bool success = true;
-    while (success && me.first != NULL && me.first->ready)
+//    std::cerr<<"release\t"<<(size_t)ptr<<std::endl;
+
+
+    // changing me.first or the ready flag must be done synchronized (me.mutex)
+    // the thread who changed me.first->ready to be true has to write it.
+
+    // change our ready flag and test if me.first->ready became true
     {
-        TItem * tmp = me.first;
-        me.first = me.first->next;
-        success = me.worker(tmp->val);
-        appendValue(me.recycled, tmp);
+        ScopedLock<Mutex> lock(me.mutex);
+        item->ready = true;
+        if (item != me.first)
+            return true;
     }
-    return success;
+
+    // ok, if we are here it seems that we are responsible for writing the buffer
+
+    SEQAN_ASSERT(me.first != NULL);
+
+    bool success;
+    do
+    {
+        success = me.worker(item->val);
+
+        {
+            ScopedLock<Mutex> lock(me.mutex);
+            me.first = item->next;
+            // recycle released items
+            appendValue(me.recycled, item);
+
+            item = me.first;
+            // can we leave?
+            if (item == NULL || !item->ready)
+                return success;
+        }
+        // we continue to write the next buffer
+    }
+    while (success);
+
+    return false;
 }
 
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
@@ -549,8 +572,8 @@ public:
 
         bool operator() (OutputBuffer const & outputBuffer)
         {
-    std::cerr<<"work\t"<<(size_t)&outputBuffer<<std::endl;
-            ostream.write((const char_type*) &(outputBuffer.buffer[0]), outputBuffer.size);
+//    std::cerr<<"work\t"<<(size_t)&outputBuffer<<std::endl;
+//            ostream.write((const char_type*) &(outputBuffer.buffer[0]), outputBuffer.size);
             return ostream.good();
         }
     };
