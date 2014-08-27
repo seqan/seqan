@@ -397,7 +397,9 @@ struct Serializer
     bool                stop;
 
     Serializer():
+        mutex(false),
         first(NULL),
+        last(NULL),
         stop(false)
     {
         clear(*this);
@@ -405,8 +407,10 @@ struct Serializer
 
     template <typename TArg>
     Serializer(TArg &arg):
+        mutex(false),
         worker(arg),
         first(NULL),
+        last(NULL),
         stop(false)
     {}
 
@@ -453,9 +457,9 @@ aquireValue(Serializer<TValue, TWorker> & me)
     else
     {
         item = new TItem();
-        item->next = NULL;
-        item->ready = false;
     }
+    item->next = NULL;
+    item->ready = false;
 
     if (me.first != NULL)
     {
@@ -464,11 +468,11 @@ aquireValue(Serializer<TValue, TWorker> & me)
     }
     else
     {
-        SEQAN_ASSERT(me.last == NULL);
         me.first = item;
         me.last = item;
     }
     
+    std::cerr<<"aquire\t"<<(size_t)item<<std::endl;
     return &item->val;
 }
 
@@ -478,10 +482,12 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 {
     typedef SerializerItem<TValue> TItem;
     
-    SEQAN_ASSERT(me.first != NULL);
-
     ScopedLock<Mutex> lock(me.mutex);
+    std::cerr<<"release\t"<<(size_t)ptr<<std::endl;
+
     TItem *item = reinterpret_cast<TItem *>(ptr);
+    SEQAN_ASSERT_NOT(item->ready);
+    SEQAN_ASSERT(me.first != NULL);
     item->ready = true;
 
     // work on a sequence of ready items
@@ -489,9 +495,10 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
     bool success = true;
     while (success && me.first != NULL && me.first->ready)
     {
-        success = me.worker(me.first->val);
-        appendValue(me.recycled, me.first);
+        TItem * tmp = me.first;
         me.first = me.first->next;
+        success = me.worker(tmp->val);
+        appendValue(me.recycled, tmp);
     }
     return success;
 }
@@ -542,6 +549,7 @@ public:
 
         bool operator() (OutputBuffer const & outputBuffer)
         {
+    std::cerr<<"work\t"<<(size_t)&outputBuffer<<std::endl;
             ostream.write((const char_type*) &(outputBuffer.buffer[0]), outputBuffer.size);
             return ostream.good();
         }
