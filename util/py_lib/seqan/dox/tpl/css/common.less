@@ -186,12 +186,12 @@ ol {
    li + li { margin-top: .5em }
 }
 
-dl {
+table {
 	margin: 0;
 	padding: 0;
 
 	&:not(.overview) {
-		dt {
+		th {
 			font-size: 1.1em;
 			font-weight: bold;
 			margin: .5em 0 0 0;
@@ -203,7 +203,7 @@ dl {
 			}
 		}
 
-		dd {
+		td {
 			margin: 0 0 0 1em;
 			padding: .5em;
 			position: relative;
@@ -223,29 +223,37 @@ dl {
 	&.overview {
 		max-width: 100%;
 
-		dt, dd {
+		th, td {
 			padding: 0.25em 0 0.25em 0;
+			vertical-align: top;
 		}
 
-		dt {
-			float: left;
-			clear: left;
-			width: 7em;
+		th {
 			text-align: right;
 			font-weight: bold;
 
 			position: relative;
 
 			code {
-				@iconSpacing: .5em;
+				@iconSpacing: 0.3em;
+				@iconWidth: .7em;
 				@inColor: #d43f3a;
 				@outColor: #4cae4c;
+				
+				&[data-param-type=in],
+				&[data-param-type=out] {
+					padding-left: @iconWidth + @iconSpacing;
+				}
+				
+				&[data-param-type=in_out] {
+					padding-left: 2*@iconWidth + @iconSpacing;
+				}
 
 				&[data-param-type]:before,
 				&[data-param-type]:after {
 					position: absolute;
 					top: .3em;
-					left: -(@iconSpacing)-1em;
+					left: 0;
 					font-size: 0.7em;
 				}
 
@@ -261,7 +269,7 @@ dl {
 
 				&[data-param-type=in_out]:before,
 				&[data-param-type=in_out]:after {
-					left: -(@iconSpacing)-2em-.3em;
+					left: 0;
 				}
 
 				&[data-param-type=in_out]:before {
@@ -272,13 +280,13 @@ dl {
 				&[data-param-type=in_out]:after {
 					.glyphicon("\e163");
 					color: @outColor;
-					margin-left: 1em + .3em;
+					left: @iconWidth + @iconSpacing;
 				}
 			}
 		}
 
-		dd {
-			margin: 0 0 0 8em;
+		td {
+			padding-left: 0.45em;
 
 			[data-lang-entity] > :first-child {
 				display: none;
@@ -292,9 +300,11 @@ dl {
 			white-space: pre;
 			padding-left: 0;
 			padding-right: 0;
-    		-ms-word-break: break-all;
+    	/* makes long lines unnecessarily wrap (problem occurred when switch von definition lists to tables 
+    	-ms-word-break: break-all;
 			word-break: break-all;
 			word-break: break-word;
+			*/
 		}
 
 		.glyphicon {
