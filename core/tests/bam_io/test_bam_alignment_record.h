@@ -46,10 +46,10 @@
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_class)
 {
     using namespace seqan;
-    
+
     // The BamAlignmentRecord class is not too interesting, we simply
     // instantiate it and call clear once.
-    
+
     BamAlignmentRecord record;
     clear(record);
 }
@@ -59,9 +59,9 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_class)
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_multiple)
 {
     using namespace seqan;
-    
+
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_MULTIPLE;
     SEQAN_ASSERT(hasFlagMultiple(record));
 
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_unmapped)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_UNMAPPED;
     SEQAN_ASSERT(hasFlagUnmapped(record));
 
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_unmapped)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_NEXT_UNMAPPED;
     SEQAN_ASSERT(hasFlagNextUnmapped(record));
 
@@ -100,7 +100,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_rc)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_RC;
     SEQAN_ASSERT(hasFlagRC(record));
 
@@ -113,7 +113,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_rc)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_NEXT_RC;
     SEQAN_ASSERT(hasFlagNextRC(record));
 
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_first)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_FIRST;
     SEQAN_ASSERT(hasFlagFirst(record));
 
@@ -139,7 +139,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_last)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_LAST;
     SEQAN_ASSERT(hasFlagLast(record));
 
@@ -152,7 +152,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_secondary)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_SECONDARY;
     SEQAN_ASSERT(hasFlagSecondary(record));
 
@@ -165,7 +165,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_qc_no_pass)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_QC_NO_PASS;
     SEQAN_ASSERT(hasFlagQCNoPass(record));
 
@@ -178,12 +178,25 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_duplicate)
     using namespace seqan;
 
     BamAlignmentRecord record;
-    
+
     record.flag = BAM_FLAG_DUPLICATE;
     SEQAN_ASSERT(hasFlagDuplicate(record));
 
     record.flag = 0xffff ^ BAM_FLAG_DUPLICATE;
     SEQAN_ASSERT_NOT(hasFlagDuplicate(record));
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_supplementary)
+{
+    using namespace seqan;
+
+    BamAlignmentRecord record;
+
+    record.flag = BAM_FLAG_SUPPLEMENTARY;
+    SEQAN_ASSERT(hasFlagSupplementary(record));
+
+    record.flag = 0xffff ^ BAM_FLAG_SUPPLEMENTARY;
+    SEQAN_ASSERT_NOT(hasFlagSupplementary(record));
 }
 
 #endif  // CORE_TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_

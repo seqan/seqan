@@ -212,7 +212,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @fn IndexEsa#createChildtab
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Creates a child table from a given lcp table.
  * 
  * @signature void createChildtab(childTab, lcp[, algoTag]);

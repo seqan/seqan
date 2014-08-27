@@ -326,15 +326,17 @@ struct FionaOptions
 		strictness = 0.0001;
 		acceptedMismatches = 1;
 		maxIndelLength = 1;
-		cycles = 0;
+		cycles = 6;
         cycle = 1;
 		autolevel = false;
 		fromLevel = 0;
 		toLevel = 0;
 #ifdef FIONA_ILLUMINA
 		errorrate = 0.01;
+        kmerAbundanceCutoff = 0.01;
 #else
-		errorrate = 0.02;
+		errorrate = 0.05;
+        kmerAbundanceCutoff = 0.05;
 #endif
 		overlap_errorrate = 0;
 		oddserrorreads = 0;
@@ -342,7 +344,6 @@ struct FionaOptions
         debugRead = -1;
         corrRead = -1;
         packagesPerThread = 100;
-        kmerAbundanceCutoff = 0.01;
         kmerStdDevCutOff = 2.0;
         depthSampleRate = 3;
         relativeErrorsToCorrect = 0.02;
@@ -1871,7 +1872,10 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 	while (next < length(possibleCorrections))
 	{
         if (possibleCorrections[next].overlap[0] <= options.overlapSumCutoffs(errorReadLength, possibleCorrections[next].errorPos))
+        {
+            ++next;  // skip this correction
             continue;
+        }
 
         bool add = true;
 		for(unsigned int i = 0; i < length(correctionsToSave); i++){

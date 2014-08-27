@@ -8,13 +8,14 @@ import os
 import os.path
 import unittest
 
-import inc_mgr
+import seqan.dox.inc_mgr as inc_mgr
 
 
 class TestIncludeManager(unittest.TestCase):
     def setUp(self):
         base_dir = os.path.dirname(os.path.realpath(__file__))
-        self.mgr = inc_mgr.IncludeManager(base_dir)
+        base_dir = os.path.join(base_dir, '../', 'test_src')
+        self.mgr = inc_mgr.IncludeManager([base_dir])
 
     def testIncludeFile(self):
         txt = self.mgr.loadFile('example.cpp')

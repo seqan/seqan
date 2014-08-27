@@ -77,7 +77,7 @@ struct Iterator<CompressedSA<TText, TSpec, TConfig> const, Rooted>:
 // ----------------------------------------------------------------------------
 /*!
  * @fn CompressedSA#begin
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns an iterator pointing to the first position of a compresses suffix array.
  * 
  * @signature TIterator begin(compressedSA, tag);
@@ -123,7 +123,7 @@ begin(CompressedSA<TText, TSpec, TConfig> const & compressedSA, Rooted const & /
 // ----------------------------------------------------------------------------
 /*!
  * @fn CompressedSA#end
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns an iterator pointing to the position behind the last element of a compresses suffix array.
  * 
  * @signature TIterator end(compressedSA, tag);

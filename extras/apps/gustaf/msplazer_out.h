@@ -929,7 +929,6 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
     // Fill sequence names
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
-        appendValue(vcfStream.header.sequenceNames, databaseIDs[i]);
         seqan::CharString contigStr = "<ID=";
         append(contigStr, databaseIDs[i]);
         append(contigStr, ",length=");
@@ -941,6 +940,7 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
         appendName(*vcfStream._context.sequenceNames,
                    databaseIDs[i],
                    vcfStream._context.sequenceNamesCache);
+
     }
 }
 
@@ -949,7 +949,9 @@ __int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
 {
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
-        if (databaseIDs[i] == dbID)
+        TId sID;
+	_getShortId(sID, databaseIDs[i]);
+        if (sID == dbID)
             return static_cast<__int32>(i);
     }
     return maxValue<int>();

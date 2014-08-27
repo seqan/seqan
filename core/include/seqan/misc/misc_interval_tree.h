@@ -1614,7 +1614,7 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
 /*!
  * @fn IntervalTree#addInterval
  * 
- * @headerfile seqan/misc/misc_interval_tree.h
+ * @headerfile <seqan/misc/misc_interval_tree.h>
  * 
  * @brief Adds an interval to an interval tree.
  * 

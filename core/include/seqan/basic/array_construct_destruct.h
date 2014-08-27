@@ -918,7 +918,7 @@ arrayCopyBackward(TSource1 source_begin,
 /*!
  * @fn arrayCopy
  * 
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @brief Copies a range of objects into another range of objects.
  * 

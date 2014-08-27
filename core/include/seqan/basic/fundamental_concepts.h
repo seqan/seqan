@@ -667,7 +667,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
 /*!
  * @mfn IsInteger
  * @brief Tests for a type to be of integral value.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature IsInteger<T>::Type
  * 
@@ -697,7 +697,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T
 /*!
  * @mfn IsIntegral
  * @brief Tests for a type to be of integral vaule.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature IsIntegral<T>::Type
  * 

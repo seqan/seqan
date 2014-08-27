@@ -53,6 +53,18 @@ if (NOT Java_JAR_EXECUTABLE)
   return ()
 endif ()
 
+# Create the payload binary ZIP file.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set (SEQAN_PLATFORM "lnx")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set (SEQAN_PLATFORM "win")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set (SEQAN_PLATFORM "mac")
+else ()
+  message (STATUS "Unsupported platform ${CMAKE_SYSTEM_NAME}, disabling CTD support.")
+  return()
+endif ()
+
 # ============================================================================
 # Variable Setup
 # ============================================================================
@@ -122,7 +134,7 @@ foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
   list (APPEND TMP_PAYLOAD_FILES "${PAYLOAD_TMP_BIN_PATH}/${_BINARY}")
   add_custom_command (OUTPUT ${PAYLOAD_TMP_BIN_PATH}/${_BINARY}
                       COMMAND ${CMAKE_COMMAND} -E copy "${_BINARY_PATH}" "${PAYLOAD_TMP_BIN_PATH}/${_BINARY}"
-                      DEPENDS ${_TARGET} 
+                      DEPENDS ${_TARGET}
                               ${PAYLOAD_TMP_BIN_PATH})
 endforeach ()
 
@@ -130,17 +142,6 @@ endforeach ()
 add_custom_command (OUTPUT "${PAYLOAD_TMP_PATH}/binaries.ini"
                     COMMAND ${CMAKE_COMMAND} -E touch ${PAYLOAD_TMP_PATH}/binaries.ini
                     DEPENDS ${PAYLOAD_TMP_PATH})
-
-# Create the payload binary ZIP file.
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set (SEQAN_PLATFORM "lnx")
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set (SEQAN_PLATFORM "win")
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set (SEQAN_PLATFORM "mac")
-else ()
-  message (FATAL_ERROR "Unknown platform name ${SEQAN_PLATFORM}")
-endif ()
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
   set (SEQAN_SYSTEM_WORDSIZE "64")
@@ -239,4 +240,3 @@ add_custom_target (prepare_workflow_plugin
                            ${ICON_FILES}
                            ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                            ${_ZIP_PATH}/${_ZIP_NAME})
-
