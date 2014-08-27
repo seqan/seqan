@@ -343,12 +343,12 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
     // -----------------------------------------------------------------------
     // Compute connected components and get topological sorting of them.
     // -----------------------------------------------------------------------
-	String<unsigned> component;
-	String<unsigned> order;
-	TComponentLength componentLength;
+	  String<unsigned> component;
+	  String<unsigned> order;
+	  TComponentLength componentLength;
     if (empty(g))
         return true;  // Nothing to do for empty graphs.
-	if (!convertAlignment(g, component, order, componentLength))
+	  if (!convertAlignment(g, component, order, componentLength))
         return false;
     unsigned numComponents = length(order);
 
