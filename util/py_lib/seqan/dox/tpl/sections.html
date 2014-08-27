@@ -141,7 +141,7 @@ Render the inheritance information of the given entr.
 {%- for s in entry.signatures -%}
 {{ s|transtext(False) }}
 {% endfor -%}
-      </code>&nbsp;
+      </code>
     </td>
   </tr>
 </table>
@@ -909,7 +909,7 @@ Render the interface functions details
   <table class="overview">
     {% for param in subentry.tparams %}
     <tr>
-        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <th><code>{{ param.type|e }}</code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
@@ -947,7 +947,7 @@ Render the interface functions details
   <table class="overview">
     {% for ret in subentry.returns %}
     <tr>
-        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <th><code>{{ ret.type|e }}</code></th>
         <td>{{ ret.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
@@ -959,7 +959,7 @@ Render the interface functions details
   <table class="overview">
     {% for thr in subentry.throws %}
     <tr>
-        <th><code>{{ thr.type|e }}</code>&nbsp;</th>
+        <th><code>{{ thr.type|e }}</code></th>
         <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
@@ -1101,7 +1101,7 @@ Render the interface metafunctions details
     <table class="overview">
     {% for param in subentry.tparams %}
         <tr>
-            <th><code>{{ param.type|e }}</code>&nbsp;</th>
+            <th><code>{{ param.type|e }}</code></th>
             <td>{{ param.desc|transtext(False) }}</td>
         </tr>
     {% endfor %}
@@ -1113,7 +1113,7 @@ Render the interface metafunctions details
     <table class="overview">
     {% for ret in subentry.returns %}
         <tr>
-            <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+            <th><code>{{ ret.type|e }}</code></th>
             <td>{{ ret.desc|transtext(False) }}</td>
         </tr>
     {% endfor %}
@@ -1176,7 +1176,7 @@ Render the member enum details
   <table class="overview">
     {% for subentry in entry.subentries['enum_value']|sort(attribute='name') %}
          <tr>
-            <th><code>{{ subentry.local_name|e }}</code>&nbsp;</th>
+            <th><code>{{ subentry.local_name|e }}</code></th>
             <td>
                 {{ subentry.brief|transtext }}
                 {{ body(subentry, start_heading=3) }}
@@ -1217,7 +1217,7 @@ Render the parameter details.
         {% else %}
         <code>{{ param.name|e }}</code>
         {% endif %}
-        &nbsp;</th>
+        </th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1241,7 +1241,7 @@ Render the template parameter details.
 <table class="overview">
 {% for param in entry.tparams %}
     <tr>
-        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <th><code>{{ param.type|e }}</code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1267,7 +1267,7 @@ Render the template parameter overview.
 <table class="overview">
 {% for param in entry.tparams %}
     <tr>
-        <th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code>&nbsp;</th>
+        <th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1291,7 +1291,7 @@ Render the template parameter details.
 <table class="overview">
 {% for ret in entry.returns %}
     <tr>
-        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <th><code>{{ ret.type|e }}</code></th>
         <td>{{ ret.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1312,7 +1312,7 @@ Render the throw details.
 <table class="overview">
 {% for thr in entry.throws %}
     <tr>
-        <th><code>{{ thr.type|e }}</code>&nbsp;</th>
+        <th><code>{{ thr.type|e }}</code></th>
         <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
