@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   ANISE
 // ==========================================================================
-// Copyright (c) 2011-2012, Manuel Holtgrewe, FU Berlin
+// Copyright (c) 2011-2014, Manuel Holtgrewe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

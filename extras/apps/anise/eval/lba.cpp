@@ -1,7 +1,7 @@
 // ==========================================================================
 //                           LINEAR BLOCK ALIGNER
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
