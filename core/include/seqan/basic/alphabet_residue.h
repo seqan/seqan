@@ -766,7 +766,10 @@ struct Finite;
 template <typename TValue, unsigned SIZE> 
 struct ValueSize<SimpleType<TValue, Finite<SIZE> > >
 {
-    typedef __uint8 Type;
+    typedef typename IfC<(SIZE <= 255u), __uint8,
+                         typename IfC<(SIZE <= 65535),
+                                      __uint16, __uint32>::Type
+                        >::Type Type;
     static const Type VALUE = SIZE;
 };
 
