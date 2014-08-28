@@ -34,4 +34,6 @@ __WRITING RESULT_____________________________________________________________
 Writing consensus to alns1.realign.fa ... OK
 Writing alignments to alns1.realign.sam ... OK
 
+Overall time: 0.278916 s
+
 Done.  Have a nice day.

@@ -33,4 +33,6 @@ __WRITING RESULT_____________________________________________________________
 Writing consensus to seqs1.nop.fa ... OK
 Writing alignments to seqs1.nop.sam ... OK
 
+Overall time: 0.0055177 s
+
 Done.  Have a nice day.

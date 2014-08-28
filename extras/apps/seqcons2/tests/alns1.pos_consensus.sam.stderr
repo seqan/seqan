@@ -35,4 +35,6 @@ __WRITING RESULT_____________________________________________________________
 Writing consensus to alns1.pos_consensus.fa ... OK
 Writing alignments to alns1.pos_consensus.sam ... OK
 
+Overall time: 0.771853 s
+
 Done.  Have a nice day.
