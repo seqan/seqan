@@ -230,6 +230,7 @@ inline OverlapInfo_ OverlapInfoComputation_<TFragmentStore>::computeOverlapInfo(
     for (; itH != itHEnd; ++itH, ++itV)
         numErrors += (isGap(itH) || isGap(itV) || (*itH != *itV));
     SEQAN_ASSERT(itV == itVEnd);
+    (void)itVEnd;  // only used when assertions are enabled
 
     // Build result.
     return OverlapInfo_(lhs, rhs, length(store.readSeqStore[lhs]), beginPos, numErrors);
