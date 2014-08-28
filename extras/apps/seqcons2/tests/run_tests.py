@@ -56,6 +56,7 @@ def main(source_base, binary_base):
                          'extras/apps/seqcons2/tests') + os.sep,
             '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
+        app_tests.RegexpReplaceTransform(r'Overall time: .*s', r'Overall time: <removed>s', right=True, left=True),
         app_tests.NormalizeScientificExponentsTransform(),
         ]
 
@@ -63,8 +64,8 @@ def main(source_base, binary_base):
     # Test seqcons2
     # ============================================================
 
-    # msa_consensus and nop for FASTA input
-    for method in ['msa_consensus', 'nop']:
+    # overlap_consensus and nop for FASTA input
+    for method in ['overlap_consensus', 'nop']:
         conf = app_tests.TestConf(
             program=path_to_seqcons,
             args=['-m', method,
@@ -87,9 +88,9 @@ def main(source_base, binary_base):
             ])
         conf_list.append(conf)
 
-    # all consensus variants for SAM input
+    # all consensus variants (except for align) for SAM input
     for oa_ext in ['.sam', '.txt']:
-        for method in ['msa_consensus', 'pos_consensus',
+        for method in ['overlap_consensus', 'pos_consensus',
                        'contig_consensus', 'realign', 'nop']:
             args = ['-m', method,
                     '-i', ph.inFile('alns1.sam'),
@@ -115,6 +116,36 @@ def main(source_base, binary_base):
                 args=args,
                 redir_stdout=ph.outFile('alns1.%s%s.stdout' % (method, oa_ext)),
                 redir_stderr=ph.outFile('alns1.%s%s.stderr' % (method, oa_ext)),
+                to_diff=to_diff)
+            conf_list.append(conf)
+
+    # align_consensus for longer sequences that are roughly globally similar
+    for oa_ext in ['.sam', '.txt']:
+        for method in ['align_consensus']:
+            args = ['-m', method,
+                    '-i', ph.inFile('seqs2.fa'),
+                    '-oa', ph.outFile('seqs2.%s%s' % (method, oa_ext)),
+                ]
+            to_diff = [(ph.inFile('seqs2.%s.fa' % method),
+                        ph.outFile('seqs2.%s.fa' % method)),
+                       (ph.inFile('seqs2.%s%s' % (method, oa_ext)),
+                        ph.outFile('seqs2.%s%s' % (method, oa_ext))),
+                       (ph.inFile('seqs2.%s%s.stderr' % (method, oa_ext)),
+                        ph.outFile('seqs2.%s%s.stderr' % (method, oa_ext)),
+                        transforms),
+                       (ph.inFile('seqs2.%s%s.stdout' % (method, oa_ext)),
+                        ph.outFile('seqs2.%s%s.stdout' % (method, oa_ext)),
+                        transforms)
+                   ]
+            if oa_ext != '.txt':
+                args += ['-oc', ph.outFile('seqs2.%s.fa' % method),]
+                to_diff += [(ph.inFile('seqs2.%s.fa' % method),
+                             ph.outFile('seqs2.%s.fa' % method))]
+            conf = app_tests.TestConf(
+                program=path_to_seqcons,
+                args=args,
+                redir_stdout=ph.outFile('seqs2.%s%s.stdout' % (method, oa_ext)),
+                redir_stderr=ph.outFile('seqs2.%s%s.stderr' % (method, oa_ext)),
                 to_diff=to_diff)
             conf_list.append(conf)
 
