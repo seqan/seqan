@@ -37,6 +37,7 @@
 
 #include <map>
 #include <vector>
+#include <stdexcept>
 
 #include <seqan/store.h>
 
@@ -52,6 +53,25 @@ namespace seqan {
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class ConsensusAlignerIllegalArgumentException
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class ConsensusAlignerIllegalArgumentException
+ * @headerfile <seqan/consensus.h>
+ * @brief Thrown in ConsensusAlignerInputException on invalid arguments.
+ *
+ * @signature class ConsensusAlignerException;
+ */
+
+class ConsensusAlignerException : public std::runtime_error
+{
+public:
+    explicit ConsensusAlignerException(std::string const & whatArg) : std::runtime_error(whatArg)
+    {}
+};
 
 // ----------------------------------------------------------------------------
 // Class ConsensusAligner_
@@ -71,6 +91,15 @@ public:
 
 private:
 
+    // Checks that there is at most one alignment per read in the store.
+    void checkAlignmentMultiplicity() const;
+    // Normalize reverse-complemented alignments and store the read IDs in rcIDs.
+    void normalizeRCReads();
+    // Restore read orientation of RC reads again.
+    void restoreRCReads();
+
+    // The ids of the reads that had a reverse-complemented alignment.
+    std::set<unsigned> rcIDs;
     // The FragmentStore to use for consensus computation.
     TFragmentStore & store;
     // The configuration of the consensus alignment.
@@ -78,8 +107,51 @@ private:
 };
 
 template <typename TFragmentStore>
+inline void ConsensusAligner_<TFragmentStore>::normalizeRCReads()
+{
+    for (unsigned i = 0; i < length(store.alignedReadStore); ++i)
+        if (store.alignedReadStore[i].beginPos > store.alignedReadStore[i].endPos)
+        {
+            unsigned readID = store.alignedReadStore[i].readId;
+            rcIDs.insert(readID);
+            reverseComplement(store.readSeqStore[readID]);
+            std::swap(store.alignedReadStore[i].beginPos, store.alignedReadStore[i].endPos);
+        }
+}
+
+template <typename TFragmentStore>
+inline void ConsensusAligner_<TFragmentStore>::restoreRCReads()
+{
+    for (unsigned i = 0; i < length(store.alignedReadStore); ++i)
+    {
+        unsigned readID = store.alignedReadStore[i].readId;
+        if (rcIDs.count(readID))
+        {
+            std::swap(store.alignedReadStore[i].beginPos, store.alignedReadStore[i].endPos);
+            reverseComplement(store.readSeqStore[readID]);
+        }
+    }
+}
+
+template <typename TFragmentStore>
+inline void ConsensusAligner_<TFragmentStore>::checkAlignmentMultiplicity() const
+{
+    std::set<unsigned> seen;
+    for (unsigned i = 0; i < length(store.alignedReadStore); ++i)
+        if (seen.count(store.alignedReadStore[i].readId))
+            throw ConsensusAlignerException("Read with id has more than one alignment.");
+        else
+            seen.insert(store.alignedReadStore[i].readId);
+}
+
+template <typename TFragmentStore>
 inline void ConsensusAligner_<TFragmentStore>::run()
 {
+    // Check that there only is one alignment per read and escape via exception otherwise.
+    checkAlignmentMultiplicity();
+    // Normalize reads with RC alignment.
+    normalizeRCReads();
+
     if (options.verbosity >= 1)
         std::cerr << "computing overlap infos...\n";
     // Build overlap infos, based on position and contig ID if configured to do so.
@@ -96,6 +168,9 @@ inline void ConsensusAligner_<TFragmentStore>::run()
     // Consensus builder.
     ConsensusBuilder_<TFragmentStore> consBuilder(options);
     consBuilder.run(store, overlapInfos);
+
+    // Restore RC'ed reads.
+    restoreRCReads();
 }
 
 // ============================================================================
