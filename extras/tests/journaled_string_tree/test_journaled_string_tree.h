@@ -669,22 +669,168 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
 
     TJst jst(hostSeq, deltaMap);
 
+    CharString localDirPath = "/extras/tests/journaled_string_tree/";
     CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/extras/tests/journaled_string_tree/goldGDF.gdf");
+    append(filePath, localDirPath);
+    append(filePath, "goldGDF.gdf");
 
-    SEQAN_ASSERT_EQ(save(jst, filePath), 0);
+    CharString wrongPath = "/wrong/path/";
+    append(wrongPath, filePath);
+
+    CharString refPath = SEQAN_PATH_TO_ROOT();
+    append(refPath, localDirPath);
+    append(refPath, "reference.fa");
+
+    GdfHeader header;
+    header.referenceMode = GdfIO::SAVE_REFERENCE_MODE_ENABLED;
+#ifdef SEQAN_EXCEPTIONS  // Only test if exceptions are enabled.
+
+    SEQAN_TRY  // Try save with invalid name store.
+    {
+        save(jst, header, filePath);
+    }
+    SEQAN_CATCH(GdfIOException e)
+    {
+        SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (Too few sequence names - Needed 4 but 0 were provided!)"));
+    }
+
+    appendValue(header.nameStore, "Seq1");
+    appendValue(header.nameStore, "Seq2");
+    appendValue(header.nameStore, "Seq3");
+    appendValue(header.nameStore, "Seq4");
+
+    header.referenceFilename = refPath;
+    SEQAN_TRY  // Try save with unknown reference file.
+    {
+        save(jst, header, filePath);
+    }
+    SEQAN_CATCH(GdfIOException e)
+    {
+        std::stringstream errMessage;
+        errMessage << "Gdf_IO_Exception: (Cannot open file: " << refPath << "!)";
+        SEQAN_ASSERT_EQ(e.what(), errMessage.str());
+    }
+
+    SEQAN_TRY  // Try save with wrong path.
+    {
+        save(jst, header, wrongPath);
+    }
+    SEQAN_CATCH(GdfIOException e)
+    {
+        std::stringstream errMessage;
+        errMessage << "Gdf_IO_Exception: (Cannot open file: "<< wrongPath << "!)";
+        SEQAN_ASSERT_EQ(e.what(), errMessage.str());
+    }
+
+    header.referenceId = "reference";
+    SEQAN_TRY  // Try save with everything set correctly.
+    {
+        save(jst, header, filePath);
+    }
+    SEQAN_CATCH(Exception e)
+    {
+        SEQAN_FAIL("Error while save!");
+    }
+#else  // SEQAN_EXCEPTIONS
+    save(jst, header, filePath);
+#endif  // SEQAN_EXCEPTIONS
 
     CharString refId;
     CharString refFilename;
     String<CharString> seqIds;
 
     JournaledStringTree<TDeltaMap> jstLoaded;
-    SEQAN_ASSERT_EQ(open(jstLoaded, filePath, refId, refFilename, seqIds), 0);
 
-    CharString testRefFilename = filePath;
-    append(testRefFilename, ".reference.fa");
-    SEQAN_ASSERT_EQ(refFilename, testRefFilename);
-    _testJournaledStringTreeJournalNextBlock(jst);
+#ifdef SEQAN_EXCEPTIONS
+
+    {  // Try load from wrong file.
+        SEQAN_TRY
+        {
+            clear(jstLoaded);
+            GdfHeader headerLoaded;
+            open(jstLoaded, headerLoaded, wrongPath);
+        }
+        SEQAN_CATCH(GdfIOException e)
+        {
+            std::stringstream errMessage;
+            errMessage << "Gdf_IO_Exception: (Unknown file <" << wrongPath << ">!)";
+            SEQAN_ASSERT_EQ(e.what(), errMessage.str());
+        }
+    }
+    {  // Try load from file with unknown rerference file.
+        SEQAN_TRY
+        {
+            clear(jstLoaded);
+            GdfHeader headerLoaded;
+            CharString unknownRefExample = SEQAN_PATH_TO_ROOT();
+            append(unknownRefExample, localDirPath);
+            append(unknownRefExample, "unknownRefExample.gdf");
+            open(jstLoaded, headerLoaded, unknownRefExample);
+        }
+        SEQAN_CATCH(GdfIOException e)
+        {
+            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (Unknown file </wrong/path/to/reference.fa>!)"));
+        }
+    }
+    {  // Try load from file with wrong crc or refId.
+        SEQAN_TRY
+        {
+            CharString otherRefPath = SEQAN_PATH_TO_ROOT();
+            append(otherRefPath, localDirPath);
+            append(otherRefPath, "other_reference.fa");
+
+            CharString wrongCrcExample = SEQAN_PATH_TO_ROOT();
+            append(wrongCrcExample, localDirPath);
+            append(wrongCrcExample, "wrongCrcExample.gdf");
+
+
+            GdfHeader testHeader;
+            testHeader.referenceId = "reference";
+            testHeader.referenceFilename = otherRefPath;
+            testHeader.nameStore = header.nameStore;
+            testHeader.referenceMode = GdfIO::SAVE_REFERENCE_MODE_DISABLED;
+
+            SEQAN_TRY
+            {
+                save(jst, testHeader, wrongCrcExample);
+            }
+            SEQAN_CATCH(Exception e)
+            {
+                SEQAN_ASSERT_FAIL("Error during save!");
+            }
+
+            clear(jstLoaded);
+            GdfHeader headerLoaded;
+            open(jstLoaded, headerLoaded, wrongCrcExample);
+        }
+        SEQAN_CATCH(GdfIOException e)
+        {
+#ifdef __SSE4_2__
+            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (The id of the reference is \'another ref\' but should be \'reference\' and the crc is \'0\' but should be \'0\'!)"));
+#else  // __SSE4_2__
+            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (The id of the reference is \'another ref\' but should be \'reference\' and the crc is \'0\' but should be \'0\'!)"));
+#endif // __SSE4_2__
+        }
+    }
+
+    {  // Try load correct file.
+        SEQAN_TRY
+        {
+            clear(jstLoaded);
+            GdfHeader headerLoaded;
+            open(jstLoaded, headerLoaded, filePath);
+        }
+        SEQAN_CATCH(Exception e)
+        {
+            SEQAN_FAIL("Error while open!");
+        }
+    }
+#else
+    GdfHeader headerLoaded;
+    open(jstLoaded, headerLoaded, filePath);
+#endif
+
+    _testJournaledStringTreeJournalNextBlock(jstLoaded);
 }
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

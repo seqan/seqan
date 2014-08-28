@@ -50,6 +50,33 @@ namespace seqan {
 
 static const char DIFF_FILE_SEPARATOR = '\t';
 
+#define GDF_IO_WRITE_KEY_VALUE(stream,key,...) stream << GDF_IO_HEADER_PREFIX << key << GDF_IO_KEY_VALUE_SEPARATOR << (__VA_ARGS__) << '\n'
+
+// ----------------------------------------------------------------------------
+// Class ByteCounterHelper_
+// ----------------------------------------------------------------------------
+
+template <typename TMapIterator, typename TBitCompression>
+struct ByteCounterHelper_
+{
+    unsigned byteCount;
+    TMapIterator it;
+
+    ByteCounterHelper_() : byteCount(0), it()
+    {}
+
+    template <typename TTag>
+    inline bool operator()(TTag /*tag*/)
+    {
+        if (isDeltaType(deltaType(it), TTag()))
+        {
+            byteCount += _countBytes(it, TTag(), TBitCompression());
+            return true;
+        }
+        return false;
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -58,62 +85,221 @@ static const char DIFF_FILE_SEPARATOR = '\t';
 // Functions
 // ============================================================================
 
-#define GDF_IO_WRITE_KEY_VALUE(stream,key,...) stream << GDF_IO_HEADER_PREFIX << key << GDF_IO_KEY_VALUE_SEPARATOR << (__VA_ARGS__) << '\n'
+// ----------------------------------------------------------------------------
+// Function _countBytes()                                        [DeltaTypeSnp]
+// ----------------------------------------------------------------------------
+
+template <typename TIterator>
+inline unsigned _countBytes(TIterator /*it*/, DeltaTypeSnp /*deltaType*/, GdfIO2BitSnpCompression /*tag*/)
+{
+    return 4;  // DeltaPosition and Snp value are compressed in 4 bytes.
+}
+
+template <typename TIterator>
+inline unsigned _countBytes(TIterator /*it*/, DeltaTypeSnp /*deltaType*/, GdfIOGenericSnpCompression /*tag*/)
+{
+    return 5;  // DeltaPosition + 1 byte for the SNP.
+}
+
+// ----------------------------------------------------------------------------
+// Function _countBytes()                                        [DeltaTypeDel]
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename TTag>
+inline unsigned _countBytes(TIterator /*it*/, DeltaTypeDel /*deltaType*/, TTag /*tag*/)
+{
+    return 8;  // 4 Bytes DeltaPosition and 4 Bytes for the deletion size.
+}
+
+// ----------------------------------------------------------------------------
+// Function _countBytes()                                        [DeltaTypeIns]
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename TTag>
+inline unsigned _countBytes(TIterator const & it, DeltaTypeIns /*deltaType*/, TTag /*tag*/)
+{
+    return 8 + length(deltaValue(it, DeltaTypeIns()));  // 4 Bytes DeltaPosition and 4 Bytes for the insertion size + number of stored values.
+}
+
+// ----------------------------------------------------------------------------
+// Function _countBytes()                                         [DeltaTypeSV]
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename TTag>
+inline unsigned _countBytes(TIterator const & it, DeltaTypeSV /*deltaType*/, TTag /*tag*/)
+{
+    return 12 + length(deltaValue(it, DeltaTypeSV()).i2);  // 4 Bytes DeltaPosition + 4 Bytes for the deletion + 4 Bytes for the insertion + number of stored values.
+}
+
+// ----------------------------------------------------------------------------
+// Function _encodeBitVector()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename THostSpec>
+inline void
+_encodeBitVector(TTarget & target,
+                 String<bool, Packed<THostSpec> > const & bv)
+{
+    typedef String<bool, Packed<THostSpec> >  TPackedString;
+    typedef typename Position<TPackedString>::Type TPosition;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
+    typedef PackedTraits_<TPackedString> TTraits;
+    typedef typename TTraits::THostValue THostValue;
+    typedef typename THostValue::TBitVector TBitVector;
+    typedef typename Value<TTarget>::Type TEncodedValue;
+    typedef Pair<TEncodedValue, TEncodedValue> TTargetValue;
+
+    // Simply return unmodified target.
+    if (empty(host(bv)))
+        return;
+
+    TConstPackedHostIterator itBlockBegin, it= begin(host(bv), Standard()) + 1;
+    TConstPackedHostIterator itEnd = end(host(bv), Standard()) - 1;
+
+    TPosition removedBits, zeroCount, oneCount = 0;
+    TTargetValue val(0,0);
+    bool lastBitSet = false;
+
+    while (true)
+    {
+        // Check for zero entries.
+        for (; it != itEnd && testAllZeros(it->i); ++it)
+        {}
+
+        val.i1 += ((it - itBlockBegin) * BitsPerValue<TBitVector>::VALUE);
+        removedBits = 0;
+        TBitVector tmp = (it != itEnd) ? it->i : it->i &
+                         (~static_cast<TBitVector>(0) <<  (BitsPerValue<TBitVector>::VALUE -
+                                                          (length(bv) % BitsPerValue<TBitVector>::VALUE)));
+        while (true)  // Process the current word.
+        {
+            if (testAllZeros(tmp))  // Check if no bit is set.
+            {
+                val.i1 += BitsPerValue<TBitVector>::VALUE - removedBits;
+                lastBitSet = false;
+                break;
+            }
+
+            zeroCount = BitsPerValue<TBitVector>::VALUE - 1 - bitScanReverse(tmp);
+            val.i1 += zeroCount;
+
+            // All bits flipped and leading zeros are shifted out of the word.
+            tmp = ~(tmp << zeroCount);
+            removedBits += zeroCount;
+
+            if (testAllZeros(tmp))  // Check if no bit is set -> Hence all bits are set, since the word is negated.
+            {  // Add number of ones to current block.
+                val.i2 += BitsPerValue<TBitVector>::VALUE;
+                lastBitSet = true;
+                break;
+            }
+            // Get the block of ones.
+            oneCount = BitsPerValue<TBitVector>::VALUE - 1 - bitScanReverse(tmp);
+            if (removedBits + oneCount == BitsPerValue<TBitVector>::VALUE)  // Stop here since everything is set to ones.
+            {
+                val.i2 += oneCount;
+                lastBitSet = true;
+                break;
+            }
+
+            val.i2 += oneCount;
+            SEQAN_ASSERT_LT(val.i1, MaxValue<TEncodedValue>::VALUE);
+            SEQAN_ASSERT_LT(val.i2, MaxValue<TEncodedValue>::VALUE);
+            appendValue(target, val.i1);
+            appendValue(target, val.i2);
+            val = TTargetValue(0,0);
+            tmp = (~tmp) << oneCount;
+            removedBits += oneCount;
+        }
+
+        ++it;
+        itBlockBegin = it;
+
+        if (it == end(host(bv), Standard()))
+        {
+            if (lastBitSet)
+            {
+                SEQAN_ASSERT_LT(val.i1, MaxValue<TEncodedValue>::VALUE);
+                SEQAN_ASSERT_LT(val.i2, MaxValue<TEncodedValue>::VALUE);
+                appendValue(target, val.i1);
+                appendValue(target, val.i2);
+            }
+            return;
+        }
+        // Check condition of previous value.
+        if (lastBitSet && !isBitSet(it->i, BitsPerValue<TBitVector>::VALUE - 1))
+        {
+            SEQAN_ASSERT_LT(val.i1, MaxValue<TEncodedValue>::VALUE);
+            SEQAN_ASSERT_LT(val.i2, MaxValue<TEncodedValue>::VALUE);
+            appendValue(target, val.i1);
+            appendValue(target, val.i2);
+            val = TTargetValue(0,0);
+        }
+    }
+    appendValue(target, MaxValue<TEncodedValue>::VALUE);  // Add stop signal
+}
+
+// ----------------------------------------------------------------------------
+// Function _encodeAndComputeByteCount()
+// ----------------------------------------------------------------------------
+
+template <typename TStringSet, typename TIterator, typename TSnpCompression>
+inline unsigned int
+_encodeAndComputeByteCount(TStringSet & set,
+                           TIterator const & itBlockBegin,
+                           TIterator const & itBlockEnd,
+                           TSnpCompression /*tag*/)
+{
+    typedef typename Value<TStringSet>::Type TSegment;
+    typedef typename Host<TSegment>::Type TEncodedString;
+    typedef typename Value<TEncodedString>::Type TEncodeValue;
+
+    ByteCounterHelper_<TIterator, TSnpCompression> counterHelper;
+    counterHelper.it = itBlockBegin;
+
+    TEncodedString target;
+    for (; counterHelper.it != itBlockEnd; ++counterHelper.it)
+    {
+        clear(target);
+        tagApply(counterHelper, DeltaTypes());
+        _encodeBitVector(target, deltaCoverage(counterHelper.it));
+        appendValue(set, target);
+    }
+    return counterHelper.byteCount + length(concat(set)) * sizeof(TEncodeValue);
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeGdfFileConfigInfo()
+// ----------------------------------------------------------------------------
 
 template <typename TStream, typename TValue>
 inline void
-_writeGdfHeaderFileInfo(TStream & stream, GdfHeader const & jseqHeader, GdfFileConfiguration<TValue> const & config)
+_writeGdfFileConfigInfo(TStream & stream, GdfFileConfiguration<TValue> const & config)
 {
-//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//    streamWriteBlock(stream, toCString(GDF_IO_FILE_VERSION_KEY), length(GDF_IO_FILE_VERSION_KEY));
-//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//    streamWriteBlock(stream, toCString(GDF_IO_FILE_VERSION_VALUE_PREFIX), length(GDF_IO_FILE_VERSION_VALUE_PREFIX));
-//    std::stringstream versionNumber;
-//    versionNumber << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR << GDF_IO_FILE_VERSION_LITTLE;
-//    streamWriteBlock(stream, versionNumber.str().c_str(), versionNumber.str().size());
-//    streamWriteChar(stream, '\n');
-
     // Write the file version information.
-    GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_VERSION_KEY,
-                           GDF_IO_FILE_VERSION_VALUE_PREFIX << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR << GDF_IO_FILE_VERSION_LITTLE);
+    std::stringstream fileVersion;
+    fileVersion << GDF_IO_FILE_VERSION_VALUE_PREFIX << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR << GDF_IO_FILE_VERSION_LITTLE;
+    GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_VERSION_KEY, fileVersion.str());
 
     // Write system's endianness.
     if (IsLittleEndian::VALUE)
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_ENDIANNESS_KEY, GDF_IO_FILE_ENDIANNESS_LITTLE);
     else
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_ENDIANNESS_KEY, GDF_IO_FILE_ENDIANNESS_BIG);
-//    stream << GDF_IO_HEADER_PREFIX << GDF_IO_FILE_VERSION_KEY << GDF_IO_KEY_VALUE_SEPARATOR <<
-//              GDF_IO_FILE_VERSION_VALUE_PREFIX << GDF_IO_FILE_VERSION_BIG << GDF_IO_FILE_VERSION_VALUE_SEPARATOR <<
-//              GDF_IO_FILE_VERSION_LITTLE << '\n';
-    // Write the endianess.  -> We always write in Network Byte Order (BgEndian)
-//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//    streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_KEY), length(GDF_IO_FILE_ENDIANNESS_KEY));
-//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//    if (SystemByteOrder::IS_LITTLE_ENDIAN())
-//        streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_LITTLE), length(GDF_IO_FILE_ENDIANNESS_LITTLE));
-//    else
-//        streamWriteBlock(stream, toCString(GDF_IO_FILE_ENDIANNESS_BIG), length(GDF_IO_FILE_ENDIANNESS_BIG));
-//    streamWriteChar(stream, '\n');
-
-    // Write the block information.
-//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//    streamWriteBlock(stream, toCString(GDF_IO_FILE_BLOCKSIZE_KEY), length(GDF_IO_FILE_BLOCKSIZE_KEY));
-//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//    std::stringstream blockSize;
-//    blockSize << jseqHeader._fileInfos._blockSize;
-//    streamWriteBlock(stream, blockSize.str().c_str(), blockSize.str().size());
-//    streamWriteChar(stream, '\n');
-
     // Write Compression mode.
-
-//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//    streamWriteBlock(stream, toCString(GDF_IO_FILE_SNP_COMPRESSION_KEY), length(GDF_IO_FILE_SNP_COMPRESSION_KEY));
-//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
     if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_2BIT);
     else
-        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_GERNERIC);
+        GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_GENERIC);
+
+    // Write Coverage Compression Mode
+    GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_COVERAGE_COMPRESSION, config.coverageCompression);
 }
+
+// ----------------------------------------------------------------------------
+// Function _writeGdfHeaderReferenceInfo()
+// ----------------------------------------------------------------------------
 
 template <typename TStream, typename TConfig>
 inline void
@@ -121,33 +307,17 @@ _writeGdfHeaderReferenceInfo(TStream & stream, GdfHeader const & jseqHeader, TCo
 {
     // Write the reference id.
       GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_REFERENCE_ID_KEY, jseqHeader.referenceId);
-//    streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//    streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_ID_KEY), length(GDF_IO_REFERENCE_ID_KEY));
-//    streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//    streamWriteBlock(stream, toCString(jseqHeader._refInfos._refId), length(jseqHeader._refInfos._refId));
-//    streamWriteChar(stream, '\n');
     // Write the reference file.
       GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_REFERENCE_FILE_KEY, jseqHeader.referenceFilename);
-//      streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//      streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_FILE_KEY), length(GDF_IO_REFERENCE_FILE_KEY));
-//      streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//      streamWriteBlock(stream, toCString(jseqHeader._refInfos._refFile), length(jseqHeader._refInfos._refFile));
-//      streamWriteChar(stream, '\n');
       // Write the reference hash.
-      GDF_IO_WRITE_KEY_VALUE(stram, GDF_IO_REFERENCE_HASH_KEY, config.refHash);
-//      streamWriteBlock(stream, toCString(GDF_IO_HEADER_PREFIX), length(GDF_IO_HEADER_PREFIX));
-//      streamWriteBlock(stream, toCString(GDF_IO_REFERENCE_HASH_KEY), length(GDF_IO_REFERENCE_HASH_KEY));
-//      streamWriteBlock(stream, toCString(GDF_IO_KEY_VALUE_SEPARATOR), length(GDF_IO_KEY_VALUE_SEPARATOR));
-//      std::stringstream referenceHash;
-//      referenceHash << jseqHeader._refInfos._refHash;
-//      streamWriteBlock(stream, referenceHash.str().c_str(), referenceHash.str().size());
-//      streamWriteChar(stream, '\n');
+      GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_REFERENCE_HASH_KEY, config.refHash);
 }
 
 // ----------------------------------------------------------------------------
-// Function
+// Function _writeBitVector()
 // ----------------------------------------------------------------------------
 
+// @deprecated.
 template <typename TStream, typename TSpec>
 inline void
 _writeBitVector(TStream & stream, String<bool, Packed<TSpec> > const & bitVec)
@@ -165,110 +335,129 @@ _writeBitVector(TStream & stream, String<bool, Packed<TSpec> > const & bitVec)
         streamWriteBlock(stream, reinterpret_cast<const char *>(&it->i), sizeof(TBitVector));
 }
 
+// ----------------------------------------------------------------------------
+// Function _writeGdfHeader()
+// ----------------------------------------------------------------------------
+
 template <typename TStream, typename TConfig>
 inline void _writeGdfHeader(TStream & stream, GdfHeader const & header, TConfig const & config)
 {
     // Write the file information.
-    _writeGdfHeaderFileInfo(stream, header, config);
+    _writeGdfFileConfigInfo(stream, config);
     // Write reference information.
     _writeGdfHeaderReferenceInfo(stream, header, config);
 
     // Write additional data.
     stream << GDF_IO_SEQ_NAMES_PREFIX;
     for (unsigned i = 0; i < length(header.nameStore); ++i)
-        stream << header.nameStore)[i] << GDF_IO_SEQ_NAMES_SEPARATOR;
-//        streamWriteBlock(stream, toCString((header.nameStore)[i]), length((header._nameStorePtr)[i]));
-//        streamWriteBlock(stream, toCString(GDF_IO_SEQ_NAMES_SEPARATOR), length(GDF_IO_SEQ_NAMES_SEPARATOR));
+        stream << header.nameStore[i] << GDF_IO_SEQ_NAMES_SEPARATOR;
     stream << '\n';
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeSnp()
+// Function _bufferSnp()
 // ----------------------------------------------------------------------------
 
 // Writes SNP in separat value after delta pos.
-template <typename TTarget, typename TPosition, typename TAlphabet>
+template <typename TBuffer, typename TValue>
 inline void
-_writeSnp(TTarget & blockBuffer, TPosition deltaPos, TAlphabet snp)
+_bufferSnp(TBuffer & buffer, BitCompressedDeltaPos_<GdfIOGenericSnpCompression> deltaPos, TValue val)
 {
-    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // The last bit should not be set.
+//    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // The last bit should not be set.
 
-    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);  // Set bit to indicate SNP
-    register __uint32 offset = sizeof(__uint32) + sizeof(TAlphabet);
-    resize(blockBuffer, length(blockBuffer) + offset);
-    endianSwap(deltaPos, HostByteOrder(), BigEndian());  // swaps endianness if HostByteOrder is little endian.
-    char* refBuffer = reinterpret_cast<char*>(&deltaPos);
-    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
-    char* snpBuffer = reinterpret_cast<char*>(&snp);
-    arrayMoveForward(snpBuffer, snpBuffer + sizeof(TAlphabet), end(blockBuffer, Standard()) - sizeof(TAlphabet));
+//    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);  // Set bit to indicate SNP
+//    __uint32 offset = sizeof(__uint32) + sizeof(TValue);
+//    resize(blockBuffer, length(blockBuffer) + offset);
+//    __uint32 codeWord = deltaPos.toWord();
+//    endianSwap(codeWord, HostByteOrder(), BigEndian());  // swaps endianness if HostByteOrder is little endian.
+//    char* refBuffer = reinterpret_cast<char*>(&codeWord);
+//    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
+//    writeToBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
+    buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
+    *buffer = val;
+    ++buffer;
+//    char* snpBuffer = reinterpret_cast<char*>(&val);
+//    arrayMoveForward(snpBuffer, snpBuffer + sizeof(TValue), end(blockBuffer, Standard()) - sizeof(TValue));
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeSnp()                                                   [Dna]
+// Function _bufferSnp()                                                  [Dna]
 // ----------------------------------------------------------------------------
 
 // Encodes SNP in delta position assuming, that 28 bits are sufficient to store the delta to the previous variant.
-template <typename TTarget, typename TPosition>
+template <typename TBuffer, typename TValue>
 inline void
-_writeSnp(TTarget & blockBuffer, TPosition deltaPos, Dna snp)
+_bufferSnp(TBuffer & buffer, BitCompressedDeltaPos_<GdfIO2BitSnpCompression> deltaPos, TValue val)
 {
-    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // Bit at index 31 not set.
-    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -2));  // Bit at index 30 not set.
-    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -3));  // Bit at index 29 not set.
-
-    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);
-    deltaPos |= static_cast<__uint32>(snp) << ((sizeof(__uint32) << 3) - 3);
-    resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
-    endianSwap(deltaPos, HostByteOrder(), BigEndian());
-    char* refBuffer = reinterpret_cast<char*>(&deltaPos);
-    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
+//    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);
+//    deltaPos |= static_cast<__uint32>(snp) << ((sizeof(__uint32) << 3) - 3);
+    deltaPos.snp = val;
+//    resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
+//    __uint32 codeWord = deltaPos.toWord();
+//    endianSwap(codeWord, HostByteOrder(), BigEndian());
+//    char* refBuffer = reinterpret_cast<char*>(&codeWord);
+//    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
+     buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeDataBlock()
+// Function _bufferDataBlock()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TDeltaMapIter, typename TValue, typename TAlphabet>
-inline int _writeDataBlock(TStream & stream,
-                           TDeltaMapIter & it,
-                           TDeltaMapIter & itEnd,
-                           DeltaMap<TValue, TAlphabet> const & /*deltaMap*/)
+template <typename TBuffer, typename TDeltaMapIter, typename TValue, typename TAlphabet, typename TSpec,
+          typename TCompressionMode>
+inline void _bufferDataBlock(TBuffer & buffer,
+                             TDeltaMapIter & it,
+                             TDeltaMapIter & itEnd,
+                             DeltaMap<TValue, TAlphabet, TSpec> const & /*deltaMap*/,
+                             TCompressionMode /*tag*/)
 {
     typedef DeltaMap<TValue, TAlphabet> TDeltaMap;
+    typedef BitCompressedDeltaPos_<TCompressionMode> TDeltaPos;
 
-    CharString blockBuffer;
-    typename Iterator<CharString>::Type blockBuffIt;
+//    std::stringstream blockBuffer2(std::ios_base::binary | std::ios_base::in | std::ios_base::out);
     __uint32 lastRefPos = deltaPosition(it);
     // Write the reference offset of the current block.
-    writeBinary(stream, lastRefPos);
+//    writeToBinary(stream, lastRefPos, HostByteOrder(), HostByteOrder());
+    buffer += _toBinary(buffer, lastRefPos);
+
     TDeltaMapIter itDelta = it;
     while(itDelta != itEnd)
     {
+        SEQAN_ASSERT_LEQ(deltaPosition(itDelta) - lastRefPos, +ValueSize<TDeltaPos>::VALUE);
         // Store the reference position.
-        __uint32 deltaPos = deltaPosition(itDelta) - lastRefPos;
+        TDeltaPos deltaPos(deltaPosition(itDelta) - lastRefPos);
 
         // Write SNP Data.
         if (deltaType(itDelta) == DELTA_TYPE_SNP)
         {
-            _writeSnp(blockBuffer, deltaPos, deltaValue(itDelta, DeltaTypeSnp()));
+            deltaPos.isSnp = 1;
+            _bufferSnp(buffer, deltaPos, deltaValue(itDelta, DeltaTypeSnp()));
         }
         else  // Write Indel
         {
-            resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
-            blockBuffIt = end(blockBuffer) - sizeof(__uint32);
-            endianSwap(deltaPos, HostByteOrder(), BigEndian());
-            char * refBuffer = reinterpret_cast<char *>(&deltaPos);
-            arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
+//            resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
+//            blockBuffIt = end(blockBuffer) - sizeof(__uint32);
+//            __uint32 codeWord = deltaPos.toWord();
+//            endianSwap(codeWord, HostByteOrder(), BigEndian());
+//            char * refBuffer = reinterpret_cast<char *>(&codeWord);
+//            arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
+//            writeToBinary(blockBuffer2, deltaPos.toWord(), HostByteOrder(), BigEndian());
+            buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
 
             if (deltaType(itDelta) == DELTA_TYPE_DEL)  // Write deletion.
             {
-                __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeDel()));
-                setBit(del, BitsPerValue<__uint32>::VALUE - 1);
-                resize(blockBuffer, length(blockBuffer) + sizeof(del));
-                blockBuffIt = end(blockBuffer) - sizeof(del);
-                endianSwap(del, HostByteOrder(), BigEndian());
-                const char * delBuffer = reinterpret_cast<const char *>(&del);
-                arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
+//                BitCompressedInDel_ del(0, 1, deltaValue(itDelta, DeltaTypeDel()));
+//                __uint32 del = static_cast<__uint32>();
+                buffer += _toBinary(buffer, BitCompressedInDel_(0, 1, deltaValue(itDelta, DeltaTypeDel())).toWord(),
+                                    HostByteOrder(), BigEndian());
+//                writeToBinary(blockBuffer2, del.toWord(), HostByteOrder(), BigEndian());
+//                setBit(del, BitsPerValue<__uint32>::VALUE - 1);
+//                resize(blockBuffer, length(blockBuffer) + sizeof(del));
+//                blockBuffIt = end(blockBuffer) - sizeof(del);
+//                endianSwap(del, HostByteOrder(), BigEndian());
+//                const char * delBuffer = reinterpret_cast<const char *>(&del);
+//                arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
             }
             else
             {
@@ -277,81 +466,164 @@ inline int _writeDataBlock(TStream & stream,
                 // Handle Indel.
                 if (deltaType(itDelta) == DELTA_TYPE_SV)
                 {
-                    TIns ins = deltaValue(itDelta, DeltaTypeSV()).i2;
-                    __uint32 insLength = length(ins);
-                    setBit(insLength, BitsPerValue<__uint32>::VALUE - 2);
-                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + sizeof(del) + length(ins));
-                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - sizeof(del) - length(ins);
-                    // Write size of insertion.
-                    endianSwap(insLength, HostByteOrder(), BigEndian());
-                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
-                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-                    // Write inserted characters.
-                    blockBuffIt = end(blockBuffer) - length(ins) - sizeof(del);
-                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
-                    // Write size of deletion
-                    __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeSV()).i1);
-                    endianSwap(del, HostByteOrder(), BigEndian());
-                    const char * delBuffer = reinterpret_cast<const char *>(&del);
-                    blockBuffIt = end(blockBuffer) - sizeof(del);
-                    arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
+//                    BitCompressedInDel_ sv(0, 1, deltaValue(itDelta, DeltaTypeSV()).i1);
+//                    writeToBinary(blockBuffer2, sv.toWord(), HostByteOrder(), BigEndian());
+                    buffer += _toBinary(buffer,
+                                        BitCompressedInDel_(0, 1, deltaValue(itDelta, DeltaTypeSV()).i1).toWord(),
+                                        HostByteOrder(), BigEndian());
+                    buffer += _toBinary(buffer, static_cast<__uint32>(length(deltaValue(itDelta, DeltaTypeSV()).i2)),
+                                        HostByteOrder(), BigEndian());
+                    buffer += _copyToBuffer(buffer, &deltaValue(itDelta, DeltaTypeSV()).i2[0],
+                                            length(deltaValue(itDelta, DeltaTypeSV()).i2));
+//                    __uint32 insLength = length(ins);
+//                    __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeSV()).i1);
+//                    setBit(insLength, BitsPerValue<__uint32>::VALUE - 2);
+//                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + sizeof(del) + length(ins));
+//                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - sizeof(del) - length(ins);
+//                    // Write size of insertion.
+//                    endianSwap(insLength, HostByteOrder(), BigEndian());
+//                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
+//                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
+//                    // Write inserted characters.
+//                    blockBuffIt = end(blockBuffer) - length(ins) - sizeof(del);
+//                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
+//                    // Write size of deletion
+//                    endianSwap(del, HostByteOrder(), BigEndian());
+//                    const char * delBuffer = reinterpret_cast<const char *>(&del);
+//                    blockBuffIt = end(blockBuffer) - sizeof(del);
+//                    arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
                 }
                 else  // Handle Insertion.
                 {
                     SEQAN_ASSERT(deltaType(itDelta) == DELTA_TYPE_INS);
-                    TIns ins = deltaValue(itDelta, DeltaTypeIns());
-                    __uint32 insLength = length(ins);
-                    SEQAN_ASSERT_NOT(isBitSet(insLength, BitsPerValue<__uint32>::VALUE - 2));
-                    endianSwap(insLength, HostByteOrder(), BigEndian());
-                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
-                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + length(ins));
-                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - length(ins);
-                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-                    blockBuffIt = end(blockBuffer) - length(ins);
-                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
+//                    BitCompressedInDel_ ins(0, 0, length(deltaValue(itDelta, DeltaTypeIns())));
+                    buffer += _toBinary(buffer,
+                                        BitCompressedInDel_(0, 0, length(deltaValue(itDelta, DeltaTypeIns()))).toWord(),
+                                        HostByteOrder(), BigEndian());
+//                    writeToBinary(blockBuffer2, ins.toWord(), HostByteOrder(), BigEndian());
+                    buffer += _copyToBuffer(buffer, &deltaValue(itDelta, DeltaTypeIns())[0],
+                                            length(deltaValue(itDelta, DeltaTypeIns())));
+//                    blockBuffer2 << deltaValue(itDelta, DeltaTypeIns());
+//
+//                    __uint32 insLength = length(ins);
+//                    SEQAN_ASSERT_NOT(isBitSet(insLength, BitsPerValue<__uint32>::VALUE - 2));
+//                    endianSwap(insLength, HostByteOrder(), BigEndian());
+//                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
+//                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + length(ins));
+//                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - length(ins);
+//                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
+//                    blockBuffIt = end(blockBuffer) - length(ins);
+//                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
                 }
             }
         }
         lastRefPos = deltaPosition(itDelta);
         ++itDelta;
     }
-
-    // Write the block Data.
-    unsigned blockLength = length(blockBuffer);
-    writeBinary(stream, blockLength);
-    streamWriteBlock(stream, &blockBuffer[0], blockLength);
-
-    // Write the coverage of the block
-    for (; it != itEnd; ++it)
-        _writeBitVector(stream, deltaCoverage(it));
-
-    return 0;
 }
 
-// Write the io context.
-template <typename TStream, typename TDeltaStore, typename TDeltaCoverageStore, typename TValue>
-inline int _writeGdfData(TStream & stream,
-                          DeltaMap<TDeltaStore, TDeltaCoverageStore> const & deltaMap,
-                          GdfFileConfiguration<TValue> const & /*config*/)
+// ----------------------------------------------------------------------------
+// Function _bufferCoverages()
+// ----------------------------------------------------------------------------
+
+template <typename TBuffer, typename TStringSet>
+inline void _bufferCoverages(TBuffer & buffer, TStringSet const & set)
 {
-    typedef DeltaMap<TDeltaStore, TDeltaCoverageStore> TDeltaMap;
+    typedef typename Concatenator<TStringSet>::Type TConcatenate;
+    typedef typename Value<TConcatenate>::Type TEncodedValue;
+    typedef typename Iterator<TConcatenate const, Standard>::Type TConcatIterator;
+
+    for (TConcatIterator it = begin(concat(set), Standard()); it != end(concat(set), Standard()); ++it)
+        buffer += _toBinary(buffer, *it);
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeGdfData()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TAlphabet, typename TSpec, typename TConfig,
+          typename TSnpCompression, typename TCoverageEncodingType>
+inline void _writeGdfData(TStream & stream,
+                          DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap,
+                          GdfFileConfiguration<TConfig> const & config,
+                          TSnpCompression /*tag*/,
+                          GdfIOCoverageCompression<TCoverageEncodingType> /*tag*/)
+{
+    typedef DeltaMap<TValue, TAlphabet, TSpec> TDeltaMap;
     typedef typename Size<TDeltaMap>::Type TSize;
     typedef typename Iterator<TDeltaMap const, Standard>::Type TIterator;
-    typedef GdfFileConfiguration<TValue> TConfig;
+
+    typedef String<TCoverageEncodingType> TEncodedString;
+    typedef StringSet<TEncodedString, Owner<ConcatDirect<> > > TEncodedSet;
 
     TSize maxNumOfNodes = length(deltaMap);
-    TSize numOfBlocks = (maxNumOfNodes + TConfig::BLOCK_SIZE - 1) / TConfig::BLOCK_SIZE;
+    __uint32 numOfBlocks = (maxNumOfNodes + config.blockSize - 1) / config.blockSize;
 
     // Write the block containing the number of blocks to read.
     writeBinary(stream, numOfBlocks);
-    for (TSize i = 0; i < numOfBlocks; ++i)  // For each block:
+
+    TEncodedSet set;
+
+    for (__uint32 i = 0; i < numOfBlocks; ++i)  // For each block:
     {
-        TIterator it = begin(deltaMap, Standard()) + (blockSize * i);
-        TIterator itEnd = _min(end(deltaMap, Standard()), it + blockSize);
-        _writeDataBlock(stream, it, itEnd, deltaMap);
+        TIterator it = begin(deltaMap, Standard()) + (config.blockSize * i);
+        TIterator itEnd = _min(end(deltaMap, Standard()), it + config.blockSize);
+        clear(set);
+
+        // Encode the bit vectors and compute buffer size.
+        unsigned int bufferSize = _encodeAndComputeByteCount(set, it, itEnd, TSnpCompression()) + (sizeof(__uint32) * 3);
+        unsigned int chunkCoverage = length(concat(set)) * sizeof(TCoverageEncodingType);
+        unsigned int chunkDelta = bufferSize - chunkCoverage - (sizeof(__uint32) * 2);
+        char * buffer = new char [bufferSize];
+        buffer += _toBinary(buffer, chunkDelta);  // Write the buffer size of delta block including the reference position.
+        _bufferDataBlock(buffer, it, itEnd, deltaMap, TSnpCompression());  // Buffer the variants.
+        buffer += _toBinary(buffer, chunkCoverage);  // Write the buffer size of the coverage block.
+        _bufferCoverages(buffer, set);  // Buffer the encoded bit vectors.
+
+        buffer -= bufferSize;  // Set back to beginning of buffer;
+        streamWriteBlock(stream, buffer, bufferSize);  // Write buffer to stream.
+        delete[] buffer;
     }
-    return 0;
 }
+
+// ----------------------------------------------------------------------------
+// Function _writeGdfData()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TAlphabet, typename TSpec, typename TConfig,
+          typename TSnpCompressionMode>
+inline void _writeGdfData(TStream & stream,
+                          DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap,
+                          GdfFileConfiguration<TConfig> const & config,
+                          TSnpCompressionMode /*tag*/)
+{
+    switch (config.coverageCompression)
+    {
+        case GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE:
+            _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint8>()); break;
+        case GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE:
+            _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint16>()); break;
+        case GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE:
+            _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint32>()); break;
+        default:
+            _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint64>()); break;
+    }
+}
+
+template <typename TStream, typename TValue, typename TAlphabet, typename TSpec, typename TConfig>
+inline void _writeGdfData(TStream & stream,
+                          DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap,
+                          GdfFileConfiguration<TConfig> const & config)
+{
+    if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+        _writeGdfData(stream, deltaMap, config, GdfIO2BitSnpCompression());
+    else
+        _writeGdfData(stream, deltaMap, config, GdfIOGenericSnpCompression());
+}
+
+// ----------------------------------------------------------------------------
+// Function write()
+// ----------------------------------------------------------------------------
 
 template <typename TStream, typename TValue, typename TAlphabet, typename TConfig>
 inline void
@@ -361,31 +633,16 @@ write(TStream & stream,
       TConfig const & config,
       Gdf const & /*tag*/)
 {
-    _writeGdfHeader(stream, gdfHeader, config);
-    _writeGdfData(stream, deltaMap, config);
+    SEQAN_TRY
+    {
+        _writeGdfHeader(stream, gdfHeader, config);
+        _writeGdfData(stream, deltaMap, config);
+    }
+    SEQAN_CATCH(Exception e)
+    {
+        SEQAN_THROW(GdfIOException(e.what()));
+    }
 }
-
-///*!
-// * @fn journalSet#write
-// * @deprecated
-// */
-//template <typename TStream, typename TJournalSequence>
-//inline int
-//write(TStream & stream,
-//      StringSet<TJournalSequence, Owner<JournaledSet> > const & journalSet,
-//      GdfHeader const & jseqHeader,
-//      Gdf const & /*tag*/)
-//{
-//    typedef typename Value<TJournalSequence>::Type TAlphabet;
-//    typedef typename Position<TJournalSequence>::Type TPosition;
-//
-//    if (empty(host(journalSet)))
-//        return -1;
-//    DeltaMap<TPosition, TAlphabet> deltaMap;
-//    adaptTo(deltaMap, journalSet);
-//    write(stream, deltaMap, jseqHeader, Gdf());
-//    return 0;
-//}
 
 }  // namespace seqan
 

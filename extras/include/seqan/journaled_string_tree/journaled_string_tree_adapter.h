@@ -625,11 +625,11 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
             {
                 // What if we found multiple insertions in between.
                 TSize delSize = it->physicalPosition - lastPhysPos;
-                register unsigned j = 0;
+                unsigned j = 0;
                 for (; (j < length(tmpInsertionEntries)) && (delSize > 0); ++j)
                 {
                     TEntiresIterator tmpInsIt = tmpInsertionEntries[j];
-                    register unsigned k = 0;
+                    unsigned k = 0;
                     for (; (k < tmpInsIt->length) && (delSize > 0); ++k, --delSize, ++currPhysBeginPos)
                     {
                         TMapInsertType _mapInsValue = TMapInsertType(TMapKey_(currPhysBeginPos, TCompareType(DELTA_TYPE_SNP, journalSeq._insertionBuffer[tmpInsIt->physicalPosition + k])), tmpValue);

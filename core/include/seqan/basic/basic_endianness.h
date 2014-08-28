@@ -108,46 +108,46 @@ struct IsLittleEndian : False{};
 // ============================================================================
 
 template <typename TValue, unsigned int SIZE>
-inline void _endianSwap(TValue & /*val*/, ConstUInt<SIZE>)
+inline TValue _endianSwap(TValue val, ConstUInt<SIZE>)
 {
-    // no-op.
+    return val;
 }
 
 #ifdef WINDOWS_PLATFORMS
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<2>)
+inline TValue _endianSwap(TValue val, ConstUInt<2>)
 {
-    val =  _byteswap_ushort(val);
+    return _byteswap_ushort(val);
 }
 
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<4>)
+inline TValue _endianSwap(TValue val, ConstUInt<4>)
 {
-    val =  _byteswap_ulong(val);
+    return _byteswap_ulong(val);
 }
 
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<8>)
+inline TValue _endianSwap(TValue val, ConstUInt<8>)
 {
-    val =  _byteswap_uint64(val);
+    return _byteswap_uint64(val);
 }
 #else  // WINDOWS_PLATFORMS
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<2>)
+inline TValue _endianSwap(TValue val, ConstUInt<2>)
 {
-    val = __builtin_bswap16(val);
+    return __builtin_bswap16(val);
 }
 
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<4>)
+inline TValue _endianSwap(TValue val, ConstUInt<4>)
 {
-    val = __builtin_bswap32(val);
+    return __builtin_bswap32(val);
 }
 
 template <typename TValue>
-inline void _endianSwap(TValue &val, ConstUInt<8>)
+inline TValue _endianSwap(TValue val, ConstUInt<8>)
 {
-    val = __builtin_bswap64(val);
+    return __builtin_bswap64(val);
 }
 #endif  // WINDOWS_PLATFORMS
 
@@ -158,31 +158,31 @@ inline void _endianSwap(TValue &val, ConstUInt<8>)
 /*!
  * @fn endianSwap
  * @inlcude <seqan/basic.h>
- * @brief Swaps the byte order between the two .
+ * @brief Returns the value with reversed byte order.
  *
- * @signature   TValue ntoh(val);
+ * @signature   TValue endianSwap(val, fromByteOrder, toByteOrder);
  * @param   val The integral type to transform the byte order for. Must be of type @link Concept.IntegerConcept @endlink.
+ * @param  fromByteOrder A tag specifying the source byte order. One of @link ByteOrderTags @endlink.
+ * @param  toByteOrder A tag specifying the target byte order. One of @link ByteOrderTags @endlink.
  *
- * @return TValue The value in host byte order.
+ * @return TValue The value in target byte order.
  *
- * This function transforms the byte order of an integral type from the network to the host byte oder. The network
- * byte order is always big endian, while the host byte order depends on the used system.
- *
- * @see hton
+ * This function transforms the byte order of an integral type from the source to the target byte order.
+ * The byte order remains unchanged if source and target byte order is the same.
  */
 
 template <typename TValue, typename TFromByteOrder, typename TToByteOrder>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, void)
-endianSwap(TValue & val, TFromByteOrder /*tag*/, TToByteOrder /*tag*/)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, TValue)
+endianSwap(TValue val, TFromByteOrder /*tag*/, TToByteOrder /*tag*/)
 {
-    _endianSwap(val, ConstUInt<sizeof(TValue)>());
+    return _endianSwap(val, ConstUInt<sizeof(TValue)>());
 }
 
 template <typename TValue, typename TByteOrder>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, void)
-endianSwap(TValue & /*val*/, TByteOrder /*tag*/, TByteOrder /*tag*/)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, TValue)
+endianSwap(TValue val, TByteOrder /*tag*/, TByteOrder /*tag*/)
 {
-    // no-op.
+    return val;
 }
 
 }

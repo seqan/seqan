@@ -44,13 +44,6 @@
 
 SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 {
-//    typedef seqan::IsLittleEndian<seqan::ByteOrder::_Union::VALUE>::Type TCheck;
-
-    if (IsLittleEndian::VALUE)
-        std::cerr << "Is LittleEndian " << std::endl;
-    else
-        std::cerr << "Is BigEndian" << std::endl;
-
     // Tests for delta map.
     SEQAN_CALL_TEST(test_delta_map_insert);
     SEQAN_CALL_TEST(test_delta_map_length);

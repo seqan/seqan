@@ -747,6 +747,39 @@ init(JournaledStringTree<TDeltaMap, TSpec> & jst,
 }
 
 // ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledStringTree#clear
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Clears the container.
+ *
+ * @signature void clear(jst);
+ *
+ * @param[in,out] jst    The Journal String Tree to be cleared.
+ *
+ * @see JournaledStringTree#reinit
+ * @see JournaledStringTree#init
+
+ */
+
+template <typename TDeltaMap, typename TSpec>
+inline void
+clear(JournaledStringTree<TDeltaMap, TSpec> & jst)
+{
+
+    clear(jst._container);
+    clear(jst._journalSet);
+    clear(jst._activeBlockVPOffset);
+    clear(jst._blockVPOffset);
+    jst._numBlocks = 1;
+    jst._activeBlock = 0;
+    jst._blockSize = JournaledStringTree<TDeltaMap, TSpec>::REQUIRE_FULL_JOURNAL;
+    jst._emptyJournal = true;
+}
+
+// ----------------------------------------------------------------------------
 // Function setBlockSize()
 // ----------------------------------------------------------------------------
 
@@ -869,6 +902,22 @@ stringSet(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
 }
 
 // ----------------------------------------------------------------------------
+// Function _isValiJstdReference()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TRefId, typename TConfig>
+inline bool _isValiJstdReference(THost const & host,
+                                 TRefId const & refId,
+                                 GdfHeader const & gdfHeader,
+                                 GdfFileConfiguration<TConfig> const & config)
+{
+    unsigned int crc = computeCrc(host);
+    if (crc == 0)
+        return refId == gdfHeader.referenceId;
+    return crc == config.refHash;
+}
+
+// ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
 
@@ -891,24 +940,26 @@ stringSet(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
  */
 
 template <typename TDeltaMap, typename TSpec, typename TFilename>
-inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
-                GdfHeader & gdfHeader,
-                TFilename const & filename)
+inline void open(JournaledStringTree<TDeltaMap, TSpec> & jst,
+                 GdfHeader & gdfHeader,
+                 TFilename const & filename)
 {
     typedef JournaledStringTree<TDeltaMap, TSpec> TJst;
     typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnp;
     typedef typename Host<TJst>::Type THost;
+    typedef typename GetStringSet<TJst>::Type TStringSet;
+    typedef typename Value<TStringSet>::Type TJString;
 
-    GdfFileConfiguration<TSnp> config;
+    GdfFileConfiguration<TSnp> config(0u);
 
     // Step 1) Read the delta map.
     std::ifstream inputFile;
     inputFile.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
     if (!inputFile.good())
     {
-        inputfile.close();
+        inputFile.close();
         std::stringstream errMessage;
-        errMessage << "Unknown file <" << filename << ">!\n";
+        errMessage << "Unknown file <" << filename << ">!";
         SEQAN_THROW(GdfIOException(errMessage.str()));
     }
     read(container(jst), gdfHeader, config, inputFile, Gdf());
@@ -921,7 +972,7 @@ inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
     {
         refFile.close();
         std::stringstream errMessage;
-        errMessage << "Unknown file <" << gdfHeader.referenceFilename << ">!\n";
+        errMessage << "Unknown file <" << gdfHeader.referenceFilename << ">!";
         SEQAN_THROW(GdfIOException(errMessage.str()));
     }
     THost tmpHost = "";
@@ -932,21 +983,21 @@ inline int open(JournaledStringTree<TDeltaMap, TSpec> & jst,
     {
         refFile.close();
         std::stringstream errMessage;
-        errMessage << "Error while parsing <" << gdfHeader.referenceFilename << ">!\n";
+        errMessage << "Error while parsing <" << gdfHeader.referenceFilename << ">!";
         SEQAN_THROW(GdfIOException(errMessage.str()));
     }
     refFile.close();
 
-    if (isNotEqual(refId, gdfHeader.referenceId) || !checkReferenceCrc(host(jst), config.refHash))
-        SEQAN_THROW(GdfIOWrongReferenceException());
+    if (!_isValiJstdReference(host(jst), refId, gdfHeader, config))
+        SEQAN_THROW(GdfIOWrongReferenceException(refId, gdfHeader.referenceId, config.refHash, computeCrc(host(jst))));
 
-    resize(stringSet(jst), getCoverageSize(container(jst)), host(stringSet(jst)), Exact());
+
+
+    resize(stringSet(jst), getCoverageSize(container(jst)), TJString(host(stringSet(jst))), Exact());
     resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
     resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
 
     jst._mapBlockBegin = jst._mapBlockEnd = begin(container(jst), Standard());
-
-    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -988,20 +1039,20 @@ inline void save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
     // Check if sequence names are available.
     if (length(gdfHeader.nameStore) < getCoverageSize(container(jst)))
     {
-        std::stringstream errMessage = "Too few sequence names (";
-        errMessage << "Needed " << getCoverageSize(container(jst)) << " but " << length(gdfHeader.nameStore) << " were provided)!";
+        std::stringstream errMessage;
+        errMessage << "Too few sequence names - Needed " << getCoverageSize(container(jst)) << " but " << length(gdfHeader.nameStore) << " were provided!";
         SEQAN_THROW(GdfIOException(errMessage.str()));
     }
 
     // Write reference.
-    if (gdfHeader.referenceMode == GdfIO::REFERENCE_MODE_WRITE_ENABLED)
+    if (gdfHeader.referenceMode == GdfIO::SAVE_REFERENCE_MODE_ENABLED)
     {
         std::ofstream refStream;
         refStream.open(toCString(gdfHeader.referenceFilename), std::ios_base::out);
         if (!refStream.good())
         {
-            std::stringstream errMessage = "Cannot open file: ";
-            errMessage << gdfHeader.referenceFilename << "!";
+            std::stringstream errMessage;
+            errMessage << "Cannot open file: "<< gdfHeader.referenceFilename << "!";
             SEQAN_THROW(GdfIOException(errMessage.str()));
         }
 
@@ -1011,16 +1062,16 @@ inline void save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
     }
 
     // Compute hash for reference sequence.
-    GdfFileConfiguration<TSnpType> gdfConfig;
-    gdfConfig.refHash = computeReferenceCrc(host(jst));
+    GdfFileConfiguration<TSnpType> gdfConfig(getCoverageSize(container(jst)));
+    gdfConfig.refHash = computeCrc(host(jst));
 
     std::ofstream fileStream;
-    fileStream.open(toCString(filename), std::ios_base::out | std::ios_base::binary);
+    fileStream.open(toCString(filename), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
     if (!fileStream.good())
     {
-        std::stringstream errMessage = "Cannot open file: ";
-        errMessage << filename << "!";
+        std::stringstream errMessage;
+        errMessage << "Cannot open file: " << filename << "!";
         SEQAN_THROW(GdfIOException(errMessage.str()));
     }
     write(fileStream, container(jst), gdfHeader, gdfConfig, Gdf());

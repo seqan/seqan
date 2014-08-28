@@ -48,17 +48,64 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Tag Gdf
+// ----------------------------------------------------------------------------
+
 struct Gdf_;
 typedef Tag<Gdf_> Gdf;
 
+// ----------------------------------------------------------------------------
+// Class GdfIOException
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class GdfIOExcetption
+ * @extends Exception
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Exception thrown by errors during I/O-Gdf operations.
+ */
+
+/*!
+ * @fn GdfIOException#what
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Outputs the error message.
+ *
+ * @signature const char* e.what();
+ * @parm e The exception.
+ *
+ * @return "const char*" The error message.
+ */
+
 struct GdfIOException : public Exception
 {
+    /*!
+     * @var std::string GdfIOException#message
+     * @brief The error message.
+     */
     std::string message;
 
+    /*!
+    * @fn GdfIOException::what
+    * @brief Outputs the associated error message.
+    *
+    * @signature const char* GdfIOException::what();
+    */
     const char* what() const noexcept
     {
         return message.c_str();
     }
+
+    /*!
+    * @fn GdfIOException::GdfIOException
+    * @brief The constructor.
+    *
+    * @signature GdfIOException()
+    * @signature GdfIOException(message)
+    * @param message The error message to be printed. Must be of type @link http://www.cplusplus.com/reference/string/string/?kw=string @endlink.
+    */
+    GdfIOException()
+    {}
 
     GdfIOException(std::string const & errMessage)
     {
@@ -69,8 +116,18 @@ struct GdfIOException : public Exception
 struct GdfIOWrongReferenceException : public GdfIOException
 {
 
-    GdfIOWrongReferenceException() : GdfIOException("Wrong reference")
+    GdfIOWrongReferenceException() : GdfIOException("Wrong reference!")
     {}
+
+    template <typename TString, typename TCrc>
+    GdfIOWrongReferenceException(TString const & isId, TString const & shouldId, TCrc isCrc, TCrc shouldCrc) :
+        GdfIOException()
+    {
+        std::stringstream errMessage;
+        errMessage << "The id of the reference is \'" << isId << "\' but should be \'" << shouldId <<
+                      "\' and the crc is \'" << isCrc << "\' but should be \'" << shouldCrc << "\'!";
+        message = GdfIOException(errMessage.str()).message;
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -79,45 +136,25 @@ struct GdfIOWrongReferenceException : public GdfIOException
 
 struct GdfIO
 {
-    // TODO(rmaerker): Replace by exceptions.
-    enum ERROR
-    {
-        PARSE_OK = 0,
-        UNSUPPORTED_PREFIX_ERROR = 1,
-        UNSUPPORTED_FILE_VERSION_ERROR = 2,
-        UNSUPPORTED_FILE_FORMAT_ERROR = 3,
-        UNSUPPORTED_REFERNCE_INFORMATION_ERROR = 4
-    };
-
     enum CompressionMode
     {
         COMPRESSION_MODE_2_BIT_SNP_COMPRESSION,
         COMPRESSION_MODE_NO_SNP_COMPRESSION
     };
 
-    enum ReferenceMode
+    enum CoverageCompression
     {
-        REFERENCE_MODE_WRITE_ENABLED,  // Writes the reference under the given filename.
-        REFERENCE_MODE_WRITE_DISABLED  // Dosen't write the reference.
+        COVERAGE_COMPRESSION_1_BYTE_PER_VALUE = 1,
+        COVERAGE_COMPRESSION_2_BYTE_PER_VALUE = 2,
+        COVERAGE_COMPRESSION_4_BYTE_PER_VALUE = 4,
+        COVERAGE_COMPRESSION_8_BYTE_PER_VALUE = 8
     };
 
-//    static const TKeyType FILE_VERSION_VALUE_PREFIX;// = "GDFv";
-//    static const TKeyType FILE_VERSION_VALUE_SEPARATOR;// = ".";
-//    static const TKeyType FILE_VERSION_KEY;// = "file version";
-//    static const TKeyType FILE_ENDIANNESS_KEY;// = "endianness";
-//    static const TKeyType FILE_ENDIANNESS_LITTLE;// = "little endian";
-//    static const TKeyType FILE_ENDIANNESS_BIG;// = "big endian";
-//    static const TKeyType FILE_SNP_COMPRESSION_KEY;// = "compression alphabet";
-//    static const TKeyType FILE_SNP_COMPRESSION_2BIT;// = "2bit";
-//    static const TKeyType FILE_SNP_COMPRESSION_GENERIC;// = "generic";
-//    static const TKeyType FILE_BLOCKSIZE_KEY;// = "block size";
-//    static const TKeyType REFERENCE_ID_KEY;// = "reference ID";
-//    static const TKeyType REFERENCE_FILE_KEY;// = "reference filename";
-//    static const TKeyType REFERENCE_HASH_KEY;// = "reference hash";
-//    static const TKeyType HEADER_PREFIX;// = "##";
-//    static const TKeyType SEQ_NAMES_PREFIX;// = "!!";
-//    static const TKeyType SEQ_NAMES_SEPARATOR;// = ",";
-//    static const TKeyType KEY_VALUE_SEPARATOR;// = "=";
+    enum SaveReferenceMode
+    {
+        SAVE_REFERENCE_MODE_ENABLED,  // Writes the reference under the given filename.
+        SAVE_REFERENCE_MODE_DISABLED  // Dosen't write the reference.
+    };
 };
 
 #define GDF_IO_FILE_VERSION_VALUE_PREFIX "GDFv"
@@ -130,6 +167,7 @@ struct GdfIO
 #define GDF_IO_FILE_SNP_COMPRESSION_2BIT "2bit"
 #define GDF_IO_FILE_SNP_COMPRESSION_GENERIC "generic"
 #define GDF_IO_FILE_BLOCKSIZE_KEY "block size"
+#define GDF_IO_FILE_COVERAGE_COMPRESSION "coverage compression"
 #define GDF_IO_REFERENCE_ID_KEY "reference ID"
 #define GDF_IO_REFERENCE_FILE_KEY "reference filename"
 #define GDF_IO_REFERENCE_HASH_KEY "reference hash"
@@ -140,155 +178,156 @@ struct GdfIO
 #define GDF_IO_FILE_VERSION_BIG 0
 #define GDF_IO_FILE_VERSION_LITTLE 1
 
-//const GdfIO::TKeyType GdfIO::FILE_VERSION_VALUE_PREFIX = "GDFv";
-//const GdfIO::TKeyType GdfIO::FILE_VERSION_VALUE_SEPARATOR = ".";
-//const GdfIO::TKeyType GdfIO::FILE_VERSION_KEY = "file version";
-//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_KEY = "endianness";
-//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_LITTLE = "little endian";
-//const GdfIO::TKeyType GdfIO::FILE_ENDIANNESS_BIG = "big endian";
-//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_KEY = "compression alphabet";
-//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_2BIT = "2bit";
-//const GdfIO::TKeyType GdfIO::FILE_SNP_COMPRESSION_GENERIC = "generic";
-//const GdfIO::TKeyType GdfIO::FILE_BLOCKSIZE_KEY = "block size";
-//const GdfIO::TKeyType GdfIO::REFERENCE_ID_KEY = "reference ID";
-//const GdfIO::TKeyType GdfIO::REFERENCE_FILE_KEY = "reference filename";
-//const GdfIO::TKeyType GdfIO::REFERENCE_HASH_KEY = "reference hash";
-//const GdfIO::TKeyType GdfIO::HEADER_PREFIX = "##";
-//const GdfIO::TKeyType GdfIO::KEY_VALUE_SEPARATOR = "=";
-//const GdfIO::TKeyType GdfIO::SEQ_NAMES_PREFIX = "!!";
-//const GdfIO::TKeyType GdfIO::SEQ_NAMES_SEPARATOR = ",";
-
 // ----------------------------------------------------------------------------
-// Struct SystemByteOrder
+// Tag GdfIO2BitSnpCompression
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): No compile time check possible with C'98 & C'11
-// Checks the byte order of the running system.
-struct SystemByteOrder
+struct GdfIO2BitSnpCompression_;
+typedef Tag<GdfIO2BitSnpCompression_> GdfIO2BitSnpCompression;
+
+struct GdfIOGenericSnpCompression_;
+typedef Tag<GdfIOGenericSnpCompression_> GdfIOGenericSnpCompression;
+
+// ----------------------------------------------------------------------------
+// Tag GdfIOCoverageCompression
+// ----------------------------------------------------------------------------
+
+template <typename TType>
+struct GdfIOCoverageCompression{};
+
+//template <typename TInt>
+//struct TransformBinaryToInt
+//{
+//
+//    static const unsigned BUFFER_SIZE = sizeof(TInt);
+//
+//    union InnerTransformer
+//    {
+//        char buffer[TransformBinaryToInt::BUFFER_SIZE];
+//        TInt value;
+//    };
+//
+//    InnerTransformer trans;
+//
+//    TransformBinaryToInt()
+//    {}
+//};
+
+struct BitCompressedInDel_
 {
-   static bool IS_LITTLE_ENDIAN()
-   {
-       union  {
-           __int16 i;
-           char c[2];
-       } tmp;
-       tmp.i = 0x006C;
-       return tmp.c[0] == 'l';
-   }
+    __uint32 isDel : 1;
+    __uint32 isSV : 1;
+    __uint32 value : BitsPerValue<__uint32>::VALUE - 2;
+
+
+    BitCompressedInDel_() : isDel(0), isSV(0), value(0)
+    {}
+
+    template <typename TValue>
+    BitCompressedInDel_(bool _isDel, bool _isSV, TValue _val) : isDel(_isDel), isSV(_isSV), value(_val)
+    {}
+
+    inline __uint32 toWord()
+    {
+        return isDel << (BitsPerValue<__uint32>::VALUE - 1) | isSV << (BitsPerValue<__uint32>::VALUE - 2) | value;
+    }
+
+    inline void fromWord(__uint32 word)
+    {
+        isDel = isBitSet(word, BitsPerValue<__uint32>::VALUE - 1);
+        isSV = isBitSet(word, BitsPerValue<__uint32>::VALUE - 2);
+        value = word & (~static_cast<__uint32>(0) >> 2);
+    }
+};
+
+template <typename TCompressionMode>
+struct BitCompressedDeltaPos_
+{
+    __uint32 isSnp : 1;
+    __uint32 pos : BitsPerValue<__uint32>::VALUE - 1;
+
+    BitCompressedDeltaPos_() : isSnp(0), pos(0)
+    {}
+
+    template <typename TPos>
+    BitCompressedDeltaPos_(TPos _pos) : isSnp(0), pos(_pos)
+    {}
+
+    inline __uint32 toWord()
+    {
+        return isSnp << (BitsPerValue<__uint32>::VALUE - 1) | pos;
+    }
+
+    inline void fromWord(__uint32 word)
+    {
+        isSnp = isBitSet(word, BitsPerValue<__uint32>::VALUE - 1);
+        pos = word & (~static_cast<__uint32>(0) >> 1);
+    }
+};
+
+template <>
+struct BitCompressedDeltaPos_<GdfIO2BitSnpCompression>
+{
+    __uint32 isSnp : 1;
+    __uint32 snp   : 2;
+    __uint32 pos   : BitsPerValue<__uint32>::VALUE - 3;
+
+    BitCompressedDeltaPos_() : isSnp(0), snp(0), pos(0)
+    {}
+
+    template <typename TPos>
+    BitCompressedDeltaPos_(TPos _pos) : isSnp(0), snp(0), pos(_pos)
+    {}
+
+    inline __uint32 toWord()
+    {
+        return isSnp << (BitsPerValue<__uint32>::VALUE - 1) | snp << (BitsPerValue<__uint32>::VALUE - 3) | pos;
+    }
+
+    inline void fromWord(__uint32 word)
+    {
+        isSnp = isBitSet(word, BitsPerValue<__uint32>::VALUE - 1);
+        snp = word & (3 << (BitsPerValue<__uint32>::VALUE - 3));
+        pos = word & (~static_cast<__uint32>(0) >> 3);
+    }
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
+template <typename TMode>
+struct ValueSize<BitCompressedDeltaPos_<TMode> >
+{
+    static const __uint32 VALUE = static_cast<__uint32>(~0) >> 1;
+};
+
+template <>
+struct ValueSize<BitCompressedDeltaPos_<GdfIO2BitSnpCompression> >
+{
+    static const __uint32 VALUE = static_cast<__uint32>(~0) >> 3;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function computeHash()
-// ----------------------------------------------------------------------------
-
-#ifdef __SSE4_2__
-template <typename TReference>
-inline unsigned int computeReferenceCrc(TReference const & ref)
-{
-    typedef typename Iterator<TReference const, Standard>::Type TIterator;
-
-    unsigned int crc;
-    for (TIterator it = begin(ref, Standard()); it != end(ref, Standard()); ++it)
-        crc = _mm_crc32_u8(crc, static_cast<unsigned char>(*it));
-    return crc;
-}
-#else  //__SSE4_2_
-template <typename TReference>
-inline unsigned int computeReferenceCrc(TReference const & /*ref*/)
-{
-    return 0;
-}
-#endif
-
-#ifdef __SSE4_2__
-template <typename TReference, typename TCrc>
-inline bool checkReferenceCrc(TReference const & ref, TCrc crc)
-{
-    return computeReferenceCrc(ref) == crc;
-}
-#else  //__SSE4_2_
-template <typename TReference, typename TCrc>
-inline bool checkReferenceCrc(TReference const & /*ref*/, TCrc /*crc*/)
-{
-    return true;  // Always return true.
-}
-#endif  //__SSE4_2_
-
-// ----------------------------------------------------------------------------
-// Function _arrayMoveForwarReverse() using pointers
-// ----------------------------------------------------------------------------
-
-template<typename TTarget, typename TSource1, typename TSource2>
-inline void
-_arrayMoveForwardReverseDefault(TSource1 source_begin,
-                                TSource2 source_end,
-                                TTarget target_begin)
-{
-    while (source_end != source_begin)
-    {
-        move(*target_begin, *(--source_end));
-        ++target_begin;
-    }
-}
-
-template<typename TValue>
-inline void
-_arrayMoveForwardReversePointer(TValue * source_begin,
-                                TValue * source_end,
-                                TValue * target_begin,
-                                True)
-{
-    ::std::reverse(source_begin, source_end);
-    ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
-}
-
-template<typename TValue>
-inline void
-_arrayMoveForwardReversePointer(TValue * source_begin,
-                                TValue * source_end,
-                                TValue * target_begin,
-                                False)
-{
-    _arrayMoveForwardReverseDefault(source_begin, source_end, target_begin);
-}
-
-template<typename TTarget, typename TSource1, typename TSource2>
-inline void
-arrayMoveForwardReverse(TSource1 source_begin,
-                        TSource2 source_end,
-                        TTarget target_begin)
-{
-    _arrayMoveForwardReverseDefault(source_begin, source_end, target_begin);
-}
-
-template<typename TValue>
-inline void
-arrayMoveForwardReverse(TValue * source_begin,
-                        TValue * source_end,
-                        TValue * target_begin)
-{
-    _arrayMoveForwardReversePointer(source_begin, source_end, target_begin, typename IsSimple<TValue>::Type() );
-}
-
 
 // ----------------------------------------------------------------------------
 // Function readFromBinary()
 // ----------------------------------------------------------------------------
 
 // TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
-template <typename TStream, typename TValue>
-inline void readFromBinary(TStream & stream, TValue & val)
-{
-    streamWriteBlock(stream, reinterpret_cast<const char *>(&val), sizeof(val));
-}
+//template <typename TStream, typename TValue, typename TFromByteOrder, typename TToByteOrder>
+//inline void readFromBinary(TStream & stream,
+//                           TValue & val,
+//                           TFromByteOrder /*formByteOrder*/,
+//                           TToByteOrder /*toByteOrder*/)
+//{
+//    TransformBinaryToInt<TValue> transformer;
+//    stream.read(transformer.trans.buffer, TransformBinaryToInt<TValue>::BUFFER_SIZE);
+//    val = transformer.trans.value;
+//    endianSwap(val, TFromByteOrder(), TToByteOrder());
+//}
 
 // ----------------------------------------------------------------------------
 // Function writeToBinary()
@@ -296,9 +335,107 @@ inline void readFromBinary(TStream & stream, TValue & val)
 
 // TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
 template <typename TStream, typename TValue>
-inline void writeBinary(TStream & stream, TValue const & val)
+inline void writeBinary(TStream & stream, TValue val)
 {
-    streamWriteBlock(stream, reinterpret_cast<const char *>(&val), sizeof(val));
+    stream.write(reinterpret_cast<const char *>(&val), sizeof(TValue));
+}
+
+template <typename TStream, typename TValue, typename TFromByteOrder, typename TToByteOrder>
+inline void writeToBinary(TStream & stream, TValue val, TFromByteOrder /*srcByteOrder*/, TToByteOrder /*targetByteOrder*/)
+{
+    stream.write(reinterpret_cast<const char *>(&endianSwap(val, TFromByteOrder(), TToByteOrder())), sizeof(TValue));
+}
+
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()
+// ----------------------------------------------------------------------------
+
+template <typename TTargetValue, typename TSrcValue, typename TSize>
+inline TSize _copyToBuffer(TTargetValue * target, TSrcValue const * source, TSize copySize)
+{
+    for (unsigned i = 0; i < copySize; ++i)
+        target[i] = convert<TTargetValue>(source[i]);
+    return copySize;
+}
+
+inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<1> /*value size*/)
+{
+    *target = *source;
+    return 1;
+}
+
+inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<2> /*value size*/)
+{
+    _copyToBuffer(target, source, ConstUInt<1>());
+    _copyToBuffer(target + 1, source + 1, ConstUInt<1>());
+    return 2;
+}
+
+inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<4> /*value size*/)
+{
+    _copyToBuffer(target, source, ConstUInt<2>());
+    _copyToBuffer(target + 2, source + 2, ConstUInt<2>());
+    return 4;
+}
+
+inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<8> /*value size*/)
+{
+    _copyToBuffer(target, source, ConstUInt<4>());
+    _copyToBuffer(target + 4, source + 4, ConstUInt<4>());
+    return 8;
+}
+
+template <unsigned SIZE>
+inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<SIZE> /*value size*/)
+{
+    _copyToBuffer(target, source, SIZE);
+}
+
+// ----------------------------------------------------------------------------
+// Function _copyFromBuffer()
+// ----------------------------------------------------------------------------
+
+template <typename TTargetValue, typename TSize>
+inline TSize _copyFromBuffer(TTargetValue & target, const char * source, TSize copySize)
+{
+    for (unsigned i = 0; i < copySize; ++i)
+        target[i] = convert<char>(source[i]);
+    return copySize;
+}
+
+// ----------------------------------------------------------------------------
+// Function _toBinary()
+// ----------------------------------------------------------------------------
+
+template <typename TBuffer, typename TValue, typename TFromByteOrder, typename TToByteOrder>
+inline unsigned _toBinary(TBuffer & buffer, TValue val, TFromByteOrder /*tag*/, TToByteOrder /*tag*/)
+{
+    val = endianSwap(val, TFromByteOrder(), TToByteOrder());
+    return _copyToBuffer(buffer, reinterpret_cast<const char *>(&val), ConstUInt<sizeof(TValue)>());
+}
+
+template <typename TBuffer, typename TValue>
+inline unsigned _toBinary(TBuffer & buffer, TValue val)
+{
+    return _toBinary(buffer, val, HostByteOrder(), HostByteOrder());
+}
+
+// ----------------------------------------------------------------------------
+// Function _fromBinary()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TBuffer, typename TFromByteOrder, typename TToByteOrder>
+inline unsigned _fromBinary(TValue & val, TBuffer const & buffer, TFromByteOrder /*tag*/, TToByteOrder /*tag*/)
+{
+    _copyToBuffer(reinterpret_cast<char *>(&val), buffer, ConstUInt<sizeof(TValue)>());
+    val = endianSwap(val, TFromByteOrder(), TToByteOrder());
+    return sizeof(TValue);
+}
+
+template <typename TBuffer, typename TValue>
+inline unsigned _fromBinary(TBuffer & buffer, TValue val)
+{
+    return _fromBinary(buffer, val, HostByteOrder(), HostByteOrder());
 }
 
 }

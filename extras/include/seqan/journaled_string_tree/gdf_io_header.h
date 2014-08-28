@@ -44,86 +44,41 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+template <unsigned BitsPerValue>
+struct GdfCompressionMode;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Struct GdfFileBlockSize_
+// Class GdfFileConfiguration
 // ----------------------------------------------------------------------------
-
-// Number of variants before the block ends.
-// Which also means we write the coverage into the blocks.
-
-template <typename T>
-struct GdfFileBlockSize_
-{
-    enum
-    {
-        VALUE = 1000000
-    };
-};
-
-
-// ----------------------------------------------------------------------------
-// Class GdfRefInfo
-// ----------------------------------------------------------------------------
-
-struct GdfRefInfo
-{
-    unsigned    _refHash;
-    CharString  _refId;
-    CharString  _refFile;
-
-    GdfRefInfo() : _refHash(0)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// GdfFileInfo
-// ----------------------------------------------------------------------------
-
-template <typename TConfig = void>
-struct GdfFileInfo
-{
-    unsigned    _minorFileId;
-    unsigned    _majorFileId;
-    unsigned    _blockSize;
-    bool        _byteOrder; // true = little endian; false = big endian.
-    bool        _snpCompression;  // true if 2 bit alphabet used.
-
-    GdfFileInfo() : _minorFileId(GDF_IO_FILE_VERSION_LITTLE),
-                    _majorFileId(GDF_IO_FILE_VERSION_BIG),
-                    _blockSize(GdfFileBlockSize_<TConfig>::VALUE),
-                    _byteOrder(SystemByteOrder::IS_LITTLE_ENDIAN()),
-                    _snpCompression(false)
-    {}
-};
-
-template <unsigned BitsPerValue>
-struct GdfCompressionMode
-{
-    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
-};
-
-template <>
-struct GdfCompressionMode<2>
-{
-    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
-};
 
 template <typename TSnpValue>
 struct GdfFileConfiguration
 {
-    static const unsigned BLOCK_SIZE = 500000;
-
     bool isLittleEndian;
     unsigned int refHash;
+    unsigned int blockSize;
+    GdfIO::CoverageCompression coverageCompression;
     GdfIO::CompressionMode compressionMode;
 
-    GdfFileConfiguration() : isLittleEndian(true), refHash(0)
+    template <typename TCoverageSize>
+    GdfFileConfiguration(TCoverageSize coverageSize) :
+        isLittleEndian(true),
+        refHash(0),
+        blockSize(100000),
+        compressionMode(GdfCompressionMode<BitsPerValue<TSnpValue>::VALUE>::VALUE)
     {
-        compressionMode = GdfCompressionMode<BitsPerValue<TSnpValue>::VALUE>::VALUE;
+        if (coverageSize <= MaxValue<__uint8>::VALUE)
+            coverageCompression = GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE;
+        else if (coverageSize <= MaxValue<__uint16>::VALUE)
+            coverageCompression = GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE;
+        else if (coverageSize <= MaxValue<__uint32>::VALUE)
+            coverageCompression = GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE;
+        else
+            coverageCompression = GdfIO::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE;
     }
 
 };
@@ -136,18 +91,34 @@ class GdfHeader
 {
 public:
 
-    GdfIO::ReferenceMode   referenceMode;
+    GdfIO::SaveReferenceMode   referenceMode;
     CharString             referenceFilename;
     CharString             referenceId;
     String<CharString>     nameStore;  // The names of the individuals.
 
-    GdfHeader() : referenceMode(GdfIO::REFERENCE_MODE_WRITE_ENABLED)
+    GdfHeader() : referenceMode(GdfIO::SAVE_REFERENCE_MODE_ENABLED)
     {}
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction GdfCompressionMode
+// ----------------------------------------------------------------------------
+
+template <unsigned BitsPerValue>
+struct GdfCompressionMode
+{
+    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
+};
+
+template <>
+struct GdfCompressionMode<2>
+{
+    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
+};
 
 // ============================================================================
 // Functions
