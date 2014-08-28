@@ -90,7 +90,7 @@ _removeGap(String<TAlignedReads, TSpec>& alignedReadStore,
 
     TAlignIter alignIt = begin(alignedReadStore, Standard());
     TAlignIter alignItEnd = end(alignedReadStore, Standard());
-    for (;alignIt != alignItEnd; ++alignIt)
+    for(;alignIt != alignItEnd; ++alignIt)
         if (alignIt != skipIt)
             result += _removeGap2(*alignIt, gapPos);
     return result;

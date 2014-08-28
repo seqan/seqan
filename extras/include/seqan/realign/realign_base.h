@@ -462,7 +462,7 @@ public:
                     layoutAlignment(layout, store);
                     std::stringstream ss;
                     printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
-                                   0, 20000, 0, 100);
+                                   0, 1000, 0, 100);
                     swap(store.alignedReadStore, contigAlignedReads);
 
                     std::cerr << " => removeGap(contigAlignedReads, " << posA << ", " << elPos << ")\n"
@@ -1127,7 +1127,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
-                           0, 20000, 0, 100);
+                           0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
             std::cerr << "PROFILE\n";
@@ -1136,26 +1136,10 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             _printProfile(std::cerr, profilePart);
         }
 
-        // Compute the flag isSingleLeft that indicates whether the current read is the first read and the coverage at
-        // the first position is 1 (i.e. only this reads aligns there).  In this case, we have to use an overlap
-        // alignment below instead of a semiglobal alignment and also adjust the band for the alignment.
-        bool isSingleLeft = (it->beginPos == 0u) &&
-                (it == begin(contigAlignedReads, Standard())) &&
-                (it - begin(contigAlignedReads, Standard()) + 1 < (int)length(contigAlignedReads)) &&
-                (((it + 1)->beginPos - it->beginPos) > 0);
-        if (windowBegin != windowEnd && windowBegin > 0)
-            isSingleLeft = false;  // Cannot be case of single left if window does not start at begin.
-        if (options.debug)
-            std::cerr << "Computing isSingleLeft\n"
-                      << "\t(it == begin(contigAlignedReads, Standard()) == " << (it == begin(contigAlignedReads, Standard())) << "\n"
-                      << "\t(it - begin(contigAlignedReads, Standard()) + 1 == " << (it - begin(contigAlignedReads, Standard()) + 1) << " < " << (int)length(contigAlignedReads) << " == (int)length(contigAlignedReads))" << "\n"
-                      << "\t(((it + 1)->beginPos - it->beginPos) == " << ((it + 1)->beginPos - it->beginPos) << "\n"
-                      << "\n"
-                      << "isSingleLeft = " << isSingleLeft << "\n";
-
         // Subtract the read alignment from the profile.
-        _subtractReadAlignment(windowBegin, windowEnd, profilePart, info, *it,
-                               it - begin(contigAlignedReads, Standard()), windowInfo);
+        _subtractReadAlignment(windowBegin, windowEnd, profilePart, info, *it, it - begin(contigAlignedReads,
+                                                                                          Standard()),
+                               windowInfo);
         SEQAN_ASSERT_LEQ(windowBegin, windowEnd);
         times.realignExtractProfile += sysTime() - beginExtractProfile;
 
@@ -1170,7 +1154,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
-                           0, 20000, 0, 100);
+                           0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
         }
 
@@ -1191,6 +1175,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
                                           Score<int, ProfileSeqScore> > > consScore;
         assignProfile(consScore, profilePart);
 
+        // Compute the flag isSingleLeft that indicates whether the current read is the first read and the coverage at
+        // the first position is 1 (i.e. only this reads aligns there).  In this case, we have to use an overlap
+        // alignment here instead of a semiglobal alignment and also adjust the band for the alignment.
+        bool isSingleLeft = (it->beginPos == 0u) &&
+                (it == begin(contigAlignedReads, Standard())) &&
+                (it - begin(contigAlignedReads, Standard()) + 1 < (int)length(contigAlignedReads)) &&
+                (((it + 1)->beginPos - it->beginPos) > 0);
+        if (windowBegin != windowEnd && windowBegin > 0)
+            isSingleLeft = false;  // Cannot be case of single left if window does not start at begin.
         int bandDelta = isSingleLeft ? ((it + 1)->beginPos - it->beginPos) : 0;
         // Compute the upper and lower band for the alignment of the read to the profile.  The band will be fixed
         // further using _fixBandSize() below.
@@ -1308,7 +1301,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
-                           0, 20000, 0, 100);
+                           0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
             std::cerr << "begin/end positions of alignments after update\n";
@@ -1352,7 +1345,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
-                           0, 20000, 0, 100);
+                           0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
             std::cerr << "begin/end positions of alignments after update\n";
