@@ -47,6 +47,7 @@
 #include <seqan/sequence_journaled.h>
 #include <seqan/journaled_set.h>
 #include <seqan/parallel.h>
+#include <seqan/misc/misc_checksum.h>
 
 // ===========================================================================
 // Basics.
