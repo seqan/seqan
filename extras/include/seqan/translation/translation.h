@@ -326,7 +326,8 @@ _translateImplLoopOMPWrapper(TTarget & target,
                              Frames_<frames> const & /**/,
                              Serial const & /**/)
 {
-    for (uint32_t i = 0; i < length(target); ++i)
+    typedef typename Size<TTarget>::Type TPos;
+    for (TPos i = 0; i < length(target); ++i)
         _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(),
                            Frames_<frames>());
 }
