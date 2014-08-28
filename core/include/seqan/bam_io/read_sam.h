@@ -341,10 +341,6 @@ int readRecord(BamAlignmentRecord & record,
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
     }
-    else if (buffer == "0")
-    {
-        record.rID = BamAlignmentRecord::INVALID_REFID;
-    }
     else if (!getIdByName(nameStore(context), buffer, record.rID, nameStoreCache(context)))
     {
         record.rID = length(nameStore(context));
@@ -358,8 +354,6 @@ int readRecord(BamAlignmentRecord & record,
     if (res != 0)
         return res;
     if (buffer == "*")
-        record.beginPos = BamAlignmentRecord::INVALID_POS;
-    else if (buffer == "0")
         record.beginPos = BamAlignmentRecord::INVALID_POS;
     else
         record.beginPos = lexicalCast<__uint32>(buffer) - 1;
@@ -440,10 +434,7 @@ int readRecord(BamAlignmentRecord & record,
         res = readDigits(buffer, reader);
         if (res != 0)
             return res;
-        if (buffer == "0")
-            record.pNext = BamAlignmentRecord::INVALID_POS;
-        else
-            record.pNext = lexicalCast<__uint32>(buffer) - 1;
+        record.pNext = lexicalCast<__uint32>(buffer) - 1;
     }
     SEQAN_SKIP_TAB;
 

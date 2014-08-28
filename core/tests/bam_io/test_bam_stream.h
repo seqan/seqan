@@ -154,7 +154,7 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].count, 4u);
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].operation, 'M');
     SEQAN_ASSERT_EQ(alignments[2].rNextId, -1);
-    SEQAN_ASSERT_EQ(alignments[2].pNext, 2147483647);
+    SEQAN_ASSERT_EQ(alignments[2].pNext, -1);
     SEQAN_ASSERT_EQ(alignments[2].tLen, 0);
     SEQAN_ASSERT_EQ(alignments[2].seq, "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
@@ -400,7 +400,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
     seqan::BamStream bamStream(toCString(filePath));
     SEQAN_ASSERT(isGood(bamStream));
 
-    SEQAN_ASSERT_EQ(fileSize(bamStream), 181u);
+    SEQAN_ASSERT_EQ(fileSize(bamStream), 180u);
     SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
 
     seqan::BamAlignmentRecord record;

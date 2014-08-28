@@ -206,11 +206,7 @@ int write2(TStream & stream,
     streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.pNext), 4);
 
     // tlen
-    __int32 zero = 0;
-    if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&zero), 4);
-    else
-        streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tLen), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tLen), 4);
 
     // read_name
     streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.qName[0]), lReadName - 1);
