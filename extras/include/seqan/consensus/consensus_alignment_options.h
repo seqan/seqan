@@ -52,7 +52,7 @@ namespace seqan {
 /*!
  * @class ConsensusAlignmentOptions
  * @headerfile <seqan/consensus.h>
- * @brief Configuration for @link consensusAlignment2 @endlink
+ * @brief Configuration for @link consensusAlignment @endlink
  *
  * @signature struct ConsensusAlignmentOptions;
  *
@@ -81,7 +81,7 @@ namespace seqan {
  *
  * When positions are not used then this value is ignored.
  *
- * See @link consensusAlignment2 @endlink for more details.
+ * See @link consensusAlignment @endlink for more details.
  *
  * @var bool ConsensusAlignmentOptions::runRealignment;
  * @brief Perform a realignment using standard parameters, depending on the sequence length.
