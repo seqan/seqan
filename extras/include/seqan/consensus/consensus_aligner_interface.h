@@ -72,6 +72,9 @@ namespace seqan {
  * @param[in,out] store   @link FragmentStore @endlink to use for consensus alignment computation.
  * @param[in]     options @link ConsensusAlignmentOptions @endlink with configuration.
  *
+ * @throws ConsensusAlignerIllegalArgumentException in case of invalid arguments (e.g. two alignments for the same
+ *                                                  read).
+ *
  * This function computes a consensus alignment for a set of nucleic sequences that are stored in a @link FragmentStore
  * @endlink.  Often, consensus sequences are reads, but they could also be other sequences, such as RNA transcripts.
  * However, in the following description we call them reads.
