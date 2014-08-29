@@ -82,8 +82,8 @@ struct CompressionContext<BgzfFile>:
 
 const char CompressionContext<BgzfFile>::header[18] =
 {
-    MagicHeader<BgzfFile>::VALUE[0], MagicHeader<BgzfFile>::VALUE[1], MagicHeader<BgzfFile>::VALUE[2],
-    4, 0, 0, 0, 0, 0, 0xff, 6, 0, 'B', 'C', 2, 0, 0, 0
+    MagicHeader<GZFile>::VALUE[0], MagicHeader<GZFile>::VALUE[1], MagicHeader<GZFile>::VALUE[2],
+    4, 0, 0, 0, 0, 0, '\xff', 6, 0, 'B', 'C', 2, 0, 0, 0
 };
 
 template <>
@@ -173,7 +173,12 @@ compressInit(CompressionContext<GZFile> & ctx)
 
     ctx.strm.zalloc = NULL;
     ctx.strm.zfree = NULL;
-    int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+
+    // (weese:) We use Z_BEST_SPEED instead of Z_DEFAULT_COMPRESSION as it turned out
+    //          to be 2x faster and produces only 7% bigger output
+//    int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+//                              GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+    int status = deflateInit2(&ctx.strm, Z_BEST_SPEED, Z_DEFLATED,
                               GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
     if (status != Z_OK)
         throw IOException("GZFile deflateInit2() failed.");
@@ -190,7 +195,6 @@ template <typename TTarget, typename TSourceIterator>
 inline typename Size<TTarget>::Type
 compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile> & ctx)
 {
-    typedef typename Size<TTarget>::Type            TSize;
     typedef typename Chunk<TTarget>::Type           TTargetChunk;
     typedef typename Chunk<TSourceIterator>::Type   TSourceChunk;
     typedef typename Value<TSourceChunk>::Type      TSourceValue;
@@ -362,9 +366,9 @@ _bgzfCheckHeader(char const * header)
     const char BGZF_LEN = 2;
     const char BGZF_XLEN = 6;  // BGZF_LEN+4
 
-    return (header[0] == MagicHeader<BgzfFile>::VALUE[0] &&
-            header[1] == MagicHeader<BgzfFile>::VALUE[1] &&
-            header[2] == MagicHeader<BgzfFile>::VALUE[2] &&
+    return (header[0] == (char)MagicHeader<GZFile>::VALUE[0] &&
+            header[1] == (char)MagicHeader<GZFile>::VALUE[1] &&
+            header[2] == (char)MagicHeader<GZFile>::VALUE[2] &&
             (header[3] & FLG_FEXTRA) != 0 &&
             _bgzfUnpack16(header + 10) == BGZF_XLEN &&
             header[12] == BGZF_ID1 &&

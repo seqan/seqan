@@ -138,7 +138,10 @@ SEQAN_TYPED_TEST(VStreamTest, Compression)
 {
     CharString buffer;
     for (unsigned i = 0; i != 10000; ++i)
+    {
+        appendNumber(buffer,i);
         append(buffer, FASTQ_EXAMPLE);
+    }
 
     typedef typename TestFixture::Type TCompressionTag;
     CharString fileName = SEQAN_TEMP_FILENAME();

@@ -121,13 +121,25 @@ public:
     template <typename TOffset, typename TDirection>
     void goFurther(TOffset ofs, TDirection dir)
     {
-        typedef typename MakeUnsigned<TOffset>::Type TUOffset;
-        while (ofs != 0)
+        size_t left = chunkSize(dir);
+        if (SEQAN_LIKELY((size_t)ofs <= left))
         {
-            reserveChunk(dir);
-            size_t adv = chunkSize(dir);
+            advanceChunk(ofs, dir);
+            return;
+        }
 
-            if (SEQAN_UNLIKELY(adv == 0))
+        while (true)
+        {
+            size_t adv = std::min((size_t)ofs, left);
+            advanceChunk(adv, dir);
+            ofs -= adv;
+            if (ofs == 0)
+                return;
+
+            this->underflow();
+            left = chunkSize(dir);
+
+            if (SEQAN_UNLIKELY(left == 0))
             {
                 // if chunking isn't available try to seek
                 pos_type res = seekoff(ofs,
@@ -142,14 +154,41 @@ public:
 
                 return;
             }
-
-            if (adv > (TUOffset)ofs)
-                adv = ofs;
-            ofs -= adv;
-
-            advanceChunk(adv, dir);
         }
     }
+
+//    template <typename TOffset, typename TDirection>
+//    void goFurther(TOffset ofs, TDirection dir)
+//    {
+//        typedef typename MakeUnsigned<TOffset>::Type TUOffset;
+//        while (ofs != 0)
+//        {
+//            reserveChunk(dir);
+//            size_t adv = chunkSize(dir);
+//
+//            if (SEQAN_UNLIKELY(adv == 0))
+//            {
+//                // if chunking isn't available try to seek
+//                pos_type res = seekoff(ofs,
+//                                       std::ios_base::cur,
+//                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+//
+//                // if seek doesn't work manually skip characters (when reading)
+//                if (IsSameType<TDirection, Input>::VALUE)
+//                    if (res == pos_type(off_type(-1)))
+//                        for (; ofs != 0; --ofs)
+//                            this->sbumpc();
+//
+//                return;
+//            }
+//
+//            if (adv > (TUOffset)ofs)
+//                adv = ofs;
+//            ofs -= adv;
+//
+//            advanceChunk(adv, dir);
+//        }
+//    }
 
 };
 
@@ -237,6 +276,14 @@ struct Reference<Iter<TStream, StreamIterator<Output> > >
 {
     typedef Iter<TStream, StreamIterator<Output> > Type;
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction GetValue
+// ----------------------------------------------------------------------------
+
+template <typename TStream>
+struct GetValue<Iter<TStream, StreamIterator<Input> > >:
+    Reference<Iter<TStream, StreamIterator<Input> > const> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -408,7 +455,7 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
         if (SEQAN_LIKELY(buf->gptr() < buf->egptr()))
             return false;
         else
-            return buf->sgetc() == TStreamBuffer::TTraits::eof();
+            return TStreamBuffer::TTraits::eq_int_type(buf->sgetc(), TStreamBuffer::TTraits::eof());
     }
 }
 
