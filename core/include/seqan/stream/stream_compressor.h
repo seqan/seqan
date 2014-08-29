@@ -169,14 +169,17 @@ inline void
 compressInit(CompressionContext<GZFile> & ctx)
 {
     const int GZIP_WINDOW_BITS = -15;   // no zlib header
-//    const int Z_DEFAULT_MEM_LEVEL = 8;
+    const int Z_DEFAULT_MEM_LEVEL = 8;
 
     ctx.strm.zalloc = NULL;
     ctx.strm.zfree = NULL;
-    //int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
-    //                          GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+
+    // (weese:) We use Z_BEST_SPEED instead of Z_DEFAULT_COMPRESSION as it turned out
+    //          to be 2x faster and produces only 7% bigger output
+//    int status = deflateInit2(&ctx.strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+//                              GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
     int status = deflateInit2(&ctx.strm, Z_BEST_SPEED, Z_DEFLATED,
-                              GZIP_WINDOW_BITS, 9, Z_HUFFMAN_ONLY);
+                              GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
     if (status != Z_OK)
         throw IOException("GZFile deflateInit2() failed.");
 }
