@@ -45,6 +45,13 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
+#ifdef PLATFORM_WINDOWS
+#include <windows.h>
+#else
+#include <pthread.h>
+#include <errno.h>
+#endif
+
 #include <seqan/system/system_critical_section.h>   // Suspendable Queue
 #include <seqan/system/system_condition.h>          // Suspendable Queue
 
