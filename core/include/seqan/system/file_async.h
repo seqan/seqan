@@ -266,7 +266,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
     struct aiocb_win32 {
         OVERLAPPED  overlapped;
+        Mutex       mutex;
         Event       xmitDone;
+
+        aiocb_win32():
+            xmitDone(mutex);
     };
 
 	template <typename TSpec>

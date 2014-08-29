@@ -208,17 +208,7 @@ struct MagicHeader<GZFile, T>
 };
 
 template <typename T>
-char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
-
-
-template <typename T>
-struct MagicHeader<BgzfFile, T>
-{
-    static char const VALUE[3];
-};
-
-template <typename T>
-char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, '\x8b', 0x08 };  // gzip's magic number
 
 
 template <typename T>
@@ -392,22 +382,36 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 // Function writeValue()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TValue>
-inline void writeValue(TContainer &cont, TValue val)
+// resizable containers
+template <typename TSequence, typename TValue>
+//inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+void
+writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);
+}
+
+// Range
+template <typename TIterator, typename TValue>
+inline void
+writeValue(Range<TIterator> &range, TValue val)
+{
+    assignValue(range.begin, val);
+    ++range.begin;
 }
 
 // ----------------------------------------------------------------------------
 // Function writeValue(Iter)
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TSpec, typename TValue>
-inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
+// resizable containers
+template <typename TSequence, typename TSpec, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+writeValue(Iter<TSequence, TSpec> &iter, TValue val)
 {
-    typedef Iter<TContainer, TSpec> TIter;
+    typedef Iter<TSequence, TSpec> TIter;
 
-    TContainer &cont = container(iter);
+    TSequence &cont = container(iter);
     typename Position<TIter>::Type pos = position(iter);
     typename Size<TIter>::Type len = length(cont);
 
@@ -425,6 +429,18 @@ inline void writeValue(Iter<TContainer, TSpec> &iter, TValue val)
     }
 }
 
+// non-resizable containers
+template <typename TNoSequence, typename TSpec, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<SequenceConcept<TNoSequence> >, void)
+writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
+{
+    SEQAN_ASSERT_LT(position(iter), length(container(iter)));
+
+    assignValue(iter, val);
+    ++iter;
+}
+
+// streams
 template <typename TContainer, typename TValue>
 inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
 {
@@ -451,24 +467,21 @@ template <typename TTarget, typename TFwdIterator, typename TSize, typename TIVa
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*> *, Range<TOValue*> *)
 {
     typedef Nothing* TNoChunking;
+    typedef typename Size<TTarget>::Type TTargetSize;
 
     Range<TIValue*> ichunk;
     Range<TOValue*> ochunk;
 
-    typename Size<TTarget>::Type minChunkSize;
-    for (; n > (TSize)0; n -= minChunkSize)
+    do
     {
-        ichunk = getChunk(iter, Input());
-        minChunkSize = ichunk.end - ichunk.begin;
+        getChunk(ichunk, iter, Input());
+        TTargetSize minChunkSize = std::min((TTargetSize)length(ichunk), (TTargetSize)n);
 //        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
-        if (minChunkSize > n)
-            minChunkSize = n;
-
         reserveChunk(target, n);
-        ochunk = getChunk(target, Output());
+        getChunk(ochunk, target, Output());
 
-        typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
+        TTargetSize olen = length(ochunk);
 
         if (SEQAN_UNLIKELY(olen == 0u))
         {
@@ -479,15 +492,71 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         if (minChunkSize > olen)
             minChunkSize = olen;
 
-
-        ichunk.end = ichunk.begin + minChunkSize;
-
-        for (; ichunk.begin != ichunk.end; ++ichunk.begin, ++ochunk.begin)
-            assignValue(ochunk.begin, getValue(ichunk.begin));
+        arrayCopyForward(ichunk.begin, ichunk.begin + minChunkSize, ochunk.begin);
 
         iter += minChunkSize;                      // advance input iterator
         advanceChunk(target, minChunkSize);
+        n -= minChunkSize;
     }
+    while (n != (TSize)0);
+}
+
+// chunked, target is pointer (e.g. readRawByte)
+template <typename TOValue, typename TFwdIterator, typename TSize>
+inline void write(TOValue *ptr, TFwdIterator &iter, TSize n)
+{
+    typedef typename Chunk<TFwdIterator>::Type TIChunk;
+
+    TIChunk ichunk;
+    typename Size<TFwdIterator>::Type chunkSize;
+
+    for (; n > (TSize)0; n -= chunkSize)
+    {
+        getChunk(ichunk, iter, Input());
+        chunkSize = length(ichunk);
+        SEQAN_ASSERT_GT(chunkSize, 0u);
+
+        if (chunkSize > n)
+            chunkSize = n;
+
+        arrayCopyForward(ichunk.begin, ichunk.begin + chunkSize, ptr);
+
+        iter += chunkSize;                          // advance input iterator
+        ptr += chunkSize;
+    }
+}
+
+// chunked, source is pointer (e.g. readRawByte)
+template <typename TTarget, typename TIValue, typename TSize>
+inline void write(TTarget &target, TIValue *ptr, TSize n)
+{
+    typedef Nothing* TNoChunking;
+    typedef typename Size<TTarget>::Type TTargetSize;
+    typedef typename Chunk<TTarget>::Type TOChunk;
+
+    TOChunk ochunk;
+
+    do
+    {
+        reserveChunk(target, n);
+        getChunk(ochunk, target, Output());
+
+        TTargetSize olen = length(ochunk);
+
+        if (SEQAN_UNLIKELY(olen == 0u))
+        {
+            _write(target, ptr, n, TNoChunking(), TNoChunking());
+            return;
+        }
+
+        TTargetSize chunkSize = std::min(olen, (TTargetSize)n);
+        arrayCopyForward(ptr, ptr + chunkSize, ochunk.begin);
+
+        ptr += chunkSize;                      // advance input iterator
+        advanceChunk(target, chunkSize);
+        n -= chunkSize;
+    }
+    while (n != (TSize)0);
 }
 
 // ----------------------------------------------------------------------------

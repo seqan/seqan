@@ -67,14 +67,15 @@ public:
     // Range Constructors
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     Range():
         begin(),
         end()
     {}
 
+
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     Range(TOtherContainer & cont)
     {
         this->begin = seqan::begin(cont, Standard());
@@ -82,14 +83,14 @@ public:
     }
 
 //    template <typename TOtherContainer>
-//    SEQAN_HOST_DEVICE inline
+//    SEQAN_HOST_DEVICE
 //    Range(TOtherContainer const & cont)
 //    {
 //        this->begin = seqan::begin(cont, Standard());
 //        this->end = seqan::end(cont, Standard());
 //    }
 
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     Range(TIterator const & begin, TIterator const & end):
         begin(begin),
         end(end)
@@ -100,7 +101,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     Range &
     operator= (TOtherContainer &other)
     {
@@ -113,7 +114,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     typename Reference<Range>::Type
     operator[] (TPos pos)
     {
@@ -121,7 +122,7 @@ public:
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    SEQAN_HOST_DEVICE
     typename GetValue<Range>::Type
     operator[] (TPos pos) const
     {
@@ -330,6 +331,14 @@ operator<<(TStream & target,
 // ----------------------------------------------------------------------------
 // toRange()
 // ----------------------------------------------------------------------------
+
+template <typename TIterator>
+SEQAN_HOST_DEVICE inline void
+assignRange(Range<TIterator> &result, TIterator const &begin, TIterator const &end)
+{
+    result.begin = begin;
+    result.end = end;
+}
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,74 +29,86 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Umbrella header for the parallel module.
+// Pool for reusable items, e.g. buffer strings
 // ==========================================================================
 
-#ifndef SEQAN_PARALLEL_H_
-#define SEQAN_PARALLEL_H_
+#ifndef SEQAN_PARALLEL_PARALLEL_RESOURCE_POOL_H_
+#define SEQAN_PARALLEL_PARALLEL_RESOURCE_POOL_H_
+
+namespace seqan {
 
 // ============================================================================
-// Prerequisites
+// Classes
 // ============================================================================
-
-#include <seqan/platform.h>
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <errno.h>
-#endif
-
-#include <seqan/system/system_critical_section.h>   // Suspendable Queue
-#include <seqan/system/system_condition.h>          // Suspendable Queue
 
 // ----------------------------------------------------------------------------
-// STL
+// Class ResourcePool
 // ----------------------------------------------------------------------------
-// Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(_OPENMP) && defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
-#include <parallel/algorithm>
-#include <parallel/numeric>
-#else
-#include <algorithm>
-#include <numeric>
-#endif // PLATFORM_GCC
+template <typename TValue>
+struct ResourcePool
+{
+    typedef ConcurrentQueue<TValue *, Suspendable<> >   TStack;
+    typedef typename Size<TStack>::Type                 TSize;
 
-#ifdef SEQAN_CXX11_STL
-#include <atomic>
-#include <thread>
-#endif
+    TStack recycled;
+
+    ResourcePool(TSize maxSize)
+    {
+        setWriterCount(recycled, 1);
+        for (; maxSize != 0; --maxSize)
+            appendValue(recycled, (TValue *)NULL);
+    }
+
+    ~ResourcePool()
+    {
+        unlockWriting(recycled);
+        TValue *ptr;
+        unsigned count = 0;
+        while (popBack(ptr, recycled))
+        {
+            if (ptr != NULL)
+                count++;
+            delete ptr;
+        }
+    }
+};
 
 // ============================================================================
-// Module Headers
+// Functions
 // ============================================================================
 
-// Misc.
-#include <seqan/parallel/parallel_tags.h>
-#include <seqan/parallel/parallel_macros.h>
+// ----------------------------------------------------------------------------
+// Function aquireValue()
+// ----------------------------------------------------------------------------
 
-// Atomic operations.
-#include <seqan/parallel/parallel_atomic_primitives.h>
-#include <seqan/parallel/parallel_atomic_misc.h>
-#include <seqan/parallel/parallel_lock.h>
+template <typename TValue>
+inline TValue *
+aquireValue(ResourcePool<TValue> & me)
+{
+    TValue *ptr;
+    if (!popBack(ptr, me.recycled))
+        return NULL;
 
-// Splitting.
-#include <seqan/parallel/parallel_splitting.h>
+    if (ptr == NULL)
+        ptr = new TValue;
 
-// Parallel variants of basic algorithms
-#include <seqan/parallel/parallel_algorithms.h>
+    return ptr;
+}
 
-// Thread-safe / lock-free container operations.
-#include <seqan/parallel/parallel_sequence.h>
-#include <seqan/parallel/parallel_queue.h>
-#include <seqan/parallel/parallel_queue_suspendable.h>
-#include <seqan/parallel/parallel_resource_pool.h>
-#include <seqan/parallel/parallel_serializer.h>
+// ----------------------------------------------------------------------------
+// Function releaseValue()
+// ----------------------------------------------------------------------------
 
-#endif  // SEQAN_PARALLEL_H_
+template <typename TValue>
+inline void
+releaseValue(ResourcePool<TValue> & me, TValue *ptr)
+{
+    appendValue(me.recycled, ptr);
+}
+
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_PARALLEL_PARALLEL_RESOURCE_POOL_H_

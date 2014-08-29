@@ -145,9 +145,7 @@ void readRecord(BamHeader & header,
                Bam const & /*tag*/)
 {
     // Read BAM magic string.
-    // char magic[5] = "\0\0\0\0";
-    String<char> magic;// = "0000";
-    clear(magic);
+    String<char, Array<4> > magic;
     readUntil(magic, iter, CountDownFunctor<>(4));
     if (magic != "BAM\1")
         throw std::runtime_error("Not in BAM format.");
@@ -221,88 +219,85 @@ void readRecord(BamHeader & header,
 */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
-void readRecord(BamAlignmentRecord & record,
-                BamIOContext<TNameStore, TNameStoreCache> & context,
-                TForwardIter & iter,
-                Bam const & /*tag*/)
+inline void
+readRecord(BamAlignmentRecord & record,
+           BamIOContext<TNameStore, TNameStoreCache> & context,
+           TForwardIter & iter,
+           Bam const & /*tag*/)
 {
-    clear(record.qName);
-    clear(record.qual);
-    clear(record.tags);
+    typedef typename Iterator<CharString, Standard>::Type                           TCharIter;
+    typedef typename Iterator<String<CigarElement<> >, Standard>::Type __restrict__ TCigarIter;
+    typedef typename Iterator<IupacString, Standard>::Type __restrict__             TSeqIter;
+    typedef typename Iterator<CharString, Standard>::Type __restrict__              TQualIter;
 
     // Read size of the remaining block.
     __int32 remainingBytes = 0;
     readRawByte(remainingBytes, iter);
 
-    SEQAN_ASSERT_GT(remainingBytes, 32);
-    readRawByte(static_cast<BamAlignmentRecordCore &>(record), iter);
-    remainingBytes -= 32;
+    // Read remaining block in one chunk (fastest).
+    clear(context.buffer);
+    write(context.buffer, iter, size_t(remainingBytes));
+    TCharIter it = begin(context.buffer, Standard());
+
+    // BamAlignmentRecordCore.
+    arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&record));
+    it += sizeof(BamAlignmentRecordCore);
+
+    remainingBytes -= sizeof(BamAlignmentRecordCore) + record._l_qname +
+                      record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq;
+    SEQAN_ASSERT_GEQ(remainingBytes, 0);
 
     // Translate file local rID into a global rID that is compatible with the context nameStore.
     if (record.rID >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rID = context.translateFile2GlobalRefId[record.rID];
-
     if (record.rID >= 0)
         SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));
 
-    // read name.
-    SEQAN_ASSERT_GT(remainingBytes, (int)record._l_qname);
-    readUntil(record.qName, iter, CountDownFunctor<>(record._l_qname));
-    resize(record.qName, record._l_qname - 1);
-    remainingBytes -= record._l_qname;
+    // query name.
+    resize(record.qName, record._l_qname - 1, Exact());
+    arrayCopyForward(it, it + record._l_qname - 1, begin(record.qName, Standard()));
+    it += record._l_qname;
 
     // cigar string.
-    SEQAN_ASSERT_GT(remainingBytes, record._n_cigar * 4);
     resize(record.cigar, record._n_cigar, Exact());
-    static char const * CIGAR_MAPPING = "MIDNSHP=";
-    typedef typename Iterator<String<CigarElement<> >, Rooted>::Type TCigarIter;
-    for (TCigarIter it = begin(record.cigar, Rooted()); !atEnd(it); goNext(it))
+    static char const * CIGAR_MAPPING = "MIDNSHP=X*******";
+    TCigarIter cigEnd = end(record.cigar, Standard());
+    for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        __uint32 ui = 0;
-        readRawByte(ui, iter);
-        it->operation = CIGAR_MAPPING[ui & 0x0007];
-        it->count = ui >> 4;
+        char ui = *reinterpret_cast<unsigned * &>(it)++;
+        cig->operation = CIGAR_MAPPING[ui & 15];
+        cig->count = ui >> 4;
     }
-    remainingBytes -= record._n_cigar * 4;
 
-    SEQAN_ASSERT_GT(remainingBytes, (record._l_qseq + 1) / 2);
-    clear(context.buffer);
-    readUntil(context.buffer, iter, CountDownFunctor<>((record._l_qseq + 1) / 2));
-    remainingBytes -= (record._l_qseq + 1) / 2;
-
-    typedef typename Iterator<CharString, Standard>::Type  TSrcIter;
-    typedef typename Iterator<IupacString, Standard>::Type TDestIter;
-
+    // query sequence.
     resize(record.seq, record._l_qseq, Exact());
-    TSrcIter sit = begin(context.buffer, Standard());
-    TSrcIter sitEnd = begin(context.buffer, Standard()) + record._l_qseq / 2;
-    TDestIter dit = begin(record.seq, Standard());
-    for (; sit != sitEnd; ++sit)
+    TSeqIter sit = begin(record.seq, Standard());
+    TSeqIter sitEnd = sit + (record._l_qseq & ~1);
+    while (sit != sitEnd)
     {
-        __uint8 ui = *sit;
-        *dit++ = Iupac(ui >> 4);
-        *dit++ = Iupac(ui & 0x0f);
+        unsigned char ui = getValue(it);
+        ++it;
+        assignValue(sit, Iupac(ui >> 4));
+        ++sit;
+        assignValue(sit, Iupac(ui & 0x0f));
+        ++sit;
     }
     if (record._l_qseq & 1)
-        *dit++ = Iupac((__uint8)*sit >> 4);
+        *sit++ = Iupac((__uint8)*it >> 4);
 
     // phred quality
-    SEQAN_ASSERT_GEQ(remainingBytes, record._l_qseq);
-    if (record._l_qseq > 0)
-        readUntil(record.qual, iter, CountDownFunctor<>(record._l_qseq));
-
+    resize(record.qual, record._l_qseq, Exact());
     // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
     // representation of '*';
-    if (!empty(record.qual) && record.qual[0] == '\xFF')
+    if (!empty(record.qual) && record.qual[0] == '\xff')
         clear(record.qual);
-    typedef typename Iterator<CharString, Rooted>::Type TQualIter;
-    for (TQualIter it = begin(record.qual, Rooted()); !atEnd(it); goNext(it))
-        *it += '!';
-    remainingBytes -= record._l_qseq;
+    TQualIter qitEnd = end(record.qual, Standard());
+    for (TQualIter qit = begin(record.qual, Standard()); qit != qitEnd;)
+        *qit++ = '!' + *it++;
 
     // tags
-    if (remainingBytes > 0)
-        readUntil(record.tags, iter, CountDownFunctor<>(remainingBytes));
+    resize(record.tags, remainingBytes, Exact());
+    arrayCopyForward(it, it + remainingBytes, begin(record.tags, Standard()));
 }
 
 }  // namespace seqan

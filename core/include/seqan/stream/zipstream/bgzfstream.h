@@ -50,7 +50,6 @@ enum EStrategy
 	DefaultStrategy = 0
 };
 
-
 /** \brief A stream decorator that takes raw input and zips it to a ostream.
 
 The class wraps up the inflate method of the bgzf library 1.1.4 http://www.gzip.org/bgzf/
@@ -73,115 +72,165 @@ public:
 	typedef typename Tr::char_type char_type;
 	typedef typename Tr::int_type int_type;
 
-    struct Concatter
+    typedef ConcurrentQueue<size_t, Suspendable<Limit> > TJobQueue;
+
+    struct OutputBuffer
+    {
+        char    buffer[BGZF_MAX_BLOCK_SIZE];
+        size_t  size;
+    };
+
+    struct BufferWriter
     {
         ostream_reference ostream;
-        Mutex lock;
-        unsigned waitForKey;
-        unsigned nextKey;
-        bool stop;
 
-        Concatter(ostream_reference ostream) :
-            ostream(ostream),
-            lock(false),
-            stop(false)
+        BufferWriter(ostream_reference ostream) :
+            ostream(ostream)
         {}
-    };
 
-    Concatter concatter;
-
-    struct BgzfThreadContext
-    {
-        typedef std::vector<byte_type, byte_allocator_type> byte_vector_type;
-        typedef std::vector<char_type, char_allocator_type> char_vector_type;
-
-        struct BgzfCompressor
+        bool operator() (OutputBuffer const & outputBuffer)
         {
-            BgzfThreadContext *threadCtx;
+            ostream.write(outputBuffer.buffer, outputBuffer.size);
+            return ostream.good();
+        }
+    };
 
-            void operator()()
-            {
-                size_t outputLen = _compressBlock(
-                    &threadCtx->outputBuffer[0], capacity(threadCtx->outputBuffer),
-                    &threadCtx->buffer[0], threadCtx->size, threadCtx->ctx);
-                while (true)
-                {
-                    ScopedLock<Mutex> scopedLock(threadCtx->concatter->lock);
-                    if (threadCtx->concatter->waitForKey == threadCtx->waitForKey)
-                    {
-                        threadCtx->concatter->ostream.write(
-                            (const char_type*) &(threadCtx->outputBuffer[0]),
-                            outputLen);
-                        if (!threadCtx->concatter->ostream.good())
-                        {
-                            threadCtx->concatter->stop = false;
-                            return;
-                        }
-                        threadCtx->concatter->waitForKey = threadCtx->waitForKey + 1;
-                        break;
-                    }
-                }
-            }
-        };
+    struct CompressionJob
+    {
+        typedef std::vector<char_type, char_allocator_type> TBuffer;
 
-        byte_vector_type                outputBuffer;
-        char_vector_type                buffer;
-        size_t                          size;
-        CompressionContext<BgzfFile>    ctx;
-        Thread<BgzfCompressor>          compressor;
+        TBuffer         buffer;
+        size_t          size;
+        OutputBuffer    *outputBuffer;
 
-        Concatter *concatter;
-        unsigned waitForKey;
-
-        BgzfThreadContext():
-            outputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0)
+        CompressionJob() :
+            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
+            size(0),
+            outputBuffer(NULL)
         {}
     };
 
-    BgzfThreadContext   *threadCtx;
-    BgzfThreadContext   *ctx;
-    size_t              thread;
-    size_t              threads;
+    // string of recycable jobs
+    size_t                  numThreads;
+    size_t                  numJobs;
+    String<CompressionJob>  jobs;
+    TJobQueue               jobQueue;
+    TJobQueue               idleQueue;
+    Serializer<
+        OutputBuffer,
+        BufferWriter>       serializer;
+
+    size_t                  currentJobId;
+    bool                    currentJobAvail;
+
+
+    struct CompressionThread
+    {
+        basic_bgzf_streambuf            *streamBuf;
+        CompressionContext<BgzfFile>    compressionCtx;
+        size_t                          threadNum;
+
+        void operator()()
+        {
+            ScopedReadLock<TJobQueue> readLock(streamBuf->jobQueue);
+            ScopedWriteLock<TJobQueue> writeLock(streamBuf->idleQueue);
+
+            // wait for a new job to become available
+            bool success = true;
+            while (success)
+            {
+                size_t jobId;
+                if (!popFront(jobId, streamBuf->jobQueue))
+                    return;
+
+                CompressionJob &job = streamBuf->jobs[jobId];
+
+                // compress block with zlib
+                job.outputBuffer->size = _compressBlock(
+                    job.outputBuffer->buffer, sizeof(job.outputBuffer->buffer),
+                    &job.buffer[0], job.size, compressionCtx);
+
+                success = releaseValue(streamBuf->serializer, job.outputBuffer);
+                appendValue(streamBuf->idleQueue, jobId);
+            }
+        }
+    };
+
+    // array of worker threads
+    Thread<CompressionThread>   *threads;
 
     /** Construct a zip stream
      * More info on the following parameters can be found in the bgzf documentation.
      */
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t threads = 4) :
-		concatter(ostream_),
-        thread(0),
-        threads(threads)
+                         size_t numThreads = 16,
+                         size_t jobsPerThread = 8) :
+        numThreads(numThreads),
+        numJobs(numThreads * jobsPerThread),
+        jobQueue(numJobs),
+        idleQueue(numJobs),
+		serializer(ostream_, numThreads * jobsPerThread)
     {
-        concatter.waitForKey = 0;
-        concatter.nextKey = 0;
-        threadCtx = new BgzfThreadContext[threads];
-        for (unsigned i = 0; i < threads; ++i)
+        resize(jobs, numJobs, Exact());
+        currentJobId = 0;
+
+        lockWriting(jobQueue);
+        lockReading(idleQueue);
+        setReaderWriterCount(jobQueue, numThreads, 1);
+        setReaderWriterCount(idleQueue, 1, numThreads);
+
+        for (unsigned i = 0; i < numJobs; ++i)
         {
-            threadCtx[i].concatter = &concatter;
-            threadCtx[i].compressor.worker.threadCtx = &threadCtx[i];
+            bool success = appendValue(idleQueue, i);
+            ignoreUnusedVariableWarning(success);
+            SEQAN_ASSERT(success);
         }
-        ctx = &threadCtx[thread];
-		this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+
+        threads = new Thread<CompressionThread>[numThreads];
+        for (unsigned i = 0; i < numThreads; ++i)
+        {
+            threads[i].worker.streamBuf = this;
+            threads[i].worker.threadNum = i;
+            run(threads[i]);
+        }
+
+        currentJobAvail = popFront(currentJobId, idleQueue);
+        SEQAN_ASSERT(currentJobAvail);
+
+        CompressionJob &job = jobs[currentJobId];
+        job.outputBuffer = aquireValue(serializer);
+		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
     }
 
     ~basic_bgzf_streambuf()
     {
         // the buffer is now (after addFooter()) and flush will append the empty EOF marker
         flush(true);
-        delete[] threadCtx;
+
+        unlockWriting(jobQueue);
+        unlockReading(idleQueue);
+
+        for (unsigned i = 0; i < numThreads; ++i)
+            waitFor(threads[i]);
+        delete[] threads;
     }
 
     bool compressBuffer(size_t size)
     {
-        ctx->size = size;
-        ctx->waitForKey = concatter.nextKey++;
-        run(ctx->compressor);
+        // submit current job
+        if (currentJobAvail)
+        {
+            jobs[currentJobId].size = size;
+            appendValue(jobQueue, currentJobId);
+        }
 
-        thread = (thread + 1) % threads;
-        ctx = &threadCtx[thread];
-        waitFor(ctx->compressor);
-        return !concatter.stop;
+        // recycle existing idle job
+        if (!(currentJobAvail = popFront(currentJobId, idleQueue)))
+            return false;
+
+        jobs[currentJobId].outputBuffer = aquireValue(serializer);
+
+        return serializer;
     }
 
     int_type overflow(int_type c)
@@ -194,7 +243,8 @@ public:
         }
         if (compressBuffer(w))
         {
-            this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+            CompressionJob &job = jobs[currentJobId];
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
             return c;
         }
         else
@@ -212,15 +262,19 @@ public:
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
         if ((w != 0 || flushEmptyBuffer) && compressBuffer(w))
-            this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+        {
+            CompressionJob &job = jobs[currentJobId];
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
+        }
         else
+        {
             w = 0;
+        }
 
-        // wait for running compressor threads (in the correct order)
-        for (unsigned i = 1; i <= threads; ++i)
-            waitFor(threadCtx[(thread + i) % threads].compressor);
+        // wait for running compressor threads
+        waitForMinSize(idleQueue, numJobs - 1);
 
-		concatter.ostream.flush();
+		serializer.worker.ostream.flush();
 		return w;
     }
 
@@ -243,7 +297,7 @@ public:
     }
 
 	/// returns a reference to the output stream
-	ostream_reference get_ostream() const	{ return concatter.ostream; };
+	ostream_reference get_ostream() const	{ return serializer.worker.ostream; };
 };
 
 /** \brief A stream decorator that takes compressed input and unzips it to a istream.
@@ -268,139 +322,216 @@ public:
 	typedef byte_type* byte_buffer_type;
 	typedef typename Tr::char_type char_type;
 	typedef typename Tr::int_type int_type;
-    typedef std::vector<char_type, char_allocator_type> char_vector_type;
+	typedef typename Tr::off_type off_type;
+	typedef typename Tr::pos_type pos_type;
+
+    typedef std::vector<char_type, char_allocator_type> TBuffer;
+    typedef ConcurrentQueue<size_t, Suspendable<Limit> >  TJobQueue;
 
     static const size_t MAX_PUTBACK = 4;
 
     struct Serializer
     {
-        istream_reference istream;
-        Mutex lock;
-        unsigned waitForKey;
-        unsigned nextKey;
-        bool stop;
+        istream_reference   istream;
+        Mutex               lock;
+        std::exception      *error;
+        off_t               fileOfs;
 
         Serializer(istream_reference istream) :
             istream(istream),
             lock(false),
-            stop(false)
+            error(NULL),
+            fileOfs(0u)
         {}
+
+        ~Serializer()
+        {
+            delete error;
+        }
     };
 
     Serializer serializer;
 
-    struct BgzfThreadContext
+    struct DecompressionJob
     {
-        typedef std::vector<byte_type, byte_allocator_type> byte_vector_type;
+        typedef std::vector<byte_type, byte_allocator_type> TInputBuffer;
 
-        struct BgzfDecompressor
-        {
-            BgzfThreadContext *threadCtx;
+        TInputBuffer    inputBuffer;
+        TBuffer         buffer;
+        off_t           fileOfs;
+        size_t          size;
 
-            void operator()()
-            {
-                size_t tailLen;
-                while (true)
-                {
-                    ScopedLock<Mutex> scopedLock(threadCtx->serializer->lock);
+        CriticalSection cs;
+        Condition       readyEvent;
+        bool            ready;
 
-                    if (threadCtx->serializer->stop)
-                        return;
-
-                    if (threadCtx->serializer->waitForKey == threadCtx->waitForKey)
-                    {
-                        // read header
-                        threadCtx->serializer->istream.read(
-                            (char*)&(threadCtx->inputBuffer[0]),
-                            BGZF_BLOCK_HEADER_LENGTH);
-
-                        // check header
-                        if (!threadCtx->serializer->istream.good() || !_bgzfCheckHeader(&(threadCtx->inputBuffer[0])))
-                        {
-                            threadCtx->serializer->stop = true;
-                            return;
-                        }
-
-                        // extract length of compressed data
-                        tailLen = _bgzfUnpack16(&(threadCtx->inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
-
-                        // read compressed data and tail
-                        threadCtx->serializer->istream.read(
-                            (char*)&(threadCtx->inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
-                            tailLen);
-
-                        if (!threadCtx->serializer->istream.good())
-                        {
-                            threadCtx->serializer->stop = true;
-                            return;
-                        }
-
-                        threadCtx->serializer->waitForKey = threadCtx->waitForKey + 1;
-                        break;
-                    }
-                }
-
-                // decompress block
-                threadCtx->size = _decompressBlock(
-                    &threadCtx->buffer[MAX_PUTBACK], capacity(threadCtx->buffer),
-                    &threadCtx->inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, threadCtx->ctx);
-            }
-        };
-
-        byte_vector_type                inputBuffer;
-        char_vector_type                buffer;
-        int                             size;
-        CompressionContext<BgzfFile>    ctx;
-        Thread<BgzfDecompressor>        decompressor;
-
-        Serializer *serializer;
-        unsigned waitForKey;
-
-        BgzfThreadContext():
+        DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
-            buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0)
+            buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
+            size(0),
+            readyEvent(cs),
+            ready(false)
+        {}
+
+        DecompressionJob(DecompressionJob const &other) :
+            inputBuffer(other.inputBuffer),
+            buffer(other.buffer),
+            size(other.size),
+            readyEvent(cs),
+            ready(other.ready)
         {}
     };
 
-    BgzfThreadContext   *threadCtx;
-    BgzfThreadContext   *ctx;
-    size_t              nextThread;
-    size_t              nextRunThread;
-    size_t              threads;
-    char_vector_type    putbackBuffer;
+    // string of recycable jobs
+    size_t                      numThreads;
+    size_t                      numJobs;
+    String<DecompressionJob>    jobs;
+    TJobQueue                   runningQueue;
+    TJobQueue                   idleQueue;
+    size_t                      currentJobId;
+    bool                        currentJobAvail;
+
+    struct DecompressionThread
+    {
+        basic_unbgzf_streambuf          *streamBuf;
+        CompressionContext<BgzfFile>    compressionCtx;
+
+        void operator()()
+        {
+            ScopedReadLock<TJobQueue> readLock(streamBuf->idleQueue);
+            ScopedWriteLock<TJobQueue> writeLock(streamBuf->runningQueue);
+
+            // wait for a new job to become available
+            while (true)
+            {
+                size_t jobId;
+                if (!popFront(jobId, streamBuf->idleQueue))
+                    return;
+
+                DecompressionJob &job = streamBuf->jobs[jobId];
+                size_t tailLen;
+
+                {
+                    ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
+
+                    if (streamBuf->serializer.error != NULL)
+                        return;
+
+                    // remember start offset (for tellg later)
+                    job.fileOfs = streamBuf->serializer.fileOfs;
+
+                    // read header
+                    streamBuf->serializer.istream.read(
+                        (char*)&(job.inputBuffer[0]),
+                        BGZF_BLOCK_HEADER_LENGTH);
+
+                    if (!streamBuf->serializer.istream.good())
+                    {
+                        if (!streamBuf->serializer.istream.eof())
+                            streamBuf->serializer.error = new IOException("Stream read error.");
+                        return;
+                    }
+
+                    // check header
+                    if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
+                    {
+                        streamBuf->serializer.error = new IOException("Invalid BGZF block header.");
+                        return;
+                    }
+
+                    // extract length of compressed data
+                    tailLen = _bgzfUnpack16(&(job.inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
+
+                    // read compressed data and tail
+                    streamBuf->serializer.istream.read(
+                        (char*)&(job.inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
+                        tailLen);
+                    
+                    if (!streamBuf->serializer.istream.good())
+                    {
+                        if (!streamBuf->serializer.istream.eof())
+                            streamBuf->serializer.error = new IOException("Stream read error.");
+                        return;
+                    }
+
+                    streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
+                    job.ready = false;
+
+                    if (!appendValue(streamBuf->runningQueue, jobId))
+                        return;
+                }
+
+                // decompress block
+                job.size = _decompressBlock(
+                    &job.buffer[MAX_PUTBACK], capacity(job.buffer),
+                    &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
+
+                // signal that job is ready
+                {
+                    ScopedLock<CriticalSection> lock(job.cs);
+                    job.ready = true;
+                    signal(job.readyEvent);
+                }
+            }
+        }
+    };
+
+    // array of worker threads
+    Thread<DecompressionThread> *threads;
+    TBuffer                     putbackBuffer;
 
     /** Construct a unzip stream
     * More info on the following parameters can be found in the bgzf documentation.
     */
     basic_unbgzf_streambuf(istream_reference istream_,
-                           size_t threads = 4) :
+                           size_t numThreads = 16,
+                           size_t jobsPerThread = 8) :
 		serializer(istream_),
-        nextThread(0),
-        nextRunThread(0),
-        threads(threads),
+        numThreads(numThreads),
+        numJobs(numThreads * jobsPerThread),
+        runningQueue(numJobs),
+        idleQueue(numJobs),
         putbackBuffer(MAX_PUTBACK)
     {
-        serializer.waitForKey = 0;
-        serializer.nextKey = 0;
-        threadCtx = new BgzfThreadContext[threads];
-        for (unsigned i = 0; i < threads; ++i)
+        resize(jobs, numJobs, Exact());
+        currentJobId = 0;
+        currentJobAvail = false;
+
+        lockReading(runningQueue);
+        lockWriting(idleQueue);
+        setReaderWriterCount(runningQueue, 1, numThreads);
+        setReaderWriterCount(idleQueue, numThreads, 1);
+
+        for (unsigned i = 0; i < numJobs; ++i)
         {
-            threadCtx[i].serializer = &serializer;
-            threadCtx[i].decompressor.worker.threadCtx = &threadCtx[i];
+            bool success = appendValue(idleQueue, i);
+            ignoreUnusedVariableWarning(success);
+            SEQAN_ASSERT(success);
         }
-        ctx = &threadCtx[0];
-		this->setp(&(ctx->buffer[0]), &(ctx->buffer[ctx->buffer.size() - 1]));
+
+        threads = new Thread<DecompressionThread>[numThreads];
+        for (unsigned i = 0; i < numThreads; ++i)
+        {
+            threads[i].worker.streamBuf = this;
+            run(threads[i]);
+        }
     }
 
 	~basic_unbgzf_streambuf()
     {
-        delete[] threadCtx;
+        unlockWriting(idleQueue);
+        unlockReading(runningQueue);
+
+        for (unsigned i = 0; i < numThreads; ++i)
+            waitFor(threads[i]);
+        delete[] threads;
     }
 
     int_type underflow()
     {
+        // no need to use the next buffer?
         if (this->gptr() && this->gptr() < this->egptr())
-            return *this->gptr();
+            return Tr::to_int_type(*this->gptr());
 
         size_t putback = this->gptr() - this->eback();
         if (putback > MAX_PUTBACK)
@@ -413,40 +544,63 @@ public:
                 this->gptr(),
                 &putbackBuffer[0]);
 
-        do
+        if (currentJobAvail)
+            appendValue(idleQueue, currentJobId);
+
+        while (true)
         {
-            ctx = &threadCtx[nextThread];
+            if (!(currentJobAvail = popFront(currentJobId, runningQueue)))
+            {
+                if (serializer.error != NULL)
+                    throw *serializer.error;
+                return EOF;
+            }
 
-            do {
-                threadCtx[nextRunThread].size = -1;
-                threadCtx[nextRunThread].waitForKey = serializer.nextKey++;
-                run(threadCtx[nextRunThread].decompressor);
-                nextRunThread = (nextRunThread + 1) % threads;
-            } while (nextRunThread != nextThread);
-
-            nextThread = (nextThread + 1) % threads;
+            DecompressionJob &job = jobs[currentJobId];
 
             // restore putback buffer
+            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
             if (putback != 0)
                 std::copy(
                     &putbackBuffer[0],
                     &putbackBuffer[putback],
-                    &ctx->buffer[MAX_PUTBACK - putback]);
+                    &job.buffer[MAX_PUTBACK - putback]);
 
-            waitFor(ctx->decompressor);
-
-            if (ctx->size == -1) // EOF
-               return EOF;
+            // wait for the end of decompression
+            {
+                ScopedLock<CriticalSection> lock(job.cs);
+                if (!job.ready)
+                    waitFor(job.readyEvent);
+            }
 
             // reset buffer pointers
             this->setg( 
-                  &ctx->buffer[MAX_PUTBACK - putback],      // beginning of putback area
-                  &ctx->buffer[MAX_PUTBACK],                // read position
-                  &ctx->buffer[MAX_PUTBACK + ctx->size]);   // end of buffer
-        } while (ctx->size == 0);
+                  &job.buffer[MAX_PUTBACK - putback],      // beginning of putback area
+                  &job.buffer[MAX_PUTBACK],                // read position
+                  &job.buffer[MAX_PUTBACK + job.size]);    // end of buffer
+
+            if (job.size != 0)
+                break;
+        }
 
         // return next character
-        return *this->gptr();
+        return Tr::to_int_type(*this->gptr());
+    }
+
+    pos_type seekoff(off_type ofs, std::ios_base::seekdir dir, std::ios_base::openmode openMode)
+    {
+        DecompressionJob &job = jobs[currentJobId];
+        if ((openMode & (std::ios_base::in | std::ios_base::out)) == std::ios_base::in)
+        {
+            if (dir == std::ios_base::cur && ofs == 0)
+                return pos_type((job.fileOfs << 16) + (this->gptr() - this->eback()));
+        }
+        return pos_type(off_type(-1));
+    }
+
+    pos_type seekpos(pos_type pos, std::ios_base::openmode openMode)
+    {
+        return seekoff(off_type(pos), std::ios_base::beg, openMode);
     }
 
 	/// returns the compressed input istream
@@ -688,4 +842,3 @@ typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 #include "bgzfstream_impl.h"
 
 #endif
-

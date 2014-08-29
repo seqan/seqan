@@ -33,8 +33,10 @@
 // ==========================================================================
 // Thread-safe queue
 // ==========================================================================
-// TODO(weese:) We could replace the spinlocks by semaphores and suspend the
-//              waiting thread if the queue is empty or fixed-size and full.
+// This queue (almost) lock-free. It only uses spin-locks when the queue must
+// be resized or for blocking if the queue is full or empty.
+//
+// If the queue is often empty or full, the suspendable queue should be used.
 
 #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 #define SEQAN_PARALLEL_PARALLEL_QUEUE_H_

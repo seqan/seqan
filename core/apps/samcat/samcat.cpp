@@ -62,6 +62,8 @@ struct AppOptions
 {
     StringSet<CharString> inFiles;
     CharString outFile;
+    bool bamFormat;
+    bool verbose;
 };
 
 // ==========================================================================
@@ -73,7 +75,7 @@ struct AppOptions
 // --------------------------------------------------------------------------
 
 template <typename TWriter>
-void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
+void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
     String<BamFile<Input> *> readerPtr;
     resize(readerPtr, length(inFiles));
@@ -84,11 +86,20 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
     {
         readerPtr[i] = new BamFile<Input>(writer);
 
+        bool success;
         if (inFiles[i] != "-")
-            open(*readerPtr[i], toCString(inFiles[i]));
+            success = open(*readerPtr[i], toCString(inFiles[i]));
         else
             // read from stdin (autodetect format from stream)
-            open(*readerPtr[i], std::cin);
+            success = open(*readerPtr[i], std::cin);
+        if (!success)
+        {
+            std::cerr << "Couldn't open " << toCString(inFiles[i]) << " for reading." << std::endl;
+            close(*readerPtr[i]);
+            delete readerPtr[i];
+            readerPtr[i] = NULL;
+            continue;
+        }
 
         readRecord(header, *(readerPtr[i]));
     }
@@ -99,16 +110,28 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles)
 
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;
+    __uint64 numRecords = 0;
+    double start = sysTime();
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
+        if (readerPtr[i] == NULL)
+            continue;
+
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
             readRecord(record, *readerPtr[i]);
             write(writer, record);
+            ++numRecords;
         }
         close(*readerPtr[i]);
         delete readerPtr[i];
+    }
+    double stop = sysTime();
+    if (options.verbose)
+    {
+        std::cerr << "Number of alignments: " << numRecords << std::endl;
+        std::cerr << "Elapsed time:         " << stop - start << " seconds" << std::endl;
     }
 }
 
@@ -130,7 +153,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");
     addDescription(parser, "This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. "
-                           "If the output file name is ommitted the result is written to standard output in SAM format.");
+                           "If the output file name is ommitted the result is written to standard output.");
 
     addDescription(parser, "(c) Copyright 2014 by David Weese.");
 
@@ -141,6 +164,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", ".sam .bam");
+    addOption(parser, ArgParseOption("b", "bam", "Use BAM format for standard output. Default: SAM."));
+    addOption(parser, ArgParseOption("v", "verbose", "Print some stats."));
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
@@ -158,6 +183,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     options.inFiles = getArgumentValues(parser, 0);
     getOptionValue(options.outFile, parser, "output");
+    getOptionValue(options.bamFormat, parser, "bam");
+    getOptionValue(options.verbose, parser, "verbose");
 
     return ArgumentParser::PARSE_OK;
 }
@@ -180,13 +207,26 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
+    bool success;
     BamFile<Output> writer;
     if (!empty(options.outFile))
-        open(writer, toCString(options.outFile));
+        success = open(writer, toCString(options.outFile));
     else
-        // read write to stdout
-        open(writer, std::cout, Sam());
-    mergeBamFiles(writer, options.inFiles);
+    {
+        // write to stdout
+        if (options.bamFormat)
+            success = open(writer, std::cout, Bam());
+        else
+            success = open(writer, std::cout, Sam());
+    }
+
+    if (!success)
+    {
+        std::cerr << "Couldn't open " << options.outFile << " for writing." << std::endl;
+        return 1;
+    }
+
+    mergeBamFiles(writer, options.inFiles, options);
 
     return 0;
 }
