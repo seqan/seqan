@@ -30,8 +30,10 @@
 //
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+//         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// TODO(esiragusa): move the content of file/file_format_mmap.h (e.g. AutoSeqFormat) inside this file
+// Smart file for reading/writing files in Fasta or Fastq format.
+// ==========================================================================
 
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 #define SEQAN_SEQ_IO_SEQUENCE_FILE_H_
@@ -42,113 +44,76 @@ namespace seqan {
 // Classes
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Class SequenceFile
-// ----------------------------------------------------------------------------
+// ============================================================================
+// Typedefs
+// ============================================================================
 
-template <typename TDirection, typename TSpec = void>
-struct SequenceFile
-{
-    typedef VirtualStream<char, TDirection>                 TStream;
-    typedef typename Iterator<TStream, TDirection>::Type    TIter;
+// --------------------------------------------------------------------------
+// Tag AutoSeqFormat
+// --------------------------------------------------------------------------
+// if TagSelector is set to -1, the file format is auto-detected
 
-    AutoSeqFormat   format;
-    TStream         stream;
-    TIter           iter;
+/*!
+ * @class AutoSeqFormat
+ * @extends TagSelector
+ * @headerfile <seqan/file.h>
+ * @brief Auto-detects and stores a file format.
+ *
+ * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
+ * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
+ */
 
-    SequenceFile() :
-        iter(stream)
-    {}
+/**
+.Class.AutoSeqFormat
+..summary:Auto-detects and stores a file format.
+..cat:Input/Output
+..general:Class.TagSelector
+..signature:AutoSeqFormat
+..remarks:Currently, it is defined as $TagSelector<SeqFormats>$, with:
+...code:
+	typedef
+		TagList<Fastq,
+		TagList<Fasta,
+		TagList<QSeq,
+		TagList<Raw> > > > 						SeqFormats;
+..include:seqan/file.h
+*/
 
-    SequenceFile(const char *fileName, int openMode = DefaultOpenMode<SequenceFile>::VALUE) :
-        iter(stream)
-    {
-        if (!open(*this, fileName, openMode))
-            throw IOError(std::string("Could not open file ") + fileName);
-    }
+typedef
+    TagList<Fastq,
+    TagList<Fasta,
+//    TagList<QSeq,   // doesn't work as it uses STL strings and parsers
+    TagList<Raw
+    > > > //>
+    SeqFormats;
 
-    ~SequenceFile()
-    {
-        close(*this);
-    }
-};
+typedef TagSelector<SeqFormats> AutoSeqFormat;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction DefaultOpenMode
+// Metafunction FileFormats
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TDummy>
-struct DefaultOpenMode<SequenceFile<TDirection, TSpec>, TDummy> :
-    DefaultOpenMode<typename SequenceFile<TDirection, TSpec>::TStream, TDummy> {};
+template <typename TDirection, typename TSpec>
+struct FileFormats<SmartFile<Fastq, TDirection, TSpec> >
+{
+    typedef SeqFormats Type;
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function setFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec, typename TFormat>
-inline void setFormat(SequenceFile<TDirection, TSpec> & file, TFormat)
-{
-    assign(file.format, TFormat());
-}
-
-// ----------------------------------------------------------------------------
-// Function open(fileName)
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-inline bool open(SequenceFile<TDirection, TSpec> & file,
-                 const char *fileName,
-                 int openMode = DefaultOpenMode<SequenceFile<TDirection, TSpec> >::VALUE)
-{
-    typedef typename SequenceFile<TDirection, TSpec>::TIter TIter;
-
-    if (!guessFormatFromFilename(fileName, file.format))
-        return false;
-
-    if (!open(file.stream, fileName, openMode))
-        return false;
-
-    file.iter = TIter(file.stream);
-
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function close()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-inline bool close(SequenceFile<TDirection, TSpec> & file)
-{
-    return close(file.stream);
-}
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, bool)
-atEnd(SequenceFile<TDirection, TSpec> const & file)
-{
-    return atEnd(file.iter);
-}
-
-// ----------------------------------------------------------------------------
 // Function read(); Without qualities
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
+read(SmartFile<Fastq, TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
 {
     readRecord(meta, seq, file.iter, file.format);
 }
@@ -158,8 +123,8 @@ read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
+read(SmartFile<Fastq, TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
 {
     readRecord(meta, seq, qual, file.iter, file.format);
 }
@@ -169,8 +134,8 @@ read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq,
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
+write(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
     writeRecord(file.iter, meta, seq, file.format);
 }
@@ -180,8 +145,8 @@ write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
+write(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
 {
     writeRecord(meta, seq, qual, file.iter, Fastq());
 }

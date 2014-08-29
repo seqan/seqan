@@ -36,7 +36,6 @@
 // as well as reading/writing from/to stdin/stdout.
 // ==========================================================================
 
-
 #ifndef SEQAN_STREAM_SMART_FILE_H_
 #define SEQAN_STREAM_SMART_FILE_H_
 
@@ -45,6 +44,9 @@ namespace seqan {
 // ============================================================================
 // Forwards
 // ============================================================================
+
+template <typename TSmartFile>
+struct FileFormats;
 
 // ============================================================================
 // Classes
@@ -55,18 +57,36 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec = void>
-struct SmartFile;
+struct SmartFile
+{
+    typedef VirtualStream<char, TDirection>                 TStream;
+    typedef typename Iterator<TStream, TDirection>::Type    TIter;
+    typedef typename FileFormats<SmartFile>::Type           TFileFormats;
+
+    TStream         stream;
+    TIter           iter;
+    TFileFormats    format;
+
+    SmartFile() :
+        iter(stream)
+    {}
+
+    SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+        iter(stream)
+    {
+        if (!open(*this, fileName, openMode))
+            throw IOError(std::string("Could not open file ") + fileName);
+    }
+
+    ~SmartFile()
+    {
+        close(*this);
+    }
+};
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction FileFormats
-// ----------------------------------------------------------------------------
-
-template <typename TSmartFile>
-struct FileFormats;
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
@@ -109,6 +129,13 @@ inline bool guessFormat(SmartFile<TFileType, Output, TSpec> &)
 // --------------------------------------------------------------------------
 // _mapFileFormatToCompressionFormat
 // --------------------------------------------------------------------------
+
+template <typename TFormat>
+inline Nothing
+_mapFileFormatToCompressionFormat(TFormat)
+{
+    return Nothing();
+}
 
 template <typename TCompressedFileTypes>
 inline void
