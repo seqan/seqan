@@ -51,431 +51,11 @@ enum EStrategy
 };
 
 
-// new Event class
 
-struct Event2
-{
-    enum { Infinite = LONG_MAX };
 
-    pthread_cond_t  data_cond;
-    Mutex &         mutex;
 
-    explicit
-    Event2(Mutex &mutex) :
-        mutex(mutex)
-    {
-        int result = pthread_cond_init(&data_cond, NULL);
-        ignoreUnusedVariableWarning(result);
-        SEQAN_ASSERT_EQ(result, 0);
-    }
 
-    ~Event2()
-    {
-        int result = pthread_cond_destroy(&data_cond);
-        ignoreUnusedVariableWarning(result);
-        SEQAN_ASSERT_EQ(result, 0);
-    }
-};
 
-inline void
-waitFor(Event2 &event)
-{
-    int result = pthread_cond_wait(&event.data_cond, event.mutex.hMutex);
-    ignoreUnusedVariableWarning(result);
-    SEQAN_ASSERT_EQ(result, 0);
-}
-
-inline void
-waitFor(Event2 &event, long timeoutMilliSec, bool & inProgress)
-{
-    if (timeoutMilliSec != Event2::Infinite)
-    {
-        timespec ts;
-        ts.tv_sec = timeoutMilliSec / 1000;
-        ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
-        int result = pthread_cond_timedwait(&event.data_cond, event.mutex.hMutex, &ts);
-        inProgress = (result == ETIMEDOUT);
-        SEQAN_ASSERT(result == 0 || inProgress);
-    }
-    else
-    {
-        inProgress = false;
-        waitFor(event);
-    }
-}
-
-inline void
-signal(Event2 &event)
-{
-    int result = pthread_cond_broadcast(&event.data_cond);
-    ignoreUnusedVariableWarning(result);
-    SEQAN_ASSERT_EQ(result, 0);
-}
-
-
-
-template <typename TSpec = void>
-struct Suspendable;
-
-template <typename TValue, typename TSpec>
-class ConcurrentQueue<TValue, Suspendable<TSpec> >
-{
-public:
-    typedef typename Host<ConcurrentQueue>::Type    TString;
-    typedef typename Size<TString>::Type            TSize;
-
-    size_t      readerCount;
-    size_t      writerCount;
-
-    TString     data;
-    TSize       occupied;
-    TSize       back;
-    TSize       front;
-
-    Mutex       mutex;
-    Event2      more;
-
-    bool        virgin;
-
-    ConcurrentQueue():
-        readerCount(0),
-        writerCount(0),
-        occupied(0),
-        back(0),
-        front(0),
-        mutex(false),
-        more(mutex),
-        virgin(true)
-    {}
-
-    ~ConcurrentQueue()
-    {
-        SEQAN_ASSERT_EQ(writerCount, 0u);
-
-        // wait for all pending readers to finish
-        while (readerCount != 0u)
-        {}
-
-        typename Iterator<TString, Standard>::Type arrayBegin = begin(data, Standard());
-
-        if (occupied != 0)
-        {
-            if (front < back)
-            {
-                arrayDestruct(arrayBegin + front, arrayBegin + back);
-            }
-            else
-            {
-                arrayDestruct(arrayBegin, arrayBegin + back);
-                arrayDestruct(arrayBegin + front, arrayBegin + capacity(data));
-            }
-        }
-        _setLength(data, 0);
-    }
-};
-
-template <typename TValue>
-class ConcurrentQueue<TValue, Suspendable<Limit> >:
-    public ConcurrentQueue<TValue, Suspendable<> >
-{
-public:
-    typedef ConcurrentQueue<TValue, Suspendable<> > TBase;
-    typedef typename Host<ConcurrentQueue>::Type    TString;
-    typedef typename Size<TString>::Type            TSize;
-
-    Event2      less;
-
-    ConcurrentQueue(TSize maxSize):
-        TBase(),
-        less(this->mutex)
-    {
-        reserve(this->data, maxSize, Exact());
-        _setLength(this->data, maxSize);
-    }
-
-    ConcurrentQueue(ConcurrentQueue const & other):
-        TBase((TBase const &)other),
-        less(this->mutex)
-    {}
-};
-
-template <typename TValue>
-struct DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<Limit> > >
-{
-    typedef Limit Type;
-};
-
-template <typename TValue, typename TSpec>
-inline void
-lockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > &)
-{}
-
-template <typename TValue, typename TSpec>
-inline void
-unlockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    if (--me.readerCount == 0u)
-        signal(me.less);
-}
-
-template <typename TValue, typename TSpec>
-inline void
-lockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > &)
-{}
-
-template <typename TValue, typename TSpec>
-inline void
-unlockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    if (--me.writerCount == 0u)
-        signal(me.more);
-}
-
-template <typename TValue, typename TSize, typename TSpec>
-inline void
-setReaderCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize readerCount)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    me.readerCount = readerCount;
-}
-
-template <typename TValue, typename TSize, typename TSpec>
-inline void
-setWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize writerCount)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    me.writerCount = writerCount;
-}
-
-template <typename TValue, typename TSize1, typename TSize2, typename TSpec>
-inline void
-setReaderWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize1 readerCount, TSize2 writerCount)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    me.readerCount = readerCount;
-    me.writerCount = writerCount;
-}
-
-template <typename TValue, typename TSpec>
-inline bool
-_popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
-    typedef typename Host<TQueue>::Type                     TString;
-    typedef typename Size<TString>::Type                    TSize;
-    typedef typename Iterator<TString, Standard>::Type      TIter;
-
-    TSize cap = capacity(me.data);
-
-    while (me.occupied == 0u && me.writerCount > 0u)
-        waitFor(me.more);
-
-    if (me.occupied == 0u)
-        return false;
-
-    SEQAN_ASSERT_NEQ(me.occupied, 0u);
-
-    // extract value and destruct it in the data string
-    TIter it = begin(me.data, Standard()) + me.front;
-    std::swap(result, *it);
-    valueDestruct(it);
-
-    me.front = (me.front + 1) % cap;
-    me.occupied--;
-
-    /* now: either me.occupied > 0 and me.nextout is the index
-       of the next occupied slot in the buffer, or
-       me.occupied == 0 and me.nextout is the index of the next
-       (empty) slot that will be filled by a producer (such as
-       me.nextout == me.nextin) */
-
-    return true;
-}
-
-template <typename TValue, typename TSpec>
-inline bool
-_popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
-    typedef typename Host<TQueue>::Type                     TString;
-    typedef typename Size<TString>::Type                    TSize;
-    typedef typename Iterator<TString, Standard>::Type      TIter;
-
-    TSize cap = capacity(me.data);
-
-    while (me.occupied == 0u && me.writerCount > 0u)
-        waitFor(me.more);
-
-    if (me.occupied == 0u)
-        return false;
-
-    SEQAN_ASSERT_NEQ(me.occupied, 0u);
-
-    me.back = (me.back + cap - 1) % cap;
-
-    // extract value and destruct it in the data string
-    TIter it = begin(me.data, Standard()) + me.back;
-    std::swap(result, *it);
-    valueDestruct(it);
-
-    me.occupied--;
-
-    /* now: either me.occupied > 0 and me.nextout is the index
-       of the next occupied slot in the buffer, or
-       me.occupied == 0 and me.nextout is the index of the next
-       (empty) slot that will be filled by a producer (such as
-       me.nextout == me.nextin) */
-
-    return true;
-}
-
-template <typename TValue, typename TSpec>
-inline bool
-popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    return _popFront(result, me);
-}
-
-template <typename TValue>
-inline bool
-popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    if (_popFront(result, me))
-    {
-        signal(me.less);
-        return true;
-    }
-    return false;
-}
-
-template <typename TValue, typename TSpec>
-inline bool
-popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    return _popBack(result, me);
-}
-
-template <typename TValue>
-inline bool
-popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    if (_popBack(result, me))
-    {
-        signal(me.less);
-        return true;
-    }
-    return false;
-}
-
-
-template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
-inline bool
-appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
-            Tag<TExpand> expandTag)
-{
-    typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
-    typedef typename Host<TQueue>::Type                     TString;
-    typedef typename Size<TString>::Type                    TSize;
-
-    ScopedLock<Mutex> lock(me.mutex);
-    TSize cap = capacity(me.data);
-
-    if (me.occupied >= cap)
-    {
-        // increase capacity
-        _setLength(me.data, cap);
-        reserve(me.data, cap + 1, expandTag);
-        TSize delta = capacity(me.data) - cap;
-
-        // create a gap of delta many values between tail and head
-        _clearSpace(me.data, delta, me.back, me.back, expandTag);
-        if (me.occupied != 0 && me.back <= me.front)
-            me.front += delta;
-
-        cap += delta;
-    }
-
-    valueConstruct(begin(me.data, Standard()) + me.back, val);
-    me.back = (me.back + 1) % cap;
-
-    me.occupied++;
-
-    /* now: either me.occupied < BSIZE and me.nextin is the index
-       of the next empty slot in the buffer, or
-       me.occupied == BSIZE and me.nextin is the index of the
-       next (occupied) slot that will be emptied by a consumer
-       (such as me.nextin == me.nextout) */
-
-    signal(me.more);
-    return true;
-}
-
-template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
-inline bool
-appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
-            Tag<TExpand> expandTag);
-
-template <typename TValue, typename TValue2>
-inline bool
-appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
-            Limit)
-{
-    typedef ConcurrentQueue<TValue, Suspendable<Limit> >    TQueue;
-    typedef typename Host<TQueue>::Type                     TString;
-    typedef typename Size<TString>::Type                    TSize;
-
-    ScopedLock<Mutex> lock(me.mutex);
-    TSize cap = capacity(me.data);
-
-    while (me.occupied >= cap && me.readerCount > 0u)
-        waitFor(me.less);
-
-    if (me.occupied >= cap)
-        return false;
-
-    SEQAN_ASSERT_LT(me.occupied, cap);
-
-    valueConstruct(begin(me.data, Standard()) + me.back, val);
-    me.back = (me.back + 1) % cap;
-    me.occupied++;
-
-    /* now: either me.occupied < BSIZE and me.nextin is the index
-       of the next empty slot in the buffer, or
-       me.occupied == BSIZE and me.nextin is the index of the
-       next (occupied) slot that will be emptied by a consumer
-       (such as me.nextin == me.nextout) */
-
-    signal(me.more);
-    return true;
-}
-
-template <typename TValue, typename TValue2, typename TSpec>
-inline bool
-appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-            TValue2 SEQAN_FORWARD_CARG val)
-{
-    return appendValue(me, val, typename DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<TSpec> > >::Type());
-}
-
-template <typename TValue, typename TSize, typename TSpec>
-inline bool
-waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-               TSize minSize)
-{
-    ScopedLock<Mutex> lock(me.mutex);
-    while (me.occupied < minSize && me.writerCount > 0u)
-        waitFor(me.more);
-    return me.occupied >= minSize;
-}
 
 
 
@@ -987,16 +567,15 @@ public:
         off_t           fileOfs;
         size_t          size;
 
-        Mutex           mutex;
-        Event2          readyEvent;
+        CriticalSection cs;
+        Condition       readyEvent;
         bool            ready;
 
         DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
             size(0),
-            mutex(false),
-            readyEvent(mutex),
+            readyEvent(cs),
             ready(false)
         {}
 
@@ -1004,8 +583,7 @@ public:
             inputBuffer(other.inputBuffer),
             buffer(other.buffer),
             size(other.size),
-            mutex(false),
-            readyEvent(mutex),
+            readyEvent(cs),
             ready(other.ready)
         {}
     };
@@ -1096,7 +674,7 @@ public:
 
                 // signal that job is ready
                 {
-                    ScopedLock<Mutex> lock(job.mutex);
+                    ScopedLock<CriticalSection> lock(job.cs);
                     job.ready = true;
                     signal(job.readyEvent);
                 }
@@ -1196,7 +774,7 @@ public:
 
             // wait for the end of decompression
             {
-                ScopedLock<Mutex> lock(job.mutex);
+                ScopedLock<CriticalSection> lock(job.cs);
                 if (!job.ready)
                     waitFor(job.readyEvent);
             }

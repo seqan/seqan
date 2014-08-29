@@ -45,6 +45,9 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
+#include <seqan/system/system_critical_section.h>
+#include <seqan/system/system_condition.h>
+
 // ----------------------------------------------------------------------------
 // STL
 // ----------------------------------------------------------------------------
@@ -85,5 +88,6 @@
 // Thread-safe / lock-free container operations.
 #include <seqan/parallel/parallel_sequence.h>
 #include <seqan/parallel/parallel_queue.h>
+#include <seqan/parallel/parallel_queue_suspendable.h>
 
 #endif  // SEQAN_PARALLEL_H_

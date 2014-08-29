@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,65 +29,81 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
+// ==========================================================================
+// Critical Section class. In conjunction with a condition object it allows
+// to suspend a thread until another wakes it up.
+// ==========================================================================
 
-#include <seqan/file.h>
+#ifndef SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_
+#define SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_
 
-#ifndef SEQAN_HEADER_SYSTEM_H
-#define SEQAN_HEADER_SYSTEM_H
-
-//____________________________________________________________________________
-// prerequisites
-
-#include <cstdio>
-#include <ctime>
-#include <string>
-#include <iostream>
+namespace seqan {
 
 #ifdef PLATFORM_WINDOWS
 
-#include <windows.h>
+struct CriticalSection
+{
+    CRITICAL_SECTION data_cs;
 
-#else //#ifdef PLATFORM_WINDOWS
+    CriticalSection()
+    {
+        InitializeCriticalSection(&data_cs);
+    }
 
-#include <cstdlib>
-#include <climits>
-#include <pthread.h>
-#include <errno.h>
-#include <semaphore.h>
-#include <aio.h>
-#include <sys/mman.h>
+    ~CriticalSection()
+    {
+        DeleteCriticalSection(&data_cs);
+    }
+};
+    
+#else
 
-#ifndef O_LARGEFILE
-#define O_LARGEFILE 0
+struct CriticalSection
+{
+    pthread_mutex_t data_cs;
+
+    CriticalSection()
+    {
+        int result = pthread_mutex_init(&data_cs, NULL);
+        ignoreUnusedVariableWarning(result);
+        SEQAN_ASSERT_EQ(result, 0);
+    }
+
+    ~CriticalSection()
+    {
+        int result = pthread_mutex_destroy(&data_cs);
+        ignoreUnusedVariableWarning(result);
+        SEQAN_ASSERT_EQ(result, 0);
+    }
+};
+
 #endif
 
-#ifndef O_DIRECT
-#define O_DIRECT 0
+inline void
+lock(CriticalSection &cs)
+{
+#ifdef PLATFORM_WINDOWS
+    EnterCriticalSection(&cs.data_cs);
+#else
+    int result = pthread_mutex_lock(&cs.data_cs);
+    ignoreUnusedVariableWarning(result);
+    SEQAN_ASSERT_EQ(result, 0);
 #endif
+}
 
-#endif //#ifdef PLATFORM_WINDOWS
+inline void
+unlock(CriticalSection &cs)
+{
+#ifdef PLATFORM_WINDOWS
+    LeaveCriticalSection(&cs.data_cs);
+#else
+    int result = pthread_mutex_unlock(&cs.data_cs);
+    ignoreUnusedVariableWarning(result);
+    SEQAN_ASSERT_EQ(result, 0);
+#endif
+}
 
-#include <seqan/system/system_forwards.h>
-#ifndef PLATFORM_WINDOWS
-#include <seqan/system/file_forwards.h>
-#endif  // #ifndef PLATFORM_WINDOWS
+}
 
-//____________________________________________________________________________
-// multi-threading
-
-#include <seqan/system/system_base.h>
-#include <seqan/system/system_mutex.h>
-#include <seqan/system/system_sema.h>
-#include <seqan/system/system_event.h>
-#include <seqan/system/system_critical_section.h>
-#include <seqan/system/system_condition.h>
-#include <seqan/system/system_thread.h>
-
-//____________________________________________________________________________
-// synchronous and asynchronous files
-
-#include <seqan/system/file_sync.h>
-#include <seqan/system/file_async.h>
-#include <seqan/system/file_directory.h>
-
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_
