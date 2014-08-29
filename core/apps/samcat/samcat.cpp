@@ -77,14 +77,14 @@ struct AppOptions
 template <typename TWriter>
 void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
-    String<BamFile<Input> *> readerPtr;
+    String<SmartFile<Bam, Input> *> readerPtr;
     resize(readerPtr, length(inFiles));
 
     // Step 1: Merge all headers (if available)
     BamHeader header;
     for (unsigned i = 0; i < length(inFiles); ++i)
     {
-        readerPtr[i] = new BamFile<Input>(writer);
+        readerPtr[i] = new SmartFile<Bam, Input>(writer);
 
         bool success;
         if (inFiles[i] != "-")
@@ -208,7 +208,7 @@ int main(int argc, char const ** argv)
         return res == ArgumentParser::PARSE_ERROR;
 
     bool success;
-    BamFile<Output> writer;
+    SmartFile<Bam, Output> writer;
     if (!empty(options.outFile))
         success = open(writer, toCString(options.outFile));
     else
