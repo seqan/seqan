@@ -172,10 +172,10 @@ readRecord(BamHeader & header,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(header, context, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(header, context, iter, TFormat());
     else
         readRecord(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -208,10 +208,10 @@ readRecord(BamAlignmentRecord & record,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(record, context, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(record, context, iter, TFormat());
     else
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -244,10 +244,10 @@ write(TTarget & target,
       BamIOContext<TNameStore, TNameStoreCache> & context,
       TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        write(target, header, context, TFormatTag());
+    if (isEqual(format, TFormat()))
+        write(target, header, context, TFormat());
     else
         write(target, header, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -280,10 +280,10 @@ write(TTarget & target,
       BamIOContext<TNameStore, TNameStoreCache> & context,
       TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        write(target, record, context, TFormatTag());
+    if (isEqual(format, TFormat()))
+        write(target, record, context, TFormat());
     else
         write(target, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }

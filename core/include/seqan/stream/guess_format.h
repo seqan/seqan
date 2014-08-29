@@ -149,48 +149,6 @@ char const * FileFormatExtensions<Raw, T>::VALUE[1] =
     ".qseq"     // default output extension
 };
 
-// --------------------------------------------------------------------------
-// Tag AutoSeqFormat
-// --------------------------------------------------------------------------
-// if TagSelector is set to -1, the file format is auto-detected
-
-/*!
- * @class AutoSeqFormat
- * @extends TagSelector
- * @headerfile <seqan/file.h>
- * @brief Auto-detects and stores a file format.
- *
- * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
- * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
- */
-
-/**
-.Class.AutoSeqFormat
-..summary:Auto-detects and stores a file format.
-..cat:Input/Output
-..general:Class.TagSelector
-..signature:AutoSeqFormat
-..remarks:Currently, it is defined as $TagSelector<SeqFormats>$, with:
-...code:
-	typedef
-		TagList<Fastq,
-		TagList<Fasta,
-		TagList<QSeq,
-		TagList<Raw> > > > 						SeqFormats;
-..include:seqan/file.h
-*/
-
-typedef
-    TagList<Fastq,
-    TagList<Fasta,
-//    TagList<QSeq,   // doesn't work as it uses STL strings and parsers
-    TagList<Raw
-    > > > //>
-    SeqFormats;
-
-typedef TagSelector<SeqFormats> AutoSeqFormat;
-
-
 // ============================================================================
 // Functions
 // ============================================================================
