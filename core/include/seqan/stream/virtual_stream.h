@@ -374,7 +374,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 {
     typedef typename TTagList::Type TFormatTag;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+    if (isEqual(format, TFormatTag()))
         return tagApply(ctx, TFormatTag());
 
     return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
