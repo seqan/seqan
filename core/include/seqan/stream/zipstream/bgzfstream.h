@@ -129,8 +129,8 @@ public:
 
     TString     data;
     TSize       occupied;
-    TSize       nextIn;
-    TSize       nextOut;
+    TSize       back;
+    TSize       front;
 
     Mutex       mutex;
     Event2      more;
@@ -141,25 +141,35 @@ public:
         readerCount(0),
         writerCount(0),
         occupied(0),
-        nextIn(0),
-        nextOut(0),
+        back(0),
+        front(0),
         mutex(false),
         more(mutex),
         virgin(true)
-    {
-    }
+    {}
 
     ~ConcurrentQueue()
     {
-        TValue tmp;
+        SEQAN_ASSERT_EQ(writerCount, 0u);
 
         // wait for all pending readers to finish
         while (readerCount != 0u)
         {}
 
-        while (popFront(tmp, *this))
-        {}
+        typename Iterator<TString, Standard>::Type arrayBegin = begin(data, Standard());
 
+        if (occupied != 0)
+        {
+            if (front < back)
+            {
+                arrayDestruct(arrayBegin + front, arrayBegin + back);
+            }
+            else
+            {
+                arrayDestruct(arrayBegin, arrayBegin + back);
+                arrayDestruct(arrayBegin + front, arrayBegin + capacity(data));
+            }
+        }
         _setLength(data, 0);
     }
 };
@@ -180,7 +190,19 @@ public:
         less(this->mutex)
     {
         reserve(this->data, maxSize, Exact());
+        _setLength(this->data, maxSize);
     }
+
+    ConcurrentQueue(ConcurrentQueue const & other):
+        TBase((TBase const &)other),
+        less(this->mutex)
+    {}
+};
+
+template <typename TValue>
+struct DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<Limit> > >
+{
+    typedef Limit Type;
 };
 
 template <typename TValue, typename TSpec>
@@ -256,11 +278,11 @@ _popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
     SEQAN_ASSERT_NEQ(me.occupied, 0u);
 
     // extract value and destruct it in the data string
-    TIter it = begin(me.data, Standard()) + me.nextOut;
+    TIter it = begin(me.data, Standard()) + me.front;
     std::swap(result, *it);
     valueDestruct(it);
 
-    me.nextOut = (me.nextOut + 1) % cap;
+    me.front = (me.front + 1) % cap;
     me.occupied--;
 
     /* now: either me.occupied > 0 and me.nextout is the index
@@ -291,10 +313,10 @@ _popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 
     SEQAN_ASSERT_NEQ(me.occupied, 0u);
 
-    me.nextIn = (me.nextIn + cap - 1) % cap;
+    me.back = (me.back + cap - 1) % cap;
 
     // extract value and destruct it in the data string
-    TIter it = begin(me.data, Standard()) + me.nextIn;
+    TIter it = begin(me.data, Standard()) + me.back;
     std::swap(result, *it);
     valueDestruct(it);
 
@@ -352,10 +374,11 @@ popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
 }
 
 
-template <typename TValue, typename TValue2, typename TSpec>
+template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-            TValue2 SEQAN_FORWARD_CARG val)
+            TValue2 SEQAN_FORWARD_CARG val,
+            Tag<TExpand> expandTag)
 {
     typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
     typedef typename Host<TQueue>::Type                     TString;
@@ -366,18 +389,21 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
 
     if (me.occupied >= cap)
     {
-        if (me.nextOut >= me.nextIn)
-            ++me.nextOut;
-        
+        // increase capacity
         _setLength(me.data, cap);
-        insertValue(me.data, me.nextIn, val);
-        ++me.nextIn;
+        reserve(me.data, cap + 1, expandTag);
+        TSize delta = capacity(me.data) - cap;
+
+        // create a gap of delta many values between tail and head
+        _clearSpace(me.data, delta, me.back, me.back, expandTag);
+        if (me.occupied != 0 && me.back <= me.front)
+            me.front += delta;
+
+        cap += delta;
     }
-    else
-    {
-        valueConstruct(begin(me.data, Standard()) + me.nextIn, val);
-        me.nextIn = (me.nextIn + 1) % cap;
-    }
+
+    valueConstruct(begin(me.data, Standard()) + me.back, val);
+    me.back = (me.back + 1) % cap;
 
     me.occupied++;
 
@@ -391,10 +417,17 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     return true;
 }
 
+template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
+inline bool
+appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
+            TValue2 SEQAN_FORWARD_CARG val,
+            Tag<TExpand> expandTag);
+
 template <typename TValue, typename TValue2>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
-            TValue2 SEQAN_FORWARD_CARG val)
+            TValue2 SEQAN_FORWARD_CARG val,
+            Limit)
 {
     typedef ConcurrentQueue<TValue, Suspendable<Limit> >    TQueue;
     typedef typename Host<TQueue>::Type                     TString;
@@ -411,8 +444,8 @@ appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
 
     SEQAN_ASSERT_LT(me.occupied, cap);
 
-    valueConstruct(begin(me.data, Standard()) + me.nextIn, val);
-    me.nextIn = (me.nextIn + 1) % cap;
+    valueConstruct(begin(me.data, Standard()) + me.back, val);
+    me.back = (me.back + 1) % cap;
     me.occupied++;
 
     /* now: either me.occupied < BSIZE and me.nextin is the index
@@ -423,6 +456,14 @@ appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
 
     signal(me.more);
     return true;
+}
+
+template <typename TValue, typename TValue2, typename TSpec>
+inline bool
+appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
+            TValue2 SEQAN_FORWARD_CARG val)
+{
+    return appendValue(me, val, typename DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<TSpec> > >::Type());
 }
 
 template <typename TValue, typename TSize, typename TSpec>
@@ -458,14 +499,13 @@ struct ResourcePool
     {
         unlockWriting(recycled);
         TValue *ptr;
-        unsigned count =0;
+        unsigned count = 0;
         while (popBack(ptr, recycled))
         {
             if (ptr != NULL)
-            count++;
+                count++;
             delete ptr;
         }
-        std::cerr<<"RESOURCES:"<<count<<std::endl;
     }
 };
 
@@ -478,7 +518,8 @@ aquireValue(ResourcePool<TValue> & me)
         return NULL;
 
     if (ptr == NULL)
-        ptr = new TValue();
+        ptr = new TValue;
+
     return ptr;
 }
 
@@ -502,33 +543,30 @@ struct SerializerItem
 template <typename TValue, typename TWorker>
 struct Serializer
 {
-    typedef SerializerItem<TValue>  TItem;
-    typedef TItem *                 TItemPtr;
+    typedef SerializerItem<TValue>          TItem;
+    typedef TItem *                         TItemPtr;
+    typedef ResourcePool<TItem>             TPool;
+    typedef typename Size<Serializer>::Type TSize;
 
     Mutex               mutex;
     TWorker             worker;
     TItemPtr            first;
     TItemPtr            last;
-    ResourcePool<TItem> pool;
+    TPool               pool;
     bool                stop;
 
     Serializer():
         mutex(false),
         first(NULL),
-        last(NULL),
-        pool(1024),
         stop(false)
-    {
-        clear(*this);
-    }
+    {}
 
     template <typename TArg>
-    Serializer(TArg &arg):
+    Serializer(TArg &arg, TSize numBuffers = 1024):
         mutex(false),
         worker(arg),
         first(NULL),
-        last(NULL),
-        pool(1024),
+        pool(numBuffers),
         stop(false)
     {}
 
@@ -539,9 +577,7 @@ struct Serializer
             TItemPtr item = first;
             first = first->next;
             delete item;
-            std::cout << "free"<<std::endl;
         }
-        std::cerr<<"Serializer:"<<capacity(pool.recycled.data)<<std::endl;
     }
 
     operator bool()
@@ -564,6 +600,9 @@ clear(Serializer<TValue, TWorker> & me)
     me.last = NULL;
 }
 
+// this function is not thread-safe as it would make
+// not much sense to order a stream by the random
+// order of executition behind a mutex
 template <typename TValue, typename TWorker>
 inline TValue *
 aquireValue(Serializer<TValue, TWorker> & me)
@@ -577,20 +616,12 @@ aquireValue(Serializer<TValue, TWorker> & me)
     // add item to the end of our linked list
     {
         ScopedLock<Mutex> lock(me.mutex);
-
-        if (me.first != NULL)
-        {
-            SEQAN_ASSERT(me.last != NULL);
-            me.last->next = item;
-        }
-        else
-        {
+        if (me.first == NULL)
             me.first = item;
-            me.last = item;
-        }
+        else
+            me.last->next = item;
+        me.last = item;
     }
-
-//    std::cerr<<"aquire\t"<<(size_t)item<<std::endl;
     return &item->val;
 }
 
@@ -602,23 +633,6 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 
     TItem *item = reinterpret_cast<TItem *>(ptr);
     SEQAN_ASSERT_NOT(item->ready);
-
-//    {
-//            ScopedLock<Mutex> lock(me.mutex);
-//            // recycle released items
-//            appendValue(me.recycled, item);
-//    }
-//    {
-//        ScopedLock<Mutex> lock(me.mutex);
-//        item->ready = true;
-//        if (item != me.first)
-//            return true;
-//    }
-//
-//    return true;
-
-//    std::cerr<<"RELEASE\t"<<(size_t)ptr<<std::endl;
-
 
     // changing me.first or the ready flag must be done synchronized (me.mutex)
     // the thread who changed me.first->ready to be true has to write it.
@@ -638,24 +652,24 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
     bool success;
     do
     {
+        // process item
         success = me.worker(item->val);
-//        std::cerr<<"WRITE"<<std::endl;
-//success=true;
 
+        // remove item from linked list
         {
             ScopedLock<Mutex> lock(me.mutex);
             me.first = item->next;
+
             // recycle released items
             releaseValue(me.pool, item);
-//    std::cerr<<"FREE\t"<<(size_t)ptr<<std::endl;
-
-            item = me.first;
 
             // can we leave?
+            item = me.first;
             if (item == NULL || !item->ready)
                 return success;
         }
-        // we continue to write the next buffer
+
+        // we continue to process the next buffer
     }
     while (success);
 
@@ -702,7 +716,6 @@ public:
 
         bool operator() (OutputBuffer const & outputBuffer)
         {
-//    std::cerr<<"work\t"<<(size_t)&outputBuffer<<std::endl;
             ostream.write(outputBuffer.buffer, outputBuffer.size);
             return ostream.good();
         }
@@ -717,7 +730,9 @@ public:
         OutputBuffer    *outputBuffer;
 
         CompressionJob() :
-            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0)
+            buffer(BGZF_BLOCK_SIZE / sizeof(char_type), 0),
+            size(0),
+            outputBuffer(NULL)
         {}
     };
 
@@ -739,6 +754,7 @@ public:
     {
         basic_bgzf_streambuf            *streamBuf;
         CompressionContext<BgzfFile>    compressionCtx;
+        size_t                          threadNum;
 
         void operator()()
         {
@@ -754,17 +770,15 @@ public:
                     return;
 
                 CompressionJob &job = streamBuf->jobs[jobId];
-                OutputBuffer *outputBuffer = aquireValue(streamBuf->serializer);
 
                 // compress block with zlib
-                outputBuffer->size = _compressBlock(
-                    outputBuffer->buffer, sizeof(outputBuffer->buffer),
+                job.outputBuffer->size = _compressBlock(
+                    job.outputBuffer->buffer, sizeof(job.outputBuffer->buffer),
                     &job.buffer[0], job.size, compressionCtx);
 
-                success = releaseValue(streamBuf->serializer, outputBuffer);
+                success = releaseValue(streamBuf->serializer, job.outputBuffer);
                 appendValue(streamBuf->idleQueue, jobId);
             }
-            std::cerr<<"DAMN"<<std::endl;
         }
     };
 
@@ -781,7 +795,7 @@ public:
         numJobs(numThreads * jobsPerThread),
         jobQueue(numJobs),
         idleQueue(numJobs),
-		serializer(ostream_)
+		serializer(ostream_, numThreads * jobsPerThread)
     {
         resize(jobs, numJobs, Exact());
         currentJobId = 0;
@@ -802,6 +816,7 @@ public:
         for (unsigned i = 0; i < numThreads; ++i)
         {
             threads[i].worker.streamBuf = this;
+            threads[i].worker.threadNum = i;
             run(threads[i]);
         }
 
@@ -809,6 +824,7 @@ public:
         SEQAN_ASSERT(currentJobAvail);
 
         CompressionJob &job = jobs[currentJobId];
+        job.outputBuffer = aquireValue(serializer);
 		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
     }
 
@@ -837,6 +853,8 @@ public:
         // recycle existing idle job
         if (!(currentJobAvail = popFront(currentJobId, idleQueue)))
             return false;
+
+        jobs[currentJobId].outputBuffer = aquireValue(serializer);
 
         return serializer;
     }
@@ -1135,8 +1153,6 @@ public:
         for (unsigned i = 0; i < numThreads; ++i)
             waitFor(threads[i]);
         delete[] threads;
-        std::cerr << "runnning queue:\t" << (__int64)&runningQueue << std::endl;
-        std::cerr << "idle queue:    \t" << (__int64)&idleQueue << std::endl;
     }
 
     int_type underflow()
