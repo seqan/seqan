@@ -145,34 +145,45 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Setup ArgumentParser.
     ArgumentParser parser("samcat");
     // Set short description, version, and date.
-    setShortDescription(parser, "SAM/BAM file concatenation and conversion");
     setCategory(parser, "Utilities");
     setVersion(parser, "0.1");
     setDate(parser, "May 2014");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");
+#if SEQAN_HAS_ZLIB
+    setShortDescription(parser, "SAM/BAM file concatenation and conversion");
     addDescription(parser, "This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. "
                            "If the output file name is ommitted the result is written to standard output.");
-
+#else
+    setShortDescription(parser, "SAM file concatenation and conversion");
+    addDescription(parser, "This tool reads a set of input files in SAM format and outputs the concatenation of them. "
+                           "If the output file name is ommitted the result is written to standard output.");
+#endif
     addDescription(parser, "(c) Copyright 2014 by David Weese.");
+
+    addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
 
     // We require one argument.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE", true));
-    setValidValues(parser, 0, ".sam .bam");
+    setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
+#if SEQAN_HAS_ZLIB
     setHelpText(parser, 0, "Input SAM or BAM file (or - for stdin).");
-
-    addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", ".sam .bam");
     addOption(parser, ArgParseOption("b", "bam", "Use BAM format for standard output. Default: SAM."));
+#else
+    setHelpText(parser, 0, "Input SAM file (or - for stdin).");
+#endif
     addOption(parser, ArgParseOption("v", "verbose", "Print some stats."));
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
     addListItem(parser, "\\fBsamcat\\fP \\fBmapped1.sam\\fP \\fBmapped2.sam\\fP \\fB-o\\fP \\fBmerged.sam\\fP",
                 "Merge two SAM files.");
+#if SEQAN_HAS_ZLIB
     addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBouput.bam\\fP",
                 "Convert a SAM file into BAM format.");
+#endif
 
     // Parse command line.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
@@ -183,7 +194,9 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     options.inFiles = getArgumentValues(parser, 0);
     getOptionValue(options.outFile, parser, "output");
+#if SEQAN_HAS_ZLIB
     getOptionValue(options.bamFormat, parser, "bam");
+#endif
     getOptionValue(options.verbose, parser, "verbose");
 
     return ArgumentParser::PARSE_OK;
@@ -214,9 +227,11 @@ int main(int argc, char const ** argv)
     else
     {
         // write to stdout
+#if SEQAN_HAS_ZLIB
         if (options.bamFormat)
             success = open(writer, std::cout, Bam());
         else
+#endif
             success = open(writer, std::cout, Sam());
     }
 
