@@ -18,7 +18,12 @@ int main(int argc, char ** argv)
         append(path, "/core/tests/seq_io/test_dna.fq");
     }
 
-    SequenceFile<Input> file(toCString(path));
+    SeqFileIn file;
+    if (!open(file, toCString(path)))
+    {
+        std::cerr << "Can't open the file." << std::endl;
+        return 1;
+    }
 
     CharString id;
     DnaString seq;

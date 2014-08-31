@@ -48,6 +48,9 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+typedef SmartFile<Fastq, Input>     SeqFileIn;
+typedef SmartFile<Fastq, Output>    SeqFileOut;
+
 // --------------------------------------------------------------------------
 // Tag AutoSeqFormat
 // --------------------------------------------------------------------------
@@ -100,7 +103,7 @@ typedef TagSelector<SeqFormats> AutoSeqFormat;
 template <typename TDirection, typename TSpec>
 struct FileFormats<SmartFile<Fastq, TDirection, TSpec> >
 {
-    typedef SeqFormats Type;
+    typedef AutoSeqFormat Type;
 };
 
 // ============================================================================
@@ -135,7 +138,7 @@ read(SmartFile<Fastq, TDirection, TSpec> & file, TIdString & meta, TSeqString & 
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-write(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
+writeRecord(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
     writeRecord(file.iter, meta, seq, file.format);
 }
@@ -146,9 +149,9 @@ write(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqSt
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-write(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
+writeRecord(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
 {
-    writeRecord(meta, seq, qual, file.iter, Fastq());
+    writeRecord(file.iter, meta, seq, qual, file.format);
 }
 
 }  // namespace seqan
