@@ -48,6 +48,9 @@ namespace seqan {
 template <typename TSmartFile>
 struct FileFormats;
 
+template <typename TSmartFile>
+struct SmartFileContext;
+
 // ============================================================================
 // Classes
 // ============================================================================
@@ -62,13 +65,22 @@ struct SmartFile
     typedef VirtualStream<char, TDirection>                 TStream;
     typedef typename Iterator<TStream, TDirection>::Type    TIter;
     typedef typename FileFormats<SmartFile>::Type           TFileFormats;
+    typedef typename SmartFileContext<SmartFile>::Type      TContext;
 
     TStream         stream;
     TIter           iter;
     TFileFormats    format;
+    TContext        ctx;
+    TContext        *ctxPtr;
 
     SmartFile() :
-        iter(stream)
+        iter(stream),
+        ctxPtr(&ctx)
+    {}
+
+    SmartFile(TContext &otherCtx) :
+        iter(stream),
+        ctxPtr(&otherCtx)
     {}
 
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
@@ -78,15 +90,38 @@ struct SmartFile
             throw IOError(std::string("Could not open file ") + fileName);
     }
 
+    SmartFile(TContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+        iter(stream),
+        ctxPtr(&otherCtx)
+    {
+        if (!open(*this, fileName, openMode))
+            throw IOError(std::string("Could not open file ") + fileName);
+    }
+
     ~SmartFile()
     {
         close(*this);
+    }
+
+    operator TContext & ()
+    {
+        return *ctxPtr;
     }
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction SmartFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TSmartFile>
+struct SmartFileContext
+{
+    typedef Nothing Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
@@ -187,10 +222,19 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
     return true;
 }
 
-template <typename TFileType, typename TSpec, typename TStream, typename TFormat>
+template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
 inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  TStream &stream,
-                 TFormat format)
+                 Tag<TFormat_> format)
+{
+    setFormat(file, format);
+    return open(file, stream);
+}
+
+template <typename TFileType, typename TSpec, typename TStream, typename TFormats>
+inline bool open(SmartFile<TFileType, Output, TSpec> & file,
+                 TStream &stream,
+                 TagSelector<TFormats> format)
 {
     setFormat(file, format);
     return open(file, stream);

@@ -31,11 +31,11 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in SAM or BAM format.
+// Smart file for reading/writing files in GFF or GTF format.
 // ==========================================================================
 
-#ifndef SEQAN_BAM_IO_BAM_FILE_H_
-#define SEQAN_BAM_IO_BAM_FILE_H_
+#ifndef SEQAN_GFF_IO_GFF_FILE_H_
+#define SEQAN_GFF_IO_GFF_FILE_H_
 
 namespace seqan {
 
@@ -47,8 +47,8 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Bam, Input>   BamFileIn;
-typedef SmartFile<Bam, Output>  BamFileOut;
+typedef SmartFile<Gff, Input>   GffFileIn;
+typedef SmartFile<Gff, Output>  GffFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -59,26 +59,26 @@ typedef SmartFile<Bam, Output>  BamFileOut;
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-struct BamFileContext_
+struct GffFileContext_
 {
     typedef StringSet<CharString>                       TNameStore;
     typedef NameStoreCache<TNameStore>                  TNameStoreCache;
-    typedef BamIOContext<TNameStore, TNameStoreCache>   TBamIOContext;
+    typedef GffIOContext<TNameStore, TNameStoreCache>   TGffIOContext;
 
     TNameStore      nameStore;
     TNameStoreCache nameStoreCache;
-    TBamIOContext   bamIOCtx;
+    TGffIOContext   gffIOCtx;
 
-    BamFileContext_() :
+    GffFileContext_() :
         nameStoreCache(nameStore),
-        bamIOCtx(nameStore, nameStoreCache)
+        gffIOCtx(nameStore, nameStoreCache)
     {}
 };
 
 template <typename TDirection, typename TSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, TSpec> >
+struct SmartFileContext<SmartFile<Gff, TDirection, TSpec> >
 {
-    typedef BamFileContext_<TSpec> Type;
+    typedef GffFileContext_<TSpec> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -86,88 +86,48 @@ struct SmartFileContext<SmartFile<Bam, TDirection, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Bam, TDirection, TSpec> >
+struct FileFormats<SmartFile<Gff, TDirection, TSpec> >
 {
-#if SEQAN_HAS_ZLIB
     typedef TagSelector<
-                TagList<Bam,
-                TagList<Sam
+                TagList<Gff,
+                TagList<Gtf
                 > >
             > Type;
-#else
-    typedef Sam Type;
-#endif
 };
 
 // --------------------------------------------------------------------------
-// _mapBamFormatToCompressionFormat
+// _mapGffFormatToCompressionFormat
 // --------------------------------------------------------------------------
 
 inline BgzfFile
-_mapFileFormatToCompressionFormat(Bam)
+_mapFileFormatToCompressionFormat(Gff)
 {
-    return BgzfFile();
+    return Nothing();
 }
 
 inline Nothing
-_mapFileFormatToCompressionFormat(Sam)
+_mapFileFormatToCompressionFormat(Gtf)
 {
     return Nothing();
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); BamHeader
+// Function read(); GffRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
 inline void
-readRecord(BamHeader & /* header */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+readRecord(GffRecord & /* record */,
+           GffIOContext<TNameStore, TNameStoreCache> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
 {}
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
 inline void
-readRecord(BamHeader & header,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
-           TForwardIter & iter,
-           TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        readRecord(header, context, iter, TFormat());
-    else
-        readRecord(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
-// convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-read(BamHeader & header, SmartFile<Bam, TDirection, TSpec> & file)
-{
-    readRecord(header, file.ctxPtr->bamIOCtx, file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function read(); BamAlignmentRecord
-// ----------------------------------------------------------------------------
-
-// support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
-inline void
-readRecord(BamAlignmentRecord & /* record */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
-           TForwardIter & /* iter */,
-           TagSelector<> const & /* format */)
-{}
-
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
-inline void
-readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+readRecord(GffRecord & record,
+           GffIOContext<TNameStore, TNameStoreCache> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
@@ -179,68 +139,32 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convient GffFile variant
 template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-read(BamAlignmentRecord & record, SmartFile<Bam, TDirection, TSpec> & file)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Gff, TDirection, TSpec>::TStream> >, void)
+read(GffRecord & record, SmartFile<Gff, TDirection, TSpec> & file)
 {
-    readRecord(record, file.ctxPtr->bamIOCtx, file.iter, file.format);
+    readRecord(record, file.ctxPtr->gffIOCtx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BamHeader
+// Function write(); GffRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
 template <typename TTarget, typename TNameStore, typename TNameStoreCache>
 inline void
 write(TTarget & /* target */,
-      BamHeader const & /* header */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
-      TagSelector<> const & /* format */)
-{}
-
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
-inline void
-write(TTarget & target,
-      BamHeader const & header,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
-      TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        write(target, header, context, TFormat());
-    else
-        write(target, header, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
-// convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Bam, TDirection, TSpec> & file, BamHeader & header)
-{
-    write(file.iter, header, file.ctxPtr->bamIOCtx, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function write(); BamAlignmentRecord
-// ----------------------------------------------------------------------------
-
-// support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
-inline void
-write(TTarget & /* target */,
-      BamAlignmentRecord & /* record */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      GffRecord & /* record */,
+      GffIOContext<TNameStore, TNameStoreCache> & /* context */,
       TagSelector<> const & /* format */)
 {}
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
 inline void
 writeRecord(TTarget & target,
-            BamAlignmentRecord & record,
-            BamIOContext<TNameStore, TNameStoreCache> & context,
+            GffRecord & record,
+            GffIOContext<TNameStore, TNameStoreCache> & context,
             TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
@@ -252,12 +176,12 @@ writeRecord(TTarget & target,
 }
 
 template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Bam, TDirection, TSpec> & file, BamAlignmentRecord & record)
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Gff, TDirection, TSpec>::TStream> >, void)
+writeRecord(SmartFile<Gff, TDirection, TSpec> & file, GffRecord & record)
 {
-    write(file.iter, record, file.ctxPtr->bamIOCtx, file.format);
+    write(file.iter, record, file.ctxPtr->gffIOCtx, file.format);
 }
 
 }  // namespace seqan
 
-#endif // SEQAN_BAM_IO_BAM_FILE_H_
+#endif // SEQAN_GFF_IO_GFF_FILE_H_

@@ -77,14 +77,14 @@ struct AppOptions
 template <typename TWriter>
 void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
-    String<SmartFile<Bam, Input> *> readerPtr;
+    String<BamFileIn *> readerPtr;
     resize(readerPtr, length(inFiles));
 
     // Step 1: Merge all headers (if available)
     BamHeader header;
     for (unsigned i = 0; i < length(inFiles); ++i)
     {
-        readerPtr[i] = new SmartFile<Bam, Input>(writer);
+        readerPtr[i] = new BamFileIn(writer);
 
         bool success;
         if (inFiles[i] != "-")
@@ -101,12 +101,12 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions c
             continue;
         }
 
-        readRecord(header, *(readerPtr[i]));
+        read(header, *(readerPtr[i]));
     }
 
     // Step 2: Remove duplicate header entries and write merged header
     removeDuplicates(header);
-    write(writer, header);
+    writeRecord(writer, header);
 
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;
@@ -120,8 +120,8 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions c
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
-            readRecord(record, *readerPtr[i]);
-            write(writer, record);
+            read(record, *readerPtr[i]);
+            writeRecord(writer, record);
             ++numRecords;
         }
         close(*readerPtr[i]);
@@ -208,7 +208,7 @@ int main(int argc, char const ** argv)
         return res == ArgumentParser::PARSE_ERROR;
 
     bool success;
-    SmartFile<Bam, Output> writer;
+    BamFileOut writer;
     if (!empty(options.outFile))
         success = open(writer, toCString(options.outFile));
     else

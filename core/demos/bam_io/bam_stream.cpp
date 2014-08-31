@@ -10,7 +10,7 @@ int main()
     std::string pathSam = std::string(SEQAN_PATH_TO_ROOT()) + "/core/demos/bam_io/example.sam";
    
     BamFileIn bamFileIn;
-    if (!open(bamFileIn, pathSam.c_str()))
+    if (!open(bamFileIn, toCString(pathSam)))
     {
         std::cerr << "Can't open the file." << std::endl;
         return 1;
@@ -22,14 +22,14 @@ int main()
 
     // Copy header. The header is automatically written out before the first record.
     BamHeader header;
-    readRecord(header, bamFileIn);
+    read(header, bamFileIn);
     write(bamFileOut, header);
 
     // BamAlignmentRecord stores one record at a time.
     BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
-        readRecord(record, bamFileIn);
+        read(record, bamFileIn);
         write(bamFileOut, record);
     }
     return 0;
