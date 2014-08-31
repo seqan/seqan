@@ -107,6 +107,14 @@ struct SmartFile
     {
         return *ctxPtr;
     }
+
+    static std::vector<std::string>
+    getFileFormatExtensions()
+    {
+        std::vector<std::string> extensions;
+        _getFileFormatExtensions(extensions, TFileFormats());
+        return extensions;
+    }
 };
 
 // ============================================================================
@@ -282,6 +290,18 @@ atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
     return atEnd(file.iter);
 }
+
+// ----------------------------------------------------------------------------
+// Function getFileFormatExtensions()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+static std::vector<std::string>
+getFileFormatExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
+{
+    return file.getFileFormatExtensions();
+}
+
 
 }  // namespace seqan
 
