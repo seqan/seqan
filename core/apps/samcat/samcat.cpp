@@ -101,7 +101,7 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions c
             continue;
         }
 
-        read(header, *(readerPtr[i]));
+        readRecord(header, *(readerPtr[i]));
     }
 
     // Step 2: Remove duplicate header entries and write merged header
@@ -120,7 +120,7 @@ void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions c
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
-            read(record, *readerPtr[i]);
+            readRecord(record, *readerPtr[i]);
             writeRecord(writer, record);
             ++numRecords;
         }

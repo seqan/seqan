@@ -78,13 +78,13 @@ struct SmartFile
     typedef typename Iterator<TStream, TDirection>::Type                TIter;
     typedef typename FileFormats<SmartFile>::Type                       TFileFormats;
     typedef typename SmartFileContext<SmartFile, Owner<> >::Type        TOwnerContext;
-    typedef typename SmartFileContext<SmartFile, Dependent<> >::Type    TDependantContext;
+    typedef typename SmartFileContext<SmartFile, Dependent<> >::Type    TDependentContext;
 
     TStream             stream;
     TIter               iter;
     TFileFormats        format;
     TOwnerContext       data_context;
-    TDependantContext   context;
+    TDependentContext   context;
 
     SmartFile() :
         iter(stream),
@@ -92,7 +92,7 @@ struct SmartFile
     {}
 
     explicit
-    SmartFile(TDependantContext &otherCtx) :
+    SmartFile(TDependentContext &otherCtx) :
         iter(stream),
         context(otherCtx)
     {}
@@ -106,7 +106,7 @@ struct SmartFile
             throw IOError(std::string("Could not open file ") + fileName);
     }
 
-    SmartFile(TDependantContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+    SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         iter(stream),
         context(otherCtx)
     {
@@ -119,7 +119,7 @@ struct SmartFile
         close(*this);
     }
 
-    operator TDependantContext & ()
+    operator TDependentContext & ()
     {
         return context;
     }
