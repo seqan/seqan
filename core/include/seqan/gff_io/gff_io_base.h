@@ -90,9 +90,44 @@ typedef Tag<TagGff_> Gff;
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
 
-struct GffContext
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Gtf, T> :
+    public MagicHeader<Nothing, T> {};
+
+template <typename T>
+struct MagicHeader<Gff, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Gff, T>
 {
-    String<char> buffer;
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Gff, T>::VALUE[1] =
+{
+    ".gff"     // default output extension
+};
+
+template <typename T>
+struct FileFormatExtensions<Gtf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
+{
+    ".gtf"     // default output extension
 };
 
 // ----------------------------------------------------------------------------
@@ -244,18 +279,18 @@ struct GffRecord
 
     // TODO(singer): Maybe use a I/O context object and store ids as integers
     // The ID of the landmark used to establish the coordinate system for the current feature.
-    String<char> ref;
+    CharString ref;
     int rID;
 
     // The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this feature.
-    String<char> source;
+    CharString source;
 
     // The type of the feature
-    String<char> type;
+    CharString type;
 
     // A list of feature attributes in the format tag=value.
-    StringSet<String<char> > tagName;
-    StringSet<String<char> > tagValue;
+    StringSet<CharString> tagName;
+    StringSet<CharString> tagValue;
 
     // The start and end of the feature, in 1-based integer coordinates, relative to the landmark given in column 1
     __uint32 beginPos;
@@ -427,7 +462,7 @@ inline void clear(GffRecord & record)
 
 template <typename TFwdIterator>
 inline void
-_readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
+_readGffRecord(GffRecord & record, TFwdIterator & iter, CharString & buffer)
 {
     IsNewline isNewline;
 
@@ -453,15 +488,16 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     skipOne(iter);
 
     // read column 4: begin position
-    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
-    record.beginPos = lexicalCast<__uint32>(context.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.beginPos = lexicalCast<__uint32>(buffer);
     --record.beginPos;  // Translate from 1-based to 0-based.
     skipOne(iter);
 
     // read column 5: end position
-    clear(context.buffer);
-    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
-    record.endPos = lexicalCast<__uint32>(context.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.endPos = lexicalCast<__uint32>(buffer);
     skipOne(iter);
 
     //check if end < begin
@@ -469,10 +505,10 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
         throw std::runtime_error("The begin position of the record is larger than the end position!");
 
     // read column 6: score
-    clear(context.buffer);
-    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
-    if (context.buffer != ".")
-        record.score = lexicalCast<float>(context.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    if (buffer != ".")
+        record.score = lexicalCast<float>(buffer);
     skipOne(iter, IsTab());
 
     // read column 7: strand
@@ -494,8 +530,8 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     while (!atEnd(iter))
     {
 
-        String<char> _key;
-        String<char> _value;
+        CharString _key;
+        CharString _value;
         // Read next key/value pair.
         _parseReadGffKeyValue(_value, _key, iter);
 
@@ -515,53 +551,24 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
     return;
 }
 
-template <typename TFwdIterator, typename TTag>
+template <typename TNameStore, typename TNameStoreCache, typename TFwdIterator, typename TTag>
 inline void 
-readRecord(GffRecord & record, TFwdIterator & iter, Tag<TTag> const & /*tag*/, GffContext & context)
-{
-    _readGffRecord(record, iter, context);
-}
-
-template <typename TFwdIterator, typename TTag>
-inline void 
-readRecord(GffRecord & record, TFwdIterator & iter, Tag<TTag> const & tag)
-{
-    GffContext context;
-    readRecord(record, iter, tag, context);
-}
-
-// TODO(singer): Needs proper documentation!!! Check the length of the stores!!!
-template <typename TFwdIterator, typename TContextSpec, typename TContextSpec2>
-inline void
-_readGffRecord(GffRecord & record, TFwdIterator & iter, GffIOContext<TContextSpec, TContextSpec2> & ioContext, GffContext & gffContext)
+readRecord(GffRecord & record,
+           GffIOContext<TNameStore, TNameStoreCache> & context,
+           TFwdIterator & iter,
+           Tag<TTag> const & /*tag*/)
 {
     // Read record with string ref from GFF file.
-    _readGffRecord(record, iter, gffContext);
+    _readGffRecord(record, iter, context.buffer);
 
     // Translate ref to rID using the context.  If there is no such sequence name in the context yet then we add it.
     unsigned idx = 0;
-    if (!getIdByName(nameStore(ioContext), record.ref, idx, nameStoreCache(ioContext)))
+    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
     {
-        idx = length(nameStore(ioContext));
-        appendName(nameStore(ioContext), record.ref, nameStoreCache(ioContext));
+        idx = length(nameStore(context));
+        appendName(nameStore(context), record.ref, nameStoreCache(context));
     }
     record.rID = idx;
-}
-
-template <typename TFwdIterator, typename TContextSpec, typename TContextSpec2>
-inline void
-_readGffRecord(GffRecord & record, TFwdIterator & iter, GffIOContext<TContextSpec, TContextSpec2> & ioCcontext)
-{
-    GffContext gffContext;
-    _readGffRecord(record, iter, ioCcontext, gffContext);
-}
-
-
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2, typename TTag>
-inline void
-readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Tag<TTag> const & /*tag*/)
-{
-    _readGffRecord(record, reader, context);
 }
 
 // ----------------------------------------------------------------------------
@@ -799,7 +806,7 @@ writeRecord(TTarget & target, GffRecord const & record, GffIOContext<TContextSpe
 {
     if (record.rID != GffRecord::INVALID_IDX)
     {
-        String<char> tempSeqId = nameStore(context)[record.rID];
+        CharString tempSeqId = nameStore(context)[record.rID];
         return _writeRecordImpl(target, record, tempSeqId, tag);
     }
     return _writeRecordImpl(target, record, record.ref, tag);

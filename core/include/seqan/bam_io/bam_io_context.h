@@ -147,23 +147,58 @@ TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 ..summary:The name store cache class.
 */
 
-template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_> >
+template <typename TArgT, typename TArgF>
+inline TArgT SEQAN_FORWARD_RETURN
+ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF SEQAN_FORWARD_ARG)
+{
+    return SEQAN_FORWARD(TArgT, argTrue);
+}
+
+template <typename TArgT, typename TArgF>
+inline TArgF SEQAN_FORWARD_RETURN
+ifSwitch(False, TArgT SEQAN_FORWARD_ARG, TArgF SEQAN_FORWARD_ARG argFalse)
+{
+    return SEQAN_FORWARD(TArgF, argFalse);
+}
+
+template <typename TPredicate, typename TArgT, typename TArgF>
+inline TArgF SEQAN_FORWARD_RETURN
+ifSwitch(TPredicate, TArgT SEQAN_FORWARD_ARG argTrue, TArgF SEQAN_FORWARD_ARG argFalse)
+{
+    return ifSwitch(typename TPredicate::Type(), SEQAN_FORWARD(TArgT, argTrue), SEQAN_FORWARD(TArgF, argFalse));
+}
+
+template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_>, typename TStorageSpec = Owner<> >
 class BamIOContext
 {
 public:
     typedef TNameStore_ TNameStore;
     typedef TNameStoreCache_ TNameStoreCache;
 
-    TNameStore * _nameStore;
-    TNameStoreCache * _nameStoreCache;
-    CharString buffer;
-    String<unsigned> translateFile2GlobalRefId;
+    typedef typename StorageSwitch<TNameStore, TStorageSpec>::Type      TNameStoreMember;
+    typedef typename StorageSwitch<TNameStoreCache, TStorageSpec>::Type TNameStoreCacheMember;
 
-    BamIOContext() : _nameStore(0), _nameStoreCache(0)
+    TNameStoreMember        _nameStore;
+    TNameStoreCacheMember   _nameStoreCache;
+    CharString              buffer;
+    String<unsigned>        translateFile2GlobalRefId;
+
+    BamIOContext() :
+        _nameStore(TNameStoreMember()),
+        _nameStoreCache(ifSwitch(IsSameType<TStorageSpec, Owner<> >(),
+                                 _nameStore,
+                                 TNameStoreCacheMember()))
     {}
 
     BamIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
-            _nameStore(&nameStore), _nameStoreCache(&nameStoreCache)
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore)),
+        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache))
+    {}
+
+    template <typename TOtherStorageSpec>
+    BamIOContext(BamIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
+        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache(other)))
     {}
 };
 
@@ -202,21 +237,18 @@ public:
 ..include:seqan/bam_io.h
 */
 
-// TODO(holtgrew): Rename to referenceNameStore
 template <typename TNameStore, typename TNameStoreCache>
 TNameStore &
 nameStore(BamIOContext<TNameStore, TNameStoreCache> & context)
 {
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
+    return _referenceCast<TNameStore &>(context._nameStore);
 }
 
 template <typename TNameStore, typename TNameStoreCache>
 TNameStore const &
 nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 {
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
+    return _referenceCast<TNameStore const &>(context._nameStore);
 }
 
 // ----------------------------------------------------------------------------
@@ -248,21 +280,18 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 ..see:Function.BamIOContext#nameStore
 */
 
-// TODO(holtgrew): Rename to referenceNameStoreCache
 template <typename TNameStore, typename TNameStoreCache>
 TNameStoreCache &
 nameStoreCache(BamIOContext<TNameStore, TNameStoreCache> & context)
 {
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
+    return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
 }
 
 template <typename TNameStore, typename TNameStoreCache>
 TNameStoreCache const &
 nameStoreCache(BamIOContext<TNameStore, TNameStoreCache> const & context)
 {
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
+    return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
 }
 
 }  // namespace seqan

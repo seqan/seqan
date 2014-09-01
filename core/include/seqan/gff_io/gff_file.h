@@ -58,27 +58,13 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec>
-struct GffFileContext_
+template <typename TDirection, typename TSpec, typename TOwnerSpec>
+struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TOwnerSpec>
 {
-    typedef StringSet<CharString>                       TNameStore;
-    typedef NameStoreCache<TNameStore>                  TNameStoreCache;
-    typedef GffIOContext<TNameStore, TNameStoreCache>   TGffIOContext;
+    typedef StringSet<CharString>                                   TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
 
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache;
-    TGffIOContext   gffIOCtx;
-
-    GffFileContext_() :
-        nameStoreCache(nameStore),
-        gffIOCtx(nameStore, nameStoreCache)
-    {}
-};
-
-template <typename TDirection, typename TSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec> >
-{
-    typedef GffFileContext_<TSpec> Type;
+    typedef GffIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -99,7 +85,7 @@ struct FileFormats<SmartFile<Gff, TDirection, TSpec> >
 // _mapGffFormatToCompressionFormat
 // --------------------------------------------------------------------------
 
-inline BgzfFile
+inline Nothing
 _mapFileFormatToCompressionFormat(Gff)
 {
     return Nothing();
@@ -116,15 +102,15 @@ _mapFileFormatToCompressionFormat(Gtf)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TForwardIter>
 inline void
 readRecord(GffRecord & /* record */,
-           GffIOContext<TNameStore, TNameStoreCache> & /* context */,
+           GffIOContext<TNameStore, TNameStoreCache> & context,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
 {}
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TNameStore, typename TNameStoreCache, typename TForwardIter, typename TTagList>
 inline void
 readRecord(GffRecord & record,
            GffIOContext<TNameStore, TNameStoreCache> & context,
@@ -140,11 +126,11 @@ readRecord(GffRecord & record,
 }
 
 // convient GffFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Gff, TDirection, TSpec>::TStream> >, void)
-read(GffRecord & record, SmartFile<Gff, TDirection, TSpec> & file)
+template <typename TSpec>
+inline void
+readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 {
-    readRecord(record, file.ctxPtr->gffIOCtx, file.iter, file.format);
+    readRecord(record, context(file).gffIOCtx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -175,11 +161,11 @@ writeRecord(TTarget & target,
         write(target, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Gff, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Gff, TDirection, TSpec> & file, GffRecord & record)
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
 {
-    write(file.iter, record, file.ctxPtr->gffIOCtx, file.format);
+    write(file.iter, record, context(file).gffIOCtx, file.format);
 }
 
 }  // namespace seqan

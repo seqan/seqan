@@ -58,27 +58,13 @@ typedef SmartFile<Bam, Output>  BamFileOut;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec>
-struct BamFileContext_
+template <typename TDirection, typename TSpec, typename TOwnerSpec>
+struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TOwnerSpec>
 {
-    typedef StringSet<CharString>                       TNameStore;
-    typedef NameStoreCache<TNameStore>                  TNameStoreCache;
-    typedef BamIOContext<TNameStore, TNameStoreCache>   TBamIOContext;
+    typedef StringSet<CharString>                                   TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
 
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache;
-    TBamIOContext   bamIOCtx;
-
-    BamFileContext_() :
-        nameStoreCache(nameStore),
-        bamIOCtx(nameStore, nameStoreCache)
-    {}
-};
-
-template <typename TDirection, typename TSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, TSpec> >
-{
-    typedef BamFileContext_<TSpec> Type;
+    typedef BamIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -144,11 +130,11 @@ readRecord(BamHeader & header,
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-read(BamHeader & header, SmartFile<Bam, TDirection, TSpec> & file)
+template <typename TSpec>
+inline void
+read(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(header, file.ctxPtr->bamIOCtx, file.iter, file.format);
+    readRecord(header, context(file).bamIOCtx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -180,11 +166,11 @@ readRecord(BamAlignmentRecord & record,
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-read(BamAlignmentRecord & record, SmartFile<Bam, TDirection, TSpec> & file)
+template <typename TSpec>
+inline void
+read(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(record, file.ctxPtr->bamIOCtx, file.iter, file.format);
+    readRecord(record, context(file).bamIOCtx, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -216,11 +202,11 @@ write(TTarget & target,
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Bam, TDirection, TSpec> & file, BamHeader & header)
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 {
-    write(file.iter, header, file.ctxPtr->bamIOCtx, file.format);
+    write(file.iter, header, context(file).bamIOCtx, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -251,11 +237,11 @@ writeRecord(TTarget & target,
         write(target, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Bam, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Bam, TDirection, TSpec> & file, BamAlignmentRecord & record)
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
 {
-    write(file.iter, record, file.ctxPtr->bamIOCtx, file.format);
+    write(file.iter, record, context(file).bamIOCtx, file.format);
 }
 
 }  // namespace seqan
