@@ -48,12 +48,24 @@ namespace seqan {
 template <typename TSmartFile>
 struct FileFormats;
 
-template <typename TSmartFile>
+template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext;
 
 // ============================================================================
 // Classes
 // ============================================================================
+
+template <typename TObject, typename TStorageSpec>
+struct StorageSwitch
+{
+    typedef TObject Type;
+};
+
+template <typename TObject, typename TSpec>
+struct StorageSwitch<TObject, Dependent<TSpec> >
+{
+    typedef TObject * Type;
+};
 
 // ----------------------------------------------------------------------------
 // Class SmartFile
@@ -62,27 +74,30 @@ struct SmartFileContext;
 template <typename TFileType, typename TDirection, typename TSpec = void>
 struct SmartFile
 {
-    typedef VirtualStream<char, TDirection>                 TStream;
-    typedef typename Iterator<TStream, TDirection>::Type    TIter;
-    typedef typename FileFormats<SmartFile>::Type           TFileFormats;
-    typedef typename SmartFileContext<SmartFile>::Type      TContext;
+    typedef VirtualStream<char, TDirection>                             TStream;
+    typedef typename Iterator<TStream, TDirection>::Type                TIter;
+    typedef typename FileFormats<SmartFile>::Type                       TFileFormats;
+    typedef typename SmartFileContext<SmartFile, Owner<> >::Type        TOwnerContext;
+    typedef typename SmartFileContext<SmartFile, Dependent<> >::Type    TDependantContext;
 
-    TStream         stream;
-    TIter           iter;
-    TFileFormats    format;
-    TContext        ctx;
-    TContext        *ctxPtr;
+    TStream             stream;
+    TIter               iter;
+    TFileFormats        format;
+    TOwnerContext       data_context;
+    TDependantContext   context;
 
     SmartFile() :
         iter(stream),
-        ctxPtr(&ctx)
+        context(data_context)
     {}
 
-    SmartFile(TContext &otherCtx) :
+    explicit
+    SmartFile(TDependantContext &otherCtx) :
         iter(stream),
-        ctxPtr(&otherCtx)
+        context(otherCtx)
     {}
 
+    explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         iter(stream)
     {
@@ -90,9 +105,9 @@ struct SmartFile
             throw IOError(std::string("Could not open file ") + fileName);
     }
 
-    SmartFile(TContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+    SmartFile(TDependantContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         iter(stream),
-        ctxPtr(&otherCtx)
+        context(otherCtx)
     {
         if (!open(*this, fileName, openMode))
             throw IOError(std::string("Could not open file ") + fileName);
@@ -103,9 +118,9 @@ struct SmartFile
         close(*this);
     }
 
-    operator TContext & ()
+    operator TDependantContext & ()
     {
-        return *ctxPtr;
+        return context;
     }
 
     static std::vector<std::string>
@@ -117,6 +132,16 @@ struct SmartFile
     }
 };
 
+// ----------------------------------------------------------------------------
+// Concepts
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TSpec>
+SEQAN_CONCEPT_IMPL((SmartFile<TFileType, Input, TSpec>), (InputStreamConcept));
+
+template <typename TFileType, typename TSpec>
+SEQAN_CONCEPT_IMPL((SmartFile<TFileType, Output, TSpec>), (OutputStreamConcept));
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -125,7 +150,7 @@ struct SmartFile
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSmartFile>
+template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext
 {
     typedef Nothing Type;
@@ -289,6 +314,17 @@ inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<TFileType, 
 atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
     return atEnd(file.iter);
+}
+
+// ----------------------------------------------------------------------------
+// Function context()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
+context(SmartFile<TFileType, TDirection, TSpec> & file)
+{
+    return file.context;
 }
 
 // ----------------------------------------------------------------------------

@@ -145,6 +145,10 @@ public:
     // TODO(holtgrew): Mutable here necessary for conceptual const-ness.  However, we would rather have a thread-safe interface!
     TName mutable name;
 
+//    NameStoreCache() :
+//        nameStore(NULL)
+//    {}
+//
     NameStoreCache(TNameStore &_nameStore):
         nameSet(TLess(_nameStore, name)),
         nameStore(&_nameStore)

@@ -608,21 +608,28 @@ SEQAN_CHECKPOINT
 }
 
 // --------------------------------------------------------------------------
-// Function _dereference()
+// Function _referenceCast()
 // --------------------------------------------------------------------------
 
 // explicitly give desired dereferenced type as first argument,
 // e.g. _dereference<int>(int*) or _dereference<Segment<..> &>(Segment<..> &)
 template <typename T>
 inline T
-_dereference(typename RemoveReference<T>::Type & ptr)
+_referenceCast(typename RemoveReference<T>::Type & ptr)
 {
     return ptr;
 }
 
 template <typename T>
 inline T
-_dereference(typename RemoveReference<T>::Type * ptr)
+_referenceCast(typename RemoveReference<T>::Type * ptr)
+{
+    return *ptr;
+}
+
+template <typename T>
+inline T
+_referenceCast(typename RemovePointer<T>::Type * ptr)
 {
     return *ptr;
 }

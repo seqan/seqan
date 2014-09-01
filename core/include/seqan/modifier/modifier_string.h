@@ -521,14 +521,14 @@ template <typename THost, typename TSpec>
 inline typename Host<ModifiedString<THost, TSpec> >::Type &
 host(ModifiedString<THost, TSpec> & me)
 {
-    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
+    return _referenceCast<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
 }
 
 template <typename THost, typename TSpec>
 inline typename Host<ModifiedString<THost, TSpec> const>::Type &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _dereference<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
+    return _referenceCast<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
 }
 
 // --------------------------------------------------------------------------
