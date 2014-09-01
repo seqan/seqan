@@ -63,7 +63,6 @@ struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TOwnerSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-
     typedef BamIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
 };
 
@@ -106,18 +105,20 @@ _mapFileFormatToCompressionFormat(Sam)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamHeader & /* header */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 readRecord(BamHeader & header,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
@@ -132,9 +133,9 @@ readRecord(BamHeader & header,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-read(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
+readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(header, context(file).bamIOCtx, file.iter, file.format);
+    readRecord(header, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -142,18 +143,20 @@ read(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & /* record */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
@@ -168,9 +171,9 @@ readRecord(BamAlignmentRecord & record,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-read(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
+readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(record, context(file).bamIOCtx, file.iter, file.format);
+    readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -178,19 +181,21 @@ read(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
       BamHeader const & /* header */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileOut: File format not specified.");
+}
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 write(TTarget & target,
       BamHeader const & header,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
       TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
@@ -206,7 +211,7 @@ template <typename TSpec>
 inline void
 writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 {
-    write(file.iter, header, context(file).bamIOCtx, file.format);
+    write(file.iter, header, context(file), file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -214,20 +219,22 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
       BamAlignmentRecord & /* record */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileOut: File format not specified.");
+}
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
-writeRecord(TTarget & target,
-            BamAlignmentRecord & record,
-            BamIOContext<TNameStore, TNameStoreCache> & context,
-            TagSelector<TTagList> const & format)
+write(TTarget & target,
+      BamAlignmentRecord & record,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+      TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
 
@@ -241,7 +248,7 @@ template <typename TSpec>
 inline void
 writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
 {
-    write(file.iter, record, context(file).bamIOCtx, file.format);
+    write(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan

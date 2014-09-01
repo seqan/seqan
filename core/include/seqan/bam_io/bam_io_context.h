@@ -147,27 +147,6 @@ TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 ..summary:The name store cache class.
 */
 
-template <typename TArgT, typename TArgF>
-inline TArgT SEQAN_FORWARD_RETURN
-ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF SEQAN_FORWARD_ARG)
-{
-    return SEQAN_FORWARD(TArgT, argTrue);
-}
-
-template <typename TArgT, typename TArgF>
-inline TArgF SEQAN_FORWARD_RETURN
-ifSwitch(False, TArgT SEQAN_FORWARD_ARG, TArgF SEQAN_FORWARD_ARG argFalse)
-{
-    return SEQAN_FORWARD(TArgF, argFalse);
-}
-
-template <typename TPredicate, typename TArgT, typename TArgF>
-inline TArgF SEQAN_FORWARD_RETURN
-ifSwitch(TPredicate, TArgT SEQAN_FORWARD_ARG argTrue, TArgF SEQAN_FORWARD_ARG argFalse)
-{
-    return ifSwitch(typename TPredicate::Type(), SEQAN_FORWARD(TArgT, argTrue), SEQAN_FORWARD(TArgF, argFalse));
-}
-
 template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_>, typename TStorageSpec = Owner<> >
 class BamIOContext
 {
@@ -185,7 +164,7 @@ public:
 
     BamIOContext() :
         _nameStore(TNameStoreMember()),
-        _nameStoreCache(ifSwitch(IsSameType<TStorageSpec, Owner<> >(),
+        _nameStoreCache(ifSwitch(typename IsSameType<TStorageSpec, Owner<> >::Type(),
                                  _nameStore,
                                  TNameStoreCacheMember()))
     {}
@@ -237,16 +216,16 @@ public:
 ..include:seqan/bam_io.h
 */
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore &
-nameStore(BamIOContext<TNameStore, TNameStoreCache> & context)
+nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStore &>(context._nameStore);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore const &
-nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
+nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStore const &>(context._nameStore);
 }
@@ -280,16 +259,16 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 ..see:Function.BamIOContext#nameStore
 */
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache &
-nameStoreCache(BamIOContext<TNameStore, TNameStoreCache> & context)
+nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache const &
-nameStoreCache(BamIOContext<TNameStore, TNameStoreCache> const & context)
+nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
 }

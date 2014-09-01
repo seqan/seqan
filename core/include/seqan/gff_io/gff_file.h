@@ -63,7 +63,6 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TOwnerSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-
     typedef GffIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
 };
 
@@ -102,18 +101,20 @@ _mapFileFormatToCompressionFormat(Gtf)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TNameStore, typename TNameStoreCache, typename TForwardIter>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TForwardIter>
 inline void
 readRecord(GffRecord & /* record */,
-           GffIOContext<TNameStore, TNameStoreCache> & context,
+           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("GffFileIn: File format not specified.");
+}
 
-template <typename TNameStore, typename TNameStoreCache, typename TForwardIter, typename TTagList>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TForwardIter, typename TTagList>
 inline void
 readRecord(GffRecord & record,
-           GffIOContext<TNameStore, TNameStoreCache> & context,
+           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
@@ -130,7 +131,7 @@ template <typename TSpec>
 inline void
 readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 {
-    readRecord(record, context(file).gffIOCtx, file.iter, file.format);
+    readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -138,19 +139,21 @@ readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
       GffRecord & /* record */,
-      GffIOContext<TNameStore, TNameStoreCache> & /* context */,
+      GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("GffFileOut: File format not specified.");
+}
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 writeRecord(TTarget & target,
             GffRecord & record,
-            GffIOContext<TNameStore, TNameStoreCache> & context,
+            GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
@@ -165,7 +168,7 @@ template <typename TSpec>
 inline void
 writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
 {
-    write(file.iter, record, context(file).gffIOCtx, file.format);
+    write(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan

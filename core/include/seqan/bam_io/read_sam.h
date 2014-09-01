@@ -144,9 +144,9 @@ inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
 // Function readRecord()                                        BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void readRecord(BamHeaderRecord & record,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
                TForwardIter & iter,
                Sam const & /*tag*/)
 {
@@ -220,9 +220,9 @@ void readRecord(BamHeaderRecord & record,
 ...remarks:Use for SAM.
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
                TForwardIter & iter,
                Sam const & tag)
 {
@@ -277,9 +277,9 @@ inline void readRecord(BamHeader & header,
 ..signature:readRecord(alignmentRecord, context, recordReader, tag)
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void readRecord(BamAlignmentRecord & record,
-            BamIOContext<TNameStore, TNameStoreCache> & context,
+            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {

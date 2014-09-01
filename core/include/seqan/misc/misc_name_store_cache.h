@@ -145,13 +145,21 @@ public:
     // TODO(holtgrew): Mutable here necessary for conceptual const-ness.  However, we would rather have a thread-safe interface!
     TName mutable name;
 
-//    NameStoreCache() :
-//        nameStore(NULL)
-//    {}
-//
-    NameStoreCache(TNameStore &_nameStore):
+    NameStoreCache() :
+        nameStore(NULL)
+    {}
+
+    NameStoreCache(TNameStore & _nameStore):
         nameSet(TLess(_nameStore, name)),
         nameStore(&_nameStore)
+    {
+        for (unsigned i = 0; i < length(*nameStore); ++i)
+            nameSet.insert(i);
+    }
+
+    NameStoreCache(NameStoreCache const & other):
+        nameSet(TLess(*other.nameStore, name)),
+        nameStore(other.nameStore)
     {
         for (unsigned i = 0; i < length(*nameStore); ++i)
             nameSet.insert(i);

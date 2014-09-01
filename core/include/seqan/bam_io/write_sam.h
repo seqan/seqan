@@ -59,10 +59,10 @@ namespace seqan {
 // Function write2()                                            BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
            BamHeaderRecord const & header,
-           BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & /*context*/,
            Sam const & /*tag*/)
 {
     char const * headerTypes[] = {"@HD", "@SQ", "@RG", "@PG", "@CO"};
@@ -91,10 +91,10 @@ inline void write(TTarget & target,
 // Function write2()                                                  BamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
            BamHeader const & header,
-           BamIOContext<TNameStore, TNameStoreCache> const & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context,
            Sam const & tag)
 {
     std::set<CharString> writtenSeqInfos;
@@ -134,10 +134,10 @@ inline void write(TTarget & target,
 // Function write2()                                         BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
            BamAlignmentRecord const & record,
-           BamIOContext<TNameStore, TNameStoreCache> const & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context,
            Sam const & /*tag*/)
 {
     write(target, record.qName);

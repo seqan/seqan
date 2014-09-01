@@ -78,10 +78,10 @@ namespace seqan {
  */
 
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
            BamHeader const & header,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            Bam const & /*tag*/)
 {
     write(target, "BAM\1");
@@ -136,10 +136,10 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
     return 0;
 }
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
            BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            Bam const & /*tag*/)
 {
     typedef typename Iterator<CharString, Standard>::Type                                   TCharIter;

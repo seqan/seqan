@@ -138,9 +138,9 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 ..include:seqan/bam_io.h
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
                TForwardIter & iter,
                Bam const & /*tag*/)
 {
@@ -218,10 +218,10 @@ void readRecord(BamHeader & header,
 ..param.alignmentRecord.type:Class.BamAlignmentRecord
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Bam const & /*tag*/)
 {
