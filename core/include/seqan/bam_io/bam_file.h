@@ -58,12 +58,12 @@ typedef SmartFile<Bam, Output>  BamFileOut;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TOwnerSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TOwnerSpec>
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-    typedef BamIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
+    typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
 };
 
 // ----------------------------------------------------------------------------

@@ -58,12 +58,12 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TOwnerSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TOwnerSpec>
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-    typedef GffIOContext<TNameStore, TNameStoreCache, TOwnerSpec>   Type;
+    typedef GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
 };
 
 // ----------------------------------------------------------------------------

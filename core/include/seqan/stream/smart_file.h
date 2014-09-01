@@ -99,7 +99,8 @@ struct SmartFile
 
     explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        iter(stream)
+        iter(stream),
+        context(data_context)
     {
         if (!open(*this, fileName, openMode))
             throw IOError(std::string("Could not open file ") + fileName);
