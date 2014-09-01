@@ -155,7 +155,8 @@ void write(TTarget & target,
     record._l_qseq = length(record.seq);
 
     resize(context.buffer, sizeof(BamAlignmentRecordCore) + record._l_qname +
-           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq);
+           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq +
+           length(record.tags));
     TCharIter it = begin(context.buffer, Standard());
 
     // bin_mq_nl

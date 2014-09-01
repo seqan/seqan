@@ -289,11 +289,11 @@ readRecord(BamAlignmentRecord & record,
     resize(record.qual, record._l_qseq, Exact());
     // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
     // representation of '*';
-    if (!empty(record.qual) && record.qual[0] == '\xff')
-        clear(record.qual);
     TQualIter qitEnd = end(record.qual, Standard());
     for (TQualIter qit = begin(record.qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
+    if (!empty(record.qual) && record.qual[0] == '\xff')
+        clear(record.qual);
 
     // tags
     resize(record.tags, remainingBytes, Exact());
