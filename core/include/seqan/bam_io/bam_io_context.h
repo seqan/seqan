@@ -164,20 +164,24 @@ public:
 
     BamIOContext() :
         _nameStore(TNameStoreMember()),
-        _nameStoreCache(ifSwitch(typename IsSameType<TStorageSpec, Owner<> >::Type(),
-                                 _nameStore,
-                                 TNameStoreCacheMember()))
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 NULL,
+                                 _nameStore))
     {}
 
-    BamIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
-        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore)),
-        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache))
+    BamIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache_,
+                                 _nameStore))
     {}
 
     template <typename TOtherStorageSpec>
     BamIOContext(BamIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
         _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
-        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache(other)))
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache(other),
+                                 _nameStore))
     {}
 };
 
