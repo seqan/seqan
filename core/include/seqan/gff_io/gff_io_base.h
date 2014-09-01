@@ -551,10 +551,10 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, CharString & buffer)
     return;
 }
 
-template <typename TNameStore, typename TNameStoreCache, typename TFwdIterator, typename TTag>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TFwdIterator, typename TTag>
 inline void 
 readRecord(GffRecord & record,
-           GffIOContext<TNameStore, TNameStoreCache> & context,
+           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TFwdIterator & iter,
            Tag<TTag> const & /*tag*/)
 {
@@ -800,9 +800,9 @@ writeRecord(TTarget & target, GffRecord const & record, TTag const tag)
     _writeRecordImpl(target, record, record.ref, tag);
 }
 
-template <typename TTarget, typename TContextSpec, typename TContextSpec2, typename TTag>
+template <typename TTarget, typename TContextSpec, typename TContextSpec2, typename TStorageSpec, typename TTag>
 inline void
-writeRecord(TTarget & target, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
+writeRecord(TTarget & target, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2, TStorageSpec> & context, TTag const tag)
 {
     if (record.rID != GffRecord::INVALID_IDX)
     {

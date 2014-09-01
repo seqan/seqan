@@ -163,7 +163,9 @@ public:
 
     GffIOContext() :
         _nameStore(TNameStoreMember()),
-        _nameStoreCache(TNameStoreCacheMember())
+        _nameStoreCache(ifSwitch(typename IsSameType<TStorageSpec, Owner<> >::Type(),
+                                 _nameStore,
+                                 TNameStoreCacheMember()))
     {}
 
     GffIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
@@ -216,17 +218,16 @@ public:
 ..include:seqan/bam_io.h
 */
 
-// TODO(holtgrew): Rename to referenceNameStore
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore &
-nameStore(GffIOContext<TNameStore, TNameStoreCache> & context)
+nameStore(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStore &>(context._nameStore);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore const &
-nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
+nameStore(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStore const &>(context._nameStore);
 }
@@ -262,17 +263,16 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
 ..see:Function.GffIOContext#nameStore
 */
 
-// TODO(holtgrew): Rename to referenceNameStoreCache
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache &
-nameStoreCache(GffIOContext<TNameStore, TNameStoreCache> & context)
+nameStoreCache(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache const &
-nameStoreCache(GffIOContext<TNameStore, TNameStoreCache> const & context)
+nameStoreCache(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
 }

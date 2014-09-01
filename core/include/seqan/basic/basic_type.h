@@ -621,17 +621,17 @@ _referenceCast(typename RemoveReference<T>::Type & ptr)
 }
 
 template <typename T>
-inline T
+inline SEQAN_FUNC_DISABLE_IF(IsSameType<T, typename RemoveReference<T>::Type>, T)
 _referenceCast(typename RemoveReference<T>::Type * ptr)
 {
     return *ptr;
 }
 
 template <typename T>
-inline T
-_referenceCast(typename RemovePointer<T>::Type * ptr)
+inline SEQAN_FUNC_DISABLE_IF(IsSameType<T, typename RemovePointer<T>::Type>, T)
+_referenceCast(typename RemovePointer<T>::Type & ptr)
 {
-    return *ptr;
+    return &ptr;
 }
 
 
