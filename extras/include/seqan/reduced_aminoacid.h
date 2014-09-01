@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // Module with reduced versions of alphabets
 // ==========================================================================
@@ -40,16 +40,16 @@
 #include <seqan/basic.h>
 #include <seqan/score.h>
 
-#include <seqan/reduced_aminoacid/base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_base.h>
 
-#include <seqan/reduced_aminoacid/murphy10_base.h>
-#include <seqan/reduced_aminoacid/murphy10_tables.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_tables.h>
 
-#include <seqan/reduced_aminoacid/cluster_red_base.h>
-#include <seqan/reduced_aminoacid/cluster_red_tables_20_to_n_b62.h>
-#include <seqan/reduced_aminoacid/cluster_red_tables_22_to_n_b62.h>
-#include <seqan/reduced_aminoacid/cluster_red_tables_24_to_n_b62.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_20_to_n_b62.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_22_to_n_b62.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_24_to_n_b62.h>
 
-#include <seqan/reduced_aminoacid/base_late.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_base_late.h>
 
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_H_
