@@ -104,7 +104,7 @@ _mapFileFormatToCompressionFormat(Gtf)
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TForwardIter>
 inline void
 readRecord(GffRecord & /* record */,
-           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
 {

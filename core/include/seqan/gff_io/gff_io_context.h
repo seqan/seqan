@@ -147,7 +147,7 @@ TGffIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 ..summary:The name store cache class.
 */
 
-template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_>, typename TStorageSpec = Owner<> >
+template <typename TNameStore_ = StringSet<CharString>, typename TNameStoreCache_ = NameStoreCache<TNameStore_>, typename TStorageSpec = Owner<> >
 class GffIOContext
 {
 public:
@@ -163,20 +163,24 @@ public:
 
     GffIOContext() :
         _nameStore(TNameStoreMember()),
-        _nameStoreCache(ifSwitch(typename IsSameType<TStorageSpec, Owner<> >::Type(),
-                                 _nameStore,
-                                 TNameStoreCacheMember()))
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 NULL,
+                                 _nameStore))
     {}
 
-    GffIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
-        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore)),
-        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache))
+    GffIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache_,
+                                 _nameStore))
     {}
 
     template <typename TOtherStorageSpec>
     GffIOContext(GffIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
         _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
-        _nameStoreCache(_referenceCast<typename Parameter_<TNameStoreCacheMember>::Type>(nameStoreCache(other)))
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache(other),
+                                 _nameStore))
     {}
 };
 

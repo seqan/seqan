@@ -141,27 +141,23 @@ public:
     typedef std::set<TId, TLess> TSet;
     
     TSet nameSet;
-    TNameStore *nameStore;
     // TODO(holtgrew): Mutable here necessary for conceptual const-ness.  However, we would rather have a thread-safe interface!
     TName mutable name;
 
-    NameStoreCache() :
-        nameStore(NULL)
+    NameStoreCache()
     {}
 
-    NameStoreCache(TNameStore & _nameStore):
-        nameSet(TLess(_nameStore, name)),
-        nameStore(&_nameStore)
+    NameStoreCache(TNameStore & nameStore):
+        nameSet(TLess(nameStore, name))
     {
-        for (unsigned i = 0; i < length(*nameStore); ++i)
+        for (unsigned i = 0; i < length(nameStore); ++i)
             nameSet.insert(i);
     }
 
     NameStoreCache(NameStoreCache const & other):
-        nameSet(TLess(*other.nameStore, name)),
-        nameStore(other.nameStore)
+        nameSet(TLess(host(other), name))
     {
-        for (unsigned i = 0; i < length(*nameStore); ++i)
+        for (unsigned i = 0; i < length(host(other)); ++i)
             nameSet.insert(i);
     }
 };
@@ -173,6 +169,24 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// refresh()
+// ----------------------------------------------------------------------------
+
+template <typename TNameStore, typename TName>
+inline TNameStore &
+host(NameStoreCache<TNameStore, TName> & cache)
+{
+    return *cache.nameSet.key_comp().nameStore;
+}
+
+template <typename TNameStore, typename TName>
+inline TNameStore &
+host(NameStoreCache<TNameStore, TName> const & cache)
+{
+    return *cache.nameSet.key_comp().nameStore;
+}
 
 // ----------------------------------------------------------------------------
 // refresh()
@@ -268,18 +282,11 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
     return false;
 }
 
-template <typename TNameStore, typename TName, typename TPos, typename TContext>
+template <typename TCNameStore, typename TCName, typename TName, typename TPos>
 inline bool
-getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
+getIdByName(NameStoreCache<TCNameStore, TCName> const & context, TName const & name, TPos & pos)
 {
-    return getIdByName(nameStore, name, pos);
-}
-
-template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
-inline bool
-getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
-{
-    typedef typename Position<TNameStore const>::Type TId;
+    typedef typename Position<TCNameStore const>::Type TId;
     typedef NameStoreCache<TCNameStore, TCName> const TNameStoreCache;
     typedef typename TNameStoreCache::TSet TSet;
 
@@ -303,6 +310,22 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
         return true;
     }
     return false;
+}
+
+// deprecated.
+template <typename TNameStore, typename TName, typename TPos, typename TContext>
+inline bool
+getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
+{
+    return getIdByName(nameStore, name, pos);
+}
+
+// deprecated.
+template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
+inline bool
+getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
+{
+    return getIdByName(context, name, pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -343,6 +366,16 @@ appendName(TNameStore &nameStore, TName const & name)
     appendValue(nameStore, name, Generous());
 }
 
+template <typename TCNameStore, typename TCName, typename TName>
+inline void
+appendName(NameStoreCache<TCNameStore, TCName> &cache, TName const & name)
+{
+    appendValue(*cache.nameStore, name, Generous());
+    cache.nameSet.insert(length(*cache.nameStore) - 1);
+}
+
+// deprecated.
+// In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
 template <typename TNameStore, typename TName, typename TContext>
 inline void
 appendName(TNameStore &nameStore, TName const & name, TContext &)
@@ -350,6 +383,7 @@ appendName(TNameStore &nameStore, TName const & name, TContext &)
     appendName(nameStore, name);
 }
 
+// deprecated.
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
 inline void
 appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
