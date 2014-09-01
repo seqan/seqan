@@ -69,6 +69,11 @@ template <>
 struct CompressionContext<GZFile>
 {
     z_stream strm;
+
+    CompressionContext()
+    {
+        bzero(&strm, sizeof(strm));
+    }
 };
 
 template <>
