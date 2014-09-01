@@ -316,6 +316,15 @@ struct RemovePointer<T * const>
 
 #endif
 
+template <typename T>
+struct IsPointer : False {};
+
+template <typename T>
+struct IsPointer<T *> : True {};
+
+template <typename T>
+struct IsPointer<T * const> : True {};
+
 // ----------------------------------------------------------------------------
 // Metafunction RemoveConst
 // ----------------------------------------------------------------------------
