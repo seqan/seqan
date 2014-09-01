@@ -18,7 +18,6 @@ int main(int argc, char ** argv)
     try
     {
         GffFileIn gffIn(argv[1]);
-
         GffRecord record;
         while (!atEnd(gffIn))
         {
