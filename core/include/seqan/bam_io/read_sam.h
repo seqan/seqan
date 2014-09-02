@@ -254,12 +254,7 @@ inline void readRecord(BamHeader & header,
             }
 
             // Add name to name store cache if necessary.
-            unsigned contigId = 0;
-            if (!getIdByName(nameStore(context), sn, contigId, nameStoreCache(context)))
-            {
-                contigId = length(nameStore(context));
-                appendName(nameStore(context), sn, nameStoreCache(context));
-            }
+            unsigned contigId = getIdByName(nameStoreCache(context), sn);
 
             if (length(header.sequenceInfos) <= contigId)
                 resize(header.sequenceInfos, contigId + 1);

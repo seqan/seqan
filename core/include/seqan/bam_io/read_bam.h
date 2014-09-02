@@ -140,9 +140,9 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-               TForwardIter & iter,
-               Bam const & /*tag*/)
+                BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+                TForwardIter & iter,
+                Bam const & /*tag*/)
 {
     // Read BAM magic string.
     String<char, Array<4> > magic;
@@ -198,13 +198,7 @@ void readRecord(BamHeader & header,
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
         appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
         // Append contig name to name store, if not known already.
-        typename Size<TNameStore>::Type globalRId = 0;
-        if (!getIdByName(nameStore(context), name, globalRId, nameStoreCache(context)))
-        {
-            globalRId = length(nameStore(context));
-            appendName(nameStore(context), name, nameStoreCache(context));
-        }
-        context.translateFile2GlobalRefId[i] = globalRId;
+        context.translateFile2GlobalRefId[i] = getIdByName(nameStoreCache(context), name);
     }
 }
 

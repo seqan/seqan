@@ -104,6 +104,7 @@ void write(TTarget & target,
 
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
+        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
         appendRawPod(target, (__int32)(length(header.sequenceInfos[i].i1) + 1));
         write(target, header.sequenceInfos[i].i1);
         writeValue(target, '\0');
