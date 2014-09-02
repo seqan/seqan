@@ -119,24 +119,7 @@ struct BlastScoringAdapter<Blosum45, TSpec>
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 16;
-    static constexpr double karlinAltschulValues[nParamSets][nParams]
-    {
-        {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-              (double) NCBI_INT2_MAX, 0.2291, 0.0924, 0.2514, 0.9113, -5.7},
-        {13, 3, (double) NCBI_INT2_MAX, 0.207,  0.049,  0.14,   1.5, -22},
-        {12, 3, (double) NCBI_INT2_MAX, 0.199,  0.039,  0.11,   1.8, -34},
-        {11, 3, (double) NCBI_INT2_MAX, 0.190,  0.031,  0.095,  2.0, -38},
-        {10, 3, (double) NCBI_INT2_MAX, 0.179,  0.023,  0.075,  2.4, -51},
-        {16, 2, (double) NCBI_INT2_MAX, 0.210,  0.051,  0.14,   1.5, -24},
-        {15, 2, (double) NCBI_INT2_MAX, 0.203,  0.041,  0.12,   1.7, -31},
-        {14, 2, (double) NCBI_INT2_MAX, 0.195,  0.032,  0.10,   1.9, -36},
-        {13, 2, (double) NCBI_INT2_MAX, 0.185,  0.024,  0.084,  2.2, -45},
-        {12, 2, (double) NCBI_INT2_MAX, 0.171,  0.016,  0.061,  2.8, -65},
-        {19, 1, (double) NCBI_INT2_MAX, 0.205,  0.040,  0.11,   1.9, -43},
-        {18, 1, (double) NCBI_INT2_MAX, 0.198,  0.032,  0.10,   2.0, -43},
-        {17, 1, (double) NCBI_INT2_MAX, 0.189,  0.024,  0.079,  2.4, -57},
-        {16, 1, (double) NCBI_INT2_MAX, 0.176,  0.016,  0.063,  2.8, -67},
-    };
+    static double const karlinAltschulValues[nParamSets][nParams];
 
     /* members */
     Blosum45 scheme;
@@ -151,10 +134,27 @@ struct BlastScoringAdapter<Blosum45, TSpec>
 };
 
 template <typename TSpec>
-constexpr double
-BlastScoringAdapter<Blosum45, TSpec>::karlinAltschulValues
-[BlastScoringAdapter<Blosum45, TSpec>::nParamSets]
-[BlastScoringAdapter<Blosum45, TSpec>::nParams];
+double const BlastScoringAdapter<Blosum45, TSpec>::karlinAltschulValues
+  [BlastScoringAdapter<Blosum45, TSpec>::nParamSets]
+  [BlastScoringAdapter<Blosum45, TSpec>::nParams] =
+{
+    {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
+            (double) NCBI_INT2_MAX, 0.2291, 0.0924, 0.2514, 0.9113, -5.7},
+    {13, 3, (double) NCBI_INT2_MAX, 0.207,  0.049,  0.14,   1.5, -22},
+    {12, 3, (double) NCBI_INT2_MAX, 0.199,  0.039,  0.11,   1.8, -34},
+    {11, 3, (double) NCBI_INT2_MAX, 0.190,  0.031,  0.095,  2.0, -38},
+    {10, 3, (double) NCBI_INT2_MAX, 0.179,  0.023,  0.075,  2.4, -51},
+    {16, 2, (double) NCBI_INT2_MAX, 0.210,  0.051,  0.14,   1.5, -24},
+    {15, 2, (double) NCBI_INT2_MAX, 0.203,  0.041,  0.12,   1.7, -31},
+    {14, 2, (double) NCBI_INT2_MAX, 0.195,  0.032,  0.10,   1.9, -36},
+    {13, 2, (double) NCBI_INT2_MAX, 0.185,  0.024,  0.084,  2.2, -45},
+    {12, 2, (double) NCBI_INT2_MAX, 0.171,  0.016,  0.061,  2.8, -65},
+    {19, 1, (double) NCBI_INT2_MAX, 0.205,  0.040,  0.11,   1.9, -43},
+    {18, 1, (double) NCBI_INT2_MAX, 0.198,  0.032,  0.10,   2.0, -43},
+    {17, 1, (double) NCBI_INT2_MAX, 0.189,  0.024,  0.079,  2.4, -57},
+    {16, 1, (double) NCBI_INT2_MAX, 0.176,  0.016,  0.063,  2.8, -67},
+};
+
 
 /// BLOSUM50
 // not implemented in seqan
@@ -168,22 +168,7 @@ struct BlastScoringAdapter<Blosum62, TSpec>
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 12;
-    static constexpr double karlinAltschulValues[nParamSets][nParams]
-    {
-         {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-                 (double) NCBI_INT2_MAX, 0.3176, 0.134, 0.4012, 0.7916, -3.2},
-         {11, 2, (double) NCBI_INT2_MAX, 0.297,  0.082, 0.27,   1.1,    -10} ,
-         {10, 2, (double) NCBI_INT2_MAX, 0.291,  0.075, 0.23,   1.3,    -15} ,
-         { 9, 2, (double) NCBI_INT2_MAX, 0.279,  0.058, 0.19,   1.5,    -19} ,
-         { 8, 2, (double) NCBI_INT2_MAX, 0.264,  0.045, 0.15,   1.8,    -26} ,
-         { 7, 2, (double) NCBI_INT2_MAX, 0.239,  0.027, 0.10,   2.5,    -46} ,
-         { 6, 2, (double) NCBI_INT2_MAX, 0.201,  0.012, 0.061,  3.3,    -58} ,
-         {13, 1, (double) NCBI_INT2_MAX, 0.292,  0.071, 0.23,   1.2,    -11} ,
-         {12, 1, (double) NCBI_INT2_MAX, 0.283,  0.059, 0.19,   1.5,    -19} ,
-         {11, 1, (double) NCBI_INT2_MAX, 0.267,  0.041, 0.14,   1.9,    -30} ,
-         {10, 1, (double) NCBI_INT2_MAX, 0.243,  0.024, 0.10,   2.5,    -44} ,
-         { 9, 1, (double) NCBI_INT2_MAX, 0.206,  0.010, 0.052,  4.0,    -87} ,
-    };
+    static double const karlinAltschulValues[nParamSets][nParams];
 
     /* members */
     Blosum62 scheme;
@@ -198,11 +183,24 @@ struct BlastScoringAdapter<Blosum62, TSpec>
 };
 
 template <typename TSpec>
-constexpr double
-BlastScoringAdapter<Blosum62, TSpec>::karlinAltschulValues
-[BlastScoringAdapter<Blosum62, TSpec>::nParamSets]
-[BlastScoringAdapter<Blosum62, TSpec>::nParams];
-
+double const BlastScoringAdapter<Blosum62, TSpec>::karlinAltschulValues
+  [BlastScoringAdapter<Blosum62, TSpec>::nParamSets]
+  [BlastScoringAdapter<Blosum62, TSpec>::nParams] =
+{
+        {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
+                (double) NCBI_INT2_MAX, 0.3176, 0.134, 0.4012, 0.7916, -3.2},
+        {11, 2, (double) NCBI_INT2_MAX, 0.297,  0.082, 0.27,   1.1,    -10} ,
+        {10, 2, (double) NCBI_INT2_MAX, 0.291,  0.075, 0.23,   1.3,    -15} ,
+        { 9, 2, (double) NCBI_INT2_MAX, 0.279,  0.058, 0.19,   1.5,    -19} ,
+        { 8, 2, (double) NCBI_INT2_MAX, 0.264,  0.045, 0.15,   1.8,    -26} ,
+        { 7, 2, (double) NCBI_INT2_MAX, 0.239,  0.027, 0.10,   2.5,    -46} ,
+        { 6, 2, (double) NCBI_INT2_MAX, 0.201,  0.012, 0.061,  3.3,    -58} ,
+        {13, 1, (double) NCBI_INT2_MAX, 0.292,  0.071, 0.23,   1.2,    -11} ,
+        {12, 1, (double) NCBI_INT2_MAX, 0.283,  0.059, 0.19,   1.5,    -19} ,
+        {11, 1, (double) NCBI_INT2_MAX, 0.267,  0.041, 0.14,   1.9,    -30} ,
+        {10, 1, (double) NCBI_INT2_MAX, 0.243,  0.024, 0.10,   2.5,    -44} ,
+        { 9, 1, (double) NCBI_INT2_MAX, 0.206,  0.010, 0.052,  4.0,    -87} ,
+};
 /// BLOSUM80
 template <typename TSpec>
 struct BlastScoringAdapter<Blosum80, TSpec>
@@ -212,20 +210,8 @@ struct BlastScoringAdapter<Blosum80, TSpec>
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 10;
-    static constexpr double karlinAltschulValues[nParamSets][nParams]
-    {
-        {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-              (double) NCBI_INT2_MAX, 0.3430,  0.177, 0.6568, 0.5222, -1.6},
-        {25, 2, (double) NCBI_INT2_MAX, 0.342,   0.17,  0.66,   0.52,   -1.6},
-        {13, 2, (double) NCBI_INT2_MAX, 0.336,   0.15,  0.57,   0.59,   -3},
-        { 9, 2, (double) NCBI_INT2_MAX, 0.319,   0.11,  0.42,   0.76,   -6},
-        { 8, 2, (double) NCBI_INT2_MAX, 0.308,   0.090, 0.35,   0.89,   -9},
-        { 7, 2, (double) NCBI_INT2_MAX, 0.293,   0.070, 0.27,   1.1,   -14},
-        { 6, 2, (double) NCBI_INT2_MAX, 0.268,   0.045, 0.19,   1.4,   -19},
-        {11, 1, (double) NCBI_INT2_MAX, 0.314,   0.095, 0.35,   0.90,   -9},
-        {10, 1, (double) NCBI_INT2_MAX, 0.299,   0.071, 0.27,   1.1,   -14},
-        { 9, 1, (double) NCBI_INT2_MAX, 0.279,   0.048, 0.20,   1.4,   -19},
-    };
+    static double const karlinAltschulValues[nParamSets][nParams];
+
 
     /* members */
     Blosum80 scheme;
@@ -240,10 +226,22 @@ struct BlastScoringAdapter<Blosum80, TSpec>
 };
 
 template <typename TSpec>
-constexpr double
-BlastScoringAdapter<Blosum80, TSpec>::karlinAltschulValues
-[BlastScoringAdapter<Blosum80, TSpec>::nParamSets]
-[BlastScoringAdapter<Blosum80, TSpec>::nParams];
+double const BlastScoringAdapter<Blosum80, TSpec>::karlinAltschulValues
+ [BlastScoringAdapter<Blosum80, TSpec>::nParamSets]
+ [BlastScoringAdapter<Blosum80, TSpec>::nParams] =
+{
+    {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
+            (double) NCBI_INT2_MAX, 0.3430,  0.177, 0.6568, 0.5222, -1.6},
+    {25, 2, (double) NCBI_INT2_MAX, 0.342,   0.17,  0.66,   0.52,   -1.6},
+    {13, 2, (double) NCBI_INT2_MAX, 0.336,   0.15,  0.57,   0.59,   -3},
+    { 9, 2, (double) NCBI_INT2_MAX, 0.319,   0.11,  0.42,   0.76,   -6},
+    { 8, 2, (double) NCBI_INT2_MAX, 0.308,   0.090, 0.35,   0.89,   -9},
+    { 7, 2, (double) NCBI_INT2_MAX, 0.293,   0.070, 0.27,   1.1,   -14},
+    { 6, 2, (double) NCBI_INT2_MAX, 0.268,   0.045, 0.19,   1.4,   -19},
+    {11, 1, (double) NCBI_INT2_MAX, 0.314,   0.095, 0.35,   0.90,   -9},
+    {10, 1, (double) NCBI_INT2_MAX, 0.299,   0.071, 0.27,   1.1,   -14},
+    { 9, 1, (double) NCBI_INT2_MAX, 0.279,   0.048, 0.20,   1.4,   -19},
+};
 
 /// BLOSUM90
 // not implemented in seqan
@@ -272,26 +270,8 @@ struct BlastScoringAdapter<Pam250, TSpec>
     /* statics */
     static constexpr size_t nParams = 8;
     static constexpr size_t nParamSets = 16;
-    static constexpr double karlinAltschulValues[nParamSets][nParams]
-    {
-        {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
-              (double) NCBI_INT2_MAX, 0.2252, 0.0868, 0.2223, 0.98,  -5.0},
-        {15, 3, (double) NCBI_INT2_MAX, 0.205,  0.049,  0.13,   1.6,  -23},
-        {14, 3, (double) NCBI_INT2_MAX, 0.200,  0.043,  0.12,   1.7,  -26},
-        {13, 3, (double) NCBI_INT2_MAX, 0.194,  0.036,  0.10,   1.9,  -31},
-        {12, 3, (double) NCBI_INT2_MAX, 0.186,  0.029,  0.085,  2.2,  -41},
-        {11, 3, (double) NCBI_INT2_MAX, 0.174,  0.020,  0.070,  2.5,  -48},
-        {17, 2, (double) NCBI_INT2_MAX, 0.204,  0.047,  0.12,   1.7,  -28},
-        {16, 2, (double) NCBI_INT2_MAX, 0.198,  0.038,  0.11,   1.8,  -29},
-        {15, 2, (double) NCBI_INT2_MAX, 0.191,  0.031,  0.087,  2.2,  -44},
-        {14, 2, (double) NCBI_INT2_MAX, 0.182,  0.024,  0.073,  2.5,  -53},
-        {13, 2, (double) NCBI_INT2_MAX, 0.171,  0.017,  0.059,  2.9,  -64},
-        {21, 1, (double) NCBI_INT2_MAX, 0.205,  0.045,  0.11,   1.8,  -34},
-        {20, 1, (double) NCBI_INT2_MAX, 0.199,  0.037,  0.10,   1.9,  -35},
-        {19, 1, (double) NCBI_INT2_MAX, 0.192,  0.029,  0.083,  2.3,  -52},
-        {18, 1, (double) NCBI_INT2_MAX, 0.183,  0.021,  0.070,  2.6,  -60},
-        {17, 1, (double) NCBI_INT2_MAX, 0.171,  0.014,  0.052,  3.3,  -86},
-    };
+    static double const karlinAltschulValues[nParamSets][nParams];
+
 
     /* members */
     Pam250 scheme;
@@ -306,10 +286,28 @@ struct BlastScoringAdapter<Pam250, TSpec>
 };
 
 template <typename TSpec>
-constexpr double
-BlastScoringAdapter<Pam250, TSpec>::karlinAltschulValues
-[BlastScoringAdapter<Pam250, TSpec>::nParamSets]
-[BlastScoringAdapter<Pam250, TSpec>::nParams];
+double const BlastScoringAdapter<Pam250, TSpec>::karlinAltschulValues
+  [BlastScoringAdapter<Pam250, TSpec>::nParamSets]
+  [BlastScoringAdapter<Pam250, TSpec>::nParams] =
+{
+    {(double) NCBI_INT2_MAX, (double) NCBI_INT2_MAX,
+            (double) NCBI_INT2_MAX, 0.2252, 0.0868, 0.2223, 0.98,  -5.0},
+    {15, 3, (double) NCBI_INT2_MAX, 0.205,  0.049,  0.13,   1.6,  -23},
+    {14, 3, (double) NCBI_INT2_MAX, 0.200,  0.043,  0.12,   1.7,  -26},
+    {13, 3, (double) NCBI_INT2_MAX, 0.194,  0.036,  0.10,   1.9,  -31},
+    {12, 3, (double) NCBI_INT2_MAX, 0.186,  0.029,  0.085,  2.2,  -41},
+    {11, 3, (double) NCBI_INT2_MAX, 0.174,  0.020,  0.070,  2.5,  -48},
+    {17, 2, (double) NCBI_INT2_MAX, 0.204,  0.047,  0.12,   1.7,  -28},
+    {16, 2, (double) NCBI_INT2_MAX, 0.198,  0.038,  0.11,   1.8,  -29},
+    {15, 2, (double) NCBI_INT2_MAX, 0.191,  0.031,  0.087,  2.2,  -44},
+    {14, 2, (double) NCBI_INT2_MAX, 0.182,  0.024,  0.073,  2.5,  -53},
+    {13, 2, (double) NCBI_INT2_MAX, 0.171,  0.017,  0.059,  2.9,  -64},
+    {21, 1, (double) NCBI_INT2_MAX, 0.205,  0.045,  0.11,   1.8,  -34},
+    {20, 1, (double) NCBI_INT2_MAX, 0.199,  0.037,  0.10,   1.9,  -35},
+    {19, 1, (double) NCBI_INT2_MAX, 0.192,  0.029,  0.083,  2.3,  -52},
+    {18, 1, (double) NCBI_INT2_MAX, 0.183,  0.021,  0.070,  2.6,  -60},
+    {17, 1, (double) NCBI_INT2_MAX, 0.171,  0.014,  0.052,  3.3,  -86},
+};
 
 /// VTML200
 // not implemented in blast
@@ -335,80 +333,7 @@ struct BlastScoringAdapter<Score<int, Simple>, TSpec>
         8 = Beta,
         9 = Theta
         10 = only applicable to even score, uneven need to be rounded down */
-    static constexpr double karlinAltschulValues[nParamSets][nParams]
-    {
-        { 1, 5, 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
-        { 1, 5, 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
-
-        { 1, 4, 0, 0, 1.383, 0.738, 1.36, 1.02,  0, 100, 0 } ,
-        { 1, 4, 1, 2,  1.36,  0.67,  1.2,  1.1,  0,  98, 0 } ,
-        { 1, 4, 0, 2,  1.26,  0.43, 0.90,  1.4, -1,  91, 0 } ,
-        { 1, 4, 2, 1,  1.35,  0.61,  1.1,  1.2, -1,  98, 0 } ,
-        { 1, 4, 1, 1,  1.22,  0.35, 0.72,  1.7, -3,  88, 0 } ,
-
-        { 2, 7, 0, 0,  0.69, 0.73, 1.34, 0.515,  0, 100, 1 } ,
-        { 2, 7, 2, 4,  0.68, 0.67,  1.2,  0.55,  0,  99, 1 } ,
-        { 2, 7, 0, 4,  0.63, 0.43, 0.90,   0.7, -1,  91, 1 } ,
-        { 2, 7, 4, 2, 0.675, 0.62,  1.1,   0.6, -1,  98, 1 } ,
-        { 2, 7, 2, 2,  0.61, 0.35, 0.72,   1.7, -3,  88, 1 } ,
-
-        { 1, 3, 0, 0, 1.374, 0.711, 1.31, 1.05,  0, 100, 0 } ,
-        { 1, 3, 2, 2,  1.37,  0.70,  1.2,  1.1,  0,  99, 0 } ,
-        { 1, 3, 1, 2,  1.35,  0.64,  1.1,  1.2, -1,  98, 0 } ,
-        { 1, 3, 0, 2,  1.25,  0.42, 0.83,  1.5, -2,  91, 0 } ,
-        { 1, 3, 2, 1,  1.34,  0.60,  1.1,  1.2, -1,  97, 0 } ,
-        { 1, 3, 1, 1,  1.21,  0.34, 0.71,  1.7, -2,  88, 0 } ,
-
-        { 2, 5, 0, 0, 0.675, 0.65,  1.1,  0.6, -1, 99, 1 },
-        { 2, 5, 2, 4,  0.67, 0.59,  1.1,  0.6, -1, 98, 1 },
-        { 2, 5, 0, 4,  0.62, 0.39, 0.78,  0.8, -2, 91, 1 },
-        { 2, 5, 4, 2,  0.67, 0.61,  1.0, 0.65, -2, 98, 1 },
-        { 2, 5, 2, 2,  0.56, 0.32, 0.59, 0.95, -4, 82, 1 },
-
-        { 1, 2, 0, 0, 1.28, 0.46, 0.85, 1.5, -2, 96, 0 },
-        { 1, 2, 2, 2, 1.33, 0.62,  1.1, 1.2,  0, 99, 0 },
-        { 1, 2, 1, 2, 1.30, 0.52, 0.93, 1.4, -2, 97, 0 },
-        { 1, 2, 0, 2, 1.19, 0.34, 0.66, 1.8, -3, 89, 0 },
-        { 1, 2, 3, 1, 1.32, 0.57,  1.0, 1.3, -1, 99, 0 },
-        { 1, 2, 2, 1, 1.29, 0.49, 0.92, 1.4, -1, 96, 0 },
-        { 1, 2, 1, 1, 1.14, 0.26, 0.52, 2.2, -5, 85, 0 },
-
-        { 2, 3, 0, 0,  0.55, 0.21, 0.46,  1.2, -5, 87, 1 },
-        { 2, 3, 4, 4,  0.63, 0.42, 0.84, 0.75, -2, 99, 1 },
-        { 2, 3, 2, 4, 0.615, 0.37, 0.72, 0.85, -3, 97, 1 },
-        { 2, 3, 0, 4,  0.55, 0.21, 0.46,  1.2, -5, 87, 1 },
-        { 2, 3, 3, 3, 0.615, 0.37, 0.68,  0.9, -3, 97, 1 },
-        { 2, 3, 6, 2,  0.63, 0.42, 0.84, 0.75, -2, 99, 1 },
-        { 2, 3, 5, 2, 0.625, 0.41, 0.78,  0.8, -2, 99, 1 },
-        { 2, 3, 4, 2,  0.61, 0.35, 0.68,  0.9, -3, 96, 1 },
-        { 2, 3, 2, 2, 0.515, 0.14, 0.33, 1.55, -9, 81, 1 },
-
-        { 3, 4, 6, 3, 0.389, 0.25, 0.56, 0.7, -5, 95, 0},
-        { 3, 4, 5, 3, 0.375, 0.21, 0.47, 0.8, -6, 92, 0},
-        { 3, 4, 4, 3, 0.351, 0.14, 0.35, 1.0, -9, 86, 0},
-        { 3, 4, 6, 2, 0.362, 0.16, 0.45, 0.8, -4, 88, 0},
-        { 3, 4, 5, 2, 0.330, 0.092, 0.28, 1.2, -13, 81, 0},
-        { 3, 4, 4, 2, 0.281, 0.046, 0.16, 1.8, -23, 69, 0},
-
-        { 4, 5, 0, 0, 0.22, 0.061, 0.22, 1.0, -15, 74, 0 },
-        { 4, 5, 6, 5, 0.28,  0.21, 0.47, 0.6 , -7, 93, 0 },
-        { 4, 5, 5, 5, 0.27,  0.17, 0.39, 0.7,  -9, 90, 0 },
-        { 4, 5, 4, 5, 0.25,  0.10, 0.31, 0.8, -10, 83, 0 },
-        { 4, 5, 3, 5, 0.23, 0.065, 0.25, 0.9, -11, 76, 0 },
-
-        { 1, 1, 3,  2, 1.09,  0.31, 0.55, 2.0,  -2, 99, 0 },
-        { 1, 1, 2,  2, 1.07,  0.27, 0.49, 2.2,  -3, 97, 0 },
-        { 1, 1, 1,  2, 1.02,  0.21, 0.36, 2.8,  -6, 92, 0 },
-        { 1, 1, 0,  2, 0.80, 0.064, 0.17, 4.8, -16, 72, 0 },
-        { 1, 1, 4,  1, 1.08,  0.28, 0.54, 2.0,  -2, 98, 0 },
-        { 1, 1, 3,  1, 1.06,  0.25, 0.46, 2.3,  -4, 96, 0 },
-        { 1, 1, 2,  1, 0.99,  0.17, 0.30, 3.3, -10, 90, 0 },
-
-        { 3, 2,  5, 5, 0.208, 0.030, 0.072, 2.9, -47, 77, 0},
-        { 5, 4, 10, 6, 0.163, 0.068, 0.16,  1.0, -19, 85, 0 },
-        { 5, 4,  8, 6, 0.146, 0.039, 0.11,  1.3, -29, 76, 0 }
-
-    };
+    static double const karlinAltschulValues[nParamSets][nParams];
 
     /* members */
     Score<int, Simple> scheme;
@@ -422,11 +347,82 @@ struct BlastScoringAdapter<Score<int, Simple>, TSpec>
 };
 
 template <typename TSpec>
-constexpr double
-BlastScoringAdapter<Score<int, Simple>, TSpec>::karlinAltschulValues
-[BlastScoringAdapter<Score<int, Simple>, TSpec>::nParamSets]
-[BlastScoringAdapter<Score<int, Simple>, TSpec>::nParams];
+double const BlastScoringAdapter<Score<int, Simple>, TSpec>::karlinAltschulValues
+ [BlastScoringAdapter<Score<int, Simple>, TSpec>::nParamSets]
+ [BlastScoringAdapter<Score<int, Simple>, TSpec>::nParams] =
+{
+    { 1, 5, 0, 0, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
+    { 1, 5, 3, 3, 1.39, 0.747, 1.38, 1.00,  0, 100, 0 } ,
 
+    { 1, 4, 0, 0, 1.383, 0.738, 1.36, 1.02,  0, 100, 0 } ,
+    { 1, 4, 1, 2,  1.36,  0.67,  1.2,  1.1,  0,  98, 0 } ,
+    { 1, 4, 0, 2,  1.26,  0.43, 0.90,  1.4, -1,  91, 0 } ,
+    { 1, 4, 2, 1,  1.35,  0.61,  1.1,  1.2, -1,  98, 0 } ,
+    { 1, 4, 1, 1,  1.22,  0.35, 0.72,  1.7, -3,  88, 0 } ,
+
+    { 2, 7, 0, 0,  0.69, 0.73, 1.34, 0.515,  0, 100, 1 } ,
+    { 2, 7, 2, 4,  0.68, 0.67,  1.2,  0.55,  0,  99, 1 } ,
+    { 2, 7, 0, 4,  0.63, 0.43, 0.90,   0.7, -1,  91, 1 } ,
+    { 2, 7, 4, 2, 0.675, 0.62,  1.1,   0.6, -1,  98, 1 } ,
+    { 2, 7, 2, 2,  0.61, 0.35, 0.72,   1.7, -3,  88, 1 } ,
+
+    { 1, 3, 0, 0, 1.374, 0.711, 1.31, 1.05,  0, 100, 0 } ,
+    { 1, 3, 2, 2,  1.37,  0.70,  1.2,  1.1,  0,  99, 0 } ,
+    { 1, 3, 1, 2,  1.35,  0.64,  1.1,  1.2, -1,  98, 0 } ,
+    { 1, 3, 0, 2,  1.25,  0.42, 0.83,  1.5, -2,  91, 0 } ,
+    { 1, 3, 2, 1,  1.34,  0.60,  1.1,  1.2, -1,  97, 0 } ,
+    { 1, 3, 1, 1,  1.21,  0.34, 0.71,  1.7, -2,  88, 0 } ,
+
+    { 2, 5, 0, 0, 0.675, 0.65,  1.1,  0.6, -1, 99, 1 },
+    { 2, 5, 2, 4,  0.67, 0.59,  1.1,  0.6, -1, 98, 1 },
+    { 2, 5, 0, 4,  0.62, 0.39, 0.78,  0.8, -2, 91, 1 },
+    { 2, 5, 4, 2,  0.67, 0.61,  1.0, 0.65, -2, 98, 1 },
+    { 2, 5, 2, 2,  0.56, 0.32, 0.59, 0.95, -4, 82, 1 },
+
+    { 1, 2, 0, 0, 1.28, 0.46, 0.85, 1.5, -2, 96, 0 },
+    { 1, 2, 2, 2, 1.33, 0.62,  1.1, 1.2,  0, 99, 0 },
+    { 1, 2, 1, 2, 1.30, 0.52, 0.93, 1.4, -2, 97, 0 },
+    { 1, 2, 0, 2, 1.19, 0.34, 0.66, 1.8, -3, 89, 0 },
+    { 1, 2, 3, 1, 1.32, 0.57,  1.0, 1.3, -1, 99, 0 },
+    { 1, 2, 2, 1, 1.29, 0.49, 0.92, 1.4, -1, 96, 0 },
+    { 1, 2, 1, 1, 1.14, 0.26, 0.52, 2.2, -5, 85, 0 },
+
+    { 2, 3, 0, 0,  0.55, 0.21, 0.46,  1.2, -5, 87, 1 },
+    { 2, 3, 4, 4,  0.63, 0.42, 0.84, 0.75, -2, 99, 1 },
+    { 2, 3, 2, 4, 0.615, 0.37, 0.72, 0.85, -3, 97, 1 },
+    { 2, 3, 0, 4,  0.55, 0.21, 0.46,  1.2, -5, 87, 1 },
+    { 2, 3, 3, 3, 0.615, 0.37, 0.68,  0.9, -3, 97, 1 },
+    { 2, 3, 6, 2,  0.63, 0.42, 0.84, 0.75, -2, 99, 1 },
+    { 2, 3, 5, 2, 0.625, 0.41, 0.78,  0.8, -2, 99, 1 },
+    { 2, 3, 4, 2,  0.61, 0.35, 0.68,  0.9, -3, 96, 1 },
+    { 2, 3, 2, 2, 0.515, 0.14, 0.33, 1.55, -9, 81, 1 },
+
+    { 3, 4, 6, 3, 0.389, 0.25, 0.56, 0.7, -5, 95, 0},
+    { 3, 4, 5, 3, 0.375, 0.21, 0.47, 0.8, -6, 92, 0},
+    { 3, 4, 4, 3, 0.351, 0.14, 0.35, 1.0, -9, 86, 0},
+    { 3, 4, 6, 2, 0.362, 0.16, 0.45, 0.8, -4, 88, 0},
+    { 3, 4, 5, 2, 0.330, 0.092, 0.28, 1.2, -13, 81, 0},
+    { 3, 4, 4, 2, 0.281, 0.046, 0.16, 1.8, -23, 69, 0},
+
+    { 4, 5, 0, 0, 0.22, 0.061, 0.22, 1.0, -15, 74, 0 },
+    { 4, 5, 6, 5, 0.28,  0.21, 0.47, 0.6 , -7, 93, 0 },
+    { 4, 5, 5, 5, 0.27,  0.17, 0.39, 0.7,  -9, 90, 0 },
+    { 4, 5, 4, 5, 0.25,  0.10, 0.31, 0.8, -10, 83, 0 },
+    { 4, 5, 3, 5, 0.23, 0.065, 0.25, 0.9, -11, 76, 0 },
+
+    { 1, 1, 3,  2, 1.09,  0.31, 0.55, 2.0,  -2, 99, 0 },
+    { 1, 1, 2,  2, 1.07,  0.27, 0.49, 2.2,  -3, 97, 0 },
+    { 1, 1, 1,  2, 1.02,  0.21, 0.36, 2.8,  -6, 92, 0 },
+    { 1, 1, 0,  2, 0.80, 0.064, 0.17, 4.8, -16, 72, 0 },
+    { 1, 1, 4,  1, 1.08,  0.28, 0.54, 2.0,  -2, 98, 0 },
+    { 1, 1, 3,  1, 1.06,  0.25, 0.46, 2.3,  -4, 96, 0 },
+    { 1, 1, 2,  1, 0.99,  0.17, 0.30, 3.3, -10, 90, 0 },
+
+    { 3, 2,  5, 5, 0.208, 0.030, 0.072, 2.9, -47, 77, 0},
+    { 5, 4, 10, 6, 0.163, 0.068, 0.16,  1.0, -19, 85, 0 },
+    { 5, 4,  8, 6, 0.146, 0.039, 0.11,  1.3, -29, 76, 0 }
+
+};
 // ============================================================================
 // Functions
 // ============================================================================
