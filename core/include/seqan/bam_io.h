@@ -89,6 +89,5 @@
 // ===========================================================================
 
 #include <seqan/bam_io/bam_file.h>
-//TODO(singer): #include <seqan/bam_io/bam_stream.h>
 
 #endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_
