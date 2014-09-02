@@ -54,7 +54,7 @@ namespace seqan {
 
 /*!
  * @enum TranslationFrames
- * @headerfile seqan/translation.h
+ * @headerfile <seqan/translation.h>
  * @brief Class Enum with frames for @link translate @endlink()
  *
  * @signature enum class TranslationFrames : uint8_t { ... };
@@ -464,7 +464,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
 
 /*!
  * @fn translate
- * @headerfile seqan/translation.h
+ * @headerfile <seqan/translation.h>
  * @brief translate sequences of Dna or Rna into amino acid alphabet, optionally with frames
  * @signature int translate(target, source[, frames][, geneticCode][, TParallelism])
  * @signature int translate(target, source[, frames][, geneticCodeSpec][, TParallelism])

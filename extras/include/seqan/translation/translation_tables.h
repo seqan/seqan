@@ -50,7 +50,7 @@ namespace seqan {
 /*!
  * @enum GeneticCodeSpec GeneticCode Specs
  * @brief Specialization values for @link GeneticCode @endlink
- * @headerfile seqan/translation.h
+ * @headerfile <seqan/translation.h>
  *
  * @signature enum class  GeneticCodeSpec : uint8_t { ...};
  *
@@ -152,7 +152,7 @@ enum GeneticCodeSpec
 /*!
  * @tag GeneticCode
  * @brief DNA/RNA to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpec @endlink.
- * @headerfile seqan/translation.h
+ * @headerfile <seqan/translation.h>
  * @signature GeneticCode<value>
  *
  * @see translate
