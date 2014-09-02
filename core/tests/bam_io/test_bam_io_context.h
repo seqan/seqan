@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
 
     CharString ns;
     NameStoreCache<CharString> nsc(ns);
-    BamIOContext<CharString> bamIOContext(ns, nsc);
+    BamIOContext<CharString, NameStoreCache<CharString>, Dependent<> > bamIOContext(ns, nsc);
     SEQAN_ASSERT_EQ(&ns, &nameStore(bamIOContext));
     SEQAN_ASSERT_EQ(&nsc, &nameStoreCache(bamIOContext));
 }

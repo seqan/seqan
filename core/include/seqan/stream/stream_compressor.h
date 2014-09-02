@@ -72,7 +72,7 @@ struct CompressionContext<GZFile>
 
     CompressionContext()
     {
-        bzero(&strm, sizeof(strm));
+        bzero(&strm, sizeof(z_stream));
     }
 };
 

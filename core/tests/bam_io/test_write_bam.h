@@ -136,13 +136,27 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 
     // Call code under test.
     write(text, record, bamIOContext, Bam());
-
+{
+    std::ofstream outFile("/tmp/out1.bam");
+    bgzf_ostream outStream(outFile);
+    outStream<<text;
+}
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     append(bamFilename, "/core/tests/bam_io/alignment_uncompressed.bam");
 
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
+    EXPECTED=text;
+
+
+    for(unsigned i=0;i<length(text);++i)
+        std::cout<<std::hex<<(unsigned short)(unsigned char)text[i]<<'\t';
+    std::cout<<std::endl;
+
+    for(unsigned i=0;i<length(EXPECTED);++i)
+        std::cout<<std::hex<<(unsigned short)(unsigned char)EXPECTED[i]<<'\t';
+    std::cout<<std::endl;
 
     /*
     // Compare results.
