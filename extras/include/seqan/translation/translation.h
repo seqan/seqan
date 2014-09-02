@@ -60,7 +60,7 @@ namespace seqan {
 
 /*!
  * @enum TranslationOptions
- * @headerfile <seqan/translation.h>
+ * @headerfile seqan/translation.h
  * @brief Enum with options for @link translate @endlink()
  *
  * @signature enum TranslationOptions;
@@ -451,7 +451,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
 
 /*!
  * @fn translate
- * @headerfile <seqan/translation.h>
+ * @headerfile seqan/translation.h
  * @brief translate sequences of Dna or Rna into amino acid alphabet, optionally with frames
  * @signature int translate(target, source[, options][, codeSpec])
  *
