@@ -47,7 +47,54 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+/*!
+ * @class BamFileIn
+ * @headerfile <seqan/bam_io.h>
+ * @brief Class that provides an easy to use interface for reading SAM and BAM files.
+ *
+ * @signature class BamFileIn;
+ *
+ * @section Example
+ *
+ * Read SAM or BAM files.
+ *
+ * @include demos/bam_io/bam_file_in.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/bam_io/bam_file_in.cpp.stdout
+ */
+
+/*!
+ * @fn BamFileIn::BamFileIn
+ * @brief Constructor
+ *
+ * @signature BamFileIn::BamFileIn([fileName[, openMode]]);
+ *
+ * @param[in] fileName The path to the SAM or BAM file to load, <tt>char const *</tt>.
+ * @param[in] openMode The open mode. Type: <tt>int</tt>.
+ */
+
 typedef SmartFile<Bam, Input>   BamFileIn;
+
+/*!
+ * @class BamFileOut
+ * @headerfile <seqan/bam_io.h>
+ * @brief Class that provides an easy to use interface for writing SAM and BAM files.
+ *
+ * @signature class BamFileOut;
+ */
+
+/*!
+ * @fn BamFileIn::BamFileOut
+ * @brief Constructor
+ *
+ * @signature BamFileOut::BamFileOut([fileName[, openMode]]);
+ *
+ * @param[in] fileName The path to the SAM or BAM file to write, <tt>char const *</tt>.
+ * @param[in] openMode The open mode. Type: <tt>int</tt>.
+ */
+
 typedef SmartFile<Bam, Output>  BamFileOut;
 
 // ============================================================================
@@ -101,8 +148,22 @@ _mapFileFormatToCompressionFormat(Sam)
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); BamHeader
+// Function readRecord(); BamHeader
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamFileIn#readRecord
+ * @brief Read one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
+ *
+ * @signature int readRecord(header, bamFileIn);
+ * @signature int readRecord(record, bamFileIn);
+ *
+ * @param[out]   header     The @link BamAlignmentHeader @endlink to read the header information into. Of type
+ *                          @link BamAlignmentHeader @endlink.
+ * @param[out]   record     The @link BamAlignmentRecord @endlink to read the next alignment record into. Of type
+ *                          @link BamAlignmentRecord @endlink.
+ * @param[in,out] bamFileIn The @link BamFileIn @endlink object to read from.
+ */
 
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -139,7 +200,7 @@ readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); BamAlignmentRecord
+// Function readRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
@@ -177,8 +238,20 @@ readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BamHeader
+// Function writeRecord(); BamHeader
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamFileOut#writeRecord
+ * @brief Write one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
+ *
+ * @signature int writeRecord(bamFileOut, header);
+ * @signature int writeRecord(bamFileOut, record);
+ *
+ * @param[in,out] bamFileOut    The @link BamFileOut @endlink object to write to.
+ * @param[in]     header        The @link BamAlignmentHeader @endlink to write out.
+ * @param[in]     record        The @link BamAlignmentRecord @endlink to write out.
+*/
 
 // support for dynamically chosen file formats
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -215,7 +288,7 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BamAlignmentRecord
+// Function writeRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
@@ -250,6 +323,79 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
 {
     write(file.iter, record, context(file), file.format);
 }
+
+// ----------------------------------------------------------------------------
+// Function jumpToRegion()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToRegion
+ * @brief Seek in BamStream using an index.
+ *
+ * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
+ * jumps to the first alignment in this region, if any.
+ *
+ * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ *
+ * @param[in,out] stream        The @link BamStream @endlink to jump with.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
+ *                              alignments.
+ * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
+ *
+ * @section Remarks
+ *
+ * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ *
+ * @see BamIndex#jumpToRegion
+ */
+
+#if SEQAN_HAS_ZLIB___disabled
+inline bool jumpToRegion(BamStream & bamIO, bool & hasAlignments, __int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index)
+{
+    if (bamIO._format != BamStream::BAM)
+        return false;  // Can only jump in BAM files.
+    if (bamIO._mode != BamStream::READ)
+        return false;  // Can only jump when reading.
+
+    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
+    return s->jumpToRegion(hasAlignments, refId, pos, posEnd, index, bamIO.bamIOContext);
+}
+#endif  // #if SEQAN_HAS_ZLIB
+
+// ----------------------------------------------------------------------------
+// Function jumpToOrphans()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToOrphans
+ * @brief Seek to orphans block in BamStream using an index.
+ *
+ * @signature bool jumpToOrphans(stream, hasAlignments, index);
+ *
+ * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[in]     index          The index to use for jumping.
+ *
+ * @see BamIndex#jumpToOrphans
+ */
+
+#if SEQAN_HAS_ZLIB___disabled
+inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
+{
+    if (bamIO._format != BamStream::BAM)
+        return false;  // Can only jump in BAM files.
+    if (bamIO._mode != BamStream::READ)
+        return false;  // Can only jump when reading.
+
+    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
+    return s->jumpToOrphans(index, bamIO.bamIOContext);
+}
+#endif  // #if SEQAN_HAS_ZLIB
 
 }  // namespace seqan
 
