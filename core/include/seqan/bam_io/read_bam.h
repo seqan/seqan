@@ -138,11 +138,11 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 ..include:seqan/bam_io.h
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
-               TForwardIter & iter,
-               Bam const & /*tag*/)
+                BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+                TForwardIter & iter,
+                Bam const & /*tag*/)
 {
     // Read BAM magic string.
     String<char, Array<4> > magic;
@@ -198,13 +198,7 @@ void readRecord(BamHeader & header,
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
         appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
         // Append contig name to name store, if not known already.
-        typename Size<TNameStore>::Type globalRId = 0;
-        if (!getIdByName(nameStore(context), name, globalRId, nameStoreCache(context)))
-        {
-            globalRId = length(nameStore(context));
-            appendName(nameStore(context), name, nameStoreCache(context));
-        }
-        context.translateFile2GlobalRefId[i] = globalRId;
+        context.translateFile2GlobalRefId[i] = getIdByName(nameStoreCache(context), name);
     }
 }
 
@@ -218,10 +212,10 @@ void readRecord(BamHeader & header,
 ..param.alignmentRecord.type:Class.BamAlignmentRecord
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Bam const & /*tag*/)
 {
@@ -289,11 +283,11 @@ readRecord(BamAlignmentRecord & record,
     resize(record.qual, record._l_qseq, Exact());
     // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
     // representation of '*';
-    if (!empty(record.qual) && record.qual[0] == '\xff')
-        clear(record.qual);
     TQualIter qitEnd = end(record.qual, Standard());
     for (TQualIter qit = begin(record.qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
+    if (!empty(record.qual) && record.qual[0] == '\xff')
+        clear(record.qual);
 
     // tags
     resize(record.tags, remainingBytes, Exact());

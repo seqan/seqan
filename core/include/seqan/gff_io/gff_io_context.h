@@ -147,21 +147,43 @@ TGffIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 ..summary:The name store cache class.
 */
 
-template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_> >
+template <
+    typename TNameStore_ = StringSet<CharString>,
+    typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
+    typename TStorageSpec = Owner<> >
 class GffIOContext
 {
 public:
     typedef TNameStore_ TNameStore;
     typedef TNameStoreCache_ TNameStoreCache;
 
-    TNameStore * _nameStore;
-    TNameStoreCache * _nameStoreCache;
+    typedef typename StorageSwitch<TNameStore, TStorageSpec>::Type      TNameStoreMember;
+    typedef typename StorageSwitch<TNameStoreCache, TStorageSpec>::Type TNameStoreCacheMember;
 
-    GffIOContext() : _nameStore(0), _nameStoreCache(0)
+    TNameStoreMember        _nameStore;
+    TNameStoreCacheMember   _nameStoreCache;
+    CharString              buffer;
+
+    GffIOContext() :
+        _nameStore(TNameStoreMember()),
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 NULL,
+                                 _nameStore))
     {}
 
-    GffIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
-            _nameStore(&nameStore), _nameStoreCache(&nameStoreCache)
+    GffIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache_,
+                                 _nameStore))
+    {}
+
+    template <typename TOtherStorageSpec>
+    GffIOContext(GffIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
+        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
+        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache(other),
+                                 _nameStore))
     {}
 };
 
@@ -203,21 +225,18 @@ public:
 ..include:seqan/bam_io.h
 */
 
-// TODO(holtgrew): Rename to referenceNameStore
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore &
-nameStore(GffIOContext<TNameStore, TNameStoreCache> & context)
+nameStore(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
+    return _referenceCast<TNameStore &>(context._nameStore);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStore const &
-nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
+nameStore(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
+    return _referenceCast<TNameStore const &>(context._nameStore);
 }
 
 // ----------------------------------------------------------------------------
@@ -251,21 +270,18 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
 ..see:Function.GffIOContext#nameStore
 */
 
-// TODO(holtgrew): Rename to referenceNameStoreCache
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache &
-nameStoreCache(GffIOContext<TNameStore, TNameStoreCache> & context)
+nameStoreCache(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
+    return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
 }
 
-template <typename TNameStore, typename TNameStoreCache>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 TNameStoreCache const &
-nameStoreCache(GffIOContext<TNameStore, TNameStoreCache> const & context)
+nameStoreCache(GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
+    return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
 }
 
 }  // namespace seqan

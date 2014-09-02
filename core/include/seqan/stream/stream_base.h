@@ -564,19 +564,19 @@ inline void write(TTarget &target, TIValue *ptr, TSize n)
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): should it be defined for Streams and Containers?
 
-template <typename TTarget, typename TValue, typename TSize>
-inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
-write(TTarget &target, TValue *ptr, TSize n)
-{
-    typedef Range<TValue*>                          TRange;
-    typedef typename Iterator<TRange, Rooted>::Type TIterator;
-    typedef typename Chunk<TIterator>::Type*        TIChunk;
-    typedef typename Chunk<TTarget>::Type*          TOChunk;
-
-    TRange range(ptr, ptr + n);
-    TIterator iter = begin(range, Rooted());
-    _write(target, iter, n, TIChunk(), TOChunk());
-}
+//template <typename TTarget, typename TValue, typename TSize>
+//inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+//write(TTarget &target, TValue *ptr, TSize n)
+//{
+//    typedef Range<TValue*>                          TRange;
+//    typedef typename Iterator<TRange, Rooted>::Type TIterator;
+//    typedef typename Chunk<TIterator>::Type*        TIChunk;
+//    typedef typename Chunk<TTarget>::Type*          TOChunk;
+//
+//    TRange range(ptr, ptr + n);
+//    TIterator iter = begin(range, Rooted());
+//    _write(target, iter, n, TIChunk(), TOChunk());
+//}
 
 // ----------------------------------------------------------------------------
 // Function write(Iterator<Input>)

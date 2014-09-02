@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     record.rNextId = BamAlignmentRecord::INVALID_REFID;
     record.pNext = BamAlignmentRecord::INVALID_POS;
     record.tLen = BamAlignmentRecord::INVALID_LEN;
-    record.seq = "CGATCGATAA";
+    record.seq  = "CGATCGATAA";
     record.qual = "IIIIIIIIII";
 
     // Call code under test.
