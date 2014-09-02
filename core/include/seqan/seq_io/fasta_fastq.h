@@ -273,6 +273,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
     skipOne(iter, TQualsBegin());       // assert and skip '+'
     skipLine(iter);                     // skip optional 2nd Fastq id
 
+    skipLine(iter);                     // skip Fastq qualities
     skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
 

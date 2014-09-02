@@ -9,8 +9,8 @@ int main(int argc, char ** argv)
     CharString path = SEQAN_TEMP_FILENAME();
     append(path, ".fa");
 
-    SequenceFile<Output> file(toCString(path));
-    write(file, "chr1", "ACGT");
+    SeqFileOut file(toCString(path));
+    writeRecord(file, "chr1", "ACGT");
     close(file);
 
     return 0;

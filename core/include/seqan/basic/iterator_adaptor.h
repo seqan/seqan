@@ -258,7 +258,7 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return _dereference<TContainer &>(me.data_container);
+    return _referenceCast<TContainer &>(me.data_container);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>

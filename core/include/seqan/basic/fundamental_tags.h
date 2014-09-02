@@ -705,12 +705,14 @@ inline bool isEqual(TagSelector<TTagList> const &selector, TTag const &)
 template <typename TTagList, typename TTag>
 inline void assign(TagSelector<TTagList> &selector, TTag &)
 {
+    SEQAN_ASSERT_NEQ(int(Find<TTagList, TTag>::VALUE), -1);
     selector.tagId = Find<TTagList, TTag>::VALUE;
 }
 
 template <typename TTagList, typename TTag>
 inline void assign(TagSelector<TTagList> &selector, TTag const &)
 {
+    SEQAN_ASSERT_NEQ(int(Find<TTagList, TTag>::VALUE), -1);
     selector.tagId = Find<TTagList, TTag>::VALUE;
 }
 

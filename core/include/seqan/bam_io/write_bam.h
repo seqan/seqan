@@ -78,10 +78,10 @@ namespace seqan {
  */
 
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
            BamHeader const & header,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            Bam const & /*tag*/)
 {
     write(target, "BAM\1");
@@ -104,6 +104,7 @@ void write(TTarget & target,
 
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
+        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
         appendRawPod(target, (__int32)(length(header.sequenceInfos[i].i1) + 1));
         write(target, header.sequenceInfos[i].i1);
         writeValue(target, '\0');
@@ -136,10 +137,10 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
     return 0;
 }
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
            BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            Bam const & /*tag*/)
 {
     typedef typename Iterator<CharString, Standard>::Type                                   TCharIter;
@@ -155,7 +156,8 @@ void write(TTarget & target,
     record._l_qseq = length(record.seq);
 
     resize(context.buffer, sizeof(BamAlignmentRecordCore) + record._l_qname +
-           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq);
+           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq +
+           length(record.tags));
     TCharIter it = begin(context.buffer, Standard());
 
     // bin_mq_nl
@@ -199,7 +201,7 @@ void write(TTarget & target,
     };
     TCigarIter citEnd = end(record.cigar, Standard());
     for (TCigarIter cit = begin(record.cigar, Standard()); cit != citEnd; ++cit)
-        *it++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
+        *reinterpret_cast<__uint32* &>(it)++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
 
     // seq
     TSeqIter sit = begin(record.seq, Standard());

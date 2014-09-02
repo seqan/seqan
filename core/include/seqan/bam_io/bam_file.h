@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
+// Smart file for reading/writing files in SAM or BAM format.
+// ==========================================================================
 
 #ifndef SEQAN_BAM_IO_BAM_FILE_H_
 #define SEQAN_BAM_IO_BAM_FILE_H_
@@ -41,15 +43,82 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TDirection, typename TSpec>
-struct BamFile;
-
 // ============================================================================
 // Typedefs
 // ============================================================================
 
-template <typename TBamFile>
-struct BamFileFormats
+/*!
+ * @class BamFileIn
+ * @headerfile <seqan/bam_io.h>
+ * @brief Class that provides an easy to use interface for reading SAM and BAM files.
+ *
+ * @signature class BamFileIn;
+ *
+ * @section Example
+ *
+ * Read SAM or BAM files.
+ *
+ * @include demos/bam_io/bam_file_in.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/bam_io/bam_file_in.cpp.stdout
+ */
+
+/*!
+ * @fn BamFileIn::BamFileIn
+ * @brief Constructor
+ *
+ * @signature BamFileIn::BamFileIn([fileName[, openMode]]);
+ *
+ * @param[in] fileName The path to the SAM or BAM file to load, <tt>char const *</tt>.
+ * @param[in] openMode The open mode. Type: <tt>int</tt>.
+ */
+
+typedef SmartFile<Bam, Input>   BamFileIn;
+
+/*!
+ * @class BamFileOut
+ * @headerfile <seqan/bam_io.h>
+ * @brief Class that provides an easy to use interface for writing SAM and BAM files.
+ *
+ * @signature class BamFileOut;
+ */
+
+/*!
+ * @fn BamFileIn::BamFileOut
+ * @brief Constructor
+ *
+ * @signature BamFileOut::BamFileOut([fileName[, openMode]]);
+ *
+ * @param[in] fileName The path to the SAM or BAM file to write, <tt>char const *</tt>.
+ * @param[in] openMode The open mode. Type: <tt>int</tt>.
+ */
+
+typedef SmartFile<Bam, Output>  BamFileOut;
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction SmartFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
+{
+    typedef StringSet<CharString>                                   TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
+    typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec>
+struct FileFormats<SmartFile<Bam, TDirection, TSpec> >
 {
 #if SEQAN_HAS_ZLIB
     typedef TagSelector<
@@ -62,366 +131,271 @@ struct BamFileFormats
 #endif
 };
 
-// ============================================================================
-// Classes
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class BamFile
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec = void>
-struct BamFile
-{
-    typedef VirtualStream<char, TDirection>                 TStream;
-    typedef typename Iterator<TStream, TDirection>::Type    TIter;
-    typedef typename BamFileFormats<BamFile>::Type          TBamFileFormats;
-
-    typedef StringSet<CharString>                           TNameStore;
-    typedef NameStoreCache<TNameStore>                      TNameStoreCache;
-    typedef BamIOContext<TNameStore, TNameStoreCache>       TBamIOContext;
-
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache;
-    TBamIOContext   bamIOCtx;
-    TBamIOContext   *ctx;
-
-    TStream         stream;
-    TIter           iter;
-    TBamFileFormats format;
-
-    BamFile() :
-        nameStoreCache(nameStore),
-        bamIOCtx(nameStore, nameStoreCache),
-        ctx(&bamIOCtx),
-        iter(stream)
-    {}
-
-    BamFile(TBamIOContext &_ctx) :
-        nameStoreCache(nameStore),
-        ctx(&_ctx),
-        iter(stream)
-    {}
-
-    BamFile(const char *fileName, int openMode = DefaultOpenMode<BamFile>::VALUE) :
-        nameStoreCache(nameStore),
-        bamIOCtx(nameStore, nameStoreCache),
-        ctx(&bamIOCtx),
-        iter(stream)
-    {
-        if (!open(*this, fileName, openMode))
-            throw IOError(std::string("Could not open file ") + fileName);
-    }
-
-    BamFile(TBamIOContext &_ctx, const char *fileName, int openMode = DefaultOpenMode<BamFile>::VALUE) :
-        nameStoreCache(nameStore),
-        ctx(&_ctx),
-        iter(stream)
-    {
-        if (!open(*this, fileName, openMode))
-            throw IOError(std::string("Could not open file ") + fileName);
-    }
-
-    ~BamFile()
-    {
-        close(*this);
-    }
-
-    operator TBamIOContext & ()
-    {
-        return *ctx;
-    }
-};
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction DefaultOpenMode
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec, typename TDummy>
-struct DefaultOpenMode<BamFile<TDirection, TSpec>, TDummy> :
-    DefaultOpenMode<typename BamFile<TDirection, TSpec>::TStream, TDummy> {};
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function setFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec, typename TFormat>
-inline void setFormat(BamFile<TDirection, TSpec> & file, TFormat format)
-{
-    assign(file.format, format);
-}
-
-// ----------------------------------------------------------------------------
-// Function guessFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline bool guessFormat(BamFile<Input, TSpec> & file)
-{
-    return guessFormat(file.stream, file.format);
-}
-
-template <typename TSpec>
-inline bool guessFormat(BamFile<Output, TSpec> &)
-{
-    return true;
-}
-
 // --------------------------------------------------------------------------
 // _mapBamFormatToCompressionFormat
 // --------------------------------------------------------------------------
 
 inline BgzfFile
-_mapBamFormatToCompressionFormat(Bam)
+_mapFileFormatToCompressionFormat(Bam)
 {
     return BgzfFile();
 }
 
 inline Nothing
-_mapBamFormatToCompressionFormat(Sam)
+_mapFileFormatToCompressionFormat(Sam)
 {
     return Nothing();
 }
 
-template <typename TBamFileFormats>
-inline TagSelector<CompressedFileTypes>
-_mapBamFormatToCompressionFormat(TagSelector<TBamFileFormats> format)
-{
-    TagSelector<CompressedFileTypes> compressionType;
-
-    if (isEqual(format, Sam()))
-        assign(compressionType, Nothing());
-    if (isEqual(format, Bam()))
-        assign(compressionType, BgzfFile());
-
-    return compressionType;
-}
-
-
-
-// --------------------------------------------------------------------------
-// Function open(stream)
-// --------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec, typename TStream>
-inline bool open(BamFile<TDirection, TSpec> & file,
-                 TStream &stream)
-{
-    typedef typename BamFile<TDirection, TSpec>::TIter TIter;
-
-    if (!open(file.stream, stream, _mapBamFormatToCompressionFormat(file.format)))
-        return false;
-
-    if (!guessFormat(file))
-        return false;
-
-    file.iter = TIter(file.stream);
-
-    return true;
-}
-
-template <typename TSpec, typename TStream, typename TFormat>
-inline bool open(BamFile<Output, TSpec> & file,
-                 TStream &stream,
-                 TFormat format)
-{
-    setFormat(file, format);
-    return open(file, stream);
-}
-
 // ----------------------------------------------------------------------------
-// Function open(fileName)
+// Function readRecord(); BamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec>
-inline bool open(BamFile<TDirection, TSpec> & file,
-                 const char *fileName,
-                 int openMode = DefaultOpenMode<BamFile<TDirection, TSpec> >::VALUE)
-{
-    typedef typename BamFile<TDirection, TSpec>::TIter TIter;
-
-    if (!guessFormatFromFilename(fileName, file.format))
-        return false;
-
-    if (!open(file.stream, fileName, openMode))
-        return false;
-
-    file.iter = TIter(file.stream);
-
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function close()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-inline bool close(BamFile<TDirection, TSpec> & file)
-{
-    return close(file.stream);
-}
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, bool)
-atEnd(BamFile<TDirection, TSpec> const & file)
-{
-    return atEnd(file.iter);
-}
-
-// ----------------------------------------------------------------------------
-// Function read(); BamHeader
-// ----------------------------------------------------------------------------
+/*!
+ * @fn BamFileIn#readRecord
+ * @brief Read one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
+ *
+ * @signature int readRecord(header, bamFileIn);
+ * @signature int readRecord(record, bamFileIn);
+ *
+ * @param[out]   header     The @link BamAlignmentHeader @endlink to read the header information into. Of type
+ *                          @link BamAlignmentHeader @endlink.
+ * @param[out]   record     The @link BamAlignmentRecord @endlink to read the next alignment record into. Of type
+ *                          @link BamAlignmentRecord @endlink.
+ * @param[in,out] bamFileIn The @link BamFileIn @endlink object to read from.
+ */
 
 // support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamHeader & /* header */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 readRecord(BamHeader & header,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(header, context, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(header, context, iter, TFormat());
     else
         readRecord(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-readRecord(BamHeader & header, BamFile<TDirection, TSpec> & file)
+template <typename TSpec>
+inline void
+readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(header, *file.ctx, file.iter, file.format);
+    readRecord(header, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); BamAlignmentRecord
+// Function readRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & /* record */,
-           BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache> & context,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(record, context, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(record, context, iter, TFormat());
     else
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-readRecord(BamAlignmentRecord & record, BamFile<TDirection, TSpec> & file)
+template <typename TSpec>
+inline void
+readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 {
-    readRecord(record, *file.ctx, file.iter, file.format);
+    readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BamHeader
+// Function writeRecord(); BamHeader
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamFileOut#writeRecord
+ * @brief Write one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
+ *
+ * @signature int writeRecord(bamFileOut, header);
+ * @signature int writeRecord(bamFileOut, record);
+ *
+ * @param[in,out] bamFileOut    The @link BamFileOut @endlink object to write to.
+ * @param[in]     header        The @link BamAlignmentHeader @endlink to write out.
+ * @param[in]     record        The @link BamAlignmentRecord @endlink to write out.
+*/
+
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
       BamHeader const & /* header */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileOut: File format not specified.");
+}
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 write(TTarget & target,
       BamHeader const & header,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
       TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        write(target, header, context, TFormatTag());
+    if (isEqual(format, TFormat()))
+        write(target, header, context, TFormat());
     else
         write(target, header, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BamFile variant
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-write(BamFile<TDirection, TSpec> & file, BamHeader & header)
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 {
-    write(file.iter, header, *file.ctx, file.format);
+    write(file.iter, header, context(file), file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BamAlignmentRecord
+// Function writeRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
       BamAlignmentRecord & /* record */,
-      BamIOContext<TNameStore, TNameStoreCache> & /* context */,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
-{}
+{
+    SEQAN_FAIL("BamFileOut: File format not specified.");
+}
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TTagList>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 write(TTarget & target,
       BamAlignmentRecord & record,
-      BamIOContext<TNameStore, TNameStoreCache> & context,
+      BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
       TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        write(target, record, context, TFormatTag());
+    if (isEqual(format, TFormat()))
+        write(target, record, context, TFormat());
     else
         write(target, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-template <typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename BamFile<TDirection, TSpec>::TStream> >, void)
-write(BamFile<TDirection, TSpec> & file, BamAlignmentRecord & record)
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
 {
-    write(file.iter, record, *file.ctx, file.format);
+    write(file.iter, record, context(file), file.format);
 }
+
+// ----------------------------------------------------------------------------
+// Function jumpToRegion()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToRegion
+ * @brief Seek in BamStream using an index.
+ *
+ * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
+ * jumps to the first alignment in this region, if any.
+ *
+ * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ *
+ * @param[in,out] stream        The @link BamStream @endlink to jump with.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
+ *                              alignments.
+ * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
+ *
+ * @section Remarks
+ *
+ * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ *
+ * @see BamIndex#jumpToRegion
+ */
+
+#if SEQAN_HAS_ZLIB___disabled
+inline bool jumpToRegion(BamStream & bamIO, bool & hasAlignments, __int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index)
+{
+    if (bamIO._format != BamStream::BAM)
+        return false;  // Can only jump in BAM files.
+    if (bamIO._mode != BamStream::READ)
+        return false;  // Can only jump when reading.
+
+    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
+    return s->jumpToRegion(hasAlignments, refId, pos, posEnd, index, bamIO.bamIOContext);
+}
+#endif  // #if SEQAN_HAS_ZLIB
+
+// ----------------------------------------------------------------------------
+// Function jumpToOrphans()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToOrphans
+ * @brief Seek to orphans block in BamStream using an index.
+ *
+ * @signature bool jumpToOrphans(stream, hasAlignments, index);
+ *
+ * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[in]     index          The index to use for jumping.
+ *
+ * @see BamIndex#jumpToOrphans
+ */
+
+#if SEQAN_HAS_ZLIB___disabled
+inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
+{
+    if (bamIO._format != BamStream::BAM)
+        return false;  // Can only jump in BAM files.
+    if (bamIO._mode != BamStream::READ)
+        return false;  // Can only jump when reading.
+
+    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
+    return s->jumpToOrphans(index, bamIO.bamIOContext);
+}
+#endif  // #if SEQAN_HAS_ZLIB
 
 }  // namespace seqan
 

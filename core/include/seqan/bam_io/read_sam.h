@@ -144,9 +144,9 @@ inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
 // Function readRecord()                                        BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void readRecord(BamHeaderRecord & record,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
                TForwardIter & iter,
                Sam const & /*tag*/)
 {
@@ -220,9 +220,9 @@ void readRecord(BamHeaderRecord & record,
 ...remarks:Use for SAM.
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache> & context,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
                TForwardIter & iter,
                Sam const & tag)
 {
@@ -254,12 +254,7 @@ inline void readRecord(BamHeader & header,
             }
 
             // Add name to name store cache if necessary.
-            unsigned contigId = 0;
-            if (!getIdByName(nameStore(context), sn, contigId, nameStoreCache(context)))
-            {
-                contigId = length(nameStore(context));
-                appendName(nameStore(context), sn, nameStoreCache(context));
-            }
+            unsigned contigId = getIdByName(nameStoreCache(context), sn);
 
             if (length(header.sequenceInfos) <= contigId)
                 resize(header.sequenceInfos, contigId + 1);
@@ -277,9 +272,9 @@ inline void readRecord(BamHeader & header,
 ..signature:readRecord(alignmentRecord, context, recordReader, tag)
 */
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void readRecord(BamAlignmentRecord & record,
-            BamIOContext<TNameStore, TNameStoreCache> & context,
+            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {

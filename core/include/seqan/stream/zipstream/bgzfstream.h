@@ -334,7 +334,7 @@ public:
     {
         istream_reference   istream;
         Mutex               lock;
-        std::exception      *error;
+        IOException         *error;
         off_t               fileOfs;
 
         Serializer(istream_reference istream) :

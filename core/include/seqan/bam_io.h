@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Facade header for module bam_io.
 // ==========================================================================
@@ -65,12 +66,8 @@
 
 #include <seqan/bam_io/read_sam.h>
 #include <seqan/bam_io/write_sam.h>
-
-// BAM I/O is only available when ZLIB is available (and thus the BGz Stream).
-#if SEQAN_HAS_ZLIB
 #include <seqan/bam_io/read_bam.h>
 #include <seqan/bam_io/write_bam.h>
-#endif  // #if SEQAN_HAS_ZLIB
 
 // ===========================================================================
 // BAM Index Related.
@@ -93,6 +90,5 @@
 // ===========================================================================
 
 #include <seqan/bam_io/bam_file.h>
-//TODO(singer): #include <seqan/bam_io/bam_stream.h>
 
 #endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_

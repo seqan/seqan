@@ -54,10 +54,37 @@ namespace seqan {
 // Tags, Enums
 // ============================================================================
 
+#if SEQAN_HAS_ZLIB
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+struct Value<basic_bgzf_istream<Elem, Tr, ElemA, ByteT, ByteAT> > :
+    Value<std::basic_istream<Elem, Tr> > {};
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+struct Position<basic_bgzf_istream<Elem, Tr, ElemA, ByteT, ByteAT> > :
+    Position<std::basic_istream<Elem, Tr> > {};
+
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+struct Value<basic_bgzf_ostream<Elem, Tr, ElemA, ByteT, ByteAT> > :
+    Value<std::basic_ostream<Elem, Tr> > {};
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+struct Position<basic_bgzf_ostream<Elem, Tr, ElemA, ByteT, ByteAT> > :
+    Position<std::basic_ostream<Elem, Tr> > {};
+
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+SEQAN_CONCEPT_IMPL((basic_bgzf_istream<Elem, Tr, ElemA, ByteT, ByteAT>), (InputStreamConcept));
+
+template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
+SEQAN_CONCEPT_IMPL((basic_bgzf_ostream<Elem, Tr, ElemA, ByteT, ByteAT>), (OutputStreamConcept));
+
+#endif
+
 // --------------------------------------------------------------------------
 // TagList CompressedFileTypes
 // --------------------------------------------------------------------------
-
 
 typedef
 #if SEQAN_HAS_ZLIB
@@ -374,7 +401,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 {
     typedef typename TTagList::Type TFormatTag;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+    if (isEqual(format, TFormatTag()))
         return tagApply(ctx, TFormatTag());
 
     return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));

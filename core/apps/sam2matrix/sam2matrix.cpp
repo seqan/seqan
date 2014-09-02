@@ -142,21 +142,12 @@ bool _initializeMap(std::map<String<char>, unsigned> & nameToPos, SamToGasicOpti
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    SequenceStream seqStream(toCString(options.readNameFileName));
-    if (!isGood(seqStream))
-    {
-        std::cerr << "ERROR: Could not open the file " << options.readNameFileName << "!\n";
-        return 1;
-    }
+    SeqFileIn seqStream(toCString(options.readNameFileName));
 
     seqan::CharString fixedId;
-    for (unsigned i = 0 ;!atEnd(seqStream); ++i)
+    for (unsigned i = 0; !atEnd(seqStream); ++i)
     {
-        if (readRecord(id, seq, seqStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read from " << options.readNameFileName << "!\n";
-            return 1;
-        }
+        readRecord(id, seq, seqStream);
 
         clear(fixedId);
         for(unsigned s = 0; s < length(id); ++s)
@@ -179,13 +170,15 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
 
     for (unsigned i = 0; i < length(options.samFileNames); ++i)
     {
-        BamStream bamIO(toCString(options.samFileNames[i])); 
+        BamFileIn bamIO(toCString(options.samFileNames[i]));
+        BamHeader header;
         BamAlignmentRecord record;
 
-        for (unsigned j = 0 ;!atEnd(bamIO); ++j)
+        readRecord(header, bamIO);
+
+        for (unsigned j = 0; !atEnd(bamIO); ++j)
         {
-            if (readRecord(record, bamIO) != 0)
-                return false;
+            readRecord(record, bamIO);
             if (!hasFlagUnmapped(record))
             {
                 if (nameToPos.find(record.qName) != nameToPos.end())
@@ -199,55 +192,39 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
     return true;
 }
 
-bool _writeFile(StringSet<String<unsigned> > const & result,
+void _writeFile(StringSet<String<unsigned> > const & result,
                 std::map<String<char>, unsigned> & nameToPos,
                 SamToGasicOptions const & options)
 {
     std::fstream fout(toCString(options.outPutFileName), std::ios::binary | std::ios::out);
+    Iter<std::fstream, StreamIterator<Output> > target(fout);
 
-    if (streamPut(fout, length(options.samFileNames)))    
-        return 1;
-    if (streamWriteChar(fout, '\t'))
-        return 1;
-    if (streamPut(fout, length(result)))
-        return 1;
-    if (streamWriteChar(fout, '\n'))
-        return 1;
+    appendNumber(target, length(options.samFileNames));
+    writeValue(target, '\t');
+    appendNumber(target, length(result));
+    writeValue(target, '\n');
 
     for (unsigned i = 0; i < length(options.genomeFileNames); ++i)
     {
-        if (streamWriteChar(fout, '>'))
-            return 1;
-        if (streamWriteBlock(fout, &(options.genomeFileNames[i])[0], length(options.genomeFileNames[i])) != length(options.genomeFileNames[i]))
-            return 1;
-        if (streamWriteChar(fout, '\n'))
-            return 1;
+        writeValue(target, '>');
+        write(target, options.genomeFileNames[i]);
+        writeValue(target, '\n');
     }
 
     std::map<String<char>, unsigned>::iterator it = nameToPos.begin();
     for (unsigned i = 0; i < length(result); ++i)
     {
-        if (streamWriteBlock(fout, &(it->first)[0], length(it->first)) != length(it->first))
-            return 1;
-        if (streamWriteChar(fout, '\t'))
-            return 1;
+        write(target, it->first);
+        writeValue(target, '\t');
 
         for (unsigned j = 0; j < length(result[i]); ++j)
         {
-            if (streamPut(fout, result[i][j]))
-                return 1;
-            if (streamWriteChar(fout, '\t'))
-                return 1;
+            appendNumber(target, result[i][j]);
+            writeValue(target, '\t');
         }
-        if (streamWriteChar(fout, '\n'))
-            return 1;
-
+        writeValue(target, '\n');
         ++it;
     }
-
-    fout.close();
-
-    return 0;
 }
 
 
@@ -274,13 +251,19 @@ int main(int argc, char const ** argv)
     StringSet<String<unsigned> > mappedReads;
     std::map<String<char>, unsigned> nameToPos;
 
-    // A std::map is used to quickly find a read id when parsing the sam
-    if (!_initializeMap(nameToPos, options))
-        std::cerr << "Problem extracting the read names." << std::endl;
-    if (!_parseSamFiles(mappedReads, nameToPos, options))
-        std::cerr << "Problem parsing the sam files." << std::endl;
-    if (!_writeFile(mappedReads, nameToPos, options))
-        std::cerr << "Problem writing the result." << std::endl;
+    try
+    {
+        // A std::map is used to quickly find a read id when parsing the sam
+        if (!_initializeMap(nameToPos, options))
+            std::cerr << "Problem extracting the read names." << std::endl;
+        if (!_parseSamFiles(mappedReads, nameToPos, options))
+            std::cerr << "Problem parsing the sam files." << std::endl;
+        _writeFile(mappedReads, nameToPos, options);
+    }
+    catch (IOException &e)
+    {
+        std::cerr << "Problem occurred: " << e.what() << std::endl;
+    }
 
     return 0;
 }

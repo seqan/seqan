@@ -59,11 +59,11 @@ namespace seqan {
 // Function write2()                                            BamHeaderRecord
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
-           BamHeaderRecord const & header,
-           BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
-           Sam const & /*tag*/)
+                  BamHeaderRecord const & header,
+                  BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & /*context*/,
+                  Sam const & /*tag*/)
 {
     char const * headerTypes[] = {"@HD", "@SQ", "@RG", "@PG", "@CO"};
     write(target, headerTypes[header.type]);
@@ -91,11 +91,11 @@ inline void write(TTarget & target,
 // Function write2()                                                  BamHeader
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
-           BamHeader const & header,
-           BamIOContext<TNameStore, TNameStoreCache> const & context,
-           Sam const & tag)
+                  BamHeader const & header,
+                  BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+                  Sam const & tag)
 {
     std::set<CharString> writtenSeqInfos;
 
@@ -120,6 +120,7 @@ inline void write(TTarget & target,
     // Write missing @SQ header records.
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
+        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
         if (writtenSeqInfos.find(header.sequenceInfos[i].i1) != writtenSeqInfos.end())
             continue;
         write(target, "@SQ\tSN:");
@@ -134,11 +135,11 @@ inline void write(TTarget & target,
 // Function write2()                                         BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache>
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
-           BamAlignmentRecord const & record,
-           BamIOContext<TNameStore, TNameStoreCache> const & context,
-           Sam const & /*tag*/)
+                  BamAlignmentRecord const & record,
+                  BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context,
+                  Sam const & /*tag*/)
 {
     write(target, record.qName);
     writeValue(target, '\t');
