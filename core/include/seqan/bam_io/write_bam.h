@@ -200,7 +200,7 @@ void write(TTarget & target,
     };
     TCigarIter citEnd = end(record.cigar, Standard());
     for (TCigarIter cit = begin(record.cigar, Standard()); cit != citEnd; ++cit)
-        *it++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
+        *reinterpret_cast<__uint32* &>(it)++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
 
     // seq
     TSeqIter sit = begin(record.seq, Standard());
