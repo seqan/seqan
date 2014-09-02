@@ -48,263 +48,102 @@ namespace seqan {
 // ============================================================================
 
 /*!
- * @defgroup GeneticCodeSpecs GeneticCode Specs
- * @brief Specialization tags for @link GeneticCode @endlink
+ * @enum GeneticCodeSpec GeneticCode Specs
+ * @brief Specialization values for @link GeneticCode @endlink
+ * @headerfile <seqan/translation.h>
+ *
+ * @signature enum class  GeneticCodeSpec : uint8_t { ...};
  *
  * @see translate
  * @see GeneticCode
  *
- * Some genetic codes have been deprecated, so not all transl_table-numbers are present.
+ * The numeric values of the enums correspond to the genbank transl_table values
+ * (see <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi">http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi</a>).
+ * Some genetic codes have been deprecated, so not all numeric values are available.
  *
- * @tag GeneticCodeSpecs#Canonical
- * @headerfile seqan/translation.h
- * @brief The Standard Genetic Code (genbank transl_table=1)
+ * Please not that this is part of the translation module which requires C++11.
  *
- * @tag GeneticCodeSpecs#VertMitochondrial
- * @headerfile seqan/translation.h
- * @brief The Vertebrate Mitochondrial Code (genbank transl_table=2)
+ * @val GeneticCodeSpec CANONICAL = 1
+ * @brief The Standard Genetic Code
  *
- * @tag GeneticCodeSpecs#YeastMitochondrial
- * @headerfile seqan/translation.h
- * @brief The Yeast Mitochondrial Code (genbank transl_table=3)
+ * @val GeneticCodeSpec VERT_MITOCHONDRIAL = 2
+ * @brief The Vertebrate Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#MoldMitochondrial
- * @headerfile seqan/translation.h
+ * @val GeneticCodeSpec YEAST_MITOCHONDRIAL = 3
+ * @brief The Yeast Mitochondrial Code
+ *
+ * @val GeneticCodeSpec MOLD_MITOCHONDRIAL = 4
  * @brief The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code
- *        (genbank transl_table=4).
  *
- * @tag GeneticCodeSpecs#InvertMitchondrial
- * @headerfile seqan/translation.h
- * @brief The Invertebrate Mitochondrial Code (genbank transl_table=5)
+ * @val GeneticCodeSpec INVERT_MITOCHONDRIAL = 5
+ * @brief The Invertebrate Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#Ciliate
- * @headerfile seqan/translation.h
- * @brief The Ciliate, Dasycladacean and Hexamita Nuclear Code (genbank transl_table=6).
+ * @val GeneticCodeSpec CILIATE = 6
+ * @brief The CILIATE, Dasycladacean and Hexamita Nuclear Code
  *
- * @tag GeneticCodeSpecs#FlatwormMitochondrial
- * @headerfile seqan/translation.h
- * @brief The Echinoderm and Flatworm Mitochondrial Code (genbank transl_table=9).
+ * @val GeneticCodeSpec FLATWORM_MITOCHONDRIAL = 9
+ * @brief The Echinoderm and Flatworm Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#Euplotid
- * @headerfile seqan/translation.h
- * @brief The Euplotid Nuclear Code (genbank transl_table=10).
+ * @val GeneticCodeSpec EUPLOTID = 10
+ * @brief The EUPLOTID Nuclear Code
  *
- * @tag GeneticCodeSpecs#Prokaryote
- * @headerfile seqan/translation.h
- * @brief The Bacterial, Archaeal and Plant Plastid Code (genbank transl_table=11).
+ * @val GeneticCodeSpec PROKARYOTE = 11
+ * @brief The Bacterial, Archaeal and Plant Plastid Code
  *
- * @tag GeneticCodeSpecs#AltYeast
- * @headerfile seqan/translation.h
- * @brief The Alternative Yeast Nuclear Code (genbank transl_table=12).
+ * @val GeneticCodeSpec ALT_YEAST = 12
+ * @brief The Alternative Yeast Nuclear Code
  *
- * @tag GeneticCodeSpecs#AscidianMitochondrial
- * @headerfile seqan/translation.h
- * @brief The Ascidian Mitochondrial Code (genbank transl_table=13).
+ * @val GeneticCodeSpec ASCIDIAN_MITOCHONDRIAL = 13
+ * @brief The Ascidian Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#AltFlatwormMitochondrial
- * @headerfile seqan/translation.h
- * @brief The Alternative Flatworm Mitochondrial Code (genbank transl_table=14).
+ * @val GeneticCodeSpec ALT_FLATWORM_MITOCHONDRIAL = 14
+ * @brief The Alternative Flatworm Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#Blepharisma
- * @headerfile seqan/translation.h
- * @brief Blepharisma Nuclear Code (genbank genbank transl_table=15).
+ * @val GeneticCodeSpec BLEPHARISMA = 15
+ * @brief BLEPHARISMA Nuclear Code
  *
- * @tag GeneticCodeSpecs#ChlorophyceanMitochondrial
- * @headerfile seqan/translation.h
- * @brief Chlorophycean Mitochondrial Code (genbank genbank transl_table=16).
+ * @val GeneticCodeSpec CHLOROPHYCEAN_MITOCHONDRIAL = 16
+ * @brief Chlorophycean Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#TrematodeMitochondrial
- * @headerfile seqan/translation.h
- * @brief Trematode Mitochondrial Code (genbank transl_table=21).
+ * @val GeneticCodeSpec TREMATODE_MITOCHONDRIAL = 21
+ * @brief Trematode Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#ScenedesmusMitochondrial
- * @headerfile seqan/translation.h
- * @brief Scenedesmus obliquus mitochondrial Code (genbank transl_table=22).
+ * @val GeneticCodeSpec SCENEDESMUS_MITOCHONDRIAL = 22
+ * @brief Scenedesmus obliquus mitochondrial Code
  *
- * @tag GeneticCodeSpecs#ThraustochytriumMitochondrial
- * @headerfile seqan/translation.h
- * @brief Thraustochytrium Mitochondrial Code (genbank transl_table=23).
+ * @val GeneticCodeSpec THRAUSTOCHYTRIUM_MITOCHONDRIAL = 23
+ * @brief Thraustochytrium Mitochondrial Code
  *
- * @tag GeneticCodeSpecs#PterobranchiaMitochondrial
- * @headerfile seqan/translation.h
- * @brief Pterobranchia mitochondrial code (genbank transl_table=24).
+ * @val GeneticCodeSpec PTEROBRANCHIA_MITOCHONDRIAL = 24
+ * @brief Pterobranchia mitochondrial code
  *
- * @tag GeneticCodeSpecs#Gracilibacteria
- * @headerfile seqan/translation.h
- * @brief Candidate Division SR1 and Gracilibacteria Code (genbank transl_table=25).
+ * @val GeneticCodeSpec GRACILIBACTERIA = 25
+ * @brief Candidate Division SR1 and GRACILIBACTERIA Code
  */
 
-// -----------------------------------------------------------------------
-// Tag Canonical
-// -----------------------------------------------------------------------
-
-struct Canonical_
-{};
-
-typedef Tag<Canonical_> Canonical;
-
-// -----------------------------------------------------------------------
-// Tag VertMitochondrial
-// -----------------------------------------------------------------------
-
-struct VertMitochondrial_
-{};
-
-typedef Tag<VertMitochondrial_> VertMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag YeastMitochondrial
-// -----------------------------------------------------------------------
-
-struct YeastMitochondrial_
-{};
-
-typedef Tag<YeastMitochondrial_> YeastMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag MoldMitochondrial
-// -----------------------------------------------------------------------
-
-struct MoldMitochondrial_
-{};
-
-typedef Tag<MoldMitochondrial_> MoldMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag InvertMitochondrial
-// -----------------------------------------------------------------------
-
-struct InvertMitochondrial_
-{};
-
-typedef Tag<InvertMitochondrial_> InvertMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag Ciliate
-// -----------------------------------------------------------------------
-
-struct Ciliate_
-{};
-
-typedef Tag<Ciliate_> Ciliate;
-
-// -----------------------------------------------------------------------
-// Tag FlatwormMitochondrial
-// -----------------------------------------------------------------------
-
-struct FlatwormMitochondrial_
-{};
-
-typedef Tag<FlatwormMitochondrial_> FlatwormMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag Euplotid
-// -----------------------------------------------------------------------
-
-struct Euplotid_
-{};
-
-typedef Tag<Euplotid_> Euplotid;
-
-// -----------------------------------------------------------------------
-// Tag Prokaryote
-// -----------------------------------------------------------------------
-
-struct Prokaryote_
-{};
-
-typedef Tag<Prokaryote_> Prokaryote;
-
-// -----------------------------------------------------------------------
-// Tag AltYeast
-// -----------------------------------------------------------------------
-
-struct AltYeast_
-{};
-
-typedef Tag<AltYeast_> AltYeast;
-
-// -----------------------------------------------------------------------
-// Tag AscidianMitochondrial
-// -----------------------------------------------------------------------
-
-struct AscidianMitochondrial_
-{};
-
-typedef Tag<AscidianMitochondrial_> AscidianMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag AltFlatwormMitochondrial
-// -----------------------------------------------------------------------
-
-struct AltFlatwormMitochondrial_
-{};
-
-typedef Tag<AltFlatwormMitochondrial_> AltFlatwormMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag Blepherisma
-// -----------------------------------------------------------------------
-
-struct Blepherisma_
-{};
-
-typedef Tag<Blepherisma_> Blepherisma;
-
-// -----------------------------------------------------------------------
-// Tag ChlorophyceanMitochondrial
-// -----------------------------------------------------------------------
-
-struct ChlorophyceanMitochondrial_
-{};
-
-typedef Tag<ChlorophyceanMitochondrial_> ChlorophyceanMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag TrematodeMitochondrial
-// -----------------------------------------------------------------------
-
-struct TrematodeMitochondrial_
-{};
-
-typedef Tag<TrematodeMitochondrial_> TrematodeMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag ScenedesmusMitochondrial
-// -----------------------------------------------------------------------
-
-struct ScenedesmusMitochondrial_
-{};
-
-typedef Tag<ScenedesmusMitochondrial_> ScenedesmusMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag ThraustochytriumMitochondrial
-// -----------------------------------------------------------------------
-
-struct ThraustochytriumMitochondrial_
-{};
-
-typedef Tag<ThraustochytriumMitochondrial_> ThraustochytriumMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag PterobranchiaMitochondrial
-// -----------------------------------------------------------------------
-
-struct PterobranchiaMitochondrial_
-{};
-
-typedef Tag<PterobranchiaMitochondrial_> PterobranchiaMitochondrial;
-
-// -----------------------------------------------------------------------
-// Tag Gracilibacteria
-// -----------------------------------------------------------------------
-
-struct Gracilibacteria_
-{};
-
-typedef Tag<Gracilibacteria_> Gracilibacteria;
-
+enum GeneticCodeSpec
+{
+    CANONICAL=1,
+    VERT_MITOCHONDRIAL,
+    YEAST_MITOCHONDRIAL,
+    MOLD_MITOCHONDRIAL,
+    INVERT_MITOCHONDRIAL,
+    CILIATE,
+    FLATWORM_MITOCHONDRIAL = 9,
+    EUPLOTID,
+    PROKARYOTE,
+    ALT_YEAST,
+    ASCIDIAN_MITOCHONDRIAL,
+    ALT_FLATWORM_MITOCHONDRIAL,
+    BLEPHARISMA,
+    CHLOROPHYCEAN_MITOCHONDRIAL,
+    TREMATODE_MITOCHONDRIAL = 21,
+    SCENEDESMUS_MITOCHONDRIAL,
+    THRAUSTOCHYTRIUM_MITOCHONDRIAL,
+    PTEROBRANCHIA_MITOCHONDRIAL,
+    GRACILIBACTERIA
+};
+// ALERT When modifying the above, also adapt GeneticCodes_ appropriately
 
 // -----------------------------------------------------------------------
 // Tag GeneticCode
@@ -312,26 +151,50 @@ typedef Tag<Gracilibacteria_> Gracilibacteria;
 
 /*!
  * @tag GeneticCode
- * @headerfile seqan/translation.h
- * @brief Dna to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpecs @endlink.
- * @signature GeneticCode<GeneticCodeSpec>
+ * @brief DNA/RNA to AminoAcid translation code, needs to be spec'ed by one of @link GeneticCodeSpec @endlink.
+ * @headerfile <seqan/translation.h>
+ * @signature GeneticCode<value>
  *
  * @see translate
- * @see GeneticCodeSpecs
+ * @see GeneticCodeSpec
  *
- * @headerfile seqan/translation.h
  */
 
-template <typename T = Canonical>
+template <GeneticCodeSpec spec = CANONICAL>
 struct GeneticCode
 {};
+
+// -----------------------------------------------------------------------
+// TagList GeneticCodes_
+// -----------------------------------------------------------------------
+
+typedef TagList<GeneticCode<CANONICAL>,
+        TagList<GeneticCode<VERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<YEAST_MITOCHONDRIAL>,
+        TagList<GeneticCode<MOLD_MITOCHONDRIAL>,
+        TagList<GeneticCode<INVERT_MITOCHONDRIAL>,
+        TagList<GeneticCode<CILIATE>,
+        TagList<GeneticCode<FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<EUPLOTID>,
+        TagList<GeneticCode<PROKARYOTE>,
+        TagList<GeneticCode<ALT_YEAST>,
+        TagList<GeneticCode<ASCIDIAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<ALT_FLATWORM_MITOCHONDRIAL>,
+        TagList<GeneticCode<BLEPHARISMA>,
+        TagList<GeneticCode<CHLOROPHYCEAN_MITOCHONDRIAL>,
+        TagList<GeneticCode<TREMATODE_MITOCHONDRIAL>,
+        TagList<GeneticCode<SCENEDESMUS_MITOCHONDRIAL>,
+        TagList<GeneticCode<THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
+        TagList<GeneticCode<PTEROBRANCHIA_MITOCHONDRIAL>,
+        TagList<GeneticCode<GRACILIBACTERIA>
+        > > > > > > > > > > > > > > > > > > >  GeneticCodes_;
 
 // -----------------------------------------------------------------------
 // struct TranslateTableDnaToAminoAcid_
 // -----------------------------------------------------------------------
 
-
-template <typename T = void>
+template <typename TCodeSpec = GeneticCode<CANONICAL>,
+          typename TVoidSpec = void>
 struct TranslateTableDnaToAminoAcid_
 {
     static char const VALUE[4][4][4];
@@ -341,10 +204,17 @@ struct TranslateTableDnaToAminoAcid_
  * http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
  */
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CANONICAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Canonical> >::VALUE[4][4][4] =
+        CANONICAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -369,10 +239,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<VERT_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        VertMitochondrial> >::VALUE [4][4][4] =
+        VERT_MITOCHONDRIAL>, TVoidSpec>::VALUE [4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -397,10 +274,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<YEAST_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        YeastMitochondrial> >::VALUE[4][4][4] =
+        YEAST_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -425,10 +309,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<MOLD_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        MoldMitochondrial> >::VALUE[4][4][4] =
+        MOLD_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -453,10 +344,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<INVERT_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        InvertMitochondrial> >::VALUE[4][4][4] =
+        INVERT_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -481,10 +379,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CILIATE>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Ciliate> >::VALUE[4][4][4] =
+        CILIATE>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -509,10 +414,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<FLATWORM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        FlatwormMitochondrial> >::VALUE[4][4][4] =
+        FLATWORM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'N', 'N', 'K', 'N' }, // aa?
@@ -537,10 +449,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<EUPLOTID>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Euplotid> >::VALUE[4][4][4] =
+        EUPLOTID>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -565,10 +484,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<PROKARYOTE>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Prokaryote> >::VALUE[4][4][4] =
+        PROKARYOTE>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -593,10 +519,17 @@ char const TranslateTableDnaToAminoAcid_<
     }
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ALT_YEAST>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        AltYeast> >::VALUE[4][4][4] =
+        ALT_YEAST>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -622,10 +555,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ASCIDIAN_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        AscidianMitochondrial> >::VALUE[4][4][4] =
+        ASCIDIAN_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -651,10 +591,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<ALT_FLATWORM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        AltFlatwormMitochondrial> >::VALUE[4][4][4] =
+        ALT_FLATWORM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'N', 'N', 'K', 'N' }, // aa?
@@ -680,10 +627,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<BLEPHARISMA>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Blepherisma> >::VALUE[4][4][4] =
+        BLEPHARISMA>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -709,10 +663,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<CHLOROPHYCEAN_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        ChlorophyceanMitochondrial> >::VALUE[4][4][4] =
+        CHLOROPHYCEAN_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -738,10 +699,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<TREMATODE_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        TrematodeMitochondrial> >::VALUE[4][4][4] =
+        TREMATODE_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'N', 'N', 'K', 'N' }, // aa?
@@ -767,10 +735,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<SCENEDESMUS_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        ScenedesmusMitochondrial> >::VALUE[4][4][4] =
+        SCENEDESMUS_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -796,10 +771,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<THRAUSTOCHYTRIUM_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        ThraustochytriumMitochondrial> >::VALUE[4][4][4] =
+        THRAUSTOCHYTRIUM_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -825,10 +807,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<PTEROBRANCHIA_MITOCHONDRIAL>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        PterobranchiaMitochondrial> >::VALUE[4][4][4] =
+        PTEROBRANCHIA_MITOCHONDRIAL>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?
@@ -854,10 +843,17 @@ char const TranslateTableDnaToAminoAcid_<
     //     a    c    g    u
 };
 
-template <>
+template <typename TVoidSpec>
+struct TranslateTableDnaToAminoAcid_<GeneticCode<GRACILIBACTERIA>,
+                                     TVoidSpec>
+{
+    static char const VALUE[4][4][4];
+};
+
+template <typename TVoidSpec>
 char const TranslateTableDnaToAminoAcid_<
     GeneticCode<
-        Gracilibacteria> >::VALUE[4][4][4] =
+        GRACILIBACTERIA>, TVoidSpec>::VALUE[4][4][4] =
 {
     { // a??
         { 'K', 'N', 'K', 'N' }, // aa?

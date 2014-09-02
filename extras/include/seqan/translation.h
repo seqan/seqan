@@ -40,6 +40,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/parallel.h>
 
 #include <seqan/translation/translation_tables.h>
 #include <seqan/translation/translation.h>
