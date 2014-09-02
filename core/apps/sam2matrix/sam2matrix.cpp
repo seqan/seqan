@@ -171,7 +171,7 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
     for (unsigned i = 0; i < length(options.samFileNames); ++i)
     {
         BamFileIn bamIO(toCString(options.samFileNames[i]));
-        BamAlignmentRecord header;
+        BamHeader header;
         BamAlignmentRecord record;
 
         readRecord(header, bamIO);
