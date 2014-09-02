@@ -51,7 +51,7 @@ void testBamIOBamStreamReadHeader(char const * pathFragment)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::BamStream bamIO(toCString(filePath), seqan::BamStream::READ);
+    seqan::BamFileIn bamIO(toCString(filePath));
     SEQAN_ASSERT(isGood(bamIO));
 
     SEQAN_ASSERT_EQ(length(bamIO.header.records), 2u);
@@ -89,7 +89,7 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::BamStream bamIO(toCString(filePath));
+    seqan::BamFileIn bamIO(toCString(filePath));
     SEQAN_ASSERT(isGood(bamIO));
 
     seqan::BamAlignmentRecord record;
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_ex1)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/ex1.bam");
 
-    seqan::BamStream bamIO(toCString(filePath));
+    seqan::BamFileIn bamIO(toCString(filePath));
     SEQAN_ASSERT(isGood(bamIO));
 
     SEQAN_ASSERT_EQ(nameStore(bamIO.bamIOContext)[0], "seq1");
@@ -216,7 +216,7 @@ void testBamIOBamStreamWriteHeader(char const * pathFragmentExpected)
         append(tmpPath, ".sam");
 
     // Initialize BamStream, build header.
-    seqan::BamStream bamIO(toCString(tmpPath), seqan::BamStream::WRITE);
+    seqan::BamFileOut bamIO(toCString(tmpPath));
     resize(bamIO.header.sequenceInfos, 1);
     bamIO.header.sequenceInfos[0].i1 = "REFERENCE";
     bamIO.header.sequenceInfos[0].i2 = 10000;
@@ -271,7 +271,7 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
         append(tmpPath, ".sam");
 
     // Initialize BamStream, build header.
-    seqan::BamStream bamIO(toCString(tmpPath), seqan::BamStream::WRITE);
+    seqan::BamFileOut bamIO(toCString(tmpPath));
     resize(bamIO.header.sequenceInfos, 1);
     bamIO.header.sequenceInfos[0].i1 = "REFERENCE";
     bamIO.header.sequenceInfos[0].i2 = 10000;
@@ -378,7 +378,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_file_size)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/small.sam");
 
-    seqan::BamStream bamStream(toCString(filePath));
+    seqan::BamFileIn bamStream(toCString(filePath));
     SEQAN_ASSERT(isGood(bamStream));
 
     // TODO(holtgrew): tellg() on std::istream does not work correctly for some reason.
@@ -397,7 +397,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/small.bam");
 
-    seqan::BamStream bamStream(toCString(filePath));
+    seqan::BamFileIn bamStream(toCString(filePath));
     SEQAN_ASSERT(isGood(bamStream));
 
     SEQAN_ASSERT_EQ(fileSize(bamStream), 181u);

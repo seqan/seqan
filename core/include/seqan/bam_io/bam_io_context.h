@@ -147,7 +147,10 @@ TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 ..summary:The name store cache class.
 */
 
-template <typename TNameStore_ = StringSet<CharString>, typename TNameStoreCache_ = NameStoreCache<TNameStore_>, typename TStorageSpec = Owner<> >
+template <
+    typename TNameStore_ = StringSet<CharString>,
+    typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
+    typename TStorageSpec = Dependent<> >
 class BamIOContext
 {
 public:
