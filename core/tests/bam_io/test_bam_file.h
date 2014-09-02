@@ -46,68 +46,69 @@
 // Read Header
 // ---------------------------------------------------------------------------
 
-void testBamIOBamStreamReadHeader(char const * pathFragment)
+void testBamIOBamFileReadHeader(char const * pathFragment)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
     seqan::BamFileIn bamIO(toCString(filePath));
-    SEQAN_ASSERT(isGood(bamIO));
+    seqan::BamHeader header;
 
-    SEQAN_ASSERT_EQ(length(bamIO.header.records), 2u);
-    SEQAN_ASSERT_EQ(bamIO.header.records[0].type, seqan::BAM_HEADER_FIRST);
-    SEQAN_ASSERT_EQ(bamIO.header.records[0].tags[0].i1, "VN");
-    SEQAN_ASSERT_EQ(bamIO.header.records[0].tags[0].i2, "1.3");
-    SEQAN_ASSERT_EQ(bamIO.header.records[0].tags[1].i1, "SO");
-    SEQAN_ASSERT_EQ(bamIO.header.records[0].tags[1].i2, "coordinate");
-    SEQAN_ASSERT_EQ(bamIO.header.records[1].type, seqan::BAM_HEADER_REFERENCE);
-    SEQAN_ASSERT_EQ(bamIO.header.records[1].tags[0].i1, "SN");
-    SEQAN_ASSERT_EQ(bamIO.header.records[1].tags[0].i2, "REFERENCE");
-    SEQAN_ASSERT_EQ(bamIO.header.records[1].tags[1].i1, "LN");
-    SEQAN_ASSERT_EQ(bamIO.header.records[1].tags[1].i2, "10000");
-    SEQAN_ASSERT_EQ(length(bamIO.header.sequenceInfos), 1u);
-    SEQAN_ASSERT_EQ(bamIO.header.sequenceInfos[0].i1, "REFERENCE");
-    SEQAN_ASSERT_EQ(bamIO.header.sequenceInfos[0].i2, 10000);
+    readRecord(header, bamIO);
+
+    SEQAN_ASSERT_EQ(length(header.records), 2u);
+    SEQAN_ASSERT_EQ(header.records[0].type, seqan::BAM_HEADER_FIRST);
+    SEQAN_ASSERT_EQ(header.records[0].tags[0].i1, "VN");
+    SEQAN_ASSERT_EQ(header.records[0].tags[0].i2, "1.3");
+    SEQAN_ASSERT_EQ(header.records[0].tags[1].i1, "SO");
+    SEQAN_ASSERT_EQ(header.records[0].tags[1].i2, "coordinate");
+    SEQAN_ASSERT_EQ(header.records[1].type, seqan::BAM_HEADER_REFERENCE);
+    SEQAN_ASSERT_EQ(header.records[1].tags[0].i1, "SN");
+    SEQAN_ASSERT_EQ(header.records[1].tags[0].i2, "REFERENCE");
+    SEQAN_ASSERT_EQ(header.records[1].tags[1].i1, "LN");
+    SEQAN_ASSERT_EQ(header.records[1].tags[1].i2, "10000");
+    SEQAN_ASSERT_EQ(length(header.sequenceInfos), 1u);
+    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i1, "REFERENCE");
+    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i2, 10000);
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_read_header)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_header)
 {
-    testBamIOBamStreamReadHeader("/core/tests/bam_io/small.sam");
+    testBamIOBamFileReadHeader("/core/tests/bam_io/small.sam");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_header)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_header)
 {
-    testBamIOBamStreamReadHeader("/core/tests/bam_io/small.bam");
+    testBamIOBamFileReadHeader("/core/tests/bam_io/small.bam");
 }
 
 // ---------------------------------------------------------------------------
 // Read Records
 // ---------------------------------------------------------------------------
 
-void testBamIOBamStreamReadRecords(char const * pathFragment)
+void testBamIOBamFileReadRecords(char const * pathFragment)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
     seqan::BamFileIn bamIO(toCString(filePath));
-    SEQAN_ASSERT(isGood(bamIO));
+    seqan::BamHeader header;
 
-    seqan::BamAlignmentRecord record;
+    readRecord(header, bamIO);
 
     seqan::String<seqan::BamAlignmentRecord> alignments;
     while (!atEnd(bamIO))
     {
         resize(alignments, length(alignments) + 1);
-        SEQAN_ASSERT_EQ(readRecord(back(alignments), bamIO), 0);
-        SEQAN_ASSERT(isGood(bamIO));
+        readRecord(back(alignments), bamIO);
     }
     SEQAN_ASSERT_EQ(length(alignments), 3u);
 
     SEQAN_ASSERT_EQ(alignments[0].qName, "READ0");
-    SEQAN_ASSERT_EQ(alignments[0].flag, 2);
+    SEQAN_ASSERT_EQ(alignments[0].flag, 2u);
     SEQAN_ASSERT_EQ(alignments[0].rID, 0);
     SEQAN_ASSERT_EQ(alignments[0].beginPos, 0);
-    SEQAN_ASSERT_EQ(alignments[0].mapQ, 8);
+    SEQAN_ASSERT_EQ(alignments[0].mapQ, 8u);
     SEQAN_ASSERT_EQ(length(alignments[0].cigar), 3u);
     SEQAN_ASSERT_EQ(alignments[0].cigar[0].count, 5u);
     SEQAN_ASSERT_EQ(alignments[0].cigar[0].operation, 'M');
@@ -123,10 +124,10 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(length(alignments[0].tags), 0u);
 
     SEQAN_ASSERT_EQ(alignments[1].qName, "READ0");
-    SEQAN_ASSERT_EQ(alignments[1].flag, 1);
+    SEQAN_ASSERT_EQ(alignments[1].flag, 1u);
     SEQAN_ASSERT_EQ(alignments[1].rID, 0);
     SEQAN_ASSERT_EQ(alignments[1].beginPos, 1);
-    SEQAN_ASSERT_EQ(alignments[1].mapQ, 8);
+    SEQAN_ASSERT_EQ(alignments[1].mapQ, 8u);
     SEQAN_ASSERT_EQ(length(alignments[1].cigar), 3u);
     SEQAN_ASSERT_EQ(alignments[1].cigar[0].count, 5u);
     SEQAN_ASSERT_EQ(alignments[1].cigar[0].operation, 'M');
@@ -142,10 +143,10 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(length(alignments[1].tags), 0u);
 
     SEQAN_ASSERT_EQ(alignments[2].qName, "READ0");
-    SEQAN_ASSERT_EQ(alignments[2].flag, 3);
+    SEQAN_ASSERT_EQ(alignments[2].flag, 3u);
     SEQAN_ASSERT_EQ(alignments[2].rID, 0);
     SEQAN_ASSERT_EQ(alignments[2].beginPos, 2);
-    SEQAN_ASSERT_EQ(alignments[2].mapQ, 8);
+    SEQAN_ASSERT_EQ(alignments[2].mapQ, 8u);
     SEQAN_ASSERT_EQ(length(alignments[2].cigar), 3u);
     SEQAN_ASSERT_EQ(alignments[2].cigar[0].count, 5u);
     SEQAN_ASSERT_EQ(alignments[2].cigar[0].operation, 'M');
@@ -154,46 +155,50 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].count, 4u);
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].operation, 'M');
     SEQAN_ASSERT_EQ(alignments[2].rNextId, -1);
-    SEQAN_ASSERT_EQ(alignments[2].pNext, 2147483647);
+//    SEQAN_ASSERT_EQ(alignments[2].rNextId, alignments[2].INVALID_REFID);
+    SEQAN_ASSERT_EQ(alignments[2].pNext, -1);
+//    SEQAN_ASSERT_EQ(alignments[2].pNext, alignments[2].INVALID_POS);
     SEQAN_ASSERT_EQ(alignments[2].tLen, 0);
     SEQAN_ASSERT_EQ(alignments[2].seq, "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
     SEQAN_ASSERT_EQ(length(alignments[2].tags), 0u);
 
-    SEQAN_ASSERT_EQ(bamIO._nameStore[0], "REFERENCE");
+    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[0], "REFERENCE");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_read_records)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_records)
 {
-    testBamIOBamStreamReadRecords("/core/tests/bam_io/small.sam");
+    testBamIOBamFileReadRecords("/core/tests/bam_io/small.sam");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_records)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_records)
 {
-    testBamIOBamStreamReadRecords("/core/tests/bam_io/small.bam");
+    testBamIOBamFileReadRecords("/core/tests/bam_io/small.bam");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_ex1)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/ex1.bam");
 
     seqan::BamFileIn bamIO(toCString(filePath));
-    SEQAN_ASSERT(isGood(bamIO));
+    seqan::BamHeader header;
 
-    SEQAN_ASSERT_EQ(nameStore(bamIO.bamIOContext)[0], "seq1");
-    SEQAN_ASSERT_EQ(nameStore(bamIO.bamIOContext)[1], "seq2");
-    SEQAN_ASSERT_EQ(bamIO.bamIOContext.translateFile2GlobalRefId[0], 0u);
-    SEQAN_ASSERT_EQ(bamIO.bamIOContext.translateFile2GlobalRefId[1], 1u);
+    readRecord(header, bamIO);
+
+    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[0], "seq1");
+    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[1], "seq2");
+    SEQAN_ASSERT_EQ(context(bamIO).translateFile2GlobalRefId[0], 0u);
+    SEQAN_ASSERT_EQ(context(bamIO).translateFile2GlobalRefId[1], 1u);
 
     seqan::BamAlignmentRecord record;
     seqan::String<int> counts;
     resize(counts, 2, 0);
     while (!atEnd(bamIO))
     {
-        SEQAN_ASSERT_EQ(readRecord(record, bamIO), 0);
+        readRecord(record, bamIO);
         ++counts[record.rID];
-//        seqan::CharString name = nameStore(bamIO.bamIOContext)[record.rID];
+//        seqan::CharString name = nameStore(context(bamIO))[record.rID];
 //        std::cout << "Chrom: " << name << " (" << record.rID << ")" << std::endl;
     }
     SEQAN_ASSERT_EQ(counts[0], 1501);
@@ -204,7 +209,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_ex1)
 // Write Header
 // ---------------------------------------------------------------------------
 
-void testBamIOBamStreamWriteHeader(char const * pathFragmentExpected)
+void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragmentExpected);
@@ -215,27 +220,29 @@ void testBamIOBamStreamWriteHeader(char const * pathFragmentExpected)
     else
         append(tmpPath, ".sam");
 
-    // Initialize BamStream, build header.
+    // Initialize BamFile, build header.
     seqan::BamFileOut bamIO(toCString(tmpPath));
-    resize(bamIO.header.sequenceInfos, 1);
-    bamIO.header.sequenceInfos[0].i1 = "REFERENCE";
-    bamIO.header.sequenceInfos[0].i2 = 10000;
-    resize(bamIO.header.records, 2);
-    resize(bamIO.header.records[0].tags, 2);
-    bamIO.header.records[0].type = seqan::BAM_HEADER_FIRST;
-    bamIO.header.records[0].tags[0].i1 = "VN";
-    bamIO.header.records[0].tags[0].i2 = "1.3";
-    bamIO.header.records[0].tags[1].i1 = "SO";
-    bamIO.header.records[0].tags[1].i2 = "coordinate";
-    resize(bamIO.header.records[1].tags, 2);
-    bamIO.header.records[1].type = seqan::BAM_HEADER_REFERENCE;
-    bamIO.header.records[1].tags[0].i1 = "SN";
-    bamIO.header.records[1].tags[0].i2 = "REFERENCE";
-    bamIO.header.records[1].tags[1].i1 = "LN";
-    bamIO.header.records[1].tags[1].i2 = "10000";
+
+    seqan::BamHeader header;
+    resize(header.sequenceInfos, 1);
+    header.sequenceInfos[0].i1 = "REFERENCE";
+    header.sequenceInfos[0].i2 = 10000;
+    resize(header.records, 2);
+    resize(header.records[0].tags, 2);
+    header.records[0].type = seqan::BAM_HEADER_FIRST;
+    header.records[0].tags[0].i1 = "VN";
+    header.records[0].tags[0].i2 = "1.3";
+    header.records[0].tags[1].i1 = "SO";
+    header.records[0].tags[1].i2 = "coordinate";
+    resize(header.records[1].tags, 2);
+    header.records[1].type = seqan::BAM_HEADER_REFERENCE;
+    header.records[1].tags[0].i1 = "SN";
+    header.records[1].tags[0].i2 = "REFERENCE";
+    header.records[1].tags[1].i1 = "LN";
+    header.records[1].tags[1].i2 = "10000";
+    writeRecord(bamIO, header);
 
     // Force writing of header on flush.
-    flush(bamIO);
     close(bamIO);
 
     // Compare results.
@@ -245,21 +252,21 @@ void testBamIOBamStreamWriteHeader(char const * pathFragmentExpected)
         SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(filePath)));
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_write_header)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_write_header)
 {
-    testBamIOBamStreamWriteHeader("/core/tests/bam_io/header.sam");
+    testBamIOBamFileWriteHeader("/core/tests/bam_io/header.sam");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_write_header)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_header)
 {
-    testBamIOBamStreamWriteHeader("/core/tests/bam_io/header.bam");
+    testBamIOBamFileWriteHeader("/core/tests/bam_io/header.bam");
 }
 
 // ---------------------------------------------------------------------------
 // Write Records
 // ---------------------------------------------------------------------------
 
-void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
+void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragmentExpected);
@@ -270,24 +277,27 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
     else
         append(tmpPath, ".sam");
 
-    // Initialize BamStream, build header.
+    // Initialize BamFile, build header.
     seqan::BamFileOut bamIO(toCString(tmpPath));
-    resize(bamIO.header.sequenceInfos, 1);
-    bamIO.header.sequenceInfos[0].i1 = "REFERENCE";
-    bamIO.header.sequenceInfos[0].i2 = 10000;
-    resize(bamIO.header.records, 2);
-    resize(bamIO.header.records[0].tags, 2);
-    bamIO.header.records[0].type = seqan::BAM_HEADER_FIRST;
-    bamIO.header.records[0].tags[0].i1 = "VN";
-    bamIO.header.records[0].tags[0].i2 = "1.3";
-    bamIO.header.records[0].tags[1].i1 = "SO";
-    bamIO.header.records[0].tags[1].i2 = "coordinate";
-    resize(bamIO.header.records[1].tags, 2);
-    bamIO.header.records[1].type = seqan::BAM_HEADER_REFERENCE;
-    bamIO.header.records[1].tags[0].i1 = "SN";
-    bamIO.header.records[1].tags[0].i2 = "REFERENCE";
-    bamIO.header.records[1].tags[1].i1 = "LN";
-    bamIO.header.records[1].tags[1].i2 = "10000";
+
+    seqan::BamHeader header;
+    resize(header.sequenceInfos, 1);
+    header.sequenceInfos[0].i1 = "REFERENCE";
+    header.sequenceInfos[0].i2 = 10000;
+    resize(header.records, 2);
+    resize(header.records[0].tags, 2);
+    header.records[0].type = seqan::BAM_HEADER_FIRST;
+    header.records[0].tags[0].i1 = "VN";
+    header.records[0].tags[0].i2 = "1.3";
+    header.records[0].tags[1].i1 = "SO";
+    header.records[0].tags[1].i2 = "coordinate";
+    resize(header.records[1].tags, 2);
+    header.records[1].type = seqan::BAM_HEADER_REFERENCE;
+    header.records[1].tags[0].i1 = "SN";
+    header.records[1].tags[0].i2 = "REFERENCE";
+    header.records[1].tags[1].i1 = "LN";
+    header.records[1].tags[1].i2 = "10000";
+    writeRecord(bamIO, header);
 
     // Construct first records.
     seqan::BamAlignmentRecord record;
@@ -309,7 +319,7 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
     record.tLen = 40;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    SEQAN_ASSERT_EQ(writeRecord(bamIO, record), 0);
+    writeRecord(bamIO, record);
 
     record.qName = "READ0";
     record.flag = 1;
@@ -328,7 +338,7 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
     record.tLen = 40;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    SEQAN_ASSERT_EQ(writeRecord(bamIO, record), 0);
+    writeRecord(bamIO, record);
 
     record.qName = "READ0";
     record.flag = 3;
@@ -347,7 +357,7 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
     record.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    SEQAN_ASSERT_EQ(writeRecord(bamIO, record), 0);
+    writeRecord(bamIO, record);
 
     // Force writing of everything.
     close(bamIO);
@@ -359,54 +369,76 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
         SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(filePath)));
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_write_records)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_write_records)
 {
-    testBamIOBamStreamWriteRecords("/core/tests/bam_io/small.sam");
+    testBamIOBamFileWriteRecords("/core/tests/bam_io/small.sam");
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_write_records)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_records)
 {
-    testBamIOBamStreamWriteRecords("/core/tests/bam_io/small.bam");
+    testBamIOBamFileWriteRecords("/core/tests/bam_io/small.bam");
 }
 
 // ---------------------------------------------------------------------------
 // File Size / Byte Position In File
 // ---------------------------------------------------------------------------
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_file_size)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/small.sam");
 
-    seqan::BamFileIn bamStream(toCString(filePath));
-    SEQAN_ASSERT(isGood(bamStream));
+    seqan::BamFileIn bamFile(toCString(filePath));
 
-    // TODO(holtgrew): tellg() on std::istream does not work correctly for some reason.
+    SEQAN_ASSERT_EQ(position(bamFile), 0u);
 
-    SEQAN_ASSERT_EQ(fileSize(bamStream), 226u);
-    // SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+    seqan::BamHeader header;
+    readRecord(header, bamFile);
+
+    SEQAN_ASSERT_EQ(position(bamFile), 51u);
+//    SEQAN_ASSERT_EQ(fileSize(bamFile), 226u);
 
     seqan::BamAlignmentRecord record;
-    SEQAN_ASSERT_EQ(readRecord(record, bamStream), 0);
+    readRecord(record, bamFile);
 
-    // SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+    SEQAN_ASSERT_EQ(position(bamFile), 110u);
+
+    readRecord(record, bamFile);
+
+    SEQAN_ASSERT_EQ(position(bamFile), 169u);
+
+    readRecord(record, bamFile);
+
+    SEQAN_ASSERT_EQ(position(bamFile), 226u);
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/bam_io/small.bam");
 
-    seqan::BamFileIn bamStream(toCString(filePath));
-    SEQAN_ASSERT(isGood(bamStream));
+    seqan::BamFileIn bamFile(toCString(filePath));
 
-    SEQAN_ASSERT_EQ(fileSize(bamStream), 181u);
-    SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+    SEQAN_ASSERT_EQ(position(bamFile), 0u);
+
+    seqan::BamHeader header;
+    readRecord(header, bamFile);
+
+//    SEQAN_ASSERT_EQ(fileSize(bamFile), 181u);
+    SEQAN_ASSERT_EQ(position(bamFile), 0x0051u);
 
     seqan::BamAlignmentRecord record;
-    SEQAN_ASSERT_EQ(readRecord(record, bamStream), 0);
+    readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);  // Is block position.
+    SEQAN_ASSERT_EQ(position(bamFile), 0x0096u);  // [block begin in bam file] << 16 + [local offset]
+
+    readRecord(record, bamFile);
+
+    SEQAN_ASSERT_EQ(position(bamFile), 0x00dbu);
+
+    readRecord(record, bamFile);
+
+    SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
 }
 
 #endif  // #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_

@@ -222,6 +222,69 @@ refresh(NameStoreCache<TNameStore, TName> &cache)
         cache.nameSet.insert(i);
 }
 
+// ----------------------------------------------------------------------------
+// appendName()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn NameStoreCache#appendName
+ * @brief Append a name to a name store and register it in the cache.
+ *
+ * @signature void appendName(nameStore, name, cache);
+ *
+ * @param[in,out] nameStore The name store to append the name to.
+ * @param[in]     name      The name to append to the store.
+ * @param[in,out] cache     The NameStoreCache to use for faster access.
+ */
+
+/**
+.Function.appendName:
+..summary:Appends a name to a name store.
+..cat:Fragment Store
+..signature:appendName(nameStore, name[, cache])
+..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
+...see:Class.FragmentStore
+..param.name:The name to be appended.
+...type:Shortcut.CharString
+..param.cache:A structure to efficiently retrieve the id for a given name. See @Function.getIdByName@.
+...default:Tag.Nothing
+...type:Class.NameStoreCache
+..see:Function.getIdByName
+..include:seqan/store.h
+*/
+
+template <typename TNameStore, typename TName>
+inline void
+appendName(TNameStore &nameStore, TName const & name)
+{
+    appendValue(nameStore, name, Generous());
+}
+
+template <typename TCNameStore, typename TCName, typename TName>
+inline void
+appendName(NameStoreCache<TCNameStore, TCName> &cache, TName const & name)
+{
+    appendValue(host(cache), name, Generous());
+    cache.nameSet.insert(length(host(cache)) - 1);
+}
+
+// deprecated.
+// In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
+template <typename TNameStore, typename TName, typename TContext>
+inline void
+appendName(TNameStore &nameStore, TName const & name, TContext &)
+{
+    appendName(nameStore, name);
+}
+
+// deprecated.
+template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
+inline void
+appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
+{
+    appendValue(nameStore, name, Generous());
+    context.nameSet.insert(length(nameStore) - 1);
+}
 
 // ----------------------------------------------------------------------------
 // getIdByName()
@@ -328,68 +391,18 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
     return getIdByName(context, name, pos);
 }
 
-// ----------------------------------------------------------------------------
-// appendName()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn NameStoreCache#appendName
- * @brief Append a name to a name store and register it in the cache.
- *
- * @signature void appendName(nameStore, name, cache);
- *
- * @param[in,out] nameStore The name store to append the name to.
- * @param[in]     name      The name to append to the store.
- * @param[in,out] cache     The NameStoreCache to use for faster access.
- */
-
-/**
-.Function.appendName:
-..summary:Appends a name to a name store.
-..cat:Fragment Store
-..signature:appendName(nameStore, name[, cache])
-..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
-...see:Class.FragmentStore
-..param.name:The name to be appended.
-...type:Shortcut.CharString
-..param.cache:A structure to efficiently retrieve the id for a given name. See @Function.getIdByName@.
-...default:Tag.Nothing
-...type:Class.NameStoreCache
-..see:Function.getIdByName
-..include:seqan/store.h
-*/
-
-template <typename TNameStore, typename TName>
-inline void
-appendName(TNameStore &nameStore, TName const & name)
+// Append contig name to name store, if not known already.
+template <typename TNameStore, typename TName, typename TName2>
+inline typename Position<TNameStore>::Type
+getIdByName(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
 {
-    appendValue(nameStore, name, Generous());
-}
-
-template <typename TCNameStore, typename TCName, typename TName>
-inline void
-appendName(NameStoreCache<TCNameStore, TCName> &cache, TName const & name)
-{
-    appendValue(*cache.nameStore, name, Generous());
-    cache.nameSet.insert(length(*cache.nameStore) - 1);
-}
-
-// deprecated.
-// In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
-template <typename TNameStore, typename TName, typename TContext>
-inline void
-appendName(TNameStore &nameStore, TName const & name, TContext &)
-{
-    appendName(nameStore, name);
-}
-
-// deprecated.
-template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
-inline void
-appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
-{
-    appendValue(nameStore, name, Generous());
-    context.nameSet.insert(length(nameStore) - 1);
+    typename Size<TNameStore>::Type nameId = 0;
+    if (!getIdByName(cache, name, nameId))
+    {
+        nameId = length(host(cache));
+        appendName(cache, name);
+    }
+    return nameId;
 }
 
 }  // namespace seqan
