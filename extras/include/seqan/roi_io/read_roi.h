@@ -62,162 +62,126 @@ typedef Tag<Roi_> Roi;
 // Function readRecord()                                            [RoiRecord]
 // ----------------------------------------------------------------------------
 
+// TODO(singer): get rid of internal buffers!
+
 // Variant without NameStoreCache.
 
-template <typename TStream, typename TSpec>
-int readRecord(RoiRecord & record,
-               RecordReader<TStream, SinglePass<TSpec> > & reader,
-               Roi const & /*tag*/)
+template <typename TForwardIter>
+inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*tag*/)
 {
+    typedef OrFunctor<IsTab, IsNewline> TNextEntry;
+
     CharString buffer;
-    int res = 0;
 
     // Read reference name.
     clear(record.ref);
-    if ((res = readUntilTabOrLineBreak(record.ref, reader)) != 0)
-        return res;
+    readUntil(record.ref, iter, TNextEntry());
     record.rID = RoiRecord::INVALID_REFID;
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read and parse start position.
     clear(buffer);
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.beginPos, buffer))
-        return 1;
+    readUntil(buffer, iter, TNextEntry());
+    if (!lexicalCast(record.beginPos, buffer))
+        throw BadLexicalCast(record.beginPos, buffer);
     record.beginPos -= 1;  // transform to 0-based
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read and parse end position.
     clear(buffer);
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.endPos, buffer))
-        return 1;
-        
+    readUntil(buffer, iter, TNextEntry());
+    if (!lexicalCast(record.endPos, buffer))
+        throw BadLexicalCast(record.endPos, buffer);
+
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read and parse region name.
     clear(record.name);
-    if ((res = readUntilTabOrLineBreak(record.name, reader)) != 0)
-        return res;
+    readUntil(record.name, iter, TNextEntry());
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read and parse region length.
     clear(buffer);
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.len, buffer))
-        return 1;
+    readUntil(buffer, iter, TNextEntry());
+    if (!lexicalCast(record.len, buffer))
+        throw BadLexicalCast(record.len, buffer);
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read strand.
-    clear(buffer);
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
-    if (buffer[0] != '.' && buffer[0] != '+' && buffer[0] != '-')
-        return 1;
-    record.strand = buffer[0];
+    readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'.'>, EqualsChar<'+'> >, EqualsChar<'-'> >());
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
+    skipOne(iter, IsTab());
 
     // Read max count.
     clear(buffer);
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
-    if (!lexicalCast2(record.countMax, buffer))
-        return 1;
+    readUntil(buffer, iter, TNextEntry());
+    if (!lexicalCast(record.countMax, buffer))
+        throw BadLexicalCast(record.countMax, buffer);
 
     // Skip TAB.
-    if (skipChar(reader, '\t') != 0)
-        return res;
-
-    // Buffer until the end of the line.
-    seqan::CharString dataBuffer;
-    if ((res = readLine(dataBuffer, reader)) != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
-
-    // Count tabs.
-    int numTabs = 0;
-    for (unsigned i = 0; i < length(dataBuffer); ++i)
-        numTabs += (dataBuffer[i] == '\t');
+    skipOne(iter, IsTab());
 
     // Read data field.
-    RecordReader<CharString, SinglePass<StringReader> > stringReader(dataBuffer);
-    for (int tabsRead = 0; !atEnd(stringReader) && tabsRead < numTabs; ++tabsRead)
+    do
     {
         clear(buffer);
-        if ((res = readGraphs(buffer, stringReader)) != 0)
-            return res;
-        appendValue(record.data, buffer);
+        readUntil(buffer, iter, TNextEntry());
+        if (!atEnd(iter))
+        {
+            if(!IsNewline()(value(iter)))
+                appendValue(record.data, buffer);
 
-        goNext(stringReader);
+            skipOne(iter);
+        }
+        else
+            break;
+
     }
+    while (true);
 
     // TODO(holtgrew): Read additional information.
 
     // Individual counts.
     clear(record.count);
-    clear(buffer);
-    for (; !atEnd(stringReader) && value(stringReader) != '\r' && value(stringReader) != '\n'; goNext(stringReader))
+    CharString castBuffer;
+    DirectionIterator<String<char>, Input>::Type castIter = begin(buffer);
+
+    while (!atEnd(castIter))
     {
-        if (value(stringReader) != ',')
+        clear(castBuffer);
+        readUntil(castBuffer, castIter, OrFunctor<EqualsChar<','>, IsNewline>());
+        if (!empty(castBuffer))
         {
-            if (!isdigit(value(stringReader)))
-                return 1;  // Error parsing.
-            appendValue(buffer, value(stringReader));
-        }
-        else
-        {
-            if (empty(buffer))
-                continue;
             unsigned count = 0;
-            if (!lexicalCast2(count, buffer))
-                return 1;  // Error parsing.
+            if (!lexicalCast(count, castBuffer))
+                throw BadLexicalCast(count, castBuffer);
             appendValue(record.count, count);
             record.countMax = std::max(record.countMax, back(record.count));
-            clear(buffer);
         }
+        if (!atEnd(castIter))
+            skipOne(castIter);
     }
-    if (!empty(buffer))
-    {
-        unsigned count = 0;
-        if (!lexicalCast2(count, buffer))
-            return 1;  // Error parsing.
-        appendValue(record.count, count);
-        record.countMax = std::max(record.countMax, back(record.count));
-    }
-
-    return 0;
 }
 
 // Variant with NameStoreCache.
 
-template <typename TStream, typename TSpec, typename TNameStore, typename TNameStoreCache>
-int readRecord(RoiRecord & record,
-               RecordReader<TStream, SinglePass<TSpec> > & reader,
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
+inline void readRecord(RoiRecord & record,
+               TForwardIter & iter,
                RoiIOContext<TNameStore, TNameStoreCache> & context,
                Roi const & tag)
 {
-    int res = readRecord(record, reader, tag);
-    if (res != 0)
-        return res;
+    readRecord(record, iter, tag);
     
     // Translate chrom to rID using the context.  If there is no such sequence name in the context yet then we add it.
     unsigned idx = 0;
@@ -227,8 +191,6 @@ int readRecord(RoiRecord & record,
         appendName(nameStore(context), record.ref, nameStoreCache(context));
     }
     record.rID = idx;
-
-    return 0;
 }
 
 }  // namespace seqan
