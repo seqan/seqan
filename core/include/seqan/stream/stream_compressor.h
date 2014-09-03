@@ -384,7 +384,7 @@ _bgzfCheckHeader(char const * header)
 // read first bytes of a file/stream and compare with file format's magic header
 template <typename TStream>
 inline bool
-guessFormat(TStream &istream, BgzfFile)
+guessFormatFromStream(TStream &istream, BgzfFile)
 {
     char putbackBuf[18];
     bool match = false;

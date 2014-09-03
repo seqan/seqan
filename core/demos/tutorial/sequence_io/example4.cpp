@@ -16,7 +16,7 @@ int main(int argc, char const ** argv)
     seqan::StringSet<seqan::CharString> ids;
     seqan::StringSet<seqan::Dna5String> seqs;
     seqan::StringSet<seqan::CharString> quals;
-    read(inFile, ids, seqs, quals);
+    readRecords(ids, seqs, quals, inFile);
 
     for (unsigned i = 0; i < length(ids); ++i)
         std::cout << ids[i] << '\t' << seqs[i] << '\t' << quals[i] << '\n';
