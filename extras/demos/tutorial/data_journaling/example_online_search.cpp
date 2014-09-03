@@ -222,7 +222,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         return -1;
     }
     // First read sequence for reference sequence.
-    read(databaseFile, seqId, sequence);
+    readRecord(seqId, sequence, databaseFile);
 
     // We have to create the global reference sequence otherwise we loose the information after this function terminates.
     createHost(journalSet, sequence);
@@ -230,7 +230,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     // If there are more
     while (!atEnd(databaseFile))
     {
-        read(databaseFile, seqId, sequence);
+        readRecord(seqId, sequence, databaseFile);
         appendValue(journalSet, TString(sequence));
         join(journalSet, length(journalSet) - 1, joinConfig);
     }

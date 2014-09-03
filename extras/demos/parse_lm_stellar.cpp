@@ -60,19 +60,21 @@ int main(int argc, char const ** argv)
     }
 
     // Read local matches in GFF Stellar format.
-    RecordReader<std::fstream, SinglePass<> > recordReader(inStream);
+    DirectionIterator<std::fstream, Input>::Type reader(inStream);
     LocalMatchStore<> lmStore;
     int i = 0;
-    while (!atEnd(recordReader))
+    try
     {
-        int res = readRecord(lmStore, recordReader, StellarGff());
-        if (res != 0)
+        while (!atEnd(reader))
         {
-            std::cerr << "Invalid Stellar GFF record #" << i << '\n';
-            return 1;
+            readRecord(lmStore, reader, StellarGff());
+            i++;
         }
-
-        i += 1;
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cerr << "Invalid Stellar GFF record #" << i << ": " << e.what() << '\n';
+        return 1;
     }
 
     // Dump records to stdout again.
