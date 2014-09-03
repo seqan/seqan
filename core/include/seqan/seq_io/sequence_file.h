@@ -97,6 +97,22 @@ typedef TagSelector<SeqFormats> AutoSeqFormat;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction SmartFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Fastq, Input, TSpec>, TStorageSpec>
+{
+    typedef Tuple<CharString, 3> Type;
+};
+
+template <typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Fastq, Output, TSpec>, TStorageSpec>
+{
+    typedef SequenceOutputOptions Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction FileFormats
 // ----------------------------------------------------------------------------
 
@@ -114,44 +130,116 @@ struct FileFormats<SmartFile<Fastq, TDirection, TSpec> >
 // Function read(); Without qualities
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, TDirection, TSpec> & file)
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords(); Without qualities
+// ----------------------------------------------------------------------------
+
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
+inline void readRecords(TIdStringSet & meta,
+                        TSeqStringSet & seq,
+                        SmartFile<Fastq, Input, TSpec> & file)
+{
+    typedef typename Size<TIdStringSet>::Type TSize;
+
+    clear(meta);
+    clear(seq);
+    for (TSize i = 0; !atEnd(file); ++i)
+    {
+        readRecord(context(file)[0], context(file)[1], file);
+        appendValue(meta, context(file)[0]);
+        appendValue(seq, context(file)[1]);
+    }
 }
 
 // ----------------------------------------------------------------------------
 // Function read(); With qualities
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, TDirection, TSpec> & file)
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, qual, file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); Without qualities
+// Function readRecords(); With qualities
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
+template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec>
+inline void readRecords(TIdStringSet & meta,
+                        TSeqStringSet & seq,
+                        TQualStringSet & qual,
+                        SmartFile<Fastq, Input, TSpec> & file)
 {
-    writeRecord(file.iter, meta, seq, file.format);
+    typedef typename Size<TIdStringSet>::Type TSize;
+
+    clear(meta);
+    clear(seq);
+    clear(qual);
+    for (TSize i = 0; !atEnd(file); ++i)
+    {
+        readRecord(context(file)[0], context(file)[1], context(file)[2], file);
+        appendValue(meta, context(file)[0]);
+        appendValue(seq, context(file)[1]);
+        appendValue(qual, context(file)[2]);
+    }
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); With qualities
+// Function writeRecord(); Without qualities
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, TDirection, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
-    writeRecord(file.iter, meta, seq, qual, file.format);
+    writeRecord(file.iter, meta, seq, file.format, context(file));
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(); With qualities
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
+{
+    writeRecord(file.iter, meta, seq, qual, file.format, context(file));
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecords(); Without qualities
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
+inline void writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+                         TIdStringSet & meta,
+                         TSeqStringSet & seq)
+{
+    for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
+        writeRecord(file, meta[i], seq[i]);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecords(); With qualities
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet>
+inline void writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+                         TIdStringSet & meta,
+                         TSeqStringSet & seq,
+                         TQualStringSet & qual)
+{
+    for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
+        writeRecord(file, meta[i], seq[i], qual[i]);
 }
 
 }  // namespace seqan

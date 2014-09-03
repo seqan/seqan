@@ -386,7 +386,7 @@ int main(int argc, char const ** argv)
     seqan::CharString quals;
     while (!atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx)
     {
-        read(inFile, id, seq, quals);
+        readRecord(id, seq, quals, inFile);
 
         // Check whether to write out sequence.
         bool writeOut = false;
@@ -452,10 +452,10 @@ int main(int argc, char const ** argv)
                 infixBegin = length(seq) - infixBegin;
                 std::swap(infixEnd, infixBegin);
 
-                write(outFile, id, infix(seqCopy, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
+                writeRecord(outFile, id, infix(seqCopy, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
             }
             else
-                write(outFile, id, infix(seq, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
+                writeRecord(outFile, id, infix(seq, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
         }
 
         // Advance counter idx.

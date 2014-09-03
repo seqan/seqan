@@ -45,6 +45,13 @@ namespace seqan {
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Tag Raw
+// --------------------------------------------------------------------------
+
+struct Raw_;
+typedef Tag<Raw_> Raw;
+
+// --------------------------------------------------------------------------
 // Compression Type Tags
 // --------------------------------------------------------------------------
 
@@ -161,15 +168,6 @@ const int IosOpenMode<Output, TDummy>::VALUE = std::ios::out;
 template <typename TDummy>
 const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
 
-// --------------------------------------------------------------------------
-// Sequence Format Tags
-// --------------------------------------------------------------------------
-
-struct TagFasta_;
-typedef Tag<TagFasta_> Fasta;
-
-struct TagFastq_;
-typedef Tag<TagFastq_> Fastq;
 
 // --------------------------------------------------------------------------
 // Compression Type Tags
@@ -220,27 +218,6 @@ struct MagicHeader<BZ2File, T>
 template <typename T>
 char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
 
-
-
-// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
-template <typename T>
-struct MagicHeader<Fasta, T>
-{
-    static char const VALUE[1];
-};
-
-template <typename T>
-char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
-
-
-template <typename T>
-struct MagicHeader<Fastq, T>
-{
-    static char const VALUE[1];
-};
-
-template <typename T>
-char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
 
 // --------------------------------------------------------------------------
 // Metafunction FileFormatExtensions

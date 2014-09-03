@@ -59,7 +59,7 @@ void convertToHardMasked(TStream & stream, char const * filename)
         clear(meta);
         clear(seq);
 
-        read(inFile, meta, seq);
+        readRecord(meta, seq, inFile);
 
         // Header lines are not touched.
         if (front(seq) != '>')
