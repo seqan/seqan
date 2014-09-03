@@ -16,8 +16,8 @@ int main(int argc, char const ** argv)
     std::fstream in(argv[1], std::ios::binary | std::ios::in);
     seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(in);
 
-    // Create the AutoSeqStreamFormat object and guess the file format.
-    seqan::AutoSeqStreamFormat formatTag;
+    // Create the AutoSeqFormat object and guess the file format.
+    seqan::AutoSeqFormat formatTag;
     if (!guessStreamFormat(reader, formatTag))
         return 1;  // Could not detect file format.
 

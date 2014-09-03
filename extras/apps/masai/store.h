@@ -217,7 +217,7 @@ struct ReadsLoader
 
     TStream                                 _file;
     unsigned long                           _fileSize;
-    AutoSeqStreamFormat                     _fileFormat;
+    AutoSeqFormat                           _fileFormat;
     std::SEQAN_AUTO_PTR_NAME<TRecordReader> _reader;
     Holder<TReads>                          reads;
 
@@ -480,10 +480,10 @@ void _estimateReadsStatistics(ReadsLoader<TSpec, TConfig> & loader)
     unsigned long recordSize;
     switch (loader._fileFormat.tagId)
     {
-    case Find<AutoSeqStreamFormat, Fasta>::VALUE:
+    case Find<AutoSeqFormat, Fasta>::VALUE:
         recordSize = _estimateRecordSize(loader, Fasta());
         break;
-    case Find<AutoSeqStreamFormat, Fastq>::VALUE:
+    case Find<AutoSeqFormat, Fastq>::VALUE:
         recordSize = _estimateRecordSize(loader, Fastq());
         break;
     default:
@@ -588,9 +588,9 @@ bool load(ReadsLoader<TSpec, TConfig> & loader, TSize count)
 {
     switch (loader._fileFormat.tagId)
     {
-    case Find<AutoSeqStreamFormat, Fasta>::VALUE:
+    case Find<AutoSeqFormat, Fasta>::VALUE:
         return load(loader, count, Fasta());
-    case Find<AutoSeqStreamFormat, Fastq>::VALUE:
+    case Find<AutoSeqFormat, Fastq>::VALUE:
         return load(loader, count, Fastq());
     default:
         return false;
