@@ -22,7 +22,7 @@ int main(int argc, char const ** argv)
     seqan::CharString seq;
     while (!atEnd(file))
     {
-        readRecord(file, id, seq);
+        readRecord(id, seq, file);
         std::cout << id << "\t" << length(seq) << "\n";
         total += length(seq);
     }

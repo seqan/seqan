@@ -322,7 +322,7 @@ struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
 // ----------------------------------------------------------------------------
 
 template <typename TObject, typename TDirection>
-struct DirectionIterator:
+struct DirectionIterator :
     If<Is<StreamConcept<TObject> >,
        Iter<TObject, StreamIterator<TDirection> >,
        typename Iterator<TObject, Rooted>::Type>

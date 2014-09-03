@@ -78,7 +78,6 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_no_empty_lines)
 
     writeRecord(outStream, meta1, seq1, Fasta(), options);
     writeRecord(outStream, meta2, seq2, Fasta(), options);
-    writeValue(outStream, '\0');
 
     char const * EXPECTED =
             ">meta1\n"
