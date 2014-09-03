@@ -17,8 +17,7 @@ int main(int argc, char const ** argv)
     seqan::CharString seq;
     while (!atEnd(inFile))
     {
-        read(inFile, id, seq);
-
+        readRecord(id, seq, inFile);
         std::cout << id << "\t" << seq << "\n";
     }
 
