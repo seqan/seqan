@@ -58,7 +58,7 @@ using namespace seqan;
 
 // Setting buffer size to 4MB, such that the overhead for jumping buffers and
 // such only occurs every 4M chars.
-const unsigned int BUFFER_SIZE = 1024 * 1024 * 4;
+//const unsigned int BUFFER_SIZE = 1024 * 1024 * 4;
 
 typedef Dna5String TSequence;
 
@@ -162,9 +162,8 @@ int readFileMMapDocument(char const * filename, Options const & /*options*/, TSp
     }
     RecordReader<TMMapString, DoublePass<StringReader> > reader(myString, BUFFER_SIZE);
     */
-    SeqFileIn reader;
-    open(reader, filename);
-    read(reader, sequenceIds, sequences);
+    SeqFileIn reader(filename);
+    readRecords(sequenceIds, sequences, reader);
     SEQAN_ASSERT_EQ(length(sequenceIds), length(sequences));
 
     // TSequenceIdsIter itId = begin(sequenceIds);
@@ -196,7 +195,7 @@ int readFastaFile(StringSet<CharString> & sequenceIds,
     CharString meta;
     TSequence seq;
     while (!atEnd(file))
-        read(meta, seq, file);
+        readRecord(meta, seq, file);
 
     return 0;
 }

@@ -199,7 +199,9 @@ inline void readRecords(TIdStringSet & meta,
 
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeqString const & seq)
+writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+            TIdString const & meta,
+            TSeqString const & seq)
 {
     writeRecord(file.iter, meta, seq, file.format, context(file));
 }
@@ -210,7 +212,10 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeq
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
+writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            TQualString const & qual)
 {
     writeRecord(file.iter, meta, seq, qual, file.format, context(file));
 }
@@ -220,9 +225,10 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeq
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
-inline void writeRecords(SmartFile<Fastq, Output, TSpec> & file,
-                         TIdStringSet & meta,
-                         TSeqStringSet & seq)
+inline void
+writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+             TIdStringSet const & meta,
+             TSeqStringSet const & seq)
 {
     for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
         writeRecord(file, meta[i], seq[i]);
@@ -233,10 +239,11 @@ inline void writeRecords(SmartFile<Fastq, Output, TSpec> & file,
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet>
-inline void writeRecords(SmartFile<Fastq, Output, TSpec> & file,
-                         TIdStringSet & meta,
-                         TSeqStringSet & seq,
-                         TQualStringSet & qual)
+inline void
+writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+             TIdStringSet const & meta,
+             TSeqStringSet const & seq,
+             TQualStringSet const & qual)
 {
     for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
         writeRecord(file, meta[i], seq[i], qual[i]);

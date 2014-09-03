@@ -269,10 +269,10 @@ template <typename TIdString, typename TSeqString, typename TFwdIterator, typena
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(meta, seq, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(meta, seq, iter, TFormat());
     else
         readRecord(meta, seq, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -291,10 +291,10 @@ template <typename TIdString, typename TSeqString, typename TQualString, typenam
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(meta, seq, qual, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(meta, seq, qual, iter, TFormat());
     else
         readRecord(meta, seq, qual, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -474,7 +474,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString>
 inline void
-writeRecord(TFwdIterator & iter, TIdString & /* meta */, TSeqString & seq, Raw const &,
+writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, Raw const &,
             SequenceOutputOptions const & = SequenceOutputOptions())
 {
     write(iter, seq);
@@ -487,7 +487,7 @@ writeRecord(TFwdIterator & iter, TIdString & /* meta */, TSeqString & seq, Raw c
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
 inline void
-writeRecord(TFwdIterator & iter, TIdString & /* meta */, TSeqString & seq, TQualString & /* qual */, Raw const &,
+writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, TQualString const & /* qual */, Raw const &,
             SequenceOutputOptions const & = SequenceOutputOptions())
 {
     write(iter, seq);
@@ -579,19 +579,21 @@ writeRecord(TTarget & target,
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString>
 inline void
-writeRecord(TFwdIterator & /* iter */, TIdString & /* meta */, TSeqString & /* seq */, TagSelector<> const & /* format */)
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */,
+            TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
 {}
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TTagList>
 inline void
-writeRecord(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TagSelector<TTagList> const & format)
+writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq,
+            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        writeRecord(iter, meta, seq, TFormatTag());
+    if (isEqual(format, TFormat()))
+        writeRecord(iter, meta, seq, TFormat(), options);
     else
-        writeRecord(iter, meta, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        writeRecord(iter, meta, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
 }
 
 // ----------------------------------------------------------------------------
@@ -600,19 +602,19 @@ writeRecord(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TagSelector
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
 inline void
-writeRecord(TFwdIterator & /* iter */, TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */,
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */, TQualString const & /* qual */,
             TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
 {}
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString, typename TTagList>
 inline void
-writeRecord(TFwdIterator & iter, TIdString & meta, TSeqString & seq, TQualString & qual, TagSelector<TTagList> const & format,
-            SequenceOutputOptions const & options = SequenceOutputOptions())
+writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq, TQualString const & qual,
+            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        writeRecord(iter, meta, seq, qual, TFormatTag(), options);
+    if (isEqual(format, TFormat()))
+        writeRecord(iter, meta, seq, qual, TFormat(), options);
     else
         writeRecord(iter, meta, seq, qual, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
 }

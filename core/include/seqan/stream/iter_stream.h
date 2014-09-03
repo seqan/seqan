@@ -329,6 +329,24 @@ struct DirectionIterator:
 {};
 
 // ----------------------------------------------------------------------------
+// Function directionIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDirection>
+inline SEQAN_FUNC_ENABLE_IF(Is<StreamConcept<TStream> >, Iter<TStream, StreamIterator<TDirection> >)
+directionIterator(TStream &stream, TDirection const &)
+{
+    return Iter<TStream, StreamIterator<TDirection> >(stream);
+}
+
+template <typename TContainer, typename TDirection>
+inline SEQAN_FUNC_DISABLE_IF(Is<StreamConcept<TContainer> >, typename Iterator<TContainer, Rooted>::Type)
+directionIterator(TContainer &cont, TDirection const &)
+{
+    return begin(cont, Rooted());
+}
+
+// ----------------------------------------------------------------------------
 // Function value() - Input
 // ----------------------------------------------------------------------------
 
