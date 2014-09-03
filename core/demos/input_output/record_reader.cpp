@@ -12,7 +12,7 @@ int main()
     append(path, "/core/demos/input_output/example.fa");
 
     // Open file
-    seqan::SequenceFile<seqan::Input> inFile(toCString(path));
+    seqan::SeqFileIn inFile(toCString(path));
 
     // Read file record-wise.
     seqan::CharString id;

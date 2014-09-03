@@ -354,8 +354,8 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
     // Open Files.
     // -----------------------------------------------------------------------
-    seqan::SequenceFile<seqan::Input> inFile;
-    seqan::SequenceFile<seqan::Output> outFile;
+    seqan::SeqFileIn inFile;
+    seqan::SeqFileOut outFile;
 
     if (!empty(options.inFastxPath))
         open(inFile, toCString(options.inFastxPath));

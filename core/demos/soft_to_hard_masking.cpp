@@ -49,7 +49,7 @@ void convertToHardMasked(TStream & stream, char const * filename)
 {
     using namespace seqan;
 
-    SequenceFile<Input> inFile(filename);
+    SeqFileIn inFile(filename);
 
     String<char> meta;
     String<char> seq;

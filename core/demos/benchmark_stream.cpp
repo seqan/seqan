@@ -162,7 +162,7 @@ int readFileMMapDocument(char const * filename, Options const & /*options*/, TSp
     }
     RecordReader<TMMapString, DoublePass<StringReader> > reader(myString, BUFFER_SIZE);
     */
-    SequenceFile<Input> reader;
+    SeqFileIn reader;
     open(reader, filename);
     read(reader, sequenceIds, sequences);
     SEQAN_ASSERT_EQ(length(sequenceIds), length(sequences));
@@ -188,7 +188,7 @@ int readFileMMapDocument(char const * filename, Options const & options)
 }
 int readFastaFile(StringSet<CharString> & sequenceIds,
                   StringSet<TSequence> & sequences,
-                  SequenceFile<Input> & file)
+                  SeqFileIn & file)
 {
     (void)sequenceIds;
     (void)sequences;
@@ -267,7 +267,7 @@ void readFileDefault(char const * filename, Options const & options)
 #if SEQAN_HAS_ZLIB
     } else if (options.gzip) {
         std::cerr << "gzip" << std::flush;
-        SequenceFile<Input> f;
+        SeqFileIn f;
         if (!open(f, filename))
         {
             std::cerr << "Could not open input file!" << std::endl;
@@ -278,7 +278,7 @@ void readFileDefault(char const * filename, Options const & options)
 #if SEQAN_HAS_BZIP2
     } else if (options.bzip2) {
         std::cerr << "bzip2" << std::flush;
-        SequenceFile<Input> f;
+        SeqFileIn f;
         if (!open(f, filename))
         {
             std::cerr << "Could not open input file!" << std::endl;
