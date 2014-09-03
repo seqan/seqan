@@ -304,8 +304,8 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-	seqan::BamStream bamStream(toCString(options.inputFileName));
-    if (!isGood(bamStream))
+	seqan::BamFileIn bamStream;
+    if (!open(bamStream, toCString(options.inputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.inputFileName << "\n";
         return 1;
@@ -342,10 +342,12 @@ int main(int argc, char const ** argv)
     roiBuilderF.writeHeader();  // only once
     RoiBuilder roiBuilderR(roiOut, roiBuilderOptions);
     // Set the reference sequence names.
-    for (unsigned i = 0; i < length(bamStream.header.sequenceInfos); ++i)
-        appendValue(roiBuilderF.refNames, bamStream.header.sequenceInfos[i].i1);
-    for (unsigned i = 0; i < length(bamStream.header.sequenceInfos); ++i)
-        appendValue(roiBuilderR.refNames, bamStream.header.sequenceInfos[i].i1);
+    BamHeader header;
+    readRecord(header, bamStream);
+    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
+        appendValue(roiBuilderF.refNames, header.sequenceInfos[i].i1);
+    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
+        appendValue(roiBuilderR.refNames, header.sequenceInfos[i].i1);
 
     // TODO(holtgrew): This is only suited for the Illumina mate pair protocol at the moment (--> <--).
 

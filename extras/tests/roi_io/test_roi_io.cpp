@@ -35,20 +35,17 @@
 #include <sstream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/seq_io.h>
 #include <seqan/roi_io.h>
 
 SEQAN_DEFINE_TEST(test_roi_read_roi_record)
 {
-    std::stringstream ss;
-    ss << "I\t1\t3\tregion0\t3\t+\t4\t1,2,4";
-    ss.seekg(0);
-
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    seqan::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4";
+    seqan::DirectionIterator<seqan::String<char>, seqan::Input>::Type iter = begin(inString);
 
     seqan::RoiRecord record;
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Roi()), 0);
+    readRecord(record, iter, seqan::Roi());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
@@ -64,20 +61,18 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record)
 
 SEQAN_DEFINE_TEST(test_roi_read_roi_record_context)
 {
-    std::stringstream ss;
-    ss << "I\t1\t3\tregion0\t3\t+\t4\t1,2,4";
-    ss.seekg(0);
+    seqan::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4";
 
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    seqan::DirectionIterator<seqan::String<char>, seqan::Input>::Type iter = begin(inString);
 
     typedef seqan::StringSet<seqan::CharString> TNameStore;
     TNameStore refNames;
     seqan::NameStoreCache<TNameStore> refNamesCache(refNames);
     seqan::RoiIOContext<TNameStore> roiIOContext(refNames, refNamesCache);
-    
+
     seqan::RoiRecord record;
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, roiIOContext, seqan::Roi()), 0);
+    readRecord(record, iter, roiIOContext, seqan::Roi());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
@@ -108,12 +103,15 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     appendValue(record.count, 2);
     appendValue(record.count, 4);
 
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record, seqan::Roi()), 0);
+    seqan::String<char> outString;
+    writeRecord(outString, record, seqan::Roi());
 
-    char const * EXPECTED = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
-    
-    SEQAN_ASSERT_EQ(EXPECTED, ss.str());
+    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+
+    std::cerr << outString << std::endl;
+
+    SEQAN_ASSERT_EQ(expected, outString);
+
 }
 
 SEQAN_DEFINE_TEST(test_roi_write_roi_record_context)
@@ -138,19 +136,19 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record_context)
     seqan::NameStoreCache<TNameStore> refNamesCache(refNames);
     seqan::RoiIOContext<TNameStore> roiIOContext(refNames, refNamesCache);
 
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record, roiIOContext, seqan::Roi()), 0);
+    seqan::String<char> outString;
+    writeRecord(outString, record, roiIOContext, seqan::Roi());
 
-    char const * EXPECTED = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
-    
-    SEQAN_ASSERT_EQ(EXPECTED, ss.str());
+    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+
+    SEQAN_ASSERT_EQ(expected, outString);
 }
 
 SEQAN_BEGIN_TESTSUITE(test_roi_io)
 {
-	SEQAN_CALL_TEST(test_roi_read_roi_record);
-	SEQAN_CALL_TEST(test_roi_read_roi_record_context);
-	SEQAN_CALL_TEST(test_roi_write_roi_record);
-	SEQAN_CALL_TEST(test_roi_write_roi_record_context);
+    SEQAN_CALL_TEST(test_roi_read_roi_record);
+    SEQAN_CALL_TEST(test_roi_read_roi_record_context);
+    SEQAN_CALL_TEST(test_roi_write_roi_record);
+    SEQAN_CALL_TEST(test_roi_write_roi_record_context);
 }
 SEQAN_END_TESTSUITE
