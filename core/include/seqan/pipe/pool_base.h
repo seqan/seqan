@@ -811,7 +811,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _ownFile = false;
             _temporary = false;
             memBufferSize = 0;
-			_setSize(::seqan::size(file) / sizeof(TValue));
+			_setSize(::seqan::length(file) / sizeof(TValue));
         }
         
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters())
@@ -821,7 +821,7 @@ namespace SEQAN_NAMESPACE_MAIN
             memBufferSize = 0;
             _ownFile = open(file, fileName);
             if (_ownFile)
-                _setSize(::seqan::size(file) / sizeof(TValue));
+                _setSize(::seqan::length(file) / sizeof(TValue));
             else
                 _setSize(0);
         }
