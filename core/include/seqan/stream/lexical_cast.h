@@ -71,24 +71,9 @@ template <typename TUnsigned, unsigned SIZE, typename T = void>
 struct IntegerFormatString_;
 
 
-template <typename T>
-struct IntegerFormatString_<False, 1, T>
-{
-    static const char VALUE[];
-    typedef char Type;
-};
-template <typename T>
-const char IntegerFormatString_<False, 1, T>::VALUE[] = "%hhi%n";
-
-
-template <typename T>
-struct IntegerFormatString_<True, 1, T>
-{
-    static const char VALUE[];
-    typedef unsigned char Type;
-};
-template <typename T>
-const char IntegerFormatString_<True, 1, T>::VALUE[] = "%hhu%n";
+template <typename TUnsigned, typename T>
+struct IntegerFormatString_<TUnsigned, 1, T> :
+    IntegerFormatString_<TUnsigned, 2, T> {};
 
 
 template <typename T>
