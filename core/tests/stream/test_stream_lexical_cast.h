@@ -192,7 +192,7 @@ SEQAN_TYPED_TEST(LexicalCastTest, SignedSource)
 
 SEQAN_TYPED_TEST(LexicalCastTest, FloatingPointSource)
 {
-    typename TestFixture::TTarget reciprocal = 123.45;
+    typename TestFixture::TTarget reciprocal = (typename TestFixture::TTarget)123.45;
     typename TestFixture::TTarget epsilon = std::numeric_limits<typename TestFixture::TTarget>::epsilon();
 
     assign(this->source, "-123.45");
