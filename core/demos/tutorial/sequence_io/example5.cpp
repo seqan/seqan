@@ -2,6 +2,8 @@
 #include <seqan/file.h>
 #include <iostream>
 
+// TODO(singer): remove this file once the tutorial is adapted.
+/*
 int main (int argc, char const ** argv)
 {
 // FRAGMENT(open)
@@ -49,3 +51,4 @@ int main (int argc, char const ** argv)
 // FRAGMENT(return)
     return 0;
 }
+*/

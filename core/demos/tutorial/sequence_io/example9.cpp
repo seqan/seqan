@@ -4,6 +4,9 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
+// TODO(singer): This is the same as in example 1
+
+/*
 int main(int argc, char const ** argv)
 {
     if (argc != 2)
@@ -31,3 +34,4 @@ int main(int argc, char const ** argv)
     
     return 0;
 }
+*/

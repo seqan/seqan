@@ -5,6 +5,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
+//TODO(singer): Delete this file once the new stream module is merged.
 int main(int argc, char const ** argv)
 {
     if (argc != 2)
