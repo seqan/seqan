@@ -589,7 +589,7 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
 //    public typename TagListValue<TTagList, I> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction TagListGetIndex
+// Metafunction Find
 // ----------------------------------------------------------------------------
 
 /*!
@@ -607,8 +607,8 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
  * @section Examples
  * 
  * @code{.cpp}
- * AutoSeqStreamFormat format;
- * if (format.tagId == TagListGetIndex<AutoSeqStreamFormat, Fasta>::VALUE)
+ * AutoSeqFormat format;
+ * if (format.tagId == Find<AutoSeqFormat, Fasta>::VALUE)
  * {
  *     // do something specific to Fasta format
  * }
@@ -639,8 +639,8 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
 ..cat:Basic
 ..include:seqan/basic.h
 ..example.code:
-AutoSeqStreamFormat format;
-if (format.tagId == TagListGetIndex<AutoSeqStreamFormat, Fasta>::VALUE)
+AutoSeqFormat format;
+if (format.tagId == Find<AutoSeqFormat, Fasta>::VALUE)
 {
     // do something specific to Fasta format
 }

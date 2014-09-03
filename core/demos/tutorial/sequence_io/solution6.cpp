@@ -20,8 +20,8 @@ int main(int argc, char const ** argv)
     seqan::RecordReader<seqan::String<char, seqan::MMap<> >,
                         seqan::DoublePass<seqan::StringReader> > reader(mmapString);
 
-    // Create the AutoSeqStreamFormat object and guess the file format.
-    seqan::AutoSeqStreamFormat formatTag;
+    // Create the AutoSeqFormat object and guess the file format.
+    seqan::AutoSeqFormat formatTag;
     if (!guessStreamFormat(reader, formatTag))
         return 1;  // Could not detect file format.
 

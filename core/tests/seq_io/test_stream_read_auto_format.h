@@ -51,13 +51,13 @@ SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_quals_fasta)
     CharString meta;
     CharString seq;
     CharString qual;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
     int res = readRecord(meta, seq, qual, reader, formatTag);
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_EQ(meta, "id1");
     SEQAN_ASSERT_EQ(seq, "AAACCC");
     SEQAN_ASSERT_EQ(length(qual), 0u);
-    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqStreamFormat, Fasta>::VALUE));
+    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqFormat, Fasta>::VALUE));
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_quals_fastq)
@@ -73,13 +73,13 @@ SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_quals_fastq)
     CharString meta;
     CharString seq;
     CharString qual;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
     int res = readRecord(meta, seq, qual, reader, formatTag);
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_EQ(meta, "id1");
     SEQAN_ASSERT_EQ(seq, "AAACCC");
     SEQAN_ASSERT_EQ(qual, "!!!!!!");
-    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqStreamFormat, Fastq>::VALUE));
+    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqFormat, Fastq>::VALUE));
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_no_quals_fasta)
@@ -94,12 +94,12 @@ SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_no_quals_fasta)
 
     CharString meta;
     CharString seq;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
     int res = readRecord(meta, seq, reader, formatTag);
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_EQ(meta, "id1");
     SEQAN_ASSERT_EQ(seq, "AAACCC");
-    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqStreamFormat, Fasta>::VALUE));
+    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqFormat, Fasta>::VALUE));
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_no_quals_fastq)
@@ -114,12 +114,12 @@ SEQAN_DEFINE_TEST(test_stream_read_record_auto_format_no_quals_fastq)
 
     CharString meta;
     CharString seq;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
     int res = readRecord(meta, seq, reader, formatTag);
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_EQ(meta, "id1");
     SEQAN_ASSERT_EQ(seq, "AAACCC");
-    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqStreamFormat, Fastq>::VALUE));
+    SEQAN_ASSERT_EQ(value(formatTag), +(Find<AutoSeqFormat, Fastq>::VALUE));
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_auto_format_quals_fasta)
@@ -135,7 +135,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_quals_fasta)
     StringSet<CharString> metas;
     StringSet<CharString> seqs;
     StringSet<CharString> quals;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
 
     int res = read2(metas, seqs, quals, reader, formatTag);
 
@@ -162,7 +162,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_quals_fastq)
     StringSet<CharString> metas;
     StringSet<CharString> seqs;
     StringSet<CharString> quals;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
 
     int res = read2(metas, seqs, quals, reader, formatTag);
 
@@ -190,7 +190,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_no_quals_fasta)
 
     StringSet<CharString> metas;
     StringSet<CharString> seqs;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
 
     int res = read2(metas, seqs, reader, formatTag);
 
@@ -215,7 +215,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_no_quals_fastq)
 
     StringSet<CharString> metas;
     StringSet<CharString> seqs;
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
 
     int res = read2(metas, seqs, reader, formatTag);
 
