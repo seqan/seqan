@@ -14,7 +14,7 @@ int main(int argc, char const ** argv)
     }
 
     // Open file.
-    seqan::SequenceFile<seqan::Input> file(argv[1]);
+    seqan::SeqFileIn file(argv[1]);
 
     // Read sequence file and print sequence lengths.
     size_t total = 0;

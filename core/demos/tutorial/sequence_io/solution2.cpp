@@ -10,7 +10,7 @@ int main(int argc, char const ** argv)
         return 1;  // Invalid number of arguments.
 
     // Open file
-    seqan::SequenceFile<seqan::Input> inFile(argv[1]);
+    seqan::SeqFileIn inFile(argv[1]);
 
     // Read file in one pass.
     seqan::StringSet<seqan::CharString> ids;
