@@ -26,6 +26,7 @@
 #include <seqan/arg_parse.h>
 //#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 #include <../../extras/include/seqan/math.h>
 #include <string>
 #include <iostream>
@@ -241,22 +242,16 @@ bool loadDatasets(
 	resize(ds, length(fileNames) + 1);
 	ds[0] = 0;
 
-	CharString seq;
-	MultiFasta multiFasta;
+	SeqFileIn seqFile;
+    StringSet<CharString> ids;
 	for(unsigned s = 0; s < length(fileNames); ++s)
 	{
-		if (!open(multiFasta.concat, toCString(fileNames[s]), OPEN_RDONLY)) return false;
-		AutoSeqFormat format;
-		guessFormat(multiFasta.concat, format);
-		split(multiFasta, format);		
-		unsigned seqCount = length(multiFasta);
-		
-		ds[s + 1] = ds[s] + seqCount;
-		resize(seqs, ds[s + 1]);
-		for(unsigned i = 0; i < seqCount; ++i)
-			assignSeq(seqs[ds[s] + i], multiFasta[i], format);
-
-		close(multiFasta.concat);
+		if (!open(seqFile, toCString(fileNames[s])))
+            return false;
+        readRecords(ids, seqs, seqFile);
+		close(seqFile);
+        ds[s + 1] = length(seqs);
+        clear(ids);
 	}
 	return (back(ds) > 0);
 }
