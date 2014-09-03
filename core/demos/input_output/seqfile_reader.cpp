@@ -1,11 +1,9 @@
 #include <fstream>
 #include <iostream>
 
-#include <seqan/seq_io.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
 
-// TODO(singer): rename, delete this file (after the new stream module
-// is merged into the develop/master branch!
 int main()
 {
     seqan::CharString path = SEQAN_PATH_TO_ROOT();
@@ -20,7 +18,6 @@ int main()
     while (!atEnd(inFile))
     {
         read(inFile, id, seq);
-
         std::cout << id << "\t" << seq << "\n";
     }
 
