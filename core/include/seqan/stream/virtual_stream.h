@@ -414,7 +414,7 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 // read first bytes of a file/stream and compare with file format's magic header
 template <typename TStream, typename TFormat_>
 inline bool
-guessFormat(TStream &istream, Tag<TFormat_>)
+guessFormatFromStream(TStream &istream, Tag<TFormat_>)
 {
     typedef Tag<TFormat_> TFormat;
 
@@ -430,7 +430,7 @@ guessFormat(TStream &istream, Tag<TFormat_>)
     for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / sizeof(char); ++i)
     {
         int c = (int)istream.get();
-        if (c != MagicHeader<TFormat>::VALUE[i])
+        if (c != (unsigned char)MagicHeader<TFormat>::VALUE[i])
         {
             match = false;
             if (c != EOF)
@@ -455,7 +455,7 @@ guessFormat(TStream &istream, Tag<TFormat_>)
 template <typename TValue, typename TStream, typename TCompressionType>
 inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
 {
-    return guessFormat(fileStream, compressionType);
+    return guessFormatFromStream(fileStream, compressionType);
 }
 
 template <typename TValue, typename TStream, typename TCompressionType>

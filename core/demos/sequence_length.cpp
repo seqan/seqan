@@ -14,28 +14,15 @@ int main(int argc, char const ** argv)
     }
 
     // Open file.
-    std::fstream inF(argv[1], std::ios::in | std::ios::binary);
-    if (!inF.good())
-    {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
-        return 1;
-    }
-
-    // Create RecordReader.
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
+    seqan::SeqFileIn file(argv[1]);
 
     // Read sequence file and print sequence lengths.
     size_t total = 0;
     seqan::CharString id;
     seqan::CharString seq;
-    while (!atEnd(reader))
+    while (!atEnd(file))
     {
-        if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
-        {
-            std::cerr << "ERROR: Problem reading file " << argv[1] << ".\n";
-            return 1;
-        }
-
+        readRecord(id, seq, file);
         std::cout << id << "\t" << length(seq) << "\n";
         total += length(seq);
     }

@@ -273,7 +273,13 @@ struct QualityValueSize<DnaQ>
 ///.Function.getQualityValue.param.c.type:Spec.DnaQ
 ///.Function.getQualityValue.class:Spec.DnaQ
 
-inline int getQualityValue(DnaQ const & c) 
+template <typename TValue>
+inline int getQualityValue(TValue const &) 
+{
+    return 0;
+}
+
+inline int getQualityValue(DnaQ const & c)
 {
     return c.value >> 2;
 }

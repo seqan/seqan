@@ -38,151 +38,47 @@
 
 namespace seqan {
 
-// ============================================================================
-// Tags
-// ============================================================================
-// TODO(esiragusa): move all tags into a common header.
-
 // --------------------------------------------------------------------------
-// Tag Fasta
-// --------------------------------------------------------------------------
-
-/**
-.Tag.File Format.tag.Fasta:
-    FASTA file format for sequences.
-..include:seqan/file.h
-*/
-struct TagFasta_;
-typedef Tag<TagFasta_> Fasta;
-
-// --------------------------------------------------------------------------
-// Tag Fastq
-// --------------------------------------------------------------------------
-
-/**
-.Tag.File Format.tag.Fastq:
-    FASTQ file format for sequences.
-..include:seqan/file.h
-*/
-struct TagFastq_;
-typedef Tag<TagFastq_> Fastq;
-
-// --------------------------------------------------------------------------
-// Tag QSeq
-// --------------------------------------------------------------------------
-
-/**
-.Tag.File Format.tag.QSeq:
-	QSeq format, used for most of the Illumina read files.
-..include:seqan/file.h
-*/
-struct QSeq_;
-typedef Tag<QSeq_> QSeq;
-
-// --------------------------------------------------------------------------
-// Tag Raw
-// --------------------------------------------------------------------------
-
-struct Raw_;
-typedef Tag<Raw_> Raw;
-
-// --------------------------------------------------------------------------
-// Tag FileFormatExtensions
+// Class FileFormatExtensions
 // --------------------------------------------------------------------------
 
 template <typename TFormat, typename T>
 struct FileFormatExtensions;
-
-
-template <typename T>
-struct FileFormatExtensions<Fasta, T>
-{
-    static char const * VALUE[6];
-};
-
-template <typename T>
-char const * FileFormatExtensions<Fasta, T>::VALUE[6] =
-{
-    ".fa",      // default output extension
-    ".fasta",
-    ".faa",     // FASTA Amino Acid file
-    ".ffn",     // FASTA nucleotide coding regions file
-    ".fna",     // FASTA Nucleic Acid file
-    ".frn"
-};
-
-template <typename T>
-struct FileFormatExtensions<Fastq, T>
-{
-    static char const * VALUE[2];
-};
-
-template <typename T>
-char const * FileFormatExtensions<Fastq, T>::VALUE[2] =
-{
-    ".fq",      // default output extension
-    ".fastq"
-};
-
-template <typename T>
-struct FileFormatExtensions<QSeq, T>
-{
-    static char const * VALUE[2];
-};
-
-template <typename T>
-char const * FileFormatExtensions<QSeq, T>::VALUE[2] =
-{
-    ".txt",     // default output extension
-    ".seq"
-};
-
-template <typename T>
-struct FileFormatExtensions<Raw, T>
-{
-    static char const * VALUE[1];	// default is one extension
-};
-
-template <typename T>
-char const * FileFormatExtensions<Raw, T>::VALUE[1] =
-{
-    ".qseq"     // default output extension
-};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // --------------------------------------------------------------------------
-// Function guessFormat()
+// Function guessFormatFromStream()
 // --------------------------------------------------------------------------
 // Base case: we get here if the file format could not be determined.
 
 template <typename TFileSeq>
-inline bool guessFormat(TFileSeq &, TagSelector<> &)
+inline bool guessFormatFromStream(TFileSeq &, TagSelector<> &)
 {
     return false;
 }
 
 // --------------------------------------------------------------------------
-// Function guessFormat(TagSelector)
+// Function guessFormatFromStream(TagSelector)
 // --------------------------------------------------------------------------
 
 template <typename TFileSeq, typename TTagList>
-inline bool guessFormat(TFileSeq &seq, TagSelector<TTagList> &format)
+inline bool guessFormatFromStream(TFileSeq &seq, TagSelector<TTagList> &format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == -1 || value(format) == LENGTH<TTagList>::VALUE - 1)
+    if (value(format) == -1 || isEqual(format, TFormat()))
     {
         // if tagId is set to -1 (auto-detect) or the current format (TFormatTag) then test for TFormatTag format
-        if (guessFormat(seq, TFormatTag()))
+        if (guessFormatFromStream(seq, TFormat()))
         {
-            value(format) = LENGTH<TTagList>::VALUE - 1;
+            assign(format, TFormat());
             return true;
         }
     }
-    return guessFormat(seq, static_cast<typename TagSelector<TTagList>::Base &>(format));
+    return guessFormatFromStream(seq, static_cast<typename TagSelector<TTagList>::Base &>(format));
 }
 
 // --------------------------------------------------------------------------
@@ -203,14 +99,14 @@ inline bool guessFormatFromFilename(TFilename const &, TagSelector<>)
 template <typename TFilename, typename TTagList>
 inline bool guessFormatFromFilename(TFilename const &fname, TagSelector<TTagList> &format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == -1 || value(format) == LENGTH<TTagList>::VALUE - 1)
+    if (value(format) == -1 || isEqual(format, TFormat()))
     {
         // if tagId is set to -1 (auto-detect) or the current format (TFormatTag) then test for TFormatTag format
-        if (guessFormatFromFilename(fname, TFormatTag()))
+        if (guessFormatFromFilename(fname, TFormat()))
         {
-            value(format) = LENGTH<TTagList>::VALUE - 1;
+            assign(format, TFormat());
             return true;
         }
     }

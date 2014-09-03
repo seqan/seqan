@@ -362,7 +362,8 @@ readRecord(VcfRecord & record,
 
     // INFO
     readUntil(record.info, iter, OrFunctor<IsTab, IsNewline>());
-    char c = readOne(iter);
+    char c;
+    readOne(c, iter);
     if (IsNewline()(c))
         return;
 
@@ -385,7 +386,8 @@ readRecord(VcfRecord & record,
                 break;  // Done
         }
 
-        char c = readOne(iter);
+        char c;
+        readOne(c, iter);
         if (IsNewline()(c))
             return;
     }

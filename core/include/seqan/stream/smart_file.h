@@ -97,13 +97,14 @@ struct SmartFile
         context(otherCtx)
     {}
 
+    // filename based c'tors
     explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         iter(stream),
         context(data_context)
     {
         if (!open(*this, fileName, openMode))
-            throw IOError(std::string("Could not open file ") + fileName);
+            SEQAN_THROW(IOError(std::string("Could not open file ") + fileName));
     }
 
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
@@ -111,7 +112,33 @@ struct SmartFile
         context(otherCtx)
     {
         if (!open(*this, fileName, openMode))
-            throw IOError(std::string("Could not open file ") + fileName);
+            SEQAN_THROW(IOError(std::string("Could not open file ") + fileName));
+    }
+
+    // stream based c'tors
+    template <typename TValue>
+    SmartFile(std::basic_istream<TValue> &istream,
+              SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
+        iter(stream),
+        context(data_context)
+    {
+        bool success = open(*this, istream);
+        ignoreUnusedVariableWarning(dummy);
+        ignoreUnusedVariableWarning(success);
+        SEQAN_ASSERT(success);
+    }
+
+    template <typename TValue, typename TFormat>
+    SmartFile(std::basic_ostream<TValue> &ostream,
+              TFormat const &format,
+              SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
+        iter(stream),
+        context(data_context)
+    {
+        bool success = open(*this, ostream, format);
+        ignoreUnusedVariableWarning(dummy);
+        ignoreUnusedVariableWarning(success);
+        SEQAN_ASSERT(success);
     }
 
     ~SmartFile()
@@ -202,7 +229,7 @@ inline void setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat fo
 template <typename TFileType, typename TSpec>
 inline bool guessFormat(SmartFile<TFileType, Input, TSpec> & file)
 {
-    return guessFormat(file.stream, file.format);
+    return guessFormatFromStream(file.stream, file.format);
 }
 
 template <typename TFileType, typename TSpec>
@@ -238,7 +265,8 @@ _mapFileFormatToCompressionFormat(TagSelector<TCompressedFileTypes> & result,
 
     if (isEqual(format, TFormat()))
         assign(result, _mapFileFormatToCompressionFormat(TFormat()));
-    _mapFileFormatToCompressionFormat(result, static_cast<TBase const &>(format));
+    else
+        _mapFileFormatToCompressionFormat(result, static_cast<TBase const &>(format));
 }
 
 template <typename TFileFormatList>
@@ -250,6 +278,19 @@ _mapFileFormatToCompressionFormat(TagSelector<TFileFormatList> format)
     return compressionType;
 }
 
+
+template <typename TSmartFile, typename TFormat>
+inline void
+_checkThatStreamOutputFormatIsSet(TSmartFile const &, TFormat const &)
+{}
+
+template <typename TFileType, typename TSpec, typename TFileFormatList>
+inline void
+_checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, TagSelector<TFileFormatList> const &format)
+{
+    if (value(format) < 0)
+        SEQAN_FAIL("SmartFile: File format not specified, use setFormat().");
+}
 
 // --------------------------------------------------------------------------
 // Function open(stream)
