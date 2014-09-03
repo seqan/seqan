@@ -27,13 +27,13 @@ int main(int argc, char const ** argv)
 
 // FRAGMENT(file-format)
     // Read FASTA file and output "$id\t$seq".
-    AutoSeqStreamFormat formatTag;
+    AutoSeqFormat formatTag;
     if (!guessStreamFormat(reader, formatTag))
     {
         std::cerr << "Could not determine file format!" << std::endl;
         return 1;
     }
-    std::cout << "File format is " << getAutoSeqStreamFormatName(formatTag) << '\n';
+    std::cout << "File format is " << getAutoSeqFormatName(formatTag) << '\n';
 // FRAGMENT(not-so-important)
     
     // Define variables for storing the sequences and sequence ids.

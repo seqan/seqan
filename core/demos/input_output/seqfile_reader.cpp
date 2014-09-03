@@ -1,16 +1,16 @@
 #include <fstream>
 #include <iostream>
 
-#include <seqan/seq_io.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
 
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc != 2)
-        return 1;  // Invalid number of arguments.
+    seqan::CharString path = SEQAN_PATH_TO_ROOT();
+    append(path, "/core/demos/input_output/example.fa");
 
     // Open file
-    seqan::SeqFileIn inFile(argv[1]);
+    seqan::SeqFileIn inFile(toCString(path));
 
     // Read file record-wise.
     seqan::CharString id;

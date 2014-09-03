@@ -10,9 +10,9 @@ int main()
     appendValue(seqs, "CGATCGATCGAT");
     appendValue(seqs, "AAAAAAAAAAAA");
 
+    seqan::DirectionIterator<std::ostream, seqan::Output>::Type streamIter(std::cout);
     for (unsigned i = 0; i < length(ids); ++i)
-        if (seqan::writeRecord(std::cout, ids[i], seqs[i], seqan::Fasta()) != 0)
-            return 1;  // Error writing.
+        seqan::writeRecord(streamIter, ids[i], seqs[i], seqan::Fasta());
 
     return 0;
 }

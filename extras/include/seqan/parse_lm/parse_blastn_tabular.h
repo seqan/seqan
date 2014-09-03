@@ -73,31 +73,34 @@ typedef Tag<BlastnTabular_> BlastnTabular;
 ..include:seqan/parse_lm.h
  */
 
-template <typename TLocalMatchStore, typename TStream, typename TPassSpec>
-int
+template <typename TLocalMatchStore, typename TForwardIter>
+inline void
 readRecord(TLocalMatchStore & store,
-           RecordReader<TStream, SinglePass<TPassSpec> > & recordReader,
+           TForwardIter & iter,
            BlastnTabular const & /*tag*/)
 {
     typedef typename TLocalMatchStore::TPosition TPosition;
-    //typedef typename TLocalMatchStore::TPosition TId;
-    
-    if (atEnd(recordReader))
-        return 1;
-    // Skip any comments.
-    while (value(recordReader) == '#') {
-        int res = skipLine(recordReader);
-        if (res)
-            return res;
-        if (atEnd(recordReader))
-            return 1;
+
+    if (atEnd(iter))
+    {
+        throw ParseError("Unexpected end of file!");
+        return;
     }
 
-    SEQAN_ASSERT_NEQ(value(recordReader), '#');
+    // Skip any comments.
+    while (value(iter) == '#') {
+        skipLine(iter);
+        if (atEnd(iter))
+        {
+            throw ParseError("Unexpected end of file!");
+            return;
+        }
+    }
+
+    SEQAN_ASSERT_NEQ(value(iter), '#');
 
     // Read line.
     CharString buffer;
-    int res = 0;
 
     CharString subjectName;
     CharString queryName;
@@ -107,87 +110,84 @@ readRecord(TLocalMatchStore & store,
     TPosition queryEndPos = 0;
 
     // Field: query id
-    res = readUntilChar(queryName, recordReader, '\t');
-    if (res) return res;
+    readUntil(queryName, iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: subject id
-    res = readUntilChar(subjectName, recordReader, '\t');
-    if (res) return res;
+    readUntil(subjectName, iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: % identity
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: alignment length
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: mismatches
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: gap opens
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: q. start
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryBeginPos = lexicalCast<TPosition>(buffer) - 1;
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: q. end
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: s. start
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectBeginPos = lexicalCast<TPosition>(buffer) - 1;
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: s. end
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: evalue
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: bit score
-    res = skipUntilWhitespace(recordReader);
-    if (res) return res;
+    skipUntil(iter, IsWhitespace());
 
     // Finally, append the local match.
     appendLocalMatch(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos);
-
-    return 0;
 }
 
 }  // namespace seqan

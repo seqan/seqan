@@ -306,11 +306,11 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_check_stream_format)
     std::fstream inFile(toCString(fileName), std::ios::in | std::ios::binary);
 
     RecordReader<std::fstream, SinglePass<> > reader(inFile);
-    AutoSeqStreamFormat tagSelector;
+    AutoSeqFormat tagSelector;
     bool b = guessStreamFormat(reader, tagSelector);
 
     SEQAN_ASSERT_MSG(b, "File format detection must have been successful.");
-    SEQAN_ASSERT_EQ(value(tagSelector), +(Find<AutoSeqStreamFormat, Fastq>::VALUE));
+    SEQAN_ASSERT_EQ(value(tagSelector), +(Find<AutoSeqFormat, Fastq>::VALUE));
 }
 
 #endif // def TEST_STREAM_TEST_STREAM_READ_FASTQ_H_

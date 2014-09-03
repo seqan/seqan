@@ -76,31 +76,31 @@ typedef Tag<LastzGeneral_> LastzGeneral;
 ..include:seqan/parse_lm.h
  */
 
-template <typename TLocalMatchStore, typename TStream, typename TPassSpec>
-int
+template <typename TLocalMatchStore, typename TForwardIter>
+inline void
 readRecord(TLocalMatchStore & store,
-           RecordReader<TStream, SinglePass<TPassSpec> > & recordReader,
+           TForwardIter & iter,
            LastzGeneral const & /*tag*/)
 {
     typedef typename TLocalMatchStore::TPosition TPosition;
-    //typedef typename TLocalMatchStore::TPosition TId;
-    
-    if (atEnd(recordReader))
-        return 1;
+
     // Skip any comments.
-    while (value(recordReader) == '#') {
-        int res = skipLine(recordReader);
-        if (res)
-            return res;
-        if (atEnd(recordReader))
-            return 1;
+    while (true)
+    {
+        if (atEnd(iter))
+        {
+            throw UnexpectedEnd();
+            return;
+        }
+        if (value(iter) != '#')
+            break;
+        skipLine(iter);
     }
 
-    SEQAN_ASSERT_NEQ(value(recordReader), '#');
+    SEQAN_ASSERT_NEQ(value(iter), '#');
 
     // Read line.
     CharString buffer;
-    int res = 0;
 
     CharString subjectName;
     CharString queryName;
@@ -112,122 +112,108 @@ readRecord(TLocalMatchStore & store,
     TPosition queryEndPos = 0;
 
     // Field: score
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: name1
-    readUntilChar(subjectName, recordReader, '\t');
-    if (res) return res;
+    readUntil(subjectName, iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: strand1
-    clear(buffer);
-    res = readNChars(buffer, recordReader, 1);
-    if (res) return res;
-    subjectStrand = buffer[0];
-    if (subjectStrand != '+' && subjectStrand != '-')
-        return 1;  // FORMAT ERROR, should probably be a constant
+    readOne(subjectStrand, iter, OrFunctor<EqualsChar<'+'>, EqualsChar<'-'> >());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: size1
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: zstart1
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectBeginPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: end1
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: name2
-    readUntilChar(queryName, recordReader, '\t');
-    if (res) return res;
+    readUntil(queryName, iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: strand2
-    clear(buffer);
-    res = readNChars(buffer, recordReader, 1);
-    if (res) return res;
-    queryStrand = buffer[0];
-    if (queryStrand != '+' && queryStrand != '-')
-        return 1;  // FORMAT ERROR, should probably be a constant
+    readOne(queryStrand, iter, OrFunctor<EqualsChar<'+'>, EqualsChar<'-'> >());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: size2
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: zstart2
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryBeginPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: end2
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: identity
     clear(buffer);
-    res = readUntilWhitespace(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, IsWhitespace());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: idPct
     clear(buffer);
-    res = readUntilWhitespace(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, IsWhitespace());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: coverage
     clear(buffer);
-    res = readUntilWhitespace(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, IsWhitespace());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: covPct
     clear(buffer);
-    res = readUntilWhitespace(buffer, recordReader);
-    if (res) return res;
-    // NOTE: Result is ignored.
+    readUntil(buffer, iter, IsWhitespace());
+
     // Skip to next line, ignore EOF here.
-    skipLine(recordReader);
+    skipLine(iter);
 
     // Finally, append the local match.
     if (subjectStrand == '-')
@@ -235,8 +221,6 @@ readRecord(TLocalMatchStore & store,
     if (queryStrand == '-')
         ::std::swap(queryBeginPos, queryEndPos);
     appendLocalMatch(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos);
-
-    return 0;
 }
 
 }  // namespace seqan

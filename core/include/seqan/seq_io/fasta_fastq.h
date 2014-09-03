@@ -41,6 +41,119 @@
 namespace seqan {
 
 // ============================================================================
+// Tags
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Tag Fasta
+// --------------------------------------------------------------------------
+
+/**
+.Tag.File Format.tag.Fasta:
+    FASTA file format for sequences.
+..include:seqan/file.h
+*/
+struct TagFasta_;
+typedef Tag<TagFasta_> Fasta;
+
+// --------------------------------------------------------------------------
+// Tag Fastq
+// --------------------------------------------------------------------------
+
+/**
+.Tag.File Format.tag.Fastq:
+    FASTQ file format for sequences.
+..include:seqan/file.h
+*/
+struct TagFastq_;
+typedef Tag<TagFastq_> Fastq;
+
+// --------------------------------------------------------------------------
+// Tag Raw
+// --------------------------------------------------------------------------
+
+struct Raw_;
+typedef Tag<Raw_> Raw;
+
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
+template <typename T>
+struct MagicHeader<Fasta, T>
+{
+    static char const VALUE[1];
+};
+template <typename T>
+char const MagicHeader<Fasta, T>::VALUE[1] = { '>' };  // Fasta's first character
+
+
+template <typename T>
+struct MagicHeader<Fastq, T>
+{
+    static char const VALUE[1];
+};
+template <typename T>
+char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+
+
+template <typename T>
+struct MagicHeader<Raw, T> :
+    MagicHeader<Nothing, T> {};
+
+// --------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Fasta, T>
+{
+    static char const * VALUE[6];
+};
+template <typename T>
+char const * FileFormatExtensions<Fasta, T>::VALUE[6] =
+{
+    ".fa",      // default output extension
+    ".fasta",
+    ".faa",     // FASTA Amino Acid file
+    ".ffn",     // FASTA nucleotide coding regions file
+    ".fna",     // FASTA Nucleic Acid file
+    ".frn"
+};
+
+
+template <typename T>
+struct FileFormatExtensions<Fastq, T>
+{
+    static char const * VALUE[2];
+};
+template <typename T>
+char const * FileFormatExtensions<Fastq, T>::VALUE[2] =
+{
+    ".fq",      // default output extension
+    ".fastq"
+};
+
+
+template <typename T>
+struct FileFormatExtensions<Raw, T>
+{
+    static char const * VALUE[2];
+};
+template <typename T>
+char const * FileFormatExtensions<Raw, T>::VALUE[2] =
+{
+    ".txt",     // default output extension
+    ".seq"
+};
+
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -132,12 +245,14 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
     TSeqSize charsPerLine;
     TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
 
-    for (; charsLeft != 0; charsLeft -= charsPerLine)
+    do
     {
         charsPerLine = std::min(charsLeft, lineLength_);
         write(target, iter, charsPerLine);
         writeValue(target, '\n');
+        charsLeft -= charsPerLine;
     }
+    while (charsLeft != 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -154,10 +269,10 @@ template <typename TIdString, typename TSeqString, typename TFwdIterator, typena
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(meta, seq, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(meta, seq, iter, TFormat());
     else
         readRecord(meta, seq, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -176,10 +291,10 @@ template <typename TIdString, typename TSeqString, typename TQualString, typenam
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, TagSelector<TTagList> const & format)
 {
-    typedef typename TTagList::Type TFormatTag;
+    typedef typename TTagList::Type TFormat;
 
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-        readRecord(meta, seq, qual, iter, TFormatTag());
+    if (isEqual(format, TFormat()))
+        readRecord(meta, seq, qual, iter, TFormat());
     else
         readRecord(meta, seq, qual, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
@@ -311,11 +426,11 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Fasta); Qualities inside seq
+// Function writeRecord()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn FastaFastqIO#writeRecord
+ * @fn FastaFastqIO#write
  * @headerfile <seqan/seq_io.h>
  * @brief Write one FASTA or FASTQ record.
  * 
@@ -353,12 +468,44 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 */
 
 
+// ----------------------------------------------------------------------------
+// Function writeRecord(Raw); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString>
+inline void
+writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, Raw const &,
+            SequenceOutputOptions const & = SequenceOutputOptions())
+{
+    write(iter, seq);
+    writeValue(iter, '\n');
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(Raw); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
+inline void
+writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, TQualString const & /* qual */, Raw const &,
+            SequenceOutputOptions const & = SequenceOutputOptions())
+{
+    write(iter, seq);
+    writeValue(iter, '\n');
+}
+
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(Fasta);
+// ----------------------------------------------------------------------------
+
 template <typename TTarget, typename TIdString, typename TSeqString>
-inline void writeRecord(TTarget & target,
-                        TIdString const & meta,
-                        TSeqString const & seq,
-                        Fasta const & /*tag*/,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+inline void
+writeRecord(TTarget & target,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Fasta const & /*tag*/,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '>');
     write(target, meta);
@@ -367,17 +514,31 @@ inline void writeRecord(TTarget & target,
     writeWrappedString(target, seq, (options.lineLength < 0)? 70 : options.lineLength); // 70bp wrapping, by default
 }
 
+template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
+inline void
+writeRecord(TTarget & target,
+            TIdString const & meta,
+            TSeqString const & seq,
+            TQualString const & /*tag*/,
+            Fasta const & fasta,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    writeRecord(target, meta, seq, fasta, options);
+}
+
+
 // ----------------------------------------------------------------------------
 // Function writeRecord(Fastq); Qualities inside qual
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
-inline void writeRecord(TTarget & target,
-                        TIdString const & meta,
-                        TSeqString const & seq,
-                        TQualString const & qual,
-                        Fastq const & /*tag*/,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+inline void
+writeRecord(TTarget & target,
+            TIdString const & meta,
+            TSeqString const & seq,
+            TQualString const & qual,
+            Fastq const & /*tag*/,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '@');
     write(target, meta);
@@ -399,15 +560,63 @@ inline void writeRecord(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString>
-inline void writeRecord(TTarget & target,
-                        TIdString const & meta,
-                        TSeqString const & seq,
-                        Fastq const & tag,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+inline void
+writeRecord(TTarget & target,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Fastq const & tag,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
     writeRecord(target, meta, seq, quals, tag, options);
+}
+
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(TagSelector); Qualities inside seq
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString>
+inline void
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */,
+            TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
+{}
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TTagList>
+inline void
+writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq,
+            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        writeRecord(iter, meta, seq, TFormat(), options);
+    else
+        writeRecord(iter, meta, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(TagSelector); Qualities inside qual
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
+inline void
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */, TQualString const & /* qual */,
+            TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
+{}
+
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString, typename TTagList>
+inline void
+writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq, TQualString const & qual,
+            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        writeRecord(iter, meta, seq, qual, TFormat(), options);
+    else
+        writeRecord(iter, meta, seq, qual, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
 }
 
 }  // namespace seqan
