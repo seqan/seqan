@@ -56,7 +56,7 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function write2()                                            BamHeaderRecord
+// Function write()                                             BamHeaderRecord
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -88,7 +88,7 @@ inline void write(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function write2()                                                  BamHeader
+// Function write()                                                   BamHeader
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -132,7 +132,7 @@ inline void write(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function write2()                                         BamAlignmentRecord
+// Function write()                                          BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>

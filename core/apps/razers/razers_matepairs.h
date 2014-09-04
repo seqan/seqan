@@ -117,55 +117,32 @@ bool loadReads(
 {
 	bool countN = !(options.matchN || options.outputFormat == 1);
 
-	MultiFasta leftMates;
-	MultiFasta rightMates;
+    SeqFileIn leftMates;
+    SeqFileIn rightMates;
 
-	if (!open(leftMates.concat, fileNameL, OPEN_RDONLY)) return false;
-	if (!open(rightMates.concat, fileNameR, OPEN_RDONLY)) return false;
-
-	AutoSeqFormat formatL;
-	guessFormat(leftMates.concat, formatL);
-	split(leftMates, formatL);
-
-	AutoSeqFormat formatR;
-	guessFormat(rightMates.concat, formatR);
-	split(rightMates, formatR);
-
-	unsigned seqCount = length(leftMates);
-	if (seqCount != length(rightMates))
-	if (options._debugLevel > 1) 
-	{
-		::std::cerr << "Numbers of mates differ: " << seqCount << "(left) != " << length(rightMates) << "(right).\n";
-		return false;
-	}
-
-#ifndef RAZERS_CONCATREADS
-	resize(reads, 2*seqCount, Exact());
-#endif
-	if (options.readNaming == 0)
-		resize(fastaIDs, 2*seqCount, Exact());
+	if (!open(leftMates, fileNameL)) return false;
+	if (!open(rightMates, fileNameR)) return false;
 	
+	CharString fastaId[2];
 	String<Dna5Q> seq[2];
 	CharString qual[2];
 	
 	unsigned kickoutcount = 0;
 	unsigned maxReadLength = 0;
-	for(unsigned i = 0; i < seqCount; ++i) 
+	while (!atEnd(leftMates) && !atEnd(rightMates))
 	{
+        readRecord(fastaId[0], seq[0], qual[0], leftMates);         // read Fasta id, sequence and qualities
+        readRecord(fastaId[1], seq[1], qual[1], rightMates);        // read Fasta id, sequence and qualities
+
 		if (options.readNaming == 0)
 		{
-			assignSeqId(fastaIDs[2*i], leftMates[i], formatL);		// read left Fasta id
-			assignSeqId(fastaIDs[2*i+1], rightMates[i], formatR);	// read right Fasta id
-			append(fastaIDs[2*i], "/L");
-			append(fastaIDs[2*i+1], "/R");
+            append(fastaId[0], "/L");
+            append(fastaId[1], "/R");
+			appendValue(fastaIDs, fastaId[0]);
+			appendValue(fastaIDs, fastaId[1]);
 		}
 		
-		assignSeq(seq[0], leftMates[i], formatL);					// read left Read sequence
-		assignSeq(seq[1], rightMates[i], formatR);					// read right Read sequence
 		reverseComplement(seq[1]);
-
-		assignQual(qual[0], leftMates[i], formatL);					// read left ascii quality values  
-		assignQual(qual[1], rightMates[i], formatR);				// read right ascii quality values  
 		reverse(qual[1]);
 		
 		if (countN)
@@ -195,21 +172,19 @@ bool loadReads(
 			if (options.trimLength > 0 && length(seq[j]) > (unsigned)options.trimLength)
 				resize(seq[j], options.trimLength);
 		}
-#ifdef RAZERS_CONCATREADS
 		appendValue(reads, seq[0], Generous());
 		appendValue(reads, seq[1], Generous());
-#else
-		assign(reads[2*i], seq[0], Exact());
-		assign(reads[2*i+1], seq[1], Exact());
-#endif
 		if (maxReadLength < length(seq[0]))
 			maxReadLength = length(seq[0]);
 		if (maxReadLength < length(seq[1]))
 			maxReadLength = length(seq[1]);
 	}
-#ifdef RAZERS_CONCATREADS
-	reserve(reads.concat, length(reads.concat), Exact());
-#endif
+
+	if (atEnd(leftMates) != atEnd(rightMates) && options._debugLevel > 1)
+	{
+		::std::cerr << "Numbers of mates differ.\n";
+		return false;
+	}
 
 	typedef Shape<Dna, SimpleShape> TShape;
 	typedef typename SAValue< Index<TMPReadSet, IndexQGram<TShape, OpenAddressing> > >::Type TSAValue;
@@ -217,20 +192,21 @@ bool loadReads(
 	sa.i1 = ~sa.i1;
 	sa.i2 = ~sa.i2;
 	
+    bool success = true;
 	if ((unsigned)sa.i1 < length(reads) - 1)
 	{
 		::std::cerr << "Maximal read number of " << (unsigned)sa.i1 + 1 << " exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
+		success = false;
 	}
 	if ((unsigned)sa.i2 < maxReadLength - 1)
 	{
 		::std::cerr << "Maximal read length of " << (unsigned)sa.i2 + 1 << " bps exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
+		success = false;
 	}
 	
 	if (options._debugLevel > 1 && kickoutcount > 0) 
 		::std::cerr << "Ignoring " << kickoutcount << " low quality mate-pairs.\n";
-	return (seqCount > 0);
+	return success;
 }
 
 	template <typename TReadMatch>
@@ -756,17 +732,15 @@ int mapMatePairReads(
 	options.timeMapReads = 0;
 	options.timeDumpResults = 0;
 
-	unsigned filecount = 0;
 	unsigned numFiles = length(genomeFileNameList);
 	unsigned gseqNo = 0;
 
 	// open genome files, one by one	
-	while (filecount < numFiles)
+	for (unsigned filecount = 0; filecount < numFiles; ++filecount)
 	{
 		// open genome file	
-		::std::ifstream file;
-		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
-		if (!file.is_open())
+		SeqFileIn file;
+		if (!open(file, toCString(genomeFileNameList[filecount])))
 			return RAZERS_GENOME_FAILED;
 
 		// remove the directory prefix of current genome file
@@ -781,16 +755,14 @@ int mapMatePairReads(
 		unsigned gseqNoWithinFile = 0;
 		// iterate over genome sequences
 		SEQAN_PROTIMESTART(find_time);
-		for(; !_streamEOF(file); ++gseqNo)
+		for(; !atEnd(file); ++gseqNo)
 		{
+            readRecord(id, genome, file);			// read Fasta id and sequence
+            cropAfterFirst(id, IsWhitespace());     // crop id after the first whitespace
+
 			if (options.genomeNaming == 0)
-			{
-				//readID(file, id, Fasta());			// read Fasta id
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
 				appendValue(genomeNames, id, Generous());
-			}
-			read(file, genome, Fasta());			// read Fasta sequence
-			
+
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
 			if (options.forward)
@@ -805,8 +777,6 @@ int mapMatePairReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
-		++filecount;
 	}
 
 	compactPairMatches(matches, cnts, options, swiftPatternL, swiftPatternR, true);
