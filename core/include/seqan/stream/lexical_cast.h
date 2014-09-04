@@ -482,7 +482,7 @@ appendNumber(TTarget & target, double source)
 {
     char buffer[32];
     int offset;
-    size_t len = snprintf(buffer, 32, "%lg%n", source, &offset);
+    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
     write(target, buffer, len);
     return len;
 }
