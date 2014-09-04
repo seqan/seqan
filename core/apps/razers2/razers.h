@@ -26,6 +26,7 @@
 #include <fstream>
 
 #include <seqan/find.h>
+#include <seqan/seq_io.h>
 #include <seqan/index.h>
 #include <seqan/store.h>
 
@@ -387,27 +388,20 @@ bool loadReads(
 {
 	bool countN = !(options.matchN || options.outputFormat == 1);
 
-	MultiFasta multiFasta;
-	if (!open(multiFasta.concat, fileName, OPEN_RDONLY)) return false;
+	SeqFileIn seqFile;
+	if (!open(seqFile, fileName)) return false;
 
-	AutoSeqFormat format;
-	guessFormat(multiFasta.concat, format);	
-	split(multiFasta, format);
-
-	unsigned seqCount = length(multiFasta);
-
+	CharString      fastaId;
 	String<Dna5Q>	seq;
 	CharString		qual;
-	CharString		id;
-	
+
 	unsigned kickoutcount = 0;
 	unsigned maxReadLength = 0;
-	for(unsigned i = 0; i < seqCount; ++i) 
+	while (!atEnd(seqFile))
 	{
-		if (options.readNaming == 0 || options.readNaming == 3)
-			assignSeqId(id, multiFasta[i], format);	// read Fasta id
-		assignSeq(seq, multiFasta[i], format);					// read Read sequence
-		assignQual(qual, multiFasta[i], format);				// read ascii quality values  
+        readRecord(fastaId, seq, qual, seqFile);
+		if (!(options.readNaming == 0 || options.readNaming == 3))
+			clear(fastaId);
 		if (countN)
 		{
 			int count = 0;
@@ -418,7 +412,7 @@ bool loadReads(
 					{
 						clear(seq);
                         clear(qual);  // So no qualities are assigned below.
-						clear(id);
+						clear(fastaId);
 						++kickoutcount;
 						break;
 					}
@@ -431,7 +425,7 @@ bool loadReads(
 		if (options.trimLength > 0 && length(seq) > (unsigned)options.trimLength)
 			resize(seq, options.trimLength);
 
-		appendRead(store, seq, id);
+		appendRead(store, seq, fastaId);
 		if (maxReadLength < length(seq))
 			maxReadLength = length(seq);
 	}
@@ -444,21 +438,21 @@ bool loadReads(
 	TSAValue sa(0, 0);
 	sa.i1 = ~sa.i1;
 	sa.i2 = ~sa.i2;
-	
+
+    bool success = true;
 	if ((unsigned)sa.i1 < length(store.readSeqStore) - 1)
 	{
 		::std::cerr << "Maximal read number of " << (unsigned)sa.i1 + 1 << " exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
+		success = false;
 	}
 	if ((unsigned)sa.i2 < maxReadLength - 1)
 	{
 		::std::cerr << "Maximal read length of " << (unsigned)sa.i2 + 1 << " bps exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
 	}
 
 	if (options._debugLevel > 1 && kickoutcount > 0) 
 		::std::cerr << "Ignoring " << kickoutcount << " low quality reads.\n";
-	return (seqCount > 0);
+	return success;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -466,20 +460,17 @@ bool loadReads(
 // and return its length
 inline int estimateReadLength(char const *fileName)
 {
-	MultiFasta multiFasta;
-	if (!open(multiFasta.concat, fileName, OPEN_RDONLY))	// open the whole file
+	SeqFileIn seqFile;
+	if (!open(seqFile, fileName))	// open the whole file
 		return RAZERS_READS_FAILED;
 
-	AutoSeqFormat format;
-	guessFormat(multiFasta.concat, format);					// guess file format
-	split(multiFasta, format);								// divide into single sequences
-
-	if (length(multiFasta) == 0)
+	if (atEnd(seqFile))
 		return 0;
 
-	Dna5String firstRead;
-	assignSeq(firstRead, multiFasta[0], format);			// read the first sequence
-	return length(firstRead);
+    CharString fastaId, seq;
+    readRecord(fastaId, seq, seqFile);
+
+	return length(seq);
 }
 	
 	
@@ -1279,17 +1270,15 @@ int mapSingleReads(
 	options.timeMapReads = 0;
 	options.timeDumpResults = 0;
 
-	unsigned filecount = 0;
 	unsigned numFiles = length(genomeFileNameList);
 	unsigned gseqNo = 0;
 
 	// open genome files, one by one	
-	while (filecount < numFiles)
+	for (unsigned filecount = 0; filecount < numFiles; ++filecount)
 	{
 		// open genome file	
-		::std::ifstream file;
-		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
-		if (!file.is_open())
+		SeqFileIn file;
+		if (!open(file, toCString(genomeFileNameList[filecount])))
 			return RAZERS_GENOME_FAILED;
 
 		// remove the directory prefix of current genome file
@@ -1300,20 +1289,17 @@ int mapSingleReads(
 		::std::string genomeName = genomeFile.substr(lastPos);
 		
 
-		CharString	id;
+		CharString	fastaId;
 		Dna5String	genome;
 		unsigned gseqNoWithinFile = 0;
 		// iterate over genome sequences
 		SEQAN_PROTIMESTART(find_time);
-		for(; !_streamEOF(file); ++gseqNo)
+ 		for(; !atEnd(file); ++gseqNo)
 		{
+            readRecord(fastaId, genome, file);			// read Fasta id and sequence
+            cropAfterFirst(fastaId, IsWhitespace());    // crop id after the first whitespace
 			if (options.genomeNaming == 0)
-			{
-				//readID(file, id, Fasta());			// read Fasta id
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
-				appendValue(store.contigNameStore, id, Generous());
-			}
-			read(file, genome, Fasta());			// read Fasta sequence
+				appendValue(store.contigNameStore, fastaId, Generous());
 			
 			appendValue(gnoToFileMap, TGNoToFile(genomeName, gseqNoWithinFile));
 			
@@ -1329,8 +1315,6 @@ int mapSingleReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
-		++filecount;
 	}
 
 	if (options._debugLevel >= 1)
@@ -1403,8 +1387,6 @@ int mapSingleReads(
 	options.timeMapReads = 0;
 	options.timeDumpResults = 0;
 
-	CharString	id;
-	
 	// iterate over genome sequences
 	SEQAN_PROTIMESTART(find_time);
 	for(unsigned gseqNo = 0; gseqNo < length(genomeSet); ++gseqNo)
