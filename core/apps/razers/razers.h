@@ -620,13 +620,14 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 {
     SeqFileIn seqFile;
     StringSet<CharString> ids;
-    size_t filecount = 0;
-	while (!atEnd(seqFile))
+	for (size_t i = 0; i != length(fileNameList); ++i)
 	{
-		if (!open(seqFile, toCString(fileNameList[filecount++])))
+		if (!open(seqFile, toCString(fileNameList[i])))
             return false;
 
         readRecords(ids, genomes, seqFile);
+        clear(ids);
+        close(seqFile);
 	}
 	return length(genomes);
 }
