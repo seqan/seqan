@@ -472,6 +472,8 @@ template <typename TValue, typename TDirection, typename TStream, typename TComp
 inline bool
 open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
+    SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
+
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
@@ -526,6 +528,8 @@ template <typename TValue, typename TDirection>
 inline bool
 open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
 {
+    SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
+
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
 
     if (!open(stream.file, fileName, openMode | std::ios::binary))
