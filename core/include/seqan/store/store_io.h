@@ -178,6 +178,18 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
 ..include:seqan/store.h
 */
 
+template <typename TKey, typename TValue, typename TIter>
+void readAmosKeyValue(TKey &key, TValue &value, TIter &reader)
+{
+    clear(key);
+    clear(value);
+
+    // read "KEY:VALUE" pair
+    readUntil(key, reader, EqualsChar<':'>());
+    skipOne(reader, EqualsChar<':'>());
+    readUntil(value, reader, IsWhitespace());
+}
+
 template<typename TFile, typename TSpec, typename TConfig>
 inline int
 read(TFile & file,
@@ -211,265 +223,161 @@ read(TFile & file,
 	// The id of the next pair match.
 	unsigned nextPairMatchId = 0;
 
-    RecordReader<TFile, SinglePass<> > reader(file);
+    typename DirectionIterator<TFile, Input>::Type reader(file);
 
 	// Parse the file and convert the internal ids
     if (atEnd(reader))
         return 1;
+
+    CharString  blockIdentifier, fieldIdentifier, eid, buffer;
+    CharString  seq, qual;
+    TId _id;
 
     while (!atEnd(reader))
     {
 		// New block?
 		if (value(reader) == '{')
         {
-            goNext(reader);
-			String<char> blockIdentifier;
-            if (readAlphaNums(blockIdentifier, reader) != 0)
-                return 1;
-            if (skipLine(reader) != 0)
-                return 1;
+            skipOne(reader, EqualsChar<'{'>())
+
+            clear(blockIdentifier);
+            readUntil(blockIdentifier, reader, NotFunctor<IsAlpha>());
+            skipLine(reader);
+
+            // reset id and eid
+            _id = TReadStoreElement::INVALID_ID;
+            clear(eid);
 
 			// Library block
 			if (blockIdentifier == "LIB")
             {
                 // The LIB block contains the mean template length/insert size and standard deviation thereof.  Besides
                 // the numeric id and (iid) a (external) name of the library (eid).
-				TLibraryStoreElement libEl;
-				TId _id = 0;
-				String<char> fieldIdentifier;
-				String<char> eid;
+                TLibraryStoreElement libEl;
 				while (!atEnd(reader) && value(reader) != '}')
                 {
-					clear(fieldIdentifier);
-                    if (readAlphaNums(fieldIdentifier, reader) != 0)
-                        return 1;
-					if (fieldIdentifier == "iid")
-                    {
-                        goNext(reader);
-                        CharString buffer;
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(_id, buffer))
-                            return 1;
-					}
-                    else if (fieldIdentifier == "eid")
-                    {
-                        goNext(reader);
-                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
-                            return 1;
-					}
-                    else if (fieldIdentifier == "mea" || fieldIdentifier == "std")
-                    {
-                        goNext(reader);
-                        CharString buffer;
-                        if (readFloat(buffer, reader) != 0)
-                            return 1;
-                        if (fieldIdentifier == "mea" && !lexicalCast2(libEl.mean, buffer))
-                            return 1;
-                        if (fieldIdentifier == "std" && !lexicalCast2(libEl.std, buffer))
-                            return 1;
-					}
-                    // Always skip over the remainder of the line.
-                    if (skipLine(reader) != 0)
-                        return 1;
-				}
+                    // read "KEY:VALUE" pair
+                    readAmosKeyValue(fieldIdentifier, buffer, reader);
 
-                // Skip '}'.
-                if (!atEnd(reader))
-                {
-                    SEQAN_ASSERT_EQ(value(reader), '}');
-                    goNext(reader);
-                }
+					if (fieldIdentifier == "iid")
+                        _id = lexicalCast<TId>(buffer);
+                    else if (fieldIdentifier == "eid")
+                        eid = buffer;
+                    else if (fieldIdentifier == "mea")
+                        libEl.mean = lexicalCast<double>(buffer);
+                    else if (fieldIdentifier == "std")
+                        libEl.std = lexicalCast<double>(buffer);
+
+                    // Always skip over the remainder of the line.
+                    skipUntil(reader, NotFunctor<IsWhitespace>());
+				}
+                skipOne(reader, EqualsChar<'}'>());
 
                 // Insert library information into the fragmentstore.
 				libIdMap.insert(std::make_pair(_id, length(fragStore.libraryStore)));
-				appendValue(fragStore.libraryStore, libEl, Generous() );
-				appendValue(fragStore.libraryNameStore, eid, Generous() );
+				appendValue(fragStore.libraryStore, libEl, Generous());
+				appendValue(fragStore.libraryNameStore, eid, Generous());
 			}
+			// Fragment block
             else if (blockIdentifier == "FRG")
             {
                 // The FRG block contains the parent library (lib), links to the paired sequencing reads (rds), internal
                 // id (iid) and external id (eid).
-				TMatePairElement matePairEl;
-				TId _id = 0;
-				String<char> fieldIdentifier;
-				String<char> eid;
-                CharString buffer;
 				bool foundRds = false;
+                TMatePairElement matePairEl;
 				while (!atEnd(reader) && value(reader) != '}')
                 {
-					clear(fieldIdentifier);
-                    if (readAlphaNums(fieldIdentifier, reader) != 0)
-                        return 1;
+                    // read "KEY:VALUE" pair
+                    readAmosKeyValue(fieldIdentifier, buffer, reader);
+
 					if (fieldIdentifier == "iid")
-                    {
-                        goNext(reader);
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(_id, buffer))
-                            return 1;
-					}
+                        _id = lexicalCast<TId>(buffer);
                     else if (fieldIdentifier == "eid")
-                    {
-                        goNext(reader);
-                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
-                            return 1;
-					}
+                        eid = buffer;
                     else if (fieldIdentifier == "lib")
-                    {
-                        goNext(reader);
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(matePairEl.libId, buffer))
-                            return 1;
-					}
+                        matePairEl.libId = lexicalCast<TId>(buffer);
                     else if (fieldIdentifier == "rds")
                     {
-                        goNext(reader);
 						foundRds = true;
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(matePairEl.readId[0], buffer))
-                            return 1;
-                        goNext(reader);
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(matePairEl.readId[1], buffer))
-                            return 1;
+                        size_t comma = findFirst(buffer, EqualsChar<','>());
+                        matePairEl.readId[0] = lexicalCast<TId>(prefix(buffer, comma));
+                        matePairEl.readId[1] = lexicalCast<TId>(suffix(buffer, comma + 1));
 
 						// Store mapping to pair match id.
 						readToPairMatchId[matePairEl.readId[0]] = nextPairMatchId;
 						readToPairMatchId[matePairEl.readId[1]] = nextPairMatchId;
-						nextPairMatchId += 1;
+						nextPairMatchId++;
                     }
                     // Always skip over the remainder of the line.
-                    if (skipLine(reader) != 0)
-                        return 1;
+                    skipUntil(reader, NotFunctor<IsWhitespace>());
 				}
-
-                // Skip '}'.
-                if (!atEnd(reader))
-                {
-                    SEQAN_ASSERT_EQ(value(reader), '}');
-                    goNext(reader);
-                }
+                skipOne(reader, EqualsChar<'}'>());
 
 				// Only insert valid mate pairs
-				if (foundRds) {
+				if (foundRds)
+                {
 					frgIdMap.insert(std::make_pair(_id, length(fragStore.matePairStore)));
-					appendValue(fragStore.matePairStore, matePairEl, Generous() );
-					appendValue(fragStore.matePairNameStore, eid, Generous() );
+					appendValue(fragStore.matePairStore, matePairEl, Generous());
+					appendValue(fragStore.matePairNameStore, eid, Generous());
 				}
 			}
-            else if (blockIdentifier == "RED")  // Read block.
+			// Read block
+            else if (blockIdentifier == "RED")
             {
-				TId _id = 0;
-				String<char> fieldIdentifier;
-				String<char> eid;
-				String<char> qual;
-                CharString buffer;
 				// If matePairId is not updated, this yields to a singleton read below.
-				TId matePairId = TReadStoreElement::INVALID_ID;
-				TReadSeq seq;
+				clear(seq);
+				clear(qual);
+                TId matePairId = TReadStoreElement::INVALID_ID;
                 while (!atEnd(reader) && value(reader) != '}')
                 {
-					clear(fieldIdentifier);
-                    if (readAlphaNums(fieldIdentifier, reader) != 0)
-                        return 1;
+                    // read "KEY:VALUE" pair
+                    readAmosKeyValue(fieldIdentifier, buffer, reader);
+
 					if (fieldIdentifier == "iid")
-                    {
-                        goNext(reader);
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(_id, buffer))
-                            return 1;
-					}
+                        _id = lexicalCast<TId>(buffer);
                     else if (fieldIdentifier == "eid")
-                    {
-                        goNext(reader);
-                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
-                            return 1;
-					}
+                        eid = buffer;
                     else if (fieldIdentifier == "frg")
-                    {
-                        goNext(reader);
-                        clear(buffer);
-                        if (readDigits(buffer, reader) != 0)
-                            return 1;
-                        if (!lexicalCast2(matePairId, buffer))
-                            return 1;
-                    }
+                        matePairId = lexicalCast<TId>(buffer);
                     else if (fieldIdentifier == "seq")
                     {
-                        goNext(reader);
-                        clear(seq);
-                        if (skipWhitespaces(reader) != 0)
-                            return 1;
-                        while (!atEnd(reader) && value(reader) != '.')
-                        {
-                            if (readLetters(seq, reader) != 0)
-                                return 1;
-                            if (skipWhitespaces(reader) != 0)
-                                return 1;
-                        }
-                        // Skip '.'.
-                        if (!atEnd(reader))
-                        {
-                            SEQAN_ASSERT_EQ(value(reader), '.');
-                            goNext(reader);
-                        }
+                        readUntil(seq, reader, EqualsChar<'.'>(), IsWhitespace());
+                        skipOne(reader, EqualsChar<'.'>());
                     }
                     else if (fieldIdentifier == "qlt")
                     {
                         // TODO(holtgrew): Problematic if . part of qualities, need to count chars.
-                        goNext(reader);
-                        clear(qual);
-                        for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
-                            if (isgraph(value(reader)))
-                                appendValue(qual, value(reader));
+                        readUntil(qual, reader, EqualsChar<'.'>(), IsWhitespace());
+                        skipOne(reader, EqualsChar<'.'>());
                     }
                     // Always skip over the remainder of the line.
-                    if (skipLine(reader) != 0)
-                        return 1;
+                    skipUntil(reader, NotFunctor<IsWhitespace>());
 				}
 				// Set quality
 				assignQualities(seq, qual);
-
-                // Skip '}'.
-                if (!atEnd(reader))
-                {
-                    SEQAN_ASSERT_EQ(value(reader), '}');
-                    goNext(reader);
-                }
+                skipOne(reader, EqualsChar<'}'>());
 
 				// Insert the read
 				readIdMap.insert(std::make_pair(_id, length(fragStore.readStore)));
 				appendRead(fragStore, seq, matePairId);
 				appendValue(fragStore.readNameStore, eid, Generous() );
 			}
-            else if (blockIdentifier == "CTG")  // Contig block
+            // Contig block
+            else if (blockIdentifier == "CTG")
             {
+				clear(seq);
+				clear(qual);
 				TContigElement contigEl;
 				TSize fromAligned = length(fragStore.alignedReadStore);
-				// TId _id = 0;
-				String<char> fieldIdentifier;
-				String<char> eid;
-				String<char> contigSeq;
-				String<char> contigQual;
-                String<char> buffer;
 				while (!atEnd(reader) && value(reader) != '}')
                 {
 					// Are we entering a TLE block
 					if (value(reader) == '{')
                     {
-                        goNext(reader);
+                        // skip "{TLE\n"
+                        skipUntil(reader, NotFunctor<IsWhitespace>());
+
 						TAlignedElement alignEl;
-						String<char> fdIdentifier;
 						typedef typename TFragmentStore::TContigPos TContigPos;
 						TContigPos offsetPos = 0;
 						TContigPos clr1 = 0;
@@ -477,81 +385,39 @@ read(TFile & file,
 						String<TContigPos> gaps;
 						while (!atEnd(reader) && value(reader) != '}')
                         {
-							clear(fdIdentifier);
-                            if (readAlphaNums(fdIdentifier, reader) != 0)
-                                return 1;
-							if (fdIdentifier == "src")
-                            {
-                                goNext(reader);
-                                clear(buffer);
-                                if (readDigits(buffer, reader) != 0)
-                                    return 1;
-                                if (!lexicalCast2(alignEl.readId, buffer))
-                                    return 1;
-							} else if (fdIdentifier == "off") {
-                                goNext(reader);
-                                if (atEnd(reader))
-                                    return 1;
-                                if (value(reader) == '-')
-                                {
-                                    offsetPos = 0;
-                                }
-                                else
-                                {
-                                    clear(buffer);
-                                    if (readDigits(buffer, reader) != 0)
-                                        return 1;
-                                    if (!lexicalCast2(offsetPos, buffer))
-                                        return 1;
-                                }
-							}
-                            else if (fdIdentifier == "clr")
-                            {
-                                goNext(reader);
-                                clear(buffer);
-                                if (readDigits(buffer, reader) != 0)
-                                    return 1;
-                                if (!lexicalCast2(clr1, buffer))
-                                    return 1;
-                                goNext(reader);
-                                clear(buffer);
-                                if (readDigits(buffer, reader) != 0)
-                                    return 1;
-                                if (!lexicalCast2(clr2, buffer))
-                                    return 1;
-							}
-                            else if (fdIdentifier == "gap")
-                            {
-                                goNext(reader);
-                                if (skipWhitespaces(reader) != 0)
-                                    return 1;
-                                for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
-                                {
-                                    if (!isspace(value(reader)))
-                                    {
-                                        clear(buffer);
-                                        if (readDigits(buffer, reader) != 0)
-                                            return 1;
-                                        TSize nextGap;
-                                        if (!lexicalCast2(nextGap, buffer))
-                                            return 1;
-										appendValue(gaps, nextGap);
-                                    }
-                                }
+                            // read "KEY:VALUE" pair
+                            readAmosKeyValue(fieldIdentifier, buffer, reader);
 
-                                // Skip '.'.
-                                if (!atEnd(reader))
+                            if (fieldIdentifier == "src")
+                                alignEl.readId = lexicalCast<TId>(buffer);
+                            else if (fieldIdentifier == "off")
+                            {
+                                if (buffer != "-")
+                                    offsetPos = lexicalCast<TContigPos>(buffer);
+                                else
+                                    offsetPos = 0;
+                            }
+                            else if (fieldIdentifier == "clr")
+                            {
+                                size_t comma = findFirst(buffer, EqualsChar<','>());
+                                clr1 = lexicalCast<TContigPos>(prefix(buffer, comma));
+                                clr2 = lexicalCast<TContigPos>(suffix(buffer, comma + 1));
+                            }
+                            else if (fieldIdentifier == "gap")
+                            {
+                                skipUntil(reader, NotFunctor<IsWhitespace>());
+                                while (!atEnd(reader) && value(reader) != '.')
                                 {
-                                    SEQAN_ASSERT_EQ(value(reader), '.');
-                                    goNext(reader);
+                                    readUntil(buffer, reader, IsWhitespace());
+                                    appendValue(gaps, lexicalCast<TContigPos>(buffer));
+                                    skipUntil(reader, NotFunctor<IsWhitespace>());
                                 }
+                                skipOne(reader, EqualsChar<'.'>());
 							}
                             // Always skip over the remainder of the line.
-                            if (skipLine(reader) != 0)
-                                return 1;
+                            skipUntil(reader, NotFunctor<IsWhitespace>());
 						}
-                        if (!atEnd(reader) && skipLine(reader) != 0)
-                            return 1;
+                        skipUntil(reader, NotFunctor<IsWhitespace>());
 
 						// Get the length of the read
 						TId readId = (readIdMap.find(alignEl.readId))->second;
@@ -614,65 +480,35 @@ read(TFile & file,
 					}
                     else
                     {
-                        // String<char> buffer;
-						clear(fieldIdentifier);
-                        if (readAlphaNums(fieldIdentifier, reader) != 0)
-                            return 1;
-						if (fieldIdentifier == "iid")
-                        {
-                            // goNext(reader);
-                            // clear(buffer);
-                            // if (readDigits(buffer, reader) != 0)
-                            //     return 1;
-                            // if (!lexicalCast2(_id, buffer))
-                            //     return 1;
-						}
+                        // read "KEY:VALUE" pair
+                        readAmosKeyValue(fieldIdentifier, buffer, reader);
+
+                        if (fieldIdentifier == "iid")
+                            _id = lexicalCast<TId>(buffer);
                         else if (fieldIdentifier == "eid")
-                        {
-                            goNext(reader);
-                            if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
-                                return 1;
-						}
+                            eid = buffer;
                         else if (fieldIdentifier == "seq")
                         {
-                            goNext(reader);
-                            if (skipWhitespaces(reader) != 0)
-                                return 1;
-                            while (!atEnd(reader) && value(reader) != '.')
-                            {
-                                if (readLetters(contigSeq, reader) != 0)
-                                    return 1;
-                                if (skipWhitespaces(reader) != 0)
-                                    return 1;
-                            }
-                            // Skip '.'.
-                            if (!atEnd(reader))
-                            {
-                                SEQAN_ASSERT_EQ(value(reader), '.');
-                                goNext(reader);
-                            }
-						}
+                            readUntil(seq, reader, EqualsChar<'.'>(), IsWhitespace());
+                            skipOne(reader, EqualsChar<'.'>());
+                        }
                         else if (fieldIdentifier == "qlt")
                         {
-                            goNext(reader);
                             // TODO(holtgrew): Problematic if . part of qualities, need to count chars.
-                            clear(contigQual);
-                            for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
-                                if (isgraph(value(reader)))
-                                    appendValue(contigQual, value(reader));
-						}
+                            readUntil(qual, reader, EqualsChar<'.'>(), IsWhitespace());
+                            skipOne(reader, EqualsChar<'.'>());
+                        }
                         // Always skip over the remainder of the line.
-                        if (skipLine(reader) != 0)
-                            return 1;
+                        skipUntil(reader, NotFunctor<IsWhitespace>());
 					}
 				}
 
 				// Create the gap anchors
 				char gapChar = gapValue<char>();
-				typedef typename Iterator<String<char> >::Type TStringIter;
-				TStringIter seqIt = begin(contigSeq);
-				TStringIter seqItEnd = end(contigSeq);
-				TStringIter qualIt = begin(contigQual);
+				typedef typename Iterator<CharString, Standard>::Type TStringIter;
+				TStringIter seqIt = begin(seq, Standard());
+				TStringIter seqItEnd = end(seq, Standard());
+				TStringIter qualIt = begin(qual, Standard());
 				typedef typename TFragmentStore::TReadPos TPos;
 				typedef typename TFragmentStore::TContigGapAnchor TContigGapAnchor;
 				TPos ungappedPos = 0;
@@ -706,15 +542,21 @@ read(TFile & file,
 					fragStore.alignedReadStore[fromAligned].contigId = newContigId;
 
 				// Insert the contig
-				appendValue(fragStore.contigStore, contigEl, Generous() );
-				appendValue(fragStore.contigNameStore, eid, Generous() );
-			} else {
-                if (skipLine(reader) != 0)
-                    return 1;
+				appendValue(fragStore.contigStore, contigEl, Generous());
+				appendValue(fragStore.contigNameStore, eid, Generous());
 			}
-		} else {
-            if (skipLine(reader) != 0)
-                return 1;
+            // Unknown block identifier
+            else
+            {
+                // skip until closing bracket
+				while (!atEnd(reader) && value(reader) != '}')
+                    skipLine(reader);
+			}
+		}
+        else
+        {
+            // not a block - skip line
+            skipLine(reader);
 		}
 	}
 
