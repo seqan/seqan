@@ -273,6 +273,17 @@ struct ExceptionMessage
 template <typename T, typename TSpec>
 const std::string ExceptionMessage<T, TSpec>::VALUE;
 
+// ----------------------------------------------------------------------------
+// Function getExceptionMessage()
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor, typename TContext>
+inline std::string const &
+getExceptionMessage(TFunctor const &, TContext const &)
+{
+    return ExceptionMessage<TFunctor, TContext>::VALUE;
+}
+
 // ============================================================================
 // Functors
 // ============================================================================
@@ -281,7 +292,7 @@ const std::string ExceptionMessage<T, TSpec>::VALUE;
 // Functor AssertFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
+template <typename TFunctor, typename TException, typename TContext = Nothing, bool RETURN_VALUE = false>
 struct AssertFunctor
 {
     TFunctor func;
@@ -297,7 +308,7 @@ struct AssertFunctor
     {
         if (SEQAN_UNLIKELY(!func(val)))
             throw TException(std::string("Value '") + val + "' produced an error. " +
-                             ExceptionMessage<TFunctor, TContext>::VALUE);
+                             getExceptionMessage(func, TContext()));
         return RETURN_VALUE;
     }
 };

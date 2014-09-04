@@ -332,9 +332,9 @@ operator<<(TStream & target,
 // toRange()
 // ----------------------------------------------------------------------------
 
-template <typename TIterator>
+template <typename TIterator, typename TIterator2, typename TIterator3>
 SEQAN_HOST_DEVICE inline void
-assignRange(Range<TIterator> &result, TIterator const &begin, TIterator const &end)
+assignRange(Range<TIterator> &result, TIterator2 const &begin, TIterator3 const &end)
 {
     result.begin = begin;
     result.end = end;
