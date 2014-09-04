@@ -238,7 +238,7 @@ read(TFile & file,
 		// New block?
 		if (value(reader) == '{')
         {
-            skipOne(reader, EqualsChar<'{'>())
+            skipOne(reader, EqualsChar<'{'>());
 
             clear(blockIdentifier);
             readUntil(blockIdentifier, reader, NotFunctor<IsAlpha>());
@@ -1116,18 +1116,15 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 	typedef typename Value<TContigStore>::Type			TContig;
 	typedef typename Value<TContigFileStore>::Type		TContigFile;
 	
+    SeqFileIn seqFile;
+
 	unsigned seqOfs = length(store.contigStore);
-	for (unsigned filecount = 0; filecount < length(fileNameList); ++filecount)
+	for (unsigned f = 0; f < length(fileNameList); ++f)
 	{
-		MultiSeqFile multiSeqFile;
-		if (!open(multiSeqFile.concat, toCString(fileNameList[filecount]), OPEN_RDONLY))
+		if (!open(seqFile, toCString(fileNameList[f])))
 			return false;
 
-		TContigFile contigFile;
-		guessFormat(multiSeqFile.concat, contigFile.format);		// guess file format
-		split(multiSeqFile, contigFile.format);						// divide into single sequences
-
-		contigFile.fileName = fileNameList[filecount];
+		contigFile.fileName = fileNameList[f];
 		contigFile.firstContigId = seqOfs;
 		appendValue(store.contigFileStore, contigFile, Generous());
 
@@ -1150,6 +1147,7 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 			assignCroppedSeqId(store.contigNameStore[seqOfs + i], multiSeqFile[i], contigFile.format);
 		}
 		seqOfs += seqCount;
+        close(seqFile);
 	}
 	reserve(store.contigStore, seqOfs, Exact());
 	return seqOfs > 0;
