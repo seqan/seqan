@@ -1124,6 +1124,7 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 		if (!open(seqFile, toCString(fileNameList[f])))
 			return false;
 
+        TContigFile contigFile;
 		contigFile.fileName = fileNameList[f];
 		contigFile.firstContigId = seqOfs;
 		appendValue(store.contigFileStore, contigFile, Generous());
@@ -1134,8 +1135,7 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 		for (unsigned i = 0; i < seqCount; ++i)
 		{
 			store.contigStore[seqOfs + i].usage = 0;
-			store.contigStore[seqOfs + i].fileBeginPos = beginPosition(multiSeqFile[i]);
-			store.contigStore[seqOfs + i].fileEndPos = endPosition(multiSeqFile[i]);
+			store.contigStore[seqOfs + i].fileBeginPos = position(seqFile);
 			store.contigStore[seqOfs + i].fileId = length(store.contigFileStore) - 1;
 			if (loadSeqs)
 				assignSeq(store.contigStore[seqOfs + i].seq, multiSeqFile[i], contigFile.format);	// read Genome sequence
@@ -1145,6 +1145,7 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
                 swap(store.contigStore[seqOfs + i].seq, emptySeq);
             }
 			assignCroppedSeqId(store.contigNameStore[seqOfs + i], multiSeqFile[i], contigFile.format);
+			store.contigStore[seqOfs + i].fileEndPos = position(seqFile);
 		}
 		seqOfs += seqCount;
         close(seqFile);
