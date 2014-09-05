@@ -1117,8 +1117,8 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 	typedef typename Value<TContigFileStore>::Type		TContigFile;
 	
     SeqFileIn seqFile;
+    CharString meta, seq;
 
-	unsigned seqOfs = length(store.contigStore);
 	for (unsigned f = 0; f < length(fileNameList); ++f)
 	{
 		if (!open(seqFile, toCString(fileNameList[f])))
@@ -1126,32 +1126,31 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
 
         TContigFile contigFile;
 		contigFile.fileName = fileNameList[f];
-		contigFile.firstContigId = seqOfs;
+		contigFile.firstContigId = length(store.contigStore);
 		appendValue(store.contigFileStore, contigFile, Generous());
 
-		unsigned seqCount = length(multiSeqFile);
-		resize(store.contigStore, seqOfs + seqCount, Generous());
-		resize(store.contigNameStore, seqOfs + seqCount, Generous());
-		for (unsigned i = 0; i < seqCount; ++i)
+		while (!atEnd(seqFile))
 		{
-			store.contigStore[seqOfs + i].usage = 0;
-			store.contigStore[seqOfs + i].fileBeginPos = position(seqFile);
-			store.contigStore[seqOfs + i].fileId = length(store.contigFileStore) - 1;
+            resize(store.contigStore, length(store.contigStore) + 1, Generous());
+
+            TContig & contig = back(store.contigStore);
+			contig.usage = 0;
+			contig.fileId = length(store.contigFileStore) - 1;
+			contig.fileBeginPos = position(seqFile);
+
 			if (loadSeqs)
-				assignSeq(store.contigStore[seqOfs + i].seq, multiSeqFile[i], contigFile.format);	// read Genome sequence
-			else
-            {
-                typename TContig::TContigSeq emptySeq;
-                swap(store.contigStore[seqOfs + i].seq, emptySeq);
-            }
-			assignCroppedSeqId(store.contigNameStore[seqOfs + i], multiSeqFile[i], contigFile.format);
-			store.contigStore[seqOfs + i].fileEndPos = position(seqFile);
+                readRecord(meta, contig.seq, seqFile);
+            else
+                readRecord(meta, seq, seqFile);
+
+			contig.fileEndPos = position(seqFile);
+
+            cropAfterFirst(meta, IsWhitespace());
+            appendValue(store.contigNameStore, meta, Generous());
 		}
-		seqOfs += seqCount;
         close(seqFile);
 	}
-	reserve(store.contigStore, seqOfs, Exact());
-	return seqOfs > 0;
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1214,8 +1213,11 @@ bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 	if (contig.fileId >= length(store.contigFileStore)) return false;
 	
 	TContigFile &contigFile = store.contigFileStore[contig.fileId];
-	String<char, MMap<> > fileString(toCString(contigFile.fileName), OPEN_RDONLY);
-	assignSeq(contig.seq, infix(fileString, contig.fileBeginPos, contig.fileEndPos), contigFile.format);			// read Read sequence
+    CharString meta;                                // dummy (seq name is already in the name store)
+
+    SeqFileIn seqFile(toCString(contigFile.fileName));
+    setPosition(seqFile, contig.fileBeginPos);
+    readRecord(meta, contig.seq, seqFile);			// read contig sequence
 
 	return true;
 }
@@ -1479,93 +1481,46 @@ Mate pairs are stored internally in an "interleaved" mode, i.e. a read is read f
 ..include:seqan/store.h
 */
 
-template <typename TFSSpec, typename TFSConfig, typename TFileName>
-bool loadReads(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName)
+template <typename TSpec, typename TConfig, typename TFileName>
+bool loadReads(FragmentStore<TSpec, TConfig> &store, TFileName &fileName)
 {
-	MultiSeqFile multiSeqFile;
-	if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+    SEQAN_ASSERT_EQ(length(store.readStore), length(store.readSeqStore));
+    SEQAN_ASSERT_EQ(length(store.readStore), length(store.readNameStore));
+
+	typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
+    typedef typename Value<TReadStore>::Type TReadStoreElement;
+
+    SeqFileIn seqFile;
+	if (!open(seqFile, toCString(fileName)))
 		return false;
 
-	// guess file format and split into sequence fractions
-	AutoSeqFormat format;
-	guessFormat(multiSeqFile.concat, format);
-	split(multiSeqFile, format);
-
-	// reserve space in fragment store
-	unsigned seqOfs = length(store.readStore);
-	unsigned seqCount = length(multiSeqFile);
-	reserve(store.readStore, seqOfs + seqCount);
-	reserve(store.readSeqStore, seqOfs + seqCount);
-	reserve(store.readNameStore, seqOfs + seqCount);
-
-	// read sequences
-	String<Dna5Q> seq;
-	CharString qual;
-	CharString _id;
-
-	for (unsigned i = 0; i < seqCount; ++i)
-	{
-		assignSeq(seq, multiSeqFile[i], format);    // read sequence
-		assignQual(qual, multiSeqFile[i], format);  // read ascii quality values
-		assignSeqId(_id, multiSeqFile[i], format);  // read sequence id
-
-		// convert ascii to values from 0..62
-		// store dna and quality together in Dna5Q
-		// TODO: support different ASCII represenations of quality values
-		assignQualities(seq, qual);
-		appendRead(store, seq, _id);
-	}
+    readRecords(store.readNameStore, store.readSeqStore, seqFile);
+    resize(store.readStore, length(store.readSeqStore), TReadStoreElement());
     return true;
 }
 
 
-template <typename TFSSpec, typename TFSConfig, typename TFileName>
-bool loadReads(FragmentStore<TFSSpec, TFSConfig> & store, TFileName & fileNameL, TFileName & fileNameR)
+template <typename TSpec, typename TConfig, typename TFileName>
+bool loadReads(FragmentStore<TSpec, TConfig> & store, TFileName & fileNameL, TFileName & fileNameR)
 {
-	MultiSeqFile multiSeqFileL, multiSeqFileR;
-	if (!open(multiSeqFileL.concat, toCString(fileNameL), OPEN_RDONLY))
+    SEQAN_ASSERT_EQ(length(store.readStore), length(store.readSeqStore));
+    SEQAN_ASSERT_EQ(length(store.readStore), length(store.readNameStore));
+
+	typedef typename FragmentStore<TSpec, TConfig>::TReadSeq TReadSeq;
+
+    SeqFileIn seqFileL, seqFileR;
+	if (!open(seqFileL, toCString(fileNameL)) || !open(seqFileR, toCString(fileNameR)))
 		return false;
-	if (!open(multiSeqFileR.concat, toCString(fileNameR), OPEN_RDONLY))
-		return false;
-
-	// Guess file format and split into sequence fractions
-	AutoSeqFormat formatL, formatR;
-	guessFormat(multiSeqFileL.concat, formatL);
-	split(multiSeqFileL, formatL);
-	guessFormat(multiSeqFileR.concat, formatR);
-	split(multiSeqFileR, formatR);
-
-    // Check that both files have the same number of reads
-	SEQAN_ASSERT_EQ(length(multiSeqFileL), length(multiSeqFileR));
-
-	// Reserve space in fragment store
-	unsigned seqOfs = length(store.readStore);
-	unsigned seqCountL = length(multiSeqFileL);
-	unsigned seqCountR = length(multiSeqFileR);
-	reserve(store.readStore, seqOfs + seqCountL + seqCountR);
-	reserve(store.readSeqStore, seqOfs + seqCountL + seqCountR);
-	reserve(store.readNameStore, seqOfs + seqCountL + seqCountR);
 
 	// Read in sequences
-	String<Dna5Q> seq[2];
-	CharString qual[2];
-	CharString _id[2];
+	TReadSeq seq[2];
+	CharString meta[2];
 
-	for (unsigned i = 0; i < seqCountL; ++i) {
-		assignSeq(seq[0], multiSeqFileL[i], formatL);    // read sequence
-		assignQual(qual[0], multiSeqFileL[i], formatL);  // read ascii quality values
-		assignSeqId(_id[0], multiSeqFileL[i], formatL);  // read sequence id
-		assignSeq(seq[1], multiSeqFileR[i], formatR);    // read sequence
-		assignQual(qual[1], multiSeqFileR[i], formatR);  // read ascii quality values
-		assignSeqId(_id[1], multiSeqFileR[i], formatR);  // read sequence id
-
-		// convert ascii to values from 0..62
-		// store dna and quality together in Dna5Q
-		// TODO: support different ASCII represenations of quality values
-		for (int j = 0; j < 2; ++j)
-			assignQualities(seq[j], qual[j]);
-		
-		appendMatePair(store, seq[0], seq[1], _id[0], _id[1]);
+	while (!atEnd(seqFileL) && !atEnd(seqFileR))
+    {
+        readRecord(meta[0], seq[0], seqFileL);
+        readRecord(meta[1], seq[1], seqFileR);
+		appendMatePair(store, seq[0], seq[1], meta[0], meta[1]);
 	}
 	return true;
 }
