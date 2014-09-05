@@ -117,6 +117,7 @@ struct SmartFile
 
     // stream based c'tors
     template <typename TValue>
+    explicit
     SmartFile(std::basic_istream<TValue> &istream,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
         iter(stream),

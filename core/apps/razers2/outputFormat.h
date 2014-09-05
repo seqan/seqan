@@ -1049,6 +1049,7 @@ void dumpMatches(
 			break;
 
 		case 4: // Sam
+        {
             if (options.dontShrinkAlignments)
                 convertMatchesToGlobalAlignment(store, scoreType, False());
             else
@@ -1089,8 +1090,10 @@ void dumpMatches(
 //                unsigned r = positionSeqToGap(contigGaps, 5349800);
 //                printAlignment(std::cerr, Raw(), layout, store, 0, l, r, 0, 1000);
 //            }
-			write(file, store, Sam());
+            SmartFile<Bam, Output, TFragmentStore> writer(file, Sam());
+			write(writer, store);
 			break;
+        }
 
 		case 5: // AFG
 			convertMatchesToGlobalAlignment(store, scoreType, True());

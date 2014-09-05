@@ -678,9 +678,8 @@ write(TFile & target,
     //typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
     // Write Header
-    String<char> temp = "{UNV\niid:1\neid:seqan\ncom:\nafg file created with SeqAn\n.\n}\n";
-    if (streamWriteBlock(target, &temp[0], length(temp)) != length(temp))
-        return 1;
+    static const char *amosHeader = "{UNV\niid:1\neid:seqan\ncom:\nafg file created with SeqAn\n.\n}\n";
+    write(target, amosHeader);
 
     // Write Libraries
     typedef typename Iterator<typename TFragmentStore::TLibraryStore, Standard>::Type TLibIter;
