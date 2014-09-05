@@ -71,26 +71,12 @@ public:
     mutable TDeltaCoverage  _mergeCoverage;
     mutable TMergePoints    _mergePoints;  // Stores the reference position of the merge point
 
-    MergePointMap_() : _varMapPtr(NULL), _mergeCoverage(), _mergePoints()
+    MergePointMap_() : _varMapPtr(NULL)
     {}
 
-    MergePointMap_(TVariantMap & map) : _varMapPtr(&map), _mergeCoverage(), _mergePoints()
+    MergePointMap_(TVariantMap & map) : _varMapPtr(&map)
     {
         resize(_mergeCoverage, getCoverageSize(map), false, Exact());
-    }
-
-    // Copy constructor.
-    MergePointMap_(MergePointMap_ const & other)
-    {
-        _copy(*this, other);
-    }
-
-    // Assignment Operator.
-    MergePointMap_ & operator=(MergePointMap_ const & other)
-    {
-        if (this != &other)
-            _copy(*this, other);
-        return *this;
     }
 };
 
@@ -129,22 +115,6 @@ struct Value<MergePointMap_<TVariantMap> const>
     typedef Pair<TPosition_, TPosition_> const Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction Reference
-// ----------------------------------------------------------------------------
-
-template <typename TVariantMap>
-struct Reference<MergePointMap_<TVariantMap> >
-{
-    typedef typename Value<MergePointMap_<TVariantMap> >::Type & Type;
-};
-
-template <typename TVariantMap>
-struct Reference<MergePointMap_<TVariantMap> const>
-{
-    typedef typename Value<MergePointMap_<TVariantMap> const>::Type & Type;
-};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -165,20 +135,6 @@ operator<<(TStream & str, MergePointMap_<TVariantMap> const & obj)
     str << "Coverge: " << obj._mergeCoverage;
     str << "\n";
     return str;
-}
-
-// ----------------------------------------------------------------------------
-// Function _copy()
-// ----------------------------------------------------------------------------
-
-template <typename TVariantMap>
-inline void
-_copy(MergePointMap_<TVariantMap> & map,
-      MergePointMap_<TVariantMap> const & other)
-{
-    map._varMapPtr = other._varMapPtr;
-    map._mergeCoverage = other._mergeCoverage;
-    map._mergePoints = other._mergePoints;
 }
 
 // ----------------------------------------------------------------------------
@@ -221,11 +177,19 @@ inline void push(MergePointMap_<TVariantMap> & mergePointStore,
     mergePointStore._mergeCoverage |= deltaCoverage(branchNodeIt);
 }
 
+// ----------------------------------------------------------------------------
+// Function pop()
+// ----------------------------------------------------------------------------
+
 template <typename TVariantMap>
 inline void pop(MergePointMap_<TVariantMap> & mergePointStore)
 {
     eraseBack(mergePointStore._mergePoints);
 }
+
+// ----------------------------------------------------------------------------
+// Function topMergePoint()
+// ----------------------------------------------------------------------------
 
 template <typename TVariantMap>
 inline typename Reference<MergePointMap_<TVariantMap> >::Type
@@ -241,6 +205,10 @@ topMergePoint(MergePointMap_<TVariantMap> const & mergePointStore)
     return back(mergePointStore._mergePoints);
 }
 
+// ----------------------------------------------------------------------------
+// Function topMergeCoverage()
+// ----------------------------------------------------------------------------
+
 template <typename TVariantMap>
 inline typename DeltaCoverage<TVariantMap>::Type &
 topMergeCoverage(MergePointMap_<TVariantMap> & mergePointStore)
@@ -255,6 +223,9 @@ topMergeCoverage(MergePointMap_<TVariantMap> const & mergePointStore)
     return deltaCoverage(iter(*mergePointStore._varMapPtr, back(mergePointStore._mergePoints).i2));
 }
 
+// ----------------------------------------------------------------------------
+// Function getMergeCoverage()
+// ----------------------------------------------------------------------------
 
 template <typename TVariantMap, typename TPosition>
 inline typename DeltaCoverage<TVariantMap>::Type &
@@ -272,6 +243,9 @@ getMergeCoverage(MergePointMap_<TVariantMap> const & mergePointStore,
     return deltaCoverage(iter(*mergePointStore._varMapPtr, mergePointStore._mergePoints[pos].i2, Standard()));
 }
 
+// ----------------------------------------------------------------------------
+// Function _updateMergePoints()
+// ----------------------------------------------------------------------------
 
 template <typename TVariantMap, typename TPosition>
 inline bool
@@ -297,9 +271,11 @@ _updateMergePoints(MergePointMap_<TVariantMap> & mergePointStack,
               length(mergePointStack._mergePoints));
         arrayFill(begin(mergePointStack._mergeCoverage, Standard()), end(mergePointStack._mergeCoverage, Standard()),
                   false);
-        for (TMergePointIt it = begin(mergePointStack._mergePoints, Standard()) + 1;
-             it != end(mergePointStack._mergePoints, Standard()); ++it)
+        for (TMergePointIt it = begin(mergePointStack._mergePoints, Standard()) + 1; it !=
+             end(mergePointStack._mergePoints, Standard()); ++it)
+        {
             mergePointStack._mergeCoverage |= deltaCoverage(iter(*mergePointStack._varMapPtr, it->i2, Standard()));
+        }
         return true;
     }
     return false;
@@ -387,7 +363,8 @@ _mapVirtualToVirtual(TIter & target,
         if (_physicalOriginPosition(target) >= deltaPosition(branchNodeIt))
         {
             while(!atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
-                (--target)._journalEntriesIterator->segmentSource == SOURCE_PATCH);
+                (--target)._journalEntriesIterator->segmentSource == SOURCE_PATCH)
+            {}
 
             if (atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
                 target._journalEntriesIterator->segmentSource == SOURCE_PATCH)
@@ -421,7 +398,9 @@ _mapVirtualToVirtual(TIter & target,
         target += (1 + virtOffset + _localEntryPosition(source));
     }
     else
+    {
         setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -453,11 +432,11 @@ _mapHostToVirtual(TIterator & resultIt,
 
     if (empty(journalEntries._journalNodes))
     {
-        resultIt = end(js);  // Put the iterator into a valid state.
+        resultIt = end(js, Standard());  // Put the iterator into a valid state.
         return;
     }
 
-    resultIt = begin(js);
+    resultIt = begin(js, Standard());
 
     TCargo refCargo;
     refCargo.physicalOriginPosition = hostPos;
@@ -488,7 +467,7 @@ _mapHostToVirtual(TIterator & resultIt,
                 ++itVar;
                 continue;
             }
-//            TMappedDelta deltaKey = mappedDelta(variantStore, position(itVar));
+
             if (deltaType(itVar) == DELTA_TYPE_INS)
                 virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
             else if (deltaType(itVar) == DELTA_TYPE_SNP)
@@ -539,7 +518,6 @@ _mapHostToVirtual(TIterator & resultIt,
             continue;
         }
 
-//        TMappedDelta deltaKey = mappedDelta(variantStore, position(itVar));
         if (deltaType(itVar) == DELTA_TYPE_INS)
             virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
         else if (deltaType(itVar) == DELTA_TYPE_SNP)

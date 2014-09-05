@@ -86,28 +86,8 @@ public:
 
     JstBranchStackEntry_() : _branchProxyId(-1),
                              _mappedHostPos(-1),
-                             _proxyEndPosDiff(0),
-                             _firstWindowBranchNode(),
-                             _proxyIter(),
-                             _proxyEndPos(),
-                             _prefixOffset(),
-                             _branchCoverage(),
-                             _externalState()
+                             _proxyEndPosDiff(0)
     {}
-
-    // Copy constructor.
-    JstBranchStackEntry_(JstBranchStackEntry_ const & other)
-    {
-        _copy(*this, other);
-    }
-
-    // Assignment Operator.
-    JstBranchStackEntry_ & operator=(JstBranchStackEntry_ const & other)
-    {
-        if (this != &other)
-            _copy(*this, other);
-        return *this;
-    }
 };
 
 // ----------------------------------------------------------------------------
@@ -130,22 +110,8 @@ public:
     TStackIter          _currEntry;
     TPosition           _activeId;
 
-    JstBranchStack_() : _stack(), _stackIndex(), _currEntry(), _activeId(-1)
+    JstBranchStack_() : _activeId(-1)
     {}
-
-    // Copy constructor.
-    JstBranchStack_(JstBranchStack_ const & other)
-    {
-        _copy(*this, other);
-    }
-
-    // Assignment Operator.
-    JstBranchStack_ & operator=(JstBranchStack_ const & other)
-    {
-        if (this != &other)
-            _copy(*this, other);
-        return *this;
-    }
 };
 
 // ============================================================================
@@ -168,21 +134,6 @@ struct Value<JstBranchStack_<TJournaledStringTree, TState> const >
     typedef JstBranchStackEntry_<TJournaledStringTree, TState> const Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction Reference
-// ----------------------------------------------------------------------------
-
-template <typename TJournaledStringTree, typename TState>
-struct Reference<JstBranchStack_<TJournaledStringTree, TState> >
-{
-    typedef JstBranchStackEntry_<TJournaledStringTree, TState> & Type;
-};
-
-template <typename TJournaledStringTree, typename TState>
-struct Reference<JstBranchStack_<TJournaledStringTree, TState> const >
-{
-    typedef JstBranchStackEntry_<TJournaledStringTree, TState> const & Type;
-};
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
@@ -197,20 +148,6 @@ struct Size<JstBranchStack_<TJournaledStringTree, TState> >
 template <typename TJournaledStringTree, typename TState>
 struct Size<JstBranchStack_<TJournaledStringTree, TState> const > :
     Size<JstBranchStack_<TJournaledStringTree, TState> >{};
-
-// ----------------------------------------------------------------------------
-// Metafunction Position
-// ----------------------------------------------------------------------------
-
-template <typename TJournaledStringTree, typename TState>
-struct Position<JstBranchStack_<TJournaledStringTree, TState> >
-{
-    typedef typename Position<TJournaledStringTree>::Type Type;
-};
-
-template <typename TJournaledStringTree, typename TState>
-struct Position<JstBranchStack_<TJournaledStringTree, TState> const > :
-    Position<JstBranchStack_<TJournaledStringTree, TState> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
@@ -235,45 +172,6 @@ struct Iterator<JstBranchStack_<TJournaledStringTree, TState> const, Standard >
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function _copy()
-// ----------------------------------------------------------------------------
-
-template <typename TJournaledStringTree, typename TState>
-inline void
-_copy(JstBranchStackEntry_<TJournaledStringTree, TState> & entry,
-      JstBranchStackEntry_<TJournaledStringTree, TState> const & other)
-{
-    entry._branchProxyId = other._branchProxyId;
-    entry._mappedHostPos = other._mappedHostPos;
-    entry._proxyEndPosDiff = other._proxyEndPosDiff;
-    entry._firstWindowBranchNode = other._firstWindowBranchNode;
-
-    // Poxy data.
-    entry._proxyIter = other._proxyIter;
-    entry._proxyEndPos = other._proxyEndPos;
-    entry._prefixOffset = other._prefixOffset;
-    entry._branchCoverage = other._branchCoverage;
-
-    // Additional data.
-    entry._externalState = other._externalState;
-}
-
-// ----------------------------------------------------------------------------
-// Function _copy()
-// ----------------------------------------------------------------------------
-
-template <typename TJournaledStringTree, typename TState>
-inline void
-_copy(JstBranchStack_<TJournaledStringTree, TState> & stack,
-      JstBranchStack_<TJournaledStringTree, TState> const & other)
-{
-    stack._stack      = other._stack;
-    stack._stackIndex = other._stackIndex;
-    stack._currEntry  = other._currEntry;
-    stack._activeId   = other._activeId;
-}
 
 // ----------------------------------------------------------------------------
 // Function createEntry()

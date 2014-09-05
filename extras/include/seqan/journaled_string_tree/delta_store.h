@@ -81,15 +81,52 @@ enum DeltaType
     DELTA_TYPE_SV = 3
 };
 
+/*!
+ * @defgroup DeltaTypeTags Delta Type Tags
+ * @brief Tags used for the different delta types.
+ */
+
+/*!
+ * @tag DeltaTypeTags#DeltaTypeSnp
+ * @brief Tag used to select SNPs.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature struct DeltaTypeSnp_;
+ *            typedef Tag<DeltaTypeSnp_> DeltaTypeSnp;
+ */
 struct DeltaTypeSnp_;
 typedef Tag<DeltaTypeSnp_> DeltaTypeSnp;
 
+/*!
+ * @tag DeltaTypeTags#DeltaTypeDel
+ * @brief Tag used to select deletions.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature struct DeltaTypeDel_;
+ *            typedef Tag<DeltaTypeDel_> DeltaTypeDel;
+ */
 struct DeltaTypeDel_;
 typedef Tag<DeltaTypeDel_> DeltaTypeDel;
 
+/*!
+ * @tag DeltaTypeTags#DeltaTypeIns
+ * @brief Tag used to select insertions.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature struct DeltaTypeIns_;
+ *            typedef Tag<DeltaTypeIns_> DeltaTypeIns;
+ */
 struct DeltaTypeIns_;
 typedef Tag<DeltaTypeIns_> DeltaTypeIns;
 
+/*!
+ * @tag DeltaTypeTags#DeltaTypeSV
+ * @brief Tag used to select SVs.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature struct DeltaTypeSV_;
+ *            typedef Tag<DeltaTypeSV_> DeltaTypeSV;
+ */
 struct DeltaTypeSV_;
 typedef Tag<DeltaTypeSV_> DeltaTypeSV;
 
@@ -97,6 +134,11 @@ typedef TagList<DeltaTypeSnp,
         TagList<DeltaTypeDel,
         TagList<DeltaTypeIns,
         TagList<DeltaTypeSV> > > > DeltaTypes;
+
+
+// ----------------------------------------------------------------------------
+// Class DeltaTypeSelector
+// ----------------------------------------------------------------------------
 
 typedef TagSelector<DeltaTypes> DeltaTypeSelector;
 

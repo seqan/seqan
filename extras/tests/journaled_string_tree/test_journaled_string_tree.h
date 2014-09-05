@@ -349,6 +349,11 @@ void _testJournaledStringTreeJournalNextBlock(TJst & jst)
     set[3] = host(jst);
 
     _createJournalString(set, jst, 0, length(container(jst)));
+    
+//    std::cerr << "[DEBUG] Output container entries\n";
+//    for (unsigned i = 0; i < length(container(jst)._entries); ++i)
+//        std::cerr << "Entry " << i << ": " << container(jst)._entries[i];
+//    std::cerr << std::endl;
 
     {  // Journal full block
         create(jst, 5, Serial());
@@ -507,7 +512,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_reinit)
         SEQAN_ASSERT_EQ(jst._journalSet[i], journalSet[i]);
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_local_to_global_pos)
 {
     typedef DeltaMap<unsigned, Dna> TDeltaMap;
     typedef JournaledStringTree<TDeltaMap> TJst;
@@ -568,16 +573,16 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
 
     SEQAN_ASSERT_EQ(jst._blockVPOffset[0], 0);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[0], 3);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 0), 0);
+    SEQAN_ASSERT_EQ(localToGlobalPos(0, 0, jst), 0u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[1], 0);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[1], 1);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 1), 0);
+    SEQAN_ASSERT_EQ(localToGlobalPos(0, 1, jst), 0u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[2], 0);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[2], 0);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 2), 0);
+    SEQAN_ASSERT_EQ(localToGlobalPos(0, 2, jst), 0u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[3], 0);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[3], 3);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 3), 0);
+    SEQAN_ASSERT_EQ(localToGlobalPos(0, 3, jst), 0u);
 
     createNext(jst, 5, Serial());
 
@@ -587,16 +592,16 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
 
     SEQAN_ASSERT_EQ(jst._blockVPOffset[0], 3);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[0], 0);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 0), 3);
+    SEQAN_ASSERT_EQ(localToGlobalPos(2, 0, jst), 5u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[1], 1);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[1], -2);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 1), 1);
+    SEQAN_ASSERT_EQ(localToGlobalPos(2, 1, jst), 3u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[2], 0);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[2], -7);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 2), 0);
+    SEQAN_ASSERT_EQ(localToGlobalPos(2, 2, jst), 2u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[3], 3);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[3], -2);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 3), 3);
+    SEQAN_ASSERT_EQ(localToGlobalPos(2, 3, jst), 5u);
 
     createNext(jst, 5, Serial());
 
@@ -606,16 +611,16 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_virtual_block_position)
 
     SEQAN_ASSERT_EQ(jst._blockVPOffset[0], 3);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[0], 0);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 0), 3);
+    SEQAN_ASSERT_EQ(localToGlobalPos(20, 0, jst), 23u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[1], -1);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[1], 4);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 1), -1);
+    SEQAN_ASSERT_EQ(localToGlobalPos(20, 1, jst), 19u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[2], -7);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[2], 0);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 2), -7);
+    SEQAN_ASSERT_EQ(localToGlobalPos(20, 2, jst), 13u);
     SEQAN_ASSERT_EQ(jst._blockVPOffset[3], 1);
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[3], 4);
-    SEQAN_ASSERT_EQ(virtualBlockOffset(jst, 3), 1);
+    SEQAN_ASSERT_EQ(localToGlobalPos(20, 3, jst), 21u);
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
@@ -669,25 +674,29 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
 
     TJst jst(hostSeq, deltaMap);
 
-    CharString localDirPath = "/extras/tests/journaled_string_tree/";
-    CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, localDirPath);
-    append(filePath, "goldGDF.gdf");
+    CharString testDir = SEQAN_PARENT_PATH(__FILE__);
 
-    CharString wrongPath = "/wrong/path/";
-    append(wrongPath, filePath);
+    CharString wrongPath = "wrongPath";
+    append(wrongPath, testDir);
+    append(wrongPath, "unknown.gdf");
 
-    CharString refPath = SEQAN_PATH_TO_ROOT();
-    append(refPath, localDirPath);
-    append(refPath, "reference.fa");
+    CharString goldRefFile = testDir;
+    append(goldRefFile, "gold_ref.fa");
+
+    CharString tmpTestDir = SEQAN_PARENT_PATH(SEQAN_TEMP_FILENAME());
+    CharString tmpGdfFile = tmpTestDir;
+    append(tmpGdfFile, "testGdf.gdf");
+
+    CharString tmpRefFile = tmpTestDir;
+    append(tmpRefFile, "testRef.fa");
 
     GdfHeader header;
-    header.referenceMode = GdfIO::SAVE_REFERENCE_MODE_ENABLED;
+    header.referenceMode = GdfIOMode::SAVE_REFERENCE_MODE_ENABLED;
 #ifdef SEQAN_EXCEPTIONS  // Only test if exceptions are enabled.
 
     SEQAN_TRY  // Try save with invalid name store.
     {
-        save(jst, header, filePath);
+        save(jst, header, tmpGdfFile);
     }
     SEQAN_CATCH(GdfIOException e)
     {
@@ -699,15 +708,15 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
     appendValue(header.nameStore, "Seq3");
     appendValue(header.nameStore, "Seq4");
 
-    header.referenceFilename = refPath;
+    header.referenceFilename = "unknown";
     SEQAN_TRY  // Try save with unknown reference file.
     {
-        save(jst, header, filePath);
+        save(jst, header, tmpGdfFile);
     }
     SEQAN_CATCH(GdfIOException e)
     {
         std::stringstream errMessage;
-        errMessage << "Gdf_IO_Exception: (Cannot open file: " << refPath << "!)";
+        errMessage << "Gdf_IO_Exception: (Cannot open file: unknown!)";
         SEQAN_ASSERT_EQ(e.what(), errMessage.str());
     }
 
@@ -723,30 +732,32 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
     }
 
     header.referenceId = "reference";
+    header.referenceFilename = tmpRefFile;
     SEQAN_TRY  // Try save with everything set correctly.
     {
-        save(jst, header, filePath);
+        save(jst, header, tmpGdfFile);
     }
     SEQAN_CATCH(Exception e)
     {
         SEQAN_FAIL("Error while save!");
     }
 #else  // SEQAN_EXCEPTIONS
-    save(jst, header, filePath);
+    save(jst, header, tmpGdfFile);
 #endif  // SEQAN_EXCEPTIONS
+
+    // Compare the reference sequences.
+    SEQAN_ASSERT(_compareTextFiles(toCString(tmpRefFile), toCString(goldRefFile)));
 
     CharString refId;
     CharString refFilename;
     String<CharString> seqIds;
-
-    JournaledStringTree<TDeltaMap> jstLoaded;
 
 #ifdef SEQAN_EXCEPTIONS
 
     {  // Try load from wrong file.
         SEQAN_TRY
         {
-            clear(jstLoaded);
+            JournaledStringTree<TDeltaMap> jstLoaded;
             GdfHeader headerLoaded;
             open(jstLoaded, headerLoaded, wrongPath);
         }
@@ -757,13 +768,12 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
             SEQAN_ASSERT_EQ(e.what(), errMessage.str());
         }
     }
-    {  // Try load from file with unknown rerference file.
+    {  // Try load from file with unknown reference file.
         SEQAN_TRY
         {
-            clear(jstLoaded);
+            JournaledStringTree<TDeltaMap> jstLoaded;
             GdfHeader headerLoaded;
-            CharString unknownRefExample = SEQAN_PATH_TO_ROOT();
-            append(unknownRefExample, localDirPath);
+            CharString unknownRefExample = testDir;
             append(unknownRefExample, "unknownRefExample.gdf");
             open(jstLoaded, headerLoaded, unknownRefExample);
         }
@@ -775,20 +785,18 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
     {  // Try load from file with wrong crc or refId.
         SEQAN_TRY
         {
-            CharString otherRefPath = SEQAN_PATH_TO_ROOT();
-            append(otherRefPath, localDirPath);
-            append(otherRefPath, "other_reference.fa");
+            CharString wrongRefFile = testDir;
+            append(wrongRefFile, "wrong_ref.fa");
 
-            CharString wrongCrcExample = SEQAN_PATH_TO_ROOT();
-            append(wrongCrcExample, localDirPath);
+            CharString wrongCrcExample = tmpTestDir;
             append(wrongCrcExample, "wrongCrcExample.gdf");
 
 
             GdfHeader testHeader;
             testHeader.referenceId = "reference";
-            testHeader.referenceFilename = otherRefPath;
+            testHeader.referenceFilename = wrongRefFile;
             testHeader.nameStore = header.nameStore;
-            testHeader.referenceMode = GdfIO::SAVE_REFERENCE_MODE_DISABLED;
+            testHeader.referenceMode = GdfIOMode::SAVE_REFERENCE_MODE_DISABLED;
 
             SEQAN_TRY
             {
@@ -799,7 +807,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
                 SEQAN_ASSERT_FAIL("Error during save!");
             }
 
-            clear(jstLoaded);
+            JournaledStringTree<TDeltaMap> jstLoaded;
             GdfHeader headerLoaded;
             open(jstLoaded, headerLoaded, wrongCrcExample);
         }
@@ -813,21 +821,22 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
         }
     }
 
+    JournaledStringTree<TDeltaMap> jstLoaded;
     {  // Try load correct file.
         SEQAN_TRY
         {
-            clear(jstLoaded);
             GdfHeader headerLoaded;
-            open(jstLoaded, headerLoaded, filePath);
+            open(jstLoaded, headerLoaded, tmpGdfFile);
         }
         SEQAN_CATCH(Exception e)
         {
+            std::cerr << e.what() << std::endl;
             SEQAN_FAIL("Error while open!");
         }
     }
 #else
     GdfHeader headerLoaded;
-    open(jstLoaded, headerLoaded, filePath);
+    open(jstLoaded, headerLoaded, tmpGdfFile);
 #endif
 
     _testJournaledStringTreeJournalNextBlock(jstLoaded);

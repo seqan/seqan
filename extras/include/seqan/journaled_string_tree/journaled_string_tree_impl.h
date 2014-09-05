@@ -81,9 +81,8 @@ struct GetStringSet{};
  * over the mapped variants use the function @link JournaledStringTree#setBlockSize @endlink. The block size
  * is the number of variants that should be integrated in the current sequence content.
  * Note that when generating the sequences block-wise, the actual position of each sequence depends only on the
- * currently integrated variants. Use the function @link JournaledStringTree#virtualBlockOffset @endlink to get
- * the offset for the previously built blocks. Adding this offset to the current sequence position gives the
- * global sequence position.
+ * currently incoporated variants. Use the function @link JournaledStringTree#localToGlobalPos @endlink to map
+ * the local position to its global position for a selected sequence.
  *
  * The sequences represented by the delta map and the journaled strings can be traversed in forward direction.
  * To do so one need to instantiate a @link JstTraverser @endlink object, which manages the traversal over the
@@ -118,11 +117,7 @@ public:
     static const TSize REQUIRE_FULL_JOURNAL = MaxValue<TSize>::VALUE;
 
     JournaledStringTree() :
-        _container(),
-        _journalSet(),
         _activeBlock(0),
-        _mapBlockBegin(),
-        _mapBlockEnd(),
         _emptyJournal(true),
         _blockSize(REQUIRE_FULL_JOURNAL),
         _numBlocks(1)
@@ -140,52 +135,6 @@ public:
         _numBlocks(1)
     {
         init(*this, reference, varData);
-    }
-};
-
-template <typename TJst, typename TContextSize>
-struct BufferJournaledStringsEndHelper_
-{
-    typedef typename GetStringSet<TJst>::Type TStringSet;
-    typedef typename Position<typename Host<TJst>::Type>::Type THostPos;
-    typedef typename Size<TStringSet>::Type TSetSize;
-
-    typedef typename Container<TJst>::Type TDeltaMap;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
-
-
-    TJst &       jst;
-    TContextSize contextSize;
-    TSetSize     jsPos;
-    THostPos     localContextEndPos;
-    TMapIterator mapIter;
-
-    BufferJournaledStringsEndHelper_(TJst & _jst, TContextSize _contextSize) : jst(_jst), contextSize(_contextSize)
-    {}
-
-    template <typename TTag>
-    inline bool operator()(TTag const & deltaTypeTag)
-    {
-        if (isDeltaType(deltaType(mapIter), deltaTypeTag))
-        {
-            if (deltaCoverage(mapIter)[jsPos])
-            {
-                journalDelta(jst._journalSet[jsPos], deltaPosition(mapIter), deltaValue(mapIter, TTag()), TTag());
-                if (IsSameType<TTag, DeltaTypeDel>::VALUE)
-                    localContextEndPos += deltaValue(mapIter, DeltaTypeDel());
-                if (IsSameType<TTag, DeltaTypeIns>::VALUE)
-                    localContextEndPos -= _min(contextSize,
-                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeIns()))));
-                if (IsSameType<TTag, DeltaTypeSV>::VALUE)
-                {
-                    localContextEndPos += deltaValue(mapIter, DeltaTypeSV()).i1;
-                    localContextEndPos -= _min(contextSize,
-                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeSV()).i2)));
-                }
-            }
-            return true;
-        }
-        return false;
     }
 };
 
@@ -416,17 +365,13 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
                 Tag<TParallelTag> parallelTag = Serial())
 {
     typedef JournaledStringTree<TDeltaMap, TSpec > TJst;
-    typedef typename Iterator<TDeltaMap const, Standard>::Type TConstMapIterator;
-
-//    typedef typename DeltaCoverage<TDeltaMap>::Type TBitVec;
-//    typedef typename Iterator<TBitVec const, Standard>::Type TBitVecIter;
-
+    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
     typedef typename GetStringSet<TJst>::Type TJournalSet;
     typedef typename Iterator<TJournalSet, Standard>::Type TJournalSetIter;
     typedef typename Size<TJournalSet>::Type TSize;
     typedef typename MakeSigned<TSize>::Type TSignedSize;
 
-    typedef JournalDeltaContext_<TJst const, TConstMapIterator> TJournalDeltaContext;
+    typedef JournalDeltaContext_<TJst const, TMapIterator> TJournalDeltaContext;
 
     // Define the block limits.
     if ((jst._activeBlock * jst._blockSize) >= length(container(jst)))
@@ -440,9 +385,9 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
 
     String<int> _lastVisitedNodes;
     if (!fullJournalRequired(jst))
-        blockJump -= _max(0, (static_cast<TSignedSize>(jst._mapBlockEnd - jst._mapBlockBegin) - static_cast<TSignedSize>(jst._blockSize)));
+        blockJump -= _max(0, (static_cast<TSignedSize>(jst._mapBlockEnd - jst._mapBlockBegin) -
+                              static_cast<TSignedSize>(jst._blockSize)));
 
-    TConstMapIterator itMapBegin = begin(variantMap, Standard());
     jst._mapBlockBegin = jst._mapBlockEnd;
     jst._mapBlockEnd += blockJump;
 
@@ -454,7 +399,8 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
         return false;
 
     // Use parallel processing.
-    Splitter<TJournalSetIter> jSetSplitter(begin(jst._journalSet, Standard()), end(jst._journalSet, Standard()), parallelTag);
+    Splitter<TJournalSetIter> jSetSplitter(begin(jst._journalSet, Standard()), end(jst._journalSet, Standard()),
+                                           parallelTag);
 
     SEQAN_OMP_PRAGMA(parallel for)
     for (int jobId = 0; jobId < static_cast<int>(length(jSetSplitter)); ++jobId)
@@ -473,13 +419,9 @@ _doJournalBlock(JournaledStringTree<TDeltaMap, TSpec> const & jst,
             }
         }
 
-        TJournalDeltaContext context(jst, itMapBegin, jobBegin, jobEnd);
-//        printf("Thread %i: jobBegin %i - jobEnd %i\n", jobId, jobBegin, jobEnd);
-        for (TConstMapIterator itMap = jst._mapBlockBegin; itMap != jst._mapBlockEnd; ++itMap)
-        {
-            context.deltaIterator = itMap;
+        TJournalDeltaContext context(jst, jst._mapBlockBegin, jobBegin, jobEnd);
+        for (; context.deltaIterator != jst._mapBlockEnd; ++context.deltaIterator)
             tagApply(context, DeltaTypes());
-        }
 
         // Post-processing: Store VPs for current block.
         if (!fullJournalRequired(jst))
@@ -519,32 +461,39 @@ host(JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
 }
 
 // ----------------------------------------------------------------------------
-// Function virtualBlockOffset()
+// Function localToGlobalPos()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledStringTree#virtualBlockOffset
+ * @fn JournaledStringTree#localToGlobalPos
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns the virtual offset for the current block for the given sequence.
+ * @brief Returns the global position of the given local position for the corresponding
+ *        @link JournaledStringTree @endlink.
  *
- * @signature TSize virtualBlockOffset(jst, id);
+ * @signature TSize localToGlobalPos(pos, id, jst);
  *
- * @param[in] jst    The Journal String Tree.
+ * @param[in] pos    The local position.
  * @param[in] id     The id of the sequence to get the offset for.
+ * @param[in] jst    The Journal String Tree.
  *
- * When constructing the sequence information block-wise, an additional offset is used to determine
- * the correct virtual position for the current block for each sequence.
+ * If the JST is constructed block wise, than the journaled strings only represent the block that is currently
+ * active. To get the corresponding global position of the @link JournaledString @endlink respectively, one has
+ * to call this function with the local position the sequence id and the @link JournaledStringTree @endlink (JST).
+ * If the JST is constructed entirely, than the returned position corresponds to the local position.
  *
- * @return TSize The Current block offset for the given sequence. The type of the returned value is of type
- * @link MakeSigned @endlink of the @link JournaledStringTree#Size @endlink type.
+ * @return TSize The global position for the given @link JournaledString @endlink of 
+           type @link JournaledStringTree#Size @endlink.
  */
 
-template <typename TDeltaMap, typename TSpec, typename TPosition>
-inline typename MakeSigned<typename Size<JournaledStringTree<TDeltaMap, TSpec> const>::Type>::Type
-virtualBlockOffset(JournaledStringTree<TDeltaMap, TSpec> const & stringTree,
-                   TPosition const & pos)
+template <typename TPos, typename TSeqId, typename TDeltaMap, typename TSpec>
+inline typename Size<JournaledStringTree<TDeltaMap, TSpec> const>::Type
+localToGlobalPos(TPos pos,
+                 TSeqId seqId,
+                 JournaledStringTree<TDeltaMap, TSpec> const & stringTree)
 {
-    return stringTree._blockVPOffset[pos];
+    SEQAN_ASSERT_LT(seqId, static_cast<TSeqId>(length(stringSet(stringTree))));
+
+    return pos + stringTree._blockVPOffset[seqId];
 }
 
 // ----------------------------------------------------------------------------
@@ -807,8 +756,7 @@ setBlockSize(JournaledStringTree<TDeltaMap, TSpec> & stringTree,
 
     stringTree._blockSize = newBlockSize;
     stringTree._activeBlock = 0;
-    stringTree._numBlocks = static_cast<unsigned>(std::ceil(static_cast<double>(length(container(stringTree))) /
-                                                            static_cast<double>(newBlockSize)));
+    stringTree._numBlocks = (length(container(stringTree)) + newBlockSize - 1) / newBlockSize;
     resize(stringTree._blockVPOffset, length(stringSet(stringTree)), 0, Exact());
 }
 
@@ -926,15 +874,15 @@ inline bool _isValiJstdReference(THost const & host,
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Opens the journaled string tree from a gdf file.
  *
- * @signature int load(jst, filename[, refId, refFilename][, seqIds]);
+ * @signature int open(jst, gdfHeader, filename);
  *
- * @param[in,out] jst The journaled string tree to be loaded.
- * @param[in] filename The name of the file used to load the data from.
- * @param[out] refId Stores the id of the reference.
- * @param[out] refFilename Stores the file name of the reference.
- * @param[out] seqIds Stores the ids of the covered sequences.
+ * @param[out] jst          The journaled string tree to be loaded from disk.
+ * @param[out] gdfHeader    The header information of the gdf file of type @link GdfHeader @endlink.
+ * @param[in]  filename     The name of the file used to load the data from.
  *
- * @return int <tt>0<\tt> on success, otherwise some value distinct from <tt>0<\tt> indicating the error.
+ * The journaled string tree is stored and loaded as GDF file. For more information see @link GdfIO @endlink.
+ *
+ * @throw GdfIOException The type of the exception thrown if unexpected error occur. See @link GdfIOException @endlink.
  *
  * @see JournaledStringTree#save
  */
@@ -990,13 +938,12 @@ inline void open(JournaledStringTree<TDeltaMap, TSpec> & jst,
 
     if (!_isValiJstdReference(host(jst), refId, gdfHeader, config))
         SEQAN_THROW(GdfIOWrongReferenceException(refId, gdfHeader.referenceId, config.refHash, computeCrc(host(jst))));
-
-
-
+    
+    // Initialize the JST.
     resize(stringSet(jst), getCoverageSize(container(jst)), TJString(host(stringSet(jst))), Exact());
     resize(jst._blockVPOffset, length(stringSet(jst)), 0, Exact());
     resize(jst._activeBlockVPOffset, length(stringSet(jst)), 0, Exact());
-
+    
     jst._mapBlockBegin = jst._mapBlockEnd = begin(container(jst), Standard());
 }
 
@@ -1007,22 +954,17 @@ inline void open(JournaledStringTree<TDeltaMap, TSpec> & jst,
 /*!
  * @fn JournaledStringTree#save
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Saves the journaled string tree at the given location in gdf format.
+ * @brief Saves the journaled string tree at the given location in GDF format.
  *
- * @signature int save(jst, filename[, refId, refFilename][, seqIds]);
+ * @signature int save(jst, gdfHeader, filename);
  *
- * @param[in] jst The journaled string tree to be saved.
- * @param[out] filename The name of the file used to save the journaled string tree.
- * @param[in] refId Id of the reference sequence.
- * @param[in] refFilename File name of the reference.
- * @param[in] seqIds Ids of the sequences covered by the jst.
+ * @param[in] jst The   The journaled string tree to be saved.
+ * @param[in] gdfHeader The header file of type @link GdfHeader @endlink.
+ * @param[in] filename  The name of the file used to save the journaled string tree.
  *
- * Stores the journaled string tree in gdf format at the specified file location. Please note,
- * that <tt>refId<\tt> and <tt>refFilename<\tt>, as well as <tt>seqIds<\tt> are optional parameters.
- * If they are empty, some default values are used instead. If the information regarding the reference are empty,
- * then the reference file is automatically stored in fasta format at <tt><filename.reference.fa><\tt>.
+ * Stores the journaled string tree in gdf format at the specified file location.
  *
- * @return int <tt>0<\tt> on success, otherwise some value distinct from <tt>0<\tt> indicating the error.
+ * @throw GdfIOException The exception type thrown if an unexpected error occurs. See @link GdfIOException @endlink.
  *
  * @see JournaledStringTree#open
  */
@@ -1034,8 +976,6 @@ inline void save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
 {
     typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnpType;
 
-//    if (!empty(gdfHeader.nameStore))
-
     // Check if sequence names are available.
     if (length(gdfHeader.nameStore) < getCoverageSize(container(jst)))
     {
@@ -1045,7 +985,7 @@ inline void save(JournaledStringTree<TDeltaMap, TSpec> const & jst,
     }
 
     // Write reference.
-    if (gdfHeader.referenceMode == GdfIO::SAVE_REFERENCE_MODE_ENABLED)
+    if (gdfHeader.referenceMode == GdfIOMode::SAVE_REFERENCE_MODE_ENABLED)
     {
         std::ofstream refStream;
         refStream.open(toCString(gdfHeader.referenceFilename), std::ios_base::out);

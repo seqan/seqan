@@ -150,11 +150,11 @@ _encodeBitVector(TTarget & target,
     typedef typename Value<TTarget>::Type TEncodedValue;
     typedef Pair<TEncodedValue, TEncodedValue> TTargetValue;
 
-    // Simply return unmodified target.
-    if (empty(host(bv)))
+    if (empty(host(bv)))  // Simply return unmodified target.
         return;
 
-    TConstPackedHostIterator itBlockBegin, it= begin(host(bv), Standard()) + 1;
+    TConstPackedHostIterator itBlockBegin = begin(host(bv), Standard()) + 1;
+    TConstPackedHostIterator it = itBlockBegin;
     TConstPackedHostIterator itEnd = end(host(bv), Standard()) - 1;
 
     TPosition removedBits, zeroCount, oneCount = 0;
@@ -164,8 +164,12 @@ _encodeBitVector(TTarget & target,
     while (true)
     {
         // Check for zero entries.
-        for (; it != itEnd && testAllZeros(it->i); ++it)
-        {}
+        if (lastBitSet)
+            for (; it != itEnd && testAllZeros(it->i); ++it)
+            {}
+        else
+            for (; it != itEnd && testAllZeros(it->i); ++it)
+            {}
 
         val.i1 += ((it - itBlockBegin) * BitsPerValue<TBitVector>::VALUE);
         removedBits = 0;
@@ -225,7 +229,7 @@ _encodeBitVector(TTarget & target,
                 appendValue(target, val.i1);
                 appendValue(target, val.i2);
             }
-            return;
+            break;
         }
         // Check condition of previous value.
         if (lastBitSet && !isBitSet(it->i, BitsPerValue<TBitVector>::VALUE - 1))
@@ -288,7 +292,7 @@ _writeGdfFileConfigInfo(TStream & stream, GdfFileConfiguration<TValue> const & c
     else
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_ENDIANNESS_KEY, GDF_IO_FILE_ENDIANNESS_BIG);
     // Write Compression mode.
-    if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+    if (config.compressionMode == GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_2BIT);
     else
         GDF_IO_WRITE_KEY_VALUE(stream, GDF_IO_FILE_SNP_COMPRESSION_KEY, GDF_IO_FILE_SNP_COMPRESSION_GENERIC);
@@ -363,21 +367,9 @@ template <typename TBuffer, typename TValue>
 inline void
 _bufferSnp(TBuffer & buffer, BitCompressedDeltaPos_<GdfIOGenericSnpCompression> deltaPos, TValue val)
 {
-//    SEQAN_ASSERT_NOT(isBitSet(deltaPos, BitsPerValue<__uint32>::VALUE -1));  // The last bit should not be set.
-
-//    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);  // Set bit to indicate SNP
-//    __uint32 offset = sizeof(__uint32) + sizeof(TValue);
-//    resize(blockBuffer, length(blockBuffer) + offset);
-//    __uint32 codeWord = deltaPos.toWord();
-//    endianSwap(codeWord, HostByteOrder(), BigEndian());  // swaps endianness if HostByteOrder is little endian.
-//    char* refBuffer = reinterpret_cast<char*>(&codeWord);
-//    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - offset);
-//    writeToBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
     buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
     *buffer = val;
     ++buffer;
-//    char* snpBuffer = reinterpret_cast<char*>(&val);
-//    arrayMoveForward(snpBuffer, snpBuffer + sizeof(TValue), end(blockBuffer, Standard()) - sizeof(TValue));
 }
 
 // ----------------------------------------------------------------------------
@@ -389,15 +381,8 @@ template <typename TBuffer, typename TValue>
 inline void
 _bufferSnp(TBuffer & buffer, BitCompressedDeltaPos_<GdfIO2BitSnpCompression> deltaPos, TValue val)
 {
-//    setBit(deltaPos, BitsPerValue<__uint32>::VALUE -1);
-//    deltaPos |= static_cast<__uint32>(snp) << ((sizeof(__uint32) << 3) - 3);
     deltaPos.snp = val;
-//    resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
-//    __uint32 codeWord = deltaPos.toWord();
-//    endianSwap(codeWord, HostByteOrder(), BigEndian());
-//    char* refBuffer = reinterpret_cast<char*>(&codeWord);
-//    arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), end(blockBuffer, Standard()) - sizeof(__uint32));
-     buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
+    buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
 }
 
 // ----------------------------------------------------------------------------
@@ -415,10 +400,8 @@ inline void _bufferDataBlock(TBuffer & buffer,
     typedef DeltaMap<TValue, TAlphabet> TDeltaMap;
     typedef BitCompressedDeltaPos_<TCompressionMode> TDeltaPos;
 
-//    std::stringstream blockBuffer2(std::ios_base::binary | std::ios_base::in | std::ios_base::out);
     __uint32 lastRefPos = deltaPosition(it);
     // Write the reference offset of the current block.
-//    writeToBinary(stream, lastRefPos, HostByteOrder(), HostByteOrder());
     buffer += _toBinary(buffer, lastRefPos);
 
     TDeltaMapIter itDelta = it;
@@ -436,28 +419,12 @@ inline void _bufferDataBlock(TBuffer & buffer,
         }
         else  // Write Indel
         {
-//            resize(blockBuffer, length(blockBuffer) + sizeof(__uint32));
-//            blockBuffIt = end(blockBuffer) - sizeof(__uint32);
-//            __uint32 codeWord = deltaPos.toWord();
-//            endianSwap(codeWord, HostByteOrder(), BigEndian());
-//            char * refBuffer = reinterpret_cast<char *>(&codeWord);
-//            arrayMoveForward(refBuffer, refBuffer + sizeof(__uint32), blockBuffIt);
-//            writeToBinary(blockBuffer2, deltaPos.toWord(), HostByteOrder(), BigEndian());
             buffer += _toBinary(buffer, deltaPos.toWord(), HostByteOrder(), BigEndian());
 
             if (deltaType(itDelta) == DELTA_TYPE_DEL)  // Write deletion.
             {
-//                BitCompressedInDel_ del(0, 1, deltaValue(itDelta, DeltaTypeDel()));
-//                __uint32 del = static_cast<__uint32>();
-                buffer += _toBinary(buffer, BitCompressedInDel_(0, 1, deltaValue(itDelta, DeltaTypeDel())).toWord(),
+                buffer += _toBinary(buffer, BitCompressedInDel_(1, 0, deltaValue(itDelta, DeltaTypeDel())).toWord(),
                                     HostByteOrder(), BigEndian());
-//                writeToBinary(blockBuffer2, del.toWord(), HostByteOrder(), BigEndian());
-//                setBit(del, BitsPerValue<__uint32>::VALUE - 1);
-//                resize(blockBuffer, length(blockBuffer) + sizeof(del));
-//                blockBuffIt = end(blockBuffer) - sizeof(del);
-//                endianSwap(del, HostByteOrder(), BigEndian());
-//                const char * delBuffer = reinterpret_cast<const char *>(&del);
-//                arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
             }
             else
             {
@@ -466,8 +433,6 @@ inline void _bufferDataBlock(TBuffer & buffer,
                 // Handle Indel.
                 if (deltaType(itDelta) == DELTA_TYPE_SV)
                 {
-//                    BitCompressedInDel_ sv(0, 1, deltaValue(itDelta, DeltaTypeSV()).i1);
-//                    writeToBinary(blockBuffer2, sv.toWord(), HostByteOrder(), BigEndian());
                     buffer += _toBinary(buffer,
                                         BitCompressedInDel_(0, 1, deltaValue(itDelta, DeltaTypeSV()).i1).toWord(),
                                         HostByteOrder(), BigEndian());
@@ -475,45 +440,15 @@ inline void _bufferDataBlock(TBuffer & buffer,
                                         HostByteOrder(), BigEndian());
                     buffer += _copyToBuffer(buffer, &deltaValue(itDelta, DeltaTypeSV()).i2[0],
                                             length(deltaValue(itDelta, DeltaTypeSV()).i2));
-//                    __uint32 insLength = length(ins);
-//                    __uint32 del = static_cast<__uint32>(deltaValue(itDelta, DeltaTypeSV()).i1);
-//                    setBit(insLength, BitsPerValue<__uint32>::VALUE - 2);
-//                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + sizeof(del) + length(ins));
-//                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - sizeof(del) - length(ins);
-//                    // Write size of insertion.
-//                    endianSwap(insLength, HostByteOrder(), BigEndian());
-//                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
-//                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-//                    // Write inserted characters.
-//                    blockBuffIt = end(blockBuffer) - length(ins) - sizeof(del);
-//                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
-//                    // Write size of deletion
-//                    endianSwap(del, HostByteOrder(), BigEndian());
-//                    const char * delBuffer = reinterpret_cast<const char *>(&del);
-//                    blockBuffIt = end(blockBuffer) - sizeof(del);
-//                    arrayMoveForward(delBuffer, delBuffer + sizeof(del), blockBuffIt);
                 }
                 else  // Handle Insertion.
                 {
                     SEQAN_ASSERT(deltaType(itDelta) == DELTA_TYPE_INS);
-//                    BitCompressedInDel_ ins(0, 0, length(deltaValue(itDelta, DeltaTypeIns())));
                     buffer += _toBinary(buffer,
                                         BitCompressedInDel_(0, 0, length(deltaValue(itDelta, DeltaTypeIns()))).toWord(),
                                         HostByteOrder(), BigEndian());
-//                    writeToBinary(blockBuffer2, ins.toWord(), HostByteOrder(), BigEndian());
                     buffer += _copyToBuffer(buffer, &deltaValue(itDelta, DeltaTypeIns())[0],
                                             length(deltaValue(itDelta, DeltaTypeIns())));
-//                    blockBuffer2 << deltaValue(itDelta, DeltaTypeIns());
-//
-//                    __uint32 insLength = length(ins);
-//                    SEQAN_ASSERT_NOT(isBitSet(insLength, BitsPerValue<__uint32>::VALUE - 2));
-//                    endianSwap(insLength, HostByteOrder(), BigEndian());
-//                    const char * insBuffer = reinterpret_cast<const char *>(&insLength);
-//                    resize(blockBuffer, length(blockBuffer) + sizeof(insLength) + length(ins));
-//                    blockBuffIt = end(blockBuffer) - sizeof(insLength) - length(ins);
-//                    arrayMoveForward(insBuffer, insBuffer + sizeof(insLength), blockBuffIt);
-//                    blockBuffIt = end(blockBuffer) - length(ins);
-//                    arrayMoveForward(begin(ins, Standard()), end(ins, Standard()), blockBuffIt);
                 }
             }
         }
@@ -560,7 +495,9 @@ inline void _writeGdfData(TStream & stream,
     __uint32 numOfBlocks = (maxNumOfNodes + config.blockSize - 1) / config.blockSize;
 
     // Write the block containing the number of blocks to read.
-    writeBinary(stream, numOfBlocks);
+    char tmp[sizeof(numOfBlocks)];
+    _toBinary(tmp, numOfBlocks);
+    streamWriteBlock(stream, tmp, sizeof(numOfBlocks));
 
     TEncodedSet set;
 
@@ -599,11 +536,11 @@ inline void _writeGdfData(TStream & stream,
 {
     switch (config.coverageCompression)
     {
-        case GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE:
             _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint8>()); break;
-        case GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE:
             _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint16>()); break;
-        case GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE:
             _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint32>()); break;
         default:
             _writeGdfData(stream, deltaMap, config, TSnpCompressionMode(), GdfIOCoverageCompression<__uint64>()); break;
@@ -615,7 +552,7 @@ inline void _writeGdfData(TStream & stream,
                           DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap,
                           GdfFileConfiguration<TConfig> const & config)
 {
-    if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+    if (config.compressionMode == GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
         _writeGdfData(stream, deltaMap, config, GdfIO2BitSnpCompression());
     else
         _writeGdfData(stream, deltaMap, config, GdfIOGenericSnpCompression());
@@ -624,6 +561,24 @@ inline void _writeGdfData(TStream & stream,
 // ----------------------------------------------------------------------------
 // Function write()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GdfIO#write
+ * @brief Writes the specified @link DeltaMap @endlink to disk in the GDF file format.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature write(stream, deltaMap, header, config, tag);
+ *
+ * @param[out] stream   The opened file stream to write the delta map to.
+ * @param[in]  deltaMap The delta map to write to file.
+ * @param[in]  header   The header containing the header information. Of type @link GdfHeader @endlink.
+ * @param[in]  config   The config object used to invoke file dependent configurations. Of type @link GdfFileConfiguration @endlink.
+ * @param[in]  tag      The tag to determine the correct file format. Must be of type @link GdfIO#Gdf @endlink.
+ *
+ * @throw GdfIOException The exception type thrown in case of an unhandled runtime error.
+ *
+ * @see GdfIO#read
+ */
 
 template <typename TStream, typename TValue, typename TAlphabet, typename TConfig>
 inline void

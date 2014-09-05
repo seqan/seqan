@@ -48,9 +48,23 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup GdfIO GDF I/O
+ * @brief Functionality for GDF I/O.
+ */
+
 // ----------------------------------------------------------------------------
 // Tag Gdf
 // ----------------------------------------------------------------------------
+
+/*!
+ * @tag GdfIO#Gdf
+ * @brief The tag used for GDF I/O functionaliy.
+ * @headerfile <seqan/journaled_string_tree.h>
+ * 
+ * @signature struct Gdf_;
+ *            typedef Tag<Gdf_> Gdf;
+ */
 
 struct Gdf_;
 typedef Tag<Gdf_> Gdf;
@@ -60,10 +74,12 @@ typedef Tag<Gdf_> Gdf;
 // ----------------------------------------------------------------------------
 
 /*!
- * @class GdfIOExcetption
+ * @class GdfIOException
  * @extends Exception
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Exception thrown by errors during I/O-Gdf operations.
+ * @brief Exception thrown by errors during GDF I/O operations.
+ *
+ * @signature struct GdfIOException : public Exception;
  */
 
 /*!
@@ -80,7 +96,7 @@ typedef Tag<Gdf_> Gdf;
 struct GdfIOException : public Exception
 {
     /*!
-     * @var std::string GdfIOException#message
+     * @var std::string GdfIOException::message
      * @brief The error message.
      */
     std::string message;
@@ -102,7 +118,7 @@ struct GdfIOException : public Exception
     *
     * @signature GdfIOException()
     * @signature GdfIOException(message)
-    * @param message The error message to be printed. Must be of type @link http://www.cplusplus.com/reference/string/string/?kw=string @endlink.
+    * @param message The error message to be printed. Must be of type <a href="http://www.cplusplus.com/reference/string/string/?kw=string">std::string</a>.
     */
     GdfIOException()
     {}
@@ -134,7 +150,50 @@ struct GdfIOWrongReferenceException : public GdfIOException
 // Class GdfIO
 // ----------------------------------------------------------------------------
 
-struct GdfIO
+ /*!
+ * @enum GdfIOMode::CompressionMode
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief SNP compression modes.
+ *
+ * @val GdfIOMode::CompressionMode GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION
+ * @brief Enables 2 bit compression of SNPs only if the SNP value fits into 2 bit.
+ *
+ * @val GdfIOMode::CompressionMode GdfIOMode::COMPRESSION_MODE_NO_SNP_COMPRESSION
+ * @brief Disables snp compression.
+ */
+
+/*!
+ * @enum GdfIOMode::CoverageCompression
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Coverage compression modes.
+ *
+ * @val GdfIOMode::CoverageCompression GdfIOMode::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE
+ * @brief Uses 1 byte sized host value if the length of the coverage is less than max. value of <tt>__uint8</tt>.
+ *
+ * @val GdfIOMode::CoverageCompression GdfIOMode::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE
+ * @brief Uses 2 byte sized host value if the length of the coverage is less than max. value of <tt>__uint16</tt>.
+ *
+ * @val GdfIOMode::CoverageCompression GdfIOMode::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE
+ * @brief Uses 4 byte sized host value if the length of the coverage is less than max. value of <tt>__uint32</tt>.
+ *
+ * @val GdfIOMode::CoverageCompression GdfIOMode::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE
+ * @brief Uses 8 byte sized host value if the length of the coverage is less than max. value of <tt>__uint64</tt>.
+ */
+
+/*!
+ * @enum GdfIOMode::SaveReferenceMode
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Mode to enable or disable write of the reference sequence.
+ *
+ * @val GdfIOMode::SaveReferenceMode GdfIOMode::SAVE_REFERENCE_MODE_ENABLED
+ * @brief Explicitly saves the reference at given filename.
+ *
+ * @val GdfIOMode::SaveReferenceMode GdfIOMode::SAVE_REFERENCE_MODE_DISABLED
+ * @brief Reference sequence is not saved explicitly. Note only use this if you are sure, that the proper reference 
+ *        sequence is already stored somewhere.
+ */
+
+struct GdfIOMode
 {
     enum CompressionMode
     {
@@ -195,23 +254,9 @@ typedef Tag<GdfIOGenericSnpCompression_> GdfIOGenericSnpCompression;
 template <typename TType>
 struct GdfIOCoverageCompression{};
 
-//template <typename TInt>
-//struct TransformBinaryToInt
-//{
-//
-//    static const unsigned BUFFER_SIZE = sizeof(TInt);
-//
-//    union InnerTransformer
-//    {
-//        char buffer[TransformBinaryToInt::BUFFER_SIZE];
-//        TInt value;
-//    };
-//
-//    InnerTransformer trans;
-//
-//    TransformBinaryToInt()
-//    {}
-//};
+// ----------------------------------------------------------------------------
+// Class BitCompressedInDel_
+// ----------------------------------------------------------------------------
 
 struct BitCompressedInDel_
 {
@@ -240,6 +285,10 @@ struct BitCompressedInDel_
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class BitCompressedDeltaPos_                                       [Generic]
+// ----------------------------------------------------------------------------
+
 template <typename TCompressionMode>
 struct BitCompressedDeltaPos_
 {
@@ -265,6 +314,10 @@ struct BitCompressedDeltaPos_
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class BitCompressedDeltaPos_                                          [2Bit]
+// ----------------------------------------------------------------------------
+
 template <>
 struct BitCompressedDeltaPos_<GdfIO2BitSnpCompression>
 {
@@ -287,7 +340,7 @@ struct BitCompressedDeltaPos_<GdfIO2BitSnpCompression>
     inline void fromWord(__uint32 word)
     {
         isSnp = isBitSet(word, BitsPerValue<__uint32>::VALUE - 1);
-        snp = word & (3 << (BitsPerValue<__uint32>::VALUE - 3));
+        snp = (word >> (BitsPerValue<__uint32>::VALUE - 3)) & 3;
         pos = word & (~static_cast<__uint32>(0) >> 3);
     }
 };
@@ -295,6 +348,10 @@ struct BitCompressedDeltaPos_<GdfIO2BitSnpCompression>
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction ValueSize
+// ----------------------------------------------------------------------------
 
 template <typename TMode>
 struct ValueSize<BitCompressedDeltaPos_<TMode> >
@@ -313,41 +370,7 @@ struct ValueSize<BitCompressedDeltaPos_<GdfIO2BitSnpCompression> >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readFromBinary()
-// ----------------------------------------------------------------------------
-
-// TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
-//template <typename TStream, typename TValue, typename TFromByteOrder, typename TToByteOrder>
-//inline void readFromBinary(TStream & stream,
-//                           TValue & val,
-//                           TFromByteOrder /*formByteOrder*/,
-//                           TToByteOrder /*toByteOrder*/)
-//{
-//    TransformBinaryToInt<TValue> transformer;
-//    stream.read(transformer.trans.buffer, TransformBinaryToInt<TValue>::BUFFER_SIZE);
-//    val = transformer.trans.value;
-//    endianSwap(val, TFromByteOrder(), TToByteOrder());
-//}
-
-// ----------------------------------------------------------------------------
-// Function writeToBinary()
-// ----------------------------------------------------------------------------
-
-// TODO(rmaerker): Replace by standard write method when io-module is updated in develop.
-template <typename TStream, typename TValue>
-inline void writeBinary(TStream & stream, TValue val)
-{
-    stream.write(reinterpret_cast<const char *>(&val), sizeof(TValue));
-}
-
-template <typename TStream, typename TValue, typename TFromByteOrder, typename TToByteOrder>
-inline void writeToBinary(TStream & stream, TValue val, TFromByteOrder /*srcByteOrder*/, TToByteOrder /*targetByteOrder*/)
-{
-    stream.write(reinterpret_cast<const char *>(&endianSwap(val, TFromByteOrder(), TToByteOrder())), sizeof(TValue));
-}
-
-// ----------------------------------------------------------------------------
-// Function _copyToBuffer()
+// Function _copyToBuffer()                                           [Generic]
 // ----------------------------------------------------------------------------
 
 template <typename TTargetValue, typename TSrcValue, typename TSize>
@@ -358,11 +381,19 @@ inline TSize _copyToBuffer(TTargetValue * target, TSrcValue const * source, TSiz
     return copySize;
 }
 
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()                                      [ConstUInt<1>]
+// ----------------------------------------------------------------------------
+
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<1> /*value size*/)
 {
     *target = *source;
     return 1;
 }
+
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()                                      [ConstUInt<2>]
+// ----------------------------------------------------------------------------
 
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<2> /*value size*/)
 {
@@ -371,6 +402,10 @@ inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<2> /
     return 2;
 }
 
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()                                      [ConstUInt<4>]
+// ----------------------------------------------------------------------------
+
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<4> /*value size*/)
 {
     _copyToBuffer(target, source, ConstUInt<2>());
@@ -378,12 +413,20 @@ inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<4> /
     return 4;
 }
 
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()                                      [ConstUInt<8>]
+// ----------------------------------------------------------------------------
+
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<8> /*value size*/)
 {
     _copyToBuffer(target, source, ConstUInt<4>());
     _copyToBuffer(target + 4, source + 4, ConstUInt<4>());
     return 8;
 }
+
+// ----------------------------------------------------------------------------
+// Function _copyToBuffer()                                   [ConstUInt<SIZE>]
+// ----------------------------------------------------------------------------
 
 template <unsigned SIZE>
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<SIZE> /*value size*/)
@@ -432,10 +475,10 @@ inline unsigned _fromBinary(TValue & val, TBuffer const & buffer, TFromByteOrder
     return sizeof(TValue);
 }
 
-template <typename TBuffer, typename TValue>
-inline unsigned _fromBinary(TBuffer & buffer, TValue val)
+template <typename TValue, typename TBuffer>
+inline unsigned _fromBinary(TValue val, TBuffer const & buffer)
 {
-    return _fromBinary(buffer, val, HostByteOrder(), HostByteOrder());
+    return _fromBinary(val, buffer, HostByteOrder(), HostByteOrder());
 }
 
 }

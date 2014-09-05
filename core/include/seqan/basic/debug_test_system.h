@@ -815,11 +815,8 @@ const char * extractParentPath(const char * path)
     static char pathBuffer[1000];
 
     unsigned pos = strlen(path);
-    std::cout << "strlen(path):  " << pos << std::endl;
     if (pos == 0)   // Empty path.
         return path;
-
-    bool foundParent = false;
 
     if (path[pos - 1] == '\\' || path[pos - 1] == '/')  // Go to next subpath.
         --pos;
@@ -827,18 +824,14 @@ const char * extractParentPath(const char * path)
     for (; pos > 0; --pos)
     {
         if (path[pos - 1] == '\\' || path[pos - 1] == '/')
-        {
-            foundParent = true;
             break;
-        }
     }
 
     if (pos == 0)  // Found no parent -> Windows systems.
         pos = strlen(path);
 
-    char tmpBuffer[1000];
-    strncpy(tmpBuffer, path, pos);  // First add root path to tmp buffer.
-    strncpy(pathBuffer, tmpBuffer, 1000);  // Then add tmp buffer to static path buffer, so we have a correct 0-terminated c-style string.
+    strncpy(pathBuffer, path, pos);  // Then add tmp buffer to static path buffer, so we have a correct 0-terminated c-style string.
+    pathBuffer[pos] = '\0';
     return pathBuffer;  // Return the buffer.
 }
 

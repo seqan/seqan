@@ -110,7 +110,8 @@ inline void _computeCrc(TCrcVal & crc, TVal /*val*/, ConstUInt<SIZE>)
 // Function computeCrc()
 // ----------------------------------------------------------------------------
 
-/*!@fn computeCrc
+/*!
+ * @fn computeCrc
  * @headerfile <seqan/misc/misc_checksum.h>
  * @brief Performs cyclic redundancy check for the given sequence.
  *

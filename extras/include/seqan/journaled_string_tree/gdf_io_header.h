@@ -55,15 +55,59 @@ struct GdfCompressionMode;
 // Class GdfFileConfiguration
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class GdfFileConfiguration
+ * @brief Automatically stores file dependent configurations.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature template <typename TSnpValue>
+ *            struct GdfFileConfiguration;
+ * 
+ * @tparam TSnpValue The type used for SNPs.
+ */
+
 template <typename TSnpValue>
 struct GdfFileConfiguration
 {
+    /*!
+     * @var bool GdfFileConfiguration::isLittleEndian
+     * @brief Set to <tt>true<\tt> if file was stored on a little endian machine, otherwise <tt>false<\tt>.
+     */
     bool isLittleEndian;
-    unsigned int refHash;
-    unsigned int blockSize;
-    GdfIO::CoverageCompression coverageCompression;
-    GdfIO::CompressionMode compressionMode;
 
+    /*!
+     * @var unsigned GdfFileConfiguration::refHash
+     * @brief The hash computed for the reference sequence. Only avilable on systems supporting SSE4.2.
+     */
+    unsigned int refHash;
+
+    /*!
+     * @var unsigned GdfFileConfiguration::blockSize
+     * @brief The number of deltas stored in one block. Defaults to <tt>100000<\tt>.
+     */
+    unsigned int blockSize;
+
+    /*!
+     * @var GdfIOMode::CoverageCompression GdfFileConfiguration::coverageCompression
+     * @brief Automatically selected compression type for the coverage depending on the number of represented sequences.
+     */
+    GdfIOMode::CoverageCompression coverageCompression;
+
+    /*!
+     * @var GdfIOMode::CompressionMode GdfFileConfiguration::compressionMode
+     * @brief Automatically selected SNP compression mode based on <tt>TSnpValue<\tt>.
+     */
+    GdfIOMode::CompressionMode compressionMode;
+
+
+    /*!
+     * @fn GdfFileConfiguration::GdfFileConfiguration
+     * @brief The constructor.
+     *
+     * @signature GfgFileConfiguration(coverageSize);
+     * 
+     * @param coverageSize The number of sequences represented by the @link DeltaMap @endlink.
+     */
     template <typename TCoverageSize>
     GdfFileConfiguration(TCoverageSize coverageSize) :
         isLittleEndian(true),
@@ -72,13 +116,13 @@ struct GdfFileConfiguration
         compressionMode(GdfCompressionMode<BitsPerValue<TSnpValue>::VALUE>::VALUE)
     {
         if (coverageSize <= MaxValue<__uint8>::VALUE)
-            coverageCompression = GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE;
+            coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE;
         else if (coverageSize <= MaxValue<__uint16>::VALUE)
-            coverageCompression = GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE;
+            coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE;
         else if (coverageSize <= MaxValue<__uint32>::VALUE)
-            coverageCompression = GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE;
+            coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE;
         else
-            coverageCompression = GdfIO::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE;
+            coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE;
     }
 
 };
@@ -87,16 +131,49 @@ struct GdfFileConfiguration
 // Class GdfHeader
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class GdfHeader
+ * @brief Stores the header information of a file stored in GDF format.
+ * @headerfile <seqan/journaled_string_tree.h>
+ * 
+ * @signature struct GdfHeader;
+ */
+
 class GdfHeader
 {
 public:
 
-    GdfIO::SaveReferenceMode   referenceMode;
-    CharString             referenceFilename;
-    CharString             referenceId;
-    String<CharString>     nameStore;  // The names of the individuals.
+    /*!
+     * @var GdfIOMode::SaveReferenceMode GdfHeader::referenceMode
+     * @brief The reference mode. See @link GdfIOMode::SaveReferenceMode @endlink.
+     */
+    GdfIOMode::SaveReferenceMode   referenceMode;
 
-    GdfHeader() : referenceMode(GdfIO::SAVE_REFERENCE_MODE_ENABLED)
+    /*!
+     * @var CharString GdfHeader::referenceFilename
+     * @brief The filename where the reference is stored. Of type @link CharString @endlink.
+     */
+    CharString referenceFilename;
+
+    /*!
+     * @var CharString GdfHeader::referenceId
+     * @brief The label of the reference sequence. Of type @link CharString @endlink.
+     */
+    CharString referenceId;
+
+    /*!
+     * @var String<CharString> GdfHeader::nameStore
+     * @brief A string set containing the names of all sequences. A @link String @endlink of @link CharString @endlink.
+     */
+    String<CharString> nameStore;  // The names of the individuals.
+
+    /*!
+     * @fn GdfHeader::GdfHeader
+     * @brief The constructor.
+     *
+     * @signature GdfHeader();
+     */
+    GdfHeader() : referenceMode(GdfIOMode::SAVE_REFERENCE_MODE_ENABLED)
     {}
 };
 
@@ -111,13 +188,13 @@ public:
 template <unsigned BitsPerValue>
 struct GdfCompressionMode
 {
-    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
+    static const typename GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_NO_SNP_COMPRESSION;
 };
 
 template <>
 struct GdfCompressionMode<2>
 {
-    static const typename GdfIO::CompressionMode VALUE = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
+    static const typename GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
 };
 
 // ============================================================================

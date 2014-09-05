@@ -1030,9 +1030,11 @@ positions(JstTraverser<TContainer, TState,  JstTraverserSpec<TContextPos, TConte
     {  // Easy case, since all sequences must be in a original node.
         if (!traverser._isSynchronized)
             _syncAndUpdateCoverage(traverser, StateTraverseMaster());
+
         unsigned hostPos = position(traverser._masterIt); //position(contextBegin(traverser, StateTraverseMaster()));  // Current position within the host.
         TIterator itBegin = begin(traverser._activeMasterCoverage, Standard());
         TIterator itEnd = end(traverser._activeMasterCoverage, Standard());
+
         for (TIterator it = itBegin; it != itEnd; ++it)
         {
             if (*it)
@@ -1040,8 +1042,8 @@ positions(JstTraverser<TContainer, TState,  JstTraverserSpec<TContextPos, TConte
                 unsigned seqId = it - itBegin;
                 appendValue(posVec,
                             TPositionValue(seqId,
-                                           hostToVirtualPosition(value(stringSet(container(traverser)), seqId),
-                                                                 hostPos) + virtualBlockOffset(container(traverser), seqId)));
+                                           localToGlobalPos(hostToVirtualPosition(value(stringSet(container(traverser)),
+                                                            seqId), hostPos), seqId, container(traverser))));
             }
         }
     }
@@ -1070,7 +1072,8 @@ positions(JstTraverser<TContainer, TState,  JstTraverserSpec<TContextPos, TConte
                 else
                     _mapVirtualToVirtual(journalIt, contextBegin(traverser, StateTraverseBranch()),
                                          traverser._branchNodeIt, container(container(traverser)), seqId);
-                appendValue(posVec, TPositionValue(seqId, position(journalIt) + virtualBlockOffset(container(traverser), seqId)));
+                appendValue(posVec, TPositionValue(seqId, localToGlobalPos(position(journalIt), seqId,
+                                                                           container(traverser))));
             }
         }
     }

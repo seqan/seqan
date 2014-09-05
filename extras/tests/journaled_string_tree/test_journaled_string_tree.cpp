@@ -73,7 +73,7 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
     SEQAN_CALL_TEST(test_journaled_string_tree_host);
-    SEQAN_CALL_TEST(test_journaled_string_tree_virtual_block_position);
+    SEQAN_CALL_TEST(test_journaled_string_tree_local_to_global_pos);
 
     SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
 

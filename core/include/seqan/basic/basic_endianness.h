@@ -161,7 +161,7 @@ inline TValue _endianSwap(TValue val, ConstUInt<8>)
  * @brief Returns the value with reversed byte order.
  *
  * @signature   TValue endianSwap(val, fromByteOrder, toByteOrder);
- * @param   val The integral type to transform the byte order for. Must be of type @link Concept.IntegerConcept @endlink.
+ * @param   val The integral type to transform the byte order for. Must be of type @link IntegerConcept @endlink.
  * @param  fromByteOrder A tag specifying the source byte order. One of @link ByteOrderTags @endlink.
  * @param  toByteOrder A tag specifying the target byte order. One of @link ByteOrderTags @endlink.
  *

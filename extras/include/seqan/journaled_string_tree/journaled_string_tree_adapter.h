@@ -45,14 +45,22 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+template <typename T> struct GetStringSet;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class CompareType_
+// ----------------------------------------------------------------------------
+
+// TODO(rrahn): Remove after changing adaptTo method for journaled string set to delta map.
 template <typename TSize, typename TAlphabet>
 struct CompareType_
 {
 //    typedef typename TValue TDeltaType;
+
 
     DeltaType _deltaType;
     TSize      _del;
@@ -86,6 +94,10 @@ struct CompareType_
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class MapKeyCompareLessFunctor_
+// ----------------------------------------------------------------------------
+
 struct MapKeyCompareLessFunctor_
 {
     template <typename TValue>
@@ -102,13 +114,19 @@ struct MapKeyCompareLessFunctor_
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class JournalDeltaContext_
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TIterator>
 struct JournalDeltaContext_
 {
-
+    typedef typename Container<TJst>::Type TDeltaMap_;
+    typedef typename Iterator<TDeltaMap_, Standard>::Type TMapIter_;
+    
     TJst &          jst;
     TIterator       deltaIterator;
-    TIterator       deltaIteratorBegin;
+    TMapIter_       deltaIteratorBegin;
     unsigned        bitVecBegin;
     unsigned        bitVecEnd;
 
@@ -150,6 +168,55 @@ struct JournalDeltaContext_
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class  BufferJournaledStringsEndHelper_
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TContextSize>
+struct BufferJournaledStringsEndHelper_
+{
+    typedef typename GetStringSet<TJst>::Type TStringSet;
+    typedef typename Position<typename Host<TJst>::Type>::Type THostPos;
+    typedef typename Size<TStringSet>::Type TSetSize;
+
+    typedef typename Container<TJst>::Type TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
+
+    TJst &       jst;
+    TContextSize contextSize;
+    TSetSize     jsPos;
+    THostPos     localContextEndPos;
+    TMapIterator mapIter;
+
+    BufferJournaledStringsEndHelper_(TJst & _jst, TContextSize _contextSize) : jst(_jst), contextSize(_contextSize)
+    {}
+
+    template <typename TTag>
+    inline bool operator()(TTag const & deltaTypeTag)
+    {
+        if (isDeltaType(deltaType(mapIter), deltaTypeTag))
+        {
+            if (deltaCoverage(mapIter)[jsPos])
+            {
+                journalDelta(jst._journalSet[jsPos], deltaPosition(mapIter), deltaValue(mapIter, TTag()), TTag());
+                if (IsSameType<TTag, DeltaTypeDel>::VALUE)
+                    localContextEndPos += deltaValue(mapIter, DeltaTypeDel());
+                if (IsSameType<TTag, DeltaTypeIns>::VALUE)
+                    localContextEndPos -= _min(contextSize,
+                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeIns()))));
+                if (IsSameType<TTag, DeltaTypeSV>::VALUE)
+                {
+                    localContextEndPos += deltaValue(mapIter, DeltaTypeSV()).i1;
+                    localContextEndPos -= _min(contextSize,
+                                               static_cast<TContextSize>(length(deltaValue(mapIter, DeltaTypeSV()).i2)));
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -159,7 +226,7 @@ struct JournalDeltaContext_
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _journalSnp()
+// Function journalDelta()                                       [DeltaTypeSnp]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TPos, typename TSnp>
@@ -187,35 +254,7 @@ journalDelta(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function _journalSnp()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TPos, typename TCoverage, typename TSnp>
-inline void
-_journalSnp(TTarget & target,
-           TPos refPos,
-           TCoverage const & coverage,
-           TSnp const & snp)
-{
-    typedef typename Value<TTarget>::Type TJournalSeq;
-    typedef typename Iterator<TCoverage const>::Type TCoverageIterator;
-
-    TCoverageIterator itBegin = begin(coverage);
-    TCoverageIterator it = begin(coverage);
-    TCoverageIterator itEnd = end(coverage);
-
-    for (; it != itEnd; ++it)
-    {
-        if (getValue(it) == true)
-        {
-            TJournalSeq & journal = value(target, it - itBegin);
-            assignValue(journal, hostToVirtualPosition(journal, refPos), snp);
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _journalDel()
+// Function journalDelta()                                       [DeltaTypeDel]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TPos, typename TSize>
@@ -241,38 +280,8 @@ journalDelta(TTarget & target,
         clear(target._insertionBuffer);
 }
 
-
 // ----------------------------------------------------------------------------
-// Function _journalDel()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TPos, typename TCoverage, typename TSize>
-inline void
-_journalDel(TTarget & target,
-           TPos refPos,
-           TCoverage const & coverage,
-           TSize const & delLength)
-{
-    typedef typename Value<TTarget>::Type TJournalSeq;
-    typedef typename Iterator<TCoverage const>::Type TCoverageIterator;
-
-    TCoverageIterator itBegin = begin(coverage);
-    TCoverageIterator it = begin(coverage);
-    TCoverageIterator itEnd = end(coverage);
-
-    for (; it != itEnd; ++it)
-    {
-        if (getValue(it) == true)
-        {
-            TJournalSeq & journal = value(target, it - itBegin);
-            unsigned virtPos = hostToVirtualPosition(journal, refPos);
-            erase(journal, virtPos, virtPos + delLength);
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _journalIns()
+// Function journalDelta()                                       [DeltaTypeIns]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TPos, typename TInsertion>
@@ -299,35 +308,7 @@ journalDelta(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function _journalIns()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TPos, typename TCoverage, typename TInsertion>
-inline void
-_journalIns(TTarget & target,
-           TPos refPos,
-           TCoverage const & coverage,
-           TInsertion const & ins)
-{
-    typedef typename Value<TTarget>::Type TJournalSeq;
-    typedef typename Iterator<TCoverage const>::Type TCoverageIterator;
-
-    TCoverageIterator itBegin = begin(coverage);
-    TCoverageIterator it = begin(coverage);
-    TCoverageIterator itEnd = end(coverage);
-
-    for (; it != itEnd; ++it)
-    {
-        if (getValue(it) == true)
-        {
-            TJournalSeq & journal = value(target, it - itBegin);
-            insert(journal, hostToVirtualPosition(journal, refPos), ins);
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _journalIns()
+// Function journalDelta()                                        [DeltaTypeSV]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TPos, typename TSV>
@@ -358,34 +339,6 @@ journalDelta(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function _journalIns()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TPos, typename TCoverage, typename TIndel>
-inline void
-_journalIndel(TTarget & target,
-              TPos refPos,
-              TCoverage const & coverage,
-              TIndel const & ins)
-{
-    typedef typename Value<TTarget>::Type TJournalSeq;
-    typedef typename Iterator<TCoverage const>::Type TCoverageIterator;
-
-    TCoverageIterator itBegin = begin(coverage);
-    TCoverageIterator it = begin(coverage);
-    TCoverageIterator itEnd = end(coverage);
-
-    for (; it != itEnd; ++it)
-    {
-        if (getValue(it) == true)
-        {
-            TJournalSeq & journal = value(target, it - itBegin);
-            insert(journal, hostToVirtualPosition(journal, refPos), ins);
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function _getInsertion()
 // ----------------------------------------------------------------------------
 
@@ -396,173 +349,7 @@ _getInsertion(TJournalIt const & it, TJournalSequence const & journalSeq)
     return infix(journalSeq._insertionBuffer, it->physicalPosition, it->physicalPosition + it->length);
 }
 
-// ----------------------------------------------------------------------------
-// Function _transformJournalCoverage()
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TAlphabet, typename TSpec, typename TBitVector>
-inline void
-_transformJournalCoverage(DeltaMap<TSize, TAlphabet, TSpec> & variantMap,
-                          TBitVector const & bitVec)
-{
-    typedef typename Iterator<TBitVector const, Standard>::Type TBitVectorIter;
-
-    TBitVectorIter itBegin = begin(bitVec);
-    TBitVectorIter itEnd = end(bitVec);
-
-    // Variant two: We search the reference sequence and then all diffs.
-    Splitter<TBitVectorIter> vecSplitter(itBegin, itEnd, Parallel());
-    SEQAN_OMP_PRAGMA(parallel for)
-    for (unsigned job = 0; job < length(vecSplitter); ++job)
-    {
-        // TODO(rmaerker): Remove debug code.
-        //        printf("Thread %ld of %ld threads.\n", job, length(refSplitter));
-        //        THostView tmpHostView;
-        //        if (job == 0)
-        //        {
-        //            tmpHostView._begin = refSplitter[job];
-        //            tmpHostView._end = refSplitter[job+1];
-        //        }
-        //        else
-        //        {
-        //            tmpHostView._begin = refSplitter[job] - overlapSize;
-        //            tmpHostView._end = refSplitter[job+1];
-        //        }
-        for (TBitVectorIter parallelIt = vecSplitter[job]; parallelIt != vecSplitter[job + 1]; ++parallelIt)
-            appendValue(value(deltaCoverageStore(variantMap)._coverageData, parallelIt - itBegin), *parallelIt);
-    }
-}
-
-/*!
- * @fn adaptTo
- * @brief Transforms delta map into journal string set.
- *
- * @signature adaptTo(target, src, tag)
- */
-
-template <typename TJournalSequence, typename TValue, typename TAlphabet, typename TSpec,
-          typename TBlockBegin, typename TBlockEnd, typename TParallelTag>
-inline void
-adaptTo(StringSet<TJournalSequence, Owner<JournaledSet> > & journalSet,
-        DeltaMap<TValue, TAlphabet, TSpec> & variantMap,
-        TBlockBegin blockBegin,
-        TBlockEnd blockEnd,
-        Tag<TParallelTag> parallelTag = Serial())
-{
-    typedef DeltaMap<TValue, TAlphabet, TSpec> TDeltaMap;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
-
-    typedef typename GetDeltaCoverageStore_<TDeltaMap>::Type TDeltaCoverageStore;
-    typedef typename Value<TDeltaCoverageStore>::Type TBitVec;
-    typedef typename Iterator<TBitVec, Standard>::Type TBitVecIter;
-
-    typedef StringSet<TJournalSequence, Owner<JournaledSet> > TJournalSet;
-    typedef typename Iterator<TJournalSet, Standard>::Type TJournalSetIter;
-    typedef typename Size<TJournalSet>::Type TSize;
-
-    // Ensure the size of the journal set is sufficient.
-    resize(journalSet, getCoverageSize(variantMap), Exact());
-
-    // Temporary string keeping track of the last journaled operation.
-    String<TSize> _lastVisitedNodes;
-    resize(_lastVisitedNodes, length(journalSet), 0, Exact());
-
-    Splitter<TJournalSetIter> jSetSplitter(begin(journalSet, Standard()), end(journalSet, Standard()), parallelTag);
-    SEQAN_OMP_PRAGMA(parallel for)
-    for (unsigned jobId = 0; jobId < length(jSetSplitter); ++jobId)
-    {
-//        printf("Thread: %i of %i\n", jobId, omp_get_num_threads());
-        unsigned jobBegin = jSetSplitter[jobId] - begin(journalSet, Standard());
-        unsigned jobEnd = jSetSplitter[jobId + 1] - begin(journalSet, Standard());
-
-        // First we set the reference sequence for all journal strings.
-        for (TJournalSetIter it = jSetSplitter[jobId]; it != jSetSplitter[jobId + 1]; ++it)
-            setHost(*it, host(journalSet));
-
-//        printf("Thread %i: jobBegin %i - jobEnd %i\n", jobId, jobBegin, jobEnd);
-
-        TMapIterator itMapBegin = begin(variantMap, Standard());
-        TMapIterator itMap = itMapBegin + blockBegin;
-        TMapIterator itMapEnd = begin(variantMap, Standard()) + blockEnd;
-//        TCoverageIterator it = begin(deltaCoverageStore(variantMap), Standard()) + blockBegin;
-
-        for (; itMap != itMapEnd; ++itMap)
-        {
-//            TMappedDelta varKey = mappedDelta(variantMap, itMap - itMapBegin);
-
-            TBitVecIter itVecBegin = begin(deltaCoverage(itMap), Standard());
-            TBitVecIter itVec = itVecBegin + jobBegin;
-            TBitVecIter itVecEnd = begin(deltaCoverage(itMap), Standard()) + jobEnd;
-            for (;itVec != itVecEnd; ++itVec)
-            {
-//                printf("Thread %i: vecPos %i\n", jobId, (int) (itVec - itVecBegin));
-                SEQAN_ASSERT_NOT(empty(host(journalSet[itVec - itVecBegin])));
-
-                if (!(*itVec))
-                    continue;
-
-//                _lastVisitedNodes[itVec - itVecBegin] = itMap - itMapBegin;
-                switch(deltaType(itMap))
-                {
-                    case DELTA_TYPE_SNP:
-                        _journalSnp(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeSnp()));
-                        break;
-                    case DELTA_TYPE_DEL:
-                        _journalDel(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeDel()));
-                        break;
-                    case DELTA_TYPE_INS:
-                        _journalIns(journalSet[itVec - itVecBegin], deltaPosition(itMap), deltaValue(itMap, DeltaTypeIns()));
-                        break;
-                        // TODO(rmaerker): Add Case for INDEL
-                }
-            }
-        }
-
-    }
-
-    // Now we have journaled all variants in the current block.
-
-//    {
-//        unsigned jobBegin = 0; //jSetSplitter[jobId] - begin(journalSet, Standard());
-//        unsigned jobEnd = length(journalSet);//jSetSplitter[jobId + 1] - begin(journalSet, Standard());
-//        // Second we run through all deltas and journal them. In case of parallelization we do it separately for each block of journal strings separately.
-//        TMapIterator itMapBegin = begin(variantMap, Standard());
-//        TMapIterator itMap = itMapBegin;
-//        TMapIterator itMapEnd = end(variantMap, Standard());
-//        TCoverageIterator it = begin(deltaCoverageStore(variantMap), Standard());
-//
-//        for (; itMap != itMapEnd; ++it, ++itMap)
-//        {
-//            TMappedDelta varKey = mappedDelta(variantMap, itMap - itMapBegin);
-//
-//            TBitVecIter itVecBegin = begin(*it, Standard()) + jobBegin;
-//            TBitVecIter itVec = itVecBegin;
-//            TBitVecIter itVecEnd = begin(*it, Standard()) + jobEnd;
-//            for (;itVec != itVecEnd; ++itVec)
-//            {
-//                SEQAN_ASSERT_NOT(empty(host(journalSet[itVec - itVecBegin])));
-//                if (!(*itVec))
-//                    continue;
-//
-//                switch(deltaType(varKey))
-//                {
-//                    case DELTA_TYPE_SNP:
-//                        _journalSnp(journalSet[itVec - itVecBegin], *itMap, deltaSnp(variantMap, deltaPosition(varKey)));
-//                        break;
-//                    case DELTA_TYPE_DEL:
-//                        _journalDel(journalSet[itVec - itVecBegin], *itMap, deltaDel(variantMap, deltaPosition(varKey)));
-//                        break;
-//                    case DELTA_TYPE_INS:
-//                        _journalIns(journalSet[itVec - itVecBegin], *itMap, deltaIns(variantMap, deltaPosition(varKey)));
-//                        break;
-//                        // TODO(rmaerker): Add Case for INDEL
-//                }
-//            }
-//        }
-//    }
-
-}
-
+// TODO(rrahn): Consider revision. Yet there is no real scenario where this is actually needed.
 template <typename TValue, typename TAlphabet, typename TSpec, typename TJournalSequence>
 inline void
 adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
@@ -714,7 +501,6 @@ adaptTo(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
             // TODO(rmaerker): Add Case for INDEL
         }
     }
-
 }
 
 }

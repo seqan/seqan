@@ -56,6 +56,10 @@ namespace seqan
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function _readGdfFileConfigInfo()
+// ----------------------------------------------------------------------------
+
 template <typename TConfig, typename TStream>
 inline void
 _readGdfFileConfigInfo(GdfFileConfiguration<TConfig> & config,
@@ -123,11 +127,11 @@ _readGdfFileConfigInfo(GdfFileConfiguration<TConfig> & config,
     clear(buffer);
     readLine(buffer, reader);
     if (buffer == GDF_IO_FILE_SNP_COMPRESSION_2BIT)
-        config.compressionMode = GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
+        config.compressionMode = GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
     else
     {
         SEQAN_ASSERT_EQ(buffer, GDF_IO_FILE_SNP_COMPRESSION_GENERIC);
-        config.compressionMode = GdfIO::COMPRESSION_MODE_NO_SNP_COMPRESSION;
+        config.compressionMode = GdfIOMode::COMPRESSION_MODE_NO_SNP_COMPRESSION;
     }
 
     //Read coverage compression status.
@@ -144,13 +148,17 @@ _readGdfFileConfigInfo(GdfFileConfiguration<TConfig> & config,
     lexicalCast2(val, buffer);  // Store the coverage compression value.
     switch(val)
     {
-        case 1: config.coverageCompression = GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE; break;
-        case 2: config.coverageCompression = GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE; break;
-        case 4: config.coverageCompression = GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE; break;
-        case 8: config.coverageCompression = GdfIO::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE; break;
+        case 1: config.coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE; break;
+        case 2: config.coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE; break;
+        case 4: config.coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE; break;
+        case 8: config.coverageCompression = GdfIOMode::COVERAGE_COMPRESSION_8_BYTE_PER_VALUE; break;
         default: SEQAN_THROW(GdfIOException("Unkown Coverage Compression Value")); break;
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function _readGdfHeaderRefInfo()
+// ----------------------------------------------------------------------------
 
 template <typename TConfig, typename TStream>
 inline void
@@ -385,22 +393,21 @@ _readCoverageBlock(TDeltaMapIterator & it,
     readNChars(tmp, reader, sizeof(__uint32));  // Read the byte size of the current block.
     __uint32 blockSize = endianSwap(*reinterpret_cast<__uint32*>(&tmp[0]), TInputOrder(), HostByteOrder());
     clear(tmp);
-    resize(tmp, blockSize, Exact());
+//    resize(tmp, blockSize, Exact());
     readNChars(tmp, reader, blockSize);  // Change to read directly from the stream.
 
     // Process the delta buffer.
     const char * buffer = &tmp[0];
-    __uint32 deltaRef = 0;
-    buffer += _fromBinary(deltaRef, buffer, TInputOrder(), HostByteOrder());
-
     while (it != itEnd)  // Process the current block.
     {
         String<TDecodeType> coverageBuffer;
 
         TDecodeType tmpVal = 0;
-        while (tmpVal != MaxValue<TDecodeType>::VALUE)
+        while (true)
         {
             buffer += _fromBinary(tmpVal, buffer, TInputOrder(), HostByteOrder());
+            if (tmpVal == MaxValue<TDecodeType>::VALUE)
+                break;
             appendValue(coverageBuffer, tmpVal);
         }
         _decodeBitVector(deltaCoverage(it), coverageBuffer);
@@ -421,16 +428,6 @@ _readSnp(TAlphabet & snp,
          TBuffer & buffer)
 {
     buffer += _copyToBuffer(&snp, buffer, sizeof(TAlphabet));
-    // Read the offset for the encoded delta.
-//    setBitTo(buffer[0], BitsPerValue<__uint8>::VALUE -1, false);  // Reset the MSB to extract delta.
-//    TPosition tmpPos = *reinterpret_cast<__uint32*>(&buffer[0]);
-//    endianSwap(tmpPos, BigEndian(), HostByteOrder());
-//    deltaPos += tmpPos;
-//    clear(buffer);
-//    readNChars(buffer, reader, sizeof(TAlphabet));
-    // Read the value for the snp.
-//    snp = *reinterpret_cast<TAlphabet*>(&buffer[0]);
-//    return sizeof(__uint32) + sizeof(TAlphabet);
 }
 
 // ----------------------------------------------------------------------------
@@ -445,15 +442,11 @@ _readSnp(TAlphabet & snp,
          TBuffer /*buffer*/)
 {
     snp = convert<TAlphabet>(deltaPos.snp);
-//    CharString buffer;
-//    readNChars(buffer, reader, sizeof(__uint32));
-//    snp = static_cast<TAlphabet>((buffer[0] >> 5) & 3);  // Extract the SNP;
-//    buffer[0] &= static_cast<__uint8>(~0) >> 3;  // Disable leading three bits.
-//    TPosition tmp = *reinterpret_cast<__uint32*>(&buffer[0]);
-//    endianSwap(tmp, BigEndian(), HostByteOrder());
-//    deltaPos += tmp;
-//    return sizeof(__uint32);
 }
+
+// ----------------------------------------------------------------------------
+// Function _readGdfBlock()
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TAlphabet, typename TStream, typename TGdfSnpCompression, typename TInputOrder>
 inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
@@ -471,25 +464,18 @@ inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
     typedef BitCompressedDeltaPos_<TGdfSnpCompression> TDeltaPos;
 
     // Read the byte size of the delta block.
-    CharString tmp;
-    readNChars(tmp, reader, sizeof(__uint32));  // Read the byte size of the current block.
-    __uint32 blockSize = endianSwap(*reinterpret_cast<__uint32*>(&tmp[0]), TInputOrder(), HostByteOrder());
-    clear(tmp);
-    resize(tmp, blockSize, Exact());
-    readNChars(tmp, reader, blockSize);  // Change to read directly from the stream.
+    CharString tmpBuffer;
+    readNChars(tmpBuffer, reader, sizeof(__uint32));  // Read the byte size of the current block.
+    __uint32 blockSize = endianSwap(*reinterpret_cast<__uint32*>(&tmpBuffer[0]), TInputOrder(), HostByteOrder());
+    clear(tmpBuffer);
+    readNChars(tmpBuffer, reader, blockSize);  // Change to read directly from the stream.
 
     // Process the delta buffer.
-    const char * buffer = &tmp[0];
+    const char * buffer = &tmpBuffer[0];
     __uint32 deltaRef = 0;
     buffer += _fromBinary(deltaRef, buffer, TInputOrder(), HostByteOrder());
-//    __uint32 blockRef = endianSwap(*reinterpret_cast<__uint32*>(&buffer[0]), TInputOrder(), HostByteOrder());
-//    clear(buffer);
-//    readNChars(buffer, reader, sizeof(__uint32));
-//    __uint32 blockSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-//    endianSwap(blockSize, TInputOrder(), HostByteOrder());
 
-    // TODO(rmaerker): Rewrite to first load the block.
-    while (buffer - &tmp[0] < blockSize)
+    while (buffer - &tmpBuffer[0] < blockSize)
     {
         TDeltaPos deltaPos;
         __uint32 tmp = 0;
@@ -511,14 +497,7 @@ inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
 
             if(indel.isDel)  // Read deletion info.
             {
-//                __uint32 delSize;
-//                buffer += _fromBinary(delSize, buffer, BigEndian(), HostByteOrder());
-//                readNChars(buffer, reader, sizeof(__uint32));
-                  //                = *reinterpret_cast<__uint32*>(&buffer[0]);
-//                endianSwap(delSize, BigEndian(), HostByteOrder());
-//                setBitTo(delSize, BitsPerValue<__uint32>::VALUE - 1, false);
                 _addDeltaWithoutCoverage(deltaMap, deltaRef, static_cast<TDel>(indel.value), DeltaTypeDel());
-//                blockSize -= length(buffer);
             }
             else
             {
@@ -534,39 +513,9 @@ inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
                     _addDeltaWithoutCoverage(deltaMap, deltaRef, TIndel(indel.value, insBuffer), DeltaTypeSV());
                 else  // Record insertion.
                     _addDeltaWithoutCoverage(deltaMap, deltaRef, insBuffer, DeltaTypeIns());
-
-//                bool isIndel = false;
-//                readNChars(buffer, reader, sizeof(__uint32));
-//                __uint32 insSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-//                endianSwap(insSize, BigEndian(), HostByteOrder());
-//                blockSize -= length(buffer);
-//                if (isBitSet(insSize, BitsPerValue<__uint32>::VALUE - 2))
-//                {  // Handle indel.
-//                    setBitTo(insSize, BitsPerValue<__uint32>::VALUE - 2, false);
-//                    isIndel = true;
-//                }
-//                clear(buffer);
-//                readNChars(buffer, reader, insSize);
-//                TIns insSegment = buffer;
-//                blockSize -= length(buffer);
-//                if (!isIndel)
-//                {
-//                    _addDeltaWithoutCoverage(deltaMap, deltaRef, insSegment, DeltaTypeIns());
-//                }
-//                else
-//                {
-//                    clear(buffer);
-//                    readNChars(buffer, reader, sizeof(__uint32));
-//                    __uint32 delSize = *reinterpret_cast<__uint32*>(&buffer[0]);
-//                    endianSwap(delSize, BigEndian(), HostByteOrder());
-//                    _addDeltaWithoutCoverage(deltaMap, deltaRef, TIndel(delSize, insSegment), DeltaTypeSV());
-//                    blockSize -= length(buffer);
-//                }
             }
         }
     }
-    buffer -= blockSize;  // Set buffer pointer to begin.
-    delete[] buffer;
 }
 
 // ----------------------------------------------------------------------------
@@ -636,11 +585,11 @@ _readGdfData(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
 {
     switch(config.coverageCompression)
     {
-        case GdfIO::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_1_BYTE_PER_VALUE:
             _readGdfData(deltaMap, reader, config, TSnpCompressionTag(), GdfIOCoverageCompression<__uint8>()); break;
-        case GdfIO::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_2_BYTE_PER_VALUE:
             _readGdfData(deltaMap, reader, config, TSnpCompressionTag(), GdfIOCoverageCompression<__uint16>()); break;
-        case GdfIO::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE:
+        case GdfIOMode::COVERAGE_COMPRESSION_4_BYTE_PER_VALUE:
             _readGdfData(deltaMap, reader, config, TSnpCompressionTag(), GdfIOCoverageCompression<__uint32>()); break;
         default:
             _readGdfData(deltaMap, reader, config, TSnpCompressionTag(), GdfIOCoverageCompression<__uint64>()); break;
@@ -650,6 +599,24 @@ _readGdfData(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
 // ----------------------------------------------------------------------------
 // Function read()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GdfIO#read
+ * @brief Reads the GDF file and stores it into a @link DeltaMap @endlink.
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @signature read(deltaMap, header, config, stream, tag);
+ *
+ * @param[out] deltaMap The delta map to load from the file.
+ * @param[in]  header   The header containing the header information. Of type @link GdfHeader @endlink.
+ * @param[in]  config   The config object used to invoke file dependent configurations. Of type @link GdfFileConfiguration @endlink.
+ * @param[in]  stream   The opened file stream pointing to the GDF file.
+ * @param[in]  tag      The tag to determine the correct file format. Must be of type @link GdfIO#Gdf @endlink.
+ *
+ * @throw GdfIOException The exception type thrown in case of an unhandled runtime error.
+ *
+ * @see GdfIO#write
+ */
 
 template <typename TValue, typename TAlphabet, typename TConfig, typename TStream>
 inline void
@@ -665,7 +632,7 @@ read(DeltaMap<TValue, TAlphabet> & deltaMap,
         readHeader(gdfHeader, config, reader, Gdf());
         setCoverageSize(deltaMap, length(gdfHeader.nameStore));
 
-        if (config.compressionMode == GdfIO::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
+        if (config.compressionMode == GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION)
             _readGdfData(deltaMap, reader, config, GdfIO2BitSnpCompression());
         else
             _readGdfData(deltaMap, reader, config, GdfIOGenericSnpCompression());
