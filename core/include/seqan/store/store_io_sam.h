@@ -40,6 +40,30 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TSpec, typename TConfig>
+class FragmentStore;
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+template <typename TDirection, typename TSpec, typename TConfig, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, TDirection, FragmentStore<TSpec, TConfig> >, TStorageSpec>
+{
+    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+    typedef typename TFragmentStore::TContigNameStore               TNameStore;
+    typedef NameStoreCache<TNameStore, CharString>                  TNameStoreCache;
+    typedef BamIOContext<TNameStore, TNameStoreCache, Dependent<> > Type;
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Parsing functions
@@ -75,24 +99,6 @@ namespace SEQAN_NAMESPACE_MAIN
             
             c = _streamGet(file);
             if (c == ' ' || c == '\t' || c == '\n') break;
-        }
-    }
-    
-//////////////////////////////////////////////////////////////////////////////
-// _parseReadSamIdentifier
-    
-    template<typename TFile, typename TString, typename TChar>
-    inline void
-    _parseReadSamIdentifier(TFile & file, TString & str, TChar& c)
-    {
-//IOREV _nodoc_ _hasCRef_ _duplicate_ same as generic _parseUntilWhitespace?
-        if (c == ' ' || c == '\t' || c == '\n') return;
-        appendValue(str, c);
-        while (!_streamEOF(file)) 
-        {
-            c = _streamGet(file);
-            if (c == ' ' || c == '\t' || c == '\n') return;
-            appendValue(str, c);
         }
     }
     
@@ -402,12 +408,11 @@ namespace SEQAN_NAMESPACE_MAIN
         flags.importReadAlignmentTags = false;
     }
 
-    template<typename TStreamOrReader, typename TSpec, typename TConfig, typename TTag>
+    template <typename TSpec, typename TConfig>
     inline void 
-    _readImpl(TStreamOrReader & streamOrReader,
-              FragmentStore<TSpec, TConfig> & fragStore,
-              TTag const & tag,
-              FragStoreImportFlags const & importFlags)
+    readRecords(FragmentStore<TSpec, TConfig> & store,
+                SmartFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile,
+                FragStoreImportFlags const & importFlags)
     {
         typedef FragmentStore<TSpec, TConfig> TFragmentStore;
         typedef typename TFragmentStore::TContigPos TContigPos;
@@ -422,83 +427,37 @@ namespace SEQAN_NAMESPACE_MAIN
         TMatchMateInfos matchMateInfos;
         TContigAnchorGaps contigAnchorGaps;
 
-        refresh(fragStore.contigNameStoreCache);
-
-        // Setup a BamIOContext for I/O.
-        typedef BamIOContext<typename TFragmentStore::TContigNameStore> TBamIOContext;
-        TBamIOContext bamIOContext(fragStore.contigNameStore, fragStore.contigNameStoreCache);
+        // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
+        setNameStore(context(bamFile), store.contigNameStore);
+        setNameStoreCache(context(bamFile), store.contigNameStoreCache);
 
         // Read in the header.  We will subsequently ignore it and use the information indirectly just using the
         // sequence names if any.
         BamHeader bamHeader;
-        if (readRecord(bamHeader, bamIOContext, streamOrReader, tag) != 0)
-        {
-            std::cerr << "ERROR: Problem reading header from SAM file.\n";
-            return;
-        }
+        readRecord(bamHeader, bamFile);
 
         // fill up contig entries for each contig name that appears in the header
-        resize(fragStore.contigStore, length(fragStore.contigNameStore));
+        resize(store.contigStore, length(store.contigNameStore));
 
         // Read in alignments section
-        _readAlignments(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, tag, importFlags);
+        _readAlignments(store, contigAnchorGaps, matchMateInfos, bamFile, importFlags);
         
         if (importFlags.importReadAlignment)
         {
             // set the match mate IDs using the information stored in matchMateInfos
-            _generatePairMatchIds(fragStore, matchMateInfos);
+            _generatePairMatchIds(store, matchMateInfos);
 
-            convertPairWiseToGlobalAlignment(fragStore, contigAnchorGaps);
+            convertPairWiseToGlobalAlignment(store, contigAnchorGaps);
         }
     }
 
-    template <typename TFile, typename TSpec, typename TConfig>
-    inline void
-    read(TFile & file,
-         FragmentStore<TSpec, TConfig> & fragStore,
-         Sam,
-         FragStoreImportFlags const & importFlags)
+    template <typename TSpec, typename TConfig>
+    inline void 
+    readRecords(FragmentStore<TSpec, TConfig> & store,
+                SmartFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile)
     {
-        // Construct a RecordReader from the input file.
-        RecordReader<TFile, SinglePass<> > reader(file);
-        if (atEnd(reader))
-            return;  // Done, file is empty.
-        _readImpl(reader, fragStore, Sam(), importFlags);
+        readRecords(store, bamFile, FragStoreImportFlags());
     }
-
-#if SEQAN_HAS_ZLIB
-    template <typename TFile, typename TSpec, typename TConfig>
-    inline void
-    read(TFile & file,
-         FragmentStore<TSpec, TConfig> & fragStore,
-         Bam,
-         FragStoreImportFlags const & importFlags)
-    {
-        _readImpl(file, fragStore, Bam(), importFlags);
-    }
-#endif  // #if SEQAN_HAS_ZLIB
-
-    template <typename TFile, typename TSpec, typename TConfig>
-    inline void
-    read(
-        TFile & file,
-        FragmentStore<TSpec, TConfig> & fragStore,
-        Sam)
-    {
-        read(file, fragStore, Sam(), FragStoreImportFlags());
-    }
-
-#if SEQAN_HAS_ZLIB
-    template <typename TFile, typename TSpec, typename TConfig>
-    inline void
-    read(
-        TFile & file,
-        FragmentStore<TSpec, TConfig> & fragStore,
-        Bam)
-    {
-        read(file, fragStore, Bam(), FragStoreImportFlags());
-    }
-#endif  // #if SEQAN_HAS_ZLIB
 
 //////////////////////////////////////////////////////////////////////////////
 // _readAlignments
@@ -529,15 +488,13 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-    template <typename TStreamOrReader, typename TNameStore, typename TNameStoreCache, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TTag>
+    template <typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos>
     inline void 
     _readAlignments(
-        TStreamOrReader & streamOrReader,
-        BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
         FragmentStore<TSpec, TConfig> & fragStore,
         TContigAnchorGaps & contigAnchorGaps,   
         TMatchMateInfos & matchMateInfos,
-        TTag const & tag,
+        SmartFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile,
         FragStoreImportFlags const & importFlags)
     {
 //IOREV _nodoc_ docusmentation in code, but unclear
@@ -549,25 +506,21 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename TFragmentStore::TReadSeqStore TReadSeqStore;
         typedef typename Size<TReadSeqStore>::Type TReadSeqStoreSize;
         typedef typename Value<TAlignQualityStore>::Type TAlignQuality;
-        
+
+        // sync sizes of alignQualityStore and alignedReadTagStore with alignedReadStore
         TAlignQuality q;
         q.score = maxValue(q.score);
-        int diff = length(fragStore.alignedReadStore) - length(fragStore.alignQualityStore);
-        for(int i = 0; i < diff; ++i)
-            appendValue(fragStore.alignQualityStore, q, Generous());
-        
-        diff = length(fragStore.alignedReadStore) - length(fragStore.alignedReadTagStore);
-        for(int i = 0; i < diff; ++i)
-            appendValue(fragStore.alignedReadTagStore, "", Generous());
-        
+        resize(fragStore.alignQualityStore, length(fragStore.alignedReadStore), q);
+        resize(fragStore.alignedReadTagStore, length(fragStore.alignedReadStore));
+
         // read in alignments
         FragStoreSAMContext<TFragmentStore> contextSAM;
 //        refresh(fragStore.contigNameStoreCache);  // was done for the BamIOContext already
         refresh(fragStore.readNameStoreCache);
 
-        while (!atEnd(streamOrReader))
-            _readOneAlignment(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, contextSAM,
-                              importFlags, tag);
+        while (!atEnd(bamFile))
+            _readOneAlignment(fragStore, contigAnchorGaps, matchMateInfos, bamFile, contextSAM,
+                              importFlags);
 
         if (importFlags.importReadSeq)
         {
@@ -586,7 +539,7 @@ namespace SEQAN_NAMESPACE_MAIN
         
     template <typename TReadSeq, typename TCigar, typename TPos, typename TId, typename TFragmentStore>
     inline void
-    _samAppendAlignment(
+    _bamAppendAlignment(
         TFragmentStore &fragStore,
         TReadSeq const &readSeq,
         TCigar &cigar,
@@ -615,7 +568,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template <typename TCigar, typename TPos, typename TId, typename TFragmentStore>
     inline void
-    _samAppendAlignmentWithoutSeq(
+    _bamAppendAlignmentWithoutSeq(
         TFragmentStore &fragStore,
         TCigar &cigar,
         TPos &beginPos, TPos &endPos,
@@ -648,29 +601,22 @@ namespace SEQAN_NAMESPACE_MAIN
 // reads in one alignement section from a Sam file
     
     template <
-        typename TStreamOrReader,
-        typename TNameStore,
-        typename TNameStoreCache,
         typename TSpec,
         typename TConfig,
         typename TContigAnchorGaps,
-        typename TMatchMateInfos,
-        typename TFragStore,
-        typename TTag>
+        typename TMatchMateInfos>
     inline void
     _readOneAlignment(
-        TStreamOrReader & streamOrReader,
-        BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
         FragmentStore<TSpec, TConfig> & fragStore,
         TContigAnchorGaps & contigAnchorGaps,
         TMatchMateInfos & matchMateInfos,
-        FragStoreSAMContext<TFragStore> & contextSAM,
-        FragStoreImportFlags const & importFlags,
-        TTag const & tag)
+        SmartFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile,
+        FragStoreSAMContext<FragmentStore<TSpec, TConfig> > & contextSAM,
+        FragStoreImportFlags const & importFlags)
     {
         // Basic types
         typedef FragmentStore<TSpec, TConfig>                                       TFragmentStore;
-        typedef FragStoreSAMContext<TFragStore>                                     TSAMContext;
+        typedef FragStoreSAMContext<TFragmentStore>                                 TSAMContext;
         typedef typename Id<TFragmentStore>::Type                                   TId;
         //typedef typename Size<TFragmentStore>::Type                                 TSize;
 
@@ -691,14 +637,8 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TMatchMateInfos>::Type                               TMatchMateInfo;
 
         // Read next BamAlignmentRecord and get shortcut.
-        if (readRecord(contextSAM.bamRecord, bamIOContext, streamOrReader, tag) != 0)
-        {
-//  TODO(weese:) skipLine would be required to continue reading after an invalid SAM line but is not yet implemented for Bgzf stream
-//            skipLine(streamOrReader);
-            std::cerr << "ERROR: Problem reading SAM/BAM record.\n";
-            return;
-        }
         BamAlignmentRecord & record = contextSAM.bamRecord;
+        readRecord(record, context(bamFile));
 
         // Get element of align quality store.
         TAlignQualityElement mapQ;
@@ -736,13 +676,11 @@ namespace SEQAN_NAMESPACE_MAIN
             SEQAN_ASSERT_NOT(newRead && empty(readSeq));
         }
         
-        // Stop if read is not aligned.
+        // Stop here if read is unaligned.
         if (record.rID == BamAlignmentRecord::INVALID_REFID || record.beginPos == BamAlignmentRecord::INVALID_POS)
             return;
 
-        // Check if the contig is already in the store.  Get its ID or create a new one otherwise.
-        contextSAM.contigId = 0;
-        _storeAppendContig(fragStore, contextSAM.contigId, nameStore(bamIOContext)[record.rID]);
+        // Sync contigStore with size of contigNameStore (if a new contig was added)
         resize(fragStore.contigStore, length(fragStore.contigNameStore));
 
         // Stop if no alignment in CIGAR string.
@@ -755,10 +693,10 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             // generate gap anchor string for the read
             if (importFlags.importReadSeq)
-                _samAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], record.cigar, beginPos, endPos,
+                _bamAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], record.cigar, beginPos, endPos,
                                     pairMatchId, contextSAM);
             else
-                _samAppendAlignmentWithoutSeq(fragStore, record.cigar, beginPos, endPos, pairMatchId, contextSAM);
+                _bamAppendAlignmentWithoutSeq(fragStore, record.cigar, beginPos, endPos, pairMatchId, contextSAM);
 
             clear(contextSAM.contigGapAnchors);
             TContigGapsPW contigGaps(contextSAM.contigGapAnchors);
@@ -809,20 +747,13 @@ namespace SEQAN_NAMESPACE_MAIN
         // used in the end of the read function to generate match mate IDs.
         if (importFlags.importRead && importFlags.importReadAlignment && record.rNextId != BamAlignmentRecord::INVALID_REFID)
         {
-            TId mcontigId = contextSAM.contigId;
-            if (record.rID != record.rNextId)
-            {
-                _storeAppendContig(fragStore, mcontigId, nameStore(bamIOContext)[record.rNextId]);
-                resize(fragStore.contigStore, length(fragStore.contigNameStore));
-            }
-
             if (contextSAM.readId < length(fragStore.readStore))
             {
                 // insert match mate info for the mate record
                 TMatchMateInfo matchMateInfo =
                 {
                     /* .readId      = */  contextSAM.readId,
-                    /* .contigId    = */  mcontigId,
+                    /* .contigId    = */  record.rNextId,
                     /* .pairMatchId = */  pairMatchId,
                     /* .matePairId  = */  fragStore.readStore[contextSAM.readId].matePairId,
                     /* .beginPos    = */  record.pNext,
@@ -843,10 +774,11 @@ namespace SEQAN_NAMESPACE_MAIN
 // Function _fillHeader()
 // --------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig>
+template <typename TSpec, typename TConfig, typename TBamIOFunctor>
 inline void
 _fillHeader(BamHeader & header,
-            FragmentStore<TSpec, TConfig> & store)
+            FragmentStore<TSpec, TConfig> & store,
+            TBamIOFunctor & /* functor */)
 {
     typedef FragmentStore<TSpec, TConfig>                       TFragmentStore;
     typedef typename TFragmentStore::TLibraryStore              TLibraryStore;
@@ -902,22 +834,29 @@ _fillHeader(BamHeader & header,
 }
 
 // --------------------------------------------------------------------------
-// Function _writeHeader()
+// Function writeHeader()
 // --------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec, typename TConfig, typename TContext>
-inline void _writeHeader(TStream & target,
-                         FragmentStore<TSpec, TConfig> & store,
-                         TContext & context,
-                         Sam)
+template <typename TSpec, typename TConfig, typename TBamIOFunctor>
+inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
+                        FragmentStore<TSpec, TConfig> & store,
+                        TBamIOFunctor & functor)
 {
     BamHeader header;
 
     // Fill header with information from fragment store.
-    _fillHeader(header, store);
+    _fillHeader(header, store, functor);
 
     // Write header to target.
-    write2(target, header, context, Sam());
+    writeRecord(bamFile, header);
+}
+
+template <typename TSpec, typename TConfig>
+inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
+                        FragmentStore<TSpec, TConfig> & store)
+{
+    Nothing nothing;
+    writeHeader(bamFile, store, nothing);
 }
 
 // --------------------------------------------------------------------------
@@ -942,13 +881,13 @@ _fillBamSeqAndQual(TSeq &bamSeq, TQual &bamQual, TRead const &read)
 // Function _fillRecord()
 // --------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TAlignedRead, typename TAlignQuality, typename TAlignFunctor>
+template <typename TSpec, typename TConfig, typename TAlignedRead, typename TAlignQuality, typename TBamIOFunctor>
 inline void
 setPrimaryMatch(BamAlignmentRecord & record,
                 FragmentStore<TSpec, TConfig> & store,
                 TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
                 TAlignQuality const & alignQuality,     // read alignment quality
-                TAlignFunctor & alignFunctor,           // functor that extracts/computes alignment for cigar/md strings
+                TBamIOFunctor & functor,                // functor that extracts/computes alignment for cigar/md strings
                 bool secondaryAlignment)                // is this a secondary alignment?
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
@@ -1026,7 +965,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
 
     // Use record.qual as a temporary for the md string.
     alignAndGetCigarString(record.cigar, record.qual, store.contigStore[alignedRead.contigId],
-            store.readSeqStore[alignedRead.readId], alignedRead, errors, alignFunctor);
+            store.readSeqStore[alignedRead.readId], alignedRead, errors, functor);
 
     if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
     {
@@ -1069,9 +1008,9 @@ setPrimaryMatch(BamAlignmentRecord & record,
 template <typename TSpec, typename TConfig, typename TAlignedRead>
 inline void
 setMateMatch(BamAlignmentRecord & record,
-            FragmentStore<TSpec, TConfig> & store,
-            TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
-            TAlignedRead const & alignedMate)       // alignment of the mate
+             FragmentStore<TSpec, TConfig> & store,
+             TAlignedRead const & alignedRead,       // read alignment to transform into a BamAlignmentRecord
+             TAlignedRead const & alignedMate)       // alignment of the mate
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
@@ -1130,13 +1069,10 @@ setMateMatch(BamAlignmentRecord & record,
 // Function _writeAlignedReads()
 // --------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec, typename TConfig, typename TContext, typename TAlignFunctor>
-inline void _writeAlignedReads(
-    TStream & target,
-    FragmentStore<TSpec, TConfig> & store,
-    TContext & context,
-    TAlignFunctor & alignFunctor,
-    Sam)
+template <typename TSpec, typename TConfig, typename TBamIOFunctor>
+inline void writeRecords(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
+                         FragmentStore<TSpec, TConfig> & store,
+                         TBamIOFunctor & functor)
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
@@ -1195,7 +1131,7 @@ inline void _writeAlignedReads(
         clear(record);
 
         // case 1 or 2 is handled here
-        setPrimaryMatch(record, store, alignedRead, *alignQualityPtr, alignFunctor, secondary);
+        setPrimaryMatch(record, store, alignedRead, *alignQualityPtr, functor, secondary);
 
         if (alignedRead.pairMatchId != TReadStoreElement::INVALID_ID)
         {
@@ -1211,7 +1147,7 @@ inline void _writeAlignedReads(
 
 
         // Write record to target.
-        write2(target, record, context, Sam());
+        writeRecord(bamFile, record);
     }
 }
 
@@ -1220,33 +1156,31 @@ inline void _writeAlignedReads(
 
 ///.Function.write.param.tag.type:Tag.File Format.tag.Sam
 
-    template<typename TFile, typename TSpec, typename TConfig, typename TAlignFunctor>
-    inline void write(TFile & target,
-                      FragmentStore<TSpec, TConfig> & store,
-                      TAlignFunctor & alignFunctor,
-                      Sam)
-    {
-        typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
-        typedef typename TFragmentStore::TContigNameStore   TContigNameStore;
-        typedef BamIOContext<TContigNameStore>              TBamIOContext;
+template <typename TSpec, typename TConfig, typename TBamIOFunctor>
+inline void write(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
+                  FragmentStore<TSpec, TConfig> & store,
+                  TBamIOFunctor & functor)
+{
+    typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
+    typedef typename TFragmentStore::TContigNameStore   TContigNameStore;
+    typedef BamIOContext<TContigNameStore>              TBamIOContext;
 
-        TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
+    TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
 
-        // 1. write header
-        _writeHeader(target, store, context, Sam());
+    // 1. write header
+    writeHeader(bamFile, store, functor);
 
-        // 2. write aligments
-        _writeAlignedReads(target, store, context, alignFunctor, Sam());
-    }
+    // 2. write aligments
+    writeRecords(bamFile, store, functor);
+}
 
-    template<typename TFile, typename TSpec, typename TConfig>
-    inline void write(TFile & target,
-                      FragmentStore<TSpec, TConfig> & store,
-                      Sam)
-    {
-        BamAlignFunctorDefault alignFunctor;
-        write(target, store, alignFunctor, Sam());
-    }
+template <typename TSpec, typename TConfig>
+inline void write(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
+                  FragmentStore<TSpec, TConfig> & store)
+{
+    BamAlignFunctorDefault functor;
+    write(bamFile, store, functor);
+}
 
 }// namespace SEQAN_NAMESPACE_MAIN
 

@@ -167,7 +167,7 @@ public:
     GffIOContext() :
         _nameStore(TNameStoreMember()),
         _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 NULL,
+                                 (TNameStoreCache*)NULL,
                                  _nameStore))
     {}
 
