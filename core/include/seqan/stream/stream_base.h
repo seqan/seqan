@@ -585,6 +585,21 @@ write(TTarget &target, TContainer &cont)
     write(target, iter, length(cont));
 }
 
+template <typename TTarget, typename TContainer>
+inline void
+write(TTarget &target, TContainer const &cont)
+{
+    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
+    write(target, iter, length(cont));
+}
+
+template <typename TTarget, typename TValue>
+inline void
+write(TTarget &target, TValue * ptr)
+{
+    write(target, ptr, length(ptr));
+}
+
 // ----------------------------------------------------------------------------
 // Function read(Iterator<Input>)
 // ----------------------------------------------------------------------------
@@ -596,17 +611,6 @@ inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
         writeValue(target, value(iter));
     return i;
-}
-
-// ----------------------------------------------------------------------------
-// Function write(TContainer)
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TContainer>
-inline void write(TTarget &target, TContainer const &cont)
-{
-    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
-    write(target, iter, length(cont));
 }
 
 // ----------------------------------------------------------------------------
