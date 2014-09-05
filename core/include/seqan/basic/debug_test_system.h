@@ -808,6 +808,40 @@ const char * tempFileName()
 #endif  // ifdef PLATFORM_WINDOWS
 }
 
+// Extracts the parent path.
+inline
+const char * extractParentPath(const char * path)
+{
+    static char pathBuffer[1000];
+
+    unsigned pos = strlen(path);
+    std::cout << "strlen(path):  " << pos << std::endl;
+    if (pos == 0)   // Empty path.
+        return path;
+
+    bool foundParent = false;
+
+    if (path[pos - 1] == '\\' || path[pos - 1] == '/')  // Go to next subpath.
+        --pos;
+
+    for (; pos > 0; --pos)
+    {
+        if (path[pos - 1] == '\\' || path[pos - 1] == '/')
+        {
+            foundParent = true;
+            break;
+        }
+    }
+
+    if (pos == 0)  // Found no parent -> Windows systems.
+        pos = strlen(path);
+
+    char tmpBuffer[1000];
+    strncpy(tmpBuffer, path, pos);  // First add root path to tmp buffer.
+    strncpy(pathBuffer, tmpBuffer, 1000);  // Then add tmp buffer to static path buffer, so we have a correct 0-terminated c-style string.
+    return pathBuffer;  // Return the buffer.
+}
+
 // Initialize the testing infrastructure.
 //
 // Used through SEQAN_BEGIN_TESTSUITE(test_name)
@@ -3099,6 +3133,36 @@ fclose(f);
 
 // Returns a temporary filename.
 #define SEQAN_TEMP_FILENAME() (::seqan::ClassTest::tempFileName())
+
+/*!
+ * @macro SEQAN_PARENT_PATH
+ * @headerfile <seqan/basic.h>
+ * @brief Extracts the parent path of the given path.
+ *
+ * @signature TCharType SEQAN_PARENT_PATH(p);
+ * @param p the path to extract the parent path for.
+ *
+ * @return TCharType <tt>char const *</tt>, string with the name of the parent path.
+ *
+ * @section Remarks
+ *
+ * The returned path always includes the root.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * const char *p = SEQAN_EXTRACT_PATH(__FILE__);
+ * buffer char tempFilename[1000];
+ * strcpy(tempFilename, p);
+ * FILE *f = fopen(tempFilename, "w");
+ * fprintf(f, "Test Data");
+ * fclose(f);
+ * @endcode
+ * @see SEQAN_PATH_TO_ROOT
+ */
+
+// Returns parent path.
+#define SEQAN_PARENT_PATH(x) (::seqan::ClassTest::extractParentPath(x))
 
 
 /**
