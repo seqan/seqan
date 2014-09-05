@@ -209,6 +209,7 @@
 #include <seqan/index/find_index.h>
 #include <seqan/index/find_quasar.h>
 #include <seqan/index/find_swift.h>
+#include <seqan/index/find_pigeonhole.h>
 #include <seqan/index/find_backtracking.h>
 
 // ----------------------------------------------------------------------------
