@@ -59,6 +59,9 @@
 #include <cmath>    // isnan, isinf
 #include <string.h> // memset
 
+#ifdef __SSE4_2__
+#include <nmmintrin.h>
+#endif
 
 // ==========================================================================
 // Index construction.
