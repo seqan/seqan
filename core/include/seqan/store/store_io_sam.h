@@ -844,6 +844,10 @@ inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > &
 {
     BamHeader header;
 
+    // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
+    setNameStore(context(bamFile), store.contigNameStore);
+    setNameStoreCache(context(bamFile), store.contigNameStoreCache);
+
     // Fill header with information from fragment store.
     _fillHeader(header, store, functor);
 

@@ -585,8 +585,8 @@ template <typename TStream>
 inline TStream &
 operator<<(TStream & target, CommandLineOption const & source)
 {
-    //IOREV _nodoc_ this specialization is not documented
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 

@@ -324,7 +324,8 @@ inline TStream &
 operator<<(TStream & target,
            Range<TIterator> const & source)
 {
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 
