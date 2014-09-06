@@ -191,12 +191,10 @@ removeEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TAlphabet, typename TCargo, typename TSpec, typename TIDString>
+template<typename TFile, typename TAlphabet, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Automaton<TAlphabet, TCargo, WordGraph<TSpec> > > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Automaton<TAlphabet, TCargo, WordGraph<TSpec> > > const& g)
 {
 //IOREV _nodoc_
 	typedef Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > TGraph;
@@ -206,7 +204,7 @@ write(TFile & target,
 	TSize table_length = ValueSize<TAlphabet>::VALUE;
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 
-	streamPut(target,"WordGraph - Directed:\n");
+	write(target, "WordGraph - Directed:\n");
 	typedef typename Iterator<String<AutomatonEdgeArray<TEdge, TAlphabet> > const, Rooted>::Type TIterConst;
 	for(TIterConst it = begin(g.data_vertex);!atEnd(it);goNext(it)) {
 		if (!idInUse(g.data_id_managerV, position(it))) continue;
@@ -214,15 +212,15 @@ write(TFile & target,
 		for(TSize i=0;i<table_length;++i) {
 			TEdge const* ed = &g.data_vertex[sourceVertex].data_edge[i];
 			if (getTarget(ed) ==  nilVal) continue;
-			streamPut(target, (int)sourceVertex);
-			streamPut(target,"->");
-			streamPut(target, (int)getTarget(ed));
-			streamPut(target, ' ');
-			streamPut(target, ' ');
-			streamPut(target, "Label: ");
-			streamPut(target, TAlphabet(i));
-			streamPut(target, CharString(getCargo(ed)));
-			streamPut(target, '\n');
+			appendNumber(target, (int)sourceVertex);
+			write(target, "->");
+			appendNumber(target, (int)getTarget(ed));
+			writeValue(target, ' ');
+			writeValue(target, ' ');
+			write(target, "Label: ");
+			writeValue(target, TAlphabet(i));
+			write(target, CharString(getCargo(ed)));
+			writeValue(target, '\n');
 		}
 	}
 }
