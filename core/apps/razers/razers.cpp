@@ -73,7 +73,6 @@ using namespace seqan;
 template<typename TSpec>
 int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
 {
-//IOREV
 	ifstream file;
 	file.open(toCString(filename),ios_base::in | ios_base::binary);
 	if(!file.is_open())
@@ -89,13 +88,6 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
 		
-/*		//locations of genome files are relative to list file's location
-		string tempGenomeFile(filename);
-		size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = 0;
-		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-
 		unsigned i = 1;
         CharString line;
 		while(!atEnd(reader))
@@ -103,9 +95,6 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
             readLine(line, reader);
             cropOuter(line, IsWhitespace());
 			appendValue(genomeFileNames, line);
-			//CharString currentGenomeFile(filePrefix);
-			//append(currentGenomeFile,_parseReadFilepath(file,c));
-			//appendValue(genomeFileNames,currentGenomeFile);
 			if(options._debugLevel >=2)
 				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
 			++i;
@@ -117,7 +106,6 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		appendValue(genomeFileNames, filename, Exact());
 	file.close();
 	return 0;
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
