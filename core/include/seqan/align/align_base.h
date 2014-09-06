@@ -633,7 +633,7 @@ write(TFile & target,
                     if (isGap(begin1_))
                         writeValue(target, gapValue<char>());
                     else
-                        writeValue(target, *begin1_);
+                        writeValue(target, getValue(begin1_));
                 }
             }
             else
