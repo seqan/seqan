@@ -44,7 +44,7 @@
 #endif  // #if SEQAN_HAS_BZIP2
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/stream.h>
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>

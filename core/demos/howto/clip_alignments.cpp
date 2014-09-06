@@ -1,5 +1,5 @@
 // FRAGMENT(headers)
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/align.h>
 
 // TODO(holtgrew): Remove, not required for new Gaps objects.

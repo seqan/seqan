@@ -2,7 +2,7 @@
 //#define SEQAN_DEBUG
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <iostream>
 
 using namespace seqan;

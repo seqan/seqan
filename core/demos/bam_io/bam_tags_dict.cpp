@@ -1,5 +1,5 @@
 #include <iostream>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/bam_io.h>
 
 using namespace seqan;

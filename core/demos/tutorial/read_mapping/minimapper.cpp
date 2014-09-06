@@ -31,7 +31,7 @@
 #include <iostream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/store.h>
 

@@ -14,7 +14,7 @@
 #include <fstream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/store.h>
 #include <seqan/random.h>
 #include <seqan/misc/misc_cmdparser.h>
