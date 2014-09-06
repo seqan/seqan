@@ -404,7 +404,7 @@ public:
             // wait for a new job to become available
             while (true)
             {
-                size_t jobId;
+                size_t jobId = -1;
                 if (!popFront(jobId, streamBuf->idleQueue))
                     return;
 

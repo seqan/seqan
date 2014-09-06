@@ -201,7 +201,6 @@ read(TFile & file,
 	typedef typename Id<TFragmentStore>::Type TId;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	//typedef typename Value<TFile>::Type TValue;
-	typedef typename TFragmentStore::TReadSeq TReadSeq;
 
 	// All fragment store element types
 	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
