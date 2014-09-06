@@ -395,8 +395,8 @@ inline SVGFile &
 operator << (SVGFile & target, 
 			 TSource  source)
 {
-SEQAN_CHECKPOINT
-	write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
 	return target;
 }
 */
@@ -404,16 +404,16 @@ SEQAN_CHECKPOINT
 inline SVGFile &
 operator << (SVGFile & target, char source)
 {
-SEQAN_CHECKPOINT
-	write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
 	return target;
 }
 
 inline SVGFile &
 operator << (SVGFile & target, char const *source)
 {
-SEQAN_CHECKPOINT
-	write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
 	return target;
 }
 

@@ -864,23 +864,16 @@ write(TTarget & target,
             appendValue(qlt, c, Generous());
         }
         write(iter, "\n.\nqlt:\n");
-        for(TSize k = 0;k<length(qlt); k+=60)
-        {
-            TSize endK = k + 60;
-            if (endK > length(qlt))
-                endK = length(qlt);
-            write(iter, infix(qlt, k, endK));
-            writeValue(iter, '\n');
-        }
-        write(iter,  ".\n");
+        writeWrappedString(iter, qlt, 60);
+        write(iter, ".\n");
 
-        while ((alignIt != alignItEnd) && (idCount < alignIt->contigId))
+        while (alignIt != alignItEnd && idCount < alignIt->contigId)
             goNext(alignIt);
 
-        for(;(alignIt != alignItEnd) && (idCount == alignIt->contigId); goNext(alignIt))
+        for (; alignIt != alignItEnd && idCount == alignIt->contigId; goNext(alignIt))
         {
             write(iter, "{TLE\nsrc:");
-            writeValue(iter, alignIt->readId + 1);
+            appendNumber(iter, alignIt->readId + 1);
             writeValue(iter, '\n');
             typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor> >::Type TReadGapsIter;
             TReadGapsIter itGaps = begin(alignIt->gaps);
@@ -891,18 +884,18 @@ write(TTarget & target,
             TSize clr1 = 0;
             TSize clr2 = lenRead;
             // Create first clear range
-            if ((itGaps != itGapsEnd) && (itGaps->gapPos == 0)) clr1 = itGaps->seqPos;
+            if (itGaps != itGapsEnd && itGaps->gapPos == 0)
+                clr1 = itGaps->seqPos;
             int diff = clr1;
             String<unsigned int> gaps;
-            for(;itGaps != itGapsEnd; goNext(itGaps))
+            for (; itGaps != itGapsEnd; goNext(itGaps))
             {
-                for(int i = 0; i< diff - ((int) itGaps->seqPos - (int) itGaps->gapPos); ++i)
+                for (int i = 0; i + itGaps->seqPos < diff + itGaps->gapPos; ++i)
                     appendValue(gaps, itGaps->seqPos - clr1, Generous());
                 // Clipped sequence
-                if (diff - ((int) itGaps->seqPos - (int) itGaps->gapPos) < 0) {
-                    clr2 = lenRead + diff - ((int) itGaps->seqPos - (int) itGaps->gapPos);
-                }
-                diff = ((int) itGaps->seqPos - (int) itGaps->gapPos);
+                if (diff + itGaps->gapPos < itGaps->seqPos)
+                    clr2 = lenRead + diff + itGaps->gapPos - itGaps->seqPos;
+                diff = (int)itGaps->seqPos - (int)itGaps->gapPos;
             }
             if (alignIt->beginPos > alignIt->endPos)
             {
@@ -910,25 +903,21 @@ write(TTarget & target,
                 clr2 = lenRead - clr2;
             }
             write(iter, "off:");
-            if (alignIt->beginPos < alignIt->endPos)
-                appendNumber(iter, alignIt->beginPos);
-            else
-                appendNumber(iter, alignIt->endPos);
-            writeValue(iter, '\n');
-            write(iter, "clr:");
+            appendNumber(iter, std::min(alignIt->beginPos, alignIt->endPos));
+            write(iter, "\nclr:");
             appendNumber(iter, clr1);
             writeValue(iter, ',');
             appendNumber(iter, clr2);
             writeValue(iter, '\n');
-            if (length(gaps))
+            if (!empty(gaps))
             {
                 write(iter, "gap:\n");
-                for(TSize z = 0;z<length(gaps); ++z)
+                for (TSize z = 0; z < length(gaps); ++z)
                 {
-                    writeValue(iter, value(gaps, z));
+                    appendNumber(iter, gaps[z]);
                     writeValue(iter, '\n');
                 }
-                write(iter,  ".\n");
+                write(iter, ".\n");
             }
             write(iter, "}\n");
         }

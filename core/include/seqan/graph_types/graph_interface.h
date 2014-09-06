@@ -790,7 +790,8 @@ inline TStream &
 operator << (TStream & target, 
 			 Graph<TSpec> const& source)
 {
-	write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
 	return target;
 }
 

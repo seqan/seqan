@@ -361,8 +361,7 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
 // resizable containers
 template <typename TSequence, typename TValue>
-//inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
-void
+inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
 writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);

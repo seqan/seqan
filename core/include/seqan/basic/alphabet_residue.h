@@ -1170,10 +1170,21 @@ inline void assign(Dna & target, DnaQ const & source)
 template <>
 struct CompareTypeImpl<DnaQ, Iupac>
 {
-    typedef Dna Type;
+    typedef Iupac Type;
 };
 
 inline void assign(DnaQ & target, Iupac const & source)
+{
+    assign(target, (Dna) source);
+}
+
+template <>
+struct CompareTypeImpl<Iupac, DnaQ>
+{
+    typedef Iupac Type;
+};
+
+inline void assign(Iupac & target, DnaQ const & source)
 {
     assign(target, (Dna) source);
 }
@@ -1568,7 +1579,7 @@ inline void assign(Dna5Q & target, Unicode c_source)
 template <>
 struct CompareTypeImpl<Dna5Q, Iupac>
 {
-    typedef Dna5 Type;
+    typedef Iupac Type;
 };
 
 inline void assign(Dna5Q & target, Iupac const & source)
@@ -1576,7 +1587,18 @@ inline void assign(Dna5Q & target, Iupac const & source)
     assign(target, (Dna5)source);
 }
 
-inline void 
+template <>
+struct CompareTypeImpl<Iupac, Dna5Q>
+{
+    typedef Iupac Type;
+};
+
+inline void assign(Iupac & target, Dna5Q const & source)
+{
+    assign(target, (Dna5)source);
+}
+
+inline void
 assign(Dna5Q & target, Dna5Q const & source)
 {
     target.value = source.value;
