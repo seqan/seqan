@@ -42,7 +42,7 @@
 #include <seqan/basic.h>
 #include <seqan/align.h>
 #include <seqan/find.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
