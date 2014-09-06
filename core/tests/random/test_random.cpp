@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/random.h>  // The module under test.
 
 #include "test_random_rng.h"

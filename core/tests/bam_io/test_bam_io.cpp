@@ -34,7 +34,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_bam_alignment_record.h"
 #include "test_bam_header_record.h"

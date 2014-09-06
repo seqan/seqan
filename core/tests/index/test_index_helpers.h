@@ -38,7 +38,7 @@
 #define TESTS_INDEX_TEST_INDEX_HELPERS_H
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/random.h>
 

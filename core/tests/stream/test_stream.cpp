@@ -36,7 +36,7 @@
 //#define SEQAN_DEBUG_FILESTREAM
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/stream.h>
 
 #include "test_stream_lexical_cast.h"

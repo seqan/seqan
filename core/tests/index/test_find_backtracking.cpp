@@ -33,7 +33,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_find_base.h"
 #include "test_find_backtracking.h"
