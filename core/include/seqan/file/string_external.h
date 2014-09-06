@@ -1413,7 +1413,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
                 pf.pageNo = -1;                             // cut back link
                 return;
@@ -1435,7 +1437,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 			} else
 				pager[pf.pageNo] = pf.dataStatus;			// restore original data status
 
@@ -1455,7 +1459,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
                 if (!inProgress && (oldStatus != READY))
                 {
@@ -1485,7 +1491,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
 				if (oldStatus != READY)
                     if (pf.pageNo >= lastDiskPage)
@@ -1534,7 +1542,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
 				return pf;
 			}
@@ -1768,7 +1778,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
             bool waitResult = waitFor(*f);              // wait for I/O transfer to complete
 
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*f), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(f->status),
+                           strerror(errno));
         }
 	}
 
