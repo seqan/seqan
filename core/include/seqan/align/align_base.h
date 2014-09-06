@@ -600,9 +600,9 @@ write(TFile & target,
             windowSize_ = end_ - begin_;
 
         // Print header line
-        char buffer[32];
-        sprintf(buffer, "%7u", (unsigned)baseCount);
-        write(target, buffer);
+        char buffer[20];
+        int len = sprintf(buffer, "%7u", (unsigned)baseCount);
+        write(target, buffer, len);
         baseCount += windowSize_;
         writeValue(target, ' ');
         for (TPosition i = 1; i <= windowSize_; ++i)
