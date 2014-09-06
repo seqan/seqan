@@ -138,10 +138,16 @@ public:
         return getValue(data_iterator);
     }
 
-    operator unsigned int() const
+    template <typename TValue>
+    operator TValue() const
     {
-        return static_cast<unsigned int>(getValue(data_iterator));
+        return static_cast<TValue>(getValue(data_iterator));
     }
+
+//    operator unsigned int() const
+//    {
+//        return static_cast<unsigned int>(getValue(data_iterator));
+//    }
 };
 
 // ============================================================================

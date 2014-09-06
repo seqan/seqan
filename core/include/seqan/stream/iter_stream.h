@@ -393,7 +393,7 @@ inline void
 setValue(Iter<TStream, StreamIterator<Output> > const & iter, TValue const &val)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->sputc(val);
+    iter.streamBuf->sputc((typename Value<Iter<TStream, StreamIterator<Output> > >::Type)val);
 }
 
 // ----------------------------------------------------------------------------
