@@ -359,7 +359,9 @@ namespace SEQAN_NAMESPACE_MAIN
             // retrieve the very first and wait for I/O transfer to complete
             bool waitResult = waitFor(*chain.first);
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(chain.first->status),
+                           strerror(errno));
 
             return processBuffer(*chain.first, *this);
         }
@@ -376,7 +378,9 @@ namespace SEQAN_NAMESPACE_MAIN
             // retrieve the next buffer in order and wait for I/O transfer to complete
             bool waitResult = waitFor(*chain.first);
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(chain.first->status),
+                           strerror(errno));
 
             return processBuffer(*chain.first, *this);
         }
@@ -510,7 +514,9 @@ namespace SEQAN_NAMESPACE_MAIN
                 // wait for I/O transfer to complete
                 bool waitResult = waitFor(*p);
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(p->status),
+                               strerror(errno));
 
                 freePage(*p, pool.file);
                 p = p->next;
