@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/random.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
 const unsigned SEED = 42;

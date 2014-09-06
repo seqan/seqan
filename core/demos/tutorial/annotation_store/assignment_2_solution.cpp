@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/store.h>
 
 using namespace seqan;

@@ -1,6 +1,6 @@
 ///A tutorial showing how to nest modifiers.
 #include <iostream>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/modifier.h>
 
 using namespace seqan;

@@ -1,6 +1,6 @@
 // FRAGMENT(header)
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/seeds.h>
 
 int main()
