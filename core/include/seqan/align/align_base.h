@@ -44,9 +44,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Raw_;
-typedef Tag<Raw_> Raw;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -574,8 +571,6 @@ detach(Align<TSource, TSpec> & me)
  * @param[in,out] stream The Stream to write to.
  * @param[in]     align  The Align object to write out.
  */
-
-// TODO(holtgrew): Part of the old I/O system. Undocumented. Rename Raw() to HumanReadable() or OnScreen()?
 
 template <typename TFile, typename TSource, typename TSpec>
 inline void
