@@ -839,14 +839,14 @@ write(TFile & target,
 			TSize offset=0;
 			// Larger numbers need to be further left
 			if (baseCount != 0) offset = (unsigned int) floor(log((double)baseCount) / log((double)10));
-			for(TSize j = 0;j<leftSpace-offset;++j) streamPut(target, ' ');
+			for(TSize j = 0;j<leftSpace-offset;++j) writeValue(target, ' ');
 			appendNumber(target, (int)baseCount);
 			baseCount+=windowSize;
-			streamPut(target, ' ');
+			writeValue(target, ' ');
 			for(TSize col = 1;col<=windowSize;++col) {
-				if ((col % 10)==0) streamPut(target, ':');
-				else if ((col % 5)==0) streamPut(target, '.');
-				else streamPut(target, ' ');
+				if ((col % 10)==0) writeValue(target, ':');
+				else if ((col % 5)==0) writeValue(target, '.');
+				else writeValue(target, ' ');
 			}
 			write(target, " \n");
 
