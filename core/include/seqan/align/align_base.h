@@ -569,21 +569,18 @@ detach(Align<TSource, TSpec> & me)
  * @deprecated Old-style I/O.
  * @brief Writing of Gaps to Streams in human-readable format.
  *
- * @signature void write(stream, align, id, Raw());
+ * @signature void write(stream, align);
  *
  * @param[in,out] stream The Stream to write to.
  * @param[in]     align  The Align object to write out.
- * @param[in]     id     ID string (ignored).
  */
 
 // TODO(holtgrew): Part of the old I/O system. Undocumented. Rename Raw() to HumanReadable() or OnScreen()?
 
-template <typename TFile, typename TSource, typename TSpec, typename TIDString>
+template <typename TFile, typename TSource, typename TSpec>
 inline void
 write(TFile & target,
-      Align<TSource, TSpec> const & source,
-      TIDString const &,
-      Raw)
+      Align<TSource, TSpec> const & source)
 {
     typedef Align<TSource, TSpec> const TAlign;
     typedef typename Row<TAlign>::Type TRow;
@@ -603,28 +600,28 @@ write(TFile & target,
             windowSize_ = end_ - begin_;
 
         // Print header line
-        char buffer[100];
+        char buffer[32];
         sprintf(buffer, "%7u", (unsigned)baseCount);
-        streamPut(target, buffer);
+        write(target, buffer);
         baseCount += windowSize_;
-        streamPut(target, ' ');
+        writeValue(target, ' ');
         for (TPosition i = 1; i <= windowSize_; ++i)
         {
             if ((i % 10) == 0)
-                streamPut(target, ':');
+                writeValue(target, ':');
             else if ((i % 5) == 0)
-                streamPut(target, '.');
+                writeValue(target, '.');
             else
-                streamPut(target, ' ');
+                writeValue(target, ' ');
         }
-        streamPut(target, ' ');
-        streamPut(target, '\n');
+        writeValue(target, ' ');
+        writeValue(target, '\n');
 
         // Print sequences
         for (TRowsPosition i = 0; i < 2 * row_count - 1; ++i)
         {
             for (unsigned int j = 0; j < leftSpace + 2; ++j)
-                streamPut(target, ' ');
+                writeValue(target, ' ');
             if ((i % 2) == 0)
             {
                 TRow & row_ = row(source, i / 2);
@@ -634,9 +631,9 @@ write(TFile & target,
                 for (; begin1_ != end1_; ++begin1_)
                 {
                     if (isGap(begin1_))
-                        streamPut(target, gapValue<char>());
+                        writeValue(target, gapValue<char>());
                     else
-                        streamPut(target, *begin1_);
+                        writeValue(target, *begin1_);
                 }
             }
             else
@@ -647,20 +644,20 @@ write(TFile & target,
                         (!isGap(row(source, (i + 1) / 2), begin_ + j)) &&
                         (row(source, (i - 1) / 2)[begin_ + j] == row(source, (i + 1) / 2)[begin_ + j]))
                     {
-                        streamPut(target, '|');
+                        writeValue(target, '|');
                     }
                     else
                     {
-                        streamPut(target, ' ');
+                        writeValue(target, ' ');
                     }
                 }
             }
-            streamPut(target, '\n');
+            writeValue(target, '\n');
         }
-        streamPut(target, '\n');
+        writeValue(target, '\n');
         begin_ += 50;
     }
-    streamPut(target, '\n');
+    writeValue(target, '\n');
 }
 
 // ----------------------------------------------------------------------------
