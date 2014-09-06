@@ -322,23 +322,19 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
     SEQAN_ASSERT_EQ(minValue(Iupac()), Iupac('U'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
-    SEQAN_ASSERT_EQ(ordValue(Iupac('U')), 0);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('T')), 1);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('A')), 2);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('W')), 3);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('C')), 4);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('Y')), 5);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('M')), 6);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('H')), 7);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('G')), 8);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('K')), 9);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('R')), 10);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('D')), 11);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('S')), 12);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('B')), 13);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('V')), 14);
-    SEQAN_ASSERT_EQ(ordValue(Iupac('N')), 15);
+
+    for (unsigned i = 0; i < 5; ++i)
+    {
+        char x = Dna5(i);
+        int o = (i < 4)? 1 << i : 15;
+        SEQAN_ASSERT_EQ(ordValue(Iupac(x)), o);
+        SEQAN_ASSERT_EQ(ordValue(Iupac(Dna5(i))), o);
+        SEQAN_ASSERT_EQ((char)(Iupac(o)), (char)x);
+        SEQAN_ASSERT_EQ((Dna5)(Iupac(o)), x);
+    }
+
+    for (unsigned i = 0; i < 16; ++i)
+        SEQAN_ASSERT_EQ(ordValue((Iupac)(char)(Iupac(i))), i);
 
     SEQAN_ASSERT(+(SameType_<typename ValueSize<Iupac>::Type, __uint8>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Iupac>::VALUE, 16);
@@ -748,15 +744,15 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
     {
         Iupac a = 'A', v = 'V';
 
-        SEQAN_ASSERT_EQ(++a, Iupac('W'));
-        SEQAN_ASSERT_EQ(a, Iupac('W'));
-        SEQAN_ASSERT_EQ(a++, Iupac('W'));
+        SEQAN_ASSERT_EQ(++a, Iupac('C'));
         SEQAN_ASSERT_EQ(a, Iupac('C'));
+        SEQAN_ASSERT_EQ(a++, Iupac('C'));
+        SEQAN_ASSERT_EQ(a, Iupac('M'));
 
-        SEQAN_ASSERT_EQ(--v, Iupac('B'));
-        SEQAN_ASSERT_EQ(v, Iupac('B'));
-        SEQAN_ASSERT_EQ(v--, Iupac('B'));
+        SEQAN_ASSERT_EQ(--v, Iupac('S'));
         SEQAN_ASSERT_EQ(v, Iupac('S'));
+        SEQAN_ASSERT_EQ(v--, Iupac('S'));
+        SEQAN_ASSERT_EQ(v, Iupac('R'));
     }
 
     // Test Relations, Same Type
@@ -788,7 +784,12 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
     {
         std::stringstream ss;
         ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('U') << Iupac('N');
-        SEQAN_ASSERT_EQ(ss.str(), "ACGUN");
+        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
+    }
+    {
+        std::stringstream ss;
+        ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('=') << Iupac('N');
+        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
     }
 }
 

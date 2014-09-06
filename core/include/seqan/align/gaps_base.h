@@ -1144,8 +1144,7 @@ clipped view position:     0123456
 template <typename TTarget, typename TSource, typename TSpec>
 inline void
 write(TTarget & target,
-	  Gaps<TSource, TSpec> const & source, 
-	  Raw)
+	  Gaps<TSource, TSpec> const & source)
 {
 	// Print gaps row
 	typedef typename Iterator<Gaps<TSource, TSpec> const>::Type TIter;
@@ -1154,8 +1153,8 @@ write(TTarget & target,
 	for (; begin_ != end_; ++begin_) {
 		if (isGap(begin_))
 			writeValue(target, gapValue<char>());
-		else 
-			writeValue(target, convert<char>(*begin_));
+		else
+			writeValue(target, getValue(begin_));
 	}
 }
 
