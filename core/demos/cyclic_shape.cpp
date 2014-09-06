@@ -1,5 +1,5 @@
-#include <seqan/stream.h>
 #include <seqan/modifier.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 
