@@ -46,7 +46,7 @@ namespace seqan {
 // ============================================================================
 
 template <typename TSmartFile>
-struct FileFormats;
+struct FileFormat;
 
 template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext;
@@ -76,13 +76,13 @@ struct SmartFile
 {
     typedef VirtualStream<char, TDirection>                             TStream;
     typedef typename Iterator<TStream, TDirection>::Type                TIter;
-    typedef typename FileFormats<SmartFile>::Type                       TFileFormats;
+    typedef typename FileFormat<SmartFile>::Type                        TFileFormat;
     typedef typename SmartFileContext<SmartFile, Owner<> >::Type        TOwnerContext;
     typedef typename SmartFileContext<SmartFile, Dependent<> >::Type    TDependentContext;
 
     TStream             stream;
     TIter               iter;
-    TFileFormats        format;
+    TFileFormat         format;
     TOwnerContext       data_context;
     TDependentContext   context;
 
@@ -156,7 +156,7 @@ struct SmartFile
     getFileFormatExtensions()
     {
         std::vector<std::string> extensions;
-        _getFileFormatExtensions(extensions, TFileFormats());
+        _getFileFormatExtensions(extensions, TFileFormat());
         return extensions;
     }
 };
@@ -235,11 +235,22 @@ directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection con
 }
 
 // ----------------------------------------------------------------------------
+// Function format()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline FileFormat<SmartFile<TFileType, TDirection, TSpec> > &
+format(SmartFile<TFileType, TDirection, TSpec> & file)
+{
+    return file.format;
+}
+// ----------------------------------------------------------------------------
 // Function setFormat()
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
-inline void setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
+inline void
+setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
 {
     assign(file.format, format);
 }

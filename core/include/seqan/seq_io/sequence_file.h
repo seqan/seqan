@@ -117,7 +117,7 @@ struct SmartFileContext<SmartFile<Fastq, Output, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Fastq, TDirection, TSpec> >
+struct FileFormat<SmartFile<Fastq, TDirection, TSpec> >
 {
     typedef AutoSeqFormat Type;
 };

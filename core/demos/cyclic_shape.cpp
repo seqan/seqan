@@ -16,12 +16,12 @@ int main(int argc, char const ** argv)
     std::cout << "shape: " << out << std::endl;
 
     // determine weight and span
-    std::cout << "weight: " << weight(shape)
-    << ", span: " << shape.span << std::endl;
+    std::cout << "weight: " << weight(shape);
+    std::cout << ", span: " << shape.span << std::endl;
 
     // modify a text to leave out characters
     CharString str = "this is an original string";
-    ModifiedString<CharString, ModCyclicShape<TShape> > modStr (str, shape);
+    ModifiedString<CharString, ModCyclicShape<TShape> > modStr(str, shape);
 
     // modStr can be used like a normal String
     std::cout << str << " => " << modStr << std::endl;

@@ -192,25 +192,26 @@ inline bool close(SVGFile &svg)
 	return true;
 }
 
-template <typename TChar>
+template <typename TCharacter>
 inline SVGFile &
-operator<<(SVGFile & svg, char character)
+operator<<(SVGFile & svg, TCharacter character)
 {
-	if (character == '\n')
+    char x = static_cast<char>(character);
+	if (x == '\n')
 	{
 		++svg.cursor.i2;
 		svg.cursor.i1 = 0;
 	}
-    else if (character == '\t')
+    else if (x == '\t')
 	{
 		svg.cursor.i1 = (svg.cursor.i1 & ~7) + 8;
 	}
     else
 	{
-		if (character != ' ')
+		if (x != ' ')
 		{
 			svg.file << "<g transform=\"translate(" << svg.cursor.i1*20+10 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.text] << '>';
-			svg.file << character;
+			svg.file << x;
 			svg.file << "</text></g>" << std::endl;
 		}
 		++svg.cursor.i1;
@@ -406,21 +407,21 @@ operator << (SVGFile & target,
 }
 */
 
-inline SVGFile &
-operator << (SVGFile & target, char source)
-{
-    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
-    write(it, source);
-	return target;
-}
-
-inline SVGFile &
-operator << (SVGFile & target, char const *source)
-{
-    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
-    write(it, source);
-	return target;
-}
+//inline SVGFile &
+//operator << (SVGFile & target, char source)
+//{
+//  typename DirectionIterator<SVGFile, Output>::Type it = directionIterator(target, Output());
+//  write(it, source);
+//	return target;
+//}
+//
+//inline SVGFile &
+//operator << (SVGFile & target, char const *source)
+//{
+//  typename DirectionIterator<SVGFile, Output>::Type it = directionIterator(target, Output());
+//  write(it, source);
+//	return target;
+//}
 
 
 template <typename TStringSet, typename TTrace, typename TIndexPair>
