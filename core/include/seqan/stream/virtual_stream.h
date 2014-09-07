@@ -526,7 +526,9 @@ open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 
 template <typename TValue, typename TDirection>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
+open(VirtualStream<TValue, TDirection> &stream,
+     const char *fileName,
+     int openMode = DefaultOpenMode<VirtualStream<TValue, TDirection> >::VALUE)
 {
     SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
 
