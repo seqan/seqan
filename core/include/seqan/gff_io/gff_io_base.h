@@ -280,7 +280,6 @@ struct GffRecord
     // TODO(singer): Maybe use a I/O context object and store ids as integers
     // The ID of the landmark used to establish the coordinate system for the current feature.
     CharString ref;
-    int rID;
 
     // The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this feature.
     CharString source;
@@ -318,7 +317,7 @@ struct GffRecord
     }
 
     GffRecord() :
-        rID(INVALID_IDX), beginPos(-1), endPos(-1), score(INVALID_SCORE()),
+        beginPos(-1), endPos(-1), score(INVALID_SCORE()),
         strand('.'), phase('.')
     {}
 };
@@ -462,12 +461,11 @@ inline void clear(GffRecord & record)
 
 template <typename TFwdIterator>
 inline void
-_readGffRecord(GffRecord & record, TFwdIterator & iter, CharString & buffer)
+read(GffRecord & record, TFwdIterator & iter, CharString & buffer)
 {
     IsNewline isNewline;
 
     clear(record);
-    record.rID = GffRecord::INVALID_IDX;
 
     skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<'#'>, IsWhitespace> >());  //skip commments and empty lines
 
@@ -549,26 +547,6 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter, CharString & buffer)
         }
     }
     return;
-}
-
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TFwdIterator, typename TTag>
-inline void 
-readRecord(GffRecord & record,
-           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TFwdIterator & iter,
-           Tag<TTag> const & /*tag*/)
-{
-    // Read record with string ref from GFF file.
-    _readGffRecord(record, iter, context.buffer);
-
-    // Translate ref to rID using the context.  If there is no such sequence name in the context yet then we add it.
-    unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
-    {
-        idx = length(nameStore(context));
-        appendName(nameStore(context), record.ref, nameStoreCache(context));
-    }
-    record.rID = idx;
 }
 
 // ----------------------------------------------------------------------------
@@ -730,18 +708,17 @@ _writeAttributes(TTarget & target, GffRecord const & record, TTag const & tag)
     return;
 }
 
-//TODO(singer): No check whether the record is complete!
-template <typename TTarget, typename TSeqId, typename TTag>
+template <typename TTarget, typename TFormat>
 inline void
-_writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref, TTag tag)
+writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
-    if (empty(ref))
+    if (empty(record.ref))
         return;
 
     // write column 1: seqid
-    //typename Iterator<TSeqId const, Rooted>::Type itRef = begin(ref);
-    write(target, ref);
+    //typename Iterator<TSeqId const, Rooted>::Type itRef = begin(record.ref);
+    write(target, record.ref);
     writeValue(target, '\t');
 
     // write column 2: source
@@ -791,25 +768,6 @@ _writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref,
 
     writeValue(target, '\n');
     return;
-}
-
-template <typename TTarget, typename TTag>
-inline void
-writeRecord(TTarget & target, GffRecord const & record, TTag const tag)
-{
-    _writeRecordImpl(target, record, record.ref, tag);
-}
-
-template <typename TTarget, typename TContextSpec, typename TContextSpec2, typename TStorageSpec, typename TTag>
-inline void
-writeRecord(TTarget & target, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2, TStorageSpec> & context, TTag const tag)
-{
-    if (record.rID != GffRecord::INVALID_IDX)
-    {
-        CharString tempSeqId = nameStore(context)[record.rID];
-        return _writeRecordImpl(target, record, tempSeqId, tag);
-    }
-    return _writeRecordImpl(target, record, record.ref, tag);
 }
 
 }  // namespace seqan

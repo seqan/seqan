@@ -1253,20 +1253,24 @@ annotationGetValueByKey (
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey>
-inline CharString 
+inline typename Parameter_<typename Value<typename TAnnotation::TValues const>::Type>::Type
 annotationGetValueByKey (
 	FragmentStore<TSpec, TConfig> & fragStore, 
 	TAnnotation const & annotation,
 	TKey const & key)
 {
-	typedef typename TAnnotation::TValues	TValues;
-	typedef typename Size<TValues>::Type	TKeyId;
-	
+    typedef FragmentStore<TSpec, TConfig>           TFragmentStore;
+	typedef typename TFragmentStore::TNameStore     TNameStore;
+	typedef typename TAnnotation::TValues           TValues;
+	typedef typename Size<TValues>::Type            TKeyId;
+
+    static const typename Value<typename TAnnotation::TValues const>::Type emptyString;
+
 	TKeyId keyId = 0;
 	if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
 		return annotation.values[keyId];
 	else
-		return "";
+		return emptyString;
 }
 
 /*!

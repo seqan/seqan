@@ -303,47 +303,32 @@ _storeOneAnnotation(
 
 ///.Function.read.param.tag.type:Tag.File Format.tag.Gff
 ///.Function.read.param.tag.type:Tag.File Format.tag.Gtf
-template <typename TFile, typename TSpec, typename TConfig>
+template <typename TSpec, typename TConfig>
 inline void
-read(
-    TFile & file,
-    FragmentStore<TSpec, TConfig> & fragStore,
-    Gff)
+read(FragmentStore<TSpec, TConfig> & fragStore,
+     SmartFile<Gff, Input, FragmentStore<TSpec, TConfig> > & gffFile)
 {
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 
-    if (streamEof(file))
+    if (atEnd(gffFile))
         return;
-
-    IOContextGff_<TFragmentStore> ctx;
 
     refresh(fragStore.contigNameStoreCache);
     refresh(fragStore.annotationNameStoreCache);
     refresh(fragStore.annotationTypeStoreCache);
 
-    RecordReader<TFile, SinglePass<> > reader(file);
     GffRecord record;
-    while (!atEnd(reader))
+    IOContextGff_<TFragmentStore> ctx;
+
+    while (!atEnd(gffFile))
     {
-        if (!readRecord(record, reader, Gff()))
-        {
-            _readOneAnnotation(ctx, record);
-            _storeOneAnnotation(fragStore, ctx);
-        }
+        readRecord(record, gffFile);
+        _readOneAnnotation(ctx, record);
+        _storeOneAnnotation(fragStore, ctx);
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);
     _storeCreateAnnoBackLinks(fragStore.annotationStore);
     _storeRemoveTempAnnoNames(fragStore);
-}
-
-template <typename TFile, typename TSpec, typename TConfig>
-inline void
-read(
-    TFile & file,
-    FragmentStore<TSpec, TConfig> & fragStore,
-    Gtf)
-{
-    read(file, fragStore, Gff());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -359,31 +344,23 @@ _writeCommonGffGtfInfo(
     TAnnotation & annotation,
     TId /*id*/)
 {
-
     typedef FragmentStore<TSpec, TConfig>       TFragmentStore;
     typedef typename TFragmentStore::TContigPos TContigPos;
 
+    clear(record);
+
     // write column 1: contig name
     if (annotation.contigId < length(store.contigNameStore))
-    {
         if (length(store.contigNameStore[annotation.contigId]) > 0u)
-        {
             record.ref = store.contigNameStore[annotation.contigId];
-        }
-    }
 
     // skip column 2: source
     record.source = ".";
 
     // write column 3: type
     if (annotation.typeId < length(store.annotationTypeStore))
-    {
         if (length(store.annotationTypeStore[annotation.typeId]) > 0u)
-        {
             record.type = store.annotationTypeStore[annotation.typeId];
-        }
-
-    }
 
     TContigPos beginPos = annotation.beginPos;
     TContigPos endPos = annotation.endPos;
@@ -398,15 +375,11 @@ _writeCommonGffGtfInfo(
 
     // write column 4: begin position
     if (beginPos != TAnnotation::INVALID_POS)
-    {
         record.beginPos = beginPos;
-    }
 
     // write column 5: end position
     if (endPos != TAnnotation::INVALID_POS)
-    {
         record.endPos = endPos;
-    }
 
     // skip column 6: score
 
@@ -414,26 +387,22 @@ _writeCommonGffGtfInfo(
     record.strand = orientation;
 }
 
-template <typename TTargetStream, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
 _writeOneAnnotation(
-    TTargetStream & target,
+    GffRecord & record,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
     TId id,
     Gff)
 {
-
     if (id == 0)
         return false;
-
-    GffRecord record;
 
     _writeCommonGffGtfInfo(record, store, annotation, id);
 
     // write column 9: group
     // write column 9.1: annotation id
-    String<char> temp;
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
         appendValue(record.tagName, "ID");
@@ -459,25 +428,21 @@ _writeOneAnnotation(
             appendValue(record.tagName, store.annotationKeyStore[keyId]);
             appendValue(record.tagValue, annotation.values[keyId]);
         }
-
-    return writeRecord(target, record, Gff());
 }
 
-template <typename TTargetStream, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
 _writeOneAnnotation(
-    TTargetStream & target,
+    GffRecord & record,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
     TId id,
     Gtf)
 {
-    typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 
     if (annotation.typeId <= TFragmentStore::ANNO_MRNA)
         return false;
-
-    GffRecord record;
 
     _writeCommonGffGtfInfo(record, store, annotation, id);
 
@@ -493,16 +458,15 @@ _writeOneAnnotation(
     while (geneId < length(store.annotationStore) && store.annotationStore[geneId].typeId != TFragmentStore::ANNO_GENE)
         geneId = store.annotationStore[geneId].parentId;
 
-    CharString tmpStr;
-    if (geneId < length(store.annotationStore) && annotationGetValueByKey(store, store.annotationStore[geneId], "gene_name", tmpStr))
+    if (geneId < length(store.annotationStore))
     {
         appendValue(record.tagName, "gene_name");
-        appendValue(record.tagValue, tmpStr);
+        appendValue(record.tagValue, annotationGetValueByKey(store, store.annotationStore[geneId], "gene_name"));
     }
-    if (transcriptId < length(store.annotationStore) && annotationGetValueByKey(store, store.annotationStore[transcriptId], "transcript_name", tmpStr))
+    if (transcriptId < length(store.annotationStore))
     {
         appendValue(record.tagName, "transcript_name");
-        appendValue(record.tagValue, tmpStr);
+        appendValue(record.tagValue, annotationGetValueByKey(store, store.annotationStore[transcriptId], "transcript_name"));
     }
 
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
@@ -533,8 +497,6 @@ _writeOneAnnotation(
         appendValue(record.tagName, "transcript_id");
         appendValue(record.tagValue, getAnnoUniqueName(store, transcriptId));
     }
-
-    return writeRecord(target, record, Gtf());
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormat>
@@ -542,7 +504,7 @@ inline void
 _writeGffGtf(
     TTargetStream & target,
     FragmentStore<TSpec, TConfig> & store,
-    TFormat format)
+    TFormat const &format)
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
     typedef typename TFragmentStore::TAnnotationStore               TAnnotationStore;
@@ -553,8 +515,14 @@ _writeGffGtf(
     TAnnoIter it = begin(store.annotationStore, Standard());
     TAnnoIter itEnd = end(store.annotationStore, Standard());
 
+    GffRecord record;
+    typename DirectionIterator<TTargetStream, Output>::Type iter = directionIterator(target, Output());
+
     for (TId id = 0; it != itEnd; ++it, ++id)
-        _writeOneAnnotation(target, store, *it, id, format);
+    {
+        if (_writeOneAnnotation(record, store, *it, id, format))
+            writeRecord(iter, record, format);
+    }
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig>

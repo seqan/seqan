@@ -36,18 +36,17 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/align.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/parallel.h>
 #include <seqan/seq_io.h>
 #include <seqan/bam_io.h>
+#include <seqan/gff_io.h>
+#include <seqan/ucsc_io.h>
 #include <seqan/misc/misc_name_store_cache.h>
 
 #include <sstream>
 #include <algorithm>
 #include <set>
-
-//TODO(singer): #include <seqan/gff_io.h>
-#include <seqan/stream.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // FRAGMENT STORE SUB-CONTAINERS
@@ -67,7 +66,7 @@
 
 #include <seqan/store/store_io.h>
 #include <seqan/store/store_io_sam.h>
-//#include <seqan/store/store_io_gff.h>
-//#include <seqan/store/store_io_ucsc.h>
+#include <seqan/store/store_io_gff.h>
+#include <seqan/store/store_io_ucsc.h>
 
 #endif //#ifndef SEQAN_HEADER_...

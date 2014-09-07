@@ -1165,12 +1165,6 @@ inline void write(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFi
                   FragmentStore<TSpec, TConfig> & store,
                   TBamIOFunctor & functor)
 {
-    typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
-    typedef typename TFragmentStore::TContigNameStore   TContigNameStore;
-    typedef BamIOContext<TContigNameStore>              TBamIOContext;
-
-    TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
-
     // 1. write header
     writeHeader(bamFile, store, functor);
 

@@ -39,8 +39,8 @@ int main(int argc, const char *argv[])
 	if (isSetLong(parser, "read-gff"))
 	{
 		getOptionValueLong(parser, "read-gff", fileName);
-		ifstream file(toCString(fileName), ios_base::in | ios_base::binary);
-		read(file, store, Gff());
+		GffFileIn file(toCString(fileName));
+		read(store, file);
 	}
 	if (isSetLong(parser, "read-ucsc"))
 	{
@@ -48,8 +48,8 @@ int main(int argc, const char *argv[])
 		ifstream file1(toCString(fileName), ios_base::in | ios_base::binary);
 		fileName = getOptionValuesLong(parser, "read-ucsc")[1];
 		ifstream file2(toCString(fileName), ios_base::in | ios_base::binary);
-		read(file1, store, Ucsc());
-		read(file2, store, Ucsc());
+		read(store, file1, Ucsc());
+		read(store, file2, Ucsc());
 	}
 
 	// EXPORT
