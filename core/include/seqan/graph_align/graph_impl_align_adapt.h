@@ -378,25 +378,25 @@ _writeGraphFooter(TFile & file,
 		TSize j = 0;
 		TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();	
 		TVertexDescriptor previousVertex = nilVertex;
-		while(j<length(str[i])) {
+		while(j<length(str[i]))
+        {
 			TVertexDescriptor nextVertex = findVertex(const_cast<TGraph&>(g), seqId, j);
 			if (nextVertex == nilVertex) {
 				++j;
 				continue;
 			}
-			if (previousVertex != nilVertex) {
-				streamPut(file, previousVertex);
-				streamPut(file, " -- ");
-				streamPut(file, nextVertex);
-				streamPut(file, " [");
-				streamPut(file, "len=3.0, arrowhead=vee");
-				streamPut(file, "];\n");
+			if (previousVertex != nilVertex)
+            {
+				write(file, previousVertex);
+				write(file, " -- ");
+				write(file, nextVertex);
+				write(file, " [len=3.0, arrowhead=vee];\n");
 			}
 			previousVertex = nextVertex;
 			j += fragmentLength(g, nextVertex);
 		}
 	}
-	streamPut(file, '\n');
+	writeValue(file, '\n');
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -407,7 +407,7 @@ _writeGraphType(TFile & file,
 				Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
 				DotDrawing)
 {
-    streamPut(file, "graph");
+    write(file, "graph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -418,7 +418,7 @@ _writeEdgeType(TFile & file,
 			   Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
 			   DotDrawing)
 {
-    streamPut(file, " -- ");
+    write(file, " -- ");
 }
 
 }  // namespace seqan

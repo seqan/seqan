@@ -469,7 +469,7 @@ inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressio
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
     SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
@@ -508,7 +508,7 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
 }
 
 template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType const & compressionType)
 {
     TCompressionType ct = compressionType;
@@ -516,7 +516,7 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
 }
 
 template <typename TValue, typename TStream>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension

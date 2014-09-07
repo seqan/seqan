@@ -935,7 +935,7 @@ write(TFile & file,
 		write(file,"PileUp\n");
 		writeValue(file, '\n');
 		write(file," MSF: ");
-		streamPut(file, (unsigned)colLen);
+		appendNumber(file, (unsigned)colLen);
 		write(file," Type: P Check: 0 ..\n\n");
 		TSize offset = 0;
 		for(TSize i = 0; i<nseq; ++i) {
