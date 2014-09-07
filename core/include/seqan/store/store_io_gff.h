@@ -305,8 +305,8 @@ _storeOneAnnotation(
 ///.Function.read.param.tag.type:Tag.File Format.tag.Gtf
 template <typename TSpec, typename TConfig>
 inline void
-read(FragmentStore<TSpec, TConfig> & fragStore,
-     SmartFile<Gff, Input, FragmentStore<TSpec, TConfig> > & gffFile)
+readRecords(FragmentStore<TSpec, TConfig> & fragStore,
+            GffFileIn & gffFile)
 {
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 
@@ -428,6 +428,8 @@ _writeOneAnnotation(
             appendValue(record.tagName, store.annotationKeyStore[keyId]);
             appendValue(record.tagValue, annotation.values[keyId]);
         }
+
+    return true;
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
@@ -497,6 +499,7 @@ _writeOneAnnotation(
         appendValue(record.tagName, "transcript_id");
         appendValue(record.tagValue, getAnnoUniqueName(store, transcriptId));
     }
+    return true;
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormat>
@@ -527,20 +530,18 @@ _writeGffGtf(
 
 template <typename TTargetStream, typename TSpec, typename TConfig>
 inline void
-write(
-    TTargetStream & target,
-    FragmentStore<TSpec, TConfig> & store,
-    Gff format)
+writeRecords(TTargetStream & target,
+             FragmentStore<TSpec, TConfig> & store,
+             Gff format)
 {
     _writeGffGtf(target, store, format);
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig>
 inline void
-write(
-    TTargetStream & target,
-    FragmentStore<TSpec, TConfig> & store,
-    Gtf format)
+writeRecords(TTargetStream & target,
+             FragmentStore<TSpec, TConfig> & store,
+             Gtf format)
 {
     _writeGffGtf(target, store, format);
 }

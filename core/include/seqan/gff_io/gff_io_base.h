@@ -461,7 +461,7 @@ inline void clear(GffRecord & record)
 
 template <typename TFwdIterator>
 inline void
-read(GffRecord & record, TFwdIterator & iter, CharString & buffer)
+readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 

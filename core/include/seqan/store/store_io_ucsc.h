@@ -147,9 +147,9 @@ _storeOneAnnotation(
 
 template <typename TSpec, typename TConfig, typename TFile, typename TFormatSpec>
 inline void
-read(FragmentStore<TSpec, TConfig> & fragStore,
-     TFile & file,
-     Tag<Ucsc_<TFormatSpec> > const &)
+readRecords(FragmentStore<TSpec, TConfig> & fragStore,
+            TFile & file,
+            Tag<Ucsc_<TFormatSpec> > const &)
 {
     typename DirectionIterator<TFile, Input>::Type iter = directionIterator(file, Input());
 
@@ -249,10 +249,9 @@ _retrieveOneAnnotation(
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormatSpec>
 inline void
-write(
-    TTargetStream & target,
-    FragmentStore<TSpec, TConfig> & store,
-    Tag<Ucsc_<TFormatSpec> > const & format)
+writeRecords(TTargetStream & target,
+             FragmentStore<TSpec, TConfig> & store,
+             Tag<Ucsc_<TFormatSpec> > const & format)
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
     typedef typename TFragmentStore::TAnnotationStore               TAnnotationStore;
@@ -260,6 +259,7 @@ write(
     typedef typename Iterator<TAnnotationStore, Standard>::Type     TAnnoIter;
     typedef typename Id<TAnnotation>::Type                          TId;
 
+    typename DirectionIterator<TTargetStream, Output>::Type iter = directionIterator(target, Output());
     UcscRecord record;
 
     TAnnoIter it = begin(store.annotationStore, Standard());
@@ -267,7 +267,7 @@ write(
 
     for (TId id = 0; it != itEnd; ++it, ++id)
         if (_retrieveOneAnnotation(record, store, *it, id, format))
-            write(target, record);
+            writeRecord(iter, record);
 }
 
 } // namespace SEQAN_NAMESPACE_MAIN

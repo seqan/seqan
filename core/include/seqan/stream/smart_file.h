@@ -176,6 +176,16 @@ SEQAN_CONCEPT_IMPL((SmartFile<TFileType, Output, TSpec>), (OutputStreamConcept))
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction DirectionIterator
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+struct DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>
+{
+    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
@@ -212,6 +222,17 @@ struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function directionIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline typename SmartFile<TFileType, TDirection, TSpec>::TIter
+directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection const &)
+{
+    file.iter;
+}
 
 // ----------------------------------------------------------------------------
 // Function setFormat()
