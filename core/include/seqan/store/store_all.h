@@ -2129,11 +2129,11 @@ inline void _printRead(
 	for (; it != itEnd; ++it, ++cit)
 	{
 		if (isGap(it))
-            streamPut(stream, '*');
+            stream << '*';
         else if (convert<Dna5>(*cit) == convert<Dna5>(*it))
-            streamPut(stream, identityChar);
+            stream << identityChar;
         else
-            streamPut(stream, convert<Dna5>(*it));
+            stream << convert<Dna5>(*it);
 	}
 }
 

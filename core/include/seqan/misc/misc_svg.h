@@ -193,27 +193,29 @@ inline bool close(SVGFile &svg)
 }
 
 template <typename TChar>
-inline void
-streamPut(SVGFile & svg, TChar character)
+inline SVGFile &
+operator<<(SVGFile & svg, char character)
 {
-//IOREV
-	if (convert<char>(character) == '\n')
+	if (character == '\n')
 	{
 		++svg.cursor.i2;
 		svg.cursor.i1 = 0;
-	} else if (convert<char>(character) == '\t')
+	}
+    else if (character == '\t')
 	{
 		svg.cursor.i1 = (svg.cursor.i1 & ~7) + 8;
-	} else
+	}
+    else
 	{
-		if (convert<char>(character) != ' ')
+		if (character != ' ')
 		{
 			svg.file << "<g transform=\"translate(" << svg.cursor.i1*20+10 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.text] << '>';
-			streamPut(svg.file, convert<char>(character));
+			svg.file << character;
 			svg.file << "</text></g>" << std::endl;
 		}
 		++svg.cursor.i1;
 	}
+    return svg;
 }
 
 template <typename TFormatTag, typename TContigGaps, typename TContigName>
@@ -259,7 +261,7 @@ inline void _printContig(
 			}
 		}
 	}
-	streamPut(svg, '\n');
+	svg << '\n';
 	
 	int savedStyle = svg.text;
 	svg.text = svg.readText;
@@ -362,7 +364,7 @@ inline void _printRead(
 			if (!inGap && convert<Dna5>(*cit) != convert<Dna5>(*it))
 			{
 				svg.file << "<g transform=\"translate(" << xEnd + 10 << ',' << line << ")\"><text y=\"0.3em\" " << svg.style[svg.readText] << '>';
-				streamPut(svg.file, convert<char>(*it));
+				svg << convert<char>(*it);
 				svg.file << "</text></g>" << std::endl;
 				x += 20;
 				arrow = 0;
@@ -377,8 +379,11 @@ inline void _printRead(
 			{
 				arrow = 2;
 				xEnd -= 10;
-			} else
+			}
+            else
+            {
 				xEnd -= 5;
+            }
 		}
 		svg.file << first << x << "\" y1=\"" << line << second << xEnd;
 		svg.file << "\" y2=\"" << line << "\" " << svg.style[style + arrow + lastWasGap] << " />" << std::endl;
