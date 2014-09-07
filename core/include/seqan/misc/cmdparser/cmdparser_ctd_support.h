@@ -80,21 +80,39 @@ _join(StringSet<TValue> const & v, CharString const & delimiter)
 template <typename TSequence>
 inline TSequence _xmlEscape(TSequence const & original)
 {
+    typedef typename Iterator<TSequence const, Standard>::Type TIter;
     TSequence escaped;
-    for (typename Iterator<TSequence const, Rooted>::Type ch  = begin(original); ch != end(original); goNext(ch))
+    TIter iterEnd = end(original, Standard());
+    for (TIter ch = begin(original, Standard()); ch != iterEnd; ++ch)
     {
-        if (value(ch) == '"')
+        if (getValue(ch) == '"')
             append(escaped, "&quot;");
-        else if (value(ch) == '\'')
+        else if (getValue(ch) == '\'')
             append(escaped, "&apos;");
-        else if (value(ch) == '&')
+        else if (getValue(ch) == '&')
             append(escaped, "&amp;");
-        else if (value(ch) == '<')
+        else if (getValue(ch) == '<')
             append(escaped, "&lt;");
-        else if (value(ch) == '>')
+        else if (getValue(ch) == '>')
             append(escaped, "&gt;");
         else
-            append(escaped, *ch);
+            appendValue(escaped, getValue(ch));
+    }
+    return escaped;
+}
+
+template <typename TSequence, typename TSpec>
+inline TSequence _xmlEscape(String<TSequence, TSpec> const & original)
+{
+    typedef String<TSequence, TSpec>        TStrings;
+    typedef typename Size<TStrings>::Type   TSize;
+
+    TSequence escaped;
+    for (TSize i = 0; i < length(original); ++i)
+    {
+        if (i != 0)
+            append(escaped, "\n");
+        append(escaped, _xmlEscape(original[i]));
     }
     return escaped;
 }

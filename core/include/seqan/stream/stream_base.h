@@ -604,7 +604,8 @@ write(TTarget &target, TValue * ptr)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TFwdIterator, typename TSize>
-inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TSize> >, TSize)
+read(TTarget &target, TFwdIterator &iter, TSize n)
 {
     TSize i;
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)

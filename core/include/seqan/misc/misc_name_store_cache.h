@@ -218,7 +218,7 @@ inline void
 refresh(NameStoreCache<TNameStore, TName> &cache)
 {
     cache.nameSet.clear();
-    for (unsigned i = 0; i < length(*cache.nameStore); ++i)
+    for (unsigned i = 0; i < length(*cache.nameSet.key_comp().nameStore); ++i)
         cache.nameSet.insert(i);
 }
 
