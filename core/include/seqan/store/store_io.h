@@ -659,7 +659,7 @@ read(TFile & file,
 template <typename TTarget, typename TSpec, typename TConfig>
 inline void
 write(TTarget & target,
-	  FragmentStore<TSpec, TConfig>& fragStore,
+	  FragmentStore<TSpec, TConfig> & fragStore,
 	  Amos)
 {
     // Basic types

@@ -69,7 +69,7 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<Gff,
