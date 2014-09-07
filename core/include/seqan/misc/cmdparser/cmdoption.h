@@ -555,6 +555,7 @@ operator<<(TStream & target, CommandLineOption const & me)
     target << ((empty(me.shortName) || empty(me.longName)) ? "" : ", ");
     if (!empty(me.longName))
         target << "--" << me.longName;
+    return target;
 }
 
 // ----------------------------------------------------------------------------

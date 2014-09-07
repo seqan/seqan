@@ -95,33 +95,17 @@ _mapFileFormatToCompressionFormat(Gtf)
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); GffRecord
+// Function readRecord(); GffRecord
 // ----------------------------------------------------------------------------
 
-// support for dynamically chosen file formats
-template <typename TForwardIter>
-inline void
-readRecord(GffRecord & /* record */,
-           CharString & /* buffer */,
-           TForwardIter & /* iter */,
-           TagSelector<> const & /* format */)
-{
-    SEQAN_FAIL("GffFileIn: File format not specified.");
-}
-
-template <typename TForwardIter, typename TTagList>
+template <typename TForwardIter, typename TFormats>
 inline void
 readRecord(GffRecord & record,
            CharString & buffer,
            TForwardIter & iter,
-           TagSelector<TTagList> const & format)
+           TagSelector<TFormats> const & /* format */)  // format is ignored as it will be autodetected per record
 {
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        readRecord(record, context, iter, TFormat());
-    else
-        readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    readRecord(record, buffer, iter);
 }
 
 // convient GffFile variant
@@ -139,10 +123,10 @@ readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 // support for dynamically chosen file formats
 template <typename TTarget>
 inline void
-write(TTarget & /* target */,
-      GffRecord & /* record */,
-      CharString & /* buffer */,
-      TagSelector<> const & /* format */)
+writeRecord(TTarget & /* target */,
+            GffRecord & /* record */,
+            CharString & /* buffer */,
+            TagSelector<> const & /* format */)
 {
     SEQAN_FAIL("GffFileOut: File format not specified.");
 }
@@ -157,9 +141,9 @@ writeRecord(TTarget & target,
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        write(target, record, buffer, TFormat());
+        writeRecord(target, record, buffer, TFormat());
     else
-        write(target, record, buffer, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        writeRecord(target, record, buffer, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 template <typename TSpec>

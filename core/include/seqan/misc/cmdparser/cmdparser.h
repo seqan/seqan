@@ -614,7 +614,7 @@ printHelp(CommandLineParser const & me, std::ostream & target)
     _printTitle(me, target);
     target << '\n';
     _printUsage(me, target);
-    streamPut(target, '\n');
+    target << '\n';
 
     for (unsigned o = 0; o < length(me.optionMap); ++o)
     {

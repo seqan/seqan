@@ -84,10 +84,9 @@ struct UcscContext
 
 template <typename TForwardIter>
 inline void
-readRecord(
-    UcscRecord & record,
-    TForwardIter & iter,
-    UcscContext & ucscContext)
+readRecord(UcscRecord & record,
+           TForwardIter & iter,
+           UcscContext & ucscContext)
 {
     OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> > nextRecord;
 
@@ -212,9 +211,8 @@ readRecord(
 
 template <typename TTarget>
 inline void
-writeRecord(
-    TTarget & target,
-    UcscRecord & record)
+writeRecord(TTarget & target,
+            UcscRecord & record)
 {
     unsigned suf = 0;
     if (record.format == record.KNOWN_ISOFORMS && length(record.transName) >= 4 && prefix(record.transName, 4) == "GENE")
