@@ -323,6 +323,49 @@ struct AsyncDummyRequest {};
 
 typedef std::ios_base::failure  IOError;
 
+// ----------------------------------------------------------------------------
+// Exception FileOpenError
+// ----------------------------------------------------------------------------
+
+struct FileOpenError : IOError
+{
+public:
+    FileOpenError(const char *fileName):
+        IOError((std::string)"Could not open file " + fileName)
+    {}
+
+protected:
+    FileOpenError(std::string const &msg):
+        IOError(msg)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Exception UnknownFileFormat
+// ----------------------------------------------------------------------------
+
+struct UnknownFileFormat : FileOpenError
+{
+    UnknownFileFormat():
+        FileOpenError(std::string("Could not detect file format"))
+    {}
+
+    UnknownFileFormat(const char *fileName):
+        FileOpenError(std::string("Could not detect file format of ") + fileName)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Exception UnknownExtensionError
+// ----------------------------------------------------------------------------
+
+struct UnknownExtensionError : FileOpenError
+{
+    UnknownExtensionError(const char *fileName):
+        FileOpenError(std::string("Unknown file extension of ") + fileName)
+    {}
+};
+
 }  // namespace seqan;
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
