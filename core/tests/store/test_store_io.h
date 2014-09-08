@@ -52,7 +52,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT(fin.good());
     seqan::FragmentStore<> store;
     readRecords(store, fin, seqan::Ucsc());
-/*
+
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
 
@@ -161,7 +161,6 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     goNext(it);
 
     SEQAN_ASSERT(atEnd(it));
-    */
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
@@ -455,8 +454,8 @@ void _writeStore(TFragStore &store, std::string const &outPath, char const *suff
 
     std::string outPathTxt = outPath + suffix;
     std::ofstream file(toCString(outPathTxt));
-    printAlignment(file, Raw(), layout, store, 0, 0, 1030, 0, 36);
-    printAlignment(file, Raw(), layout, store, 1, 0, 1030, 0, 36);
+    printAlignment(file, layout, store, 0, 0, 1030, 0, 36);
+    printAlignment(file, layout, store, 1, 0, 1030, 0, 36);
     file.close();
 
     std::string goldPathTxt = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge" + suffix;
@@ -555,7 +554,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
 
     // Write out contigs and SAM file.
     BamFileOut fSamOut(toCString(outPathSam));
-    write(fSamOut, store);
+    writeRecords(fSamOut, store);
     close(fSamOut);
 
     SeqFileOut fFastaOut(toCString(outPathFasta));
@@ -592,7 +591,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
     seqan::FragmentStore<> store;
     loadContigs(store, toCString(inPathFasta));
     BamFileIn fSamIn(toCString(inPathSam));
-    read(store, fSamIn);
+    readRecords(store, fSamIn);
 
     // Write out AMOS file.
     std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);

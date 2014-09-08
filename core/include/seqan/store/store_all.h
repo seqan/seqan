@@ -2105,17 +2105,16 @@ void layoutAlignment(AlignedReadLayout &layout, FragmentStore<TSpec, TConfig> &s
 	}
 }
 
-template <typename TStream, typename TFormatTag, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
+template <typename TStream, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
 	TStream &stream, 
-	Tag<TFormatTag> const & /*format*/,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TReadGaps &readGaps,
 	TAlignedRead &alignedRead,
 	TLine)
 {
-//	write(stream, readGaps, "", format);
+//	stream << readGaps;
 
 	typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
 	typedef typename Iterator<TReadGaps, Standard>::Type TIterator;
@@ -2137,25 +2136,23 @@ inline void _printRead(
 	}
 }
 
-template <typename TStream, typename TFormatTag, typename TContigGaps, typename TContigName>
+template <typename TStream, typename TContigGaps, typename TContigName>
 inline void _printContig(
 	TStream &stream,
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TContigName const &)
 {
-	write(stream, contigGaps, "", format);
+	stream << contigGaps;
 }
 
 /*!
  * @fn AlignedReadLayout#printAlignment
  * @brief Prints a window of the visible layout of reads into a std::outstream.
  *
- * @signature void printAlignment(stream, format, layout, store, contigID, posBegin, posEnd, lineBegin, lineEnd);
+ * @signature void printAlignment(stream, layout, store, contigID, posBegin, posEnd, lineBegin, lineEnd);
  *
  * @param[in,out] stream    The std::ostream to print to.
- * @param[in]     format    The output format, e.g. <tt>Raw</tt>.
  * @param[in]     layout    The @link AlignedReadLayout @endlink computed earlier in @link
  *                          AlignedReadLayout#layoutAlignment @endlink.
  * @param[in]     store     The FragmentStore that this layout belongs to.
@@ -2174,13 +2171,10 @@ inline void _printContig(
 ..class:Class.AlignedReadLayout
 ..summary:Prints a window of the visible layout of reads into a outstream.
 ..cat:Fragment Store
-..signature:printAlignment(stream, format, layout, store, contigId, posBegin, posEnd, lineBegin, lineEnd)
+..signature:printAlignment(stream, layout, store, contigId, posBegin, posEnd, lineBegin, lineEnd)
 ..param.stream:A C++ outstream, e.g. std::cout.
 ..param.layout:A layout structure created by a previous call of @Function.layoutAlignment@.
 ...type:Class.AlignedReadLayout
-..param.format:Output format.
-...type:Tag.File Format.tag.Raw
-...remarks: This tag is used for subsequent calls of @Function.write@ for contig and read gaps data structures.
 ..param.store:The fragment store.
 ...type:Class.FragmentStore
 ..param.contigId:The $contigId$ of the affected contig.
@@ -2194,11 +2188,10 @@ The empty space is then filled with whitespaces.
 ..include:seqan/store.h
 */
 
-template <typename TStream, typename TFormatTag, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
+template <typename TStream, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
 void printAlignment(
 	TStream &stream, 
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &layout, 
+	AlignedReadLayout &layout,
 	FragmentStore<TSpec, TConfig> &store, 
 	TContigId contigId,
 	TPos posBegin, TPos posEnd,
@@ -2233,7 +2226,7 @@ void printAlignment(
 //		TContigGaps	contigGaps(store.contigStore[contigId].seq, store.contigStore[contigId].gaps);
 		setClippedBeginPosition(contigGaps, posBegin);
 		setClippedEndPosition(contigGaps, posEnd);
-		_printContig(stream, format, layout, contigGaps, store.contigNameStore[contigId]);
+		_printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
 		stream << '\n';
 	} else
 		stream << '\n';
@@ -2302,7 +2295,7 @@ void printAlignment(
 			if (posEnd < (TPos)cEnd)
 				setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
 			
-			_printRead(stream, format, layout, contigGaps, readGaps, align, line);
+			_printRead(stream, layout, contigGaps, readGaps, align, line);
 			cursor = cEnd;
 		}
 		stream << '\n';

@@ -145,9 +145,9 @@ Note that qualities are expected to be in PHRED scale.
 ..include:seqan/basic.h
 */
 
-// TODO(holtgrew): Uncomment, place somewhere that knows both iterators and assignQualityValue, maybe in module sequence?
 template <typename TDest, typename TSource>
-void assignQualities(TDest &dst, TSource const &src)
+inline void
+_assignQualities(TDest &dst, TSource const &src, True)
 {
     typedef typename Iterator<TDest>::Type TDestIter;
     typedef typename Iterator<TSource const>::Type TSourceIter;
@@ -160,6 +160,20 @@ void assignQualities(TDest &dst, TSource const &src)
 
     for (TSourceIter itSrc = begin(src, Standard()); itSrc != itSrcEnd; ++itDst, ++itSrc)
         assignQualityValue(*itDst, *itSrc);
+}
+
+template <typename TDest, typename TSource>
+inline void
+_assignQualities(TDest &, TSource const &, False)
+{}
+
+// TODO(holtgrew): Uncomment, place somewhere that knows both iterators and assignQualityValue, maybe in module sequence?
+template <typename TDest, typename TSource>
+inline void
+assignQualities(TDest &dst, TSource const &src)
+{
+    typedef typename Value<TDest>::Type TValue;
+    _assignQualities(dst, src, typename Or<IsSameType<TValue, DnaQ>, IsSameType<TValue, Dna5Q> >::Type());
 }
 
 template <typename T>

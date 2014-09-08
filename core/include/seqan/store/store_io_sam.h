@@ -329,7 +329,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     resize(store.contigStore, length(store.contigNameStore));
 
     // Read in alignments section
-    _readAlignments(store, contigAnchorGaps, matchMateInfos, iter, format, importFlags);
+    _readAlignments(store, contigAnchorGaps, matchMateInfos, ctx, iter, format, importFlags);
     
     if (importFlags.importReadAlignment)
     {
@@ -350,7 +350,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     typedef typename TFragmentStore::TContigNameStore       TContigNameStore;
     typedef NameStoreCache<TContigNameStore, CharString>    TContigNameStoreCache;
 
-    BamIOContext<TNameStore, TNameStoreCache, Dependent<> > ctx;
+    BamIOContext<TContigNameStore, TContigNameStoreCache, Dependent<> > ctx;
 
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
     setNameStore(ctx, store.contigNameStore);
@@ -753,9 +753,9 @@ _fillHeader(BamHeader & header,
 // Function writeHeader()
 // --------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TBamIOFunctor>
-inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
-                        FragmentStore<TSpec, TConfig> & store,
+template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
+inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
+                        FragmentStore<TFSSpec, TFSConfig> & store,
                         TBamIOFunctor & functor)
 {
     BamHeader header;
@@ -771,9 +771,9 @@ inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > &
     writeRecord(bamFile, header);
 }
 
-template <typename TSpec, typename TConfig>
-inline void writeHeader(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
-                        FragmentStore<TSpec, TConfig> & store)
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
+inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
+                        FragmentStore<TFSSpec, TFSConfig> & store)
 {
     Nothing nothing;
     writeHeader(bamFile, store, nothing);
@@ -994,14 +994,13 @@ setMateMatch(BamAlignmentRecord & record,
 // Function writeAlignments()
 // --------------------------------------------------------------------------
 
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec,
-          typename TSpec, typename TConfig, typename TBamIOFunctor>
+template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
 inline void
-writeAlignments(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
-                FragmentStore<TSpec, TConfig> & store,
+writeAlignments(SmartFile<Bam, Output, TSpec> & bamFile,
+                FragmentStore<TFSSpec, TFSConfig> & store,
                 TBamIOFunctor & functor)
 {
-    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+    typedef FragmentStore<TFSSpec, TFSConfig>                       TFragmentStore;
 
     typedef typename TFragmentStore::TReadStore                     TReadStore;
     typedef typename Value<TReadStore>::Type                        TReadStoreElement;
@@ -1082,11 +1081,10 @@ writeAlignments(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile
 // Function writeRecords()
 // --------------------------------------------------------------------------
 
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec,
-          typename TSpec, typename TConfig, typename TBamIOFunctor>
+template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
 inline void
-writeRecords(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
-             FragmentStore<TSpec, TConfig> & store,
+writeRecords(SmartFile<Bam, Output, TSpec> & bamFile,
+             FragmentStore<TFSSpec, TFSConfig> & store,
              TBamIOFunctor & functor)
 {
     // 1. write header
@@ -1096,11 +1094,10 @@ writeRecords(SmartFile<Bam, Output, FragmentStore<TSpec, TConfig> > & bamFile,
     writeAlignments(bamFile, store, functor);
 }
 
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec,
-          typename TSpec, typename TConfig>
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
-writeRecords(SmartFile<TNameStore, TNameStoreCache, TStorageSpec> & bamFile,
-             FragmentStore<TSpec, TConfig> & store)
+writeRecords(SmartFile<Bam, Output, TSpec> & bamFile,
+             FragmentStore<TFSSpec, TFSConfig> & store)
 {
     BamAlignFunctorDefault functor;
     writeRecords(bamFile, store, functor);
