@@ -228,7 +228,7 @@ struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline typename SmartFile<TFileType, TDirection, TSpec>::TIter
+inline typename SmartFile<TFileType, TDirection, TSpec>::TIter &
 directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection const &)
 {
     return file.iter;

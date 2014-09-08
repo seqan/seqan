@@ -219,11 +219,10 @@ operator<<(SVGFile & svg, TCharacter character)
     return svg;
 }
 
-template <typename TFormatTag, typename TContigGaps, typename TContigName>
+template <typename TContigGaps, typename TContigName>
 inline void _printContig(
 	SVGFile &svg, 
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TContigName const &contigName)
 {
@@ -266,14 +265,13 @@ inline void _printContig(
 	
 	int savedStyle = svg.text;
 	svg.text = svg.readText;
-	write(svg, contigGaps, "", format);
+	svg << contigGaps;
 	svg.text = savedStyle;
 }
 
-template <typename TFormatTag, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
+template <typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
 	SVGFile &svg, 
-	Tag<TFormatTag> const &,
 	AlignedReadLayout &layout, 
 	TContigGaps &contigGaps,
 	TReadGaps &readGaps,
