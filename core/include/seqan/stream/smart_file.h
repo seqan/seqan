@@ -231,7 +231,7 @@ template <typename TFileType, typename TDirection, typename TSpec>
 inline typename SmartFile<TFileType, TDirection, TSpec>::TIter
 directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection const &)
 {
-    file.iter;
+    return file.iter;
 }
 
 // ----------------------------------------------------------------------------

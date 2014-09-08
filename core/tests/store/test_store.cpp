@@ -43,7 +43,6 @@ SEQAN_BEGIN_TESTSUITE(test_store)
 {
     // the UCSC knownGene format
     SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
-    /*
     SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
 
     // the gff format
@@ -65,6 +64,5 @@ SEQAN_BEGIN_TESTSUITE(test_store)
 #if SEQAN_HAS_ZLIB
     SEQAN_CALL_TEST(test_store_io_read_bam);
 #endif  // #if SEQAN_HAS_ZLIB
-    */
 }
 SEQAN_END_TESTSUITE

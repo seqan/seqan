@@ -559,7 +559,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
     close(fSamOut);
 
     SeqFileOut fFastaOut(toCString(outPathFasta));
-    writeContigs(fFastaOut, store, seqan::Fasta());
+    writeContigs(fFastaOut, store);
     close(fFastaOut);
 
     // Compare result.
