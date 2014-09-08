@@ -189,7 +189,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 SEQAN_DEFINE_TEST(test_store_io_read_gff)
 {
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/store/example_gff.tsv");
+    append(gffPath, "/core/tests/store/example.gff");
 
     GffFileIn f(toCString(gffPath));
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
@@ -235,20 +235,17 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gff)
 {
-    seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/store/example_gff.tsv");
+    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
+    append(goldPath, "/core/tests/store/example.gff");
 
-    GffFileIn fin(toCString(gffPath));
+    GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
     readRecords(store, fin);
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
+    append(outPath, ".gff");
     GffFileOut fout(toCString(outPath), std::ios::binary | std::ios::out);
-    writeRecords(fout, store, seqan::Gff());
-
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_gff.tsv");
+    writeRecords(fout, store);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
@@ -258,7 +255,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
 
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/core/tests/store/example_gtf.tsv");
+    append(gtfPath, "/core/tests/store/example.gtf");
 
     GffFileIn fin(toCString(gtfPath));
     seqan::FragmentStore<> store;
@@ -373,20 +370,17 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gtf)
 {
-    seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/core/tests/store/example_gtf.tsv");
+    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
+    append(goldPath, "/core/tests/store/example.gtf");
 
-    GffFileIn fin(toCString(gtfPath));
+    GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
     readRecords(store, fin);
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
+    append(outPath, ".gtf");
     GffFileOut fout(toCString(outPath), std::ios::binary | std::ios::out);
-    writeRecords(fout, store, seqan::Gtf());
-
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_gtf.tsv");
+    writeRecords(fout, store);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }

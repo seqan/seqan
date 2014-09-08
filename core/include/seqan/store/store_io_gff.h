@@ -546,6 +546,17 @@ writeRecords(TTargetStream & target,
     _writeGffGtf(target, store, format);
 }
 
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
+inline void
+writeRecords(SmartFile<Gff, Output, TSpec> & gffFile,
+             FragmentStore<TFSSpec, TFSConfig> & store)
+{
+    if (isEqual(format(gffFile), Gtf()))
+        _writeGffGtf(gffFile, store, Gtf());
+    else
+        _writeGffGtf(gffFile, store, Gff());
+}
+
 } // namespace SEQAN_NAMESPACE_MAIN
 
 #endif //#ifndef SEQAN_HEADER_...

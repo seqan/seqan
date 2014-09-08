@@ -103,16 +103,14 @@ struct SmartFile
         iter(stream),
         context(data_context)
     {
-        if (!open(*this, fileName, openMode))
-            SEQAN_THROW(IOError(std::string("Could not open file ") + fileName));
+        _open(*this, fileName, openMode, True());
     }
 
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         iter(stream),
         context(otherCtx)
     {
-        if (!open(*this, fileName, openMode))
-            SEQAN_THROW(IOError(std::string("Could not open file ") + fileName));
+        _open(*this, fileName, openMode, True());
     }
 
     // stream based c'tors
@@ -239,7 +237,7 @@ directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection con
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline FileFormat<SmartFile<TFileType, TDirection, TSpec> > &
+inline typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type &
 format(SmartFile<TFileType, TDirection, TSpec> & file)
 {
     return file.format;
@@ -329,17 +327,25 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // Function open(stream)
 // --------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TStream>
-inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
-                 TStream &stream)
+template <typename TFileType, typename TDirection, typename TSpec, typename TStream, typename TThrowExceptions>
+inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
+                  TStream &stream, TThrowExceptions = True())
 {
     typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
 
     if (!open(file.stream, stream, _mapFileFormatToCompressionFormat(file.format)))
+    {
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(UnknownFileFormat());
         return false;
+    }
 
     if (!guessFormat(file))
+    {
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(UnknownFileFormat());
         return false;
+    }
 
     file.iter = TIter(file.stream);
 
@@ -352,7 +358,7 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  Tag<TFormat_> format)
 {
     setFormat(file, format);
-    return open(file, stream);
+    return _open(file, stream, False());
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormats>
@@ -361,29 +367,46 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  TagSelector<TFormats> format)
 {
     setFormat(file, format);
-    return open(file, stream);
+    return _open(file, stream, False());
 }
 
 // ----------------------------------------------------------------------------
 // Function open(fileName)
 // ----------------------------------------------------------------------------
 
+template <typename TFileType, typename TDirection, typename TSpec, typename TThrowExceptions>
+inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
+                  const char *fileName,
+                  int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
+                  TThrowExceptions = True())
+{
+    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
+
+    if (!guessFormatFromFilename(fileName, file.format))
+    {
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(UnknownExtensionError(fileName));
+        return false;
+    }
+
+    if (!open(file.stream, fileName, openMode))
+    {
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(FileOpenError(fileName));
+        return false;
+    }
+
+    file.iter = TIter(file.stream);
+
+    return true;
+}
+
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
                  const char *fileName,
                  int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE)
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
-
-    if (!guessFormatFromFilename(fileName, file.format))
-        return false;
-
-    if (!open(file.stream, fileName, openMode))
-        return false;
-
-    file.iter = TIter(file.stream);
-
-    return true;
+    return _open(file, fileName, openMode, False());
 }
 
 // ----------------------------------------------------------------------------

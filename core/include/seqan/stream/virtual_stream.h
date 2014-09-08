@@ -534,7 +534,7 @@ open(VirtualStream<TValue, TDirection> &stream,
 
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
 
-    if (!open(stream.file, fileName, openMode | std::ios::binary))
+    if (!open(stream.file, fileName, openMode))
         return false;
 
     // detect compression type from file extension

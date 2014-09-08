@@ -358,7 +358,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 
-    readRecords(store, ctx, directionIterator(bamFile, Input()), bamFile.format, importFlags);
+    readRecords(store, ctx, directionIterator(bamFile, Input()), format(bamFile), importFlags);
 
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
