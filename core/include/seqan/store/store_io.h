@@ -952,12 +952,12 @@ write(TTarget & target,
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/store.h
 */
-template <typename TStream, typename TFSSpec, typename TFSConfig, typename TFormat>
-bool writeContigs(TStream & file, FragmentStore<TFSSpec, TFSConfig> & store, TFormat const &)
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
+bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
 {
 //IOREV _doc_
 	for (unsigned i = 0; i < length(store.contigNameStore); ++i)
-		write(file, store.contigStore[i].seq, store.contigNameStore[i], TFormat());
+		writeRecord(file, store.contigNameStore[i], store.contigStore[i].seq);
 	return true;
 }
 
