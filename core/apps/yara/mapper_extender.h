@@ -61,9 +61,7 @@ struct HitsExtender
     typedef typename Traits::TRanks            TRanks;
     typedef typename Traits::TSA               TSA;
 
-    typedef AlignTextBanded<FindPrefix, NMatchesNone_, NMatchesNone_> TMyersSpec;
-    typedef Myers<TMyersSpec, True, void>               TAlgorithm;
-    typedef Extender<TContigSeqs, TReadSeq, TAlgorithm> TExtender;
+    typedef Extender<TContigSeqs, TReadSeq, EditDistance> TExtender;
 
     // Thread-private data.
     TExtender           extender;
