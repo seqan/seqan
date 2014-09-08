@@ -200,6 +200,9 @@ _retrieveOneAnnotation(
     clear(record.exonBegin);
     clear(record.exonEnd);
 
+    record.annotationBeginPos = annotation.beginPos;
+    record.annotationEndPos = annotation.endPos;
+
     TId lastChildId = annotation.lastChildId;
     TId i = lastChildId;
     do
