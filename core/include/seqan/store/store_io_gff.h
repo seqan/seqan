@@ -460,15 +460,18 @@ _writeOneAnnotation(
     while (geneId < length(store.annotationStore) && store.annotationStore[geneId].typeId != TFragmentStore::ANNO_GENE)
         geneId = store.annotationStore[geneId].parentId;
 
-    if (geneId < length(store.annotationStore))
+    typename Id<TAnnotation>::Type valueId;
+    if (geneId < length(store.annotationStore) &&
+        (valueId = annotationGetValueIdByKey(store, store.annotationStore[geneId], "gene_name")) != TAnnotation::INVALID_ID)
     {
         appendValue(record.tagName, "gene_name");
-        appendValue(record.tagValue, annotationGetValueByKey(store, store.annotationStore[geneId], "gene_name"));
+        appendValue(record.tagValue, store.annotationStore[geneId].values[valueId]);
     }
-    if (transcriptId < length(store.annotationStore))
+    if (transcriptId < length(store.annotationStore) &&
+        (valueId = annotationGetValueIdByKey(store, store.annotationStore[transcriptId], "transcript_name")) != TAnnotation::INVALID_ID)
     {
         appendValue(record.tagName, "transcript_name");
-        appendValue(record.tagValue, annotationGetValueByKey(store, store.annotationStore[transcriptId], "transcript_name"));
+        appendValue(record.tagValue, store.annotationStore[transcriptId].values[valueId]);
     }
 
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))

@@ -244,8 +244,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_gff)
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".gff");
-    GffFileOut fout(toCString(outPath), std::ios::binary | std::ios::out);
+    GffFileOut fout(toCString(outPath));
     writeRecords(fout, store);
+    close(fout);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
@@ -379,8 +380,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_gtf)
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".gtf");
-    GffFileOut fout(toCString(outPath), std::ios::binary | std::ios::out);
+    GffFileOut fout(toCString(outPath));
     writeRecords(fout, store);
+    close(fout);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
@@ -516,10 +518,9 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     // 3. WRITE SAM ALIGNMENTS
     CharString outFileName = SEQAN_TEMP_FILENAME();
     // Write Sam to temp file.
-    {
-        BamFileOut outFile(toCString(outFileName));
-        writeRecords(outFile, store);
-    }
+    BamFileOut outFile(toCString(outFileName));
+    writeRecords(outFile, store);
+    close(outFile);
 
     // 4. COMPARE BOTH SAM FILES
     CharString samFileName = SEQAN_PATH_TO_ROOT();
@@ -543,7 +544,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
     seqan::FragmentStore<> store;
     std::fstream fAmosIn(toCString(inPath), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fAmosIn.good());
-    int res = read(fAmosIn, store, seqan::Amos());
+    int res = read(store, fAmosIn, seqan::Amos());
     SEQAN_ASSERT_EQ(res, 0);
 
     // Write out contigs and SAM file.
@@ -595,5 +596,29 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
     // Compare result.
     seqan::CharString goldPathAmos = SEQAN_PATH_TO_ROOT();
     append(goldPathAmos, "/core/tests/store/sam_to_amos_result.amos");
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
+}
+
+// Read SAM and write out as AMOS.  The resulting AMOS file is compared to a gold standard file.
+SEQAN_DEFINE_TEST(test_store_io_readwrite_amos)
+{
+    // Get path to input files.
+    std::string goldPathAmos = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/toy.amos";
+    // Get path to temporary file.
+    std::string outPathAmos = SEQAN_TEMP_FILENAME();
+
+    // Read in AMOS.
+    seqan::FragmentStore<> store;
+    std::fstream fAmosIn(toCString(goldPathAmos), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fAmosIn.good());
+    int res = read(store, fAmosIn, seqan::Amos());
+    SEQAN_ASSERT_EQ(res, 0);
+
+    // Write out AMOS file.
+    std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);
+    write(fAmosOut, store, seqan::Amos());
+    fAmosOut.close();
+
+    // Compare result.
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
 }

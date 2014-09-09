@@ -192,8 +192,8 @@ void readAmosKeyValue(TKey &key, TValue &value, TIter &reader)
 
 template<typename TFile, typename TSpec, typename TConfig>
 inline int
-read(TFile & file,
-	 FragmentStore<TSpec, TConfig>& fragStore,
+read(FragmentStore<TSpec, TConfig>& fragStore,
+     TFile & file,
 	 Amos)
 {
 	// Basic types
@@ -208,6 +208,8 @@ read(TFile & file,
 	typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
 	typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
 	typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
+	typedef typename TFragmentStore::TReadSeq TReadSeq;
+	typedef typename TFragmentStore::TContigSeq TContigSeq;
 
 	// All maps to mirror file ids to our ids
 	typedef std::map<TId, TSize> TIdMap;
@@ -229,7 +231,9 @@ read(TFile & file,
         return 1;
 
     CharString  blockIdentifier, fieldIdentifier, eid, buffer;
-    CharString  seq, qual;
+    TReadSeq    readSeq;
+    CharString  contigSeq;
+    CharString  qual;
     TId _id;
 
     while (!atEnd(reader))
@@ -324,7 +328,7 @@ read(TFile & file,
             else if (blockIdentifier == "RED")
             {
 				// If matePairId is not updated, this yields to a singleton read below.
-				clear(seq);
+				clear(readSeq);
 				clear(qual);
                 TId matePairId = TReadStoreElement::INVALID_ID;
                 while (!atEnd(reader) && value(reader) != '}')
@@ -340,7 +344,7 @@ read(TFile & file,
                         matePairId = lexicalCast<TId>(buffer);
                     else if (fieldIdentifier == "seq")
                     {
-                        readUntil(seq, reader, EqualsChar<'.'>(), IsWhitespace());
+                        readUntil(readSeq, reader, EqualsChar<'.'>(), IsWhitespace());
                         skipOne(reader, EqualsChar<'.'>());
                     }
                     else if (fieldIdentifier == "qlt")
@@ -353,18 +357,18 @@ read(TFile & file,
                     skipUntil(reader, NotFunctor<IsWhitespace>());
 				}
 				// Set quality
-				assignQualities(seq, qual);
+				assignQualities(readSeq, qual);
                 skipOne(reader, EqualsChar<'}'>());
 
 				// Insert the read
 				readIdMap.insert(std::make_pair(_id, length(fragStore.readStore)));
-				appendRead(fragStore, seq, matePairId);
+				appendRead(fragStore, readSeq, matePairId);
 				appendValue(fragStore.readNameStore, eid, Generous());
 			}
             // Contig block
             else if (blockIdentifier == "CTG")
             {
-				clear(seq);
+				clear(contigSeq);
 				clear(qual);
 				TContigElement contigEl;
 				TSize fromAligned = length(fragStore.alignedReadStore);
@@ -374,6 +378,10 @@ read(TFile & file,
 					if (value(reader) == '{')
                     {
                         // skip "{TLE\n"
+                        skipOne(reader, EqualsChar<'{'>());
+                        skipOne(reader, EqualsChar<'T'>());
+                        skipOne(reader, EqualsChar<'L'>());
+                        skipOne(reader, EqualsChar<'E'>());
                         skipUntil(reader, NotFunctor<IsWhitespace>());
 
 						TAlignedElement alignEl;
@@ -407,6 +415,7 @@ read(TFile & file,
                                 skipUntil(reader, NotFunctor<IsWhitespace>());
                                 while (!atEnd(reader) && value(reader) != '.')
                                 {
+                                    clear(buffer);
                                     readUntil(buffer, reader, IsWhitespace());
                                     appendValue(gaps, lexicalCast<TContigPos>(buffer));
                                     skipUntil(reader, NotFunctor<IsWhitespace>());
@@ -416,6 +425,7 @@ read(TFile & file,
                             // Always skip over the remainder of the line.
                             skipUntil(reader, NotFunctor<IsWhitespace>());
 						}
+                        skipOne(reader, EqualsChar<'}'>());
                         skipUntil(reader, NotFunctor<IsWhitespace>());
 
 						// Get the length of the read
@@ -488,7 +498,7 @@ read(TFile & file,
                             eid = buffer;
                         else if (fieldIdentifier == "seq")
                         {
-                            readUntil(seq, reader, EqualsChar<'.'>(), IsWhitespace());
+                            readUntil(contigSeq, reader, EqualsChar<'.'>(), IsWhitespace());
                             skipOne(reader, EqualsChar<'.'>());
                         }
                         else if (fieldIdentifier == "qlt")
@@ -501,19 +511,22 @@ read(TFile & file,
                         skipUntil(reader, NotFunctor<IsWhitespace>());
 					}
 				}
+				// Set quality
+                skipOne(reader, EqualsChar<'}'>());
 
 				// Create the gap anchors
 				char gapChar = gapValue<char>();
 				typedef typename Iterator<CharString, Standard>::Type TStringIter;
-				TStringIter seqIt = begin(seq, Standard());
-				TStringIter seqItEnd = end(seq, Standard());
+				TStringIter seqIt = begin(contigSeq, Standard());
+				TStringIter seqItEnd = end(contigSeq, Standard());
 				TStringIter qualIt = begin(qual, Standard());
 				typedef typename TFragmentStore::TReadPos TPos;
 				typedef typename TFragmentStore::TContigGapAnchor TContigGapAnchor;
 				TPos ungappedPos = 0;
 				TPos gappedPos = 0;
 				bool gapOpen = false;
-				for(;seqIt != seqItEnd; goNext(seqIt), goNext(qualIt), ++gappedPos) {
+				for (; seqIt != seqItEnd; goNext(seqIt), goNext(qualIt), ++gappedPos)
+                {
 					if (value(seqIt) == gapChar)
                     {
 					    gapOpen = true;
@@ -525,8 +538,8 @@ read(TFile & file,
 							appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous());
 							gapOpen = false;
 						}
-						Dna5Q letter = value(seqIt);
-						assignQualityValue(letter, value(qualIt));
+						typename Value<TContigSeq>::Type letter = getValue(seqIt);
+						assignQualityValue(letter, getValue(qualIt));
 						appendValue(contigEl.seq, letter, Generous());
 						++ungappedPos;
 					}
@@ -684,13 +697,12 @@ write(TTarget & target,
     typedef typename Iterator<typename TFragmentStore::TLibraryStore, Standard>::Type TLibIter;
     TLibIter libIt = begin(fragStore.libraryStore, Standard() );
     TLibIter libItEnd = end(fragStore.libraryStore, Standard() );
-    bool noNamesPresent = (length(fragStore.libraryNameStore) == 0);
     for(TSize idCount = 0;libIt != libItEnd; goNext(libIt), ++idCount)
     {
         write(iter, "{LIB\niid:");
         appendNumber(iter, idCount + 1);
         writeValue(iter, '\n');
-        if (!noNamesPresent)
+        if (!empty(fragStore.libraryNameStore) && !empty(fragStore.libraryNameStore[idCount]))
         {
             write(iter, "eid:");
             write(iter, fragStore.libraryNameStore[idCount]);
@@ -709,13 +721,12 @@ write(TTarget & target,
     typedef typename Iterator<typename TFragmentStore::TMatePairStore, Standard>::Type TMateIter;
     TMateIter mateIt = begin(fragStore.matePairStore, Standard() );
     TMateIter mateItEnd = end(fragStore.matePairStore, Standard() );
-    noNamesPresent = (length(fragStore.matePairNameStore) == 0);
     for(TSize idCount = 0;mateIt != mateItEnd; goNext(mateIt), ++idCount)
     {
         write(iter, "{FRG\niid:");
         appendNumber(iter, idCount + 1);
         writeValue(iter, '\n');
-        if (!noNamesPresent)
+        if (!empty(fragStore.matePairNameStore) && !empty(fragStore.matePairNameStore[idCount]))
         {
             write(iter, "eid:");
             write(iter, fragStore.matePairNameStore[idCount]);
@@ -724,7 +735,7 @@ write(TTarget & target,
         write(iter, "lib:");
         appendNumber(iter, mateIt->libId + 1);
         writeValue(iter, '\n');
-        if ((mateIt->readId[0] != TMatePairElement::INVALID_ID) && (mateIt->readId[1] != TMatePairElement::INVALID_ID))
+        if (mateIt->readId[0] != TMatePairElement::INVALID_ID && mateIt->readId[1] != TMatePairElement::INVALID_ID)
         {
             write(iter, "rds:");
             appendNumber(iter, mateIt->readId[0] + 1);
@@ -754,7 +765,6 @@ write(TTarget & target,
     typedef typename Iterator<typename TFragmentStore::TReadStore, Standard>::Type TReadIter;
     TReadIter readIt = begin(fragStore.readStore, Standard() );
     TReadIter readItEnd = end(fragStore.readStore, Standard() );
-    noNamesPresent = (length(fragStore.readNameStore) == 0);
     for(TSize idCount = 0;readIt != readItEnd; ++readIt, ++idCount)
     {
         // Skip reads without a name.
@@ -763,7 +773,7 @@ write(TTarget & target,
         write(iter, "{RED\niid:");
         appendNumber(iter, idCount + 1);
         writeValue(iter, '\n');
-        if (!noNamesPresent)
+        if (!empty(fragStore.readNameStore) && !empty(fragStore.readNameStore[idCount]))
         {
             write(iter, "eid:");
             write(iter, fragStore.readNameStore[idCount]);
@@ -804,13 +814,12 @@ write(TTarget & target,
     TContigIter contigItEnd = end(fragStore.contigStore, Standard() );
     alignIt = begin(fragStore.alignedReadStore);
     alignItEnd = end(fragStore.alignedReadStore);
-    noNamesPresent = (length(fragStore.contigNameStore) == 0);
     for(TSize idCount = 0;contigIt != contigItEnd; goNext(contigIt), ++idCount)
     {
         write(iter, "{CTG\niid:");
         appendNumber(iter, idCount + 1);
         writeValue(iter, '\n');
-        if (!noNamesPresent)
+        if (!empty(fragStore.contigNameStore) && !empty(fragStore.contigNameStore[idCount]))
         {
             write(iter, "eid:");
             write(iter, fragStore.contigNameStore[idCount]);
