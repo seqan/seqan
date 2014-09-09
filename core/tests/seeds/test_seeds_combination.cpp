@@ -40,7 +40,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>  // for printing seqan::String<>
+#include <seqan/stream.h>  // for printing seqan::String<>
 
 #include <seqan/seeds.h>
 

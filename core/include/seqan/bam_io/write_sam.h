@@ -56,7 +56,7 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function write2()                                            BamHeaderRecord
+// Function write()                                             BamHeaderRecord
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -88,7 +88,7 @@ inline void write(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function write2()                                                  BamHeader
+// Function write()                                                   BamHeader
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -120,7 +120,6 @@ inline void write(TTarget & target,
     // Write missing @SQ header records.
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
-        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
         if (writtenSeqInfos.find(header.sequenceInfos[i].i1) != writtenSeqInfos.end())
             continue;
         write(target, "@SQ\tSN:");
@@ -132,7 +131,7 @@ inline void write(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
-// Function write2()                                         BamAlignmentRecord
+// Function write()                                          BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>

@@ -260,7 +260,7 @@ int main(int argc, char const ** argv)
             std::cerr << "Problem parsing the sam files." << std::endl;
         _writeFile(mappedReads, nameToPos, options);
     }
-    catch (IOException &e)
+    catch (IOError &e)
     {
         std::cerr << "Problem occurred: " << e.what() << std::endl;
     }

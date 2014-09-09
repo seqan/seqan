@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_sequence_journaled.h"
 #include "test_sequence_journaled_iterator.h"

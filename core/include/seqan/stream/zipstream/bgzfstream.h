@@ -139,7 +139,7 @@ public:
             bool success = true;
             while (success)
             {
-                size_t jobId;
+                size_t jobId = -1;
                 if (!popFront(jobId, streamBuf->jobQueue))
                     return;
 
@@ -334,7 +334,7 @@ public:
     {
         istream_reference   istream;
         Mutex               lock;
-        IOException         *error;
+        IOError             *error;
         off_t               fileOfs;
 
         Serializer(istream_reference istream) :
@@ -404,7 +404,7 @@ public:
             // wait for a new job to become available
             while (true)
             {
-                size_t jobId;
+                size_t jobId = -1;
                 if (!popFront(jobId, streamBuf->idleQueue))
                     return;
 
@@ -428,14 +428,14 @@ public:
                     if (!streamBuf->serializer.istream.good())
                     {
                         if (!streamBuf->serializer.istream.eof())
-                            streamBuf->serializer.error = new IOException("Stream read error.");
+                            streamBuf->serializer.error = new IOError("Stream read error.");
                         return;
                     }
 
                     // check header
                     if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
                     {
-                        streamBuf->serializer.error = new IOException("Invalid BGZF block header.");
+                        streamBuf->serializer.error = new IOError("Invalid BGZF block header.");
                         return;
                     }
 
@@ -450,7 +450,7 @@ public:
                     if (!streamBuf->serializer.istream.good())
                     {
                         if (!streamBuf->serializer.istream.eof())
-                            streamBuf->serializer.error = new IOException("Stream read error.");
+                            streamBuf->serializer.error = new IOError("Stream read error.");
                         return;
                     }
 

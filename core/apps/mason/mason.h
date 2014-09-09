@@ -495,14 +495,14 @@ int writeRandomSequence(TRNG & rng, size_t length, CharString const & fileName, 
             appendValue(randomSequence, Dna('T'));
     }
 
-    std::ofstream file;
-    file.open(toCString(fileName), std::ios_base::out | std::ios_base::trunc);
-    if (!file.is_open()) {
+    SeqFileOut file;
+    if (!open(file, toCString(fileName)))
+    {
         std::cerr << "Failed to write random sequence to " << fileName << std::endl;
         return 1;
     }
-    write(file, randomSequence, "random_sequence", Fasta());
-    file.close();
+    writeRecord(file, randomSequence, "random_sequence");
+    close(file);
     return 0;
 }
 
@@ -741,7 +741,7 @@ void loadHaplotype(StringSet<String<Dna5, Journaled<Alloc<> > > > & haplotype,
     unsigned indelLenSum = 0;
     unsigned unknownContigs = 0;
     
-    while (!_streamEOF(file)) 
+    while (!streamEof(file))
     {
         // ignore comments
         _parseSkipWhitespace(file, c);

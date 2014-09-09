@@ -186,7 +186,7 @@ compressInit(CompressionContext<GZFile> & ctx)
     int status = deflateInit2(&ctx.strm, Z_BEST_SPEED, Z_DEFLATED,
                               GZIP_WINDOW_BITS, Z_DEFAULT_MEM_LEVEL, Z_DEFAULT_STRATEGY);
     if (status != Z_OK)
-        throw IOException("GZFile deflateInit2() failed.");
+        throw IOError("GZFile deflateInit2() failed.");
 }
 
 inline void
@@ -236,7 +236,7 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 
         int status = deflate(&ctx.strm, Z_NO_FLUSH);
         if (status != Z_OK)
-            throw IOException("BgzfFile deflateInit2() failed.");
+            throw IOError("BgzfFile deflateInit2() failed.");
 
         source += length(sChunk) - ctx.strm.avail_in;
         size_t size = length(tChunk) - ctx.strm.avail_out;
@@ -250,7 +250,7 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 //
 //    status = deflateEnd(&zs);
 //    if (status != Z_OK)
-//        throw IOException("BgzfFile deflateEnd() failed.");
+//        throw IOError("BgzfFile deflateEnd() failed.");
 //
 //    if (!rawDataTooBig)
 //    {
@@ -321,12 +321,12 @@ _compressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
     if (status != Z_STREAM_END)
     {
         deflateEnd(&ctx.strm);
-        throw IOException("Deflation failed. Compressed BGZF data is too big.");
+        throw IOError("Deflation failed. Compressed BGZF data is too big.");
     }
 
     status = deflateEnd(&ctx.strm);
     if (status != Z_OK)
-        throw IOException("BGZF deflateEnd() failed.");
+        throw IOError("BGZF deflateEnd() failed.");
 
 
     // 3. APPEND FOOTER
@@ -352,7 +352,7 @@ decompressInit(CompressionContext<GZFile> & ctx)
     ctx.strm.zfree = NULL;
     int status = inflateInit2(&ctx.strm, GZIP_WINDOW_BITS);
     if (status != Z_OK)
-        throw IOException("GZip inflateInit2() failed.");
+        throw IOError("GZip inflateInit2() failed.");
 }
 
 inline void
@@ -423,14 +423,14 @@ _decompressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
     // 1. CHECK HEADER
 
     if (srcLength <= BLOCK_HEADER_LENGTH + BLOCK_FOOTER_LENGTH)
-        throw IOException("BGZF block too short.");
+        throw IOError("BGZF block too short.");
 
     if (!_bgzfCheckHeader(srcBegin))
-        throw IOException("Invalid BGZF block header.");
+        throw IOError("Invalid BGZF block header.");
 
     size_t compressedLen = _bgzfUnpack16(srcBegin + 16) + 1u;
     if (compressedLen != srcLength)
-        throw IOException("BGZF compressed size mismatch.");
+        throw IOError("BGZF compressed size mismatch.");
 
 
     // 2. DECOMPRESS
@@ -445,12 +445,12 @@ _decompressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
     if (status != Z_STREAM_END)
     {
         inflateEnd(&ctx.strm);
-        throw IOException("Inflation failed. Decompressed BGZF data is too big.");
+        throw IOError("Inflation failed. Decompressed BGZF data is too big.");
     }
 
     status = inflateEnd(&ctx.strm);
     if (status != Z_OK)
-        throw IOException("BGZF inflateEnd() failed.");
+        throw IOError("BGZF inflateEnd() failed.");
 
 
     // 3. CHECK FOOTER
@@ -461,10 +461,10 @@ _decompressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
 
     srcBegin += compressedLen - BLOCK_FOOTER_LENGTH;
     if (_bgzfUnpack32(srcBegin) != crc)
-        throw IOException("BGZF wrong checksum.");
+        throw IOError("BGZF wrong checksum.");
 
     if (_bgzfUnpack32(srcBegin + 4) != dstCapacity - ctx.strm.avail_out)
-        throw IOException("BGZF size mismatch.");
+        throw IOError("BGZF size mismatch.");
 
     return (dstCapacity - ctx.strm.avail_out) / sizeof(TDestValue);
 }

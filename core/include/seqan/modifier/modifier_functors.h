@@ -206,9 +206,17 @@ struct TranslateTableRna5ToRna5Complement_
     static char const VALUE[5];
 };
 
-
 template <typename T>
 char const TranslateTableRna5ToRna5Complement_<T>::VALUE[5] = {'U', 'G', 'C', 'A', 'N'};
+
+template <typename T = void>
+struct TranslateTableIupacToIupacComplement_
+{
+    static signed char const VALUE[16];
+};
+
+template <typename T>
+signed char const TranslateTableIupacToIupacComplement_<T>::VALUE[16] = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
 
 // --------------------------------------------------------------------------
 // Class FunctorComplement
@@ -270,7 +278,6 @@ struct FunctorComplement<Dna> : public std::unary_function<Dna,Dna>
     }
 };
 
-
 template <>
 struct FunctorComplement<Dna5> : public std::unary_function<Dna5,Dna5> 
 {
@@ -280,7 +287,6 @@ struct FunctorComplement<Dna5> : public std::unary_function<Dna5,Dna5>
     }
 };
 
-
 template <>
 struct FunctorComplement<Rna> : public std::unary_function<Rna,Rna> 
 {
@@ -289,7 +295,6 @@ struct FunctorComplement<Rna> : public std::unary_function<Rna,Rna>
         return TranslateTableRna5ToRna5Complement_<>::VALUE[x.value]; 
     }
 };
-
 
 template <>
 struct FunctorComplement<Rna5> : public std::unary_function<Rna5,Rna5> 
@@ -322,6 +327,16 @@ struct FunctorComplement<Dna5Q> : public std::unary_function<Dna5Q,Dna5Q>
         return x;
     }
 };
+
+template <>
+struct FunctorComplement<Iupac> : public std::unary_function<Iupac,Iupac>
+{
+    inline Iupac operator()(Iupac x) const
+    {
+        return TranslateTableIupacToIupacComplement_<>::VALUE[x.value];
+    }
+};
+
 
 }  // namespace seqan
 

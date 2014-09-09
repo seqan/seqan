@@ -1,6 +1,6 @@
 ///A tutorial about the use of a user-defined modifier.
 #include <iostream>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/modifier.h>
 
 using namespace seqan;

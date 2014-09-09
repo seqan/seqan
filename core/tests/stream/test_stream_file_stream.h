@@ -246,6 +246,7 @@ SEQAN_TYPED_TEST(FileStreamTest, Tell)
     SEQAN_ASSERT_EQ(pos, 0u);
     c = stream2.get();
     c = stream2.get();
+    ignoreUnusedVariableWarning(c);
     pos = streamTell(stream2);
     SEQAN_ASSERT_EQ(pos, 2u);
 }

@@ -30,11 +30,11 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer<jochen.singer@fu-berlin.de>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
-#define CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
 
 namespace seqan {
 
@@ -108,4 +108,4 @@ inline void clear(UcscRecord & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

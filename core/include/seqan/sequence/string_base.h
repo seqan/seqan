@@ -378,6 +378,13 @@ template <typename TValue, typename TSpec>
 struct IsSequence<String<TValue, TSpec> > : True {};
 
 // ----------------------------------------------------------------------------
+// Concept Sequence
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (SequenceConcept));
+
+// ----------------------------------------------------------------------------
 // Internal Metafunction TempCopy_
 // ----------------------------------------------------------------------------
 
@@ -2066,7 +2073,7 @@ inline TStream &
 operator<<(TStream & target,
            String<TValue, TSpec> const & source)
 {
-    typename DirectionIterator<TStream, Output>::Type it(target);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
     write(it, source);
     return target;
 }
@@ -2080,7 +2087,7 @@ inline TStream &
 operator>>(TStream & source,
            String<TValue, TSpec> & target)
 {
-    typename DirectionIterator<TStream, Input>::Type it(source);
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
     read(it, target);
     return source;
 }

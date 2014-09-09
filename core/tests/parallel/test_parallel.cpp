@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>     // Testing infrastructure.
-#include <seqan/file.h>      // Required to print strings in tests.
+#include <seqan/stream.h>      // Required to print strings in tests.
 #include <seqan/parallel.h>  // Header under test.
 
 #if defined(_OPENMP)

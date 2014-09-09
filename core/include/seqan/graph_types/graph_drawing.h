@@ -374,7 +374,7 @@ _writeGraphType(TFile & file,
 				DotDrawing)
 {
 //IOREV
-	streamPut(file, "digraph");
+	write(file, "digraph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,7 @@ _writeGraphType(TFile & file,
 				DotDrawing)
 {
 //IOREV
-	streamPut(file, "digraph");
+	write(file, "digraph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -398,7 +398,7 @@ _writeGraphType(TFile & file,
 				DotDrawing)
 {
 //IOREV
-	streamPut(file, "graph");
+	write(file, "graph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -410,7 +410,7 @@ _writeGraphType(TFile & file,
 				DotDrawing)
 {
 //IOREV
-	streamPut(file, "digraph");
+	write(file, "digraph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,7 @@ _writeEdgeType(TFile & file,
 			   DotDrawing)
 {
 //IOREV
-	streamPut(file, " -> ");
+	write(file, " -> ");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ _writeEdgeType(TFile & file,
 			   DotDrawing)
 {
 //IOREV
-	streamPut(file, " -> ");
+	write(file, " -> ");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -446,7 +446,7 @@ _writeEdgeType(TFile & file,
 			   DotDrawing)
 {
 //IOREV
-	streamPut(file, " -- ");
+	write(file, " -- ");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -458,7 +458,7 @@ _writeEdgeType(TFile & file,
 			   DotDrawing)
 {
 //IOREV
-	streamPut(file, " -> ");
+	write(file, " -> ");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -506,47 +506,47 @@ write(TFile & file,
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
 	_writeGraphType(file,g,DotDrawing());
-	streamPut(file, " G {\n");
-	streamPut(file, '\n');
-	streamPut(file, "/* Graph Attributes */\n");
-	streamPut(file, "graph [rankdir = LR];\n");
-	streamPut(file, '\n');
-	streamPut(file, "/* Node Attributes */\n");
-	streamPut(file, "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n");
-	streamPut(file, '\n');
-	streamPut(file, "/* Edge Attributes */\n");
-	streamPut(file, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
-	streamPut(file, '\n');
+	write(file, " G {\n");
+	writeValue(file, '\n');
+	write(file, "/* Graph Attributes */\n");
+	write(file, "graph [rankdir = LR];\n");
+	writeValue(file, '\n');
+	write(file, "/* Node Attributes */\n");
+	write(file, "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n");
+	writeValue(file, '\n');
+	write(file, "/* Edge Attributes */\n");
+	write(file, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
+	writeValue(file, '\n');
 
-	streamPut(file, "/* Nodes */\n");
+	write(file, "/* Nodes */\n");
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
 	for(;!atEnd(it);++it) {
-		streamPut(file, (int)*it);
-		streamPut(file, " [");
-		streamPut(file, getProperty(nodeMap, *it));
-		streamPut(file, "];\n");
+		appendNumber(file, (int)*it);
+		write(file, " [");
+		write(file, getProperty(nodeMap, *it));
+		write(file, "];\n");
 	}
-	streamPut(file, '\n');
+	writeValue(file, '\n');
 
-	streamPut(file, "/* Edges */\n");
+	write(file, "/* Edges */\n");
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
 	for(;!atEnd(itEd);++itEd) {
 		TVertexDescriptor sc = sourceVertex(itEd);
 		TVertexDescriptor tr = targetVertex(itEd);
-		streamPut(file, (int)sc);
+		appendNumber(file, (int)sc);
 		_writeEdgeType(file, g, DotDrawing());
-		streamPut(file, (int)tr);
-		streamPut(file, " [");
-		streamPut(file, getProperty(edgeMap, *itEd));
-		streamPut(file, "];\n");
+		appendNumber(file, (int)tr);
+		write(file, " [");
+		write(file, getProperty(edgeMap, *itEd));
+		write(file, "];\n");
 	}
-	streamPut(file, '\n');
+	writeValue(file, '\n');
 
 	_writeGraphFooter(file,g,DotDrawing());
 
-	streamPut(file, "}\n");
+	write(file, "}\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -32,18 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_STORE_IO_UCSC_H
-#define SEQAN_HEADER_STORE_IO_UCSC_H
-
-/* IOREV
- *
- * _doc_
- *
- *
- * maybe move this to file/ because its a file format
- *
- */
-
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
 
 namespace SEQAN_NAMESPACE_MAIN {
 
@@ -65,7 +55,7 @@ struct Ucsc_;
 */
 
 struct UcscKnownGene_;
-typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
+typedef Tag<Ucsc_<UcscKnownGene_> > Ucsc;
 
 /*!
  * @tag UcscIsoforms
@@ -81,7 +71,7 @@ typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
 ..include:seqan/store.h
 */
 struct UcscKnownIsoforms_;
-typedef Tag<Ucsc_<UcscKnownIsoforms_> > const UcscIsoforms;
+typedef Tag<Ucsc_<UcscKnownIsoforms_> > UcscIsoforms;
 
 //////////////////////////////////////////////////////////////////////////////
 // Read Ucsc
@@ -94,12 +84,10 @@ struct UcscContext
 
 template <typename TForwardIter>
 inline void
-readRecord(
-    UcscRecord & record,
-    TForwardIter & iter,
-    UcscContext & ucscContext)
+readRecord(UcscRecord & record,
+           TForwardIter & iter,
+           UcscContext & ucscContext)
 {
-
     OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> > nextRecord;
 
     clear(record);
@@ -217,41 +205,14 @@ readRecord(
     }
 }
 
-template <typename TForwardIter, typename TSpec>
-inline void
-read(
-    String<UcscRecord, TSpec> & records,
-    TForwardIter & iter)
-{
-    typedef typename Iterator<String<UcscRecord, TSpec> >::Type TIter;
-
-    clear(records);
-    UcscContext context;
-    unsigned i = 0;
-    while (!atEnd(iter))
-    {
-        resize(records, length(records) + 1);
-        try
-        {
-            readRecord(records[i], iter, context);
-            ++i;
-        }
-        catch(std::runtime_error())
-        {
-
-        }
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Write Ucsc
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TTarget>
 inline void
-writeRecord(
-    TTarget & target,
-    UcscRecord & record)
+writeRecord(TTarget & target,
+            UcscRecord & record)
 {
     unsigned suf = 0;
     if (record.format == record.KNOWN_ISOFORMS && length(record.transName) >= 4 && prefix(record.transName, 4) == "GENE")
@@ -349,30 +310,6 @@ writeRecord(
     writeValue(target, '\n');
 }
 
-template <typename TTarget, typename TSpec>
-inline void
-write(
-    TTarget & target,
-    String<UcscRecord, TSpec> & records)
-{
-    typedef typename Iterator<String<UcscRecord, TSpec>, Rooted>::Type TIter;
-
-    TIter recordsIter = begin(records);
-
-    while (!atEnd(recordsIter))
-    {
-        try
-        {
-            writeRecord(target, value(recordsIter));
-        }
-        catch(std::runtime_error())
-        {
-
-        }
-        ++recordsIter;
-    }
-}
-
 } // namespace SEQAN_NAMESPACE_MAIN
 
-#endif //#ifndef SEQAN_HEADER_...
+#endif //#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_

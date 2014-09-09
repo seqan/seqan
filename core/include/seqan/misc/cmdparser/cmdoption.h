@@ -532,25 +532,6 @@ argumentText(CommandLineOption const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _writeOptName()
-// ----------------------------------------------------------------------------
-
-template <typename TStream>
-inline void
-_writeOptName(TStream & target, CommandLineOption const & me)
-{
-    //IOREV _notio_ irrelevant for iorev
-    streamPut(target, empty(me.shortName) ? "" : "-");
-    streamPut(target, me.shortName);
-    streamPut(target, (empty(me.shortName) || empty(me.longName)) ? "" : ", ");
-    if (!empty(me.longName))
-    {
-        streamPut(target, "--");
-        streamPut(target, me.longName);
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function write()                                           CommandLineOption
 // ----------------------------------------------------------------------------
 
@@ -566,27 +547,14 @@ _writeOptName(TStream & target, CommandLineOption const & me)
 */
 
 template <typename TStream>
-inline void
-write(TStream & target, CommandLineOption const & me)
-{
-    //IOREV _nodoc_ this specialization is not documented
-    streamPut(target, '\t');
-    _writeOptName(target, me);
-    streamPut(target, '\t');
-    streamPut(target, '\t');
-    streamPut(target, me.helpText);
-}
-
-// ----------------------------------------------------------------------------
-// operator<<()                                               CommandLineOption
-// ----------------------------------------------------------------------------
-
-template <typename TStream>
 inline TStream &
-operator<<(TStream & target, CommandLineOption const & source)
+operator<<(TStream & target, CommandLineOption const & me)
 {
-    //IOREV _nodoc_ this specialization is not documented
-    write(target, source);
+    if (!empty(me.shortName))
+        target << "-" << me.shortName;
+    target << ((empty(me.shortName) || empty(me.longName)) ? "" : ", ");
+    if (!empty(me.longName))
+        target << "--" << me.longName;
     return target;
 }
 

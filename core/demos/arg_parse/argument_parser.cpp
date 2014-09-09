@@ -2,7 +2,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>      // For printing SeqAn Strings.
+#include <seqan/stream.h>      // For printing SeqAn Strings.
 
 #include <seqan/arg_parse.h>
 

@@ -73,38 +73,31 @@ using namespace seqan;
 template<typename TSpec>
 int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
 {
-//IOREV
 	ifstream file;
 	file.open(toCString(filename),ios_base::in | ios_base::binary);
 	if(!file.is_open())
 		return RAZERS_GENOME_FAILED;
 
-	clear(genomeFileNames);
-	char c = _streamGet(file);
-	if (c != '>' && c != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    if (!atEnd(reader))
+        return 0;
+
+    clear(genomeFileNames);
+	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
 		
-/*		//locations of genome files are relative to list file's location
-		string tempGenomeFile(filename);
-		size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = 0;
-		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-
 		unsigned i = 1;
-		while(!_streamEOF(file))
-		{ 
-			_parseSkipWhitespace(file, c);
-			appendValue(genomeFileNames,_parseReadFilepath(file,c));
-			//CharString currentGenomeFile(filePrefix);
-			//append(currentGenomeFile,_parseReadFilepath(file,c));
-			//appendValue(genomeFileNames,currentGenomeFile);
+        CharString line;
+		while(!atEnd(reader))
+		{
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
 			if(options._debugLevel >=2)
-				cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << endl;
+				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
 			++i;
-			_parseSkipWhitespace(file, c);
 		}
 		if(options._debugLevel >=1)
 			cout << i-1 << " genome files total." <<endl;
@@ -113,7 +106,6 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		appendValue(genomeFileNames, filename, Exact());
 	file.close();
 	return 0;
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -125,7 +117,6 @@ int mapReads(
 	CharString & errorPrbFileName,
 	RazerSOptions<TSpec> &options)
 {
-	MultiFasta				genomeSet;
 	TReadSet				readSet;
 	StringSet<CharString>	genomeNames;	// genome names, taken from the Fasta file
 	StringSet<CharString>	readNames;		// read names, taken from the Fasta file

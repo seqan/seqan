@@ -48,9 +48,6 @@
 // Code for debugging and testing (assertions, test system) and profiling.
 #include <seqan/basic/basic_debug.h>
 
-// Basic exceptions.
-#include <seqan/basic/basic_exception.h>
-
 // C++ Metaprogramming Support Code, generally independent of SeqAn.
 #include <seqan/basic/basic_metaprogramming.h>
 
@@ -59,6 +56,9 @@
 
 // Fundamental meta and global functions.  This is what makes SeqAn SeqAn.
 #include <seqan/basic/basic_fundamental.h>
+
+// Basic exceptions.
+#include <seqan/basic/basic_exception.h>
 
 // More advanced debug system constructs.
 // TODO(holtgrew): Move into basic_debug subsystem, some stuff from metaprogramming and fundamental required, those should not depend on debug system.

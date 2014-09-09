@@ -45,13 +45,11 @@
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
-#include <seqan/misc/misc_name_store_cache.h>
 
 // ===========================================================================
 // First Header Group.
 // ===========================================================================
 
-#include <seqan/gff_io/gff_io_context.h>
 #include <seqan/gff_io/gff_io_base.h>
 #include <seqan/gff_io/gff_file.h>
 

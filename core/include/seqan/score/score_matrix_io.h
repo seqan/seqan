@@ -74,127 +74,41 @@ typedef Tag<TagScoreMatrixFile_> ScoreMatrixFile;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Helper Function _sscanfValue()                                 [DEPRECATED!]
-// ----------------------------------------------------------------------------
-
-/*
-.Function._sscanfValue:
-..cat:Input/Output
-..summary:Use sscanf to parse a value from a $char *$ buffer.
-..signature:_sscanfValue(buffer, value)
-..param.buffer:Buffer to parse into.
-...type:const char *
-..param.value:Variable to parse the value from $buffer$ to.
-...type:unsigned int
-..include:seqan/score.h
- */
-
-inline void
-SEQAN_DEPRECATED_PRE("Use new RecordReader-based parsing functionality instead")
-_sscanfValue(const char * buf, unsigned int & val)
-SEQAN_DEPRECATED_POST("Use new RecordReader-based parsing functionality instead");
-
-inline void
-_sscanfValue(const char * buf, unsigned int & val)
-{
-    SEQAN_CHECKPOINT;
-    std::sscanf(buf, "%u", & val);
-}
-
-/*
-.Function._sscanfValue.param.value.type:int
-..include:seqan/score.h
- */
-
-inline void
-SEQAN_DEPRECATED_PRE("Use new RecordReader-based parsing functionality instead")
-_sscanfValue(const char * buf, int & val)
-SEQAN_DEPRECATED_POST("Use new RecordReader-based parsing functionality instead");
-
-inline void
-_sscanfValue(const char * buf, int & val)
-{
-    SEQAN_CHECKPOINT;
-    std::sscanf(buf, "%i", & val);
-}
-
-/*
-.Function._sscanfValue.param.value.type:float
-..include:seqan/score.h
- */
-
-inline void
-SEQAN_DEPRECATED_PRE("Use new RecordReader-based parsing functionality instead")
-_sscanfValue(const char * buf, float & val)
-SEQAN_DEPRECATED_POST("Use new RecordReader-based parsing functionality instead");
-
-inline void
-_sscanfValue(const char * buf, float & val)
-{
-    SEQAN_CHECKPOINT;
-    std::sscanf(buf, "%f", & val);
-}
-
-/*
-.Function._sscanfValue.param.value.type:double
-..include:seqan/score.h
- */
-
-inline void
-SEQAN_DEPRECATED_PRE("Use new RecordReader-based parsing functionality instead")
-_sscanfValue(const char * buf, double & val)
-SEQAN_DEPRECATED_POST("Use new RecordReader-based parsing functionality instead");
-
-inline void
-_sscanfValue(const char * buf, double & val)
-{
-    SEQAN_CHECKPOINT;
-    std::sscanf(buf, "%lf", & val);
-}
-
-// ----------------------------------------------------------------------------
 // Function readMeta()                                        [ScoreMatrixFile]
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Fix parameter order, adjust to new style I/O system.
-
-template <typename TStream, typename TMeta>
-int
-readMeta(RecordReader<TStream, SinglePass<> > & reader,
-         TMeta & meta,
+template <typename TMeta, typename TSourceIter>
+inline void
+readMeta(TMeta & meta,
+         TSourceIter & reader,
          ScoreMatrixFile const & /*tag*/)
 {
     clear(meta);
     while (!atEnd(reader) && value(reader) == '#')
     {
-        goNext(reader);
-        int res = readLine(meta, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return 1;
+        skipOne(reader);
+        readLine(meta, reader);
     }
-
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
 // Function read()                                            [ScoreMatrixFile]
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TValue, typename TSequenceValue, typename TSpec>
-int
-read(RecordReader<TStream, SinglePass<> > & reader,
-     Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
+template <typename TValue, typename TSequenceValue, typename TSpec, typename TSourceIter>
+inline void
+read(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
+     TSourceIter & reader,
      ScoreMatrixFile const & /*tag*/)
 {
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
 
     // Clear the matrix.
-    std::fill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
+    arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
 
     // Skip header.
     while (!atEnd(reader) && value(reader) == '#')
-        if (skipLine(reader) != 0)
-            return 1;  // Also at EOF!
+        skipLine(reader);
 
     // -----------------------------------------------------------------------
     // Read alphabet line.
@@ -202,77 +116,48 @@ read(RecordReader<TStream, SinglePass<> > & reader,
     // The first non-header line is the alphabet line.  Read in the characters and build a map from column to character.
     // Such a line could read " A R N D C Q E G H I L K M F P S T W Y V B Z X *".
     String<TSequenceValue> mapping;
-    // Skip blanks (TAB and SPACE).
-    while (!atEnd(reader) && isblank(value(reader)))
-        goNext(reader);
-    while (!atEnd(reader) && value(reader) != '\n' && value(reader) != '\r')
-    {
-        appendValue(mapping, value(reader));  // Conversion char => TSequenceValue
-        goNext(reader);
-        // Skip blanks (TAB and SPACE).
-        while (!atEnd(reader) && isblank(value(reader)))
-            goNext(reader);
-    }
-    if (skipLine(reader) != 0)  // Go to next line.
-        return 1;
+
+    skipUntil(reader, NotFunctor<IsWhitespace>());
+    readUntil(mapping, reader, IsNewline(), IsWhitespace());    // Conversion char => TSequenceValue, Skip blanks
+    skipLine(reader);
 
     // -----------------------------------------------------------------------
     // Read the matrix.
     // -----------------------------------------------------------------------
     // The matrix is read line-wise, we read the score for a (source, dest) replacement.
+
+    CharString buffer;
     for (unsigned row = 0; !atEnd(reader); ++row)
     {
-        while (!atEnd(reader) && isblank(value(reader)))  // Skip blanks (TAB and SPACE).
-            goNext(reader);
-        if (atEnd(reader))
-            return 1;  // No label.
+        skipUntil(reader, NotFunctor<IsBlank>());
 
         // Read label.
-        TSequenceValue source = value(reader);
-        unsigned const OFFSET = ordValue(source) * TScore::VALUE_SIZE;
-        goNext(reader);
-        while (!atEnd(reader) && isblank(value(reader)))  // Skip blanks (TAB and SPACE).
-            goNext(reader);
-        if (atEnd(reader))
-            return 1;  // No entries.
+        TSequenceValue source;
+        readOne(source, reader);
+        unsigned const offset = ordValue(source) * TScore::VALUE_SIZE;
+
+        skipUntil(reader, NotFunctor<IsBlank>());
 
         // Read numbers.
-        CharString buffer;
-        for (unsigned col = 0; !atEnd(reader) && value(reader) != '\r' && value(reader) != '\n'; ++col)
+        for (unsigned col = 0; !atEnd(reader) && !IsNewline()(value(reader)); ++col)
         {
-            if (atEnd(reader))
-                return 1;  // No number.
-
+            readUntil(buffer, reader, IsWhitespace());
+            sc.data_tab[offset + ordValue(mapping[col])] = lexicalCast<TValue>(buffer);
             clear(buffer);
-            int res = readUntilWhitespace(buffer, reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return 1;  // Error reading.
-            TValue val = 0;
-            if (!lexicalCast2(val, buffer))
-                return 1;  // Invalid number.
-
-            TSequenceValue destChar = mapping[col];
-            sc.data_tab[OFFSET + ordValue(destChar)] = val;
-
-            while (!atEnd(reader) && isblank(value(reader)))  // Skip blanks (TAB and SPACE).
-                goNext(reader);
+            skipUntil(reader, NotFunctor<IsBlank>());
         }
 
-        int res = skipLine(reader);  // Go to next line.
-        if (res != 0)
-            return 1;
+        skipLine(reader);  // Go to next line.
     }
-
-    return 0;
 }
 
 
-template <typename TStream, typename TValue, typename TSequenceValue, typename TSpec>
+template <typename TValue, typename TSequenceValue, typename TSpec, typename TSourceIter>
 inline void
-read(RecordReader<TStream, SinglePass<> > & fl,
-     Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc)
+read(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
+     TSourceIter & iter)
 {
-    read(fl, sc, ScoreMatrixFile());
+    read(sc, iter, ScoreMatrixFile());
 }
 
 // ----------------------------------------------------------------------------
@@ -301,16 +186,18 @@ read(RecordReader<TStream, SinglePass<> > & fl,
 ..include:seqan/score.h
 */
 template <typename TValue, typename TSequenceValue, typename TSpec>
-inline void
+inline bool
 loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
-                CharString const & filename)
+                const char * filename)
 {
-    std::fstream fin(toCString(filename), std::ios::binary | std::ios::in);
-    RecordReader<std::fstream, SinglePass<> > reader(fin);
-    read(reader, sc);
-}
+    VirtualStream<char, Input> fin;
+    if (!open(fin, toCString(filename)))
+        return false;
 
-// TODO(holtgrew): Change parameter order?
+    typename DirectionIterator<VirtualStream<char, Input>, Input>::Type reader = directionIterator(fin, Input());
+    read(sc, reader);
+    return true;
+}
 
 /**
 .Function.loadScoreMatrix
@@ -319,74 +206,20 @@ loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
 ..status:The order of the parameters filename and meta will switch.
 ..include:seqan/score.h
 */
-template <typename TValue, typename TSequenceValue, typename TSpec, typename TMeta>
-inline void
-loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, CharString const & filename, TMeta & meta)
+template <typename TMeta, typename TValue, typename TSequenceValue, typename TSpec>
+inline bool
+loadScoreMatrix(TMeta & meta,
+                Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
+                const char * filename)
 {
-    std::fstream fin(toCString(filename), std::ios::binary | std::ios::in);
-    RecordReader<std::fstream, SinglePass<> > reader(fin);
-    readMeta(reader, meta, ScoreMatrixFile());
-    read(reader, sc, ScoreMatrixFile());
-}
+    VirtualStream<char, Input> fin;
+    if (!open(fin, toCString(filename)))
+        return false;
 
-// ----------------------------------------------------------------------------
-// Helper Function _sprintfValue()
-// ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Can we solve this more eleganly using std::stringstream's?
-
-/*
-.Function._sprintfValue
-..cat:Input/Output
-..summary:Use sprintf to print a value into a $const char *$ buffer.
-..signature:_sprintf(buffer, value)
-..param.buffer:Buffer to write to.
-...type:char *
-...remark:Must be of sufficient size.
-..param.value:Variable for which to write the string value to $buffer$.
-...type:unsigned int
-...type:int
-...type:float
-...type:double
-..includes:seqan/score.h
-..include:seqan/score.h
- */
-
-inline void
-_sprintfValue(char * buf, unsigned val)
-{
-    std::sprintf(buf, "%u", val);
-}
-
-/*
-.Function._sprintfValue.param.value.type:int
-..include:seqan/score.h
- */
-inline void
-_sprintfValue(char * buf, int val)
-{
-    std::sprintf(buf, "%d", val);
-}
-
-/*
-.Function._sprintfValue.param.value.type:float
-..include:seqan/score.h
- */
-inline void
-_sprintfValue(char * buf, float val)
-{
-    double d = val;
-    std::sprintf(buf, "%G", d);
-}
-
-/*
-.Function._sprintfValue.param.value.type:float
-..include:seqan/score.h
- */
-inline void
-_sprintfValue(char * buf, double val)
-{
-    std::sprintf(buf, "%G", val);
+    typename DirectionIterator<VirtualStream<char, Input>, Input>::Type reader = directionIterator(fin, Input());
+    readMeta(meta, reader, ScoreMatrixFile());
+    read(sc, reader, ScoreMatrixFile());
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -421,9 +254,9 @@ _sprintfValue(char * buf, double val)
 ..include:seqan/score.h
  */
 
-template <typename TStream, typename TValue, typename TSequenceValue, typename TSpec>
-inline int
-write(TStream & stream,
+template <typename TTarget, typename TValue, typename TSequenceValue, typename TSpec>
+inline void
+write(TTarget & target,
       Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc,
       CharString const & meta)
 {
@@ -436,52 +269,52 @@ write(TStream & stream,
     // -----------------------------------------------------------------------
     // Write meta data.
     // -----------------------------------------------------------------------
-    if (!empty(meta)) {
+    if (!empty(meta))
+    {
         bool lineBegin = true;
         for (unsigned int i = 0; i < length(meta); ++i) {
             if (lineBegin)
             {
                 // Escape each line with a starting '#'.
-                streamPut(stream, '#');
+                writeValue(target, '#');
                 lineBegin = false;
             }
             if (meta[i] == '\r')
                 continue;
             if (meta[i] == '\n')
                 lineBegin = true;
-            streamPut(stream, meta[i]);
+            writeValue(target, meta[i]);
         }
         if (!lineBegin)
-            streamPut(stream, '\n');
+            writeValue(target, '\n');
     }
 
     // -----------------------------------------------------------------------
     // Determine maximal column width.
     // -----------------------------------------------------------------------
-    unsigned colWidth = 1;
-    char buf[100];  // 100 is enough for printing int, unsigned, dobule
+    size_t colWidth = 1;
+    String<char, Array<100> > buf;  // 100 is enough for printing int, unsigned, dobule
     for (unsigned i = 0; i < TAB_SIZE; ++i)
     {
-        _sprintfValue(buf, tab[i]);
-        unsigned cellWidth = std::strlen(buf);
-        if (cellWidth > colWidth)
-            colWidth = cellWidth;  // Compute maximum.
+        clear(buf);
+        appendNumber(buf, tab[i]);
+        colWidth = std::max(colWidth, (size_t)length(buf));
     }
-    colWidth += 1;  // Increase colWidth for an additional blank.
+    colWidth++;     // Increase colWidth for an additional blank.
 
     // -----------------------------------------------------------------------
     // Write alphabet line.
     // -----------------------------------------------------------------------
-    streamPut(stream, ' ');  // A blank for alphabet column.
+    writeValue(target, ' ');  // A blank for alphabet column.
     for (unsigned j = 0; j < VALUE_SIZE; ++j)
     {
         char val = static_cast<TSequenceValue>(j);  // Conversion integral => TSequenceValue => char.
         // Leading blanks for column j.
         for (unsigned k = 1; k < colWidth; ++k)
-            streamPut(stream, ' ');
-        streamPut(stream, val);
+            writeValue(target, ' ');
+        writeValue(target, val);
     }
-    streamPut(stream, '\n');
+    writeValue(target, '\n');
 
     // -----------------------------------------------------------------------
     // Write rest of matrix.
@@ -490,34 +323,42 @@ write(TStream & stream,
     {
         // Write alphabet column cell.
         char val = static_cast<TSequenceValue>(i);  // Conversion integral => TSequenceValue => char.
-        streamPut(stream, val);
+        writeValue(target, val);
 
         // Write rest of line i.
         unsigned offset = i * VALUE_SIZE;
         for (unsigned j = 0; j < VALUE_SIZE; ++j)
         {
-            _sprintfValue(buf, tab[offset + j]);
-            unsigned len = strlen(buf);
+            clear(buf);
+            appendNumber(buf, tab[offset + j]);
 
             // Leading blanks.
-            for (unsigned k = 0; k < colWidth - len; ++k)
-                streamPut(stream, ' ');
+            for (unsigned k = length(buf); k < colWidth; ++k)
+                writeValue(target, ' ');
 
             // Write cell.
-            streamPut(stream, buf);
+            write(target, buf);
         }
-        streamPut(stream, '\n');
+        writeValue(target, '\n');
     }
+}
 
-    return 0;
+template <typename TTarget, typename TValue, typename TSequenceValue, typename TSpec>
+inline void
+write(TTarget & target,
+      Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc)
+{
+    write(target, sc, "");
 }
 
 template <typename TStream, typename TValue, typename TSequenceValue, typename TSpec>
-inline int
-write(TStream & stream,
-      Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc)
+inline TStream &
+operator<<(TStream & target,
+           Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc)
 {
-    return write(stream, sc, "");
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, sc);
+    return target;
 }
 
 }  // namespace seqan

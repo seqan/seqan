@@ -75,7 +75,7 @@ namespace seqan {
  * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
-typedef SmartFile<Bam, Input>   BamFileIn;
+typedef SmartFile<Bam, Input> BamFileIn;
 
 /*!
  * @class BamFileOut
@@ -95,7 +95,7 @@ typedef SmartFile<Bam, Input>   BamFileIn;
  * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
-typedef SmartFile<Bam, Output>  BamFileOut;
+typedef SmartFile<Bam, Output> BamFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -118,7 +118,7 @@ struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Bam, TDirection, TSpec> >
+struct FileFormat<SmartFile<Bam, TDirection, TSpec> >
 {
 #if SEQAN_HAS_ZLIB
     typedef TagSelector<

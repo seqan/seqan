@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 
 using namespace std;
 using namespace seqan;
@@ -43,8 +44,8 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 	TIndex	index;
 
 	// import sequences
-	resize(indexText(index), seqCount);
-	for(int arg = 1, seq = 0; arg < argc; ++arg) 
+    StringSet<CharString> meta;
+	for(int arg = 1, seq = 0; arg < argc; ++arg)
 	{
 		// skip two argument options
 		if (strcmp(argv[arg], "-p") == 0 || strcmp(argv[arg], "--profile") == 0 ||
@@ -55,14 +56,14 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 		}
 
 		if (argv[arg][0] != '-') {
-			ifstream file;
-			file.open(argv[arg], ios_base::in | ios_base::binary);
-			if (!file.is_open()) {
+			SeqFileIn file;
+			if (!open(file, argv[arg])) {
 				cout << "Import of sequence " << argv[arg] << " failed." << endl;
 				return 1;
 			}
-			read(file, indexText(index)[seq], Fasta());
-			file.close();
+			readRecords(meta, indexText(index), file);
+            clear(meta);
+			close(file);
 			++seq;
 		}
 	}

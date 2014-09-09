@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <davod.weese@fu-berlin.de>
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // A minimal subset of the Boost Concept Checking Library.  A lot of the code

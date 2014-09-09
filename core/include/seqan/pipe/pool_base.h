@@ -359,7 +359,9 @@ namespace SEQAN_NAMESPACE_MAIN
             // retrieve the very first and wait for I/O transfer to complete
             bool waitResult = waitFor(*chain.first);
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(chain.first->status),
+                           strerror(errno));
 
             return processBuffer(*chain.first, *this);
         }
@@ -376,7 +378,9 @@ namespace SEQAN_NAMESPACE_MAIN
             // retrieve the next buffer in order and wait for I/O transfer to complete
             bool waitResult = waitFor(*chain.first);
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(chain.first->status),
+                           strerror(errno));
 
             return processBuffer(*chain.first, *this);
         }
@@ -510,7 +514,9 @@ namespace SEQAN_NAMESPACE_MAIN
                 // wait for I/O transfer to complete
                 bool waitResult = waitFor(*p);
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(p->status),
+                               strerror(errno));
 
                 freePage(*p, pool.file);
                 p = p->next;
@@ -811,7 +817,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _ownFile = false;
             _temporary = false;
             memBufferSize = 0;
-			_setSize(::seqan::size(file) / sizeof(TValue));
+			_setSize(::seqan::length(file) / sizeof(TValue));
         }
         
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters())
@@ -821,7 +827,7 @@ namespace SEQAN_NAMESPACE_MAIN
             memBufferSize = 0;
             _ownFile = open(file, fileName);
             if (_ownFile)
-                _setSize(::seqan::size(file) / sizeof(TValue));
+                _setSize(::seqan::length(file) / sizeof(TValue));
             else
                 _setSize(0);
         }

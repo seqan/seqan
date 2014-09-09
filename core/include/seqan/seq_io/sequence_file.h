@@ -117,7 +117,7 @@ struct SmartFileContext<SmartFile<Fastq, Output, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Fastq, TDirection, TSpec> >
+struct FileFormat<SmartFile<Fastq, TDirection, TSpec> >
 {
     typedef AutoSeqFormat Type;
 };
@@ -146,11 +146,9 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Size<TIdStringSet>::Type TSize;
-
-    clear(meta);
-    clear(seq);
-    for (TSize i = 0; !atEnd(file); ++i)
+//    clear(meta);
+//    clear(seq);
+    while (!atEnd(file))
     {
         readRecord(context(file)[0], context(file)[1], file);
         appendValue(meta, context(file)[0]);
@@ -179,12 +177,10 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Size<TIdStringSet>::Type TSize;
-
-    clear(meta);
-    clear(seq);
-    clear(qual);
-    for (TSize i = 0; !atEnd(file); ++i)
+//    clear(meta);
+//    clear(seq);
+//    clear(qual);
+    while (!atEnd(file))
     {
         readRecord(context(file)[0], context(file)[1], context(file)[2], file);
         appendValue(meta, context(file)[0]);

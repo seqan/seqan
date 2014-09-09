@@ -1243,21 +1243,21 @@ write(TFile & file,
 			TSize window_end = column + winSize;
 			if (window_end >= len) window_end = len;
 			// Position
-			for(int i = 0; i<offset - 2; ++i) streamWriteChar(file, ' ');
-			streamWriteBlock(file, "Pos: ", 5);
-			streamPut(file, column);
-			streamWriteChar(file, '\n');
+			for(int i = 0; i<offset - 2; ++i) writeValue(file, ' ');
+			write(file, "Pos: ");
+			appendNumber(file, column);
+			writeValue(file, '\n');
 			// Ruler
-			for(int i = 0; i<offset + 3; ++i) streamWriteChar(file, ' ');
+			for(int i = 0; i<offset + 3; ++i) writeValue(file, ' ');
 			for(TSize local_col = 1; local_col<window_end - column + 1; ++local_col) {
 				if ((local_col % 10)==0)
-                    streamWriteChar(file, ':');
+                    writeValue(file, ':');
 				else if ((local_col % 5)==0)
-                    streamWriteChar(file, '.');
+                    writeValue(file, '.');
 				else
-                    streamWriteChar(file, ' ');
+                    writeValue(file, ' ');
 			}
-			streamWriteChar(file, '\n');
+			writeValue(file, '\n');
 			// Matrix
 			for(TSize row = 0; row<maxCoverage; ++row) {
 				TSize tmp = row;
@@ -1266,40 +1266,40 @@ write(TFile & file,
 					tmp /= 10;
 					++off;
 				}
-				for(int i = 0; i<offset - off; ++i) streamWriteChar(file, ' ');
-				streamPut(file, row);
-				streamWriteChar(file, ':');
-				streamWriteChar(file, ' ');
+				for(int i = 0; i<offset - off; ++i) writeValue(file, ' ');
+				appendNumber(file, row);
+				writeValue(file, ':');
+				writeValue(file, ' ');
 				for(TSize local_col = column; local_col<window_end; ++local_col) {
-					streamWriteChar(file, mat[row * len + local_col]);
+					writeValue(file, mat[row * len + local_col]);
 					if (mat[row * len + local_col] != '.') ++coverage[local_col];
 				}
-				streamWriteChar(file, '\n');
+				writeValue(file, '\n');
 			}
-			streamWriteChar(file, '\n');
+			writeValue(file, '\n');
 	
 			// Consensus
 			for(int i = 0; i<offset; ++i)
-                streamWriteChar(file, ' ');
-			streamWriteBlock(file, "C: ", 3);
+                writeValue(file, ' ');
+			write(file, "C: ");
 			for(unsigned int local_col = column; local_col<window_end; ++local_col, ++itCons) 
-				streamWriteChar(file, *itCons);
-			streamWriteChar(file, '\n');
+				writeValue(file, *itCons);
+			writeValue(file, '\n');
 			for(int i = 0; i<offset-1; ++i)
-                streamWriteChar(file, ' ');
-			streamWriteBlock(file, ">2: ", 4);
+                writeValue(file, ' ');
+			write(file, ">2: ");
 			for(unsigned int local_col = column; local_col<window_end; ++local_col) {
 				if (coverage[local_col] > 2)
-                    streamWriteChar(file, gappedConsensus[local_col]);
+                    writeValue(file, gappedConsensus[local_col]);
 				else
-                    streamWriteChar(file, gapChar);
+                    writeValue(file, gapChar);
 			}
-			streamWriteChar(file, '\n');
-			streamWriteChar(file, '\n');
+			writeValue(file, '\n');
+			writeValue(file, '\n');
 			column+=winSize;
 		}
-		streamWriteChar(file, '\n');
-		streamWriteChar(file, '\n');
+		writeValue(file, '\n');
+		writeValue(file, '\n');
 
 		// Print all aligned reads belonging to this contig
 
@@ -1330,34 +1330,32 @@ write(TFile & file,
 		for(TSize iCount = 0;alignIt != alignItEnd; ++alignIt, ++iCount) {
 
 			// Print all reads
-			streamWriteBlock(file, "typ:", 4);
+			write(file, "typ:");
 			if (!noNamesPresent)
             {
-				streamWriteChar(file, 'R');
-				streamPut(file, iCount);
+				writeValue(file, 'R');
+				appendNumber(file, iCount);
 			}
             else
             {
-                streamPut(file, fragStore.readNameStore[alignIt->readId]);
+                write(file, fragStore.readNameStore[alignIt->readId]);
             }
-			streamWriteChar(file, '\n');
-			streamWriteBlock(file, "seq:", 4);
-			streamPut(file, fragStore.readSeqStore[alignIt->readId]);
-			streamWriteChar(file, '\n');
-			streamWriteBlock(file, "Pos:", 4);
-			streamPut(file, alignIt->beginPos);
-			streamWriteChar(file, ',');
-			streamPut(file, alignIt->endPos);
-			streamWriteChar(file, '\n');
+			write(file, "\nseq:");
+			write(file, fragStore.readSeqStore[alignIt->readId]);
+			write(file, "\nPos:");
+			appendNumber(file, alignIt->beginPos);
+			writeValue(file, ',');
+			appendNumber(file, alignIt->endPos);
+			writeValue(file, '\n');
 #ifndef CELERA_OFFSET
 			TSize begClr = 0;
 			TSize endClr = 0;
 			getClrRange(fragStore, *alignIt, begClr, endClr);
-			streamWriteBlock(file, "clr:", 4);
-			streamPut(file, begClr);
-			streamWriteChar(file, ',');
-			streamPut(file, endClr);
-			streamWriteChar(file, '\n');
+			write(file, "clr:");
+			appendNumber(file, begClr);
+			writeValue(file, ',');
+			appendNumber(file, endClr);
+			writeValue(file, '\n');
 #endif
 			std::stringstream gapCoords;
 			TSize letterCount = 0;
@@ -1368,13 +1366,13 @@ write(TFile & file,
 					gapCoords << letterCount << ' ';
 				} else ++letterCount;
 			}
-			streamWriteBlock(file, "dln:", 4);
-			streamPut(file, gapCount);
-			streamWriteChar(file, '\n');
-			streamWriteBlock(file, "del:", 4);
+			write(file, "dln:");
+			appendNumber(file, gapCount);
+			writeValue(file, '\n');
+			write(file, "del:");
 			streamWriteBlock(file, gapCoords.str().c_str(), gapCoords.str().size());
-			streamWriteChar(file, '\n');
-			streamWriteChar(file, '\n');
+			writeValue(file, '\n');
+			writeValue(file, '\n');
 		}
 	}
 
@@ -1844,7 +1842,8 @@ _writeCeleraFrg(TFile& target,
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
 	TAlignIter alignIt = begin(fragStore.alignedReadStore);
 	TAlignIter alignItEnd = end(fragStore.alignedReadStore);
-	for(;alignIt != alignItEnd; goNext(alignIt)) {
+	for(;alignIt != alignItEnd; goNext(alignIt))
+    {
 		TReadPos begClr = 0;
 		TReadPos endClr = 0;
 		getClrRange(fragStore, value(alignIt), begClr, endClr);
@@ -1856,51 +1855,30 @@ _writeCeleraFrg(TFile& target,
 	TReadIter readIt = begin(fragStore.readStore);
 	TReadIter readItEnd = end(fragStore.readStore);
 	bool noNamesPresent = (length(fragStore.readNameStore) == 0);
-	for(TSize idCount = 0;readIt != readItEnd; goNext(readIt), ++idCount) {
-		streamPut(target, "{FRG\n");
-		streamPut(target, "act:");
-		streamPut(target, 'A');
-		streamPut(target, '\n');
-		streamPut(target, "acc:");
-		streamPut(target, idCount + 1);
-		streamPut(target, '\n');
-		streamPut(target, "typ:");
-		streamPut(target, 'R');
-		streamPut(target, '\n');
-		if (!noNamesPresent) {
-			streamPut(target, "src:\n");
-			streamPut(target, value(fragStore.readNameStore, idCount));
-			streamPut(target, "\n.\n");
+	for (TSize idCount = 0; readIt != readItEnd; goNext(readIt), ++idCount)
+    {
+		write(target, "{FRG\nact:A\nacc:");
+		appendNumber(target, idCount + 1);
+		write(target, "\ntyp:R\n");
+		if (!noNamesPresent)
+        {
+			write(target, "src:\n");
+			write(target, fragStore.readNameStore[idCount]);
+			write(target, "\n.\n");
 		}
-		streamPut(target, "etm:");
-		streamPut(target, '0');
-		streamPut(target, '\n');
-		streamPut(target, "seq:\n");
-		typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
-		//typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
-		TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
-		TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
-		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 70 == 0) && (k != 0)) streamPut(target, '\n');
-			streamPut(target, getValue(seqIt));
-		}
-		streamPut(target, "\n.\n");
-		streamPut(target, "qlt:\n");
-		seqIt = begin(value(fragStore.readSeqStore, idCount));
-		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 70 == 0) && (k != 0)) streamPut(target, '\n');
-			Ascii c = ' ';
-			convertQuality(c, getQualityValue(value(seqIt)));
-			streamPut(target, c);
-		}
-		streamPut(target, "\n.\n");
+		write(target, "etm:0\nseq:\n");
+        writeWrappedString(target, fragStore.readSeqStore[idCount], 70);
+		write(target, ".\nqlt:\n");
+        typedef typename Value<typename TFragmentStore::TReadSeqStore>::Type TReadSeq;
+        typedef QualityExtractor<typename Value<TReadSeq>::Type> TQualityExtractor;
+        ModifiedString<TReadSeq const, ModView<TQualityExtractor> > quals(fragStore.readSeqStore[idCount]);
+        writeWrappedString(iter, quals, 70);
 		// Note: Clear range does not have to be ordered, e.g. no indication for reverse complemented reads, this is happening in cgb records
-		streamPut(target, "clr:");
-		streamPut(target, (value(clearStr, idCount)).i1);
-		streamPut(target, ',');
-		streamPut(target, (value(clearStr, idCount)).i2);
-		streamPut(target, '\n');
-		streamPut(target, "}\n");
+		write(target, ".\nclr:");
+		appendNumber(target, clearStr[idCount].i1);
+		writeValue(target, ',');
+		appendNumber(target, clearStr[idCount].i2);
+		write(target, "\n}\n");
 	}
 }
 
@@ -1927,14 +1905,11 @@ _writeCeleraCgb(TFile& target,
 	sortAlignedReads(fragStore.alignedReadStore, SortBeginPos());
 
 	// Write Header
-	streamPut(target, "{IUM\nacc:0\nsrc:\ngen> @@ [0,0]\n.\ncov:0.000\nsta:X\nfur:X\nabp:0\nbbp:0\n");
-	streamPut(target, "len:");
-	streamPut(target, length((value(fragStore.contigStore, contigId)).seq));
-	streamWriteChar(target, '\n');
-	streamPut(target, "cns:\n.\nqlt:\n.\nfor:0\n");
-	streamPut(target, "nfr:");
-	streamPut(target, length(fragStore.readStore));
-	streamPut(target, '\n');
+	write(target, "{IUM\nacc:0\nsrc:\ngen> @@ [0,0]\n.\ncov:0.000\nsta:X\nfur:X\nabp:0\nbbp:0\nlen:");
+	appendNumber(target, length((value(fragStore.contigStore, contigId)).seq));
+	write(target, "\ncns:\n.\nqlt:\n.\nfor:0\nnfr:");
+	appendNumber(target, length(fragStore.readStore));
+	writeValue(target, '\n');
 
 	// Write reads
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
@@ -1945,26 +1920,15 @@ _writeCeleraCgb(TFile& target,
     {
 		if (contigId != alignIt->contigId)
             continue;
-		streamPut(target, "{IMP\n");
-		streamPut(target, "typ:");
-		streamPut(target, 'R');
-		streamPut(target, '\n');
-		streamPut(target, "mid:");
-		streamPut(target, alignIt->readId + 1);
-		streamPut(target, '\n');
-		streamPut(target, "con:");
-		streamPut(target, '0');
-		streamPut(target, '\n');
-		streamPut(target, "pos:");
-		streamPut(target, alignIt->beginPos - offsetLeft);
-		streamPut(target, ',');
-		streamPut(target, alignIt->endPos - offsetLeft);
-		streamPut(target, '\n');
-		streamPut(target, "dln:0\n");
-		streamPut(target, "del:\n");
-		streamPut(target, "}\n");
+		write(target, "{IMP\ntyp:R\nmid:");
+		appendNumber(target, alignIt->readId + 1);
+		write(target, "\ncon:0\npos:");
+		appendNumber(target, alignIt->beginPos - offsetLeft);
+		writeValue(target, ',');
+		appendNumber(target, alignIt->endPos - offsetLeft);
+		write(target, "\ndln:0\ndel:\n}\n");
 	}
-	streamPut(target, "}\n");
+	write(target, "}\n");
 
     return streamError(target);
 }

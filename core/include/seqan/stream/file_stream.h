@@ -95,14 +95,6 @@ reserve(Buffer<TValue, TSpec> & me, TSize newCapacity)
 // Tags, Classes, Enums
 // ============================================================================
 
-struct IOException :
-    public std::runtime_error
-{
-    IOException(const std::string & message) :
-        std::runtime_error(message)
-    {}
-};
-
 // ----------------------------------------------------------------------------
 // Class FilePage
 // ----------------------------------------------------------------------------
@@ -332,7 +324,7 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, File<TFileSpec> &
 
     // if an error occurred, throw an I/O exception
     if (!success)
-        throw IOException((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
+        throw IOError((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
 
     return false;   // false = reading in process
 }
@@ -429,7 +421,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec>
 
     // if an error occurred, throw an I/O exception
     if (!success)
-        throw IOException((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
+        throw IOError((std::string)_pageFrameStatusString(page.state) + " operation could not be initiated: \"" + strerror(errno) + '"');
     return false;   // false = writing in process
 }
 
@@ -1093,8 +1085,16 @@ clear(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
     buffer.writePagePos = 0;
 }
 
+// --------------------------------------------------------------------------
+// Forwards
+// --------------------------------------------------------------------------
+
 template <typename TValue, typename TDirection, typename TSpec>
 class FileStream;
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
+close(FileStream<TValue, TDirection, TSpec> & stream);
 
 // --------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
@@ -1134,12 +1134,12 @@ public:
 
     ~FileStream()
     {
-        ::close(*this);
+        seqan::close(*this);
     }
 
     void close()
     {
-        ::close(*this);
+        seqan::close(*this);
     }
 };
 
