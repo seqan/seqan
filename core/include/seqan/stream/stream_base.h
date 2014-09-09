@@ -361,8 +361,7 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
 // resizable containers
 template <typename TSequence, typename TValue>
-//inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
-void
+inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
 writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);
@@ -562,7 +561,7 @@ inline void write(TTarget &target, TIValue *ptr, TSize n)
 //TODO(singer): Enable this!
 template <typename TTarget, typename TFwdIterator, typename TSize>
 //inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TSize> >, void)
 write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
@@ -585,28 +584,33 @@ write(TTarget &target, TContainer &cont)
     write(target, iter, length(cont));
 }
 
+template <typename TTarget, typename TContainer>
+inline void
+write(TTarget &target, TContainer const &cont)
+{
+    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
+    write(target, iter, length(cont));
+}
+
+template <typename TTarget, typename TValue>
+inline void
+write(TTarget &target, TValue * ptr)
+{
+    write(target, ptr, length(ptr));
+}
+
 // ----------------------------------------------------------------------------
 // Function read(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TFwdIterator, typename TSize>
-inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TSize> >, TSize)
+read(TTarget &target, TFwdIterator &iter, TSize n)
 {
     TSize i;
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
         writeValue(target, value(iter));
     return i;
-}
-
-// ----------------------------------------------------------------------------
-// Function write(TContainer)
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TContainer>
-inline void write(TTarget &target, TContainer const &cont)
-{
-    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
-    write(target, iter, length(cont));
 }
 
 // ----------------------------------------------------------------------------

@@ -646,7 +646,8 @@ template <typename TStream, typename TContainer, typename TSpec>
 inline TStream &
 operator<<(TStream & target, ContainerView<TContainer, TSpec> const & source)
 {
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 

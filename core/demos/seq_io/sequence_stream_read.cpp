@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
     {
         try
         {
-            read(file, id, seq, qual);
+            readRecord(id, seq, qual, file);
         }
         catch (UnexpectedEnd &)
         {

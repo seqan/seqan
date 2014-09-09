@@ -1141,24 +1141,20 @@ clipped view position:     0123456
 // Function write()
 // ----------------------------------------------------------------------------
 
-template <typename TFile, typename TSource, typename TIDString, typename TSpec>
+template <typename TTarget, typename TSource, typename TSpec>
 inline void
-write(TFile & target,
-	  Gaps<TSource, TSpec> const & source, 
-	  TIDString const &,
-	  Raw)
+write(TTarget & target,
+	  Gaps<TSource, TSpec> const & source)
 {
-//IOREV _nodoc_ specialization not documented
-
 	// Print gaps row
 	typedef typename Iterator<Gaps<TSource, TSpec> const>::Type TIter;
 	TIter begin_ = begin(source);
 	TIter end_ = end(source);
 	for (; begin_ != end_; ++begin_) {
 		if (isGap(begin_))
-			streamPut(target, gapValue<char>());
-		else 
-			streamPut(target, convert<char>(*begin_));
+			writeValue(target, gapValue<char>());
+		else
+			writeValue(target, getValue(begin_));
 	}
 }
 
@@ -1168,23 +1164,13 @@ write(TFile & target,
 
 // TODO(holtgrew): Document appropriately.
 
-template <typename TStream, typename TSource, typename TSpec>
-inline TStream &
-operator<<(TStream & stream, Gaps<TSource, TSpec> const & gaps)
+template <typename TTarget, typename TSource, typename TSpec>
+inline TTarget &
+operator<<(TTarget & target, Gaps<TSource, TSpec> const & gaps)
 {
-    typedef Gaps<TSource, TSpec> const             TGaps;
-    typedef typename Iterator<TGaps, Rooted>::Type TIter;
-
-    for (TIter it = begin(gaps, Rooted()); !atEnd(it); goNext(it))
-    {
-        // TODO(holtgrew): Ideally, we could simply print the expanded alphabet char but that is broken.
-        if (isGap(it))
-            stream << gapValue<char>();
-        else
-            stream << convert<char>(*it);
-    }
-
-    return stream;
+    typename DirectionIterator<TTarget, Output>::Type it = directionIterator(target, Output());
+    write(it, gaps);
+    return target;
 }
 
 // ----------------------------------------------------------------------------

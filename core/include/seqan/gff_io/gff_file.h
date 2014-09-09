@@ -61,9 +61,7 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 template <typename TDirection, typename TSpec, typename TStorageSpec>
 struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 {
-    typedef StringSet<CharString>                                   TNameStore;
-    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-    typedef GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+    typedef CharString Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -71,7 +69,7 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormats<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<Gff,
@@ -97,33 +95,17 @@ _mapFileFormatToCompressionFormat(Gtf)
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); GffRecord
+// Function readRecord(); GffRecord
 // ----------------------------------------------------------------------------
 
-// support for dynamically chosen file formats
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TForwardIter>
-inline void
-readRecord(GffRecord & /* record */,
-           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
-           TForwardIter & /* iter */,
-           TagSelector<> const & /* format */)
-{
-    SEQAN_FAIL("GffFileIn: File format not specified.");
-}
-
-template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TForwardIter, typename TTagList>
+template <typename TForwardIter, typename TFormats>
 inline void
 readRecord(GffRecord & record,
-           GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           CharString & buffer,
            TForwardIter & iter,
-           TagSelector<TTagList> const & format)
+           TagSelector<TFormats> const & /* format */)  // format is ignored as it will be autodetected per record
 {
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        readRecord(record, context, iter, TFormat());
-    else
-        readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    readRecord(record, buffer, iter);
 }
 
 // convient GffFile variant
@@ -139,29 +121,29 @@ readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+template <typename TTarget>
 inline void
-write(TTarget & /* target */,
-      GffRecord & /* record */,
-      GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
-      TagSelector<> const & /* format */)
+writeRecord(TTarget & /* target */,
+            GffRecord & /* record */,
+            CharString & /* buffer */,
+            TagSelector<> const & /* format */)
 {
     SEQAN_FAIL("GffFileOut: File format not specified.");
 }
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
+template <typename TTarget, typename TTagList>
 inline void
 writeRecord(TTarget & target,
             GffRecord & record,
-            GffIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            CharString & buffer,
             TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        write(target, record, context, TFormat());
+        writeRecord(target, record, buffer, TFormat());
     else
-        write(target, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        writeRecord(target, record, buffer, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 template <typename TSpec>

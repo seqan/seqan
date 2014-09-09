@@ -69,9 +69,12 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 	if(!file.is_open())
 		return RAZERS_GENOME_FAILED;
 
-	clear(genomeFileNames);
-	char c = _streamGet(file);
-	if (c != '>' && c != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    if (!atEnd(reader))
+        return 0;
+
+    clear(genomeFileNames);
+	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
@@ -84,17 +87,18 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
 
 		unsigned i = 1;
-		while(!_streamEOF(file))
-		{ 
-			_parseSkipWhitespace(file, c);
-			appendValue(genomeFileNames,_parseReadFilepath(file,c));
+        CharString line;
+		while(!atEnd(reader))
+		{
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
 			//CharString currentGenomeFile(filePrefix);
 			//append(currentGenomeFile,_parseReadFilepath(file,c));
 			//appendValue(genomeFileNames,currentGenomeFile);
 			if(options._debugLevel >=2)
-				cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << endl;
+				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
 			++i;
-			_parseSkipWhitespace(file, c);
 		}
 		if(options._debugLevel >=1)
 			cout << i-1 << " genome files total." <<endl;
@@ -117,7 +121,6 @@ int mapReads(
 {
 	FragmentStore<>			store;			// stores all of the tables
 
-	MultiFasta				genomeSet;
 
 	// dump configuration in verbose mode
 	if (options._debugLevel >= 1) 

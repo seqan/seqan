@@ -469,9 +469,11 @@ inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressio
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
+    SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
+
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
@@ -506,7 +508,7 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
 }
 
 template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType const & compressionType)
 {
     TCompressionType ct = compressionType;
@@ -514,7 +516,7 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
 }
 
 template <typename TValue, typename TStream>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension
@@ -524,11 +526,15 @@ open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 
 template <typename TValue, typename TDirection>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
+open(VirtualStream<TValue, TDirection> &stream,
+     const char *fileName,
+     int openMode = DefaultOpenMode<VirtualStream<TValue, TDirection> >::VALUE)
 {
+    SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
+
     typedef VirtualStream<TValue, TDirection> TVirtualStream;
 
-    if (!open(stream.file, fileName, openMode | std::ios::binary))
+    if (!open(stream.file, fileName, openMode))
         return false;
 
     // detect compression type from file extension

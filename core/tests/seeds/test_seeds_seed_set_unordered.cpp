@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>  // Includes testing infrastructure.
-#include <seqan/file.h>   // Required to print strings in tests.
+#include <seqan/stream.h>   // Required to print strings in tests.
 
 #include <seqan/seeds.h>  // Include module under test.
 

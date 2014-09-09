@@ -48,56 +48,43 @@ using namespace std;
 using namespace seqan;
 
 
-template<typename TOptions>
+template <typename TOptions>
 int getGenomeFileNameList(CharString const & filename, StringSet<CharString> & genomeFileNames, TOptions const & options)
 {
-    std::ifstream file;
-    file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
-    if(!file.is_open())
-        return RAZERS_GENOME_FAILED;
+	ifstream file;
+	file.open(toCString(filename),ios_base::in | ios_base::binary);
+	if(!file.is_open())
+		return RAZERS_GENOME_FAILED;
 
-    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > reader(file);
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    if (!atEnd(reader))
+        return 0;
 
-    CharString nameStr;
-    if (value(reader) != '>' && value(reader) != '@')
-    {
-        // If file does not start with a fasta header --> list of multiple reference genome files.
-        if(options._debugLevel >=1)
-            std::cout << std::endl << "Reading multiple genome files:" << std::endl;
-        /*      //locations of genome files are relative to list file's location
-         ::std::string tempGenomeFile(filename);
-         size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-         if (lastPos == tempGenomeFile.npos) lastPos = 0;
-         ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-        unsigned i = 0;
-        for (; !atEnd(reader); ++i)
-        {
-            clear(nameStr);
-            int res = skipWhitespaces(reader);
-            if (res == EOF_BEFORE_SUCCESS)
-                break;  // Done, no more file name.
-            if (res != 0)
-                return res;  // Error reading.
-            res = readGraphs(nameStr, reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return res;
-            appendValue(genomeFileNames,nameStr,Generous());
-            if(options._debugLevel >= 2)
-                std::cout << "Genome file #" << (i + 1) << ": " << genomeFileNames[length(genomeFileNames) - 1] << std::endl;
-        }
-        if(options._debugLevel >=1)
-            std::cout << i << " genome files total." << std::endl;
-    }
-    else
-    {
-        // If file starts with a fasta header --> regular one-genome-file input.
-        appendValue(genomeFileNames,filename,Generous());
-    }
-
-    return 0;
+    clear(genomeFileNames);
+	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+	{
+		if(options._debugLevel >=1)
+			cout << endl << "Reading multiple genome files:" <<endl;
+		
+		unsigned i = 1;
+        CharString line;
+		while(!atEnd(reader))
+		{
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
+			if(options._debugLevel >=2)
+				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
+			++i;
+		}
+		if(options._debugLevel >=1)
+			cout << i-1 << " genome files total." <<endl;
+	}
+	else		//if file starts with a fasta header --> regular one-genome-file input
+		appendValue(genomeFileNames, filename, Exact());
+	file.close();
+	return 0;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Main read mapper function

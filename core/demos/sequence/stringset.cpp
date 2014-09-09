@@ -1,6 +1,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 

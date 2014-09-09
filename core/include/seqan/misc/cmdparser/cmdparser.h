@@ -562,9 +562,7 @@ printShortHelp(CommandLineParser const & me, TStream & target)
 {
     _printTitle(me, target);
     _printUsage(me, target);
-    streamPut(target, "Try '");
-    streamPut(target, me._appName);
-    streamPut(target, " --help' for more information.\n");
+    target << "Try '" << me._appName << " --help' for more information.\n";
 }
 
 /*
@@ -616,7 +614,7 @@ printHelp(CommandLineParser const & me, std::ostream & target)
     _printTitle(me, target);
     target << '\n';
     _printUsage(me, target);
-    streamPut(target, '\n');
+    target << '\n';
 
     for (unsigned o = 0; o < length(me.optionMap); ++o)
     {
@@ -855,20 +853,13 @@ inline void
 _reportInvalidType(CommandLineParser const & me, CommandLineOption const & opt,
                    CharString const & val, TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid ");
-
+    estream << me._appName << ": \"" << val  << "\" is not a valid ";
     // there should be no other situation then those two
     if (isIntOption(opt))
-        streamPut(estream, "integer");
+        estream << "integer";
     else if (isDoubleOption(opt))
-        streamPut(estream, "double");
-
-    streamPut(estream, " value for '");
-    _writeOptName(estream, opt);
-    streamPut(estream, "'\n");
+        estream << "double";
+    estream << " value for '" << opt << "'\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -880,12 +871,7 @@ inline void
 _reportMissingArgument(CommandLineParser const & me,
                        CommandLineOption const & opt, TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": \'");
-    _writeOptName(estream, opt);
-    streamPut(estream, "\' requires ");
-    streamPut(estream, opt.argumentsPerOption);
-    streamPut(estream, " value(s)\n");
+    estream << me._appName << ": \'" << opt << "\' requires " << opt.argumentsPerOption << " value(s)\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -897,10 +883,7 @@ inline void
 _reportInvalidOption(CommandLineParser const & me, CharString const & option,
                      TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": invalid option '");
-    streamPut(estream, option);
-    streamPut(estream, "\'\n");
+    estream << me._appName << ": invalid option '" << option << "\'\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -912,14 +895,9 @@ inline void
 _reportValueNotInRange(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not in the required range [");
-    streamPut(estream, (opt.minValue != "" ? opt.minValue : "-inf"));
-    streamPut(estream, ":");
-    streamPut(estream, (opt.maxValue != "" ? opt.maxValue : "+inf"));
-    streamPut(estream, "]\n");
+    estream << opt << ": given argument \"" << val << "\" is not in the required range [";
+    estream << (opt.minValue != "" ? opt.minValue : "-inf");
+    estream << ":" << (opt.maxValue != "" ? opt.maxValue : "+inf") << "]\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -933,21 +911,16 @@ _reportInvalidValue(CommandLineOption const & opt, CharString const & val,
 {
     typedef Iterator<StringSet<CharString> const, Rooted>::Type TStringSetIter;
 
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid value [");
-    for (TStringSetIter valid = begin(opt.validValues);; )
-    {
-        streamPut(estream, *valid);
+    estream << opt << ": given argument \"" << val << "\" is not a valid value [";
 
-        goNext(valid);
-        if (valid == end(opt.validValues))
-            break;
-        else
-            streamPut(estream, ", ");
+    TStringSetIter valid = begin(opt.validValues);
+    if (valid != end(opt.validValues))
+    {
+        estream << *valid;
+        for (++valid; valid != end(opt.validValues); ++valid)
+            estream << ", " << *valid;
     }
-    streamPut(estream, "]\n");
+    estream << "]\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -959,21 +932,18 @@ inline void
 _reportInvalidFileType(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid file type [");
-    for (Iterator<StringSet<CharString> const, Rooted>::Type valid = begin(opt.validValues);; )
-    {
-        streamPut(estream, *valid);
+    typedef Iterator<StringSet<CharString> const, Rooted>::Type TStringSetIter;
 
-        goNext(valid);
-        if (valid == end(opt.validValues))
-            break;
-        else
-            streamPut(estream, ", ");
+    estream << opt << ": given argument \"" << val << "\" is not a valid file type [";
+
+    TStringSetIter valid = begin(opt.validValues);
+    if (valid != end(opt.validValues))
+    {
+        estream << *valid;
+        for (++valid; valid != end(opt.validValues); ++valid)
+            estream << ", " << *valid;
     }
-    streamPut(estream, "]\n");
+    estream << "]\n";
 }
 
 // ----------------------------------------------------------------------------

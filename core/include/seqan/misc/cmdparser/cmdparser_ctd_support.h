@@ -77,24 +77,44 @@ _join(StringSet<TValue> const & v, CharString const & delimiter)
  *  < -> &lt;
  *  > -> &gt;
  */
-template <typename TSequence>
-inline TSequence _xmlEscape(TSequence const & original)
+template <typename TValue, typename TSpec>
+inline String<TValue, TSpec>
+_xmlEscape(String<TValue, TSpec> const & original)
 {
-    TSequence escaped;
-    for (typename Iterator<TSequence const, Rooted>::Type ch  = begin(original); ch != end(original); goNext(ch))
+    typedef typename Iterator<String<TValue, TSpec> const, Standard>::Type TIter;
+    String<TValue, TSpec> escaped;
+    TIter iterEnd = end(original, Standard());
+    for (TIter ch = begin(original, Standard()); ch != iterEnd; ++ch)
     {
-        if (value(ch) == '"')
+        if (getValue(ch) == '"')
             append(escaped, "&quot;");
-        else if (value(ch) == '\'')
+        else if (getValue(ch) == '\'')
             append(escaped, "&apos;");
-        else if (value(ch) == '&')
+        else if (getValue(ch) == '&')
             append(escaped, "&amp;");
-        else if (value(ch) == '<')
+        else if (getValue(ch) == '<')
             append(escaped, "&lt;");
-        else if (value(ch) == '>')
+        else if (getValue(ch) == '>')
             append(escaped, "&gt;");
         else
-            append(escaped, *ch);
+            appendValue(escaped, getValue(ch));
+    }
+    return escaped;
+}
+
+template <typename TValue, typename TSpec, typename TSpec2>
+inline String<TValue, TSpec>
+_xmlEscape(String<String<TValue, TSpec>, TSpec2> const & original)
+{
+    typedef String<String<TValue, TSpec>, TSpec2>  TStrings;
+    typedef typename Size<TStrings>::Type           TSize;
+
+    String<TValue, TSpec> escaped;
+    for (TSize i = 0; i < length(original); ++i)
+    {
+        if (i != 0)
+            appendValue(escaped, '\n');
+        append(escaped, _xmlEscape(original[i]));
     }
     return escaped;
 }

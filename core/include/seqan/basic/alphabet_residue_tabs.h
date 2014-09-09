@@ -64,7 +64,7 @@ struct TranslateTableDna5ToIupac_
 };
 
 template <typename T>
-char const TranslateTableDna5ToIupac_<T>::VALUE[5] = {0x02, 0x04, 0x08, 0x01, 0x0f};
+char const TranslateTableDna5ToIupac_<T>::VALUE[5] = {0x01, 0x02, 0x04, 0x08, 0x0f};
 
 template <typename T = void>
 struct TranslateTableAsciiToDna_

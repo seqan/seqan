@@ -903,8 +903,8 @@ inline TStream &
 operator >> (TStream & source,
              Segment<THost, TSpec> const & target)
 {
-SEQAN_CHECKPOINT
-    read(source, target);
+    typename DirectionIterator<TStream, Input>::Type it(source);
+    read(it, target);
     return source;
 }
 

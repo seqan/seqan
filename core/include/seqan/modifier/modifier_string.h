@@ -814,7 +814,8 @@ template < typename TStream, typename THost, typename TSpec >
 inline TStream &
 operator<<(TStream & target, ModifiedString<THost, TSpec> const & source)
 {
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 
@@ -826,7 +827,8 @@ template < typename TStream, typename THost, typename TSpec >
 inline TStream &
 operator>>(TStream & source, ModifiedString<THost, TSpec> & target)
 {
-    read(source, target);
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
+    read(it, target);
     return source;
 }
 

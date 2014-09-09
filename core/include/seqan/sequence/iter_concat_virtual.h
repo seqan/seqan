@@ -180,9 +180,9 @@ public:
     {
         if (objNo >= length(*host))
         {
-            SEQAN_ASSERT_EQ(_begin, obj_iterator());
-            SEQAN_ASSERT_EQ(_cur, obj_iterator());
-            SEQAN_ASSERT_EQ(_end, obj_iterator());
+            SEQAN_ASSERT(_begin == obj_iterator());
+            SEQAN_ASSERT(_cur == obj_iterator());
+            SEQAN_ASSERT(_end == obj_iterator());
             return;
         }
 

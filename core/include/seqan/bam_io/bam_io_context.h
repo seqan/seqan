@@ -168,7 +168,7 @@ public:
     BamIOContext() :
         _nameStore(TNameStoreMember()),
         _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 NULL,
+                                 (TNameStoreCache*)NULL,
                                  _nameStore))
     {}
 
@@ -224,17 +224,24 @@ public:
 */
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-TNameStore &
+inline TNameStore &
 nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStore &>(context._nameStore);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-TNameStore const &
+inline TNameStore const &
 nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStore const &>(context._nameStore);
+}
+
+template <typename TNameStore, typename TNameStoreCache>
+inline void
+setNameStore(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStore & nameStore)
+{
+    context._nameStore = &nameStore;
 }
 
 // ----------------------------------------------------------------------------
@@ -267,17 +274,24 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & contex
 */
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-TNameStoreCache &
+inline TNameStoreCache &
 nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-TNameStoreCache const &
+inline TNameStoreCache const &
 nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
+}
+
+template <typename TNameStore, typename TNameStoreCache>
+inline void
+setNameStoreCache(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStoreCache & nameStoreCache)
+{
+    context._nameStoreCache = &nameStoreCache;
 }
 
 }  // namespace seqan

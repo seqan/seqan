@@ -1884,16 +1884,6 @@ void mapSingleReads(
 
 #endif
 
-// Trim after the first whitespace.
-void trimAfterSpace(seqan::CharString & s)
-{
-    unsigned i = 0;
-    for (; i < length(s); ++i)
-        if (isspace(s[i]))
-            break;
-    resize(s, i);
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in many genome sequences (import from Fasta)
 template <
@@ -2019,14 +2009,10 @@ int mapSingleReads(
 		SEQAN_PROTIMESTART(find_time);
 		for(; !atEnd(reader); ++gseqNo)
 		{
-            if (readRecord(id, genome, reader, Fasta()) != 0)
-            {
-                std::cerr << "ERROR: Could not read genome from " << genomeFileNameList[filecount] << "\n";
-                return 1;
-            }
+            readRecord(id, genome, seqFile);
 			if (options.genomeNaming == 0)
 			{
-                trimAfterSpace(id);
+                cropAfterFirst(id, IsWhitespace());
 				appendValue(genomeNames, id, Generous());
 			}
 			

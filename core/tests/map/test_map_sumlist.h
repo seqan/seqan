@@ -36,7 +36,7 @@
 #include <cstdio>
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/map.h>
 
 

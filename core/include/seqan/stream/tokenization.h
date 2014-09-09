@@ -138,6 +138,33 @@ template <char CHAR, typename TContext>
 const std::string ExceptionMessage<EqualsChar<CHAR>, TContext>::VALUE = std::string("Character '") + CHAR + "' expected.";
 
 // ----------------------------------------------------------------------------
+// Functor EqualsDynamicValue
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct EqualsDynamicValue
+{
+    TValue val;
+
+    EqualsDynamicValue(TValue const & val) :
+        val(val)
+    {}
+
+    template <typename TValue2>
+    bool operator() (TValue2 const & v) const
+    {
+        return v == val;
+    }
+};
+
+template <typename TValue, typename TContext>
+inline std::string const &
+getExceptionMessage(EqualsDynamicValue<TValue> const & func, TContext const &)
+{
+    return std::string("Character '") + func.val + "' expected.";
+}
+
+// ----------------------------------------------------------------------------
 // Composite Functors
 // ----------------------------------------------------------------------------
 // Don't use isblank() or isspace() as it they seem to be slower than our functors (due to inlining)
@@ -177,7 +204,7 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
 
     for (; !atEnd(iter); )
     {
-        Range<TIValue*> ichunk;
+        Range<TIValue const *> ichunk;
         getChunk(ichunk, iter, Input());
         SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
@@ -468,6 +495,113 @@ inline void skipLine(TFwdIterator &iter)
     // Unix Carriage Return ('\n') is the simplest case.
     if (*iter == '\n')
         ++iter;     // consume the found newline
+}
+
+// ----------------------------------------------------------------------------
+// Function findFirst()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline typename Position<TContainer>::Type
+findFirst(TContainer const &cont, TFunctor const &func)
+{
+    typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
+    skipUntil(iter, func);
+    return iter - begin(cont, Rooted());
+}
+
+template <typename TContainer>
+inline typename Position<TContainer>::Type
+findFirst(TContainer const &cont, typename Value<TContainer>::Type const &val)
+{
+    EqualsDynamicValue<typename Value<TContainer>::Type> func(val);
+    return findFirst(cont, func);
+}
+
+// ----------------------------------------------------------------------------
+// Function findLast()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline typename Position<TContainer>::Type
+findLast(TContainer const &cont, TFunctor const &func)
+{
+    typedef ModifiedString<TContainer const, ModReverse> TRevContainer;
+
+    SEQAN_CONCEPT_ASSERT((IntegerConcept<typename Position<TContainer>::Type>));
+
+    // search from back to front
+    TRevContainer rev(cont);
+    typename Iterator<TRevContainer, Rooted>::Type iter = begin(rev, Rooted());
+    skipUntil(iter, func);
+
+    if (atEnd(iter))
+        return -1;
+
+    return host(iter) - begin(cont, Rooted());
+}
+
+template <typename TContainer>
+inline typename Position<TContainer>::Type
+findLast(TContainer const &cont, typename Value<TContainer>::Type const &val)
+{
+    EqualsDynamicValue<typename Value<TContainer>::Type> func(val);
+    return findLast(cont, func);
+}
+
+// ----------------------------------------------------------------------------
+// Function cropAfterFirst(); crop after first occurrence (including it)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void
+cropAfterFirst(TContainer &cont, TFunctor const &func)
+{
+    resize(cont, findFirst(cont, func));
+}
+
+// ----------------------------------------------------------------------------
+// Function cropAfterLast(); crop after last occurrence (excluding it)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void
+cropAfterLast(TContainer &cont, TFunctor const &func)
+{
+    resize(cont, findLast(cont, func) + 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function cropBeforeFirst(); crop before first occurrence (excluding it)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void
+cropBeforeFirst(TContainer &cont, TFunctor const &func)
+{
+    erase(cont, 0, findFirst(cont, func));
+}
+
+// ----------------------------------------------------------------------------
+// Function cropBeforeLast(); crop before first occurrence (including it)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void
+cropBeforeLast(TContainer &cont, TFunctor const &func)
+{
+    erase(cont, 0, findLast(cont, func) + 1);
+}
+// ----------------------------------------------------------------------------
+// Function cropOuter(); crop after last occurrence (excluding it)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TFunctor>
+inline void
+cropOuter(TContainer &cont, TFunctor const &func)
+{
+    cropAfterLast(cont, NotFunctor<TFunctor>(func));
+    cropBeforeFirst(cont, NotFunctor<TFunctor>(func));
 }
 
 }  // namespace seqan

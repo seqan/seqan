@@ -1,5 +1,5 @@
-#include <seqan/file.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 int main()
