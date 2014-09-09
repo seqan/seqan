@@ -397,12 +397,12 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.copy.sam";
     BamFileIn inFile(toCString(goldPathSam));
     readRecords(store, inFile);
   
     // 3. WRITE SAM ALIGNMENTS
-    std::string testPathSam = SEQAN_TEMP_FILENAME();
+    std::string testPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     BamFileOut outFile(toCString(testPathSam));
     writeRecords(outFile, store);
     close(outFile);
@@ -419,12 +419,12 @@ SEQAN_DEFINE_TEST(test_store_io_sam2)
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.copy.sam";
     BamFileIn inFile(toCString(goldPathSam));
     readRecords(store, inFile);
 
     // 3. WRITE SAM ALIGNMENTS
-    std::string testPathSam = SEQAN_TEMP_FILENAME();
+    std::string testPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     BamFileOut outFile(toCString(testPathSam));
     writeRecords(outFile, store);
     close(outFile);
@@ -496,14 +496,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    CharString fastaFileName = SEQAN_PATH_TO_ROOT();
-    append(fastaFileName, "/core/tests/store/ex1.fa");
-
+    std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     loadContigs(store, toCString(fastaFileName));
 
     // 2. LOAD BAM ALIGNMENTS
-    CharString bamFileName = SEQAN_PATH_TO_ROOT();
-    append(bamFileName, "/core/tests/store/ex1.bam");
+    std::string bamFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.bam";
 
     // Read reference Sam from file.
     {
@@ -524,7 +521,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
 
     // 4. COMPARE BOTH SAM FILES
     CharString samFileName = SEQAN_PATH_TO_ROOT();
-    append(samFileName, "/core/tests/store/ex1.sam.copy");
+    append(samFileName, "/core/tests/store/ex1.copy.sam");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(samFileName), toCString(outFileName)));
 }
 
