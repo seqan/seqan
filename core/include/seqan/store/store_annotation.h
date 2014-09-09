@@ -812,7 +812,8 @@ assignValueByKey(
  * @fn AnnotationTreeIterator#getValueByKey
  * @brief Retrieve a key's value in the current annotation.
  *
- * @signature bool getValueByKey(it, key, value);
+ * @signature bool getValueByKey(it, key);
+ * @signature bool getValueByKey(value, it, key);
  *
  * @param[in]  it    The AnnotationTreeIterator for which to retrieve the key.
  * @param[in]  key   The key to get the value for.
@@ -828,7 +829,7 @@ assignValueByKey(
 ..summary:Given a key, retrieve its value of the current annotation.
 ..cat:Fragment Store
 ..signature:getValueByKey(iter, key)
-..signature:getValueByKey(iter, key, value)
+..signature:getValueByKey(value, iter, key)
 ..param.iter:An annotation tree iterator.
 ...type:Spec.AnnotationTree Iterator
 ..param.key:The key to retrieve the value from.
@@ -847,9 +848,9 @@ assignValueByKey(
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline bool 
 getValueByKey(
-	Iter<TFragmentStore, AnnotationTree<TSpec> > const & it,
-	TKey const & key,
-	TValue & value)
+    TValue & value,
+    Iter<TFragmentStore, AnnotationTree<TSpec> > const & it,
+	TKey const & key)
 {
 	return annotationGetValueByKey(*it.store, getAnnotation(it), key, value);
 }

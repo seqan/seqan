@@ -1230,10 +1230,10 @@ annotationAssignValueByKey (
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey, typename TValue>
 inline bool 
 annotationGetValueByKey (
+    TValue & value,
 	FragmentStore<TSpec, TConfig> & fragStore, 
 	TAnnotation const & annotation,
-	TKey const & key,
-	TValue & value)
+	TKey const & key)
 {
 	typedef typename TAnnotation::TValues	TValues;
 	typedef typename Size<TValues>::Type	TKeyId;
@@ -1253,8 +1253,8 @@ annotationGetValueByKey (
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey>
-inline typename Parameter_<typename Value<typename TAnnotation::TValues const>::Type>::Type
-annotationGetValueByKey (
+inline typename Id<TAnnotation>::Type
+annotationGetValueIdByKey (
 	FragmentStore<TSpec, TConfig> & fragStore, 
 	TAnnotation const & annotation,
 	TKey const & key)
@@ -1268,9 +1268,9 @@ annotationGetValueByKey (
 
 	TKeyId keyId = 0;
 	if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
-		return annotation.values[keyId];
-	else
-		return emptyString;
+        if (keyId < length(annotation.values) && !empty(annotation.values[keyId]))
+            return keyId;
+    return TAnnotation::INVALID_ID;
 }
 
 /*!

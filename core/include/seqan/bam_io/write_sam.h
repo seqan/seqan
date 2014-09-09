@@ -120,7 +120,6 @@ inline void write(TTarget & target,
     // Write missing @SQ header records.
     for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
     {
-        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
         if (writtenSeqInfos.find(header.sequenceInfos[i].i1) != writtenSeqInfos.end())
             continue;
         write(target, "@SQ\tSN:");
