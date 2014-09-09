@@ -80,7 +80,6 @@ struct FragStoreSAMContext
     typedef typename TFragmentStore::TReadSeq                                   TReadSeq;
 
     TId                 readId;
-    TId                 contigId;
     TReadGapAnchors     readGapAnchors;
     TContigAnchorGaps   contigGapAnchors;
 
@@ -199,12 +198,12 @@ clear(FragStoreImportFlags & flags)
 // Function appendAlignment()
 // --------------------------------------------------------------------------
 
-template<typename TSpec, typename TConfig, typename TId, typename TPos, typename TGaps>
+template<typename TSpec, typename TConfig, typename TContigId, typename TId, typename TPos, typename TGaps>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
 appendAlignment(
     FragmentStore<TSpec, TConfig> & fragStore, 
     TId readId, 
-    TId contigId, 
+    TContigId contigId,
     TPos beginPos, 
     TPos endPos, 
     TGaps const & gaps)
@@ -358,8 +357,10 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 
+    refresh(nameStoreCache(ctx));
     readRecords(store, ctx, directionIterator(bamFile, Input()), format(bamFile), importFlags);
-
+//for(size_t i=0;i<length(nameStore(ctx));++i)
+//std::cout<<nameStore(ctx)[i]<<std::endl;
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 }
@@ -446,13 +447,14 @@ _readAlignments(
 // Function _bamAppendAlignment()
 // --------------------------------------------------------------------------
 
-template <typename TReadSeq, typename TCigar, typename TPos, typename TId, typename TFragmentStore>
+template <typename TReadSeq, typename TCigar, typename TPos, typename TContigId, typename TId, typename TFragmentStore>
 inline void
 _bamAppendAlignment(
     TFragmentStore &fragStore,
     TReadSeq const &readSeq,
     TCigar &cigar,
     TPos &beginPos, TPos &endPos,
+    TContigId contigId,
     TId &pairMatchId,
     FragStoreSAMContext<TFragmentStore> & contextSAM)
 {
@@ -472,19 +474,20 @@ _bamAppendAlignment(
         beginPos += beginGaps;
 
     // create a new entry in the aligned read store
-    pairMatchId = appendAlignment(fragStore, contextSAM.readId, contextSAM.contigId, beginPos, endPos, contextSAM.readGapAnchors);
+    pairMatchId = appendAlignment(fragStore, contextSAM.readId, contigId, beginPos, endPos, contextSAM.readGapAnchors);
 }
 
 // --------------------------------------------------------------------------
 // Function _bamAppendAlignmentWithoutSeq()
 // --------------------------------------------------------------------------
 
-template <typename TCigar, typename TPos, typename TId, typename TFragmentStore>
+template <typename TCigar, typename TPos, typename TContigId, typename TId, typename TFragmentStore>
 inline void
 _bamAppendAlignmentWithoutSeq(
     TFragmentStore &fragStore,
     TCigar &cigar,
     TPos &beginPos, TPos &endPos,
+    TContigId contigId,
     TId &pairMatchId,
     FragStoreSAMContext<TFragmentStore> & contextSAM)
 {
@@ -505,7 +508,7 @@ _bamAppendAlignmentWithoutSeq(
         beginPos += beginGaps;
 
     // create a new entry in the aligned read store
-    pairMatchId = appendAlignment(fragStore, contextSAM.readId, contextSAM.contigId, beginPos, endPos, contextSAM.readGapAnchors);
+    pairMatchId = appendAlignment(fragStore, contextSAM.readId, contigId, beginPos, endPos, contextSAM.readGapAnchors);
 }
 
 // --------------------------------------------------------------------------
@@ -581,7 +584,7 @@ _readOneAlignment(
 
     // Check if read sequence is already in the store.  If so get the ID, otherwise create new entries in the read
     // then read name and mate pair store.
-    contextSAM.readId = 0;
+    contextSAM.readId = -1;
     if (importFlags.importRead)
     {
         if (!importFlags.importReadName)
@@ -611,9 +614,10 @@ _readOneAlignment(
         // generate gap anchor string for the read
         if (importFlags.importReadSeq)
             _bamAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], record.cigar, beginPos, endPos,
-                                pairMatchId, contextSAM);
+                                record.rID, pairMatchId, contextSAM);
         else
-            _bamAppendAlignmentWithoutSeq(fragStore, record.cigar, beginPos, endPos, pairMatchId, contextSAM);
+            _bamAppendAlignmentWithoutSeq(fragStore, record.cigar, beginPos, endPos, record.rID, pairMatchId,
+                                          contextSAM);
 
         clear(contextSAM.contigGapAnchors);
         TContigGapsPW contigGaps(contextSAM.contigGapAnchors);
