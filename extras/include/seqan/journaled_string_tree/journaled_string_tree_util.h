@@ -529,37 +529,6 @@ _mapHostToVirtual(TIterator & resultIt,
     resultIt += virtualOffset + 1;  // Set the iterator to the beginning of the variant.
 }
 
-// ----------------------------------------------------------------------------
-// Function _testEqual()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename THostSpec>
-inline bool
-_testEqual(String<TValue, Packed<THostSpec> > const & lhs,
-           String<TValue, Packed<THostSpec> > const & rhs)
-{
-    typedef String<TValue, Packed<THostSpec> > TPackedString;
-    typedef typename Host<TPackedString>::Type TPackedHost;
-    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
-    typedef PackedTraits_<TPackedString> TPackedTraits;
-
-    TConstPackedHostIterator itLOperand = begin(host(lhs), Standard());
-    TConstPackedHostIterator itROperand = begin(host(rhs), Standard());
-    TConstPackedHostIterator itEndLOperand = end(host(lhs), Standard()) - 1;
-    TConstPackedHostIterator itEndROperand = end(host(rhs), Standard()) - 1;
-
-    while(itLOperand != itEndLOperand && itROperand != itEndROperand)
-    {
-        if (*itLOperand != *itROperand)
-            return false;
-        ++itLOperand;
-        ++itROperand;
-    }
-
-    return (*itLOperand >> (TPackedTraits::VALUES_PER_HOST_VALUE - (length(lhs) % TPackedTraits::VALUES_PER_HOST_VALUE)))
-        == (*itROperand >> (TPackedTraits::VALUES_PER_HOST_VALUE - (length(rhs) % TPackedTraits::VALUES_PER_HOST_VALUE)));
-}
-
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_UTIL_H_

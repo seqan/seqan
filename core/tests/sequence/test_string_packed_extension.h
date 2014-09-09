@@ -41,6 +41,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/random.h>
 
 using namespace seqan;
 
@@ -598,6 +599,85 @@ void testStringPackedExtensionTestAllOnes()
     }
 }
 
+template <typename TValue>
+void testStringPackedExtensionTestEqual()
+{
+    typedef String<TValue, Packed<> > TPackedString;
+    typedef PackedTraits_<TPackedString> TTraits;
+    typedef typename TTraits::THostValue THostValue;
+    typedef typename THostValue::TBitVector TBitVector;
+    typedef typename Iterator<TPackedString, Standard>::Type TIter;
+
+    Rng<MersenneTwister> rng(42);
+    Pdf<Uniform<unsigned> > pdf(0, ValueSize<TValue>::VALUE - 1);
+
+    {  // Empty host.
+        TPackedString strL, strR;
+
+        resize(strL, 1243, Exact());
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+
+    {  // Different Size.
+        TPackedString strL, strR;
+        resize(strL, +TTraits::VALUES_PER_HOST_VALUE, TValue());
+        resize(strR, +TTraits::VALUES_PER_HOST_VALUE * 2, TValue());
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+
+    {  // Test Equal.
+        TPackedString strL, strR;
+        resize(strL, +TTraits::VALUES_PER_HOST_VALUE - 3, TValue(), Exact());
+
+        for (TIter it = begin(strL, Standard()); it != end(strL, Standard()); ++it)
+            assignValue(it, convert<TValue>(pickRandomNumber(rng, pdf)));
+
+        strR = strL;
+        // Manipulate wasted bits.
+        *(begin(host(strR), Standard()) + 1) |= ~(~static_cast<TBitVector>(0) >> TTraits::WASTED_BITS);
+        // Manipulate inactive bits at end.
+        *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
+
+        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(strL == strR);
+        SEQAN_ASSERT_NOT(strL != strR);
+
+        resize(strL, 8 * TTraits::VALUES_PER_HOST_VALUE - 3, TValue(), Exact());
+        for (TIter it = begin(strL, Standard()); it != end(strL, Standard()); ++it)
+            assignValue(it, convert<TValue>(pickRandomNumber(rng, pdf)));
+
+        strR = strL;
+        // Manipulate wasted bits.
+        *(begin(host(strR), Standard()) + 4) |= ~(~static_cast<TBitVector>(0) >> TTraits::WASTED_BITS);
+        // Manipulate inactive bits at end.
+        *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
+
+        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(strL == strR);
+        SEQAN_ASSERT_NOT(strL != strR);
+
+        unsigned pos = 3 * TTraits::VALUES_PER_HOST_VALUE + 2;
+        TValue tmp = strR[pos];
+        strR[pos] = convert<TValue>(~ordValue(tmp));  // Invert value.
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+
+        strR[pos] = tmp;
+        *(end(strL, Standard()) - 1) = convert<TValue>(~ordValue(getValue(end(strL, Standard()) - 1)));  // Invert last value.
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+}
+
 void testStringPackedExtensionBitScanForward()
 {
     typedef String<bool, Packed<> > TBitString;
@@ -678,6 +758,8 @@ SEQAN_DEFINE_TEST(String_Packed_Extension)
     testStringPackedExtensionBitwiseNot();
     testStringPackedExtensionTestAllZeros();
     testStringPackedExtensionTestAllOnes();
+    testStringPackedExtensionTestEqual<bool>();
+    testStringPackedExtensionTestEqual<Dna5>();
     testStringPackedExtensionBitScanForward();
     testStringPackedExtensionBitScanReverse();
 }

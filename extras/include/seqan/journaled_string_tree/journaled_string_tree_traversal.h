@@ -1354,7 +1354,7 @@ _traverseBranch(JstTraverser<TContainer, TState, JstTraverserSpec<TContextPositi
             transform(splitVec, varCoverage, top(traverser._branchStack)._branchCoverage, FunctorBitwiseAnd());
 
             // Check if found split point effects the current branch.
-            if (!testAllZeros(splitVec) && !_testEqual(splitVec, top(traverser._branchStack)._branchCoverage))
+            if (!testAllZeros(splitVec) && splitVec != top(traverser._branchStack)._branchCoverage)
             {
                 // Appending to the branch stack might invalidate the current pointer.
                 TBranchStackEntry & splitProxyWindow = createEntry(traverser._branchStack);
