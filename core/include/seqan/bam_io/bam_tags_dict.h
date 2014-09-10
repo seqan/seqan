@@ -149,10 +149,10 @@ for (unsigned i = 0; i < length(tags); ++i)
 
 class BamTagsDict
 {
+public:
     typedef Host<BamTagsDict>::Type TBamTagsSequence;
     typedef Position<TBamTagsSequence>::Type TPos;
 
-public:
     Holder<TBamTagsSequence> _host;
     mutable String<TPos> _positions;
 
@@ -337,6 +337,7 @@ buildIndex(BamTagsDict const & bamTags)
     TIter itEnd = end(host(bamTags), Standard());
     for (TIter it = itBegin; it != itEnd; )
     {
+        SEQAN_ASSERT(it < itEnd);
         // skip tag name (e.g. "NM")
         it += 2;
 
@@ -1024,7 +1025,7 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
  */
 
 template <typename TKey>
-inline bool
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TKey> >, bool)
 eraseTag(BamTagsDict & tags, TKey const & key)
 {
     if (!hasIndex(tags))
@@ -1036,6 +1037,24 @@ eraseTag(BamTagsDict & tags, TKey const & key)
 
     erase(host(tags), tags._positions[id], tags._positions[id + 1]);
     clear(tags._positions);
+    return true;
+}
+
+template <typename TId>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, bool)
+eraseTag(BamTagsDict & tags, TId const & id)
+{
+    typedef typename Iterator<String<typename BamTagsDict::TPos>, Standard>::Type TIter;
+    if (!hasIndex(tags))
+        buildIndex(tags);
+
+    typename BamTagsDict::TPos delta = tags._positions[id + 1] - tags._positions[id];
+    erase(host(tags), tags._positions[id], tags._positions[id + 1]);
+    erase(tags._positions, id);
+    TIter it = begin(tags._positions, Standard()) + id;
+    TIter itEnd = end(tags._positions, Standard());
+    for (; it != itEnd; ++it)
+        *it -= delta;
     return true;
 }
 
