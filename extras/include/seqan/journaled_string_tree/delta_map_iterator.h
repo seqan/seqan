@@ -206,7 +206,7 @@ template <typename TDeltaMap>
 inline DeltaType
 deltaType(Iter<TDeltaMap, DeltaMapIteratorSpec> const& iter)
 {
-    return getDeltaRecord(getValue(iter)).i1;
+    return static_cast<DeltaType>(getDeltaRecord(getValue(iter)).i1);
 }
 
 // ----------------------------------------------------------------------------

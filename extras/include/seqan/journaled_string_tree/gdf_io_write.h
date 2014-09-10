@@ -397,7 +397,6 @@ inline void _bufferDataBlock(TBuffer & buffer,
                              DeltaMap<TValue, TAlphabet, TSpec> const & /*deltaMap*/,
                              TCompressionMode /*tag*/)
 {
-    typedef DeltaMap<TValue, TAlphabet> TDeltaMap;
     typedef BitCompressedDeltaPos_<TCompressionMode> TDeltaPos;
 
     __uint32 lastRefPos = deltaPosition(it);
@@ -428,8 +427,6 @@ inline void _bufferDataBlock(TBuffer & buffer,
             }
             else
             {
-                typedef typename DeltaValue<TDeltaMap const, DeltaTypeIns>::Type TIns;
-
                 // Handle Indel.
                 if (deltaType(itDelta) == DELTA_TYPE_SV)
                 {
@@ -465,7 +462,6 @@ template <typename TBuffer, typename TStringSet>
 inline void _bufferCoverages(TBuffer & buffer, TStringSet const & set)
 {
     typedef typename Concatenator<TStringSet>::Type TConcatenate;
-    typedef typename Value<TConcatenate>::Type TEncodedValue;
     typedef typename Iterator<TConcatenate const, Standard>::Type TConcatIterator;
 
     for (TConcatIterator it = begin(concat(set), Standard()); it != end(concat(set), Standard()); ++it)

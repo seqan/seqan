@@ -84,11 +84,19 @@
 // ==========================================================================
 
 // Check endianness for most platforms using GNU C library.
-#ifdef __LITTLE_ENDIAN__
+#ifdef __LITTLE_ENDIAN__  // LITTLE_ENDIAN
 #define SEQAN_LITTLE_ENDIAN __LITTLE_ENDIAN__
-#elif defined(__BIG_ENDIAN__)
+#elif defined(__BIG_ENDIAN__)  // BIG_ENDIAN
 #define SEQAN_LITTLE_ENDIAN !__BIG_ENDIAN__
-#endif
+#elif defined(__BYTE_ORDER__)  // Check via set byte order.
+#ifdef __ORDER_LITTLE_ENDIAN__
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define SEQAN_LITTLE_ENDIAN 1
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define SEQAN_LITTLE_ENDIAN 0
+#endif  // if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__.
+#endif  // ifdef __ORDER_LITTLE_ENDIAN__
+#endif  // ifdef __LITTLE_ENDIAN__
 
 // Check other platforms if endianness could not be determined.
 #ifndef SEQAN_LITTLE_ENDIAN
@@ -118,7 +126,7 @@
 #define SEQAN_LITTLE_ENDIAN 0
 #else  // SEQAN_LITTLE_ENDIAN - no known endianness.
 #define SEQAN_LITTLE_ENDIAN 1
-#warning "Could not determine endianness for the host system!"
+#warning "Could not determine endianness for the host system or host's endianness is not supported!"
 #endif  // Macro checks.
 #endif  // SEQAN_LITTLE_ENDIAN.
 

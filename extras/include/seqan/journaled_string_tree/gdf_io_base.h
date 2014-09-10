@@ -93,7 +93,7 @@ typedef Tag<Gdf_> Gdf;
  * @return "const char*" The error message.
  */
 
-struct GdfIOException : public Exception
+struct GdfIOException
 {
     /*!
      * @var std::string GdfIOException::message
@@ -107,7 +107,7 @@ struct GdfIOException : public Exception
     *
     * @signature const char* GdfIOException::what();
     */
-    const char* what() const noexcept
+    const char* what()
     {
         return message.c_str();
     }
@@ -123,9 +123,11 @@ struct GdfIOException : public Exception
     GdfIOException()
     {}
 
-    GdfIOException(std::string const & errMessage)
+    template <typename TString>
+    GdfIOException(TString const & errMessage)
     {
-        message = "Gdf_IO_Exception: (" + errMessage + ")";
+        std::string tmp(errMessage);
+        message = "Gdf_IO_Exception: (" + tmp + ")";
     }
 };
 
@@ -431,7 +433,7 @@ inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<8> /
 template <unsigned SIZE>
 inline unsigned _copyToBuffer(char * target, const char * source, ConstUInt<SIZE> /*value size*/)
 {
-    _copyToBuffer(target, source, SIZE);
+    return _copyToBuffer(target, source, SIZE);
 }
 
 // ----------------------------------------------------------------------------

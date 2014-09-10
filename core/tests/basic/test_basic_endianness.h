@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,48 +31,52 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
+// Unit tests for basic endianness.
+// ==========================================================================
+
+#ifndef EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_
+#define EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
 
-#include "test_delta_map.h"
-#include "test_journaled_string_tree.h"
-
-SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
+template <typename TVal>
+TVal _testToHostByteOrder(TVal val)
 {
-    // Tests for delta map.
-
-    SEQAN_CALL_TEST(test_delta_map_insert);
-    SEQAN_CALL_TEST(test_delta_map_length);
-    SEQAN_CALL_TEST(test_delta_map_empty);
-    SEQAN_CALL_TEST(test_delta_map_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_set_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_iterator);
-    SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
-    SEQAN_CALL_TEST(test_delta_map_iterator_assign);
-    SEQAN_CALL_TEST(test_delta_map_iterator_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
-
-    // Tests for journaled string tree
-    SEQAN_CALL_TEST(test_journaled_string_tree_container_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_get_string_tree_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_host_mf);
-    SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
-    SEQAN_CALL_TEST(test_journaled_string_tree_init);
-    SEQAN_CALL_TEST(test_journaled_string_tree_reinit);
-    SEQAN_CALL_TEST(test_journaled_string_tree_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_string_set);
-    SEQAN_CALL_TEST(test_journaled_string_tree_full_journal_required);
-    SEQAN_CALL_TEST(test_journaled_string_tree_set_block_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
-    SEQAN_CALL_TEST(test_journaled_string_tree_host);
-    SEQAN_CALL_TEST(test_journaled_string_tree_local_to_global_pos);
-
-    SEQAN_CALL_TEST(test_journaled_string_tree_save_open);
-    SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
+    return endianSwap(val, seqan::HostByteOrder(), seqan::HostByteOrder());
 }
-SEQAN_END_TESTSUITE
+
+template <typename TVal>
+TVal _testToOtherByteOrder(TVal val)
+{
+    return endianSwap(val, seqan::LittleEndian(), seqan::BigEndian());
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_8)
+{
+    __uint8 x = 0x12;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint8)0x12);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint8)0x12);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_16)
+{
+    __uint16 x = 0x1234;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint16)0x1234);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint16)0x3412);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_32)
+{
+    __uint32 x = 0x12345678;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint32)0x12345678);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint32)0x78563412);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_64)
+{
+    __uint64 x = 0x123456789ABCDEF0;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint64)0x123456789ABCDEF0);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint64)0xF0DEBC9A78563412);
+}
+
+#endif  // EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_

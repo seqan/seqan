@@ -3130,7 +3130,7 @@ fclose(f);
 /*!
  * @macro SEQAN_PARENT_PATH
  * @headerfile <seqan/basic.h>
- * @brief Extracts the parent path of the given path.
+ * @brief Extracts the parent path of the given path name.
  *
  * @signature TCharType SEQAN_PARENT_PATH(p);
  * @param p the path to extract the parent path for.
@@ -3144,12 +3144,13 @@ fclose(f);
  * @section Examples
  *
  * @code{.cpp}
- * const char *p = SEQAN_EXTRACT_PATH(__FILE__);
- * buffer char tempFilename[1000];
- * strcpy(tempFilename, p);
- * FILE *f = fopen(tempFilename, "w");
- * fprintf(f, "Test Data");
- * fclose(f);
+ * const char *parentDir = SEQAN_EXTRACT_PATH(__FILE__);
+ * DIR *dir;
+ * struct dirent *ent;
+ * dir = opendir(parentDir); // Open paren dir.
+ * while ((ent = readdir(dir)) != NULL)  // List all files in paren dir.
+ *     printf ("%s\n", ent->d_name);
+ * closedir(dir);
  * @endcode
  * @see SEQAN_PATH_TO_ROOT
  */

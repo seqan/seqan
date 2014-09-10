@@ -157,7 +157,7 @@ template <typename TRefPos, typename TStorePos>
 struct DeltaRecord<DeltaMapEntry<TRefPos, TStorePos> >
 {
     static const unsigned REMAINING_BITS = BitsPerValue<TStorePos>::VALUE - BitsPerValue<DeltaType>::VALUE;
-    typedef Pair<DeltaType, TStorePos, BitPacked<BitsPerValue<DeltaType>::VALUE, REMAINING_BITS> > Type;
+    typedef Pair<TStorePos, TStorePos, BitPacked<BitsPerValue<DeltaType>::VALUE, REMAINING_BITS> > Type;
 };
 
 template <typename TRefPos, typename TStorePos>

@@ -113,7 +113,7 @@ inline TValue _endianSwap(TValue val, ConstUInt<SIZE>)
     return val;
 }
 
-#ifdef WINDOWS_PLATFORMS
+#if defined(PLATFORM_WINDOWS)
 template <typename TValue>
 inline TValue _endianSwap(TValue val, ConstUInt<2>)
 {
@@ -131,11 +131,15 @@ inline TValue _endianSwap(TValue val, ConstUInt<8>)
 {
     return _byteswap_uint64(val);
 }
-#else  // WINDOWS_PLATFORMS
+#else  // PLATFORM_WINDOWS
 template <typename TValue>
 inline TValue _endianSwap(TValue val, ConstUInt<2>)
 {
+#if __GNUC__ >= 4 && __GNUC_MINOR__ >= 8  // Supported only for GNU compiler since version 4.8.
     return __builtin_bswap16(val);
+#else
+    return (val << 8) | (val >> 8);
+#endif
 }
 
 template <typename TValue>
@@ -149,7 +153,7 @@ inline TValue _endianSwap(TValue val, ConstUInt<8>)
 {
     return __builtin_bswap64(val);
 }
-#endif  // WINDOWS_PLATFORMS
+#endif  // PLATFORM_WINDOWS
 
 // ----------------------------------------------------------------------------
 // Function endianSwap()

@@ -188,13 +188,13 @@ public:
 template <unsigned BitsPerValue>
 struct GdfCompressionMode
 {
-    static const typename GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_NO_SNP_COMPRESSION;
+    static const GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_NO_SNP_COMPRESSION;
 };
 
 template <>
 struct GdfCompressionMode<2>
 {
-    static const typename GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
+    static const GdfIOMode::CompressionMode VALUE = GdfIOMode::COMPRESSION_MODE_2_BIT_SNP_COMPRESSION;
 };
 
 // ============================================================================

@@ -342,6 +342,7 @@ _mapVirtualToVirtual(TIter & target,
                      TProxyId const & proxyId)
 {
     typedef typename Position<TIter>::Type TPosition;
+    typedef typename Size<TIter>::Type TSize;
     // Check if both journals point to the same reference.
     SEQAN_ASSERT_EQ(&host(*target._journalStringPtr), &host(*source._journalStringPtr));
 
@@ -381,7 +382,7 @@ _mapVirtualToVirtual(TIter & target,
         }
 
         TBranchNodeIt tmpIt = const_cast<TBranchNodeIt&>(branchNodeIt);  // We are at this position.
-        unsigned virtOffset = target._journalEntriesIterator->length - _localEntryPosition(target) - 1;
+        TSize virtOffset = target._journalEntriesIterator->length - _localEntryPosition(target) - 1;
         while (!atBegin(tmpIt, variantStore) && deltaPosition(--tmpIt) > hostPos)
         {
             if (deltaCoverage(tmpIt)[proxyId] != true)  // Irrelevant variant.
@@ -426,6 +427,7 @@ _mapHostToVirtual(TIterator & resultIt,
     typedef JournalEntryLtByPhysicalOriginPos<TCargoPos, TCargoSize> TComp;
 
     typedef typename Iterator<TDeltaMap, Standard>::Type TVarIterator;
+    typedef typename Position<TDeltaMap>::Type TDeltaMapPos;
 
     // We need to set the iterator to the correct position within the proxy sequence given the host pos.
     TJournalEntries & journalEntries = _journalEntries(js);
@@ -456,11 +458,11 @@ _mapHostToVirtual(TIterator & resultIt,
     if (it->segmentSource == SOURCE_PATCH)  // The iterator has to be at the beginning.
     {
         TVarIterator itVar = begin(variantStore, Standard());
-        SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<unsigned const>(hostPos));
+        SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<TDeltaMapPos const>(hostPos));
 
-        unsigned virtualOffset = 0;
+        TDeltaMapPos virtualOffset = 0;
         // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-        while(deltaPosition(itVar) != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
+        while(deltaPosition(itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
         {
             if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
             {
@@ -484,7 +486,7 @@ _mapHostToVirtual(TIterator & resultIt,
 
     // We assume that the operation begins here!
     resultIt._journalEntriesIterator = it;
-    if (it->physicalOriginPosition + it->length > static_cast<unsigned const>(hostPos))
+    if (it->physicalOriginPosition + it->length > static_cast<TDeltaMapPos const>(hostPos))
     {
         _updateSegmentIterators(resultIt);
         if (it->physicalOriginPosition < hostPos)
@@ -493,7 +495,7 @@ _mapHostToVirtual(TIterator & resultIt,
     }
 
     _updateSegmentIteratorsLeft(resultIt);  // Set the iterator to the end of the current original node.
-    if (_physicalPosition(resultIt) + 1 == static_cast<unsigned const>(hostPos))
+    if (_physicalPosition(resultIt) + 1 == static_cast<TDeltaMapPos const>(hostPos))
     {
         ++resultIt;
         return;
@@ -506,11 +508,11 @@ _mapHostToVirtual(TIterator & resultIt,
     TVarIterator itVar = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), tmpEntry,
                                           DeltaMapEntryCompareLessByDeltaPosition_());
 
-    SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<unsigned const>(hostPos));
+    SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<TDeltaMapPos const>(hostPos));
 
-    unsigned virtualOffset = 0;
+    TDeltaMapPos virtualOffset = 0;
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-    while (deltaPosition(itVar) != static_cast<unsigned const>(hostPos) && !atEnd(itVar, variantStore))
+    while (deltaPosition(itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
     {
         if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
         {

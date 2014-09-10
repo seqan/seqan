@@ -215,11 +215,12 @@ struct FunctorTestAllZeros<String<bool, Packed<THostSpec> > >
     typedef typename Host<TPackedString>::Type TPackedHost;
     typedef typename Value<TPackedHost>::Type TPackedHostValue;
     typedef typename Size<TPackedHostValue>::Type TSize;
+	typedef typename TPackedHostValue::TBitVector TBitVector;
 
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllZeros(TShift const & shift) : _wastedBits(shift)
+	FunctorTestAllZeros(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -255,7 +256,7 @@ struct FunctorTestAllOnes<String<bool, Packed<THostSpec> > >
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllOnes(TShift const & shift) : _wastedBits(shift)
+    FunctorTestAllOnes(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -1737,8 +1738,8 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     TConstPackedHostIterator itBegin = begin(host(obj), Standard());
 
     // We need to treat the last value differently, because it's possible not all bits are in use.
-    TBitVector lastVal = it->i & (~static_cast<TBitVector>(0) <<
-                                  (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+	TBitVector lastVal = BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE);
+	lastVal = it->i & (~static_cast<TBitVector>(0)) << ((lastVal == BitsPerValue<TBitVector>::VALUE) ? 0 : lastVal);
 
     if (!testAllZeros(lastVal))
         return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
@@ -1781,9 +1782,18 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
 
     // If last element is not 0, we return the last position. Note, that we do not check for the returned index to be
     // bigger than the length of the string. The caller has to do this.
-    TBitVector lastVal = (it != itEnd) ? it->i :
-             it->i & (~static_cast<TBitVector>(0) << (BitsPerValue<TBitVector>::VALUE -
-                                                      (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+
+    TBitVector lastVal;
+	if (it != itEnd)
+	{
+		lastVal = it->i;
+	}
+	else
+	{
+		lastVal = BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE);
+		lastVal = it->i & (~static_cast<TBitVector>(0) << ((lastVal == BitsPerValue<TBitVector>::VALUE) ? 0 : lastVal));
+	}
+
     if (testAllZeros(lastVal))
         return length(obj);
     return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) + (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(lastVal);

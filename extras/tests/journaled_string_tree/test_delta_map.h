@@ -332,8 +332,6 @@ _testDeltaMapIterator(TContainer & deltaMap)
 SEQAN_DEFINE_TEST(test_delta_map_iterator)
 {
     typedef DeltaMap<unsigned, char, Default> TDeltaMap;
-    typedef Iterator<TDeltaMap, Standard>::Type TIterator;
-    typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
     _testDetlaMapfill(deltaMap);

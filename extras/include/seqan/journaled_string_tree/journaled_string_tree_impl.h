@@ -326,7 +326,6 @@ _bufferJournaledStringEnds(JournaledStringTree<TDeltaMap, TSpec> const & jst,
                            TPos jobEnd)
 {
     typedef JournaledStringTree<TDeltaMap, TSpec> const TJst;
-    typedef typename Iterator<TDeltaMap const, Standard>::Type TMapIterator;
     typedef BufferJournaledStringsEndHelper_<TJst, TSize> THelper;
 
     THelper helper(jst, contextSize);

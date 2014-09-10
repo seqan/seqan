@@ -352,7 +352,7 @@ _decodeBitVector(String<bool, Packed<THostSpec> > & target,
                 break;
             }
 
-            it->i |= (~static_cast<TBitVector>(0)) >> (BitsPerValue<TBitVector>::VALUE - remainingBits) + blockSize;  // Skip remaining zeros at the beginning of the current word.
+            it->i |= (~static_cast<TBitVector>(0)) >> ((BitsPerValue<TBitVector>::VALUE - remainingBits) + blockSize);  // Skip remaining zeros at the beginning of the current word.
             remainingBits -= blockSize;
             blockSize = *(++srcIt);  // Extract number of ones.
 
@@ -455,12 +455,10 @@ inline void _readGdfBlock(DeltaMap<TValue, TAlphabet> & deltaMap,
                           TInputOrder /*tag*/)
 {
     typedef DeltaMap<TValue, TAlphabet>                        TDeltaMap;
-    typedef typename Size<TDeltaMap>::Type                     TSize;
     typedef typename DeltaValue<TDeltaMap, DeltaTypeSnp>::Type TSnp;
     typedef typename DeltaValue<TDeltaMap, DeltaTypeDel>::Type TDel;
     typedef typename DeltaValue<TDeltaMap, DeltaTypeIns>::Type TIns;
     typedef typename DeltaValue<TDeltaMap, DeltaTypeSV>::Type  TIndel;
-    typedef typename Iterator<TDeltaMap, Standard>::Type       TMapIter;
     typedef BitCompressedDeltaPos_<TGdfSnpCompression> TDeltaPos;
 
     // Read the byte size of the delta block.

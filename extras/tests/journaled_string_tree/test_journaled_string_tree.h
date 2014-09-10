@@ -41,6 +41,8 @@
 #include <seqan/sequence.h>
 #include <seqan/journaled_string_tree.h>
 
+#include "test_journaled_string_tree_traversal.h"
+
 #include "test_delta_map.h"
 
 using namespace seqan;
@@ -840,6 +842,23 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
 #endif
 
     _testJournaledStringTreeJournalNextBlock(jstLoaded);
+}
+
+// ----------------------------------------------------------------------------
+// Test Traversal Concept.
+// ----------------------------------------------------------------------------
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_jst_traversal_concept)
+{
+    using namespace seqan;
+
+    typedef DeltaMap<unsigned, Dna> TDeltaMap;
+    typedef JournaledStringTree<TDeltaMap> TJst;
+
+    typedef DummyCaller_<TJst> TDummy;
+
+    bool res =  Is<JstTraversalConcept<TDummy> >::VALUE;
+    SEQAN_ASSERT_EQ(res, true);
 }
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

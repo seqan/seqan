@@ -385,7 +385,6 @@ find(DeltaMap<TRefPos, TAlphabet, TSpec> & deltaMap, TPosition refPosition)
 {
     typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
 
     SEQAN_ASSERT(!empty(deltaMap));
 
@@ -399,9 +398,8 @@ template <typename TRefPos, typename TAlphabet, typename TSpec, typename TPositi
 inline typename Iterator<DeltaMap<TRefPos, TAlphabet, TSpec> const, Standard>::Type
 find(DeltaMap<TRefPos, TAlphabet, TSpec> const & deltaMap, TPosition refPosition)
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> const TDeltaMap;
+    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
 
     SEQAN_ASSERT(!empty(deltaMap));
 
