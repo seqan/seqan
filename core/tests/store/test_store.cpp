@@ -42,26 +42,26 @@
 SEQAN_BEGIN_TESTSUITE(test_store)
 {
     // the UCSC knownGene format
-    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
-    SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
-
-    // the gff format
-    SEQAN_CALL_TEST(test_store_io_read_gff);
-    SEQAN_CALL_TEST(test_store_io_write_gff);
-
-    // the gtf format
-    SEQAN_CALL_TEST(test_store_io_read_gtf);
-    SEQAN_CALL_TEST(test_store_io_write_gtf);
-
-    // Tests for the AMOS format.
-    SEQAN_CALL_TEST(test_store_io_readwrite_amos);
-    SEQAN_CALL_TEST(test_store_io_read_amos);
-    SEQAN_CALL_TEST(test_store_io_write_amos);
+//    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
+//    SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
+//
+//    // the gff format
+//    SEQAN_CALL_TEST(test_store_io_read_gff);
+//    SEQAN_CALL_TEST(test_store_io_write_gff);
+//
+//    // the gtf format
+//    SEQAN_CALL_TEST(test_store_io_read_gtf);
+//    SEQAN_CALL_TEST(test_store_io_write_gtf);
+//
+//    // Tests for the AMOS format.
+//    SEQAN_CALL_TEST(test_store_io_readwrite_amos);
+//    SEQAN_CALL_TEST(test_store_io_read_amos);
+//    SEQAN_CALL_TEST(test_store_io_write_amos);
 
     // Tests for the SAM/BAM format.
-    SEQAN_CALL_TEST(test_store_io_sam);
-    SEQAN_CALL_TEST(test_store_io_sam2);
-    SEQAN_CALL_TEST(test_store_io_split_sam);
+//    SEQAN_CALL_TEST(test_store_io_sam);
+//    SEQAN_CALL_TEST(test_store_io_sam2);
+//    SEQAN_CALL_TEST(test_store_io_split_sam);
 #if SEQAN_HAS_ZLIB
     SEQAN_CALL_TEST(test_store_io_read_bam);
 #endif  // #if SEQAN_HAS_ZLIB
