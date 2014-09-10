@@ -294,7 +294,7 @@ inline void _addMatchImpl(HitsExtender<TSpec, Traits> & me,
     me.prototype.errors = matchErrors;
     appendValue(me.matches, me.prototype, Generous(), typename Traits::TThreading());
 
-    TReadSeqId readId = getReadId(me.prototype);
+    TReadSeqId readId = getValue(me.prototype, SortReadId());
     setMinErrors(me.ctx, readId, matchErrors);
 }
 
