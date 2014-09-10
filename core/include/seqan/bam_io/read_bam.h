@@ -258,9 +258,9 @@ readRecord(BamAlignmentRecord & record,
     TCigarIter cigEnd = end(record.cigar, Standard());
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        char ui = *reinterpret_cast<unsigned * &>(it)++;
-        cig->operation = CIGAR_MAPPING[ui & 15];
-        cig->count = ui >> 4;
+        unsigned opAndCnt = *reinterpret_cast<unsigned * &>(it)++;
+        cig->operation = CIGAR_MAPPING[opAndCnt >> 16];
+        cig->count = opAndCnt & 0xffff;
     }
 
     // query sequence.
@@ -277,7 +277,7 @@ readRecord(BamAlignmentRecord & record,
         ++sit;
     }
     if (record._l_qseq & 1)
-        *sit++ = Iupac((__uint8)*it >> 4);
+        *sit++ = Iupac((__uint8)*it++ >> 4);
 
     // phred quality
     resize(record.qual, record._l_qseq, Exact());
