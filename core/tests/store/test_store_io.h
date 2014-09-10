@@ -508,9 +508,9 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
         readRecords(store, inFile);
     }
 
-    // AlignedReadLayout layout;
-    // layoutAlignment(layout, store);
-    // printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
+//    AlignedReadLayout layout;
+//    layoutAlignment(layout, store);
+//    printAlignment(std::cout, layout, store, 0, 0, 1000, 0, 1000);
 
     // 3. WRITE SAM ALIGNMENTS
     std::string outFileName = (std::string)SEQAN_TEMP_FILENAME() + ".sam";

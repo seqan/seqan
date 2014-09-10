@@ -259,8 +259,9 @@ readRecord(BamAlignmentRecord & record,
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
         unsigned opAndCnt = *reinterpret_cast<unsigned * &>(it)++;
-        cig->operation = CIGAR_MAPPING[opAndCnt >> 16];
-        cig->count = opAndCnt & 0xffff;
+        SEQAN_ASSERT_LEQ(opAndCnt & 15, 8u);
+        cig->operation = CIGAR_MAPPING[opAndCnt & 15];
+        cig->count = opAndCnt >> 4;
     }
 
     // query sequence.
