@@ -122,7 +122,7 @@ namespace seqan {
 ..type:nolink:$TCount$
 */
 
-template <typename TOperation_ = char, typename TCount_ = unsigned>
+template <typename TOperation_ = char, typename TCount_ = unsigned short>
 struct CigarElement
 {
     typedef TOperation_ TOperation;

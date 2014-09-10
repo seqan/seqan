@@ -513,7 +513,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     // printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
 
     // 3. WRITE SAM ALIGNMENTS
-    CharString outFileName = SEQAN_TEMP_FILENAME();
+    std::string outFileName = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     // Write Sam to temp file.
     BamFileOut outFile(toCString(outFileName));
     writeRecords(outFile, store);
