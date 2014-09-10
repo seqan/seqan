@@ -110,6 +110,7 @@ add_executable(yara_mapper    mapper.cpp
                               bits_matches.h
                               bits_context.h
                               bits_seeds.h
+                              bits_bucket.h
                               find_extender.h
                               find_verifier.h
                               index_fm.h)
