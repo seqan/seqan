@@ -329,7 +329,7 @@ buildIndex(BamTagsDict const & bamTags)
     typedef Iterator<TTagString const, Standard>::Type TIter;
 
     clear(bamTags._positions);
-    if (empty(value(bamTags._host)))
+    if (empty(host(bamTags)))
         return;  // Done.
 
     appendValue(bamTags._positions, 0);
@@ -434,7 +434,7 @@ setHost(BamTagsDict & me, THost const & host_)
 inline Size<BamTagsDict>::Type
 length(BamTagsDict const & tags)
 {
-    if (empty(value(tags._host)))
+    if (empty(host(tags)))
         return 0;
     if (!hasIndex(tags))
         buildIndex(tags);
