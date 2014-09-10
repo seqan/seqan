@@ -202,11 +202,11 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getContigId(anchor));
 
     contigBegin.i2 = 0;
-    if (getValue(anchor, SortBeginPos()) + me.options.libraryLength > me.options.libraryError)
-        contigBegin.i2 = getValue(anchor, SortBeginPos()) + me.options.libraryLength - me.options.libraryError;
+    if (getValue(anchor, BeginPos()) + me.options.libraryLength > me.options.libraryError)
+        contigBegin.i2 = getValue(anchor, BeginPos()) + me.options.libraryLength - me.options.libraryError;
     contigBegin.i2 = _min(contigBegin.i2, contigLength);
 
-    contigEnd.i2 = _min(getValue(anchor, SortBeginPos()) + me.options.libraryLength + me.options.libraryError, contigLength);
+    contigEnd.i2 = _min(getValue(anchor, BeginPos()) + me.options.libraryLength + me.options.libraryError, contigLength);
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
     SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);

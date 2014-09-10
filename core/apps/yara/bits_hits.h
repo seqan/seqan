@@ -193,7 +193,7 @@ getErrors(Hit<TSize, HammingDistance> const & hit)
 }
 
 // ----------------------------------------------------------------------------
-// Function getValue(, MatchErrors())
+// Function getErrors()
 // ----------------------------------------------------------------------------
 
 template <typename THits, typename THitId>
