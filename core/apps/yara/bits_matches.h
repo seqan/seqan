@@ -68,12 +68,12 @@ typedef Tag<SortErrors_> const SortErrors;
 template <typename TSpec = void>
 struct Match
 {
-    unsigned        readId       : YaraBits<TSpec>::READ_ID;
-    unsigned char   contigId; // : YaraBits<TSpec>::CONTIG_ID;
+    unsigned        readId       : MemberBits<Match, SortReadId>::VALUE;
+    unsigned char   contigId; // : MemberBits<Match, SortContigId>::VALUE;
     bool            isRev        : 1;
-    unsigned        contigBegin  : YaraBits<TSpec>::CONTIG_SIZE;
-    unsigned short  contigEnd    : YaraBits<TSpec>::READ_SIZE;
-    unsigned        errors       : YaraBits<TSpec>::ERRORS;
+    unsigned        contigBegin  : MemberBits<Match, ContigSize>::VALUE;
+    unsigned short  contigEnd    : MemberBits<Match, ReadSize>::VALUE;
+    unsigned        errors       : MemberBits<Match, SortErrors>::VALUE;
 }
 #ifndef PLATFORM_WINDOWS
     __attribute__((packed))
@@ -224,7 +224,7 @@ inline void setInvalid(Match<TSpec> & me)
     me.isRev = 0;
     me.contigBegin = 0;
     me.contigEnd = 0;
-    me.errors = YaraLimits<TSpec>::ERRORS;
+    me.errors = MemberLimits<Match<TSpec>, SortErrors>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -333,9 +333,9 @@ inline unsigned getCigarLength(Match<TSpec> const & me)
 template <typename TSpec>
 inline unsigned long getSortKey(Match<TSpec> const & me, SortBeginPos)
 {
-    return ((unsigned long)getContigId(me)     << (1 + YaraBits<TSpec>::CONTIG_SIZE + YaraBits<TSpec>::ERRORS)) |
-           ((unsigned long)onReverseStrand(me) << (YaraBits<TSpec>::CONTIG_SIZE + YaraBits<TSpec>::ERRORS))     |
-           ((unsigned long)getContigBegin(me)  <<  YaraBits<TSpec>::ERRORS)                                     |
+    return ((unsigned long)getContigId(me)     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, SortErrors>::VALUE)) |
+           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, SortErrors>::VALUE))     |
+           ((unsigned long)getContigBegin(me)  <<  MemberBits<Match<TSpec>, SortErrors>::VALUE)                                                    |
            ((unsigned long)getErrors(me));
 }
 
@@ -346,9 +346,9 @@ inline unsigned long getSortKey(Match<TSpec> const & me, SortBeginPos)
 template <typename TSpec>
 inline unsigned long getSortKey(Match<TSpec> const & me, SortEndPos)
 {
-    return ((unsigned long)getContigId(me)     << (1 + YaraBits<TSpec>::CONTIG_SIZE + YaraBits<TSpec>::ERRORS)) |
-           ((unsigned long)onReverseStrand(me) << (YaraBits<TSpec>::CONTIG_SIZE + YaraBits<TSpec>::ERRORS))     |
-           ((unsigned long)getContigEnd(me)    <<  YaraBits<TSpec>::ERRORS)                                     |
+    return ((unsigned long)getContigId(me)     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, SortErrors>::VALUE)) |
+           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, SortErrors>::VALUE))     |
+           ((unsigned long)getContigEnd(me)    <<  MemberBits<Match<TSpec>, SortErrors>::VALUE)                                                    |
            ((unsigned long)getErrors(me));
 }
 
