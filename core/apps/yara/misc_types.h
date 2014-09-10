@@ -40,15 +40,22 @@
 
 using namespace seqan;
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
 // ----------------------------------------------------------------------------
-// Class MemberBits
+// Metafunction MemberBits
 // ----------------------------------------------------------------------------
 
 template <typename TObject, typename TSpec>
-struct MemberBits;
+struct MemberBits
+{
+    static const unsigned VALUE = BitsPerValue<typename Member<TObject, TSpec>::Type>::VALUE;
+};
 
 // ----------------------------------------------------------------------------
-// Class MemberLimits
+// Metafunction MemberLimits
 // ----------------------------------------------------------------------------
 
 template <typename TObject, typename TSpec>
@@ -64,22 +71,56 @@ struct MemberLimits
 template <typename TSpec>
 struct Match;
 
+typedef SortBeginPos    ContigSize;
+typedef SortEndPos      ReadSize;
+
+struct MatchErrors_;
+typedef Tag<MatchErrors_> const MatchErrors;
+
+
 // ============================================================================
-// Tags
+// Match Types
 // ============================================================================
 
-struct ContigSize_;
-typedef Tag<ContigSize_> const ContigSize;
+template <typename TSpec>
+struct Member<Match<TSpec>, SortReadId>
+{
+    typedef __uint32    Type;
+};
 
-struct ReadSize_;
-typedef Tag<ReadSize_> const ReadSize;
+template <typename TSpec>
+struct Member<Match<TSpec>, SortContigId>
+{
+    typedef __uint8     Type;
+};
 
-struct SortErrors_;
-typedef Tag<SortErrors_> const SortErrors;
+template <typename TSpec>
+struct Member<Match<TSpec>, ContigSize>
+{
+    typedef __uint32    Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, ReadSize>
+{
+    typedef __uint16    Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, MatchErrors>
+{
+    typedef __uint32    Type;
+};
 
 // ============================================================================
 // Match Limits
 // ============================================================================
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, SortReadId>
+{
+    static const unsigned VALUE = 21;
+};
 
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, SortContigId>
@@ -94,19 +135,13 @@ struct MemberBits<Match<TSpec>, ContigSize>
 };
 
 template <typename TSpec>
-struct MemberBits<Match<TSpec>, SortReadId>
-{
-    static const unsigned VALUE = 21;
-};
-
-template <typename TSpec>
 struct MemberBits<Match<TSpec>, ReadSize>
 {
     static const unsigned VALUE = 14;
 };
 
 template <typename TSpec>
-struct MemberBits<Match<TSpec>, SortErrors>
+struct MemberBits<Match<TSpec>, MatchErrors>
 {
     static const unsigned VALUE = 6;
 };

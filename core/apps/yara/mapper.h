@@ -332,7 +332,7 @@ template <typename TReadSeqSize>
 inline TReadSeqSize getReadErrors(Options const & options, TReadSeqSize readSeqLength)
 {
     return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
-                    (TReadSeqSize)MemberLimits<Match<void>, SortErrors>::VALUE);
+                    (TReadSeqSize)MemberLimits<Match<void>, MatchErrors>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -833,8 +833,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
     // Sort matches by errors.
     start(me.timer);
-    iterate(me.matchesSet, sortMatches<TMatchesIt, SortErrors>, Standard(), typename TTraits::TThreading());
-//    forEach(me.matchesSet, sortMatches<TMatches, SortErrors>, typename TTraits::TThreading());
+    iterate(me.matchesSet, sortMatches<TMatchesIt, MatchErrors>, Standard(), typename TTraits::TThreading());
+//    forEach(me.matchesSet, sortMatches<TMatches, MatchErrors>, typename TTraits::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
     if (me.options.verbose > 1)
