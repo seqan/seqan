@@ -40,36 +40,75 @@
 
 using namespace seqan;
 
-// ============================================================================
-// Yara Limits
-// ============================================================================
-
 // ----------------------------------------------------------------------------
-// Class YaraBits
+// Class MemberBits
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void>
-struct YaraBits
+template <typename TObject, typename TSpec>
+struct MemberBits;
+
+// ----------------------------------------------------------------------------
+// Class MemberLimits
+// ----------------------------------------------------------------------------
+
+template <typename TObject, typename TSpec>
+struct MemberLimits
 {
-    static const unsigned CONTIG_ID   = 8;
-    static const unsigned CONTIG_SIZE = 30;
-    static const unsigned READ_ID     = 21;
-    static const unsigned READ_SIZE   = 14;
-    static const unsigned ERRORS      = 6;
+    static const unsigned VALUE = Power<2, MemberBits<TObject, TSpec>::VALUE>::VALUE - 1;
 };
 
-// ----------------------------------------------------------------------------
-// Class YaraLimits
-// ----------------------------------------------------------------------------
+// ============================================================================
+// Forwards
+// ============================================================================
 
-template <typename TSpec = void>
-struct YaraLimits
+template <typename TSpec>
+struct Match;
+
+// ============================================================================
+// Tags
+// ============================================================================
+
+struct ContigSize_;
+typedef Tag<ContigSize_> const ContigSize;
+
+struct ReadSize_;
+typedef Tag<ReadSize_> const ReadSize;
+
+struct SortErrors_;
+typedef Tag<SortErrors_> const SortErrors;
+
+// ============================================================================
+// Match Limits
+// ============================================================================
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, SortContigId>
 {
-    static const unsigned CONTIG_ID   = Power<2, YaraBits<TSpec>::CONTIG_ID>::VALUE - 1;
-    static const unsigned CONTIG_SIZE = Power<2, YaraBits<TSpec>::CONTIG_SIZE>::VALUE - 1;
-    static const unsigned READ_ID     = Power<2, YaraBits<TSpec>::READ_ID>::VALUE - 1;
-    static const unsigned READ_SIZE   = Power<2, YaraBits<TSpec>::READ_SIZE>::VALUE - 1;
-    static const unsigned ERRORS      = Power<2, YaraBits<TSpec>::ERRORS>::VALUE - 1;
+    static const unsigned VALUE = 8;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ContigSize>
+{
+    static const unsigned VALUE = 30;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, SortReadId>
+{
+    static const unsigned VALUE = 21;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ReadSize>
+{
+    static const unsigned VALUE = 14;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, SortErrors>
+{
+    static const unsigned VALUE = 6;
 };
 
 // ============================================================================
