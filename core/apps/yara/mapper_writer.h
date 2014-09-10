@@ -371,7 +371,7 @@ inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & 
         clear(me.record);
         _fillReadName(me, getReadSeqId(*it, me.reads.seqs));
         _fillReadPosition(me, *it);
-        appendExtraPosition(me.record, getValue(*it, SortEndPos()));
+        appendExtraPosition(me.record, getValue(*it, ContigEnd()));
         me.record.flag |= BAM_FLAG_SECONDARY;
         _writeRecord(me);
     }
@@ -409,7 +409,7 @@ inline void _fillReadPosition(MatchesWriter<TSpec, Traits> & me, TMatch const & 
         me.record.flag |= BAM_FLAG_RC;
 
     me.record.rID = getValue(match, ContigId());
-    me.record.beginPos = getValue(match, BeginPos());
+    me.record.beginPos = getValue(match, ContigBegin());
     appendErrors(me.record, getValue(match, Errors()));
 }
 
@@ -462,14 +462,14 @@ inline void _fillMatePosition(MatchesWriter<TSpec, Traits> & me, TMatch const & 
         me.record.flag |= BAM_FLAG_NEXT_RC;
 
     me.record.rNextId = getValue(mate, ContigId());
-    me.record.pNext = getValue(mate, BeginPos());
+    me.record.pNext = getValue(mate, ContigBegin());
 
     if (getValue(match, ContigId()) == getValue(mate, ContigId()))
     {
-        if (getValue(match, BeginPos()) < getValue(mate, BeginPos()))
-            me.record.tLen = getValue(mate, SortEndPos()) - getValue(match, BeginPos());
+        if (getValue(match, ContigBegin()) < getValue(mate, ContigBegin()))
+            me.record.tLen = getValue(mate, ContigEnd()) - getValue(match, ContigBegin());
         else
-            me.record.tLen = getValue(mate, BeginPos()) - getValue(match, SortEndPos());
+            me.record.tLen = getValue(mate, ContigBegin()) - getValue(match, ContigEnd());
     }
 }
 

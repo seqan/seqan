@@ -162,8 +162,8 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     unsigned errors = getValue(match, Errors());
     TReadSeq const & readSeq = me.readSeqs[getReadSeqId(match, me.readSeqs)];
     TContigInfix const & contigInfix = infix(me.contigSeqs[getValue(match, ContigId())],
-                                             getValue(match, BeginPos()),
-                                             getValue(match, SortEndPos()));
+                                             getValue(match, ContigBegin()),
+                                             getValue(match, ContigEnd()));
 
     clear(me.contigAnchors);
     clear(me.readAnchors);

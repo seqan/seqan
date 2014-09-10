@@ -191,11 +191,11 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
     for (TIterator rightIt = rightBegin; rightIt != rightEnd; ++rightIt)
     {
         // Compute the interval of feasible left matches from current right match.
-        unsigned rightHead = getValue(*rightIt, SortEndPos()) - me.options.libraryLength + me.options.libraryError;
-        unsigned rightTail = getValue(*rightIt, SortEndPos()) - me.options.libraryLength - me.options.libraryError;
+        unsigned rightHead = getValue(*rightIt, ContigEnd()) - me.options.libraryLength + me.options.libraryError;
+        unsigned rightTail = getValue(*rightIt, ContigEnd()) - me.options.libraryLength - me.options.libraryError;
 
         // Seek first feasible left match - beyond the right tail.
-        while (leftIt != leftEnd && getValue(*leftIt, BeginPos()) < rightTail)
+        while (leftIt != leftEnd && getValue(*leftIt, ContigBegin()) < rightTail)
             ++leftIt;
 
         // No left matches anymore.
@@ -204,12 +204,12 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
             break;
 
         // Continue with next right match if there are no feasible left matches anymore.
-        unsigned leftTail = getValue(*leftTailIt, BeginPos());
+        unsigned leftTail = getValue(*leftTailIt, ContigBegin());
         if (leftTail >= rightHead)
             continue;
 
         // Seek first infeasible left match - beyond the right head.
-        while (leftIt != leftEnd && getValue(*leftIt, BeginPos()) < rightHead)
+        while (leftIt != leftEnd && getValue(*leftIt, ContigBegin()) < rightHead)
             ++leftIt;
         TIterator leftHeadIt = leftIt;
 
