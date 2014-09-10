@@ -112,10 +112,10 @@ struct HitsExtender
         _extendHitImpl(*this, hitsIt, typename Traits::TStrategy());
     }
 
-    template <typename TMatchPos, typename TMatchErrors>
-    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TMatchErrors matchErrors)
+    template <typename TMatchPos, typename TErrors>
+    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TErrors errors)
     {
-        _addMatchImpl(*this, matchBegin, matchEnd, matchErrors);
+        _addMatchImpl(*this, matchBegin, matchEnd, errors);
     }
 };
 
@@ -294,7 +294,7 @@ inline void _addMatchImpl(HitsExtender<TSpec, Traits> & me,
     me.prototype.errors = matchErrors;
     appendValue(me.matches, me.prototype, Generous(), typename Traits::TThreading());
 
-    TReadSeqId readId = getValue(me.prototype, SortReadId());
+    TReadSeqId readId = getValue(me.prototype, ReadId());
     setMinErrors(me.ctx, readId, matchErrors);
 }
 

@@ -195,7 +195,7 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
         unsigned rightTail = getValue(*rightIt, SortEndPos()) - me.options.libraryLength - me.options.libraryError;
 
         // Seek first feasible left match - beyond the right tail.
-        while (leftIt != leftEnd && getValue(*leftIt, SortBeginPos()) < rightTail)
+        while (leftIt != leftEnd && getValue(*leftIt, BeginPos()) < rightTail)
             ++leftIt;
 
         // No left matches anymore.
@@ -204,12 +204,12 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
             break;
 
         // Continue with next right match if there are no feasible left matches anymore.
-        unsigned leftTail = getValue(*leftTailIt, SortBeginPos());
+        unsigned leftTail = getValue(*leftTailIt, BeginPos());
         if (leftTail >= rightHead)
             continue;
 
         // Seek first infeasible left match - beyond the right head.
-        while (leftIt != leftEnd && getValue(*leftIt, SortBeginPos()) < rightHead)
+        while (leftIt != leftEnd && getValue(*leftIt, BeginPos()) < rightHead)
             ++leftIt;
         TIterator leftHeadIt = leftIt;
 
@@ -229,8 +229,8 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & left, TMatch const & right)
 {
-    TMatch & bestLeft = me.pairs[getValue(left, SortReadId())];
-    TMatch & bestRight = me.pairs[getValue(right, SortReadId())];
+    TMatch & bestLeft = me.pairs[getValue(left, ReadId())];
+    TMatch & bestRight = me.pairs[getValue(right, ReadId())];
 
     unsigned errors = getErrors(left, right);
     unsigned bestErrors = getErrors(bestLeft, bestRight);
@@ -245,8 +245,8 @@ inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & le
             bestLeft = left;
             bestRight = right;
 
-            setPaired(me.ctx, getValue(left, SortReadId()));
-            setPaired(me.ctx, getValue(right, SortReadId()));
+            setPaired(me.ctx, getValue(left, ReadId()));
+            setPaired(me.ctx, getValue(right, ReadId()));
         }
     }
 }

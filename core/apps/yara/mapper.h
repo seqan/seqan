@@ -332,7 +332,7 @@ template <typename TReadSeqSize>
 inline TReadSeqSize getReadErrors(Options const & options, TReadSeqSize readSeqLength)
 {
     return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
-                    (TReadSeqSize)MemberLimits<Match<void>, MatchErrors>::VALUE);
+                    (TReadSeqSize)MemberLimits<Match<void>, Errors>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -746,8 +746,8 @@ inline void aggregateMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
     // Bucket sort matches by readId.
     start(me.timer);
     setHost(me.matchesSet, me.matches);
-    sort(me.matches, MatchSorter<TMatch, SortReadId>(), typename TConfig::TThreading());
-    bucket(me.matchesSet, Getter<TMatch, SortReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
+    sort(me.matches, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
+    bucket(me.matchesSet, Getter<TMatch, ReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
 
@@ -833,8 +833,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
     // Sort matches by errors.
     start(me.timer);
-    iterate(me.matchesSet, sortMatches<TMatchesIt, MatchErrors>, Standard(), typename TTraits::TThreading());
-//    forEach(me.matchesSet, sortMatches<TMatches, MatchErrors>, typename TTraits::TThreading());
+    iterate(me.matchesSet, sortMatches<TMatchesIt, Errors>, Standard(), typename TTraits::TThreading());
+//    forEach(me.matchesSet, sortMatches<TMatches, Errors>, typename TTraits::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
     if (me.options.verbose > 1)

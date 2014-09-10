@@ -37,10 +37,11 @@
 #ifndef APP_YARA_BITS_MATCHES_H_
 #define APP_YARA_BITS_MATCHES_H_
 
-using namespace seqan;
+
+namespace seqan {
 
 // ============================================================================
-// Forwards
+// Functors
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -57,11 +58,55 @@ struct Getter
 };
 
 // ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction MemberBits
+// ------------------------S----------------------------------------------------
+
+template <typename TObject, typename TSpec>
+struct MemberBits
+{
+    static const unsigned VALUE = BitsPerValue<typename Member<TObject, TSpec>::Type>::VALUE;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction MemberLimits
+// ----------------------------------------------------------------------------
+
+template <typename TObject, typename TSpec>
+struct MemberLimits
+{
+    static const unsigned VALUE = Power<2, MemberBits<TObject, TSpec>::VALUE>::VALUE - 1;
+};
+
+}
+
+
+using namespace seqan;
+
+// ============================================================================
 // Tags
 // ============================================================================
 
-struct MatchErrors_;
-typedef Tag<MatchErrors_> const MatchErrors;
+struct ReadId_;
+typedef Tag<ReadId_> const ReadId;
+
+struct ContigId_;
+typedef Tag<ContigId_> const ContigId;
+
+//struct ReadSize_;
+//typedef Tag<ReadSize_> const ReadSize;
+//
+//struct ContigSize_;
+//typedef Tag<ContigSize_> const ContigSize;
+
+struct Errors_;
+typedef Tag<Errors_> const Errors;
+
+typedef SortBeginPos    ContigSize;
+typedef SortEndPos      ReadSize;
 
 // ============================================================================
 // Classes
@@ -78,12 +123,12 @@ typedef Tag<MatchErrors_> const MatchErrors;
 template <typename TSpec = void>
 struct Match
 {
-    typename Member<Match, SortReadId>::Type    readId       : MemberBits<Match, SortReadId>::VALUE;
-    typename Member<Match, SortContigId>::Type  contigId; // : MemberBits<Match, SortContigId>::VALUE;
+    typename Member<Match, ReadId>::Type        readId       : MemberBits<Match, ReadId>::VALUE;
+    typename Member<Match, ContigId>::Type      contigId; // : MemberBits<Match, ContigId>::VALUE;
     bool                                        isRev        : 1;
     typename Member<Match, ContigSize>::Type    contigBegin  : MemberBits<Match, ContigSize>::VALUE;
     typename Member<Match, ReadSize>::Type      contigEnd    : MemberBits<Match, ReadSize>::VALUE;
-    typename Member<Match, MatchErrors>::Type    errors       : MemberBits<Match, MatchErrors>::VALUE;
+    typename Member<Match, Errors>::Type        errors       : MemberBits<Match, Errors>::VALUE;
 }
 #ifndef PLATFORM_WINDOWS
     __attribute__((packed))
@@ -93,6 +138,78 @@ struct Match
 #ifdef PLATFORM_WINDOWS
       #pragma pack(pop)
 #endif
+
+// ============================================================================
+// Match Types
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Member Types
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct Member<Match<TSpec>, ReadId>
+{
+    typedef __uint32    Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, ContigId>
+{
+    typedef __uint8     Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, ContigSize>
+{
+    typedef __uint32    Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, ReadSize>
+{
+    typedef __uint16    Type;
+};
+
+template <typename TSpec>
+struct Member<Match<TSpec>, Errors>
+{
+    typedef __uint32    Type;
+};
+
+// ----------------------------------------------------------------------------
+// Member Bits
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ReadId>
+{
+    static const unsigned VALUE = 21;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ContigId>
+{
+    static const unsigned VALUE = 8;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ContigSize>
+{
+    static const unsigned VALUE = 30;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, ReadSize>
+{
+    static const unsigned VALUE = 14;
+};
+
+template <typename TSpec>
+struct MemberBits<Match<TSpec>, Errors>
+{
+    static const unsigned VALUE = 6;
+};
 
 // ----------------------------------------------------------------------------
 // Class MatchSorter
@@ -209,7 +326,7 @@ inline void setInvalid(Match<TSpec> & me)
     me.isRev = 0;
     me.contigBegin = 0;
     me.contigEnd = 0;
-    me.errors = MemberLimits<Match<TSpec>, MatchErrors>::VALUE;
+    me.errors = MemberLimits<Match<TSpec>, Errors>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -217,21 +334,21 @@ inline void setInvalid(Match<TSpec> & me)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, SortReadId>::Type
-getValue(Match<TSpec> & me, SortReadId)
+inline typename Member<Match<TSpec>, ReadId>::Type
+getValue(Match<TSpec> & me, ReadId)
 {
     return me.readId;
 }
 template <typename TSpec>
-inline typename Member<Match<TSpec>, SortReadId>::Type
-getValue(Match<TSpec> const & me, SortReadId)
+inline typename Member<Match<TSpec>, ReadId>::Type
+getValue(Match<TSpec> const & me, ReadId)
 {
     return me.readId;
 }
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, SortContigId>::Type
-getValue(Match<TSpec> const & me, SortContigId)
+inline typename Member<Match<TSpec>, ContigId>::Type
+getValue(Match<TSpec> const & me, ContigId)
 {
     return me.contigId;
 }
@@ -251,15 +368,15 @@ getValue(Match<TSpec> const & me, SortEndPos)
 }
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, MatchErrors>::Type
-getValue(Match<TSpec> & me, MatchErrors)
+inline typename Member<Match<TSpec>, Errors>::Type
+getValue(Match<TSpec> & me, Errors)
 {
     return me.errors;
 }
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, MatchErrors>::Type
-getValue(Match<TSpec> const & me, MatchErrors)
+inline typename Member<Match<TSpec>, Errors>::Type
+getValue(Match<TSpec> const & me, Errors)
 {
     return me.errors;
 }
@@ -300,7 +417,7 @@ inline bool isValid(Match<TSpec> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function getValue(, MatchErrors())
+// Function getValue(, Errors())
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
@@ -329,7 +446,7 @@ inline unsigned getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b
 template <typename TSpec>
 inline unsigned getCigarLength(Match<TSpec> const & me)
 {
-    return isInvalid(me) ? 0 : 2 * getValue(me, MatchErrors()) + 1;
+    return isInvalid(me) ? 0 : 2 * getValue(me, Errors()) + 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -339,10 +456,10 @@ inline unsigned getCigarLength(Match<TSpec> const & me)
 template <typename TSpec>
 inline unsigned long getSortKey(Match<TSpec> const & me, SortBeginPos)
 {
-    return ((unsigned long)getValue(me, SortContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, MatchErrors>::VALUE)) |
-           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, MatchErrors>::VALUE))     |
-           ((unsigned long)getValue(me, SortBeginPos())  <<  MemberBits<Match<TSpec>, MatchErrors>::VALUE)                                                    |
-           ((unsigned long)getValue(me, MatchErrors()));
+    return ((unsigned long)getValue(me, ContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
+           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
+           ((unsigned long)getValue(me, SortBeginPos())  <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+           ((unsigned long)getValue(me, Errors()));
 }
 
 // ----------------------------------------------------------------------------
@@ -352,10 +469,10 @@ inline unsigned long getSortKey(Match<TSpec> const & me, SortBeginPos)
 template <typename TSpec>
 inline unsigned long getSortKey(Match<TSpec> const & me, SortEndPos)
 {
-    return ((unsigned long)getValue(me, SortContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, MatchErrors>::VALUE)) |
-           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, MatchErrors>::VALUE))     |
-           ((unsigned long)getValue(me, SortEndPos())    <<  MemberBits<Match<TSpec>, MatchErrors>::VALUE)                                                    |
-           ((unsigned long)getValue(me, MatchErrors()));
+    return ((unsigned long)getValue(me, ContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
+           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
+           ((unsigned long)getValue(me, SortEndPos())    <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+           ((unsigned long)getValue(me, Errors()));
 }
 
 // ----------------------------------------------------------------------------
@@ -375,7 +492,7 @@ inline bool strandEqual(Match<TSpec> const & a, Match<TSpec> const & b)
 template <typename TSpec>
 inline bool contigEqual(Match<TSpec> const & a, Match<TSpec> const & b)
 {
-    return getValue(a, SortContigId()) == getValue(b, SortContigId()) && strandEqual(a, b);
+    return getValue(a, ContigId()) == getValue(b, ContigId()) && strandEqual(a, b);
 }
 
 // ----------------------------------------------------------------------------
@@ -474,7 +591,7 @@ countBestMatches(TMatches const & matches)
 
     TCount count = 0;
 
-    for (TIter it = itBegin; it != itEnd && getValue(*it, MatchErrors()) <= getValue(*itBegin, MatchErrors()); it++, count++) ;
+    for (TIter it = itBegin; it != itEnd && getValue(*it, Errors()) <= getValue(*itBegin, Errors()); it++, count++) ;
 
     return count;
 }
@@ -556,10 +673,10 @@ inline bool findSameContig(TMatchesIterator & leftIt, TMatchesIterator & rightIt
 {
     while (!atEnd(leftIt, left) && !atEnd(rightIt, right))
     {
-        if (getValue(*leftIt, SortContigId()) < getValue(*rightIt, SortContigId()))
-            findNextContig(leftIt, left, getValue(*leftIt, SortContigId()));
-        else if (getValue(*leftIt, SortContigId()) > getValue(*rightIt, SortContigId()))
-            findNextContig(rightIt, right, getValue(*rightIt, SortContigId()));
+        if (getValue(*leftIt, ContigId()) < getValue(*rightIt, ContigId()))
+            findNextContig(leftIt, left, getValue(*leftIt, ContigId()));
+        else if (getValue(*leftIt, ContigId()) > getValue(*rightIt, ContigId()))
+            findNextContig(rightIt, right, getValue(*rightIt, ContigId()));
         else
             return true;
     }
@@ -575,7 +692,7 @@ inline bool findSameContig(TMatchesIterator & leftIt, TMatchesIterator & rightIt
 template <typename TMatchesIterator, typename TMatches, typename TContigId>
 inline void findNextContig(TMatchesIterator & it, TMatches const & matches, TContigId contigId)
 {
-    while (!atEnd(it, matches) && getValue(*it, SortContigId()) <= contigId) ++it;
+    while (!atEnd(it, matches) && getValue(*it, ContigId()) <= contigId) ++it;
 }
 
 // ----------------------------------------------------------------------------
@@ -586,7 +703,7 @@ inline void findNextContig(TMatchesIterator & it, TMatches const & matches, TCon
 template <typename TMatchesIterator, typename TMatches, typename TContigId>
 inline void findReverseStrand(TMatchesIterator & it, TMatches const & matches, TContigId contigId)
 {
-    while (!atEnd(it, matches) && (getValue(*it, SortContigId()) <= contigId) && onForwardStrand(*it)) ++it;
+    while (!atEnd(it, matches) && (getValue(*it, ContigId()) <= contigId) && onForwardStrand(*it)) ++it;
 }
 
 // ----------------------------------------------------------------------------
@@ -605,7 +722,7 @@ inline void bucketMatches(TMatches const & left, TMatches const & right, TDelega
     // Find matches on the same contig.
     while (findSameContig(leftIt, rightIt, left, right))
     {
-        unsigned contigId = getValue(*leftIt, SortContigId());
+        unsigned contigId = getValue(*leftIt, ContigId());
 
         TIterator leftBegin;
         TIterator rightBegin;

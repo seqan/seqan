@@ -408,9 +408,9 @@ inline void _fillReadPosition(MatchesWriter<TSpec, Traits> & me, TMatch const & 
     if (onReverseStrand(match))
         me.record.flag |= BAM_FLAG_RC;
 
-    me.record.rID = getValue(match, SortContigId());
-    me.record.beginPos = getValue(match, SortBeginPos());
-    appendErrors(me.record, getValue(match, MatchErrors()));
+    me.record.rID = getValue(match, ContigId());
+    me.record.beginPos = getValue(match, BeginPos());
+    appendErrors(me.record, getValue(match, Errors()));
 }
 
 // ----------------------------------------------------------------------------
@@ -420,7 +420,7 @@ inline void _fillReadPosition(MatchesWriter<TSpec, Traits> & me, TMatch const & 
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
-    me.record.cigar = me.cigarSet[getValue(match, SortReadId())];
+    me.record.cigar = me.cigarSet[getValue(match, ReadId())];
 }
 
 // --------------------------------------------------------------------------
@@ -461,15 +461,15 @@ inline void _fillMatePosition(MatchesWriter<TSpec, Traits> & me, TMatch const & 
     if (onReverseStrand(mate))
         me.record.flag |= BAM_FLAG_NEXT_RC;
 
-    me.record.rNextId = getValue(mate, SortContigId());
-    me.record.pNext = getValue(mate, SortBeginPos());
+    me.record.rNextId = getValue(mate, ContigId());
+    me.record.pNext = getValue(mate, BeginPos());
 
-    if (getValue(match, SortContigId()) == getValue(mate, SortContigId()))
+    if (getValue(match, ContigId()) == getValue(mate, ContigId()))
     {
-        if (getValue(match, SortBeginPos()) < getValue(mate, SortBeginPos()))
-            me.record.tLen = getValue(mate, SortEndPos()) - getValue(match, SortBeginPos());
+        if (getValue(match, BeginPos()) < getValue(mate, BeginPos()))
+            me.record.tLen = getValue(mate, SortEndPos()) - getValue(match, BeginPos());
         else
-            me.record.tLen = getValue(mate, SortBeginPos()) - getValue(match, SortEndPos());
+            me.record.tLen = getValue(mate, BeginPos()) - getValue(match, SortEndPos());
     }
 }
 
@@ -557,7 +557,7 @@ inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
     TIter itEnd = end(matches, Standard());
     for (TIter it = begin(matches, Standard()); it != itEnd; ++it)
     {
-        append(me.xa, nameStore(me.outputCtx)[getValue(*it, SortContigId())]);
+        append(me.xa, nameStore(me.outputCtx)[getValue(*it, ContigId())]);
         appendValue(me.xa, ',');
         // TODO(esiragusa): convert contig begin and end to string.
 //        append(me.xa, getContigBegin(*it) + 1);
@@ -567,7 +567,7 @@ inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
         appendValue(me.xa, onForwardStrand(*it) ? '+' : '-');
         appendValue(me.xa, ',');
         // TODO(esiragusa): convert errors to string.
-        appendValue(me.xa, '0' + getValue(*it, MatchErrors()));
+        appendValue(me.xa, '0' + getValue(*it, Errors()));
         appendValue(me.xa, ';');
     }
 }
