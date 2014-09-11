@@ -141,6 +141,49 @@ struct CountDownFunctor
     }
 };
 
+// ----------------------------------------------------------------------------
+// Functor CountFunctor
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor>
+struct CountFunctor
+{
+    __uint64 count;
+    TFunctor func;
+
+    CountFunctor()
+    {}
+
+    CountFunctor(TFunctor const &func):
+        func(func)
+    {}
+
+    template <typename TValue>
+    bool operator() (TValue const & val)
+    {
+        if (func(val))
+            ++count;
+        return false;
+    }
+
+    operator __uint64() const
+    {
+        return count;
+    }
+};
+
+template <typename TFunctor>
+inline void clear(CountFunctor<TFunctor> &func)
+{
+    func.count = 0;
+}
+
+template <typename TFunctor>
+inline __uint64 & value(CountFunctor<TFunctor> &func)
+{
+    return func.count;
+}
+
 }   // namespace seqan
 
 #endif // SEQAN_BASIC_FUNCTORS_H_

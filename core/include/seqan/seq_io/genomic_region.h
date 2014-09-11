@@ -44,8 +44,8 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-class GenomicRegion;
-inline bool parse(GenomicRegion & region, CharString const & regionString);
+struct GenomicRegion;
+inline void parse(GenomicRegion & region, CharString const & regionString);
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -194,27 +194,29 @@ The default constructor sets all integer members to $-1$, the $seqName$ member i
 ..type:nolink:$__int32$
 */
 
-class GenomicRegion
+struct GenomicRegion
 {
-public:
     // Name of sequence.
     CharString seqName;
     // Index of sequence in FASTA file.  -1 if not set.
-    __int32 seqId;
+    unsigned seqId;
     // 0-based begin position.  -1 if not set.
-    __int32 beginPos;
+    unsigned beginPos;
     // 0-based, C-style end position.  -1 if not set.
-    __int32 endPos;
+    unsigned endPos;
+
+    static const unsigned INVALID_ID = -1;
+    static const unsigned INVALID_POS = -1;
+
+    GenomicRegion() :
+        seqId(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
+    {}
 
     GenomicRegion(CharString const & str) :
-            seqId(-1), beginPos(-1), endPos(-1)
+        seqId(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {
         parse(*this, str);
     }
-
-    GenomicRegion() :
-        seqId(-1), beginPos(-1), endPos(-1)
-    {}
 };
 
 // ============================================================================
@@ -253,9 +255,9 @@ public:
 inline void clear(GenomicRegion & region)
 {
     clear(region.seqName);
-    region.seqId = -1;
-    region.beginPos = -1;
-    region.endPos = -1;
+    region.seqId = GenomicRegion::INVALID_ID;
+    region.beginPos = GenomicRegion::INVALID_POS;
+    region.endPos = GenomicRegion::INVALID_POS;
 }
 
 // ---------------------------------------------------------------------------
@@ -293,71 +295,39 @@ inline void clear(GenomicRegion & region)
 // Parse regionString and write to region.  region.seqId will not be set but
 // region.seqName will be.  Return true on success.
 
-inline bool parse(GenomicRegion & region, CharString const & regionString)
+inline void parse(GenomicRegion & region, CharString const & regionString)
 {
-    Stream<CharArray<char const *> > stream(begin(regionString, Standard()),
-                                            end(regionString, Standard()));
-    RecordReader<Stream<CharArray<char const *> >, SinglePass<> > reader(stream);
+    typename DirectionIterator<CharString const, Input>::Type reader = directionIterator(regionString, Input());
 
     // Parse out sequence name.
-    CharString buffer;
-    int res = readUntilChar(buffer, reader, ':');
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return 1;  // Parse error.
-
-    region.seqName = buffer;
+    clear(region.seqName);
+    readUntil(region.seqName, reader, EqualsChar<':'>());
     if (atEnd(reader))
-        return true;  // Done after parsing the sequence name.
+        return;
 
-    goNext(reader);  // Skip ':'.
+    skipOne(reader, EqualsChar<':'>());     // Skip ':'.
 
     // Parse out begin position.
-    clear(buffer);
-    while (!atEnd(reader) && value(reader) != '-')
-    {
-        if (!isdigit(value(reader)) && value(reader) != ',')
-            return false;  // Error parsing.
+    CharString buffer;
+    readUntil(buffer, reader, EqualsChar<'-'>(), NotFunctor<EqualsChar<','> >());
+    lexicalCastWithException(region.beginPos, buffer);
 
-        if (isdigit(value(reader)))
-            appendValue(buffer, value(reader));
-        goNext(reader);
-    }
-    if (empty(buffer))
-        return false;
+    if (region.beginPos < 1)
+        SEQAN_THROW(ParseError("GenomicRegion: Begin postition less than 1"));
 
-    if (!lexicalCast2(region.beginPos, buffer))
-        return false;
-
-    if (region.beginPos <= 0)
-        return false;
-
-    region.beginPos -= 1;  // Adjust to 0-based.
+    region.beginPos--;                      // Adjust to 0-based.
     if (atEnd(reader))
-        return true;
+        return;
 
-    goNext(reader);  // Skip '-'.
+    skipOne(reader, EqualsChar<'-'>());     // Skip '-'.
 
     // Parse out end position.
     clear(buffer);
-    while (!atEnd(reader))
-    {
-        if (!isdigit(value(reader)) && value(reader) != ',')
-            return false;  // Error parsing.
+    readUntil(buffer, reader, True(), NotFunctor<EqualsChar<','> >());
+    lexicalCastWithException(region.endPos, buffer);
 
-        if (isdigit(value(reader)))
-            appendValue(buffer, value(reader));
-        goNext(reader);
-    }
-    if (empty(buffer))
-        return false;
-
-    if (!lexicalCast2(region.endPos, buffer))
-        return false;
-
-    if (region.endPos <= 0)
-        return false;
-
-    return atEnd(reader);
+    if (region.endPos < 1)
+        SEQAN_THROW(ParseError("GenomicRegion: End postition less than 1"));
 }
 
 }  // namespace seqan

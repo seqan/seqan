@@ -71,13 +71,23 @@ public:
     __uint64 offset;
     // Number of sequence characters per line.
     unsigned lineLength;
-    // Number of overall characters per line, including newline character(s).
+    // Number of bytes per line, including newline character(s).
     unsigned overallLineLength;
 
     FaiIndexEntry_() :
         sequenceLength(0), offset(0), lineLength(0), overallLineLength(0)
     {}
 };
+
+inline void
+clear(FaiIndexEntry_ &entry)
+{
+    clear(entry.name);
+    entry.sequenceLength = 0;
+    entry.offset = 0;
+    entry.lineLength = 0;
+    entry.overallLineLength = 0;
+}
 
 // ----------------------------------------------------------------------------
 // Class FaiIndex
@@ -146,10 +156,9 @@ public:
 
     // We use this memory mapped string (opened read-only) to read from the file.
     String<char, MMap<> > mmapString;
-    bool mmapStringOpen;
 
     FaiIndex() :
-        seqNameStoreCache(seqNameStore), mmapStringOpen(false)
+        seqNameStoreCache(seqNameStore)
     {}
 };
 
@@ -273,16 +282,16 @@ inline bool getIdByName(FaiIndex const & index, TName const & name, TId & refId)
 ..include:seqan/seq_io.h
 */
 
-template <typename TRefId>
-inline __uint64 sequenceLength(FaiIndex const & index, TRefId seqId)
+template <typename TSeqId>
+inline __uint64 sequenceLength(FaiIndex const & index, TSeqId seqId)
 {
     return index.indexEntryStore[seqId].sequenceLength;
 }
 
 // TODO(holtgrew): Wrapper and template only here because sequenceLength in string_set_base.h is weird.
 
-template <typename TRefId>
-inline __uint64 sequenceLength(FaiIndex & index, TRefId seqId)
+template <typename TSeqId>
+inline __uint64 sequenceLength(FaiIndex & index, TSeqId seqId)
 {
     return index.indexEntryStore[seqId].sequenceLength;
 }
@@ -317,7 +326,7 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId seqId)
 ..include:seqan/seq_io.h
 */
 
-inline CharString sequenceName(FaiIndex const & index, unsigned seqId)
+inline CharString const & sequenceName(FaiIndex const & index, unsigned seqId)
 {
     return index.indexEntryStore[seqId].name;
 }
@@ -399,18 +408,18 @@ inline __uint64 numSeqs(FaiIndex const & index)
 ..include:seqan/seq_io.h
 */
 
-template <typename TValue, typename TSpec>
-inline int readRegion(String<TValue, TSpec> & str,
-                      FaiIndex const & index,
-                      unsigned seqId,
-                      unsigned beginPos,
-                      unsigned endPos)
+template <typename TValue, typename TSpec, typename TSeqId, typename TPos>
+inline bool readRegion(String<TValue, TSpec> & str,
+                       FaiIndex const & index,
+                       TSeqId seqId,
+                       TPos beginPos,
+                       TPos endPos)
 {
     // Limit region to the infix, make sure that beginPos < endPos, compute character to read.
-    unsigned seqLen = index.indexEntryStore[seqId].sequenceLength;;
+    TPos seqLen = index.indexEntryStore[seqId].sequenceLength;;
     beginPos = std::min(beginPos, seqLen);
     endPos = std::min(std::max(beginPos, endPos), seqLen);
-    unsigned toRead = endPos - beginPos;
+    TPos toRead = endPos - beginPos;
 
     typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
     typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
@@ -445,24 +454,17 @@ inline int readRegion(String<TValue, TSpec> & str,
 }
 
 template <typename TValue, typename TSpec>
-inline int readRegion(String<TValue, TSpec> & str,
-                      FaiIndex const & index,
-                      GenomicRegion const & region)
+inline bool readRegion(String<TValue, TSpec> & str,
+                       FaiIndex const & index,
+                       GenomicRegion const & region)
 {
-    int seqId = region.seqId;
-    if (seqId == -1)
-    {
-        unsigned x = 0;
-        if (!getIdByName(index, region.seqName, x))
-            return 1;  // Sequence with this name could not be found.
-        seqId = x;
-    }
-    int beginPos = region.beginPos;
-    if (beginPos == -1)
-        beginPos = 0;
-    int endPos = region.endPos;
-    if (endPos == -1)
-        endPos = sequenceLength(index, seqId);
+    unsigned seqId = region.seqId;
+    if (seqId == GenomicRegion::INVALID_ID)
+        if (!getIdByName(index, region.seqName, seqId))
+            return false;  // Sequence with this name could not be found.
+
+    unsigned beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
+    unsigned endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, seqId);
     return readRegion(str, index, seqId, beginPos, endPos);
 }
 
@@ -500,10 +502,10 @@ inline int readRegion(String<TValue, TSpec> & str,
 */
 
 template <typename TValue, typename TSpec>
-inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned seqId)
+inline bool readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned seqId)
 {
-    if (seqId > numSeqs(index))
-        return 1;  // Out of bounds.
+    if (seqId >= numSeqs(index))
+        return false;  // Out of bounds.
 
     return readRegion(str, index, seqId, 0, sequenceLength(index, seqId));
 }
@@ -543,138 +545,81 @@ inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, uns
 ..include:seqan/seq_io.h
 */
 
-inline int read(FaiIndex & index, char const * fastaFilename, char const * faiFilename)
+template <typename TFwdIterator>
+inline void
+readRecord(FaiIndexEntry_ & entry, TFwdIterator & reader, CharString & buffer)
+{
+    clear(entry);
+
+    // Read REF_NAME.
+    readUntil(entry.name, reader, IsTab());
+
+    skipOne(reader, IsTab());   // Must have been on tab
+
+    // Read SEQ_LENGTH.
+    clear(buffer);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(entry.sequenceLength, buffer);
+
+    skipOne(reader, IsTab());   // Must have been on tab
+
+    // Read OFFSET.
+    clear(buffer);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(entry.offset, buffer);
+
+    skipOne(reader, IsTab());   // Must have been on tab
+
+    // Read LINE_LENGTH.
+    clear(buffer);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(entry.lineLength, buffer);
+
+    skipOne(reader, IsTab());   // Must have been on tab
+
+    // Read OVERALL_LINE_LENGTH.
+    clear(buffer);
+    readUntil(buffer, reader, OrFunctor<IsTab, IsNewline>());
+    lexicalCast(entry.overallLineLength, buffer);
+
+    skipLine(reader);           // Skip over line ending.
+}
+
+inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiFilename)
 {
     clear(index);  // Also clears filename, thus backup above and restore below.
     index.fastaFilename = fastaFilename;
     index.faiFilename = faiFilename;
 
-    if (index.mmapStringOpen)
-        close(index.mmapString);
     if (!open(index.mmapString, toCString(fastaFilename), OPEN_RDONLY))
-        return 1;  // Could not open file.
-    index.mmapStringOpen = true;
+        return false;  // Could not open file.
 
     // Open file.
-    std::ifstream faiStream(toCString(index.faiFilename), std::ios::binary | std::ios::in);
+    std::ifstream faiStream(toCString(index.faiFilename));
     if (!faiStream.good())
         return 1;
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(faiStream, Input());
 
     // Read FAI file.
-    RecordReader<std::ifstream, SinglePass<> > reader(faiStream);
     CharString buffer;
+    FaiIndexEntry_ entry;
     while (!atEnd(reader))
     {
-        FaiIndexEntry_ entry;
-
-        // Read REF_NAME.
-        if (readUntilTabOrLineBreak(entry.name, reader) != 0)
-            return 1;
-
+        readRecord(entry, reader, buffer);
         appendValue(index.seqNameStore, entry.name);
-        if (atEnd(reader) || value(reader) != '\t')
-            return 1;  // Must be on tab.
-
-        skipChar(reader, '\t');  // Must have been on tab, no checking.
-
-        // Read SEQ_LENGTH.
-        clear(buffer);
-        if (readUntilTabOrLineBreak(buffer, reader) != 0)
-            return 1;
-
-        if (!lexicalCast2(entry.sequenceLength, buffer))
-            return 1;  // Could not cast to integer.
-
-        if (atEnd(reader) || value(reader) != '\t')
-            return 1;  // Must be on tab.
-
-        skipChar(reader, '\t');  // Must have been on tab, no checking.
-
-        // Read OFFSET.
-        clear(buffer);
-        if (readUntilTabOrLineBreak(buffer, reader) != 0)
-            return 1;
-
-        if (!lexicalCast2(entry.offset, buffer))
-            return 1;  // Could not cast to integer.
-
-        if (atEnd(reader) || value(reader) != '\t')
-            return 1;  // Must be on tab.
-
-        skipChar(reader, '\t');  // Must have been on tab, no checking.
-
-        // Read LINE_LENGTH.
-        clear(buffer);
-        if (readUntilTabOrLineBreak(buffer, reader) != 0)
-            return 1;
-
-        if (!lexicalCast2(entry.lineLength, buffer))
-            return 1;  // Could not cast to integer.
-
-        if (atEnd(reader) || value(reader) != '\t')
-            return 1;  // Must be on tab.
-
-        skipChar(reader, '\t');  // Must have been on tab, no checking.
-
-        // Read OVERALL_LINE_LENGTH.
-        clear(buffer);
-        if (readUntilTabOrLineBreak(buffer, reader) != 0)
-            return 1;
-
-        if (!lexicalCast2(entry.overallLineLength, buffer))
-            return 1;  // Could not cast to integer.
-
-        if (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n')
-            return 1;  // Must be on end of line or file.
-
-        if (!atEnd(reader))
-            skipLine(reader);  // Skip over line ending.
-
         appendValue(index.indexEntryStore, entry);
     }
 
     // Clear name store cache.
     clear(index.seqNameStoreCache);
-
-    return 0;
+    return true;
 }
 
-// TODO(holtgrew): The wrappers can go when the clash from read() from the file module is gone.
-
-inline int read(FaiIndex & index, char * fastaFilename, char const * faiFilename)
+inline bool open(FaiIndex & index, char const * fastaFilename)
 {
-    return read(index, static_cast<char const *>(fastaFilename), faiFilename);
-}
-
-inline int read(FaiIndex & index, char const * fastaFilename, char * faiFilename)
-{
-    return read(index, fastaFilename, static_cast<char const *>(faiFilename));
-}
-
-inline int read(FaiIndex & index, char * fastaFilename, char * faiFilename)
-{
-    return read(index, static_cast<char const *>(fastaFilename), static_cast<char const *>(faiFilename));
-}
-
-inline int read(FaiIndex & index, char const * fastaFilename)
-{
-    char buffer[1000];
-    snprintf(buffer, 999, "%s.fai", toCString(fastaFilename));
-    return read(index, fastaFilename, &buffer[0]);
-}
-
-inline int read(FaiIndex & index, char * fastaFilename)
-{
-    return read(index, static_cast<char const *>(fastaFilename));
-}
-
-inline int read(FaiIndex & index)
-{
-    // Cannot read if FAI filename is empty.
-    if (empty(index.faiFilename))
-        return 1;
-
-    return read(index, toCString(index.fastaFilename), toCString(index.faiFilename));
+    std::string faiFilename = fastaFilename;
+    faiFilename += ".fai";
+    return open(index, fastaFilename, toCString(faiFilename));
 }
 
 // ---------------------------------------------------------------------------
@@ -712,48 +657,78 @@ inline int read(FaiIndex & index)
 ..include:seqan/seq_io.h
 */
 
-// TODO(holtgrew): The wrappers can go when the clash from read() from the file module is gone.
-
-inline int write(FaiIndex const & index, char const * faiFilename)
+inline bool save(FaiIndex const & index, char const * faiFilename)
 {
     // Open index files.
-    std::ofstream indexOut(faiFilename, std::ios::binary | std::ios::out);
+    std::ofstream file(faiFilename);
+    if (!file.good())
+        return false;
 
+    file.exceptions(std::ios_base::badbit);
     for (unsigned i = 0; i < length(index.indexEntryStore); ++i)
     {
         FaiIndexEntry_ const & entry = index.indexEntryStore[i];
-        indexOut << entry.name << '\t' << entry.sequenceLength << '\t' << entry.offset << '\t'
-                 << entry.lineLength << '\t' << entry.overallLineLength << '\n';
+        file << entry.name << '\t' << entry.sequenceLength << '\t' << entry.offset << '\t'
+             << entry.lineLength << '\t' << entry.overallLineLength << '\n';
     }
-
-    return !indexOut.good();  // 1 on errors, 0 on success.
+    return true;
 }
 
-inline int write(FaiIndex const & index, char * faiFilename)
-{
-    return write(index, static_cast<char const *>(faiFilename));
-}
-
-inline int write(FaiIndex & index, char const * faiFilename)
-{
-    return write(static_cast<FaiIndex const &>(index), faiFilename);
-}
-
-inline int write(FaiIndex & index, char * faiFilename)
-{
-    return write(static_cast<FaiIndex const &>(index), static_cast<char const *>(faiFilename));
-}
-
-inline int write(FaiIndex const & index)
+inline bool write(FaiIndex const & index)
 {
     if (empty(index.faiFilename))
-        return 1;  // Cannot write out if faiFilename member is empty.
+        return false;  // Cannot write out if faiFilename member is empty.
     return write(index, toCString(index.faiFilename));
 }
 
-inline int write(FaiIndex & index)
+// ----------------------------------------------------------------------------
+// Function getRecordInfo(Fastq);
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator>
+inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
 {
-    return write(static_cast<FaiIndex const &>(index));
+    typedef EqualsChar<'>'> TFastaBegin;
+
+    clear(entry);
+
+    skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    entry.offset = position(iter);      // store file position
+    skipOne(iter);                      // skip '>'
+
+    readLine(entry.name, iter);         // read Fasta id
+    entry.offset = position(iter);      // store offset
+
+    FaiIndexEntry_ temp;
+    FaiIndexEntry_ *entryPtr = &entry;
+    OrFunctor<IsNewline, CountFunctor<NotFunctor<IsWhitespace> > > countCharsPerLine;
+
+    while (!atEnd(iter) && !TFastaBegin()(iter))
+    {
+        // check for consistency
+        if (entryPtr->lineLength != entry.lineLength ||
+            entryPtr->overallLineLength != entry.overallLineLength)
+        {
+            SEQAN_THROW(ParseError("FastaIndex: Record has inconsistent line lengths or line endings"));
+        }
+
+        __uint64 start = position(iter);
+
+        // skip to the end of line and count non-whitespace characters
+        clear(countCharsPerLine.func2);
+        skipUntil(iter, countCharsPerLine);
+        entry.sequenceLength += value(countCharsPerLine.func2);
+
+        // determine line length in bases
+        entryPtr->lineLength = value(countCharsPerLine.func2);
+
+        // skip linebreak
+        skipLine(iter);
+
+        // determine line length in bytes
+        entryPtr->overallLineLength = position(iter) - start;
+        entryPtr = &temp;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -791,87 +766,32 @@ inline int write(FaiIndex & index)
 ..include:seqan/stream.h
  */
 
-inline int build(FaiIndex & index, char const * seqFilename, char const * faiFilename)
+inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFilename)
 {
     index.fastaFilename = seqFilename;
     index.faiFilename = faiFilename;
+
+    SeqFileIn seqFile(seqFilename);
+    DirectionIterator<SeqFileIn, Input>::Type iter = directionIterator(seqFile, Input());
     
-    if (index.mmapStringOpen)
-        close(index.mmapString);
-    if (!open(index.mmapString, toCString(seqFilename), OPEN_RDONLY))
-        return 1;  // Could not open file.
-    index.mmapStringOpen = true;
+    if (!isEqual(format(seqFile), seqan::Fasta()))
+        return false;  // Invalid format, not FASTA.
 
-    typedef String<char, MMap<> > TMMapString;
-    RecordReader<TMMapString, SinglePass<StringReader> > reader(index.mmapString);
-    // Get file format, must be FASTA for FAI.
-    AutoSeqFormat tagSelector;
-    if (!guessStreamFormat(reader, tagSelector))
-        return 1;  // Invalid format.
+    // Clear everything.
+    clear(index.seqNameStore);
+    clear(index.seqNameStoreCache);
+    clear(index.indexEntryStore);
 
-    if (!isEqual(tagSelector, seqan::Fasta()))
-        return 1;  // Invalid format, not FASTA.
-
-    // Re-using the FASTA/FASTQ parsing code from read_fasta_fastq is not really feasible here.  We roll our own
-    // mini-parser from scratch.
-    CharString line;
-    CharString seqName;
-    __uint32 seqLength = 0;
-    __uint64 seqOffset = 0;
-    __uint32 lineLength = 0;
-    __uint32 lineSize = 0;
+    // Create FastaIndex
+    FaiIndexEntry_ entry;
     while (!atEnd(reader))
     {
-        clear(line);
-        clear(seqName);
-
-        if (value(reader) != '>')
-            return 1;  // Must be >.
-
-        goNext(reader);
-
-        int res = readUntilWhitespace(seqName, reader);
-        if (res != 0)
-            return res;  // Error reading.
-
-        res = skipLine(reader);
-        if (res != 0)
-            return res;  // Error reading.
-
-        seqOffset = reader._current - begin(reader._string, Standard());
-
-        res = readLine(line, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return res;  // Error reading.
-
-        lineSize = reader._current - begin(reader._string, Standard()) - seqOffset;
-        lineLength = length(line);
-        seqLength = lineLength;
-
-        while (!atEnd(reader))
-        {
-            char c = value(reader);
-            if (c == '>')
-                break;
-            if (!isspace(c))
-                seqLength += 1;
-            goNext(reader);
-        }
-
-        FaiIndexEntry_ entry;
-        entry.name = seqName;
-        entry.sequenceLength = seqLength;
-        entry.offset = seqOffset;
-        entry.lineLength = lineLength;
-        entry.overallLineLength = lineSize;
-        appendValue(index.indexEntryStore, entry);
+        getRecordInfo(entry, iter, Fasta());
         appendValue(index.seqNameStore, entry.name);
+        appendValue(index.indexEntryStore, entry);
     }
 
-    // Refresh name store cache.
-    clear(index.seqNameStoreCache);
-
-    return 0;
+    return true;
 }
 
 inline int build(FaiIndex & index, char const * seqFilename)
