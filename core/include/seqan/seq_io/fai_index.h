@@ -703,7 +703,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
     FaiIndexEntry_ *entryPtr = &entry;
     OrFunctor<IsNewline, CountFunctor<NotFunctor<IsWhitespace> > > countCharsPerLine;
 
-    while (!atEnd(iter) && !TFastaBegin()(iter))
+    while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency
         if (entryPtr->lineLength != entry.lineLength ||
@@ -726,7 +726,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
         skipLine(iter);
 
         // determine line length in bytes
-        entryPtr->overallLineLength = position(iter) - start;
+        entryPtr->overallLineLength = (__uint64)position(iter) - start;
         entryPtr = &temp;
     }
 }

@@ -60,7 +60,7 @@ struct OrFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return func1(val) || func2(val);
     }
@@ -84,7 +84,7 @@ struct AndFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return func1(val) && func2(val);
     }
@@ -107,7 +107,7 @@ struct NotFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return !func(val);
     }
