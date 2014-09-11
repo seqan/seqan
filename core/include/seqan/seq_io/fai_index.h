@@ -678,7 +678,7 @@ inline bool write(FaiIndex const & index)
 {
     if (empty(index.faiFilename))
         return false;  // Cannot write out if faiFilename member is empty.
-    return write(index, toCString(index.faiFilename));
+    return save(index, toCString(index.faiFilename));
 }
 
 // ----------------------------------------------------------------------------
@@ -784,7 +784,7 @@ inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFi
 
     // Create FastaIndex
     FaiIndexEntry_ entry;
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
         getRecordInfo(entry, iter, Fasta());
         appendValue(index.seqNameStore, entry.name);
