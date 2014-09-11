@@ -435,6 +435,13 @@ inline TTarget lexicalCast(TSource const & source)
     return target;
 }
 
+template <typename TTarget, typename TSource>
+inline void lexicalCastWithException(TTarget & target, TSource const & source)
+{
+    if (!lexicalCast(target, source))
+        throw BadLexicalCast(target, source);
+}
+
 // ----------------------------------------------------------------------------
 // Function appendNumber()
 // ----------------------------------------------------------------------------
