@@ -193,6 +193,22 @@ host(NameStoreCache<TNameStore, TName> const & cache)
 // ----------------------------------------------------------------------------
 
 /*!
+ * @fn NameStoreCache#clear
+ * @brief Clears a NameStoreCache.
+ *
+ * @signature void clear(cache);
+ *
+ * @param[in,out] nameStore The NameStoreCache to clear.
+ */
+
+template <typename TNameStore, typename TName>
+inline void
+clear(NameStoreCache<TNameStore, TName> &cache)
+{
+    cache.nameSet.clear();
+}
+
+/*!
  * @fn NameStoreCache#refresh
  * @brief Recreate a NameStoreCache.
  *
@@ -201,23 +217,11 @@ host(NameStoreCache<TNameStore, TName> const & cache)
  * @param[in,out] nameStore The NameStoreCache to refresh.
  */
 
-/**
-.Function.refresh:
-..class:Class.NameStoreCache
-..summary:Recreate a name store cache.
-..cat:Fragment Store
-..signature:refresh(cache)
-..param.cache:A @Class.NameStoreCache@ object.
-...type:Class.NameStoreCache
-..see:Function.getIdByName
-..include:seqan/store.h
-*/
-    
 template <typename TNameStore, typename TName>
 inline void
 refresh(NameStoreCache<TNameStore, TName> &cache)
 {
-    cache.nameSet.clear();
+    clear(cache);
     for (unsigned i = 0; i < length(*cache.nameSet.key_comp().nameStore); ++i)
         cache.nameSet.insert(i);
 }

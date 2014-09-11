@@ -43,6 +43,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 // ===========================================================================
 // Sequence File Formats
@@ -63,12 +64,12 @@
 // Genomic Region
 // ===========================================================================
 
-//#include <seqan/seq_io/genomic_region.h>
+#include <seqan/seq_io/genomic_region.h>
 
 // ===========================================================================
 // FAI Index
 // ===========================================================================
 
-//#include <seqan/seq_io/fai_index.h>
+#include <seqan/seq_io/fai_index.h>
 
 #endif  // CORE_INCLUDE_SEQAN_SEQ_IO_H_
