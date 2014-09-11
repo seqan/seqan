@@ -63,9 +63,9 @@ namespace seqan {
 class FaiIndexEntry_
 {
 public:
-    // Name of reference sequence.
+    // Name of the sequences.
     CharString name;
-    // Number of nucleotides in sequence.
+    // Length of the sequence.
     __uint64 sequenceLength;
     // Offset in the file.
     __uint64 offset;
@@ -139,17 +139,17 @@ public:
 
     // The index entries.
     String<FaiIndexEntry_> indexEntryStore;
-    // A store for the reference names.
-    StringSet<CharString> refNameStore;
-    // A cache for fast access to the reference name store.
-    NameStoreCache<StringSet<CharString> > refNameStoreCache;
+    // A store for the sequence names.
+    StringSet<CharString> seqNameStore;
+    // A cache for fast access to the sequence name store.
+    NameStoreCache<StringSet<CharString> > seqNameStoreCache;
 
     // We use this memory mapped string (opened read-only) to read from the file.
     String<char, MMap<> > mmapString;
     bool mmapStringOpen;
 
     FaiIndex() :
-        refNameStoreCache(refNameStore), mmapStringOpen(false)
+        seqNameStoreCache(seqNameStore), mmapStringOpen(false)
     {}
 };
 
@@ -190,8 +190,8 @@ inline void clear(FaiIndex & index)
     clear(index.fastaFilename);
     clear(index.faiFilename);
     clear(index.indexEntryStore);
-    clear(index.refNameStore);
-    refresh(index.refNameStoreCache);
+    clear(index.seqNameStore);
+    clear(index.seqNameStoreCache);
 }
 
 // ----------------------------------------------------------------------------
@@ -200,30 +200,30 @@ inline void clear(FaiIndex & index)
 
 /*!
  * @fn FaiIndex#getIdByName
- * @brief Return id (numeric index in the file) of a sequence in a FAI file.
+ * @brief Return refId (numeric index in the file) of a sequence in a FAI file.
  *
- * @signature bool getIdByName(faiIndex, name, id);
+ * @signature bool getIdByName(faiIndex, name, refId);
  *
  * @param[in]  faiIndex The FaiIndex to query.
  * @param[in]  name     The name of the sequence to look the id up for.  Type: @link SequenceConcept @endlink.
- * @param[out] id       The id of the sequence is written here.
+ * @param[out] refId    The id of the sequence is written here.
  *
- * @return bool true if a reference with the given name is known in the index.
+ * @return bool true if a sequence with the given name is known in the index.
  */
 
 /**
 .Function.FaiIndex#getIdByName
 ..cat:Input/Output
 ..class:Class.FaiIndex
-..signature:getIdByName(faiIndex, name, refId)
+..signature:getIdByName(faiIndex, name, seqId)
 ..summary:Return id (numeric index in the file) of a sequence in a FAI file.
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
 ..param.name:The name of the sequence to get the id for.
 ...type:Shortcut.CharString
-..param.refId:The id of the sequence is written here.
+..param.seqId:The id of the sequence is written here.
 ...type:nolink:$unsigned$
-..return:$bool$ indicating whether a reference with this name is known in the index.
+..return:$bool$ indicating whether a sequence with this name is known in the index.
 ..include:seqan/seq_io.h
 */
 
@@ -232,15 +232,15 @@ inline void clear(FaiIndex & index)
 // TODO(holtgrew): Using templates here because of ambiguities hit otherwise.
 
 template <typename TName, typename TId>
-inline bool getIdByName(FaiIndex & index, TName const & name, TId & id)
+inline bool getIdByName(FaiIndex & index, TName const & name, TId & refId)
 {
-    return getIdByName(index.refNameStore, name, id, index.refNameStoreCache);
+    return getIdByName(index.seqNameStore, name, refId, index.seqNameStoreCache);
 }
 
 template <typename TName, typename TId>
-inline bool getIdByName(FaiIndex const & index, TName const & name, TId & id)
+inline bool getIdByName(FaiIndex const & index, TName const & name, TId & refId)
 {
-    return getIdByName(index.refNameStore, name, id, index.refNameStoreCache);
+    return getIdByName(index.seqNameStore, name, refId, index.seqNameStoreCache);
 }
 
 // ----------------------------------------------------------------------------
@@ -251,40 +251,40 @@ inline bool getIdByName(FaiIndex const & index, TName const & name, TId & id)
  * @fn FaiIndex#sequenceLength
  * @brief Return length of the sequence with the given id in the FaiIndex.
  *
- * @signature __uint64 sequenceLength(faiIndex, refId);
+ * @signature __uint64 sequenceLength(faiIndex, seqId);
  *
  * @param[in] faiIndex The FaiIndex to query.
- * @param[in] refId    The id of the sequence to get the length of.
+ * @param[in] seqId    The id of the sequence to get the length of.
  *
- * @return __uint64 The length of the sequence with index refId in faiIndex.
+ * @return __uint64 The length of the sequence with index seqId in faiIndex.
  */
 
 /**
 .Function.FaiIndex#sequenceLength
 ..cat:Input/Output
 ..class:Class.FaiIndex
-..signature:__uint64 sequenceLength(faiIndex, refId)
+..signature:__uint64 sequenceLength(faiIndex, seqId)
 ..summary:Return length of the sequence with the given id in the @Class.FaiIndex@.
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
-..param.refId:The id of the sequence to get the length of.
+..param.seqId:The id of the sequence to get the length of.
 ...type:nolink:$unsigned$
 ..return:$__uint64$ with the length of the sequence.
 ..include:seqan/seq_io.h
 */
 
 template <typename TRefId>
-inline __uint64 sequenceLength(FaiIndex const & index, TRefId refId)
+inline __uint64 sequenceLength(FaiIndex const & index, TRefId seqId)
 {
-    return index.indexEntryStore[refId].sequenceLength;
+    return index.indexEntryStore[seqId].sequenceLength;
 }
 
 // TODO(holtgrew): Wrapper and template only here because sequenceLength in string_set_base.h is weird.
 
 template <typename TRefId>
-inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
+inline __uint64 sequenceLength(FaiIndex & index, TRefId seqId)
 {
-    return index.indexEntryStore[refId].sequenceLength;
+    return index.indexEntryStore[seqId].sequenceLength;
 }
 
 // ----------------------------------------------------------------------------
@@ -293,12 +293,12 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
 
 /*!
  * @fn FaiIndex#sequenceName
- * @brief Return the name of the sequence with th egiven id in the FaiIndex.
+ * @brief Return the name of the sequence with the given id in the FaiIndex.
  *
- * @signature CharString sequenceName(faiIndex, refId);
+ * @signature CharString sequenceName(faiIndex, seqId);
  *
  * @param[in] faiIndex The FaiIndex to query.
- * @param[in] refId    The index of the sequence.
+ * @param[in] seqId    The index of the sequence.
  *
  * @return CharString The name of the sequence with the given id.
  */
@@ -307,19 +307,19 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
 .Function.FaiIndex#sequenceName
 ..cat:Input/Output
 ..class:Class.FaiIndex
-..signature:CharString sequenceName(faiIndex, refId)
+..signature:CharString sequenceName(faiIndex, seqId)
 ..summary:Return the name of the sequence with the given id in the @Class.FaiIndex@.
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
-..param.refId:The id of the sequence to get the name of.
+..param.seqId:The id of the sequence to get the name of.
 ...type:Shortcut.CharString
 ..return:@Shortcut.CharString@ with the name of the sequence.
 ..include:seqan/seq_io.h
 */
 
-inline CharString sequenceName(FaiIndex const & index, unsigned refId)
+inline CharString sequenceName(FaiIndex const & index, unsigned seqId)
 {
-    return index.indexEntryStore[refId].name;
+    return index.indexEntryStore[seqId].name;
 }
 
 // ----------------------------------------------------------------------------
@@ -362,12 +362,12 @@ inline __uint64 numSeqs(FaiIndex const & index)
  * @fn FaiIndex#readRegion
  * @brief Read a region through an FaiIndex.
  *
- * @signature int readRegion(str, faiIndex, refId, beginPos, endPos);
+ * @signature int readRegion(str, faiIndex, seqId, beginPos, endPos);
  * @signature int readRegion(str, faiIndex, region);
  *
  * @param[out] str      The @link String @endlink to read the sequence into.
  * @param[in]  faiIndex The FaiIndex to read from.
- * @param[in]  refId    The id of the reference to read (Type: <tt>unsigned).
+ * @param[in]  seqId    The id of the sequence to read (Type: <tt>unsigned).
  * @param[in]  beginPos The begin position of the region to read (Type: <tt>unsigned).
  * @param[in]  endPos   The end position of the region to read  (Type: <tt>unsigned).
  * @param[in]  region   The @link GenomicRegion @endlink to read.
@@ -379,7 +379,7 @@ inline __uint64 numSeqs(FaiIndex const & index)
 .Function.FaiIndex#readRegion
 ..cat:Input/Output
 ..class:Class.FaiIndex
-..signature:readRegion(str, faiIndex, refId, beginPos, endPos)
+..signature:readRegion(str, faiIndex, seqId, beginPos, endPos)
 ..signature:readRegion(str, faiIndex, region);
 ..summary:Load the infix of a sequence from a @Class.FaiIndex@.
 ..description:The given region is loaded from the indexed FASTA file.
@@ -387,7 +387,7 @@ inline __uint64 numSeqs(FaiIndex const & index)
 ...type:Class.String
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
-..param.refId:The index of the reference in the file.
+..param.seqId:The index of the sequence in the file.
 ...type:nolink:$unsigned$
 ..param.beginPos:The begin position of the infix to write to $str$.
 ...type:nolink:$unsigned$
@@ -402,12 +402,12 @@ inline __uint64 numSeqs(FaiIndex const & index)
 template <typename TValue, typename TSpec>
 inline int readRegion(String<TValue, TSpec> & str,
                       FaiIndex const & index,
-                      unsigned refId,
+                      unsigned seqId,
                       unsigned beginPos,
                       unsigned endPos)
 {
     // Limit region to the infix, make sure that beginPos < endPos, compute character to read.
-    unsigned seqLen = index.indexEntryStore[refId].sequenceLength;;
+    unsigned seqLen = index.indexEntryStore[seqId].sequenceLength;;
     beginPos = std::min(beginPos, seqLen);
     endPos = std::min(std::max(beginPos, endPos), seqLen);
     unsigned toRead = endPos - beginPos;
@@ -415,12 +415,12 @@ inline int readRegion(String<TValue, TSpec> & str,
     typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
     typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
     TSourceIter itSource = begin(index.mmapString, Standard());
-    __uint64 offset = index.indexEntryStore[refId].offset;
+    __uint64 offset = index.indexEntryStore[seqId].offset;
     // First, compute offset of the completely filled lines.
-    unsigned numLines = beginPos / index.indexEntryStore[refId].lineLength;
-    unsigned numBytes = numLines * index.indexEntryStore[refId].overallLineLength;
+    unsigned numLines = beginPos / index.indexEntryStore[seqId].lineLength;
+    unsigned numBytes = numLines * index.indexEntryStore[seqId].overallLineLength;
     // Then, compute overall offset by adding remaining bytes, too.
-    numBytes += beginPos % index.indexEntryStore[refId].lineLength;
+    numBytes += beginPos % index.indexEntryStore[seqId].lineLength;
     offset += numBytes;
     // Advance iterator in MMap file.
     itSource += offset;
@@ -474,11 +474,11 @@ inline int readRegion(String<TValue, TSpec> & str,
  * @fn FaiIndex#readSequence
  * @brief Load a whole sequence from a FaiIndex.
  *
- * @signature int readSequence(str, faiIndex, refId);
+ * @signature int readSequence(str, faiIndex, seqId);
  *
  * @param[out] str      The @link String @endlink to read into.
  * @param[in]  faiIndex The FaiIndex to read from.
- * @param[in]  refID    The index of the sequence in the file.
+ * @param[in]  seqID    The index of the sequence in the file.
  *
  * @return int 0 on success, non-0 on errors.
  */
@@ -487,25 +487,25 @@ inline int readRegion(String<TValue, TSpec> & str,
 .Function.FaiIndex#readSequence
 ..cat:Input/Output
 ..class:Class.FaiIndex
-..signature:readSequence(str, faiIndex, refId)
+..signature:readSequence(str, faiIndex, seqId)
 ..summary:Load a whole sequence from an @Class.FaiIndex@.
 ..param.str:The sequence is written into this string.
 ...type:Class.String
 ..param.faiIndex:The @Class.FaiIndex@ to use.
 ...type:Class.FaiIndex
-..param.refId:The index of the reference in the file.
+..param.seqId:The index of the sequence in the file.
 ...type:nolink:$unsigned$
 ..return:Status code $int$, $0$ indicating success and $1$ an error.
 ..include:seqan/seq_io.h
 */
 
 template <typename TValue, typename TSpec>
-inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned refId)
+inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned seqId)
 {
-    if (refId > numSeqs(index))
+    if (seqId > numSeqs(index))
         return 1;  // Out of bounds.
 
-    return readRegion(str, index, refId, 0, sequenceLength(index, refId));
+    return readRegion(str, index, seqId, 0, sequenceLength(index, seqId));
 }
 
 // ----------------------------------------------------------------------------
@@ -571,7 +571,7 @@ inline int read(FaiIndex & index, char const * fastaFilename, char const * faiFi
         if (readUntilTabOrLineBreak(entry.name, reader) != 0)
             return 1;
 
-        appendValue(index.refNameStore, entry.name);
+        appendValue(index.seqNameStore, entry.name);
         if (atEnd(reader) || value(reader) != '\t')
             return 1;  // Must be on tab.
 
@@ -633,8 +633,8 @@ inline int read(FaiIndex & index, char const * fastaFilename, char const * faiFi
         appendValue(index.indexEntryStore, entry);
     }
 
-    // Refresh name store cache.
-    refresh(index.refNameStoreCache);
+    // Clear name store cache.
+    clear(index.seqNameStoreCache);
 
     return 0;
 }
@@ -865,11 +865,11 @@ inline int build(FaiIndex & index, char const * seqFilename, char const * faiFil
         entry.lineLength = lineLength;
         entry.overallLineLength = lineSize;
         appendValue(index.indexEntryStore, entry);
-        appendValue(index.refNameStore, entry.name);
+        appendValue(index.seqNameStore, entry.name);
     }
 
     // Refresh name store cache.
-    refresh(index.refNameStoreCache);
+    clear(index.seqNameStoreCache);
 
     return 0;
 }
