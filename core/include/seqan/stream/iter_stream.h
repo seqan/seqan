@@ -437,7 +437,8 @@ inline typename Position<Iter<TStream, StreamIterator<TDirection> > const>::Type
 position(Iter<TStream, StreamIterator<TDirection> > const & iter)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.stream->seekpos(0, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+    return iter.streamBuf->pubseekoff(0, std::ios_base::cur,
+                                      (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
 // ----------------------------------------------------------------------------
@@ -449,7 +450,7 @@ inline void
 setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter, TPosition pos)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.stream->seekpos(pos, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+    iter.streamBuf->pubseekpos(pos, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
 // ----------------------------------------------------------------------------

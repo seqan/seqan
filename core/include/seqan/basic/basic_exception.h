@@ -304,7 +304,7 @@ struct AssertFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         if (SEQAN_UNLIKELY(!func(val)))
             throw TException(std::string("Value '") + val + "' produced an error. " +
