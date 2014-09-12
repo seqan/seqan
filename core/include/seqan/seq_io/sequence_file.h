@@ -176,13 +176,14 @@ inline void readRecords(TIdStringSet & meta,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
     typedef typename Value<TSeqStringSet>::Type TSeqString;
+    typedef typename Value<TSeqString>::Type TValue;
 
-    TSeqString seqBuffer;
+    String<TValue> seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
+    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
     while (!atEnd(file))
     {
@@ -193,7 +194,8 @@ inline void readRecords(TIdStringSet & meta,
 
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
+    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
+    seqBuffer.data_capacity = 0;
 }
 
 // ----------------------------------------------------------------------------

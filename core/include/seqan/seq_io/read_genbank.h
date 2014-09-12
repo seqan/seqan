@@ -234,6 +234,14 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
     readRecord(seq, iter, GenBankSequence());
 }
 
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, GenBank)
+{
+    clear(qual);
+    readRecord(meta, seq, iter, GenBank());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef EXTRAS_INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_

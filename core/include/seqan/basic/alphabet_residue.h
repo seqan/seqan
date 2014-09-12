@@ -256,8 +256,11 @@ template <> struct BitsPerValue<DnaQ>
     typedef __uint8 Type;
 };
 
-template <> struct HasQualities<DnaQ> :
-    True {};
+template <> struct HasQualities<DnaQ>
+{
+    typedef True Type;
+    static const bool VALUE = true;
+};
 
 template <>
 struct BaseAlphabet<DnaQ>
@@ -378,8 +381,11 @@ template <> struct BitsPerValue<Dna5Q>
     typedef __uint8 Type;
 };
 
-template <> struct HasQualities<Dna5Q> :
-    True {};
+template <> struct HasQualities<Dna5Q>
+{
+    typedef True Type;
+    static const bool VALUE = true;
+};
 
 template <>
 struct BaseAlphabet<Dna5Q>

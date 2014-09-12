@@ -121,10 +121,8 @@ struct SmartFile
         iter(stream),
         context(data_context)
     {
-        bool success = open(*this, istream);
+        _open(*this, istream, True());
         ignoreUnusedVariableWarning(dummy);
-        ignoreUnusedVariableWarning(success);
-        SEQAN_ASSERT(success);
     }
 
     template <typename TValue, typename TFormat>
