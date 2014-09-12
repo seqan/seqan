@@ -256,11 +256,8 @@ template <> struct BitsPerValue<DnaQ>
     typedef __uint8 Type;
 };
 
-template <> struct HasQualities<DnaQ>
-{
-    enum { VALUE = true };
-    typedef True Type;
-};
+template <> struct HasQualities<DnaQ> :
+    True {};
 
 template <>
 struct BaseAlphabet<DnaQ>
@@ -381,11 +378,8 @@ template <> struct BitsPerValue<Dna5Q>
     typedef __uint8 Type;
 };
 
-template <> struct HasQualities<Dna5Q>
-{
-    enum { VALUE = true };
-    typedef True Type;
-};
+template <> struct HasQualities<Dna5Q> :
+    True {};
 
 template <>
 struct BaseAlphabet<Dna5Q>
