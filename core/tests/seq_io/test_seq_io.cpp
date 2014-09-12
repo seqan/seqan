@@ -47,8 +47,8 @@
 //#include "test_stream_record_reader_fasta.h"
 //#include "test_stream_record_reader_fastq.h"
 //#include "test_stream_guess_stream_format.h"
-//#include "test_stream_read_embl.h"
-//#include "test_stream_read_genbank.h"
+#include "test_stream_read_embl.h"
+#include "test_stream_read_genbank.h"
 //#include "test_stream_read_auto_format.h"
 
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
@@ -120,23 +120,19 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
 //    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_mmap);
 //    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_concat_mmap);
 //    SEQAN_CALL_TEST(test_stream_record_reader_fastq_check_stream_format);
-//
-//    // Tests for EMBL
-//    SEQAN_CALL_TEST(test_stream_read_embl_single_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_embl_record_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_embl_batch_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_embl_single_mmap);
-//    SEQAN_CALL_TEST(test_stream_read_embl_single_batch_mmap);
-//    SEQAN_CALL_TEST(test_stream_read_embl_single_batch_concat_mmap);
-//
-//    // Tests for GenBank
-//    SEQAN_CALL_TEST(test_stream_read_genbank_single_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_genbank_record_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_genbank_batch_char_array_stream);
-//    SEQAN_CALL_TEST(test_stream_read_genbank_single_mmap);
-//    SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_mmap);
-//    SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_concat_mmap);
-//
+
+    // Tests for EMBL
+    SEQAN_CALL_TEST(test_stream_read_embl_single_char_array_stream);
+    SEQAN_CALL_TEST(test_stream_read_embl_record_char_array_stream);
+    SEQAN_CALL_TEST(test_stream_read_embl_single_mmap);
+    SEQAN_CALL_TEST(test_stream_read_embl_single_batch_mmap);
+
+    // Tests for GenBank
+    SEQAN_CALL_TEST(test_stream_read_genbank_single_char_array_stream);
+    SEQAN_CALL_TEST(test_stream_read_genbank_record_char_array_stream);
+    SEQAN_CALL_TEST(test_stream_read_genbank_single_mmap);
+    SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_mmap);
+
 //    // TODO Tests for other formats once they are supported
 //
 //    // Tests for file format auto-detection

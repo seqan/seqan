@@ -82,20 +82,47 @@ typedef Tag<EmblSequence_> EmblSequence;
 
 template <typename TKey, typename TValue, typename TFwdIterator>
 inline void
-readEmblHeader(TKey & key, TValue & value, TFwdIterator & iter)
+readRecord(TKey & key, TValue & val, TFwdIterator & iter, EmblHeader)
 {
     clear(key);
-    clear(value);
+    clear(val);
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
     readUntil(key, iter, IsWhitespace(), AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError>());
     if (!atEnd(iter) && IsBlank()(value(iter)))
     {
         skipUntil(iter, NotFunctor<IsBlank>());
-        readUntil(value, iter, IsNewline());
+        readUntil(val, iter, IsNewline());
     }
     skipLine(iter);
 }
+
+// ----------------------------------------------------------------------------
+// Function nextIs()
+// ----------------------------------------------------------------------------
+
+// nextIs() for EMBL header records.
+
+template <typename TFwdIterator>
+inline bool
+nextIs(TFwdIterator & iter, EmblHeader)
+{
+    return !atEnd(iter) && !IsWhitespace()(value(iter));
+}
+
+// nextIs() for EMBL sequence records.
+
+template <typename TFwdIterator>
+inline bool
+nextIs(TFwdIterator & iter, EmblSequence)
+{
+    return !atEnd(iter) && IsWhitespace()(value(iter));
+}
+
+
+// ----------------------------------------------------------------------------
+// Function readRecord()
+// ----------------------------------------------------------------------------
 
 // readRecord() for EMBL sequences records.
 
@@ -112,11 +139,17 @@ readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
     IsNewline isNewline;
     TSeqAsserter asserter;
 
+    if (!atEnd(iter) && value(iter) == 'I')
+        skipLine(iter);
+
     clear(seq);
     for (; !atEnd(iter); skipLine(iter))
     {
         if (value(iter) == '/')
-            continue;
+        {
+            skipLine(iter);
+            return;
+        }
 
         readUntil(seq, iter, isNewline, asserter);
     }
@@ -128,22 +161,23 @@ template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 {
-    AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError, Embl> asserter;
     IsBlank isBlank;
+    IsWhitespace isWhite;
     String<char, Array<2> > key;
 
     // extract meta from "ID" line
-    while (!atEnd(iter) && !isBlank(value(iter)))
+    clear(meta);
+    for (; !atEnd(iter) && !isBlank(value(iter)); skipLine(iter))
     {
-        clear(key);
-        readUntil(key, iter, isBlank, asserter);
+        AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError, Embl> asserter;
 
+        clear(key);
+        readUntil(key, iter, isWhite, asserter);
         if (!atEnd(iter) && isBlank(value(iter)) && key == "ID")
         {
             skipUntil(iter, NotFunctor<IsBlank>());
             readUntil(meta, iter, IsNewline());
         }
-        skipLine(iter);
     }
 
     readRecord(seq, iter, EmblSequence());

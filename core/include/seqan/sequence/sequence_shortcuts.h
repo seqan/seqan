@@ -191,6 +191,52 @@ typedef Iterator<DnaString, Rooted>::Type DnaIterator;
 
 typedef String<Dna5, Alloc<void> > Dna5String;
 
+//////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @typedef DnaQString
+ * @headerfile <seqan/sequence.h>
+ * @brief An AllocString with DnaQ alphabet.
+ *
+ * @signature typedef String<DnaQ> CharString;
+ */
+
+/**
+.Shortcut.DnaQString:
+..cat:Strings
+..summary:A string of @Spec.DnaQ@.
+..signature:DnaQString
+..shortcutfor:Spec.Alloc String
+...signature:String<DnaQ, Alloc<> >
+..see:Spec.DnaQ
+..see:Shortcut.DnaString
+*/
+
+typedef String<DnaQ, Alloc<void> > DnaQString;
+
+//////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @typedef Dna5QString
+ * @headerfile <seqan/sequence.h>
+ * @brief An AllocString with Dna5Q alphabet.
+ *
+ * @signature typedef String<Dna5Q> CharString;
+ */
+
+/**
+.Shortcut.Dna5QString:
+..cat:Strings
+..summary:A string of @Spec.Dna5Q@.
+..signature:Dna5QString
+..shortcutfor:Spec.Alloc String
+...signature:String<Dna5Q, Alloc<> >
+..see:Spec.Dna5Q
+..see:Shortcut.DnaString
+*/
+
+typedef String<Dna5Q, Alloc<void> > Dna5QString;
+
 //____________________________________________________________________________
 
 /*!

@@ -232,6 +232,10 @@ specialization tag class.
 ..see:Spec.Dna5Q
 */
 
+#ifndef SEQAN_DEFAULT_QUALITY
+#define SEQAN_DEFAULT_QUALITY 40
+#endif
+
 struct DnaQ_ {};
 typedef SimpleType <unsigned char, DnaQ_> DnaQ;
 
@@ -331,7 +335,7 @@ void assignQualityValue(char & q, DnaQ c)
  * 
  * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.
  * 
- * Note that the default quality value is set to 60.
+ * Note that the default quality value is set to 40.
  * 
  * @see Dna5
  * @see DnaQ
@@ -351,7 +355,7 @@ The 'N' character ("unkown nucleotide") is encoded by 4.
 ...text:Objects of type $Dna5$ can be converted to various other types and vice versa. 
 ...text:$Dna5Q$ is typedef for $SimpleType<char,Dna5Q_>$, while $Dna5Q_$ is a helper
 specialization tag class.
-...text:Note that the default quality value is set to 60.
+...text:Note that the default quality value is set to 40.
 ..see:Metafunction.ValueSize
 */
 
@@ -1153,7 +1157,7 @@ struct CompareTypeImpl<DnaQ, Dna>
 
 inline void assign(DnaQ & target, Dna const & source)
 {
-    target.value = source.value | (60 << 2);
+    target.value = source.value | (SEQAN_DEFAULT_QUALITY << 2);
 }
 
 template <>
@@ -1502,10 +1506,11 @@ inline void assign(Dna5Q & target, Dna5 const & source)
     // We perform the conversion from DNA5 with qualities to DNA5 by a simple
     // table lookup.  The lookup below is equivalent to the following line:
     //
-    // target.value = (source.value == 4)? Dna5QValueN_ : source.value | (60 << 2);
+    // target.value = (source.value == 4)? Dna5QValueN_ : source.value | (40 << 2);
 
     static const unsigned table[] = {
-        (60 << 2) + 0, (60 << 2) + 1, (60 << 2) + 2, (60 << 2) + 3, Dna5QValueN_
+        (SEQAN_DEFAULT_QUALITY << 2) + 0, (SEQAN_DEFAULT_QUALITY << 2) + 1,
+        (SEQAN_DEFAULT_QUALITY << 2) + 2, (SEQAN_DEFAULT_QUALITY << 2) + 3, Dna5QValueN_
     };
     target.value = table[source.value];
 }
