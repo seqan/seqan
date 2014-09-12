@@ -1090,8 +1090,8 @@ void dumpMatches(
 //                unsigned r = positionSeqToGap(contigGaps, 5349800);
 //                printAlignment(std::cerr, Raw(), layout, store, 0, l, r, 0, 1000);
 //            }
-            SmartFile<Bam, Output, TFragmentStore> writer(file, Sam());
-			write(writer, store);
+            BamFileOut writer(file, Sam());
+			writeRecords(writer, store);
 			break;
         }
 

@@ -74,8 +74,11 @@ struct QualityValueSize<TValue const> : QualityValueSize<TValue>
 // ----------------------------------------------------------------------------
 
 template <typename TValue>
-struct HasQualities :
-    False {};
+struct HasQualities
+{
+    typedef False Type;
+    static const bool VALUE = false;
+};
 
 // ============================================================================
 // Functions

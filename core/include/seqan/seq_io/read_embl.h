@@ -210,6 +210,14 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
     readRecord(seq, iter, EmblSequence());
 }
 
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Embl)
+{
+    clear(qual);
+    readRecord(meta, seq, iter, Embl());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef EXTRAS_INCLUDE_SEQAN_SEQ_IO_READ_EMBL_H_
