@@ -206,20 +206,20 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
     {
         Range<TIValue const *> ichunk;
         getChunk(ichunk, iter, Input());
-        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
+        SEQAN_ASSERT(ichunk.begin < ichunk.end);
 
-        const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
+        const TIValue* SEQAN_RESTRICT ptr = ichunk.begin;
 
-        for (; ptr != end(ichunk, Standard()); ++ptr)
+        for (; ptr != ichunk.end; ++ptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
             {
-                iter += ptr - begin(ichunk, Standard());    // advance input iterator
+                iter += ptr - ichunk.begin;    // advance input iterator
                 return;
             }
         }
 
-        iter += ptr - begin(ichunk, Standard());            // advance input iterator
+        iter += ptr - ichunk.begin;            // advance input iterator
     }
 }
 
@@ -304,43 +304,44 @@ inline void _readUntil(TTarget &target,
                        Range<TIValue*> *,
                        Range<TOValue*> *)
 {
-    Range<TOValue*> ochunk = Range<TOValue*>(NULL, NULL);
+    Range<TOValue*> ochunk(NULL, NULL);
     TOValue* SEQAN_RESTRICT optr = NULL;
 
+    Range<TIValue*> ichunk;
     for (; !atEnd(iter); )
     {
-        Range<TIValue*> ichunk;
         getChunk(ichunk, iter, Input());
-        const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
-        SEQAN_ASSERT(iptr < end(ichunk, Standard()));
+        const TIValue* SEQAN_RESTRICT iptr = ichunk.begin;
+        SEQAN_ASSERT(iptr < ichunk.end);
 
-        for (; iptr != end(ichunk, Standard()); ++iptr)
+        for (; iptr != ichunk.end; ++iptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*iptr)))
             {
-                iter += iptr - begin(ichunk, Standard());               // advance input iterator
-                advanceChunk(target, optr - begin(ochunk, Standard())); // extend target string size
+                iter += iptr - ichunk.begin;               // advance input iterator
+                advanceChunk(target, optr - ochunk.begin); // extend target string size
                 return;
             }
-            if (SEQAN_LIKELY(!ignoreFunctor(*iptr)))
+            
+            if (SEQAN_UNLIKELY(ignoreFunctor(*iptr)))
+                continue;
+
+            // construct values in reserved memory
+            if (SEQAN_UNLIKELY(optr == ochunk.end))
             {
-                // construct values in reserved memory
-                if (SEQAN_UNLIKELY(optr == end(ochunk, Standard())))
-                {
-                    advanceChunk(target, optr - begin(ochunk, Standard()));
-                    // reserve memory for the worst-case
-                    // TODO(weese):Document worst-case behavior
-                    reserveChunk(target, length(ichunk));
-                    getChunk(ochunk, target, Output());
-                    optr = begin(ochunk, Standard());
-                    SEQAN_ASSERT(optr < end(ochunk, Standard()));
-                }
-                *optr++ = *iptr;
+                advanceChunk(target, optr - ochunk.begin);
+                // reserve memory for the worst-case
+                // TODO(weese):Document worst-case behavior
+                reserveChunk(target, length(ichunk));
+                getChunk(ochunk, target, Output());
+                optr = ochunk.begin;
+                SEQAN_ASSERT(optr < ochunk.end);
             }
+            *optr++ = *iptr;
         }
-        iter += iptr - begin(ichunk, Standard());                       // advance input iterator
+        iter += iptr - ichunk.begin;                       // advance input iterator
     }
-    advanceChunk(target, optr - begin(ochunk, Standard()));
+    advanceChunk(target, optr - ochunk.begin);
 }
 
 // ----------------------------------------------------------------------------

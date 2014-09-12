@@ -236,20 +236,10 @@ inline void clear(FaiIndex & index)
 ..include:seqan/seq_io.h
 */
 
-// TODO(holtgrew): Fix parameter order when getIdByName() has good parameter order.
-
-// TODO(holtgrew): Using templates here because of ambiguities hit otherwise.
-
 template <typename TName, typename TId>
-inline bool getIdByName(FaiIndex & index, TName const & name, TId & refId)
+inline bool getIdByName(TId & refId, FaiIndex const & index, TName const & name)
 {
-    return getIdByName(index.seqNameStore, name, refId, index.seqNameStoreCache);
-}
-
-template <typename TName, typename TId>
-inline bool getIdByName(FaiIndex const & index, TName const & name, TId & refId)
-{
-    return getIdByName(index.seqNameStore, name, refId, index.seqNameStoreCache);
+    return getIdByName(refId, index.seqNameStoreCache, name);
 }
 
 // ----------------------------------------------------------------------------
@@ -408,49 +398,73 @@ inline __uint64 numSeqs(FaiIndex const & index)
 ..include:seqan/seq_io.h
 */
 
-template <typename TValue, typename TSpec, typename TSeqId, typename TPos>
-inline bool readRegion(String<TValue, TSpec> & str,
+template <typename TValue, typename TSpec, typename TSeqId, typename TBeginPos, typename TEndPos>
+inline void readRegion(String<TValue, TSpec> & str,
                        FaiIndex const & index,
                        TSeqId seqId,
-                       TPos beginPos,
-                       TPos endPos)
+                       TBeginPos beginPos,
+                       TEndPos endPos)
 {
+    typedef String<char, MMap<> > const TFastaFile;
+
+    FaiIndexEntry_ const & entry = index.indexEntryStore[seqId];
+
     // Limit region to the infix, make sure that beginPos < endPos, compute character to read.
-    TPos seqLen = index.indexEntryStore[seqId].sequenceLength;;
-    beginPos = std::min(beginPos, seqLen);
-    endPos = std::min(std::max(beginPos, endPos), seqLen);
-    TPos toRead = endPos - beginPos;
+    TEndPos seqLen = entry.sequenceLength;;
+    beginPos = std::min((TEndPos)beginPos, seqLen);
+    endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
+    TEndPos toRead = endPos - beginPos;
 
-    typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
-    typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
-    TSourceIter itSource = begin(index.mmapString, Standard());
-    __uint64 offset = index.indexEntryStore[seqId].offset;
-    // First, compute offset of the completely filled lines.
-    unsigned numLines = beginPos / index.indexEntryStore[seqId].lineLength;
-    unsigned numBytes = numLines * index.indexEntryStore[seqId].overallLineLength;
-    // Then, compute overall offset by adding remaining bytes, too.
-    numBytes += beginPos % index.indexEntryStore[seqId].lineLength;
-    offset += numBytes;
-    // Advance iterator in MMap file.
-    itSource += offset;
+    // seek to start position
+    DirectionIterator<TFastaFile, Input>::Type reader = directionIterator(index.mmapString, Input());
+    setPosition(
+        reader,
+        index.indexEntryStore[seqId].offset +
+        (beginPos / entry.lineLength) * entry.overallLineLength);
 
-    // Copy out the characters from FASTA file and convert via iterator assignment to target string's type.
-    resize(str, toRead, TValue());
-    TTargetIter itTarget = begin(str, Standard());
-    for (unsigned i = 0; i < toRead; )
-    {
-        if (isspace(*itSource))
-        {
-            ++itSource;
-            continue;  // Skip spaces.
-        }
-        *itTarget = *itSource;
-        ++itTarget;
-        ++itSource;
-        ++i;
-    }
+    // set up countdowns
+    CountDownFunctor<NotFunctor<IsWhitespace> > countDownIgnore(beginPos % entry.lineLength);
+    CountDownFunctor<NotFunctor<IsWhitespace> > countDownData(toRead);
+    IsWhitespace ignWhiteSpace;
 
-    return 0;
+    // read characters
+    clear(str);
+    skipUntil(reader, countDownIgnore);
+    readUntil(str, reader, countDownData, ignWhiteSpace);
+    if (!countDownData)
+        SEQAN_THROW(UnexpectedEnd());
+//
+//
+//    typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
+//    typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
+//    TSourceIter itSource = begin(index.mmapString, Standard());
+//    __uint64 offset = index.indexEntryStore[seqId].offset;
+//    // First, compute offset of the completely filled lines.
+//    unsigned numLines = beginPos / index.indexEntryStore[seqId].lineLength;
+//    unsigned numBytes = numLines * index.indexEntryStore[seqId].overallLineLength;
+//    // Then, compute overall offset by adding remaining bytes, too.
+//    numBytes += beginPos % index.indexEntryStore[seqId].lineLength;
+//    offset += numBytes;
+//    // Advance iterator in MMap file.
+//    itSource += offset;
+//
+//    // Copy out the characters from FASTA file and convert via iterator assignment to target string's type.
+//    resize(str, toRead, TValue());
+//    TTargetIter itTarget = begin(str, Standard());
+//    for (TEndPos i = 0; i < toRead; )
+//    {
+//        if (isspace(*itSource))
+//        {
+//            ++itSource;
+//            continue;  // Skip spaces.
+//        }
+//        *itTarget = *itSource;
+//        ++itTarget;
+//        ++itSource;
+//        ++i;
+//    }
+//
+//    return true;
 }
 
 template <typename TValue, typename TSpec>
@@ -460,12 +474,13 @@ inline bool readRegion(String<TValue, TSpec> & str,
 {
     unsigned seqId = region.seqId;
     if (seqId == GenomicRegion::INVALID_ID)
-        if (!getIdByName(index, region.seqName, seqId))
+        if (!getIdByName(seqId, index, region.seqName))
             return false;  // Sequence with this name could not be found.
 
     unsigned beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
     unsigned endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, seqId);
-    return readRegion(str, index, seqId, beginPos, endPos);
+    readRegion(str, index, seqId, beginPos, endPos);
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -502,12 +517,9 @@ inline bool readRegion(String<TValue, TSpec> & str,
 */
 
 template <typename TValue, typename TSpec>
-inline bool readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned seqId)
+inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned seqId)
 {
-    if (seqId >= numSeqs(index))
-        return false;  // Out of bounds.
-
-    return readRegion(str, index, seqId, 0, sequenceLength(index, seqId));
+    readRegion(str, index, seqId, 0u, sequenceLength(index, seqId));
 }
 
 // ----------------------------------------------------------------------------
@@ -610,8 +622,8 @@ inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiF
         appendValue(index.indexEntryStore, entry);
     }
 
-    // Clear name store cache.
-    clear(index.seqNameStoreCache);
+    // Recreate name store cache.
+    refresh(index.seqNameStoreCache);
     return true;
 }
 
@@ -696,18 +708,20 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
     entry.offset = position(iter);      // store file position
     skipOne(iter);                      // skip '>'
 
-    readLine(entry.name, iter);         // read Fasta id
+    readUntil(entry.name, iter, IsWhitespace());    // read Fasta id (up to first whitespace)
+    skipLine(iter);
     entry.offset = position(iter);      // store offset
 
     FaiIndexEntry_ temp;
     FaiIndexEntry_ *entryPtr = &entry;
+    FaiIndexEntry_ *cmpPtr = &entry;
     OrFunctor<IsNewline, CountFunctor<NotFunctor<IsWhitespace> > > countCharsPerLine;
 
     while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency
-        if (entryPtr->lineLength != entry.lineLength ||
-            entryPtr->overallLineLength != entry.overallLineLength)
+        if (cmpPtr->lineLength != entry.lineLength ||
+            cmpPtr->overallLineLength != entry.overallLineLength)
         {
             SEQAN_THROW(ParseError("FastaIndex: Record has inconsistent line lengths or line endings"));
         }
@@ -727,6 +741,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
 
         // determine line length in bytes
         entryPtr->overallLineLength = (__uint64)position(iter) - start;
+        cmpPtr = entryPtr;
         entryPtr = &temp;
     }
 }
@@ -790,6 +805,9 @@ inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFi
         appendValue(index.seqNameStore, entry.name);
         appendValue(index.indexEntryStore, entry);
     }
+
+    // Recreate name store cache.
+    refresh(index.seqNameStoreCache);
 
     return true;
 }
