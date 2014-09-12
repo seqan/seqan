@@ -2028,7 +2028,7 @@ testEqual(String<TValue, Packed<THostSpec> > const & lhs,
     if (*itLOperand != *itROperand)
         return false;  // Lengths are not equal.
 
-    TBitVector maskE = ACTIVE_BITS & ~(ACTIVE_BITS >> (length(lhs) % TPackedTraits::VALUES_PER_HOST_VALUE));
+    TBitVector maskE = ACTIVE_BITS & ~(ACTIVE_BITS >> (BitsPerValue<TValue>::VALUE * (length(lhs) % TPackedTraits::VALUES_PER_HOST_VALUE)));
     while (++itLOperand != itEndLOperand && !((*itLOperand ^ *(++itROperand)) & ACTIVE_BITS))
     {}
 
