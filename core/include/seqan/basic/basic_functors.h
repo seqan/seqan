@@ -117,13 +117,13 @@ struct NotFunctor
 // Functor CountDownFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor>
+template <typename TFunctor = True, __uint64 REMAINING = 0>
 struct CountDownFunctor
 {
     __uint64 remaining;
     TFunctor func;
 
-    CountDownFunctor(__uint64 remaining):
+    CountDownFunctor(__uint64 remaining = REMAINING):
         remaining(remaining)
     {}
 
@@ -152,7 +152,7 @@ struct CountDownFunctor
 // Functor CountFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor>
+template <typename TFunctor = True>
 struct CountFunctor
 {
     __uint64 count;

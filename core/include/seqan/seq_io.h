@@ -51,7 +51,7 @@
 
 #include <seqan/seq_io/fasta_fastq.h>
 
-//#include <seqan/seq_io/read_embl.h>
+#include <seqan/seq_io/read_embl.h>
 //#include <seqan/seq_io/read_genbank.h>
 
 // ===========================================================================

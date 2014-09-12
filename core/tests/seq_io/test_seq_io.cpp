@@ -43,7 +43,7 @@
 #include "test_genomic_region.h"
 #include "test_fai_index.h"
 
-#include "test_sequence_stream.h"
+#include "test_sequence_file.h"
 //#include "test_stream_record_reader_fasta.h"
 //#include "test_stream_record_reader_fastq.h"
 //#include "test_stream_guess_stream_format.h"
@@ -53,28 +53,25 @@
 
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
-    // Test simple readFasta() function.
-//    SEQAN_CALL_TEST(test_seq_io_read_fasta);
-
     // Test recognition of supported file types.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_type_gz_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_type_bz2_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_type_gz_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta);
 
     // Test recognition of supported file formats.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_format_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_format_text_fastq);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq);
 
     // Test reading with different interfaces.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_read_record_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_read_all_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_read_record_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_read_all_text_fasta);
 
     // Test writing with different interfaces.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fastq_no_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fastq_with_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fastq_no_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fastq_with_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual);
 
     // Test parsing for GenomicRegion.
     SEQAN_CALL_TEST(test_seq_io_genomic_region_default_constructed);
