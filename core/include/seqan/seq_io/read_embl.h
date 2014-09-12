@@ -47,21 +47,14 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/*
 struct Embl_;
 typedef Tag<Embl_> Embl;
-*/
 
 struct EmblHeader_;
 typedef Tag<EmblHeader_> EmblHeader;
 
 struct EmblSequence_;
 typedef Tag<EmblSequence_> EmblSequence;
-
-enum EmblErrorCodes_
-{
-    IOERR_EMBL_WRONG_RECORD = 2048
-};
 
 // ============================================================================
 // Metafunctions
@@ -76,190 +69,84 @@ enum EmblErrorCodes_
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn splitEmblHeader
+ * @fn readEmblHeader
  * @headerfile <seqan/seq_io.h>
  * @brief Split an EMBL header line.
  *
- * @signature void splitEmblHeader(key, value, line);
+ * @signature void readEmblHeader(key, value, iter);
  *
  * @param[out] key   A @link SequenceConcept @endlink object to write the key to.
  * @param[out] value A @link SequenceConcept @endlink object to write the value to.
- * @param[in]  line  A @link SequenceConcept @endlink object with the line.
+ * @param[in]  iter  Input iterator.
  */
 
-/**
-.Function.splitEmblHeader
-..cat:Input/Output
-..signature:startsWith(key, value, line)
-..summary:Split an EMBL header line.
-..param.key:The 2-character header type.
-..param.value:The line's value.
-..param.line:The header line to split.
-..returns:$void$
-..include:seqan/stream.h
-*/
-
-template <typename TKey, typename TValue, typename TLine>
+template <typename TKey, typename TValue, typename TFwdIterator>
 inline void
-splitEmblHeader(TKey & key, TValue & value, TLine const & line)
+readEmblHeader(TKey & key, TValue & value, TFwdIterator & iter)
 {
     clear(key);
+    clear(value);
 
-    enum State { IN_KEY, IN_SPACE, IN_VALUE };
-    State state = IN_KEY;
-
-    typedef typename Iterator<TLine const, Rooted>::Type TIterator;
-    TIterator it = begin(line, Rooted());
-    for (; !atEnd(it); goNext(it))
+    skipUntil(iter, NotFunctor<IsWhitespace>());
+    readUntil(key, iter, IsWhitespace(), AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError>());
+    if (!atEnd(iter) && IsBlank()(value(iter)))
     {
-        if (state == IN_KEY)
-        {
-            appendValue(key, *it);
-            if (length(key) == 2u)
-                state = IN_SPACE;
-        }
-        else if (state == IN_SPACE && !isblank(*it))
-        {
-            break;
-        }
+        skipUntil(iter, NotFunctor<IsBlank>());
+        readUntil(value, iter, IsNewline());
     }
-
-    value = suffix(line, position(it));
-}
-
-// ----------------------------------------------------------------------------
-// Function nextIs()
-// ----------------------------------------------------------------------------
-
-// nextIs() for EMBL header records.
-
-template <typename TStream, typename TSpec>
-inline bool
-nextIs(RecordReader<TStream, TSpec> & reader, EmblHeader const & /*tag*/)
-{
-    return !atEnd(reader) && !isblank(value(reader));
-}
-
-// nextIs() for EMBL sequence records.
-
-template <typename TStream, typename TSpec>
-inline bool
-nextIs(RecordReader<TStream, TSpec> & reader, EmblSequence const & /*tag*/)
-{
-    return !atEnd(reader) && isblank(value(reader));
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord()
-// ----------------------------------------------------------------------------
-
-// readRecord() for EMBL header records.
-
-template <typename TTarget, typename TStream, typename TSpec>
-inline int
-readRecord(TTarget & buffer, RecordReader<TStream, SinglePass<TSpec> > & reader,
-           EmblHeader const & tag)
-{
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
-        return IOERR_EMBL_WRONG_RECORD;
-    clear(buffer);
-
-    return readLine(buffer, reader);
+    skipLine(iter);
 }
 
 // readRecord() for EMBL sequences records.
 
 // Read all sequence, eat/ignore '//' line.
 
-template <typename TTarget, typename TStream, typename TSpec>
-inline int
-readRecord(TTarget & buffer, RecordReader<TStream, SinglePass<TSpec> > & reader,
-           EmblSequence const & tag)
+template <typename TSeqString, typename TFwdIterator>
+inline void
+readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 {
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
-        return IOERR_EMBL_WRONG_RECORD;
-    clear(buffer);
+    typedef typename Value<TSeqString>::Type TSeqAlphabet;
+    typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
+                      AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Embl> > TSeqAsserter;
 
-    for (; !atEnd(reader); goNext(reader))
+    IsNewline isNewline;
+    TSeqAsserter asserter;
+
+    clear(seq);
+    for (; !atEnd(iter); skipLine(iter))
     {
-        if (isspace(value(reader)) || isdigit(value(reader)))
-            continue;  // Skip blanks.
-        // If we found a slash, look for the next one.
-        if (value(reader) == '/')
-        {
-            if (goNext(reader))  // Returns true if at end.
-                break;
-            if (value(reader) == '/')
-            {
-                skipLine(reader);
-                return 0;  // OK, found complete terminator.
-            }
-        }
+        if (value(iter) == '/')
+            continue;
 
-        // Otherwise, append the just found character to buffer.
-        appendValue(buffer, value(reader));
+        readUntil(seq, iter, isNewline, asserter);
     }
-
-    return EOF_BEFORE_SUCCESS;
 }
 
 // readRecord() for EMBL id/seq pairs.
 
-template <typename TId, typename TSequence, typename TStream, typename TSpec>
-inline int
-readRecord(TId & id,
-           TSequence & sequence,
-           RecordReader<TStream, SinglePass<TSpec> > & reader,
-           Embl const & /*tag*/)
+template <typename TIdString, typename TSeqString, typename TFwdIterator>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 {
-    CharString buffer;
-    while (nextIs(reader, EmblHeader()))
+    AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError, Embl> asserter;
+    IsBlank isBlank;
+    String<char, Array<2> > key;
+
+    // extract meta from "ID" line
+    while (!atEnd(iter) && !isBlank(value(iter)))
     {
-        int res = readRecord(buffer, reader, EmblHeader());
-        if (res != 0)
-            return res;
-        if (startsWith(buffer, "ID"))
+        clear(key);
+        readUntil(key, iter, isBlank, asserter);
+
+        if (!atEnd(iter) && isBlank(value(iter)) && key == "ID")
         {
-            CharString k, v;
-            splitEmblHeader(k, id, buffer);
+            skipUntil(iter, NotFunctor<IsBlank>());
+            readUntil(meta, iter, IsNewline());
         }
-    }
-    clear(sequence);
-    int res = readRecord(sequence, reader, EmblSequence());
-    if (res != 0)
-        return res;
-    
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function read2()
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TIdSpec, typename TSeqString, typename TSeqSpec,
-          typename TStream, typename TSpec>
-int read2(StringSet<TIdString, TIdSpec> & sequenceIds,
-          StringSet<TSeqString, TSeqSpec> & sequences,
-          RecordReader<TStream, SinglePass<TSpec> > & reader,
-          Embl const & tag)
-{
-    TIdString id;
-    TSeqString seq;
-
-    while (!atEnd(reader))
-    {
-        int res = readRecord(id, seq, reader, tag);
-        if (res != 0)
-            return res;
-        appendValue(sequenceIds, id);
-        appendValue(sequences, seq);
+        skipLine(iter);
     }
 
-    return 0;
+    readRecord(seq, iter, EmblSequence());
 }
 
 }  // namespace seqan

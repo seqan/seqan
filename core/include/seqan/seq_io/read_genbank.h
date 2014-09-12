@@ -64,10 +64,6 @@ typedef Tag<GenBankHeader_> GenBankHeader;
 struct GenBankSequence_;
 typedef Tag<GenBankSequence_> GenBankSequence;
 
-enum GenBankErrorCodes_
-{
-    IOERR_GENBANK_WRONG_RECORD = 2048
-};
 
 // ============================================================================
 // Metafunctions
