@@ -208,6 +208,13 @@ clear(NameStoreCache<TNameStore, TName> &cache)
     cache.nameSet.clear();
 }
 
+template <typename TNameStore, typename TName>
+inline bool
+empty(NameStoreCache<TNameStore, TName> const &cache)
+{
+    return cache.nameSet.empty();
+}
+
 /*!
  * @fn NameStoreCache#refresh
  * @brief Recreate a NameStoreCache.
@@ -329,8 +336,8 @@ appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore
 */
 
 template <typename TNameStore, typename TName, typename TPos>
-inline bool 
-getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
+inline bool
+getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
 {
     typedef typename Iterator<TNameStore const, Standard>::Type TNameStoreIter;
     
@@ -351,7 +358,7 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
 
 template <typename TCNameStore, typename TCName, typename TName, typename TPos>
 inline bool
-getIdByName(NameStoreCache<TCNameStore, TCName> const & context, TName const & name, TPos & pos)
+getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TName const & name)
 {
     typedef typename Position<TCNameStore const>::Type TId;
     typedef NameStoreCache<TCNameStore, TCName> const TNameStoreCache;
@@ -384,7 +391,7 @@ template <typename TNameStore, typename TName, typename TPos, typename TContext>
 inline bool
 getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
 {
-    return getIdByName(nameStore, name, pos);
+    return getIdByName(pos, nameStore, name);
 }
 
 // deprecated.
@@ -392,7 +399,7 @@ template<typename TNameStore, typename TName, typename TPos, typename TCNameStor
 inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {
-    return getIdByName(context, name, pos);
+    return getIdByName(pos, context, name);
 }
 
 // Append contig name to name store, if not known already.
@@ -401,7 +408,7 @@ inline typename Position<TNameStore>::Type
 getIdByName(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
 {
     typename Size<TNameStore>::Type nameId = 0;
-    if (!getIdByName(cache, name, nameId))
+    if (!getIdByName(nameId, cache, name))
     {
         nameId = length(host(cache));
         appendName(cache, name);

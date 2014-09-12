@@ -416,6 +416,13 @@ writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
     ++iter;
 }
 
+template <typename TTargetValue, typename TValue>
+inline void
+writeValue(TTargetValue * iter, TValue val)
+{
+    *iter++ = val;
+}
+
 // streams
 template <typename TContainer, typename TValue>
 inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
@@ -448,25 +455,29 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
     Range<TIValue*> ichunk;
     Range<TOValue*> ochunk;
 
-    do
+    while (n != (TSize)0)
     {
         getChunk(ichunk, iter, Input());
-        TTargetSize minChunkSize = std::min((TTargetSize)length(ichunk), (TTargetSize)n);
-//        SEQAN_ASSERT_GT(minChunkSize, 0u);
-
-        reserveChunk(target, n);
         getChunk(ochunk, target, Output());
 
-        TTargetSize olen = length(ochunk);
+        TTargetSize minChunkSize = std::min((TTargetSize)length(ichunk), (TTargetSize)length(ochunk));
 
-        if (SEQAN_UNLIKELY(olen == 0u))
+        if (SEQAN_UNLIKELY(minChunkSize == 0u))
         {
-            _write(target, iter, n, TNoChunking(), TNoChunking());
-            return;
+            reserveChunk(target, n);
+            reserveChunk(iter, n);
+            getChunk(ichunk, iter, Input());
+            getChunk(ochunk, target, Output());
+            minChunkSize = std::min((TTargetSize)length(ichunk), (TTargetSize)length(ochunk));
+            if (SEQAN_UNLIKELY(minChunkSize == 0u))
+            {
+                _write(target, iter, n, TNoChunking(), TNoChunking());
+                return;
+            }
         }
 
-        if (minChunkSize > olen)
-            minChunkSize = olen;
+        if (minChunkSize > (TTargetSize)n)
+            minChunkSize = (TTargetSize)n;
 
         arrayCopyForward(ichunk.begin, ichunk.begin + minChunkSize, ochunk.begin);
 
@@ -474,31 +485,43 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
         advanceChunk(target, minChunkSize);
         n -= minChunkSize;
     }
-    while (n != (TSize)0);
 }
 
 // chunked, target is pointer (e.g. readRawByte)
 template <typename TOValue, typename TFwdIterator, typename TSize>
 inline void write(TOValue *ptr, TFwdIterator &iter, TSize n)
 {
+    typedef Nothing* TNoChunking;
+    typedef typename Size<TFwdIterator>::Type TSourceSize;
     typedef typename Chunk<TFwdIterator>::Type TIChunk;
 
     TIChunk ichunk;
-    typename Size<TFwdIterator>::Type chunkSize;
 
-    for (; n > (TSize)0; n -= chunkSize)
+    while (n != (TSize)0)
     {
         getChunk(ichunk, iter, Input());
-        chunkSize = length(ichunk);
-        SEQAN_ASSERT_GT(chunkSize, 0u);
+        TSourceSize chunkSize = length(ichunk);
 
-        if (chunkSize > n)
-            chunkSize = n;
+        if (SEQAN_UNLIKELY(chunkSize == 0u))
+        {
+            reserveChunk(iter, n);
+            getChunk(ichunk, iter, Input());
+            TSourceSize chunkSize = length(ichunk);
+            if (SEQAN_UNLIKELY(chunkSize == 0u))
+            {
+                _write(ptr, iter, n, TNoChunking(), TNoChunking());
+                return;
+            }
+        }
+
+        if (chunkSize > (TSourceSize)n)
+            chunkSize = (TSourceSize)n;
 
         arrayCopyForward(ichunk.begin, ichunk.begin + chunkSize, ptr);
 
         iter += chunkSize;                          // advance input iterator
         ptr += chunkSize;
+        n -= chunkSize;
     }
 }
 
@@ -512,27 +535,32 @@ inline void write(TTarget &target, TIValue *ptr, TSize n)
 
     TOChunk ochunk;
 
-    do
+    while (n != (TSize)0)
     {
-        reserveChunk(target, n);
         getChunk(ochunk, target, Output());
+        TTargetSize chunkSize = length(ochunk);
 
-        TTargetSize olen = length(ochunk);
-
-        if (SEQAN_UNLIKELY(olen == 0u))
+        if (SEQAN_UNLIKELY(chunkSize == 0u))
         {
-            _write(target, ptr, n, TNoChunking(), TNoChunking());
-            return;
+            reserveChunk(target, n);
+            getChunk(ochunk, target, Output());
+            chunkSize = length(ochunk);
+            if (SEQAN_UNLIKELY(chunkSize == 0u))
+            {
+                _write(target, ptr, n, TNoChunking(), TNoChunking());
+                return;
+            }
         }
 
-        TTargetSize chunkSize = std::min(olen, (TTargetSize)n);
+        if (chunkSize > (TTargetSize)n)
+            chunkSize = (TTargetSize)n;
+
         arrayCopyForward(ptr, ptr + chunkSize, ochunk.begin);
 
         ptr += chunkSize;                      // advance input iterator
         advanceChunk(target, chunkSize);
         n -= chunkSize;
     }
-    while (n != (TSize)0);
 }
 
 // ----------------------------------------------------------------------------

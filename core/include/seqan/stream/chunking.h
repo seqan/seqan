@@ -98,13 +98,17 @@ inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
     typedef Iter<TContainer, TSpec> TIter;
 
     TContainer &cont = container(iter);
-    typename Size<TIter>::Type newCap = length(cont) + size;
+    typename Position<TIter>::Type pos = position(iter);
+    typename Size<TIter>::Type len = length(cont);
 
-    if (newCap <= capacity(cont))
+    if (SEQAN_LIKELY(pos < len))
         return;
 
-    typename Position<TIter>::Type pos = position(iter);
-    reserve(cont, newCap);
+    len += size;
+    if (len <= capacity(cont))
+        return;
+
+    reserve(cont, len);
     setPosition(iter, pos);
 }
 

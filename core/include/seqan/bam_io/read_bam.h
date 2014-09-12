@@ -146,7 +146,7 @@ void readRecord(BamHeader & header,
 {
     // Read BAM magic string.
     String<char, Array<4> > magic;
-    readUntil(magic, iter, CountDownFunctor<>(4));
+    write(magic, iter, 4);
     if (magic != "BAM\1")
         throw std::runtime_error("Not in BAM format.");
 
@@ -155,7 +155,7 @@ void readRecord(BamHeader & header,
     readRawByte(lText, iter);
 
     CharString samHeader;
-    readUntil(samHeader, iter, CountDownFunctor<>(lText));
+    write(samHeader, iter, lText);
 
     // Truncate to first position of '\0'.
     Iterator<CharString, Rooted>::Type it = begin(samHeader);
@@ -188,7 +188,7 @@ void readRecord(BamHeader & header,
         __int32 nName;
         readRawByte(nName, iter);
         clear(name);
-        readUntil(name, iter, CountDownFunctor<>(nName));
+        write(name, iter, nName);
         resize(name, nName - 1);
         // Read length of the reference sequence.
         __int32 lRef;

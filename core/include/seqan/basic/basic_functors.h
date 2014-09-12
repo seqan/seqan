@@ -117,21 +117,28 @@ struct NotFunctor
 // Functor CountDownFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TCounter = __uint64>
+template <typename TFunctor>
 struct CountDownFunctor
 {
     __uint64 remaining;
+    TFunctor func;
 
-    CountDownFunctor(TCounter const & newRemaining):
-        remaining(newRemaining)
+    CountDownFunctor(__uint64 remaining):
+        remaining(remaining)
+    {}
+
+    CountDownFunctor(__uint64 remaining, TFunctor const &func):
+        remaining(remaining),
+        func(func)
     {}
 
     template <typename TValue>
-    bool operator() (TValue const &) 
+    bool operator() (TValue const & val)
     {
         if (remaining == 0)
             return true;
-        --remaining;
+        if (func(val))
+            --remaining;
         return false;
     }
     

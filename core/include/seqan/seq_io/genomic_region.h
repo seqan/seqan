@@ -205,8 +205,10 @@ struct GenomicRegion
     // 0-based, C-style end position.  -1 if not set.
     unsigned endPos;
 
-    static const unsigned INVALID_ID = -1;
-    static const unsigned INVALID_POS = -1;
+    enum { INVALID_ID = (unsigned)-1 };
+    enum { INVALID_POS = (unsigned)-1 };
+//    static const unsigned INVALID_ID = -1;
+//    static const unsigned INVALID_POS = -1;
 
     GenomicRegion() :
         seqId(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
@@ -297,7 +299,7 @@ inline void clear(GenomicRegion & region)
 
 inline void parse(GenomicRegion & region, CharString const & regionString)
 {
-    typename DirectionIterator<CharString const, Input>::Type reader = directionIterator(regionString, Input());
+    DirectionIterator<CharString const, Input>::Type reader = directionIterator(regionString, Input());
 
     // Parse out sequence name.
     clear(region.seqName);
@@ -309,7 +311,7 @@ inline void parse(GenomicRegion & region, CharString const & regionString)
 
     // Parse out begin position.
     CharString buffer;
-    readUntil(buffer, reader, EqualsChar<'-'>(), NotFunctor<EqualsChar<','> >());
+    readUntil(buffer, reader, EqualsChar<'-'>(), EqualsChar<','>());
     lexicalCastWithException(region.beginPos, buffer);
 
     if (region.beginPos < 1)
@@ -323,7 +325,7 @@ inline void parse(GenomicRegion & region, CharString const & regionString)
 
     // Parse out end position.
     clear(buffer);
-    readUntil(buffer, reader, True(), NotFunctor<EqualsChar<','> >());
+    readUntil(buffer, reader, False(), EqualsChar<','>());
     lexicalCastWithException(region.endPos, buffer);
 
     if (region.endPos < 1)
