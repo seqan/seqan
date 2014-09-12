@@ -100,16 +100,27 @@ typedef TagSelector<SeqFormats> AutoSeqFormat;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, Input, TSpec>, TStorageSpec>
+template <typename TDirection>
+struct SeqFileContext_;
+
+template <>
+struct SeqFileContext_<Input>
 {
-    typedef Tuple<CharString, 3> Type;
+    Tuple<CharString, 3>    buffer;
+    Dna5QString             hybrid;
 };
 
-template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, Output, TSpec>, TStorageSpec>
+template <>
+struct SeqFileContext_<Output>
 {
-    typedef SequenceOutputOptions Type;
+    SequenceOutputOptions   options;
+};
+
+
+template <typename TSpec, typename TDirection, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
+{
+    typedef SeqFileContext_<TDirection> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -142,18 +153,43 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // ----------------------------------------------------------------------------
 
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
+inline void _readRecordsSeqIO(
+    TIdStringSet & meta,
+    TSeqStringSet & seq,
+    SmartFile<Fastq, Input, TSpec> & file,
+    False)
+{
+    while (!atEnd(file))
+    {
+        readRecord(context(file).buffer[0], context(file).buffer[1], file);
+        appendValue(meta, context(file).buffer[0]);
+        appendValue(seq, context(file).buffer[1]);
+    }
+}
+
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
+inline void _readRecordsSeqIO(
+    TIdStringSet & meta,
+    TSeqStringSet & seq,
+    SmartFile<Fastq, Input, TSpec> & file,
+    True)
+{
+    while (!atEnd(file))
+    {
+        readRecord(context(file).buffer[0], context(file).hybrid, file);
+        appendValue(meta, context(file).buffer[0]);
+        appendValue(seq, context(file).hybrid);
+    }
+}
+
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
-//    clear(meta);
-//    clear(seq);
-    while (!atEnd(file))
-    {
-        readRecord(context(file)[0], context(file)[1], file);
-        appendValue(meta, context(file)[0]);
-        appendValue(seq, context(file)[1]);
-    }
+    typedef typename Value<TSeqStringSet>::Type TSeqString;
+    typedef typename Value<TSeqString>::Type TValue;
+    _readRecordsSeqIO(meta, seq, file, typename HasQualities<TValue>::Type());
 }
 
 // ----------------------------------------------------------------------------
@@ -182,10 +218,10 @@ inline void readRecords(TIdStringSet & meta,
 //    clear(qual);
     while (!atEnd(file))
     {
-        readRecord(context(file)[0], context(file)[1], context(file)[2], file);
-        appendValue(meta, context(file)[0]);
-        appendValue(seq, context(file)[1]);
-        appendValue(qual, context(file)[2]);
+        readRecord(context(file).buffer[0], context(file).buffer[1], context(file).buffer[2], file);
+        appendValue(meta, context(file).buffer[0]);
+        appendValue(seq, context(file).buffer[1]);
+        appendValue(qual, context(file).buffer[2]);
     }
 }
 
@@ -199,7 +235,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq)
 {
-    writeRecord(file.iter, meta, seq, file.format, context(file));
+    writeRecord(file.iter, meta, seq, file.format, context(file).options);
 }
 
 // ----------------------------------------------------------------------------
@@ -213,7 +249,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
             TSeqString const & seq,
             TQualString const & qual)
 {
-    writeRecord(file.iter, meta, seq, qual, file.format, context(file));
+    writeRecord(file.iter, meta, seq, qual, file.format, context(file).options);
 }
 
 // ----------------------------------------------------------------------------

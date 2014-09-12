@@ -388,8 +388,19 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
     skipOne(iter, TQualsBegin());       // assert and skip '+'
     skipLine(iter);                     // skip optional 2nd Fastq id
 
-    skipLine(iter);                     // skip Fastq qualities
-    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    if (HasQualities<TSeqAlphabet>::VALUE)
+    {
+        // TODO: Replace this temporary by Modifier
+        CharString qual;
+        readUntil(qual, iter, IsNewline(), IsBlank());  // read Fastq qualities
+        assignQualities(seq, qual);
+        skipUntil(iter, TFastqBegin());                 // forward to the next '@'
+    }
+    else
+    {
+        skipLine(iter);                                 // skip Fastq qualities
+        skipUntil(iter, TFastqBegin());                 // forward to the next '@'
+    }
 }
 
 // ----------------------------------------------------------------------------

@@ -242,6 +242,7 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 {
     return file.format;
 }
+
 // ----------------------------------------------------------------------------
 // Function setFormat()
 // ----------------------------------------------------------------------------
@@ -382,17 +383,19 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 {
     typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
 
-    if (!guessFormatFromFilename(fileName, file.format))
-    {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownExtensionError(fileName));
-        return false;
-    }
-
     if (!open(file.stream, fileName, openMode))
     {
         if (TThrowExceptions::VALUE)
             SEQAN_THROW(FileOpenError(fileName));
+        return false;
+    }
+
+    Prefix<const char *>::Type basename = getBasename(fileName, format(file.stream));
+    if (!guessFormatFromFilename(basename, file.format))
+    {
+        close(file.stream);
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(UnknownExtensionError(fileName));
         return false;
     }
 
