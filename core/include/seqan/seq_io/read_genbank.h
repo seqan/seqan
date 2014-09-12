@@ -69,6 +69,33 @@ typedef Tag<GenBankSequence_> GenBankSequence;
 // Metafunctions
 // ============================================================================
 
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<GenBank, T>
+{
+    static char const VALUE[6];
+};
+template <typename T>
+char const MagicHeader<GenBank, T>::VALUE[6] = { 'L','O','C','U','S',' ' };  // typical GenBank header
+
+// --------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<GenBank, T>
+{
+    static char const * VALUE[1];
+};
+template <typename T>
+char const * FileFormatExtensions<GenBank, T>::VALUE[1] =
+{
+    ".gbk",     // default output extension
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -98,14 +125,19 @@ readRecord(TKey & key, TValue & val, TFwdIterator & iter, GenBankHeader)
     clear(key);
     clear(val);
 
-    skipUntil(iter, NotFunctor<IsWhitespace>());
-    readUntil(key, iter, IsWhitespace(), AssertFunctor<NotFunctor<CountDownFunctor<True, 2> >, ParseError>());
-    if (!atEnd(iter) && IsBlank()(value(iter)))
+    readUntil(key, iter, IsWhitespace());
+
+    if (IsBlank()(value(iter)))
     {
         skipUntil(iter, NotFunctor<IsBlank>());
-        readUntil(val, iter, IsNewline());
+        readLine(val, iter);
     }
-    skipLine(iter);
+
+    while (IsBlank()(value(iter)))
+    {
+        appendValue(val, '\n');
+        readLine(val, iter);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -156,7 +188,10 @@ readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
     for (; !atEnd(iter); skipLine(iter))
     {
         if (value(iter) == '/')
-            continue;
+        {
+            skipLine(iter);
+            break;
+        }
 
         readUntil(seq, iter, isNewline, asserter);
     }
@@ -168,7 +203,7 @@ template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
 {
-    AssertFunctor<NotFunctor<CountDownFunctor<True, 20> >, ParseError, Embl> asserter;
+    IsWhitespace isWhite;
     IsBlank isBlank;
     String<char, Array<20> > key;
 
@@ -176,21 +211,23 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
     clear(meta);
     for (; !atEnd(iter); skipLine(iter))
     {
-        clear(key);
-        readUntil(key, iter, isBlank, asserter);
+        if (isBlank(value(iter)))
+            continue;
 
-        if (!atEnd(iter) && isBlank(value(iter)))
+        AssertFunctor<NotFunctor<CountDownFunctor<True, 20> >, ParseError, Embl> asserter;
+
+        clear(key);
+        readUntil(key, iter, isWhite, asserter);
+
+        if (key == "VERSION")
         {
-            if (key == "VERSION")
-            {
-                skipUntil(iter, NotFunctor<IsBlank>());
-                readUntil(meta, iter, IsNewline());
-            }
-            if (key == "ORIGIN")
-            {
-                skipLine(iter);
-                break;
-            }
+            skipUntil(iter, NotFunctor<IsBlank>());
+            readUntil(meta, iter, IsNewline());
+        }
+        else if (key == "ORIGIN")
+        {
+            skipLine(iter);
+            break;
         }
     }
 

@@ -60,6 +60,33 @@ typedef Tag<EmblSequence_> EmblSequence;
 // Metafunctions
 // ============================================================================
 
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Embl, T>
+{
+    static char const VALUE[3];
+};
+template <typename T>
+char const MagicHeader<Embl, T>::VALUE[3] = { 'I','D',' ' };  // typical Embl header
+
+// --------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Embl, T>
+{
+    static char const * VALUE[1];
+};
+template <typename T>
+char const * FileFormatExtensions<Embl, T>::VALUE[1] =
+{
+    ".embl",     // default output extension
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -148,7 +175,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
         if (value(iter) == '/')
         {
             skipLine(iter);
-            return;
+            break;
         }
 
         readUntil(seq, iter, isNewline, asserter);

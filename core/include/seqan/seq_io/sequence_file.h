@@ -85,12 +85,24 @@ typedef SmartFile<Fastq, Output>    SeqFileOut;
 typedef
     TagList<Fastq,
     TagList<Fasta,
-//    TagList<QSeq,   // doesn't work as it uses STL strings and parsers
+    TagList<Embl,
+    TagList<GenBank,
     TagList<Raw
-    > > > //>
-    SeqFormats;
+    > > > > >
+    SeqInFormats;
 
-typedef TagSelector<SeqFormats> AutoSeqFormat;
+typedef
+    TagList<Fastq,
+    TagList<Fasta,
+    TagList<Raw
+    > > >
+    SeqOutFormats;
+
+typedef TagSelector<SeqInFormats>   SeqInFormat;
+typedef TagSelector<SeqOutFormats>  SeqOutFormat;
+
+// deprecated
+typedef SeqInFormat AutoSeqFormat;
 
 // ============================================================================
 // Metafunctions
@@ -127,10 +139,16 @@ struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
 // Metafunction FileFormats
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Fastq, TDirection, TSpec> >
+template <typename TSpec>
+struct FileFormat<SmartFile<Fastq, Input, TSpec> >
 {
-    typedef AutoSeqFormat Type;
+    typedef TagSelector<SeqInFormats> Type;
+};
+
+template <typename TSpec>
+struct FileFormat<SmartFile<Fastq, Output, TSpec> >
+{
+    typedef TagSelector<SeqOutFormats> Type;
 };
 
 // ============================================================================
