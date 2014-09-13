@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Code for loading and writing FAI FASTA index files.
 // ==========================================================================
@@ -635,14 +636,14 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
 }
 
 // ---------------------------------------------------------------------------
-// Function write()
+// Function save()
 // ---------------------------------------------------------------------------
 
 /*!
- * @fn FaiIndex#write
+ * @fn FaiIndex#save
  * @brief Write out an FaiIndex object.
  *
- * @signature int write(faiIndex[, faiFileName]);
+ * @signature int save(faiIndex[, faiFileName]);
  *
  * @param[in] faiIndex    The FaiIndex to write out.
  * @param[in] faiFileName The name of the FAI file to write to.  This parameter is optional only if the FAI index knows
@@ -654,7 +655,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
  */
 
 /**
-.Function.FaiIndex#write
+.Function.FaiIndex#save
 ..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:write(faiIndex[, faiFileName])
@@ -686,7 +687,7 @@ inline bool save(FaiIndex const & index, char const * faiFilename)
     return true;
 }
 
-inline bool write(FaiIndex const & index)
+inline bool save(FaiIndex const & index)
 {
     if (empty(index.faiFilename))
         return false;  // Cannot write out if faiFilename member is empty.
@@ -769,7 +770,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
 ..class:Class.FaiIndex
 ..summary:Create @Class.FaiIndex@ from FASTA file.
 ..signature:build(faiIndex, fastaFilename[, faiFilename])
-..description:The index can later be written out with @Function.FaiIndex#write@ and be loaded again using @Function.FaiIndex#read@.
+..description:The index can later be written out with @Function.FaiIndex#save@ and be loaded again using @Function.FaiIndex#read@.
 ..param.faiIndex:@Class.FaiIndex@ to write index to.
 ...type:Class.FaiIndex
 ..param.fastaFilename:Name of FASTA file to build an index for.
