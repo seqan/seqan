@@ -351,6 +351,13 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
     return true;
 }
 
+template <typename TFileType, typename TDirection, typename TSpec, typename TStream>
+inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
+                 TStream &stream)
+{
+    return _open(file, stream, False());
+}
+
 template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
 inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  TStream &stream,
