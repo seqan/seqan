@@ -348,7 +348,7 @@ getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
         if (name == getValue(iter))
         {
             // set the ID
-            pos = position(iter);
+            pos = iter - begin(nameStore, Standard());
             // and break the loop
             return true;
         }

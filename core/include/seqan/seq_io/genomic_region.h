@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // The GenomicRegion class represents a region on one chromosome/contig in a
 // genome, e.g. chr1, chr1:15,000, chr1:100,000-200,000.
