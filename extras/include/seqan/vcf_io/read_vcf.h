@@ -319,6 +319,9 @@ readRecord(VcfRecord & record,
 
     // CHROM
     readUntil(vcfContext.buffer, iter, NextEntry());
+    if (empty(vcfContext.buffer))
+        SEQAN_THROW(EmptyFieldError("CHROM"));
+
     if (!getIdByName(*context.sequenceNames, vcfContext.buffer, record.rID, context.sequenceNamesCache))
     {
         record.rID = length(*context.sequenceNames);
@@ -327,74 +330,94 @@ readRecord(VcfRecord & record,
     skipOne(iter);
 
     // POS
-    // TODO(signer): Do we need this clear?
     clear(vcfContext.buffer);
     readUntil(vcfContext.buffer, iter, NextEntry());
+    if (empty(vcfContext.buffer))
+        SEQAN_THROW(EmptyFieldError("POS"));
     record.beginPos = lexicalCast<__int32>(vcfContext.buffer) - 1; // Translate from 1-based to 0-based.
     skipOne(iter);
 
     // ID
     readUntil(record.id, iter, NextEntry());
+    if (empty(record.id))
+        SEQAN_THROW(EmptyFieldError("ID"));
     skipOne(iter);
 
     // REF
     readUntil(record.ref, iter, NextEntry());
+    if (empty(record.id))
+        SEQAN_THROW(EmptyFieldError("REF"));
     skipOne(iter);
 
     // ALT
     readUntil(record.alt, iter, NextEntry());
+    if (empty(record.id))
+        SEQAN_THROW(EmptyFieldError("ALT"));
     skipOne(iter);
 
     // QUAL
     clear(vcfContext.buffer);
     readUntil(vcfContext.buffer, iter, NextEntry());
+    if (empty(vcfContext.buffer))
+        SEQAN_THROW(EmptyFieldError("QUAL"));
 
     if (vcfContext.buffer == ".")
         record.qual = VcfRecord::MISSING_QUAL();
     else
-        record.qual = lexicalCast<float>(vcfContext.buffer);
+        lexicalCastWithException(record.qual, vcfContext.buffer);
 
     skipOne(iter);
 
     // FILTER
     readUntil(record.filter, iter, NextEntry());
+    if (empty(record.filter))
+        SEQAN_THROW(EmptyFieldError("FILTER"));
     skipOne(iter);
 
     // INFO
     readUntil(record.info, iter, OrFunctor<IsTab, IsNewline>());
-    char c;
-    readOne(c, iter);
-    if (IsNewline()(c))
+    if (empty(record.info))
+        SEQAN_THROW(EmptyFieldError("INFO"));
+
+    // the following columns are optional
+    if (atEnd(iter) || IsNewline()(value(iter)))
+    {
+        skipLine(iter);
         return;
+    }
+    skipOne(iter);
 
     // FORMAT
     readUntil(record.format, iter, NextEntry());
+    if (empty(record.format))
+        SEQAN_THROW(EmptyFieldError("FORMAT"));
     skipOne(iter);
 
     // The samples.
     for (unsigned i = 0; i < length(*context.sampleNames); ++i)
     {
         clear(vcfContext.buffer);
-        readUntil(vcfContext.buffer, iter, IsWhitespace());
-
-        appendValue(record.genotypeInfos, vcfContext.buffer);
-        if (atEnd(iter))
+        if (i + 1 != length(*context.sampleNames))
         {
-            if ((i + 1) != length(*context.sampleNames))
-                throw ParseError("No genotype information for all samples.");
-            else
-                break;  // Done
+            readUntil(vcfContext.buffer, iter, NextEntry());
+            skipOne(iter);
+        }
+        else
+        {
+            readUntil(vcfContext.buffer, iter, OrFunctor<IsTab, IsNewline>());
         }
 
-        char c;
-        readOne(c, iter);
-        if (IsNewline()(c))
-            return;
+        if (empty(vcfContext.buffer))
+        {
+            char buffer[30];    // == 9 (GENOTYPE_) + 20 (#digits in MIN_INT64) + 1 (trailing zero)
+            sprintf(buffer, "GENOTYPE_%i", i + 1);
+            SEQAN_THROW(EmptyFieldError(buffer));
+        }
+        appendValue(record.genotypeInfos, vcfContext.buffer);
     }
 
-    // Skip empty lines, necessary for getting to EOF if there is an empty line at the end of the file.
-    while (!atEnd(iter) && IsNewline()(value(iter)))
-        skipOne(iter);
+    // skip line break and optional additional columns
+    skipLine(iter);
 }
 
 template <typename TForwardIter>

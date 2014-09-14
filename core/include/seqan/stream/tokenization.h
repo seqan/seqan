@@ -66,6 +66,17 @@ struct UnexpectedEnd : ParseError
     {}
 };
 
+// ----------------------------------------------------------------------------
+// Exception EmptyFieldError
+// ----------------------------------------------------------------------------
+
+struct EmptyFieldError : ParseError
+{
+    EmptyFieldError(std::string fieldName):
+        ParseError(fieldName + " field was empty.")
+    {}
+};
+
 // ============================================================================
 // Functors
 // ============================================================================
