@@ -405,7 +405,7 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
 // Append contig name to name store, if not known already.
 template <typename TNameStore, typename TName, typename TName2>
 inline typename Position<TNameStore>::Type
-getIdByName(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
+nameToId(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
 {
     typename Size<TNameStore>::Type nameId = 0;
     if (!getIdByName(nameId, cache, name))

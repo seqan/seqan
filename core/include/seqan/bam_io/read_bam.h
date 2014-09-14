@@ -198,7 +198,7 @@ void readRecord(BamHeader & header,
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
         appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
         // Append contig name to name store, if not known already.
-        context.translateFile2GlobalRefId[i] = getIdByName(nameStoreCache(context), name);
+        context.translateFile2GlobalRefId[i] = nameToId(nameStoreCache(context), name);
     }
 }
 
@@ -246,6 +246,12 @@ readRecord(BamAlignmentRecord & record,
         record.rID = context.translateFile2GlobalRefId[record.rID];
     if (record.rID >= 0)
         SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));
+
+    // ... the same for rNextId
+    if (record.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+        record.rNextId = context.translateFile2GlobalRefId[record.rNextId];
+    if (record.rNextId >= 0)
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rNextId), length(nameStore(context)));
 
     // query name.
     resize(record.qName, record._l_qname - 1, Exact());

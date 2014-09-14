@@ -141,12 +141,6 @@ _mapFileFormatToCompressionFormat(Bam)
     return BgzfFile();
 }
 
-inline Nothing
-_mapFileFormatToCompressionFormat(Sam)
-{
-    return Nothing();
-}
-
 // ----------------------------------------------------------------------------
 // Function readRecord(); BamHeader
 // ----------------------------------------------------------------------------
