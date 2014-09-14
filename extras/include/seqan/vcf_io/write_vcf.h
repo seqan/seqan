@@ -92,23 +92,23 @@ template <typename TTarget, typename TNameStore, typename TNameStoreCache, typen
 inline void
 writeRecord(TTarget & target,
             VcfHeader const & header,
-            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> &,
+            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             Vcf const & /*tag*/)
 {
-    for (unsigned i = 0; i < length(header.headerRecords); ++i)
+    for (unsigned i = 0; i < length(header); ++i)
     {
         write(target, "##");
-        write(target, header.headerRecords[i].key);
+        write(target, header[i].key);
         writeValue(target, '=');
-        write(target, header.headerRecords[i].value);
+        write(target, header[i].value);
         writeValue(target, '\n');
     }
 
     write(target, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
-    for (unsigned i = 0; i < length(header.sampleNames); ++i)
+    for (unsigned i = 0; i < length(sampleNames(context)); ++i)
     {
         writeValue(target, '\t');
-        write(target, header.sampleNames[i]);
+        write(target, sampleNames(context)[i]);
     }
     writeValue(target, '\n');
 }
@@ -155,7 +155,7 @@ writeRecord(TTarget & target,
             Vcf const & /*tag*/)
 {
     // CHROM
-    write(target, contigNameStore(context)[record.rID]);
+    write(target, contigNames(context)[record.rID]);
     writeValue(target, '\t');
 
     // POS
