@@ -31,11 +31,12 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in GFF or GTF format.
+// Smart file for reading/writing files in Vcf format.
 // ==========================================================================
+// TODO(weese:) add Bcf I/O and integrate it
 
-#ifndef SEQAN_GFF_IO_GFF_FILE_H_
-#define SEQAN_GFF_IO_GFF_FILE_H_
+#ifndef SEQAN_VCF_IO_VCF_FILE_H_
+#define SEQAN_VCF_IO_VCF_FILE_H_
 
 namespace seqan {
 
@@ -47,8 +48,8 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Gff, Input>   GffFileIn;
-typedef SmartFile<Gff, Output>  GffFileOut;
+typedef SmartFile<Vcf, Input>   VcfFileIn;
+typedef SmartFile<Vcf, Output>  VcfFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -59,7 +60,7 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
+struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };
@@ -69,74 +70,47 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<SmartFile<Vcf, TDirection, TSpec> >
 {
-    typedef TagSelector<
-                TagList<Gff,
-                TagList<Gtf
-                > >
-            > Type;
+    typedef Vcf Type;
 };
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); GffRecord
+// Function readRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
-template <typename TForwardIter, typename TFormats>
-inline void
-readRecord(GffRecord & record,
-           CharString & buffer,
-           TForwardIter & iter,
-           TagSelector<TFormats> const & /* format */)  // format is ignored as it will be autodetected per record
-{
-    readRecord(record, buffer, iter);
-}
-
-// convient GffFile variant
 template <typename TSpec>
 inline void
-readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
+readRecord(VcfHeader & record, SmartFile<Vcf, Input, TSpec> & file)
+{
+    readRecord(record, context(file), file.iter, file.format);
+}
+
+template <typename TSpec>
+inline void
+readRecord(VcfRecord & record, SmartFile<Vcf, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); GffRecord
+// Function writeRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
-// support for dynamically chosen file formats
-template <typename TTarget>
+template <typename TSpec>
 inline void
-writeRecord(TTarget & /* target */,
-            GffRecord & /* record */,
-            CharString & /* buffer */,
-            TagSelector<> const & /* format */)
+writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfHeader & record)
 {
-    SEQAN_FAIL("GffFileOut: File format not specified.");
-}
-
-template <typename TTarget, typename TTagList>
-inline void
-writeRecord(TTarget & target,
-            GffRecord & record,
-            CharString & buffer,
-            TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        writeRecord(target, record, buffer, TFormat());
-    else
-        writeRecord(target, record, buffer, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    write(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
+writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfRecord & record)
 {
     write(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan
 
-#endif // SEQAN_GFF_IO_GFF_FILE_H_
+#endif // SEQAN_VCF_IO_VCF_FILE_H_

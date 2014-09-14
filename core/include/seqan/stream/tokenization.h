@@ -616,6 +616,108 @@ cropOuter(TContainer &cont, TFunctor const &func)
     cropBeforeFirst(cont, NotFunctor<TFunctor>(func));
 }
 
+// --------------------------------------------------------------------------
+// Function strSplit()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#strSplit
+ * @brief Append a list of the words in the string, using sep as the delimiter string @link StringSet @endlink.
+ *
+ * @signature void strSplit(result, sequence[, sep[, allowEmptyStrings[, maxSplit]]]);
+ *
+ * @param[out] result           The resulting string set.
+ * @param[in]  sequence         The sequence to split.
+ * @param[in]  sep              The splitter to use (default <tt>' '</tt>).
+ * @param[in]  allowEmptyString Whether or not to allow empty strings (<tt>bool</tt>, defaults to <tt>true</tt> iff
+ *                              <tt>sep</tt> is given).
+ * @param[in]  maxSplit         The maximal number of split operations to do if given.
+ */
+
+/**
+.Function.stringSplit:
+..summary:Append a list of the words in the string, using sep as the delimiter string @Class.StringSet@.
+..cat:Sequences
+..class:Class.StringSet
+..signature:strSplit(stringSet, sequence)
+..signature:strSplit(stringSet, sequence, sep)
+..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings)
+..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings, maxSplit)
+..param.stringSet:The @Class.StringSet@ object the words are appended to.
+...type:Class.StringSet
+..param.sequence:A sequence of words.
+..param.sep:Word separator (default: ' ').
+..param.allowEmptyStrings:Boolean to specify whether empty words should be considered (default: true, iff sep is given).
+..param.maxSplit:If maxsplit is given, at most maxsplit splits are done.
+..include:seqan/sequence.h
+*/
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor, typename TSize>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings, TSize maxSplit)
+{
+    typedef typename Iterator<TSequence const, Standard>::Type TIter;
+    
+    TIter itBeg = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    TIter itFrom = itBeg;
+    
+    if (maxSplit == 0)
+    {
+        appendValue(result, sequence);
+        return;
+    }
+    
+    for (TIter it = itBeg; it != itEnd; ++it)
+        if (sep(getValue(it)))
+        {
+            if (allowEmptyStrings || itFrom != it)
+            {
+                appendValue(result, infix(sequence, itFrom - itBeg, it - itBeg));
+                if (--maxSplit == 0)
+                {
+                    if (!allowEmptyStrings)
+                    {
+                        while (it != itEnd && sep(getValue(it)))
+                            ++it;
+                    }
+                    else
+                        ++it;
+                    
+                    if (it != itEnd)
+                        appendValue(result, infix(sequence, it - itBeg, itEnd - itBeg));
+                    
+                    return;
+                }
+            }
+            itFrom = it + 1;
+        }
+    
+    if (allowEmptyStrings || itFrom != itEnd)
+        appendValue(result, infix(sequence, itFrom - itBeg, itEnd - itBeg));
+}
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings)
+{
+    strSplit(result, sequence, sep, allowEmptyStrings, maxValue<typename Size<TSequence>::Type>());
+}
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep)
+{
+    strSplit(result, sequence, sep, true);
+}
+
+template <typename TString, typename TSpec, typename TSequence>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
+{
+    strSplit(result, sequence, EqualsChar<' '>(), false);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_TOKENIZATION_H_
