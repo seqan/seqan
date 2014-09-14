@@ -145,14 +145,14 @@ readRecord(VcfHeader & header,
             skipOne(iter);
 
             // Read header value.
-            readLine(record.value, iter, IsNewline());
-            appendValue(header.headerRecords, record);
+            readLine(record.value, iter);
+            appendValue(header, record);
 
             // Parse out name if headerRecord is a contig field.
             if (record.key == "contig")
             {
                 _parseVcfContig(buffer, record.value);
-                appendName(contigNameStoreCache(context), buffer);
+                appendName(contigNamesCache(context), buffer);
             }
         }
         else
@@ -170,7 +170,7 @@ readRecord(VcfHeader & header,
 
             // Get sample names.
             for (unsigned i = 9; i < length(fields); ++i)
-                appendName(sampleNameStoreCache(context), fields[i]);
+                appendName(sampleNamesCache(context), fields[i]);
         }
     }
 }
@@ -226,7 +226,7 @@ readRecord(VcfRecord & record,
     readUntil(buffer, iter, NextEntry());
     if (empty(buffer))
         SEQAN_THROW(EmptyFieldError("CHROM"));
-    record.rID = nameToId(contigNameStoreCache(context), buffer);
+    record.rID = nameToId(contigNamesCache(context), buffer);
     skipOne(iter);
 
     // POS
@@ -294,10 +294,11 @@ readRecord(VcfRecord & record,
     skipOne(iter);
 
     // The samples.
-    for (unsigned i = 0; i < length(*context.sampleNames); ++i)
+    unsigned numSamples = length(sampleNames(context));
+    for (unsigned i = 0; i < numSamples; ++i)
     {
         clear(buffer);
-        if (i + 1 != length(*context.sampleNames))
+        if (i + 1 != numSamples)
         {
             readUntil(buffer, iter, NextEntry());
             skipOne(iter);
@@ -310,7 +311,7 @@ readRecord(VcfRecord & record,
         if (empty(buffer))
         {
             char buffer[30];    // == 9 (GENOTYPE_) + 20 (#digits in MIN_INT64) + 1 (trailing zero)
-            sprintf(buffer, "GENOTYPE_%i", i + 1);
+            sprintf(buffer, "GENOTYPE_%u", i + 1);
             SEQAN_THROW(EmptyFieldError(buffer));
         }
         appendValue(record.genotypeInfos, buffer);

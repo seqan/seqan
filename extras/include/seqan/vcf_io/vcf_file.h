@@ -62,7 +62,9 @@ typedef SmartFile<Vcf, Output>  VcfFileOut;
 template <typename TDirection, typename TSpec, typename TStorageSpec>
 struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
 {
-    typedef CharString Type;
+    typedef StringSet<CharString>                                   TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
+    typedef VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
 };
 
 // ----------------------------------------------------------------------------
