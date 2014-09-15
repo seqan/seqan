@@ -344,8 +344,6 @@ struct Difference< ModifiedString<THost, TSpec> >:
 // Metafunction Iterator
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
-
 ///.Metafunction.Iterator.param.T.type:Class.ModifiedString
 ///.Metafunction.Iterator.class:Class.ModifiedString
 
@@ -354,24 +352,38 @@ struct Iterator<ModifiedString<THost, TSpec>, Standard>
 {
     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
-
-template <typename THost, typename TSpec >
-struct Iterator<ModifiedString<THost, TSpec> const, Standard>
-{
-    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
-};
-
 template <typename THost, typename TSpec>
 struct Iterator<ModifiedString<THost, TSpec>, Rooted>
 {
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
 
+// TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
+//          weese: I chose more lenient variant (A), i.e. constness is not propagated upwards.
+
+// VARIANT A: const ModifiedString does not propagate its constness upwards
+template <typename THost, typename TSpec >
+struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+{
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
+};
 template <typename THost, typename TSpec >
 struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 {
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
+
+// VARIANT B: const ModifiedString propagates its constness upwards
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+//{
+//    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
+//};
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+//{
+//    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Host
@@ -397,10 +409,17 @@ struct Host<ModifiedString<THost, TSpec> > {
     typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
 
+// VARIANT A: const ModifiedString does not propagate its constness upwards
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> const > {
-    typedef typename ConvertArrayToPointer<THost const>::Type Type;
+    typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
+
+// VARIANT B: const ModifiedString propagates its constness upwards
+//template <typename THost, typename TSpec >
+//struct Host<ModifiedString<THost, TSpec> const > {
+//    typedef typename ConvertArrayToPointer<THost const>::Type Type;
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Parameter_
