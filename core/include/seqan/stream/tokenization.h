@@ -217,7 +217,7 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
     {
         Range<TIValue const *> ichunk;
         getChunk(ichunk, iter, Input());
-        SEQAN_ASSERT(ichunk.begin < ichunk.end);
+        SEQAN_ASSERT(!empty(ichunk));
 
         const TIValue* SEQAN_RESTRICT ptr = ichunk.begin;
 

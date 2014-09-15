@@ -50,7 +50,7 @@ SEQAN_DEFINE_TEST(test_align_stream_gaps_write)
     insertGaps(gaps, 0, 2);
 
     std::stringstream ss;
-    write(ss, gaps, "IGNORED ID STRING", seqan::Raw());
+    ss << gaps;
     
     std::stringstream expected;
     expected << "--CGATT-TAT--";
@@ -86,7 +86,7 @@ SEQAN_DEFINE_TEST(test_align_stream_align_write)
     globalAlignment(align, seqan::EditDistanceScore());
 
     std::stringstream ss;
-    write(ss, align, "IGNORED ID STRING", seqan::Raw());
+    ss << align;
     
     std::stringstream expected;
     expected << "      0     .     \n"
