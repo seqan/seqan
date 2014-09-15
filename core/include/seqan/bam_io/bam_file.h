@@ -132,7 +132,7 @@ struct FileFormat<SmartFile<Bam, TDirection, TSpec> >
 };
 
 // --------------------------------------------------------------------------
-// _mapBamFormatToCompressionFormat
+// Function _mapBamFormatToCompressionFormat()
 // --------------------------------------------------------------------------
 
 inline BgzfFile

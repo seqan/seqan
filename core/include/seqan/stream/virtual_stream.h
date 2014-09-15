@@ -530,7 +530,7 @@ template <typename TValue, typename TDirection, typename TTraits, typename TStre
 inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TCompressionType const & compressionType)
 {
-    stream.format = compressionType;
+    assign(stream.format, compressionType);
     return open(stream, fileStream, stream.format);
 }
 
@@ -539,7 +539,7 @@ inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension
-    stream.format = typename FileFormat<VirtualStream<TValue, Input> >::Type();
+    assign(stream.format, typename FileFormat<VirtualStream<TValue, Input> >::Type());
     return open(stream, fileStream, stream.format);
 }
 
@@ -557,7 +557,7 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream,
         return false;
 
     // detect compression type from file extension
-    stream.format = typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type();
+    assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
     guessFormatFromFilename(fileName, stream.format);
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(stream.file);
