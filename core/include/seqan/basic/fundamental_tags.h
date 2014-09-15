@@ -716,7 +716,7 @@ inline void assign(TagSelector<TTagList> &selector, TTag const &)
     selector.tagId = Find<TTagList, TTag>::VALUE;
 }
 
-template <typename TTagList, typename TTag>
+template <typename TTagList>
 inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> const &other)
 {
     selector.tagId = other.tagId;
