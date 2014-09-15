@@ -146,6 +146,16 @@ struct FileFormat<SmartFile<Vcf, TDirection, TSpec> >
 //#endif
 };
 
+// --------------------------------------------------------------------------
+// Function _mapBamFormatToCompressionFormat()
+// --------------------------------------------------------------------------
+
+inline BgzfFile
+_mapFileFormatToCompressionFormat(Bcf)
+{
+    return BgzfFile();
+}
+
 // ----------------------------------------------------------------------------
 // Function readRecord(); VcfRecord
 // ----------------------------------------------------------------------------
