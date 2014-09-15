@@ -452,15 +452,21 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TSpec, typename TValue, typename TSize >
-    inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count) {
-//IOREV
-		return (int) me.read(memPtr, count * sizeof(TValue)) == (int) (count * sizeof(TValue));
+    inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
+    {
+		return (size_t)me.read(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
     }
     
     template < typename TSpec, typename TValue, typename TSize >
-    inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count) {
-//IOREV
-		return (int) me.write(memPtr, count * sizeof(TValue)) == (int) (count * sizeof(TValue));
+    inline bool write(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
+    {
+		return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
+    }
+
+    template < typename TSpec, typename TValue, typename TSize >
+    inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count)
+    {
+		return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
     }
 
 }

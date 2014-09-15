@@ -92,7 +92,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
 
         std::fstream fileStream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
         SeqFileOut file(fileStream, Fasta());
-        context(file) = SequenceOutputOptions(0);
+        context(file).options = SequenceOutputOptions(0);
 
         before = sysTime();
         std::cerr << "Writing with new IO (no linebreaks, fstream) .... " << std::flush;
