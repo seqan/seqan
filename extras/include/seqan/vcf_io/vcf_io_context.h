@@ -119,7 +119,7 @@ VcfIOContext objects store the names of (and provide a cache for) reference and 
 template <
     typename TNameStore_ = StringSet<CharString>,
     typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
-    typename TStorageSpec = Dependent<> >
+    typename TStorageSpec = Owner<> >
 class VcfIOContext
 {
 public:
@@ -165,11 +165,11 @@ public:
     VcfIOContext(VcfIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
         _contigNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(contigNames(other))),
         _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 &contigNames(other),
+                                 &contigNamesCache(other),
                                  _contigNames)),
         _sampleNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(sampleNames(other))),
         _sampleNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 &sampleNames(other),
+                                 &sampleNamesCache(other),
                                  _sampleNames))
     {}
 };

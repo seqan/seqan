@@ -44,6 +44,12 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+struct Vcf_;
+typedef Tag<Vcf_> Vcf;
+
+struct Bcf_;
+typedef Tag<Bcf_> Bcf;
+
 // ============================================================================
 // Typedefs
 // ============================================================================
@@ -54,6 +60,59 @@ typedef SmartFile<Vcf, Output>  VcfFileOut;
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Vcf, T>
+{
+    static unsigned char const VALUE[16];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Vcf, T>::VALUE[16] =
+{
+    '#', '#', 'f', 'i', 'l', 'e', 'f', 'o', 'r', 'm', 'a', 't', '=', 'V', 'C', 'F'  // VCF's magic header
+};
+
+template <typename T>
+struct MagicHeader<Bcf, T>
+{
+    static unsigned char const VALUE[5];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Bcf, T>::VALUE[5] = { 'B', 'C', 'F', '\2', '\1' };  // BCF2's magic header
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Vcf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Vcf, T>::VALUE[1] =
+{
+    ".vcf"     // default output extension
+};
+
+template <typename T>
+struct FileFormatExtensions<Bcf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Bcf, T>::VALUE[1] =
+{
+    ".bcf"     // default output extension
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction SmartFileContext
@@ -74,7 +133,17 @@ struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
 template <typename TDirection, typename TSpec>
 struct FileFormat<SmartFile<Vcf, TDirection, TSpec> >
 {
+// TODO(weese:) Enable this, as soon as someone implements BCF
+
+//#if SEQAN_HAS_ZLIB
+//    typedef TagSelector<
+//                TagList<Bcf,
+//                TagList<Vcf
+//                > >
+//            > Type;
+//#else
     typedef Vcf Type;
+//#endif
 };
 
 // ----------------------------------------------------------------------------
@@ -103,14 +172,14 @@ template <typename TSpec>
 inline void
 writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfHeader & record)
 {
-    write(file.iter, record, context(file), file.format);
+    writeRecord(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec>
 inline void
 writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfRecord & record)
 {
-    write(file.iter, record, context(file), file.format);
+    writeRecord(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan

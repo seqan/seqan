@@ -223,6 +223,7 @@ readRecord(VcfRecord & record,
     CharString &buffer = context.buffer;
 
     // CHROM
+    clear(buffer);
     readUntil(buffer, iter, NextEntry());
     if (empty(buffer))
         SEQAN_THROW(EmptyFieldError("CHROM"));
