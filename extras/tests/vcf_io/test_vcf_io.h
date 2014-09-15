@@ -169,7 +169,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     }
 }
 
-SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_read_record)
+SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
     append(vcfPath, "/extras/tests/vcf_io/example.vcf");
@@ -353,10 +353,10 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
-SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
+SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    seqan::VcfFileOut vcfStream(toCString(tmpPath));
+    std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
+    seqan::VcfFileOut vcfStream(tmpPath.c_str());
 
     // Build header.
     appendName(contigNamesCache(context(vcfStream)), "20");
@@ -402,6 +402,9 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
     header[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
     header[17].key = "FORMAT";
     header[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
+
+    // Write header
+    writeRecord(vcfStream, header);
 
     // Write first record.
     {
@@ -461,7 +464,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
 
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
     append(goldPath, "/extras/tests/vcf_io/example.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 
 #endif  // SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_
