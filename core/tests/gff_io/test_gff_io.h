@@ -409,7 +409,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)
     GffFileIn inStream(toCString(gtfPath));
 
     CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
+    append(outPath, ".gff");
 
     GffFileOut outStream(toCString(outPath));
 
@@ -433,7 +433,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
     GffFileIn inStream(toCString(gtfPath));
 
     CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
+    append(outPath, ".gtf");
 
     GffFileOut outStream(toCString(outPath));
 
