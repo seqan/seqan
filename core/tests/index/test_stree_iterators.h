@@ -456,7 +456,7 @@ SEQAN_DEFINE_TEST(testMultiMEMs)
 		t[4] = "ill";
 		t[5] = "wow";
 
-		std::ofstream = dotFile("stree.dot");
+		std::ofstream dotFile("stree.dot");
 		writeRecords(dotFile, esa, DotDrawing());
 		dotFile.close();
 
