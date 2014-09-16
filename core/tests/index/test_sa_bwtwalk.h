@@ -115,13 +115,11 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 //#  endif
 //#endif
 
-    char buffer[1023];
-    strcpy(buffer, SEQAN_PATH_TO_ROOT());
-    strcat(buffer, "/core/tests/index/m_tuberculosis_h37rv.fa");
+    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/index/m_tuberculosis_h37rv.fa";
     
-	std::fstream inputFile(buffer);
-	CharString text;
-	read(inputFile, text, Raw());
+	SeqFileIn inputFile(path.c_str());
+	CharString text, id;
+	readRecord(id, text, inputFile);
 	resize(text, 10000);
 //	std::cout << "textsize: " << length(text) << std::endl;
 
