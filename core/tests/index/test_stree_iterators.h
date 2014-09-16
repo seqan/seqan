@@ -380,7 +380,7 @@ SEQAN_DEFINE_TEST(testMaxRepeats)
 		indexText(esa) = "HALLOBALLOHALLEBALLO";
 
 //		FILE* dotFile = fopen("stree.dot","w");
-//		write(dotFile, esa, DotDrawing());
+//		writeRecords(dotFile, esa, DotDrawing());
 //		fclose(dotFile);
 
         Iterator< Index<TText>, MaxRepeats >::Type it(esa, 3);
@@ -456,9 +456,9 @@ SEQAN_DEFINE_TEST(testMultiMEMs)
 		t[4] = "ill";
 		t[5] = "wow";
 
-		FILE* dotFile = fopen("stree.dot","w");
-		write(dotFile, esa, DotDrawing());
-		fclose(dotFile);
+		std::ofstream = dotFile("stree.dot");
+		writeRecords(dotFile, esa, DotDrawing());
+		dotFile.close();
 
         Iterator< Index<TMulti>, MultiMems >::Type it(esa, 3);
 		typedef MultiMem< Index<TMulti> > TMultiMEM;

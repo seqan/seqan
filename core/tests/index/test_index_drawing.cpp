@@ -42,7 +42,7 @@ SEQAN_DEFINE_TEST(test_index_drawing_esa_dot)
     seqan::Index<seqan::CharString> stree(myString);
     
     std::stringstream sstream;
-    write(sstream, stree, seqan::DotDrawing());
+    writeRecords(sstream, stree, seqan::DotDrawing());
     
     std::stringstream expected;
     expected << "digraph G {\n"
