@@ -109,7 +109,6 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & /* target */,
             GffRecord & /* record */,
-            CharString & /* buffer */,
             TagSelector<> const & /* format */)
 {
     SEQAN_FAIL("GffFileOut: File format not specified.");
@@ -119,22 +118,21 @@ template <typename TTarget, typename TTagList>
 inline void
 writeRecord(TTarget & target,
             GffRecord & record,
-            CharString & buffer,
             TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        writeRecord(target, record, buffer, TFormat());
+        writeRecord(target, record, TFormat());
     else
-        writeRecord(target, record, buffer, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        writeRecord(target, record, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 template <typename TSpec>
 inline void
 writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
 {
-    write(file.iter, record, context(file), file.format);
+    writeRecord(file.iter, record, file.format);
 }
 
 }  // namespace seqan
