@@ -56,8 +56,8 @@
 template <typename T>
 struct Tag {};
 
-struct Nothing_;
-typedef Tag<Nothing_> Nothing;
+//struct Nothing_;
+//typedef Tag<Nothing_> Nothing;
 
 // ============================================================================
 // Macros

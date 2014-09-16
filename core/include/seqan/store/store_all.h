@@ -2217,7 +2217,9 @@ void printAlignment(
 
 	typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >	TContigGaps;
 	typedef Gaps<CharString, AnchorGaps<typename TAlignedRead::TGapAnchors> >	TReadGaps;
-	
+
+    typedef typename DirectionIterator<TStream, Output>::Type       TOutIter;
+
 	TContigGaps	contigGaps;
 	if ((TId)contigId < length(store.contigStore))
 	{
@@ -2227,10 +2229,10 @@ void printAlignment(
 		setClippedBeginPosition(contigGaps, posBegin);
 		setClippedEndPosition(contigGaps, posEnd);
 		_printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
-		stream << '\n';
-	} else
-		stream << '\n';
-	
+	};
+    TOutIter iter = directionIterator(stream, Output());
+    writeValue(iter, '\n');
+
 	if ((TId)contigId >= length(layout.contigRows))
 		return;
 	
@@ -2289,16 +2291,20 @@ void printAlignment(
 			if ((TPos)cBegin < posBegin)
 				setClippedBeginPosition(readGaps, posBegin - (TPos)cBegin);
 			else
+            {
+                TOutIter iter = directionIterator(stream, Output());
 				for (; cursor < (TPos)cBegin; ++cursor)
-					stream << ' ';
-			
+                    writeValue(iter, ' ');
+            }
+
 			if (posEnd < (TPos)cEnd)
 				setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
 			
 			_printRead(stream, layout, contigGaps, readGaps, align, line);
 			cursor = cEnd;
 		}
-		stream << '\n';
+        TOutIter iter = directionIterator(stream, Output());
+        writeValue(iter, '\n');
 	}
 }
 

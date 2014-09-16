@@ -10,8 +10,8 @@ int main()
 {
     FragmentStore<> store;
 
-    std::ifstream file("assignment_annotations.gtf", std::ios_base::in | std::ios_base::binary);
-    read(file, store, Gtf());
+    GffFileIn file("assignment_annotations.gtf");
+    readRecords(store, file);
     // Create AnnotationTree iterator
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
