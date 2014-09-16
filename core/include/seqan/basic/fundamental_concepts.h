@@ -216,6 +216,31 @@ private:
     T b;
 };
 
+SEQAN_CONCEPT(Convertible,(T)(S))
+{
+    SEQAN_CONCEPT_USAGE(Convertible)
+    {
+#if !defined(_ITERATOR_)    // back_insert_iterator broken for VC++ STL
+        t = s;              // require assignment operator
+#endif
+        constConstraints(s);
+    }
+private:
+    void constConstraints(const S& x)
+    {
+#if !defined(_ITERATOR_)    // back_insert_iterator broken for VC++ STL
+        t = x;              // const required for argument to assignment
+#else
+        ignoreUnusedVariableWarning(x);
+#endif
+    }
+private:
+    T t;
+    S s;
+};
+
+
+
 /*!
  * @concept CopyConstructibleConcept
  * @brief A type with a copy-constructor.
