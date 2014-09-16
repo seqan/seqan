@@ -469,6 +469,9 @@ struct IsSequence<ModifiedString<THost, TSpec> > : True
 template <typename THost, typename TSpec>
 SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec>), (ContainerConcept));
 
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec> const), (ContainerConcept));
+
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess
 // --------------------------------------------------------------------------
