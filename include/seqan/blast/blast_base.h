@@ -221,11 +221,10 @@ enum class BlastFormatGeneration : uint8_t
 template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
 struct BlastFormat_
 {
-    // have static members for easy and run-time access to "type"
-    static constexpr BlastFormatFile        f = _f;
-    static constexpr BlastFormatProgram     p = _p;
-    static constexpr BlastFormatGeneration  g = _g;
-
+//     // have static members for easy and run-time access to "type"
+//     static constexpr BlastFormatFile        f = _f;
+//     static constexpr BlastFormatProgram     p = _p;
+//     static constexpr BlastFormatGeneration  g = _g;
 };
 
 template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
@@ -236,6 +235,27 @@ using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
 // ============================================================================
 
 //TODO document or _
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr BlastFormatFile
+getFileType(BlastFormat<f, p, g> const & /**/)
+{
+    return f;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr BlastFormatProgram
+getProgramType(BlastFormat<f, p, g> const & /**/)
+{
+    return p;
+}
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr BlastFormatGeneration
+getGenerationType(BlastFormat<f, p, g> const & /**/)
+{
+    return g;
+}
 
 // ----------------------------------------------------------------------------
 // qHasRevComp()
