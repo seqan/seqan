@@ -612,7 +612,10 @@ inline SEQAN_FUNC_ENABLE_IF(And<
 write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     for (; n > (TSize)0; --n, ++iter)
+    {
         write(target, *iter);
+        writeValue(target, ' ');
+    }
 }
 
 // ----------------------------------------------------------------------------

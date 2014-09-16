@@ -227,6 +227,11 @@ private:
     T b;
 };
 
+template <typename T>
+struct Is<Assignable<T> > :
+    Is<FundamentalConcept<T> > {};
+
+
 /*!
  * @concept ConvertibleConcept
  * @brief A type that can be converted into another.
