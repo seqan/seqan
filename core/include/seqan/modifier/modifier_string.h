@@ -57,7 +57,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
 
 /*!
  * @class ModifiedString
- * @implements SequenceConcept
+ * @implements ContainerConcept
  * @headerfile <seqan/modifier.h>
  * @brief Allows you to generate modified versions of a string in a non-inplace way.
  *
@@ -467,7 +467,7 @@ struct IsSequence<ModifiedString<THost, TSpec> > : True
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec>), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec>), (ContainerConcept));
 
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess

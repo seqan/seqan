@@ -148,7 +148,7 @@ const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
  * @signature bool lexicalCast2(target, source);
  * 
  * @param[out] target Object to hold result of cast.
- * @param[in]  source The string to be read from.  Type: @link SequenceConcept @endlink.
+ * @param[in]  source The string to be read from.  Type: @link ContainerConcept @endlink.
 
  * @return bool <tt>true</tt> if cast was successful, <tt>false</tt> otherwise.
  * 
@@ -361,7 +361,7 @@ inline bool lexicalCast(double & target, TSource const & source)
  * 
  * @tparam TTarget Target type to cast to.
  *
- * @param[in] source The string to be read from.  Type: @link SequenceConcept @endlink.
+ * @param[in] source The string to be read from.  Type: @link ContainerConcept @endlink.
  * 
  * @return TTarget Value of Type TTarget with cast contents of source.
  * 

@@ -111,8 +111,8 @@ char const * FileFormatExtensions<GenBank, T>::VALUE[1] =
  *
  * @signature void readGenBankHeader(key, value, iter);
  *
- * @param[out] key   A @link SequenceConcept @endlink object to write the key to.
- * @param[out] value A @link SequenceConcept @endlink object to write the value to.
+ * @param[out] key   A @link ContainerConcept @endlink object to write the key to.
+ * @param[out] value A @link ContainerConcept @endlink object to write the value to.
  * @param[in]  iter  Input iterator.
  */
 

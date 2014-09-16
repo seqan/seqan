@@ -149,8 +149,8 @@ class SeedSet;
  *                          requires the bandwidth information.
  * @param[in]     score     The scoring scheme.Note, only Chaos and SimpleChain require the score.
  *                          Type: @link SimpleScore @endlink.
- * @param[in]     seqH      Database sequence (horizontal).  Only required for Chaos Chaining.  Types: SequenceConcept.
- * @param[in]     seqV      Query sequence (vertical).  Only required for Chaos Chaining.  Types: SequenceConcept.
+ * @param[in]     seqH      Database sequence (horizontal).  Only required for Chaos Chaining.  Types: ContainerConcept.
+ * @param[in]     seqV      Query sequence (vertical).  Only required for Chaos Chaining.  Types: ContainerConcept.
  * @param[in]     tag       Select the algorithm that is used to add the new seed.  Note that not every algorithm can
  *                          be used with each type of @link Seed @endlink.  See special signatures above.  The seed is
  *                          copied and then added.
@@ -199,10 +199,10 @@ class SeedSet;
 ..param.seed:The seed to be added.
 ...type:Class.Seed
 ..param.seqH: Database sequence (horizontal).
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ...remarks:Only required for @Tag.Local Chaining|Chaos Chaining@.
 ..param.seqV: Query sequence (vertical).
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ...remarks:Only required for @Tag.Local Chaining|Chaos Chaining@.
 ..param.score:The scoring scheme.
 ...type:Spec.Simple Score

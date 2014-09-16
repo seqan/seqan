@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, WildShiftAnd>;
  *
- * @tparam TNeedle The needle type.  Type: @link SequenceConcept @endlink.
+ * @tparam TNeedle The needle type.  Type: @link ContainerConcept @endlink.
  *
  * The supported wildcards are <tt>*</tt> (zero or more occurrence), <tt>+</tt> (one or more occurrences), <tt>?</tt>
  * (optional character), <tt>.</tt> (every character), character classes (e.g. <tt>[a-z]</tt>) and bounded repeats (e.g.

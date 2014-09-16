@@ -144,11 +144,11 @@ struct Alloc {};
 
 /*!
  * @class String
- * @implements SequenceConcept
+ * @implements StringConcept
  * @implements TextConcept
  * @implements SegmentableConcept
  * @headerfile <seqan/sequence.h>
- * @brief @link SequenceConcept Sequence @endlink container class.
+ * @brief @link StringConcept Sequence @endlink container class.
  *
  * @signature template <typename TValue, typename TSpec>
  *            class String<TValue, TSpec>;
@@ -157,7 +157,7 @@ struct Alloc {};
  * @tparam TSpec  The tag for selecting the string specialization.
  *
  * The String class is for storing sequences and thus at the core of the sequence analysis library SeqAn.  They
- * are models for the @link SequenceConcept sequence concept @endlink but extend the sequence concept by allowing
+ * are models for the @link StringConcept sequence concept @endlink but extend the sequence concept by allowing
  * implicit conversion of other sequence into strings as long as the element conversion works:
  *
  * @snippet demos/sequence/string.cpp initializing strings
@@ -197,7 +197,7 @@ struct Alloc {};
  * @signature String::String()
  * @signature String::String(other)
  *
- * @param[in] other The source for the copy constructor.  Can be of any @link SequenceConcept sequence @endlink type
+ * @param[in] other The source for the copy constructor.  Can be of any @link StringConcept sequence @endlink type
  *                  as long as <tt>other</tt>'s elements are convertible to the value type of this string.
  *
  * Default and copy constructor are implemented.
@@ -315,7 +315,7 @@ The $String$ class provides the default constructor and copy constructor.
 Additionally, you can construct a string from any sequence.
 ..param.other:Another $String$ object of the same type.
 ..param.seq:A sequence to copy into the $String$.
-...type:Concept.SequenceConcept
+...type:Concept.StringConcept
 ..remarks:
 The third variant (construction from sequence) first reserves the necessary space and then copies over the characters from $seq$.
 During this copying, the source characters are implicitely casted/converted into the alphabet of the String.
@@ -378,11 +378,11 @@ template <typename TValue, typename TSpec>
 struct IsSequence<String<TValue, TSpec> > : True {};
 
 // ----------------------------------------------------------------------------
-// Concept Sequence
+// Concept StringConcept
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (SequenceConcept));         // resizable container
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));         // resizable container
 
 template <typename TValue, typename TSpec>
 SEQAN_CONCEPT_IMPL((String<TValue, TSpec> const), (ContainerConcept));  // read-only container

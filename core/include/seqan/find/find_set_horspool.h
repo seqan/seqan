@@ -52,7 +52,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, SetHorspool>;
  * 
- * @tparam TNeedle The needle type, a string of keywords.  Types: @link SequenceConcept @endlink.
+ * @tparam TNeedle The needle type, a string of keywords.  Types: @link ContainerConcept @endlink.
  * 
  * The types of all keywords in the needle and the haystack have to match.
  */
