@@ -101,7 +101,7 @@ namespace seqan
     struct TestConceptModelA_ {};
 
     template <>
-    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelA_);
+    SEQAN_CONCEPT_IMPL(TestConceptModelA_, (TestConceptA_)(TestConceptB_));
 
     template <typename T1, typename T2>
     struct TestConceptModelBSpec_{};
@@ -110,7 +110,7 @@ namespace seqan
     struct TestConceptModelB_{};
 
     template <typename T, typename TSpec1, typename TSpec2>
-    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelB_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >);
+    SEQAN_CONCEPT_IMPL((TestConceptModelB_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >), (TestConceptA_)(TestConceptB_));
 }
 
 SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)

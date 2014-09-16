@@ -536,9 +536,9 @@ writeRecords(
 	for(;!atEnd(itEd);++itEd) {
 		TVertexDescriptor sc = sourceVertex(itEd);
 		TVertexDescriptor tr = targetVertex(itEd);
-		appendNumber(iter, (int)sc);
+		appendNumber(iter, sc);
 		_writeEdgeType(iter, g, DotDrawing());
-		appendNumber(iter, (int)tr);
+		appendNumber(iter, tr);
 		write(iter, " [");
 		write(iter, getProperty(edgeMap, *itEd));
 		write(iter, "];\n");

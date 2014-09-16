@@ -260,31 +260,6 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function writeWrappedString()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TSequence, typename TSize>
-inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize lineLength)
-{
-    typedef typename Size<TSequence>::Type TSeqSize;
-    typedef typename Iterator<TSequence const, Rooted>::Type TIter;
-
-    TIter iter = begin(seq, Rooted());
-    TSeqSize charsLeft = length(seq);
-    TSeqSize charsPerLine;
-    TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
-
-    do
-    {
-        charsPerLine = std::min(charsLeft, lineLength_);
-        write(target, iter, charsPerLine);
-        writeValue(target, '\n');
-        charsLeft -= charsPerLine;
-    }
-    while (charsLeft != 0);
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Qualities inside seq
 // ----------------------------------------------------------------------------
 
