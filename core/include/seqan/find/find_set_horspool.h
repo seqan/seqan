@@ -186,7 +186,7 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
 	_createTrieNodeNames(me.data_reverseTrie, me.data_terminalStateMap, nodeMap);
 	String<String<char> > edgeMap;
 	_createEdgeNames(me.data_reverseTrie,edgeMap);
-	write(strm,me.data_reverseTrie,nodeMap,edgeMap,DotDrawing());
+	writeRecords(strm,me.data_reverseTrie,nodeMap,edgeMap,DotDrawing());
 	strm.close();
 	*/
 }

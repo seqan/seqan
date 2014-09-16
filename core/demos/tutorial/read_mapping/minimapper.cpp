@@ -93,8 +93,8 @@ int main(int argc, char *argv[]) {
 
 //FRAGMENT(main-output)
     // 4) Write out Sam file.
-    std::ofstream samFile(argv[3], std::ios_base::out);
-    write(samFile, fragStore, Sam());
+    BamFileOut bamFile(argv[3]);
+    writeRecords(bamFile, fragStore);
 
     return 0;
 }
