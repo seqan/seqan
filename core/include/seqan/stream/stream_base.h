@@ -602,6 +602,7 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 }
 
 // write for more complex values (defer to write of iterator value)
+// used for Strings of Pairs
 template <typename TTarget, typename TFwdIterator, typename TSize>
 //inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
 inline SEQAN_FUNC_ENABLE_IF(And<
