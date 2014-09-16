@@ -361,7 +361,7 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
 // resizable containers
 template <typename TSequence, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
 writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);
@@ -382,7 +382,7 @@ writeValue(Range<TIterator> &range, TValue val)
 
 // resizable containers
 template <typename TSequence, typename TSpec, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SequenceConcept<TSequence> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
 writeValue(Iter<TSequence, TSpec> &iter, TValue val)
 {
     typedef Iter<TSequence, TSpec> TIter;
@@ -407,7 +407,7 @@ writeValue(Iter<TSequence, TSpec> &iter, TValue val)
 
 // non-resizable containers
 template <typename TNoSequence, typename TSpec, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<SequenceConcept<TNoSequence> >, void)
+inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<TNoSequence> >, void)
 writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
 {
     SEQAN_ASSERT_LT(position(iter), length(container(iter)));
@@ -602,10 +602,8 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 // Function write(TContainer)
 // ----------------------------------------------------------------------------
 
-//TODO(singer): Enable this!
 template <typename TTarget, typename TContainer>
-//inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TTarget> >, void)
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TContainer> >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
@@ -613,7 +611,7 @@ write(TTarget &target, TContainer &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TContainer const> >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename Iterator<TContainer const, Rooted>::Type iter = begin(cont, Rooted());
@@ -625,6 +623,58 @@ inline void
 write(TTarget &target, TValue * ptr)
 {
     write(target, ptr, length(ptr));
+}
+
+// ----------------------------------------------------------------------------
+// Function write(StringSet)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline void
+write(TTarget &target, StringSet<TSequence, TSpec> &seqs)
+{
+    typedef typename Size<StringSet<TSequence, TSpec> >::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline void
+write(TTarget &target, StringSet<TSequence, TSpec> const &seqs)
+{
+    typedef typename Size<StringSet<TSequence, TSpec> const>::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
+write(TTarget &target, String<TSequence, TSpec> &seqs)
+{
+    typedef typename Size<String<TSequence, TSpec> >::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
+write(TTarget &target, String<TSequence, TSpec> const &seqs)
+{
+    typedef typename Size<String<TSequence, TSpec> const>::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
 }
 
 // ----------------------------------------------------------------------------

@@ -382,7 +382,10 @@ struct IsSequence<String<TValue, TSpec> > : True {};
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (SequenceConcept));         // resizable container
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec> const), (ContainerConcept));  // read-only container
 
 // ----------------------------------------------------------------------------
 // Internal Metafunction TempCopy_

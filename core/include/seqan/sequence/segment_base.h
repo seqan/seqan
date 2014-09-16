@@ -441,6 +441,16 @@ template <typename THost, typename TSpec>
 struct IsSequence< Segment<THost, TSpec> > :
     True {};
 
+// ----------------------------------------------------------------------------
+// Concept Sequence
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((Segment<THost, TSpec>), (ContainerConcept));
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((Segment<THost, TSpec> const), (ContainerConcept));
+
 //////////////////////////////////////////////////////////////////////////////
 
 ///.Metafunction.IsLightWeight.param.T.type:Class.Segment
