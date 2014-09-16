@@ -330,7 +330,7 @@ inline void setInvalid(Match<TSpec> & me)
 }
 
 // ----------------------------------------------------------------------------
-// Match Getters
+// Function getValue()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
@@ -394,7 +394,7 @@ inline bool onForwardStrand(Match<TSpec> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Match Composite Getters
+// Composite Getters
 // ----------------------------------------------------------------------------
 
 template <typename TReadSeqs, typename TSpec>
@@ -417,13 +417,14 @@ inline bool isValid(Match<TSpec> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function getValue(, Errors())
+// Function getErrors()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline unsigned getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
+inline typename Member<Match<TSpec>, Errors>::Type
+getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
 {
-    return (unsigned)a.errors + b.errors;
+    return (typename Member<Match<TSpec>, Errors>::Type)getValue(a, Errors()) + getValue(b, Errors());
 }
 
 // ----------------------------------------------------------------------------
@@ -454,12 +455,12 @@ inline unsigned getCigarLength(Match<TSpec> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline unsigned long getSortKey(Match<TSpec> const & me, ContigBegin)
+inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 {
-    return ((unsigned long)getValue(me, ContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((unsigned long)getValue(me, ContigBegin())  <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
-           ((unsigned long)getValue(me, Errors()));
+    return ((__uint64)getValue(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
+           ((__uint64)getValue(me, ContigBegin())   <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+           ((__uint64)getValue(me, Errors()));
 }
 
 // ----------------------------------------------------------------------------
@@ -467,12 +468,12 @@ inline unsigned long getSortKey(Match<TSpec> const & me, ContigBegin)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline unsigned long getSortKey(Match<TSpec> const & me, ContigEnd)
+inline __uint64 getSortKey(Match<TSpec> const & me, ContigEnd)
 {
-    return ((unsigned long)getValue(me, ContigId())     << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((unsigned long)onReverseStrand(me) << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((unsigned long)getValue(me, ContigEnd())    <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
-           ((unsigned long)getValue(me, Errors()));
+    return ((__uint64)getValue(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
+           ((__uint64)getValue(me, ContigEnd())     <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+           ((__uint64)getValue(me, Errors()));
 }
 
 // ----------------------------------------------------------------------------
