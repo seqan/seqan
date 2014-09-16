@@ -286,13 +286,17 @@ struct Spec<Triple<T1, T2, T3, TSpec> >
 // Function operator<<();  Stream Output.
 // -----------------------------------------------------------------------
 
-// TODO(holtgrew): Document?
-
-template <typename T1, typename T2, typename T3, typename TSpec>
-std::ostream & operator<<(std::ostream & out, Triple<T1,T2,T3,TSpec> const & t)
+template <typename TTarget, typename T1, typename T2, typename T3, typename TSpec>
+inline void
+write(TTarget &target, Triple<T1, T2, T3, TSpec> const & p)
 {
-    out << "< " << getValueI1(t) << " , " << getValueI2(t) << " , " << getValueI3(t) << " >";
-    return out;
+    write(target, "< ");
+    write(target, getValueI1(p));
+    write(target, " , ");
+    write(target, getValueI2(p));
+    write(target, " , ");
+    write(target, getValueI3(p));
+    write(target, "> ");
 }
 
 // -----------------------------------------------------------------------
