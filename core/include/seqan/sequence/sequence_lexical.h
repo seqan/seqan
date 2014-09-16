@@ -277,7 +277,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 // Comparator: returns object that can compare objects of type T
 
-// TODO(holtgrew): Does this belong to the SequenceConcept?
+// TODO(holtgrew): Does this belong to the StringConcept?
 
 /*!
  * @mfn Comparator

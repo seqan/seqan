@@ -131,7 +131,7 @@ namespace seqan
     SEQAN_CONCEPT_IMPL((Peter<T1, T2>), (ContainerConcept));
 
     template <typename T1, typename T2>
-    SEQAN_CONCEPT_IMPL((Klaus<T1, T2>), (SequenceConcept));
+    SEQAN_CONCEPT_IMPL((Klaus<T1, T2>), (StringConcept));
 
 }
 
@@ -177,8 +177,8 @@ SEQAN_DEFINE_TEST(test_basic_concepts_concept_refine)
 
     SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::String<double> >));
     SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::Segment<CharString, InfixSegment> >));
-    SEQAN_CONCEPT_ASSERT((seqan::SequenceConcept<seqan::String<double> >));
-    myAssert(Not<Is<      seqan::SequenceConcept<seqan::Segment<CharString, InfixSegment> > > >::Type());   // should fail
+    SEQAN_CONCEPT_ASSERT((seqan::StringConcept<seqan::String<double> >));
+    myAssert(Not<Is<      seqan::StringConcept<seqan::Segment<CharString, InfixSegment> > > >::Type());   // should fail
 }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_

@@ -51,7 +51,7 @@ struct Owner {};
 
 /*!
  * @class StringSet
- * @implements SequenceConcept
+ * @implements StringConcept
  * @implements TextConcept
  * @implements SegmentableConcept
  * @headerfile <seqan/sequence.h>
@@ -384,6 +384,16 @@ struct DefaultOverflowImplicit<StringSet< TString, TSpec> const>
 {
     typedef Generous Type;
 };
+
+// ----------------------------------------------------------------------------
+// Concept StringConcept
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+SEQAN_CONCEPT_IMPL((StringSet<TString, TSpec>), (StringConcept));           // resizable container
+
+template <typename TString, typename TSpec>
+SEQAN_CONCEPT_IMPL((StringSet<TString, TSpec> const), (ContainerConcept));  // read-only container
 
 // ============================================================================
 // Functions

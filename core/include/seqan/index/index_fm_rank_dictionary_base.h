@@ -223,7 +223,7 @@ SEQAN_HOST_DEVICE inline bool empty(RankDictionary<TValue, TSpec> const & dict)
  * 
  * @signature void createRankDictionary(dictionary, text);
  * 
- * @param[in]  text       A text to be transfered into a rank dictionary. Types: @link SequenceConcept @endlink
+ * @param[in]  text       A text to be transfered into a rank dictionary. Types: @link ContainerConcept @endlink
  * @param[out] dictionary The dictionary.
  */
 

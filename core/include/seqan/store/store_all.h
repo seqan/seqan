@@ -1352,7 +1352,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  * @signature TSize appendRead(store, read, name[, matePairId]);
  *
  * @param[in,out] store      The FragmentStore to append the read to.
- * @param[in]     read       The read sequence.  Type: @link SequenceConcept @endlink.
+ * @param[in]     read       The read sequence.  Type: @link ContainerConcept @endlink.
  * @param[in]     name       The name of the read.  Type: @link CharString @endlink.
  * @param[in]     matePairId ID of the mate-pair that this read is part of.  Default:
  *                           <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.

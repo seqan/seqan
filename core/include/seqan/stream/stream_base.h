@@ -590,15 +590,28 @@ inline void write(TTarget &target, TIValue *ptr, TSize n)
 template <typename TTarget, typename TFwdIterator, typename TSize>
 //inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
 inline SEQAN_FUNC_ENABLE_IF(And<
-    Is<IntegerConcept<TSize> >
+    Is<IntegerConcept<TSize> >,
     Is<Convertible<typename Value<TTarget>::Type,
-                   typename Value<TFwdIterator>::Type> >, void)
+                   typename Value<TFwdIterator>::Type> > >, void)
 write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
     typedef typename Chunk<TTarget>::Type*      TOChunk;
 
     _write(target, iter, n, TIChunk(), TOChunk());
+}
+
+// write for more complex values (defer to write of iterator value)
+template <typename TTarget, typename TFwdIterator, typename TSize>
+//inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And<
+    Is<IntegerConcept<TSize> >,
+    Not< Is<Convertible<typename Value<TTarget>::Type,
+                        typename Value<TFwdIterator>::Type> > > >, void)
+write(TTarget &target, TFwdIterator &iter, TSize n)
+{
+    for (; n > (TSize)0; --n, ++iter)
+        write(target, *iter);
 }
 
 // ----------------------------------------------------------------------------
@@ -626,6 +639,24 @@ inline void
 write(TTarget &target, TValue * ptr)
 {
     write(target, ptr, length(ptr));
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TNumber)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, void)
+write(TTarget &target, TNumber &number)
+{
+    appendNumber(target, number);
+}
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber const> >, void)
+write(TTarget &target, TNumber const &number)
+{
+    appendNumber(target, number);
 }
 
 // ----------------------------------------------------------------------------

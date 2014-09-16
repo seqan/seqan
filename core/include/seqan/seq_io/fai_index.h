@@ -215,7 +215,7 @@ inline void clear(FaiIndex & index)
  * @signature bool getIdByName(faiIndex, name, refId);
  *
  * @param[in]  faiIndex The FaiIndex to query.
- * @param[in]  name     The name of the sequence to look the id up for.  Type: @link SequenceConcept @endlink.
+ * @param[in]  name     The name of the sequence to look the id up for.  Type: @link ContainerConcept @endlink.
  * @param[out] refId    The id of the sequence is written here.
  *
  * @return bool true if a sequence with the given name is known in the index.

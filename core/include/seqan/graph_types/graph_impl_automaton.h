@@ -951,7 +951,7 @@ getSuccessor(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  *
  * @param[in]     a       An Automaton.
  * @param[in]     v       The descriptor of the vertex to start at.
- * @param[in]     str     The @link SequenceConcept @endlink to parse.
+ * @param[in]     str     The @link ContainerConcept @endlink to parse.
  * @param[in,out] beginIt Begin iterator to sequence to parse.  Set to the first character that could not be parsed
  *                        or to the value of endIt if all of the string was parsed.
  * @param[in]     endIt   End iterator to sequence to parse.

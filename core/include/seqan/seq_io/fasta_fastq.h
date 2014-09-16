@@ -448,9 +448,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
  * @signature int writeRecord(target, id, seq, quals, tag[, options]);
  * 
  * @param[in,out] target  The target to write to.  Type: StreamConcept
- * @param[in]     id      ID/Meta information line to write out. Types: SequenceConcept
- * @param[in]     seq     Sequence to write out.  Type: SequenceConcept
- * @param[in]     quals   ASCII quality characters to write out.  Types: SequenceConcept
+ * @param[in]     id      ID/Meta information line to write out. Types: ContainerConcept
+ * @param[in]     seq     Sequence to write out.  Type: ContainerConcept
+ * @param[in]     quals   ASCII quality characters to write out.  Types: ContainerConcept
  * @param[in]     tag     The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
  * @param[in]     options if not supplied, defaults are chosen.  Types: SequenceOutputOptions
  *
@@ -465,11 +465,11 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 ..param.target:The target to write to.
 ...type:Concept.StreamConcept
 ..param.id:ID/Meta information line to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.seq:Sequence to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.quals:ASCII quality characters to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.tag:The format selector.
 ...type:nolink:$Fasta$, $Fastq$
 ..param.options:if not supplied defaults are chosen.

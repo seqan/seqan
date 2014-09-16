@@ -926,7 +926,7 @@ void sameType(T, T) { }
  * @section Examples
  * 
  * @code{.cpp}
- * Is<SequenceConcept<TSeq> >::Type
+ * Is<StringConcept<TSeq> >::Type
  * IfC<Is<ContainerConcept<TSeq> >::VALUE, T1, T2>::Type
  *  
  * std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;     // 1
@@ -979,7 +979,7 @@ void sameType(T, T) { }
 If @Tag.Logical Values.tag.True@/$true$ is returned, $TConcept$ must pass the concept test via @Macro.SEQAN_CONCEPT_ASSERT@.
 It can be used to switch between different implementations depending on the concept of a type, or in combination with @Macro.SEQAN_FUNC_ENABLE_IF@ to make a function only visible to types of certain concepts.
 ..example.code:
-Is<SequenceConcept<TSeq> >::Type
+Is<StringConcept<TSeq> >::Type
 IfC<Is<ContainerConcept<TSeq> >::VALUE, T1, T2>::Type
 
 std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;     // 1

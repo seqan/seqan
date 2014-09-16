@@ -166,16 +166,16 @@ struct IsSequence< TValue const [SIZE] >
 // ----------------------------------------------------------------------------
 
 template <typename TValue>
-SEQAN_CONCEPT_IMPL((TValue *), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
 
 template <typename TValue>
-SEQAN_CONCEPT_IMPL((TValue * const), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
 
 template <typename TValue, size_t SIZE>
-SEQAN_CONCEPT_IMPL((TValue [SIZE]), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((TValue [SIZE]), (ContainerConcept));
 
 template <typename TValue, size_t SIZE>
-SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (SequenceConcept));
+SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (ContainerConcept));
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
