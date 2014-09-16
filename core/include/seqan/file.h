@@ -70,7 +70,6 @@
 
 #include <seqan/file/file_interface.h>
 #include <seqan/file/file_base.h>
-//#include <seqan/file/file_cstyle.h>
 #include <seqan/system.h>	// async file (default file type of File<>)
 
 // ===========================================================================

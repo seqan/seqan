@@ -478,6 +478,36 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function operator<<() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           String<TValue, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator>>() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator>>(TStream & source,
+           String<TValue, TSpec> & target)
+{
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
+    read(it, target);
+    return source;
+}
+
+
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_ITER_H_
