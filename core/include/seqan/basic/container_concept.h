@@ -342,9 +342,6 @@ struct ContainerConcept :
         sameType(size, length(c));
         sameType(true, empty(c));
 
-        // clear
-        clear(c);
-
         // TODO: infix/suffix/prefix
         // maybe we need a SequenceConcept between Container and String
 
@@ -377,6 +374,9 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
     SEQAN_CONCEPT_USAGE(SequenceConcept)
     {
         pos = 0u;
+
+        // clear
+        clear(str);
 
         // append
         append(str, str2);

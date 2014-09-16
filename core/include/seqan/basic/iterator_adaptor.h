@@ -422,6 +422,26 @@ value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function getValue()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TIterator, typename TSpec>
+inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
+getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
+{
+    SEQAN_CHECKPOINT;
+    return getValue(hostIterator(me));
+}
+
+template <typename TContainer, typename TIterator, typename TSpec>
+inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
+{
+    SEQAN_CHECKPOINT;
+    return getValue(hostIterator(me));
+}
+
+// ----------------------------------------------------------------------------
 // Function assignValue()
 // ----------------------------------------------------------------------------
 
