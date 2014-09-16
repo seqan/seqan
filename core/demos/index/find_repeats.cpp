@@ -9,16 +9,13 @@ int main()
     using namespace seqan;
 
     // Get path to file to search for repeats in.
-    CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/core/demos/index/ref.fa");
+    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/core/demos/index/ref.fa";
 
     // Load first sequence from file.
+    CharString id;
     Dna5String seq;
-    if (readFasta(seq, toCString(path)) != 0)
-    {
-        std::cerr << "Could not open " << path << "\n";
-        return 1;
-    }
+    SeqFileIn file(path.c_str());
+    readRecord(id, seq, file);
 
     // Find repeats and print them.
     String<Repeat<unsigned, unsigned> > repeats;

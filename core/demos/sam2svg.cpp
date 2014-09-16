@@ -62,7 +62,7 @@ int main(int argc, const char *argv[])
 	}
 
 	TFragStore store;
-	std::ifstream samFile(toCString(getArgumentValue(parser, 0)), std::ios_base::in | std::ios_base::binary);
+	BamFileIn samFile(toCString(getArgumentValue(parser, 0)));
 	std::ofstream ascii;
 	SVGFile svg;
 
@@ -78,7 +78,7 @@ int main(int argc, const char *argv[])
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Load Sam file
-	if (!stop) read(samFile, store, Sam());
+	if (!stop) readRecords(store, samFile);
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Choose contigs
@@ -159,9 +159,9 @@ int main(int argc, const char *argv[])
 
 			std::cout <<l<<'\t'<<r<<'\t'<<firstLine<<'\t'<<lastLine<<std::endl;
 			if (inASCII)
-				printAlignment(ascii, Raw(), layout, store, contigs[i], l, r, firstLine, lastLine);
+				printAlignment(ascii, layout, store, contigs[i], l, r, firstLine, lastLine);
 			else
-				printAlignment(svg, Raw(), layout, store, contigs[i], l, r, firstLine, lastLine);
+				printAlignment(svg, layout, store, contigs[i], l, r, firstLine, lastLine);
 
 			std::cout << "done" << std::endl;
 		}
