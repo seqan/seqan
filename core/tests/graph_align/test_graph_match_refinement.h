@@ -138,44 +138,43 @@ SEQAN_DEFINE_TEST(RefineInexactFragment)
 
 //////////////////////////////////////////////////////////////////////////////////77
 
-// TODO(holtgrew): Is this a helper? What does it do?
-int Test_ConvertSequences(String<char> const in_path, String<char> const in_file, String<char> const path, String<char> const file_prefix) {
-	typedef String<Dna5, External<ExternalConfig<File<>, 64*1024> > > TString;
-	
-	// count sequences
-	unsigned seqCount = 0;
-
-	ifstream file;
-	std::stringstream input;
-	input << in_path << in_file;
-	file.open(input.str().c_str(), ios_base::in | ios_base::binary);
-	if (!file.is_open()) return 0;
-	while (!_streamEOF(file)) {
-		String<char> id;
-		readID(file, id, Fasta());
-		std::cout << id << std::endl;
-		goNext(file, Fasta());
-		++seqCount;
-	}
-	std::cout << "Number of sequences: " << seqCount << std::endl;
-
-	// import sequences
-	file.clear();
-	file.seekg(0, ios_base::beg);
-	for(unsigned i = 0; (i < seqCount) && !_streamEOF(file); ++i) 
-	{
-		TString str;
-		//String<TraceBack, External<> > trace;
-		//open(trace, "D:\\seqan.dat");
-		std::stringstream s;
-		s << path << file_prefix << i;
-		open(str, s.str().c_str());
-		read(file, str, Fasta());
-	}
-    file.close();
-
-	return seqCount;
-}
+//// TODO(holtgrew): Is this a helper? What does it do?
+//int Test_ConvertSequences(String<char> const in_path, String<char> const in_file, String<char> const path, String<char> const file_prefix) {
+//	typedef String<Dna5, External<ExternalConfig<File<>, 64*1024> > > TString;
+//	
+//	// count sequences
+//	unsigned seqCount = 0;
+//
+//	SeqFileIn file;
+//	std::stringstream input;
+//	input << in_path << in_file;
+//	if (!open(file, input.str().c_str())) return 0;
+//    String<char> id, seq;
+//	while (!atEnd(file))
+//    {
+//		readRecord(id, seq, file);
+//		std::cout << id << std::endl;
+//		++seqCount;
+//	}
+//	std::cout << "Number of sequences: " << seqCount << std::endl;
+//
+//	// import sequences
+//	file.clear();
+//	file.seekg(0, ios_base::beg);
+//	for(unsigned i = 0; (i < seqCount) && !_streamEOF(file); ++i) 
+//	{
+//		TString str;
+//		//String<TraceBack, External<> > trace;
+//		//open(trace, "D:\\seqan.dat");
+//		std::stringstream s;
+//		s << path << file_prefix << i;
+//		open(str, s.str().c_str());
+//		read(file, str, Fasta());
+//	}
+//    file.close();
+//
+//	return seqCount;
+//}
 
 //////////////////////////////////////////////////////////////////////////////
 

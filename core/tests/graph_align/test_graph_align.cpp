@@ -46,6 +46,7 @@
 // SeqAn Includes
 #include <seqan/graph_align.h>
 #include <seqan/basic.h>
+#include <seqan/seq_io.h>
 
 // Test files
 #include "test_graph_impl_align.h"

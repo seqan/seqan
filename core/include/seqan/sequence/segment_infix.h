@@ -138,7 +138,6 @@ SEQAN_CHECKPOINT
     }
 
     SEQAN_HOST_DEVICE
-    explicit
     Segment(typename Parameter_<THost>::Type _host):
         data_host(_toPointer(_host)),
         data_begin_position(0),
