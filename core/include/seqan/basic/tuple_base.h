@@ -380,6 +380,14 @@ assignValue(Tuple<TValue, SIZE, TSpec> & me, TPos k, TValue2 const source)
 
 template <typename TValue, unsigned SIZE, typename TSpec, typename TPos>
 inline TValue
+getValue(Tuple<TValue, SIZE, TSpec> & me, TPos k)
+{
+    SEQAN_CHECK((unsigned(k) < SIZE), "Invalid position, k = %u, SIZE = %u.", unsigned(k), unsigned(SIZE));
+    return me.i[k];
+}
+
+template <typename TValue, unsigned SIZE, typename TSpec, typename TPos>
+inline TValue
 getValue(Tuple<TValue, SIZE, TSpec> const & me, TPos k)
 {
     SEQAN_CHECK((unsigned(k) < SIZE), "Invalid position, k = %u, SIZE = %u.", unsigned(k), unsigned(SIZE));
