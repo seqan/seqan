@@ -51,6 +51,20 @@ namespace seqan {
  */
 
 // ===========================================================================
+// Concepts
+// ===========================================================================
+
+// ----------------------------------------------------------------------------
+// Concept StringConcept
+// ----------------------------------------------------------------------------
+
+template <typename TChar, typename TAlloc>
+SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc>), (StringConcept));          // resizable container
+
+template <typename TChar, typename TAlloc>
+SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc> const), (ContainerConcept)); // read-only container
+
+// ===========================================================================
 // Metafunctions
 // ===========================================================================
 
