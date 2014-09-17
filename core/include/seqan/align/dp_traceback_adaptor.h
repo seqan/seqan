@@ -47,7 +47,7 @@ namespace seqan {
 template <typename TFile, typename TSeq0Value, typename TSeq1Value>
 inline void _writeTraceSegmentToFile(TFile & file, TSeq0Value const & seq0Val, TSeq1Value const & seq1Val)
 {
-    file << '(' << seq0Val << ',' << seq1Val << ")\n'";
+    file << '(' << seq0Val << ',' << seq1Val << ")\n";
 }
 
 // ----------------------------------------------------------------------------

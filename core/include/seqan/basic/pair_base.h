@@ -45,6 +45,12 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TObject, typename TDirection>
+struct DirectionIterator;
+
+struct Output_;
+typedef Tag<Output_> Output;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -286,7 +292,17 @@ write(TTarget &target, Pair<T1, T2, TSpec> const & p)
     write(target, getValueI1(p));
     write(target, " , ");
     write(target, getValueI2(p));
-    write(target, "> ");
+    write(target, " >");
+}
+
+template <typename TStream, typename T1, typename T2, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           Pair<T1, T2, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
 }
 
 // -----------------------------------------------------------------------

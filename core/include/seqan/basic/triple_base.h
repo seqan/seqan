@@ -296,7 +296,17 @@ write(TTarget &target, Triple<T1, T2, T3, TSpec> const & p)
     write(target, getValueI2(p));
     write(target, " , ");
     write(target, getValueI3(p));
-    write(target, "> ");
+    write(target, " >");
+}
+
+template <typename TStream, typename T1, typename T2, typename T3, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           Triple<T1, T2, T3, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
 }
 
 // -----------------------------------------------------------------------
