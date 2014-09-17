@@ -686,14 +686,20 @@ template <typename TTarget, typename TNumber>
 inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, void)
 write(TTarget &target, TNumber &number)
 {
-    appendNumber(target, number);
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
 }
 
 template <typename TTarget, typename TNumber>
 inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber const> >, void)
 write(TTarget &target, TNumber const &number)
 {
-    appendNumber(target, number);
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
 }
 
 // ----------------------------------------------------------------------------
