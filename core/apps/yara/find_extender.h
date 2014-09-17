@@ -128,19 +128,48 @@ inline TErrors _extendDelta(TErrors maxErrors, EditDistance)
 }
 
 // ----------------------------------------------------------------------------
+// Function checkHammingDistance()
+// ----------------------------------------------------------------------------
+
+template <typename THaystackInfix, typename TNeedleInfix, typename TErrors, typename TMaxErrors>
+inline bool checkHammingDistance(THaystackInfix & haystackInfix,
+                                 TNeedleInfix & needleInfix,
+                                 TErrors & needleErrors,
+                                 TMaxErrors maxErrors)
+{
+    typedef typename Iterator<THaystackInfix, Standard>::Type   THaystackIt;
+    typedef typename Iterator<TNeedleInfix, Standard>::Type     TNeedleIt;
+
+    if (length(haystackInfix) != length(needleInfix)) return false;
+
+    THaystackIt hIt = begin(haystackInfix, Standard());
+    THaystackIt hEnd = end(haystackInfix, Standard());
+    TNeedleIt nIt = begin(needleInfix, Standard());
+
+    for (; hIt != hEnd && needleErrors <= maxErrors; ++hIt, ++nIt)
+        needleErrors += !ordEqual(value(hIt), value(nIt));
+
+    return hIt == hEnd && needleErrors <= maxErrors;
+}
+
+// ----------------------------------------------------------------------------
 // Function _extendLeft<HammingDistance>()
 // ----------------------------------------------------------------------------
 
 template <typename THaystack, typename TNeedle,
           typename THaystackInfix, typename TNeedleInfix, typename THaystackPos, typename TErrors, typename TMaxErrors>
-inline bool _extendLeft(Extender<THaystack, TNeedle, HammingDistance> & extender,
+inline bool _extendLeft(Extender<THaystack, TNeedle, HammingDistance> & /* extender */,
                         THaystackInfix & haystackInfix,
                         TNeedleInfix & needleInfix,
                         THaystackPos & matchBegin,
                         TErrors & needleErrors,
                         TMaxErrors maxErrors)
 {
-    return _extendRight(extender, haystackInfix, needleInfix, matchBegin, needleErrors, maxErrors);
+    if (!checkHammingDistance(haystackInfix, needleInfix, needleErrors, maxErrors))
+        return false;
+
+    matchBegin = posAdd(matchBegin, -length(haystackInfix));
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -152,21 +181,15 @@ template <typename THaystack, typename TNeedle,
 inline bool _extendRight(Extender<THaystack, TNeedle, HammingDistance> & /* extender */,
                          THaystackInfix & haystackInfix,
                          TNeedleInfix & needleInfix,
-                         THaystackPos & /* matchEnd */,
+                         THaystackPos & matchEnd,
                          TErrors & needleErrors,
                          TMaxErrors maxErrors)
 {
-    typedef typename Iterator<THaystackInfix, Standard>::Type   THaystackIt;
-    typedef typename Iterator<TNeedleInfix, Standard>::Type     TNeedleIt;
+    if (!checkHammingDistance(haystackInfix, needleInfix, needleErrors, maxErrors))
+        return false;
 
-    THaystackIt hIt = begin(haystackInfix, Standard());
-    THaystackIt hEnd = end(haystackInfix, Standard());
-    TNeedleIt nIt = begin(needleInfix, Standard());
-
-    for (; hIt != hEnd && needleErrors <= maxErrors; ++hIt, ++nIt)
-        needleErrors += !ordEqual(value(hIt), value(nIt));
-
-    return needleErrors <= maxErrors;
+    matchEnd = posAdd(matchEnd, length(haystackInfix));
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -371,9 +394,10 @@ extend(Extender<THaystack, TNeedle, TDistance> & extender,
     if (needleBegin > 0)
     {
         THaystackPos haystackLeftBegin = haystackBegin;
+        THaystackSize haystackLeftOffset = needleBegin + _extendDelta(maxErrors - needleErrors, TDistance());
         setSeqOffset(haystackLeftBegin, 0);
-        if (getSeqOffset(haystackBegin) > needleBegin + _extendDelta(maxErrors - needleErrors, TDistance()))
-            setSeqOffset(haystackLeftBegin, getSeqOffset(haystackBegin) - (needleBegin + _extendDelta(maxErrors - needleErrors, TDistance())));
+        if (getSeqOffset(haystackBegin) > haystackLeftOffset)
+            setSeqOffset(haystackLeftBegin, getSeqOffset(haystackBegin) - haystackLeftOffset);
 
         THaystackInfix haystackLeft = infix(extender.haystack, haystackLeftBegin, haystackBegin);
         TNeedleInfix needleLeft = infix(needle, 0, needleBegin);
@@ -386,9 +410,10 @@ extend(Extender<THaystack, TNeedle, TDistance> & extender,
 
     if (needleEnd < needleLength)
     {
+        THaystackSize haystackRightOffset = needleLength - needleBegin + _extendDelta(maxErrors - needleErrors, TDistance());
         THaystackPos haystackRightEnd = THaystackPos(haystackId, haystackLength);
-        if (getSeqOffset(haystackRightEnd) > getSeqOffset(haystackBegin) + needleLength - needleBegin + _extendDelta(maxErrors - needleErrors, TDistance()))
-            setSeqOffset(haystackRightEnd, getSeqOffset(haystackBegin) + needleLength - needleBegin + _extendDelta(maxErrors - needleErrors, TDistance()));
+        if (getSeqOffset(haystackRightEnd) > getSeqOffset(haystackBegin) + haystackRightOffset)
+            setSeqOffset(haystackRightEnd, getSeqOffset(haystackBegin) + haystackRightOffset);
 
         THaystackInfix haystackRight = infix(extender.haystack, haystackEnd, haystackRightEnd);
         TNeedleInfix needleRight = infix(needle, needleEnd, needleLength);
