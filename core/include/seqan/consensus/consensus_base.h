@@ -1390,12 +1390,12 @@ write(
 
 template<typename TFile, typename TSpec, typename TConfig, typename TFilePath>
 inline void
-_convertSimpleReadFile(TFile& file,
-					   FragmentStore<TSpec, TConfig>& fragStore,
-					   TFilePath& filePath, 
-					   bool moveToFront)
+_convertSimpleReadFile(TFile& /*file*/,
+					   FragmentStore<TSpec, TConfig>& /*fragStore*/,
+					   TFilePath& /*filePath*/,
+					   bool /*moveToFront*/)
 {
-#warning Manuel_do_we_need_this_function
+return;
 ////IOREV _nodoc_ huge undocumented function, uses custom IO based on iostream and FILE* :S
 //	// Basic types
 //	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
@@ -1818,7 +1818,7 @@ _convertSimpleReadFile(TFile& file,
 //			alignIt->endPos -= minPos;
 //		}
 //	}
-	return 0;
+//	return 0;
 }
 
 
