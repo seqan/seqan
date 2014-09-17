@@ -41,6 +41,13 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TValue, typename TTraits, typename TValue2>
+inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val);
+
+// ============================================================================
 // Tags
 // ============================================================================
 
@@ -489,7 +496,8 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 
 // chunked, target is pointer (e.g. readRawByte)
 template <typename TOValue, typename TFwdIterator, typename TSize>
-inline void write(TOValue *ptr, TFwdIterator &iter, TSize n)
+inline SEQAN_FUNC_DISABLE_IF(IsSameType<typename Chunk<TFwdIterator>::Type, Nothing>, void)
+write(TOValue *ptr, TFwdIterator &iter, TSize n)
 {
     typedef Nothing* TNoChunking;
     typedef typename Size<TFwdIterator>::Type TSourceSize;
@@ -527,7 +535,8 @@ inline void write(TOValue *ptr, TFwdIterator &iter, TSize n)
 
 // chunked, source is pointer (e.g. readRawByte)
 template <typename TTarget, typename TIValue, typename TSize>
-inline void write(TTarget &target, TIValue *ptr, TSize n)
+inline SEQAN_FUNC_DISABLE_IF(IsSameType<typename Chunk<TTarget>::Type, Nothing>, void)
+write(TTarget &target, TIValue *ptr, TSize n)
 {
     typedef Nothing* TNoChunking;
     typedef typename Size<TTarget>::Type TTargetSize;
