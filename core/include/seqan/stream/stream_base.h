@@ -273,6 +273,8 @@ char const * FileFormatExtensions<BgzfFile, T>::VALUE[2] =
 {
     ".bgzf",      // default output extension
     ".bam"        // BAM files are bgzf compressed
+
+    // if you add extensions here, extend getBasename() below
 };
 
 
@@ -359,6 +361,28 @@ atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function getBasename()
+// ----------------------------------------------------------------------------
+
+// make sure not to only cut the ".bgzf" extension and not ".bam"
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+getBasename(TFilename const & fileName, BgzfFile)
+{
+    typedef typename Value<TFilename>::Type                                     TValue;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    
+    TLowcase lowcaseFileName(fileName);
+
+    if (endsWith(lowcaseFileName, ".bgzf"))
+        return prefix(fileName, length(fileName) - 5);
+
+    return prefix(fileName, length(fileName));
+}
+
+
 // TODO(esiragusa): not unique to streams - move them into basic
 // TODO(esiragusa): tests
 
