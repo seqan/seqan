@@ -454,13 +454,13 @@ appendNumber(TTarget & target, TInteger i)
     typedef IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
                           sizeof(TInteger)> TInt;
 
-    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
+    // 1 byte has at most 3 decimal digits (plus 2 for '-' and the NULL character)
     char buffer[sizeof(TInteger) * 3 + 2];
     int offset;
     size_t len = snprintf(buffer, sizeof(buffer),
                           TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
-
-    write(target, buffer, len);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
     return len;
 }
 
@@ -475,7 +475,8 @@ appendNumber(TTarget & target, float source)
     char buffer[32];
     int offset;
     size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    write(target, buffer, len);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
     return len;
 }
 
@@ -490,7 +491,8 @@ appendNumber(TTarget & target, double source)
     char buffer[32];
     int offset;
     size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    write(target, buffer, len);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
     return len;
 }
 

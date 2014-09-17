@@ -300,6 +300,12 @@ inline void writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 
     ++iter;
 }
 
+template <typename TValue, typename TTraits, typename TValue2>
+inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val)
+{
+    ostream.put(val);
+}
+
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------

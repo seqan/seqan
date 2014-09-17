@@ -102,8 +102,7 @@ bool endsWith(CharString const & str, CharString const & x)
     return suffix(str, pos) == x;
 }
 
-template <typename TStreamOrReader, typename TFormatTag>
-bool performEstimation(LibraryInfo & libInfo, TStreamOrReader & streamOrReader, TFormatTag const & formatTag)
+bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
 {
     typedef StringSet<String<char> >   TNameStore;
     typedef NameStoreCache<TNameStore> TNameStoreCache;
@@ -112,15 +111,9 @@ bool performEstimation(LibraryInfo & libInfo, TStreamOrReader & streamOrReader, 
     typedef std::vector<unsigned int> TVecISize;
     TVecISize vecISize;
 
-
-    // BAM Meta Info.
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    BamIOContext<TNameStore> context(nameStore, nameStoreCache);
-
     // Read Header.
     BamHeader header;
-    readRecord(header, context, streamOrReader, formatTag);
+    readRecord(header, bamFileIn);
 
     // Orientations.
     unsigned orientationCounters[4] = {0, 0, 0, 0};
@@ -131,13 +124,9 @@ bool performEstimation(LibraryInfo & libInfo, TStreamOrReader & streamOrReader, 
 
     // Count.
     BamAlignmentRecord record;
-    while (!atEnd(streamOrReader))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, context, streamOrReader, formatTag) != 0)
-        {
-            std::cerr << "Error reading SAM/BAM file.\n";
-            return false;
-        }
+        readRecord(record, bamFileIn);
 
         // Skip all records except for first mate of properly mapped pairs.
         if (!hasFlagMultiple(record) || hasFlagUnmapped(record) || hasFlagNextUnmapped(record) ||
@@ -219,33 +208,15 @@ int main(int argc, char const ** argv)
 
     LibraryInfo libInfo;
 
-    // Guess file type from extension.
-    if (endsWith(argv[1], ".sam"))
+    BamFileIn bamFileIn;
+    if (!open(bamFileIn, argv[1]))
     {
-        std::ifstream inSamStream(toCString(argv[1]), std::ios::binary | std::ios::in);
-        if (!inSamStream.good())
-        {
-            std::cerr << "Could not open input SAM file " << argv[1] << "\n";
-            return 1;
-        }
-
-        RecordReader<std::ifstream, SinglePass<> > reader(inSamStream);
-
-        if (!performEstimation(libInfo, reader, Sam()))
-            return 1;
+        std::cerr << "Could not open input SAM/BAM file " << argv[1] << "\n";
+        return 1;
     }
-    else
-    {
-        Stream<Bgzf> inBamStream;
-        if (!open(inBamStream, toCString(argv[1]), "r"))
-        {
-            std::cerr << "Could not open input BAM file " << argv[1] << "\n";
-            return 1;
-        }
 
-        if (!performEstimation(libInfo, inBamStream, Bam()))
-            return 1;
-    }
+    if (!performEstimation(libInfo, bamFileIn))
+        return 1;
 
     // Print result.
     std::cout << "Library Information\n\n"
