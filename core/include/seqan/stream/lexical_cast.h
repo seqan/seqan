@@ -465,6 +465,18 @@ appendNumber(TTarget & target, TInteger i)
 }
 
 // ----------------------------------------------------------------------------
+// Function appendNumber(bool)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, bool source)
+{
+    writeValue(target, '0' + source);
+    return 1;
+}
+
+// ----------------------------------------------------------------------------
 // Function appendNumber(float)
 // ----------------------------------------------------------------------------
 
@@ -506,6 +518,30 @@ appendRawPod(TTarget & target, TValue const & val)
 {
     write(target, (unsigned char*)&val, sizeof(TValue));
     return sizeof(TValue);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TNumber)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, void)
+write(TTarget &target, TNumber &number)
+{
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
+}
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber const> >, void)
+write(TTarget &target, TNumber const &number)
+{
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
 }
 
 }
