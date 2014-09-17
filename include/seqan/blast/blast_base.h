@@ -310,6 +310,22 @@ using QHasFrames = typename std::conditional<qHasFrames(TFormat()),
                                              False>::type;
 
 // ----------------------------------------------------------------------------
+// qNumFrames()
+// ----------------------------------------------------------------------------
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr uint8_t
+qNumFrames(BlastFormat<f,p,g> const & /**/)
+{
+    using TFormat = BlastFormat<f,p,g>;
+    return (qHasFrames(TFormat())
+            ? 6
+            : (qHasRevComp(TFormat())
+                ? 2
+                : 1));
+}
+
+// ----------------------------------------------------------------------------
 // sHasRevComp()
 // ----------------------------------------------------------------------------
 
@@ -365,6 +381,22 @@ template <typename TFormat>
 using SHasFrames = typename std::conditional<sHasRevComp(TFormat()),
                                              True,
                                              False>::type;
+
+// ----------------------------------------------------------------------------
+// sNumFrames()
+// ----------------------------------------------------------------------------
+
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+constexpr uint8_t
+sNumFrames(BlastFormat<f,p,g> const & /**/)
+{
+    using TFormat = BlastFormat<f,p,g>;
+    return (sHasFrames(TFormat())
+            ? 6
+            : (sHasRevComp(TFormat())
+                ? 2
+                : 1));
+}
 
 // ----------------------------------------------------------------------------
 // getBlastProgramType()
