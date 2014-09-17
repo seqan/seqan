@@ -514,7 +514,8 @@ inline bool _pigeonholeProcessQGram(
     for(; occ != occEnd; ++occ) 
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index));
-        hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);		// bucket begin in haystack
+        hit.hstkPos = finder.curPos;
+        hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
         hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
         {
@@ -1064,7 +1065,8 @@ windowFindNext(
 				for(; occ != occEnd; ++occ) 
 				{
 					posLocalize(ndlPos, *occ, stringSetLimits(index));
-					hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);	// bucket begin in haystack
+					hit.hstkPos = finder.curPos;
+                    hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
 					hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
 
 					if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
