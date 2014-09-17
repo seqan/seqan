@@ -273,17 +273,29 @@ struct Spec<Tuple<TValue, SIZE, TSpec> >
 // Function operator<<();  Stream Output.
 // -----------------------------------------------------------------------
 
-template <typename TValue, unsigned SIZE, typename TSpec>
-inline std::ostream &
-operator<< (std::ostream & out, Tuple<TValue, SIZE, TSpec> const &a)
+template <typename TTarget, typename TValue, unsigned SIZE, typename TSpec>
+inline void
+write(TTarget &target, Tuple<TValue, SIZE, TSpec> const &a)
 {
-    out << '[';
+    writeValue(target, '[');
     if (SIZE > 0)
-        out << (TValue)a[0];
-    for(unsigned j = 1; j < SIZE; ++j)
-        out << ' ' << (TValue)a[j];
-    out << ']';
-    return out;
+        write(target, (TValue)a[0]);
+    for (unsigned j = 1; j < SIZE; ++j)
+    {
+        writeValue(target, ' ');
+        write(target, (TValue)a[j]);
+    }
+    writeValue(target, ']');
+}
+
+template <typename TStream, typename TValue, unsigned SIZE, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           Tuple<TValue, SIZE, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
 }
 
 // ----------------------------------------------------------------------------
