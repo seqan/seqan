@@ -354,14 +354,14 @@ getValue(Match<TSpec> const & me, ContigId)
 }
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, ContigBegin>::Type
+inline typename Member<Match<TSpec>, ContigSize>::Type
 getValue(Match<TSpec> const & me, ContigBegin)
 {
     return me.contigBegin;
 }
 
 template <typename TSpec>
-inline typename Member<Match<TSpec>, ContigEnd>::Type
+inline typename Member<Match<TSpec>, ContigSize>::Type
 getValue(Match<TSpec> const & me, ContigEnd)
 {
     return me.contigBegin + me.contigEnd;
