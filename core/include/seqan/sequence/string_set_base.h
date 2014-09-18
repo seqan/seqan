@@ -203,6 +203,9 @@ struct StringSetPosition
     typedef typename Size<TString>::Type Type;
 };
 
+template <typename TString>
+struct StringSetPosition<TString const> : StringSetPosition<TString> {};
+
 template <typename TString, typename TSpec>
 struct StringSetPosition<StringSet<TString, TSpec> >
 {
