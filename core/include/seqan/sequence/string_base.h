@@ -2113,10 +2113,14 @@ operator>=(TLeftValue * left,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TSize>
-inline void reserveChunk(String<TValue, TSpec> &str, TSize size)
+inline void reserveChunk(String<TValue, TSpec> &str, TSize size, Output)
 {
     reserve(str, length(str) + size);
 }
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void reserveChunk(String<TValue, TSpec> const &str, TSize size, Input)
+{}
 
 // ----------------------------------------------------------------------------
 // Function getChunk()

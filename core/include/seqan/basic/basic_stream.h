@@ -352,10 +352,10 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 
         if (SEQAN_UNLIKELY(minChunkSize == 0u))
         {
-            reserveChunk(target, n);
-            reserveChunk(iter, n);
-            getChunk(ichunk, iter, Input());
+            reserveChunk(target, n, Output());
+            reserveChunk(iter, n, Input());
             getChunk(ochunk, target, Output());
+            getChunk(ichunk, iter, Input());
             minChunkSize = std::min((TTargetSize)length(ichunk), (TTargetSize)length(ochunk));
             if (SEQAN_UNLIKELY(minChunkSize == 0u))
             {
@@ -393,7 +393,7 @@ write(TOValue *ptr, TFwdIterator &iter, TSize n)
 
         if (SEQAN_UNLIKELY(chunkSize == 0u))
         {
-            reserveChunk(iter, n);
+            reserveChunk(iter, n, Input());
             getChunk(ichunk, iter, Input());
             TSourceSize chunkSize = length(ichunk);
             if (SEQAN_UNLIKELY(chunkSize == 0u))
@@ -432,7 +432,7 @@ write(TTarget &target, TIValue *ptr, TSize n)
 
         if (SEQAN_UNLIKELY(chunkSize == 0u))
         {
-            reserveChunk(target, n);
+            reserveChunk(target, n, Output());
             getChunk(ochunk, target, Output());
             chunkSize = length(ochunk);
             if (SEQAN_UNLIKELY(chunkSize == 0u))
@@ -526,6 +526,13 @@ write(TTarget &target, TContainer const &cont)
 {
     typename DirectionIterator<TContainer const, Input>::Type iter = directionIterator(cont, Input());
     write(target, iter, length(cont));
+}
+
+template <typename TTarget, typename TValue>
+inline void
+write(TTarget &target, TValue * ptr)
+{
+    write(target, ptr, length(ptr));
 }
 
 // ----------------------------------------------------------------------------

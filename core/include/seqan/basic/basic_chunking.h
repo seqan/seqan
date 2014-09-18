@@ -77,8 +77,8 @@ struct Chunk
 // Function reserveChunk()
 // ----------------------------------------------------------------------------
 
-template <typename TIterator, typename TSize>
-inline void reserveChunk(TIterator &, TSize)
+template <typename TIterator, typename TSize, typename TDirection>
+inline void reserveChunk(TIterator &, TSize, TDirection)
 {}
 
 // ----------------------------------------------------------------------------
