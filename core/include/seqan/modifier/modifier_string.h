@@ -463,7 +463,7 @@ struct IsSequence<ModifiedString<THost, TSpec> > : True
 {};
 
 // ----------------------------------------------------------------------------
-// Concept Sequence
+// Concept ContainerConcept
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>

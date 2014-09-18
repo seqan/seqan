@@ -177,6 +177,16 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Concept ContainerConcept
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TSpec>
+SEQAN_CONCEPT_IMPL((ContainerView<TContainer, TSpec>), (ContainerConcept));
+
+template <typename TContainer, typename TSpec>
+SEQAN_CONCEPT_IMPL((ContainerView<TContainer, TSpec> const), (ContainerConcept));
+
+// ----------------------------------------------------------------------------
 // Metafunction View
 // ----------------------------------------------------------------------------
 
