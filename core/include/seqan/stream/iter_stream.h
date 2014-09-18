@@ -175,7 +175,9 @@ public:
 
     Iter(TIStream& stream):
         streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
-    {}
+    {
+        stream.exceptions(std::ios_base::badbit);
+    }
 
     Iter(TStreamBuffer *buf):
         streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
@@ -199,7 +201,9 @@ public:
 
     Iter(TOStream& stream):
         streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
-    {}
+    {
+        stream.exceptions(std::ios_base::badbit);
+    }
 
     Iter(TBasicBuffer *buf):
         streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
@@ -320,9 +324,15 @@ directionIterator(TContainer &cont, TDirection const &)
 // ----------------------------------------------------------------------------
 
 template <typename TStream, typename TDirection, typename TSize>
-inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize)
+inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize, Input dir)
 {
-    iter.streamBuf->reserveChunk(TDirection());
+    iter.streamBuf->reserveChunk(dir);
+}
+
+template <typename TStream, typename TDirection, typename TSize>
+inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize, Output dir)
+{
+    iter.streamBuf->reserveChunk(dir);
 }
 
 // ----------------------------------------------------------------------------

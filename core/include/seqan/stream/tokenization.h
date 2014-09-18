@@ -343,7 +343,7 @@ inline void _readUntil(TTarget &target,
                 advanceChunk(target, optr - ochunk.begin);
                 // reserve memory for the worst-case
                 // TODO(weese):Document worst-case behavior
-                reserveChunk(target, length(ichunk));
+                reserveChunk(target, length(ichunk), Output());
                 getChunk(ochunk, target, Output());
                 optr = ochunk.begin;
                 SEQAN_ASSERT(optr < ochunk.end);

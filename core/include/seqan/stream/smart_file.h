@@ -93,21 +93,18 @@ struct SmartFile
 
     explicit
     SmartFile(TDependentContext &otherCtx) :
-        iter(stream),
         context(otherCtx)
     {}
 
     // filename based c'tors
     explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        iter(stream),
         context(data_context)
     {
         _open(*this, fileName, openMode, True());
     }
 
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        iter(stream),
         context(otherCtx)
     {
         _open(*this, fileName, openMode, True());
@@ -118,7 +115,6 @@ struct SmartFile
     explicit
     SmartFile(std::basic_istream<TValue> &istream,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
-        iter(stream),
         context(data_context)
     {
         _open(*this, istream, True());
@@ -129,7 +125,6 @@ struct SmartFile
     SmartFile(std::basic_ostream<TValue> &ostream,
               TFormat const &format,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
-        iter(stream),
         context(data_context)
     {
         bool success = open(*this, ostream, format);
@@ -346,7 +341,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    file.iter = TIter(file.stream);
+    file.iter = directionIterator(file.stream, TDirection());
 
     return true;
 }
@@ -404,7 +399,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    file.iter = TIter(file.stream);
+    file.iter = directionIterator(file.stream, TDirection());
 
     return true;
 }
@@ -424,6 +419,7 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 {
+    file.iter = typename DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
 

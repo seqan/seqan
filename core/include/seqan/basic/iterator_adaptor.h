@@ -44,6 +44,9 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TValue>
+inline size_t length(TValue const * me);
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -794,7 +797,7 @@ assign(Iter<TTargetContainer, AdaptorIterator<TIterator, TSpec> > & target,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TSize>
-inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
+inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size, Output)
 {
     typedef Iter<TContainer, TSpec> TIter;
 
@@ -802,7 +805,7 @@ inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
     typename Position<TIter>::Type pos = position(iter);
     typename Size<TIter>::Type len = length(cont);
 
-    if (SEQAN_LIKELY(pos < len))
+    if (pos < len)
         return;
 
     len += size;
@@ -812,6 +815,10 @@ inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
     reserve(cont, len);
     setPosition(iter, pos);
 }
+
+template <typename TContainer, typename TSpec, typename TSize>
+inline void reserveChunk(Iter<TContainer, TSpec> &, TSize, Input)
+{}
 
 // ----------------------------------------------------------------------------
 // Function getChunk()
