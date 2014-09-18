@@ -438,22 +438,36 @@ atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
 // Function position()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename Position<SmartFile<TFileType, TDirection, TSpec> >::Type
-position(SmartFile<TFileType, TDirection, TSpec> & file)
+template <typename TFileType, typename TSpec>
+inline typename Position<SmartFile<TFileType, Output, TSpec> >::Type
+position(SmartFile<TFileType, Output, TSpec> & file)
 {
-    return streamTell(file.stream);
+    return file.stream.tellp();
+}
+
+template <typename TFileType, typename TSpec>
+inline typename Position<SmartFile<TFileType, Input, TSpec> >::Type
+position(SmartFile<TFileType, Input, TSpec> & file)
+{
+    return file.stream.tellg();
 }
 
 // ----------------------------------------------------------------------------
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TPosition>
+template <typename TFileType, typename TSpec, typename TPosition>
 inline void
-setPosition(SmartFile<TFileType, TDirection, TSpec> & file, TPosition pos)
+setPosition(SmartFile<TFileType, Output, TSpec> & file, TPosition pos)
 {
-    return streamSeek(file.stream, pos, SEEK_SET);
+    return file.stream.seekp(pos, std::ios_base::beg);
+}
+
+template <typename TFileType, typename TSpec, typename TPosition>
+inline void
+setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
+{
+    return file.stream.seekg(pos, std::ios_base::beg);
 }
 
 // ----------------------------------------------------------------------------
