@@ -2119,7 +2119,7 @@ inline void reserveChunk(String<TValue, TSpec> &str, TSize size, Output)
 }
 
 template <typename TValue, typename TSpec, typename TSize>
-inline void reserveChunk(String<TValue, TSpec> const &str, TSize size, Input)
+inline void reserveChunk(String<TValue, TSpec> const &, TSize, Input)
 {}
 
 // ----------------------------------------------------------------------------
