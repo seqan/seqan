@@ -147,6 +147,7 @@ struct Match
 // Member Types
 // ----------------------------------------------------------------------------
 
+namespace seqan {
 template <typename TSpec>
 struct Member<Match<TSpec>, ReadId>
 {
@@ -176,11 +177,13 @@ struct Member<Match<TSpec>, Errors>
 {
     typedef __uint32    Type;
 };
+}
 
 // ----------------------------------------------------------------------------
 // Member Bits
 // ----------------------------------------------------------------------------
 
+namespace seqan {
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, ReadId>
 {
@@ -210,6 +213,7 @@ struct MemberBits<Match<TSpec>, Errors>
 {
     static const unsigned VALUE = 6;
 };
+}
 
 // ----------------------------------------------------------------------------
 // Class MatchSorter
