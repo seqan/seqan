@@ -135,6 +135,16 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Concept ContainerConcept
+// ----------------------------------------------------------------------------
+
+template <typename TIterator>
+SEQAN_CONCEPT_IMPL((Range<TIterator>), (ContainerConcept));
+
+template <typename TIterator>
+SEQAN_CONCEPT_IMPL((Range<TIterator> const), (ContainerConcept));
+
+// ----------------------------------------------------------------------------
 // Metafunction IsView
 // ----------------------------------------------------------------------------
 
