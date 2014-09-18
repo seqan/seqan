@@ -325,8 +325,6 @@ template <typename TFileType, typename TDirection, typename TSpec, typename TStr
 inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   TStream &stream, TThrowExceptions = True())
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
-
     if (!open(file.stream, stream, _mapFileFormatToCompressionFormat(file.format)))
     {
         if (TThrowExceptions::VALUE)
@@ -381,8 +379,6 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
-
     if (!open(file.stream, fileName, openMode))
     {
         if (TThrowExceptions::VALUE)
