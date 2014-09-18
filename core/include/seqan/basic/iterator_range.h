@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_SEQUENCE_ITERATOR_RANGE_H
-#define SEQAN_EXTRAS_SEQUENCE_ITERATOR_RANGE_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
+#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
 
 namespace seqan {
 
@@ -76,19 +76,13 @@ public:
 
     template <typename TOtherContainer>
     SEQAN_HOST_DEVICE
-    Range(TOtherContainer & cont)
+    Range(TOtherContainer & cont,
+          SEQAN_CTOR_ENABLE_IF(Is<ContainerConcept<TOtherContainer> >)) :
+        begin(begin(cont, Standard())),
+        end(end(cont, Standard()))
     {
-        this->begin = seqan::begin(cont, Standard());
-        this->end = seqan::end(cont, Standard());
+        ignoreUnusedVariableWarning(dummy);
     }
-
-//    template <typename TOtherContainer>
-//    SEQAN_HOST_DEVICE
-//    Range(TOtherContainer const & cont)
-//    {
-//        this->begin = seqan::begin(cont, Standard());
-//        this->end = seqan::end(cont, Standard());
-//    }
 
     SEQAN_HOST_DEVICE
     Range(TIterator const & begin, TIterator const & end):
@@ -326,20 +320,6 @@ assign(Range<TIterator> &range, TContainer &cont)
 }
 
 // ----------------------------------------------------------------------------
-// operator<<
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TIterator>
-inline TStream &
-operator<<(TStream & target,
-           Range<TIterator> const & source)
-{
-    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
-    write(it, source);
-    return target;
-}
-
-// ----------------------------------------------------------------------------
 // toRange()
 // ----------------------------------------------------------------------------
 
@@ -386,4 +366,4 @@ inline void operator << (Range<TIterator> &dest, Pipe<TInput, TPipeSpec> &src)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_SEQUENCE_ITERATOR_RANGE_H
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H

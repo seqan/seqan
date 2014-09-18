@@ -395,7 +395,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    Prefix<const char *>::Type basename = getBasename(fileName, format(file.stream));
+    Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
     if (!guessFormatFromFilename(basename, file.format))
     {
         close(file.stream);

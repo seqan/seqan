@@ -31,106 +31,76 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Basic definitions for the stream module
-// ==========================================================================
 
-#ifndef SEQAN_STREAM_STREAM_BASE_
-#define SEQAN_STREAM_STREAM_BASE_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
 
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Enums
+// Tags
 // ============================================================================
 
 // --------------------------------------------------------------------------
-// Compression Type Tags
+// Direction Tags
 // --------------------------------------------------------------------------
 
-struct GZFile_;
-typedef Tag<GZFile_> GZFile;
+struct Input_;
+typedef Tag<Input_> Input;
 
-struct BgzfFile_;
-typedef Tag<BgzfFile_> BgzfFile;
+struct Output_;
+typedef Tag<Output_> Output;
 
-struct BZ2File_;
-typedef Tag<BZ2File_> BZ2File;
+struct Bidirectional_;
+typedef Tag<Bidirectional_> Bidirectional;
 
-// --------------------------------------------------------------------------
-// MagicHeader
-// --------------------------------------------------------------------------
-
-template <typename T>
-struct MagicHeader<GZFile, T>
-{
-    static char const VALUE[3];
-};
-
-template <typename T>
-char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, '\x8b', 0x08 };  // gzip's magic number
-
-
-template <typename T>
-struct MagicHeader<BZ2File, T>
-{
-    static char const VALUE[3];
-};
-
-template <typename T>
-char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+// ============================================================================
+// Metafunctions
+// ============================================================================
 
 // --------------------------------------------------------------------------
-// FileFormatExtensions
+// Metafunction Chunk
 // --------------------------------------------------------------------------
 
-template <typename T>
-struct FileFormatExtensions<GZFile, T>
+// Chunking is only supported for selected objects
+template <typename TObject>
+struct Chunk
 {
-    static char const * VALUE[3];
+    typedef Nothing Type;   // disabled by default
 };
 
-template <typename T>
-char const * FileFormatExtensions<GZFile, T>::VALUE[3] =
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function reserveChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename TSize>
+inline void reserveChunk(TIterator &, TSize)
+{}
+
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TChunk, typename TIterator, typename TDirection>
+inline Nothing getChunk(TChunk &, TIterator &, TDirection)
 {
-    ".gz",      // default output extension
-    ".Z",
-    ".zip"
-};
+    return Nothing();
+}
 
+// ----------------------------------------------------------------------------
+// Function advanceChunk()
+// ----------------------------------------------------------------------------
 
-template <typename T>
-struct FileFormatExtensions<BgzfFile, T>
+template <typename TIterator, typename TSize>
+inline void advanceChunk(TIterator &iter, TSize size)
 {
-    static char const * VALUE[2];
-};
-
-template <typename T>
-char const * FileFormatExtensions<BgzfFile, T>::VALUE[2] =
-{
-    ".bgzf",      // default output extension
-    ".bam"        // BAM files are bgzf compressed
-
-    // if you add extensions here, extend getBasename() below
-};
-
-
-template <typename T>
-struct FileFormatExtensions<BZ2File, T>
-{
-    static char const * VALUE[2];
-};
-
-template <typename T>
-char const * FileFormatExtensions<BZ2File, T>::VALUE[2] =
-{
-    ".bz2",      // default output extension
-    ".bz"
-};
+    iter += size;
+}
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_STREAM_STREAM_BASE_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_

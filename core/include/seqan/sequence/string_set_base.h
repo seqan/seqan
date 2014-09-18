@@ -2078,6 +2078,58 @@ operator!=(StringSet<TLeftString, TLeftSpec> const & left,
     return isNotEqual(_lex);
 }
 
+// ----------------------------------------------------------------------------
+// Function write(StringSet)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline void
+write(TTarget &target, StringSet<TSequence, TSpec> &seqs)
+{
+    typedef typename Size<StringSet<TSequence, TSpec> >::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline void
+write(TTarget &target, StringSet<TSequence, TSpec> const &seqs)
+{
+    typedef typename Size<StringSet<TSequence, TSpec> const>::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
+write(TTarget &target, String<TSequence, TSpec> &seqs)
+{
+    typedef typename Size<String<TSequence, TSpec> >::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
+template <typename TTarget, typename TSequence, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
+write(TTarget &target, String<TSequence, TSpec> const &seqs)
+{
+    typedef typename Size<String<TSequence, TSpec> const>::Type TSize;
+    for (TSize i = 0; i < length(seqs); ++i)
+    {
+        write(target, seqs[i]);
+        writeValue(target, '\n');
+    }
+}
+
 
 }  // namespace seqan
 

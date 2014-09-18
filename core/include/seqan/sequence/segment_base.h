@@ -877,16 +877,6 @@ SEQAN_CHECKPOINT
 // stream operators
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO(singer): Remove this forward.
-template <typename TObject, typename TDirection>
-struct DirectionIterator;
-
-struct Input_;
-typedef Tag<Input_> Input;
-
-struct Output_;
-typedef Tag<Output_> Output;
-
 template <typename TStream, typename THost, typename TSpec>
 inline TStream &
 operator << (TStream & target,

@@ -368,6 +368,14 @@ struct Spec<String<TValue, TSpec> const>:
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction Chunk
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct Chunk<String<TValue, TSpec> >:
+    Chunk<typename Iterator<String<TValue, TSpec>, Rooted>::Type> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
 
@@ -2099,6 +2107,80 @@ operator>=(TLeftValue * left,
  * 
  * @return TPos Length of the string.
  */
+
+// ----------------------------------------------------------------------------
+// Function reserveChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void reserveChunk(String<TValue, TSpec> &str, TSize size)
+{
+    reserve(str, length(str) + size);
+}
+
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TChunk, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, String<TValue, TSpec> &cont, Output)
+{
+    return assignRange(result, end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
+}
+
+// ----------------------------------------------------------------------------
+// Function advanceChunk()
+// ----------------------------------------------------------------------------
+
+// extend target string size
+template <typename TValue, typename TSpec, typename TSize>
+inline void advanceChunk(String<TValue, TSpec> &str, TSize size)
+{
+    _setLength(str, length(str) + size);
+}
+
+template <typename TValue, typename TStringSpec, typename TSpec, typename TSize>
+inline void advanceChunk(Iter<String<TValue, TStringSpec>, TSpec> &iter, TSize size)
+{
+    typedef String<TValue, TStringSpec> TContainer;
+    typedef Iter<TContainer, TSpec> TIter;
+
+    TContainer &cont = container(iter);
+    typename Position<TIter>::Type pos = position(iter);
+
+    iter += size;
+    if (pos > length(cont))
+        _setLength(cont, pos);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator<<() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           String<TValue, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator>>() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator>>(TStream & source,
+           String<TValue, TSpec> & target)
+{
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
+    read(it, target);
+    return source;
+}
 
 }  // namespace seqan
 

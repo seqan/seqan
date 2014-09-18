@@ -897,6 +897,13 @@ SEQAN_CHECKPOINT
 */
 //////////////////////////////////////////////////////////////////////////////
 
+template <typename TTarget, typename TValue>
+inline void
+write(TTarget &target, TValue * ptr)
+{
+    write(target, ptr, length(ptr));
+}
+
 }  // namespace seqan
 
 //____________________________________________________________________________
