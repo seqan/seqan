@@ -87,7 +87,6 @@ struct SmartFile
     TDependentContext   context;
 
     SmartFile() :
-        iter(stream),
         context(data_context)
     {}
 
