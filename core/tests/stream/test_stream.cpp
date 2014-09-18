@@ -37,7 +37,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
-#include <seqan/stream.h>
 
 #include "test_stream_lexical_cast.h"
 #include "test_stream_tokenization.h"

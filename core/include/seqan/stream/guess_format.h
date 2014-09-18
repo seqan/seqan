@@ -94,7 +94,7 @@ inline bool guessFormatFromFilename(TFilename const &, TagSelector<>)
 
 template <typename TFilename>
 inline typename Prefix<TFilename const>::Type
-getBasename(TFilename const & fname, TagSelector<>)
+getBasename(TFilename const & fname, TagSelector<> const &)
 {
     return prefix(fname, length(fname));
 }
@@ -122,14 +122,14 @@ inline bool guessFormatFromFilename(TFilename const &fname, TagSelector<TTagList
 
 template <typename TFilename, typename TTagList>
 inline typename Prefix<TFilename const>::Type
-getBasename(TFilename const & fname, TagSelector<TTagList> &format)
+getBasename(TFilename const & fname, TagSelector<TTagList> const &format)
 {
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
         return getBasename(fname, TFormat());
     else
-        return getBasename(fname, static_cast<typename TagSelector<TTagList>::Base &>(format));
+        return getBasename(fname, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // --------------------------------------------------------------------------
@@ -181,7 +181,7 @@ inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*
 
 template <typename TFilename, typename TFormat_>
 inline typename Prefix<TFilename const>::Type
-getBasename(TFilename const & fileName, Tag<TFormat_> /*formatTag*/)
+getBasename(TFilename const & fileName, Tag<TFormat_> const & /*formatTag*/)
 {
     typedef typename Value<TFilename>::Type                                     TValue;
     typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;

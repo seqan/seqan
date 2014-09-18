@@ -115,7 +115,6 @@
 // Lightweight Containers.
 // ===========================================================================
 
-#include <seqan/sequence/iterator_range.h>
 #include <seqan/sequence/container_view.h>
 
 // ===========================================================================

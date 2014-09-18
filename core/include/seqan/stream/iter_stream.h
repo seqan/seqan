@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@
 // ==========================================================================
 // TODO(esiragusa): tests
 
-#ifndef SEQAN_STREAM_ITER_H_
-#define SEQAN_STREAM_ITER_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
 
 namespace seqan {
 
@@ -156,40 +156,6 @@ public:
             }
         }
     }
-
-//    template <typename TOffset, typename TDirection>
-//    void goFurther(TOffset ofs, TDirection dir)
-//    {
-//        typedef typename MakeUnsigned<TOffset>::Type TUOffset;
-//        while (ofs != 0)
-//        {
-//            reserveChunk(dir);
-//            size_t adv = chunkSize(dir);
-//
-//            if (SEQAN_UNLIKELY(adv == 0))
-//            {
-//                // if chunking isn't available try to seek
-//                pos_type res = seekoff(ofs,
-//                                       std::ios_base::cur,
-//                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
-//
-//                // if seek doesn't work manually skip characters (when reading)
-//                if (IsSameType<TDirection, Input>::VALUE)
-//                    if (res == pos_type(off_type(-1)))
-//                        for (; ofs != 0; --ofs)
-//                            this->sbumpc();
-//
-//                return;
-//            }
-//
-//            if (adv > (TUOffset)ofs)
-//                adv = ofs;
-//            ofs -= adv;
-//
-//            advanceChunk(adv, dir);
-//        }
-//    }
-
 };
 
 template <typename TStream>
@@ -260,6 +226,20 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction Chunk
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+struct Chunk<StreamBuffer<TValue, TTraits> >
+{
+    typedef Range<TValue*> Type;
+};
+
+template <typename TStream, typename TDirection>
+struct Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >:
+    Chunk<typename Iter<TStream, StreamIterator<Tag<TDirection> > >::TStreamBuffer> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
@@ -318,17 +298,6 @@ struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction Iterator
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TDirection>
-struct DirectionIterator :
-    If<Is<StreamConcept<TObject> >,
-       Iter<TObject, StreamIterator<TDirection> >,
-       typename Iterator<TObject, Rooted>::Type>
-{};
-
-// ----------------------------------------------------------------------------
 // Function directionIterator()
 // ----------------------------------------------------------------------------
 
@@ -344,6 +313,54 @@ inline SEQAN_FUNC_DISABLE_IF(Is<StreamConcept<TContainer> >, typename Iterator<T
 directionIterator(TContainer &cont, TDirection const &)
 {
     return begin(cont, Rooted());
+}
+
+// ----------------------------------------------------------------------------
+// Function reserveChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDirection, typename TSize>
+inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize)
+{
+    iter.streamBuf->reserveChunk(TDirection());
+}
+
+// ----------------------------------------------------------------------------
+// Function advanceChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDirection, typename TSize>
+inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
+{
+    iter.streamBuf->advanceChunk(size, TDirection());
+}
+
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+// StreamBuffer
+template <typename TChunk, typename TValue, typename TTraits>
+inline void
+getChunk(TChunk &result, StreamBuffer<TValue, TTraits> &buf, Input)
+{
+    return assignRange(result, buf.gptr(), buf.egptr());
+}
+
+template <typename TChunk, typename TValue, typename TTraits>
+inline void
+getChunk(TChunk &result, StreamBuffer<TValue, TTraits> &buf, Output)
+{
+    return assignRange(result, buf.pptr(), buf.epptr());
+}
+
+// StreamIterator
+template <typename TChunk, typename TStream, typename TDirection>
+inline void
+getChunk(TChunk &result, Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    getChunk(result, *iter.streamBuf, Tag<TDirection>());
 }
 
 // ----------------------------------------------------------------------------
@@ -382,6 +399,10 @@ value(Iter<TStream, StreamIterator<Output> > const & iter)
     return iter;
 }
 
+// ----------------------------------------------------------------------------
+// Function setValue()
+// ----------------------------------------------------------------------------
+
 template <typename TStream, typename TValue>
 inline void
 setValue(Iter<TStream, StreamIterator<Output> > & iter, TValue const &val)
@@ -394,6 +415,18 @@ setValue(Iter<TStream, StreamIterator<Output> > const & iter, TValue const &val)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
     iter.streamBuf->sputc((typename Value<Iter<TStream, StreamIterator<Output> > >::Type)val);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeValue()
+// ----------------------------------------------------------------------------
+
+// streams
+template <typename TContainer, typename TValue>
+inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val)
+{
+    setValue(iter, val);
+    //goNext(iter);     // implicitly done by setValue above
 }
 
 // ----------------------------------------------------------------------------
@@ -478,36 +511,6 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function operator<<() for streams.
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TValue, typename TSpec>
-inline TStream &
-operator<<(TStream & target,
-           String<TValue, TSpec> const & source)
-{
-    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
-    write(it, source);
-    return target;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator>>() for streams.
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TValue, typename TSpec>
-inline TStream &
-operator>>(TStream & source,
-           String<TValue, TSpec> & target)
-{
-    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
-    read(it, target);
-    return source;
-}
-
-
-
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_STREAM_ITER_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_

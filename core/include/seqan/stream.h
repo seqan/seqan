@@ -85,7 +85,6 @@
 // ===========================================================================
 // TODO(esiragusa): move these files into basic - they are not unique to streams.
 
-#include <seqan/stream/chunking.h>
 #include <seqan/stream/tokenization.h>
 #include <seqan/stream/lexical_cast.h>
 

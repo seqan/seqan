@@ -61,6 +61,32 @@ struct FileFormat;
 // Tags, Enums
 // ============================================================================
 
+// --------------------------------------------------------------------------
+// TagList CompressedFileTypes
+// --------------------------------------------------------------------------
+
+typedef
+#if SEQAN_HAS_ZLIB
+    TagList<BgzfFile,
+    TagList<GZFile,
+#endif
+#if SEQAN_HAS_BZIP2
+    TagList<BZ2File,
+#endif
+    TagList<Nothing>
+#if SEQAN_HAS_BZIP2
+    >
+#endif
+#if SEQAN_HAS_ZLIB
+    >
+    >
+#endif
+    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
 #if SEQAN_HAS_ZLIB
 
 template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename ByteAT>
@@ -88,32 +114,6 @@ template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename B
 SEQAN_CONCEPT_IMPL((basic_bgzf_ostream<Elem, Tr, ElemA, ByteT, ByteAT>), (OutputStreamConcept));
 
 #endif
-
-// --------------------------------------------------------------------------
-// TagList CompressedFileTypes
-// --------------------------------------------------------------------------
-
-typedef
-#if SEQAN_HAS_ZLIB
-    TagList<BgzfFile,
-    TagList<GZFile,
-#endif
-#if SEQAN_HAS_BZIP2
-    TagList<BZ2File,
-#endif
-    TagList<Nothing>
-#if SEQAN_HAS_BZIP2
-    >
-#endif
-#if SEQAN_HAS_ZLIB
-    >
-    >
-#endif
-    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // --------------------------------------------------------------------------
 // Metafunction VirtualStreamSwitch_
@@ -481,6 +481,54 @@ template <typename TValue, typename TStream, typename TCompressionType>
 inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressionType &)
 {
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getUncompressedBasename()
+// ----------------------------------------------------------------------------
+
+// single format
+template <typename TFilename, typename TFormat>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fileName, TFormat const & format)
+{
+    return getBasename(fileName, format);
+}
+
+// make sure not to only cut the ".bgzf" extension and not ".bam"
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
+{
+    typedef typename Value<TFilename>::Type                                     TValue;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    
+    TLowcase lowcaseFileName(fileName);
+
+    if (endsWith(lowcaseFileName, ".bgzf"))
+        return prefix(fileName, length(fileName) - 5);
+
+    return prefix(fileName, length(fileName));
+}
+
+// TagSelector
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fname, TagSelector<> const & format)
+{
+    return getBasename(fname, format);
+}
+
+template <typename TFilename, typename TTagList>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fname, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        return _getUncompressedBasename(fname, TFormat());
+    else
+        return _getUncompressedBasename(fname, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // --------------------------------------------------------------------------
