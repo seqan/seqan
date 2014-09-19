@@ -196,8 +196,9 @@ inline void find(TText & text,
     typedef StringSet<TNeedle_, TSSetSpec> const                    TNeedles;
     typedef typename Value<TNeedles>::Type                          TNeedle;
     typedef typename Iterator<TNeedles, Rooted>::Type               TNeedlesIt;
+    typedef typename Reference<TNeedlesIt>::Type                    TNeedleRef;
 
-    typedef typename FindState_<TText, TNeedle, TAlgorithm>::Type  TState;
+    typedef typename FindState_<TText, TNeedle, TAlgorithm>::Type   TState;
     typedef typename StatesPool_<TState, TThreading>::Type          TStatesPool;
     typedef typename HasStatesPool_<TState, TThreading>::Type       HasStatesPool;
 
@@ -209,7 +210,7 @@ inline void find(TText & text,
     iterate(needles, [&](TNeedlesIt const & needlesIt)
     {
         TState & state = _findPickState(pool, HasStatesPool());
-        TNeedle const & needle = value(needlesIt);
+        TNeedleRef needle = value(needlesIt);
         TDelegator delegator(delegate, needlesIt);
 
         _findStateInit(state, text, needle, threshold, TAlgorithm());

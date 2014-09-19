@@ -438,7 +438,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
 
 /*!
  * @fn FiniteOrderedAlphabetConcept#ordValue
- * @headerfile seqan/sequence.h
+ * @headerfile <seqan/sequence.h>
  * @brief Maps an alphabet 1-to-1 to the interval [0..ValueSize).
  * 
  * @signature T ordValue(value);

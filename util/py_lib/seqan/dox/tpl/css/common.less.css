@@ -1516,26 +1516,26 @@ ol {
 ol li + li {
   margin-top: 0.5em;
 }
-dl {
+table {
   margin: 0;
   padding: 0;
 }
-dl:not(.overview) dt {
+table:not(.overview) th {
   font-size: 1.1em;
   font-weight: bold;
   margin: .5em 0 0 0;
   padding: 3px 5px;
   border-radius: 4px;
 }
-dl:not(.overview) dt:after {
+table:not(.overview) th:after {
   content: ':';
 }
-dl:not(.overview) dd {
+table:not(.overview) td {
   margin: 0 0 0 1em;
   padding: .5em;
   position: relative;
 }
-dl:not(.overview) dd:before {
+table:not(.overview) td:before {
   position: absolute;
   top: 0.3em;
   left: -1em;
@@ -1550,29 +1550,34 @@ dl:not(.overview) dd:before {
   margin: 5px auto 10px;
   font-size: .8em;
 }
-dl.overview {
+table.overview {
   max-width: 100%;
 }
-dl.overview dt,
-dl.overview dd {
+table.overview th,
+table.overview td {
   padding: 0.25em 0 0.25em 0;
+  vertical-align: top;
 }
-dl.overview dt {
-  float: left;
-  clear: left;
-  width: 7em;
+table.overview th {
   text-align: right;
   font-weight: bold;
   position: relative;
 }
-dl.overview dt code[data-param-type]:before,
-dl.overview dt code[data-param-type]:after {
+table.overview th code[data-param-type=in],
+table.overview th code[data-param-type=out] {
+  padding-left: 1em;
+}
+table.overview th code[data-param-type=in_out] {
+  padding-left: 1.7em;
+}
+table.overview th code[data-param-type]:before,
+table.overview th code[data-param-type]:after {
   position: absolute;
   top: .3em;
-  left: -1.5em;
+  left: 0;
   font-size: 0.7em;
 }
-dl.overview dt code[data-param-type=in]:before {
+table.overview th code[data-param-type=in]:before {
   font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
@@ -1582,7 +1587,7 @@ dl.overview dt code[data-param-type=in]:before {
   content: "\e161";
   color: #d43f3a;
 }
-dl.overview dt code[data-param-type=out]:before {
+table.overview th code[data-param-type=out]:before {
   font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
@@ -1592,11 +1597,11 @@ dl.overview dt code[data-param-type=out]:before {
   content: "\e163";
   color: #4cae4c;
 }
-dl.overview dt code[data-param-type=in_out]:before,
-dl.overview dt code[data-param-type=in_out]:after {
-  left: -2.8em;
+table.overview th code[data-param-type=in_out]:before,
+table.overview th code[data-param-type=in_out]:after {
+  left: 0;
 }
-dl.overview dt code[data-param-type=in_out]:before {
+table.overview th code[data-param-type=in_out]:before {
   font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
@@ -1606,7 +1611,7 @@ dl.overview dt code[data-param-type=in_out]:before {
   content: "\e161";
   color: #d43f3a;
 }
-dl.overview dt code[data-param-type=in_out]:after {
+table.overview th code[data-param-type=in_out]:after {
   font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
@@ -1615,26 +1620,29 @@ dl.overview dt code[data-param-type=in_out]:after {
   -moz-osx-font-smoothing: grayscale;
   content: "\e163";
   color: #4cae4c;
-  margin-left: 1.3em;
+  left: 1em;
 }
-dl.overview dd {
-  margin: 0 0 0 8em;
+table.overview td {
+  padding-left: 0.45em;
 }
-dl.overview dd [data-lang-entity] > :first-child {
+table.overview td [data-lang-entity] > :first-child {
   display: none;
 }
-dl.overview code {
+table.overview code {
   position: relative;
   top: .15em;
   line-height: 1.428571429em;
   white-space: pre;
   padding-left: 0;
   padding-right: 0;
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
+  /* makes long lines unnecessarily wrap (problem occurred when switch von definition lists to tables 
+        -ms-word-break: break-all;
+            word-break: break-all;
+            word-break: break-word;
+            */
+
 }
-dl.overview .glyphicon {
+table.overview .glyphicon {
   font-size: .7em;
 }
 pre {
@@ -2485,22 +2493,27 @@ ul.params {
 #results ol li.result h2 a:before {
   top: 0.5em;
 }
-#results ol li.result h2 a div {
-  color: #000;
+#results ol li.result h2 a .aka {
+  color: #333333;
 }
-#results ol li.result h2 a div .aka:before {
-  content: "a.k.a. ";
+#results ol li.result h2 a:not(:only-child) {
+  padding-bottom: 0;
+}
+#results ol li.result h2 .aka {
+  font-size: 0.9em;
+}
+#results ol li.result h2 .aka:before {
+  content: "synonyms: ";
   font-style: italic;
 }
-#results ol li.result h2 a div ul.subentries:before {
+#results ol li.result h2 .subentries {
+  font-size: 0.9em;
+}
+#results ol li.result h2 .subentries:before {
   content: 'matches:';
   font-style: italic;
-}
-#results ol li.result h2 a div ul.subentries li {
-  margin-left: 0.5em;
-}
-#results ol li.result h2 a div .text {
-  display: none;
+  display: block;
+  margin-left: 1.65em;
 }
 #results ol li.result.more {
   display: none;
@@ -2660,36 +2673,36 @@ html:not(.list) [data-lang-entity-container=typedef] > h2[data-lang-entity=typed
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=typedef] dt {
   padding: 0;
   background-color: transparent;
@@ -2795,36 +2808,36 @@ html:not(.list) [data-lang-entity-container=grouped_typedef] > h2[data-lang-enti
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=grouped_typedef] dt {
   padding: 0;
   background-color: transparent;
@@ -2930,36 +2943,36 @@ html:not(.list) [data-lang-entity-container=global_typedef] > h2[data-lang-entit
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=global_typedef] dt {
   padding: 0;
   background-color: transparent;
@@ -3065,36 +3078,36 @@ html:not(.list) [data-lang-entity-container=member_typedef] > h2[data-lang-entit
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=member_typedef] dt {
   padding: 0;
   background-color: transparent;
@@ -3200,36 +3213,36 @@ html:not(.list) [data-lang-entity-container=concept] > h2[data-lang-entity=conce
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=concept] dt {
   padding: 0;
   background-color: transparent;
@@ -3335,36 +3348,36 @@ html:not(.list) [data-lang-entity-container=class] > h2[data-lang-entity=class] 
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=class] dt {
   padding: 0;
   background-color: transparent;
@@ -3470,36 +3483,36 @@ html:not(.list) [data-lang-entity-container=specialization] > h2[data-lang-entit
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=specialization] dt {
   padding: 0;
   background-color: transparent;
@@ -3605,36 +3618,36 @@ html:not(.list) [data-lang-entity-container=enum] > h2[data-lang-entity=enum] > 
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=enum] dt {
   padding: 0;
   background-color: transparent;
@@ -3740,36 +3753,36 @@ html:not(.list) [data-lang-entity-container=metafunction] > h2[data-lang-entity=
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=metafunction] dt {
   padding: 0;
   background-color: transparent;
@@ -3875,36 +3888,36 @@ html:not(.list) [data-lang-entity-container=global_metafunction] > h2[data-lang-
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=global_metafunction] dt {
   padding: 0;
   background-color: transparent;
@@ -4010,36 +4023,36 @@ html:not(.list) [data-lang-entity-container=interface_metafunction] > h2[data-la
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=interface_metafunction] dt {
   padding: 0;
   background-color: transparent;
@@ -4145,36 +4158,36 @@ html:not(.list) [data-lang-entity-container=function] > h2[data-lang-entity=func
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=function] dt {
   padding: 0;
   background-color: transparent;
@@ -4280,36 +4293,36 @@ html:not(.list) [data-lang-entity-container=global_function] > h2[data-lang-enti
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=global_function] dt {
   padding: 0;
   background-color: transparent;
@@ -4415,36 +4428,36 @@ html:not(.list) [data-lang-entity-container=interface_function] > h2[data-lang-e
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=interface_function] dt {
   padding: 0;
   background-color: transparent;
@@ -4550,36 +4563,36 @@ html:not(.list) [data-lang-entity-container=member_function] > h2[data-lang-enti
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=member_function] dt {
   padding: 0;
   background-color: transparent;
@@ -4685,36 +4698,36 @@ html:not(.list) [data-lang-entity-container=tag] > h2[data-lang-entity=tag] > :f
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=tag] dt {
   padding: 0;
   background-color: transparent;
@@ -4820,36 +4833,36 @@ html:not(.list) [data-lang-entity-container=grouped_tag] > h2[data-lang-entity=g
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=grouped_tag] dt {
   padding: 0;
   background-color: transparent;
@@ -4955,36 +4968,36 @@ html:not(.list) [data-lang-entity-container=variable] > h2[data-lang-entity=vari
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=variable] dt {
   padding: 0;
   background-color: transparent;
@@ -5090,36 +5103,36 @@ html:not(.list) [data-lang-entity-container=global_variable] > h2[data-lang-enti
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=global_variable] dt {
   padding: 0;
   background-color: transparent;
@@ -5225,36 +5238,36 @@ html:not(.list) [data-lang-entity-container=local_variable] > h2[data-lang-entit
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=local_variable] dt {
   padding: 0;
   background-color: transparent;
@@ -5360,36 +5373,36 @@ html:not(.list) [data-lang-entity-container=member_variable] > h2[data-lang-enti
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=member_variable] dt {
   padding: 0;
   background-color: transparent;
@@ -5495,36 +5508,36 @@ html:not(.list) [data-lang-entity-container=adaption] > h2[data-lang-entity=adap
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=adaption] dt {
   padding: 0;
   background-color: transparent;
@@ -5630,36 +5643,36 @@ html:not(.list) [data-lang-entity-container=macro] > h2[data-lang-entity=macro] 
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=macro] dt {
   padding: 0;
   background-color: transparent;
@@ -5765,36 +5778,36 @@ html:not(.list) [data-lang-entity-container=template_parameter] > h2[data-lang-e
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=template_parameter] dt {
   padding: 0;
   background-color: transparent;
@@ -5900,36 +5913,36 @@ html:not(.list) [data-lang-entity-container=page] > h2[data-lang-entity=page] > 
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=page] dt {
   padding: 0;
   background-color: transparent;
@@ -6038,36 +6051,36 @@ html:not(.list) [data-lang-entity-container=group] > h2[data-lang-entity=group] 
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=group] dt {
   padding: 0;
   background-color: transparent;
@@ -6176,36 +6189,36 @@ html:not(.list) [data-lang-entity-container=tutorial] > h2[data-lang-entity=tuto
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=tutorial] dt {
   padding: 0;
   background-color: transparent;
@@ -6311,36 +6324,36 @@ html:not(.list) [data-lang-entity-container=unknown] > h2[data-lang-entity=unkno
   display: inline-block;
 }
 /*
-	// annotates h3
-	h3[data-lang-entity=@{langEntity}] {
-	    display: table;
-	    font-size: 1.1em;
-	    padding-bottom: .3em;
+    // annotates h3
+    h3[data-lang-entity=@{langEntity}] {
+        display: table;
+        font-size: 1.1em;
+        padding-bottom: .3em;
         width: 100%;
         font-weight: 700;
-	    
-	    > * { display: table-cell !important; }
-	    
-    	> :first-child {
-    	    font-size: 1rem;
-    	    font-weight: 700 !important;
-        	width: 3.6rem;
-        	vertical-align: middle;
-        	text-align: center;
-        	background-color: @color;
-        	border-color: darken(@color, 10%);
-        	color: #fff;
-        	
-        	&:hover {
-            	background-color: darken(@color, 10%);
-        	}
+
+        > * { display: table-cell !important; }
+
+        > :first-child {
+            font-size: 1rem;
+            font-weight: 700 !important;
+            width: 3.6rem;
+            vertical-align: middle;
+            text-align: center;
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            color: #fff;
+
+            &:hover {
+                background-color: darken(@color, 10%);
+            }
         }
-        
+
         > :nth-child(2) {
             padding-left: 1.9rem;
         }
-	}
-	/**/
+    }
+    /**/
 html.page_languageentities [data-lang-entity-container=unknown] dt {
   padding: 0;
   background-color: transparent;
@@ -6434,16 +6447,16 @@ html [data-lang-entity=template_parameter] > *:first-child,
 html .popover[data-lang-entity-container=template_parameter] .popover-title,
 html.page_languageentities [data-lang-entity-container=template_parameter] [data-lang-entity-ideogram]:before {
   /* RAINBOW
-	background: -moz-linear-gradient(-45deg, rgba(217,63,63,1) 0%, rgba(217,178,63,1) 14%, rgba(140,217,63,1) 29%, rgba(63,217,102,1) 43%, rgba(63,217,217,1) 57%, rgba(63,102,217,1) 71%, rgba(140,63,217,1) 86%, rgba(217,63,178,1) 100%);
-	background: -webkit-linear-gradient(transparent, transparent),-webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(217,63,63,1)), color-stop(14%,rgba(217,178,63,1)), color-stop(29%,rgba(140,217,63,1)), color-stop(43%,rgba(63,217,102,1)), color-stop(57%,rgba(63,217,217,1)), color-stop(71%,rgba(63,102,217,1)), color-stop(86%,rgba(140,63,217,1)), color-stop(100%,rgba(217,63,178,1)));
-	background: -webkit-linear-gradient(transparent, transparent),-webkit-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
-	background: -o-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
-	background: -ms-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
-	background: linear-gradient(135deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+    background: -moz-linear-gradient(-45deg, rgba(217,63,63,1) 0%, rgba(217,178,63,1) 14%, rgba(140,217,63,1) 29%, rgba(63,217,102,1) 43%, rgba(63,217,217,1) 57%, rgba(63,102,217,1) 71%, rgba(140,63,217,1) 86%, rgba(217,63,178,1) 100%);
+    background: -webkit-linear-gradient(transparent, transparent),-webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(217,63,63,1)), color-stop(14%,rgba(217,178,63,1)), color-stop(29%,rgba(140,217,63,1)), color-stop(43%,rgba(63,217,102,1)), color-stop(57%,rgba(63,217,217,1)), color-stop(71%,rgba(63,102,217,1)), color-stop(86%,rgba(140,63,217,1)), color-stop(100%,rgba(217,63,178,1)));
+    background: -webkit-linear-gradient(transparent, transparent),-webkit-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+    background: -o-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+    background: -ms-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+    background: linear-gradient(135deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
 */
 
   /* RED & BLACK
-//	background: mix(@red, @anthrazit); /* Old browsers */
+//  background: mix(@red, @anthrazit); /* Old browsers */
 
 }
 html.page_languageentities #toc ol {
@@ -6566,7 +6579,10 @@ ul.overview > li table tr td {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   vertical-align: top;
-  border-top: 1px dotted #222222;
+  border-top: 1px solid #ccc;
+}
+ul.overview > li table tr td:before {
+  display: none;
 }
 ul.overview > li table tr td:last-child {
   padding-right: 1rem;
@@ -6590,11 +6606,11 @@ ul.overview > li [data-lang-entity] > :nth-child(2) {
             -moz-column-count: 1;
             -webkit-column-count: 1;
             column-count: 1;
-        
+
             > li {
                 float: none;
                 width: 100%;
-                
+
                 margin-left: 0;
             }
         }

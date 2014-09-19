@@ -1,0 +1,7 @@
+Name: Yara
+Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+License: BSD
+Copyright: 2010-2014, Enrico Siragusa; 2013, NVIDIA Corporation
+Status: testing
+Description: Yet another read aligner.

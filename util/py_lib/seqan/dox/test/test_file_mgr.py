@@ -8,7 +8,7 @@ import os
 import os.path
 import unittest
 
-import file_mgr
+import seqan.dox.file_mgr as file_mgr
 
 
 class Test(unittest.TestCase):

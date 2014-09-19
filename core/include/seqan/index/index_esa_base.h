@@ -240,7 +240,7 @@ TA
 /*!
  * @mfn Index#GetVSTreeIteratorTraits
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Default behaviour of @link InputIteratorConcept#goNext @endlink when no second parameter is given.
  * 
@@ -372,7 +372,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * @see IndexEsa
  * 
  * @tag IndexEsaFibres#EsaSA
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The suffix array.
  * 
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
@@ -382,7 +382,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag IndexEsaFibres#EsaIsa
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The inverse suffix array.
  *
  * The inverse suffix array stores the lexicographic rank of each suffix of <tt>EsaRawText</tt>.
@@ -391,7 +391,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * size type.
  *
  * @tag IndexEsaFibres#EsaChildtab
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The child table.
  * 
  * The child table contains structural information of the suffix tree (see
@@ -401,7 +401,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * size type.
  * 
  * @tag IndexEsaFibres#EsaRawText
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The raw text the index is really based on.
  * 
  * <tt>EsaText</tt> and <tt>EsaRawText</tt> fibres are equal by default. They
@@ -409,11 +409,11 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * concatenation of all strings in this set.
  * 
  * @tag IndexEsaFibres#EsaText
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The original text the index should be based on.
  * 
  * @tag IndexEsaFibres#EsaBwt
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The Burrows-Wheeler table.
  * 
  * The Burrows-Wheeler table contains the Burrows-Wheeler transformation of
@@ -424,7 +424,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * <tt>EsaBwt</tt>.
  * 
  * @tag IndexEsaFibres#EsaLcp
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The lcp table.
  * 
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
@@ -434,7 +434,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * size type.
  *
  * @tag IndexEsaFibres#EsaLcpe
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief The lcpe table.
  */
 
@@ -472,7 +472,7 @@ information of the suffix tree) are provided.
 /*!
  * @class IndexEsa
  * @extends Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief An index based on an enhanced suffix array.
  * 
  * @signature template <typename TText, typename TSpec>
