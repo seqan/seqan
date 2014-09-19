@@ -49,12 +49,14 @@
 #include <cxxabi.h>
 #endif
 
+namespace seqan {
+
 // ============================================================================
 // Forwards
 // ============================================================================
 
 template <typename T>
-struct Tag {};
+struct Tag;
 
 //struct Nothing_;
 //typedef Tag<Nothing_> Nothing;
@@ -165,8 +167,6 @@ struct Tag {};
 #define SEQAN_RETHROW
 
 #endif // #ifdef SEQAN_EXCEPTIONS
-
-namespace seqan {
 
 // ============================================================================
 // Exceptions
