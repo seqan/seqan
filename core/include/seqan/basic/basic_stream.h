@@ -43,14 +43,17 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TValue, typename TTraits, typename TValue2>
-inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val);
-
 template <typename TDirection>
 struct StreamIterator;
 
 template <typename TValue, typename TTraits, typename TValue2>
+inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val);
+
+template <typename TValue, typename TTraits, typename TValue2>
 inline void writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 val);
+
+template <typename TContainer, typename TValue>
+inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue val);
 
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
@@ -691,27 +694,49 @@ appendRawPod(TTarget & target, TValue const & val)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(TNumber)
+// Function write(TNumber); write fundamental type
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TNumber>
-inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, void)
-write(TTarget &target, TNumber &number)
+template <typename TTarget, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<Convertible<typename Value<TTarget>::Type, TValue> >,
+                                 Is<FundamentalConcept<TValue> > >, void)
+write(TTarget &target, TValue &number)
 {
-    if (sizeof(TNumber) == 1)
-        writeValue(target, number);
+    if (sizeof(TValue) == 1)
+        writeValue(target, number);     // write chars as chars
     else
         appendNumber(target, number);
 }
 
-template <typename TTarget, typename TNumber>
-inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber const> >, void)
-write(TTarget &target, TNumber const &number)
+template <typename TTarget, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<Convertible<typename Value<TTarget>::Type, TValue> >,
+                                 Is<FundamentalConcept<TValue> > >, void)
+write(TTarget &target, TValue const &number)
 {
-    if (sizeof(TNumber) == 1)
-        writeValue(target, number);
+    if (sizeof(TValue) == 1)
+        writeValue(target, number);     // write chars as chars
     else
         appendNumber(target, number);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TNumber); write non-fundamental, convertible type
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<Convertible<typename Value<TTarget>::Type, TValue> >,
+                                 Not<Is<FundamentalConcept<TValue> > > >, void)
+write(TTarget &target, TValue &number)
+{
+    writeValue(target, number);
+}
+
+template <typename TTarget, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<Convertible<typename Value<TTarget>::Type, TValue const> >,
+                                 Not<Is<FundamentalConcept<TValue const> > > >, void)
+write(TTarget &target, TValue const &number)
+{
+    writeValue(target, number);
 }
 
 // ----------------------------------------------------------------------------
