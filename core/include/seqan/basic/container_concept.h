@@ -342,11 +342,7 @@ struct ContainerConcept :
         sameType(size, length(c));
         sameType(true, empty(c));
 
-        // clear
-        clear(c);
-
         // TODO: infix/suffix/prefix
-        // maybe we need a SequenceConcept between Container and String
 
         // swap containers
 //        swap(c, c2);          // swap is not yet supported by every string
@@ -354,13 +350,13 @@ struct ContainerConcept :
 };
 
 /**
-.Concept.SequenceConcept
+.Concept.StringConcept
 ..baseconcept:Concept.ContainerConcept
 ..summary:Concept for sequences.
 ..include:seqan/basic.h
 */
 
-SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
+SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept))
 {
     typedef typename Value<TString>::Type                 TValue;
     typedef typename Size<TString>::Type                  TSize;
@@ -374,9 +370,12 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
 
     TString     str, str2;
 
-    SEQAN_CONCEPT_USAGE(SequenceConcept)
+    SEQAN_CONCEPT_USAGE(StringConcept)
     {
         pos = 0u;
+
+        // clear
+        clear(str);
 
         // append
         append(str, str2);
@@ -480,16 +479,16 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @concept SequenceConcept
+ * @concept StringConcept
  * @brief Sequences are dense linear containers that have positions.
  * @extends RandomAccessContainerConcept
  * @headerfile <seqan/basic.h>
  *
- * @signature SequenceConcept<T>
+ * @signature StringConcept<T>
  */
 
 /*!
- * @fn SequenceConcept#iter
+ * @fn StringConcept#iter
  * @headerfile <seqan/sequence.h>
  * @brief Iterator to the item at the given position in a container.
  *
@@ -509,7 +508,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#append
+ * @fn StringConcept#append
  * @brief Append a sequence to another one.
  *
  * @signature void append(seq, other);
@@ -519,7 +518,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#appendValue
+ * @fn StringConcept#appendValue
  * @brief Append a value to a sequence.
  *
  * @signature void appendValue(seq, val);
@@ -529,7 +528,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#front
+ * @fn StringConcept#front
  * @brief Return reference to the first element.
  *
  * @signature TReference front(seq);
@@ -540,7 +539,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#back
+ * @fn StringConcept#back
  * @brief Return reference to the last element.
  *
  * @signature TReference back(seq);
@@ -551,7 +550,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#resize
+ * @fn StringConcept#resize
  * @brief Resize a sequence.
  *
  * @signature void resize(seq, len[, val]);
@@ -564,7 +563,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#clear
+ * @fn StringConcept#clear
  * @brief Remove all elements from the sequences.
  *
  * @signature void clear(seq);
@@ -573,7 +572,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#erase
+ * @fn StringConcept#erase
  * @brief Erase an element or a range of elements from a sequence.
  *
  * @signature void erase(seq, pos[, posEnd)
@@ -584,7 +583,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#eraseFront
+ * @fn StringConcept#eraseFront
  * @brief Erase first element in a sequence.
  *
  * @signature void eraseFront(seq);
@@ -593,7 +592,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @fn SequenceConcept#eraseBack
+ * @fn StringConcept#eraseBack
  * @brief Erase last element in a sequence.
  *
  * @signature void eraseBack(seq);
@@ -602,7 +601,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @mfn SequenceConcept#Infix
+ * @mfn StringConcept#Infix
  * @brief Returns the infix type for a sequence.
  *
  * @signature Infix<TSequence>::Type
@@ -613,7 +612,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @mfn SequenceConcept#Suffix
+ * @mfn StringConcept#Suffix
  * @brief Returns the suffix type for a sequence.
  *
  * @signature Suffix<TSequence>::Type
@@ -624,7 +623,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  */
 
 /*!
- * @mfn SequenceConcept#Prefix
+ * @mfn StringConcept#Prefix
  * @brief Returns the prefix type for a sequence.
  *
  * @signature Prefix<TSequence>::Type

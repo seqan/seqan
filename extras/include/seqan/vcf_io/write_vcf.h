@@ -88,27 +88,27 @@ namespace seqan {
 ..include:seqan/vcf_io.h
 */
 
-template <typename TTarget>
-void
-write(TTarget & target,
-      VcfHeader const & header,
-      VcfIOContext const & /*vcfIOContext*/,
-      Vcf const & /*tag*/)
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+writeRecord(TTarget & target,
+            VcfHeader const & header,
+            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            Vcf const & /*tag*/)
 {
-    for (unsigned i = 0; i < length(header.headerRecords); ++i)
+    for (unsigned i = 0; i < length(header); ++i)
     {
         write(target, "##");
-        write(target, header.headerRecords[i].key);
+        write(target, header[i].key);
         writeValue(target, '=');
-        write(target, header.headerRecords[i].value);
+        write(target, header[i].value);
         writeValue(target, '\n');
     }
 
     write(target, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
-    for (unsigned i = 0; i < length(header.sampleNames); ++i)
+    for (unsigned i = 0; i < length(sampleNames(context)); ++i)
     {
         writeValue(target, '\t');
-        write(target, header.sampleNames[i]);
+        write(target, sampleNames(context)[i]);
     }
     writeValue(target, '\n');
 }
@@ -147,51 +147,70 @@ write(TTarget & target,
 ..include:seqan/vcf_io.h
 */
 
-template <typename TTarget>
-void 
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
 writeRecord(TTarget & target,
-           VcfRecord const & record,
-           VcfIOContext const & vcfIOContext,
-           Vcf const & /*tag*/)
+            VcfRecord const & record,
+            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            Vcf const & /*tag*/)
 {
-    write(target, (*vcfIOContext.sequenceNames)[record.rID]);
+    // CHROM
+    write(target, contigNames(context)[record.rID]);
     writeValue(target, '\t');
+
+    // POS
     appendNumber(target, record.beginPos + 1);
     writeValue(target, '\t');
+
+    // ID
     if (empty(record.id))
         writeValue(target, '.');
     else
         write(target, record.id);
     writeValue(target, '\t');
+
+    // REF
     if (empty(record.ref))
         writeValue(target, '.');
     else
         write(target, record.ref);
     writeValue(target, '\t');
+
+    // ALT
     if (empty(record.alt))
         writeValue(target, '.');
     else
         write(target, record.alt);
     writeValue(target, '\t');
+
+    // QUAL
     if (record.qual != record.qual)  // only way to test for nan
         writeValue(target, '.');
     else
         appendNumber(target, record.qual);
+
+    // FILTER
     writeValue(target, '\t');
     if (empty(record.filter))
         writeValue(target, '.');
     else
         write(target, record.filter);
     writeValue(target, '\t');
+
+    // INFO
     if (empty(record.info))
         writeValue(target, '.');
     else
         write(target, record.info);
+
+    // FORMAT
     writeValue(target, '\t');
     if (empty(record.format))
         writeValue(target, '.');
     else
         write(target, record.format);
+
+    // The samples.
     for (unsigned i = 0; i < length(record.genotypeInfos); ++i)
     {
         writeValue(target, '\t');

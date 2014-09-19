@@ -83,8 +83,6 @@ struct FragStoreSAMContext
     TReadGapAnchors     readGapAnchors;
     TContigAnchorGaps   contigGapAnchors;
 
-    // Buffer for SAM tags.
-    CharString tags;
     // Buffer for the read sequence.
     TReadSeq readSeq;
 
@@ -426,8 +424,21 @@ _readAlignments(
 //        refresh(fragStore.contigNameStoreCache);  // was done for the BamIOContext already
     refresh(fragStore.readNameStoreCache);
 
+    __uint64 recNo = 0;
     while (!atEnd(iter))
-        _readOneAlignment(fragStore, contigAnchorGaps, matchMateInfos, ctx, iter, format, contextSAM, importFlags);
+    {
+        try
+        {
+            ++recNo;
+            _readOneAlignment(fragStore, contigAnchorGaps, matchMateInfos, ctx, iter, format, contextSAM, importFlags);
+        }
+        catch (IOError &e)
+        {
+            std::stringstream sstr;
+            sstr << "Error in SAM/BAM record #" << recNo << ": " << e.what();
+            SEQAN_THROW(IOError(sstr.str()));
+        }
+    }
 
     if (importFlags.importReadSeq)
     {
@@ -579,9 +590,6 @@ _readOneAlignment(
     if (hasFlagRC(record))
         reverseComplement(readSeq);
 
-    // Get tags in SAM format.
-    assignTagsBamToSam(contextSAM.tags, record.tags);
-
     // Check if read sequence is already in the store.  If so get the ID, otherwise create new entries in the read
     // then read name and mate pair store.
     contextSAM.readId = -1;
@@ -629,32 +637,15 @@ _readOneAlignment(
     if (importFlags.importReadAlignmentTags || importFlags.importReadAlignmentQuality)
     {
         // extract and delete some tags
-        if (!empty(contextSAM.tags))
-            for (unsigned pos = length(contextSAM.tags), right = length(contextSAM.tags); pos != 0; )
-            {
-                --pos;
-                if (pos == 0 || contextSAM.tags[pos] == '\t')
-                {
-                    unsigned left = pos;
-                    if (contextSAM.tags[left] == '\t') ++left;                    
-
-                    bool remove = false;
-                    if (infix(contextSAM.tags, left, left + 2) == "MD")
-                        remove = true;
-                    
-                    if (infix(contextSAM.tags, left, left + 2) == "NM")
-                    {
-                        int errors = lexicalCast<int>(infix(contextSAM.tags, left + 5, right));  // NM:i:x
-                        mapQ.errors = errors;
-                        remove = true;
-                    }
-                    
-                    if (remove)
-                        erase(contextSAM.tags, left, _min(right + 1, length(contextSAM.tags)));
-
-                    right = pos;
-                }
-            }
+        if (!empty(record.tags))
+        {
+            BamTagsDict tags(record.tags);
+            int tagId = -1;
+            if (findTagKey(tagId, tags, "MD"))
+                eraseTag(tags, tagId);
+            if (findTagKey(tagId, tags, "NM") && extractTagValue(mapQ.errors, tags, tagId))
+                eraseTag(tags, tagId);
+        }
     }
 
     // Create entries in Sam specific stores.
@@ -662,7 +653,7 @@ _readOneAlignment(
         appendValue(fragStore.alignQualityStore, mapQ, Generous());
     
     if (importFlags.importReadAlignmentTags)
-        appendValue(fragStore.alignedReadTagStore, contextSAM.tags, Generous());
+        appendValue(fragStore.alignedReadTagStore, record.tags, Generous());
 
     // Store additional data about match mate temporarily.
     // used in the end of the read function to generate match mate IDs.
@@ -905,7 +896,6 @@ setPrimaryMatch(BamAlignmentRecord & record,
     }
 
     // Fill tags here to release record.qual 
-    clear(record.tags);
     if (errors != -1)
         appendTagValue(record.tags, "NM", errors);
     if (!empty(record.tags))
@@ -1073,8 +1063,7 @@ writeAlignments(SmartFile<Bam, Output, TSpec> & bamFile,
 
         // Append additional tags.
         if (alignedRead.id < length(store.alignedReadTagStore))
-            assignTagsSamToBam(record.tags, store.alignedReadTagStore[alignedRead.id]);
-
+            append(record.tags, store.alignedReadTagStore[alignedRead.id]);
 
         // Write record to target.
         writeRecord(bamFile, record);

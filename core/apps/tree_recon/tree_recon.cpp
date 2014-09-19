@@ -205,10 +205,9 @@ int main(int argc, const char *argv[])
 		}
 
 		// Write the result
-		FILE* strmDot;
-		strmDot = fopen(outfile.c_str(), "w");
-		write(strmDot, tree, names, DotDrawing());
-		fclose(strmDot);
+		std::ofstream strmDot(outfile.c_str());
+		writeRecords(strmDot, tree, names, DotDrawing());
+		strmDot.close();
 	} else if (format == "newick") {
 		FILE* strmDot;
 		strmDot = fopen(outfile.c_str(), "w");

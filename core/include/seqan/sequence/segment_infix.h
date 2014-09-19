@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename THost>
  *            class Segment<THost, InfixSegment>;
  *
- * @tparam THost The underlying @link SequenceConcept sequence @endlink type.
+ * @tparam THost The underlying @link ContainerConcept sequence @endlink type.
  *
  * @see SuffixSegment
  * @see PrefixSegment
@@ -138,7 +138,6 @@ SEQAN_CHECKPOINT
     }
 
     SEQAN_HOST_DEVICE
-    explicit
     Segment(typename Parameter_<THost>::Type _host):
         data_host(_toPointer(_host)),
         data_begin_position(0),

@@ -60,7 +60,7 @@ struct OrFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return func1(val) || func2(val);
     }
@@ -84,7 +84,7 @@ struct AndFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return func1(val) && func2(val);
     }
@@ -107,7 +107,7 @@ struct NotFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         return !func(val);
     }
@@ -117,21 +117,28 @@ struct NotFunctor
 // Functor CountDownFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TCounter = __uint64>
+template <typename TFunctor = True, __uint64 REMAINING = 0>
 struct CountDownFunctor
 {
     __uint64 remaining;
+    TFunctor func;
 
-    CountDownFunctor(TCounter const & newRemaining):
-        remaining(newRemaining)
+    CountDownFunctor(__uint64 remaining = REMAINING):
+        remaining(remaining)
+    {}
+
+    CountDownFunctor(__uint64 remaining, TFunctor const &func):
+        remaining(remaining),
+        func(func)
     {}
 
     template <typename TValue>
-    bool operator() (TValue const &) 
+    bool operator() (TValue const & val)
     {
         if (remaining == 0)
             return true;
-        --remaining;
+        if (func(val))
+            --remaining;
         return false;
     }
     
@@ -140,6 +147,49 @@ struct CountDownFunctor
         return remaining == 0;
     }
 };
+
+// ----------------------------------------------------------------------------
+// Functor CountFunctor
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor = True>
+struct CountFunctor
+{
+    __uint64 count;
+    TFunctor func;
+
+    CountFunctor()
+    {}
+
+    CountFunctor(TFunctor const &func):
+        func(func)
+    {}
+
+    template <typename TValue>
+    bool operator() (TValue const & val)
+    {
+        if (func(val))
+            ++count;
+        return false;
+    }
+
+    operator __uint64() const
+    {
+        return count;
+    }
+};
+
+template <typename TFunctor>
+inline void clear(CountFunctor<TFunctor> &func)
+{
+    func.count = 0;
+}
+
+template <typename TFunctor>
+inline __uint64 & value(CountFunctor<TFunctor> &func)
+{
+    return func.count;
+}
 
 }   // namespace seqan
 

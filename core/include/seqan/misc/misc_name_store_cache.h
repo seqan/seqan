@@ -193,6 +193,29 @@ host(NameStoreCache<TNameStore, TName> const & cache)
 // ----------------------------------------------------------------------------
 
 /*!
+ * @fn NameStoreCache#clear
+ * @brief Clears a NameStoreCache.
+ *
+ * @signature void clear(cache);
+ *
+ * @param[in,out] nameStore The NameStoreCache to clear.
+ */
+
+template <typename TNameStore, typename TName>
+inline void
+clear(NameStoreCache<TNameStore, TName> &cache)
+{
+    cache.nameSet.clear();
+}
+
+template <typename TNameStore, typename TName>
+inline bool
+empty(NameStoreCache<TNameStore, TName> const &cache)
+{
+    return cache.nameSet.empty();
+}
+
+/*!
  * @fn NameStoreCache#refresh
  * @brief Recreate a NameStoreCache.
  *
@@ -201,23 +224,11 @@ host(NameStoreCache<TNameStore, TName> const & cache)
  * @param[in,out] nameStore The NameStoreCache to refresh.
  */
 
-/**
-.Function.refresh:
-..class:Class.NameStoreCache
-..summary:Recreate a name store cache.
-..cat:Fragment Store
-..signature:refresh(cache)
-..param.cache:A @Class.NameStoreCache@ object.
-...type:Class.NameStoreCache
-..see:Function.getIdByName
-..include:seqan/store.h
-*/
-    
 template <typename TNameStore, typename TName>
 inline void
 refresh(NameStoreCache<TNameStore, TName> &cache)
 {
-    cache.nameSet.clear();
+    clear(cache);
     for (unsigned i = 0; i < length(*cache.nameSet.key_comp().nameStore); ++i)
         cache.nameSet.insert(i);
 }
@@ -325,8 +336,8 @@ appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore
 */
 
 template <typename TNameStore, typename TName, typename TPos>
-inline bool 
-getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
+inline bool
+getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
 {
     typedef typename Iterator<TNameStore const, Standard>::Type TNameStoreIter;
     
@@ -337,7 +348,7 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
         if (name == getValue(iter))
         {
             // set the ID
-            pos = position(iter);
+            pos = iter - begin(nameStore, Standard());
             // and break the loop
             return true;
         }
@@ -347,7 +358,7 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos)
 
 template <typename TCNameStore, typename TCName, typename TName, typename TPos>
 inline bool
-getIdByName(NameStoreCache<TCNameStore, TCName> const & context, TName const & name, TPos & pos)
+getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TName const & name)
 {
     typedef typename Position<TCNameStore const>::Type TId;
     typedef NameStoreCache<TCNameStore, TCName> const TNameStoreCache;
@@ -380,7 +391,7 @@ template <typename TNameStore, typename TName, typename TPos, typename TContext>
 inline bool
 getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
 {
-    return getIdByName(nameStore, name, pos);
+    return getIdByName(pos, nameStore, name);
 }
 
 // deprecated.
@@ -388,16 +399,16 @@ template<typename TNameStore, typename TName, typename TPos, typename TCNameStor
 inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {
-    return getIdByName(context, name, pos);
+    return getIdByName(pos, context, name);
 }
 
 // Append contig name to name store, if not known already.
 template <typename TNameStore, typename TName, typename TName2>
 inline typename Position<TNameStore>::Type
-getIdByName(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
+nameToId(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
 {
     typename Size<TNameStore>::Type nameId = 0;
-    if (!getIdByName(cache, name, nameId))
+    if (!getIdByName(nameId, cache, name))
     {
         nameId = length(host(cache));
         appendName(cache, name);

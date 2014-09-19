@@ -890,6 +890,8 @@ write(TFile & file,
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	String<char> align;
 	if (convertAlignment(g, align)) {	
 		TSize nseq = length(stringSet(g));
@@ -897,15 +899,15 @@ write(TFile & file,
 		typedef typename Iterator<String<char>, Standard>::Type TIter;
 		TIter it = begin(align, Standard());
 		for(TSize i = 0; i<nseq; ++i) {
-			writeValue(file, '>');
-			write(file,names[i]);
-			writeValue(file, '\n');
+			writeValue(target, '>');
+			write(target,names[i]);
+			writeValue(target, '\n');
 			TSize col = 0;
 			while(col < colLen) {
 				TSize max = ((colLen - col) < 60) ? colLen - col : 60;
 				for(TSize finger = 0; finger<max; ++finger, ++col, ++it) 
-					writeValue(file, *it);
-				writeValue(file, '\n');
+					writeValue(target, *it);
+				writeValue(target, '\n');
 			}
 		}
 	}
@@ -927,51 +929,53 @@ write(TFile & file,
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	String<char> align;
 	if (convertAlignment(g, align)) {	
 		TSize nseq = length(stringSet(g));
 		TSize colLen = length(align) / nseq;
 	
-		write(file,"PileUp\n");
-		writeValue(file, '\n');
-		write(file," MSF: ");
-		appendNumber(file, (unsigned)colLen);
-		write(file," Type: P Check: 0 ..\n\n");
+		write(target,"PileUp\n");
+		writeValue(target, '\n');
+		write(target," MSF: ");
+		appendNumber(target, (unsigned)colLen);
+		write(target," Type: P Check: 0 ..\n\n");
 		TSize offset = 0;
 		for(TSize i = 0; i<nseq; ++i) {
-			write(file," Name: ");
-			write(file,names[i]);
-			write(file," oo  Len:  ");
+			write(target," Name: ");
+			write(target,names[i]);
+			write(target," oo  Len:  ");
 			TSize len = length(names[i]);
 			if (len > offset) offset = len;
-			appendNumber(file, (unsigned)colLen);
-			write(file," Check: 0");
-			write(file," Weight: 1.00");
-			writeValue(file, '\n');
+			appendNumber(target, (unsigned)colLen);
+			write(target," Check: 0");
+			write(target," Weight: 1.00");
+			writeValue(target, '\n');
 		}
 		offset += 5;
-		writeValue(file, '\n');
-		write(file, "//\n");
-		writeValue(file, '\n');
-		writeValue(file, '\n');
+		writeValue(target, '\n');
+		write(target, "//\n");
+		writeValue(target, '\n');
+		writeValue(target, '\n');
 		TSize col = 0;
 		while(col < colLen) {
 			TSize max = 0;
 			for(TSize i = 0; i<nseq; ++i) {
 				max = ((colLen - col) < 50) ? colLen - col : 50;
-				write(file,names[i]);
+				write(target,names[i]);
 				for(TSize j = 0; j<offset - length(names[i]); ++j) 
-					writeValue(file, ' ');
+					writeValue(target, ' ');
 				for(TSize finger = col; finger<col+max; ++finger) {
-					if ((finger - col) % 10 == 0) writeValue(file, ' ');
-					if (align[i*colLen + finger] == '-') writeValue(file, '.');
-					else writeValue(file, align[i*colLen + finger]);
+					if ((finger - col) % 10 == 0) writeValue(target, ' ');
+					if (align[i*colLen + finger] == '-') writeValue(target, '.');
+					else writeValue(target, align[i*colLen + finger]);
 				}
-				writeValue(file, '\n');
+				writeValue(target, '\n');
 			}
 			col += max;
-			writeValue(file, '\n');
-			writeValue(file, '\n');
+			writeValue(target, '\n');
+			writeValue(target, '\n');
 		}
 	}
 }
@@ -984,7 +988,7 @@ _writeCargo(TFile & file,
 			 Graph<Alignment<TStringSet, void, TSpec> > const&,
 			 TEdge const&)
 {
-	appedNumber(file, 0);
+	appendNumber(file, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1015,45 +1019,47 @@ write(TFile & file,
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename Iterator<String<TEdgeStump*> const, Rooted>::Type TIterConst;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	TStringSet& str = stringSet(g);
 	TSize nseq = length(str);
 
-	write(file, "{DATA Data\n");
-	write(file, "\t[__GLOBAL__] tracks=");
-	appendNumber(file, nseq);
-	writeValue(file, '\n');
+	write(target, "{DATA Data\n");
+	write(target, "\t[__GLOBAL__] tracks=");
+	appendNumber(target, nseq);
+	writeValue(target, '\n');
 	for(TSize i = 0; i<nseq; ++i) {
-		write(file, "\tfasta_id=\"");
-		write(file,names[i]);
-		write(file, "\" sequence=\"");
-		write(file,str[i]);
-		write(file, "\" track=");
-		appendNumber(file, i);
-		write(file, " type=\"DNA\": 0 ");
-		appendNumber(file, length(str[i])- 1);
-		writeValue(file, '\n');
+		write(target, "\tfasta_id=\"");
+		write(target,names[i]);
+		write(target, "\" sequence=\"");
+		write(target,str[i]);
+		write(target, "\" track=");
+		appendNumber(target, i);
+		write(target, " type=\"DNA\": 0 ");
+		appendNumber(target, length(str[i])- 1);
+		writeValue(target, '\n');
 	}
-	write(file, "}\n");
+	write(target, "}\n");
 	for(TSize i = 0; i<nseq; ++i) {
-		write(file, "{DATA ");
-		appendNumber(file, i);
-		//write(file,names[i]);
-		write(file, "-seqlen\n\t[__GLOBAL__]\n\tlength=");
-		appendNumber(file, length(str[i]));
-		write(file, ":\t0 ");
-		appendNumber(file, length(str[i])- 1);
-		write(file, "\n}\n");
+		write(target, "{DATA ");
+		appendNumber(target, i);
+		//write(target,names[i]);
+		write(target, "-seqlen\n\t[__GLOBAL__]\n\tlength=");
+		appendNumber(target, length(str[i]));
+		write(target, ":\t0 ");
+		appendNumber(target, length(str[i])- 1);
+		write(target, "\n}\n");
 	}
 	for(TSize i=0; i<nseq; ++i) {
 		for(TSize j=i+1; j<nseq; ++j) {
-			write(file, "{DATA ");
-			appendNumber(file, i);
-			//write(file,names[i]);
-			write(file, "-vs-");
-			appendNumber(file, j);
-			//write(file,names[j]);
-			writeValue(file, '\n');
-			write(file, "\t[__GLOBAL__]\n");
+			write(target, "{DATA ");
+			appendNumber(target, i);
+			//write(target,names[i]);
+			write(target, "-vs-");
+			appendNumber(target, j);
+			//write(target,names[j]);
+			writeValue(target, '\n');
+			write(target, "\t[__GLOBAL__]\n");
 			for(TIterConst it = begin(g.data_align.data_vertex);!atEnd(it);goNext(it)) {
 				TVertexDescriptor sourceV = position(it);
 				TId id1 = sequenceId(g, sourceV);
@@ -1069,41 +1075,41 @@ write(TFile & file,
 								current=getNextS(current);
 								continue;
 						}
-						write(file, "\t");
-						write(file, "source=");
-						appendNumber(file, (int)sourceV);		
-						writeValue(file, ' ');
-						write(file, "target=");
-						appendNumber(file, (int)targetV);
-						writeValue(file, ' ');
-						write(file, "edgeId=");
-						appendNumber(file, (int)_getId(current));
-						writeValue(file, ' ');
-						write(file, "cargo=");
-						_writeCargo(file,g,current);
-						writeValue(file, ' ');
-						write(file, "label=");
-						write(file,label(g,sourceV));
-						writeValue(file, ' ');
-						write(file, "labelOpp=");
-						write(file,label(g,targetV));
-						writeValue(file, ':');
-						writeValue(file, '\t');
-						appendNumber(file, (int)fragmentBegin(g, sourceV));
-						writeValue(file, ' ');
-						appendNumber(file, (int)fragmentBegin(g, targetV));
-						writeValue(file, ' ');
-                        appendNumber(file, (int)(fragmentBegin(g, sourceV) + fragmentLength(g, sourceV)));
-						writeValue(file, ' ');
-                        appendNumber(file, (int)(fragmentBegin(g, targetV) + fragmentLength(g, targetV)));
-						writeValue(file, '\n');
+						write(target, "\t");
+						write(target, "source=");
+						appendNumber(target, (int)sourceV);
+						writeValue(target, ' ');
+						write(target, "target=");
+						appendNumber(target, (int)targetV);
+						writeValue(target, ' ');
+						write(target, "edgeId=");
+						appendNumber(target, (int)_getId(current));
+						writeValue(target, ' ');
+						write(target, "cargo=");
+						_writeCargo(target,g,current);
+						writeValue(target, ' ');
+						write(target, "label=");
+						write(target,label(g,sourceV));
+						writeValue(target, ' ');
+						write(target, "labelOpp=");
+						write(target,label(g,targetV));
+						writeValue(target, ':');
+						writeValue(target, '\t');
+						appendNumber(target, (int)fragmentBegin(g, sourceV));
+						writeValue(target, ' ');
+						appendNumber(target, (int)fragmentBegin(g, targetV));
+						writeValue(target, ' ');
+                        appendNumber(target, (int)(fragmentBegin(g, sourceV) + fragmentLength(g, sourceV)));
+						writeValue(target, ' ');
+                        appendNumber(target, (int)(fragmentBegin(g, targetV) + fragmentLength(g, targetV)));
+						writeValue(target, '\n');
 						current=getNextS(current);
 					} else {
 						current=getNextT(current);
 					}
 				}
 			}
-			write(file, "}\n");	
+			write(target, "}\n");	
 		}
 	}
 }

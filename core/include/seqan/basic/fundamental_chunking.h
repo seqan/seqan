@@ -29,110 +29,78 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
 
 namespace seqan {
 
 // ============================================================================
-// Forwards
+// Tags
 // ============================================================================
 
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
+// --------------------------------------------------------------------------
+// Direction Tags
+// --------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
-// Class VcfHeader
-// ----------------------------------------------------------------------------
+struct Input_;
+typedef Tag<Input_> Input;
 
-/*!
- * @class VcfHeader
- * @headerfile <seqan/vcf_io.h>
- * @brief Store VCF Header information.
- * 
- * @signature class VcfHeader;
- * 
- *
- * @fn VcfHeader::VcfHeader
- * @brief Constructor.
- * 
- * @signature VcfHeader::VcfHeader();
- *
- * 
- * @var TRecords VcfHeader::headerRecords;
- * 
- * @brief The meta information records (@link AllocString @endlink of @link VcfHeaderRecord @endlink).
- * 
- * @var TNames VcfHeader::sequenceNames;
- * @brief Names of the sequences (@link StringSet @endlink of @link CharString @endlink).
- * 
- * @var TNames VcfHeader::sampleNames;
- * @brief Names of the samples (@link StringSet @endlink of @link CharString @endlink).
- */
+struct Output_;
+typedef Tag<Output_> Output;
 
-/**
-.Class.VcfHeader
-..cat:VCF I/O
-..summary:Store VCF Header information.
-..signature:class VcfHeader
-..include:seqan/vcf_io.h
-
-.Memfunc.VcfHeader#VcfHeader
-..class:Class.VcfHeader
-..signature:VcfHeader::VcfHeader()
-..summary:Only default constructor.
-
-.Memvar.VcfHeader#sequenceNames
-..class:Class.VcfHeader
-..summary:Names of the sequences (@Class.StringSet@<@Shortcut.CharString@>).
-
-.Memvar.VcfHeader#sampleNames
-..class:Class.VcfHeader
-..summary:Names of the samples (@Class.StringSet@<@Shortcut.CharString@>).
-
-.Memvar.VcfHeader#headerRecords
-..class:Class.VcfHeader
-..summary:The meta information records (@Class.String@ of @Class.VcfHeaderRecord@).
-*/
-
-// Records for the meta information lines.
-typedef String<VcfHeaderRecord> VcfHeader;
+struct Bidirectional_;
+typedef Tag<Bidirectional_> Bidirectional;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction Chunk
+// --------------------------------------------------------------------------
+
+// Chunking is only supported for selected objects
+template <typename TObject>
+struct Chunk
+{
+    typedef Nothing Type;   // disabled by default
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function clear()
+// Function reserveChunk()
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn VcfHeader#clear
- * @brief Clear a VcfHeader.
- * 
- * @signature void clear(header);
- *
- * @param[in,out] header VcfHeader to clear.
- */
+template <typename TIterator, typename TSize, typename TDirection>
+inline void reserveChunk(TIterator &, TSize, TDirection)
+{}
 
-/**
-.Function.VcfHeader#clear
-..class:Class.VcfHeader
-..summary:Clear a @Class.VcfHeader@.
-..signature:void clear(header)
-..param.header:@Class.VcfHeader@ to clear.
-...type:Class.VcfHeader
-..include:seqan/vcf_io.h
-*/
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TChunk, typename TIterator, typename TDirection>
+inline Nothing getChunk(TChunk &, TIterator &, TDirection)
+{
+    return Nothing();
+}
+
+// ----------------------------------------------------------------------------
+// Function advanceChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TIterator, typename TSize>
+inline void advanceChunk(TIterator &iter, TSize size)
+{
+    iter += size;
+}
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_

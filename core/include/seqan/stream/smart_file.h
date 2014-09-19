@@ -87,27 +87,23 @@ struct SmartFile
     TDependentContext   context;
 
     SmartFile() :
-        iter(stream),
         context(data_context)
     {}
 
     explicit
     SmartFile(TDependentContext &otherCtx) :
-        iter(stream),
         context(otherCtx)
     {}
 
     // filename based c'tors
     explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        iter(stream),
         context(data_context)
     {
         _open(*this, fileName, openMode, True());
     }
 
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        iter(stream),
         context(otherCtx)
     {
         _open(*this, fileName, openMode, True());
@@ -118,20 +114,16 @@ struct SmartFile
     explicit
     SmartFile(std::basic_istream<TValue> &istream,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
-        iter(stream),
         context(data_context)
     {
-        bool success = open(*this, istream);
+        _open(*this, istream, True());
         ignoreUnusedVariableWarning(dummy);
-        ignoreUnusedVariableWarning(success);
-        SEQAN_ASSERT(success);
     }
 
     template <typename TValue, typename TFormat>
     SmartFile(std::basic_ostream<TValue> &ostream,
               TFormat const &format,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
-        iter(stream),
         context(data_context)
     {
         bool success = open(*this, ostream, format);
@@ -242,6 +234,7 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 {
     return file.format;
 }
+
 // ----------------------------------------------------------------------------
 // Function setFormat()
 // ----------------------------------------------------------------------------
@@ -331,8 +324,6 @@ template <typename TFileType, typename TDirection, typename TSpec, typename TStr
 inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   TStream &stream, TThrowExceptions = True())
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
-
     if (!open(file.stream, stream, _mapFileFormatToCompressionFormat(file.format)))
     {
         if (TThrowExceptions::VALUE)
@@ -347,9 +338,16 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    file.iter = TIter(file.stream);
+    file.iter = directionIterator(file.stream, TDirection());
 
     return true;
+}
+
+template <typename TFileType, typename TDirection, typename TSpec, typename TStream>
+inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
+                 TStream &stream)
+{
+    return _open(file, stream, False());
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
@@ -380,15 +378,6 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter TIter;
-
-    if (!guessFormatFromFilename(fileName, file.format))
-    {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownExtensionError(fileName));
-        return false;
-    }
-
     if (!open(file.stream, fileName, openMode))
     {
         if (TThrowExceptions::VALUE)
@@ -396,7 +385,16 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    file.iter = TIter(file.stream);
+    Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
+    if (!guessFormatFromFilename(basename, file.format))
+    {
+        close(file.stream);
+        if (TThrowExceptions::VALUE)
+            SEQAN_THROW(UnknownExtensionError(fileName));
+        return false;
+    }
+
+    file.iter = directionIterator(file.stream, TDirection());
 
     return true;
 }
@@ -416,6 +414,7 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 {
+    file.iter = typename DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
 
@@ -434,22 +433,36 @@ atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
 // Function position()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename Position<SmartFile<TFileType, TDirection, TSpec> >::Type
-position(SmartFile<TFileType, TDirection, TSpec> & file)
+template <typename TFileType, typename TSpec>
+inline typename Position<SmartFile<TFileType, Output, TSpec> >::Type
+position(SmartFile<TFileType, Output, TSpec> & file)
 {
-    return streamTell(file.stream);
+    return file.stream.tellp();
+}
+
+template <typename TFileType, typename TSpec>
+inline typename Position<SmartFile<TFileType, Input, TSpec> >::Type
+position(SmartFile<TFileType, Input, TSpec> & file)
+{
+    return file.stream.tellg();
 }
 
 // ----------------------------------------------------------------------------
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TPosition>
+template <typename TFileType, typename TSpec, typename TPosition>
 inline void
-setPosition(SmartFile<TFileType, TDirection, TSpec> & file, TPosition pos)
+setPosition(SmartFile<TFileType, Output, TSpec> & file, TPosition pos)
 {
-    return streamSeek(file.stream, pos, SEEK_SET);
+    return file.stream.seekp(pos, std::ios_base::beg);
+}
+
+template <typename TFileType, typename TSpec, typename TPosition>
+inline void
+setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
+{
+    return file.stream.seekg(pos, std::ios_base::beg);
 }
 
 // ----------------------------------------------------------------------------

@@ -25,8 +25,7 @@ int main(int argc, char ** argv)
 
             // Note that we print the position 1-based since we use text output
             // whereas it is 0-based in the GffRecord.
-            std::cout << nameStore(context(gffIn))[record.rID]
-                      << "\t" << (record.beginPos + 1) << "\n";
+            std::cout << record.ref << "\t" << (record.beginPos + 1) << "\n";
         }
     }
     catch (Exception &e)

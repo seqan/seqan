@@ -175,6 +175,13 @@ typedef Tag<Default_> Default;
 struct Nothing_;
 typedef Tag<Nothing_> Nothing;
 
+// --------------------------------------------------------------------------
+// Tag Raw
+// --------------------------------------------------------------------------
+
+struct Raw_;
+typedef Tag<Raw_> Raw;
+
 // ----------------------------------------------------------------------------
 // Tag Move
 // ----------------------------------------------------------------------------
@@ -716,7 +723,7 @@ inline void assign(TagSelector<TTagList> &selector, TTag const &)
     selector.tagId = Find<TTagList, TTag>::VALUE;
 }
 
-template <typename TTagList, typename TTag>
+template <typename TTagList>
 inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> const &other)
 {
     selector.tagId = other.tagId;

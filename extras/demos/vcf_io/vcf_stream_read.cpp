@@ -8,25 +8,24 @@ int main()
     CharString path = SEQAN_PATH_TO_ROOT();
     append(path, "/extras/demos/vcf_io/example.vcf");
 
-    VcfStream vcfIn(toCString(path));
-    if (!isGood(vcfIn))
+    VcfFileIn vcfIn;
+    if (!open(vcfIn, toCString(path)))
     {
         std::cerr << "ERROR: Could not open " << path << " for reading!\n";
         return 1;
     }
 
+    VcfHeader header;
+    readRecord(header, vcfIn);
+
     VcfRecord record;
     while (!atEnd(vcfIn))
     {
-        if (readRecord(record, vcfIn) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from " << path << "\n";
-            return 1;
-        }
+        readRecord(record, vcfIn);
 
         // Note that we print the position 1-based since we use text output
         // whereas it is 0-based in the VcfRecord.
-        std::cout << vcfIn.header.sequenceNames[record.rID]
+        std::cout << contigNames(context(vcfIn))[record.rID]
                   << "\t" << (record.beginPos + 1) << "\n";
     }
     

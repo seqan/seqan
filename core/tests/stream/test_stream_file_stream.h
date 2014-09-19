@@ -226,10 +226,13 @@ SEQAN_TYPED_TEST(FileStreamTest, Seek)
 // Test of streamTell().
 SEQAN_TYPED_TEST(FileStreamTest, Tell)
 {
+    typedef FileStream<char, Output, typename TestFixture::TSpec> TStream;
+    typedef FileStream<char, Input, typename TestFixture::TSpec> TStream2;
+
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    FileStream<char, Output, typename TestFixture::TSpec> stream;
+    TStream stream;
     stream.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "0123456789";
@@ -237,17 +240,19 @@ SEQAN_TYPED_TEST(FileStreamTest, Tell)
     close(stream);
 
     // Test tell.
-    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    TStream2 stream2;
     stream2.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
 
+    typename DirectionIterator<TStream2, Input>::Type iter = directionIterator(stream2, Input());
+
     char c = '\0';
-    size_t pos = streamTell(stream2);
+    size_t pos = position(iter);
     SEQAN_ASSERT_EQ(pos, 0u);
-    c = stream2.get();
-    c = stream2.get();
+    c = *iter++;
+    c = *iter++;
     ignoreUnusedVariableWarning(c);
-    pos = streamTell(stream2);
+    pos = position(iter);
     SEQAN_ASSERT_EQ(pos, 2u);
 }
 

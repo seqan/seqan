@@ -32,7 +32,7 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// String <=> Numerical conversions
+// String => Numerical conversions
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_LEXICAL_CAST_H
@@ -62,79 +62,6 @@ struct BadLexicalCast : ParseError
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Metafunction IntegerFormatString_
-// ----------------------------------------------------------------------------
-// Return the format string for numbers.
-
-template <typename TUnsigned, unsigned SIZE, typename T = void>
-struct IntegerFormatString_;
-
-
-template <typename TUnsigned, typename T>
-struct IntegerFormatString_<TUnsigned, 1, T> :
-    IntegerFormatString_<TUnsigned, 2, T> {};
-
-
-template <typename T>
-struct IntegerFormatString_<False, 2, T>
-{
-    static const char VALUE[];
-    typedef short Type;
-};
-template <typename T>
-const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
-
-
-template <typename T>
-struct IntegerFormatString_<True, 2, T>
-{
-    static const char VALUE[];
-    typedef unsigned short Type;
-};
-template <typename T>
-const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
-
-
-template <typename T>
-struct IntegerFormatString_<False, 4, T>
-{
-    static const char VALUE[];
-    typedef int Type;
-};
-template <typename T>
-const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
-
-
-template <typename T>
-struct IntegerFormatString_<True, 4, T>
-{
-    static const char VALUE[];
-    typedef unsigned Type;
-};
-template <typename T>
-const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
-
-
-template <typename T>
-struct IntegerFormatString_<False, 8, T>
-{
-    static const char VALUE[];
-    typedef __int64 Type;
-};
-template <typename T>
-const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
-
-
-template <typename T>
-struct IntegerFormatString_<True, 8, T>
-{
-    static const char VALUE[];
-    typedef __uint64 Type;
-};
-template <typename T>
-const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -148,7 +75,7 @@ const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
  * @signature bool lexicalCast2(target, source);
  * 
  * @param[out] target Object to hold result of cast.
- * @param[in]  source The string to be read from.  Type: @link SequenceConcept @endlink.
+ * @param[in]  source The string to be read from.  Type: @link ContainerConcept @endlink.
 
  * @return bool <tt>true</tt> if cast was successful, <tt>false</tt> otherwise.
  * 
@@ -361,7 +288,7 @@ inline bool lexicalCast(double & target, TSource const & source)
  * 
  * @tparam TTarget Target type to cast to.
  *
- * @param[in] source The string to be read from.  Type: @link SequenceConcept @endlink.
+ * @param[in] source The string to be read from.  Type: @link ContainerConcept @endlink.
  * 
  * @return TTarget Value of Type TTarget with cast contents of source.
  * 
@@ -435,69 +362,24 @@ inline TTarget lexicalCast(TSource const & source)
     return target;
 }
 
+template <typename TTarget, typename TSource>
+inline void lexicalCastWithException(TTarget & target, TSource const & source)
+{
+    if (!lexicalCast(target, source))
+        throw BadLexicalCast(target, source);
+}
+
 // ----------------------------------------------------------------------------
 // Function appendNumber()
 // ----------------------------------------------------------------------------
-// Generic version for integers.
 
-template <typename TTarget, typename TInteger>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
-appendNumber(TTarget & target, TInteger i)
-{
-    typedef IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
-                          sizeof(TInteger)> TInt;
-
-    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
-    char buffer[sizeof(TInteger) * 3 + 2];
-    int offset;
-    size_t len = snprintf(buffer, sizeof(buffer),
-                          TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
-
-    write(target, buffer, len);
-    return len;
-}
-
-// ----------------------------------------------------------------------------
-// Function appendNumber(float)
-// ----------------------------------------------------------------------------
-
-template <typename TTarget>
-inline typename Size<TTarget>::Type
-appendNumber(TTarget & target, float source)
-{
-    char buffer[32];
-    int offset;
-    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    write(target, buffer, len);
-    return len;
-}
-
-// ----------------------------------------------------------------------------
-// Function appendNumber(double)
-// ----------------------------------------------------------------------------
-
-template <typename TTarget>
-inline typename Size<TTarget>::Type
-appendNumber(TTarget & target, double source)
-{
-    char buffer[32];
-    int offset;
-    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    write(target, buffer, len);
-    return len;
-}
+// went into basic_stream_xy module
 
 // ----------------------------------------------------------------------------
 // Function appendRawPod()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTarget>
-inline typename Size<TTarget>::Type
-appendRawPod(TTarget & target, TValue const & val)
-{
-    write(target, (unsigned char*)&val, sizeof(TValue));
-    return sizeof(TValue);
-}
+// went into basic_stream_xy module
 
 }
 

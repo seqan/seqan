@@ -1151,7 +1151,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically. 
  * @param[out] dir The resulting array that indicates at which position in index the corresponding <i>q</i>-grams
  *                 can be found.
- * @param[in] text The sequence. Types: @link SequenceConcept @endlink
+ * @param[in] text The sequence. Types: @link ContainerConcept @endlink
  * 
  * The resulting <tt>index</tt> contains the sorted list of qgrams.  For each possible <i>q</i>-gram pos contains
  * the first position in index that corresponds to this <i>q</i>-gram.

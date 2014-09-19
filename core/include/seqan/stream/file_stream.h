@@ -275,7 +275,7 @@ template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
 inline void *
 _getFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize)
 {
-    register unsigned pageNo = filePos / table.pageSize;
+    unsigned pageNo = filePos / table.pageSize;
     if (SEQAN_LIKELY(pageNo < length(table.frameStart)))
         return table.frameStart[pageNo];
     else
@@ -290,7 +290,7 @@ template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
 inline void
 _setFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize, void * frameStart)
 {
-    register unsigned pageNo = filePos / table.pageSize;
+    unsigned pageNo = filePos / table.pageSize;
     if (length(table.frameStart) <= pageNo)
         resize(table.frameStart, pageNo + 1, table.EMPTY);
     table.frameStart[pageNo] = frameStart;
@@ -868,6 +868,7 @@ struct FileStreamBuffer :
                 // for BGZF files we know the block size on disk only after writing the page
                 int count = atomicDec(writePage->lockCount);
                 SEQAN_ASSERT_EQ(count, 0);
+                ignoreUnusedVariableWarning(count);
                 writePage->targetState = UNUSED;
                 erase(pager.ready, *writePage);
                 _processFilePage(pager, *writePage, True());

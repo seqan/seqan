@@ -162,6 +162,22 @@ struct IsSequence< TValue const [SIZE] >
 };
 
 // ----------------------------------------------------------------------------
+// Concept Sequence
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
+
+template <typename TValue, size_t SIZE>
+SEQAN_CONCEPT_IMPL((TValue [SIZE]), (ContainerConcept));
+
+template <typename TValue, size_t SIZE>
+SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (ContainerConcept));
+
+// ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
 

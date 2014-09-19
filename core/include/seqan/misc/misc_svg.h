@@ -120,6 +120,12 @@ private:
 	}
 };
 
+template <>
+struct DirectionIterator<SVGFile, Output>
+{
+    typedef SVGFile* Type;
+};
+
 inline void svgResize(SVGFile &svg, int width, int height)
 {
     svg.size.i1 = width;
@@ -192,31 +198,38 @@ inline bool close(SVGFile &svg)
 	return true;
 }
 
+SVGFile *
+directionIterator(SVGFile & svg, Output)
+{
+    return &svg;
+}
+
+
 template <typename TCharacter>
-inline SVGFile &
-operator<<(SVGFile & svg, TCharacter character)
+inline void
+writeValue(SVGFile *svg, TCharacter character)
 {
     char x = static_cast<char>(character);
 	if (x == '\n')
 	{
-		++svg.cursor.i2;
-		svg.cursor.i1 = 0;
+		++svg->cursor.i2;
+		svg->cursor.i1 = 0;
 	}
     else if (x == '\t')
 	{
-		svg.cursor.i1 = (svg.cursor.i1 & ~7) + 8;
+		svg->cursor.i1 = (svg->cursor.i1 & ~7) + 8;
 	}
     else
 	{
 		if (x != ' ')
 		{
-			svg.file << "<g transform=\"translate(" << svg.cursor.i1*20+10 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.text] << '>';
-			svg.file << x;
-			svg.file << "</text></g>" << std::endl;
+			svg->file << "<g transform=\"translate(" << svg->cursor.i1*20+10 << ',' << svg->cursor.i2*20+10
+                      << ")\"><text y=\"0.3em\" " << svg->style[svg->text] << '>';
+			svg->file << x;
+			svg->file << "</text></g>" << std::endl;
 		}
-		++svg.cursor.i1;
+		++svg->cursor.i1;
 	}
-    return svg;
 }
 
 template <typename TContigGaps, typename TContigName>
@@ -261,7 +274,7 @@ inline void _printContig(
 			}
 		}
 	}
-	svg << '\n';
+	writeValue(&svg, '\n');
 	
 	int savedStyle = svg.text;
 	svg.text = svg.readText;
@@ -363,7 +376,7 @@ inline void _printRead(
 			if (!inGap && convert<Dna5>(*cit) != convert<Dna5>(*it))
 			{
 				svg.file << "<g transform=\"translate(" << xEnd + 10 << ',' << line << ")\"><text y=\"0.3em\" " << svg.style[svg.readText] << '>';
-				svg << convert<char>(*it);
+				writeValue(&svg, convert<char>(*it));
 				svg.file << "</text></g>" << std::endl;
 				x += 20;
 				arrow = 0;

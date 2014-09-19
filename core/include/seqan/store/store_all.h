@@ -1352,7 +1352,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  * @signature TSize appendRead(store, read, name[, matePairId]);
  *
  * @param[in,out] store      The FragmentStore to append the read to.
- * @param[in]     read       The read sequence.  Type: @link SequenceConcept @endlink.
+ * @param[in]     read       The read sequence.  Type: @link ContainerConcept @endlink.
  * @param[in]     name       The name of the read.  Type: @link CharString @endlink.
  * @param[in]     matePairId ID of the mate-pair that this read is part of.  Default:
  *                           <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.
@@ -2217,7 +2217,9 @@ void printAlignment(
 
 	typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >	TContigGaps;
 	typedef Gaps<CharString, AnchorGaps<typename TAlignedRead::TGapAnchors> >	TReadGaps;
-	
+
+    typedef typename DirectionIterator<TStream, Output>::Type       TOutIter;
+
 	TContigGaps	contigGaps;
 	if ((TId)contigId < length(store.contigStore))
 	{
@@ -2227,10 +2229,10 @@ void printAlignment(
 		setClippedBeginPosition(contigGaps, posBegin);
 		setClippedEndPosition(contigGaps, posEnd);
 		_printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
-		stream << '\n';
-	} else
-		stream << '\n';
-	
+	};
+    TOutIter iter = directionIterator(stream, Output());
+    writeValue(iter, '\n');
+
 	if ((TId)contigId >= length(layout.contigRows))
 		return;
 	
@@ -2289,16 +2291,20 @@ void printAlignment(
 			if ((TPos)cBegin < posBegin)
 				setClippedBeginPosition(readGaps, posBegin - (TPos)cBegin);
 			else
+            {
+                TOutIter iter = directionIterator(stream, Output());
 				for (; cursor < (TPos)cBegin; ++cursor)
-					stream << ' ';
-			
+                    writeValue(iter, ' ');
+            }
+
 			if (posEnd < (TPos)cEnd)
 				setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
 			
 			_printRead(stream, layout, contigGaps, readGaps, align, line);
 			cursor = cEnd;
 		}
-		stream << '\n';
+        TOutIter iter = directionIterator(stream, Output());
+        writeValue(iter, '\n');
 	}
 }
 

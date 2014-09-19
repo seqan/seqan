@@ -29,8 +29,8 @@ int main(int argc, char ** argv)
     DnaString seq;
     CharString qual;
 
-    typename Size<CharString>::Type records = 0;
-    typename Size<CharString>::Type bases = 0;
+    Size<CharString>::Type records = 0;
+    Size<CharString>::Type bases = 0;
 
     double start, finish;
 

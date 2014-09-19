@@ -111,10 +111,10 @@ struct AssignTagsSamToBamOneTagHelper_
 template <typename TTarget, typename TForwardIter>
 void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString & buffer)
 {
-    readUntil(target, iter, CountDownFunctor<>(2));
+    write(target, iter, 2);
 
     clear(buffer);
-    readUntil(buffer, iter, CountDownFunctor<>(3));
+    write(buffer, iter, 3);
     SEQAN_ASSERT_EQ(buffer[0], ':');
     SEQAN_ASSERT_EQ(buffer[2], ':');
 

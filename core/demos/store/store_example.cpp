@@ -12,13 +12,13 @@ int main ()
 
     // load example genome and example reads and alignments
     loadContigs(store, pathGenome.c_str());
-    std::ifstream file(pathSAM.c_str());
-    read(file, store, Sam());
+    BamFileIn bamFile(pathSAM.c_str());
+    readRecords(store, bamFile);
 
     // compute staircase read layout and print from position 30..129
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, Raw(), layout, store, 1, 30, 130, 0, 36);
+    printAlignment(std::cout, layout, store, 1, 30, 130, 0, 36);
     
     return 0;
 }
