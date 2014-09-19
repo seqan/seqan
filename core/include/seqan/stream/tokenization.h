@@ -66,6 +66,17 @@ struct UnexpectedEnd : ParseError
     {}
 };
 
+// ----------------------------------------------------------------------------
+// Exception EmptyFieldError
+// ----------------------------------------------------------------------------
+
+struct EmptyFieldError : ParseError
+{
+    EmptyFieldError(std::string fieldName):
+        ParseError(fieldName + " field was empty.")
+    {}
+};
+
 // ============================================================================
 // Functors
 // ============================================================================
@@ -206,20 +217,20 @@ inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TVal
     {
         Range<TIValue const *> ichunk;
         getChunk(ichunk, iter, Input());
-        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
+        SEQAN_ASSERT(!empty(ichunk));
 
-        const TIValue* SEQAN_RESTRICT ptr = begin(ichunk, Standard());
+        const TIValue* SEQAN_RESTRICT ptr = ichunk.begin;
 
-        for (; ptr != end(ichunk, Standard()); ++ptr)
+        for (; ptr != ichunk.end; ++ptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
             {
-                iter += ptr - begin(ichunk, Standard());    // advance input iterator
+                iter += ptr - ichunk.begin;    // advance input iterator
                 return;
             }
         }
 
-        iter += ptr - begin(ichunk, Standard());            // advance input iterator
+        iter += ptr - ichunk.begin;            // advance input iterator
     }
 }
 
@@ -304,43 +315,44 @@ inline void _readUntil(TTarget &target,
                        Range<TIValue*> *,
                        Range<TOValue*> *)
 {
-    Range<TOValue*> ochunk = Range<TOValue*>(NULL, NULL);
+    Range<TOValue*> ochunk(NULL, NULL);
     TOValue* SEQAN_RESTRICT optr = NULL;
 
+    Range<TIValue*> ichunk;
     for (; !atEnd(iter); )
     {
-        Range<TIValue*> ichunk;
         getChunk(ichunk, iter, Input());
-        const TIValue* SEQAN_RESTRICT iptr = begin(ichunk, Standard());
-        SEQAN_ASSERT(iptr < end(ichunk, Standard()));
+        const TIValue* SEQAN_RESTRICT iptr = ichunk.begin;
+        SEQAN_ASSERT(iptr < ichunk.end);
 
-        for (; iptr != end(ichunk, Standard()); ++iptr)
+        for (; iptr != ichunk.end; ++iptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*iptr)))
             {
-                iter += iptr - begin(ichunk, Standard());               // advance input iterator
-                advanceChunk(target, optr - begin(ochunk, Standard())); // extend target string size
+                iter += iptr - ichunk.begin;               // advance input iterator
+                advanceChunk(target, optr - ochunk.begin); // extend target string size
                 return;
             }
-            if (SEQAN_LIKELY(!ignoreFunctor(*iptr)))
+            
+            if (SEQAN_UNLIKELY(ignoreFunctor(*iptr)))
+                continue;
+
+            // construct values in reserved memory
+            if (SEQAN_UNLIKELY(optr == ochunk.end))
             {
-                // construct values in reserved memory
-                if (SEQAN_UNLIKELY(optr == end(ochunk, Standard())))
-                {
-                    advanceChunk(target, optr - begin(ochunk, Standard()));
-                    // reserve memory for the worst-case
-                    // TODO(weese):Document worst-case behavior
-                    reserveChunk(target, length(ichunk));
-                    getChunk(ochunk, target, Output());
-                    optr = begin(ochunk, Standard());
-                    SEQAN_ASSERT(optr < end(ochunk, Standard()));
-                }
-                *optr++ = *iptr;
+                advanceChunk(target, optr - ochunk.begin);
+                // reserve memory for the worst-case
+                // TODO(weese):Document worst-case behavior
+                reserveChunk(target, length(ichunk), Output());
+                getChunk(ochunk, target, Output());
+                optr = ochunk.begin;
+                SEQAN_ASSERT(optr < ochunk.end);
             }
+            *optr++ = *iptr;
         }
-        iter += iptr - begin(ichunk, Standard());                       // advance input iterator
+        iter += iptr - ichunk.begin;                       // advance input iterator
     }
-    advanceChunk(target, optr - begin(ochunk, Standard()));
+    advanceChunk(target, optr - ochunk.begin);
 }
 
 // ----------------------------------------------------------------------------
@@ -498,6 +510,31 @@ inline void skipLine(TFwdIterator &iter)
 }
 
 // ----------------------------------------------------------------------------
+// Function writeWrappedString()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSequence, typename TSize>
+inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize lineLength)
+{
+    typedef typename Size<TSequence>::Type TSeqSize;
+    typedef typename Iterator<TSequence const, Rooted>::Type TIter;
+
+    TIter iter = begin(seq, Rooted());
+    TSeqSize charsLeft = length(seq);
+    TSeqSize charsPerLine;
+    TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
+
+    do
+    {
+        charsPerLine = std::min(charsLeft, lineLength_);
+        write(target, iter, charsPerLine);
+        writeValue(target, '\n');
+        charsLeft -= charsPerLine;
+    }
+    while (charsLeft != 0);
+}
+
+// ----------------------------------------------------------------------------
 // Function findFirst()
 // ----------------------------------------------------------------------------
 
@@ -602,6 +639,108 @@ cropOuter(TContainer &cont, TFunctor const &func)
 {
     cropAfterLast(cont, NotFunctor<TFunctor>(func));
     cropBeforeFirst(cont, NotFunctor<TFunctor>(func));
+}
+
+// --------------------------------------------------------------------------
+// Function strSplit()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#strSplit
+ * @brief Append a list of the words in the string, using sep as the delimiter string @link StringSet @endlink.
+ *
+ * @signature void strSplit(result, sequence[, sep[, allowEmptyStrings[, maxSplit]]]);
+ *
+ * @param[out] result           The resulting string set.
+ * @param[in]  sequence         The sequence to split.
+ * @param[in]  sep              The splitter to use (default <tt>' '</tt>).
+ * @param[in]  allowEmptyString Whether or not to allow empty strings (<tt>bool</tt>, defaults to <tt>true</tt> iff
+ *                              <tt>sep</tt> is given).
+ * @param[in]  maxSplit         The maximal number of split operations to do if given.
+ */
+
+/**
+.Function.stringSplit:
+..summary:Append a list of the words in the string, using sep as the delimiter string @Class.StringSet@.
+..cat:Sequences
+..class:Class.StringSet
+..signature:strSplit(stringSet, sequence)
+..signature:strSplit(stringSet, sequence, sep)
+..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings)
+..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings, maxSplit)
+..param.stringSet:The @Class.StringSet@ object the words are appended to.
+...type:Class.StringSet
+..param.sequence:A sequence of words.
+..param.sep:Word separator (default: ' ').
+..param.allowEmptyStrings:Boolean to specify whether empty words should be considered (default: true, iff sep is given).
+..param.maxSplit:If maxsplit is given, at most maxsplit splits are done.
+..include:seqan/sequence.h
+*/
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor, typename TSize>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings, TSize maxSplit)
+{
+    typedef typename Iterator<TSequence const, Standard>::Type TIter;
+    
+    TIter itBeg = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    TIter itFrom = itBeg;
+    
+    if (maxSplit == 0)
+    {
+        appendValue(result, sequence);
+        return;
+    }
+    
+    for (TIter it = itBeg; it != itEnd; ++it)
+        if (sep(getValue(it)))
+        {
+            if (allowEmptyStrings || itFrom != it)
+            {
+                appendValue(result, infix(sequence, itFrom - itBeg, it - itBeg));
+                if (--maxSplit == 0)
+                {
+                    if (!allowEmptyStrings)
+                    {
+                        while (it != itEnd && sep(getValue(it)))
+                            ++it;
+                    }
+                    else
+                        ++it;
+                    
+                    if (it != itEnd)
+                        appendValue(result, infix(sequence, it - itBeg, itEnd - itBeg));
+                    
+                    return;
+                }
+            }
+            itFrom = it + 1;
+        }
+    
+    if (allowEmptyStrings || itFrom != itEnd)
+        appendValue(result, infix(sequence, itFrom - itBeg, itEnd - itBeg));
+}
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings)
+{
+    strSplit(result, sequence, sep, allowEmptyStrings, maxValue<typename Size<TSequence>::Type>());
+}
+
+template <typename TString, typename TSpec, typename TSequence, typename TFunctor>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep)
+{
+    strSplit(result, sequence, sep, true);
+}
+
+template <typename TString, typename TSpec, typename TSequence>
+inline void
+strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
+{
+    strSplit(result, sequence, EqualsChar<' '>(), false);
 }
 
 }  // namespace seqan

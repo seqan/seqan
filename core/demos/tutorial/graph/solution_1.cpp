@@ -20,9 +20,10 @@ int main ()
     addEdge(g, vertHamburg, vertHannover, 289u);
     addEdge(g, vertHannover, vertMuenchen, 572u);
 
-    FILE* strmWrite = fopen("graph.dot", "w");
-    write(strmWrite, g, DotDrawing());
-    fclose(strmWrite);
+    std::ofstream dotFile("graph.dot");
+    writeRecords(dotFile, g, DotDrawing());
+
+    dotFile.close();
 
     typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     TVertexIterator itV(g);

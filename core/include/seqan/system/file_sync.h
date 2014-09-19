@@ -299,12 +299,13 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
 
-        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE) {
+        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
+        {
             // Construct the pattern for the temporary file.
             //
             // First, try to get the temporary directory from the environment
             // variables TMPDIR, TMP.
-            CharString tmpDir;
+            std::string tmpDir;
             if ((getuid() == geteuid()) && (getgid() == getegid())) 
 			{
                 char * res;
@@ -327,11 +328,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
             // At this point, we have a temporary directory.  Now, we add the
             // file name template to get the full path template.
-            append(tmpDir, "/SQNXXXXXX");
+            tmpDir += "/SQNXXXXXX";
             // Open temporary file and unlink it immediately afterwards so the
             // memory is released when the program exits.
             int oldMode = umask(077);  // Create with restrictive permissions.
-			if ((handle = ::mkstemp(toCString(tmpDir))) == -1) {
+			if ((handle = ::mkstemp((char*)tmpDir.c_str())) == -1)
+            {
 			    umask(oldMode);  // Reset umask mode.
 				if (!(openMode & OPEN_QUIET))
 					::std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << ::std::endl;
@@ -452,15 +454,21 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TSpec, typename TValue, typename TSize >
-    inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count) {
-//IOREV
-		return (int) me.read(memPtr, count * sizeof(TValue)) == (int) (count * sizeof(TValue));
+    inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
+    {
+		return (size_t)me.read(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
     }
     
     template < typename TSpec, typename TValue, typename TSize >
-    inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count) {
-//IOREV
-		return (int) me.write(memPtr, count * sizeof(TValue)) == (int) (count * sizeof(TValue));
+    inline bool write(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
+    {
+		return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
+    }
+
+    template < typename TSpec, typename TValue, typename TSize >
+    inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count)
+    {
+		return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
     }
 
 }

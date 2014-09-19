@@ -146,7 +146,7 @@ void readRecord(BamHeader & header,
 {
     // Read BAM magic string.
     String<char, Array<4> > magic;
-    readUntil(magic, iter, CountDownFunctor<>(4));
+    write(magic, iter, 4);
     if (magic != "BAM\1")
         throw std::runtime_error("Not in BAM format.");
 
@@ -155,7 +155,7 @@ void readRecord(BamHeader & header,
     readRawByte(lText, iter);
 
     CharString samHeader;
-    readUntil(samHeader, iter, CountDownFunctor<>(lText));
+    write(samHeader, iter, lText);
 
     // Truncate to first position of '\0'.
     Iterator<CharString, Rooted>::Type it = begin(samHeader);
@@ -188,7 +188,7 @@ void readRecord(BamHeader & header,
         __int32 nName;
         readRawByte(nName, iter);
         clear(name);
-        readUntil(name, iter, CountDownFunctor<>(nName));
+        write(name, iter, nName);
         resize(name, nName - 1);
         // Read length of the reference sequence.
         __int32 lRef;
@@ -198,7 +198,7 @@ void readRecord(BamHeader & header,
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
         appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
         // Append contig name to name store, if not known already.
-        context.translateFile2GlobalRefId[i] = getIdByName(nameStoreCache(context), name);
+        context.translateFile2GlobalRefId[i] = nameToId(nameStoreCache(context), name);
     }
 }
 
@@ -247,6 +247,12 @@ readRecord(BamAlignmentRecord & record,
     if (record.rID >= 0)
         SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));
 
+    // ... the same for rNextId
+    if (record.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+        record.rNextId = context.translateFile2GlobalRefId[record.rNextId];
+    if (record.rNextId >= 0)
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rNextId), length(nameStore(context)));
+
     // query name.
     resize(record.qName, record._l_qname - 1, Exact());
     arrayCopyForward(it, it + record._l_qname - 1, begin(record.qName, Standard()));
@@ -258,9 +264,10 @@ readRecord(BamAlignmentRecord & record,
     TCigarIter cigEnd = end(record.cigar, Standard());
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        char ui = *reinterpret_cast<unsigned * &>(it)++;
-        cig->operation = CIGAR_MAPPING[ui & 15];
-        cig->count = ui >> 4;
+        unsigned opAndCnt = *reinterpret_cast<unsigned * &>(it)++;
+        SEQAN_ASSERT_LEQ(opAndCnt & 15, 8u);
+        cig->operation = CIGAR_MAPPING[opAndCnt & 15];
+        cig->count = opAndCnt >> 4;
     }
 
     // query sequence.
@@ -277,7 +284,7 @@ readRecord(BamAlignmentRecord & record,
         ++sit;
     }
     if (record._l_qseq & 1)
-        *sit++ = Iupac((__uint8)*it >> 4);
+        *sit++ = Iupac((__uint8)*it++ >> 4);
 
     // phred quality
     resize(record.qual, record._l_qseq, Exact());

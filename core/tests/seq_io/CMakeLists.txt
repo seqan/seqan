@@ -33,7 +33,7 @@ add_executable (test_seq_io
                 test_seq_io.cpp
                 test_fai_index.h
                 test_genomic_region.h
-                test_sequence_stream.h
+                test_sequence_file.h
                 test_stream_guess_stream_format.h
                 test_stream_read_auto_format.h
                 test_stream_read_embl.h

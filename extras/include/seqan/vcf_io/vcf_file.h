@@ -31,11 +31,12 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in GFF or GTF format.
+// Smart file for reading/writing files in Vcf format.
 // ==========================================================================
+// TODO(weese:) add Bcf I/O and integrate it
 
-#ifndef SEQAN_GFF_IO_GFF_FILE_H_
-#define SEQAN_GFF_IO_GFF_FILE_H_
+#ifndef SEQAN_VCF_IO_VCF_FILE_H_
+#define SEQAN_VCF_IO_VCF_FILE_H_
 
 namespace seqan {
 
@@ -43,25 +44,86 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+struct Vcf_;
+typedef Tag<Vcf_> Vcf;
+
+struct Bcf_;
+typedef Tag<Bcf_> Bcf;
+
 // ============================================================================
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Gff, Input>   GffFileIn;
-typedef SmartFile<Gff, Output>  GffFileOut;
+typedef SmartFile<Vcf, Input>   VcfFileIn;
+typedef SmartFile<Vcf, Output>  VcfFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Vcf, T>
+{
+    static unsigned char const VALUE[16];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Vcf, T>::VALUE[16] =
+{
+    '#', '#', 'f', 'i', 'l', 'e', 'f', 'o', 'r', 'm', 'a', 't', '=', 'V', 'C', 'F'  // VCF's magic header
+};
+
+template <typename T>
+struct MagicHeader<Bcf, T>
+{
+    static unsigned char const VALUE[5];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Bcf, T>::VALUE[5] = { 'B', 'C', 'F', '\2', '\1' };  // BCF2's magic header
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Vcf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Vcf, T>::VALUE[1] =
+{
+    ".vcf"     // default output extension
+};
+
+template <typename T>
+struct FileFormatExtensions<Bcf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Bcf, T>::VALUE[1] =
+{
+    ".bcf"     // default output extension
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
+struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
 {
-    typedef CharString Type;
+    typedef StringSet<CharString>                                   TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
+    typedef VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -69,72 +131,67 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<SmartFile<Vcf, TDirection, TSpec> >
 {
-    typedef TagSelector<
-                TagList<Gff,
-                TagList<Gtf
-                > >
-            > Type;
+// TODO(weese:) Enable this, as soon as someone implements BCF
+
+//#if SEQAN_HAS_ZLIB
+//    typedef TagSelector<
+//                TagList<Bcf,
+//                TagList<Vcf
+//                > >
+//            > Type;
+//#else
+    typedef Vcf Type;
+//#endif
 };
 
-// ----------------------------------------------------------------------------
-// Function readRecord(); GffRecord
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Function _mapBamFormatToCompressionFormat()
+// --------------------------------------------------------------------------
 
-template <typename TForwardIter, typename TFormats>
-inline void
-readRecord(GffRecord & record,
-           CharString & buffer,
-           TForwardIter & iter,
-           TagSelector<TFormats> const & /* format */)  // format is ignored as it will be autodetected per record
+inline BgzfFile
+_mapFileFormatToCompressionFormat(Bcf)
 {
-    readRecord(record, buffer, iter);
+    return BgzfFile();
 }
 
-// convient GffFile variant
+// ----------------------------------------------------------------------------
+// Function readRecord(); VcfRecord
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline void
-readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
+readRecord(VcfHeader & record, SmartFile<Vcf, Input, TSpec> & file)
+{
+    readRecord(record, context(file), file.iter, file.format);
+}
+
+template <typename TSpec>
+inline void
+readRecord(VcfRecord & record, SmartFile<Vcf, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); GffRecord
+// Function writeRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
-// support for dynamically chosen file formats
-template <typename TTarget>
+template <typename TSpec>
 inline void
-writeRecord(TTarget & /* target */,
-            GffRecord & /* record */,
-            TagSelector<> const & /* format */)
+writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfHeader & record)
 {
-    SEQAN_FAIL("GffFileOut: File format not specified.");
-}
-
-template <typename TTarget, typename TTagList>
-inline void
-writeRecord(TTarget & target,
-            GffRecord & record,
-            TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        writeRecord(target, record, TFormat());
-    else
-        writeRecord(target, record, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    writeRecord(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
+writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfRecord & record)
 {
-    writeRecord(file.iter, record, file.format);
+    writeRecord(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan
 
-#endif // SEQAN_GFF_IO_GFF_FILE_H_
+#endif // SEQAN_VCF_IO_VCF_FILE_H_

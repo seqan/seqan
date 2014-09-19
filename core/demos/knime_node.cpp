@@ -88,10 +88,10 @@ parseCommandLine(KnimeNodeOptions & options, int argc, char const ** argv)
     
     // We require one argument.
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
-    setValidValues(parser, 0, "fastq fq");
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
     
     addOption(parser, seqan::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
-    setValidValues(parser, "outputFile", "fastq fq");
+    setValidValues(parser, "outputFile", seqan::SeqFileOut::getFileFormatExtensions());
 	setDefaultValue(parser, "outputFile", "result.fastq");
     
     // The verbosity option should be used to help debugging
@@ -155,7 +155,7 @@ int main(int argc, char const ** argv)
         return res == seqan::ArgumentParser::PARSE_ERROR;
     
     std::cout << "EXAMPLE PROGRAM\n"
-    << "===============\n\n";
+              << "===============\n\n";
     
     // Print the command line arguments back to the user.
     if (options.verbosity > 0)
@@ -168,7 +168,7 @@ int main(int argc, char const ** argv)
     }
     
     // Reading the input
-    seqan::SequenceStream seqIn(seqan::toCString(options.inputFile));
+    seqan::SeqFileIn seqIn(seqan::toCString(options.inputFile));
     seqan::StringSet<seqan::CharString> ids;
     seqan::StringSet<seqan::Dna5String> seqs;
     seqan::StringSet<seqan::CharString> quals;
@@ -179,22 +179,15 @@ int main(int argc, char const ** argv)
         std::cout << "ERROR: File does not contain any sequences!\n";
         return 1;
     }
-    if(seqan::readAll(ids, seqs, quals, seqIn) != 0)
-    {
-        std::cout << "ERROR: Could not read records!\n";
-        return 1;
-    }
+    readRecords(ids, seqs, quals, seqIn);
     
     // DO SOMETHING HERE
     // *
     // *
     // *
     
-    seqan::SequenceStream seqOut(seqan::toCString(options.outputFile), seqan::SequenceStream::WRITE);
-    if (seqan::writeAll(seqOut, ids, seqs, quals) != 0)
-    {
-        return 1;
-    }
-    
+    seqan::SeqFileOut seqOut(seqan::toCString(options.outputFile));
+    writeRecords(seqOut, ids, seqs, quals);
+
     return 0;
 }

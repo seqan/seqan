@@ -51,6 +51,10 @@ template <typename TOutPager, typename TSpec>
 struct Pager;
 
 // ============================================================================
+// Tags, Enums
+// ============================================================================
+
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -210,7 +214,7 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
     if (ctx.headerPos < sizeof(ctx.header))
     {
         size_t headerLeft = sizeof(ctx.header) - ctx.headerPos;
-        reserveChunk(target, headerLeft);
+        reserveChunk(target, headerLeft, Output());
 
         tChunk = getChunk(target, Output());
         size_t size = std::min(headerLeft, length(tChunk));

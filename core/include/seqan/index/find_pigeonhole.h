@@ -171,7 +171,7 @@ namespace seqan
  *
  * @tparam TSpec Specifies the type of pigeonhole filter.
  * @tparam THaystack The type of the sequence that should be searched.
- *                   Types: @link SequenceConcept @endlink
+ *                   Types: @link ContainerConcept @endlink
  *
  * Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors in the text,
  * every partition into k+1 parts contains one part that matches without error.

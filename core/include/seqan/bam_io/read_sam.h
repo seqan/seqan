@@ -254,7 +254,7 @@ inline void readRecord(BamHeader & header,
             }
 
             // Add name to name store cache if necessary.
-            unsigned contigId = getIdByName(nameStoreCache(context), sn);
+            unsigned contigId = nameToId(nameStoreCache(context), sn);
 
             if (length(header.sequenceInfos) <= contigId)
                 resize(header.sequenceInfos, contigId + 1);
@@ -273,10 +273,11 @@ inline void readRecord(BamHeader & header,
 */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void readRecord(BamAlignmentRecord & record,
-            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-            TForwardIter & iter,
-            Sam const & /*tag*/)
+inline void
+readRecord(BamAlignmentRecord & record,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & /*tag*/)
 {
     OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
 
@@ -298,14 +299,9 @@ inline void readRecord(BamAlignmentRecord & record,
     clear(buffer);
     readUntil(buffer, iter, nextEntry);
     if (buffer == "*")
-    {
         record.rID = BamAlignmentRecord::INVALID_REFID;
-    }
-    else if (!getIdByName(nameStore(context), buffer, record.rID, nameStoreCache(context)))
-    {
-        record.rID = length(nameStore(context));
-        appendName(nameStore(context), buffer, nameStoreCache(context));
-    }
+    else
+        record.rID = nameToId(nameStoreCache(context), buffer);
     skipOne(iter, IsTab());
 
     // POS
@@ -350,18 +346,11 @@ inline void readRecord(BamAlignmentRecord & record,
     clear(buffer);
     readUntil(buffer, iter, nextEntry);
     if (buffer == "*")
-    {
         record.rNextId = BamAlignmentRecord::INVALID_REFID;
-    }
     else if (buffer == "=")
-    {
         record.rNextId = record.rID;
-    }
-    else if (!getIdByName(nameStore(context), buffer, record.rNextId, nameStoreCache(context)))
-    {
-        record.rNextId = length(nameStore(context));
-        appendName(nameStore(context), buffer, nameStoreCache(context));
-    }
+    else
+        record.rNextId = nameToId(nameStoreCache(context), buffer);
     skipOne(iter, IsTab());
 
     // PNEXT

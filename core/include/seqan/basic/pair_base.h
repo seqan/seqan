@@ -45,6 +45,12 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TObject, typename TDirection>
+struct DirectionIterator;
+
+struct Output_;
+typedef Tag<Output_> Output;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -278,13 +284,25 @@ move(Pair<T1, T2, TSpec> & p1, Pair<T1, T2, TSpec> & p2)
 // Function operator<<();  Stream Output.
 // ----------------------------------------------------------------------------
 
-template <typename T1, typename T2, typename TSpec>
-inline
-std::ostream & operator<<(std::ostream & out, Pair<T1, T2, TSpec> const & p)
+template <typename TTarget, typename T1, typename T2, typename TSpec>
+inline void
+write(TTarget &target, Pair<T1, T2, TSpec> const & p)
 {
-    // TODO(holtgrew): Incorporate this into new stream concept? Adapt from stream module?
-    out << "< " << getValueI1(p) << " , " << getValueI2(p) << " >";
-    return out;
+    write(target, "< ");
+    write(target, getValueI1(p));
+    write(target, " , ");
+    write(target, getValueI2(p));
+    write(target, " >");
+}
+
+template <typename TStream, typename T1, typename T2, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           Pair<T1, T2, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
 }
 
 // -----------------------------------------------------------------------

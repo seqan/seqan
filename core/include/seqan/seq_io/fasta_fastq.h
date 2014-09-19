@@ -153,6 +153,36 @@ char const * FileFormatExtensions<Raw, T>::VALUE[2] =
     ".seq"
 };
 
+// ----------------------------------------------------------------------------
+// Class FastaIgnoreFunctor_
+// ----------------------------------------------------------------------------
+
+template <typename TAlphabet>
+struct FastaIgnoreFunctor_
+{
+    typedef typename If< Or< IsSameType<TAlphabet, char>,
+                         Or< IsSameType<TAlphabet, signed char>,
+                             IsSameType<TAlphabet, unsigned char> > >,
+                         IsNewline,                     // ignore only newline if the target alphabet is a char
+                         IsWhitespace                   // ignore whitespace as well for all other alphabets
+                     >::Type Type;
+};
+
+template <typename TAlphabet>
+struct FastaIgnoreOrAssertFunctor_
+{
+    typedef typename FastaIgnoreFunctor_<TAlphabet>::Type               TIgnore;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
+
+    typedef typename If< Or< IsSameType<TAlphabet, char>,
+                         Or< IsSameType<TAlphabet, signed char>,
+                             IsSameType<TAlphabet, unsigned char> > >,
+                         TIgnore,                       // don't assert in case of char alphabets
+                         OrFunctor<TIgnore, TAsserter>  // assert being part of the alphabet for other alphabets
+                     >::Type Type;
+};
+
+
 // ============================================================================
 // Classes
 // ============================================================================
@@ -231,31 +261,6 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function writeWrappedString()
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TSequence, typename TSize>
-inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize lineLength)
-{
-    typedef typename Size<TSequence>::Type TSeqSize;
-    typedef typename Iterator<TSequence const, Rooted>::Type TIter;
-
-    TIter iter = begin(seq, Rooted());
-    TSeqSize charsLeft = length(seq);
-    TSeqSize charsPerLine;
-    TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
-
-    do
-    {
-        charsPerLine = std::min(charsLeft, lineLength_);
-        write(target, iter, charsPerLine);
-        writeValue(target, '\n');
-        charsLeft -= charsPerLine;
-    }
-    while (charsLeft != 0);
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Qualities inside seq
 // ----------------------------------------------------------------------------
 
@@ -300,27 +305,23 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(Raw); Qualities inside seq
+// Function readRecord(Raw);
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
 {
-    typedef typename Value<TSeqString>::Type                            TAlphabet;
-    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
-    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
-    typedef EqualsChar<'>'>                                             TFastaBegin;
+    typedef typename Value<TSeqString>::Type                        TAlphabet;
+    typedef typename FastaIgnoreOrAssertFunctor_<TAlphabet>::Type   TIgnoreOrAssert;
 
     clear(meta);
     clear(seq);
-
-    skipUntil(iter, TFastaBegin());     // forward to the next '>'
-    skipLine(iter);                      // assert and skip '>'
-    readUntil(seq, iter, TFastaBegin(), TIgnoreOrAssert()); // read Fasta sequence
+    readUntil(seq, iter, IsNewline(), TIgnoreOrAssert());
+    skipLine(iter);
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(Raw); Qualities inside qual
+// Function readRecord(Raw);
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
@@ -337,10 +338,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
-    typedef typename Value<TSeqString>::Type                            TAlphabet;
-    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Fasta>   TAsserter;
-    typedef OrFunctor<IsWhitespace, TAsserter>                          TIgnoreOrAssert;
-    typedef EqualsChar<'>'>                                             TFastaBegin;
+    typedef typename Value<TSeqString>::Type                        TAlphabet;
+    typedef typename FastaIgnoreOrAssertFunctor_<TAlphabet>::Type   TIgnoreOrAssert;
+    typedef EqualsChar<'>'>                                         TFastaBegin;
 
     clear(meta);
     clear(seq);
@@ -370,9 +370,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
 {
-    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
-    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
-    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
+    typedef typename Value<TSeqString>::Type                                TAlphabet;
+    typedef typename FastaIgnoreFunctor_<TAlphabet>::Type                   TIgnore;
+    typedef typename FastaIgnoreOrAssertFunctor_<TAlphabet>::Type           TIgnoreOrAssert;
     typedef EqualsChar<'@'>                                                 TFastqBegin;
     typedef EqualsChar<'+'>                                                 TQualsBegin;
 
@@ -384,12 +384,28 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 
     readLine(meta, iter);               // read Fastq id
 
-    readUntil(seq, iter, TQualsBegin(), TSeqIgnoreOrAssert());  // read Fastq sequence
+    readUntil(seq, iter, TQualsBegin(), TIgnoreOrAssert());     // read Fastq sequence
     skipOne(iter, TQualsBegin());       // assert and skip '+'
     skipLine(iter);                     // skip optional 2nd Fastq id
 
-    skipLine(iter);                     // skip Fastq qualities
-    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    // as '@' could be either part of the base-call qualities or mark the
+    // beginning of the next record, we count the number of consumed quality
+    // values instead of (1) reading only 1 line or (2) until the next '@'
+    CountDownFunctor<NotFunctor<TIgnore> > qualCountDown(length(seq));
+
+    if (HasQualities<TAlphabet>::VALUE)
+    {
+        // TODO: Replace this temporary by Modifier
+        CharString qual;
+        TIgnore qualIgnore;
+        readUntil(qual, iter, qualCountDown, qualIgnore);  // read Fastq qualities
+        assignQualities(seq, qual);
+    }
+    else
+    {
+        skipUntil(iter, qualCountDown);                     // skip Fastq qualities
+    }
+    skipUntil(iter, TFastqBegin());                         // forward to the next '@'
 }
 
 // ----------------------------------------------------------------------------
@@ -401,10 +417,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 {
     typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
     typedef typename Value<TQualString>::Type                               TQualAlphabet;
-    typedef AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Fastq>    TSeqAsserter;
-    typedef AssertFunctor<IsInAlphabet<TQualAlphabet>, ParseError, Fastq>   TQualAsserter;
-    typedef OrFunctor<IsWhitespace, TSeqAsserter>                           TSeqIgnoreOrAssert;
-    typedef OrFunctor<IsBlank, TQualAsserter>                               TQualIgnoreOrAssert;
+    typedef typename FastaIgnoreOrAssertFunctor_<TSeqAlphabet>::Type        TSeqIgnoreOrAssert;
+    typedef typename FastaIgnoreFunctor_<TQualAlphabet>::Type               TQualIgnore;
+    typedef typename FastaIgnoreOrAssertFunctor_<TQualAlphabet>::Type       TQualIgnoreOrAssert;
     typedef EqualsChar<'@'>                                                 TFastqBegin;
     typedef EqualsChar<'+'>                                                 TQualsBegin;
 
@@ -421,7 +436,13 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
     skipOne(iter, TQualsBegin());       // assert and skip '+'
     skipLine(iter);                     // skip optional 2nd Fastq id
 
-    readUntil(qual, iter, IsNewline(), TQualIgnoreOrAssert());  // read Fastq qualities
+    // as '@' could be either part of the base-call qualities or mark the
+    // beginning of the next record, we count the number of consumed quality
+    // values instead of (1) reading only 1 line or (2) until the next '@'
+    CountDownFunctor<NotFunctor<TQualIgnore> > qualCountDown(length(seq));
+    TQualIgnoreOrAssert qualIgnore;
+
+    readUntil(qual, iter, qualCountDown, qualIgnore);  // read Fastq qualities
     skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
 
@@ -438,9 +459,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
  * @signature int writeRecord(target, id, seq, quals, tag[, options]);
  * 
  * @param[in,out] target  The target to write to.  Type: StreamConcept
- * @param[in]     id      ID/Meta information line to write out. Types: SequenceConcept
- * @param[in]     seq     Sequence to write out.  Type: SequenceConcept
- * @param[in]     quals   ASCII quality characters to write out.  Types: SequenceConcept
+ * @param[in]     id      ID/Meta information line to write out. Types: ContainerConcept
+ * @param[in]     seq     Sequence to write out.  Type: ContainerConcept
+ * @param[in]     quals   ASCII quality characters to write out.  Types: ContainerConcept
  * @param[in]     tag     The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
  * @param[in]     options if not supplied, defaults are chosen.  Types: SequenceOutputOptions
  *
@@ -455,11 +476,11 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 ..param.target:The target to write to.
 ...type:Concept.StreamConcept
 ..param.id:ID/Meta information line to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.seq:Sequence to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.quals:ASCII quality characters to write out.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.tag:The format selector.
 ...type:nolink:$Fasta$, $Fastq$
 ..param.options:if not supplied defaults are chosen.

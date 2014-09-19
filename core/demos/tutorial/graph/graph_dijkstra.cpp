@@ -30,9 +30,9 @@ int main ()
 	addEdge(g, vertHamburg, vertMainz, 521);
 
 // FRAGMENT(main-graph-io)
-	FILE* strmWrite = fopen("graph.dot", "w");
-	write(strmWrite, g, DotDrawing());
-	fclose(strmWrite);
+	std::ofstream dotFile("graph.dot");
+	writeRecords(dotFile, g, DotDrawing());
+    dotFile.close();
 
 
 // FRAGMENT(definition-property-map)

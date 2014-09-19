@@ -186,19 +186,22 @@ operator * (FrequencyDistribution<TValue, TSpec> const & fd_, TType value_)
 	return ret;
 }
 
-template <typename TValue, typename TSpec>
-inline std::ostream & 
-operator << (std::ostream & ostr, FrequencyDistribution<TValue, TSpec> & fd_) 
-{ 
-	for(unsigned int i=0; i<FrequencyDistribution<TValue, TSpec>::SIZE; ++i)
-	{	
-		ostr.width(15);
-		ostr << std::left << fd_.frequency_list[i];
-	}
-	
-	return ostr;  
-} 
+template <typename TTarget, typename TValue, typename TSpec>
+inline void
+write(TTarget &target, FrequencyDistribution<TValue, TSpec> & fd_)
+{
+    write(target, fd_.frequency_list);
+}
 
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           FrequencyDistribution<TValue, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //Metafunctions

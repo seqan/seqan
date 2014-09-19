@@ -114,8 +114,14 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     open(mmapString, toCString(ucscPath));
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
+    UcscContext ctx;
+    UcscRecord record;
     String<UcscRecord> records;
-    read(records, iter);
+    while (!atEnd(iter))
+    {
+        readRecord(record, iter, ctx);
+        appendValue(records, record);
+    }
 
     SEQAN_ASSERT_EQ(records[0].transName, "uc002yoz.1");
     SEQAN_ASSERT_EQ(records[0].contigName, "chr21");
@@ -200,9 +206,15 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_isoforms)
     open(mmapString, toCString(ucscPath));
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
+    UcscContext ctx;
+    UcscRecord record;
     String<UcscRecord> records;
+    while (!atEnd(iter))
+    {
+        readRecord(record, iter, ctx);
+        appendValue(records, record);
+    }
 
-    read(records, iter);
     SEQAN_ASSERT_EQ(records[0].transName, "GENE1");
     SEQAN_ASSERT_EQ(records[0].contigName, "NM_001025288");
     SEQAN_ASSERT(records[0].format == records[0].KNOWN_ISOFORMS);
@@ -246,11 +258,14 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
     open(mmapString, toCString(ucscPath));
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
-    String<UcscRecord> records;
-    read(records, iter);
-
+    UcscContext ctx;
+    UcscRecord record;
     String<char> outString;
-    write(outString, records);
+    while (!atEnd(iter))
+    {
+        readRecord(record, iter, ctx);
+        writeRecord(outString, record);
+    }
 
     SEQAN_ASSERT_EQ(mmapString, outString);
 }
@@ -264,11 +279,11 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_ucsc_known_isoforms)
     open(mmapString, toCString(ucscPath));
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
+    UcscContext ucscContext;
+    UcscRecord record;
     String<char> outString;
     while (!atEnd(iter))
     {
-        UcscRecord record;
-        UcscContext ucscContext;
         readRecord(record, iter, ucscContext);
         writeRecord(outString, record);
     }
@@ -285,11 +300,14 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_isoforms)
     open(mmapString, toCString(ucscPath));
     Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(mmapString);
 
-    String<UcscRecord> records;
-    read(records, iter);
-
+    UcscContext ucscContext;
+    UcscRecord record;
     String<char> outString;
-    write(outString, records);
+    while (!atEnd(iter))
+    {
+        readRecord(record, iter, ucscContext);
+        writeRecord(outString, record);
+    }
 
     SEQAN_ASSERT_EQ(mmapString, outString);
 }

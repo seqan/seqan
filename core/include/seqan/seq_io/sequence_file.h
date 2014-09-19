@@ -85,12 +85,24 @@ typedef SmartFile<Fastq, Output>    SeqFileOut;
 typedef
     TagList<Fastq,
     TagList<Fasta,
-//    TagList<QSeq,   // doesn't work as it uses STL strings and parsers
+    TagList<Embl,
+    TagList<GenBank,
     TagList<Raw
-    > > > //>
-    SeqFormats;
+    > > > > >
+    SeqInFormats;
 
-typedef TagSelector<SeqFormats> AutoSeqFormat;
+typedef
+    TagList<Fastq,
+    TagList<Fasta,
+    TagList<Raw
+    > > >
+    SeqOutFormats;
+
+typedef TagSelector<SeqInFormats>   SeqInFormat;
+typedef TagSelector<SeqOutFormats>  SeqOutFormat;
+
+// deprecated
+typedef SeqInFormat AutoSeqFormat;
 
 // ============================================================================
 // Metafunctions
@@ -100,26 +112,43 @@ typedef TagSelector<SeqFormats> AutoSeqFormat;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, Input, TSpec>, TStorageSpec>
+template <typename TDirection>
+struct SeqFileContext_;
+
+template <>
+struct SeqFileContext_<Input>
 {
-    typedef Tuple<CharString, 3> Type;
+    Tuple<CharString, 3>    buffer;
+    Dna5QString             hybrid;
 };
 
-template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, Output, TSpec>, TStorageSpec>
+template <>
+struct SeqFileContext_<Output>
 {
-    typedef SequenceOutputOptions Type;
+    SequenceOutputOptions   options;
+};
+
+
+template <typename TSpec, typename TDirection, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
+{
+    typedef SeqFileContext_<TDirection> Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction FileFormats
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Fastq, TDirection, TSpec> >
+template <typename TSpec>
+struct FileFormat<SmartFile<Fastq, Input, TSpec> >
 {
-    typedef AutoSeqFormat Type;
+    typedef TagSelector<SeqInFormats> Type;
+};
+
+template <typename TSpec>
+struct FileFormat<SmartFile<Fastq, Output, TSpec> >
+{
+    typedef TagSelector<SeqOutFormats> Type;
 };
 
 // ============================================================================
@@ -146,14 +175,27 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
-//    clear(meta);
-//    clear(seq);
+    typedef typename Value<TSeqStringSet>::Type TSeqString;
+    typedef typename Value<TSeqString>::Type TValue;
+
+    String<TValue> seqBuffer;
+
+    // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
+
     while (!atEnd(file))
     {
-        readRecord(context(file)[0], context(file)[1], file);
-        appendValue(meta, context(file)[0]);
-        appendValue(seq, context(file)[1]);
+        readRecord(context(file).buffer[0], seqBuffer, file);
+        appendValue(meta, context(file).buffer[0]);
+        appendValue(seq, seqBuffer);
     }
+
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
+    seqBuffer.data_capacity = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -177,16 +219,26 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         SmartFile<Fastq, Input, TSpec> & file)
 {
-//    clear(meta);
-//    clear(seq);
-//    clear(qual);
+    typedef typename Value<TSeqStringSet>::Type TSeqString;
+
+    TSeqString seqBuffer;
+
+    // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
+
     while (!atEnd(file))
     {
-        readRecord(context(file)[0], context(file)[1], context(file)[2], file);
-        appendValue(meta, context(file)[0]);
-        appendValue(seq, context(file)[1]);
-        appendValue(qual, context(file)[2]);
+        readRecord(context(file).buffer[0], seqBuffer, context(file).buffer[2], file);
+        appendValue(meta, context(file).buffer[0]);
+        appendValue(seq, seqBuffer);
+        appendValue(qual, context(file).buffer[2]);
     }
+
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
 }
 
 // ----------------------------------------------------------------------------
@@ -199,7 +251,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq)
 {
-    writeRecord(file.iter, meta, seq, file.format, context(file));
+    writeRecord(file.iter, meta, seq, file.format, context(file).options);
 }
 
 // ----------------------------------------------------------------------------
@@ -213,7 +265,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
             TSeqString const & seq,
             TQualString const & qual)
 {
-    writeRecord(file.iter, meta, seq, qual, file.format, context(file));
+    writeRecord(file.iter, meta, seq, qual, file.format, context(file).options);
 }
 
 // ----------------------------------------------------------------------------

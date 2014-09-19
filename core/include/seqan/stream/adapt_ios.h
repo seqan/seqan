@@ -300,6 +300,12 @@ inline void writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 
     ++iter;
 }
 
+template <typename TValue, typename TTraits, typename TValue2>
+inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val)
+{
+    ostream.put(val);
+}
+
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
@@ -311,211 +317,30 @@ inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it)
 }
 
 // ----------------------------------------------------------------------------
-// Function streamEof()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-template <typename TStream>
-inline bool
-streamEof(TStream & stream)
-{
-    // Peak sets eofbit if the next char is EOF.
-    SEQAN_ASSERT_BADBIT(stream);
-    stream.peek();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return stream.eof();
-}
-
-// ----------------------------------------------------------------------------
-// Function streamPeek()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-template <typename TStream>
-inline typename Value<TStream>::Type
-streamPeek(TStream & stream)
-{
-    typedef typename Value<TStream>::Type TValue;
-
-    // Peak sets eofbit if the next char is EOF.
-    SEQAN_ASSERT_BADBIT(stream);
-    TValue val = (TValue)stream.peek();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return val;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamGet()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-template <typename TStream>
-inline typename Value<TStream>::Type
-streamGet(TStream & stream)
-{
-    typedef typename Value<TStream>::Type TValue;
-
-    SEQAN_ASSERT_BADBIT(stream);
-    SEQAN_ASSERT_NOT(streamEof(stream));
-    TValue val = (TValue)stream.get();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return val;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamPut()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-template <typename TStream, typename TValue>
-inline void
-streamPut(TStream & stream, TValue const & val)
-{
-    SEQAN_ASSERT_BADBIT(stream);
-    stream.put(val);
-    SEQAN_ASSERT_NOT(stream.fail());
-}
-
-// ----------------------------------------------------------------------------
-// Function streamFlush()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-template <typename TStream, typename TValue>
-inline void
-streamFlush(TStream & stream)
-{
-    SEQAN_ASSERT_BADBIT(stream);
-    stream << std::flush;
-    SEQAN_ASSERT_NOT(stream.fail());
-}
-
-// ----------------------------------------------------------------------------
-// Function streamSeek()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-// Input
-template <typename TStream, typename TDelta, typename TPos>
-inline SEQAN_FUNC_ENABLE_IF(
-    And<    Is<InputStreamConcept<TStream> >,
-        Not<Is<BidirectionalStreamConcept<TStream> > > >, void)
-streamSeek(TStream & stream, TDelta delta, TPos origin)
-{
-    SEQAN_ASSERT_BADBIT(stream);
-    stream.seekg(delta, _getSTLStyleOrigin(origin));
-    SEQAN_ASSERT_NOT(stream.fail());
-}
-
-// Output
-template <typename TStream, typename TDelta, typename TPos>
-inline SEQAN_FUNC_ENABLE_IF(
-    And<    Is<OutputStreamConcept<TStream> >,
-        Not<Is<BidirectionalStreamConcept<TStream> > > >, void)
-streamSeek(TStream & stream, TDelta delta, TPos origin)
-{
-    SEQAN_ASSERT_BADBIT(stream);
-    stream.seekp(delta, _getSTLStyleOrigin(origin));
-    SEQAN_ASSERT_NOT(stream.fail());
-}
-
-// Bidirectional
-template <typename TStream, typename TDelta, typename TPos>
-inline SEQAN_FUNC_ENABLE_IF(Is<BidirectionalStreamConcept<TStream> >, void)
-streamSeek(TStream & stream, TDelta delta, TPos origin)
-{
-    SEQAN_ASSERT_BADBIT(stream);
-    stream.seekp(delta, _getSTLStyleOrigin(origin));
-    SEQAN_ASSERT_NOT(stream.fail());
-}
-
-// ----------------------------------------------------------------------------
-// Function streamTell()
-// ----------------------------------------------------------------------------
-// Deprecated?
-
-// Input
-template <typename TStream>
-inline SEQAN_FUNC_ENABLE_IF(
-    And<    Is<InputStreamConcept<TStream> >,
-        Not<Is<BidirectionalStreamConcept<TStream> > > >, typename Position<TStream>::Type)
-streamTell(TStream & stream)
-{
-    typedef typename Position<TStream>::Type TPos;
-
-    SEQAN_ASSERT_BADBIT(stream);
-    TPos pos = stream.tellg();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return pos;
-}
-
-// Output
-template <typename TStream>
-inline SEQAN_FUNC_ENABLE_IF(
-    And<    Is<OutputStreamConcept<TStream> >,
-        Not<Is<BidirectionalStreamConcept<TStream> > > >, typename Position<TStream>::Type)
-streamTell(TStream & stream)
-{
-    typedef typename Position<TStream>::Type TPos;
-
-    SEQAN_ASSERT_BADBIT(stream);
-    TPos pos = stream.tellp();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return pos;
-}
-
-// Bidirectional
-template <typename TStream>
-inline SEQAN_FUNC_ENABLE_IF(Is<BidirectionalStreamConcept<TStream> >, typename Position<TStream>::Type)
-streamTell(TStream & stream)
-{
-    typedef typename Position<TStream>::Type  TPos;
-
-    SEQAN_ASSERT_BADBIT(stream);
-    SEQAN_ASSERT_EQ(stream.tellg(), stream.tellp());
-    TPos pos = stream.tellg();
-    SEQAN_ASSERT_NOT(stream.fail());
-    return pos;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamInit()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits>
-inline void streamInit(std::basic_ios<TValue, TTraits> & stream)
-{
-    stream.exceptions(std::ios_base::badbit);
-}
-
-// ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
 inline bool open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    streamInit(stream);
+    stream.exceptions(std::ios_base::badbit);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
-//    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();
 }
 
 template <typename TValue, typename TTraits>
 inline bool open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    streamInit(stream);
+    stream.exceptions(std::ios_base::badbit);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
-//    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();
 }
 
 template <typename TValue, typename TTraits>
 inline bool open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    streamInit(stream);
+    stream.exceptions(std::ios_base::badbit);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
-//    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();
 }
 

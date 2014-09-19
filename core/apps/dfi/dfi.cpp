@@ -681,7 +681,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
 #endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
-    setValidValues(parser, 0, "fa fasta fq fastq txt");
+    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Database files in Fasta/Fastq or text format (lines are strings).");
 
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");

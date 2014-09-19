@@ -493,60 +493,61 @@ _writeEdgeType(TFile & file,
 ...type:Tag.DotDrawing
 ..include:seqan/graph_types.h
  */
-template <typename TFile, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
+template <typename TTarget, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
 void
-write(TFile & file,
-	  Graph<TSpec> const& g,
-	  TNodeAttributes const& nodeMap,
-	  TEdgeAttributes const& edgeMap,
-	  DotDrawing)
+writeRecords(
+    TTarget & target,
+    Graph<TSpec> const& g,
+    TNodeAttributes const& nodeMap,
+    TEdgeAttributes const& edgeMap,
+    DotDrawing)
 {
-//IOREV _doc_ _batchreading_
 	typedef Graph<TSpec> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typename DirectionIterator<TTarget, Output>::Type iter = directionIterator(target, Output());
 
-	_writeGraphType(file,g,DotDrawing());
-	write(file, " G {\n");
-	writeValue(file, '\n');
-	write(file, "/* Graph Attributes */\n");
-	write(file, "graph [rankdir = LR];\n");
-	writeValue(file, '\n');
-	write(file, "/* Node Attributes */\n");
-	write(file, "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n");
-	writeValue(file, '\n');
-	write(file, "/* Edge Attributes */\n");
-	write(file, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
-	writeValue(file, '\n');
+	_writeGraphType(iter,g,DotDrawing());
+	write(iter, " G {\n");
+	writeValue(iter, '\n');
+	write(iter, "/* Graph Attributes */\n");
+	write(iter, "graph [rankdir = LR];\n");
+	writeValue(iter, '\n');
+	write(iter, "/* Node Attributes */\n");
+	write(iter, "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n");
+	writeValue(iter, '\n');
+	write(iter, "/* Edge Attributes */\n");
+	write(iter, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
+	writeValue(iter, '\n');
 
-	write(file, "/* Nodes */\n");
+	write(iter, "/* Nodes */\n");
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
 	for(;!atEnd(it);++it) {
-		appendNumber(file, (int)*it);
-		write(file, " [");
-		write(file, getProperty(nodeMap, *it));
-		write(file, "];\n");
+		appendNumber(iter, (int)*it);
+		write(iter, " [");
+		write(iter, getProperty(nodeMap, *it));
+		write(iter, "];\n");
 	}
-	writeValue(file, '\n');
+	writeValue(iter, '\n');
 
-	write(file, "/* Edges */\n");
+	write(iter, "/* Edges */\n");
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
 	for(;!atEnd(itEd);++itEd) {
 		TVertexDescriptor sc = sourceVertex(itEd);
 		TVertexDescriptor tr = targetVertex(itEd);
-		appendNumber(file, (int)sc);
-		_writeEdgeType(file, g, DotDrawing());
-		appendNumber(file, (int)tr);
-		write(file, " [");
-		write(file, getProperty(edgeMap, *itEd));
-		write(file, "];\n");
+		appendNumber(iter, sc);
+		_writeEdgeType(iter, g, DotDrawing());
+		appendNumber(iter, tr);
+		write(iter, " [");
+		write(iter, getProperty(edgeMap, *itEd));
+		write(iter, "];\n");
 	}
-	writeValue(file, '\n');
+	writeValue(iter, '\n');
 
-	_writeGraphFooter(file,g,DotDrawing());
+	_writeGraphFooter(iter,g,DotDrawing());
 
-	write(file, "}\n");
+	write(iter, "}\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -558,15 +559,16 @@ write(TFile & file,
  */
 template <typename TFile, typename TSpec, typename TNodeAttributes>
 inline void
-write(TFile & file,
-	  Graph<TSpec> const& g, 
-	  TNodeAttributes const& nodeMap,
-	  DotDrawing) 
+writeRecords(
+    TFile & file,
+    Graph<TSpec> const& g, 
+    TNodeAttributes const& nodeMap,
+    DotDrawing) 
 {
 //IOREV _doc_ _batchreading_
 	String<String<char> > edgeMap;
 	_createEdgeAttributes(g,edgeMap);
-	write(file,g,nodeMap,edgeMap,DotDrawing());
+	writeRecords(file,g,nodeMap,edgeMap,DotDrawing());
 }
 
 
@@ -579,16 +581,17 @@ write(TFile & file,
  */
 template <typename TFile, typename TSpec>
 inline void
-write(TFile & file,
-	  Graph<TSpec> const& g, 
-	  DotDrawing) 
+writeRecords(
+    TFile & file,
+    Graph<TSpec> const& g,
+    DotDrawing) 
 {
 //IOREV _doc_ _batchreading_
 	String<String<char> > nodeMap;
 	_createNodeAttributes(g,nodeMap);
 	String<String<char> > edgeMap;
 	_createEdgeAttributes(g,edgeMap);
-	write(file,g,nodeMap,edgeMap,DotDrawing());
+	writeRecords(file,g,nodeMap,edgeMap,DotDrawing());
 }
 
 
@@ -902,45 +905,42 @@ _processStatement(Graph<TSpec>& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
-void read(TFile & file,
-		  Graph<TSpec>& g,
-		  TNodeAttributes& nodeMap,
-		  TEdgeAttributes& edgeMap,
-		  DotDrawing)
+template <typename TSpec, typename TNodeAttributes, typename TEdgeAttributes, typename TInStream>
+void readRecords(
+    Graph<TSpec>& g,
+    TNodeAttributes& nodeMap,
+    TEdgeAttributes& edgeMap,
+    TInStream & stream,
+    DotDrawing)
 {
-    // TODO(holtgrew): Could be adapted to use RecordReader for parsing.
+    typename DirectionIterator<TInStream, Input>::Type reader = directionIterator(stream, Input());
+
 	typedef Graph<TSpec> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TFile>::Type TValue;
-	typedef std::map<String<TValue>, TVertexDescriptor> TMap;
+	typedef std::map<CharString, TVertexDescriptor> TMap;
 	TMap nodeIdMap;
 
-	TValue c;
-	String<TValue> stmt;
-	while (!streamEOF(file)) {
-        streamReadChar(c, file);
-
-		if (c == ';') _processStatement(g,stmt, nodeMap, edgeMap, nodeIdMap);
-		else if ((c == '\n') ||
-				(c == '\r')) {
-					clear(stmt);
-		}
-		else append(stmt,c);
+	CharString stmt;
+	while (!atEnd(reader))
+    {
+        clear(stmt);
+        readUntil(stmt, reader, EqualsChar<';'>());
+        _processStatement(g, stmt, nodeMap, edgeMap, nodeIdMap);
+        skipLine(reader);
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TSpec>
-void read(TFile & file,
-		  Graph<TSpec>& g,
-		  DotDrawing) 
+template <typename TSpec, typename TInStream>
+void readRecords(
+    Graph<TSpec>& g,
+    TInStream & stream,
+    DotDrawing)
 {
-//IOREV _batchreading_ 
-	String<String<char> > nodeMap;
-	String<String<char> > edgeMap;
-	read(file,g,nodeMap,edgeMap,DotDrawing());
+	String<CharString> nodeMap;
+	String<CharString> edgeMap;
+	readRecords(g, nodeMap, edgeMap, stream, DotDrawing());
 }
 
 

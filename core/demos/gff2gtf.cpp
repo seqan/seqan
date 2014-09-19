@@ -4,55 +4,33 @@
 #include <string>
 
 #include <seqan/store.h>
-#include <seqan/misc/misc_cmdparser.h>
 
 using namespace seqan;
 
 int main(int argc, const char *argv[])
 {
-	typedef FragmentStore<> TFragStore;
-	
-	//////////////////////////////////////////////////////////////////////////////
-	// Define options
-	CommandLineParser parser;
-	addUsageLine(parser, "[OPTION]... <infile> <outfile>");
-	
-	addOption(parser, CommandLineOption("gff",  "",    "write annotation in Gff format", OptionType::Bool));
-	addOption(parser, CommandLineOption("gtf",  "",    "write annotation in Gtf format (default)", OptionType::Bool));
-	requiredArguments(parser, 2);
+	if (argc < 3)
+    {
+        std::cerr << "[OPTION]... <infile.[gff|gtf]> <outfile.[gff|gtf]>" << std::endl;
+        return 0;
+	}
 
-	bool stop = !parse(parser, argc, argv, std::cerr);
-	if (stop) return 0;
-
-	//////////////////////////////////////////////////////////////////////////////
-	// Extract and check options	
-	TFragStore store;
-	std::ifstream inFile(toCString(getArgumentValue(parser, 0)), std::ios_base::in);
-	std::ofstream outFile(toCString(getArgumentValue(parser, 1)), std::ios_base::out);
-
-	if (!inFile.is_open() && (stop = true))
+	FragmentStore<> store;
+	GffFileIn inFile;
+	if (!open(inFile, argv[1]))
+    {
 		std::cerr << "Failed to open annotation infile for reading." << std::endl;
-	else
-		read(inFile, store, Gff());
+        return 1;
+    }
+    readRecords(store, inFile);
 
-	if (!stop)
-	{
-		if (!outFile.is_open() && (stop = true))
-			std::cerr << "Failed to open annotation outfile for writing." << std::endl ;
-		else
-		{
-			if (isSetShort(parser, "gff"))
-				write(outFile, store, Gff());
-			else
-				write(outFile, store, Gtf());
-		}
+	GffFileOut outFile;
+    if (!open(outFile, argv[2]))
+    {
+        std::cerr << "Failed to open annotation outfile for writing." << std::endl ;
+        return 1;
 	}
-	
-	if (stop)
-	{
-		std::cerr << "Exiting ..." << std::endl;
-		return 1;
-	}
+    writeRecords(outFile, store);
 
 	return 0;
 }

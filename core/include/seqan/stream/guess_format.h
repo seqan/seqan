@@ -92,6 +92,13 @@ inline bool guessFormatFromFilename(TFilename const &, TagSelector<>)
     return false;
 }
 
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+getBasename(TFilename const & fname, TagSelector<> const &)
+{
+    return prefix(fname, length(fname));
+}
+
 // --------------------------------------------------------------------------
 // Function guessFormatFromFilename(TagSelector)
 // --------------------------------------------------------------------------
@@ -111,6 +118,18 @@ inline bool guessFormatFromFilename(TFilename const &fname, TagSelector<TTagList
         }
     }
     return guessFormatFromFilename(fname, static_cast<typename TagSelector<TTagList>::Base &>(format));
+}
+
+template <typename TFilename, typename TTagList>
+inline typename Prefix<TFilename const>::Type
+getBasename(TFilename const & fname, TagSelector<TTagList> const &format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        return getBasename(fname, TFormat());
+    else
+        return getBasename(fname, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // --------------------------------------------------------------------------
@@ -159,6 +178,23 @@ inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*
 
     return false;
 }
+
+template <typename TFilename, typename TFormat_>
+inline typename Prefix<TFilename const>::Type
+getBasename(TFilename const & fileName, Tag<TFormat_> const & /*formatTag*/)
+{
+    typedef typename Value<TFilename>::Type                                     TValue;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    typedef Tag<TFormat_>                                                       TFormat;
+    
+    TLowcase lowcaseFileName(fileName);
+    for (unsigned i = 0; i < sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
+        if (endsWith(lowcaseFileName, FileFormatExtensions<TFormat>::VALUE[i]))
+            return prefix(fileName, length(fileName) - length(FileFormatExtensions<TFormat>::VALUE[i]));
+
+    return prefix(fileName, length(fileName));
+}
+
 
 // --------------------------------------------------------------------------
 // Function _getFileFormatExtensions()

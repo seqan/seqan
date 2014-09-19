@@ -36,7 +36,7 @@
 #include <sstream>
 #include <seqan/map.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/misc/cmdparser/cmdoption.h>
 #include <seqan/misc/cmdparser/cmdparser_type_support.h>
 

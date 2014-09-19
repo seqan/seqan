@@ -37,7 +37,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
-#include <seqan/stream.h>
 
 #include "test_stream_lexical_cast.h"
 #include "test_stream_tokenization.h"
@@ -223,19 +222,12 @@ SEQAN_TYPED_TEST(InputStreamTest, Open)
 {
     typedef typename TestFixture::Type  TStream;
 
-    {
-        bool feature = HasStreamFeature<TStream, HasFilename>::VALUE;
-        SEQAN_ASSERT(feature);
-    }
-    {
-        bool feature = HasStreamFeature<TStream, IsInput>::VALUE;
-        SEQAN_ASSERT(feature);
-    }
-
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
 
     SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY));
-    streamGet(this->stream);
+
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
+    *iter++;
 
 //    SEQAN_ASSERT_NOT(open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY));
 }
@@ -250,11 +242,12 @@ SEQAN_TYPED_TEST(InputStreamTest, Get)
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
     open(this->stream, toCString(ctx.inputFilename));
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
 
     for (unsigned i = 0; i < ctx.filesize; i += length(ctx.content))
     {
-        streamSeek(this->stream, i, SEEK_SET);
-        SEQAN_ASSERT_EQ(streamGet(this->stream), front(ctx.content));
+        setPosition(iter, i);
+        SEQAN_ASSERT_EQ(*iter, front(ctx.content));
     }
 }
 
@@ -267,11 +260,12 @@ SEQAN_TYPED_TEST(InputStreamTest, Eof)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-
     open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY);
-    SEQAN_ASSERT_NOT(streamEof(this->stream));
-    streamSeek(this->stream, 0u, SEEK_END);
-    SEQAN_ASSERT(streamEof(this->stream));
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
+
+    SEQAN_ASSERT_NOT(atEnd(iter));
+    setPosition(iter, ctx.filesize);
+    SEQAN_ASSERT(atEnd(iter));
 }
 
 // ========================================================================== 
@@ -286,22 +280,16 @@ SEQAN_TYPED_TEST(OutputStreamTest, Open)
 {
     typedef typename TestFixture::Type  TStream;
 
-    {
-        bool feature = HasStreamFeature<TStream, HasFilename>::VALUE;
-        SEQAN_ASSERT(feature);
-    }
-    {
-        bool feature = HasStreamFeature<TStream, IsOutput>::VALUE;
-        SEQAN_ASSERT(feature);
-    }
-
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-
     SEQAN_ASSERT(open(this->stream, toCString(ctx.outputFilename), OPEN_WRONLY));
-    streamPut(this->stream, front(ctx.content));
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(this->stream, Output());
+
+    writeValue(iter, front(ctx.content));
     close(this->stream);
+
     SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_WRONLY|OPEN_APPEND));
-    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
+    iter = directionIterator(this->stream, Output());
+    SEQAN_ASSERT_EQ(position(iter), ctx.filesize);
 }
 
 // --------------------------------------------------------------------------
@@ -331,27 +319,39 @@ SEQAN_TYPED_TEST(OutputStreamTest, Put)
 // Test streamTell()
 // --------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(StreamTest, Tell)
+SEQAN_TYPED_TEST(InputStreamTest, Tell)
 {
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
     open(this->stream, toCString(ctx.inputFilename), DefaultOpenMode<TStream>::VALUE | OPEN_APPEND);
 
-    streamSeek(this->stream, 0u, SEEK_END);
-    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
 
-    streamSeek(this->stream, 11u, SEEK_END);
-    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize + 11u);
+    setPosition(iter, 23);
+    SEQAN_ASSERT_EQ(position(iter), 23u);
 
-    streamSeek(this->stream, 23u, SEEK_SET);
-    SEQAN_ASSERT_EQ(streamTell(this->stream), 23u);
-
-    streamSeek(this->stream, 23u, SEEK_CUR);
-    SEQAN_ASSERT_EQ(streamTell(this->stream), 46u);
+    setPosition(iter, 46);
+    SEQAN_ASSERT_EQ(position(iter), 46u);
 }
 
-// ========================================================================== 
+SEQAN_TYPED_TEST(OutputStreamTest, Tell)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+    open(this->stream, toCString(ctx.inputFilename), DefaultOpenMode<TStream>::VALUE | OPEN_APPEND);
+
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(this->stream, Output());
+
+    setPosition(iter, 23);
+    SEQAN_ASSERT_EQ(position(iter), 23u);
+
+    setPosition(iter, 46);
+    SEQAN_ASSERT_EQ(position(iter), 46u);
+}
+
+// ==========================================================================
 // Functions
 // ========================================================================== 
 

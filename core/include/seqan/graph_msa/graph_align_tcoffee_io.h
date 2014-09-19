@@ -1046,7 +1046,7 @@ read(TFile & file,
 
 	//std::fstream strm1; // Alignment graph as dot
 	//strm1.open("tree23.dot", std::ios_base::out | std::ios_base::trunc);
-	//write(strm1,guideTree,DotDrawing());
+	//writeRecords(strm1,guideTree,DotDrawing());
 	//strm1.close();
 
 	//std::cout << guideTree << std::endl;

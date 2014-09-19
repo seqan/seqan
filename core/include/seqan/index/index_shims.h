@@ -135,7 +135,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * @signature void createSuffixArray(suffixArray, text[, algoTag]);
  * 
  * @param[out] suffix  Array The resulting suffix array.
- * @param[in]  text    A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  text    A given text. Types: @link ContainerConcept @endlink
  * @param[in]  algoTag A tag that identifies the algorithm which is used for creation.
  *
  * This function should not be called directly.  Please use @link Index#indexCreate
@@ -357,7 +357,7 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * @signature void createLcpTable(lcp, text, suffixArray[, algoTag]);
  * 
  * @param[out] lcp         The resulting lcp table.
- * @param[in]  text        A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  text        A given text. Types: @link ContainerConcept @endlink
  * @param[in]  suffixArray The suffix array of <tt>text</tt>.
  * @param[in]  algoTag     A tag that identifies the algorithm which is used for creation.
  * 
@@ -572,7 +572,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @param[out] bwt     The resulting Burrows-Wheeler table.
  * @param[in]  suffix  Array The suffix array of <tt>text</tt>.
- * @param[in]  text    A given text. Types: @link SequenceConcept @endlink
+ * @param[in]  text    A given text. Types: @link ContainerConcept @endlink
  * @param[in]  algoTag A tag that identifies the algorithm which is used for creation.
  *
  * This function should not be called directly.  Please use @link Index#indexCreate

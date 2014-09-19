@@ -156,7 +156,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename THost, typename TSpec>
  *            class Segment;
  *
- * @tparam THost The underlying @link SequenceConcept sequence @endlink type.
+ * @tparam THost The underlying @link ContainerConcept sequence @endlink type.
  * @tparam TSpec The tag to use for selecting the Segment specialization.
  *
  * Segments are lightweight representations of an underlying sequence (host).  Only a pointer to the host and begin
@@ -166,8 +166,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @snippet demos/sequence/segment.cpp basic operations
  *
- * You can get the type of the infix/prefix/suffix of a sequence using @link SequenceConcept#Infix @endlink,
- * @link SequenceConcept#Prefix @endlink, and @link SequenceConcept#Suffix @endlink.  These metafunctions will
+ * You can get the type of the infix/prefix/suffix of a sequence using @link ContainerConcept#Infix @endlink,
+ * @link ContainerConcept#Prefix @endlink, and @link ContainerConcept#Suffix @endlink.  These metafunctions will
  * "flatten" the type such that using these metafunctions, the infix of an infix is an infix and not
  * an Infix Segment with an Infix Segment as its host.  Instead, it will again be an Infix Segment
  * of the host of the inner type.
@@ -440,6 +440,16 @@ struct IsContiguous< Segment<THost, TSpec> > :
 template <typename THost, typename TSpec>
 struct IsSequence< Segment<THost, TSpec> > :
     True {};
+
+// ----------------------------------------------------------------------------
+// Concept ContainerConcept
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((Segment<THost, TSpec>), (ContainerConcept));
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((Segment<THost, TSpec> const), (ContainerConcept));
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -866,16 +876,6 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 // stream operators
 //////////////////////////////////////////////////////////////////////////////
-
-// TODO(singer): Remove this forward.
-template <typename TObject, typename TDirection>
-struct DirectionIterator;
-
-struct Input_;
-typedef Tag<Input_> Input;
-
-struct Output_;
-typedef Tag<Output_> Output;
 
 template <typename TStream, typename THost, typename TSpec>
 inline TStream &

@@ -51,7 +51,40 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TSmartFile>
+struct FileFormat;
+
+// ============================================================================
 // Tags, Enums
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// TagList CompressedFileTypes
+// --------------------------------------------------------------------------
+
+typedef
+#if SEQAN_HAS_ZLIB
+    TagList<BgzfFile,
+    TagList<GZFile,
+#endif
+#if SEQAN_HAS_BZIP2
+    TagList<BZ2File,
+#endif
+    TagList<Nothing>
+#if SEQAN_HAS_BZIP2
+    >
+#endif
+#if SEQAN_HAS_ZLIB
+    >
+    >
+#endif
+    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
+
+// ============================================================================
+// Metafunctions
 // ============================================================================
 
 #if SEQAN_HAS_ZLIB
@@ -81,32 +114,6 @@ template <typename Elem, typename Tr, typename ElemA, typename ByteT, typename B
 SEQAN_CONCEPT_IMPL((basic_bgzf_ostream<Elem, Tr, ElemA, ByteT, ByteAT>), (OutputStreamConcept));
 
 #endif
-
-// --------------------------------------------------------------------------
-// TagList CompressedFileTypes
-// --------------------------------------------------------------------------
-
-typedef
-#if SEQAN_HAS_ZLIB
-    TagList<BgzfFile,
-    TagList<GZFile,
-#endif
-#if SEQAN_HAS_BZIP2
-    TagList<BZ2File,
-#endif
-    TagList<Nothing>
-#if SEQAN_HAS_BZIP2
-    >
-#endif
-#if SEQAN_HAS_ZLIB
-    >
-    >
-#endif
-    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // --------------------------------------------------------------------------
 // Metafunction VirtualStreamSwitch_
@@ -224,16 +231,18 @@ template <typename TValue, typename TDirection, typename TTraits = std::char_tra
 class VirtualStream: public BasicStream<TValue, TDirection, TTraits>::Type
 {
 public:
-    typedef typename BasicStream<TValue, TDirection, TTraits>::Type  TStream;      // the stream base class we expose
-    typedef std::fstream                                    TFile;                  // if a real file should be opened
-    typedef BufferedStream<TStream, TDirection>             TBufferedStream;        // if input stream is not buffered
-    typedef std::basic_streambuf<TValue>                    TStreamBuffer;          // the streambuf to use
-    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;  // the owner of the streambuf
+    typedef typename BasicStream<TValue, TDirection, TTraits>::Type TStream;                // the stream base class we expose
+    typedef std::fstream                                            TFile;                  // if a real file should be opened
+    typedef BufferedStream<TStream, TDirection>                     TBufferedStream;        // if input stream is not buffered
+    typedef std::basic_streambuf<TValue>                            TStreamBuffer;          // the streambuf to use
+    typedef VirtualStreamContext_<TValue, TDirection>               TVirtualStreamContext;  // the owner of the streambuf
+    typedef typename FileFormat<VirtualStream>::Type                TFormat;                // detected format
 
     TFile                   file;
     TBufferedStream         bufferedStream;
     TStreamBuffer           *streamBuf;
     TVirtualStreamContext   *context;
+    TFormat                 format;
 
     VirtualStream():
         TStream(NULL),
@@ -291,11 +300,21 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TTraits>
+struct FileFormat<VirtualStream<TValue, TDirection, TTraits> >
+{
+    typedef TagSelector<CompressedFileTypes> Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
-struct Value<VirtualStream<TValue, TDirection> >
+template <typename TValue, typename TDirection, typename TTraits>
+struct Value<VirtualStream<TValue, TDirection, TTraits> >
 {
     typedef TValue Type;
 };
@@ -304,26 +323,26 @@ struct Value<VirtualStream<TValue, TDirection> >
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
-struct Position<VirtualStream<TValue, TDirection> >:
-    Position<typename VirtualStream<TValue, TDirection>::TFile> {};
+template <typename TValue, typename TDirection, typename TTraits>
+struct Position<VirtualStream<TValue, TDirection, TTraits> >:
+    Position<typename VirtualStream<TValue, TDirection, TTraits>::TFile> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator<Standard>
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
-struct Iterator<VirtualStream<TValue, TDirection>, TDirection>
+template <typename TValue, typename TDirection, typename TTraits>
+struct Iterator<VirtualStream<TValue, TDirection, TTraits>, TDirection>
 {
-    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> > Type;
+    typedef Iter<VirtualStream<TValue, TDirection, TTraits>, StreamIterator<TDirection> > Type;
 };
 
 // --------------------------------------------------------------------------
 // Metafunction DefaultOpenMode<Input>
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDummy>
-struct DefaultOpenMode<VirtualStream<TValue, Input>, TDummy>
+template <typename TValue, typename TDummy, typename TTraits>
+struct DefaultOpenMode<VirtualStream<TValue, Input, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_RDONLY };
 };
@@ -332,8 +351,8 @@ struct DefaultOpenMode<VirtualStream<TValue, Input>, TDummy>
 // Metafunction DefaultOpenMode<Output>
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDummy>
-struct DefaultOpenMode<VirtualStream<TValue, Output>, TDummy>
+template <typename TValue, typename TDummy, typename TTraits>
+struct DefaultOpenMode<VirtualStream<TValue, Output, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
 };
@@ -355,11 +374,11 @@ SEQAN_CONCEPT_IMPL((VirtualStream<TValue, Bidirectional>), (BidirectionalStreamC
 // Class VirtualStreamFactoryContext_
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
-struct VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection> >
+template <typename TValue, typename TDirection, typename TTraits>
+struct VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection, TTraits> >
 {
-    typedef VirtualStream<TValue, TDirection>       TVirtualStream;
-    typedef typename TVirtualStream::TStream        TStream;
+    typedef VirtualStream<TValue, TDirection, TTraits>  TVirtualStream;
+    typedef typename TVirtualStream::TStream            TStream;
 
     TStream &stream;
     VirtualStreamFactoryContext_(TStream &stream):
@@ -380,9 +399,9 @@ struct Value<VirtualStreamFactoryContext_<TVirtualStream> >
 // Function tagApply()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TFormat>
-inline VirtualStreamContext_<TValue, TDirection>*
-tagApply(VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection> > &ctx, Tag<TFormat>)
+template <typename TValue, typename TDirection, typename TTraits, typename TFormat>
+inline VirtualStreamContext_<TValue, TDirection> *
+tagApply(VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection, TTraits> > &ctx, Tag<TFormat>)
 {
     return new VirtualStreamContext_<TValue, TDirection, Tag<TFormat> >(ctx.stream);
 }
@@ -464,17 +483,65 @@ inline bool _guessFormat(VirtualStream<TValue, Output> &, TStream &, TCompressio
     return true;
 }
 
+// ----------------------------------------------------------------------------
+// Function _getUncompressedBasename()
+// ----------------------------------------------------------------------------
+
+// single format
+template <typename TFilename, typename TFormat>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fileName, TFormat const & format)
+{
+    return getBasename(fileName, format);
+}
+
+// make sure not to only cut the ".bgzf" extension and not ".bam"
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
+{
+    typedef typename Value<TFilename>::Type                                     TValue;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    
+    TLowcase lowcaseFileName(fileName);
+
+    if (endsWith(lowcaseFileName, ".bgzf"))
+        return prefix(fileName, length(fileName) - 5);
+
+    return prefix(fileName, length(fileName));
+}
+
+// TagSelector
+template <typename TFilename>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fname, TagSelector<> const & format)
+{
+    return getBasename(fname, format);
+}
+
+template <typename TFilename, typename TTagList>
+inline typename Prefix<TFilename const>::Type
+_getUncompressedBasename(TFilename const & fname, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        return _getUncompressedBasename(fname, TFormat());
+    else
+        return _getUncompressedBasename(fname, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
 // --------------------------------------------------------------------------
 // Function open()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
+template <typename TValue, typename TDirection, typename TTraits, typename TStream, typename TCompressionType>
 inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
-open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType & compressionType)
+open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TCompressionType & compressionType)
 {
     SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
 
-    typedef VirtualStream<TValue, TDirection> TVirtualStream;
+    typedef VirtualStream<TValue, TDirection, TTraits> TVirtualStream;
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
     // peek the first character to initialize the underlying streambuf (for in_avail)
@@ -507,12 +574,12 @@ open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressio
     return true;
 }
 
-template <typename TValue, typename TDirection, typename TStream, typename TCompressionType>
+template <typename TValue, typename TDirection, typename TTraits, typename TStream, typename TCompressionType>
 inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
-open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream, TCompressionType const & compressionType)
+open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TCompressionType const & compressionType)
 {
-    TCompressionType ct = compressionType;
-    return open(stream, fileStream, ct);
+    assign(stream.format, compressionType);
+    return open(stream, fileStream, stream.format);
 }
 
 template <typename TValue, typename TStream>
@@ -520,31 +587,31 @@ inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension
-    TagSelector<CompressedFileTypes> compressionType;
-    return open(stream, fileStream, compressionType);
+    assign(stream.format, typename FileFormat<VirtualStream<TValue, Input> >::Type());
+    return open(stream, fileStream, stream.format);
 }
 
-template <typename TValue, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits>
 inline bool
-open(VirtualStream<TValue, TDirection> &stream,
+open(VirtualStream<TValue, TDirection, TTraits> &stream,
      const char *fileName,
-     int openMode = DefaultOpenMode<VirtualStream<TValue, TDirection> >::VALUE)
+     int openMode = DefaultOpenMode<VirtualStream<TValue, TDirection, TTraits> >::VALUE)
 {
     SEQAN_ASSERT_MSG(stream.context == NULL, "VirtualStream: close() must be called before re-opening.");
 
-    typedef VirtualStream<TValue, TDirection> TVirtualStream;
+    typedef VirtualStream<TValue, TDirection, TTraits> TVirtualStream;
 
     if (!open(stream.file, fileName, openMode))
         return false;
 
     // detect compression type from file extension
-    TagSelector<CompressedFileTypes> fileType;
-    guessFormatFromFilename(fileName, fileType);
+    assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
+    guessFormatFromFilename(fileName, stream.format);
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(stream.file);
 
     // create a new (un)zipper buffer
-    stream.context = tagApply(ctx, fileType);
+    stream.context = tagApply(ctx, stream.format);
     if (stream.context == NULL)
     {
         close(stream.file);
@@ -561,14 +628,25 @@ open(VirtualStream<TValue, TDirection> &stream,
 // Function close()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection>
+template <typename TValue, typename TDirection, typename TTraits>
 inline bool
-close(VirtualStream<TValue, TDirection> &stream)
+close(VirtualStream<TValue, TDirection, TTraits> &stream)
 {
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
     return close(stream.file);
+}
+
+// ----------------------------------------------------------------------------
+// Function format()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TTraits>
+inline typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type &
+format(VirtualStream<TValue, TDirection, TTraits> &stream)
+{
+    return stream.format;
 }
 
 }  // namespace seqan

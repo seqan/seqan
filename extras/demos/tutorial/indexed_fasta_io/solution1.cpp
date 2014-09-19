@@ -20,7 +20,7 @@ int main(int argc, char const ** argv)
     seqan::CharString faiFilename = argv[1];
     append(faiFilename, ".fai");
 
-    if (write(faiIndex, toCString(faiFilename)) != 0)
+    if (!save(faiIndex, toCString(faiFilename)))
     {
         std::cerr << "ERROR: Could not write the index to file!\n";
         return 1;

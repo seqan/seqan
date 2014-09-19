@@ -49,6 +49,18 @@
 #include <cxxabi.h>
 #endif
 
+namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename T>
+struct Tag;
+
+//struct Nothing_;
+//typedef Tag<Nothing_> Nothing;
+
 // ============================================================================
 // Macros
 // ============================================================================
@@ -155,8 +167,6 @@
 #define SEQAN_RETHROW
 
 #endif // #ifdef SEQAN_EXCEPTIONS
-
-namespace seqan {
 
 // ============================================================================
 // Exceptions
@@ -303,11 +313,30 @@ struct AssertFunctor
         func(func)
     {}
 
+    std::string escapeChar(unsigned char val)
+    {
+        if (val <= '\r')
+        {
+            static const char * const escapeCodes[14] = {
+                "\\0",  "\\1",  "\\2",  "\\3",  "\\4",  "\\5",  "\\6",  "\\a",
+                "\\b",  "\\t",  "\\n",  "\\v",  "\\f",  "\\r" };
+            return std::string(escapeCodes[val]);
+        }
+        else if (' ' <= val && val < 128u)
+            return std::string() + (char)val;
+        else
+        {
+            char buffer[6]; // 5 + 1, e.g. "\0xff" + trailing zero
+            sprintf(buffer, "\\%#2x", (unsigned)val);
+            return std::string(buffer);
+        }
+    }
+
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator() (TValue const & val)
     {
         if (SEQAN_UNLIKELY(!func(val)))
-            throw TException(std::string("Value '") + val + "' produced an error. " +
+            throw TException(std::string("Unexpected character '") + escapeChar(val) + "' found. " +
                              getExceptionMessage(func, TContext()));
         return RETURN_VALUE;
     }
