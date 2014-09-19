@@ -251,6 +251,79 @@ char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
     ""
 };              // default output extension
 
+// ----------------------------------------------------------------------------
+// Metafunction IntegerFormatString_
+// ----------------------------------------------------------------------------
+// Return the format string for numbers.
+
+template <typename TUnsigned, unsigned SIZE, typename T = void>
+struct IntegerFormatString_;
+
+
+template <typename TUnsigned, typename T>
+struct IntegerFormatString_<TUnsigned, 1, T> :
+    IntegerFormatString_<TUnsigned, 2, T> {};
+
+
+template <typename T>
+struct IntegerFormatString_<False, 2, T>
+{
+    static const char VALUE[];
+    typedef short Type;
+};
+template <typename T>
+const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 2, T>
+{
+    static const char VALUE[];
+    typedef unsigned short Type;
+};
+template <typename T>
+const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
+
+
+template <typename T>
+struct IntegerFormatString_<False, 4, T>
+{
+    static const char VALUE[];
+    typedef int Type;
+};
+template <typename T>
+const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 4, T>
+{
+    static const char VALUE[];
+    typedef unsigned Type;
+};
+template <typename T>
+const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
+
+
+template <typename T>
+struct IntegerFormatString_<False, 8, T>
+{
+    static const char VALUE[];
+    typedef __int64 Type;
+};
+template <typename T>
+const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 8, T>
+{
+    static const char VALUE[];
+    typedef __uint64 Type;
+};
+template <typename T>
+const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
+
 // ============================================================================
 // Functions
 // ============================================================================
