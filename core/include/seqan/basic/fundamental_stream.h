@@ -52,8 +52,12 @@ struct StreamIterator;
 template <typename TValue, typename TTraits, typename TValue2>
 inline void writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 val);
 
-template <typename TValue, typename TTraits> inline bool
-atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
+template <typename TValue, typename TTraits>
+inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 /*!
  * @macro SEQAN_HAS_ZLIB
