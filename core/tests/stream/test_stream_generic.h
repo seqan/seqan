@@ -43,11 +43,13 @@ void testStreamReadSimpleUsage(TStream & stream)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     // Read first line.
     char buffer[100];
     char *ptr = buffer;
-    while (!streamEof(stream)) {
-        *ptr = stream.get();
+    while (!atEnd(iter)) {
+        *ptr = *iter;
         SEQAN_ASSERT(stream.good());
         SEQAN_ASSERT_LT(ptr, buffer + 100);
         if (*(ptr++) == '\n')

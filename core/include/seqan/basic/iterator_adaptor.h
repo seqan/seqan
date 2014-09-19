@@ -230,21 +230,21 @@ template <typename TContainer, typename TIterator, typename TSpec>
 struct GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > > :
     GetValue<TIterator> {};
 
-template <typename TContainer, typename TIterator, typename TSpec>
-struct GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
-    GetValue<TIterator const> {};
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
+//    GetValue<TIterator const> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TIterator, typename TSpec>
-struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > > :
-    GetValue<TIterator> {};
-
-template <typename TContainer, typename TIterator, typename TSpec>
-struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
-    GetValue<TIterator const> {};
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > > :
+//    GetValue<TIterator> {};
+//
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
+//    GetValue<TIterator const> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction IteratorDefaultImp_
