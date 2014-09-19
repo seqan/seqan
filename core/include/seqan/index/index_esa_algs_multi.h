@@ -67,7 +67,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @class MumsIterator Mums Iterator
  * @extends BottomUpIterator
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Iterator to search for all maximum unique matches.
  * 
@@ -193,7 +193,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @class MultiMemsIterator Multi Mems Iterator
  * @extends BottomUpIterator
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief Iterator to search for MultiMems.
  * 

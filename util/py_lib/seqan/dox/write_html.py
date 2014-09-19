@@ -172,6 +172,7 @@ def transTextNode(text_node, top=True, start_heading=3, path_mgr=None, **kwargs)
     converter = TextNodeToHtml(text_node, skip_top_tag=not top, start_heading=start_heading, path_mgr=path_mgr)
     return converter.convert() or ''
 
+
 def createTransLink(doc, path_mgr):
     link_converter = LinkConverter(doc)
     def transLink(entity_name, text=None):
@@ -270,6 +271,11 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             return
         target = a_node.attrs['href'][6:]
         target_path, target_title, target_obj = self.path_converter.convert(target)
+        # Shorten path title if not manually specified.
+        if (a_node.children and a_node.plainText == target_title and
+           self.doc.local_name_counter.get(target_title, 1) <= 1):
+            short_title = proc_doc.splitSecondLevelEntry(target_title)[1]
+            a_node.children = [proc_doc.TextNode(text=short_title)]
         if target_title:
             target_title = proc_doc.TextNode(text=target_title)
         else:
@@ -502,10 +508,12 @@ class HtmlWriter(object):
             if hasattr(entry, 'akas'):
                 akas = ','.join(entry.akas)
             if hasattr(entry, 'subentries'):
-                xs = []
-                for lst in entry.subentries.values():
-                    xs += lst
-                subentries = ','.join(['%s %s' % (s.kind, proc_doc.splitSecondLevelEntry(s.title)[1]) for s in xs])
+                subentries = []
+                for t in entry.subentries.values():
+                    for s in t:
+                        sID = s.title
+                        title = proc_doc.splitSecondLevelEntry(s.title)[1]
+                        subentries.append({'type': s.kind, 'title': title, 'id': sID})
             js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
                       (repr(entry.title), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),

@@ -783,7 +783,7 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
 /*!
  * @mfn IsInteger
  * @brief Tests for a type to be of integral value.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature IsInteger<T>::Type
  * 
@@ -813,7 +813,7 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
 /*!
  * @mfn IsIntegral
  * @brief Tests for a type to be of integral vaule.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature IsIntegral<T>::Type
  * 

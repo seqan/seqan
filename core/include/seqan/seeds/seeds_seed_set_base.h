@@ -130,7 +130,7 @@ class SeedSet;
 /*!
  * @fn SeedSet#addSeed
  * 
- * @headerfile seqan/seeds.h
+ * @headerfile <seqan/seeds.h>
  * 
  * @brief Adds a seed to an existing @link SeedSet @endlink using different
  *        algorithms for local chaining.

@@ -260,7 +260,7 @@ struct LocalMatchStoreConfig
 /*!
  * @fn LocalMatchStore#readRecord
  * 
- * @headerfile seqan/parse_lm.h
+ * @headerfile <seqan/parse_lm.h>
  * 
  * @brief Read Lastz "general" format record.
  * 

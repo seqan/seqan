@@ -141,7 +141,7 @@ Render the inheritance information of the given entr.
 {%- for s in entry.signatures -%}
 {{ s|transtext(False) }}
 {% endfor -%}
-      </code>&nbsp;
+      </code>
     </td>
   </tr>
 </table>
@@ -234,7 +234,7 @@ rendered with level h_level.
 {% if entry.sees %}
   <h{{ h_level }} class="clause_header">See Also</h{{ h_level }}>
   <ul class="summary compact">
-  {% for link in entry.sees %}
+  {% for link in entry.sortedSees() %}
   <li>{{ link|transtext(True) }}</li>
   {% endfor %}
   </ul>
@@ -255,7 +255,7 @@ Render the member functions overview
 
 {% if entry.subentries['member_function'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['member_function'] %}
+  {% for entry in entry.subentries['member_function']|sort(attribute='name') %}
   <li class="public">
     {% if entry.sig_entries %}
     <!-- TODO(holtgrew): Why sig_entries? -->
@@ -274,12 +274,12 @@ Render the member functions overview
 </ul>
 {% endif %}
 
-{% for cl in entry.all_extended %}
+{% for cl in entry.all_extended|sort %}
 {% if doc.top_level_entries[cl].subentries['member_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[cl].subentries['member_function'] %}
+  {% for entry in doc.top_level_entries[cl].subentries['member_function']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -287,12 +287,12 @@ Render the member functions overview
 {% endfor %}
 
 {% if entry.kind == 'class' or entry.kind == 'specialization' %}
-{% for co in entry.all_implemented %}
+{% for co in entry.all_implemented|sort %}
 {% if doc.top_level_entries[co].subentries['member_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[co].subentries['member_function'] %}
+  {% for entry in doc.top_level_entries[co].subentries['member_function']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -320,7 +320,7 @@ Render the member typedefs overview
 
 {% if entry.subentries['member_typedef'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['member_typedef'] %}
+  {% for entry in entry.subentries['member_typedef']|sort(attribute='name') %}
   <li class="public">
     {% if entry.sig_entries %}
     <!-- TODO(holtgrew): Why sig_entries? -->
@@ -340,12 +340,12 @@ Render the member typedefs overview
 {% endif %}
 
 
-{% for cl in entry.all_extended %}
+{% for cl in entry.all_extended|sort %}
 {% if doc.top_level_entries[cl].subentries['member_typedef'] %}
 <h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[cl].subentries['member_typedef'] %}
+  {% for entry in doc.top_level_entries[cl].subentries['member_typedef']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -353,8 +353,8 @@ Render the member typedefs overview
 {% endfor %}
 
 {% if entry.kind == 'class' or entry.kind == 'specialization' %}
-{% for co in entry.all_implemented %}
-{% if doc.top_level_entries[co].subentries['member_typedef'] %}
+{% for co in entry.all_implemented|sort %}
+{% if doc.top_level_entries[co].subentries['member_typedef']|sort(attribute='name') %}
 <h3 data-toc="hidden">{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
@@ -385,7 +385,7 @@ Render the interface functions overview
 
 {% if entry.subentries['interface_function'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['interface_function'] %}
+  {% for entry in entry.subentries['interface_function']|sort(attribute='name') %}
   <li class="public">
     {% if entry.sig_entries %}
     <!-- TODO(holtgrew): Why sig_entries? -->
@@ -404,12 +404,12 @@ Render the interface functions overview
 </ul>
 {% endif %}
 
-{% for cl in entry.all_extended %}
+{% for cl in entry.all_extended|sort %}
 {% if doc.top_level_entries[cl].subentries['interface_function'] %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[cl].subentries['interface_function'] %}
+  {% for entry in doc.top_level_entries[cl].subentries['interface_function']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -417,8 +417,8 @@ Render the interface functions overview
 {% endfor %}
 
 {% if entry.kind == 'class' or entry.kind == 'specialization' %}
-{% for co in entry.all_implemented %}
-{% if doc.top_level_entries[co].subentries['interface_function'] %}
+{% for co in entry.all_implemented|sort %}
+{% if doc.top_level_entries[co].subentries['interface_function']|sort(attribute='name') %}
 <h3 data-toc="hidden">{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
@@ -447,7 +447,7 @@ Render the grouped macros overview
 <h2 data-lang-entity="macro">{{ qualifier }} Macros Overview</h2>
 
 <table width="100%">
-  {% for entry in entry.subentries['grouped_macro'] %}
+  {% for entry in entry.subentries['grouped_macro']|sort(attribute='name') %}
   <tr>
     {% if entry.sig_entries %}
     <td>{{ sig_entries[0].toString() }}{{ entry.brief|transtext }}</td>
@@ -463,7 +463,7 @@ Render the grouped macros overview
 {% endmacro %}
 
 <!--
-Macro interface_functions_ov(entry, doc)
+Macro grouped_tags_ov(entry, doc)
 
 Render the interface functions overview
 -->
@@ -474,7 +474,7 @@ Render the interface functions overview
 <h2 data-lang-entity="grouped_tag">{{ qualifier }} Tags Overview</h2>
 
 <ul class="summary">
-  {% for entry in entry.subentries['grouped_tag'] %}
+  {% for entry in entry.subentries['grouped_tag']|sort(attribute='name') %}
   <li class="public">
     {% if entry.sig_entries %}
     <span class="summary_signature"><code>{{ sig_entries[0].toString() }}</code></span>
@@ -510,7 +510,7 @@ Render the interface metafunctions overview
 
 {% if entry.subentries['interface_metafunction'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['interface_metafunction'] %}
+  {% for entry in entry.subentries['interface_metafunction']|sort(attribute='name') %}
   <li class="public">
     {% if entry.sig_entries %}
     <!-- TODO(holtgrew): Why sig_entries? -->
@@ -529,12 +529,12 @@ Render the interface metafunctions overview
 </ul>
 {% endif %}
 
-{% for cl in entry.all_extended %}
+{% for cl in entry.all_extended|sort %}
 {% if doc.top_level_entries[cl].subentries['interface_metafunction'] %}
 <h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction'] %}
+  {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -542,12 +542,12 @@ Render the interface metafunctions overview
 {% endfor %}
 
 {% if entry.kind == 'class' or entry.kind == 'specialization' %}
-{% for co in entry.all_implemented %}
+{% for co in entry.all_implemented|sort %}
 {% if doc.top_level_entries[co].subentries['interface_metafunction'] %}
 <h3 data-toc="hidden">{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[co].subentries['interface_metafunction'] %}
+  {% for entry in doc.top_level_entries[co].subentries['interface_metafunction']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -573,7 +573,7 @@ Render the member variables overview
 
 {% if entry.subentries['member_variable'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['member_variable'] %}
+  {% for entry in entry.subentries['member_variable']|sort(attribute='name') %}
   <li class="public">
     <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
@@ -584,12 +584,12 @@ Render the member variables overview
 </ul>
 {% endif %}
 
-{% for cl in entry.all_extended %}
+{% for cl in entry.all_extended|sort %}
 {% if doc.top_level_entries[cl].subentries['member_variable'] %}
 <h3 data-toc="hidden">{{ qualifier }} Variables Inherited From {{ cl|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[cl].subentries['member_variable'] %}
+  {% for entry in doc.top_level_entries[cl].subentries['member_variable']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -598,12 +598,12 @@ Render the member variables overview
 {% endfor %}
 
 {% if entry.kind == 'class' or entry.kind == 'specialization' %}
-{% for co in entry.all_implemented %}
+{% for co in entry.all_implemented|sort %}
 {% if doc.top_level_entries[co].subentries['member_variable'] %}
 <h3 data-toc="hidden">{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
 
 <ul class="summary compact">
-  {% for entry in doc.top_level_entries[co].subentries['member_variable'] %}
+  {% for entry in doc.top_level_entries[co].subentries['member_variable']|sort(attribute='name') %}
   <li class="public"><span class="summary_signature"><code>{{ entry.name|translink(text=entry.local_name) }}</code></span></li>
   {% endfor %}
 </ul>
@@ -629,7 +629,7 @@ Render the member variables overview
 
 {% if entry.subentries['enum_value'] -%}
 <ul class="summary">
-  {% for entry in entry.subentries['enum_value'] %}
+  {% for entry in entry.subentries['enum_value']|sort(attribute='name') %}
   <li class="public">
     <span class="summary_signature"><code><a href="#{{ entry.name|escape_anchor|url_encode }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
@@ -667,7 +667,7 @@ Render the grouped macros details
 <div class="grouped_tags_details" data-lang-entity-container="grouped_tag">
   <h2 data-lang-entity="grouped_tag">{{ qualifier }} Tags Detail</h2>
 
-  {% for subentry in entry.subentries['grouped_tag'] %}
+  {% for subentry in entry.subentries['grouped_tag']|sort(attribute='name') %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
       <code>
@@ -713,7 +713,7 @@ Render the grouped macros details
       {% if subentry.sees %}
       <dt>See Also</dt>
       <dd>
-        {% for link in subentry.sees %}
+        {% for link in subentry.sortedSees() %}
       <dd>{{ link|transtext(False)|translink }}</dd>
       {% endfor %}
       </dd>
@@ -745,7 +745,7 @@ Render the grouped macros details
 <div class="details grouped_macros" data-lang-entity-container="grouped_macro">
 <h2 data-lang-entity="grouped_macro">{{ qualifier }} Macros Detail</h2>
 
-{% for subentry in entry.subentries['grouped_macro'] %}
+{% for subentry in entry.subentries['grouped_macro']|sort(attribute='name') %}
 <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}">
   {{ subentry.name|e }}
 </h3>
@@ -808,10 +808,21 @@ Render the grouped macros details
   {% endfor %}
 {% endif %}
 
+{% if subentry.throws %}
+  <dt>Thrown Exceptions</dt>
+
+  {% for thr in subentry.throws %}
+  <dd>
+    <code>{{ thr.type|e }}</code> -
+    {{ thr.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% endif %}
+
 {% if subentry.sees %}
   <dt>See Also</dt>
   <dd>
-  {% for link in subentry.sees %}
+  {% for link in subentry.sortedSees() %}
   <dd>{{ link|transtext(False)|translink }}</dd>
   {% endfor %}
   </dd>
@@ -837,7 +848,7 @@ Render the interface functions details
 <div class="{{ key|e }}_details" data-lang-entity-container="{{ key|e }}">
   <h2 data-lang-entity="{{ key|e }}">{{ qualifier }} Functions Detail</h2>
 
-  {% for subentry in entry.subentries[key] %}
+  {% for subentry in entry.subentries[key]|sort(attribute='name') %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <code>
@@ -898,7 +909,7 @@ Render the interface functions details
   <table class="overview">
     {% for param in subentry.tparams %}
     <tr>
-        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <th><code>{{ param.type|e }}</code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
@@ -936,8 +947,20 @@ Render the interface functions details
   <table class="overview">
     {% for ret in subentry.returns %}
     <tr>
-        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <th><code>{{ ret.type|e }}</code></th>
         <td>{{ ret.desc|transtext(False) }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if subentry.throws %}
+  <h4>Thrown Exceptions</h4>
+  <table class="overview">
+    {% for thr in subentry.throws %}
+    <tr>
+        <th><code>{{ thr.type|e }}</code></th>
+        <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
     {% endfor %}
   </table>
@@ -952,7 +975,7 @@ Render the interface functions details
   {% if subentry.sees %}
   <h4>See Also</h4>
   <ul>
-    {% for link in subentry.sees %}
+    {% for link in subentry.sortedSees() %}
     <li>{{ link|transtext(False)|translink }}</li>
     {% endfor %}
   </ul>
@@ -974,7 +997,7 @@ Render the member typedef details
 <div class="{{ key|e }}_defails" data-lang-entity-container="{{ key|e }}">
   <h2 data-lang-entity="member_typedef">{{ qualifier }} Typedef Detail</h2>
 
-  {% for subentry in entry.subentries[key] %}
+  {% for subentry in entry.subentries[key]|sort(attribute='name') %}
       <div class="method_details{% if loop.first %} first{% endif %}">
         <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
           <code>
@@ -995,7 +1018,7 @@ Render the member typedef details
       <div class="tags">
         <h4>See Also</h4>
         <ul class="see">
-          {% for link in subentry.sees %}
+          {% for link in subentry.sortedSees() %}
             <li>{{ link|transtext(False)|translink }}</li>
           {% endfor %}
         </ul>
@@ -1018,7 +1041,7 @@ Render the interface metafunctions details
 <div class="interface_metafunction_details" data-lang-entity-container="{{ key|e }}">
 <h2 data-lang-entity="interface_metafunction">{{ qualifier }} Metafunctions Detail</h2>
 
-{% for subentry in entry.subentries['interface_metafunction'] %}
+{% for subentry in entry.subentries['interface_metafunction']|sort(attribute='name') %}
 <div class="method_details{% if loop.first %} first{% endif %}">
   <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
     <code>
@@ -1078,7 +1101,7 @@ Render the interface metafunctions details
     <table class="overview">
     {% for param in subentry.tparams %}
         <tr>
-            <th><code>{{ param.type|e }}</code>&nbsp;</th>
+            <th><code>{{ param.type|e }}</code></th>
             <td>{{ param.desc|transtext(False) }}</td>
         </tr>
     {% endfor %}
@@ -1090,7 +1113,7 @@ Render the interface metafunctions details
     <table class="overview">
     {% for ret in subentry.returns %}
         <tr>
-            <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+            <th><code>{{ ret.type|e }}</code></th>
             <td>{{ ret.desc|transtext(False) }}</td>
         </tr>
     {% endfor %}
@@ -1121,7 +1144,7 @@ Render the member variables details
 <div class="member_variable_details" data-lang-entity-container="member_variable">
   <h2 data-lang-entity="member_variable">{{ qualifier }} Variables Detail</h2>
 
-  {% for subentry in entry.subentries['member_variable'] %}
+  {% for subentry in entry.subentries['member_variable']|sort(attribute='name') %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
     <h3 data-toc="hidden" id="{{ subentry.name|escape_anchor }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
       <code>{{ subentry.type|e }} {{ subentry.name|e }}</code>
@@ -1151,9 +1174,9 @@ Render the member enum details
   <h2 data-lang-entity="enum">Enum Values</h2>
 
   <table class="overview">
-    {% for subentry in entry.subentries['enum_value'] %}
+    {% for subentry in entry.subentries['enum_value']|sort(attribute='name') %}
          <tr>
-            <th><code>{{ subentry.local_name|e }}</code>&nbsp;</th>
+            <th><code>{{ subentry.local_name|e }}</code></th>
             <td>
                 {{ subentry.brief|transtext }}
                 {{ body(subentry, start_heading=3) }}
@@ -1194,7 +1217,7 @@ Render the parameter details.
         {% else %}
         <code>{{ param.name|e }}</code>
         {% endif %}
-        &nbsp;</th>
+        </th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1218,7 +1241,7 @@ Render the template parameter details.
 <table class="overview">
 {% for param in entry.tparams %}
     <tr>
-        <th><code>{{ param.type|e }}</code>&nbsp;</th>
+        <th><code>{{ param.type|e }}</code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1244,7 +1267,7 @@ Render the template parameter overview.
 <table class="overview">
 {% for param in entry.tparams %}
     <tr>
-        <th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code>&nbsp;</th>
+        <th><code><a href="#" data-lang-entity="template_parameter">{{ param.type|e }}</a></code></th>
         <td>{{ param.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
@@ -1268,8 +1291,29 @@ Render the template parameter details.
 <table class="overview">
 {% for ret in entry.returns %}
     <tr>
-        <th><code>{{ ret.type|e }}</code>&nbsp;</th>
+        <th><code>{{ ret.type|e }}</code></th>
         <td>{{ ret.desc|transtext(False) }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro throws(entry)
+
+Render the throw details.
+-->
+
+{% macro throws(entry) %}
+{% if entry.throws %}
+<h2>Thrown Exceptions</h2>
+
+<table class="overview">
+{% for thr in entry.throws %}
+    <tr>
+        <th><code>{{ thr.type|e }}</code></th>
+        <td>{{ thr.desc|transtext(False) }}</td>
     </tr>
 {% endfor %}
 </table>

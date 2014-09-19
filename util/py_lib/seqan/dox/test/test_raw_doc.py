@@ -7,8 +7,8 @@ __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
 import unittest
 
-import lexer
-import raw_doc
+import seqan.dox.lexer as lexer
+import seqan.dox.raw_doc as raw_doc
 
 
 class TestDoxFormatter(unittest.TestCase):
@@ -57,11 +57,12 @@ class TestDocumentation(unittest.TestCase):
     # TODO(holtgrew): Write more tests!
 
     def testMerge(self):
+        self.page_token = lexer.Token('COMMAND_PAGE', '@page', 0, 0, 0)
         doc_left = raw_doc.RawDoc()
-        page_left = raw_doc.RawPage()
+        page_left = raw_doc.RawPage(self.page_token)
         doc_left.entries.append(page_left)
         doc_right = raw_doc.RawDoc()
-        page_right = raw_doc.RawPage()
+        page_right = raw_doc.RawPage(self.page_token)
         doc_right.entries.append(page_right)
         doc_left.merge(doc_right)
 
@@ -73,13 +74,14 @@ class TestDocumentation(unittest.TestCase):
 
 class TestEntry(unittest.TestCase):
     def setUp(self):
+        self.tok = lexer.Token('WORD', 'entry', 0, 0, 0)
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Concept', 0, 0, 0)
         self.title_tok = lexer.Token('WORD', 'Concept Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
 
     def testInitialization(self):
-        entry = raw_doc.RawEntry()
+        entry = raw_doc.RawEntry(self.tok)
         self.assertEqual(entry.name.text, raw_doc.RawText().text)
         self.assertEqual(len(entry.briefs), 0)
         self.assertEqual(entry.body, raw_doc.RawBody())
@@ -87,41 +89,41 @@ class TestEntry(unittest.TestCase):
         self.assertEqual(entry.command, '<entry>')
 
     def testAddBrief(self):
-        entry = raw_doc.RawEntry()
+        entry = raw_doc.RawEntry(self.tok)
         self.assertEqual(entry.briefs, [])
-        b = raw_doc.RawBrief(raw_doc.RawText())
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText())
         entry.addBrief(b)
         self.assertEqual(len(entry.briefs), 1)
         self.assertEqual(entry.briefs, [b])
 
     def testAddSee(self):
-        entry = raw_doc.RawEntry()
+        entry = raw_doc.RawEntry(self.tok_see)
         self.assertEqual(entry.sees, [])
-        s = raw_doc.RawSee(raw_doc.RawText())
+        s = raw_doc.RawSee(self.tok_see, raw_doc.RawText())
         entry.addSee(s)
         self.assertEqual(len(entry.sees), 1)
         self.assertEqual(entry.sees, [s])
 
     def testEntryTypes(self):
         expected = ('concept', 'class', 'function', 'metafunction', 'page',
-                    'enum', 'var', 'tag', 'defgroup', 'macro')
+                    'enum', 'var', 'tag', 'defgroup', 'macro', 'enum_value')
         self.assertEqual(raw_doc.RawEntry.entryTypes(), expected)
 
     def testAddParagraph(self):
-        entry = raw_doc.RawEntry()
+        entry = raw_doc.RawEntry(self.tok)
         self.assertEqual(entry.body, raw_doc.RawBody())
-        p = raw_doc.RawParagraph()
+        p = raw_doc.RawParagraph(self.tok)
         entry.addParagraph(p)
         b = raw_doc.RawBody()
         b.addParagraph(p)
         self.assertEqual(entry.body, b)
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        entry = raw_doc.RawEntry([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        entry = raw_doc.RawEntry(self.brief_tok, [b])
         entry.name = raw_doc.RawText([self.name_tok])
         entry.title = raw_doc.RawText([self.title_tok])
-        entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
+        entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
         formatter = raw_doc.DoxFormatter()
         msg = ('@<entry> Concept Concept Title\n\n'
                '@brief This is brief.\n\n'
@@ -131,6 +133,8 @@ class TestEntry(unittest.TestCase):
 
 class CodeEntryTest(unittest.TestCase):
     def setUp(self):
+        self.code_tok = lexer.Token('COMMAND_CODE', '@code', 0, 0, 0)
+        self.sig_tok = lexer.Token('COMMAND_SIGNATURE', '@signature', 0, 0, 0)
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Concept', 0, 0, 0)
         self.title_tok = lexer.Token('WORD', 'Concept Title', 0, 0, 0)
@@ -138,23 +142,24 @@ class CodeEntryTest(unittest.TestCase):
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
 
     def testCreation(self):
-        code_entry = raw_doc.RawCodeEntry()
+        code_entry = raw_doc.RawCodeEntry(self.code_tok)
         self.assertEqual(code_entry.signatures, [])
         self.assertEqual(code_entry.command, '<code entry>')
 
     def testAddSignature(self):
-        code_entry = raw_doc.RawCodeEntry()
-        s = raw_doc.RawSignature(raw_doc.RawText([lexer.Token('WORD', 'payload', 0, 0, 0)]))
+        code_entry = raw_doc.RawCodeEntry(self.code_tok)
+        s = raw_doc.RawSignature(self.sig_tok, raw_doc.RawText(
+            [lexer.Token('WORD', 'payload', 0, 0, 0)]))
         code_entry.addSignature(s)
 
     def testGetFormatted(self):
-        code_entry = raw_doc.RawCodeEntry()
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawCodeEntry([b])
+        code_entry = raw_doc.RawCodeEntry(self.code_tok)
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawCodeEntry(self.code_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.title = raw_doc.RawText([self.title_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         formatter = raw_doc.DoxFormatter()
         txt = ('@<code entry> Concept Concept Title\n\n'
@@ -174,12 +179,12 @@ class ConceptTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawConcept([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawConcept(self.brief_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.title = raw_doc.RawText([self.title_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         txt = ('@concept Concept Concept Title\n\n'
                '@brief This is brief.\n\n'
@@ -198,12 +203,12 @@ class EnumTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawEnum([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawEnum(self.brief_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.title = raw_doc.RawText([self.title_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         txt = ('@enum Enum Enum Title\n\n'
                '@brief This is brief.\n\n'
@@ -222,12 +227,12 @@ class TypedefTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawTypedef([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawTypedef(self.brief_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.title = raw_doc.RawText([self.title_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         txt = ('@typedef TypeDef Typedef Title\n\n'
                '@brief This is brief.\n\n'
@@ -246,12 +251,12 @@ class AdaptionTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawAdaption([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawAdaption(self.brief_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.title = raw_doc.RawText([self.title_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         txt = ('@adaption Adaption Adaption Title\n\n'
                '@brief This is brief.\n\n'
@@ -270,14 +275,14 @@ class VariableTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testGetFormatted(self):
-        b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
-        code_entry = raw_doc.RawVariable([b])
+        b = raw_doc.RawBrief(self.brief_tok, raw_doc.RawText([self.brief_tok]))
+        code_entry = raw_doc.RawVariable(self.brief_tok, [b])
         code_entry.name = raw_doc.RawText([self.name_tok])
         code_entry.type = raw_doc.RawText([self.type_tok])
-        code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
-        s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
+        code_entry.sees = [raw_doc.RawSee(self.tok_see, raw_doc.RawText([self.tok_see]))]
+        s = raw_doc.RawSignature(self.tok_sig, raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
-        txt = ('@var int var\n\n'
+        txt = ('@var int var;\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
@@ -287,7 +292,7 @@ class VariableTest(unittest.TestCase):
 class BodyTest(unittest.TestCase):
     def setUp(self):
         self.t = lexer.Token('WORD', 'aword', 0, 0, 0)
-        self.p = raw_doc.RawParagraph(raw_doc.RawText([self.t]))
+        self.p = raw_doc.RawParagraph(self.t, raw_doc.RawText([self.t]))
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
@@ -309,27 +314,27 @@ class SectionTest(unittest.TestCase):
         self.txt = raw_doc.RawText([self.t])
 
     def testCreation(self):
-        section = raw_doc.RawSection(self.txt)
+        section = raw_doc.RawSection(self.t, self.txt)
         self.assertEqual(section.heading, self.txt)
         self.assertEqual(section.level, 0)
 
     def testGetType(self):
-        section = raw_doc.RawSection(self.txt, 1)
+        section = raw_doc.RawSection(self.t, self.txt, 1)
         self.assertEqual(section.getType(), 'section')
 
     def testCreationWithLevel(self):
-        section = raw_doc.RawSection(self.txt, 1)
+        section = raw_doc.RawSection(self.t, self.txt, 1)
         self.assertEqual(section.heading, self.txt)
         self.assertEqual(section.level, 1)
 
     def testGetCommand(self):
-        section = raw_doc.RawSection(self.txt, 0)
+        section = raw_doc.RawSection(self.t, self.txt, 0)
         self.assertEqual(section.getCommand(), 'section')
-        section = raw_doc.RawSection(self.txt, 1)
+        section = raw_doc.RawSection(self.t, self.txt, 1)
         self.assertEqual(section.getCommand(), 'subsection')
 
     def testGetFormatted(self):
-        section = raw_doc.RawSection(self.txt, 1)
+        section = raw_doc.RawSection(self.t, self.txt, 1)
         self.assertEqual(section.getFormatted(self.formatter), '@subsection aword\n')
 
 
@@ -340,7 +345,7 @@ class IncludeTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        include = raw_doc.RawInclude(self.path)
+        include = raw_doc.RawInclude(self.path_t, [self.path_t])
         self.assertEqual(include.path, self.path)
         self.assertEqual(include.getFormatted(self.formatter), '@include apath\n')
 
@@ -357,7 +362,7 @@ class SnippetTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        snippet = raw_doc.RawSnippet(self.path, self.snippet)
+        snippet = raw_doc.RawSnippet(self.path_t, self.path.tokens, self.snippet.tokens)
         self.assertEqual(snippet.getFormatted(self.formatter),
                          '@snippet apath The snippet\n')
 
@@ -369,12 +374,12 @@ class CodeTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        paragraph = raw_doc.RawCode(self.txt)
+        paragraph = raw_doc.RawCode(self.t, self.txt)
         self.assertEqual(paragraph.text, self.txt)
         self.assertEqual(paragraph.extension, '.txt')
 
     def testCreationWithExtension(self):
-        paragraph = raw_doc.RawCode(self.txt, '.cpp')
+        paragraph = raw_doc.RawCode(self.t, self.txt, '.cpp')
         self.assertEqual(paragraph.text, self.txt)
         self.assertEqual(paragraph.extension, '.cpp')
 
@@ -392,15 +397,15 @@ class BriefTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        brief = raw_doc.RawBrief(self.txt)
+        brief = raw_doc.RawBrief(self.t, self.txt)
         self.assertEqual(brief.text, self.txt)
 
     def testGetType(self):
-        brief = raw_doc.RawBrief(self.txt)
+        brief = raw_doc.RawBrief(self.t, self.txt)
         self.assertEqual(brief.getType(), 'brief')
 
     def testGetFormatted(self):
-        brief = raw_doc.RawBrief(self.txt)
+        brief = raw_doc.RawBrief(self.t, self.txt)
         self.assertEqual(brief.getFormatted(self.formatter), '@brief aword\n')
 
 
@@ -411,15 +416,15 @@ class ExtendsTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        extends = raw_doc.RawExtends(self.txt)
+        extends = raw_doc.RawExtends(self.t, self.txt)
         self.assertEqual(extends.text, self.txt)
 
     def testGetType(self):
-        extends = raw_doc.RawExtends(self.txt)
+        extends = raw_doc.RawExtends(self.t, self.txt)
         self.assertEqual(extends.getType(), 'extends')
 
     def testGetFormatted(self):
-        extends = raw_doc.RawExtends(self.txt)
+        extends = raw_doc.RawExtends(self.t, self.txt)
         self.assertEqual(extends.getFormatted(self.formatter), '@extends aword\n')
 
 
@@ -430,15 +435,15 @@ class ImplementsTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        implements = raw_doc.RawImplements(self.txt)
+        implements = raw_doc.RawImplements(self.t, self.txt)
         self.assertEqual(implements.text, self.txt)
 
     def testGetType(self):
-        implements = raw_doc.RawImplements(self.txt)
+        implements = raw_doc.RawImplements(self.t, self.txt)
         self.assertEqual(implements.getType(), 'implements')
 
     def testGetFormatted(self):
-        implements = raw_doc.RawImplements(self.txt)
+        implements = raw_doc.RawImplements(self.t, self.txt)
         self.assertEqual(implements.getFormatted(self.formatter), '@implements aword\n')
 
 
@@ -449,20 +454,21 @@ class SeeTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        see = raw_doc.RawSee(self.txt)
+        see = raw_doc.RawSee(self.t, self.txt)
         self.assertEqual(see.text, self.txt)
 
     def testGetType(self):
-        see = raw_doc.RawSee(self.txt)
+        see = raw_doc.RawSee(self.t, self.txt)
         self.assertEqual(see.getType(), 'see')
 
     def testGetFormatted(self):
-        see = raw_doc.RawSee(self.txt)
+        see = raw_doc.RawSee(self.t, self.txt)
         self.assertEqual(see.getFormatted(self.formatter), '@see aword\n')
 
 
 class ParamTest(unittest.TestCase):
     def setUp(self):
+        self.tok = lexer.Token('COMMAND_PARAM', '@param', 0, 0, 0)
         self.tok_name = lexer.Token('WORD', 'name', 0, 0, 0)
         self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
         self.tok_inout = lexer.Token('PARAM_IN_OUT', '[in,out]', 0, 0, 0)
@@ -471,32 +477,33 @@ class ParamTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        param = raw_doc.RawParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.name, self.txt_name)
         self.assertEqual(param.text, self.txt_text)
         self.assertEqual(param.inout, None)
 
     def testCreationInOut(self):
-        param = raw_doc.RawParam(self.txt_name, self.txt_text, self.tok_inout)
+        param = raw_doc.RawParam(self.tok, self.txt_name, self.txt_text, self.tok_inout)
         self.assertEqual(param.name, self.txt_name)
         self.assertEqual(param.text, self.txt_text)
         self.assertEqual(param.inout, self.tok_inout)
 
     def testGetType(self):
-        param = raw_doc.RawParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.getType(), 'param')
 
     def testGetFormatted(self):
-        param = raw_doc.RawParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.getFormatted(self.formatter),
                          '@param name text\n')
-        param = raw_doc.RawParam(self.txt_name, self.txt_text, self.tok_inout)
+        param = raw_doc.RawParam(self.tok, self.txt_name, self.txt_text, self.tok_inout)
         self.assertEqual(param.getFormatted(self.formatter),
                          '@param[in,out] name text\n')
 
 
 class TParamTest(unittest.TestCase):
     def setUp(self):
+        self.tok = lexer.Token('COMMAND_TPARAM', '@tparam', 0, 0, 0)
         self.tok_name = lexer.Token('WORD', 'name', 0, 0, 0)
         self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
         self.txt_name = raw_doc.RawText([self.tok_name])
@@ -504,22 +511,23 @@ class TParamTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        param = raw_doc.RawTParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawTParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.name, self.txt_name)
         self.assertEqual(param.text, self.txt_text)
 
     def testGetType(self):
-        param = raw_doc.RawTParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawTParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.getType(), 'tparam')
 
     def testGetFormatted(self):
-        param = raw_doc.RawTParam(self.txt_name, self.txt_text)
+        param = raw_doc.RawTParam(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(param.getFormatted(self.formatter),
                          '@tparam name text\n')
 
 
 class ReturnTest(unittest.TestCase):
     def setUp(self):
+        self.tok = lexer.Token('COMMAND_RETURN', '@return', 0, 0, 0)
         self.tok_name = lexer.Token('WORD', 'name', 0, 0, 0)
         self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
         self.txt_name = raw_doc.RawText([self.tok_name])
@@ -527,37 +535,65 @@ class ReturnTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        ret = raw_doc.RawReturn(self.txt_name, self.txt_text)
+        ret = raw_doc.RawReturn(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(ret.name, self.txt_name)
         self.assertEqual(ret.text, self.txt_text)
         self.assertEqual(ret.inout, None)
 
     def testGetType(self):
-        ret = raw_doc.RawReturn(self.txt_name, self.txt_text)
+        ret = raw_doc.RawReturn(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(ret.getType(), 'return')
 
     def testGetFormatted(self):
-        ret = raw_doc.RawReturn(self.txt_name, self.txt_text)
+        ret = raw_doc.RawReturn(self.tok, self.txt_name, self.txt_text)
         self.assertEqual(ret.getFormatted(self.formatter),
                          '@return name text\n')
 
 
+class ThrowTest(unittest.TestCase):
+    """Test for the RawThrow class, mostly tests instance variables."""
+
+    def setUp(self):
+        self.tok = lexer.Token('COMMAND_THROW', '@throw', 0, 0, 0)
+        self.tok_type = lexer.Token('WORD', 'type', 0, 0, 0)
+        self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
+        self.txt_type = raw_doc.RawText([self.tok_type])
+        self.txt_text = raw_doc.RawText([self.tok_text])
+        self.formatter = raw_doc.DoxFormatter()
+
+    def testCreation(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.name, self.txt_type)
+        self.assertEqual(ret.text, self.txt_text)
+        self.assertEqual(ret.inout, None)
+
+    def testGetType(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.getType(), 'throw')
+
+    def testGetFormatted(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
+        self.assertEqual(ret.getFormatted(self.formatter),
+                         '@throw type text\n')
+
+
 class SignatureTest(unittest.TestCase):
     def setUp(self):
+        self.tok = lexer.Token('COMMAND_SIGNATURE', '@signature', 0, 0, 0)
         self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
         self.txt_text = raw_doc.RawText([self.tok_text])
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        signature = raw_doc.RawSignature(self.txt_text)
+        signature = raw_doc.RawSignature(self.tok, self.txt_text)
         self.assertEqual(signature.text, self.txt_text)
 
     def testGetType(self):
-        signature = raw_doc.RawSignature(self.txt_text)
+        signature = raw_doc.RawSignature(self.tok, self.txt_text)
         self.assertEqual(signature.getType(), 'signature')
 
     def testGetFormatted(self):
-        signature = raw_doc.RawSignature(self.txt_text)
+        signature = raw_doc.RawSignature(self.tok, self.txt_text)
         self.assertEqual(signature.getFormatted(self.formatter),
                          '@signature text\n')
 

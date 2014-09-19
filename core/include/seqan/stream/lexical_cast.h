@@ -69,7 +69,7 @@ struct BadLexicalCast : ParseError
 // TODO(dox): lexicalCast2
 /*!
  * @fn lexicalCast2
- * @headerfile seqan/stream.h
+ * @headerfile <seqan/stream.h>
  * @brief Cast from a String-type to a numerical type
  * 
  * @signature bool lexicalCast2(target, source);

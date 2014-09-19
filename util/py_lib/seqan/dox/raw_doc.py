@@ -558,6 +558,7 @@ class RawFunction(RawCodeEntry):
     @ivar tparams List of RawParameter objects.
     @ivar params List of RawParameter objects.
     @ivar returns List of RawReturn objects.
+    @ivar throw List of RawThrow objects.
     """
     
     def __init__(self, first_token, briefs=[]):
@@ -565,6 +566,7 @@ class RawFunction(RawCodeEntry):
         self.tparams = []
         self.params = []
         self.returns = []
+        self.throws = []
 
     def addTParam(self, p):
         self.tparams.append(p)
@@ -574,6 +576,9 @@ class RawFunction(RawCodeEntry):
 
     def addReturn(self, p):
         self.returns.append(p)
+
+    def addThrow(self, t):
+        self.throws.append(t)
 
     def getType(self):
         if '#' in self.name.text:
@@ -619,6 +624,10 @@ class RawFunction(RawCodeEntry):
             res.append('\n')
         for x in self.returns:
             res.append(x.getFormatted(formatter))
+        if self.throws:
+            res.append('\n')
+        for x in self.throws:
+            res.append(x.getFormatted(formatter))
         if not self.body.empty:
             res.append('\n')
         res += self.body.getFormatted(formatter)
@@ -643,18 +652,23 @@ class RawMacro(RawCodeEntry):
     
     @ivar params List of RawParameter objects.
     @ivar returns List of RawReturn objects.
+    @ivar throws List of RawThrow objects.
     """
     
     def __init__(self, first_token, briefs=[]):
         RawCodeEntry.__init__(self, first_token, briefs=briefs, command='macro')
         self.params = []
         self.returns = []
+        self.throws = []
 
     def addParam(self, p):
         self.params.append(p)
 
     def addReturn(self, p):
         self.returns.append(p)
+
+    def addThrow(self, t):
+        self.throws.append(t)
 
     def getType(self):
         if '#' in self.name.text:
@@ -693,6 +707,10 @@ class RawMacro(RawCodeEntry):
         if self.returns:
             res.append('\n')
         for x in self.returns:
+            res.append(x.getFormatted(formatter))
+        if self.throws:
+            res.append('\n')
+        for x in self.throws:
             res.append(x.getFormatted(formatter))
         if not self.body.empty:
             res.append('\n')
@@ -1334,6 +1352,23 @@ class RawReturn(RawParam):
 
     def getFormatted(self, formatter):
         return formatter.formatCommand('return', self.text.text, self.name.text)
+
+
+class RawThrow(RawParam):
+    """RawDoc for one throw description.
+    
+    @ivar type The thrown type.
+    @ivar text RawParagraph entry with the documentation of the parameter.
+    """
+    
+    def __init__(self, first_token, name=RawText(), text=RawText(), in_out=None):
+        RawParam.__init__(self, first_token, name, text)
+
+    def getType(self):
+        return 'throw'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('throw', self.text.text, self.name.text)
 
 
 class RawSignature(object):

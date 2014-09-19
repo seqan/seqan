@@ -40,6 +40,9 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Add binary for tests.
 add_executable (test_funcs_param_chooser test_param_chooser.cpp)
 
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_funcs_param_chooser ${SEQAN_LIBRARIES})
+
 # ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------

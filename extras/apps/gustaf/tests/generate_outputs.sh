@@ -90,6 +90,15 @@ out="pairedEnd_st1_l30"
     -ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
 # ============================================================
+# Sanity check vcf out multiple references
+# -st 1 -l 30
+# ============================================================
+
+out="reference2_st1_l30"
+    ${GUSTAF} adeno.fa read_reference2.fa -st 1 \
+    -l 30 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+
+# ============================================================
 # paired-end no artificial breakpoint
 # -st 1 -m stellar_joinedMates_l30.gff -ll 800 -le 30 -rc
 # ============================================================
