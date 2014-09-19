@@ -76,13 +76,10 @@ public:
 
     template <typename TOtherContainer>
     SEQAN_HOST_DEVICE
-    Range(TOtherContainer & cont,
-          SEQAN_CTOR_ENABLE_IF(Is<ContainerConcept<TOtherContainer> >)) :
+    Range(TOtherContainer & cont) :
         begin(begin(cont, Standard())),
         end(end(cont, Standard()))
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
+    {}
 
     SEQAN_HOST_DEVICE
     Range(TIterator const & begin, TIterator const & end):

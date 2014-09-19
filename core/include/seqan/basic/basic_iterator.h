@@ -61,6 +61,9 @@
 // Iterator concept.
 #include <seqan/basic/iterator_concept.h>
 
+// Container concept.
+#include <seqan/basic/container_concept.h>
+
 // Makes a container out of begin/end iterators
 #include <seqan/basic/iterator_range.h>
 
