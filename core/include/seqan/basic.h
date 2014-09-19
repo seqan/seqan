@@ -70,9 +70,6 @@
 // Container concept and supporting code.
 #include <seqan/basic/basic_container.h>
 
-// Alphabet concept and biological implementations.
-#include <seqan/basic/basic_alphabet.h>
-
 // Memory allocation code.
 #include <seqan/basic/basic_allocator.h>
 
@@ -88,11 +85,14 @@
 // Iterator concept and implementation.
 #include <seqan/basic/basic_iterator.h>
 
+// Functions to efficiently move data between containers/iterators/streams
+#include <seqan/basic/basic_stream.h>
+
+// Alphabet concept and biological implementations.
+#include <seqan/basic/basic_alphabet.h>
+
 // Proxy class and supporting code.
 #include <seqan/basic/basic_proxy.h>
-
-// Functions to efficiently move data between containers/iterators/streams
-#include <seqan/basic/fundamental_stream.h>
 
 // Aggregate data types (pairs, triples, tuples).
 #include <seqan/basic/basic_aggregate.h>
