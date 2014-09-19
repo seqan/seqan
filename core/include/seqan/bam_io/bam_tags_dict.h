@@ -723,7 +723,7 @@ inline char getBamTypeChar(T const &)
 /*!
  * @fn BamTagsDict#setTagValue
  *
- * @headerfile seqan/bam_io.h
+ * @headerfile <seqan/bam_io.h>
  *
  * @brief Set the value of a tag through a @link BamTagsDict @endlink.
  *
@@ -938,7 +938,7 @@ setTagValue(BamTagsDict & tags, TKey const & key, TValue const & val)
 /*!
  * @fn BamTagsDict#appendTagValue
  *
- * @headerfile seqan/bam_io.h
+ * @headerfile <seqan/bam_io.h>
  *
  * @brief Append a tag/value pair to a @link BamTagsDict @endlink.
  *

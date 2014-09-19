@@ -81,7 +81,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 /*!
  * @class OpenAddressingQGramIndex
  * @extends IndexQGram
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief A <i>q</i>-gram that uses open addressing hashing instead of an array.
  * 
  * @signature template <typename TIndex, typename TShapeSpec>

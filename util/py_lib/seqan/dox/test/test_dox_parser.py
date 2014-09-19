@@ -17,9 +17,9 @@ import os
 import unittest
 import sys
 
-import lexer
-import dox_tokens
-import dox_parser
+import seqan.dox.lexer as lexer
+import seqan.dox.dox_tokens as dox_tokens
+import seqan.dox.dox_parser as dox_parser
 
 
 class TestDoxParserBase(unittest.TestCase):
@@ -221,6 +221,7 @@ class TestMacroParsing(TestDoxParserBase):
                '@signature MACRO(param)\n'
                '@param param The parameter.\n'
                '@return TString A path as <tt>char const *</tt>.\n'
+               '@throw Exception The exception type.\n'
                '\n'
                '@section This is the first section.\n'
                '\n'
@@ -243,6 +244,8 @@ class TestMacroParsing(TestDoxParserBase):
                     '@param param The parameter.\n'
                     '\n'
                     '@return TString A path as <tt>char const *</tt>.\n'
+                    '\n'
+                    '@throw Exception The exception type.\n'
                     '\n'
                     '@section This is the first section.\n'
                     '\n'
@@ -275,6 +278,17 @@ class TestFunctionParsing(TestDoxParserBase):
         txt = '<tt>true</tt> if empty, <tt>false</tt> otherwise.'
         self.assertEqual(fn.returns[0].text.text, txt)
 
+    def testThrow(self):
+        txt = ('@fn funktion\n'
+               '@throw Exception The thrown exception')
+        parser = self.parseText(txt)
+        doc = parser.documentation
+        fn = doc.entries[0]
+        self.assertEqual(len(fn.throws), 1)
+        self.assertEqual(fn.throws[0].name.text, 'Exception')
+        txt = 'The thrown exception'
+        self.assertEqual(fn.throws[0].text.text, txt)
+
     def testGlobalFull(self):
         txt = ('@fn funktion\n'
                '@brief This is a brief text.\n'
@@ -289,6 +303,8 @@ class TestFunctionParsing(TestDoxParserBase):
                '@param     p2 The second parameter.\n'
                '@return TRes1 The first return type.\n'
                '@return TRes2 The second return type.\n'
+               '\n'
+               '@throw Exception The thrown exception.\n'
                '\n'
                '@section This is the first section.\n'
                '\n'
@@ -319,6 +335,8 @@ class TestFunctionParsing(TestDoxParserBase):
                     '\n'
                     '@return TRes1 The first return type.\n'
                     '@return TRes2 The second return type.\n'
+                    '\n'
+                    '@throw Exception The thrown exception.\n'
                     '\n'
                     '@section This is the first section.\n'
                     '\n'
@@ -634,7 +652,7 @@ class TestVariableParsing(TestDoxParserBase):
                '@see Other')
         parser = self.parseText(txt)
         doc = parser.documentation
-        expected = ('@var int var\n'
+        expected = ('@var int var;\n'
                     '\n'
                     '@headerfile <seqan/base.h>\n'
                     '@headerfile <seqan/sequence.h>\n'
@@ -661,7 +679,7 @@ class TestVariableParsing(TestDoxParserBase):
         txt = '@var Klass::Type Klass::var'
         parser = self.parseText(txt)
         doc = parser.documentation
-        self.assertMultiLineEqual(doc.getFormatted(), '@var Klass::Type Klass::var\n\n')
+        self.assertMultiLineEqual(doc.getFormatted(), '@var Klass::Type Klass::var;\n\n')
 
     def testMemberFull(self):
         txt = ('@var Klass::Type Klass::var\n'
@@ -679,7 +697,7 @@ class TestVariableParsing(TestDoxParserBase):
                '@see Other')
         parser = self.parseText(txt)
         doc = parser.documentation
-        expected = ('@var Klass::Type Klass::var\n'
+        expected = ('@var Klass::Type Klass::var;\n'
                     '\n'
                     '@brief This is a brief text.\n'
                     '\n'

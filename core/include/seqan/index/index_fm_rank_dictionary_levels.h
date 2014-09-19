@@ -221,7 +221,7 @@ struct RankDictionaryEntry_<TValue, TwoLevels<TSpec> >
 /*!
  * @class TwoLevelRankDictionary
  * @extends RankDictionary
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief A TwoLevelRankDictionary is a @link RankDictionary @endlink consisting of two levels.
  * 

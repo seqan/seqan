@@ -283,7 +283,7 @@ SEQAN_CHECKPOINT
 
 /*!
  * @fn matchRefinement
- * @headerfile seqan/graph_align.h
+ * @headerfile <seqan/graph_align.h>
  * @brief Refines (i.e. cuts into smaller parts) a set of pairwise segment matches in such a way that none of the
  *        segments partly overlap. They are either identical (fully overlapping) or non-overlapping.
  * 

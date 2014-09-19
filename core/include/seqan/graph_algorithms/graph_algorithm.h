@@ -486,7 +486,7 @@ stronglyConnectedComponents(Graph<TSpec> const& g_source,
 /*!
  * @fn connectedComponents
  * 
- * @headerfile seqan/graph_algorithms.h
+ * @headerfile <seqan/graph_algorithms.h>
  * 
  * @brief Decomposes an undirected graph into its connected components.
  * 
@@ -1180,7 +1180,7 @@ dagShortestPath(Graph<TSpec> const& g,
 /*!
  * @fn bellmanFordAlgorithm
  *
- * @headerfile seqan/graph_algorithms.h
+ * @headerfile <seqan/graph_algorithms.h>
  *
  * @brief Computes shortest paths from a single source in a directed graph.
  *
@@ -1882,7 +1882,7 @@ _getMinimumAug(Graph<TSpec> const& rG,
 /*!
  * @fn fordFulkersonAlgorithm
  * 
- * @headerfile seqan/graph_algorithms.h
+ * @headerfile <seqan/graph_algorithms.h>
  * 
  * @brief Computes a maximum flow in a directed graph.
  * 

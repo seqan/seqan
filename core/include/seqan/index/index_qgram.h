@@ -258,7 +258,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 /*!
  * @class IndexQGram
  * @extends Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief An index based on an array of sorted q-grams.
  * 
@@ -494,7 +494,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 */
 /*!
  * @fn IndexQGram#indexDir
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., QGramDir())</tt>.
  * @signature TFibre indexDir(index);
  * 
@@ -529,7 +529,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 */
 /*!
  * @fn IndexQGram#dirAt
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
  *
  * @signature TFibre dirAt(position, index);
@@ -566,7 +566,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 */
 /*!
  * @fn IndexQGram#indexCounts
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(index, QGramCounts())</tt>.
  * 
  * @signature TFibre indexCounts(index);
@@ -600,7 +600,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 */
 /*!
  * @fn IndexQGram#indexCountsDir
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(index, QGramCountsDir())</tt>.
  * 
  * @signature TFibre indexCountsDir(index);
@@ -635,7 +635,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 */
 /*!
  * @fn IndexQGram#indexBucketMap
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(index, QGramBucketMap())</tt>.
  * 
  * @signature TFibre indexBucketMap(index);
@@ -673,7 +673,7 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
 */
 /*!
  * @fn IndexQGram#indexShape
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(index, QGramShape())</tt>.
  * @signature TFibre indexShape(index);
  * 
@@ -707,7 +707,7 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
 */
 /*!
  * @fn IndexQGram#getStepSize
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Return the <i>q</i>-gram step size used for index creation.
  * @signature TSize getStepSize(index);
  * 
@@ -743,7 +743,7 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 */
 /*!
  * @fn IndexQGram#setStepSize
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Change the <i>q</i>-gram step size used for index creation.
  *
  * @signature void setStepSize(index, stepSize);
@@ -1484,7 +1484,7 @@ The resulting tables must have appropriate size before calling this function.
 */
 /*!
  * @fn IndexQGram#createQGramIndex
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Builds a <i>q</i>-gram index on a sequence.
  * 
  * @signature void createQGramIndex(index);
@@ -1621,7 +1621,7 @@ The resulting tables must have appropriate size before calling this function.
 */
 /*!
  * @fn IndexQGram#createQGramIndexSAOnly
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Builds the suffix array of a q-gram index on a sequence.
  * 
  * @signature void createQGramIndexSAOnly(sa, text, shape, stepSize)
@@ -1808,7 +1808,7 @@ The resulting tables must have appropriate size before calling this function.
 */
 /*!
  * @fn IndexQGram#createQGramIndexDirOnly
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Builds the directory of a <i>q</i>-gram index on a sequence.
  * 
  * @signature void createQGramIndexDirOnly(dir, bucketMap, text, shape, stepSize);
@@ -1876,7 +1876,7 @@ The resulting tables must have appropriate size before calling this function.
 */
 /*!
  * @fn IndexQGram#createCountArray
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Builds an index on a StringSet storing how often a <i>q</i>-gram occurs in each sequence.
  * 
  * @signature void createCountsArray(counts, dir, bucketMap, stringSet, shape, stepSize);
@@ -2557,7 +2557,7 @@ It sums up the minimum number of q-gram occurrences between both sequences for e
 */
 /*!
  * @fn IndexQGram#getKmerSimilarityMatrix
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Creates a matrix storing the number of common q-grams between all pairs of sequences.
  * 
  * @signature void getKmerSimilarityMatrix(index, distMat[, seqSet]);
@@ -2804,7 +2804,7 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 */
 /*!
  * @fn IndexQGram#range
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the suffix array interval borders of a q-gram in the index text.
  * 
  * @signature TPair range(index, shape);
@@ -2859,7 +2859,7 @@ If the type of $index$ is $TIndex$ the return type is $SAValue<TIndex>::Type$.
 */
 /*!
  * @fn IndexQGram#getOccurrence
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns an occurrence a q-gram in the index text.
  *
  * @signature TSAValue getOccurrence(index, shape);
@@ -2909,7 +2909,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 */
 /*!
  * @fn IndexQGram#getOccurrences
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns all occurrences of a q-gram in the index text.
  * 
  * @signature TSAInfix getOccurrences(index, shape);
@@ -2972,7 +2972,7 @@ If the type of $index$ is $TIndex$ the return type is $Size<TIndex>::Type$.
 */
 /*!
  * @fn IndexQGram#countOccurrences
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the number of occurrences of a q-gram in the index text.
  * 
  * @signature TSize countOccurrences(index, shape);
@@ -3033,7 +3033,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 */
 /*!
  * @fn IndexQGram#countOccurrencesMultiple
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns the number of occurrences of a q-gram for every sequence of a @link StringSet @endlink .
  * 
  * @signature TCountInfix countOccurrencesMultiple(index, shape);

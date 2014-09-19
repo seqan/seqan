@@ -109,7 +109,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 /*!
  * @class WaveletTree
  * @extends RankDictionary
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief A wavelet tree is a tree like binary encoding of a text.
  * 

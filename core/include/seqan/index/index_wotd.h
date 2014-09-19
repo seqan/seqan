@@ -135,7 +135,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 /*!
  * @class IndexWotd
  * @extends Index
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
  *        trees").
  * 
@@ -1143,7 +1143,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 /*!
  * @fn IndexWotd#createWotdIndex
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Builds a the WOTD index.
  * 
  * @signature void createWotdIndex(sa, dir, text);

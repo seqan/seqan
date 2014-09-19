@@ -88,7 +88,7 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 /*!
  * @class IndexDfi
  * @extends IndexWotd
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief The Deferred Frequency Index (see Weese and Schulz, "Efficient string mining under constraints via
  *        the deferred frequency index").

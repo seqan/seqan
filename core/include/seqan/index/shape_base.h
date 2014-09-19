@@ -831,7 +831,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 */
 /*!
  * @fn Shape#hashNext
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Computes the hash value for the adjacent shape.
  * 
  * @signature TValue hashNext(shape, it);
@@ -1015,7 +1015,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 */
 /*!
  * @fn Shape#hash2Next
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Computes a unique hash value for the adjacent shape, even if it is shorter than q.
  * 
  * @signature TValue hash2Next(shape, it);
@@ -1077,7 +1077,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 */
 /*!
  * @fn Shape#unhash
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Inverse of the @link Shape#hash @endlink function; for ungapped shapes.
  * 
  * @signature void unhash(result, hash, q);

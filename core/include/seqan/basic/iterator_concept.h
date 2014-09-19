@@ -188,7 +188,7 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * @extends IteratorAssociatedTypesConcept
  * @extends CopyConstructibleConcept
  * @extends EqualityComparableConcept
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * @brief Iterator that allows dereferenced reading.
  * 
  * @signature InputIteratorConcept<T>
@@ -514,7 +514,7 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
 /*!
  * @concept BidirectionalIteratorConcept
  * 
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @extends ForwardIteratorConcept
  * 
