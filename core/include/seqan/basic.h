@@ -70,9 +70,6 @@
 // Container concept and supporting code.
 #include <seqan/basic/basic_container.h>
 
-// Functions and metafunctions to use contiguous chunks of memory
-#include <seqan/basic/basic_chunking.h>
-
 // Alphabet concept and biological implementations.
 #include <seqan/basic/basic_alphabet.h>
 
@@ -95,7 +92,7 @@
 #include <seqan/basic/basic_proxy.h>
 
 // Functions to efficiently move data between containers/iterators/streams
-#include <seqan/basic/basic_stream.h>
+#include <seqan/basic/fundamental_stream.h>
 
 // Aggregate data types (pairs, triples, tuples).
 #include <seqan/basic/basic_aggregate.h>
