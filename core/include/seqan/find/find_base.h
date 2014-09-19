@@ -345,7 +345,7 @@ Hit at position: 16
 /*!
  * @class Finder
  * 
- * @headerfile seqan/find.h
+ * @headerfile <seqan/find.h>
  * 
  * @brief Holds the haystack and a current search context.
  * 

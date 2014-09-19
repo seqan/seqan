@@ -4,42 +4,42 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="{{ entry_kind }}_{{ entry_name|lower }}" data-page="{{ entry_name }}">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />    
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
     <title>{% block title %}{% endblock %} - SeqAn API Documentation</title>
-    
+
       {% if development %}
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.js"></script>
-      
+
       <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/js/bootstrap.min.js"></script>
-      
+
       <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-      
+
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/ZeroClipboard/ZeroClipboard.min.js"></script>
-      
+
       <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/css/style.css" type="text/css" media="screen" charset="utf-8" />
       <link rel="stylesheet/less" href="../../util/py_lib/seqan/dox/tpl/css/common.less" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/less.min.js"></script>
       {% endif %}
-      
+
       {% if not development %}
       <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-      
+
       <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
-      
+
       <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-      
+
       <script type="text/javascript" charset="utf-8" src="lib/ZeroClipboard/ZeroClipboard.min.js"></script>
-      
+
       <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
       <link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
       {% endif %}
 
-      
+
 
     <script type="text/javascript" charset="utf-8">
       hasFrames = window.top.frames.main ? true : false;
@@ -60,11 +60,11 @@
           color: red;
       }
     </style>
-    
+
       {% if development %}
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/jquery-bbq/jquery.ba-bbq.min.js"></script>
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.smooth-scroll.js"></script>
-      
+
       <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script><!-- dynamically created and thus only existent in output dir -->
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/app.js"></script>
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/autocomplete.js"></script>
@@ -80,17 +80,14 @@
       <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
-      
-      <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
-      {% endif %}  
-
+      {% endif %}
   </head>
   <body>
-  	<a id="top" name="top"></a>
+    <a id="top" name="top"></a>
 
     <div id="content">
       {% block content %}{% endblock %}
     </div>
-    
+
   </body>
 </html>

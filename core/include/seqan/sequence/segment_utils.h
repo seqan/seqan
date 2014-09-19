@@ -120,8 +120,8 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
  *
  * @signature bool startsWith(str, prefix);
  *
- * @param[in] str    The string to check.
- * @param[in] prefix The prefix to check for.
+ * @param[in] str    The string to check (A @link SequenceConcept sequence @endlink).
+ * @param[in] prefix The prefix to check for (A @link SequenceConcept sequence @endlink)..
  *
  * @return bool <tt>true</tt> if <tt>prefix</tt> is a prefix of <tt>str</tt>.
  */

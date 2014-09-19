@@ -683,7 +683,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 */
 /*!
  * @fn Index#indexCreate
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Creates a specific @link Fibre @endlink.
  * 
  * @signature bool indexCreate(index, fibreTag[, algoTag]);
@@ -802,7 +802,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 */
 /*!
  * @fn Index#indexSupplied
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief Returns whether a specific @link Fibre @endlink is present.
  * 
  * @signature bool indexSupplied(index, fibreTag);
@@ -855,7 +855,7 @@ I	ISSISSIPPI
 */
 /*!
  * @fn Index#indexRequire
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * @brief On-demand creation of a specific @link Fibre @endlink.
  * 
  * @signature bool indexRequire(index, fibreTag);

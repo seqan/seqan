@@ -61,7 +61,7 @@ clear(String<TValue, CStyle> & me);
 /*!
  * @class CStyleString CStyle String
  * @extends String
- * @headerfile seqan/sequence.h
+ * @headerfile <seqan/sequence.h>
  * @brief Allows adaption of strings to C-style strings.
  * 
  * @signature template <typename TValue, typename TCStyle>

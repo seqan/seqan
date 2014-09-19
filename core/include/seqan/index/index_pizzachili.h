@@ -101,7 +101,7 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
  * 
  * @extends Index
  * 
- * @headerfile seqan/index.h
+ * @headerfile <seqan/index.h>
  * 
  * @brief An adapter for the Pizza &amp; Chili index API.
  * 

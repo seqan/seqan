@@ -83,6 +83,18 @@ class Config(object):
 
 
 class FileNameSource(object):
+    """Recursive traversal of directory hierarchy, generating doxumentable files.
+    
+    Create with list to paths to crawl.  Then generate() creates a generator that
+    yields all of these files.
+    
+    Attributes:
+    
+      paths -- list of strings of paths to crawl
+      extensions -- list of strings with file extensions to yield in generate
+      ignore -- list of strings with entry names to ignore
+    """
+
     def __init__(self, paths):
         self.paths = paths
         self.extensions = ['.h', '.cpp', '.dox']
@@ -164,6 +176,7 @@ def doMain(args):
 
 
 def main():
+    # build command line parser and parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--lex-only', dest='lex_only', help='Lex only.',
                         default=False, action='store_true')
@@ -187,8 +200,8 @@ def main():
                         'dox system itself or its templates.', default=False,
                         action='store_true', dest='development')
     args = parser.parse_args()
-    #if not args.inputs:
-    #    parser.error('Missing input.')
+
+    # defer actual work to doMain()
     return doMain(args)
 
 

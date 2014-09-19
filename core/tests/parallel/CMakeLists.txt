@@ -41,6 +41,10 @@ add_executable (test_parallel
                test_parallel_splitting.h
                test_parallel_queue.h)
 
+if (CXX11_FOUND AND COMPILER_IS_CLANG AND (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") )
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
+endif (CXX11_FOUND AND COMPILER_IS_CLANG AND (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") )
+               
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_parallel ${SEQAN_LIBRARIES})
 

@@ -668,6 +668,23 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         startSeqPos = splitPos;
                         endSeqPos = splitPos;
 
+                        if (!swap)
+                        {
+                            // Adjust bp position if they arise from matches on the reverse strand
+                            if (!(*stMatch1).orientation)
+                                startSeqPos = (*stMatch1).end1 - startSeqPos + (*stMatch1).begin1;
+                            if (!(*stMatch2).orientation)
+                                endSeqPos = (*stMatch2).end1 - endSeqPos + (*stMatch2).begin1;
+                        }
+                        else
+                        {
+                            // Adjust bp position if they arise from matches on the reverse strand
+                            if (!(*stMatch2).orientation)
+                                startSeqPos = (*stMatch2).end1 - startSeqPos + (*stMatch2).begin1;
+                            if (!(*stMatch1).orientation)
+                                endSeqPos = (*stMatch1).end1 - endSeqPos + (*stMatch1).begin1;
+                        }
+
                         // Reverse complement sequence content back again
                         if (!(*stMatch1).orientation)
                             reverseComplement(source(row(match1, 1)));
@@ -685,6 +702,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             endSeqPos = (*stMatch2).begin1;
                             readStartPos = (*stMatch1).end2;
                             readEndPos = (*stMatch2).begin2;
+                            // Adjust bp position if they arise from matches on the reverse strand
+                            if (!(*stMatch1).orientation)
+                                startSeqPos = (*stMatch1).end1 - startSeqPos + (*stMatch1).begin1;
+                            if (!(*stMatch2).orientation)
+                                endSeqPos = (*stMatch2).end1 - endSeqPos + (*stMatch2).begin1;
                         }
                         else
                         {
@@ -692,6 +714,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             endSeqPos = (*stMatch1).begin1;
                             readStartPos = (*stMatch2).end2;
                             readEndPos = (*stMatch1).begin2;
+                            // Adjust bp position if they arise from matches on the reverse strand
+                            if (!(*stMatch2).orientation)
+                                startSeqPos = (*stMatch2).end1 - startSeqPos + (*stMatch2).begin1;
+                            if (!(*stMatch1).orientation)
+                                endSeqPos = (*stMatch1).end1 - endSeqPos + (*stMatch1).begin1;
                         }
 
                     }

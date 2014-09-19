@@ -3,7 +3,7 @@
 import sys
 import unittest
 
-import sig_parser
+import seqan.dox.sig_parser as sig_parser
 
 
 class TestParseEnum(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestParseEnum(unittest.TestCase):
         self.assertEqual(entry.name, 'EnumName')
         txt = 'enum EnumName;'
         self.assertEqual(entry.toString(), txt)
-        
+
 
 class TestParseStruct(unittest.TestCase):
     def testValid(self):
@@ -26,7 +26,7 @@ class TestParseStruct(unittest.TestCase):
         self.assertEqual(entry.name, 'StructName')
         txt = 'struct StructName;'
         self.assertEqual(entry.toString(), txt)
-        
+
 
 class TestParseClass(unittest.TestCase):
     def testValid(self):
@@ -38,7 +38,7 @@ class TestParseClass(unittest.TestCase):
         txt = 'class ClassName;'
         self.assertEqual(entry.toString(), txt)
 
-        
+
 class TestParseConcept(unittest.TestCase):
     def testValid(self):
         txt = 'concept ConceptConcept'
@@ -49,7 +49,7 @@ class TestParseConcept(unittest.TestCase):
         txt = 'concept ConceptConcept;'
         self.assertEqual(entry.toString(), txt)
 
-        
+
 class TestParseVariable(unittest.TestCase):
     def testValid(self):
         txt = 'Type variable;'
@@ -61,7 +61,7 @@ class TestParseVariable(unittest.TestCase):
         txt = 'Type variable;'
         self.assertEqual(entry.toString(), txt)
 
-        
+
 class TestParseFunction(unittest.TestCase):
     def testEmptyParams(self):
         txt = 'void foo()'
@@ -114,7 +114,7 @@ class TestParseFunction(unittest.TestCase):
         self.assertEqual(len(entry.params), 0)
         txt = 'String::String();'
         self.assertEqual(entry.toString(), txt)
-        
+
     def testConstructorParams(self):
         txt = 'String::String(int x, double y)'
         parser = sig_parser.SigParser(txt)
@@ -130,7 +130,7 @@ class TestParseFunction(unittest.TestCase):
         self.assertEqual(entry.params[1].name, 'y')
         txt = 'String::String(int x, double y);'
         self.assertEqual(entry.toString(), txt)
-        
+
     def testDestructorNoParams(self):
         txt = 'String::~String()'
         parser = sig_parser.SigParser(txt)
@@ -142,7 +142,7 @@ class TestParseFunction(unittest.TestCase):
         self.assertEqual(len(entry.params), 0)
         txt = 'String::~String();'
         self.assertEqual(entry.toString(), txt)
-        
+
     def testInterfaceFunction(self):
         txt = 'void Foo#bar(int x, double y)'
         parser = sig_parser.SigParser(txt)
@@ -158,10 +158,10 @@ class TestParseFunction(unittest.TestCase):
         self.assertEqual(entry.params[1].name, 'y')
         txt = 'void Foo#bar(int x, double y);'
         self.assertEqual(entry.toString(), txt)
-        
+
     def testConstructor(self):
         pass
-        
+
 
 class TestTemplateFunction(unittest.TestCase):
     def testEmptyParams(self):
