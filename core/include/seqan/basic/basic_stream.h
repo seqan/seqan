@@ -758,10 +758,11 @@ read(TTarget &target, TFwdIterator &iter, TSize n)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TContainer>
-inline void read(TTarget &target, TContainer &cont)
+inline typename Size<TTarget>::Type
+read(TTarget &target, TContainer &cont)
 {
     typename DirectionIterator<TContainer, Input>::Type iter = directionIterator(cont, Input());
-    read(target, iter, length(cont));
+    return read(target, iter, length(cont));
 }
 
 // ----------------------------------------------------------------------------

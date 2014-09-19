@@ -459,6 +459,16 @@ goNext(Iter<TStream, StreamIterator<Output> > &)
     // a value to the iterator with *iter= or setValue
 }
 
+// we intentionally don't return an iterator here, as the copied iterator wouldn't
+// point to the position before the increment.
+template <typename TContainer, typename TSpec>
+inline void
+operator++(Iter<TContainer, StreamIterator<Input> > & iter, int)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.streamBuf->sbumpc();
+}
+
 // ----------------------------------------------------------------------------
 // Function goFurther()
 // ----------------------------------------------------------------------------
