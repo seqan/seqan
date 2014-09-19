@@ -540,6 +540,108 @@ write(TTarget &target, TValue * ptr)
 }
 
 // ----------------------------------------------------------------------------
+// Function appendNumber()
+// ----------------------------------------------------------------------------
+// Generic version for integers.
+
+template <typename TTarget, typename TInteger>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
+appendNumber(TTarget & target, TInteger i)
+{
+    typedef IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
+                          sizeof(TInteger)> TInt;
+
+    // 1 byte has at most 3 decimal digits (plus 2 for '-' and the NULL character)
+    char buffer[sizeof(TInteger) * 3 + 2];
+    int offset;
+    size_t len = snprintf(buffer, sizeof(buffer),
+                          TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
+    return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(bool)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, bool source)
+{
+    writeValue(target, '0' + source);
+    return 1;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(float)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, float source)
+{
+    char buffer[32];
+    int offset;
+    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
+    return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(double)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, double source)
+{
+    char buffer[32];
+    int offset;
+    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
+    char *bufPtr = buffer;
+    write(target, bufPtr, len);
+    return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendRawPod()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTarget>
+inline typename Size<TTarget>::Type
+appendRawPod(TTarget & target, TValue const & val)
+{
+    write(target, (unsigned char*)&val, sizeof(TValue));
+    return sizeof(TValue);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TNumber)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, void)
+write(TTarget &target, TNumber &number)
+{
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
+}
+
+template <typename TTarget, typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber const> >, void)
+write(TTarget &target, TNumber const &number)
+{
+    if (sizeof(TNumber) == 1)
+        writeValue(target, number);
+    else
+        appendNumber(target, number);
+}
+
+// ----------------------------------------------------------------------------
 // Function read(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
