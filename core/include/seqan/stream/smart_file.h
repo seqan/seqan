@@ -452,17 +452,17 @@ position(SmartFile<TFileType, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TSpec, typename TPosition>
-inline void
+inline bool
 setPosition(SmartFile<TFileType, Output, TSpec> & file, TPosition pos)
 {
-    return file.stream.seekp(pos, std::ios_base::beg);
+    return file.stream.seekp(pos, std::ios_base::beg) == pos;
 }
 
 template <typename TFileType, typename TSpec, typename TPosition>
-inline void
+inline bool
 setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
 {
-    return file.stream.seekg(pos, std::ios_base::beg);
+    return file.stream.seekg(pos, std::ios_base::beg) == pos;
 }
 
 // ----------------------------------------------------------------------------

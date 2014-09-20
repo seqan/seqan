@@ -70,16 +70,6 @@
 #include <seqan/bam_io/write_bam.h>
 
 // ===========================================================================
-// BAM Index Related.
-// ===========================================================================
-
-// BAM indices are only available when ZLIB is available.
-#if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/bam_index_base.h>
-//#include <seqan/bam_io/bam_index_bai.h>
-#endif  // #if SEQAN_HAS_ZLIB
-
-// ===========================================================================
 // Utility Routines.
 // ===========================================================================
 
@@ -90,5 +80,15 @@
 // ===========================================================================
 
 #include <seqan/bam_io/bam_file.h>
+
+// ===========================================================================
+// BAM Index Related.
+// ===========================================================================
+
+// BAM indices are only available when ZLIB is available.
+#if SEQAN_HAS_ZLIB
+#include <seqan/bam_io/bam_index_base.h>
+#include <seqan/bam_io/bam_index_bai.h>
+#endif  // #if SEQAN_HAS_ZLIB
 
 #endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_
