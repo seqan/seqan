@@ -151,7 +151,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     // Trim off the chimera peak in mate-pair libraries.
     if (libInfo.defaultOrient == LibraryInfo::R_MINUS && (runningMean / pairCount) >= 1000u)
     {
-        typedef typename TVecISize::const_iterator TVecISizeIter;
+        typedef TVecISize::const_iterator TVecISizeIter;
         TVecISize vecISizeTmp;
         for(TVecISizeIter it = vecISize.begin(); it < vecISize.end(); ++it)
             if (*it > 1000)
@@ -167,7 +167,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     // Get library stats.
     //
     // Start with median.
-    typedef typename TVecISize::iterator TVecISizeIter;
+    typedef TVecISize::iterator TVecISizeIter;
     TVecISizeIter begin = vecISize.begin();
     TVecISizeIter end = vecISize.end();
     std::nth_element(begin, begin + (end - begin) / 2, end);

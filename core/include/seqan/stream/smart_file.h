@@ -90,21 +90,10 @@ struct SmartFile
         context(data_context)
     {}
 
-    explicit
-    SmartFile(TDependentContext &otherCtx) :
-        context(otherCtx)
-    {}
-
     // filename based c'tors
     explicit
     SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         context(data_context)
-    {
-        _open(*this, fileName, openMode, True());
-    }
-
-    SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
-        context(otherCtx)
     {
         _open(*this, fileName, openMode, True());
     }
@@ -125,6 +114,42 @@ struct SmartFile
               TFormat const &format,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
         context(data_context)
+    {
+        bool success = open(*this, ostream, format);
+        ignoreUnusedVariableWarning(dummy);
+        ignoreUnusedVariableWarning(success);
+        SEQAN_ASSERT(success);
+    }
+
+    // now everything given another context
+    explicit
+    SmartFile(TDependentContext &otherCtx) :
+        context(otherCtx)
+    {}
+
+    SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+        context(otherCtx)
+    {
+        _open(*this, fileName, openMode, True());
+    }
+
+    template <typename TValue>
+    explicit
+    SmartFile(TDependentContext &otherCtx,
+              std::basic_istream<TValue> &istream,
+              SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
+        context(otherCtx)
+    {
+        _open(*this, istream, True());
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+    template <typename TValue, typename TFormat>
+    SmartFile(TDependentContext &otherCtx,
+              std::basic_ostream<TValue> &ostream,
+              TFormat const &format,
+              SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
+        context(otherCtx)
     {
         bool success = open(*this, ostream, format);
         ignoreUnusedVariableWarning(dummy);

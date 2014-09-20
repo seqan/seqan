@@ -168,7 +168,7 @@ int _dumpRegion(BamFileIn & in, BamFileOut & out, TOptions const & options)
 
     // Dump each region after loading the index.
     BamIndex<Bai> bamIndex;
-    if (read(bamIndex, toCString(options.baiFile)) != 0)
+    if (!open(bamIndex, toCString(options.baiFile)))
     {
         std::cerr << "[ERROR] Could not open index file " << options.baiFile << ", required when specifying regions." << std::endl;
         return 1;
