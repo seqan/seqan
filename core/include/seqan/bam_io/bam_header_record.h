@@ -292,14 +292,7 @@ swap(BamHeaderRecord &a, BamHeaderRecord &b)
 ..type:nolink:$String<BamHeaderRecord>$
 */
 
-class BamHeader
-{
-public:
-    typedef Pair<CharString, __int32> TSequenceInfo;
-
-    String<Pair<CharString, __int32> > sequenceInfos;
-    String<BamHeaderRecord> records;
-};
+typedef String<BamHeaderRecord> BamHeader;
 
 // ============================================================================
 // Metafunctions
@@ -522,11 +515,9 @@ searchRecord(unsigned & recordIdx,
              BamHeaderRecordType recordType,
              unsigned startIdx)
 {
-    for (recordIdx = startIdx; recordIdx < length(header.records); ++recordIdx)
-    {
-        if (header.records[recordIdx].type == recordType)
+    for (recordIdx = startIdx; recordIdx < length(header); ++recordIdx)
+        if (header[recordIdx].type == recordType)
             return true;
-    }
     return false;
 }
 
@@ -562,22 +553,20 @@ removeDuplicates(BamHeader & header)
     BamHeaderRecordTypeLess less;
     BamHeaderRecordEqual pred;
 
-    std::stable_sort(begin(header.records, Standard()), end(header.records, Standard()), less);
+    std::stable_sort(begin(header, Standard()), end(header, Standard()), less);
 
-    for (size_t uniqueBegin = 0, uniqueEnd = 1; uniqueEnd < length(header.records);)
+    for (size_t uniqueBegin = 0, uniqueEnd = 1; uniqueEnd < length(header);)
     {
-        if (less(header.records[uniqueBegin], header.records[uniqueEnd]))
+        if (less(header[uniqueBegin], header[uniqueEnd]))
             uniqueBegin = uniqueEnd;
 
         size_t j;
         for (j = uniqueBegin; j < uniqueEnd; ++j)
-        {
-            if (pred(header.records[j], header.records[uniqueEnd]))
+            if (pred(header[j], header[uniqueEnd]))
             {
-                erase(header.records, uniqueEnd);
+                erase(header, uniqueEnd);
                 break;
             }
-        }
 
         if (j == uniqueEnd)
             ++uniqueEnd;
@@ -590,7 +579,7 @@ getSortOrder(BamHeader const & header)
     CharString soString;
     for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
     {
-        if (getTagValue(soString, "SO", header.records[recIdx]))
+        if (getTagValue(soString, "SO", header[recIdx]))
         {
             if (soString == "unsorted")
                 return BAM_SORT_UNSORTED;
@@ -611,7 +600,7 @@ setSortOrder(BamHeader & header, BamSortOrder sortOrder)
     for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
     {
         unsigned idx = 0;
-        if (findTagKey(idx, "SO", header.records[recIdx]))
+        if (findTagKey(idx, "SO", header[recIdx]))
         {
             CharString soString;
             switch (sortOrder)
@@ -631,24 +620,10 @@ setSortOrder(BamHeader & header, BamSortOrder sortOrder)
                 default:
                     soString = "unknown";
             }
-            setTagValue(idx, soString, header.records[recIdx]);
+            setTagValue(idx, soString, header[recIdx]);
         }
     }
 }
-
-// ----------------------------------------------------------------------------
-// Function clear()
-// ----------------------------------------------------------------------------
-
-///.Function.clear.param.object.type:Class.BamHeader
-
-inline void
-clear(BamHeader & header)
-{
-    clear(header.sequenceInfos);
-    clear(header.records);
-}
-
 
 }  // namespace seqan
 

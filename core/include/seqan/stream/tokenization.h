@@ -40,44 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Exceptions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Exception ParseError
-// ----------------------------------------------------------------------------
-
-struct ParseError : RuntimeError
-{
-    template <typename TString>
-    ParseError(TString const &message):
-        RuntimeError(message)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Exception UnexpectedEnd
-// ----------------------------------------------------------------------------
-
-struct UnexpectedEnd : ParseError
-{
-    UnexpectedEnd():
-        ParseError("Unexpected end of input.")
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Exception EmptyFieldError
-// ----------------------------------------------------------------------------
-
-struct EmptyFieldError : ParseError
-{
-    EmptyFieldError(std::string fieldName):
-        ParseError(fieldName + " field was empty.")
-    {}
-};
-
-// ============================================================================
 // Functors
 // ============================================================================
 
@@ -434,23 +396,8 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
 // ----------------------------------------------------------------------------
 
 //TODO(singer) to be revised
-/*
-template <typename TTarget, typename TFwdIterator, typename TNumber>
-inline void readRawByte(TTarget & target, TFwdIterator &iter, TNumber numberOfBytes)
-{
-    char * buffer = reinterpret_cast<char *>(&target);
-    for (; !numberOfBytes(*iter); ++buffer, ++iter)
-        *buffer = *iter;
-
-    if (numberOfBytes(*iter))
-        throw UnexpectedEnd();
-
-}
-*/
-
-//TODO(singer) to be revised
 template <typename TValue, typename TFwdIterator>
-inline void readRawByte(TValue & value, TFwdIterator &srcIter)
+inline void readRawPod(TValue & value, TFwdIterator &srcIter)
 {
     write((char*)&value, srcIter, sizeof(TValue));
 }

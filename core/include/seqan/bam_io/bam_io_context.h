@@ -150,18 +150,27 @@ TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
 template <
     typename TNameStore_ = StringSet<CharString>,
     typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
-    typename TStorageSpec = Dependent<> >
+    typename TStorageSpec = void>
 class BamIOContext
 {
 public:
     typedef TNameStore_ TNameStore;
     typedef TNameStoreCache_ TNameStoreCache;
+    typedef __int32 TSequenceLength;
+    typedef String<TSequenceLength> TSequenceLengths;
 
-    typedef typename StorageSwitch<TNameStore, TStorageSpec>::Type      TNameStoreMember;
-    typedef typename StorageSwitch<TNameStoreCache, TStorageSpec>::Type TNameStoreCacheMember;
+    typedef typename If<IsSameType<TStorageSpec, void>,
+                        Dependent<>, TStorageSpec>::Type TNSStorageSpec;
+    typedef typename If<IsSameType<TStorageSpec, void>,
+                        Owner<>, TStorageSpec>::Type TSLStorageSpec;
+
+    typedef typename StorageSwitch<TNameStore, TNSStorageSpec>::Type        TNameStoreMember;
+    typedef typename StorageSwitch<TNameStoreCache, TNSStorageSpec>::Type   TNameStoreCacheMember;
+    typedef typename StorageSwitch<TSequenceLengths, TSLStorageSpec>::Type  TSequenceLengthsMember;
 
     TNameStoreMember        _nameStore;
     TNameStoreCacheMember   _nameStoreCache;
+    TSequenceLengthsMember  _sequenceLengths;
     CharString              buffer;
     String<unsigned>        translateFile2GlobalRefId;
 
@@ -169,14 +178,16 @@ public:
         _nameStore(TNameStoreMember()),
         _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
                                  (TNameStoreCache*)NULL,
-                                 _nameStore))
+                                 _nameStore)),
+        _sequenceLengths(TSequenceLengthsMember())
     {}
 
     BamIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
         _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
         _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
                                  &nameStoreCache_,
-                                 _nameStore))
+                                 _nameStore)),
+        _sequenceLengths(TSequenceLengthsMember())
     {}
 
     template <typename TOtherStorageSpec>
@@ -184,7 +195,8 @@ public:
         _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
         _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
                                  &nameStoreCache(other),
-                                 _nameStore))
+                                 _nameStore)),
+        _sequenceLengths(_referenceCast<typename Parameter_<TSequenceLengthsMember>::Type>(sequenceLengths(other)))
     {}
 };
 
@@ -242,6 +254,33 @@ inline void
 setNameStore(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStore & nameStore)
 {
     context._nameStore = &nameStore;
+}
+
+// ----------------------------------------------------------------------------
+// Function sequenceLengths()
+// ----------------------------------------------------------------------------
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths &
+sequenceLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths TSequenceLengths;
+    return _referenceCast<TSequenceLengths &>(context._sequenceLengths);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths const &
+sequenceLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+{
+    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths TSequenceLengths;
+    return _referenceCast<TSequenceLengths const &>(context._sequenceLengths);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TSequenceLengths>
+inline void
+setSequenceLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TSequenceLengths & sequenceLengths)
+{
+    context._sequenceLengths = &sequenceLengths;
 }
 
 // ----------------------------------------------------------------------------

@@ -94,38 +94,38 @@ inline void write(TTarget & target,
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void write(TTarget & target,
                   BamHeader const & header,
-                  BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+                  BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context,
                   Sam const & tag)
 {
-    std::set<CharString> writtenSeqInfos;
+    String<bool> writtenSeqInfos;
+    resize(writtenSeqInfos, length(nameStore(context)), false);
 
-    for (unsigned i = 0; i < length(header.records); ++i)
+    size_t globalRefId = 0;
+    for (unsigned i = 0; i < length(header); ++i)
     {
-        BamHeaderRecord const & record = header.records[i];
+        BamHeaderRecord const & record = header[i];
         if (record.type == BAM_HEADER_REFERENCE)
-        {
-            for (unsigned i = 0; i < length(record.tags); ++i)
-            {
-                if (record.tags[i].i1 == "SN")
+            for (unsigned j = 0; j < length(record.tags); ++j)
+                if (record.tags[j].i1 == "SN")
                 {
-                    writtenSeqInfos.insert(record.tags[i].i2);
+                    if (getIdByName(globalRefId, nameStoreCache(context), record.tags[j].i2))
+                        writtenSeqInfos[globalRefId] = true;
                     break;
                 }
-            }
-        }
 
         write(target, record, context, tag);
     }
 
     // Write missing @SQ header records.
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
+    SEQAN_ASSERT_LEQ(length(sequenceLengths(context)), length(nameStore(context)));
+    for (unsigned i = 0; i < length(sequenceLengths(context)); ++i)
     {
-        if (writtenSeqInfos.find(header.sequenceInfos[i].i1) != writtenSeqInfos.end())
+        if (writtenSeqInfos[i])
             continue;
         write(target, "@SQ\tSN:");
-        write(target, header.sequenceInfos[i].i1);
+        write(target, nameStore(context)[i]);
         write(target, "\tLN:");
-        appendNumber(target, header.sequenceInfos[i].i2);
+        appendNumber(target, sequenceLengths(context)[i]);
         writeValue(target, '\n');
     }
 }
