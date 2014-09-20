@@ -145,10 +145,11 @@ inline bool nextIs(TForwardIter & iter, SamHeader const & /*tag*/)
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-void readRecord(BamHeaderRecord & record,
-               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-               TForwardIter & iter,
-               Sam const & /*tag*/)
+inline void
+readRecord(BamHeaderRecord & record,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & /*tag*/)
 {
     clear(record);
 
@@ -156,9 +157,8 @@ void readRecord(BamHeaderRecord & record,
     skipOne(iter, EqualsChar<'@'>());
 
     // Read the header tag.
-    char c1;
+    char c1, c2;
     readOne(c1, iter);
-    char c2;
     readOne(c2, iter);
 
     // Determine header type.
@@ -173,10 +173,7 @@ void readRecord(BamHeaderRecord & record,
     else if (c1 == 'C' && c2 == 'O')
         record.type = BAM_HEADER_COMMENT;
     else
-    {
-        throw ParseError("Unknown header type!");
-        return;
-    }
+        SEQAN_THROW(ParseError("Unknown SAM header type!"));
 
     if (record.type == BAM_HEADER_COMMENT)
     {
@@ -201,11 +198,9 @@ void readRecord(BamHeaderRecord & record,
 
             appendValue(record.tags, Pair<CharString>(key, val));
         }
-    }
-
-    // Skip remaining line break, in case of comment, we already skipped over it.
-    if (record.type != BAM_HEADER_COMMENT)
+        // Skip remaining line break
         skipLine(iter);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -221,44 +216,37 @@ void readRecord(BamHeaderRecord & record,
 */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void readRecord(BamHeader & header,
-               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-               TForwardIter & iter,
-               Sam const & tag)
+inline void
+readRecord(BamHeader & header,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & tag)
 {
-    typedef typename BamHeader::TSequenceInfo TSequenceInfo;
-
     BamHeaderRecord record;
     while (nextIs(iter, SamHeader()))
     {
         clear(record);
         readRecord(record, context, iter, tag);
-        appendValue(header.records, record);
+        appendValue(header, record);
 
         // Get sequence information from @SQ header.
         if (record.type == BAM_HEADER_REFERENCE)
         {
-            CharString sn = "unknown";
-            unsigned ln = 0;
+            CharString name;
+            unsigned lRef = 0;
             for (unsigned i = 0; i < length(record.tags); ++i)
             {
                 if (record.tags[i].i1 == "SN")
-                {
-                    sn = record.tags[i].i2;
-                }
+                    name = record.tags[i].i2;
                 else if (record.tags[i].i1 == "LN")
-                {
-                    if (!lexicalCast<unsigned>(ln, record.tags[i].i2))
-                        ln = 0;
-                }
+                    lexicalCast(lRef, record.tags[i].i2);
             }
 
-            // Add name to name store cache if necessary.
-            unsigned contigId = nameToId(nameStoreCache(context), sn);
-
-            if (length(header.sequenceInfos) <= contigId)
-                resize(header.sequenceInfos, contigId + 1);
-            header.sequenceInfos[contigId] = TSequenceInfo(sn, ln);
+            // Add entry to name store and sequenceInfos if necessary.
+            size_t globalRefId = nameToId(nameStoreCache(context), name);
+            if (length(sequenceLengths(context)) <= globalRefId)
+                resize(sequenceLengths(context), globalRefId + 1, 0);
+            sequenceLengths(context)[globalRefId] = lRef;
         }
     }
 }

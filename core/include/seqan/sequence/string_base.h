@@ -2186,6 +2186,21 @@ operator>>(TStream & source,
     return source;
 }
 
+// ----------------------------------------------------------------------------
+// Function assignValueById
+// ----------------------------------------------------------------------------
+
+template<typename TValue, typename TSpec, typename TId>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, void)
+assignValueById(String<TValue, TSpec> & me,
+                TId id,
+                TValue const & obj)
+{
+    if (length(me) <= id)
+        resize(me, id + 1, TValue());
+    assignValue(me, id, obj);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_

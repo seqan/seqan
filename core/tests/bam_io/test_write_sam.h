@@ -44,7 +44,6 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 {
     using namespace seqan;
 
-    typedef typename BamHeader::TSequenceInfo TSequenceInfo;
     typedef typename BamHeaderRecord::TTag    TTag;
 
     // Prepare input.
@@ -55,18 +54,18 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
     
     BamHeader header;
-    appendValue(header.sequenceInfos, TSequenceInfo("REF", 10000));
+    appendValue(sequenceLengths(bamIOContext), 10000);
 
     BamHeaderRecord firstRecord;
     firstRecord.type = BAM_HEADER_FIRST;
     appendValue(firstRecord.tags, TTag("VN", "1.0"));
-    appendValue(header.records, firstRecord);
+    appendValue(header, firstRecord);
 
     BamHeaderRecord seqRecord;
     seqRecord.type = BAM_HEADER_REFERENCE;
     appendValue(seqRecord.tags, TTag("SN", "REF"));
     appendValue(seqRecord.tags, TTag("LN", "10000"));
-    appendValue(header.records, seqRecord);
+    appendValue(header, seqRecord);
 
     // Call code under test.
     String<char> buffer;

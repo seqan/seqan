@@ -88,8 +88,8 @@ void write(TTarget & target,
     clear(context.buffer);
 
     // Create text of header.
-    for (unsigned i = 0; i < length(header.records); ++i)
-        write(context.buffer, header.records[i], context, Sam());
+    for (unsigned i = 0; i < length(header); ++i)
+        write(context.buffer, header[i], context, Sam());
     
     // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
     // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
@@ -100,15 +100,25 @@ void write(TTarget & target,
     write(target, context.buffer);
 
     // Write references.
-    appendRawPod(target, (__int32)_max(length(header.sequenceInfos), length(nameStore(context))));
+    __int32 nRef = std::max(length(nameStore(context)), length(sequenceLengths(context)));
+    appendRawPod(target, nRef);
 
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
+    for (__int32 i = 0; i < nRef; ++i)
     {
-//        getIdByName(nameStoreCache(context), header.sequenceInfos[i].i1);
-        appendRawPod(target, (__int32)(length(header.sequenceInfos[i].i1) + 1));
-        write(target, header.sequenceInfos[i].i1);
+        if (i < (__int32)length(nameStore(context)))
+        {
+            appendRawPod(target, (__int32)(length(nameStore(context)[i]) + 1));
+            write(target, nameStore(context)[i]);
+        }
+        else
+        {
+            appendRawPod(target, (__int32)1);
+        }
         writeValue(target, '\0');
-        appendRawPod(target, (__int32)header.sequenceInfos[i].i2);
+        __int32 lRef = 0;
+        if (i < (__int32)length(sequenceLengths(context)))
+            lRef = sequenceLengths(context)[i];
+        appendRawPod(target, lRef);
     }
 }
 

@@ -150,6 +150,44 @@ SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)
 {};
 
 // ============================================================================
+// Exceptions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Exception ParseError
+// ----------------------------------------------------------------------------
+
+struct ParseError : RuntimeError
+{
+    template <typename TString>
+    ParseError(TString const &message):
+        RuntimeError(message)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Exception UnexpectedEnd
+// ----------------------------------------------------------------------------
+
+struct UnexpectedEnd : ParseError
+{
+    UnexpectedEnd():
+        ParseError("Unexpected end of input.")
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Exception EmptyFieldError
+// ----------------------------------------------------------------------------
+
+struct EmptyFieldError : ParseError
+{
+    EmptyFieldError(std::string fieldName):
+        ParseError(fieldName + " field was empty.")
+    {}
+};
+
+// ============================================================================
 // Metafunctions
 // ============================================================================
 
@@ -455,7 +493,7 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
     }
 }
 
-// chunked, target is pointer (e.g. readRawByte)
+// chunked, target is pointer (e.g. readRawPod)
 template <typename TOValue, typename TFwdIterator, typename TSize>
 inline SEQAN_FUNC_DISABLE_IF(IsSameType<typename Chunk<TFwdIterator>::Type, Nothing>, void)
 write(TOValue *ptr, TFwdIterator &iter, TSize n)
@@ -494,7 +532,7 @@ write(TOValue *ptr, TFwdIterator &iter, TSize n)
     }
 }
 
-// chunked, source is pointer (e.g. readRawByte)
+// chunked, source is pointer (e.g. readRawPod)
 template <typename TTarget, typename TIValue, typename TSize>
 inline SEQAN_FUNC_DISABLE_IF(IsSameType<typename Chunk<TTarget>::Type, Nothing>, void)
 write(TTarget &target, TIValue *ptr, TSize n)
