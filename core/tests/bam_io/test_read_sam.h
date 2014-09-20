@@ -73,28 +73,27 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     // Check Results.
     // -----------------------------------------------------------------------
 
-    SEQAN_ASSERT_EQ(length(header.sequenceInfos), 1u);
-    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i1, "REFERENCE");
-    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i2, 10000);
+    SEQAN_ASSERT_EQ(length(sequenceLengths(bamIOContext)), 1u);
+    SEQAN_ASSERT_EQ(sequenceLengths(bamIOContext)[0], 10000);
 
     SEQAN_ASSERT_EQ(length(referenceNameStore), 1u);
     SEQAN_ASSERT_EQ(referenceNameStore[0], "REFERENCE");
 
-    SEQAN_ASSERT_EQ(length(header.records), 2u);
+    SEQAN_ASSERT_EQ(length(header), 2u);
 
-    SEQAN_ASSERT_EQ(header.records[0].type, BAM_HEADER_FIRST);
-    SEQAN_ASSERT_EQ(length(header.records[0].tags), 2u);
-    SEQAN_ASSERT_EQ(header.records[0].tags[0].i1, "VN");
-    SEQAN_ASSERT_EQ(header.records[0].tags[0].i2, "1.3");
-    SEQAN_ASSERT_EQ(header.records[0].tags[1].i1, "SO");
-    SEQAN_ASSERT_EQ(header.records[0].tags[1].i2, "coordinate");
+    SEQAN_ASSERT_EQ(header[0].type, BAM_HEADER_FIRST);
+    SEQAN_ASSERT_EQ(length(header[0].tags), 2u);
+    SEQAN_ASSERT_EQ(header[0].tags[0].i1, "VN");
+    SEQAN_ASSERT_EQ(header[0].tags[0].i2, "1.3");
+    SEQAN_ASSERT_EQ(header[0].tags[1].i1, "SO");
+    SEQAN_ASSERT_EQ(header[0].tags[1].i2, "coordinate");
 
-    SEQAN_ASSERT_EQ(header.records[1].type, BAM_HEADER_REFERENCE);
-    SEQAN_ASSERT_EQ(length(header.records[1].tags), 2u);
-    SEQAN_ASSERT_EQ(header.records[1].tags[0].i1, "SN");
-    SEQAN_ASSERT_EQ(header.records[1].tags[0].i2, "REFERENCE");
-    SEQAN_ASSERT_EQ(header.records[1].tags[1].i1, "LN");
-    SEQAN_ASSERT_EQ(header.records[1].tags[1].i2, "10000");
+    SEQAN_ASSERT_EQ(header[1].type, BAM_HEADER_REFERENCE);
+    SEQAN_ASSERT_EQ(length(header[1].tags), 2u);
+    SEQAN_ASSERT_EQ(header[1].tags[0].i1, "SN");
+    SEQAN_ASSERT_EQ(header[1].tags[0].i2, "REFERENCE");
+    SEQAN_ASSERT_EQ(header[1].tags[1].i1, "LN");
+    SEQAN_ASSERT_EQ(header[1].tags[1].i2, "10000");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
