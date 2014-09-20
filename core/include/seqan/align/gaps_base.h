@@ -1154,7 +1154,7 @@ write(TTarget & target,
 		if (isGap(begin_))
 			writeValue(target, gapValue<char>());
 		else
-			writeValue(target, getValue(begin_));
+			writeValue(target, convert<char>(getValue(begin_)));
 	}
 }
 

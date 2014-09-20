@@ -461,7 +461,7 @@ public:
                     seqan::AlignedReadLayout layout;
                     layoutAlignment(layout, store);
                     std::stringstream ss;
-                    printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+                    printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                                    0, 1000, 0, 100);
                     swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1126,7 +1126,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1153,7 +1153,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
         }
@@ -1300,7 +1300,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1344,7 +1344,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
