@@ -139,44 +139,41 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-void readRecord(BamHeader & header,
-                BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-                TForwardIter & iter,
-                Bam const & /*tag*/)
+inline void
+readRecord(BamHeader & header,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Bam const & /*tag*/)
 {
     // Read BAM magic string.
     String<char, Array<4> > magic;
-    write(magic, iter, 4);
+    read(magic, iter, 4);
     if (magic != "BAM\1")
-        throw std::runtime_error("Not in BAM format.");
+        SEQAN_THROW(ParseError("Not in BAM format."));
 
     // Read header text, including null padding.
     __int32 lText;
-    readRawByte(lText, iter);
+    readRawPod(lText, iter);
 
     CharString samHeader;
     write(samHeader, iter, lText);
 
     // Truncate to first position of '\0'.
-    Iterator<CharString, Rooted>::Type it = begin(samHeader);
-    for (; !atEnd(it); ++it)
-        if (*it == '\0')
-            break;
-    resize(samHeader, (it - begin(samHeader))); 
+    cropAfterFirst(samHeader, EqualsChar<'\0'>());
 
     // Parse out header records.
     BamHeaderRecord headerRecord;
-    it = begin(samHeader);
+    Iterator<CharString, Rooted>::Type it = begin(samHeader);
     while (!atEnd(it))
     {
         clear(headerRecord);
         readRecord(headerRecord, context, it, Sam());
-        appendValue(header.records, headerRecord);
+        appendValue(header, headerRecord);
     }
 
     // Read # reference sequences.
     __int32 nRef;
-    readRawByte(nRef, iter);
+    readRawPod(nRef, iter);
     CharString name;
 
     clear(context.translateFile2GlobalRefId);
@@ -186,19 +183,21 @@ void readRecord(BamHeader & header,
     {
         // Read length of the reference name.
         __int32 nName;
-        readRawByte(nName, iter);
+        readRawPod(nName, iter);
         clear(name);
         write(name, iter, nName);
         resize(name, nName - 1);
         // Read length of the reference sequence.
         __int32 lRef;
-        readRawByte(lRef, iter);
+        readRawPod(lRef, iter);
 
-        // Store sequence info.
-        typedef typename BamHeader::TSequenceInfo TSequenceInfo;
-        appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
-        // Append contig name to name store, if not known already.
-        context.translateFile2GlobalRefId[i] = nameToId(nameStoreCache(context), name);
+        // Add entry to name store and sequenceInfos if necessary.
+        // Compute translation from local ids (used in the BAM file) to corresponding ids in the name store
+        size_t globalRefId = nameToId(nameStoreCache(context), name);
+        context.translateFile2GlobalRefId[i] = globalRefId;
+        if (length(sequenceLengths(context)) <= globalRefId)
+            resize(sequenceLengths(context), globalRefId + 1, 0);
+        sequenceLengths(context)[globalRefId] = lRef;
     }
 }
 
@@ -226,7 +225,7 @@ readRecord(BamAlignmentRecord & record,
 
     // Read size of the remaining block.
     __int32 remainingBytes = 0;
-    readRawByte(remainingBytes, iter);
+    readRawPod(remainingBytes, iter);
 
     // Read remaining block in one chunk (fastest).
     clear(context.buffer);

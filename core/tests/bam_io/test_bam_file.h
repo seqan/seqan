@@ -56,20 +56,19 @@ void testBamIOBamFileReadHeader(char const * pathFragment)
 
     readRecord(header, bamIO);
 
-    SEQAN_ASSERT_EQ(length(header.records), 2u);
-    SEQAN_ASSERT_EQ(header.records[0].type, seqan::BAM_HEADER_FIRST);
-    SEQAN_ASSERT_EQ(header.records[0].tags[0].i1, "VN");
-    SEQAN_ASSERT_EQ(header.records[0].tags[0].i2, "1.3");
-    SEQAN_ASSERT_EQ(header.records[0].tags[1].i1, "SO");
-    SEQAN_ASSERT_EQ(header.records[0].tags[1].i2, "coordinate");
-    SEQAN_ASSERT_EQ(header.records[1].type, seqan::BAM_HEADER_REFERENCE);
-    SEQAN_ASSERT_EQ(header.records[1].tags[0].i1, "SN");
-    SEQAN_ASSERT_EQ(header.records[1].tags[0].i2, "REFERENCE");
-    SEQAN_ASSERT_EQ(header.records[1].tags[1].i1, "LN");
-    SEQAN_ASSERT_EQ(header.records[1].tags[1].i2, "10000");
-    SEQAN_ASSERT_EQ(length(header.sequenceInfos), 1u);
-    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i1, "REFERENCE");
-    SEQAN_ASSERT_EQ(header.sequenceInfos[0].i2, 10000);
+    SEQAN_ASSERT_EQ(length(header), 2u);
+    SEQAN_ASSERT_EQ(header[0].type, seqan::BAM_HEADER_FIRST);
+    SEQAN_ASSERT_EQ(header[0].tags[0].i1, "VN");
+    SEQAN_ASSERT_EQ(header[0].tags[0].i2, "1.3");
+    SEQAN_ASSERT_EQ(header[0].tags[1].i1, "SO");
+    SEQAN_ASSERT_EQ(header[0].tags[1].i2, "coordinate");
+    SEQAN_ASSERT_EQ(header[1].type, seqan::BAM_HEADER_REFERENCE);
+    SEQAN_ASSERT_EQ(header[1].tags[0].i1, "SN");
+    SEQAN_ASSERT_EQ(header[1].tags[0].i2, "REFERENCE");
+    SEQAN_ASSERT_EQ(header[1].tags[1].i1, "LN");
+    SEQAN_ASSERT_EQ(header[1].tags[1].i2, "10000");
+    SEQAN_ASSERT_EQ(length(sequenceLengths(context(bamIO))), 1u);
+    SEQAN_ASSERT_EQ(sequenceLengths(context(bamIO))[0], 10000);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_header)
@@ -224,22 +223,20 @@ void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
     seqan::BamFileOut bamIO(toCString(tmpPath));
 
     seqan::BamHeader header;
-    resize(header.sequenceInfos, 1);
-    header.sequenceInfos[0].i1 = "REFERENCE";
-    header.sequenceInfos[0].i2 = 10000;
-    resize(header.records, 2);
-    resize(header.records[0].tags, 2);
-    header.records[0].type = seqan::BAM_HEADER_FIRST;
-    header.records[0].tags[0].i1 = "VN";
-    header.records[0].tags[0].i2 = "1.3";
-    header.records[0].tags[1].i1 = "SO";
-    header.records[0].tags[1].i2 = "coordinate";
-    resize(header.records[1].tags, 2);
-    header.records[1].type = seqan::BAM_HEADER_REFERENCE;
-    header.records[1].tags[0].i1 = "SN";
-    header.records[1].tags[0].i2 = "REFERENCE";
-    header.records[1].tags[1].i1 = "LN";
-    header.records[1].tags[1].i2 = "10000";
+    assignValueById(sequenceLengths(context(bamIO)), nameToId(nameStoreCache(context(bamIO)), "REFERENCE"), 10000);
+    resize(header, 2);
+    resize(header[0].tags, 2);
+    header[0].type = seqan::BAM_HEADER_FIRST;
+    header[0].tags[0].i1 = "VN";
+    header[0].tags[0].i2 = "1.3";
+    header[0].tags[1].i1 = "SO";
+    header[0].tags[1].i2 = "coordinate";
+    resize(header[1].tags, 2);
+    header[1].type = seqan::BAM_HEADER_REFERENCE;
+    header[1].tags[0].i1 = "SN";
+    header[1].tags[0].i2 = "REFERENCE";
+    header[1].tags[1].i1 = "LN";
+    header[1].tags[1].i2 = "10000";
     writeRecord(bamIO, header);
 
     // Force writing of header on flush.
@@ -281,22 +278,20 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     seqan::BamFileOut bamIO(toCString(tmpPath));
 
     seqan::BamHeader header;
-    resize(header.sequenceInfos, 1);
-    header.sequenceInfos[0].i1 = "REFERENCE";
-    header.sequenceInfos[0].i2 = 10000;
-    resize(header.records, 2);
-    resize(header.records[0].tags, 2);
-    header.records[0].type = seqan::BAM_HEADER_FIRST;
-    header.records[0].tags[0].i1 = "VN";
-    header.records[0].tags[0].i2 = "1.3";
-    header.records[0].tags[1].i1 = "SO";
-    header.records[0].tags[1].i2 = "coordinate";
-    resize(header.records[1].tags, 2);
-    header.records[1].type = seqan::BAM_HEADER_REFERENCE;
-    header.records[1].tags[0].i1 = "SN";
-    header.records[1].tags[0].i2 = "REFERENCE";
-    header.records[1].tags[1].i1 = "LN";
-    header.records[1].tags[1].i2 = "10000";
+    assignValueById(sequenceLengths(context(bamIO)), nameToId(nameStoreCache(context(bamIO)), "REFERENCE"), 10000);
+    resize(header, 2);
+    resize(header[0].tags, 2);
+    header[0].type = seqan::BAM_HEADER_FIRST;
+    header[0].tags[0].i1 = "VN";
+    header[0].tags[0].i2 = "1.3";
+    header[0].tags[1].i1 = "SO";
+    header[0].tags[1].i2 = "coordinate";
+    resize(header[1].tags, 2);
+    header[1].type = seqan::BAM_HEADER_REFERENCE;
+    header[1].tags[0].i1 = "SN";
+    header[1].tags[0].i2 = "REFERENCE";
+    header[1].tags[1].i1 = "LN";
+    header[1].tags[1].i2 = "10000";
     writeRecord(bamIO, header);
 
     // Construct first records.

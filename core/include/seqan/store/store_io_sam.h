@@ -352,6 +352,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
     setNameStore(ctx, store.contigNameStore);
     setNameStoreCache(ctx, store.contigNameStoreCache);
+    setSequenceLengths(ctx, sequenceLengths(context(bamFile)));
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 
@@ -702,7 +703,6 @@ _fillHeader(BamHeader & header,
     typedef typename Iterator<TNameStore, Standard>::Type       TContigNameIter;
     typedef typename Id<TContig>::Type                          TId;
 
-    typedef BamHeader::TSequenceInfo                            TSequenceInfo;
     typedef BamHeaderRecord::TTag                               TTag;
 
     // Fill first header line.
@@ -710,22 +710,13 @@ _fillHeader(BamHeader & header,
     firstRecord.type = BAM_HEADER_FIRST;
     appendValue(firstRecord.tags, TTag("VN", "1.4"));
     appendValue(firstRecord.tags, TTag("SO", "unsorted"));
-    appendValue(header.records, firstRecord);
-
-    // Fill sequence info header line.
-    TContigIter it          = begin(store.contigStore, Standard());
-    TContigIter itEnd       = end(store.contigStore, Standard());
-    TContigNameIter nit     = begin(store.contigNameStore, Standard());
-    TContigNameIter nitEnd  = end(store.contigNameStore, Standard());
-
-    for (; it != itEnd && nit != nitEnd; ++it, ++nit)
-        appendValue(header.sequenceInfos, TSequenceInfo(*nit, length((*it).seq)));
+    appendValue(header, firstRecord);
 
     // Fill program header line.
     BamHeaderRecord pgRecord;
     pgRecord.type = BAM_HEADER_PROGRAM;
     appendValue(pgRecord.tags, TTag("ID", "SeqAn"));
-    appendValue(header.records, pgRecord);
+    appendValue(header, pgRecord);
 
     // Fill library info header line.
     BamHeaderRecord rgRecord;
@@ -761,6 +752,11 @@ inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
 
     // Fill header with information from fragment store.
     _fillHeader(header, store, functor);
+
+    // Fill sequence lengths.
+    resize(sequenceLengths(context(bamFile)), length(store.contigStore));
+    for (size_t i = 0; i != length(store.contigStore); ++i)
+        sequenceLengths(context(bamFile))[i] = length(store.contigStore[i].seq);
 
     // Write header to target.
     writeRecord(bamFile, header);
