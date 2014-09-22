@@ -165,12 +165,12 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
 
 #if SEQAN_HAS_ZLIB
 
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
-//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
 
     // Test BAM indices.
     SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
