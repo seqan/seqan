@@ -60,6 +60,8 @@ _loadSequences(TSeqSet& sequences, TNameSet& fastaIDs, const char *fileName)
     TMeta meta;
     while (!atEnd(reader))
     {
+        clear(seq);
+        clear(meta);
         readRecord(meta, seq, reader, Fasta());
         appendValue(sequences, seq);
         appendValue(fastaIDs, meta);
