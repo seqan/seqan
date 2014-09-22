@@ -440,7 +440,7 @@ _setUpArgumentParser(ArgumentParser & parser)
             parser,
             ArgParseOption("i", "infile", "Name of the alignment file <\\fIFASTA FILE\\fP>",
                            ArgParseArgument::INPUTFILE));
-            setValidValues(parser, "infile", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
+    setValidValues(parser, "infile", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
 
 }
 
