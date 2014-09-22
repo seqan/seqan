@@ -39,35 +39,23 @@ template <typename TSeqSet, typename TNameSet>
 bool
 _loadSequences(TSeqSet& sequences, TNameSet& fastaIDs, const char *fileName)
 {
-    typedef VirtualStream<char, Input> TInStream;
-    typedef typename DirectionIterator<TInStream, Input>::Type TReader;
-    typedef typename Value<TSeqSet>::Type TSeq;
-    typedef typename Value<TNameSet>::Type TMeta;
-
-    TInStream inStream;
-    if (!open(inStream, fileName, OPEN_RDONLY))
+    SeqFileIn inFile;
+    if (!open(inFile, fileName))
     {
         std::cerr << "Could not open " << fileName << "for reading!" << std::endl;
-        close(inStream);
         return false;
     }
 
-    clear(sequences);
-    clear(fastaIDs);
-    TReader reader = directionIterator(inStream, Input());
+    readRecords(fastaIDs, sequences, inFile);
 
-    TSeq seq;
-    TMeta meta;
-    while (!atEnd(reader))
+    // Force to only use first 2 sequences.
+    if (length(fastaIDs) > 2u)
     {
-        clear(seq);
-        clear(meta);
-        readRecord(meta, seq, reader, Fasta());
-        appendValue(sequences, seq);
-        appendValue(fastaIDs, meta);
+        resize(sequences, 2, Exact());
+        resize(fastaIDs, 2, Exact());
+        return true;
     }
-    close(inStream);
-    return (length(fastaIDs) > 0u);
+    return (length(fastaIDs) == 2u);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +82,6 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
     if (!open(outStream, toCString(msaOpt.outfile)))
     {
         std::cerr << "Can't open " << msaOpt.outfile << " for writing!" << std::endl;
-        close(outStream);
         return;
     }
     if (guessFormatFromFilename(msaOpt.outfile, Fasta()))
