@@ -75,6 +75,20 @@ namespace seqan {
 struct Parallel_;
 typedef Tag<Parallel_> Parallel;
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction DefaultParallelSpec
+// ----------------------------------------------------------------------------
+
+template <typename TObject>
+struct DefaultParallelSpec
+{
+    typedef Parallel Type;
+};
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_
