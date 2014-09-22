@@ -58,34 +58,22 @@ bool _loadSequences(TSeqSet& sequences,
                     TNameSet& fastaIDs,
                     const char *fileName)
 {
-    typedef VirtualStream<char, Input> TInputStream;
-    typedef typename DirectionIterator<TInputStream, Input>::Type TInputIter;
-    typedef typename Value<TNameSet>::Type TMeta;
-    typedef typename Value<TSeqSet>::Type TSeq;
-
-    TInputStream inputStream;
-    if (!open(inputStream, fileName, OPEN_RDONLY))
+    SeqFileIn inFile;
+    if (!open(inFile, fileName))
     {
-        std::cerr << "Could not read from file " << fileName << "!" << std::endl;
-        close(inputStream);
+        std::cerr << "Could not open file " << fileName << " for reading!" << std::endl;
         return false;
     }
 
-    clear(sequences);
-    clear(fastaIDs);
+    readRecords(fastaIDs, sequences, inFile);
 
-    TMeta meta;
-    TSeq seq;
-    TInputIter it = directionIterator(inputStream, Input());
-    while(!atEnd(it))
+    if (length(fastaIDs) > 2u)  // Limit number of sequences to 2.
     {
-        clear(meta);
-        clear(seq);
-        readRecord(meta, seq, it, Fasta());
-        appendValue(sequences, seq);
-        appendValue(fastaIDs, meta);
+        resize(fastaIDs, 2, Exact());
+        resize(sequences, 2, Exact());
+        return true;
     }
-    return (length(fastaIDs) > 0u);
+    return (length(fastaIDs) == 2u);
 }
 
 // TODO(holtgrew): Make publically available.
@@ -142,7 +130,6 @@ pairwise_align(TScore const& sc,
     if (!open(outputFile, toCString(outfile)))
     {
         std::cerr << "Could not open " << outfile << " for writing!" << std::endl;
-        close(outputFile);
         return;
     }
 
@@ -150,7 +137,6 @@ pairwise_align(TScore const& sc,
         write(outputFile, gAlign, sequenceNames, FastaFormat());
     else
         write(outputFile, gAlign, sequenceNames, MsfFormat());
-    close(outputFile);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
