@@ -1259,8 +1259,6 @@ annotationGetValueIdByKey (
 	TAnnotation const & annotation,
 	TKey const & key)
 {
-    typedef FragmentStore<TSpec, TConfig>           TFragmentStore;
-	typedef typename TFragmentStore::TNameStore     TNameStore;
 	typedef typename TAnnotation::TValues           TValues;
 	typedef typename Size<TValues>::Type            TKeyId;
 
