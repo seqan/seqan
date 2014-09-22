@@ -45,17 +45,8 @@ _loadSequences(TSeqSet& sequences, TNameSet& fastaIDs, const char *fileName)
         std::cerr << "Could not open " << fileName << "for reading!" << std::endl;
         return false;
     }
-
     readRecords(fastaIDs, sequences, inFile);
-
-    // Force to only use first 2 sequences.
-    if (length(fastaIDs) > 2u)
-    {
-        resize(sequences, 2, Exact());
-        resize(fastaIDs, 2, Exact());
-        return true;
-    }
-    return (length(fastaIDs) == 2u);
+    return (length(fastaIDs) > 0u);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +79,6 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
         write(outStream, gAlign, sequenceNames, FastaFormat());
     else
         write(outStream, gAlign, sequenceNames, MsfFormat());
-    close(outStream);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
