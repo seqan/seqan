@@ -120,7 +120,13 @@ typedef Tag<MummerLib_> const MummerLib;
 struct NewickFormat_;
 typedef Tag<NewickFormat_> const NewickFormat;
 
+typedef OrFunctor<EqualsChar<';'>,
+                  OrFunctor<EqualsChar<')'>,
+                  OrFunctor<EqualsChar<','>, EqualsChar<':'> > > > IsNewickNodeStop_;
 
+typedef OrFunctor<EqualsChar<'['>,
+                  OrFunctor<EqualsChar<']'>,
+                  OrFunctor<EqualsChar<'('>, IsWhitespace> > > IsForbiddenNewickIdentifierChar_;
 
 /////////////////////////////////////////////////////////////////////////////
 // T-Coffee Library Reading / Writing
@@ -1006,7 +1012,7 @@ read(TFile & file,
 		} else if (value(reader) == ':') {
             goNext(reader);
             clear(buffer);
-            readUntil(buffer, reader, IsWhitespace());
+            readUntil(buffer, reader, IsNewickNodeStop_());
             double tmpDouble = lexicalCast<double>(buffer);
 			cargo(findEdge(guideTree, lastVertex, lastChild)) = (TCargo) (tmpDouble * SEQAN_DISTANCE_UNITY);
 		} else if (value(reader) == ';') {
@@ -1014,7 +1020,8 @@ read(TFile & file,
             skipUntil(reader, NotFunctor<IsWhitespace>());
 		} else {
             TName tmp;
-            readUntil(tmp, reader, IsWhitespace());
+            readUntil(tmp, reader, IsNewickNodeStop_(),
+                                   AssertFunctor<NotFunctor<IsForbiddenNewickIdentifierChar_>, ParseError>());
 			//std::cout << tmp << std::endl;
 			if (lastVertex == nilVertex) {
 				// Tree is rooted at a leaf
