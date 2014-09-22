@@ -325,8 +325,9 @@ public:
 	typedef typename Tr::off_type off_type;
 	typedef typename Tr::pos_type pos_type;
 
-    typedef std::vector<char_type, char_allocator_type> TBuffer;
-    typedef ConcurrentQueue<size_t, Suspendable<Limit> >  TJobQueue;
+    typedef std::vector<char_type, char_allocator_type>     TBuffer;
+    typedef ConcurrentQueue<size_t, Suspendable<Limit> >    TJobQueue;
+    typedef ConcurrentQueue<size_t, Serial>                 TIdleQueue;
 
     static const size_t MAX_PUTBACK = 4;
 
@@ -387,7 +388,8 @@ public:
     size_t                      numJobs;
     String<DecompressionJob>    jobs;
     TJobQueue                   runningQueue;
-    TJobQueue                   idleQueue;
+    TJobQueue                   todoQueue;
+    TIdleQueue                  idleQueue;
     size_t                      currentJobId;
     bool                        currentJobAvail;
 
@@ -398,18 +400,28 @@ public:
 
         void operator()()
         {
-            ScopedReadLock<TJobQueue> readLock(streamBuf->idleQueue);
+            ScopedReadLock<TJobQueue> readLock(streamBuf->todoQueue);
             ScopedWriteLock<TJobQueue> writeLock(streamBuf->runningQueue);
 
             // wait for a new job to become available
             while (true)
             {
                 size_t jobId = -1;
-                if (!popFront(jobId, streamBuf->idleQueue))
+                if (!popFront(jobId, streamBuf->todoQueue))
                     return;
 
                 DecompressionJob &job = streamBuf->jobs[jobId];
                 size_t tailLen;
+
+                // typically the idle queue contains only ready jobs
+                // however, if we fast forward running jobs into the idle queue when seeking
+                // the caller defers the task of waiting to the decompression threads
+                if (!job.ready)
+                {
+                    ScopedLock<CriticalSection> lock(job.cs);
+                    if (!job.ready)
+                        waitFor(job.readyEvent);
+                }
 
                 {
                     ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
@@ -490,7 +502,7 @@ public:
         numThreads(numThreads),
         numJobs(numThreads * jobsPerThread),
         runningQueue(numJobs),
-        idleQueue(numJobs),
+        todoQueue(numJobs),
         putbackBuffer(MAX_PUTBACK)
     {
         resize(jobs, numJobs, Exact());
@@ -498,13 +510,13 @@ public:
         currentJobAvail = false;
 
         lockReading(runningQueue);
-        lockWriting(idleQueue);
+        lockWriting(todoQueue);
         setReaderWriterCount(runningQueue, 1, numThreads);
-        setReaderWriterCount(idleQueue, numThreads, 1);
+        setReaderWriterCount(todoQueue, numThreads, 1);
 
         for (unsigned i = 0; i < numJobs; ++i)
         {
-            bool success = appendValue(idleQueue, i);
+            bool success = appendValue(todoQueue, i);
             ignoreUnusedVariableWarning(success);
             SEQAN_ASSERT(success);
         }
@@ -519,7 +531,7 @@ public:
 
 	~basic_unbgzf_streambuf()
     {
-        unlockWriting(idleQueue);
+        unlockWriting(todoQueue);
         unlockReading(runningQueue);
 
         for (unsigned i = 0; i < numThreads; ++i)
@@ -545,7 +557,7 @@ public:
                 &putbackBuffer[0]);
 
         if (currentJobAvail)
-            appendValue(idleQueue, currentJobId);
+            appendValue(todoQueue, currentJobId);
 
         while (true)
         {
@@ -589,11 +601,84 @@ public:
 
     pos_type seekoff(off_type ofs, std::ios_base::seekdir dir, std::ios_base::openmode openMode)
     {
-        DecompressionJob &job = jobs[currentJobId];
         if ((openMode & (std::ios_base::in | std::ios_base::out)) == std::ios_base::in)
         {
-            if (dir == std::ios_base::cur && ofs == 0)
-                return pos_type((job.fileOfs << 16) + (this->gptr() - this->eback()));
+            if (dir == std::ios_base::cur)
+            {
+                if (currentJobAvail)
+                {
+                    DecompressionJob &job = jobs[currentJobId];
+
+
+                    // reset buffer pointers
+                    this->setg( 
+                          &job.buffer[MAX_PUTBACK - putback],      // beginning of putback area
+                          &job.buffer[MAX_PUTBACK],                // read position
+                          &job.buffer[MAX_PUTBACK + job.size]);    // end of buffer
+
+                    return pos_type((job.fileOfs << 16) + (this->gptr() - this->eback()));
+
+                }
+                else
+                {
+                    if ( && ofs == 0);
+                    return 0;
+                }
+            }
+            else if (dir == std::ios_base::set)
+            {
+                size_t destFileOfs = ofs >> 16;
+                {
+                    ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
+                    if (currentJobAvail)
+                        appendValue(todoQueue, currentJobId);
+
+                    while (currentJobAvail = popFront(currentJobId, runningQueue))
+                    {
+                        if (!(currentJobAvail = popFront(currentJobId, runningQueue)))
+
+
+                    // remove all running jobs and put them in the idle queue unless we
+                    // find our seek target
+                    size_t left = (currentJobAvail)? numJobs - 1 : numJobs;
+                    for (; left != 0 && (!currentJobAvail || jobs[currentJobId].fileOfs != destFileOfs))
+                    {
+                        // push back useless job
+                        if (currentJobAvail)
+                            appendValue(idleQueue, currentJobId);
+
+                        // test next running job if it is the right one
+                        currentJobAvail = popFront(currentJobId, runningQueue);
+                        SEQAN_ASSERT(currentJobAvail);
+                    }
+
+                    if (left == 0)
+                    {
+                        streamBuf->serializer.fileOfs = destFileOfs;
+                        appendValue(todoQueue, popFront(idleQueue));
+                        currentJobAvail = popFront(currentJobId, runningQueue);
+                        SEQAN_ASSERT(currentJobAvail);
+                    }
+
+                    // put back all unused jobs
+                    while (!empty(idleQueue))
+                        appendValue(todoQueue, popFront(idleQueue));
+
+                    // wait for the end of decompression
+                    DecompressionJob &job = jobs[currentJobId];
+                    {
+                        ScopedLock<CriticalSection> lock(job.cs);
+                        if (!job.ready)
+                            waitFor(job.readyEvent);
+                    }
+
+                    // reset buffer pointers
+                    this->setg( 
+                          &job.buffer[MAX_PUTBACK],                     // no putback area
+                          &job.buffer[MAX_PUTBACK + (ofs & 0xffff)],    // read position
+                          &job.buffer[MAX_PUTBACK + job.size]);         // end of buffer
+                }
+            }
         }
         return pos_type(off_type(-1));
     }
