@@ -43,12 +43,11 @@
 #include "test_bam_tags_dict.h"
 #include "test_read_sam.h"
 #include "test_write_sam.h"
-//#if SEQAN_HAS_ZLIB
 #include "test_read_bam.h"
 #include "test_write_bam.h"
-//#include "test_bam_index.h"
 
 #if SEQAN_HAS_ZLIB
+#include "test_bam_index.h"
 #include "test_bam_file.h"
 #endif
 
@@ -157,23 +156,24 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_bam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_write_alignment);
 
-    // Test BAM indices.
-    //SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
-
-#if SEQAN_HAS_ZLIB
-
     // Test BamStream class.
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_records);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
+
+#if SEQAN_HAS_ZLIB
+
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
+//    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
+
+    // Test BAM indices.
+    SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
 
 #endif
 }
