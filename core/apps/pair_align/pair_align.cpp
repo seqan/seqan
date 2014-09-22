@@ -376,7 +376,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setDefaultValue(parser, "outfile", "out.fasta");
     std::vector<std::string> outFileNames = getFileFormatExtensions(Fasta());
     outFileNames.push_back(".msf");
-	setValidValues(parser, "outfile", outFileNames);
+    setValidValues(parser, "outfile", outFileNames);
 
     addSection(parser, "Scoring Options");
     addOption(parser, seqan::ArgParseOption("g", "gop", "Gap open penalty.", seqan::ArgParseOption::INTEGER, "INT"));
