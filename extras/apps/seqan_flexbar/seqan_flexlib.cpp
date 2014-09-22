@@ -123,7 +123,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Name of the output file.",
             seqan::ArgParseOption::OUTPUTFILE, "OUTPUT");
-        setValidValues(outputOpt, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+        setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
     }
     else
@@ -131,7 +131,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Prefix and file ending of output files (prefix$.fasta - $: placeholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
-        setValidValues(outputOpt, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+        setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
     }
 
@@ -216,13 +216,13 @@ void ArgumentParserBuilder::addDemultiplexingOptions(seqan::ArgumentParser & par
     seqan::ArgParseOption barcodeFileOpt = seqan::ArgParseOption(
         "b", "barcodes", "FastA file containing the used barcodes and their IDs. Necessary for demutiplexing.",
         seqan::ArgParseArgument::INPUTFILE, "BARCODE_FILE");
-    setValidValues(barcodeFileOpt, "fasta fasta.gz fastq fastq.gz");
+    setValidValues(barcodeFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, barcodeFileOpt);
 
     seqan::ArgParseOption multiplexFileOpt = seqan::ArgParseOption(
         "x", "multiplex", "FastA/FastQ file containing the barcode for each read.",
         seqan::ArgParseArgument::INPUTFILE, "MULTIPLEX_FILE");
-    setValidValues(multiplexFileOpt, "fasta fasta.gz fastq fastq.gz");
+    setValidValues(multiplexFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, multiplexFileOpt);
     
     addOption(parser, seqan::ArgParseOption(
@@ -248,7 +248,7 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
         "a", "adapters", "FastA file containing the two adapter sequences. "
         "The adapters according to the layout: 5'-adapter1-read-adapter2-3'.",
         seqan::ArgParseArgument::INPUTFILE, "ADAPTER_FILE");
-    setValidValues(adapterFileOpt, "fasta fasta.gz fastq fastq.gz");
+    setValidValues(adapterFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, adapterFileOpt);
 
     seqan::ArgParseOption noAdapterOpt = seqan::ArgParseOption(
@@ -362,7 +362,7 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -414,7 +414,7 @@ void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -429,8 +429,6 @@ seqan::ArgumentParser AdapterRemovalParserBuilder::build()
 
     return parser;
 }
-
-
 
 // --------------------------------------------------------------------------
 // Class DemultiplexingParserBuilder
@@ -469,7 +467,7 @@ void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -522,7 +520,7 @@ void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -581,7 +579,7 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
-    setValidValues(fileArg, ".fasta .fa .fasta.gz .fa.gz .fastq .fq .fastq.gz .fq.gz");
+    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -877,7 +875,7 @@ struct ProgramParams
     int fileCount;
     int readCount;
     double processTime, ioTime;
-    seqan::SequenceStream fileStream1, fileStream2;
+    seqan::SeqFileIn fileStream1, fileStream2;
 
     ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
 };
@@ -981,30 +979,29 @@ struct ProgramParams
 //TODO(singer): THIS NEEDS TO BE REDONE/DELETED
 class OutputStreams
 {
-    typedef seqan::SequenceStream * PSeqStream;
+    typedef seqan::SeqFileOut * PSeqStream;
     typedef seqan::Pair<PSeqStream, PSeqStream> TStreamPair;
     std::map<int, TStreamPair> pairedFileStreams;
     std::map<int, PSeqStream> fileStreams;
     const seqan::CharString basePath;
     seqan::CharString extension;
-    StringSet<String<char> > possibleExt;
 
 public:
-//Constructor prepares the file extension which will be used for all streams created 
-//by this object and saves a base directory path.
-    OutputStreams(seqan::CharString base, bool /*noQuality*/) : basePath(base)
+    // Constructor saves a base directory path used for all outputs.
+    // The correct file extension is determined from the base path, according to the available
+    // file extensions of the SeqFileOut and used for all stored files.
+    OutputStreams(seqan::CharString const & base, bool /*noQuality*/) : basePath(base)
     {
-        // TODO(singer): Use values of argument parser
-        appendValue(possibleExt, ".fasta");
-        appendValue(possibleExt, ".fastq");
-        appendValue(possibleExt, ".fa");
-        appendValue(possibleExt, ".fq");
-        appendValue(possibleExt, ".fasta.gz");
-        appendValue(possibleExt, ".fastq.gz");
-        appendValue(possibleExt, ".fa.gz");
-        appendValue(possibleExt, ".fq.gz");
-
+        for (unsigned i = 0; i < length(seqan::SeqFileOut::getFileFormatExtensions()); ++i)
+        {
+            if (endsWith(basePath, seqan::SeqFileOut::getFileFormatExtensions()[i]))
+            {
+                extension = seqan::SeqFileOut::getFileFormatExtensions()[i];
+                break;
+            }
+        }
     }
+
      //Checks whether a key exists in a map. 
     template <typename TKey, typename TMap>
     bool exists(TKey& key, TMap& map)
@@ -1015,26 +1012,17 @@ public:
     //Adds a new output streams to the collection of streams.
     void addStream(seqan::CharString fileName, int id, bool useDefault)
     {
-                //Prepend basePath and append file extension to the filename.
-        unsigned extLength = 0;
-        unsigned i = 0;
-        for (; i < length(possibleExt); ++i)
-            if (endsWith(basePath, possibleExt[i]))
-            {
-                extLength = length(possibleExt[i]);
-                break;
-            }
-
-        seqan::CharString path = prefix(basePath, length(basePath) - extLength);
+        //Prepend basePath and append file extension to the filename.
+        seqan::CharString path = prefix(basePath, length(basePath) - length(extension));
         if (fileName != "")
             seqan::append(path, "_");
         if (useDefault)
             append(path, "_result");
 
         seqan::append(path, fileName);
-        seqan::append(path, possibleExt[i]);
+        seqan::append(path, extension);
         char* file = seqan::toCString(path);
-        PSeqStream stream = new SequenceStream(file, seqan::SequenceStream::WRITE);
+        PSeqStream stream = new seqan::SeqFileOut(file);
         fileStreams[id] = stream;
     }
     
@@ -1046,17 +1034,8 @@ public:
     void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id, bool useDefault)
     {
         //Prepend basePath and append file extension to the filename.
-        unsigned extLength = 0;
-        unsigned i = 0;
-        for (; i < length(possibleExt); ++i)
-            if (endsWith(basePath, possibleExt[i]))
-            {
-                extLength = length(possibleExt[i]);
-                break;
-            }
-
-        seqan::CharString path1 = prefix(basePath, length(basePath) - extLength);
-        seqan::CharString path2 = prefix(basePath, length(basePath) - extLength);
+        seqan::CharString path1 = prefix(basePath, length(basePath) - length(extension));
+        seqan::CharString path2 = prefix(basePath, length(basePath) - length(extension));
         if (fileName1 != "")
             seqan::append(path1, "_");
         if (fileName2 != "")
@@ -1069,13 +1048,13 @@ public:
         }
 
         seqan::append(path1, fileName1);
-        seqan::append(path1, possibleExt[i]);
+        seqan::append(path1, extension);
         seqan::append(path2, fileName2);
-        seqan::append(path2, possibleExt[i]);
+        seqan::append(path2, extension);
         char* file1 = seqan::toCString(path1);
         char* file2 = seqan::toCString(path2);
-        PSeqStream stream1 = new SequenceStream(file1, seqan::SequenceStream::WRITE);
-        PSeqStream stream2 = new SequenceStream(file2, seqan::SequenceStream::WRITE);
+        PSeqStream stream1 = new seqan::SeqFileOut(file1);
+        PSeqStream stream2 = new seqan::SeqFileOut(file2);
         pairedFileStreams[id] = TStreamPair(stream1, stream2);
     }
 
@@ -1157,7 +1136,7 @@ public:
         for (unsigned i = 0; i < length(seqs); ++i)
         {
             unsigned streamIndex = map[i];
-            seqan::writeAll(*fileStreams[streamIndex], ids[i], seqs[i]);
+            writeRecords(*fileStreams[streamIndex], ids[i], seqs[i]);
         }
     }
     //Overload of writeSeqs for paired-end data.
@@ -1169,8 +1148,8 @@ public:
         {
             unsigned streamIndex = map[i];
             TStreamPair tmp = pairedFileStreams[streamIndex];
-            seqan::writeAll(*tmp.i1, ids1[i], seqs1[i]);
-            seqan::writeAll(*tmp.i2, ids2[i], seqs2[i]);
+            writeRecords(*tmp.i1, ids1[i], seqs1[i]);
+            writeRecords(*tmp.i2, ids2[i], seqs2[i]);
         }
     }
     //Destructor of the object holding the output streams. Needed
@@ -1211,24 +1190,37 @@ public:
 ...type:nolink:int
 ..see:Class..SequenceStream
 */
-int loadSeqs(seqan::SequenceStream& seqStream, seqan::StringSet<seqan::String<char> >& ids,
-    seqan::StringSet<seqan::String<seqan::Dna5Q> >& seqs, unsigned records)
+
+template <typename TId, typename TString>
+inline void loadSeqs(seqan::SeqFileIn& file,
+                     seqan::StringSet<TId>& ids,
+                     seqan::StringSet<TString>& seqs,
+                     unsigned records)
 {
-    resize(ids, records, Exact());
-    resize(seqs, records, Exact());
-    if (!seqan::isGood(seqStream))
+    typedef typename seqan::Value<TString>::Type TValue;
+
+    seqan::String<TValue> seqBuffer;
+
+    // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
+
+    unsigned counter = 0;
+    while (!atEnd(file) && counter < records)
     {
-        std::cerr << "Error while opening the sequence-file.\n";
-        return 1;
+        readRecord(context(file).buffer[0], seqBuffer, file);
+        appendValue(ids, context(file).buffer[0]);
+        appendValue(seqs, seqBuffer);
+        ++counter;
     }
 
-    if (seqan::readBatch(ids, seqs, seqStream, records) != 0)
-    {
-        std::cerr << "Error while reading the sequences.\n";
-        return 1;
-    }
-    return 0;
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
+    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
+    seqBuffer.data_capacity = 0;
 }
+
 /**
 .Function.loadBarcodes:
 ..summary:Function for loading the barcode file.
@@ -1244,24 +1236,21 @@ int loadSeqs(seqan::SequenceStream& seqStream, seqan::StringSet<seqan::String<ch
 */
 int loadBarcodes(char const * path, DemultiplexingParams& params)
 {
-    seqan::SequenceStream bcStream(path, seqan::SequenceStream::READ);
-    if (!seqan::isGood (bcStream))
+    seqan::SeqFileIn bcFile;
+
+    if (!open(bcFile, path, OPEN_RDONLY))
     {
         std::cerr << "Error while opening file'" <<  params.barcodeFile << "'.\n";
         return 1;
     }
+    readRecords(params.barcodeIds, params.barcodes, bcFile);
 
-    if (seqan::readAll(params.barcodeIds, params.barcodes, bcStream) != 0)
-    {
-        std::cerr << "Error while reading barcodes from '" << params.barcodeFile << "'.\n";
-        return 1;
-    }
     if (params.approximate)                            //modifies the barcodes for approximate matching
     {
         buildAllVariations(params.barcodes);
     }
-    resize(params.stats.groups, length(params.barcodes)+1);
-    for (unsigned i = 0; i < length(params.stats.groups); ++i)
+    seqan::resize(params.stats.groups, seqan::length(params.barcodes)+1);
+    for (unsigned i = 0; i < seqan::length(params.stats.groups); ++i)
     {
         params.stats.groups[i] = 0;             //Sets the right size for the stats String and fills it with 0.
     }
@@ -1281,22 +1270,10 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 ..returns:An interger: 1 on errors, 0 otherwise.
 ...type:nolink:int
 */
-int loadMultiplex (seqan::SequenceStream& multiplexStream, DemultiplexingParams& params, unsigned records)
+inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
-    resize(params.multiplex, records, Exact());
     seqan::StringSet<seqan::String<char> > ids;
-    resize(ids, records);
-    if (!seqan::isGood(multiplexStream))
-    {
-        std::cerr << "Error while opening file '" <<  params.multiplexFile << "'.\n";
-        return 1;
-    }
-    if (seqan::readBatch(ids, params.multiplex, multiplexStream, records) != 0)
-    {
-        std::cerr << "Error while reading barcodes from '" << params.multiplexFile << "'.\n";
-        return 1;
-    }
-    return 0;
+    loadSeqs(multiplexFile, ids, params.multiplex, records);
 }
 
 /**
@@ -1310,10 +1287,9 @@ int loadMultiplex (seqan::SequenceStream& multiplexStream, DemultiplexingParams&
 ..returns:An interger: 1 on errors, 0 otherwise.
 ...type:nolink:int
 */
-int openStream(seqan::CharString const & file, seqan::SequenceStream & stream)
+int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
 {
-    open(stream, seqan::toCString(file));
-    if (!isGood(stream))
+    if (!open(inFile, seqan::toCString(file)))
     {
         std::cerr << "Error while opening input file '" << file << "'.\n";
         return 1;
@@ -1387,19 +1363,14 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     if (isSet(parser, "a"))
     {
         getOptionValue(adapterFile, parser, "a");
-        seqan::SequenceStream adapterStream(toCString(adapterFile));
-        if (!seqan::isGood(adapterStream))
+        seqan::SeqFileIn adapterInFile;
+        if (!open(adapterInFile, toCString(adapterFile), OPEN_RDONLY))
         {
             std::cerr << "Error while opening file'" << adapterFile << "'.\n";
             return 1;
         }
-        int err = seqan::readRecord(id, params.adapter1, adapterStream);
-            err += seqan::readRecord(id, params.adapter2, adapterStream);
-        if (err != 0)
-        {
-            std::cerr << "Error while reading adapters from '" << adapterFile << "'.\n";
-            return 1;
-        }
+        readRecord(id, params.adapter1, adapterInFile);
+        readRecord(id, params.adapter2, adapterInFile);
     }
     // If they are not given, but we would need them (single-end trimming), output error.
     else if (isSet(parser, "np") || (params.noAdapter && fileCount == 1))
@@ -1506,7 +1477,7 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
         {
             return 1;
         }
-        if (params.fileStream1._fileFormat != params.fileStream2._fileFormat)
+        if (value(params.fileStream1.format) != value(params.fileStream2.format))
         {
             std::cerr << "Input files must have the same file format.\n";
             return 1;
@@ -1548,9 +1519,9 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
     // If quality trimming was selected, check if file format includes qualities.
     if (qualityTrimmingParams.run)
     {
-        if (programParams.fileStream1._fileFormat != seqan::SeqIOFileFormat_::FILE_FORMAT_FASTQ
-          || ((programParams.fileCount == 2)
-          && programParams.fileStream2._fileFormat != seqan::SeqIOFileFormat_::FILE_FORMAT_FASTQ))
+        if ((value(programParams.fileStream1.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE) ||
+            ((programParams.fileCount == 2) &&
+            (value(programParams.fileStream2.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE)))
         {
             std::cerr << "\nQuality trimming requires quality information, please specify fastq files." << std::endl;
             return 1;
@@ -2324,13 +2295,19 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     DemultiplexingParams demultiplexingParams;
-    seqan::SequenceStream multiplexStream;    //Initialising the SequenceStream for the multiplex file
+    seqan::SeqFileIn multiplexInFile;    //Initialising the SequenceStream for the multiplex file
 
     if(flexiProgram == DEMULTIPLEXING || flexiProgram == ALL_STEPS)
     {
         getOptionValue(demultiplexingParams.multiplexFile, parser, "x");
         if (isSet(parser, "x"))
-            open(multiplexStream, seqan::toCString(demultiplexingParams.multiplexFile));
+        {
+            if (!open(multiplexInFile, seqan::toCString(demultiplexingParams.multiplexFile)))
+            {
+                std::cerr << "Could not open file " << demultiplexingParams.multiplexFile << " for reading!" << std::endl;
+                return 1;
+            }
+        }
 
         if (loadDemultiplexingParams(parser, demultiplexingParams) != 0)
             return 1;
@@ -2424,7 +2401,8 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     // Prepare output stream object and initial mapping from StringSets to files.
-    bool noQuality = (programParams.fileStream1._fileFormat == seqan::SeqIOFileFormat_::FILE_FORMAT_FASTA);
+    bool noQuality = (value(programParams.fileStream1.format) ==
+                      Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE);
     if (isSet(parser, "nq"))
     {
         noQuality = true;
@@ -2483,11 +2461,12 @@ int flexbarMain(int argc, char const ** argv)
             std::cout << "\tCompress output: NO" << "\n";
         }
         */
-        if (isSet(parser, "nq") && (programParams.fileStream1._fileFormat != seqan::SeqIOFileFormat_::FILE_FORMAT_FASTA))
+        if (isSet(parser, "nq") && (value(programParams.fileStream1.format) !=
+                                    Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE))
         {
             std::cout << "\tForce no-quality output: YES\n";
         }
-        else if (programParams.fileStream1._fileFormat != seqan::SeqIOFileFormat_::FILE_FORMAT_FASTA)
+        else if (value(programParams.fileStream1.format) != Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE)
         {
             std::cout << "\tForce no-quality output: NO\n";
         }
@@ -2640,47 +2619,36 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet, seqan::StringSet<Dna5QString>());
 
-            if (loadSeqs(programParams.fileStream1, idSet[0], seqSet[0], records) == 0)
-            {
-                programParams.readCount += length(idSet[0]);
-                SEQAN_PROTIMESTART(processTime);            // START of processing time.
+            loadSeqs(programParams.fileStream1, idSet[0], seqSet[0], records);
 
-                if (demultiplexingParams.runx && (loadMultiplex(multiplexStream, demultiplexingParams , records) !=0))
-                {
-                    return 1;
-                }
+            programParams.readCount += length(idSet[0]);
+            SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
-
-                // Preprocessing and Filtering
-                preprocessingStage(seqSet[0], idSet[0], demultiplexingParams,
-                    processingParams, parser, generalStats);
-
-                // Demultiplexing
-                if (demultiplexingStage(demultiplexingParams, seqSet, idSet,
-                                    esaFinder, map, generalStats) != 0)
-                {
-                    return 1;
-                }
-
-                // Adapter trimming
-                adapterTrimmingStage(adapterTrimmingParams, seqSet, idSet, tagOpt);
-
-                // Quality trimming
-                qualityTrimmingStage(qualityTrimmingParams, idSet, seqSet, tagOpt);
-
-                // Postprocessing
-                postprocessingStage(seqSet, idSet, processingParams, generalStats);
-                programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
-
-                // Append to output file.
-                outputStreams.writeSeqs(idSet, seqSet, map, demultiplexingParams.barcodeIds);
-                // Information
-                std::cout << "\r" << programParams.readCount;
-            }
-            else
-            {
+            loadMultiplex(multiplexInFile, demultiplexingParams, records);
+            if (demultiplexingParams.runx)
                 return 1;
-            }
+
+            // Preprocessing and Filtering
+            preprocessingStage(seqSet[0], idSet[0], demultiplexingParams, processingParams, parser, generalStats);
+
+            // Demultiplexing
+            if (demultiplexingStage(demultiplexingParams, seqSet, idSet, esaFinder, map, generalStats) != 0)
+                return 1;
+
+            // Adapter trimming
+            adapterTrimmingStage(adapterTrimmingParams, seqSet, idSet, tagOpt);
+
+            // Quality trimming
+            qualityTrimmingStage(qualityTrimmingParams, idSet, seqSet, tagOpt);
+
+            // Postprocessing
+            postprocessingStage(seqSet, idSet, processingParams, generalStats);
+            programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
+
+            // Append to output file.
+            outputStreams.writeSeqs(idSet, seqSet, map, demultiplexingParams.barcodeIds);
+            // Information
+            std::cout << "\r" << programParams.readCount;
         }
      }
      else
@@ -2703,41 +2671,39 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet2, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet2, seqan::StringSet<Dna5QString>());
 
-            if (loadSeqs(programParams.fileStream1, idSet1[0], seqSet1[0], records) == 0 &&
-                loadSeqs(programParams.fileStream2, idSet2[0], seqSet2[0], records) == 0)
-            {
-                programParams.readCount += length(idSet1[0]);
-                SEQAN_PROTIMESTART(processTime); // START of processing time.
+            loadSeqs(programParams.fileStream1, idSet1[0], seqSet1[0], records);
+            loadSeqs(programParams.fileStream2, idSet2[0], seqSet2[0], records);
 
-                if (demultiplexingParams.runx && (loadMultiplex(multiplexStream, demultiplexingParams , records) !=0))
-                {
-                    return 1;
-                }
-                // Generall Processing
-                preprocessingStage(seqSet1[0], idSet1[0], seqSet2[0], idSet2[0], demultiplexingParams,
-                    processingParams, parser, generalStats);
+            programParams.readCount += length(idSet1[0]);
+            SEQAN_PROTIMESTART(processTime); // START of processing time.
 
-                // Demultiplexing.
-                if (demultiplexingStage(demultiplexingParams, seqSet1, seqSet2, idSet1, idSet2,
-                                    esaFinder, map, generalStats) != 0)
-                    return 1;
+            loadMultiplex(multiplexInFile, demultiplexingParams , records);
+            if (demultiplexingParams.runx)
+                return 1;
 
-                // Adapter trimming.
-                adapterTrimmingStage(adapterTrimmingParams, seqSet1, idSet1, seqSet2, idSet2, tagOpt);
+            // Generall Processing
+            preprocessingStage(seqSet1[0], idSet1[0], seqSet2[0], idSet2[0], demultiplexingParams, processingParams,
+                               parser, generalStats);
 
-                // Quality trimming.
-                qualityTrimmingStage(qualityTrimmingParams, idSet1, seqSet1, idSet2, seqSet2, tagOpt);
+            // Demultiplexing.
+            if (demultiplexingStage(demultiplexingParams, seqSet1, seqSet2, idSet1, idSet2,
+                                esaFinder, map, generalStats) != 0)
+                return 1;
 
-                // Postprocessing
-                postprocessingStage(seqSet1, idSet1, seqSet2, idSet2, processingParams, generalStats);
-                programParams.processTime += SEQAN_PROTIMEDIFF(processTime); // END of processing time.
+            // Adapter trimming.
+            adapterTrimmingStage(adapterTrimmingParams, seqSet1, idSet1, seqSet2, idSet2, tagOpt);
 
-                // Append to output file.
-                outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
-                // Information
-                std::cout << "\r" << 2*programParams.readCount;
-            }
-            else return 1;
+            // Quality trimming.
+            qualityTrimmingStage(qualityTrimmingParams, idSet1, seqSet1, idSet2, seqSet2, tagOpt);
+
+            // Postprocessing
+            postprocessingStage(seqSet1, idSet1, seqSet2, idSet2, processingParams, generalStats);
+            programParams.processTime += SEQAN_PROTIMEDIFF(processTime); // END of processing time.
+
+            // Append to output file.
+            outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
+            // Information
+            std::cout << "\r" << 2*programParams.readCount;
         }
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
