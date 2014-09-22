@@ -326,8 +326,8 @@ public:
 	typedef typename Tr::pos_type pos_type;
 
     typedef std::vector<char_type, char_allocator_type>     TBuffer;
-    typedef ConcurrentQueue<size_t, Suspendable<Limit> >    TJobQueue;
-    typedef ConcurrentQueue<size_t, Serial>                 TIdleQueue;
+    typedef ConcurrentQueue<int, Suspendable<Limit> >       TJobQueue;
+    typedef ConcurrentQueue<int, Serial>                    TIdleQueue;
 
     static const size_t MAX_PUTBACK = 4;
 
@@ -360,7 +360,7 @@ public:
         TInputBuffer    inputBuffer;
         TBuffer         buffer;
         off_t           fileOfs;
-        size_t          size;
+        int             size;
 
         CriticalSection cs;
         Condition       readyEvent;
@@ -371,7 +371,7 @@ public:
             buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
             size(0),
             readyEvent(cs),
-            ready(false)
+            ready(true)
         {}
 
         DecompressionJob(DecompressionJob const &other) :
@@ -390,8 +390,7 @@ public:
     TJobQueue                   runningQueue;
     TJobQueue                   todoQueue;
     TIdleQueue                  idleQueue;
-    size_t                      currentJobId;
-    bool                        currentJobAvail;
+    int                         currentJobId;
 
     struct DecompressionThread
     {
@@ -406,15 +405,17 @@ public:
             // wait for a new job to become available
             while (true)
             {
-                size_t jobId = -1;
+                int jobId = -1;
                 if (!popFront(jobId, streamBuf->todoQueue))
                     return;
+                if (jobId <0)
+                jobId = -1;
 
                 DecompressionJob &job = streamBuf->jobs[jobId];
                 size_t tailLen;
 
                 // typically the idle queue contains only ready jobs
-                // however, if we fast forward running jobs into the idle queue when seeking
+                // however, if seek() fast forwards running jobs into the todoQueue
                 // the caller defers the task of waiting to the decompression threads
                 if (!job.ready)
                 {
@@ -431,58 +432,73 @@ public:
 
                     // remember start offset (for tellg later)
                     job.fileOfs = streamBuf->serializer.fileOfs;
+                    job.size = -1;
 
-                    // read header
-                    streamBuf->serializer.istream.read(
-                        (char*)&(job.inputBuffer[0]),
-                        BGZF_BLOCK_HEADER_LENGTH);
-
-                    if (!streamBuf->serializer.istream.good())
+                    // only decompress if not at EOF
+                    if (job.fileOfs != -1)
                     {
-                        if (!streamBuf->serializer.istream.eof())
+                        // read header
+                        streamBuf->serializer.istream.read(
+                            (char*)&(job.inputBuffer[0]),
+                            BGZF_BLOCK_HEADER_LENGTH);
+
+                        if (!streamBuf->serializer.istream.good())
+                        {
+                            streamBuf->serializer.fileOfs = -1;
+                            if (streamBuf->serializer.istream.eof())
+                                goto eofSkip;
                             streamBuf->serializer.error = new IOError("Stream read error.");
-                        return;
-                    }
+                            return;
+                        }
 
-                    // check header
-                    if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
-                    {
-                        streamBuf->serializer.error = new IOError("Invalid BGZF block header.");
-                        return;
-                    }
+                        // check header
+                        if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
+                        {
+                            streamBuf->serializer.fileOfs = -1;
+                            streamBuf->serializer.error = new IOError("Invalid BGZF block header.");
+                            return;
+                        }
 
-                    // extract length of compressed data
-                    tailLen = _bgzfUnpack16(&(job.inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
+                        // extract length of compressed data
+                        tailLen = _bgzfUnpack16(&(job.inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
 
-                    // read compressed data and tail
-                    streamBuf->serializer.istream.read(
-                        (char*)&(job.inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
-                        tailLen);
-                    
-                    if (!streamBuf->serializer.istream.good())
-                    {
-                        if (!streamBuf->serializer.istream.eof())
+                        // read compressed data and tail
+                        streamBuf->serializer.istream.read(
+                            (char*)&(job.inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
+                            tailLen);
+                        
+                        if (!streamBuf->serializer.istream.good())
+                        {
+                            streamBuf->serializer.fileOfs = -1;
+                            if (streamBuf->serializer.istream.eof())
+                                goto eofSkip;
                             streamBuf->serializer.error = new IOError("Stream read error.");
-                        return;
+                            return;
+                        }
+
+                        streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
+                        job.ready = false;
                     }
 
-                    streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
-                    job.ready = false;
+                eofSkip:
 
                     if (!appendValue(streamBuf->runningQueue, jobId))
                         return;
                 }
 
-                // decompress block
-                job.size = _decompressBlock(
-                    &job.buffer[MAX_PUTBACK], capacity(job.buffer),
-                    &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
-
-                // signal that job is ready
+                if (streamBuf->serializer.fileOfs != -1)
                 {
-                    ScopedLock<CriticalSection> lock(job.cs);
-                    job.ready = true;
-                    signal(job.readyEvent);
+                    // decompress block
+                    job.size = _decompressBlock(
+                        &job.buffer[MAX_PUTBACK], capacity(job.buffer),
+                        &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
+
+                    // signal that job is ready
+                    {
+                        ScopedLock<CriticalSection> lock(job.cs);
+                        job.ready = true;
+                        signal(job.readyEvent);
+                    }
                 }
             }
         }
@@ -506,8 +522,7 @@ public:
         putbackBuffer(MAX_PUTBACK)
     {
         resize(jobs, numJobs, Exact());
-        currentJobId = 0;
-        currentJobAvail = false;
+        currentJobId = -1;
 
         lockReading(runningQueue);
         lockWriting(todoQueue);
@@ -556,13 +571,15 @@ public:
                 this->gptr(),
                 &putbackBuffer[0]);
 
-        if (currentJobAvail)
+        if (currentJobId >= 0)
             appendValue(todoQueue, currentJobId);
 
         while (true)
         {
-            if (!(currentJobAvail = popFront(currentJobId, runningQueue)))
+            if (!popFront(currentJobId, runningQueue))
             {
+                currentJobId = -1;
+                SEQAN_ASSERT(serializer.error != NULL);
                 if (serializer.error != NULL)
                     throw *serializer.error;
                 return EOF;
@@ -585,18 +602,19 @@ public:
                     waitFor(job.readyEvent);
             }
 
+            size_t size = (job.size != -1)? job.size : 0;
+
             // reset buffer pointers
             this->setg( 
-                  &job.buffer[MAX_PUTBACK - putback],      // beginning of putback area
-                  &job.buffer[MAX_PUTBACK],                // read position
-                  &job.buffer[MAX_PUTBACK + job.size]);    // end of buffer
+                  &job.buffer[MAX_PUTBACK - putback],       // beginning of putback area
+                  &job.buffer[MAX_PUTBACK],                 // read position
+                  &job.buffer[MAX_PUTBACK + size]);         // end of buffer
 
-            if (job.size != 0)
-                break;
+            if (job.size == -1)
+                return EOF;
+            else if (job.size > 0)
+                return Tr::to_int_type(*this->gptr());      // return next character
         }
-
-        // return next character
-        return Tr::to_int_type(*this->gptr());
     }
 
     pos_type seekoff(off_type ofs, std::ios_base::seekdir dir, std::ios_base::openmode openMode)
@@ -605,59 +623,60 @@ public:
         {
             if (dir == std::ios_base::cur)
             {
-                if (currentJobAvail)
+                if (ofs < 0)
+                    return pos_type(off_type(-1));
+
+                while (this->egptr() - this->gptr() <= ofs)
+                {
+                    ofs -= this->egptr() - this->gptr();
+                    if (this->underflow() == EOF)
+                        break;
+                }
+
+                if (currentJobId >= 0 && ofs <= this->egptr() - this->gptr())
                 {
                     DecompressionJob &job = jobs[currentJobId];
 
-
                     // reset buffer pointers
                     this->setg( 
-                          &job.buffer[MAX_PUTBACK - putback],      // beginning of putback area
-                          &job.buffer[MAX_PUTBACK],                // read position
-                          &job.buffer[MAX_PUTBACK + job.size]);    // end of buffer
+                          this->eback(),            // beginning of putback area
+                          this->gptr() + ofs,       // read position
+                          this->egptr());           // end of buffer
 
-                    return pos_type((job.fileOfs << 16) + (this->gptr() - this->eback()));
-
+                    return pos_type((job.fileOfs << 16) + (this->gptr() - &job.buffer[MAX_PUTBACK]));
                 }
-                else
-                {
-                    if ( && ofs == 0);
-                    return 0;
-                }
+                
             }
-            else if (dir == std::ios_base::set)
+            else if (dir == std::ios_base::beg)
             {
-                size_t destFileOfs = ofs >> 16;
+                off_t destFileOfs = ofs >> 16;
                 {
-                    ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
-                    if (currentJobAvail)
+                    ScopedLock<Mutex> scopedLock(serializer.lock);
+                    if (currentJobId >= 0)
                         appendValue(todoQueue, currentJobId);
-
-                    while (currentJobAvail = popFront(currentJobId, runningQueue))
-                    {
-                        if (!(currentJobAvail = popFront(currentJobId, runningQueue)))
-
 
                     // remove all running jobs and put them in the idle queue unless we
                     // find our seek target
-                    size_t left = (currentJobAvail)? numJobs - 1 : numJobs;
-                    for (; left != 0 && (!currentJobAvail || jobs[currentJobId].fileOfs != destFileOfs))
+                    size_t left = (currentJobId < 0)? numJobs : numJobs - 1;
+                    while (left != 0 && (currentJobId < 0 || jobs[currentJobId].fileOfs != destFileOfs))
                     {
                         // push back useless job
-                        if (currentJobAvail)
+                        if (currentJobId >= 0)
                             appendValue(idleQueue, currentJobId);
 
                         // test next running job if it is the right one
-                        currentJobAvail = popFront(currentJobId, runningQueue);
-                        SEQAN_ASSERT(currentJobAvail);
+                        if (!popFront(currentJobId, runningQueue))
+                            currentJobId = -1;
+                        SEQAN_ASSERT_GEQ(currentJobId, 0);
                     }
 
-                    if (left == 0)
+                    if (currentJobId < 0 || jobs[currentJobId].fileOfs != destFileOfs)
                     {
-                        streamBuf->serializer.fileOfs = destFileOfs;
+                        serializer.fileOfs = destFileOfs;
                         appendValue(todoQueue, popFront(idleQueue));
-                        currentJobAvail = popFront(currentJobId, runningQueue);
-                        SEQAN_ASSERT(currentJobAvail);
+                        if (!popFront(currentJobId, runningQueue))
+                            currentJobId = -1;
+                        SEQAN_ASSERT_GEQ(currentJobId, 0);
                     }
 
                     // put back all unused jobs
@@ -677,6 +696,7 @@ public:
                           &job.buffer[MAX_PUTBACK],                     // no putback area
                           &job.buffer[MAX_PUTBACK + (ofs & 0xffff)],    // read position
                           &job.buffer[MAX_PUTBACK + job.size]);         // end of buffer
+                    return ofs;
                 }
             }
         }

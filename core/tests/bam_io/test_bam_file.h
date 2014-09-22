@@ -433,7 +433,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
+    SEQAN_ASSERT_EQ(position(bamFile), 0xbb0000);
 }
 
 #endif  // #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
