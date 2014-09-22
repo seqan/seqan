@@ -86,8 +86,10 @@ public:
     typedef typename Host<ConcurrentQueue>::Type                TString;
     typedef typename Size<TString>::Type                        TSize;
     typedef typename Atomic<TSize>::Type                        TAtomicSize;
-    typedef typename IsSameType<TSpec, Limit>::Type             TFixedCapacity;
-    typedef typename If<TFixedCapacity, Serial, Parallel>::Type TLockTag;
+    typedef typename If<typename IsSameType<TSpec, Limit>::Type,
+                        Serial,
+                        typename DefaultParallelSpec<ConcurrentQueue>::Type
+                     >::Type                                    TLockTag;
 
     TString                 data;
     mutable ReadWriteLock   lock;           char pad1[SEQAN_CACHE_LINE_SIZE - sizeof(ReadWriteLock)];
@@ -178,6 +180,16 @@ private:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction DefaultParallelSpec
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct DefaultParallelSpec<ConcurrentQueue<TValue, Serial> >
+{
+    typedef Serial Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -473,7 +485,7 @@ template <typename TValue, typename TSpec>
 inline bool
 tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
-    return tryPopFront(result, me, Parallel());
+    return tryPopFront(result, me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 // ----------------------------------------------------------------------------
@@ -572,7 +584,7 @@ template <typename TValue, typename TSpec>
 inline bool
 popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
-    return popFront(result, me, Parallel());
+    return popFront(result, me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 /*!
@@ -610,7 +622,7 @@ template <typename TValue, typename TSpec>
 inline TValue SEQAN_FORWARD_RETURN
 popFront(ConcurrentQueue<TValue, TSpec> & me)
 {
-    return popFront(me, Parallel());
+    return popFront(me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 template <typename TValue, typename TSpec, typename TValue2>
@@ -783,7 +795,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
             TValue2 SEQAN_FORWARD_CARG val,
             Tag<TExpand> expandTag)
 {
-    appendValue(me, SEQAN_FORWARD(TValue, val), expandTag, Parallel());
+    appendValue(me, SEQAN_FORWARD(TValue, val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 }  // namespace seqan
