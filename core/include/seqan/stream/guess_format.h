@@ -201,30 +201,37 @@ getBasename(TFilename const & fileName, Tag<TFormat_> const & /*formatTag*/)
 // --------------------------------------------------------------------------
 
 template <typename TStringSet, typename TFormat_>
-inline void _getFileFormatExtensions(TStringSet &stringSet, Tag<TFormat_> /*formatTag*/)
+inline void _getFileFormatExtensions(TStringSet &stringSet, Tag<TFormat_> /*formatTag*/, bool primaryExtensionOnly = false)
 {
     typedef Tag<TFormat_> TFormat;
-    for (unsigned i = 0; i < sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
-        appendValue(stringSet, FileFormatExtensions<TFormat>::VALUE[i]);
+    if (primaryExtensionOnly)
+    {
+        appendValue(stringSet, FileFormatExtensions<TFormat>::VALUE[0]);    // first is primary
+    }
+    else
+    {
+        for (unsigned i = 0; i < sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
+            appendValue(stringSet, FileFormatExtensions<TFormat>::VALUE[i]);
+    }
 }
 
 template <typename TStringSet, typename TTag>
-inline void _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, void> const /*formatTag*/)
+inline void _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, void> const /*formatTag*/, bool primaryExtensionOnly = false)
 {
-    _getFileFormatExtensions(stringSet, TTag());
+    _getFileFormatExtensions(stringSet, TTag(), primaryExtensionOnly);
 }
 
 template <typename TStringSet, typename TTag, typename TSubList>
-inline void _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, TSubList> const /*formatTag*/)
+inline void _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, TSubList> const /*formatTag*/, bool primaryExtensionOnly = false)
 {
-    _getFileFormatExtensions(stringSet, TTag());
-    _getFileFormatExtensions(stringSet, TSubList());
+    _getFileFormatExtensions(stringSet, TTag(), primaryExtensionOnly);
+    _getFileFormatExtensions(stringSet, TSubList(), primaryExtensionOnly);
 }
 
 template <typename TStringSet, typename TTagList>
-inline void _getFileFormatExtensions(TStringSet &stringSet, TagSelector<TTagList> const /*formatTag*/)
+inline void _getFileFormatExtensions(TStringSet &stringSet, TagSelector<TTagList> const /*formatTag*/, bool primaryExtensionOnly = false)
 {
-    _getFileFormatExtensions(stringSet, TTagList());
+    _getFileFormatExtensions(stringSet, TTagList(), primaryExtensionOnly);
 }
 
 } // namespace seqan
