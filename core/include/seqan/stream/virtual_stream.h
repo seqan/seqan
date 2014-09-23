@@ -635,7 +635,7 @@ close(VirtualStream<TValue, TDirection, TTraits> &stream)
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
-    return close(stream.file);
+    return !stream.file.is_open() || close(stream.file);
 }
 
 // ----------------------------------------------------------------------------

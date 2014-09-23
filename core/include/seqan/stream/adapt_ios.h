@@ -83,29 +83,29 @@ struct Position<std::basic_iostream<TValue, TTraits> >
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_fstream<TValue, TTraits> > :
-    Position<std::basic_iostream<TValue, TTraits>  > {};
+    Position<std::basic_iostream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_stringstream<TValue, TTraits> > :
-    Position<std::basic_iostream<TValue, TTraits>  > {};
+    Position<std::basic_iostream<TValue, TTraits> > {};
 
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_ifstream<TValue, TTraits> > :
-    Position<std::basic_istream<TValue, TTraits>  > {};
+    Position<std::basic_istream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_istringstream<TValue, TTraits> > :
-    Position<std::basic_istream<TValue, TTraits>  > {};
+    Position<std::basic_istream<TValue, TTraits> > {};
 
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_ofstream<TValue, TTraits> > :
-    Position<std::basic_ostream<TValue, TTraits>  > {};
+    Position<std::basic_ostream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_ostringstream<TValue, TTraits> > :
-    Position<std::basic_ostream<TValue, TTraits>  > {};
+    Position<std::basic_ostream<TValue, TTraits> > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -137,29 +137,29 @@ struct Value<std::basic_iostream<TValue, TTraits> >
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_fstream<TValue, TTraits> > :
-    Value<std::basic_iostream<TValue, TTraits>  > {};
+    Value<std::basic_iostream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_stringstream<TValue, TTraits> > :
-    Value<std::basic_iostream<TValue, TTraits>  > {};
+    Value<std::basic_iostream<TValue, TTraits> > {};
 
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_ifstream<TValue, TTraits> > :
-    Value<std::basic_istream<TValue, TTraits>  > {};
+    Value<std::basic_istream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_istringstream<TValue, TTraits> > :
-    Value<std::basic_istream<TValue, TTraits>  > {};
+    Value<std::basic_istream<TValue, TTraits> > {};
 
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_ofstream<TValue, TTraits> > :
-    Value<std::basic_ostream<TValue, TTraits>  > {};
+    Value<std::basic_ostream<TValue, TTraits> > {};
 
 template <typename TValue, typename TTraits>
 struct Value<std::basic_ostringstream<TValue, TTraits> > :
-    Value<std::basic_ostream<TValue, TTraits>  > {};
+    Value<std::basic_ostream<TValue, TTraits> > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Reference

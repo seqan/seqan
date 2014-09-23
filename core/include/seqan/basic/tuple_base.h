@@ -279,11 +279,11 @@ write(TTarget &target, Tuple<TValue, SIZE, TSpec> const &a)
 {
     writeValue(target, '[');
     if (SIZE > 0)
-        write(target, a[0]);
+        write(target, (TValue)a[0]);
     for (unsigned j = 1; j < SIZE; ++j)
     {
         writeValue(target, ' ');
-        write(target, a[j]);
+        write(target, (TValue)a[j]);
     }
     writeValue(target, ']');
 }

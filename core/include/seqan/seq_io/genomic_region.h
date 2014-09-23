@@ -255,7 +255,8 @@ struct GenomicRegion
 ..include:seqan/seq_io.h
 */
 
-inline void clear(GenomicRegion & region)
+inline void
+clear(GenomicRegion & region)
 {
     clear(region.seqName);
     region.seqId = GenomicRegion::INVALID_ID;
@@ -298,7 +299,8 @@ inline void clear(GenomicRegion & region)
 // Parse regionString and write to region.  region.seqId will not be set but
 // region.seqName will be.  Return true on success.
 
-inline void parse(GenomicRegion & region, CharString const & regionString)
+inline void
+parse(GenomicRegion & region, CharString const & regionString)
 {
     DirectionIterator<CharString const, Input>::Type reader = directionIterator(regionString, Input());
 

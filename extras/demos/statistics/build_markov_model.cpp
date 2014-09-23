@@ -16,18 +16,14 @@ int main()
 
     // Read the background from a file into X.
     StringSet<DnaString> X;
-    SequenceStream seqStream(toCString(bgPath));
-    if (!isGood(seqStream))
+    SeqFileIn seqFile;
+    if (!open(seqFile, toCString(bgPath)))
     {
         std::cerr << "ERROR: Could not open " << bgPath << "\n";
         return 1;
     }
     StringSet<CharString> ids;  // will be ignored
-    if (readAll(ids, X, seqStream) != 0)
-    {
-        std::cerr << "ERROR: Problem reading from " << bgPath << "\n";
-        return 1;
-    }
+    readRecords(ids, X, seqFile);
 
     // Create MarkovModel of order 3 from the background.
     MarkovModel<Dna> mm(3);

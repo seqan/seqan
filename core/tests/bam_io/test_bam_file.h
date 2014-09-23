@@ -436,4 +436,41 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
     SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
 }
 
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
+{
+    std::string filePath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/apps/ngs_roi/example/example.bam";
+
+    seqan::BamFileIn bamFile(filePath.c_str());
+
+    SEQAN_ASSERT_EQ(position(bamFile), 0u);
+
+    seqan::BamHeader header;
+    readRecord(header, bamFile);
+
+    seqan::String<seqan::Pair<off_t, int> > recs;
+
+    seqan::BamAlignmentRecord record;
+    while (!atEnd(bamFile))
+    {
+        off_t ofs = position(bamFile);
+        readRecord(record, bamFile);
+        appendValue(recs, seqan::Pair<off_t, int>(ofs, record.beginPos));
+    }
+
+    for (size_t j = 0; j < length(recs); ++j)
+    {
+        setPosition(bamFile, recs[j].i1);
+        readRecord(record, bamFile);
+        SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
+    }
+
+    for (size_t i = 0; i < 10000; ++i)
+    {
+        long j = random() % length(recs);
+        setPosition(bamFile, recs[j].i1);
+        readRecord(record, bamFile);
+        SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
+    }
+}
+
 #endif  // #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
