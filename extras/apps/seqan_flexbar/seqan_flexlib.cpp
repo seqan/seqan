@@ -992,11 +992,12 @@ public:
     // file extensions of the SeqFileOut and used for all stored files.
     OutputStreams(seqan::CharString const & base, bool /*noQuality*/) : basePath(base)
     {
-        for (unsigned i = 0; i < length(seqan::SeqFileOut::getFileFormatExtensions()); ++i)
+        std::vector<std::string> tmpExtensions = seqan::SeqFileOut::getFileFormatExtensions();
+        for (unsigned i = 0; i < length(tmpExtensions); ++i)
         {
-            if (endsWith(basePath, seqan::SeqFileOut::getFileFormatExtensions()[i]))
+            if (endsWith(basePath, tmpExtensions[i]))
             {
-                extension = seqan::SeqFileOut::getFileFormatExtensions()[i];
+                extension = tmpExtensions[i];
                 break;
             }
         }
