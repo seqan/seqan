@@ -69,6 +69,7 @@ struct Options;
 #include "bits_context.h"
 #include "bits_matches.h"
 #include "bits_seeds.h"
+#include "bits_bucket.h"
 #include "find_verifier.h"
 #include "find_extender.h"
 #include "mapper_collector.h"

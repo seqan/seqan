@@ -191,11 +191,11 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
     for (TIterator rightIt = rightBegin; rightIt != rightEnd; ++rightIt)
     {
         // Compute the interval of feasible left matches from current right match.
-        unsigned rightHead = getContigEnd(*rightIt) - me.options.libraryLength + me.options.libraryError;
-        unsigned rightTail = getContigEnd(*rightIt) - me.options.libraryLength - me.options.libraryError;
+        unsigned rightHead = getValue(*rightIt, ContigEnd()) - me.options.libraryLength + me.options.libraryError;
+        unsigned rightTail = getValue(*rightIt, ContigEnd()) - me.options.libraryLength - me.options.libraryError;
 
         // Seek first feasible left match - beyond the right tail.
-        while (leftIt != leftEnd && getContigBegin(*leftIt) < rightTail)
+        while (leftIt != leftEnd && getValue(*leftIt, ContigBegin()) < rightTail)
             ++leftIt;
 
         // No left matches anymore.
@@ -204,12 +204,12 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
             break;
 
         // Continue with next right match if there are no feasible left matches anymore.
-        unsigned leftTail = getContigBegin(*leftTailIt);
+        unsigned leftTail = getValue(*leftTailIt, ContigBegin());
         if (leftTail >= rightHead)
             continue;
 
         // Seek first infeasible left match - beyond the right head.
-        while (leftIt != leftEnd && getContigBegin(*leftIt) < rightHead)
+        while (leftIt != leftEnd && getValue(*leftIt, ContigBegin()) < rightHead)
             ++leftIt;
         TIterator leftHeadIt = leftIt;
 
@@ -229,8 +229,8 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & left, TMatch const & right)
 {
-    TMatch & bestLeft = me.pairs[getReadId(left)];
-    TMatch & bestRight = me.pairs[getReadId(right)];
+    TMatch & bestLeft = me.pairs[getValue(left, ReadId())];
+    TMatch & bestRight = me.pairs[getValue(right, ReadId())];
 
     unsigned errors = getErrors(left, right);
     unsigned bestErrors = getErrors(bestLeft, bestRight);
@@ -245,8 +245,8 @@ inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & le
             bestLeft = left;
             bestRight = right;
 
-            setPaired(me.ctx, getReadId(left));
-            setPaired(me.ctx, getReadId(right));
+            setPaired(me.ctx, getValue(left, ReadId()));
+            setPaired(me.ctx, getValue(right, ReadId()));
         }
     }
 }
