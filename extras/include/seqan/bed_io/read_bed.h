@@ -163,7 +163,7 @@ _readBedRecordNoData(BedRecord<Bed3> & record,
     record.endPos = lexicalCast<__int32>(buffer);
 
     // Go over tab if any.
-    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+    if (!atEnd(iter) && IsTab()(value(iter)))
         skipOne(iter);
 }
 
@@ -182,7 +182,7 @@ _readBedRecordNoData(BedRecord<Bed4> & record,
     readUntil(record.name, iter, OrFunctor<IsTab, IsNewline>());
 
     // Go over tab if any.
-    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+    if (!atEnd(iter) && IsTab()(value(iter)))
         skipOne(iter);
 }
 
@@ -201,7 +201,7 @@ _readBedRecordNoData(BedRecord<Bed5> & record,
     readUntil(record.score, iter, OrFunctor<IsTab, IsNewline>());
 
     // Go over tab if any.
-    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+    if (!atEnd(iter) && IsTab()(value(iter)))
         skipOne(iter);
 }
 
@@ -221,7 +221,7 @@ _readBedRecordNoData(BedRecord<Bed6> & record,
     skipOne(iter, OrFunctor<OrFunctor<EqualsChar<'.'>, EqualsChar<'+'> >, EqualsChar<'-'> >());
 
     // Go over tab if any.
-    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
+    if (!atEnd(iter) && !IsNewline()(value(iter)))
         skipOne(iter);
 }
 
@@ -315,19 +315,8 @@ readRecord(BedRecord<TSpec> & record,
            Bed const & /*tag*/)
 {
     clear(record);
-
     _readBedRecordNoData(record, iter, buffer);
-
-    // Read data if any, skipping over the line.
-    if (!atEnd(iter) && value(iter) != '\r' && value(iter) != '\n')
-    {
-        readLine(record.data, iter);
-        return;
-    }
-
-    // If there is no data then skip over line.
-    if (!atEnd(iter))
-        skipLine(iter);
+    readLine(record.data, iter);
 }
 
 }  // namespace seqan

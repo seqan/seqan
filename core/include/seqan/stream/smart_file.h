@@ -170,8 +170,21 @@ struct SmartFile
     static std::vector<std::string>
     getFileFormatExtensions()
     {
+        std::vector<std::string> formatExtensions;
+        std::vector<std::string> compressionExtensions;
         std::vector<std::string> extensions;
-        _getFileFormatExtensions(extensions, TFileFormat());
+
+        _getFileFormatExtensions(formatExtensions, TFileFormat(), IsSameType<TDirection, Output>::VALUE);                               // allow show only primary extensions for output
+        _getFileFormatExtensions(compressionExtensions, typename FileFormat<TStream>::Type(), IsSameType<TDirection, Output>::VALUE);   // allow show only primary extensions for output
+
+        // compute cartesian product of extensions
+        for (size_t i = 0; i < length(compressionExtensions); ++i)
+        {
+            size_t ii = (i == 0)? length(compressionExtensions) - 1 : i - 1;    // swap first and last compression extension
+            for (size_t j = 0; j < length(formatExtensions); ++j)
+                extensions.push_back(formatExtensions[j] + compressionExtensions[ii]);
+        }
+
         return extensions;
     }
 };

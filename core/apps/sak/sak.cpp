@@ -60,9 +60,6 @@ struct SakOptions
     // Path to output file.
     seqan::CharString outPath;
 
-    // Whether or not to print FASTQ to output.
-    seqan::AutoSeqFormat outFormat;
-
     // Set if one sequence is to be retrieved.
     seqan::String<__uint64> seqIndices;
 
@@ -102,51 +99,27 @@ struct SakOptions
 template <typename TNum>
 bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeStr)
 {
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type iter = begin(rangeStr);
+    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type reader = directionIterator(rangeStr, seqan::Input());
 
     // Parse out begin position.
     seqan::CharString buffer;
-    while (!atEnd(iter) && value(iter) != '-')
-    {
-        if (!seqan::IsDigit()(value(iter)) && value(iter) != ',')
-            return false;  // Error parsing.
-
-        if (seqan::IsDigit()(value(iter)))
-            appendValue(buffer, value(iter));
-        skipOne(iter, seqan::IsDigit());
-    }
-    if (empty(buffer))
-        return false;
-
+    readUntil(buffer, reader, EqualsChar<'-'>(), EqualsChar<','>());
     if (!lexicalCast(beginPos, buffer))
         return false;
 
     if (atEnd(iter))
         return true;
 
-    goNext(iter);  // Skip '-'.
+    skipOne(iter);  // Skip '-'.
 
     // Parse out end position.
     clear(buffer);
-    while (!atEnd(iter))
-    {
-        if (!seqan::IsDigit()(value(iter)) && value(iter) != ',')
-            return false;  // Error parsing.
-
-        if (seqan::IsDigit()(value(iter)))
-            appendValue(buffer, value(iter));
-        skipOne(iter, seqan::IsDigit());
-    }
-    if (empty(buffer))
-        return false;
+    readUntil(buffer, reader, False(), EqualsChar<','>());
 
     if (!lexicalCast(endPos, buffer))
         return false;
 
-    if (endPos < beginPos)
-        return false;
-
-    return true;
+    return (beginPos <= endPos);
 }
 
 // --------------------------------------------------------------------------
@@ -164,15 +137,15 @@ parseArgs(SakOptions & options,
     setDate(parser, "November 2012");
     setCategory(parser, "Utilities");
 
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\B-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\fB-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");
     addDescription(parser, "\"It slices, it dices and it makes the laundry!\"");
-    addDescription(parser, "Rewrite of the original SAK tool by Manuel Holtgrewe.");
+    addDescription(parser, "Original SAK tool by David Weese. Rewrite by Manuel Holtgrewe.");
 
     // The only argument is the input file.
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
-    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqFormat()));
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -183,10 +156,9 @@ parseArgs(SakOptions & options,
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path",
-                                            "Path to the resulting file.  If omitted, result is printed to stdout. "
-                                            "Use files ending in \\fI.fq\\fP or \\fI.\\fP to write out FASTQ.",
+                                            "Path to the resulting file.  If omitted, result is printed to stdout in FastQ format.",
                                             seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
-    setValidValues(parser, "out-path", getFileFormatExtensions(seqan::AutoSeqFormat()));
+    setValidValues(parser, "out-path", seqan::SeqFileOut::getFileFormatExtensions());
     addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
     addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
                                             seqan::ArgParseOption::INTEGER, "LEN"));
@@ -236,8 +208,6 @@ parseArgs(SakOptions & options,
 
     seqan::CharString tmp;
     getOptionValue(tmp, parser, "out-path");
-    if (!guessFormatFromFilename(tmp, options.outFormat))
-        assign(options.outFormat, seqan::Fasta());
 
     if (isSet(parser, "out-path"))
         getOptionValue(options.outPath, parser, "out-path");
@@ -338,7 +308,6 @@ int main(int argc, char const ** argv)
                   << "VERBOSITY    " << options.verbosity << "\n"
                   << "IN           " << options.inFastxPath << "\n"
                   << "OUT          " << options.outPath << "\n"
-                  << "FASTQ OUT    " << yesNo(isEqual(options.outFormat, seqan::Fastq())) << "\n"
                   << "INFIX BEGIN  " << options.seqInfixBegin << "\n"
                   << "INFIX END    " << options.seqInfixEnd << "\n"
                   << "MAX LEN      " << options.maxLength << "\n"
@@ -359,9 +328,13 @@ int main(int argc, char const ** argv)
 
     if (!empty(options.inFastxPath))
         open(inFile, toCString(options.inFastxPath));
+    else
+        open(inFile, std::cin);
 
     if (!empty(options.outPath))
         open(outFile, toCString(options.outPath));
+    else
+        open(outFile, std::cout, seqan::Fastq());
 
     // Compute index of last sequence to write if any.
     __uint64 endIdx = seqan::maxValue<__uint64>();
