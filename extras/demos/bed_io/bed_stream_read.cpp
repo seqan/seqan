@@ -9,16 +9,16 @@ using namespace seqan;
 //
 // We only read BED 3 here but the example can be easily adjusted to more complex examples.
 
-int main(int argc, char ** argv)
+int main(int argc, char const * argv[])
 {
     if (argc != 2)
     {
-        std::cerr << "USAGE: " << argv[1] << " IN.bed\n";
+        std::cerr << "USAGE: " << argv[0] << " IN.bed\n";
         return 1;
     }
 
-    BedStream bedIn(argv[1]);
-    if (!isGood(bedIn))
+    BedFileIn bedIn;
+    if (!open(bedIn, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading!\n";
         return 1;
@@ -27,12 +27,7 @@ int main(int argc, char ** argv)
     BedRecord<Bed3> record;
     while (!atEnd(bedIn))
     {
-        if (readRecord(record, bedIn) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from " << argv[1] << "\n";
-            return 1;
-        }
-
+        readRecord(record, bedIn);
         std::cout << record.ref << "\t" << record.beginPos << "\n";
     }
     

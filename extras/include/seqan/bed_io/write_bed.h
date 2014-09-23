@@ -181,41 +181,11 @@ inline void
 writeRecord(TTarget & target, BedRecord<TRecordSpec> const & record, Bed const & /*tag*/)
 {
     _writeBedRecord(target, record, record.ref);
-
-    if (empty(record.data))
+    if (!empty(record.data))
     {
-        writeValue(target, '\n');
-        return;
+        writeValue(target, '\t');
+        write(target, record.data);
     }
-
-    writeValue(target, '\t');
-    write(target, record.data);
-    writeValue(target, '\n');
-}
-
-template <typename TTarget, typename TRecordSpec, typename TNameStore, typename TNameStoreCache>
-inline void 
-writeRecord(TTarget & target, BedRecord<TRecordSpec> const & record,
-                BedIOContext<TNameStore, TNameStoreCache> const & context, Bed const & /*tag*/)
-{
-
-    if (record.rID == BedRecord<TRecordSpec>::INVALID_REFID)
-    {
-        _writeBedRecord(target, record, record.ref);
-    }
-    else
-    {
-        _writeBedRecord(target, record, nameStore(context)[record.rID]);
-    }
-
-    if (empty(record.data))
-    {
-        writeValue(target, '\n');
-        return;
-    }
-
-    writeValue(target, '\t');
-    write(target, record.data);
     writeValue(target, '\n');
 }
 

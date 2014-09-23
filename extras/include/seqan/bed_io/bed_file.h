@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,11 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Tags to select serial/parallel algorithms.
+// Smart file for reading/writing files in BED format.
 // ==========================================================================
 
-#ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_
-#define SEQAN_PARALLEL_PARALLEL_TAGS_H_
+#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
+#define SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
 
 namespace seqan {
 
@@ -44,51 +44,59 @@ namespace seqan {
 // ============================================================================
 
 // ============================================================================
-// Tags, Classes, Enums
+// Typedefs
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Tag Parallel
-// ----------------------------------------------------------------------------
-
-/*!
- * @defgroup ParallelismTags Parallelism Tags
- * @brief Tags for enabling/disabling parallelism.
- *
- * @tag ParallelismTags#Parallel
- * @headerfile <seqan/parallel.h>
- * @brief Tag to select the parallel implementation of an algorithm.
- *
- * @tag ParallelismTags#Serial
- * @headerfile <seqan/parallel.h>
- * @brief Tag to select the serial implementation of an algorithm.
- */
-
-/**
-.Tag.Parallel:
-..cat:Parallelism
-..summary:Tag to select a parallel implementation of an algorithm.
-..tag.Parallel:Select serial implementation of an algorithm.
-..include:seqan/parallel.h
-*/
-
-struct Parallel_;
-typedef Tag<Parallel_> Parallel;
+typedef SmartFile<Bed, Input>   BedFileIn;
+typedef SmartFile<Bed, Output>  BedFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction DefaultParallelSpec
+// Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TObject>
-struct DefaultParallelSpec
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bed, TDirection, TSpec>, TStorageSpec>
 {
-    typedef Parallel Type;
+    typedef CharString Type;
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec>
+struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
+{
+    typedef Bed Type;
+};
+
+// ----------------------------------------------------------------------------
+// Function readRecord(); BedRecord
+// ----------------------------------------------------------------------------
+
+// convient BedFile variant
+template <typename TRecordSpec, typename TSpec>
+inline void
+readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
+{
+    readRecord(record, context(file), file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(); BedRecord
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TRecordSpec>
+inline void
+writeRecord(SmartFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)
+{
+    writeRecord(file.iter, record, file.format);
+}
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_
+#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_

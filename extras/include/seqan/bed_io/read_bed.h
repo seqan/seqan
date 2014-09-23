@@ -56,6 +56,30 @@ typedef Tag<Bed_> Bed;
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Bed, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Bed, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Bed, T>::VALUE[1] =
+{
+    ".bed"     // default output extension
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -286,10 +310,10 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
 template <typename TSpec, typename TForwardIter>
 inline void
 readRecord(BedRecord<TSpec> & record,
+           CharString & buffer,
            TForwardIter & iter,
            Bed const & /*tag*/)
 {
-    CharString buffer;
     clear(record);
 
     _readBedRecordNoData(record, iter, buffer);
@@ -306,26 +330,6 @@ readRecord(BedRecord<TSpec> & record,
         skipLine(iter);
 }
 
-// This overload uses a BedIoContext object to translate the textual chromosome name into an index.
-template <typename TSpec, typename TForwardIter, typename TContextSpec, typename TContextSpec2>
-int readRecord(BedRecord<TSpec> & record,
-               TForwardIter & iter,
-               BedIOContext<TContextSpec, TContextSpec2> & context,
-               Bed const & tag)
-{
-    readRecord(record, iter, tag);
-
-    // Translate chrom to rID using the context.  If there is no such sequence name in the context yet then we add it.
-    unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
-    {
-        idx = length(nameStore(context));
-        appendName(nameStore(context), record.ref, nameStoreCache(context));
-    }
-    record.rID = idx;
-
-    return 0;
-}
 }  // namespace seqan
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_BED_IO_READ_BED_H_
