@@ -327,7 +327,6 @@ public:
 
     typedef std::vector<char_type, char_allocator_type>     TBuffer;
     typedef ConcurrentQueue<int, Suspendable<Limit> >       TJobQueue;
-    typedef ConcurrentQueue<int, Serial>                    TIdleQueue;
 
     static const size_t MAX_PUTBACK = 4;
 
@@ -389,7 +388,7 @@ public:
     String<DecompressionJob>    jobs;
     TJobQueue                   runningQueue;
     TJobQueue                   todoQueue;
-    TIdleQueue                  idleQueue;
+    String<int>                 idleQueue;
     int                         currentJobId;
 
     struct DecompressionThread
@@ -434,7 +433,7 @@ public:
                     job.fileOfs = streamBuf->serializer.fileOfs;
                     job.size = -1;
 
-                    // only decompress if not at EOF
+                    // only load if not at EOF
                     if (job.fileOfs != -1)
                     {
                         // read header
@@ -478,12 +477,22 @@ public:
 
                         streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
                         job.ready = false;
+
+                    eofSkip:
+                        streamBuf->serializer.istream.clear(
+                            streamBuf->serializer.istream.rdstate() & ~std::ios_base::failbit);
                     }
 
-                eofSkip:
-
                     if (!appendValue(streamBuf->runningQueue, jobId))
+                    {
+                        // signal that job is ready
+                        {
+                            ScopedLock<CriticalSection> lock(job.cs);
+                            job.ready = true;
+                            signal(job.readyEvent);
+                        }
                         return;
+                    }
                 }
 
                 if (streamBuf->serializer.fileOfs != -1)
@@ -621,12 +630,10 @@ public:
     {
         if ((openMode & (std::ios_base::in | std::ios_base::out)) == std::ios_base::in)
         {
-            if (dir == std::ios_base::cur)
+            if (dir == std::ios_base::cur && ofs >= 0)
             {
-                if (ofs < 0)
-                    return pos_type(off_type(-1));
-
-                while (this->egptr() - this->gptr() <= ofs)
+                // forward delta seek
+                while (currentJobId < 0 || this->egptr() - this->gptr() < ofs)
                 {
                     ofs -= this->egptr() - this->gptr();
                     if (this->underflow() == EOF)
@@ -649,40 +656,65 @@ public:
             }
             else if (dir == std::ios_base::beg)
             {
+                // random seek
                 off_t destFileOfs = ofs >> 16;
+
+                // are we in the same block?
+                if (currentJobId >= 0 && jobs[currentJobId].fileOfs == destFileOfs)
+                {
+                    DecompressionJob &job = jobs[currentJobId];
+
+                    // reset buffer pointers
+                    this->setg(
+                          this->eback(),                                // beginning of putback area
+                          &job.buffer[MAX_PUTBACK + (ofs & 0xffff)],    // read position
+                          this->egptr());                               // end of buffer
+                    return ofs;
+                }
+
+                // ok, different block
                 {
                     ScopedLock<Mutex> scopedLock(serializer.lock);
-                    if (currentJobId >= 0)
-                        appendValue(todoQueue, currentJobId);
 
                     // remove all running jobs and put them in the idle queue unless we
                     // find our seek target
-                    size_t left = (currentJobId < 0)? numJobs : numJobs - 1;
-                    while (left != 0 && (currentJobId < 0 || jobs[currentJobId].fileOfs != destFileOfs))
+
+                    if (currentJobId >= 0)
+                        appendValue(todoQueue, currentJobId);
+
+                    // empty is thread-safe in serializer.lock
+                    while (!empty(runningQueue))
                     {
+                        popFront(currentJobId, runningQueue);
+
+                        if (jobs[currentJobId].fileOfs == destFileOfs)
+                            break;
+
                         // push back useless job
-                        if (currentJobId >= 0)
-                            appendValue(idleQueue, currentJobId);
-
-                        // test next running job if it is the right one
-                        if (!popFront(currentJobId, runningQueue))
-                            currentJobId = -1;
-                        SEQAN_ASSERT_GEQ(currentJobId, 0);
+                        appendValue(todoQueue, currentJobId);
+                        currentJobId = -1;
                     }
 
-                    if (currentJobId < 0 || jobs[currentJobId].fileOfs != destFileOfs)
+                    if (currentJobId == -1)
                     {
-                        serializer.fileOfs = destFileOfs;
-                        appendValue(todoQueue, popFront(idleQueue));
-                        if (!popFront(currentJobId, runningQueue))
-                            currentJobId = -1;
-                        SEQAN_ASSERT_GEQ(currentJobId, 0);
+                        SEQAN_ASSERT(empty(runningQueue));
+                        serializer.istream.clear(serializer.istream.rdstate() & ~std::ios_base::eofbit);
+                        if (serializer.istream.rdbuf()->pubseekpos(destFileOfs, std::ios_base::in) == destFileOfs)
+                            serializer.fileOfs = destFileOfs;
+                        else
+                            currentJobId = -2;      // temporarily signals a seek error
                     }
+                }
 
-                    // put back all unused jobs
-                    while (!empty(idleQueue))
-                        appendValue(todoQueue, popFront(idleQueue));
+                // if our block wasn't in the running queue yet, it should now
+                // be the first that falls out after modifying serializer.fileOfs
+                if (currentJobId == -1)
+                    popFront(currentJobId, runningQueue);
+                else if (currentJobId == -2)
+                    currentJobId = -1;
 
+                if (currentJobId >= 0)
+                {
                     // wait for the end of decompression
                     DecompressionJob &job = jobs[currentJobId];
                     {
@@ -690,6 +722,8 @@ public:
                         if (!job.ready)
                             waitFor(job.readyEvent);
                     }
+
+                    SEQAN_ASSERT(job.fileOfs == destFileOfs);
 
                     // reset buffer pointers
                     this->setg( 

@@ -230,15 +230,15 @@ waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     return me.occupied >= minSize;
 }
 
-template <typename TValue, typename TSize, typename TSpec>
+template <typename TValue, typename TSpec>
 inline bool
 empty(ConcurrentQueue<TValue, Suspendable<TSpec> > const & me)
 {
     return me.occupied == 0;
 }
 
-template <typename TValue, typename TSize, typename TSpec>
-inline Size<ConcurrentQueue<TValue, Suspendable<TSpec> > >
+template <typename TValue, typename TSpec>
+inline typename Size<ConcurrentQueue<TValue, Suspendable<TSpec> > >::Type
 length(ConcurrentQueue<TValue, Suspendable<TSpec> > const & me)
 {
     return me.occupied;
