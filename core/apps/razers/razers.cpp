@@ -249,10 +249,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 #endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqFormat()));
+    setValidValues(parser, 0, getFileFormatExtensions(seqan::SeqFileIn::getFileFormatExtensions()));
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
-    setValidValues(parser, 1, getFileFormatExtensions(seqan::AutoSeqFormat()));
+    setValidValues(parser, 1, getFileFormatExtensions(seqan::SeqFileIn::getFileFormatExtensions()));
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");

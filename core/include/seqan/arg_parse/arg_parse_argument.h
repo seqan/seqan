@@ -986,6 +986,21 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string co
         if ((isInputFileArgument(me) || isOutputFileArgument(me)) && value == "-")
             return;
 
+        // Allow the filename to be a pipe (without checking its extension)
+        if (isInputFileArgument(me))
+        {
+#ifdef PLATFORM_WINDOWS
+            struct _stat buf;
+            if (_stat(value.c_str(), &buf) == 0)
+#else
+            struct stat buf;
+            if (stat(value.c_str(), &buf) == 0)
+#endif
+            {
+                if (buf.st_mode & S_IFMT == S_IFIFO)
+                    return true;
+            }
+        }
         bool isContained = false;
         for (TVectorIterator validValue = me.validValues.begin();
              validValue != me.validValues.end();
