@@ -416,6 +416,24 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
+    // Allow file to be a pipe (guess format from content)
+    bool autoDetectFromContent = false;
+    {
+#ifdef PLATFORM_WINDOWS
+        struct _stat buf;
+        if (_stat(value.c_str(), &buf) == 0)
+#else
+        struct stat buf;
+        if (stat(value.c_str(), &buf) == 0)
+#endif
+        {
+            if (buf.st_mode & S_IFMT == S_IFIFO)
+                autoDetectFromContent = true;
+        }
+    }
+
+
+
     if (!open(file.stream, fileName, openMode))
     {
         if (TThrowExceptions::VALUE)
