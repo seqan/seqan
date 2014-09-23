@@ -61,9 +61,7 @@ struct HitsExtender
     typedef typename Traits::TRanks            TRanks;
     typedef typename Traits::TSA               TSA;
 
-    typedef AlignTextBanded<FindPrefix, NMatchesNone_, NMatchesNone_> TMyersSpec;
-    typedef Myers<TMyersSpec, True, void>               TAlgorithm;
-    typedef Extender<TContigSeqs, TReadSeq, TAlgorithm> TExtender;
+    typedef Extender<TContigSeqs, TReadSeq, EditDistance> TExtender;
 
     // Thread-private data.
     TExtender           extender;
@@ -114,10 +112,10 @@ struct HitsExtender
         _extendHitImpl(*this, hitsIt, typename Traits::TStrategy());
     }
 
-    template <typename TMatchPos, typename TMatchErrors>
-    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TMatchErrors matchErrors)
+    template <typename TMatchPos, typename TErrors>
+    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TErrors errors)
     {
-        _addMatchImpl(*this, matchBegin, matchEnd, matchErrors);
+        _addMatchImpl(*this, matchBegin, matchEnd, errors);
     }
 };
 
@@ -296,7 +294,7 @@ inline void _addMatchImpl(HitsExtender<TSpec, Traits> & me,
     me.prototype.errors = matchErrors;
     appendValue(me.matches, me.prototype, Generous(), typename Traits::TThreading());
 
-    TReadSeqId readId = getReadId(me.prototype);
+    TReadSeqId readId = getValue(me.prototype, ReadId());
     setMinErrors(me.ctx, readId, matchErrors);
 }
 

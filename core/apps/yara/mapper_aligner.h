@@ -159,11 +159,11 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
 
     if (isInvalid(match)) return;
 
-    unsigned errors = getErrors(match);
+    unsigned errors = getValue(match, Errors());
     TReadSeq const & readSeq = me.readSeqs[getReadSeqId(match, me.readSeqs)];
-    TContigInfix const & contigInfix = infix(me.contigSeqs[getContigId(match)],
-                                             getContigBegin(match),
-                                             getContigEnd(match));
+    TContigInfix const & contigInfix = infix(me.contigSeqs[getValue(match, ContigId())],
+                                             getValue(match, ContigBegin()),
+                                             getValue(match, ContigEnd()));
 
     clear(me.contigAnchors);
     clear(me.readAnchors);
@@ -187,9 +187,9 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.
 //    me.cigarSet[getReadId(match)] = me.cigar;
-    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getReadId(match)]));
-    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getReadId(match)], Standard()));
-    assignValue(me.cigarLimits, getReadId(match) + 1, length(me.cigar));
+    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getValue(match, ReadId())]));
+    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getValue(match, ReadId())], Standard()));
+    assignValue(me.cigarLimits, getValue(match, ReadId()) + 1, length(me.cigar));
 
 //    clear(me.md);
 //    getMDString(me.md, contigGaps, readGaps);
