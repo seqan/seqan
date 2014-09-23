@@ -175,7 +175,14 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     // Do not align if the match contains no gaps.
     // TODO(esiragusa): reuse DP matrix.
     if (!(errors == 0 || (errors == 1 && length(contigInfix) == length(readSeq))))
-        dpErrors = -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
+    {
+//        dpErrors = -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
+
+        dpErrors = globalAlignment(contigGaps, readGaps,
+                                   Score<int>(0, -999, -1001, -1000),
+                                   AlignConfig<true, false, false, true>(),
+                                   -(int)errors, (int)errors, Gotoh()) / -999;
+    }
 
     SEQAN_ASSERT_EQ(dpErrors, (int)errors);
     ignoreUnusedVariableWarning(dpErrors);
