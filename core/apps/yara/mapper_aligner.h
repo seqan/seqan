@@ -182,7 +182,7 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     {
 //        dpErrors = -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
 
-        dpErrors = globalAlignment(contigGaps, readGaps,
+        dpErrors = globalAlignment(readGaps, contigGaps,
                                    Score<int>(0, -999, -1001, -1000),
                                    AlignConfig<true, false, false, true>(),
                                    -(int)errors, (int)errors, Gotoh()) / -999;
