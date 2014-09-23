@@ -72,7 +72,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed4_record)
     append(test, "II\t999\t1000\tNAME2\tdata again!");
 
     // Iterator to use
-    Iterator<String<char> >::Type iter = begin(test);
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed4> record;
@@ -102,7 +102,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
     append(test, "II\t999\t1000\tNAME2\t2e5\tdata again!");
 
     // Iterator to use
-    Iterator<String<char> >::Type iter = begin(test);
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed5> record;
@@ -134,7 +134,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
     append(test, "II\t999\t1000\tNAME2\t2e5\t.\tdata again!");
 
     // Iterator to use
-    Iterator<String<char> >::Type iter = begin(test);
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed6> record;
@@ -168,7 +168,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     append(test, "II\t999\t1000\tNAME2\t2e5\t.\t44\t55\t0,0,0\t3\t3,4,5\t4,5,6\tdata again!");
 
     // Iterator to use
-    Iterator<String<char> >::Type iter = begin(test);
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed12> record;
