@@ -480,14 +480,14 @@ template <typename TFileType, typename TSpec, typename TPosition>
 inline bool
 setPosition(SmartFile<TFileType, Output, TSpec> & file, TPosition pos)
 {
-    return file.stream.rdbuf()->pubseekpos(pos, std::ios_base::out) == pos;
+    return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::out) == pos;
 }
 
 template <typename TFileType, typename TSpec, typename TPosition>
 inline bool
 setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
 {
-    return file.stream.rdbuf()->pubseekpos(pos, std::ios_base::in) == pos;
+    return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::in) == pos;
 }
 
 // ----------------------------------------------------------------------------

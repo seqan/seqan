@@ -388,7 +388,6 @@ public:
     String<DecompressionJob>    jobs;
     TJobQueue                   runningQueue;
     TJobQueue                   todoQueue;
-    String<int>                 idleQueue;
     int                         currentJobId;
 
     struct DecompressionThread
@@ -407,11 +406,9 @@ public:
                 int jobId = -1;
                 if (!popFront(jobId, streamBuf->todoQueue))
                     return;
-                if (jobId <0)
-                jobId = -1;
 
                 DecompressionJob &job = streamBuf->jobs[jobId];
-                size_t tailLen;
+                size_t tailLen = 0;
 
                 // typically the idle queue contains only ready jobs
                 // however, if seek() fast forwards running jobs into the todoQueue
@@ -420,7 +417,10 @@ public:
                 {
                     ScopedLock<CriticalSection> lock(job.cs);
                     if (!job.ready)
+                    {
                         waitFor(job.readyEvent);
+                        job.ready = true;
+                    }
                 }
 
                 {
@@ -495,7 +495,7 @@ public:
                     }
                 }
 
-                if (streamBuf->serializer.fileOfs != -1)
+                if (!job.ready)
                 {
                     // decompress block
                     job.size = _decompressBlock(
