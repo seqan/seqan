@@ -433,7 +433,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0x120);
+    SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
@@ -457,13 +457,19 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
         appendValue(recs, seqan::Pair<off_t, int>(ofs, record.beginPos));
     }
 
-    for (size_t i = 0; i < 2000; ++i)
+    for (size_t j = 0; j < length(recs); ++j)
+    {
+        setPosition(bamFile, recs[j].i1);
+        readRecord(record, bamFile);
+        SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
+    }
+
+    for (size_t i = 0; i < 10000; ++i)
     {
         long j = random() % length(recs);
         setPosition(bamFile, recs[j].i1);
         readRecord(record, bamFile);
         SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
-//        std::cout << std::hex << recs[j] << std::endl;
     }
 }
 
