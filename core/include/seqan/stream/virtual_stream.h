@@ -265,7 +265,8 @@ public:
         open(*this, stream);
     }
 
-    VirtualStream(const char *fileName, int openMode):
+    VirtualStream(const char *fileName,
+                  int openMode = DefaultOpenMode<VirtualStream>::VALUE):
         TStream(NULL),
         streamBuf(),
         context()
