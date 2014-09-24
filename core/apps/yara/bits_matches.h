@@ -311,8 +311,8 @@ inline void setReadId(Match<TSpec> & me, TReadSeqs const & readSeqs, TReadSeqId 
     me.isRev = isRevReadSeq(readSeqs, readSeqId);
 }
 
-template <typename TSpec, typename TContigPos>
-inline void setContigPosition(Match<TSpec> & me, TContigPos contigBegin, TContigPos contigEnd)
+template <typename TSpec, typename TContigBegin, typename TContigEnd>
+inline void setContigPosition(Match<TSpec> & me, TContigBegin contigBegin, TContigEnd contigEnd)
 {
     SEQAN_ASSERT_EQ(getValueI1(contigBegin), getValueI1(contigEnd));
     SEQAN_ASSERT_LT(getValueI2(contigBegin), getValueI2(contigEnd));
