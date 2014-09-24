@@ -434,6 +434,8 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 template <typename TValue, typename TStream, typename TCompressionType>
 inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
 {
+    // peek the first character to initialize the underlying streambuf
+    fileStream.rdbuf()->sgetc();
     return guessFormatFromStream(fileStream, compressionType);
 }
 
