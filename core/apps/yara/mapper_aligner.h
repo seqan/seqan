@@ -37,6 +37,36 @@
 
 using namespace seqan;
 
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countLeadingGaps(TGaps const & gaps)
+{
+    return toViewPosition(gaps, 0);
+}
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countTrailingGaps(TGaps const & gaps)
+{
+    return length(gaps) - toViewPosition(gaps, length(source(gaps)) - 1) - 1;
+}
+
+template <typename TGlobalGaps, typename TLocalGaps>
+inline void clipSemiGlobal(TGlobalGaps & global, TLocalGaps & local)
+{
+    typedef typename Size<TLocalGaps>::Type  TGapsSize;
+
+    TGapsSize leadingGaps = countLeadingGaps(local);
+    TGapsSize trailingGaps = countTrailingGaps(local);
+    TGapsSize globalLenght = length(global);
+    TGapsSize localLength = length(local);
+
+    setClippedBeginPosition(global, leadingGaps);
+    setClippedBeginPosition(local, leadingGaps);
+    setClippedEndPosition(global, globalLenght - trailingGaps);
+    setClippedEndPosition(local, localLength - trailingGaps);
+}
+
 // ============================================================================
 // Classes
 // ============================================================================
@@ -67,16 +97,16 @@ struct MatchesAligner
     // Shared-memory read-write data.
     TCigarSet &             cigarSet;
     TCigarLimits &          cigarLimits;
+    TMatches &              matches;
 
     // Shared-memory read-only data.
-    TMatches const &        matches;
     TContigSeqs const &     contigSeqs;
     TReadSeqs const &       readSeqs;
     Options const &         options;
 
     MatchesAligner(TCigarSet & cigarSet,
                    TCigarLimits & cigarLimits,
-                   TMatches const & matches,
+                   TMatches & matches,
                    TContigSeqs const & contigSeqs,
                    TReadSeqs const & readSeqs,
                    Options const & options) :
@@ -91,7 +121,7 @@ struct MatchesAligner
     }
 
     template <typename TMatch>
-    void operator() (TMatch const & match)
+    void operator() (TMatch & match)
     {
         _alignMatchImpl(*this, match);
     }
@@ -144,9 +174,9 @@ inline void _alignMatches(MatchesAligner<TSpec, Traits> & me)
 // Aligns one match.
 
 template <typename TSpec, typename Traits, typename TMatchIt>
-inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const & matchIt)
+inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & matchIt)
 {
-    typedef typename Value<TMatchIt const>::Type    TMatch;
+    typedef typename Value<TMatchIt>::Type          TMatch;
     typedef typename Traits::TContigSeqs            TContigSeqs;
     typedef typename Value<TContigSeqs const>::Type TContigSeq;
     typedef typename Infix<TContigSeq>::Type        TContigInfix;
@@ -159,15 +189,15 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     typedef Gaps<TContigInfix, TAnchorGaps>         TContigGaps;
     typedef Gaps<TReadSeq, TAnchorGaps>             TReadGaps;
 
-    TMatch const & match = value(matchIt);
+    TMatch & match = value(matchIt);
 
     if (isInvalid(match)) return;
 
-    unsigned errors = getValue(match, Errors());
+    unsigned errors = getMember(match, Errors());
     TReadSeq const & readSeq = me.readSeqs[getReadSeqId(match, me.readSeqs)];
-    TContigInfix const & contigInfix = infix(me.contigSeqs[getValue(match, ContigId())],
-                                             getValue(match, ContigBegin()),
-                                             getValue(match, ContigEnd()));
+    TContigInfix const & contigInfix = infix(me.contigSeqs[getMember(match, ContigId())],
+                                             getMember(match, ContigBegin()),
+                                             getMember(match, ContigEnd()));
 
     clear(me.contigAnchors);
     clear(me.readAnchors);
@@ -182,10 +212,38 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     {
 //        dpErrors = -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
 
-        dpErrors = globalAlignment(readGaps, contigGaps,
-                                   Score<int>(0, -999, -1001, -1000),
-                                   AlignConfig<true, false, false, true>(),
+        dpErrors = globalAlignment(contigGaps, readGaps,
+                                   Score<int>(0, -999, -1001, -1000),           // Match, mismatch, extend, open.
+                                   AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
                                    -(int)errors, (int)errors, Gotoh()) / -999;
+
+        if (me.options.verbose > 1 && countLeadingGaps(readGaps))
+        {
+            typedef Align<Dna5String, ArrayGaps>  TAlign;
+
+            TAlign align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), contigInfix);
+            assignSource(row(align, 1), readSeq);
+
+            globalAlignment(align,
+                            Score<int>(0, -999, -1001, -1000),           // Match, mismatch, extend, open.
+                            AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+                            -(int)errors, (int)errors, Gotoh());
+
+            std::cout << align << std::endl << std::endl;
+
+            std::cout << "Leading gaps: " <<  countLeadingGaps(row(align, 0)) << " : " << countLeadingGaps(row(align, 1)) << std::endl;
+            std::cout << "Trailing gaps: " <<  countTrailingGaps(row(align, 0)) << " : " << countTrailingGaps(row(align, 1)) << std::endl;
+
+            clipSemiGlobal(row(align, 0), row(align, 1));
+            std::cout << align << std::endl << std::endl;
+        }
+
+        match.contigBegin += clippedBeginPosition(contigGaps);
+        match.contigEnd += clippedBeginPosition(contigGaps);
+//        setContigPosition(match, getMember(match, ContigBegin()) + clippedBeginPosition(readGaps), getMember(match, ContigEnd()));
+        clipSemiGlobal(contigGaps, readGaps);
     }
 
     SEQAN_ASSERT_EQ(dpErrors, (int)errors);
@@ -198,9 +256,9 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.
 //    me.cigarSet[getReadId(match)] = me.cigar;
-    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getValue(match, ReadId())]));
-    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getValue(match, ReadId())], Standard()));
-    assignValue(me.cigarLimits, getValue(match, ReadId()) + 1, length(me.cigar));
+    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getMember(match, ReadId())]));
+    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getMember(match, ReadId())], Standard()));
+    assignValue(me.cigarLimits, getMember(match, ReadId()) + 1, length(me.cigar));
 
 //    clear(me.md);
 //    getMDString(me.md, contigGaps, readGaps);
