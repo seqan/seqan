@@ -46,6 +46,12 @@
 #include <fstream>
 #include <sstream>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifndef PLATFORM_WINDOWS
+#include <unistd.h>
+#endif
+
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>

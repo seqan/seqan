@@ -170,21 +170,13 @@ struct SmartFile
     static std::vector<std::string>
     getFileFormatExtensions()
     {
-        std::vector<std::string> formatExtensions;
-        std::vector<std::string> compressionExtensions;
         std::vector<std::string> extensions;
 
-        _getFileFormatExtensions(formatExtensions, TFileFormat(), IsSameType<TDirection, Output>::VALUE);                               // allow show only primary extensions for output
-        _getFileFormatExtensions(compressionExtensions, typename FileFormat<TStream>::Type(), IsSameType<TDirection, Output>::VALUE);   // allow show only primary extensions for output
-
-        // compute cartesian product of extensions
-        for (size_t i = 0; i < length(compressionExtensions); ++i)
-        {
-            size_t ii = (i == 0)? length(compressionExtensions) - 1 : i - 1;    // swap first and last compression extension
-            for (size_t j = 0; j < length(formatExtensions); ++j)
-                extensions.push_back(formatExtensions[j] + compressionExtensions[ii]);
-        }
-
+        _getCompressionExtensions(extensions,
+                                  TFileFormat(),
+                                  typename FileFormat<TStream>::Type(),
+                                  true);
+//                                  IsSameType<TDirection, Output>::VALUE);
         return extensions;
     }
 };
@@ -423,17 +415,28 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
-    if (!guessFormatFromFilename(basename, file.format))
+    if (IsSameType<TDirection, Input>::VALUE && _isPipe(fileName))
     {
-        close(file.stream);
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownExtensionError(fileName));
-        return false;
+        if (!guessFormat(file))
+        {
+            if (TThrowExceptions::VALUE)                        // read from a pipe (without file extension)
+                SEQAN_THROW(UnknownFileFormat());
+            return false;
+        }
+    }
+    else
+    {
+        Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
+        if (!guessFormatFromFilename(basename, file.format))    // read/write from/to a file (with extension)
+        {
+            close(file.stream);
+            if (TThrowExceptions::VALUE)
+                SEQAN_THROW(UnknownExtensionError(fileName));
+            return false;
+        }
     }
 
     file.iter = directionIterator(file.stream, TDirection());
-
     return true;
 }
 
@@ -517,6 +520,81 @@ context(SmartFile<TFileType, TDirection, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function getFileFormatExtensions()
 // ----------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Function _getFileFormatExtensions()
+// --------------------------------------------------------------------------
+
+template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    Tag<TFormat_> const & /*formatTag*/,
+    TCompressionFormats const & compress,
+    bool primaryExtensionOnly,
+    Nothing)
+{
+    typedef Tag<TFormat_> TFormat;
+
+    std::vector<std::string> compressionExtensions;
+    _getFileFormatExtensions(compressionExtensions, compress, primaryExtensionOnly);
+
+    unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*);
+    for (unsigned i = 0; i < len; ++i)
+        for (unsigned j = 0; j < compressionExtensions.size(); ++j)
+        {
+            size_t jj = (j == 0)? compressionExtensions.size() - 1 : j - 1;    // swap first and last compression extension
+            appendValue(stringSet, (std::string)FileFormatExtensions<TFormat>::VALUE[i] + compressionExtensions[jj]);
+        }
+}
+
+template <typename TStringSet, typename TFormat_, typename TCompressionFormats, typename TCompression_>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    Tag<TFormat_> const & formatTag,
+    TCompressionFormats const &,
+    bool primaryExtensionOnly,
+    Tag<TCompression_>)
+{
+    _getFileFormatExtensions(stringSet, formatTag, primaryExtensionOnly);
+}
+
+template <typename TStringSet, typename TTag, typename TCompressionFormats>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    TagList<TTag, void> const & /*formatTag*/,
+    TCompressionFormats const & compress,
+    bool primaryExtensionOnly = false)
+{
+    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly, _mapFileFormatToCompressionFormat(TTag()));
+}
+
+template <typename TStringSet, typename TTag, typename TSubList, typename TCompressionFormats>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    TagList<TTag, TSubList> const & /*formatTag*/,
+    TCompressionFormats const & compress,
+    bool primaryExtensionOnly = false)
+{
+    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly, _mapFileFormatToCompressionFormat(TTag()));
+    _getCompressionExtensions(stringSet, TSubList(), compress, primaryExtensionOnly);
+}
+
+template <typename TStringSet, typename TTagList, typename TCompressionFormats>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    TagSelector<TTagList> const & /*formatTag*/,
+    TCompressionFormats const & compress,
+    bool primaryExtensionOnly = false)
+{
+    _getCompressionExtensions(stringSet, TTagList(), compress, primaryExtensionOnly);
+}
+
+
 
 template <typename TFileType, typename TDirection, typename TSpec>
 static std::vector<std::string>

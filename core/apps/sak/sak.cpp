@@ -103,18 +103,24 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 
     // Parse out begin position.
     seqan::CharString buffer;
-    readUntil(buffer, reader, EqualsChar<'-'>(), EqualsChar<','>());
+    readUntil(buffer, reader, seqan::EqualsChar<'-'>(), seqan::EqualsChar<','>());
     if (!lexicalCast(beginPos, buffer))
         return false;
 
-    if (atEnd(iter))
-        return true;
+    if (atEnd(reader))
+        return false;
 
-    skipOne(iter);  // Skip '-'.
+    skipOne(reader);    // Skip '-'.
 
     // Parse out end position.
     clear(buffer);
-    readUntil(buffer, reader, False(), EqualsChar<','>());
+    readUntil(buffer, reader, seqan::False(), seqan::EqualsChar<','>());
+
+    if (empty(buffer))
+    {
+        endPos = seqan::maxValue<TNum>();
+        return true;
+    }
 
     if (!lexicalCast(endPos, buffer))
         return false;
