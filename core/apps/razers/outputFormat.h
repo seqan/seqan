@@ -520,7 +520,7 @@ void dumpMatches(
 	TReads const &reads,
 	TCounts & stats,							// Match statistics (possibly empty)
 	TReadNames const &readIDs,					// Read names (read from Fasta file, currently unused)
-	CharString readFName,					// read name (e.g. "reads.fa"), used for file/read naming
+	CharString readFName,                       // read name (e.g. "reads.fa"), used for file/read naming
 	CharString errorPrbFileName,
 	RazerSOptions<TSpec> &options)
 {
@@ -600,14 +600,17 @@ void dumpMatches(
 		scoreType.data_mismatch = -1;
 	resize(rows(align), 2);
 
-	::std::ofstream file;
+    VirtualStream<char, Output> file;
+    bool success;
+    if (!isEqual(options.output, "-"))
+        success = open(file, toCString(options.output));
+    else
+        success = open(file, std::cout, Nothing());
 
-	file.open(toCString(toCString(options.output)), ::std::ios_base::out | ::std::ios_base::trunc);
-	if (!file.is_open()) {
+	if (!success) {
 		::std::cerr << "Failed to open output file" << ::std::endl;
 		return;
 	}
-
 	
 #ifdef RAZERS_SPLICED
 	//maskPairDuplicates(matches);
@@ -1202,11 +1205,12 @@ void dumpMatches(
 			break;
 	}
 
-	file.close();
+	close(file);
 
 	// get empirical error distribution
 	if (!empty(errorPrbFileName) && maxReadLength > 0)
 	{
+        std::ofstream file;
 		file.open(toCString(errorPrbFileName), ::std::ios_base::out | ::std::ios_base::trunc);
 		if (file.is_open())
 		{
