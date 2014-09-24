@@ -741,6 +741,50 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 */
 
 // ----------------------------------------------------------------------------
+// Function countLeadingGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countLeadingGaps
+ * @brief The number of leading gaps.
+ *
+ * @signature TSize countLeadingGaps(gaps);
+ *
+ * @param[in] gaps    The Gaps object to query.
+ *
+ * @return TSize The number of leading gap characters  (Metafunction: @link ContainerConcept#Size @endlink).
+ */
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countLeadingGaps(TGaps const & gaps)
+{
+    return toViewPosition(gaps, 0);
+}
+
+// ----------------------------------------------------------------------------
+// Function countTrailingGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countTrailingGaps
+ * @brief The number of trailing gaps.
+ *
+ * @signature TSize countTrailingGaps(gaps);
+ *
+ * @param[in] gaps    The Gaps object to query.
+ *
+ * @return TSize The number of trailing gap characters  (Metafunction: @link ContainerConcept#Size @endlink).
+ */
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countTrailingGaps(TGaps const & gaps)
+{
+    return length(gaps) - toViewPosition(gaps, length(source(gaps)) - 1) - 1;
+}
+
+// ----------------------------------------------------------------------------
 // Function countCharacters()
 // ----------------------------------------------------------------------------
 
@@ -1432,6 +1476,38 @@ void copyClipping(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSour
 {
     setClippedBeginPosition(dest, clippedBeginPosition(source));
     setClippedEndPosition(dest, clippedEndPosition(source));
+}
+
+// ----------------------------------------------------------------------------
+// Function clipSemiGlobal()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#clipSemiGlobal
+ * @brief Clip the Gaps objects to reflect a semi-global alignment.
+ *
+ * Leading and trailing gaps are clipped in the local Gaps object. The global Gaps object is updated accordingly.
+ *
+ * @signature void clipSemiGlobal(global, local);
+ *
+ * @param[in,out] global The global Gaps object.
+ * @param[in,out] local  The local Gaps object.
+ */
+
+template <typename TGlobalGaps, typename TLocalGaps>
+inline void clipSemiGlobal(TGlobalGaps & global, TLocalGaps & local)
+{
+    typedef typename Size<TLocalGaps>::Type  TGapsSize;
+
+    TGapsSize leadingGaps = countLeadingGaps(local);
+    TGapsSize trailingGaps = countTrailingGaps(local);
+    TGapsSize globalLenght = length(global);
+    TGapsSize localLength = length(local);
+
+    setClippedBeginPosition(global, leadingGaps);
+    setClippedBeginPosition(local, leadingGaps);
+    setClippedEndPosition(global, globalLenght - trailingGaps);
+    setClippedEndPosition(local, localLength - trailingGaps);
 }
 
 // ----------------------------------------------------------------------------
