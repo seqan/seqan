@@ -90,15 +90,14 @@ char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's
 template <typename T>
 struct FileFormatExtensions<GZFile, T>
 {
-    static char const * VALUE[3];
+    static char const * VALUE[2];
 };
 
 template <typename T>
-char const * FileFormatExtensions<GZFile, T>::VALUE[3] =
+char const * FileFormatExtensions<GZFile, T>::VALUE[2] =
 {
     ".gz",      // default output extension
-    ".Z",
-    ".zip"
+    ".z"
 };
 
 

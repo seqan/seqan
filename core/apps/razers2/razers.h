@@ -110,6 +110,8 @@ namespace SEQAN_NAMESPACE_MAIN
 	// misc
 		unsigned	compactThresh;		// compact match array if larger than compactThresh
 
+        SeqFileIn   readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
+
 	// multi-threading
 
 		RazerSOptions() 
