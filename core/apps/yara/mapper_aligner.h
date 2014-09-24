@@ -37,36 +37,6 @@
 
 using namespace seqan;
 
-template <typename TGaps>
-inline typename Size<TGaps>::Type
-countLeadingGaps(TGaps const & gaps)
-{
-    return toViewPosition(gaps, 0);
-}
-
-template <typename TGaps>
-inline typename Size<TGaps>::Type
-countTrailingGaps(TGaps const & gaps)
-{
-    return length(gaps) - toViewPosition(gaps, length(source(gaps)) - 1) - 1;
-}
-
-template <typename TGlobalGaps, typename TLocalGaps>
-inline void clipSemiGlobal(TGlobalGaps & global, TLocalGaps & local)
-{
-    typedef typename Size<TLocalGaps>::Type  TGapsSize;
-
-    TGapsSize leadingGaps = countLeadingGaps(local);
-    TGapsSize trailingGaps = countTrailingGaps(local);
-    TGapsSize globalLenght = length(global);
-    TGapsSize localLength = length(local);
-
-    setClippedBeginPosition(global, leadingGaps);
-    setClippedBeginPosition(local, leadingGaps);
-    setClippedEndPosition(global, globalLenght - trailingGaps);
-    setClippedEndPosition(local, localLength - trailingGaps);
-}
-
 // ============================================================================
 // Classes
 // ============================================================================
@@ -179,6 +149,7 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
     typedef typename Value<TMatchIt>::Type          TMatch;
     typedef typename Traits::TContigSeqs            TContigSeqs;
     typedef typename Value<TContigSeqs const>::Type TContigSeq;
+    typedef typename StringSetPosition<TContigSeqs const>::Type TContigPos;
     typedef typename Infix<TContigSeq>::Type        TContigInfix;
 
     typedef typename Traits::TReadSeqs              TReadSeqs;
@@ -217,33 +188,14 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
                                    AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
                                    -(int)errors, (int)errors, Gotoh()) / -999;
 
-        if (me.options.verbose > 1 && countLeadingGaps(readGaps))
-        {
-            typedef Align<Dna5String, ArrayGaps>  TAlign;
-
-            TAlign align;
-            resize(rows(align), 2);
-            assignSource(row(align, 0), contigInfix);
-            assignSource(row(align, 1), readSeq);
-
-            globalAlignment(align,
-                            Score<int>(0, -999, -1001, -1000),           // Match, mismatch, extend, open.
-                            AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
-                            -(int)errors, (int)errors, Gotoh());
-
-            std::cout << align << std::endl << std::endl;
-
-            std::cout << "Leading gaps: " <<  countLeadingGaps(row(align, 0)) << " : " << countLeadingGaps(row(align, 1)) << std::endl;
-            std::cout << "Trailing gaps: " <<  countTrailingGaps(row(align, 0)) << " : " << countTrailingGaps(row(align, 1)) << std::endl;
-
-            clipSemiGlobal(row(align, 0), row(align, 1));
-            std::cout << align << std::endl << std::endl;
-        }
-
-        match.contigBegin += clippedBeginPosition(contigGaps);
-        match.contigEnd += clippedBeginPosition(contigGaps);
-//        setContigPosition(match, getMember(match, ContigBegin()) + clippedBeginPosition(readGaps), getMember(match, ContigEnd()));
         clipSemiGlobal(contigGaps, readGaps);
+
+        // Shrink the match after realigning and clipping.
+        TContigPos contigBegin(getMember(match, ContigId()), getMember(match, ContigBegin()));
+        contigBegin = posAdd(contigBegin, clippedBeginPosition(readGaps));
+        TContigPos contigEnd = contigBegin;
+        contigEnd = posAdd(contigEnd, length(readGaps));
+        setContigPosition(match, contigBegin, contigEnd);
     }
 
     SEQAN_ASSERT_EQ(dpErrors, (int)errors);
