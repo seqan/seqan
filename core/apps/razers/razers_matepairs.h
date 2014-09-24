@@ -111,18 +111,23 @@ template <typename TReadSet, typename TNameSet, typename TRazerSOptions>
 bool loadReads(
 	TReadSet &reads,			// resulting mate sequences
 	TNameSet &fastaIDs,			// resulting mate ids
-	const char *fileNameL,		// left mates file
+	SeqFileIn &leftMates,		// left mates file
 	const char *fileNameR,		// right mates file
 	TRazerSOptions &options)
 {
 	bool countN = !(options.matchN || options.outputFormat == 1);
 
-    SeqFileIn leftMates;
     SeqFileIn rightMates;
 
-	if (!open(leftMates, fileNameL)) return false;
-	if (!open(rightMates, fileNameR)) return false;
-	
+    bool success;
+    if (!isEqual(fileNameR, "-"))
+        success = open(rightMates, fileNameR);
+    else
+        success = open(rightMates, std::cin);
+
+    if (!success)
+        return false;
+
 	CharString fastaId[2];
 	String<Dna5Q> seq[2];
 	CharString qual[2];
@@ -192,7 +197,7 @@ bool loadReads(
 	sa.i1 = ~sa.i1;
 	sa.i2 = ~sa.i2;
 	
-    bool success = true;
+    success = true;
 	if ((unsigned)sa.i1 < length(reads) - 1)
 	{
 		::std::cerr << "Maximal read number of " << (unsigned)sa.i1 + 1 << " exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;

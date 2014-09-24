@@ -434,6 +434,8 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 template <typename TValue, typename TStream, typename TCompressionType>
 inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
 {
+    // peek the first character to initialize the underlying streambuf
+    fileStream.rdbuf()->sgetc();
     return guessFormatFromStream(fileStream, compressionType);
 }
 
@@ -565,10 +567,10 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream,
         return false;
 
     // detect compression type from file extension
-    assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
+    assign(stream.format, typename FileFormat<TVirtualStream>::Type());
 
     if (IsSameType<TDirection, Input>::VALUE && _isPipe(fileName))
-        _guessFormat(stream, stream.file, stream.format);       // read from a pipe (without file extension)
+        open(stream, stream.file, stream.format);               // read from a pipe (without file extension)
     else
         guessFormatFromFilename(fileName, stream.format);       // read/write from/to a file (with extension)
 

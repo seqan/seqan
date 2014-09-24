@@ -157,6 +157,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		String<VerificationTask_, MMap<> > verifications;
 
+        SeqFileIn   readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
+
 		RazerSOptions() 
 		{
 			forward = true;
@@ -474,16 +476,13 @@ template <typename TReadSet, typename TNameSet, typename TRazerSOptions>
 bool loadReads(
 	TReadSet &reads, 
 	TNameSet &fastaIDs, 
-	const char *fileName, 
+	SeqFileIn &seqFile,
 	TRazerSOptions &options)
 {
 	bool countN = !(options.matchN || options.outputFormat == 1);
 #ifdef RAZERS_MICRO_RNA
 	if(options.microRNA) countN = false;
 #endif
-
-	SeqFileIn seqFile;
-	if (!open(seqFile, fileName)) return false;
 
 	CharString fastaId;
 	String<Dna5Q> seq;
@@ -579,19 +578,26 @@ bool loadReads(
 //////////////////////////////////////////////////////////////////////////////
 // Read the first sequence of a multi-sequence file
 // and return its length
-inline int estimateReadLength(char const *fileName)
+inline int estimateReadLength(SeqFileIn &seqFile)
 {
-	SeqFileIn seqFile;
-	if (!open(seqFile, fileName))	// open the whole file
-		return RAZERS_READS_FAILED;
-
 	if (atEnd(seqFile))
 		return 0;
 
-    CharString fastaId, seq;
-    readRecord(fastaId, seq, seqFile);
+    typedef String<char, Array<1000> > TBuffer;
 
-	return length(seq);
+    // read chunk into buffer
+    TBuffer buffer;
+    resize(buffer, capacity(buffer));
+    size_t len = seqFile.stream.readsome(&buffer[0], length(buffer));
+    for (size_t i = 0; i < len; ++i)
+        seqFile.stream.unget();
+    resize(buffer, len);
+
+    // parse record from buffer
+    typename DirectionIterator<TBuffer, Input>::Type iter = directionIterator(buffer, Input());
+    CharString fastaId, seq;
+    readRecord(fastaId, seq, iter, seqFile.format);
+    return length(seq);
 }
 
 
