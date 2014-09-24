@@ -118,11 +118,7 @@ inline void _alignMatches(MatchesAligner<TSpec, Traits> & me)
     resize(cigarLimits, length(me.matches) + 1, Exact());
     front(cigarLimits) = 0;
     TCigarSuffix const & cigarSuffix = suffix(cigarLimits, 1);
-    transform(cigarSuffix, me.matches, [&](Match<void> const & match)
-    {
-        return 2 * getCigarLength<void>(match);
-    },
-    typename Traits::TThreading());
+    transform(cigarSuffix, me.matches, getCigarLength<void>, typename Traits::TThreading());
 
     // Bucket the cigar set.
     partialSum(cigarLimits, typename Traits::TThreading());
