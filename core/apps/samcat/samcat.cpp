@@ -35,8 +35,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
-#include <seqan/misc/misc_name_store_cache.h>
-
 #include <seqan/arg_parse.h>
 
 #include <iostream>
@@ -153,13 +151,14 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");
 #if SEQAN_HAS_ZLIB
     setShortDescription(parser, "SAM/BAM file concatenation and conversion");
-    addDescription(parser, "This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. "
-                           "If the output file name is ommitted the result is written to standard output.");
+    addDescription(parser, "This tool reads a set of input files in SAM or BAM format "
 #else
     setShortDescription(parser, "SAM file concatenation and conversion");
-    addDescription(parser, "This tool reads a set of input files in SAM format and outputs the concatenation of them. "
-                           "If the output file name is ommitted the result is written to standard output.");
+    addDescription(parser, "This tool reads a set of input files in SAM format "
 #endif
+                           "and outputs the concatenation of them. "
+                           "If the output file name is ommitted the result is written to stdout.");
+
     addDescription(parser, "(c) Copyright 2014 by David Weese.");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
@@ -242,6 +241,5 @@ int main(int argc, char const ** argv)
     }
 
     mergeBamFiles(writer, options.inFiles, options);
-
     return 0;
 }

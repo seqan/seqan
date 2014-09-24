@@ -416,24 +416,6 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
                   int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
-    // Allow file to be a pipe (guess format from content)
-    bool autoDetectFromContent = false;
-    {
-#ifdef PLATFORM_WINDOWS
-        struct _stat buf;
-        if (_stat(value.c_str(), &buf) == 0)
-#else
-        struct stat buf;
-        if (stat(value.c_str(), &buf) == 0)
-#endif
-        {
-            if (buf.st_mode & S_IFMT == S_IFIFO)
-                autoDetectFromContent = true;
-        }
-    }
-
-
-
     if (!open(file.stream, fileName, openMode))
     {
         if (TThrowExceptions::VALUE)
@@ -441,17 +423,28 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         return false;
     }
 
-    Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
-    if (!guessFormatFromFilename(basename, file.format))
+    if (IsSameType<TDirection, Input>::VALUE && _isPipe(fileName))
     {
-        close(file.stream);
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownExtensionError(fileName));
-        return false;
+        if (!guessFormat(file))
+        {
+            if (TThrowExceptions::VALUE)                        // read from a pipe (without file extension)
+                SEQAN_THROW(UnknownFileFormat());
+            return false;
+        }
+    }
+    else
+    {
+        Prefix<const char *>::Type basename = _getUncompressedBasename(fileName, format(file.stream));
+        if (!guessFormatFromFilename(basename, file.format))    // read/write from/to a file (with extension)
+        {
+            close(file.stream);
+            if (TThrowExceptions::VALUE)
+                SEQAN_THROW(UnknownExtensionError(fileName));
+            return false;
+        }
     }
 
     file.iter = directionIterator(file.stream, TDirection());
-
     return true;
 }
 
