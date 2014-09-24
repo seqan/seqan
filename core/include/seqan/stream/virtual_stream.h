@@ -34,6 +34,7 @@
 // Virtual stream class to automatically compress/decompress files/streams.
 // It adapts the zipstream and bzip2stream classes (Jonathan de Halleux, 2003)
 // http://www.codeproject.com/Articles/4457/zipstream-bzip2stream-iostream-wrappers-for-the-zl
+// and our own implementation of a parallel bgzfstream.
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_VIRTUAL_STREAM_
@@ -426,47 +427,6 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
     return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
 }
 
-// --------------------------------------------------------------------------
-// Function guessFormat()
-// --------------------------------------------------------------------------
-
-// read first bytes of a file/stream and compare with file format's magic header
-template <typename TStream, typename TFormat_>
-inline bool
-guessFormatFromStream(TStream &istream, Tag<TFormat_>)
-{
-    typedef Tag<TFormat_> TFormat;
-
-    SEQAN_ASSERT(istream.good());
-
-    if (MagicHeader<TFormat>::VALUE == NULL)
-        return true;
-
-    bool match = true;
-
-    // check magic header
-    unsigned i;
-    for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / sizeof(char); ++i)
-    {
-        int c = (int)istream.get();
-        if (c != (unsigned char)MagicHeader<TFormat>::VALUE[i])
-        {
-            match = false;
-            if (c != EOF)
-                ++i;
-            break;
-        }
-    }
-
-    // unget all read characters
-    for (; i > 0; --i)
-        istream.unget();
-
-    SEQAN_ASSERT(istream.good());
-
-    return match;
-}
-
 // ----------------------------------------------------------------------------
 // _guessFormat wrapper
 // ----------------------------------------------------------------------------
@@ -606,7 +566,11 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream,
 
     // detect compression type from file extension
     assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
-    guessFormatFromFilename(fileName, stream.format);
+
+    if (IsSameType<TDirection, Input>::VALUE && _isPipe(fileName))
+        _guessFormat(stream, stream.file, stream.format);       // read from a pipe (without file extension)
+    else
+        guessFormatFromFilename(fileName, stream.format);       // read/write from/to a file (with extension)
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(stream.file);
 
