@@ -73,7 +73,7 @@ struct AppOptions
 // --------------------------------------------------------------------------
 
 template <typename TWriter>
-void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
+void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
     String<BamFileIn *> readerPtr;
     resize(readerPtr, length(inFiles));
@@ -240,6 +240,6 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    mergeBamFiles(writer, options.inFiles, options);
+    catBamFiles(writer, options.inFiles, options);
     return 0;
 }
