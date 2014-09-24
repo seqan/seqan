@@ -131,6 +131,73 @@ char const * FileFormatExtensions<BZ2File, T>::VALUE[2] =
     ".bz"
 };
 
+// ============================================================================
+// Functions
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Function _isPipe()
+// --------------------------------------------------------------------------
+
+inline bool
+_isPipe(const char * fileName)
+{
+#ifdef PLATFORM_WINDOWS
+    struct _stat buf;
+    if (_stat(value.c_str(), &buf) == 0)
+        if ((buf.st_mode & _S_IFMT) == _S_IFCHR)
+            return true;
+#else
+    struct stat buf;
+    if (stat(fileName, &buf) == 0)
+        if ((buf.st_mode & S_IFMT) == S_IFIFO ||
+            (buf.st_mode & S_IFMT) == S_IFCHR)
+            return true;
+#endif
+    return false;
+}
+
+// --------------------------------------------------------------------------
+// Function guessFormat()
+// --------------------------------------------------------------------------
+
+// read first bytes of a file/stream and compare with file format's magic header
+template <typename TStream, typename TFormat_>
+inline bool
+guessFormatFromStream(TStream &istream, Tag<TFormat_>)
+{
+    typedef Tag<TFormat_> TFormat;
+
+    SEQAN_ASSERT(istream.good());
+
+    if (MagicHeader<TFormat>::VALUE == NULL)
+        return true;
+
+    bool match = true;
+
+    // check magic header
+    unsigned i;
+    for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / sizeof(char); ++i)
+    {
+        int c = (int)istream.get();
+        if (c != (unsigned char)MagicHeader<TFormat>::VALUE[i])
+        {
+            match = false;
+            if (c != EOF)
+                ++i;
+            break;
+        }
+    }
+
+    // unget all read characters
+    for (; i > 0; --i)
+        istream.unget();
+
+    SEQAN_ASSERT(istream.good());
+
+    return match;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_STREAM_BASE_
