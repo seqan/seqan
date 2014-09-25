@@ -379,7 +379,7 @@ bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles, A
     for (unsigned i = 0; i != length(chunkFiles); ++i)
         if (!atEnd(streamPtr[i]->reader))
         {
-            _readBamRecord(streamPtr[i]->buffer, streamPtr[i]->reader.iter);
+            _readBamRecordWithoutSize(streamPtr[i]->buffer, streamPtr[i]->reader.iter);
             queue.push(streamPtr[i]);
         }
 
@@ -393,7 +393,7 @@ bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles, A
         queue.pop();
         if (!atEnd(top->reader))
         {
-            _readBamRecord(top->buffer, top->reader.iter);
+            _readBamRecordWithoutSize(top->buffer, top->reader.iter);
             queue.push(top);
         }
     }

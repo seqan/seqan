@@ -197,6 +197,29 @@ readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 // Function readRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
+template <typename TBuffer, typename TForwardIter>
+inline void
+_readBamRecord(TBuffer & /* rawRecord */, TForwardIter & /* iter */, TagSelector<> const & /* format */)
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
+
+template <typename TBuffer, typename TForwardIter, typename TTagList>
+inline void
+_readBamRecord(TBuffer & rawRecord, TForwardIter & iter, TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        _readBamRecord(rawRecord, iter, TFormat());
+    else
+        _readBamRecord(rawRecord, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(); BamAlignmentRecord
+// ----------------------------------------------------------------------------
+
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
@@ -229,6 +252,31 @@ inline void
 readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
+}
+
+template <typename TRecords, typename TSpec, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>,
+                                IsInteger<TSize> >, TSize)
+readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxRecords)
+{
+    String<CharString> & buffers = context(file).buffers;
+    if ((TSize)length(buffers) < maxRecords)
+    {
+        resize(buffers, maxRecords, Exact());
+        resize(records, maxRecords, Exact());
+    }
+
+    TSize numRecords = 0;
+    for (; numRecords < maxRecords && !atEnd(file.iter); ++numRecords)
+        _readBamRecord(buffers[numRecords], file.iter, file.format);
+
+//    SEQAN_OMP_PRAGMA(parallel for)
+    for (int i = 0; i < (int)numRecords; ++i)
+    {
+        CharIterator bufIter = begin(buffers[i]);
+        readRecord(records[i], context(file), bufIter, file.format);
+    }
+    return numRecords;
 }
 
 // ----------------------------------------------------------------------------
@@ -318,11 +366,22 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
     write(file.iter, record, context(file), file.format);
 }
 
-template <typename TSpec>
-inline void
-writeRecords(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
+template <typename TSpec, typename TRecords>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>, void)
+writeRecords(SmartFile<Bam, Output, TSpec> & file, TRecords const & records)
 {
-    write(file.iter, record, context(file), file.format);
+    String<CharString> & buffers = context(file).buffers;
+    if (length(buffers) < length(records))
+        resize(buffers, length(records));
+
+    SEQAN_OMP_PRAGMA(parallel for)
+    for (int i = 0; i < (int)length(records); ++i)
+    {
+        clear(buffers[i]);
+        write(buffers[i], records[i], context(file), file.format);
+    }
+    for (int i = 0; i < (int)length(records); ++i)
+        write(file.iter, buffers[i]);
 }
 
 // ----------------------------------------------------------------------------

@@ -2150,10 +2150,11 @@ inline void advanceChunk(Iter<String<TValue, TStringSpec>, TSpec> &iter, TSize s
     typedef String<TValue, TStringSpec> TContainer;
     typedef Iter<TContainer, TSpec> TIter;
 
+    iter += size;
+
     TContainer &cont = container(iter);
     typename Position<TIter>::Type pos = position(iter);
 
-    iter += size;
     if (pos > length(cont))
         _setLength(cont, pos);
 }
