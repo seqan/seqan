@@ -74,13 +74,15 @@ struct AppOptions
     CharString  inFile;
     CharString  outPrefix;
     CharString  outFile;
-    size_t      maxMem;
+    CharString  order;
+    __uint64    maxMem;
 
-    bool        verbose;
     __uint64    numRecords;
+    bool        verbose;
 
     AppOptions() :
-        maxMem(512 * 1024 * 1024),      // default memory to use is 512MB
+        order("coord"),
+        maxMem(512 << 20),      // default memory to use is 512MB
         numRecords(0)
     {}
 };
@@ -89,9 +91,26 @@ struct AppOptions
 // Functions
 // ==========================================================================
 
+struct BamInStream
+{
+    std::ifstream   file;
+    BamFileIn       reader;
+    CharString      buffer;
+
+    template <typename TObject>
+    BamInStream(TObject &object) :
+        reader(object)
+    {}
+};
+
+// sort by genomic coordinate, query name
 struct LessCoord
 {
     char const *start;
+
+    LessCoord() :
+        start(NULL)
+    {}
 
     LessCoord(CharString &buffer) :
         start(begin(buffer, Standard()) + 4)
@@ -99,21 +118,70 @@ struct LessCoord
 
     bool operator() (size_t a, size_t b)
     {
-        return *reinterpret_cast<const __uint64 *>(start + a) < *reinterpret_cast<const __uint64 *>(start + b);
+        __uint64 x = *reinterpret_cast<const __uint64 *>(start + a);
+        __uint64 y = *reinterpret_cast<const __uint64 *>(start + b);
+        x = x << 32 | x >> 32;
+        y = y << 32 | y >> 32;
+        if (x != y)
+            return x < y;
+
+        return strcmp(start + a + sizeof(BamAlignmentRecordCore),
+                      start + b + sizeof(BamAlignmentRecordCore)) < 0;
+    }
+
+    bool operator() (BamInStream *a, BamInStream *b)
+    {
+        __uint64 x = *reinterpret_cast<const __uint64 *>(&a->buffer[0]);
+        __uint64 y = *reinterpret_cast<const __uint64 *>(&b->buffer[0]);
+        x = x << 32 | x >> 32;
+        y = y << 32 | y >> 32;
+        if (x != y)
+            return x > y;
+
+        return strcmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
+                      &b->buffer[sizeof(BamAlignmentRecordCore)]) > 0;
     }
 };
 
-struct LessCoordMerge
+// sort by query name, genomic coordinate
+struct LessQName
 {
-    String<char const *> &buffers;
+    char const *start;
 
-    LessCoord(String<char const *> &buffers) :
-        buffers(buffers)
+    LessQName() :
+        start(NULL)
+    {}
+
+    LessQName(CharString &buffer) :
+        start(begin(buffer, Standard()) + 4)
     {}
 
     bool operator() (size_t a, size_t b)
     {
-        return *reinterpret_cast<const __uint64 *>(buffers[a] + 4) < *reinterpret_cast<const __uint64 *>(buffers[b] + 4);
+        int res = strcmp(start + a + sizeof(BamAlignmentRecordCore),
+                         start + b + sizeof(BamAlignmentRecordCore));
+        if (res != 0)
+            return res < 0;
+
+        __uint64 x = *reinterpret_cast<const __uint64 *>(start + a);
+        __uint64 y = *reinterpret_cast<const __uint64 *>(start + b);
+        x = x << 32 | x >> 32;
+        y = y << 32 | y >> 32;
+        return x < y;
+    }
+
+    bool operator() (BamInStream *a, BamInStream *b)
+    {
+        int res = strcmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
+                         &b->buffer[sizeof(BamAlignmentRecordCore)]);
+        if (res != 0)
+            return res > 0;
+
+        __uint64 x = *reinterpret_cast<const __uint64 *>(&a->buffer[0]);
+        __uint64 y = *reinterpret_cast<const __uint64 *>(&b->buffer[0]);
+        x = x << 32 | x >> 32;
+        y = y << 32 | y >> 32;
+        return x > y;
     }
 };
 
@@ -122,7 +190,7 @@ struct LessCoordMerge
 // --------------------------------------------------------------------------
 
 template <typename TLess>
-bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions const &options)
+bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions &options)
 {
     BamHeader header;
     readRecord(header, bamFileIn);
@@ -131,7 +199,7 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
     String<size_t> ofs;
     reserve(buffer, options.maxMem, Exact());
 
-    __int32 recordLen = -1;
+    __uint32 recordLen = 0;
     bool needMerge = false;
     bool doReadRecordLen = true;
 
@@ -142,7 +210,6 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
 
         while (!atEnd(bamFileIn))
         {
-            appendValue(ofs, length(buffer));                                   // Remember begin position of record in buffer.
             if (doReadRecordLen)
                 readRawPod(recordLen, bamFileIn.iter);                          // Read size of the remaining block.
 
@@ -153,6 +220,7 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
                 break;
             }
 
+            appendValue(ofs, length(buffer));                                   // Remember begin position of record in buffer.
             appendRawPod(buffer, recordLen);                                    // Append record size.
             write(buffer, bamFileIn.iter, recordLen);                           // Read remaining block in one chunk (fastest).
 
@@ -168,13 +236,19 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
             fname = options.outPrefix;
             appendValue(fname, '.');
             appendNumber(fname, length(outFiles));
-            append(fname, ".bam");
+            append(fname, ".raw");
             appendValue(outFiles, fname);
         }
 
+        std::ofstream rawFile;
         BamFileOut bamFileOut(bamFileIn);                                       // Open output/temporary bam files.
         bool success;
-        if (!empty(options.outFile) || needMerge)
+        if (needMerge)
+        {
+            rawFile.open(toCString(fname));
+            success = rawFile.is_open() && _open(bamFileOut, rawFile, Nothing(), False());
+        }
+        else if (!empty(options.outFile))
             success = open(bamFileOut, toCString(fname));
         else
             success = open(bamFileOut, std::cout, Bam());
@@ -191,7 +265,8 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
         TOfsIter itEnd = end(ofs, Standard());
         char const *start = begin(buffer, Standard());
         for (; it != itEnd; ++it)
-            write(bamFileOut.iter, start + *it, *reinterpret_cast<const __uint32 *>(start + *it));
+            write(bamFileOut.iter, start + *it, 4 + *reinterpret_cast<const __uint32 *>(start + *it));
+        close(bamFileOut);
     }
 
     return true;
@@ -204,57 +279,60 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions c
 template <typename TLess>
 bool mergeBamFiles(BamFileOut &bamFileOut, String<CharString> &chunkFiles)
 {
-    String<BamFileIn *> readerPtr;
-    resize(readerPtr, length(chunkFiles));
+    String<BamInStream *> streamPtr;
+    resize(streamPtr, length(chunkFiles));
 
     // Step 1: Merge all headers (if available)
     BamHeader header;
     for (unsigned i = 0; i < length(chunkFiles); ++i)
     {
-        readerPtr[i] = new BamFileIn(bamFileOut);
-        if (!open(*readerPtr[i], toCString(chunkFiles[i])))
+        streamPtr[i] = new BamInStream(bamFileOut);
+        streamPtr[i]->file.open(toCString(chunkFiles[i]));
+        if (!streamPtr[i]->file.is_open() || !open(streamPtr[i]->reader, streamPtr[i]->file))
         {
             std::cerr << "Couldn't open " << toCString(chunkFiles[i]) << " for reading." << std::endl;
             return false;
         }
-        readRecord(header, *(readerPtr[i]));
+        readRecord(header, streamPtr[i]->reader);
     }
 
     // Step 2: Remove duplicate header entries and write merged header
     removeDuplicates(header);
     writeRecord(bamFileOut, header);
 
-    // Step 3: Read and output alignment records
+    // Step 3: Read first records and fill priority queue
     String<CharString> buffers;
-    std::priority_queue<size_t> queue(TLess(buffers));
+    std::priority_queue<BamInStream *, std::vector<BamInStream *>, TLess> queue;
     for (unsigned i = 0; i != length(chunkFiles); ++i)
-        queue.push_back(i);
+        if (!atEnd(streamPtr[i]->reader))
+        {
+            _readBamRecord(streamPtr[i]->buffer, streamPtr[i]->reader.iter);
+            queue.push(streamPtr[i]);
+        }
 
+    // Step 4: Extract smallest element, write it and read next from the same stream
     BamAlignmentRecord record;
     while (!queue.empty())
     {
-
-        readRawPod(recordLen, bamFileIn.iter);                          // Read size of the remaining block.
-
-
-        write(buffer, bamFileIn.iter, recordLen);                           // Read remaining block in one chunk (fastest).
-
-        // copy all alignment records
-        while (!atEnd(*readerPtr[i]))
+        BamInStream *top = queue.top();
+        appendRawPod(bamFileOut.iter, (__uint32)length(top->buffer));
+        write(bamFileOut.iter, top->buffer);
+        queue.pop();
+        if (!atEnd(top->reader))
         {
-
-            readRecord(record, *readerPtr[i]);
-            writeRecord(bamFileOut, record);
-            ++numRecords;
+            size_t x=_readBamRecord(top->buffer, top->reader.iter);
+            SEQAN_ASSERT_EQ(x, length(top->buffer));
+            queue.push(top);
         }
     }
 
     for (unsigned i = 0; i < length(chunkFiles); ++i)
     {
-        close(*readerPtr[i]);
-        delete readerPtr[i];
-        unlink(toCString(chunkFiles[i]));
+        close(streamPtr[i]->reader);
+        delete streamPtr[i];
+//        unlink(toCString(chunkFiles[i]));
     }
+    return true;
 }
 
 // --------------------------------------------------------------------------
@@ -278,7 +356,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                            "and outputs the concatenation of them. "
                            "If the output file name is ommitted the result is written to stdout.");
 
-    addDescription(parser, "(c) Copyright 2014 by David Weese.");
+    addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
@@ -287,6 +365,12 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE"));
     setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
+	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));
+    setValidValues(parser, "sort-order", "coord qname");
+    setDefaultValue(parser, "sort-order", options.order);
+	addOption(parser, ArgParseOption("m", "max-memory", "Set maximal amount of memory (in MB) used for buffering.", ArgParseOption::INTEGER));
+    setMinValue(parser, "max-memory", "1");
+    setDefaultValue(parser, "max-memory", options.maxMem >> 20);
     addOption(parser, ArgParseOption("v", "verbose", "Print some stats."));
 
     // Add Examples Section.
@@ -305,6 +389,9 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     getArgumentValue(options.inFile, parser, 0);
     getOptionValue(options.outFile, parser, "output");
+    getOptionValue(options.order, parser, "sort-order");
+	getOptionValue(options.maxMem, parser, "max-memory");
+    options.maxMem <<= 20;
     getOptionValue(options.verbose, parser, "verbose");
 
     if (length(options.outFile) > 4)
@@ -353,7 +440,12 @@ int main(int argc, char const ** argv)
 
     // Step 2: Sort chunks in memory and write to disk
     String<CharString> chunkFiles;
-    if (!sortChunks<LessCoord>(chunkFiles, bamFileIn, options))
+    if (options.order == "coord")
+        success = sortChunks<LessCoord>(chunkFiles, bamFileIn, options);
+    else
+        success = sortChunks<LessQName>(chunkFiles, bamFileIn, options);
+
+    if (!success)
         return 1;
 
     // Step 3: Merge chunks and write to output file
@@ -371,7 +463,12 @@ int main(int argc, char const ** argv)
             return 1;
         }
 
-        if (!mergeBamFiles<LessCoordMerge>(bamFileOut, chunkFiles))
+        if (options.order == "coord")
+            success = mergeBamFiles<LessCoord>(bamFileOut, chunkFiles);
+        else
+            success = mergeBamFiles<LessQName>(bamFileOut, chunkFiles);
+
+        if (!success)
             return 1;
     }
 
