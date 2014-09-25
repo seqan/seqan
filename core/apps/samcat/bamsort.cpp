@@ -330,7 +330,7 @@ bool mergeBamFiles(BamFileOut &bamFileOut, String<CharString> &chunkFiles)
     {
         close(streamPtr[i]->reader);
         delete streamPtr[i];
-//        unlink(toCString(chunkFiles[i]));
+        unlink(toCString(chunkFiles[i]));
     }
     return true;
 }
