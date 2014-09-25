@@ -779,28 +779,28 @@ struct BitsPerValue<SimpleType<TValue, Finite<SIZE> > >
 // char
 // ----------------------------------------------------------------------------
 
-inline void assign(char & c_target, 
+inline void assign(char & c_target,
                    Dna const & source)
 {
     c_target = TranslateTableDna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char & c_target, 
+inline void assign(char & c_target,
                    Dna5 const & source)
 {
     c_target = TranslateTableDna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char& target,
+inline void assign(char & c_target,
                    Rna const & source)
 {
-        target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
+    c_target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char& target,
+inline void assign(char & c_target,
                    Rna5 const & source)
 {
-        target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
+    c_target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
 }
 
 inline void assign(char & c_target, Iupac const & source)
@@ -959,7 +959,7 @@ struct CompareTypeImpl<Rna, __uint8>
 
 inline void assign(Rna & target, __uint8 c_source)
 {
-        target.value = TranslateTableByteToRna_<>::VALUE[c_source];
+    target.value = TranslateTableByteToDna_<>::VALUE[c_source];
 }
 
 template <>
@@ -970,7 +970,7 @@ struct CompareTypeImpl<Rna, char>
 
 inline void assign(Rna & target, char c_source)
 {
-        target.value = TranslateTableAsciiToRna_<>::VALUE[(unsigned char)c_source];
+    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -981,7 +981,7 @@ struct CompareTypeImpl<Rna, Unicode>
 
 inline void assign(Rna & target, Unicode c_source)
 {
-        target.value = TranslateTableAsciiToRna_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -1007,7 +1007,7 @@ struct CompareTypeImpl<Rna5, __uint8>
 
 inline void assign(Rna5 & target, __uint8 c_source)
 {
-        target.value = TranslateTableByteToRna5_<>::VALUE[c_source];
+    target.value = TranslateTableByteToDna5_<>::VALUE[c_source];
 }
 
 template <>
@@ -1018,7 +1018,7 @@ struct CompareTypeImpl<Rna5, char>
 
 inline void assign(Rna5 & target, char c_source)
 {
-        target.value = TranslateTableAsciiToRna5_<>::VALUE[(unsigned char)c_source];
+    target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -1029,7 +1029,7 @@ struct CompareTypeImpl<Rna5, Unicode>
 
 inline void assign(Rna5 & target, Unicode c_source)
 {
-        target.value = TranslateTableAsciiToRna5_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
