@@ -15,7 +15,7 @@ message (STATUS "Configuring core/apps/samcat")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
