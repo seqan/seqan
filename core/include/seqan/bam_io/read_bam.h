@@ -213,7 +213,7 @@ readRecord(BamHeader & header,
 
 template <typename TBuffer, typename TForwardIter>
 inline __int32
-_readBamRecord(TBuffer & rawRecord, TForwardIter & iter)
+_readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
@@ -222,12 +222,23 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter)
     return recordLen;
 }
 
+template <typename TBuffer, typename TForwardIter>
+inline void
+_readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
+{
+    __int32 recordLen = 0;
+    readRawPod(recordLen, iter);
+    clear(rawRecord);
+    appendRawPod(rawRecord, recordLen);
+    write(rawRecord, iter, (size_t)recordLen);
+}
+
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & record,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
-           Bam const & /*tag*/)
+           Bam const & /* tag */)
 {
     typedef typename Iterator<CharString, Standard>::Type                           TCharIter;
     typedef typename Iterator<String<CigarElement<> >, Standard>::Type __restrict__ TCigarIter;
@@ -235,7 +246,7 @@ readRecord(BamAlignmentRecord & record,
     typedef typename Iterator<CharString, Standard>::Type __restrict__              TQualIter;
 
     // Read size and data of the remaining block in one chunk (fastest).
-    __int32 remainingBytes = _readBamRecord(context.buffer, iter);
+    __int32 remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
     TCharIter it = begin(context.buffer, Standard());
 
     // BamAlignmentRecordCore.

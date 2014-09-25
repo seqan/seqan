@@ -107,7 +107,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
     writeRecord(writer, header);
 
     // Step 3: Read and output alignment records
-    BamAlignmentRecord record;
+    String<BamAlignmentRecord> records;
     __uint64 numRecords = 0;
     double start = sysTime();
     for (unsigned i = 0; i != length(inFiles); ++i)
@@ -118,9 +118,9 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
-            readRecord(record, *readerPtr[i]);
-            writeRecord(writer, record);
-            ++numRecords;
+            unsigned size = readBatch(records, *readerPtr[i], 100000);
+            writeRecords(writer, prefix(records, size));
+            numRecords += size;
         }
         close(*readerPtr[i]);
         delete readerPtr[i];
