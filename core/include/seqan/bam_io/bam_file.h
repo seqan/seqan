@@ -318,6 +318,13 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
     write(file.iter, record, context(file), file.format);
 }
 
+template <typename TSpec>
+inline void
+writeRecords(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
+{
+    write(file.iter, record, context(file), file.format);
+}
+
 // ----------------------------------------------------------------------------
 // Function jumpToRegion()
 // ----------------------------------------------------------------------------
