@@ -73,7 +73,7 @@ struct AppOptions
 // --------------------------------------------------------------------------
 
 template <typename TWriter>
-void mergeBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
+void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions const &options)
 {
     String<BamFileIn *> readerPtr;
     resize(readerPtr, length(inFiles));
@@ -159,7 +159,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                            "and outputs the concatenation of them. "
                            "If the output file name is ommitted the result is written to stdout.");
 
-    addDescription(parser, "(c) Copyright 2014 by David Weese.");
+    addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
@@ -240,6 +240,6 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    mergeBamFiles(writer, options.inFiles, options);
+    catBamFiles(writer, options.inFiles, options);
     return 0;
 }

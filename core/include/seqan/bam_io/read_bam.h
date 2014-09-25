@@ -211,6 +211,17 @@ readRecord(BamHeader & header,
 ..param.alignmentRecord.type:Class.BamAlignmentRecord
 */
 
+template <typename TForwardIter>
+inline __int32
+_readBamRecord(CharString & rawRecord, TForwardIter & iter)
+{
+    __int32 recordLen = 0;
+    readRawPod(recordLen, iter);
+    clear(rawRecord);
+    write(rawRecord, iter, (size_t)recordLen);
+    return recordLen;
+}
+
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & record,
@@ -223,13 +234,8 @@ readRecord(BamAlignmentRecord & record,
     typedef typename Iterator<IupacString, Standard>::Type __restrict__             TSeqIter;
     typedef typename Iterator<CharString, Standard>::Type __restrict__              TQualIter;
 
-    // Read size of the remaining block.
-    __int32 remainingBytes = 0;
-    readRawPod(remainingBytes, iter);
-
-    // Read remaining block in one chunk (fastest).
-    clear(context.buffer);
-    write(context.buffer, iter, size_t(remainingBytes));
+    // Read size and data of the remaining block in one chunk (fastest).
+    __int32 remainingBytes = _readBamRecord(context.buffer, iter);
     TCharIter it = begin(context.buffer, Standard());
 
     // BamAlignmentRecordCore.

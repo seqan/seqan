@@ -105,7 +105,7 @@ struct SmartFile
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
         context(data_context)
     {
-        _open(*this, istream, True());
+        _open(*this, istream, _mapFileFormatToCompressionFormat(format), True());
         ignoreUnusedVariableWarning(dummy);
     }
 
@@ -140,7 +140,7 @@ struct SmartFile
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
         context(otherCtx)
     {
-        _open(*this, istream, True());
+        _open(*this, istream, _mapFileFormatToCompressionFormat(format), True());
         ignoreUnusedVariableWarning(dummy);
     }
 
@@ -350,11 +350,14 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // Function open(stream)
 // --------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TStream, typename TThrowExceptions>
+template <typename TFileType, typename TDirection, typename TSpec,
+          typename TStream, typename TCompressionFormat, typename TThrowExceptions>
 inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
-                  TStream &stream, TThrowExceptions = True())
+                  TStream &stream,
+                  TCompressionFormat const &compressionFormat,
+                  TThrowExceptions = True())
 {
-    if (!open(file.stream, stream, _mapFileFormatToCompressionFormat(file.format)))
+    if (!open(file.stream, stream, compressionFormat))
     {
         if (TThrowExceptions::VALUE)
             SEQAN_THROW(UnknownFileFormat());
@@ -377,7 +380,7 @@ template <typename TFileType, typename TDirection, typename TSpec, typename TStr
 inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
                  TStream &stream)
 {
-    return _open(file, stream, False());
+    return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
@@ -386,7 +389,7 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  Tag<TFormat_> format)
 {
     setFormat(file, format);
-    return _open(file, stream, False());
+    return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormats>
@@ -395,7 +398,7 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
                  TagSelector<TFormats> format)
 {
     setFormat(file, format);
-    return _open(file, stream, False());
+    return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
 // ----------------------------------------------------------------------------
@@ -560,6 +563,17 @@ _getCompressionExtensions(
     _getFileFormatExtensions(stringSet, formatTag, primaryExtensionOnly);
 }
 
+template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
+inline void
+_getCompressionExtensions(
+    TStringSet &stringSet,
+    Tag<TFormat_> const & formatTag,
+    TCompressionFormats const & compress,
+    bool primaryExtensionOnly)
+{
+    _getCompressionExtensions(stringSet, formatTag, compress, primaryExtensionOnly, _mapFileFormatToCompressionFormat(formatTag));
+}
+
 template <typename TStringSet, typename TTag, typename TCompressionFormats>
 inline void
 _getCompressionExtensions(
@@ -568,7 +582,7 @@ _getCompressionExtensions(
     TCompressionFormats const & compress,
     bool primaryExtensionOnly = false)
 {
-    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly, _mapFileFormatToCompressionFormat(TTag()));
+    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly);
 }
 
 template <typename TStringSet, typename TTag, typename TSubList, typename TCompressionFormats>
@@ -579,7 +593,7 @@ _getCompressionExtensions(
     TCompressionFormats const & compress,
     bool primaryExtensionOnly = false)
 {
-    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly, _mapFileFormatToCompressionFormat(TTag()));
+    _getCompressionExtensions(stringSet, TTag(), compress, primaryExtensionOnly);
     _getCompressionExtensions(stringSet, TSubList(), compress, primaryExtensionOnly);
 }
 
