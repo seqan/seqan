@@ -1094,7 +1094,7 @@ template <typename TValue, typename TDirection, typename TSpec>
 class FileStream;
 
 template <typename TValue, typename TDirection, typename TSpec>
-inline void
+inline bool
 close(FileStream<TValue, TDirection, TSpec> & stream);
 
 // --------------------------------------------------------------------------
@@ -1136,6 +1136,11 @@ public:
     ~FileStream()
     {
         seqan::close(*this);
+    }
+
+    bool is_open()
+    {
+        return buffer.pager.file;
     }
 
     void close()
@@ -1269,10 +1274,11 @@ close(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
 }
 
 template <typename TValue, typename TDirection, typename TSpec>
-inline void
+inline bool
 close(FileStream<TValue, TDirection, TSpec> & stream)
 {
     close(stream.buffer);
+    return true;
 }
 
 } // namespace seqan

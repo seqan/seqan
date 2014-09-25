@@ -118,7 +118,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
         // copy all alignment records
         while (!atEnd(*readerPtr[i]))
         {
-            unsigned size = readBatch(records, *readerPtr[i], 100000);
+            unsigned size = readBatch(records, *readerPtr[i], 10000);
             writeRecords(writer, prefix(records, size));
             numRecords += size;
         }
