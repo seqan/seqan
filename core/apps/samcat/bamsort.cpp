@@ -255,6 +255,10 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
     {
         clear(ofs);
         clear(buffer);
+        double start = sysTime();
+
+        if (options.verbose)
+            std::cerr << "Reading chunk #" << length(outFiles) << std::flush;
 
         while (!atEnd(bamFileIn))
         {
@@ -276,7 +280,21 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
             options.numRecords++;
         }
 
+        if (options.verbose)
+        {
+            std::cerr << " took\t" << sysTime() - start << " seconds" << std::endl;
+            std::cerr << "Sorting chunk #" << length(outFiles) << std::flush;
+            start = sysTime();
+        }
+
         std::sort(begin(ofs, Standard()), end(ofs, Standard()), TLess(buffer)); // Parallely sort records
+
+        if (options.verbose)
+        {
+            std::cerr << " took\t" << sysTime() - start << " seconds" << std::endl;
+            std::cerr << "Writing chunk #" << length(outFiles) << std::flush;
+            start = sysTime();
+        }
 
         CharString fname = options.outFile;
         if (needMerge)                                                          // Get output file name.
@@ -311,10 +329,13 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
         typedef Iterator<String<size_t>, Standard>::Type TOfsIter;              // Write records in sorted order.
         TOfsIter it = begin(ofs, Standard());
         TOfsIter itEnd = end(ofs, Standard());
-        unsigned char const *start = begin(buffer, Standard());
+        unsigned char const *beg = begin(buffer, Standard());
         for (; it != itEnd; ++it)
-            write(bamFileOut.iter, start + *it, 4 + *reinterpret_cast<const __uint32 *>(start + *it));
+            write(bamFileOut.iter, beg + *it, 4 + *reinterpret_cast<const __uint32 *>(beg + *it));
         close(bamFileOut);
+
+        if (options.verbose)
+            std::cerr << " took\t" << sysTime() - start << " seconds" << std::endl;
     }
 
     return true;
@@ -325,10 +346,14 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
 // --------------------------------------------------------------------------
 
 template <typename TLess>
-bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles)
+bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles, AppOptions &options)
 {
     String<BamInStream *> streamPtr;
     resize(streamPtr, length(chunkFiles));
+
+    double start = sysTime();
+    if (options.verbose)
+        std::cerr << "Merging chunks" << std::flush;
 
     // Step 1: Merge all headers (if available)
     BamHeader header;
@@ -378,6 +403,9 @@ bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles)
         close(streamPtr[i]->reader);
         delete streamPtr[i];
     }
+
+    if (options.verbose)
+        std::cerr << " took\t" << sysTime() - start << " seconds" << std::endl;
     return true;
 }
 
@@ -511,9 +539,9 @@ int main(int argc, char const ** argv)
         if (success)
         {
             if (options.order == "coord")
-                success = mergeBamFiles<LessCoord>(bamFileOut, chunkFiles);
+                success = mergeBamFiles<LessCoord>(bamFileOut, chunkFiles, options);
             else
-                success = mergeBamFiles<LessQName>(bamFileOut, chunkFiles);
+                success = mergeBamFiles<LessQName>(bamFileOut, chunkFiles, options);
         }
         else
             std::cerr << "Couldn't open " << options.outFile << " for writing." << std::endl;
@@ -529,8 +557,8 @@ int main(int argc, char const ** argv)
     double stop = sysTime();
     if (options.verbose)
     {
-        std::cerr << "Number of alignments: " << options.numRecords << std::endl;
-        std::cerr << "Elapsed time:         " << stop - start << " seconds" << std::endl;
+        std::cerr << "Number of alignments:\t" << options.numRecords << std::endl;
+        std::cerr << "Elapsed total time:  \t" << stop - start << " seconds" << std::endl;
     }
     return 0;
 }
