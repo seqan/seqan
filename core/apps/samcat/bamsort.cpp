@@ -45,6 +45,10 @@
 #include <vector>
 #include <algorithm>
 
+#if !defined(_OPENMP) && SEQAN_IGNORE_MISSING_OPENMP != 1
+#pragma message("OpenMP not found! Parallelization will be limited in bamsort.")
+#endif
+
 using namespace seqan;
 
 // ==========================================================================
@@ -54,10 +58,13 @@ using namespace seqan;
 namespace seqan {
 
 template <typename TDirection>
-struct FileFormat<SmartFile<Bam, TDirection> >
+struct FileFormat<SmartFile<Bam, TDirection, int> >
 {
     typedef Bam Type;
 };
+
+typedef SmartFile<Bam, Input, int> BamOnlyFileIn;
+typedef SmartFile<Bam, Output, int> BamOnlyFileOut;
 
 }
 
@@ -94,7 +101,7 @@ struct AppOptions
 struct BamInStream
 {
     std::ifstream   file;
-    BamFileIn       reader;
+    BamOnlyFileIn       reader;
     CharString      buffer;
 
     template <typename TObject>
@@ -190,7 +197,7 @@ struct LessQName
 // --------------------------------------------------------------------------
 
 template <typename TLess>
-bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions &options)
+bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptions &options)
 {
     BamHeader header;
     readRecord(header, bamFileIn);
@@ -241,7 +248,7 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions &
         }
 
         std::ofstream rawFile;
-        BamFileOut bamFileOut(bamFileIn);                                       // Open output/temporary bam files.
+        BamOnlyFileOut bamFileOut(bamFileIn);                                       // Open output/temporary bam files.
         bool success;
         if (needMerge)
         {
@@ -277,7 +284,7 @@ bool sortChunks(String<CharString> &outFiles, BamFileIn &bamFileIn, AppOptions &
 // --------------------------------------------------------------------------
 
 template <typename TLess>
-bool mergeBamFiles(BamFileOut &bamFileOut, String<CharString> &chunkFiles)
+bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles)
 {
     String<BamInStream *> streamPtr;
     resize(streamPtr, length(chunkFiles));
@@ -320,8 +327,7 @@ bool mergeBamFiles(BamFileOut &bamFileOut, String<CharString> &chunkFiles)
         queue.pop();
         if (!atEnd(top->reader))
         {
-            size_t x=_readBamRecord(top->buffer, top->reader.iter);
-            SEQAN_ASSERT_EQ(x, length(top->buffer));
+            _readBamRecord(top->buffer, top->reader.iter);
             queue.push(top);
         }
     }
@@ -359,11 +365,11 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
+    setValidValues(parser, "output", BamOnlyFileOut::getFileFormatExtensions());
 
     // We require one argument.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE"));
-    setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, BamOnlyFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
 	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));
     setValidValues(parser, "sort-order", "coord qname");
@@ -425,7 +431,7 @@ int main(int argc, char const ** argv)
     double start = sysTime();
 
     // Step 1: Open input file
-    BamFileIn bamFileIn;
+    BamOnlyFileIn bamFileIn;
     bool success;
     if (!empty(options.inFile))
         success = open(bamFileIn, toCString(options.inFile));
@@ -451,7 +457,7 @@ int main(int argc, char const ** argv)
     // Step 3: Merge chunks and write to output file
     if (!empty(chunkFiles))
     {
-        BamFileOut bamFileOut;
+        BamOnlyFileOut bamFileOut;
         if (!empty(options.outFile))
             success = open(bamFileOut, toCString(options.outFile));
         else
