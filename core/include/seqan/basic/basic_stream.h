@@ -663,7 +663,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget
 appendNumber(TTarget & target, TInteger i)
 {
     typedef IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
-                          sizeof(TInteger)> TInt;
+                                 xsizeof(TInteger)> TInt;
 
     // 1 byte has at most 3 decimal digits (plus 2 for '-' and the NULL character)
     char buffer[sizeof(TInteger) * 3 + 2];
