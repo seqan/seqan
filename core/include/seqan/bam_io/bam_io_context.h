@@ -172,6 +172,7 @@ public:
     TNameStoreCacheMember   _nameStoreCache;
     TSequenceLengthsMember  _sequenceLengths;
     CharString              buffer;
+    String<CharString>      buffers;
     String<unsigned>        translateFile2GlobalRefId;
 
     BamIOContext() :

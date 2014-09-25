@@ -273,23 +273,23 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<char>::VALUE != typeC)
             return false;
 
-        appendValue(target, getValue(it));
+        writeValue(target, getValue(it));
         ++it;
         return true;
     }
 };
 
 template <typename TTarget, typename TSourceIter>
-void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
+void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 {   
     // Copy tag name.
     SEQAN_ASSERT_NOT(atEnd(it));
-    appendValue(target, *it++);
+    writeValue(target, *it++);
     SEQAN_ASSERT_NOT(atEnd(it));
-    appendValue(target, *it++);
+    writeValue(target, *it++);
 
     // Add ':'.
-    appendValue(target, ':');
+    writeValue(target, ':');
     
     char typeC = *it++;
     char c = FunctorLowcase<char>()(typeC);
@@ -297,12 +297,12 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
     // The only integer type supported is a 32bit signed int (SAM Format Spec, 28 Feb 2014, Section 1.5)
     // This sucks as this projection is not identically reversible
     if (c == 'c' || c == 's' || c == 'i')
-        appendValue(target, 'i');
+        writeValue(target, 'i');
     else
-        appendValue(target, typeC);
+        writeValue(target, typeC);
 
     // Add ':'.
-    appendValue(target, ':');
+    writeValue(target, ':');
 
     switch (typeC)
     {
@@ -312,7 +312,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             SEQAN_ASSERT_NOT(atEnd(it));
             while (*it != '\0')
             {
-                appendValue(target, *it);
+                writeValue(target, *it);
                 ++it;
                 SEQAN_ASSERT_NOT(atEnd(it));
             }
@@ -323,7 +323,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
         {
             // BAM array
             typeC = *it++;
-            appendValue(target, typeC);
+            writeValue(target, typeC);
             AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
             
             // Read array length.
@@ -338,7 +338,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             }
             for (unsigned i = 0; i < tmp.len; ++i)
             {
-                appendValue(target, ',');
+                writeValue(target, ',');
                 if (!tagApply(func, BamTagTypes()))
                     SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
             }
@@ -383,25 +383,29 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsBamToSam(TTarget & target, TSource const & source)
+inline void
+appendTagsBamToSam(TTarget & target, TSource const & source)
 {
-    // Handle case of empty source sequence.
     if (empty(source))
-        clear(target);
-
-    clear(target);
+        return;
 
     typedef typename Iterator<TSource const, Rooted>::Type TSourceIter;
     TSourceIter it = begin(source, Rooted());
 
-    bool first = true;
-    while (!atEnd(it))
+    while (true)
     {
-        if (!first)
-            appendValue(target, '\t');
-        first = false;
-        _assignTagsBamToSamOneTag(target, it);
+        _appendTagsBamToSamOneTag(target, it);
+        if (atEnd(it))
+            return;
+        writeValue(target, '\t');
     }
+}
+
+template <typename TTarget, typename TSource>
+void assignTagsBamToSam(TTarget & target, TSource const & source)
+{
+    clear(target);
+    appendTagsBamToSam(target, source);
 }
 
 }  // namespace seqan

@@ -252,6 +252,18 @@ readRecord(BamHeader & header,
 }
 
 // ----------------------------------------------------------------------------
+// Function _readBamRecord()
+// ----------------------------------------------------------------------------
+
+template <typename TBuffer, typename TForwardIter>
+inline void
+_readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Sam)
+{
+    clear(rawRecord);
+    readLine(rawRecord, iter);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord()                                     BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
