@@ -1221,9 +1221,11 @@ SEQAN_CONCEPT_IMPL((FileStream<TValue, Bidirectional, TSpec>), (BidirectionalStr
 
 template <typename TValue, typename TDirection, typename TSpec, typename TFilename, typename TFlags>
 inline bool
-open(FilePageTable<TValue, TDirection, TSpec> & pager, TFilename const & filename, TFlags const & flags)
+open(FilePageTable<TValue, TDirection, TSpec> & pager, TFilename const & filename, TFlags flags)
 {
     clear(pager);
+    if (IsSameType<TSpec, MMap<> >::VALUE && (flags & OPEN_WRONLY))
+        flags |= OPEN_RDWR;
     bool result = open(pager.file, filename, flags);
     pager.fileSize = (result) ? length(pager.file) / sizeof(TValue) : 0ul;
     return result;
