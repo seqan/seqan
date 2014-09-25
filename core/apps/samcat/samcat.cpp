@@ -159,7 +159,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                            "and outputs the concatenation of them. "
                            "If the output file name is ommitted the result is written to stdout.");
 
-    addDescription(parser, "(c) Copyright 2014 by David Weese.");
+    addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
     addOption(parser, ArgParseOption("o", "output", "Output file name", ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
