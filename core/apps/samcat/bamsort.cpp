@@ -412,7 +412,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setValidValues(parser, 0, BamOnlyFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
 	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));
-    setValidValues(parser, "sort-order", "coord qname qname_lex");
+    setValidValues(parser, "sort-order", "coord qname");
     setDefaultValue(parser, "sort-order", options.order);
 	addOption(parser, ArgParseOption("m", "max-memory", "Set maximal amount of memory (in MB) used for buffering.", ArgParseOption::INTEGER));
     setMinValue(parser, "max-memory", "1");
@@ -424,12 +424,9 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addText(parser,
             "The three sort orders \\fIcoord\\fP, \\fIqname\\fP, and \\fIqname_lex\\fP have the following meaning.");
     addListItem(parser, "coord",
-                "Sort by coordinate, unmapped reads come after all others.");
+                "Sort by coordinate, unmapped reads come after all others. Secondary key is qname.");
     addListItem(parser, "qname",
-                "Sort by query name as samtools does.  This is similar to Windows Explorer file sorting, i.e. "
-                "\"a10b\" comes after \"a9b\".");
-    addListItem(parser, "qname_lex",
-                "Sort lexicographically, i.e. \"a9\" is greater than \"a10\".");
+                "Sort by query names lexicographically and included number numerically. Secondary key is coordinate. ");
     // Add Examples Section.
     addTextSection(parser, "Examples");
     addListItem(parser, "\\fBbamsort\\fP \\fBunsorted.bam\\fP \\fB-o\\fP \\fBsorted.bam\\fP",
