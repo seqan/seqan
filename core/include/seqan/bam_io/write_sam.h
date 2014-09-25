@@ -213,13 +213,10 @@ inline void write(TTarget & target,
     if (!empty(record.tags))
     {
         writeValue(target, '\t');
-        CharString buffer;
-        assignTagsBamToSam(buffer, record.tags);
-        write(target, buffer);
+        appendTagsBamToSam(target, record.tags);
     }
 
     writeValue(target, '\n');
-#undef SEQAN_PUT_TAB
 }
 
 }  // namespace seqan
