@@ -695,12 +695,9 @@ _fillHeader(BamHeader & header,
     typedef FragmentStore<TSpec, TConfig>                       TFragmentStore;
     typedef typename TFragmentStore::TLibraryStore              TLibraryStore;
     typedef typename TFragmentStore::TContigStore               TContigStore;
-    typedef typename TFragmentStore::TNameStore                 TNameStore;
 
     typedef typename Value<TContigStore>::Type                  TContig;
     typedef typename Iterator<TLibraryStore, Standard>::Type    TLibraryIter;
-    typedef typename Iterator<TContigStore, Standard>::Type     TContigIter;
-    typedef typename Iterator<TNameStore, Standard>::Type       TContigNameIter;
     typedef typename Id<TContig>::Type                          TId;
 
     typedef BamHeaderRecord::TTag                               TTag;
