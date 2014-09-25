@@ -233,7 +233,8 @@ class VirtualStream: public BasicStream<TValue, TDirection, TTraits>::Type
 {
 public:
     typedef typename BasicStream<TValue, TDirection, TTraits>::Type TStream;                // the stream base class we expose
-    typedef std::fstream                                            TFile;                  // if a real file should be opened
+//    typedef std::fstream                                            TFile;                  // if a real file should be opened
+    typedef FileStream<char, TDirection, MMap<> >                   TFile;                  // if a real file should be opened
     typedef BufferedStream<TStream, TDirection>                     TBufferedStream;        // if input stream is not buffered
     typedef std::basic_streambuf<TValue>                            TStreamBuffer;          // the streambuf to use
     typedef VirtualStreamContext_<TValue, TDirection>               TVirtualStreamContext;  // the owner of the streambuf
