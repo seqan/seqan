@@ -100,9 +100,9 @@ struct AppOptions
 
 struct BamInStream
 {
-    std::ifstream   file;
-    BamOnlyFileIn       reader;
-    CharString      buffer;
+    std::ifstream           file;
+    BamOnlyFileIn           reader;
+    String<unsigned char>   buffer;
 
     template <typename TObject>
     BamInStream(TObject &object) :
@@ -110,16 +110,52 @@ struct BamInStream
     {}
 };
 
+// compare strings lexicographically and runs of digits as numerically
+inline int
+numericalStrCmp(const unsigned char * __restrict__ a,
+                const unsigned char * __restrict__ b)
+{
+    IsDigit isDigit;
+    while (*a && *b)
+    {
+        if (isDigit(*a) && isDigit(*b))
+        {
+            while (*a == '0') ++a;                          // skip leading zeros
+            while (*b == '0') ++b;                          // dito
+            while (isDigit(*a) && *a == *b) { ++a; ++b; };  // skip until first difference
+
+            int tmp = 0;
+            if (isDigit(*a) && isDigit(*b))
+            {
+                tmp = (int)*a - (int)*b;
+                while (isDigit(*a) && isDigit(*b)) { ++a; ++b; };
+            }
+            if (isDigit(*a))
+                return 1;                                   // a has more non-zero digits than b
+            else
+                if (isDigit(*b))
+                    return -1;                              // b has more non-zero digits than a
+                else if (tmp != 0)
+                    return tmp;                             // same amount of digits, the first difference (if exists) decides
+        }
+        else if (*a != *b)
+            return (int)*a - (int)*b;
+        else
+            ++a, ++b;
+    }
+    return (int)*a - (int)*b;
+}
+
 // sort by genomic coordinate, query name
 struct LessCoord
 {
-    char const *start;
+    unsigned char const *start;
 
     LessCoord() :
         start(NULL)
     {}
 
-    LessCoord(CharString &buffer) :
+    LessCoord(String<unsigned char> &buffer) :
         start(begin(buffer, Standard()) + 4)
     {}
 
@@ -132,8 +168,8 @@ struct LessCoord
         if (x != y)
             return x < y;
 
-        return strcmp(start + a + sizeof(BamAlignmentRecordCore),
-                      start + b + sizeof(BamAlignmentRecordCore)) < 0;
+        return numericalStrCmp(start + a + sizeof(BamAlignmentRecordCore),
+                               start + b + sizeof(BamAlignmentRecordCore)) < 0;
     }
 
     bool operator() (BamInStream *a, BamInStream *b)
@@ -145,28 +181,28 @@ struct LessCoord
         if (x != y)
             return x > y;
 
-        return strcmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
-                      &b->buffer[sizeof(BamAlignmentRecordCore)]) > 0;
+        return numericalStrCmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
+                               &b->buffer[sizeof(BamAlignmentRecordCore)]) > 0;
     }
 };
 
 // sort by query name, genomic coordinate
 struct LessQName
 {
-    char const *start;
+    unsigned char const *start;
 
     LessQName() :
         start(NULL)
     {}
 
-    LessQName(CharString &buffer) :
+    LessQName(String<unsigned char> &buffer) :
         start(begin(buffer, Standard()) + 4)
     {}
 
     bool operator() (size_t a, size_t b)
     {
-        int res = strcmp(start + a + sizeof(BamAlignmentRecordCore),
-                         start + b + sizeof(BamAlignmentRecordCore));
+        int res = numericalStrCmp(start + a + sizeof(BamAlignmentRecordCore),
+                                  start + b + sizeof(BamAlignmentRecordCore));
         if (res != 0)
             return res < 0;
 
@@ -179,8 +215,8 @@ struct LessQName
 
     bool operator() (BamInStream *a, BamInStream *b)
     {
-        int res = strcmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
-                         &b->buffer[sizeof(BamAlignmentRecordCore)]);
+        int res = numericalStrCmp(&a->buffer[sizeof(BamAlignmentRecordCore)],
+                                  &b->buffer[sizeof(BamAlignmentRecordCore)]);
         if (res != 0)
             return res > 0;
 
@@ -202,7 +238,12 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
     BamHeader header;
     readRecord(header, bamFileIn);
 
-    CharString buffer;
+    if (options.order == "coord")
+        setSortOrder(header, BAM_SORT_COORDINATE);
+    else
+        setSortOrder(header, BAM_SORT_QUERYNAME);
+
+    String<unsigned char> buffer;
     String<size_t> ofs;
     reserve(buffer, options.maxMem, Exact());
 
@@ -270,7 +311,7 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
         typedef Iterator<String<size_t>, Standard>::Type TOfsIter;              // Write records in sorted order.
         TOfsIter it = begin(ofs, Standard());
         TOfsIter itEnd = end(ofs, Standard());
-        char const *start = begin(buffer, Standard());
+        unsigned char const *start = begin(buffer, Standard());
         for (; it != itEnd; ++it)
             write(bamFileOut.iter, start + *it, 4 + *reinterpret_cast<const __uint32 *>(start + *it));
         close(bamFileOut);
@@ -336,7 +377,6 @@ bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles)
     {
         close(streamPtr[i]->reader);
         delete streamPtr[i];
-        unlink(toCString(chunkFiles[i]));
     }
     return true;
 }
@@ -372,13 +412,24 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setValidValues(parser, 0, BamOnlyFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
 	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));
-    setValidValues(parser, "sort-order", "coord qname");
+    setValidValues(parser, "sort-order", "coord qname qname_lex");
     setDefaultValue(parser, "sort-order", options.order);
 	addOption(parser, ArgParseOption("m", "max-memory", "Set maximal amount of memory (in MB) used for buffering.", ArgParseOption::INTEGER));
     setMinValue(parser, "max-memory", "1");
     setDefaultValue(parser, "max-memory", options.maxMem >> 20);
     addOption(parser, ArgParseOption("v", "verbose", "Print some stats."));
 
+    // Add explanation for sort order
+    addTextSection(parser, "Sort Order");
+    addText(parser,
+            "The three sort orders \\fIcoord\\fP, \\fIqname\\fP, and \\fIqname_lex\\fP have the following meaning.");
+    addListItem(parser, "coord",
+                "Sort by coordinate, unmapped reads come after all others.");
+    addListItem(parser, "qname",
+                "Sort by query name as samtools does.  This is similar to Windows Explorer file sorting, i.e. "
+                "\"a10b\" comes after \"a9b\".");
+    addListItem(parser, "qname_lex",
+                "Sort lexicographically, i.e. \"a9\" is greater than \"a10\".");
     // Add Examples Section.
     addTextSection(parser, "Examples");
     addListItem(parser, "\\fBbamsort\\fP \\fBunsorted.bam\\fP \\fB-o\\fP \\fBsorted.bam\\fP",
@@ -451,11 +502,8 @@ int main(int argc, char const ** argv)
     else
         success = sortChunks<LessQName>(chunkFiles, bamFileIn, options);
 
-    if (!success)
-        return 1;
-
     // Step 3: Merge chunks and write to output file
-    if (!empty(chunkFiles))
+    if (!empty(chunkFiles) && success)
     {
         BamOnlyFileOut bamFileOut;
         if (!empty(options.outFile))
@@ -463,20 +511,23 @@ int main(int argc, char const ** argv)
         else
             success = open(bamFileOut, std::cout);
 
-        if (!success)
+        if (success)
         {
-            std::cerr << "Couldn't open " << options.outFile << " for writing." << std::endl;
-            return 1;
+            if (options.order == "coord")
+                success = mergeBamFiles<LessCoord>(bamFileOut, chunkFiles);
+            else
+                success = mergeBamFiles<LessQName>(bamFileOut, chunkFiles);
         }
-
-        if (options.order == "coord")
-            success = mergeBamFiles<LessCoord>(bamFileOut, chunkFiles);
         else
-            success = mergeBamFiles<LessQName>(bamFileOut, chunkFiles);
-
-        if (!success)
-            return 1;
+            std::cerr << "Couldn't open " << options.outFile << " for writing." << std::endl;
     }
+
+    // remove temp files
+    for (unsigned i = 0; i < length(chunkFiles); ++i)
+        unlink(toCString(chunkFiles[i]));
+
+    if (!success)
+        return 1;
 
     double stop = sysTime();
     if (options.verbose)

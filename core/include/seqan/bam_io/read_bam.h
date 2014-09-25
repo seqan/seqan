@@ -211,9 +211,9 @@ readRecord(BamHeader & header,
 ..param.alignmentRecord.type:Class.BamAlignmentRecord
 */
 
-template <typename TForwardIter>
+template <typename TBuffer, typename TForwardIter>
 inline __int32
-_readBamRecord(CharString & rawRecord, TForwardIter & iter)
+_readBamRecord(TBuffer & rawRecord, TForwardIter & iter)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
