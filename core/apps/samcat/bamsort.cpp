@@ -302,19 +302,19 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
             fname = options.outPrefix;
             appendValue(fname, '.');
             appendNumber(fname, length(outFiles));
-            append(fname, ".raw");
+            append(fname, ".bam");
             appendValue(outFiles, fname);
         }
 
         std::ofstream rawFile;
         BamOnlyFileOut bamFileOut(bamFileIn);                                       // Open output/temporary bam files.
         bool success;
-        if (needMerge)
+/*        if (needMerge)
         {
             rawFile.open(toCString(fname));
             success = rawFile.is_open() && _open(bamFileOut, rawFile, Nothing(), False());
         }
-        else if (!empty(options.outFile))
+        else*/ if (!empty(options.outFile) || needMerge)
             success = open(bamFileOut, toCString(fname));
         else
             success = open(bamFileOut, std::cout, Bam());
