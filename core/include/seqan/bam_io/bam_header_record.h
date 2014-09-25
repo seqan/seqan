@@ -597,30 +597,50 @@ getSortOrder(BamHeader const & header)
 inline void
 setSortOrder(BamHeader & header, BamSortOrder sortOrder)
 {
+    char const * soString;
+    switch (sortOrder)
+    {
+        case BAM_SORT_UNSORTED:
+            soString = "unsorted";
+            break;
+
+        case BAM_SORT_QUERYNAME:
+            soString = "queryname";
+            break;
+
+        case BAM_SORT_COORDINATE:
+            soString = "coordinate";
+            break;
+
+        default:
+            soString = "unknown";
+    }
+
+    bool notFound = true;
     for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
     {
         unsigned idx = 0;
         if (findTagKey(idx, "SO", header[recIdx]))
         {
-            CharString soString;
-            switch (sortOrder)
-            {
-                case BAM_SORT_UNSORTED:
-                    soString = "unsorted";
-                    break;
-
-                case BAM_SORT_QUERYNAME:
-                    soString = "queryname";
-                    break;
-
-                case BAM_SORT_COORDINATE:
-                    soString = "coordinate";
-                    break;
-
-                default:
-                    soString = "unknown";
-            }
+            notFound = false;
             setTagValue(idx, soString, header[recIdx]);
+        }
+    }
+
+    if (notFound)
+    {
+        unsigned recIdx = 0;
+        if (searchRecord(recIdx, header, BAM_HEADER_FIRST))
+        {
+            setTagValue("SO", soString, header[recIdx]);
+        }
+        else
+        {
+            BamHeaderRecord rec;
+            rec.type = BAM_HEADER_FIRST;
+            setTagValue("VN", "1.4", rec);
+            setTagValue("SO", soString, rec);
+            insert(header, 0, rec);
         }
     }
 }
