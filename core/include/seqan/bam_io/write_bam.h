@@ -254,7 +254,7 @@ _writeBamRecordWrapper(TTarget & target,
     {
         appendRawPod(range.begin, size);
         _writeBamRecord(range.begin, record, tag);
-        advanceChunk(target, size);
+        advanceChunk(target, size + 4);
     }
     else
     {
