@@ -412,11 +412,6 @@ readRecord(BamAlignmentRecord & record,
     clear(buffer);
     readLine(buffer, iter);
     appendTagsSamToBam(record.tags, buffer);
-
-    for(int i=0;i<length(record.tags);++i)
-        std::cout<<std::hex<<(int)(unsigned char)record.tags[i]<<' ';
-    std::cout<<std::endl;
-
 }
 
 }  // namespace seqan
