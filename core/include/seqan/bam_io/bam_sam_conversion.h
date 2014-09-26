@@ -61,14 +61,14 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TBuffer>
-struct AssignTagsSamToBamOneTagHelper_
+struct AppendTagsSamToBamOneTagHelper_
 {
     TTarget     &target;
     TBuffer     buffer;
     char        typeC;
     std::string tmpBuffer;
 
-    AssignTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
+    AppendTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
         target(target),
         buffer(buffer),
         typeC(typeC)
@@ -80,13 +80,7 @@ struct AssignTagsSamToBamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        union {
-            char raw[sizeof(Type)];
-            Type i;
-        } tmp;
-
-        tmp.i = lexicalCast<Type>(buffer);
-        append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
+        appendRawPod(target, lexicalCast<Type>(buffer));
         return true;
     }
 
@@ -96,20 +90,14 @@ struct AssignTagsSamToBamOneTagHelper_
         if (BamTypeChar<float>::VALUE != typeC)
             return false;
 
-        union {
-            char raw[sizeof(float)];
-            float i;
-        } tmp;
-
         assign(tmpBuffer, buffer);
-        tmp.i = lexicalCast<float>(tmpBuffer);
-        append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(float)]));
+        appendRawPod(target, lexicalCast<float>(tmpBuffer));
         return true;
     }
 };
 
 template <typename TTarget, typename TForwardIter>
-void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString & buffer)
+void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString & buffer)
 {
     write(target, iter, 2);
 
@@ -169,7 +157,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
                     if (buffer[endPos] == ',' || buffer[endPos] == '\t')
                         break;
 
-                AssignTagsSamToBamOneTagHelper_<TTarget, TBufferInfix> func(target,
+                AppendTagsSamToBamOneTagHelper_<TTarget, TBufferInfix> func(target,
                                                                             infix(buffer, startPos, endPos),
                                                                             typeC);
                 if (!tagApply(func, BamTagTypes()))
@@ -186,7 +174,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             clear(buffer);
             readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
 
-            AssignTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
+            AppendTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
             if (!tagApply(func, BamTagTypes()))
                 SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
         }
@@ -220,7 +208,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsSamToBam(TTarget & target, TSource const & source)
+void appendTagsSamToBam(TTarget & target, TSource const & source)
 {
     // Handle case of empty source sequence.
     if (empty(source))
@@ -236,8 +224,15 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
         if (value(it) == '\t')
             skipOne(it);
 
-        _assignTagsSamToBamOneTag(target, it, buffer);
+        _appendTagsSamToBamOneTag(target, it, buffer);
     }
+}
+
+template <typename TTarget, typename TSource>
+void assignTagsSamToBam(TTarget & target, TSource const & source)
+{
+    clear(target);
+    appendTagsSamToBam(target, source);
 }
 
 // ----------------------------------------------------------------------------

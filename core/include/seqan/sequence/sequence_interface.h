@@ -232,55 +232,6 @@ struct DefaultOverflowExplicit
 };
 
 // --------------------------------------------------------------------------
-// Metafunction IsContiguous
-// --------------------------------------------------------------------------
-
-/*!
- * @mfn IsContiguous
- * @headerfile <seqan/sequence.h>
- * @brief Determines whether a container stores its elements contiguously in memory.
- *
- * @signature IsContiguous<T>::Type;
- * @signature IsContiguous<T>::VALUE;
- *
- * @tparam T The type that is tested for being a string.
- *
- * @return Type  Either <tt>True</tt> or <tt>False</tt>, depending on whether <tt>T</tt> is stored contiguously.
- * @return VALUE Either <tt>true</tt> or <tt>false</tt>, depending on whether <tt>T</tt> is stored contiguously.
- *
- * A sequence container is "contiguous", if its elements are stored in a single contiguous array.  Examples for
- * contiguous sequences are AllocString or char arrays.
- *
- * If an object <tt>obj</tt> is a contiguous sequence, then <tt>begin(obj)</tt> can be converted to a pointer to the
- * first element of the content array.
- */
-
-/**
-.Metafunction.IsContiguous:
-..cat:Sequences
-..summary:Determines whether a container stores its elements in a contiguous array.
-..signature:IsContiguous<T>::VALUE
-..param.T:Type that is tested for being a string.
-..returns.param.VALUE:$true$ if $T$ is a string, $false$ otherwise.
-..remarks:Definition: A sequence container is "contiguous", if its elements
-    are stored in a single contiguous array.
-    Examples for contiguous sequences are @Spec.Alloc String@ or @Adaption.char array@.
-..remarks:If an object $obj$ is a contiguous sequence, then $begin(obj)$ can be
-    converted to a pointer to the first element of the content array.
-..include:seqan/sequence.h
-*/
-template <typename T>
-struct IsContiguous
-{
-    typedef False Type;
-    enum { VALUE = false };
-};
-
-template <typename T>
-struct IsContiguous<T const>
-    : public IsContiguous<T> {};
-
-// --------------------------------------------------------------------------
 // Metafunction IsSequence
 // --------------------------------------------------------------------------
 

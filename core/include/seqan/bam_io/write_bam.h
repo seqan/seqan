@@ -30,12 +30,10 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Code for writing BAM.
 // ==========================================================================
-
-// TODO(holtgrew): Add buffer to context?
-// TODO(holtgrew): Rename to writeRecord from write2! Go over deprecated alias!
 
 #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
 #define CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
@@ -171,15 +169,13 @@ _writeBamRecord(TTarget & target,
     typedef typename Iterator<IupacString const, Standard>::Type __restrict__               TSeqIter;
     typedef typename Iterator<CharString const, Standard>::Type __restrict__                TQualIter;
 
-    // First, write record to buffer.
-
     // bin_mq_nl
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
     record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
     // BamAlignmentRecordCore.
-    appendRawPod(target, record);
+    appendRawPod(target, (BamAlignmentRecordCore &)record);
 //    std::memcpy(it, reinterpret_cast<char *>(&record), sizeof(BamAlignmentRecordCore));
 //    it += sizeof(BamAlignmentRecordCore);
 
@@ -240,7 +236,7 @@ template <typename TTarget>
 inline void
 _writeBamRecordWrapper(TTarget & target,
                        BamAlignmentRecord & record,
-                       Nothing /* range */,
+                       Nothing & /* range */,
                        __uint32 /* size */,
                        Bam const & tag)
 {
@@ -251,7 +247,7 @@ template <typename TTarget, typename TOValue>
 inline void
 _writeBamRecordWrapper(TTarget & target,
                        BamAlignmentRecord & record,
-                       Range<TOValue*> range,
+                       Range<TOValue*> & range,
                        __uint32 size,
                        Bam const & tag)
 {
@@ -272,17 +268,23 @@ void write(TTarget & target,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            Bam const & tag)
 {
-    // Update internal lengths and output leading length
+    // Update internal lengths
     __uint32 size = updateLengths(record);
-    appendRawPod(target, size);
 
     // Reserve chunk memory
     typename Chunk<TTarget>::Type ochunk;
     reserveChunk(target, size, Output());
     getChunk(ochunk, target, Output());
 
-    // Output record
+    // Output length and record
+    appendRawPod(target, size);
     _writeBamRecordWrapper(target, record, ochunk, size, tag);
+
+    std::cout<<record.tags<<std::endl;
+
+    for(int i=0;i<length(target);++i)
+        std::cout<<std::hex<<(int)(unsigned char)target[i]<<' ';
+    std::cout<<std::endl;
 }
 
 }  // namespace seqan
