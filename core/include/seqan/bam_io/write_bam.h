@@ -174,10 +174,8 @@ _writeBamRecord(TTarget & target,
     _getLengthInRef(record.cigar, l);
     record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
-    // BamAlignmentRecordCore.
+    // Write fixed-size BamAlignmentRecordCore.
     appendRawPod(target, (BamAlignmentRecordCore &)record);
-//    std::memcpy(it, reinterpret_cast<char *>(&record), sizeof(BamAlignmentRecordCore));
-//    it += sizeof(BamAlignmentRecordCore);
 
     // read_name
     write(target, record.qName);
@@ -271,20 +269,14 @@ void write(TTarget & target,
     // Update internal lengths
     __uint32 size = updateLengths(record);
 
-    // Reserve chunk memory
-    typename Chunk<TTarget>::Type ochunk;
-    reserveChunk(target, size, Output());
-    getChunk(ochunk, target, Output());
-
-    // Output length and record
+    // Reserve chunk memory and write length
+    reserveChunk(target, 4 + size, Output());
     appendRawPod(target, size);
+
+    // Write record
+    typename Chunk<TTarget>::Type ochunk;
+    getChunk(ochunk, target, Output());
     _writeBamRecordWrapper(target, record, ochunk, size, tag);
-
-    std::cout<<record.tags<<std::endl;
-
-    for(int i=0;i<length(target);++i)
-        std::cout<<std::hex<<(int)(unsigned char)target[i]<<' ';
-    std::cout<<std::endl;
 }
 
 }  // namespace seqan
