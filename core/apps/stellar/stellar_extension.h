@@ -49,7 +49,7 @@ struct ExtensionEndPosition {
 template<typename TSource, typename TSize>
 inline bool
 isMatch(Align<TSource> const & align, TSize pos) {
-SEQAN_CHECKPOINT
+
     if(isGap(row(align, 0), pos)) {
         return false;
     } else if(isGap(row(align, 1), pos)) {
@@ -67,7 +67,6 @@ template<typename TSource, typename TPos>
 void
 _fillGapsString(Align<TSource> const & align,
                 String<Triple<TPos, TPos, TPos> > & gaps) {
-SEQAN_CHECKPOINT
     typedef Triple<TPos, TPos, TPos> TGapInfo;
     TPos totalErrors = 0;
 	typename Row<Align<TSource> >::Type row0 = row(align, 0);
@@ -108,8 +107,6 @@ inline bool
 _isEpsMatch(Triple<TPos, TPos, TPos> const & left,
            Triple<TPos, TPos, TPos> const & right,
            TFloat eps) {
-//IOREV _notio_
-SEQAN_CHECKPOINT
     // compute mismatches/indels and length
     TPos errors = right.i3 - left.i3 - (right.i2 - right.i1);
     TPos len = right.i1 - left.i2;
@@ -127,7 +124,6 @@ bool
 longestEpsMatch(Align<TSource> & align,
                 TSize matchMinLength,
                 TFloat epsilon) {
-SEQAN_CHECKPOINT
     // Preprocessing: compute and store gaps and lengths
     // A gap is a triple of gap begin position, gap end position, and total number of errors in sequence from begin
     //   to end position of this gap.
@@ -252,7 +248,6 @@ _align_banded_nw_best_ends(TTrace& trace,
 						   TDiagonal const diagL,
 						   TDiagonal const diagU)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Value<TTrace>::Type TTraceValue;
 	typedef typename Value<TScore>::Type TScoreValue;
 	typedef typename Value<TStringSet>::Type TString;
@@ -369,7 +364,6 @@ _reverseLeftExtension(Segment<TSequenceA, InfixSegment> const & infH,
 					  Segment<TSequenceB, InfixSegment> const & infV,
 					  TSeed & seed,
 					  TSeed & seedOld) {
-SEQAN_CHECKPOINT
 	Segment<TSequenceA, InfixSegment> infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
 	Segment<TSequenceB, InfixSegment> infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
 	reverse(infixH);
@@ -389,7 +383,7 @@ _fillMatrixBestEndsLeft(TMatrix & matrixLeft,
 						TSeed & seed,
 						TSeed & seedOld,
 						TScore const & scoreMatrix) {
-SEQAN_CHECKPOINT
+
 	typedef Segment<TSequence, InfixSegment> TInfix;
 
 	TInfix infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
@@ -769,7 +763,6 @@ template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
 			   Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
-SEQAN_CHECKPOINT
 	typedef typename Size<TSource>::Type TSize;
 	typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
@@ -800,7 +793,6 @@ _extendAndExtract(Align<Segment<Segment<TSequence, InfixSegment>, InfixSegment> 
 				  TSize minLength,
 				  TEps eps,
 				  TAlign & align) {
-SEQAN_CHECKPOINT
     typedef typename Position<TSequence>::Type TPos;
     typedef Seed<Simple> TSeed;
 
