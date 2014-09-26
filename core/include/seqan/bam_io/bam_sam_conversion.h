@@ -66,7 +66,6 @@ struct AppendTagsSamToBamOneTagHelper_
     TTarget     &target;
     TBuffer     buffer;
     char        typeC;
-    std::string tmpBuffer;
 
     AppendTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
         target(target),
@@ -81,17 +80,6 @@ struct AppendTagsSamToBamOneTagHelper_
             return false;
 
         appendRawPod(target, lexicalCast<Type>(buffer));
-        return true;
-    }
-
-    // we have to make this workaround until lexical_cast<float|double> can cope with Segments
-    bool operator() (float)
-    {
-        if (BamTypeChar<float>::VALUE != typeC)
-            return false;
-
-        assign(tmpBuffer, buffer);
-        appendRawPod(target, lexicalCast<float>(tmpBuffer));
         return true;
     }
 };
@@ -138,32 +126,34 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             for (size_t i = 0; i != len; ++i)
                 if (buffer[i] == ',')
                     ++nEntries;
+                    std::cout<<buffer<<std::endl;
 
             // Write out array length.
             appendRawPod(target, (__uint32)nEntries);
 
             // Write out array values.
             typedef typename Infix<CharString>::Type TBufferInfix;
-            size_t startPos = 0;
+            size_t startPos = 1;
             for (unsigned i = 0; i < nEntries; ++i)
             {
                 SEQAN_ASSERT_LT(startPos, len);
-                if (buffer[startPos] == ',')
-                    ++startPos;
 
                 // search end of current entry
                 size_t endPos = startPos;
                 for (; endPos < len; ++endPos)
-                    if (buffer[endPos] == ',' || buffer[endPos] == '\t')
+                    if (buffer[endPos] == ',')
+                    {
+                        buffer[endPos] = '\0';
                         break;
+                    }
 
-                AppendTagsSamToBamOneTagHelper_<TTarget, TBufferInfix> func(target,
-                                                                            infix(buffer, startPos, endPos),
-                                                                            typeC);
+                AppendTagsSamToBamOneTagHelper_<TTarget, char*> func(target,
+                                                                     toCString(buffer) + startPos,
+                                                                     typeC);
                 if (!tagApply(func, BamTagTypes()))
                     SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
 
-                startPos = endPos;
+                startPos = endPos + 1;
             }
             break;
         }
