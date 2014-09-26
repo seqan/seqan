@@ -67,16 +67,16 @@ struct MatchesAligner
     // Shared-memory read-write data.
     TCigarSet &             cigarSet;
     TCigarLimits &          cigarLimits;
+    TMatches &              matches;
 
     // Shared-memory read-only data.
-    TMatches const &        matches;
     TContigSeqs const &     contigSeqs;
     TReadSeqs const &       readSeqs;
     Options const &         options;
 
     MatchesAligner(TCigarSet & cigarSet,
                    TCigarLimits & cigarLimits,
-                   TMatches const & matches,
+                   TMatches & matches,
                    TContigSeqs const & contigSeqs,
                    TReadSeqs const & readSeqs,
                    Options const & options) :
@@ -91,7 +91,7 @@ struct MatchesAligner
     }
 
     template <typename TMatch>
-    void operator() (TMatch const & match)
+    void operator() (TMatch & match)
     {
         _alignMatchImpl(*this, match);
     }
@@ -135,16 +135,40 @@ inline void _alignMatches(MatchesAligner<TSpec, Traits> & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function _align(AffineGaps)
+// ----------------------------------------------------------------------------
+
+template <typename TContigGaps, typename TReadGaps, typename TErrors>
+inline int _align(TContigGaps & contigGaps, TReadGaps & readGaps, TErrors errors, AffineGaps)
+{
+    return globalAlignment(contigGaps, readGaps,
+                           Score<int>(0, -999, -1001, -1000),           // Match, mismatch, extend, open.
+                           AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+                           -(int)errors, (int)errors, Gotoh()) / -999;
+}
+
+// ----------------------------------------------------------------------------
+// Function _align(LinearGaps)
+// ----------------------------------------------------------------------------
+
+template <typename TContigGaps, typename TReadGaps, typename TErrors>
+inline int _align(TContigGaps & contigGaps, TReadGaps & readGaps, TErrors errors, LinearGaps)
+{
+    return -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
+}
+
+// ----------------------------------------------------------------------------
 // Function _alignMatchImpl()
 // ----------------------------------------------------------------------------
 // Aligns one match.
 
 template <typename TSpec, typename Traits, typename TMatchIt>
-inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const & matchIt)
+inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & matchIt)
 {
-    typedef typename Value<TMatchIt const>::Type    TMatch;
+    typedef typename Value<TMatchIt>::Type          TMatch;
     typedef typename Traits::TContigSeqs            TContigSeqs;
     typedef typename Value<TContigSeqs const>::Type TContigSeq;
+    typedef typename StringSetPosition<TContigSeqs const>::Type TContigPos;
     typedef typename Infix<TContigSeq>::Type        TContigInfix;
 
     typedef typename Traits::TReadSeqs              TReadSeqs;
@@ -155,30 +179,39 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     typedef Gaps<TContigInfix, TAnchorGaps>         TContigGaps;
     typedef Gaps<TReadSeq, TAnchorGaps>             TReadGaps;
 
-    TMatch const & match = value(matchIt);
+    TMatch & match = value(matchIt);
 
     if (isInvalid(match)) return;
 
-    unsigned errors = getValue(match, Errors());
+    unsigned errors = getMember(match, Errors());
     TReadSeq const & readSeq = me.readSeqs[getReadSeqId(match, me.readSeqs)];
-    TContigInfix const & contigInfix = infix(me.contigSeqs[getValue(match, ContigId())],
-                                             getValue(match, ContigBegin()),
-                                             getValue(match, ContigEnd()));
+    TContigInfix const & contigInfix = infix(me.contigSeqs[getMember(match, ContigId())],
+                                             getMember(match, ContigBegin()),
+                                             getMember(match, ContigEnd()));
 
     clear(me.contigAnchors);
     clear(me.readAnchors);
     TContigGaps contigGaps(contigInfix, me.contigAnchors);
     TReadGaps readGaps(readSeq, me.readAnchors);
 
-    int dpErrors = errors;
-
     // Do not align if the match contains no gaps.
     // TODO(esiragusa): reuse DP matrix.
     if (!(errors == 0 || (errors == 1 && length(contigInfix) == length(readSeq))))
-        dpErrors = -globalAlignment(contigGaps, readGaps, Score<short, EditDistance>(), -(int)errors, (int)errors);
+    {
+        int dpErrors = _align(contigGaps, readGaps, errors, TSpec());
 
-    SEQAN_ASSERT_EQ(dpErrors, (int)errors);
-    ignoreUnusedVariableWarning(dpErrors);
+        SEQAN_ASSERT_EQ(dpErrors, (int)errors);
+        ignoreUnusedVariableWarning(dpErrors);
+
+        clipSemiGlobal(contigGaps, readGaps);
+
+        // Shrink the match after realigning and clipping.
+        TContigPos contigBegin(getMember(match, ContigId()), getMember(match, ContigBegin()));
+        contigBegin = posAdd(contigBegin, clippedBeginPosition(readGaps));
+        TContigPos contigEnd = contigBegin;
+        contigEnd = posAdd(contigEnd, length(readGaps));
+        setContigPosition(match, contigBegin, contigEnd);
+    }
 
     // Compute cigar.
     clear(me.cigar);
@@ -187,9 +220,9 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt const &
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.
 //    me.cigarSet[getReadId(match)] = me.cigar;
-    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getValue(match, ReadId())]));
-    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getValue(match, ReadId())], Standard()));
-    assignValue(me.cigarLimits, getValue(match, ReadId()) + 1, length(me.cigar));
+    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getMember(match, ReadId())]));
+    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getMember(match, ReadId())], Standard()));
+    assignValue(me.cigarLimits, getMember(match, ReadId()) + 1, length(me.cigar));
 
 //    clear(me.md);
 //    getMDString(me.md, contigGaps, readGaps);
