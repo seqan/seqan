@@ -147,47 +147,45 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
     return 0;
 }
 
-template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-void write(TTarget & target,
-           BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           Bam const & /*tag*/)
+inline __uint32
+updateLengths(BamAlignmentRecord & record)
 {
-    typedef typename Iterator<CharString, Standard>::Type                                   TCharIter;
+    // update internal lengths.
+    record._l_qname = length(record.qName) + 1;
+    record._n_cigar = length(record.cigar);
+    record._l_qseq = length(record.seq);
+
+    return sizeof(BamAlignmentRecordCore) + record._l_qname +
+           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq +
+           length(record.tags);
+}
+
+
+template <typename TTarget>
+inline void
+_writeBamRecord(TTarget & target,
+                BamAlignmentRecord & record,
+                Bam const & /*tag*/)
+{
     typedef typename Iterator<String<CigarElement<> > const, Standard>::Type __restrict__   TCigarIter;
     typedef typename Iterator<IupacString const, Standard>::Type __restrict__               TSeqIter;
     typedef typename Iterator<CharString const, Standard>::Type __restrict__                TQualIter;
 
     // First, write record to buffer.
 
-    // set internal lengths.
-    record._l_qname = length(record.qName) + 1;
-    record._n_cigar = length(record.cigar);
-    record._l_qseq = length(record.seq);
-
-    resize(context.buffer, sizeof(BamAlignmentRecordCore) + record._l_qname +
-           record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq +
-           length(record.tags));
-    TCharIter it = begin(context.buffer, Standard());
-
     // bin_mq_nl
-    SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
     record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
     // BamAlignmentRecordCore.
-    arrayCopyForward(reinterpret_cast<char*>(&record),
-                     reinterpret_cast<char*>(&record) + sizeof(BamAlignmentRecordCore),
-                     it);
-    it += sizeof(BamAlignmentRecordCore);
+    appendRawPod(target, record);
+//    std::memcpy(it, reinterpret_cast<char *>(&record), sizeof(BamAlignmentRecordCore));
+//    it += sizeof(BamAlignmentRecordCore);
 
     // read_name
-    arrayCopyForward(begin(record.qName, Standard()),
-                     end(record.qName, Standard()),
-                     it);
-    it += length(record.qName);
-    *it++ = 0;
+    write(target, record.qName);
+    writeValue(target, '\0');
 
     // cigar
     static unsigned char const MAP[256] =
@@ -211,7 +209,7 @@ void write(TTarget & target,
     };
     TCigarIter citEnd = end(record.cigar, Standard());
     for (TCigarIter cit = begin(record.cigar, Standard()); cit != citEnd; ++cit)
-        *reinterpret_cast<__uint32* &>(it)++ = ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation];
+        appendRawPod(target, ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation]);
 
     // seq
     TSeqIter sit = begin(record.seq, Standard());
@@ -219,29 +217,72 @@ void write(TTarget & target,
     while (sit != sitEnd)
     {
         unsigned char x = (ordValue(getValue(sit++)) << 4);
-        *it++ = x | ordValue(getValue(sit++));
+        writeValue(target, x | ordValue(getValue(sit++)));
     }
     if (record._l_qseq & 1)
-        *it++ = ordValue(getValue(sit++)) << 4;
+        writeValue(target, ordValue(getValue(sit++)) << 4);
 
     // qual
     SEQAN_ASSERT_LEQ(length(record.qual), length(record.seq));
-    TCharIter itQEnd = it + record._l_qseq;
     TQualIter qit = begin(record.qual, Standard());
     TQualIter qitEnd = end(record.qual, Standard());
+    TQualIter qitVirtEnd = qit + record._l_qseq;
     while (qit != qitEnd)
-        *it++ = *qit++ - '!';
-    while (it != itQEnd)
-        *it++ = '\xff';         // fill with zero qualities
+        writeValue(target, *qit++ - '!');
+    for (; qit != qitVirtEnd; ++qit)
+        writeValue(target, '\xff');     // fill with zero qualities
 
     // tags
-    arrayCopyForward(begin(record.tags, Standard()),
-                     end(record.tags, Standard()),
-                     it);
+    write(target, record.tags);
+}
 
-    // buffer to stream
-    appendRawPod(target, (__uint32)length(context.buffer));
-    write(target, begin(context.buffer, Standard()), length(context.buffer));
+template <typename TTarget>
+inline void
+_writeBamRecordWrapper(TTarget & target,
+                       BamAlignmentRecord & record,
+                       Nothing /* range */,
+                       __uint32 /* size */,
+                       Bam const & tag)
+{
+    _writeBamRecord(target, record, tag);
+}
+
+template <typename TTarget, typename TOValue>
+inline void
+_writeBamRecordWrapper(TTarget & target,
+                       BamAlignmentRecord & record,
+                       Range<TOValue*> range,
+                       __uint32 size,
+                       Bam const & tag)
+{
+    if (size <= length(range))
+    {
+        _writeBamRecord(range.begin, record, tag);
+        advanceChunk(target, size);
+    }
+    else
+    {
+        _writeBamRecord(target, record, tag);
+    }
+}
+
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+void write(TTarget & target,
+           BamAlignmentRecord & record,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
+           Bam const & tag)
+{
+    // Update internal lengths and output leading length
+    __uint32 size = updateLengths(record);
+    appendRawPod(target, size);
+
+    // Reserve chunk memory
+    typename Chunk<TTarget>::Type ochunk;
+    reserveChunk(target, size, Output());
+    getChunk(ochunk, target, Output());
+
+    // Output record
+    _writeBamRecordWrapper(target, record, ochunk, size, tag);
 }
 
 }  // namespace seqan
