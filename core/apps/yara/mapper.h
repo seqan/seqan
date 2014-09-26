@@ -81,6 +81,7 @@ struct Options
     unsigned            readsCount;
     unsigned            threadsCount;
     unsigned            hitsThreshold;
+    bool                rabema;
     unsigned            verbose;
 
     CharString          commandLine;
@@ -103,6 +104,7 @@ struct Options
         readsCount(100000),
         threadsCount(1),
         hitsThreshold(300),
+        rabema(false),
         verbose(0)
     {
         appendValue(readsFormatList, "fastq");
@@ -886,13 +888,19 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 template <typename TSpec, typename TConfig>
 inline void alignMatches(Mapper<TSpec, TConfig> & me)
 {
-    typedef MapperTraits<TSpec, TConfig>        TTraits;
-    typedef MatchesAligner<TSpec, TTraits>      TMatchesAligner;
+    typedef MapperTraits<TSpec, TConfig>            TTraits;
+    typedef MatchesAligner<LinearGaps, TTraits>     TLinearAligner;
+    typedef MatchesAligner<AffineGaps , TTraits>    TAffineAligner;
 
     start(me.timer);
     setHost(me.cigarSet, me.cigars);
     typename TTraits::TCigarLimits cigarLimits;
-    TMatchesAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+
+    if (me.options.rabema)
+        TLinearAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+    else
+        TAffineAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+
     stop(me.timer);
     me.stats.alignMatches += getValue(me.timer);
 
