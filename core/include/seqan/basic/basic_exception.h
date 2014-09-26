@@ -416,7 +416,7 @@ static void globalExceptionHandler();
 // Install global exception handler.
 static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
 
-static void globalExceptionHandler()
+inline static void globalExceptionHandler()
 {
     SEQAN_TRY
     {
