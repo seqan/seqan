@@ -363,10 +363,7 @@ template <typename TSpec>
 inline void
 writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
 {
-    clear(context(file).buffer);
-    write(context(file).buffer, record, context(file), file.format);
-    write(file.iter, context(file).buffer);
-    //write(file.iter, record, context(file), file.format);
+    write(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec, typename TRecords>

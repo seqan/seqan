@@ -235,9 +235,10 @@ inline void
 _writeBamRecordWrapper(TTarget & target,
                        BamAlignmentRecord & record,
                        Nothing & /* range */,
-                       __uint32 /* size */,
+                       __uint32 size,
                        Bam const & tag)
 {
+    appendRawPod(target, size);
     _writeBamRecord(target, record, tag);
 }
 
@@ -249,13 +250,15 @@ _writeBamRecordWrapper(TTarget & target,
                        __uint32 size,
                        Bam const & tag)
 {
-    if (size <= length(range))
+    if (SEQAN_LIKELY(size + 4 <= length(range)))
     {
+        appendRawPod(range.begin, size);
         _writeBamRecord(range.begin, record, tag);
         advanceChunk(target, size);
     }
     else
     {
+        appendRawPod(target, size);
         _writeBamRecord(target, record, tag);
     }
 }
@@ -269,11 +272,10 @@ void write(TTarget & target,
     // Update internal lengths
     __uint32 size = updateLengths(record);
 
-    // Reserve chunk memory and write length
+    // Reserve chunk memory
     reserveChunk(target, 4 + size, Output());
-    appendRawPod(target, size);
 
-    // Write record
+    // Write length and record
     typename Chunk<TTarget>::Type ochunk;
     getChunk(ochunk, target, Output());
     _writeBamRecordWrapper(target, record, ochunk, size, tag);
