@@ -230,8 +230,6 @@ struct LessLength : public ::std::binary_function <TMatch, TMatch, bool> {
 template<typename TSequence, typename TId, typename TRowNo, typename TSize>
 inline bool
 _isUpstream(StellarMatch<TSequence, TId> & match1, StellarMatch<TSequence, TId> & match2, TRowNo row, TSize minLength) {
-//IOREV _notio_
-SEQAN_CHECKPOINT 
 	typedef typename StellarMatch<TSequence, TId>::TPos TPos;
 
 	TPos e1, b2;
