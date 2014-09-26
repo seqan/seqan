@@ -860,11 +860,27 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     if (me.options.verbose > 1)
         std::cout << "Mapped reads:\t\t\t" << mappedReads << std::endl;
 
-    // Try to pair co-optimal matches.
+    // Otherwise try to pair mates.
     if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
 
     start(me.timer);
-    TPairsSelector selector(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.options);
+    // Concordant pairs of first co-optimal mates with second sub-optimal mates.
+    TPairsSelector selectorOptSubFwdRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.matchesSet, me.options);
+    // Concordant pairs of first sub-optimal mates with second co-optimal mates.
+    TPairsSelector selectorSubOptFwdRev(me.primaryMatches, me.ctx, readSeqs, me.matchesSet, me.bestMatchesSet, me.options);
+
+    Options orientation = me.options;
+    // Disconcordant co-optimal pairs.
+    orientation.libraryOrientation = FWD_FWD;
+    TPairsSelector selectorOptOptFwdFwd(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+    // Disconcordant co-optimal pairs.
+    orientation.libraryOrientation = REV_REV;
+    TPairsSelector selectorOptOptRevRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+    // Any pair of co-optimal mates in the same chromosome.
+    orientation.libraryOrientation = ANY;
+    orientation.libraryError = MaxValue<unsigned>::VALUE;
+    TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+
     stop(me.timer);
     me.stats.selectPairs += getValue(me.timer);
 
