@@ -107,6 +107,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
     writeRecord(writer, header);
 
     // Step 3: Read and output alignment records
+    BamAlignmentRecord record;
     String<BamAlignmentRecord> records;
     __uint64 numRecords = 0;
     double start = sysTime();
@@ -115,14 +116,29 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
         if (readerPtr[i] == NULL)
             continue;
 
+        BamFileIn &reader = *readerPtr[i];
+
         // copy all alignment records
-        while (!atEnd(*readerPtr[i]))
+        if (isEqual(format(writer), Sam()))
         {
-            unsigned size = readBatch(records, *readerPtr[i], 10000);
-            writeRecords(writer, prefix(records, size));
-            numRecords += size;
+            // For Sam parallel batch processing is faster
+            while (!atEnd(reader))
+            {
+                unsigned size = readBatch(records, reader, 100000);
+                writeRecords(writer, prefix(records, size));
+                numRecords += size;
+            }
         }
-        close(*readerPtr[i]);
+        else
+        {
+            while (!atEnd(reader))
+            {
+                readRecord(record, reader);
+                writeRecord(writer, record);
+                ++numRecords;
+            }
+        }
+        close(reader);
         delete readerPtr[i];
     }
     double stop = sysTime();
