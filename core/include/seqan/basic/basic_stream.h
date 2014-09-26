@@ -432,7 +432,7 @@ writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
 
 template <typename TTargetValue, typename TValue>
 inline void
-writeValue(TTargetValue * iter, TValue val)
+writeValue(TTargetValue * &iter, TValue val)
 {
     *iter++ = val;
 }
@@ -639,7 +639,8 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
+                                 Not<IsContiguous<TContainer> > >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename DirectionIterator<TContainer, Input>::Type iter = directionIterator(cont, Input());
@@ -647,12 +648,33 @@ write(TTarget &target, TContainer &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TContainer const> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
+                                 IsContiguous<TContainer> >, void)
+write(TTarget &target, TContainer &cont)
+{
+    write(target, begin(cont, Standard()), length(cont));
+}
+
+
+
+template <typename TTarget, typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
+                                 Not<IsContiguous<TContainer> > >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename DirectionIterator<TContainer const, Input>::Type iter = directionIterator(cont, Input());
     write(target, iter, length(cont));
 }
+
+template <typename TTarget, typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
+                                 IsContiguous<TContainer> >, void)
+write(TTarget &target, TContainer const &cont)
+{
+    write(target, begin(cont, Standard()), length(cont));
+}
+
+
 
 template <typename TTarget, typename TValue>
 inline void
