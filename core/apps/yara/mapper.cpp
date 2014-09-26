@@ -132,6 +132,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
 
+    addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the Read Alignment BEnchMArk (RABEMA)."));
+
     // Setup mapping options.
     addSection(parser, "Mapping Options");
 
@@ -142,7 +144,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report only cooptimal alignments."));
 
-    addOption(parser, ArgParseOption("", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
     hideOption(getOption(parser, "quick"));
 
 //    addOption(parser, ArgParseOption("s", "strata-rate", "Report found suboptimal alignments within this error rate from the optimal one.
@@ -252,6 +254,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 #endif
 
     getOptionValue(options.readsCount, parser, "reads-batch");
+
+    getOptionValue(options.rabema, parser, "output-rabema");
 
     if (isSet(parser, "verbose")) options.verbose = 1;
     if (isSet(parser, "vverbose")) options.verbose = 2;
