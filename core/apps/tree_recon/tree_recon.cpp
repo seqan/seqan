@@ -178,7 +178,6 @@ int main(int argc, const char *argv[])
     }
 
     VirtualStream<char, Output> oStream(outfile.c_str());
-    DirectionIterator<VirtualStream<char, Output>, Output>::Type oIter = directionIterator(oStream, Output());
 
 	if (format == "dot")
     {
@@ -198,15 +197,15 @@ int main(int argc, const char *argv[])
 			names[nameLen] = "label = \"\"";
 
 		// Write the result
-        writeRecords(oIter, tree, names, DotDrawing());
+        writeRecords(oStream, tree, names, DotDrawing());
 	}
     else if (format == "newick")
     {
 		// If nj tree collapse the root
 		if (build == 0)
-            write(oIter, tree, names, true, NewickFormat());
+            write(oStream, tree, names, true, NewickFormat());
 		else
-            write(oIter, tree, names, false, NewickFormat());
+            write(oStream, tree, names, false, NewickFormat());
 	}
 
 	return 0;
