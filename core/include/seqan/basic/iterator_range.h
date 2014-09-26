@@ -73,12 +73,10 @@ public:
         end()
     {}
 
-
-    template <typename TOtherContainer>
     SEQAN_HOST_DEVICE
-    Range(TOtherContainer & cont) :
-        begin(begin(cont, Standard())),
-        end(end(cont, Standard()))
+    Range(Range const & range) :
+        begin(range.begin),
+        end(range.end)
     {}
 
     SEQAN_HOST_DEVICE

@@ -48,6 +48,7 @@ namespace seqan {
 SEQAN_CONCEPT(FundamentalConcept, (T));
 SEQAN_CONCEPT(IntegralConcept, (T));
 SEQAN_CONCEPT(NumberConcept, (T));
+SEQAN_CONCEPT(CharConcept, (T));
 SEQAN_CONCEPT(IntegerConcept, (T));
 SEQAN_CONCEPT(SignedIntegerConcept, (T));
 SEQAN_CONCEPT(UnsignedIntegerConcept, (T));
@@ -659,6 +660,19 @@ private:
 // ============================================================================
 // Test fulfilled concepts
 // ============================================================================
+
+template <typename T>
+struct Is< CharConcept<T> >
+{
+    typedef
+        // Explicitely unsigned.
+        typename IfC< IsSameType<T, char>::VALUE,           True,
+        typename IfC< IsSameType<T, signed char>::VALUE,    True,
+        typename IfC< IsSameType<T, unsigned short>::VALUE, True,
+        False
+        >::Type>::Type>::Type Type;
+        enum { VALUE = Type::VALUE };
+};
 
 template <typename T>
 struct Is< SignedIntegerConcept<T> >

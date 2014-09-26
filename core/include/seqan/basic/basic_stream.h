@@ -571,6 +571,15 @@ write(TTarget &target, TIValue *ptr, TSize n)
     }
 }
 
+template <typename TOValue, typename TIValue, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<CharConcept<TOValue> >,
+                                 Is<CharConcept<TIValue> > >, void)
+write(TOValue * &optr, TIValue *iptr, TSize n)
+{
+    std::memcpy(optr, iptr, n);
+    optr += n;
+}
+
 // ----------------------------------------------------------------------------
 // Function write(TValue *)
 // ----------------------------------------------------------------------------
@@ -597,10 +606,9 @@ write(TTarget &target, TIValue *ptr, TSize n)
 //TODO(singer): Enable this!
 template <typename TTarget, typename TFwdIterator, typename TSize>
 //inline SEQAN_FUNC_ENABLE_IF(Or<Is<OutputStreamConcept<TTarget> >, Is<ContainerConcept<TTarget> > >, void)
-inline SEQAN_FUNC_ENABLE_IF(And<
-    Is<IntegerConcept<TSize> >,
-    Is<Convertible<typename Value<TTarget>::Type,
-                   typename Value<TFwdIterator>::Type> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Is<IntegerConcept<TSize> >,
+                                 Is<Convertible<typename Value<TTarget>::Type,
+                                                typename Value<TFwdIterator>::Type> > >, void)
 write(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
@@ -723,12 +731,18 @@ appendNumber(TTarget & target, double source)
 // Function appendRawPod()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTarget>
-inline typename Size<TTarget>::Type
+template <typename TTarget, typename TValue>
+inline void
 appendRawPod(TTarget & target, TValue const & val)
 {
     write(target, (unsigned char*)&val, sizeof(TValue));
-    return sizeof(TValue);
+}
+
+template <typename TTargetValue, typename TValue>
+inline void
+appendRawPod(TTargetValue * &ptr, TValue const & val)
+{
+    *reinterpret_cast<TValue* &>(ptr)++ = val;
 }
 
 // ----------------------------------------------------------------------------
