@@ -35,7 +35,6 @@ using namespace seqan;
 template<typename TSize>
 TSize
 _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
-SEQAN_CHECKPOINT
 
 	const double K = 0.34;
 	const double logK = log(K);
@@ -112,7 +111,6 @@ SEQAN_CHECKPOINT
 template<typename TRow, typename TString>
 void
 _getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & mutations) { 
-SEQAN_CHECKPOINT
     typedef typename Size<TRow>::Type TSize;
 
     TSize pos = 0;
@@ -349,7 +347,6 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
 			   TMode verbose,
 			   TFile & fileName,
 			   TString & format) {
-SEQAN_CHECKPOINT
 	typedef StellarMatch<TInfix, TQueryId> TMatch;
 	typedef typename Size<typename TMatch::TAlign>::Type TSize;
 	typedef typename Iterator<String<TMatch> >::Type TIterator;
@@ -448,7 +445,6 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
 			   TFile & fileName,
 			   TString & format,
 			   TString & disabledFile) {
-SEQAN_CHECKPOINT
 	typedef StellarMatch<TInfix, TQueryId> TMatch;
 	typedef typename Size<typename TMatch::TAlign>::Type TSize;
 	typedef typename Iterator<String<TMatch> >::Type TIterator;

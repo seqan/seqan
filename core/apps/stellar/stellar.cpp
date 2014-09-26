@@ -21,8 +21,10 @@
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/index.h>
 #include <seqan/arg_parse.h>
+#include <seqan/index.h>
+#include <seqan/seq_io.h>
+
 #include "stellar.h"
 #include "stellar_output.h"
 
@@ -235,30 +237,22 @@ _importSequences(CharString const & fileName,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids)
 {
-    MultiSeqFile multiSeqFile;
-    if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+    SeqFileIn inSeqs;
+    if (!open(inSeqs, (toCString(fileName))))
     {
         std::cerr << "Failed to open " << name << " file." << std::endl;
         return false;
     }
-
-    AutoSeqFormat format;
-    guessFormat(multiSeqFile.concat, format);
-    split(multiSeqFile, format);
-
-    unsigned seqCount = length(multiSeqFile);
-    reserve(seqs, seqCount, Exact());
-    reserve(ids, seqCount, Exact());
 
     std::set<TId> uniqueIds; // set of short IDs (cut at first whitespace)
     bool idsUnique = true;
 
     TSequence seq;
     TId id;
-    for (unsigned i = 0; i < seqCount; ++i)
+    unsigned seqCount = 0;
+    for (; !atEnd(inSeqs); ++seqCount)
     {
-        assignSeq(seq, multiSeqFile[i], format);
-        assignSeqId(id, multiSeqFile[i], format);
+        readRecord(id, seq, inSeqs);
 
         idsUnique &= _checkUniqueId(uniqueIds, id);
 
