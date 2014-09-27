@@ -239,19 +239,10 @@ inline void _enumeratePairs(PairsSelector<TSpec, Traits> & me, TMatches const & 
     TIterator rightBegin = begin(right, Standard());
     TIterator rightEnd = end(right, Standard());
 
-//    std::cout << Pair<unsigned>(leftEnd - leftIt, rightEnd - rightBegin) << std::endl;
-
-    // Couple all lefts matches in the queue with current right match.
     for (; leftIt != leftEnd; ++leftIt)
-    {
         for (TIterator rightIt = rightBegin; rightIt != rightEnd; ++rightIt)
-        {
-             unsigned libraryDeviation = _abs((int)getTemplateLength(*leftIt, *rightIt) - (int)me.options.libraryLength);
-
-             if (libraryDeviation <= me.options.libraryError)
+             if (getTemplateDeviation(*leftIt, *rightIt, me.options.libraryLength) <= me.options.libraryError)
                 _selectBestPair(me, *leftIt, *rightIt);
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -264,22 +255,15 @@ inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & le
     TMatch & bestLeft = me.pairs[getMember(left, ReadId())];
     TMatch & bestRight = me.pairs[getMember(right, ReadId())];
 
-    unsigned errors = getErrors(left, right);
-    unsigned bestErrors = getErrors(bestLeft, bestRight);
-
-    if (errors <= bestErrors)
+    if (getErrors(left, right) <= getErrors(bestLeft, bestRight) &&
+        getTemplateDeviation(left, right, me.options.libraryLength) <=
+        getTemplateDeviation(bestLeft, bestRight, me.options.libraryLength))
     {
-        unsigned libraryDeviation = _abs((int)getTemplateLength(left, right) - (int)me.options.libraryLength);
-        unsigned bestLibraryDeviation = _abs((int)getTemplateLength(bestLeft, bestRight) - (int)me.options.libraryLength);
+        bestLeft = left;
+        bestRight = right;
 
-        if (libraryDeviation <= bestLibraryDeviation)
-        {
-            bestLeft = left;
-            bestRight = right;
-
-            setPaired(me.ctx, getMember(left, ReadId()));
-            setPaired(me.ctx, getMember(right, ReadId()));
-        }
+        setPaired(me.ctx, getMember(left, ReadId()));
+        setPaired(me.ctx, getMember(right, ReadId()));
     }
 }
 
