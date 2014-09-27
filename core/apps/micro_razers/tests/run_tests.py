@@ -24,7 +24,7 @@ def main(source_base, binary_base):
     """Main entry point of the script."""
 
     print 'Executing test for micro_razers'
-    print '========================='
+    print '==============================='
     print
     
     ph = app_tests.TestPathHelper(
@@ -53,71 +53,71 @@ def main(source_base, binary_base):
     # Run with default options.
     conf = app_tests.TestConf(
         program=path_to_program,
-        redir_stdout=ph.razersFile('se-adeno-reads36_1_default.stdout'),
+        redir_stdout=ph.outFile('se-adeno-reads36_1_default.stdout'),
         args=[ph.inFile('adeno-genome.fa'),
               ph.inFile('adeno-reads36_1.fa'),
-              '-o', ph.razersFile('se-adeno-reads36_1_default.razers' )],
+              '-o', ph.outFile('se-adeno-reads36_1_default.razers' )],
         to_diff=[(ph.inFile('se-adeno-reads36_1_default.razers' ),
-                  ph.razersFile('se-adeno-reads36_1_default.razers' )),
+                  ph.outFile('se-adeno-reads36_1_default.razers' )),
                  (ph.inFile('se-adeno-reads36_1_default.stdout' ),
-                  ph.razersFile('se-adeno-reads36_1_default.stdout' ))])
+                  ph.outFile('se-adeno-reads36_1_default.stdout' ))])
     conf_list.append(conf)
     
     # Run with different seed lengths
     for sl in range(14,21):
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.razersFile('se-adeno-reads36_1_sl%d.stdout' % sl),
+            redir_stdout=ph.outFile('se-adeno-reads36_1_sl%d.stdout' % sl),
             args=['-sL', str(sl), 
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads36_1.fa'),
-                  '-o', ph.razersFile('se-adeno-reads36_1_sl%d.razers' % sl)],
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d.razers' % sl)],
             to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d.razers' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d.razers' % sl)),
+                      ph.outFile('se-adeno-reads36_1_sl%d.razers' % sl)),
                      (ph.inFile('se-adeno-reads36_1_sl%d.stdout' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d.stdout' % sl))])
+                      ph.outFile('se-adeno-reads36_1_sl%d.stdout' % sl))])
         conf_list.append(conf)
     
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.razersFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl),
+            redir_stdout=ph.outFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl),
             args=['-sL', str(sl), 
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads36_1.fa'),
-                  '-o', ph.razersFile('se-adeno-reads36_1_sl%d.sam' % sl)],
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d.sam' % sl)],
             to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d.sam' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d.sam' % sl)),
+                      ph.outFile('se-adeno-reads36_1_sl%d.sam' % sl)),
                      (ph.inFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl))])
+                      ph.outFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl))])
         conf_list.append(conf)
     
         # allow error in seed
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.razersFile('se-adeno-reads36_1_sl%d_se.stdout' % sl),
+            redir_stdout=ph.outFile('se-adeno-reads36_1_sl%d_se.stdout' % sl),
             args=['-sL', str(sl), '-sE',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads36_1.fa'),
-                  '-o', ph.razersFile('se-adeno-reads36_1_sl%d_se.razers' % sl)],
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d_se.razers' % sl)],
             to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d_se.razers' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d_se.razers' % sl)),
+                      ph.outFile('se-adeno-reads36_1_sl%d_se.razers' % sl)),
                      (ph.inFile('se-adeno-reads36_1_sl%d_se.stdout' % sl),
-                      ph.razersFile('se-adeno-reads36_1_sl%d_se.stdout' % sl))])
+                      ph.outFile('se-adeno-reads36_1_sl%d_se.stdout' % sl))])
         conf_list.append(conf)
 
 
     # change maxhits parameter 
     conf = app_tests.TestConf(
         program=path_to_program,
-        redir_stdout=ph.razersFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ),
+        redir_stdout=ph.outFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ),
         args=['-sL', str(18), '-m', str(20), '-pa',
               ph.inFile('adeno-genome.fa'),
               ph.inFile('adeno-reads36_1.fa'),
-              '-o', ph.razersFile('se-adeno-reads36_1_sl18_m20_pa.razers' )],
+              '-o', ph.outFile('se-adeno-reads36_1_sl18_m20_pa.razers' )],
         to_diff=[(ph.inFile('se-adeno-reads36_1_sl18_m20_pa.razers' ),
-                  ph.razersFile('se-adeno-reads36_1_sl18_m20_pa.razers' )),
+                  ph.outFile('se-adeno-reads36_1_sl18_m20_pa.razers' )),
                  (ph.inFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ),
-                  ph.razersFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ))])
+                  ph.outFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ))])
     conf_list.append(conf)
 
     # ============================================================
