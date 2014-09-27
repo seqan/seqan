@@ -57,11 +57,9 @@ int getGenomeFileNameList(CharString const & filename, StringSet<CharString> & g
 		return RAZERS_GENOME_FAILED;
 
     DirectionIterator<std::fstream, Input>::Type reader(file);
-    if (!atEnd(reader))
-        return 0;
-
     clear(genomeFileNames);
-	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+    // if file does not start with a fasta header --> list of multiple reference genome files
+	if (!atEnd(reader) && value(reader) != '>' && value(reader) != '@')
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
