@@ -523,7 +523,7 @@ inline void _fillReadInfoImpl(MatchesWriter<TSpec, Traits> & me, TMatches const 
 template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
 inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, TPos primaryPos)
 {
-    _fillXaImpl(me, matches, bestCount, primaryPos, typename Traits::TStrategy());
+//    _fillXaImpl(me, matches, bestCount, primaryPos, typename Traits::TStrategy());
 }
 
 template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
