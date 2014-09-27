@@ -430,12 +430,35 @@ getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline unsigned getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b)
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b)
 {
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+
+    if (getMember(a, ContigId()) != getMember(b, ContigId()))
+        return MaxValue<TContigSize>::VALUE;
+
     if (getMember(a, ContigBegin()) < getMember(b, ContigBegin()))
         return getMember(b, ContigEnd()) - getMember(a, ContigBegin());
     else
         return getMember(a, ContigEnd()) - getMember(b, ContigBegin());
+}
+
+// ----------------------------------------------------------------------------
+// Function getTemplateDeviation()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TSize>
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getTemplateDeviation(Match<TSpec> const & a, Match<TSpec> const & b, TSize expectedLength)
+{
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+    typedef typename MakeSigned<TContigSize>::Type          TSignedContigSize;
+
+    if (isValid(a) && isValid(a))
+        return _abs((TSignedContigSize)getTemplateLength(a, b) - (TSignedContigSize)expectedLength);
+    else
+        return MaxValue<TContigSize>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
