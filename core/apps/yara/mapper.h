@@ -848,7 +848,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
     // Randomly choose primary matches among co-optimal ones.
     resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
-    transform(me.primaryMatches, me.bestMatchesSet, MatchesPicker<TMatches>(), Serial());
+    forEach(me.primaryMatches, setInvalid<void>, typename TTraits::TThreading());
+//    transform(me.primaryMatches, me.bestMatchesSet, MatchesPicker<TMatches>(), Serial());
 
     unsigned long mappedReads = 0;
     if (me.options.verbose > 0)
@@ -880,6 +881,13 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     orientation.libraryOrientation = ANY;
     orientation.libraryError = MaxValue<unsigned>::VALUE;
     TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+
+    MatchesPicker<TMatches> picker;
+    iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
+    {
+        if (!isValid(*matchesIt)) *matchesIt = picker(me.bestMatchesSet[position(matchesIt, me.primaryMatches)]);
+    },
+    Standard(), Serial());
 
     stop(me.timer);
     me.stats.selectPairs += getValue(me.timer);
