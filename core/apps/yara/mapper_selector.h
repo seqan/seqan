@@ -255,6 +255,8 @@ inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & le
     TMatch & bestLeft = me.pairs[getMember(left, ReadId())];
     TMatch & bestRight = me.pairs[getMember(right, ReadId())];
 
+    if (isPaired(me.ctx, getMember(left, ReadId())) && isPaired(me.ctx, getMember(right, ReadId()))) return;
+
     if (getErrors(left, right) < getErrors(bestLeft, bestRight) ||
         (getErrors(left, right) == getErrors(bestLeft, bestRight) &&
             getTemplateDeviation(left, right, me.options.libraryLength) <=
@@ -262,9 +264,6 @@ inline void _selectBestPair(PairsSelector<TSpec, Traits> & me, TMatch const & le
     {
         bestLeft = left;
         bestRight = right;
-
-        setPaired(me.ctx, getMember(left, ReadId()));
-        setPaired(me.ctx, getMember(right, ReadId()));
     }
 }
 
