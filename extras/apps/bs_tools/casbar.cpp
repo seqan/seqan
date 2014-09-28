@@ -61,8 +61,8 @@
 #include <seqan/basic.h>
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
-#include <../../extras/include/seqan/vcf_io.h>
-#include <../../extras/include/seqan/bed_io.h>
+#include <seqan/vcf_io.h>
+#include <seqan/bed_io.h>
 
 #include <boost/math/tools/tuple.hpp>
 #include <boost/math/tools/roots.hpp>

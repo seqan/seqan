@@ -26,7 +26,7 @@
 #include <seqan/arg_parse.h>
 //#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/index.h>
-#include <../../extras/include/seqan/math.h>
+#include <seqan/math.h>
 #include <string>
 #include <iostream>
 #include <fstream>
