@@ -49,7 +49,7 @@ using namespace seqan;
 
 
 template <typename TOptions>
-int getGenomeFileNameList(CharString const & filename, StringSet<CharString> & genomeFileNames, TOptions const & options)
+int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, TOptions const & options)
 {
 	ifstream file;
 	file.open(toCString(filename),ios_base::in | ios_base::binary);
