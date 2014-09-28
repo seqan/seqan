@@ -846,10 +846,50 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     assign(me.bestMatchesSet, me.matchesSet);
     removeSuboptimal(me.bestMatchesSet, typename TTraits::TThreading());
 
-    // Randomly choose primary matches among co-optimal ones.
+    // Initialize primary matches.
     resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
     forEach(me.primaryMatches, setInvalid<void>, typename TTraits::TThreading());
-//    transform(me.primaryMatches, me.bestMatchesSet, MatchesPicker<TMatches>(), Serial());
+
+    // Try to pair mates.
+    if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
+    {
+        start(me.timer);
+
+        // Concordant pairs of first co-optimal mates with second sub-optimal mates.
+        TPairsSelector selectorOptSubFwdRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.matchesSet, me.options);
+        // Concordant pairs of first sub-optimal mates with second co-optimal mates.
+        TPairsSelector selectorSubOptFwdRev(me.primaryMatches, me.ctx, readSeqs, me.matchesSet, me.bestMatchesSet, me.options);
+
+        // Mark paired mates as properly paired.
+        iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
+        {
+            if (isValid(*matchesIt)) setPaired(me.ctx, getMember(*matchesIt, ReadId()));
+        },
+        Standard(), typename TTraits::TThreading());
+
+        Options orientation = me.options;
+        // Disconcordant co-optimal pairs.
+        orientation.libraryOrientation = FWD_FWD;
+        TPairsSelector selectorOptOptFwdFwd(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+        // Disconcordant co-optimal pairs.
+        orientation.libraryOrientation = REV_REV;
+        TPairsSelector selectorOptOptRevRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+        // Any pair of co-optimal mates in the same chromosome.
+        orientation.libraryOrientation = ANY;
+        orientation.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+
+        stop(me.timer);
+        me.stats.selectPairs += getValue(me.timer);
+    }
+
+    // Randomly choose primary matches among co-optimal ones.
+    MatchesPicker<TMatches> picker;
+    iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
+    {
+        if (!isValid(*matchesIt)) *matchesIt = picker(me.bestMatchesSet[position(matchesIt, me.primaryMatches)]);
+    },
+    Standard(), Serial());
 
     unsigned long mappedReads = 0;
     if (me.options.verbose > 0)
@@ -860,37 +900,6 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     }
     if (me.options.verbose > 1)
         std::cout << "Mapped reads:\t\t\t" << mappedReads << std::endl;
-
-    // Otherwise try to pair mates.
-    if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
-
-    start(me.timer);
-    // Concordant pairs of first co-optimal mates with second sub-optimal mates.
-    TPairsSelector selectorOptSubFwdRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.matchesSet, me.options);
-    // Concordant pairs of first sub-optimal mates with second co-optimal mates.
-    TPairsSelector selectorSubOptFwdRev(me.primaryMatches, me.ctx, readSeqs, me.matchesSet, me.bestMatchesSet, me.options);
-
-    Options orientation = me.options;
-    // Disconcordant co-optimal pairs.
-    orientation.libraryOrientation = FWD_FWD;
-    TPairsSelector selectorOptOptFwdFwd(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
-    // Disconcordant co-optimal pairs.
-    orientation.libraryOrientation = REV_REV;
-    TPairsSelector selectorOptOptRevRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
-    // Any pair of co-optimal mates in the same chromosome.
-    orientation.libraryOrientation = ANY;
-    orientation.libraryError = MaxValue<unsigned>::VALUE;
-    TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
-
-    MatchesPicker<TMatches> picker;
-    iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
-    {
-        if (!isValid(*matchesIt)) *matchesIt = picker(me.bestMatchesSet[position(matchesIt, me.primaryMatches)]);
-    },
-    Standard(), Serial());
-
-    stop(me.timer);
-    me.stats.selectPairs += getValue(me.timer);
 
     unsigned long pairedReads = 0;
     if (me.options.verbose > 0)
