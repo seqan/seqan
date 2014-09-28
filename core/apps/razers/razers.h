@@ -581,7 +581,7 @@ bool loadReads(
 inline int estimateReadLength(SeqFileIn &seqFile)
 {
 	if (atEnd(seqFile))
-		return 0;
+		return RAZERS_READS_FAILED;
 
     typedef String<char, Array<1000> > TBuffer;
 
@@ -2033,10 +2033,12 @@ int mapSingleReads(
 		SEQAN_PROTIMESTART(find_time);
 		for(; !atEnd(file); ++gseqNo)
 		{
-            readRecord(id, genome, file);			// read Fasta id and sequence
-            cropAfterFirst(id, IsWhitespace());     // crop id after the first whitespace
+            readRecord(id, genome, file);               // read Fasta id and sequence
 			if (options.genomeNaming == 0)
+            {
+                cropAfterFirst(id, IsWhitespace());     // crop id after the first whitespace
 				appendValue(genomeNames, id, Generous());
+            }
 
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
