@@ -845,7 +845,7 @@ ngsOverlapper(TOptions &options)
 	SEQAN_PROTIMESTART(find2_time);
 #endif 
     // read annotations from GFF or GTF
-    GffFileIn inGff;
+    GffFileIn inGff(toCString(options.nameGFF));
     readRecords(fragStore, inGff);
 
 	adjustParentEntries(fragStore);
