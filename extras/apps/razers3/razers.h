@@ -30,6 +30,7 @@
 #endif
 
 #include <seqan/find.h>
+#include <seqan/seq_io.h>
 #include <seqan/index.h>
 #include <seqan/index/find_pigeonhole.h>
 #include <seqan/store.h>
@@ -280,6 +281,8 @@ struct RazerSOptions
 
     CharString commandLine;
     std::string version;
+
+    SeqFileIn readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
 
     RazerSOptions()
     {
@@ -602,63 +605,42 @@ struct MatchVerifier
 
 //////////////////////////////////////////////////////////////////////////////
 // Read a list of genome file names
-template <typename TSpec>
-int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> & options)
+template<typename TSpec>
+int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
 {
-    std::fstream file;
-    file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
-    if (!file.is_open())
-        return RAZERS_GENOME_FAILED;
+	std::ifstream file;
+	file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
+	if (!file.is_open())
+		return RAZERS_GENOME_FAILED;
+
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    if (!atEnd(reader))
+        return 0;
 
     clear(genomeFileNames);
-    char c = _streamGet(file);
-    if (c != '>' && c != '@')   //if file does not start with a fasta header --> list of multiple reference genome files
-    {
-        if (options._debugLevel >= 1)
-            std::cout << std::endl << "Reading multiple genome files:" << std::endl;
-
-/*		//locations of genome files are relative to list file's location
-        string tempGenomeFile(filename);
-        size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-        if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-        if (lastPos == tempGenomeFile.npos) lastPos = 0;
-        string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-
-        unsigned i = 1;
-        while (!_streamEOF(file))
-        {
-            _parseSkipWhitespace(file, c);
-            appendValue(genomeFileNames, _parseReadFilepath(file, c));
-            //CharString currentGenomeFile(filePrefix);
-            //append(currentGenomeFile,_parseReadFilepath(file,c));
-            //appendValue(genomeFileNames,currentGenomeFile);
-            if (options._debugLevel >= 2)
-                std::cout << "Genome file #" << i << ": " << genomeFileNames[length(genomeFileNames) - 1] << std::endl;
-            ++i;
-            _parseSkipWhitespace(file, c);
-        }
-        if (options._debugLevel >= 1)
-            std::cout << i - 1 << " genome files total." << std::endl;
-    }
-    else        //if file starts with a fasta header --> regular one-genome-file input
-        appendValue(genomeFileNames, filename, Exact());
-    file.close();
-    return 0;
-
-}
-
-
-template <typename TId>
-inline void
-cropSequenceId(TId &seqId)
-{
-    typedef typename Iterator<TId, Standard>::Type TIterator;
-    
-    TIterator itBeg = begin(seqId, Standard());
-    TIterator it = itBeg;
-    
-    _seekLineBreak(it, end(seqId, Standard()));
-    resize(seqId, it - itBeg);
+	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+	{
+		if(options._debugLevel >=1)
+			std::cout << std::endl << "Reading multiple genome files:" << std::endl;
+		
+		unsigned i = 1;
+        CharString line;
+		while (!atEnd(reader))
+		{
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
+			if(options._debugLevel >=2)
+				std::cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << std::endl;
+			++i;
+		}
+		if(options._debugLevel >=1)
+			std::cout << i-1 << " genome files total." << std::endl;
+	}
+	else		//if file starts with a fasta header --> regular one-genome-file input
+		appendValue(genomeFileNames, filename, Exact());
+	file.close();
+	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -666,12 +648,10 @@ cropSequenceId(TId &seqId)
 template <typename TFSSpec, typename TFSConfig, typename TRazerSOptions>
 bool loadReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
-    const char * fileName,
+	SeqFileIn &seqFile,
     TRazerSOptions & options)
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
-
-    SequenceStream seqStream(fileName);
 
     String<__uint64> qualSum;
     String<Dna5Q>    seq;
@@ -681,20 +661,15 @@ bool loadReads(
     unsigned seqCount = 0;
     unsigned kickoutcount = 0;
 
-    while (!atEnd(seqStream))
+    while (!atEnd(seqFile))
     {
+        readRecord(seqId, seq, qual, seqFile);
         ++seqCount;
-
-        if (readRecord(seqId, seq, qual, seqStream) != 0)
-        {
-            std::cerr << "Read error in file " << fileName << std::endl;
-            return false;
-        }
 
         if (options.readNaming == 0 || options.readNaming == 3)
         {
             if (!options.fullFastaId)
-                cropSequenceId(seqId);     // read Fasta id up to the first whitespace
+                cropAfterFirst(seqId, IsWhitespace());  // read Fasta id up to the first whitespace
         }
         else
         {
@@ -819,22 +794,26 @@ bool loadReads(
 //////////////////////////////////////////////////////////////////////////////
 // Read the first sequence of a multi-sequence file
 // and return its length
-inline int estimateReadLength(char const * fileName)
+inline int estimateReadLength(SeqFileIn &seqFile)
 {
-    MultiFasta multiFasta;
-    if (!open(multiFasta.concat, fileName, OPEN_RDONLY))    // open the whole file
-        return RAZERS_READS_FAILED;
+	if (atEnd(seqFile))
+		return 0;
 
-    AutoSeqFormat format;
-    guessFormat(multiFasta.concat, format);                 // guess file format
-    split(multiFasta, format);                              // divide into single sequences
+    typedef String<char, Array<1000> > TBuffer;
 
-    if (length(multiFasta) == 0)
-        return 0;
+    // read chunk into buffer
+    TBuffer buffer;
+    resize(buffer, capacity(buffer));
+    size_t len = seqFile.stream.readsome(&buffer[0], length(buffer));
+    for (size_t i = 0; i < len; ++i)
+        seqFile.stream.unget();
+    resize(buffer, len);
 
-    Dna5String firstRead;
-    assignSeq(firstRead, multiFasta[0], format);            // read the first sequence
-    return length(firstRead);
+    // parse record from buffer
+    DirectionIterator<TBuffer, Input>::Type iter = directionIterator(buffer, Input());
+    CharString fastaId, seq;
+    readRecord(fastaId, seq, iter, seqFile.format);
+    return length(seq);
 }
 
 // Comparators for RazerS1-style matches.
