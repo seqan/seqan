@@ -866,10 +866,14 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
                 std::cerr << "Reference sequence " << contigNameStore[record.rID] << " not known in FAI file.\n";
                 return 1;
             }
-            if (readSequence(contig, faiIndex, faiRefId) != 0)
+            try
+            {
+                readSequence(contig, faiIndex, faiRefId);
+            }
+            catch (seqan::IOError const & ioErr)
             {
                 std::cerr << "Could not load sequence " << contigNameStore[record.rID]
-                          << " from FASTA file with FAI.\n";
+                          << " from FASTA file with FAI (" << ioErr.what() << ").\n";
                 return 1;
             }
             rcContig = contig;
@@ -1167,7 +1171,12 @@ int main(int argc, char const ** argv)
     startTime = sysTime();
     std::cerr << "Reference Index       " << options.referencePath << ".fai ...";
     FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.referencePath)) != 0)
+    try
+    {
+        open(faiIndex, toCString(options.referencePath));
+        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
+    }
+    catch (seqan::IOError const & /*err*/)
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
         std::cerr << "Building Index        " << options.referencePath << ".fai ...";
@@ -1180,15 +1189,15 @@ int main(int argc, char const ** argv)
         seqan::CharString faiPath = options.referencePath;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
-        if (write(faiIndex, toCString(faiPath)) != 0)
+        try
         {
-            std::cerr << "Could not write FAI index we just built.\n";
+            save(faiIndex, toCString(faiPath));
+        }
+        catch (seqan::IOError const & ioErr)
+        {
+            std::cerr << "Could not write FAI index we just built (" << ioErr.what() << ").\n";
             return 1;
         }
-        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
-    }
-    else
-    {
         std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
     }
 
