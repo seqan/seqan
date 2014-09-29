@@ -85,11 +85,17 @@ struct CompressionContext<BgzfFile>:
     CompressionContext<GZFile>
 {
     enum { BLOCK_HEADER_LENGTH = 18 };
-    static const char header[BLOCK_HEADER_LENGTH];
     unsigned char headerPos;
 };
 
-const char CompressionContext<BgzfFile>::header[18] =
+template <typename T>
+struct MagicHeader<BgzfFile, T>
+{
+    static char const VALUE[18];
+};
+
+template <typename T>
+char const MagicHeader<BgzfFile, T>::VALUE[18] = 
 {
     MagicHeader<GZFile>::VALUE[0], MagicHeader<GZFile>::VALUE[1], MagicHeader<GZFile>::VALUE[2],
     4, 0, 0, 0, 0, 0, '\xff', 6, 0, 'B', 'C', 2, 0, 0, 0
@@ -211,9 +217,9 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
     TTargetChunk tChunk;
     TSourceChunk sChunk;
 
-    if (ctx.headerPos < sizeof(ctx.header))
+    if (ctx.headerPos < sizeof(MagicHeader<BgzfFile>::VALUE))
     {
-        size_t headerLeft = sizeof(ctx.header) - ctx.headerPos;
+        size_t headerLeft = sizeof(MagicHeader<BgzfFile>::VALUE) - ctx.headerPos;
         reserveChunk(target, headerLeft, Output());
 
         tChunk = getChunk(target, Output());
@@ -310,7 +316,7 @@ _compressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
 
     // 1. COPY HEADER
 
-    std::copy(&ctx.header[0], &ctx.header[BLOCK_HEADER_LENGTH], dstBegin);
+    std::copy(&MagicHeader<BgzfFile>::VALUE[0], &MagicHeader<BgzfFile>::VALUE[BLOCK_HEADER_LENGTH], dstBegin);
 
 
     // 2. COMPRESS
