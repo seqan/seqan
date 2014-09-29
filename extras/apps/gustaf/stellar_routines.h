@@ -637,7 +637,7 @@ _importSequences(CharString const & fileName,
     unsigned seqCount = 0, counter = 0;
     for (; !atEnd(seqFileIn); ++seqCount)
     {
-        readRecord(seq, id, seqFileIn);
+        readRecord(id, seq, seqFileIn);
         appendValue(seqs, seq, Generous());
 
         _getShortId(sId, id);
