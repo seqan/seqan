@@ -562,9 +562,14 @@ void dumpMatches(
 		scoreType.data_mismatch = -1;
 	resize(rows(align), 2);
 
-	std::ofstream file;
-	file.open(toCString(options.output), std::ios_base::out | std::ios_base::trunc);
-	if (!file.is_open()) {
+    VirtualStream<char, Output> file;
+    bool success;
+    if (!isEqual(options.output, "-"))
+        success = open(file, toCString(options.output));
+    else
+        success = open(file, std::cout, Nothing());
+ 
+	if (!success) {
 		std::cerr << "Failed to open output file" << std::endl;
 		return;
 	}
@@ -1101,11 +1106,12 @@ void dumpMatches(
 			break;
 	}
 
-	file.close();
+	close(file);
 
 	// get empirical error distribution
 	if (!empty(errorPrbFileName) && maxReadLength > 0)
 	{
+        std::ofstream file;
 		file.open(toCString(errorPrbFileName), std::ios_base::out | std::ios_base::trunc);
 		if (file.is_open())
 		{
