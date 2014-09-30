@@ -714,37 +714,6 @@ void updateStats(Stats & stats,
     stats.histo[diffPre - diffPost] += 1;
 }
 
-// Read header and perform basic validity checks.
-
-template <typename TRecordReader>
-int readHeader(seqan::BamHeader & header,
-               seqan::BamIOContext<TNameStore> & context,
-               TRecordReader & reader)
-{
-    using namespace seqan;
-
-    int res = 0;
-    res = readRecord(header, context, reader, Sam());
-    if (res != 0)
-    {
-        std::cerr << "Could not read SAM header!\n";
-        return 1;
-    }
-
-    // Check that the SAM file is sorted by QNAME.
-    CharString sortOrder;
-    for (unsigned i = 0; i < length(header.records); ++i)
-    {
-        if (header.records[i].type != BAM_HEADER_FIRST)
-            continue;
-        unsigned idx = 0;
-        if (findTagKey(idx, "SO", header.records[i]))
-            sortOrder = header.records[i].tags[idx].i2;
-    }
-
-    return 0;
-}
-
 seqan::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
@@ -910,76 +879,64 @@ int main(int argc, char const ** argv)
 
     // Opening file and record reader.
 
-    seqan::BamStream inPre(toCString(options.pathSamPreCorrection));
-    if (!isGood(inPre))
+    seqan::BamFileIn inPre;
+    if (!open(inPre, toCString(options.pathSamPreCorrection)))
     {
         std::cerr << "ERROR: Could not open pre-correction file.\n";
         return 1;
     }
-    std::fstream inPost;
-    bool postSam = !empty(options.pathSamPostCorrection);  // Whether or not to read post SAM.
-    if (postSam)
-        inPost.open(toCString(options.pathSamPostCorrection), std::ios::in | std::ios::binary);
+    BamHeader header;
+    readRecord(header, inPre);
+
+    seqan::BamFileIn inPostBam(inPre);
+    seqan::SeqFileIn inPostFastq;
+    bool success;
+    bool postBam = !empty(options.pathSamPostCorrection);  // Whether or not to read post SAM.
+    if (postBam)
+        success = open(inPostBam, toCString(options.pathSamPostCorrection));
     else
-        inPost.open(toCString(options.pathFastaFastqPostCorrection), std::ios::in | std::ios::binary);
-    if (!inPost.good())
+        success = open(inPostFastq, toCString(options.pathFastaFastqPostCorrection));
+    if (!success)
     {
         std::cerr << "ERROR: Could not open post-correction file.\n";
         return 1;
     }
-    RecordReader<std::fstream, SinglePass<> > readerPost(inPost);
 
     // Read pre-correction SAM header.
 
     std::cerr << "SAM headers...\n";
 
-    TNameStore refNameStore;
-    BamHeader header = inPre.header;
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
-        appendValue(refNameStore, header.sequenceInfos[i].i1);
-    TNameStoreCache refNameStoreCache(refNameStore);
-    BamIOContext<TNameStore> context(refNameStore, refNameStoreCache);
-
     // Read post-correction SAM header and forget it immediately. We COULD check for consistency with pre-correction
     // header but this tool is for internal use only...
 
-    if (postSam)
+    if (postBam)
     {
-        TNameStore refNameStore;
-        TNameStoreCache refNameStoreCache(refNameStore);
-        BamIOContext<TNameStore> context(refNameStore, refNameStoreCache);
         BamHeader header;
-        int res = readHeader(header, context, readerPost);
-        if (res != 0)
-            return 1;  // Error message printed above.
+        readRecord(header, inPostBam);
     }
 
     // Read genome and compute mapping from SAM record reference ids to seqs index.
 
     std::cerr << "Read Genome...\n";
 
-    StringSet<CharString> ids;
-    StringSet<Dna5String> seqs;
-    std::fstream inGenome(toCString(options.pathGenome), std::ios::in | std::ios::binary);
-    if (!inGenome.good())
+    seqan::SeqFileIn inGenome;
+    if (!open(inGenome, toCString(options.pathGenome)))
     {
         std::cerr << "ERROR: Could not open genome file\n";
         return 1;
     }
-    RecordReader<std::fstream, SinglePass<> > readerGenome(inGenome);
-    if (read2(ids, seqs, readerGenome, Fasta()) != 0)
-    {
-        std::cerr << "Could not read genome!\n";
-        return 1;
-    }
+
+    StringSet<CharString> ids;
+    StringSet<Dna5String> seqs;
+    readRecords(ids, seqs, inGenome);
 
     String<unsigned> idMap;
-    resize(idMap, length(refNameStore), maxValue<unsigned>());
+    resize(idMap, length(nameStore(context(inPre))), maxValue<unsigned>());
     for (unsigned i = 0; i < length(ids); ++i)
     {
         trimSeqHeaderToId(ids[i]);
         unsigned idx = 0;
-        if (!getIdByName(refNameStore, ids[i], idx, refNameStoreCache))
+        if (!getIdByName(idx, nameStoreCache(context(inPre)), ids[i]))
         {
             std::cerr << "Reference " << ids[i] << " not in SAM references!\n";
             return 1;
@@ -1043,15 +1000,19 @@ int main(int argc, char const ** argv)
             clear(recordPre.qName);
             clear(recordPost.qName);
 
-            while (!stop && !error && !atEnd(inPre) && !atEnd(readerPost))
+            while (!stop && !error && !atEnd(inPre))
             {
-                // Read next record into chunk.
-                if (readRecord(recordPre, inPre) != 0)
-                {
-                    std::cerr << "ERROR: Problem reading from pre correction file. (" << omp_get_thread_num() << ")\n";
-                    stop = error = true;  // Stop processing for all.
+                if (postBam)
+                    stop = atEnd(inPostBam);
+                else
+                    stop = atEnd(inPostFastq);
+                
+                if (stop)
                     break;
-                }
+                
+                // Read next record into chunk.
+                readRecord(recordPre, inPre);
+
                 if (hasFlagSecondary(recordPre))
                     continue;  // Skip, this happens for bwasw input.
 
@@ -1065,27 +1026,19 @@ int main(int argc, char const ** argv)
                 prevName = recordPre.qName;
 
                 // read post-records as long as they are less than the last pre-record
-                while (!atEnd(readerPost) && (empty(recordPost.qName) || strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0))
+                while (!stop && (empty(recordPost.qName) || strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0))
                 {
-                    if (postSam)
+                    if (postBam)
                     {
-                        if (readRecord(recordPost, context, readerPost, Sam()) != 0)
-                        {
-                            std::cerr << "ERROR: Problem reading from post correction file. (" << omp_get_thread_num() << ")\n";
-                            stop = error = true;  // Stop processing for all.
-                            break;
-                        }
+                        readRecord(recordPost, inPostBam);
                         stats[tid].numUnmappedPost += hasFlagUnmapped(recordPost);
+                        stop = atEnd(inPostBam);
                     }
                     else
                     {
-                        if (readRecord(recordPost.qName, recordPost.seq, readerPost, seqFormatTag) != 0)
-                        {
-                            std::cerr << "ERROR: Problem reading from post correction file. (" << omp_get_thread_num() << ")\n";
-                            stop = error = true;  // Stop processing for all.
-                            break;
-                        }
+                        readRecord(recordPost.qName, recordPost.seq, inPostFastq);
                         trimSeqHeaderToId(recordPost.qName);
+                        stop = atEnd(inPostFastq);
                     }
                     stats[tid].numUnmappedPre++;
                 }
@@ -1095,7 +1048,7 @@ int main(int argc, char const ** argv)
                 {
                     appendValue(chunkPre, recordPre);
                     appendValue(chunkPost, recordPost.seq);
-                    if (postSam)
+                    if (postBam)
                     {
                         if (hasFlagRC(recordPost) != hasFlagRC(recordPre))
                             reverseComplement(back(chunkPost)); // transform post-read to the same orientation as pre-read
@@ -1113,7 +1066,7 @@ int main(int argc, char const ** argv)
                     break;
             }
 
-            if (atEnd(inPre) || atEnd(readerPost) || chunksLeftToRead == 0ul)
+            if (atEnd(inPre) || chunksLeftToRead == 0ul)
                 stop = true;  // Do not read any more, this thread finishes its computation.
             else
                 --chunksLeftToRead;
@@ -1126,7 +1079,7 @@ int main(int argc, char const ** argv)
             updateStats(stats[tid], correctionLog, chunkPre[i], chunkPost[i], idMap, seqs, options);
     }
 
-    if (!atEnd(inPre) || !atEnd(readerPost))
+    if (!atEnd(inPre) || (postBam && !atEnd(inPostBam)) || (!postBam && !atEnd(inPostFastq)))
         std::cerr << "WARNING: Files not read completely!\n";
     if (error)
     {
@@ -1138,7 +1091,7 @@ int main(int argc, char const ** argv)
 
     if (chunksLeftToRead != 0ul)
     {
-        SEQAN_CHECK(atEnd(inPre) && atEnd(readerPost), "Both readers must be at end!");
+        SEQAN_CHECK((!atEnd(inPre) || (postBam && !atEnd(inPostBam)) || (!postBam && !atEnd(inPostFastq))), "Both readers must be at end!");
     }
 
     // -----------------------------------------------------------------------
