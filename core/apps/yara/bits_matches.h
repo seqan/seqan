@@ -478,9 +478,11 @@ inline unsigned getCigarLength(Match<TSpec> const & me)
 template <typename TSpec>
 inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 {
-    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigBegin())   <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+    typedef Match<TSpec>    TMatch;
+
+    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)            << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((__uint64)getMember(me, ContigBegin())   <<  MemberBits<TMatch, Errors>::VALUE)                                              |
            ((__uint64)getMember(me, Errors()));
 }
 
@@ -491,9 +493,11 @@ inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 template <typename TSpec>
 inline __uint64 getSortKey(Match<TSpec> const & me, ContigEnd)
 {
-    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigEnd())     <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+    typedef Match<TSpec>    TMatch;
+
+    return ((__uint64)getMember(me, ContigId())     << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)           << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((__uint64)getMember(me, ContigEnd())    <<  MemberBits<TMatch, Errors>::VALUE)                                              |
            ((__uint64)getMember(me, Errors()));
 }
 
