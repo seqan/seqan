@@ -1261,7 +1261,7 @@ _printRecord(TFile &file, BamAlignmentRecord &record)
 template<typename TBamTags, typename TOptions>
 int
 interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
-                int & clipLeft, int & clipRight, TOptions & options, Sam)
+                int & clipLeft, int & clipRight, TOptions & options)
 {
     BamTagsDict bamTags(tags);
     unsigned editDistIndex = 0;
@@ -1315,21 +1315,6 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     // count tag?
     return 0;
 }
-
-
-// TODO: implement this as in interpretSamTags, currently bam tags are not considered when parsing .bam files
-template<typename TBamTags, typename TOptions>
-int
-interpretBamTags(TBamTags & /*tags*/, int & /*editDist*/, bool & /*multi*/,
-                int & /*clipLeft*/, int & /*clipRight*/, TOptions & /*options*/)
-{
-
-//    char* bamTags = reinterpret_cast<char *>(toCString(tags));
-//
-    return 0;
-
-}
-
 
 
 /////////////////////////////////////////////////////////////
