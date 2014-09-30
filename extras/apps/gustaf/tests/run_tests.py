@@ -204,11 +204,11 @@ def main(source_base, binary_base):
               '-gff', ph.outFile('st2_l100.gff'),
               '-vcf', ph.outFile('st2_l100.vcf'),
               ],
-        to_diff=[(ph.inFile('st2_l100.vcf'),
-                  ph.outFile('st2_l100.vcf'),
-                  transforms),
-                 (ph.inFile('st2_l100.gff'),
-                  ph.outFile('st2_l100.gff'))])
+        to_diff=[])#(ph.inFile('st2_l100.vcf'),
+                 # ph.outFile('st2_l100.vcf'),
+                 # transforms),
+                 #(ph.inFile('st2_l100.gff'),
+                 # ph.outFile('st2_l100.gff'))])
     conf_list.append(conf)
 
     #out="st2_l100"
