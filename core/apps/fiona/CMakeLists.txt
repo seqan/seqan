@@ -22,7 +22,7 @@ find_package (Boost)
 # Stop here if we cannot find Boost or OpenMP.
 if (NOT Boost_FOUND OR NOT OpenMP_FLAG_DETECTED)
     message (STATUS "  Boost or OpenMP not found, not building fiona.")
-    return ()
+    #    return ()
 endif ()
 
 # ----------------------------------------------------------------------------
