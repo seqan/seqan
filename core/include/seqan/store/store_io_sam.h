@@ -733,16 +733,16 @@ _fillHeader(BamHeader & header,
 }
 
 // --------------------------------------------------------------------------
-// Function writeHeader()
+// Function fillHeader()
 // --------------------------------------------------------------------------
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
-inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
-                        FragmentStore<TFSSpec, TFSConfig> & store,
-                        TBamIOFunctor & functor)
+inline void
+fillHeader(BamHeader & header,
+           SmartFile<Bam, Output, TSpec> & bamFile,
+           FragmentStore<TFSSpec, TFSConfig> & store,
+           TBamIOFunctor & functor)
 {
-    BamHeader header;
-
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
     setNameStore(context(bamFile), store.contigNameStore);
     setNameStoreCache(context(bamFile), store.contigNameStoreCache);
@@ -754,6 +754,31 @@ inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
     resize(sequenceLengths(context(bamFile)), length(store.contigStore));
     for (size_t i = 0; i != length(store.contigStore); ++i)
         sequenceLengths(context(bamFile))[i] = length(store.contigStore[i].seq);
+}
+
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
+inline void
+fillHeader(BamHeader & header,
+           SmartFile<Bam, Output, TSpec> & bamFile,
+           FragmentStore<TFSSpec, TFSConfig> & store)
+{
+    Nothing nothing;
+    fillHeader(header, bamFile, store, nothing);
+}
+
+// --------------------------------------------------------------------------
+// Function writeHeader()
+// --------------------------------------------------------------------------
+
+template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
+inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
+                        FragmentStore<TFSSpec, TFSConfig> & store,
+                        TBamIOFunctor & functor)
+{
+    BamHeader header;
+
+    // Fill header with information from fragment store.
+    fillHeader(header, bamFile, store, functor);
 
     // Write header to target.
     writeRecord(bamFile, header);

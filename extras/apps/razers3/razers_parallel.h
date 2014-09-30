@@ -560,7 +560,7 @@ void _mapSingleReadsParallelToContig(
     TContigId const & contigId,
     TCounts & /*cnts*/,
     char                                                      orientation,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & /*shape*/,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & /*mode*/,
     TFilterSpec)
@@ -577,7 +577,7 @@ void _mapSingleReadsParallelToContig(
     //typedef typename Size<TReadSeqStore>::Type                      TSize;
 
     //typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
-    typedef RazerSOptions<TSpec> TOptions;
+    typedef RazerSCoreOptions<TSpec> TOptions;
 
     typedef typename Value<TThreadLocalStorages>::Type TThreadLocalStorage;
     typedef typename TThreadLocalStorage::TMatches TMatches;
@@ -587,7 +587,7 @@ void _mapSingleReadsParallelToContig(
     typedef Finder<TContigSeq, TFilterSpec>                         TFilterFinder;
     typedef Pattern<TIndex, TFilterSpec>                            TFilterPattern;
 
-    typedef RazerSOptions<TSpec> TOptions;
+    typedef RazerSCoreOptions<TSpec> TOptions;
 
     typedef typename WindowFindResult<TFilterFinder>::Type THitString;
     typedef Job<SingleVerification<TMatches, TFragmentStore, THitString, TOptions, TFilterPattern> > TVerificationJob;
@@ -956,7 +956,7 @@ template <
 int _mapSingleReadsParallel(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode,
     TFilterSpec)
@@ -970,7 +970,7 @@ int _mapSingleReadsParallel(
 
     typedef Pattern<TIndex, TFilterSpec>                            TFilterPattern;
     //typedef Pattern<TRead, MyersUkkonen>                            TMyersPattern;  // verifier
-    typedef RazerSOptions<TSpec> TOptions;
+    typedef RazerSCoreOptions<TSpec> TOptions;
 
     typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
     typedef typename TFragmentStore::TContigSeq                     TContigSeq;
@@ -1193,7 +1193,7 @@ template <
 int _mapSingleReadsParallel(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode)
 {
