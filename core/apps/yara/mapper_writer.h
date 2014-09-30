@@ -286,7 +286,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _fillReadInfo(me, matches, bestCount);
 
     if (!me.options.outputSecondary)
-        _fillXa(me, matches, bestCount, 0u);
+        _fillXa(me, matches, 0u);
 
     _writeRecord(me);
 
@@ -324,7 +324,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     TSize primaryPos = position(it, matches);
 
     if (!me.options.outputSecondary)
-        _fillXa(me, matches, bestCount, primaryPos);
+        _fillXa(me, matches, primaryPos);
 
     _writeRecord(me);
 
@@ -520,33 +520,16 @@ inline void _fillReadInfoImpl(MatchesWriter<TSpec, Traits> & me, TMatches const 
 // Function _fillXa()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, TPos primaryPos)
+template <typename TSpec, typename Traits, typename TMatches, typename TPos>
+inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TPos primaryPos)
 {
-//    _fillXaImpl(me, matches, bestCount, primaryPos, typename Traits::TStrategy());
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _fillXaImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount /* bestCount */, TPos primaryPos, All)
-{
-    // Exclude primary match from matches list.
     clear(me.xa);
-    _fillXa(me, prefix(matches, primaryPos));
-    _fillXa(me, suffix(matches, primaryPos + 1));
-    appendAlignments(me.record, me.xa);
-}
 
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _fillXaImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, TPos primaryPos, Strata)
-{
-    if (primaryPos < bestCount)
-    {
-        clear(me.xa);
-        TMatches const & cooptimal = prefix(matches, bestCount);
-        _fillXa(me, prefix(cooptimal, primaryPos));
-        _fillXa(me, suffix(cooptimal, primaryPos + 1));
-        appendAlignments(me.record, me.xa);
-    }
+    // Exclude primary match from matches list.
+    _fillXa(me, prefix(matches, primaryPos));
+    _fillXa(me, suffix(matches, std::min(primaryPos + 1, (TPos)length(matches))));
+
+    appendAlignments(me.record, me.xa);
 }
 
 template <typename TSpec, typename Traits, typename TMatches>
