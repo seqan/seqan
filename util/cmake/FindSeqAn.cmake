@@ -267,16 +267,10 @@ endif ()
 # Search for dependencies.
 # ----------------------------------------------------------------------------
 
-# libpthread -- implicit, on Linux only
+# librt, libpthread -- implicit, on Linux only
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
-endif ()
-
-# librt -- implicit, on Linux only
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
 endif ()
 
 # libexecinfo -- implicit
