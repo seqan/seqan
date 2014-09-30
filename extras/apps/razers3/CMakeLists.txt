@@ -15,7 +15,7 @@ find_package(CXX11 REQUIRED)
 # Disable RazerS3 for MinGW and VS8 and earlier.
 if (NOT CXX11_FOUND)
     message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
-    #    return ()
+    return ()
 endif (NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ if (OpenMP_FLAG_DETECTED)
 endif (OpenMP_FLAG_DETECTED)
 
 # However, the sequential tests are always executed.
-seqan_add_app_test (razers3_sequential)
+seqan_add_app_test (razers3 _sequential)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
