@@ -808,7 +808,7 @@ int dumpMatches(
             //fileOffsets[0] = back(fileOffsets);
 
             for (TAlignedReadStoreSize i = 0; i < chunkSize; ++i)
-                write(file, lines[i]);
+                file << lines[i];
 
             fromIdx += chunkSize;
         }

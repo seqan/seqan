@@ -232,7 +232,7 @@ int mapReads(
     //////////////////////////////////////////////////////////////////////////////
     // Step 3: Find matches using SWIFT
     loadContigs(store, genomeFileNames, false); // add filenames to the contig store (they are loaded on-demand)
-    int error = _mapReads(store, stats, options);
+    int error = _mapReads(store, stats, (RazerSCoreOptions<TSpec>&)options);
     if (error != 0)
     {
         switch (error)
@@ -301,7 +301,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setAppName(parser, "razers3");
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
-    options.version = "3.2";
+    options.version = "3.3";
 #ifdef SEQAN_REVISION
     options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
 #endif
@@ -353,7 +353,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
     addOption(parser, ArgParseOption("o", "output", "Mapping result filename (use - to dump to stdout in razers format). Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .afg");
+    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .bam .afg");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -490,6 +490,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 	addListItem(parser, ".eland", "Eland format");
 	addListItem(parser, ".gff", "GFF format");
 	addListItem(parser, ".sam", "SAM format");
+	addListItem(parser, ".bam", "BAM format");
 	addListItem(parser, ".afg", "Amos AFG format");
 
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
@@ -648,7 +649,7 @@ extractOptions(
         options.outputFormat = 2;
     else if (endsWith(tmp, ".gff"))
         options.outputFormat = 3;
-    else if (endsWith(tmp, ".sam"))
+    else if (endsWith(tmp, ".sam") || endsWith(tmp, ".bam"))
         options.outputFormat = 4;
     else if (endsWith(tmp, ".afg"))
         options.outputFormat = 5;
