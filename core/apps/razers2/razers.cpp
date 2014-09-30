@@ -291,7 +291,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
     addOption(parser, ArgParseOption("o", "output", "Change output filename (use - to dump to stdout in razers format). Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .afg");
+    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .bam .afg");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -347,6 +347,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 	addListItem(parser, ".eland", "Eland format");
 	addListItem(parser, ".gff", "GFF format");
 	addListItem(parser, ".sam", "SAM format");
+	addListItem(parser, ".bam", "BAM format");
 	addListItem(parser, ".afg", "Amos AFG format");
 
     addText(parser, "");
@@ -484,7 +485,7 @@ extractOptions(
         options.outputFormat = 2;
     else if (endsWith(tmp, ".gff"))
         options.outputFormat = 3;
-    else if (endsWith(tmp, ".sam"))
+    else if (endsWith(tmp, ".sam") || endsWith(tmp, ".bam"))
         options.outputFormat = 4;
     else if (endsWith(tmp, ".afg"))
         options.outputFormat = 5;
