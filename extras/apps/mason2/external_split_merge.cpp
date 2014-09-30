@@ -69,10 +69,9 @@ void IdSplitter::open()
         }
 
         // The file exists now and is already closed.
-
         DeleteFile(fileNameBuffer);
-        files.push_back(fopen(fileNameBuffer, "w+b"));
-        DeleteFile(fileNameBuffer);
+        files.push_back(new std::fstream(&fileNameBuffer[0], std::ios::binary | std::ios::in | std::ios::out));
+        // TODO: Deleting the file here will not actually remove it on windows.
         fileNames.push_back(fileNameBuffer);
 #else  // POSIX (Linux/Mac)
         // Create temporary file using POSIX API, open with <cstdio>, delete, close POSIX.
@@ -83,7 +82,7 @@ void IdSplitter::open()
         pathTpl += "/MASON_XXXXXX";
 
         int fd = mkstemp(&pathTpl[0]);
-        files.push_back(fopen(pathTpl.c_str(), "w+b"));
+        files.push_back(new std::fstream(pathTpl.c_str(), std::ios::binary | std::ios::in | std::ios::out));
         remove(pathTpl.c_str());
         ::close(fd);
 #endif
@@ -106,11 +105,9 @@ void IdSplitter::reset()
         if (files[i] != 0)
         {
             SEQAN_ASSERT(!ferror(files[i]));
-            fflush(files[i]);
-            int res = fseek(files[i], 0L, SEEK_SET);
-            (void)res;
-            SEQAN_ASSERT_EQ(res, 0);
-            SEQAN_ASSERT(!ferror(files[i]));
+            files[i]->flush();
+            files[i]->seekg(0);
+            SEQAN_ASSERT(files[i]->good());
         }
 }
 
@@ -123,7 +120,7 @@ void IdSplitter::close()
     for (unsigned i = 0; i < files.size(); ++i)
         if (files[i])
         {
-            fclose(files[i]);
+            delete files[i];
 #ifdef PLATFORM_WINDOWS
             DeleteFile(fileNames[i].c_str());
 #endif  // #ifdef PLATFORM_WINDOWS
@@ -144,7 +141,7 @@ void SamJoiner::init()
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        readers.push_back(new TReader(splitter->files[i]));
+        bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
 
         // We use a separate header structure and name stores and caches.  Since the headers of all files are equal, we
         // will write out the first one only.
@@ -152,14 +149,9 @@ void SamJoiner::init()
         seqan::StringSet<seqan::CharString> tmpNameStore;
         seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > tmpNameStoreCache(tmpNameStore);
         seqan::BamIOContext<seqan::StringSet<seqan::CharString> > tmpContext(tmpNameStore, tmpNameStoreCache);
-        if (readRecord(tmpHeader, tmpContext, *readers[i], seqan::Sam()) != 0)
-            throw MasonIOException("Could not load SAM header from temporary file.");
+        readRecord(tmpHeader, *bamFileIns[i]);
         if (i == 0u)
-        {
             header = tmpHeader;
-            nameStore = seqan::nameStore(tmpContext);
-            refresh(nameStoreCache);
-        }
 
         active[i] = _loadNext(records[i], i);
         numActive += (active[i] != false);
@@ -172,13 +164,9 @@ void SamJoiner::init()
 
 bool SamJoiner::_loadNext(seqan::BamAlignmentRecord & record, unsigned idx)
 {
-    if (seqan::atEnd(*readers[idx]))
+    if (seqan::atEnd(*bamFileIns[idx]))
         return false;
-    if (readRecord(record, context, *readers[idx], seqan::Sam()) != 0)
-    {
-        std::cerr << "ERROR: Problem reading temporary data.\n";
-        exit(1);
-    }
+    readRecord(record, *bamFileIns[idx]);
     return true;
 }
 
