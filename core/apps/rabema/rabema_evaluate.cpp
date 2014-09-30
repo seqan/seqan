@@ -126,9 +126,7 @@ public:
 
     // Exactly one of the following has to be set.
     //
-    // Path to input SAM file.
-    CharString inSamPath;
-    // Path to input BAM file.
+    // Path to input SAM or BAM file.
     CharString inBamPath;
 
     // Path to output TSV stats file.
@@ -144,10 +142,10 @@ public:
     // Print the missed intervals to stderr for debugging purposes.
     bool showMissedIntervals;
 
-    // Print superflous intervals (intervals found in Sam file but have too bad score).
+    // Print superflous intervals (intervals found in BAM file but have too bad score).
     bool showSuperflousIntervals;
 
-    // Print additional intervals (intervals found in Sam with good score that are not in WIT file).
+    // Print additional intervals (intervals found in BAM with good score that are not in WIT file).
     bool showAdditionalIntervals;
 
     // Print the hit intervals to stderr for debugging purposes.
@@ -1062,12 +1060,9 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     setRequired(parser, "in-gsi", true);
     setValidValues(parser, "in-gsi", "gsi gsi.gz");  // GSI (Gold Standard Intervals) Format only.
 
-    addOption(parser, seqan::ArgParseOption("s", "in-sam", "Path to load the read mapper SAM output from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "SAM"));
-    setValidValues(parser, "in-sam", "sam");
-    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper BAM output from.",
+    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
                                             seqan::ArgParseArgument::INPUTFILE, "BAM"));
-    setValidValues(parser, "in-bam", "bam");
+    setValidValues(parser, "in-bam", "sam bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
                                             seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
     setValidValues(parser, "out-tsv", "rabema_report_tsv");
@@ -1196,8 +1191,6 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     if (isSet(parser, "reference"))
         getOptionValue(options.referencePath, parser, "reference");
-    if (isSet(parser, "in-sam"))
-        getOptionValue(options.inSamPath, parser, "in-sam");
     if (isSet(parser, "in-bam"))
         getOptionValue(options.inBamPath, parser, "in-bam");
     if (isSet(parser, "in-gsi"))
@@ -1254,9 +1247,6 @@ int main(int argc, char const ** argv)
 
     double startTime = 0;  // For measuring time below.
 
-    typedef StringSet<CharString>      TNameStore;
-    typedef NameStoreCache<TNameStore> TNameStoreCache;
-
     std::cerr << "==============================================================================\n"
               << "                RABEMA - Read Alignment BEnchMArk\n"
               << "==============================================================================\n"
@@ -1297,7 +1287,12 @@ int main(int argc, char const ** argv)
     // Open reference FAI index.
     std::cerr << "Reference Index           " << options.referencePath << ".fai ...";
     FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.referencePath)) != 0)
+    try
+    {
+        open(faiIndex, toCString(options.referencePath));
+        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
+    }
+    catch (IOError const & ioErr)
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
         std::cerr << "Building Index        " << options.referencePath << ".fai ...";
@@ -1317,10 +1312,6 @@ int main(int argc, char const ** argv)
         }
         std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
     }
-    else
-    {
-        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
-    }
 
     std::cerr << "Reference Sequences       " << options.referencePath << " ...";
     StringSet<Dna5String> refSeqs;
@@ -1338,22 +1329,27 @@ int main(int argc, char const ** argv)
 
     // Open gold standard intervals (GSI) file and read in header.
     std::cerr << "Gold Standard Intervals   " << options.inGsiPath << " (header) ...";
-    Stream<GZFile> inGsi;
-    if (!open(inGsi, toCString(options.inGsiPath), "rb"))
+    VirtualStream<char, Input> inGsi;
+    if (!open(inGsi, toCString(options.inGsiPath)))
     {
         std::cerr << "Could not open GSI file.\n";
         return 1;
     }
-    if (!isDirect(inGsi))
+    // TODO(holtgrew): Ask for being compressed with new interface.
+    if (!isDirect(inGsiFile))
         std::cerr << " (is gzip'ed)";
-    RecordReader<Stream<GZFile>, SinglePass<> > gsiReader(inGsi);
+    DirectionIterator<VirtualStream<char, Input> >::Type inGsiIter = directionIterator(inGsi, Input());
     GsiHeader gsiHeader;
-    if (readRecord(gsiHeader, gsiReader, Gsi()) != 0)
+    try
     {
-        std::cerr << "Could not read GSI header.\n";
+        readRecord(gsiHeader, gsiReader, Gsi());
+        std::cerr << " OK\n";
+    }
+    catch (IOError const & ioErr)
+    {
+        std::cerr << "Could not read GSI header(" << ioErr.what() << ").\n";
         return 1;
     }
-    std::cerr << " OK\n";
 
     // Open SAM/BAM file and read in header.
     TNameStore refNameStore;
