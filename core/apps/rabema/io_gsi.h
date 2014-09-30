@@ -336,13 +336,10 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 // stream -- Stream to write to.
 
 template <typename TStream>
-int writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, "@GSI\tVN:1.1\n") != 0)
-        return 1;
-    if (streamPut(stream, "@MATES\tSEP:/\tTYPE:01\n") != 0)
-        return 1;
-    return 0;
+    stream << "@GIS\tVN:1.1\n"
+           << "@MATES\tSEP:/\tTYPE:01\n";
 }
 
 // ---------------------------------------------------------------------------

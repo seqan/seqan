@@ -856,7 +856,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
 
             // Load reference sequence on the fly using FAI index to save memory.
             unsigned faiRefId = 0;
-            if (!getIdByName(faiIndex, contigNameStore[record.rID], faiRefId))
+            if (!getIdByName(faiRefId, faiIndex, contigNameStore[record.rID]))
             {
                 std::cerr << "Reference sequence " << contigNameStore[record.rID] << " not known in FAI file.\n";
                 return 1;
@@ -1242,7 +1242,7 @@ int main(int argc, char const ** argv)
     startTime = sysTime();
     std::cerr << "\n____WRITING OUTPUT____________________________________________________________\n\n";
     VirtualStream<char, Output> gsiStream;
-    if ((options.outGsiPath == "-" && !open(gsiStream, std::cout)) ||
+    if ((options.outGsiPath == "-" && !open(gsiStream, std::cout, Nothing())) ||
         open(gsiStream, toCString(options.outGsiPath)))
     {
         std::cerr << "Could not open output file " << options.outGsiPath << ".\n";
@@ -1253,7 +1253,7 @@ int main(int argc, char const ** argv)
         std::cerr << "Writing to stdout ...";
     else
         std::cerr << "Writing to " << options.outGsiPath << " ...";
-    intervalizeAndDumpErrorCurves(gisStream, errorCurves, readAlignmentDistances, readNameStore,
+    intervalizeAndDumpErrorCurves(gsiStream, errorCurves, readAlignmentDistances, readNameStore,
                                   nameStore(context(inBam)), options, true);
     std::cerr << " DONE\n"
               << "\n Took " << sysTime() - startTime << " s\n";
