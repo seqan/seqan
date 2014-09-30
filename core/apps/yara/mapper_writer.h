@@ -492,12 +492,6 @@ inline void _fillMapq(MatchesWriter<TSpec, Traits> & me, TCount count)
 template <typename TSpec, typename Traits, typename TMatches, typename TCount>
 inline void _fillReadInfo(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount)
 {
-    _fillReadInfoImpl(me, matches, bestCount, typename Traits::TStrategy());
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TCount>
-inline void _fillReadInfoImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, All)
-{
     _fillMapq(me, bestCount);
     appendCooptimalCount(me.record, bestCount);
     appendSuboptimalCount(me.record, length(matches) - bestCount);
@@ -505,15 +499,6 @@ inline void _fillReadInfoImpl(MatchesWriter<TSpec, Traits> & me, TMatches const 
     // Set number of secondary alignments and hit index.
 //    appendTagValue(me.record.tags, "NH", 1, 'i');
 //    appendTagValue(me.record.tags, "HI", 1, 'i');
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TCount>
-inline void _fillReadInfoImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & /* matches */, TCount bestCount, Strata)
-{
-    _fillMapq(me, bestCount);
-    appendCooptimalCount(me.record, bestCount);
-//    appendSuboptimalCount(me.record, 0);
-    appendType(me.record, bestCount == 1);
 }
 
 // ----------------------------------------------------------------------------
