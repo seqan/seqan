@@ -643,7 +643,6 @@ inline void clipMatches(TMatchesSet & matchesSet, TClipper clipper, TThreading c
 {
     typedef typename StringSetLimits<TMatchesSet>::Type         TLimits;
     typedef typename Suffix<TLimits>::Type                      TLimitsSuffix;
-    typedef typename Value<TMatchesSet>::Type                   TMatches;
 
     TLimits newLimits;
     resize(newLimits, length(stringSetLimits(matchesSet)), Exact());
