@@ -358,15 +358,9 @@ int writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*ta
 // str    -- string to write to stream.
 
 template <typename TStream>
-int writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, '#') != 0)
-        return 1;
-    if (streamPut(stream, str) != 0)
-        return 1;
-    if (streamPut(stream, '\n') != 0)
-        return 1;
-    return 0;
+    stream << '#' << str << '\n';
 }
 
 // ---------------------------------------------------------------------------
@@ -381,52 +375,23 @@ int writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
 // record -- the GsiRecord to write out.
 
 template <typename TStream>
-int writeRecord(TStream & stream, GsiRecord const & record, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, GsiRecord const & record, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, record.readName) != 0)
-        return 1;
+    stream << record.readName;
     if (record.flags & GsiRecord::FLAG_PAIRED)
     {
         if (record.flags & GsiRecord::FLAG_FIRST_MATE)
-        {
-            if (streamPut(stream, "/0") != 0)
-                return 1;
-        }
+            stream << "/0";
         else if (record.flags & GsiRecord::FLAG_SECOND_MATE)
-        {
-            if (streamPut(stream, "/1") != 0)
-                return 1;
-        }
+            stream << "/1";
         else
-        {
-            if (streamPut(stream, "/?") != 0)
-                return 1;
-        }
+            stream << "/?";
     }
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.distance) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.contigName) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, (record.isForward ? 'F' : 'R')) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.firstPos) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.lastPos) != 0)
-        return 1;
-    if (streamPut(stream, '\n') != 0)
-        return 1;
-
-    return 0;
+    stream << '\t' << record.distance << '\t'
+           << record.contigName << '\t'
+           << (record.isForward ? 'F' : 'R') << '\t'
+           << record.firstPos << '\t'
+           << record.lastPos << '\n';
 }
 
 #endif  // #ifndef SEQAN_CORE_APPS_RABEMA_IO_GSI_H_

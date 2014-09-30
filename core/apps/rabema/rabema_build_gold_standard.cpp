@@ -149,17 +149,13 @@ struct BuildGoldStandardOptions
     // Path to the perfect input BAM file.
     seqan::CharString inBamPath;
 
-    // Whether or not to compress GSI output.
-    bool compressGsi;
-
     BuildGoldStandardOptions() :
         verbosity(1),
         matchN(false),
         oracleMode(false),
         maxError(0),
         maxErrorSet(false),
-        distanceMetric(EDIT_DISTANCE),
-        compressGsi(false)
+        distanceMetric(EDIT_DISTANCE)
     {}
 };
 
@@ -230,11 +226,8 @@ int intervalizeAndDumpErrorCurves(TStream & stream,
 
     // Write out the header.
     GsiHeader header;
-    if (writeRecord(stream, header, Gsi()) != 0)
-        return 1;
-
-    if (writeRecord(stream, GSI_COLUMN_NAMES, Gsi()) != 0)
-        return 1;
+    writeRecord(stream, header, Gsi());
+    writeRecord(stream, GSI_COLUMN_NAMES, Gsi());
 
     // Get a list of read ids, sorted by their read name.
     String<unsigned> sortedReadIds;
@@ -754,21 +747,19 @@ void buildErrorCurvePoints(String<WeightedMatch> & errorCurve,
 
 // Compute error curve from the reads and reference sequences.
 
-template <typename TPatternSpec, typename TStreamOrReader, typename TFormat>
+template <typename TPatternSpec>
 int matchesToErrorFunction(TErrorCurves & errorCurves,
                            String<int> & readAlignmentDistances,  // only used in case of oracle mode
-                           TStreamOrReader & streamOrReader,
-                           BamIOContext<StringSet<CharString> > & samIOContext,
+                           BamFileIn & inBam,
                            StringSet<CharString> & readNameStore,
                            StringSet<CharString> const & contigNameStore,
                            FaiIndex const & faiIndex,
                            BuildGoldStandardOptions const & options,
-                           TPatternSpec const & /*patternTag*/,
-                           TFormat const & formatTag)
+                           TPatternSpec const & /*patternTag*/)
 {
     double startTime = 0;
 
-    if (atEnd(streamOrReader))
+    if (atEnd(inBam))
         return 0;  // Do nothing if there are no more alignments in the file.
 
     // We store the read names and append "/0" and "/1", depending on their flag value ("/0" for first, "/1" for last
@@ -797,16 +788,20 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
     Dna5String rcContig;
     Dna5String readSeq;
     CharString readName;
-    while (!atEnd(streamOrReader))
+    while (!atEnd(inBam))
     {
         // -------------------------------------------------------------------
         // Read SAM/BAM Record and retrieve name and sequence.
         // -------------------------------------------------------------------
 
         // Read SAM/BAM record.
-        if (readRecord(record, samIOContext, streamOrReader, formatTag) != 0)
+        try
         {
-            std::cerr << "ERROR reading SAM/BAM record!\n";
+            readRecord(record, inBam);
+        }
+        catch (seqan::IOError const & ioErr)
+        {
+            std::cerr << "ERROR reading SAM/BAM record(" << ioErr.what() << ")!\n";
             return 1;
         }
         // Break if we have an unaligned SAM/BAM record.
@@ -1121,7 +1116,6 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
         getOptionValue(options.inSamPath, parser, "in-sam");
     if (isSet(parser, "in-bam"))
         getOptionValue(options.inBamPath, parser, "in-bam");
-    options.compressGsi = endsWith(options.outGsiPath, ".gsi.gz");
 
     return res;
 }
@@ -1156,7 +1150,6 @@ int main(int argc, char const ** argv)
               << "Distance measure      " << metricName(options.distanceMetric) << "\n"
               << "Match Ns              " << yesNo(options.matchN) << '\n'
               << "GSI Output File       " << options.outGsiPath << '\n'
-              << "  compress GSI?       " << yesNo(options.compressGsi) << '\n'
               << "SAM Input File        " << options.inSamPath << '\n'
               << "BAM Input File        " << options.inBamPath << '\n'
               << "Reference File        " << options.referencePath << '\n'
@@ -1202,45 +1195,21 @@ int main(int argc, char const ** argv)
     }
 
     // Open SAM file and read in header.
-    TNameStore refNameStore;
-    TNameStoreCache refNameStoreCache(refNameStore);
-    BamIOContext<TNameStore> bamIOContext(refNameStore, refNameStoreCache);
     BamHeader bamHeader;
-    std::ifstream inSam;  // Use this for reading SAM.
-    Stream<Bgzf> bamStream;   // Use this for reading BAM.
-    bool fromSam = !empty(options.inSamPath);
-    if (fromSam)
+    BamFileIn inBam;
+    if (!open(inBam, toCString(options.inSamPath)))
     {
-        std::cerr << "Alignments            " << options.inSamPath << " (header) ...";
-        inSam.open(toCString(options.inSamPath), std::ios_base::in | std::ios_base::binary);
-        if (!inSam.is_open() || !inSam.good())
-        {
-            std::cerr << "Could not open SAM file.\n";
-            return 1;
-        }
+        std::cerr << "Could not open SAM file.\n";
+        return 1;
     }
-    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
-    if (fromSam)
+    try
     {
-        if (readRecord(bamHeader, bamIOContext, samReader, Sam()) != 0)
-        {
-            std::cerr << "Could not read SAM header.\n";
-            return 1;
-        }
+        readRecord(bamHeader, inBam);
     }
-    else
+    catch (IOError const & ioErr)
     {
-        std::cerr << "Alignments            " << options.inBamPath << " (header) ...";
-        if (!open(bamStream, toCString(options.inBamPath), "r"))
-        {
-            std::cerr << "Could not read BAM header.\n";
-            return 1;
-        }
-        if (readRecord(bamHeader, bamIOContext, bamStream, Bam()) != 0)
-        {
-            std::cerr << "Could not read BAM header.\n";
-            return 1;
-        }
+        std::cerr << "Could not read BAM header (" << ioErr.what() << ").\n";
+        return 1;
     }
     std::cerr << " OK\n";
     std::cerr << "\nTook " << sysTime() - startTime << "s\n";
@@ -1255,24 +1224,12 @@ int main(int argc, char const ** argv)
     // In oracle mode, we store the distance of the alignment from the SAM file for each read.  Otherwise, this variable
     // remains unused.
     String<int> readAlignmentDistances;
-    if (fromSam)
-    {
-        if (options.distanceMetric == EDIT_DISTANCE)
-            res = matchesToErrorFunction(errorCurves, readAlignmentDistances, samReader, bamIOContext, readNameStore,
-                                         refNameStore, faiIndex, options, MyersUkkonenReads(), Sam());
-        else // options.distanceMetric == DISTANCE_HAMMING
-            res = matchesToErrorFunction(errorCurves, readAlignmentDistances, samReader, bamIOContext, readNameStore,
-                                         refNameStore, faiIndex, options, HammingSimple(), Sam());
-    }
-    else
-    {
-        if (options.distanceMetric == EDIT_DISTANCE)
-            res = matchesToErrorFunction(errorCurves, readAlignmentDistances, bamStream, bamIOContext, readNameStore,
-                                         refNameStore, faiIndex, options, MyersUkkonenReads(), Bam());
-        else // options.distanceMetric == DISTANCE_HAMMING
-            res = matchesToErrorFunction(errorCurves, readAlignmentDistances, bamStream, bamIOContext, readNameStore,
-                                         refNameStore, faiIndex, options, HammingSimple(), Bam());
-    }
+    if (options.distanceMetric == EDIT_DISTANCE)
+        res = matchesToErrorFunction(errorCurves, readAlignmentDistances, inBam, readNameStore,
+                                     nameStore(context(inBam)), faiIndex, options, MyersUkkonenReads());
+    else // options.distanceMetric == DISTANCE_HAMMING
+        res = matchesToErrorFunction(errorCurves, readAlignmentDistances, inBam, readNameStore,
+                                     nameStore(context(inBam)), faiIndex, options, HammingSimple());
     if (res != 0)
         return 1;
 
@@ -1284,41 +1241,22 @@ int main(int argc, char const ** argv)
     // The two alternatives are equivalent after opening the file.
     startTime = sysTime();
     std::cerr << "\n____WRITING OUTPUT____________________________________________________________\n\n";
+    VirtualStream<char, Output> gsiStream;
+    if ((options.outGsiPath == "-" && !open(gsiStream, std::cout)) ||
+        open(gsiStream, toCString(options.outGsiPath)))
+    {
+        std::cerr << "Could not open output file " << options.outGsiPath << ".\n";
+        return 1;
+    }
+
     if (options.outGsiPath == "-")
-    {
-        std::cerr << "Writing to stdout ...\n";
-        intervalizeAndDumpErrorCurves(std::cout, errorCurves, readAlignmentDistances, readNameStore, refNameStore,
-                                      options, true);
-        std::cerr << "DONE\n";
-    }
+        std::cerr << "Writing to stdout ...";
     else
-    {
         std::cerr << "Writing to " << options.outGsiPath << " ...";
-        if (options.compressGsi)
-        {
-            Stream<GZFile> gsiStream;
-            if (!open(gsiStream, toCString(options.outGsiPath), "wb"))
-            {
-                std::cerr << "Could not open out file \"" << options.outGsiPath << "\"\n";
-                return 1;
-            }
-            intervalizeAndDumpErrorCurves(gsiStream, errorCurves, readAlignmentDistances, readNameStore, refNameStore,
-                                          options, false);
-        }
-        else
-        {
-            std::fstream gsiStream(toCString(options.outGsiPath), std::ios::binary | std::ios::out);
-            if (!gsiStream.good())
-            {
-                std::cerr << "Could not open out file \"" << options.outGsiPath << "\"\n";
-                return 1;
-            }
-            intervalizeAndDumpErrorCurves(gsiStream, errorCurves, readAlignmentDistances, readNameStore, refNameStore,
-                                          options, false);
-        }
-        std::cerr << " DONE\n";
-    }
-    std::cerr << "\n Took " << sysTime() - startTime << " s\n";
+    intervalizeAndDumpErrorCurves(gisStream, errorCurves, readAlignmentDistances, readNameStore,
+                                  nameStore(context(inBam)), options, true);
+    std::cerr << " DONE\n"
+              << "\n Took " << sysTime() - startTime << " s\n";
 
     return 0;
 }
