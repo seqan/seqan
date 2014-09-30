@@ -601,13 +601,13 @@ inline void removeDuplicates(TMatchesSet & matchesSet, TThreading const & thread
 }
 
 // ----------------------------------------------------------------------------
-// Function countBestMatches()
+// Function countMatchesInStrata()
 // ----------------------------------------------------------------------------
-// Count the number of cooptimal matches - ordering by errors is required.
+// Count the number of matches within the first strata - ordering by errors is required.
 
-template <typename TMatches>
+template <typename TMatches, typename TStrata>
 inline typename Size<TMatches>::Type
-countBestMatches(TMatches const & matches)
+countMatchesInStrata(TMatches const & matches, TStrata strata)
 {
     typedef typename Iterator<TMatches const, Standard>::Type   TIter;
     typedef typename Size<TMatches>::Type                       TCount;
@@ -617,18 +617,29 @@ countBestMatches(TMatches const & matches)
 
     TCount count = 0;
 
-    for (TIter it = itBegin; it != itEnd && getMember(*it, Errors()) <= getMember(*itBegin, Errors()); it++, count++) ;
+    for (TIter it = itBegin; it != itEnd && getMember(*it, Errors()) <= getMember(*itBegin, Errors()) + strata; it++, count++) ;
 
     return count;
 }
 
 // ----------------------------------------------------------------------------
-// Function removeSuboptimal()
+// Function countMatchesInBestStratum()
 // ----------------------------------------------------------------------------
-// Remove suboptimal matches from a set of matches.
 
-template <typename TMatchesSet, typename TThreading>
-inline void removeSuboptimal(TMatchesSet & matchesSet, TThreading const & threading)
+template <typename TMatches>
+inline typename Size<TMatches>::Type
+countMatchesInBestStratum(TMatches const & matches)
+{
+    return countMatchesInStrata(matches, 0u);
+}
+
+// ----------------------------------------------------------------------------
+// Function clipMatches()
+// ----------------------------------------------------------------------------
+// Clip trailing matches from a set of matches.
+
+template <typename TMatchesSet, typename TClipper, typename TThreading>
+inline void clipMatches(TMatchesSet & matchesSet, TClipper clipper, TThreading const & threading)
 {
     typedef typename StringSetLimits<TMatchesSet>::Type         TLimits;
     typedef typename Suffix<TLimits>::Type                      TLimitsSuffix;
@@ -639,11 +650,11 @@ inline void removeSuboptimal(TMatchesSet & matchesSet, TThreading const & thread
     SEQAN_ASSERT_GT(length(stringSetLimits(matchesSet)), 0u);
     front(newLimits) = 0;
 
-    // Count co-optimal matches.
+    // Count leading matches to preserve.
     TLimitsSuffix counts = suffix(newLimits, 1);
-    transform(counts, matchesSet, countBestMatches<TMatches>, threading);
+    transform(counts, matchesSet, clipper, threading);
 
-    // Exclude suboptimal matches at the end.
+    // Clip trailing matches.
     assign(stringSetLimits(matchesSet), newLimits);
     _refreshStringSetLimits(matchesSet, threading);
 }

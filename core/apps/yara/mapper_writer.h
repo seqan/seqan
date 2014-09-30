@@ -282,7 +282,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _fillMateInfo(me, readId);
 
     TMatches const & matches = me.matchesSet[readId];
-    TSize bestCount = countBestMatches(matches);
+    TSize bestCount = countMatchesInBestStratum(matches);
     _fillReadInfo(me, matches, bestCount);
 
     if (!me.options.outputSecondary)
@@ -316,7 +316,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     }
 
     TMatches const & matches = me.matchesSet[readId];
-    TSize bestCount = countBestMatches(matches);
+    TSize bestCount = countMatchesInBestStratum(matches);
     _fillReadInfo(me, matches, bestCount);
 
     // Find the primary match in the list of matches.
