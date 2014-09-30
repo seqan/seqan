@@ -144,9 +144,7 @@ struct BuildGoldStandardOptions
 
     // Exactly one of the following two has to be given.
     //
-    // Path to the perfect input SAM file.
-    seqan::CharString inSamPath;
-    // Path to the perfect input BAM file.
+    // Path to the perfect input SAM/BAM file.
     seqan::CharString inBamPath;
 
     BuildGoldStandardOptions() :
@@ -985,10 +983,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--out-gsi\\fP \\fIOUT.gsi\\fP \\fB--reference\\fP \\fIREF.fa\\fP "
-                 "\\fB--in-sam\\fP \\fIPERFECT.sam\\fP");
-    addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB--out-gsi\\fP \\fIOUT.gsi\\fP \\fB--reference\\fP \\fIREF.fa\\fP "
-                 "\\fB--in-bam\\fP \\fIPERFECT.bam\\fP");
+                 "\\fB--in-bam\\fP \\fIPERFECT.{sam,bam}\\fP");
     addDescription(parser,
                    "This program allows to build a RABEMA gold standard.  The input is a reference FASTA file "
                    "and a perfect SAM/BAM map (e.g. created using RazerS 3 in full-sensitivity mode).");
@@ -1008,12 +1003,9 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
                                             seqan::ArgParseArgument::INPUTFILE, "FASTA"));
     setRequired(parser, "reference", true);
     setValidValues(parser, "reference", "fa fasta");
-    addOption(parser, seqan::ArgParseOption("s", "in-sam", "Path to load the \"perfect\" SAM file from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "SAM"));
-    setValidValues(parser, "in-sam", "sam");
-    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" BAM file from.",
+    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
                                             seqan::ArgParseArgument::INPUTFILE, "BAM"));
-    setValidValues(parser, "in-bam", "bam");
+    setValidValues(parser, "in-bam", "sam bam");
 
     addSection(parser, "Gold Standard Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",
@@ -1077,14 +1069,6 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res;
 
-    // Check that either "--in-sam" or "--in-bam" was used.
-    if ((!isSet(parser, "in-sam") && !isSet(parser, "in-bam")) ||
-        (isSet(parser, "in-sam") && isSet(parser, "in-bam")))
-    {
-        std::cerr << "You have to specify either --in-sam or --in-bam.\n";
-        return seqan::ArgumentParser::PARSE_ERROR;
-    }
-
     // -----------------------------------------------------------------------
     // Fill BuildGoldStandardOptions Object
     // -----------------------------------------------------------------------
@@ -1112,8 +1096,6 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
         getOptionValue(options.outGsiPath, parser, "out-gsi");
     if (isSet(parser, "reference"))
         getOptionValue(options.referencePath, parser, "reference");
-    if (isSet(parser, "in-sam"))
-        getOptionValue(options.inSamPath, parser, "in-sam");
     if (isSet(parser, "in-bam"))
         getOptionValue(options.inBamPath, parser, "in-bam");
 
@@ -1150,8 +1132,7 @@ int main(int argc, char const ** argv)
               << "Distance measure      " << metricName(options.distanceMetric) << "\n"
               << "Match Ns              " << yesNo(options.matchN) << '\n'
               << "GSI Output File       " << options.outGsiPath << '\n'
-              << "SAM Input File        " << options.inSamPath << '\n'
-              << "BAM Input File        " << options.inBamPath << '\n'
+              << "SAM/BAM Input File    " << options.inBamPath << '\n'
               << "Reference File        " << options.referencePath << '\n'
               << "Verbosity             " << options.verbosity << "\n\n";
 
@@ -1164,16 +1145,11 @@ int main(int argc, char const ** argv)
     startTime = sysTime();
     std::cerr << "Reference Index       " << options.referencePath << ".fai ...";
     FaiIndex faiIndex;
-    try
-    {
-        open(faiIndex, toCString(options.referencePath));
-        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
-    }
-    catch (seqan::IOError const & /*err*/)
+    if (!open(faiIndex, toCString(options.referencePath)))
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
         std::cerr << "Building Index        " << options.referencePath << ".fai ...";
-        if (build(faiIndex, toCString(options.referencePath)) != 0)
+        if (!build(faiIndex, toCString(options.referencePath)))
         {
             std::cerr << "Could not build FAI index.\n";
             return 1;
@@ -1193,11 +1169,12 @@ int main(int argc, char const ** argv)
         }
         std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
     }
+    std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
 
     // Open SAM file and read in header.
     BamHeader bamHeader;
     BamFileIn inBam;
-    if (!open(inBam, toCString(options.inSamPath)))
+    if (!open(inBam, toCString(options.inBamPath)))
     {
         std::cerr << "Could not open SAM file.\n";
         return 1;
@@ -1243,7 +1220,7 @@ int main(int argc, char const ** argv)
     std::cerr << "\n____WRITING OUTPUT____________________________________________________________\n\n";
     VirtualStream<char, Output> gsiStream;
     if ((options.outGsiPath == "-" && !open(gsiStream, std::cout, Nothing())) ||
-        open(gsiStream, toCString(options.outGsiPath)))
+        !open(gsiStream, toCString(options.outGsiPath)))
     {
         std::cerr << "Could not open output file " << options.outGsiPath << ".\n";
         return 1;

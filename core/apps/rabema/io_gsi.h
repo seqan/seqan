@@ -338,7 +338,7 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 template <typename TStream>
 void writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
 {
-    stream << "@GIS\tVN:1.1\n"
+    stream << "@GSI\tVN:1.1\n"
            << "@MATES\tSEP:/\tTYPE:01\n";
 }
 

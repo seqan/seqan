@@ -88,7 +88,7 @@ def main(source_base, binary_base):
         args=['--distance-metric', 'hamming', '-e', '8',
               '-o', ph.outFile('gold-adeno-hamming-08.gsi'),
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('gold-adeno-hamming-08.by_coordinate.sam')],
+              '--in-bam', ph.inFile('gold-adeno-hamming-08.by_coordinate.sam')],
         to_diff=[(ph.inFile('gold-adeno-hamming-08.stdout'),
                   ph.outFile('gold-adeno-hamming-08.stdout')),
                  (ph.inFile('gold-adeno-hamming-08.gsi'),
@@ -101,7 +101,7 @@ def main(source_base, binary_base):
         args=['--distance-metric', 'edit', '-e', '8',
               '-o', ph.outFile('gold-adeno-edit-08.gsi'),
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('gold-adeno-edit-08.by_coordinate.sam')],
+              '--in-bam', ph.inFile('gold-adeno-edit-08.by_coordinate.sam')],
         to_diff=[(ph.inFile('gold-adeno-edit-08.stdout'),
                   ph.outFile('gold-adeno-edit-08.stdout')),
                  (ph.inFile('gold-adeno-edit-08.gsi'),
@@ -117,7 +117,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('razers2-adeno-hamming-08.stdout'),
         args=['--distance-metric', 'hamming', '-e', '8',
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('razers2-adeno-hamming-08.sam'),
+              '--in-bam', ph.inFile('razers2-adeno-hamming-08.sam'),
               '--in-gsi', ph.inFile('gold-adeno-hamming-08.gsi')],
         to_diff=[(ph.inFile('razers2-adeno-hamming-08.stdout'),
                   ph.outFile('razers2-adeno-hamming-08.stdout'))])
@@ -128,7 +128,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('razers2-adeno-hamming-04.stdout'),
         args=['--distance-metric', 'hamming', '-e', '8',
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('razers2-adeno-hamming-04.sam'),
+              '--in-bam', ph.inFile('razers2-adeno-hamming-04.sam'),
               '--in-gsi', ph.inFile('gold-adeno-hamming-08.gsi')],
         to_diff=[(ph.inFile('razers2-adeno-hamming-04.stdout'),
                   ph.outFile('razers2-adeno-hamming-04.stdout'))])
@@ -139,7 +139,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('razers2-adeno-edit-08.stdout'),
         args=['--distance-metric', 'edit', '-e', '8',
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('razers2-adeno-edit-08.sam'),
+              '--in-bam', ph.inFile('razers2-adeno-edit-08.sam'),
               '--in-gsi', ph.inFile('gold-adeno-edit-08.gsi')],
         to_diff=[(ph.inFile('razers2-adeno-edit-08.stdout'),
                   ph.outFile('razers2-adeno-edit-08.stdout'))])
@@ -150,7 +150,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('razers2-adeno-edit-04.stdout'),
         args=['--distance-metric', 'edit', '-e', '8',
               '--reference', ph.outFile('adeno-genome.fa'),
-              '--in-sam', ph.inFile('razers2-adeno-edit-04.sam'),
+              '--in-bam', ph.inFile('razers2-adeno-edit-04.sam'),
               '--in-gsi', ph.inFile('gold-adeno-edit-08.gsi')],
         to_diff=[(ph.inFile('razers2-adeno-edit-04.stdout'),
                   ph.outFile('razers2-adeno-edit-04.stdout'))])
