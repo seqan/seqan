@@ -855,10 +855,10 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     {
         start(me.timer);
 
-        // Concordant pairs of first co-optimal mates with second sub-optimal mates.
-        TPairsSelector selectorOptSubFwdRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.matchesSet, me.options);
-        // Concordant pairs of first sub-optimal mates with second co-optimal mates.
-        TPairsSelector selectorSubOptFwdRev(me.primaryMatches, me.ctx, readSeqs, me.matchesSet, me.bestMatchesSet, me.options);
+        // Concordant pairs of first co-optimal match with second sub-optimal match.
+        TPairsSelector selectorOptSubConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.matchesSet, me.options);
+        // Concordant pairs of first sub-optimal match with second co-optimal match.
+        TPairsSelector selectorSubOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.matchesSet, me.bestMatchesSet, me.options);
 
         // Mark paired mates as properly paired.
         iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
@@ -867,17 +867,15 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         },
         Standard(), typename TTraits::TThreading());
 
-        Options orientation = me.options;
-        // Disconcordant co-optimal pairs.
-        orientation.libraryOrientation = FWD_FWD;
-        TPairsSelector selectorOptOptFwdFwd(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
-        // Disconcordant co-optimal pairs.
-        orientation.libraryOrientation = REV_REV;
-        TPairsSelector selectorOptOptRevRev(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
-        // Any pair of co-optimal mates in the same chromosome.
-        orientation.libraryOrientation = ANY;
-        orientation.libraryError = MaxValue<unsigned>::VALUE;
-        TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, orientation);
+        // Concordant co-optimal matches on the same chromosome outside of the expected insert size.
+        Options pairing = me.options;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
+
+        // Any pair of co-optimal matches on the same chromosome.
+        pairing.libraryOrientation = ANY;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
 
         stop(me.timer);
         me.stats.selectPairs += getValue(me.timer);
