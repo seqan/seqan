@@ -41,6 +41,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+// TODO(holtgrew): Consistently use exceptions instead of return values in mason.
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -85,27 +87,22 @@ public:
 // Functions
 // ============================================================================
 
-template <typename TStream, typename TSpec>
-int readRecord(VariationSizeRecord & record, seqan::RecordReader<TStream, TSpec> & reader,
+template <typename TForwardIterator>
+int readRecord(VariationSizeRecord & record, TForwardIterator & iter,
                VariationSizeTsv const & /*tag*/)
 {
     seqan::CharString buffer, buffer2;
 
-    int res = 0;
     // Read until tab, must not read file end.
-    if ((res = readUntilTabOrLineBreak(buffer, reader)) != 0)
-        return res;
+    readUntil(buffer, iter, seqan::OrFunctor<seqan::IsTab, seqan::IsNewline>());
 
     // Read until tab, must not reach file end.
-    if ((res = skipChar(reader, '\t')) != 0)
-        return res;
+    skipOne(iter, seqan::IsTab());
 
     // Read until tab or line break, may reach end of file.
-    if ((res = readUntilTabOrLineBreak(buffer2, reader)) != 0 && res != seqan::EOF_BEFORE_SUCCESS)
-        return res;
+    readUntil(buffer2, iter, seqan::OrFunctor<seqan::IsTab, seqan::IsNewline>());
 
-    if (!lexicalCast2(record.size, buffer2))
-        return 1;  // invalid number
+    lexicalCastWithException(record.size, buffer2);
 
     if (buffer == "INS" || buffer == "DEL")
         record.kind = VariationSizeRecord::INDEL;
@@ -126,21 +123,18 @@ int readRecord(VariationSizeRecord & record, seqan::RecordReader<TStream, TSpec>
         record.size = -record.size;
 
     // In case of an insertion, check if we can read the sequence to be inserted.
-    if (buffer == "INS" && !atEnd(reader) && value(reader) == '\t')
+    if (buffer == "INS" && !atEnd(iter) && *iter == '\t')
     {
-        if ((res = skipChar(reader, '\t')) != 0)  // Skip TAB char.
-            return res;
+        skipOne(iter, seqan::IsTab());
 
         clear(buffer2);
-        if ((res = readLetters(buffer2, reader)) != 0 && res != seqan::EOF_BEFORE_SUCCESS)
-            return res;
+        readUntil(buffer2, iter, seqan::IsWhitespace());
         record.seq = buffer2;
         record.size = length(record.seq);
     }
 
     // Skip rest of the line, may reach end of file.
-    if ((res = skipLine(reader)) != 0 && res != seqan::EOF_BEFORE_SUCCESS)
-        return res;
+    skipLine(iter);
 
     return 0;
 }
