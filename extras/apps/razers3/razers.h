@@ -156,7 +156,7 @@ struct RazerSSpec
 };
 
 template <typename TSpec = RazerSSpec<> >
-struct RazerSOptions
+struct RazerSCoreOptions
 {
     // major options
     AlignMode  alignMode;
@@ -282,9 +282,7 @@ struct RazerSOptions
     CharString commandLine;
     std::string version;
 
-    SeqFileIn readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
-
-    RazerSOptions()
+    RazerSCoreOptions()
     {
         alignMode = RAZERS_GLOBAL;
         gapMode = RAZERS_GAPPED;
@@ -357,11 +355,18 @@ struct RazerSOptions
 
 };
 
-template <typename TSpec>
-String<unsigned char> RazerSOptions<TSpec>::errorCutOff;
+template <typename TSpec = RazerSSpec<> >
+struct RazerSOptions : RazerSCoreOptions<TSpec>
+{
+    typedef RazerSCoreOptions<TSpec> TCoreOptions;
+    SeqFileIn readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
+};
 
 template <typename TSpec>
-typename RazerSOptions<TSpec>::TPreprocessing RazerSOptions<TSpec>::forwardPatterns;
+String<unsigned char> RazerSCoreOptions<TSpec>::errorCutOff;
+
+template <typename TSpec>
+typename RazerSCoreOptions<TSpec>::TPreprocessing RazerSCoreOptions<TSpec>::forwardPatterns;
 
 //////////////////////////////////////////////////////////////////////////////
 // Typedefs
@@ -606,7 +611,7 @@ struct MatchVerifier
 //////////////////////////////////////////////////////////////////////////////
 // Read a list of genome file names
 template<typename TSpec>
-int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
+int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSCoreOptions<TSpec> &options)
 {
 	std::ifstream file;
 	file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
@@ -1534,7 +1539,7 @@ template <
 void compactMatches(
     TMatches & matches,
     TCounts &,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const &,
     TSwift & swift,
     CompactMatchesMode compactMode)
@@ -1700,7 +1705,7 @@ template <
 void compactMatches(
     TMatches & matches,
     TCounts & cnts,
-    RazerSOptions<TSpec> &,
+    RazerSCoreOptions<TSpec> &,
     RazerSMode<RazerSGlobal, TGapMode, RazerSQuality<RazerSMAQ>, TMatchNPolicy> const &,
     TSwift &,
     CompactMatchesMode compactMode)
@@ -1798,7 +1803,7 @@ template <
 void compactMatches(
     TFragmentStore &,
     TCounts &,
-    RazerSOptions<TSpec> &,
+    RazerSCoreOptions<TSpec> &,
     RazerSMode<TAlignMode, TGapMode, TScoreMode> const,
     TSwift &,
     CompactMatchesMode)
@@ -2981,7 +2986,7 @@ template <
 int _mapSingleReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy>  const & mode,
     TReadIndex & readIndex,
     TFilterSpec)
@@ -3102,7 +3107,7 @@ template <
 int _mapSingleReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode,
     TFilterSpec)
@@ -3141,7 +3146,7 @@ template <
 int _mapSingleReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<RazerSPrefix, TGapMode, TScoreMode, TMatchNPolicy> const & mode,
     TFilterSpec)
@@ -3186,7 +3191,7 @@ template <
 int _mapSingleReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode)
 {
@@ -3217,7 +3222,7 @@ template <
 int _mapMatePairReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode)
 {
@@ -3245,7 +3250,7 @@ template <
 int _mapReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     TRazerSMode                       const & mode)
 {
@@ -3342,7 +3347,7 @@ template <typename TFSSpec, typename TFSConfig, typename TCounts, typename TSpec
 int _mapReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TRazersMode                       const & mode)
 {
     Shape<Dna, SimpleShape>     ungapped;
@@ -3369,7 +3374,7 @@ template <typename TFSSpec, typename TFSConfig, typename TCounts, typename TSpec
 int _mapReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     RazerSMode<TAlignMode, TGapMode, Nothing, TMatchNPolicy> const)
 {
     if (options.scoreMode == RAZERS_ERRORS)
@@ -3388,7 +3393,7 @@ template <typename TFSSpec, typename TFSConfig, typename TCounts, typename TSpec
 int _mapReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options)
+    RazerSCoreOptions<TSpec> & options)
 {
     if (options.matchN)
     {

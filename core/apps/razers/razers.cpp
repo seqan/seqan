@@ -240,9 +240,9 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
 #ifdef SEQAN_REVISION
-	setVersion(parser, "1.2 [" + std::string(SEQAN_REVISION) + "]");
+	setVersion(parser, "1.3 [" + std::string(SEQAN_REVISION) + "]");
 #else
-	setVersion(parser, "1.2");
+	setVersion(parser, "1.3");
 #endif
 #ifdef SEQAN_DATE
 	setDate(parser, SEQAN_DATE);

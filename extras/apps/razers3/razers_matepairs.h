@@ -410,7 +410,7 @@ void compactPairMatches(
     TFragmentStore & store,            // all but aligned reads up to the global writeback
     TMatches & matches,                // aligned read only
     TCounts &,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TFilterL & filterL,
     TFilterR & filterR,
     CompactMatchesMode        compactMode)
@@ -1022,7 +1022,7 @@ template <
 int _mapMatePairReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy>  const & mode,
     TFilterSpec)
