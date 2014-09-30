@@ -42,9 +42,9 @@ public:
     // The read sequences.
     TReadSeqSet const & readSeqs;
     // The options object.
-    RazerSOptions<TOptionsSpec> const & options;
+    RazerSCoreOptions<TOptionsSpec> const & options;
 
-    MatchFilter(unsigned readCount_, unsigned matchThreshold_, double frac_, TCallback & callback_, unsigned readOffset_, TReadSeqSet const & readSeqs_, RazerSOptions<TOptionsSpec> const & options_) :
+    MatchFilter(unsigned readCount_, unsigned matchThreshold_, double frac_, TCallback & callback_, unsigned readOffset_, TReadSeqSet const & readSeqs_, RazerSCoreOptions<TOptionsSpec> const & options_) :
         readCount(readCount_), matchThreshold(matchThreshold_), frac(frac_), callback(callback_), readOffset(readOffset_), readSeqs(readSeqs_), options(options_)
     {
         resize(hitCount, readCount, 0, Exact());

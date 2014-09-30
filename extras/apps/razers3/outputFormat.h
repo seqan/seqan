@@ -553,15 +553,16 @@ int dumpMatches(
         scoreType.data_mismatch = -1;
     resize(rows(align), 2);
 
-    std::ofstream file;
-
-    String<char, MMap<> > fileMM;
-    if (options.outputFormat == 0)
-        open(fileMM, toCString(options.output), OPEN_RDWR | OPEN_CREATE);  //use fast mmap strings for format 0
-    else
+    VirtualStream<char, Output> file;
+    if (options.outputFormat != 4)   // not SAM
     {
-        file.open(toCString(options.output), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
-        if (!file.is_open())
+        bool success;
+        if (!isEqual(options.output, "-"))
+            success = open(file, toCString(options.output));
+        else
+            success = open(file, std::cout, Nothing());
+
+        if (!success)
         {
             std::cerr << "Failed to open output file" << std::endl;
             return false;
@@ -708,7 +709,7 @@ int dumpMatches(
                 appendValue(line, _sep_);
                 appendValue(line, '0' + options.positionFormat);
                 appendValue(line, _sep_);
-                streamPut(line, readLen);
+                appendNumber(line, readLen);
                 appendValue(line, _sep_);
                 appendValue(line, (ar.beginPos < ar.endPos) ? 'F' : 'R');
                 appendValue(line, _sep_);
@@ -735,14 +736,14 @@ int dumpMatches(
 
                 appendValue(line, _sep_);
                 if (ar.beginPos < ar.endPos)
-                    streamPut(line, ar.beginPos + options.positionFormat);
+                    appendNumber(line, ar.beginPos + options.positionFormat);
                 else
-                    streamPut(line, ar.endPos + options.positionFormat);
+                    appendNumber(line, ar.endPos + options.positionFormat);
                 appendValue(line, _sep_);
                 if (ar.beginPos < ar.endPos)
-                    streamPut(line, ar.endPos);
+                    appendNumber(line, ar.endPos);
                 else
-                    streamPut(line, ar.beginPos);
+                    appendNumber(line, ar.beginPos);
                 appendValue(line, _sep_);
                 sprintf(intBuf, "%.5g", percId);
                 append(line, intBuf);
@@ -754,14 +755,14 @@ int dumpMatches(
                 if (ar.pairMatchId != TAlignedRead::INVALID_ID)
                 {
                     appendValue(line, _sep_);
-                    streamPut(line, ar.pairMatchId);
+                    appendNumber(line, ar.pairMatchId);
                     appendValue(line, _sep_);
-                    streamPut(line, (int)store.alignQualityStore[ar.id].pairScore);
+                    appendNumber(line, (int)store.alignQualityStore[ar.id].pairScore);
                     appendValue(line, _sep_);
                     if (ar.beginPos < ar.endPos)
-                        streamPut(line, libSize[ar.pairMatchId]);
+                        appendNumber(line, libSize[ar.pairMatchId]);
                     else
-                        streamPut(line, -libSize[ar.pairMatchId]);
+                        appendNumber(line, -libSize[ar.pairMatchId]);
                     //file << _sep_ << ar.pairMatchId << _sep_ << (int)store.alignQualityStore[ar.id].pairScore << _sep_;
                     //if (ar.beginPos < ar.endPos)
                     //    file << libSize[ar.pairMatchId];
@@ -807,7 +808,7 @@ int dumpMatches(
             //fileOffsets[0] = back(fileOffsets);
 
             for (TAlignedReadStoreSize i = 0; i < chunkSize; ++i)
-                append(fileMM, lines[i]);
+                file << lines[i];
 
             fromIdx += chunkSize;
         }
@@ -1169,40 +1170,49 @@ int dumpMatches(
 //
 //			write(file, store, Sam());
         {
-            typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
-            typedef typename TFragmentStore::TContigNameStore   TContigNameStore;
-            typedef BamIOContext<TContigNameStore>              TBamIOContext;
+            BamFileOut bamFile;
 
-            TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
+            bool success;
+            if (!isEqual(options.output, "-"))
+                success = open(bamFile, toCString(options.output));
+            else
+                success = open(bamFile, std::cout, Sam());
 
-            // 1. write header
+            if (!success)
+            {
+                std::cerr << "Failed to open output file" << std::endl;
+                return false;
+            }
+
+
+            // 1. write custom header
             BamHeader header;
 
             // fill header with information from fragment store.
-            _fillHeader(header, store);
+            fillHeader(header, bamFile, store);
             setSortOrder(header, BAM_SORT_COORDINATE);
 
             for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_PROGRAM, recIdx); ++recIdx)
             {
-                setTagValue("ID", "razers3", header.records[recIdx]);
-                setTagValue("VN", options.version, header.records[recIdx]);
-                setTagValue("PN", "razers3", header.records[recIdx]);
-                setTagValue("CL", options.commandLine, header.records[recIdx]);
+                setTagValue("ID", "razers3", header[recIdx]);
+                setTagValue("VN", options.version, header[recIdx]);
+                setTagValue("PN", "razers3", header[recIdx]);
+                setTagValue("CL", options.commandLine, header[recIdx]);
             }
 
-            // write header to target.
-            write2(file, header, context, Sam());
+            // write header to file.
+            writeRecord(bamFile, header);
 
             // 2. write aligments
             if (options.dontShrinkAlignments)
             {
                 BamAlignFunctorEditDistance func;
-                _writeAlignedReads(file, store, context, func, Sam());
+                writeAlignments(bamFile, store, func);
             }
             else
             {
                 BamAlignFunctorSemiGlobalGotoh func(scoreType);
-                _writeAlignedReads(file, store, context, func, Sam());
+                writeAlignments(bamFile, store, func);
             }
         }
         break;
@@ -1213,7 +1223,8 @@ int dumpMatches(
         break;
     }
 
-    file.close();
+    if (options.outputFormat != 4)   // not SAM
+        close(file);
 
     // free no longer required contigs
     if (options.dumpAlignment || options.outputFormat == 4 || options.outputFormat == 5 || !empty(options.errorPrbFileName))
@@ -1233,6 +1244,7 @@ int dumpMatches(
     // get empirical error distribution
     if (!empty(options.errorPrbFileName) && maxReadLength > 0)
     {
+        std::ofstream file;
         file.open(toCString(options.errorPrbFileName), std::ios_base::out | std::ios_base::trunc);
         if (file.is_open())
         {
