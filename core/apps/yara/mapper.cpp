@@ -239,7 +239,11 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
 //    getOptionValue(options.strataRate, parser, "strata-rate");
 
-    if (isSet(parser, "all")) options.mappingMode = ALL;
+    if (isSet(parser, "all"))
+    {
+        options.mappingMode = ALL;
+        options.strataRate = options.errorRate;
+    }
 
     getOptionValue(options.quick, parser, "quick");
 
