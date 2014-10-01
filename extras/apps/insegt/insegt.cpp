@@ -141,9 +141,13 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     getArgumentValue(options.nameSAM, parser, 0);
     getArgumentValue(options.nameGFF, parser, 1);
     if (endsWith(options.nameGFF, ".gff"))
+    {
         options.gtf = false;
+    }
     else if (endsWith(options.nameGFF, ".gtf"))
+    {
         options.gtf = true;
+    }
     else 
     {
         std::cerr << "ERROR: Input format of annotation file must be either GFF or GTF!\n";
