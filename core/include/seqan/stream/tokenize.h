@@ -2113,7 +2113,7 @@ readLineStripTrailingBlanks(TBuffer & buffer,
 }
 
 /*!
- * @fn RecordReader#skipLine
+ * @fn FileFormatTokenization#skipLine
  * @headerfile <seqan/stream.h>
  * @brief Skip a line in stream and go to beginning of next
  * 
