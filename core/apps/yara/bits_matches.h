@@ -430,12 +430,35 @@ getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline unsigned getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b)
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b)
 {
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+
+    if (getMember(a, ContigId()) != getMember(b, ContigId()))
+        return MaxValue<TContigSize>::VALUE;
+
     if (getMember(a, ContigBegin()) < getMember(b, ContigBegin()))
         return getMember(b, ContigEnd()) - getMember(a, ContigBegin());
     else
         return getMember(a, ContigEnd()) - getMember(b, ContigBegin());
+}
+
+// ----------------------------------------------------------------------------
+// Function getTemplateDeviation()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TSize>
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getTemplateDeviation(Match<TSpec> const & a, Match<TSpec> const & b, TSize expectedLength)
+{
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+    typedef typename MakeSigned<TContigSize>::Type          TSignedContigSize;
+
+    if (isValid(a) && isValid(a))
+        return _abs((TSignedContigSize)getTemplateLength(a, b) - (TSignedContigSize)expectedLength);
+    else
+        return MaxValue<TContigSize>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -455,9 +478,11 @@ inline unsigned getCigarLength(Match<TSpec> const & me)
 template <typename TSpec>
 inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 {
-    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigBegin())   <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+    typedef Match<TSpec>    TMatch;
+
+    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)            << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((__uint64)getMember(me, ContigBegin())   <<  MemberBits<TMatch, Errors>::VALUE)                                              |
            ((__uint64)getMember(me, Errors()));
 }
 
@@ -468,9 +493,11 @@ inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 template <typename TSpec>
 inline __uint64 getSortKey(Match<TSpec> const & me, ContigEnd)
 {
-    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)           << (MemberBits<Match<TSpec>, ContigSize>::VALUE + MemberBits<Match<TSpec>, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigEnd())     <<  MemberBits<Match<TSpec>, Errors>::VALUE)                                                    |
+    typedef Match<TSpec>    TMatch;
+
+    return ((__uint64)getMember(me, ContigId())     << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((__uint64)onReverseStrand(me)           << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((__uint64)getMember(me, ContigEnd())    <<  MemberBits<TMatch, Errors>::VALUE)                                              |
            ((__uint64)getMember(me, Errors()));
 }
 
@@ -574,13 +601,13 @@ inline void removeDuplicates(TMatchesSet & matchesSet, TThreading const & thread
 }
 
 // ----------------------------------------------------------------------------
-// Function countBestMatches()
+// Function countMatchesInStrata()
 // ----------------------------------------------------------------------------
-// Count the number of cooptimal matches - ordering by errors is required.
+// Count the number of matches within the first strata - ordering by errors is required.
 
-template <typename TMatches>
+template <typename TMatches, typename TStrata>
 inline typename Size<TMatches>::Type
-countBestMatches(TMatches const & matches)
+countMatchesInStrata(TMatches const & matches, TStrata strata)
 {
     typedef typename Iterator<TMatches const, Standard>::Type   TIter;
     typedef typename Size<TMatches>::Type                       TCount;
@@ -590,33 +617,43 @@ countBestMatches(TMatches const & matches)
 
     TCount count = 0;
 
-    for (TIter it = itBegin; it != itEnd && getMember(*it, Errors()) <= getMember(*itBegin, Errors()); it++, count++) ;
+    for (TIter it = itBegin; it != itEnd && getMember(*it, Errors()) <= getMember(*itBegin, Errors()) + strata; it++, count++) ;
 
     return count;
 }
 
 // ----------------------------------------------------------------------------
-// Function removeSuboptimal()
+// Function countMatchesInBestStratum()
 // ----------------------------------------------------------------------------
-// Remove suboptimal matches from a set of matches.
 
-template <typename TMatchesSet, typename TThreading>
-inline void removeSuboptimal(TMatchesSet & matchesSet, TThreading const & threading)
+template <typename TMatches>
+inline typename Size<TMatches>::Type
+countMatchesInBestStratum(TMatches const & matches)
+{
+    return countMatchesInStrata(matches, 0u);
+}
+
+// ----------------------------------------------------------------------------
+// Function clipMatches()
+// ----------------------------------------------------------------------------
+// Clip trailing matches from a set of matches.
+
+template <typename TMatchesSet, typename TClipper, typename TThreading>
+inline void clipMatches(TMatchesSet & matchesSet, TClipper clipper, TThreading const & threading)
 {
     typedef typename StringSetLimits<TMatchesSet>::Type         TLimits;
     typedef typename Suffix<TLimits>::Type                      TLimitsSuffix;
-    typedef typename Value<TMatchesSet>::Type                   TMatches;
 
     TLimits newLimits;
     resize(newLimits, length(stringSetLimits(matchesSet)), Exact());
     SEQAN_ASSERT_GT(length(stringSetLimits(matchesSet)), 0u);
     front(newLimits) = 0;
 
-    // Count co-optimal matches.
+    // Count leading matches to preserve.
     TLimitsSuffix counts = suffix(newLimits, 1);
-    transform(counts, matchesSet, countBestMatches<TMatches>, threading);
+    transform(counts, matchesSet, clipper, threading);
 
-    // Exclude suboptimal matches at the end.
+    // Clip trailing matches.
     assign(stringSetLimits(matchesSet), newLimits);
     _refreshStringSetLimits(matchesSet, threading);
 }
