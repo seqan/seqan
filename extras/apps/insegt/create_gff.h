@@ -261,7 +261,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 			           << ";ParentID="
 			           << getValue(fragStore.annotationNameStore, getValue(itAnno).parentId)
 			           << ';';
-        annoOutput << *itNorm << ";\n";
+        annoOutput << formattedNumber("%f", *itNorm) << ";\n";
 	}
 }
 
@@ -338,7 +338,7 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
 					// tuple count
 					tupleOutput << getValue(itC) << '\t';
 					// normalized tuple count
-                    tupleOutput << *itN << '\n';
+                    tupleOutput << formattedNumber("%f", *itN) << '\n';
 				}
 			}
 			//matepair connections:
@@ -380,7 +380,7 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
 					// tuple count
 					tupleOutput << *itC << '\t';
 					// normalized tuple count
-                    tupleOutput << *itN << '\n';
+                    tupleOutput << formattedNumber("%f", *itN) << '\n';
 				}
 			}
 		}
