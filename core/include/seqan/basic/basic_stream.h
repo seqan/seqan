@@ -150,6 +150,35 @@ SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)
 {};
 
 // ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Struct FormattedNumber
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct FormattedNumber
+{
+    char const *format;
+    TValue value;
+
+    FormattedNumber(char const *format, TValue const &value) :
+        format(format),
+        value(value)
+    {}
+
+    operator TValue() const
+    {
+        return value;
+    }
+};
+
+template <typename TValue>
+struct Is< NumberConcept< FormattedNumber<TValue> > > :
+    Is< NumberConcept<TValue> > {};
+
+// ============================================================================
 // Exceptions
 // ============================================================================
 
@@ -726,10 +755,8 @@ inline typename Size<TTarget>::Type
 appendNumber(TTarget & target, float source)
 {
     char buffer[32];
-    int offset;
-    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    char *bufPtr = buffer;
-    write(target, bufPtr, len);
+    size_t len = snprintf(buffer, sizeof(buffer), "%g", source);
+    write(target, (char *)buffer, len);
     return len;
 }
 
@@ -742,11 +769,31 @@ inline typename Size<TTarget>::Type
 appendNumber(TTarget & target, double source)
 {
     char buffer[32];
-    int offset;
-    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
-    char *bufPtr = buffer;
-    write(target, bufPtr, len);
+    size_t len = snprintf(buffer, sizeof(buffer), "%g", source);
+    write(target, (char *)buffer, len);
     return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(double)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TValue>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, FormattedNumber<TValue> const &
+source)
+{
+    char buffer[100];
+    size_t len = snprintf(buffer, sizeof(buffer), source.format, source.value);
+    write(target, (char *)buffer, len);
+    return len;
+}
+
+template <typename TValue>
+inline FormattedNumber<TValue>
+formattedNumber(const char *format, TValue const & val)
+{
+    return FormattedNumber<TValue>(format, val);
 }
 
 // ----------------------------------------------------------------------------
@@ -847,6 +894,16 @@ template <typename TStream, typename TIterator>
 inline TStream &
 operator<<(TStream & target,
            Range<TIterator> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
+
+template <typename TStream, typename TValue>
+inline TStream &
+operator<<(TStream & target,
+           FormattedNumber<TValue> const & source)
 {
     typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
     write(it, source);
