@@ -455,6 +455,17 @@ setLength(Matrix<TValue, DIMENSION> & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Matrix#resize
+ * @brief Resize the matrix and fill it with a given value or zeroes.
+ *
+ * @signature void resize(matrix[, val]);
+ *
+ * @param[in,out] matrix The Matrix to fill.
+ * @param[in]     val    The optional value to fill the matrix with.
+ */
+
+
 template <typename TValue, unsigned DIMENSION>
 inline void
 resize(Matrix<TValue, DIMENSION> & me)

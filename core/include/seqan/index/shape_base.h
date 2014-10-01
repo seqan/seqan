@@ -61,7 +61,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks:To get the span or the weight of a shape call @Function.length@ or @Function.weight@.
 ..example
 ...text:The following code shows how one can use a gapped shape to search for the pattern "ACxA" in a reference. First
-we assign a form to the shape and then compute the corresponding hash value. The hash value of a string and a Shape 
+we assign a form to the shape and then compute the corresponding hash value. The hash value of a string and a Shape
 object is unique, such that one can retrieve the string from a shape if the hash value is known.
 ...file:demos/index/shape.cpp
 ...output:The hash is: 4
@@ -81,18 +81,18 @@ Hit at position: 17
  * @class Shape
  * @headerfile <seqan/index.h>
  * @brief Stores hash value and shape for an ungapped or gapped q-gram.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            class Shape;
- * 
+ *
  * @tparam TSpec The specializing type. Default: @link SimpleShape @endlink, for
  *               ungapped q-grams.
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of Shape is the ValueSize of TValue which is the
  * alphabet size.
- * 
+ *
  * To get the span or the weight of a shape call @link Shape#length @endlink or @link Shape#weight @endlink.
  */
 	template <typename TValue = Dna, typename TSpec = SimpleShape>
@@ -190,11 +190,11 @@ Hit at position: 17
 ///.Metafunction.ValueSize.param.T.type:Class.Shape
 ///.Metafunction.ValueSize.class:Class.Shape
 	template <typename TValue, typename TSpec>
-	struct ValueSize< Shape<TValue, TSpec> > 
+	struct ValueSize< Shape<TValue, TSpec> >
 	{
 		typedef typename Value<Shape<TValue, TSpec> >::Type THashValue;
 		static const THashValue VALUE = Power<
-						ValueSize<TValue>::VALUE, 
+						ValueSize<TValue>::VALUE,
 						WEIGHT< Shape<TValue, TSpec> >::VALUE >::VALUE;
 	};
 
@@ -237,18 +237,18 @@ Hit at position: 17
  * @extends Shape
  * @headerfile <seqan/index.h>
  * @brief A variable length ungapped shape (also called q-gram or k-mer).
- * 
+ *
  * @signature template <typename TValue>
  *            class Shape<TValue, SimpleShape>;
- * 
+ *
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * @section Remarks
- * 
+ *
  * A SimpleShape must be resized first to a valid length.  To do so, call @link
  * Shape#resize @endlink.
- * 
+ *
  * @see UngappedShape
  */
 
@@ -282,16 +282,16 @@ Hit at position: 17
 */
 /*!
  * @fn SimpleShape::Shape
- * 
+ *
  * @brief Constructor.
- * 
+ *
  * @signature Shape::Shape();
  * @signature Shape::Shape(shape);
  * @signature Shape::Shape(q);
- * 
+ *
  * @param[in] shape Other Shape object (copy constructor).
  * @param[in] q     Length of the ungapped q-gram (@link IntegerConcept @endlink).
- */ 
+ */
 		Shape():
 			span(0),
 			hValue(0),
@@ -351,14 +351,14 @@ Hit at position: 17
  * @extends Shape
  * @headerfile <seqan/index.h>
  * @brief A fixed length ungapped shape (also called q-gram or k-mer).
- * 
+ *
  * @signature template <typename TValue, unsigned Q>
  *            class Shape<TValue, UngappedShape<Q> >;
- * 
+ *
  * @tparam Q      The length of the shape (@link IntegerConcept @endlink).
  * @tparam TValue The @link Value @endlink type of the sequence the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * @see SimpleShape
  */
 
@@ -423,11 +423,11 @@ Hit at position: 17
 /*!
  * @fn Shape#length
  * @brief Returns the number of elements of the shape (span).
- * 
+ *
  * @signature TSize length(shape);
- * 
+ *
  * @param[in] shape Shape object for which the number of relevant positions is determined.
- * 
+ *
  * @return TSize The number of elements of the shape (span) (Metafunction: @link Shape#Size @endlink).
  */
 ///.Function.length.param.object.type:Class.Shape
@@ -457,13 +457,13 @@ For gapped shapes this is the number of '1's.
 /*!
  * @fn Shape#weight
  * @brief Number of relevant positions in a shape.
- * 
+ *
  * @signature TSize weight(shape);
- * 
+ *
  * @param[in] shape Shape object for which the number of relevant positions is determined.
- * 
+ *
  * @return TSize Number of relevant positions  (Metafunction: @link Shape#Size @endlink).
- * 
+ *
  * For ungapped shapes the return value is the result of the @link Shape#length
  * @endlink function.  For gapped shapes this is the number of '1's.
  */
@@ -483,12 +483,12 @@ For gapped shapes this is the number of '1's.
 /*!
  * @fn Shape#resize
  * @brief Resize a shape to a specified span.
- * 
+ *
  * @signature TSize resize(shape, length)
- * 
+ *
  * @param[in,out] shape  Shape object for which the number of relevant positions is determined
- * @param[in]     length The new length (span) of the shape. 
- * 
+ * @param[in]     length The new length (span) of the shape.
+ *
  * @return TSize The new span of type  (Metafunction: @link Shape#Size @endlink).
  */
 	template <typename TValue, typename TSize>
@@ -518,7 +518,7 @@ If @Function.hash@ is called with a gapped shape, the q-gram is the text subsequ
 ..param.shape:Shape to be used for hashing.
 ...type:Class.Shape
 ..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end. 
+..param.charsLeft:The distance of $it$ to the string end.
 If $charsLeft$ is smaller than the shape's span, the hash value corresponds to the lexicographically smallest shape beginning with $charsLeft$ characters. The hash value of such a truncated shape corresponds to the shape applied to a text padded with the smallest alphabet characters.
 ..returns:Hash value of the shape.
 ..see:Function.hashNext
@@ -537,18 +537,18 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 /*!
  * @fn Shape#hash
  * @brief Computes a (lower) hash value for a shape applied to a sequence.
- * 
+ *
  * @signature TValue hash(shape, it[, charsLeft]);
- * 
+ *
  * @param[in,out] shape     Shape to be used for hashing. Types: @link Shape @endlink
  * @param[in]     it        Sequence iterator pointing to the first character of the shape.
  * @param[in]     charsLeft The distance of <tt>it</tt> to the string end. If
  *                          <tt>charsLeft</tt> is smaller than the shape's span, the
  *                          hash value corresponds to the smallest shape beginning with
  *                          <tt>charsLeft</tt> characters.
- * 
+ *
  * @return TValue Hash value of the shape  (Metafunction: @link Shape#Value @endlink).
- * 
+ *
  * @see Shape#hashNext
  * @see Shape#hashUpper
  * @see Shape#hash2
@@ -570,6 +570,33 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 		}
 		return me.hValue;
 	}
+
+/*!
+ * @fn Shape#hashInit
+ *
+ * @brief Preprocessing step of a pure @link Shape#hashNext @endlink loop.
+ *
+ * Overlapping q-grams can efficiently be hashed by calling @link Shape#hash @endlink on the first text position and @link Shape#hashNext @endlink on succeeding, adjacent positions.
+ * One drawback of this scenario is that for-loops cannot start with the first position directly and become more complicated.
+ * As a remedy, @link Shape#hashInit @endlink was introduced which initializes the Shape to be used with @link Shape#hashNext @endlink on the first position directly.
+ *
+ * @signature void hashInit(shape, it);
+ *
+ * @param[in,out] shape Shape to be used for hasing.
+ * @param[in]     it    The @link IteratorAssociatedTypesConcept iterator @endlink to use for initializing the shape.
+ *
+ * @section Example
+ *
+ * Two hash loop examples.
+ * The first loop uses @link Shape#hash @endlink/@link Shape#hashNext @endlink while the second use @link Shape#hashInit @endlink/@link Shape#hashNext @endlink and can process all hashes within the loop.
+ *
+ * @include demos/index/shape_hash_init.cpp
+ *
+ * @code{.stdout}
+ * 0	0	1	4	17	4	18	11	47	63	62	56	
+ * 0	0	1	4	17	4	18	11	47	63	62	56
+ * @endcode
+ */
 
 /**
 .Function.hashInit:
@@ -688,10 +715,10 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack>
 	inline THValue
 	_hashTuple2FixedShape(
-		THValue const, 
+		THValue const,
 		Tuple<TTValue, SIZE, TPack> const &tuple,
 		TValue const,
-		UngappedShape<1> const) 
+		UngappedShape<1> const)
 	{
 		return ordValue(tuple[0]);
 	}
@@ -699,24 +726,24 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack, unsigned q>
 	inline THValue
 	_hashTuple2FixedShape(
-		THValue const, 
+		THValue const,
 		Tuple<TTValue, SIZE, TPack> const &tuple,
 		TValue const,
-		UngappedShape<q> const) 
+		UngappedShape<q> const)
 	{
-		return _hashTuple2FixedShape(THValue(), tuple, TValue(), UngappedShape<q - 1>()) 
+		return _hashTuple2FixedShape(THValue(), tuple, TValue(), UngappedShape<q - 1>())
 			* ValueSize<TValue>::VALUE + ordValue(tuple[q-1]);
 	}
 
 	// ... for fixed ungapped shapes
 	template <
 		typename TValue,
-		typename TTValue, 
-		unsigned SIZE, 
+		typename TTValue,
+		unsigned SIZE,
 		unsigned q>
 	typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(
-		Shape<TValue, UngappedShape<q> > &me, 
+		Shape<TValue, UngappedShape<q> > &me,
 		Tuple<TTValue, SIZE, BitPacked<> > /*const &*/tuple)
 	{
 	SEQAN_CHECKPOINT
@@ -731,13 +758,13 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 
 	template <
 		typename TValue,
-		typename TTValue, 
-		unsigned SIZE, 
-		typename TPack, 
+		typename TTValue,
+		unsigned SIZE,
+		typename TPack,
 		unsigned q>
 	typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(
-		Shape<TValue, UngappedShape<q> > &me, 
+		Shape<TValue, UngappedShape<q> > &me,
 		Tuple<TTValue, SIZE, TPack> /*const &*/tuple)
 	{
 	SEQAN_CHECKPOINT
@@ -754,7 +781,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 ..param.shape:Shape to be used for hashing.
 ...type:Class.Shape
 ..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end. 
+..param.charsLeft:The distance of $it$ to the string end.
 ..returns:Upper hash value of the shape.
 The hash value corresponds to the maximal @Function.hash@ value of a shape beginning with $min(charsLeft,length(shape))$ characters + 1.
 ..remarks:This function in conjunction with @Function.hash@ is useful to search a q-gram index for p-grams with p<q.
@@ -762,21 +789,21 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 /*!
  * @fn Shape#hashUpper
  * @brief Computes an upper hash value for a shape applied to a sequence.
- * 
+ *
  * @signature TValue hashUpper(shape, it, charsLeft);
- * 
+ *
  * @param[in,out] shape     Shape to be used for hashing. Types: @link Shape @endlink
  * @param[in]     it        Sequence iterator pointing to the first character of the shape.
  * @param[in]     charsLeft The distance of <tt>it</tt> to the string end.
- * 
+ *
  * @return TValue Upper hash value of the shape. The hash value corresponds to
  *                the maximal @link Shape#hash @endlink value of a shape beginning
  *                with <tt>min(charsLeft,length(shape))</tt> characters + 1  (Metafunction:
- *                @link Shape#Value @endlink). 
- * 
+ *                @link Shape#Value @endlink).
+ *
  * This function in conjunction with @link Shape#hash @endlink is useful to search a q-gram index for p-grams with
  * p &lt; q.
- * 
+ *
  * @see Shape#hash
  */
 
@@ -833,16 +860,16 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
  * @fn Shape#hashNext
  * @headerfile <seqan/index.h>
  * @brief Computes the hash value for the adjacent shape.
- * 
+ *
  * @signature TValue hashNext(shape, it);
- * 
+ *
  * @param[in,out] shape Shape to be used for hashing. Types: @link Shape @endlink
  * @param[in]     it    Sequence iterator pointing to the first character of the adjacent shape.
- * 
+ *
  * @return TValue Hash value of the q-gram (Metafunction: @link Shape#Value @endlink).
- * 
+ *
  * @link Shape#hash @endlink has to be called before.
- * 
+ *
  * @see Shape#hash
  */
 	template <typename TValue, typename TSpec, typename TIter>
@@ -856,7 +883,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		me.hValue = 
+		me.hValue =
 			(me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor) * ValueSize<TValue>::VALUE
 			+ ordValue((TValue)*(it + ((TSize)me.span - 1)));
 		me.leftChar = *it;
@@ -873,7 +900,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 ..param.shape:Shape to be used for hashing.
 ...type:Class.Shape
 ..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end. 
+..param.charsLeft:The distance of $it$ to the string end.
 ..returns:Hash value of the shape.
 ..see:Function.hash2Next
 ..see:Function.hash2Upper
@@ -882,15 +909,15 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
  * @fn Shape#hash2
  * @brief Computes an unique hash value of a shape applied to a sequence, even if the sequence is shorter than
  *        the shape span.
- * 
+ *
  * @signature TValue hash2(shape, it, charsLeft);
- * 
+ *
  * @param[in,out] shape     Shape to be used for hashing. Types: @link Shape @endlink
  * @param[in]     it        Sequence iterator pointing to the first character of the shape.
  * @param[in]     charsLeft The distance of <tt>it</tt> to the string end.
- * 
+ *
  * @return TValue Hash value of the shape (Metafunction: @link Shape#Value @endlink).
- * 
+ *
  * @see Shape#hash2Next
  * @see Shape#hash2Upper
  * @see Shape#unhash
@@ -935,7 +962,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 ..param.shape:Shape to be used for hashing.
 ...type:Class.Shape
 ..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end. 
+..param.charsLeft:The distance of $it$ to the string end.
 ..returns:Upper hash value of the shape.
 The hash value corresponds to the maximal @Function.hash2@ value of a shape beginning with the $min(charsLeft,length(shape))$ characters + 1
 ..remarks:This function in conjunction with @Function.hash2@ is useful to search a q-gram index for p-grams with p<q.
@@ -944,21 +971,21 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @fn Shape#hash2Upper
  * @brief Computes an upper unique hash value of a shape applied to a sequence,
  *        even if the sequence is shorter than the shape span.
- * 
+ *
  * @signature TValue hash2Upper(shape, it, charsLeft);
- * 
+ *
  * @param[in] shape     Shape to be used for hashing. Types: @link Shape @endlink
  * @param[in] it        Sequence iterator pointing to the first character of the shape.
  * @param[in] charsLeft The distance of <tt>it</tt> to the string end.
- * 
+ *
  * @return TValue Upper hash value of the shape. The hash value corresponds to
  *                the maximal @link Shape#hash2 @endlink value of a shape beginning
  *                with the <tt>min(charsLeft,length(shape))</tt> characters + 1
  *                (Metafunction: @link Shape#Value @endlink).
- * 
+ *
  * This function in conjunction with @link Shape#hash2 @endlink is useful to search a
  * q-gram index for p-grams with <i>p &lt; q</i>.
- * 
+ *
  * @see Shape#hash2
  */
 	template <typename TValue, typename TSpec, typename TIter, typename TSize>
@@ -1017,16 +1044,16 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @fn Shape#hash2Next
  * @headerfile <seqan/index.h>
  * @brief Computes a unique hash value for the adjacent shape, even if it is shorter than q.
- * 
+ *
  * @signature TValue hash2Next(shape, it);
- * 
+ *
  * @param[in,out] shape Shape to be used for hashing the q-gram. Types: @link Shape @endlink
  * @param[in,out] it    Sequence iterator pointing to the first character of the adjacent shape.
- * 
+ *
  * @return TValue Hash value of the shape (Metafunction: @link Shape#Value @endlink).
- * 
+ *
  * @link Shape#hash @endlink has to be called before with <tt>shape</tt> on the left adjacent q-gram.
- * 
+ *
  * @see Shape#hash2
  */
 
@@ -1079,13 +1106,13 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @fn Shape#unhash
  * @headerfile <seqan/index.h>
  * @brief Inverse of the @link Shape#hash @endlink function; for ungapped shapes.
- * 
+ *
  * @signature void unhash(result, hash, q);
- * 
+ *
  * @param[out] result @link String @endlink to write the result to. Types: @link String @endlink.
  * @param[in]  hash   The hash value previously computed with @link Shape#hash @endlink.
  * @param[in]  q      The <tt>q</tt>-gram length. Types: <tt>unsigned</tt>
- * 
+ *
  * @see Shape#hash
  * @see Shape#hash2
  */
@@ -1096,7 +1123,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 		typedef typename Value<TString>::Type	TValue;
 
 		resize(result, q);
-		for (unsigned i = q; i > 0; ) 
+		for (unsigned i = q; i > 0; )
 		{
 			result[--i] = (TValue)(hash % ValueSize<TValue>::VALUE);
 			hash /= ValueSize<TValue>::VALUE;
@@ -1107,7 +1134,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 
 /**.Function.stringToShape:
 ..cat:Index
-..summary:Takes a shape given as a string of '1' (relevant position) and '0' 
+..summary:Takes a shape given as a string of '1' (relevant position) and '0'
 (irrelevant position) and converts it into a Shape object.
 ..signature:stringToShape(shape, bitmap)
 ..class:Class.Shape
@@ -1124,9 +1151,9 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @fn Shape#stringToShape
  * @brief Takes a shape given as a string of '1' (relevant position) and '0'
  *        (irrelevant position) and converts it into a Shape object.
- * 
+ *
  * @signature bool stringToShape(shape, bitmap);
- * 
+ *
  * @param[in,out] shape Shape object that is manipulated.
  * @param[in]     bitmap A character string of '1' and '0' representing relevant and irrelevant positions (blanks)
  *                respectively.  This string must begin with a '1'.  Trailing '0's are ignored.  If <tt>shape</tt>
@@ -1142,7 +1169,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 	template <typename TValue, typename TShapeString>
 	inline bool
 	stringToShape(
-		Shape<TValue, SimpleShape> &me, 
+		Shape<TValue, SimpleShape> &me,
 		TShapeString const &bitmap)
 	{
 	SEQAN_CHECKPOINT
@@ -1167,7 +1194,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 /**.Function.shapeToString:
 ..cat:Index
 ..class:Class.Shape
-..summary:Converts a given shape into a sequence of '1' (relevant position) and '0' 
+..summary:Converts a given shape into a sequence of '1' (relevant position) and '0'
 (irrelevant position).
 ..signature:shapeToString(bitmap, shape)
 ..class:Class.Shape
@@ -1180,12 +1207,12 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 /*!
  * @fn Shape#shapeToString
  * @brief Converts a given shape into a sequence of '1' (relevant position) and '0' (irrelevant position).
- * 
+ *
  * @signature void shapeToString(bitmap, shape);
- * 
+ *
  * @param[in,out] bitmap The resulting sequence object. Types: @link String @endlink
  * @param[in]     shape Shape object. Types: @link Shape @endlink
- * 
+ *
  * @see Shape#stringToShape
  */
 
