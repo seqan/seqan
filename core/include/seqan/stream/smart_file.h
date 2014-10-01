@@ -127,6 +127,11 @@ struct SmartFile
         context(otherCtx)
     {}
 
+    explicit
+    SmartFile(SmartFile &other) :
+        context(other.context)
+    {}
+
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         context(otherCtx)
     {
