@@ -1051,7 +1051,7 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn HmmGraph#emissionsProbability
+ * @fn HmmGraph#emissionProbability
  * @brief Returns a reference to the emissions probability.
  *
  * @signature TCargo emissionProbability(hmm, state, symbol);
