@@ -138,8 +138,8 @@ int main(int argc, char const ** argv)
 
     // Open fragments FASTA file.
     std::cerr << "Opening fragments       " << options.inputFileName << " ...";
-    seqan::SequenceStream inFragments(toCString(options.inputFileName));
-    if (!isGood(inFragments))
+    seqan::SeqFileIn inFragments;
+    if (!open(inFragments, toCString(options.inputFileName)))
     {
         std::cerr << " ERROR\n"
                   << "Could not open " << options.inputFileName << "\n";
@@ -149,8 +149,8 @@ int main(int argc, char const ** argv)
 
     // Open reads output file.
     std::cerr << "Opening output file (L) " << options.outFileNameLeft << " ...";
-    seqan::SequenceStream outReads(toCString(options.outFileNameLeft), seqan::SequenceStream::WRITE);
-    if (!isGood(outReads))
+    seqan::SeqFileOut outReads;
+    if (!open(outReads, toCString(options.outFileNameLeft)))
     {
         std::cerr << " ERROR\n"
                   << "Could not open " << options.outFileNameLeft << "\n";
@@ -159,12 +159,11 @@ int main(int argc, char const ** argv)
     std::cerr << " OK\n";
 
     // Open output file for the right reads.
-    seqan::SequenceStream outReadsRight;
+    seqan::SeqFileOut outReadsRight;
     if (!empty(options.outFileNameRight))
     {
         std::cerr << "Opening output file (R) " << options.outFileNameRight << " ...";
-        open(outReadsRight, toCString(options.outFileNameRight), seqan::SequenceStream::WRITE);
-        if (!isGood(outReadsRight))
+        if (!open(outReadsRight, toCString(options.outFileNameRight)))
         {
             std::cerr << " ERROR\n"
                       << "Could not open " << options.outFileNameRight << "\n";
@@ -174,8 +173,8 @@ int main(int argc, char const ** argv)
     }
 
     // Configure output streams to write out each sequence in a single line.
-    outReads.outputOptions.lineLength = 0;
-    outReadsRight.outputOptions.lineLength = 0;
+    context(outReads).options.lineLength = 0;
+    context(outReads).options.lineLength = 0;
 
     // Perform genome simulation.
     std::cerr << "\n__SIMULATING READS___________________________________________________________\n"
@@ -211,8 +210,7 @@ int main(int argc, char const ** argv)
         ssR.clear();
 
         // Read fragment to simulate from.
-        if (readRecord(fragId, fragSeq, inFragments) != 0)
-            return 1;
+        readRecord(fragId, fragSeq, inFragments);
 
         // Trim fragment identifier after first whitespace.
         trimAfterSpace(fragId);
@@ -227,11 +225,7 @@ int main(int argc, char const ** argv)
                 simInfoL.serialize(ssL);
                 ssL << " FRAG_ID=" << fragId;
             }
-            if (writeRecord(outReads, ssL.str(), seqL, qualsL) != 0)
-            {
-                std::cerr << "ERROR writing to " << options.outFileNameLeft << "\n";
-                return 1;
-            }
+            writeRecord(outReads, ssL.str(), seqL, qualsL);
         }
         else  // Paired sequencing.
         {
@@ -251,16 +245,8 @@ int main(int argc, char const ** argv)
             // std::cerr << seqL << "\t" << qualsL << "\n"
             //           << seqR << "\t" << qualsR << "\n\n";
 
-            if (writeRecord(outReads, ssL.str(), seqL, qualsL) != 0)
-            {
-                std::cerr << "ERROR writing to " << options.outFileNameLeft << "\n";
-                return 1;
-            }
-            if (writeRecord(outReadsRight, ssR.str(), seqR, qualsR) != 0)
-            {
-                std::cerr << "ERROR writing to " << options.outFileNameRight << "\n";
-                return 1;
-            }
+            writeRecord(outReads, ssL.str(), seqL, qualsL);
+            writeRecord(outReadsRight, ssR.str(), seqR, qualsR);
         }
     }
 
