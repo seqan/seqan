@@ -334,6 +334,22 @@ toRange(TIterator const &begin, TIterator const &end)
     return Range<TIterator>(begin, end);
 }
 
+template <typename TContainer>
+SEQAN_HOST_DEVICE inline
+Range<typename Iterator<TContainer, Standard>::Type>
+toRange(TContainer &cont)
+{
+    return Range<typename Iterator<TContainer, Standard>::Type >(begin(cont, Standard()), end(cont, Standard()));
+}
+
+template <typename TContainer>
+SEQAN_HOST_DEVICE inline
+Range<typename Iterator<TContainer const, Standard>::Type>
+toRange(TContainer const &cont)
+{
+    return Range<typename Iterator<TContainer const, Standard>::Type >(begin(cont, Standard()), end(cont, Standard()));
+}
+
 // ----------------------------------------------------------------------------
 // pipe interface
 // ----------------------------------------------------------------------------
@@ -346,7 +362,7 @@ inline void assign(Range<TIterator> &dest, Pipe<TInput, TPipeSpec> &src)
     typedef typename Iterator<Range<TIterator>, Standard>::Type TDestIter;
     resize(dest, length(src));
     beginRead(src);
-    for (TDestIter _cur = begin(dest, Standard()), end = end(dest, Standard()); _cur != end; ++_cur, ++src)
+    for (TDestIter _cur = begin(dest, Standard()), _end = end(dest, Standard()); _cur != _end; ++_cur, ++src)
         *_cur = *src;
     endRead(src);
 }
