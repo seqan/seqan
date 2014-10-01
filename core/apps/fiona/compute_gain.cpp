@@ -513,7 +513,7 @@ void updateStats(Stats & stats,
                       << "TP = " << tp << ", FP = " << fp << ", TN = " << tn << ", FN = " << fn << '\n';
         }
 
-        if (correctionLog.good() && (diffPre != diffPost || options.logAll))
+        if (correctionLog.is_open() && (diffPre != diffPost || options.logAll))
         {
             correctionLog << "RECORD: " << preRecord.qName << "\n"
                           << "\n"
@@ -1091,7 +1091,11 @@ int main(int argc, char const ** argv)
 
     if (chunksLeftToRead != 0ul)
     {
-        SEQAN_CHECK((!atEnd(inPre) || (postBam && !atEnd(inPostBam)) || (!postBam && !atEnd(inPostFastq))), "Both readers must be at end!");
+        SEQAN_CHECK(atEnd(inPre), "Pre-correction reader must be at end!");
+        if (postBam)
+            SEQAN_CHECK(atEnd(inPostBam), "Post-correction reader must be at end!");
+        else
+            SEQAN_CHECK(atEnd(inPostFastq), "Post-correction reader must be at end!");
     }
 
     // -----------------------------------------------------------------------
