@@ -104,7 +104,7 @@ void IdSplitter::reset()
     for (unsigned i = 0; i < files.size(); ++i)
         if (files[i] != 0)
         {
-            SEQAN_ASSERT(!ferror(files[i]));
+            SEQAN_ASSERT(files[i]->good());
             files[i]->flush();
             files[i]->seekg(0);
             SEQAN_ASSERT(files[i]->good());
