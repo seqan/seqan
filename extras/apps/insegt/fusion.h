@@ -581,7 +581,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 					// tuple count
 					tupleOutput_Fusion << *itC << '\t';
 					// normalized tuple count
-					tupleOutput_Fusion << *itN << '\n';
+					tupleOutput_Fusion << formattedNumber("%f", *itN) << '\n';
 				}
 			}
 		}
