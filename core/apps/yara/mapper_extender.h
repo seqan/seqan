@@ -224,6 +224,8 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
 {
     typedef typename Traits::TReadSeqs                  TReadSeqs;
     typedef typename Size<TReadSeqs>::Type              TReadId;
+    typedef typename Traits::TReadSeq                   TReadSeq;
+    typedef typename Size<TReadSeq>::Type               TReadSeqSize;
 
     typedef typename Traits::TSeeds                     TSeeds;
     typedef typename Id<TSeeds>::Type                   TSeedId;
@@ -237,8 +239,10 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
     typedef typename Traits::TRanks                     TRanks;
     typedef typename Reference<TRanks const>::Type      TRank;
 
-    // Get readSeqId.
+    // Get readId.
     TReadId readId = position(it);
+    TReadSeqSize readLength = length(me.readSeqs[readId]);
+    TReadSeqSize readStrata = getReadStrata(me.options, readLength);
 
     TReadId fwdSeqId = getFirstMateFwdSeqId(me.readSeqs, readId);
     TReadId revSeqId = getFirstMateRevSeqId(me.readSeqs, readId);
@@ -271,7 +275,7 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
             _extendHitImpl(me, it, All());
 
         // Mark mapped reads.
-        if (getMinErrors(me.ctx, readId) <= seedRank * (me.seedErrors + 1))
+        if (getMinErrors(me.ctx, readId) + readStrata <= seedRank * (me.seedErrors + 1))
             setMapped(me.ctx, readId);
     }
 }
