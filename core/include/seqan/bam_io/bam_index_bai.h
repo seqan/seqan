@@ -160,6 +160,32 @@ public:
 // Function jumpToRegion()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamStream#jumpToRegion
+ * @brief Seek in BamStream using an index.
+ *
+ * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
+ * jumps to the first alignment in this region, if any.
+ *
+ * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ *
+ * @param[in,out] stream        The @link BamStream @endlink to jump with.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
+ *                              alignments.
+ * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
+ * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
+ *
+ * @section Remarks
+ *
+ * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ *
+ * @see BamIndex#jumpToRegion
+ */
+
 /**
 .Function.BamIndex#jumpToRegion
 ..class:Class.BamIndex
@@ -212,6 +238,9 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
              __int32 posEnd,
              BamIndex<Bai> const & index)
 {
+    if (!isEqual(format(bamFile), Bam()))
+        return false;
+
     hasAlignments = false;
     if (refId < 0)
         return false;  // Cannot seek to invalid reference.
@@ -326,6 +355,19 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
 // Function jumpToOrphans()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamStream#jumpToOrphans
+ * @brief Seek to orphans block in BamStream using an index.
+ *
+ * @signature bool jumpToOrphans(stream, hasAlignments, index);
+ *
+ * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[in]     index          The index to use for jumping.
+ *
+ * @see BamIndex#jumpToOrphans
+ */
+
 /**
 .Function.BamIndex#jumpToOrphans
 ..class:Class.BamIndex
@@ -349,6 +391,9 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
                    bool & hasAlignments,
                    BamIndex<Bai> const & index)
 {
+    if (!isEqual(format(bamFile), Bam()))
+        return false;
+
     hasAlignments = false;
 
     // Search linear indices for the largest entry of all references.
