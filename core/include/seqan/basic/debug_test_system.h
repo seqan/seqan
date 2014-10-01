@@ -1927,7 +1927,7 @@ SEQAN_END_TESTSUITE
     }
 
 /*!
- * @macro TestSystemMacros#SEQAN_CALL_TESTS
+ * @macro TestSystemMacros#SEQAN_CALL_TEST
  * @headerfile <seqan/basic.h>
  * @brief Expand to calling a test.
  *
