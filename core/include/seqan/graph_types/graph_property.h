@@ -174,7 +174,7 @@ resizeEdgeMap(Graph<TSpec> const & g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn ExternalPropertyMap#assignProperty:
+ * @fn ExternalPropertyMap#assignProperty
  * @brief Assigns a property to an item in the property map.
  * @signature void assignProperty(pm, d, val)
  * @param pm  The property map
@@ -952,7 +952,7 @@ getProperty(TValue TClass:: * const ptr_to_member,
 
 //////////////////////////////////////////////////////////////////////////////
 /*!
- * @fn Graph#PropertyMap#assignVertexMap
+ * @fn Graph#assignVertexMap
  * @brief Initializes a vertex map with values of an array.
  * @signature void assignVertexMap(g, pm, prop)
  * @param g    A Graph.
