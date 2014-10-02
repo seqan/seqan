@@ -30,8 +30,6 @@ The set of available fibres of an index ``Index<TText, TSpec>`` depends on the i
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
 | EsaRawText             | Virtually concatenates all strings of the EsaText fibre.                                                            |
 +------------------------+---------------------------------------------------------------------------------------------------------------------+
-| EsaRawSA               | Virtually transforms all positions of EsaSA fibre to global positions (see :dox:`SAValue`).                         |
-+------------------------+---------------------------------------------------------------------------------------------------------------------+
 
 +------------------------+----------------------------------------------------------------------------------------------+
 | :dox:`WOTDIndexFibres` | Description                                                                                  |
@@ -44,22 +42,18 @@ The set of available fibres of an index ``Index<TText, TSpec>`` depends on the i
 +------------------------+----------------------------------------------------------------------------------------------+
 | WotdRawText            | Virtually concatenates all strings of the WotdText fibre.                                    |
 +------------------------+----------------------------------------------------------------------------------------------+
-| WotdRawSA              | Virtually transforms all positions of WotdSA fibre to global positions (see :dox:`SAValue`). |
-+------------------------+----------------------------------------------------------------------------------------------+
 
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| :dox:`DfiFibres` | Description                                                                                      | Type                                                                                         |
-+==================+==================================================================================================+==============================================================================================+
-| DfiText          | The original text the index should be based on.                                                  | First template argument of the :dox:`Index`. Can be either a sequence or a :dox:`StringSet`. |
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| DfiSA            | The suffix array stores the begin positions of all suffixes in lexicographical order.            | String over the :dox:`SAValue` type of the index.                                            |
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| DfiDir           | See :cite:`Giegerich2003`.                                                                       | String over the :dox:`Size` type of the index.                                               |
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| DfiRawText       | Virtually concatenates all strings of the DfiText fibre.                                         | :dox:`ContainerConcept` over the alphabet of the text.                                       |
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| DfiRawSA         | Virtually transforms all positions of DfiSA fibre to global positions (see :dox:`SAValue` here]) | :dox:`ContainerConcept` over :dox:`Index#Size` type of the index.                            |
-+------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
++-----------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| :dox:`DfiIndexFibres` | Description                                                                                      | Type                                                                                         |
++=======================+==================================================================================================+==============================================================================================+
+| DfiText               | The original text the index should be based on.                                                  | First template argument of the :dox:`Index`. Can be either a sequence or a :dox:`StringSet`. |
++-----------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| DfiSA                 | The suffix array stores the begin positions of all suffixes in lexicographical order.            | String over the :dox:`SAValue` type of the index.                                            |
++-----------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| DfiDir                | See :cite:`Giegerich2003`.                                                                       | String over the :dox:`Size` type of the index.                                               |
++-----------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| DfiRawText            | Virtually concatenates all strings of the DfiText fibre.                                         | :dox:`ContainerConcept` over the alphabet of the text.                                       |
++-----------------------+--------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 | :dox:`QGramIndexFibres` | Description                                                                                                | Type                                                                                         |
@@ -79,8 +73,6 @@ The set of available fibres of an index ``Index<TText, TSpec>`` depends on the i
 | QGramBucketMap          | Used by the :dox:`OpenAddressingQGramIndex` index to store the hash value occupancy in the QGramDir fibre. | String over the :dox:`Value` type of the shape.                                              |
 +-------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 | QGramRawText            | Virtually concatenates all strings of the QGramText fibre.                                                 | :dox:`ContainerConcept` over the alphabet of the text.                                       |
-+-------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
-| QGramRawSA              | Virtually transforms all positions of QGramSA fibre to global positions (see [:dox:`SAValue` here])        | :dox:`ContainerConcept` over :dox:`Index#Size` type of the index.                            |
 +-------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 
 +---------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------+
@@ -114,53 +106,49 @@ One fibre in every index is the text to be indexed itself.
 This fibre can be assigned during the construction.
 For the ease of use, there exist shortcuts to access frequently used fibres:
 
-+---------------------------------------------------+---------------------------------------------------------+
-| Shortcut                                          | Expands To ...                                          |
-+===================================================+=========================================================+
-| :dox:`Index#indexBucketMap indexBucketMap(index)` | :dox:`Index#getFibre getFibre(index, FibreBucketMap())` |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexBwt indexBwt(index)`             | :dox:`Index#getFibre getFibre(index, FibreBwt())`       |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexChildtab indexChildtab(index)`   | :dox:`Index#getFibre getFibre(index, FibreChildtab())`  |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexCounts indexCounts(index)`       | :dox:`Index#getFibre getFibre(index, FibreCounts())`    |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexCountsDir indexCountsDir(index)` | :dox:`Index#getFibre getFibre(index, FibreCountsDir())` |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexLcp indexLcp(index)`             | :dox:`Index#getFibre getFibre(index, FibreLcp())`       |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexRawSA indexRawSA(index)`         | :dox:`Index#getFibre getFibre(index, FibreRawSA())`     |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexRawText indexRawText(index)`     | :dox:`Index#getFibre getFibre(index, FibreRawText())`   |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexSA indexSA(index)`               | :dox:`Index#getFibre getFibre(index, FibreSA())`        |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexShape indexShape(index)`         | :dox:`Index#getFibre getFibre(index, FibreShape())`     |
-+---------------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#indexText indexText(index)`           | :dox:`Index#getFibre getFibre(index, FibreText())`      |
-+---------------------------------------------------+---------------------------------------------------------+
++--------------------------------------------------------+---------------------------------------------------------+
+| Shortcut                                               | Expands To ...                                          |
++========================================================+=========================================================+
+| :dox:`IndexQGram#indexBucketMap indexBucketMap(index)` | :dox:`Index#getFibre getFibre(index, FibreBucketMap())` |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#indexBwt indexBwt(index)`               | :dox:`Index#getFibre getFibre(index, FibreBwt())`       |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#indexChildtab indexChildtab(index)`     | :dox:`Index#getFibre getFibre(index, FibreChildtab())`  |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexQGram#indexCounts indexCounts(index)`       | :dox:`Index#getFibre getFibre(index, FibreCounts())`    |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexQGram#indexCountsDir indexCountsDir(index)` | :dox:`Index#getFibre getFibre(index, FibreCountsDir())` |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#indexLcp indexLcp(index)`               | :dox:`Index#getFibre getFibre(index, FibreLcp())`       |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`Index#indexRawText indexRawText(index)`          | :dox:`Index#getFibre getFibre(index, FibreRawText())`   |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#indexSA indexSA(index)`                 | :dox:`Index#getFibre getFibre(index, FibreSA())`        |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexQGram#indexShape indexShape(index)`         | :dox:`Index#getFibre getFibre(index, FibreShape())`     |
++--------------------------------------------------------+---------------------------------------------------------+
+| :dox:`Index#indexText indexText(index)`                | :dox:`Index#getFibre getFibre(index, FibreText())`      |
++--------------------------------------------------------+---------------------------------------------------------+
 
 and to access a single values:
 
-+-------------------------------------------------+-----------------------------------------------------------+
-| Shortcut                                        | Expands To ...                                            |
-+=================================================+===========================================================+
-| :dox:`IndexEsa#bwtAt bwtAt(pos, index)`         | :dox:`IndexEsa#indexBwt "indexBwt[index`(pos)"`           |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#childAt childAt(pos, index)`     | :dox:`IndexEsa#indexChildtab "indexChildtab[index`(pos)"` |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#dirAt dirAt(pos, index)`         | :dox:`IndexEsa#indexDir "indexDir[index`(pos)"`           |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#lcpAt lcpAt(pos, index)`         | :dox:`IndexEsa#indexLCP "indexLcp[index`(pos)"`           |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#rawsaAt rawsaAt(pos, index)`     | :dox:`IndexEsa#indexRawSA "indexRawSA[index`(pos)"`       |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#rawtextAt rawtextAt(pos, index)` | :dox:`IndexEsa#indexRawText "indexRawText[index`(pos)"`   |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#saAt saAt(pos, index)`           | :dox:`IndexEsa#indexSA "indexSA[index`(pos)"`             |
-+-------------------------------------------------+-----------------------------------------------------------+
-| :dox:`IndexEsa#textAt textAt(pos, index)`       | :dox:`IndexEsa#indexText "indexText[index`(pos)"`         |
-+-------------------------------------------------+-----------------------------------------------------------+
++----------------------------------------------+---------------------------------------------------------+
+| Shortcut                                     | Expands To ...                                          |
++==============================================+=========================================================+
+| :dox:`IndexEsa#bwtAt bwtAt(pos, index)`      | :dox:`IndexEsa#indexBwt indexBwt(index)[pos]`           |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#childAt childAt(pos, index)`  | :dox:`IndexEsa#indexChildtab indexChildtab(index)[pos]` |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexQGram#dirAt dirAt(pos, index)`    | :dox:`IndexQGram#indexDir indexDir(index)[pos]`         |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#lcpAt lcpAt(pos, index)`      | :dox:`IndexEsa#indexLcp indexLcp(index)[pos]`           |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`Index#rawtextAt rawtextAt(pos, index)` | :dox:`Index#indexRawText indexRawText(index)[pos]`      |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`IndexEsa#saAt saAt(pos, index)`        | :dox:`IndexEsa#indexSA indexSA(index)[pos]`             |
++----------------------------------------------+---------------------------------------------------------+
+| :dox:`Index#textAt textAt(pos, index)`       | :dox:`Index#indexText indexText(index)[pos]`            |
++----------------------------------------------+---------------------------------------------------------+
 
 Please note that :dox:`Index#textAt textAt` can also be used if the index text is a :dox:`StringSet`.
 ``pos`` can then be a :dox:`SAValue`.
