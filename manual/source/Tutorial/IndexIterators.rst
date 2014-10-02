@@ -17,17 +17,15 @@ Difficulty
 Duration
   1.5 h
 
-Prerequisites ::
+Prerequisites
   :ref:`tutorial-sequences`, :ref:`tutorial-iterators`
 
 Virtual String Tree Iterator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. TODO create and link to suffix tree definition
-
 The search procedure of :dox:`IndexEsa`, :dox:`IndexWotd IndexWotd`, :dox:`IndexDfi` and :dox:`FMIndex` are suffix array based.
 This can be utilized in form of a common iterator interface.
-This common interface is the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`) in SeqAn, which lets you access the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi IndexDfi` as if using a suffix tree (suffix tree definition) and the :dox:`FMIndex FMIndex` as if using a prefix trie.
+This common interface is the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`) in SeqAn, which lets you access the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi IndexDfi` as if using a suffix tree (:ref:`suffix-tree` definition) and the :dox:`FMIndex FMIndex` as if using a prefix trie.
 
 In the first part of this tutorial we will concentrate on the :dox:`TopDownIterator TopDown Iterator` which is one of the two index iterator specializations (besides the :dox:`BottomUpIterator BottomUp Iterator`).
 The second part will then deal with the DFS.
@@ -124,14 +122,16 @@ Assignment 2
      Review
 
    Objective
-     Write a little program that traverses the nodes of the suffix tree of ``"tobeornottobe"`` in the order shown here:
+     Write a program that traverses the nodes of the suffix tree of ``"tobeornottobe"`` in the order shown here:
 
      .. image:: streePreorder.png
 	:align: center
 	:width: 300px
 
      At each node print the text of the edges from the root to the node.
-     You may only use the functions :dox:`TopDownIterator#goDown goDown`, :dox:`TopDownIterator#goRight goRight`, :dox:`TopDownHistoryIterator#goUp goUp` and :dox:`VSTreeIterator#goRoot goRoot`, :dox:`VSTreeIterator#isRoot isRoot` and :dox:`VSTreeIterator#representative representative` which returns the string that represents the node the iterator points to.
+     You may only use the functions :dox:`TopDownIterator#goDown goDown`, :dox:`TopDownIterator#goRight goRight`, 
+     :dox:`TopDownHistoryIterator#goUp goUp` and :dox:`VSTreeIterator#isRoot isRoot` to navigate and 
+     :dox:`VSTreeIterator#representative representative` which returns the string that represents the node the iterator points to.
 
    Hint
      * Use a :dox:`TopDownHistoryIterator TopDown History Iterator`.
@@ -160,7 +160,20 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/index/iterator_solution2.cpp
+         One iteration step of a preorder DFS can be described as follows:
+
+            - if possible, go down one node
+            - if not:
+
+                - if possible, go to the next sibling
+                - if not:
+
+                    - go up until it is possible to go to a next sibling
+                    - stop the whole iteration after reaching the root node
+    
+         Thus, the DFS walk can be implemented in the following way:
+    
+            .. includefrags:: core/demos/tutorial/index/iterator_solution2.cpp
 
 Assignment 3
 """"""""""""
@@ -227,9 +240,7 @@ In order to do so, we create the string "abracadabra" and an index specialized w
 .. includefrags:: core/demos/tutorial/index/index_preorder.cpp
    :fragment: includes
 
-.. TODO Iterator metafunction not documented for Index.
-
-The :dox:`Index#Iterator` metafunction expects two arguments, the type of the container to be iterated and a specialization tag, as described earlier.
+The :dox:`StringTreeConcept#Iterator Iterator` metafunction expects two arguments, the type of the container to be iterated and a specialization tag, as described earlier.
 In this example we chose a :dox:`TopDownHistoryIterator TopDown History Iterator` whose signature in the second template argument is ``TopDown< ParentLinks<Preorder> >``.
 
 .. includefrags:: core/demos/tutorial/index/index_preorder.cpp
@@ -272,11 +283,9 @@ Program output:
    If solely a postorder traversal is needed the :dox:`BottomUpIterator BottomUp Iterator` should be preferred as it is more memory efficient.
    Please note that the BottomUp Iterator is only applicable to :dox:`IndexEsa` indices.
 
-.. TODO: Dave has to integrate teh SuffixTree definition here.
-
 .. tip:: 
 
-   A relaxed suffix tree (see [[Tutorial/Indices/SuffixTree| definition]]) is a suffix tree after removing the $ characters and empty edges.
+   A relaxed suffix tree (see :ref:`suffix-tree`) is a suffix tree after removing the $ characters and empty edges.
    For some bottom-up algorithms it would be better not to remove empty edges and to have a one-to-one relationship between leaves and suffices.
    In that cases you can use the tags PreorderEmptyEdges or PostorderEmptyEdges instead of Preorder or Postorder or EmptyEdges for the TopDown Iterator.
 
@@ -402,7 +411,7 @@ Assignment 5
 	Its constructor expects the index and optionally a minimum MUM length as a second parameter.
 	The set of all MUMs can be represented by a subset of suffix tree nodes.
 	The iterator will halt in every node that is a MUM of the minimum length.
-	The corresponding match is the node's :dox:`VSTreeIterator#representative`.
+	The corresponding match is the node's :dox:`VSTreeIterator#representative representative`.
 
 	.. includefrags:: core/demos/tutorial/index/index_assignment2.cpp
 	   :fragment: iteration
@@ -432,10 +441,8 @@ There are various functions to access the node the iterator points at (some we h
 :dox:`VSTreeIterator#getOccurrences getOccurrences`
   returns a string of all positions where the representative occurs in the text
 
-.. TODO: Dave has to integrate the figure here.
-
 :dox:`VSTreeIterator#isRightTerminal isRightTerminal`
-  tests if the representative is a suffix in the text (corresponds to the shaded nodes in the suffix tree figures)
+  tests if the representative is a suffix in the text (corresponds to the shaded nodes in the :ref:`suffix-tree` figures)
 
 :dox:`VSTreeIterator#isLeaf isLeaf`
   tests if the current node is a tree leaf
@@ -443,14 +450,10 @@ There are various functions to access the node the iterator points at (some we h
 :dox:`TopDownIterator#parentEdgeLabel parentEdgeLabel`
   returns the substring that represents the edge from the current node to its parent (only TopDownHistory Iterator)
 
-.. TODO: Dave has to integrate the figure here
-
 .. important::
 
-   .. TODO link to suffix tree definition
-
    There is a difference between the functions isLeaf and isRightTerminal.
-   In a relaxed suffix tree (see definition) a leaf is always a suffix, but not vice versa, as there can be internal nodes a suffix ends in.
+   In a relaxed suffix tree (see :ref:`suffix-tree`) a leaf is always a suffix, but not vice versa, as there can be internal nodes a suffix ends in.
    For them isLeaf returns false and isRightTerminal returns true.
 
 Property Maps
@@ -458,9 +461,9 @@ Property Maps
 
 Some algorithms require to store auxiliary information (e.g. weights, scores) to the nodes of a suffix tree.
 To attain this goal SeqAn provides so-called property maps, simple Strings of a property type.
-Before storing a property value, these strings must first be resized with :dox:`Index#resizeVertexMap resizeVertexMap`.
-The property value can then be assigned or retrieved via :dox:`VSTreeIterator#assignProperty assignProperty` :dox:`VSTreeIterator#getProperty getProperty`, or `:dox:VSTreeIterator#property property`.
-It is recommended to call :dox:`Index#resizeVertexMap resizeVertexMap` prior to every call of :dox:`VSTreeIterator#assignProperty assignProperty` to ensure that the property map has sufficient size.
+Before storing a property value, these strings must first be resized with :dox:`StringTreeConcept#resizeVertexMap resizeVertexMap`.
+The property value can then be assigned or retrieved via :dox:`VSTreeIterator#assignProperty assignProperty`, :dox:`VSTreeIterator#getProperty getProperty`, or :dox:`VSTreeIterator#property property`.
+It is recommended to call :dox:`StringTreeConcept#resizeVertexMap resizeVertexMap` prior to every call of :dox:`VSTreeIterator#assignProperty assignProperty` to ensure that the property map has sufficient size.
 The following example iterates over all nodes in preorder dfs and recursively assigns the node depth to each node.
 First we create a :dox:`String` of ``int`` to store the node depth for each suffix tree node.
 
@@ -469,8 +472,8 @@ First we create a :dox:`String` of ``int`` to store the node depth for each suff
 
 The main loop iterates over all nodes in preorder DFS, i.e. parents are visited prior children.
 The node depth for the root node is 0 and for all other nodes it is the parent node depth increased by 1.
-The functions :dox:`VSTreeIterator#assignProperty assignProperty`, :dox:`VSTreeIterator#getProperty getProperty` and :dox:`VSTreeIterator#property property` must be called with a :dox:`Index#VertexDescriptor VertexDescriptor`.
-The vertex descriptor of the iterator node is returned by :dox:`VSTreeIterator#value value` and the descriptor of the parent node is returned by :dox:`VSTreeIterator#nodeUp nodeUp`.
+The functions :dox:`VSTreeIterator#assignProperty assignProperty`, :dox:`VSTreeIterator#getProperty getProperty` and :dox:`VSTreeIterator#property property` must be called with a :dox:`StringTreeConcept#VertexDescriptor VertexDescriptor`.
+The vertex descriptor of the iterator node is returned by :dox:`VSTreeIterator#value value` and the descriptor of the parent node is returned by :dox:`TopDownIterator#nodeUp nodeUp`.
 
 .. includefrags:: core/demos/tutorial/index/index_property_maps.cpp
    :fragment: iteration
@@ -499,7 +502,7 @@ Program output:
 
 .. tip::
 
-   In SeqAn there is already a function :dox:`TopDownHistoryIterator#nodeDepth` defined to return the node depth.
+   In SeqAn there is already a function :dox:`TopDownHistoryIterator#nodeDepth nodeDepth` defined to return the node depth.
 
 Additional iterators
 ~~~~~~~~~~~~~~~~~~~~
@@ -519,19 +522,19 @@ By now, we know the following iterators (:math:`n` = text size, :math:`\sigma` =
 Besides the iterators described above, there are some
 application-specific iterators in SeqAn:
 
-+------------------------------------+------------------------------------------+-------------+--------------------------+
-| Iterator specialization            | Description                              | Space       | Index tables             |
-+====================================+==========================================+=============+==========================+
-| :dox:`MaxRepeatsIterator`          | maximal repeats                          | O(n)        | SA, Lcp, Bwt             |
-+------------------------------------+------------------------------------------+-------------+--------------------------+
-| :dox:`SuperMaxRepeatsIterator`     | supermaximal repeats                     | O(d+σ)      | SA, Lcp, Childtab, Bwt   |
-+------------------------------------+------------------------------------------+-------------+--------------------------+
-| :dox:`SuperMaxRepeatsFastIterator` | supermaximal repeats (optimized for ESA) | O(σ)        | SA, Lcp, Bwt             |
-+------------------------------------+------------------------------------------+-------------+--------------------------+
-| :dox:`MumsIterator`                | maximal unique matches                   | O(d)        | SA, Lcp, Bwt             |
-+------------------------------------+------------------------------------------+-------------+--------------------------+
-| :dox:`MultiMemsIterator`           | multiple maximal exact matches (w.i.p.)  | O(n)        | SA, Lcp, Bwt             |
-+------------------------------------+------------------------------------------+-------------+--------------------------+
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
+| Iterator specialization            | Description                              | Space                         | Index tables           |
++====================================+==========================================+===============================+========================+
+| :dox:`MaxRepeatsIterator`          | maximal repeats                          | :math:`\mathcal{O}(n)`        | SA, Lcp, Bwt           |
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
+| :dox:`SuperMaxRepeatsIterator`     | supermaximal repeats                     | :math:`\mathcal{O}(d+\sigma)` | SA, Lcp, Childtab, Bwt |
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
+| :dox:`SuperMaxRepeatsFastIterator` | supermaximal repeats (optimized for ESA) | :math:`\mathcal{O}(\sigma)`   | SA, Lcp, Bwt           |
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
+| :dox:`MumsIterator`                | maximal unique matches                   | :math:`\mathcal{O}(d)`        | SA, Lcp, Bwt           |
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
+| :dox:`MultiMemsIterator`           | multiple maximal exact matches (w.i.p.)  | :math:`\mathcal{O}(n)`        | SA, Lcp, Bwt           |
++------------------------------------+------------------------------------------+-------------------------------+------------------------+
 
 Given a string s a repeat is a substring r that occurs at 2 different positions i and j in s.
 The repeat can also be identified by the triple (i,j,\|r\|).

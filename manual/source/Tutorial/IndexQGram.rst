@@ -46,7 +46,7 @@ There are different specializations of :dox:`Shape` available:
 
 * \- *fixed at compile time*, \+ *can be changed at runtime*
 
-Each shape evaluates a gapped or ungapped sequence of q characters to a hash value by the Functions :dox:`Shape#hash hash`, :dox:`Shape#hashNext`, etc.
+Each shape evaluates a gapped or ungapped sequence of q characters to a hash value by the Functions :dox:`Shape#hash hash`, :dox:`Shape#hashNext hashNext`, etc.
 For example, the shape ``1101`` represents a 3-gram with one gap of length 1.
 This shape overlayed with the :dox:`Dna` text ``"GATTACA"`` at the third position corresponds to ``"TT-C"``.
 The function :dox:`Shape#hash hash` converts this 3-gram into :math:`61 = (\mathbf{3} \cdot 4 + \mathbf{3}) \cdot 4 + 1`.
@@ -119,23 +119,23 @@ Assignment 1
 
 	Before we can create a :dox:`DnaString` index of "CATGATTACATA", we have to choose an appropriate :dox:`Shape`.
 	Because our shape ``1101`` is known at compile-time and contains only one gap we could choose :dox:`OneGappedShape`, :dox:`GappedShape`, or :dox:`GenericShape` (see the commented-out code).
-	Although the :dox:`GenericShape` could be used for every possible shape, it is a good idea to choose a :dox:`Shape` with restrictions as its :dox:`Shape#hash` functions are more efficient in general.
+	Although the :dox:`GenericShape` could be used for every possible shape, it is a good idea to choose a :dox:`Shape` with restrictions as its :dox:`Shape#hash hash` functions are more efficient in general.
 
 	.. includefrags:: core/demos/tutorial/index/index_assignment5.cpp
 	   :fragment: initialization
 
-	Please note that the :dox:`Shape` object that corresponds to the :dox:`IndexQGram` index is empty initially and has to be set by :dox:`Shape#stringToShape` or :dox:`Shape#resize`.
+	Please note that the :dox:`Shape` object that corresponds to the :dox:`IndexQGram` index is empty initially and has to be set by :dox:`Shape#stringToShape stringToShape` or :dox:`Shape#resize resize`.
 	This initialization is not necessary for :dox:`Shape` that are defined at compile-time, i.e. :dox:`UngappedShape` and :dox:`GappedShape`.
 	To search for "AT-A" we first have to hash it with the index shape or any other :dox:`Shape` with the same bitmap.
-	The we can use :dox:`IndexQGram#getOccurrences` to output all matches.
+	The we can use :dox:`IndexQGram#getOccurrences getOccurrences` to output all matches.
 
 	.. includefrags:: core/demos/tutorial/index/index_assignment5.cpp
           :fragment: output
 
 	.. tip::
 
-	   Instead of ``length(getOccurrences(...))`` we could have used :dox:`IndexQGram#countOccurrences`.
-	   But beware that ::dox:`IndexQGram#countOccurrences` requires only the ``QGram_Dir`` fibre, whereas :dox:`IndexQGram#getOccurrences` requires both ``QGram_Dir`` and  ``QGram_SA``, see :ref:`how-to-access-index-fibres`.
+	   Instead of ``length(getOccurrences(...))`` we could have used :dox:`IndexQGram#countOccurrences countOccurrences`.
+	   But beware that :dox:`IndexQGram#countOccurrences countOccurrences` requires only the ``QGram_Dir`` fibre, whereas :dox:`IndexQGram#getOccurrences getOccurrences` requires both ``QGram_Dir`` and  ``QGram_SA``, see :ref:`how-to-access-index-fibres`.
 	   Because ``QGram_SA`` can be much more efficiently constructed during the construction of ``QGram_Dir``, ``QGram_Dir`` would be constructed twice.
 
 	Program output:
@@ -158,60 +158,60 @@ Assignment 2
      Optional: Run the matrix calculation twice, once for an :dox:`IndexQGram` and once for an :dox:`OpenAddressingQGramIndex Open Adressing QGram Index` and output the directory sizes (QGram_Dir, QGram_CountsDir fibre).
 
    Hint
-     A common g-gram that occurs a times in one and b times in the other sequence counts for :math:`\min(a,b)`.
+     A common q-gram that occurs :math:`a` times in one and :math:`b` times in the other sequence counts for :math:`\min(a,b)`.
 
-   Solution ::
+   Solution
      .. container:: foldable
 
-	For generating random numbers we use the :dox:`MersenneTwisterRng` which is a specialization of the random number generator class :dox:`Rng`.
-	The random numbers returned by :dox:`Rng#pickRandomNumber` are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
-	The 3 generated strings are of random length and appended to a :dox:`StringSet`.
-	The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
+        For generating random numbers we use the :dox:`MersenneTwisterRng` which is a specialization of the random number generator class :dox:`Rng`.
+        The random numbers returned by :dox:`Rng#pickRandomNumber pickRandomNumber` are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
+        The 3 generated strings are of random length and appended to a :dox:`StringSet`.
+        The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
 
-	.. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
            :fragment: initialization
 
-	The main function expects the :dox:`StringSet` and the :dox:`Index` specialization as a tag.
-	First, we define lots of types we need to iterate and access the fibres directly.
-	We then notify the index about the fibres we require.
-	For storing the common q-grams we use a 2-dimensional :dox:`Matrix` object whose lengths have to be set with ```setLength``` for each dimension.
-	The matrix is initialized with zeros by :dox:`Matrix#resize`.
+        The main function expects the :dox:`StringSet` and the :dox:`Index` specialization as a tag.
+        First, we define lots of types we need to iterate and access the fibres directly.
+        We then notify the index about the fibres we require.
+        For storing the common q-grams we use a 2-dimensional :dox:`Matrix` object whose lengths have to be set with ``setLength`` for each dimension.
+        The matrix is initialized with zeros by :dox:`Matrix#resize`.
 
-	.. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
-	   :fragment: matrix_init
+        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+           :fragment: matrix_init
 
-	The main part of the function iterates over the CountsDir fibre.
-	Each entry in this directory represents a q-gram bucket, a contiguous interval in the Counts fibre storing for every sequence the q-gram occurs in the number of occurrences in pairs (seqNo,count).
-	The interval begin of each bucket is stored in the directory and the interval end is the begin of the next bucket.
-	So the inner loops iterate over all non-empty buckets and two pairs (seqNo1,count1) and (seqNo2,count2) indicate that seqNo1 and seqNo2 have a common q-gram.
-	At the end the matrix can simply be output by shifting it to the ``cout`` stream.
+        The main part of the function iterates over the CountsDir fibre.
+        Each entry in this directory represents a q-gram bucket, a contiguous interval in the Counts fibre storing for every sequence the q-gram occurs in the number of occurrences in pairs (seqNo,count).
+        The interval begin of each bucket is stored in the directory and the interval end is the begin of the next bucket.
+        So the inner loops iterate over all non-empty buckets and two pairs (seqNo1,count1) and (seqNo2,count2) indicate that seqNo1 and seqNo2 have a common q-gram.
+        At the end the matrix can simply be output by shifting it to the ``cout`` stream.
 
-	.. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
-	   :fragment: matrix_calculation
+        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+           :fragment: matrix_calculation
 
-	Please note that the :dox:`OpenAddressingQGramIndex open addressing` q-gram index directories are smaller than the :dox:`IndexQGram` index directories.
+        Please note that the :dox:`OpenAddressingQGramIndex open addressing` q-gram index directories are smaller than the :dox:`IndexQGram` index directories.
 
-	Program output:
+        Program output:
 
-	.. code-block:: console
+        .. code-block:: console
 
-	   >Seq0
-	   TCATTTTCTCGATGAAAGCGTTGACCCCACATATCGTTAGTACTCTTGTACCCT
-	   >Seq1
-	   TGATTGTGTAGAAACCGAACTACGGTACCTCCTGTTGGTAGTCACGATAGATTATAAAAGTATGTTCCCACCCTATCGACGAGACTGGCA
-	   >Seq2
-	   CCTAGGTGTTTGCGGTGTTGGTACGTGCG
+           >Seq0
+           TCATTTTCTCGATGAAAGCGTTGACCCCACATATCGTTAGTACTCTTGTACCCT
+           >Seq1
+           TGATTGTGTAGAAACCGAACTACGGTACCTCCTGTTGGTAGTCACGATAGATTATAAAAGTATGTTCCCACCCTATCGACGAGACTGGCA
+           >Seq2
+           CCTAGGTGTTTGCGGTGTTGGTACGTGCG
 
-	   Length of the CountsDir fibre: 1025
+           Length of the CountsDir fibre: 1025
 
-	   Common 5-mers for Seq_i, Seq_j
-	   50	4	0
-	   0	86	5
-	   0	0	25
+           Common 5-mers for Seq_i, Seq_j
+           50	4	0
+           0	86	5
+           0	0	25
 
-	   Length of the CountsDir fibre: 259
+           Length of the CountsDir fibre: 259
 
-	   Common 5-mers for Seq_i, Seq_j
-	   50	4	0
-	   0	86	5
-	   0	0	25
+           Common 5-mers for Seq_i, Seq_j
+           50	4	0
+           0	86	5
+           0	0	25
