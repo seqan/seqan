@@ -153,7 +153,7 @@ inline void clear(MergePointMap_<TVariantMap> & mergePointStore)
 
 template <typename TVariantMap, typename TPos, typename TIter>
 inline void push(MergePointMap_<TVariantMap> & mergePointStore,
-                 TPos const & pos,
+                 TPos pos,
                  TIter const & branchNodeIt)
 {
     typedef MergePointMap_<TVariantMap> TMergePointStore;
@@ -331,78 +331,80 @@ _syncToMergePoint(TCoverage & target,
 // ----------------------------------------------------------------------------
 // Function _mapVirtualToVirtual()
 // ----------------------------------------------------------------------------
-
-// Rebases the target iterator to the source iterator's position based on the common host.
-template <typename TIter, typename TIterSrc, typename TBranchNodeIt, typename TDeltaMap, typename TProxyId>
-inline void
-_mapVirtualToVirtual(TIter & target,
-                     TIterSrc const & source,
-                     TBranchNodeIt const & branchNodeIt,
-                     TDeltaMap const & variantStore,
-                     TProxyId const & proxyId)
-{
-    typedef typename Position<TIter>::Type TPosition;
-    typedef typename Size<TIter>::Type TSize;
-    // Check if both journals point to the same reference.
-    SEQAN_ASSERT_EQ(&host(*target._journalStringPtr), &host(*source._journalStringPtr));
-
-    if (source._journalEntriesIterator->segmentSource == SOURCE_PATCH)
-    {
-        SEQAN_ASSERT_GEQ(deltaPosition(branchNodeIt), _physicalOriginPosition(source));
-        if (_physicalOriginPosition(source) == 0)
-        {
-            setPosition(target, position(source));
-            return;
-        }
-
-        unsigned hostPos = _physicalOriginPosition(source) - 1;  // In the patch node -> the first position that is original to the left plus 1.
-        unsigned mappedVirtPos = hostToVirtualPosition(*target._journalStringPtr, hostPos);
-        setPosition(target, mappedVirtPos);
-
-        SEQAN_ASSERT_EQ(target._journalEntriesIterator->segmentSource, SOURCE_ORIGINAL);  // TODO(rmaerker): Check end condition!
-
-        if (_physicalOriginPosition(target) >= deltaPosition(branchNodeIt))
-        {
-            while(!atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
-                (--target)._journalEntriesIterator->segmentSource == SOURCE_PATCH)
-            {}
-
-            if (atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
-                target._journalEntriesIterator->segmentSource == SOURCE_PATCH)
-            {
-                setPosition(target, static_cast<TPosition>(0));
-                hostPos = 0;
-            }
-            else
-            {
-                SEQAN_ASSERT_EQ(target._journalEntriesIterator->segmentSource, SOURCE_ORIGINAL);
-                _updateSegmentIteratorsLeft(target);
-                hostPos = _physicalOriginPosition(target);
-            }
-        }
-
-        TBranchNodeIt tmpIt = const_cast<TBranchNodeIt&>(branchNodeIt);  // We are at this position.
-        TSize virtOffset = target._journalEntriesIterator->length - _localEntryPosition(target) - 1;
-        while (!atBegin(tmpIt, variantStore) && deltaPosition(--tmpIt) > hostPos)
-        {
-            if (deltaCoverage(tmpIt)[proxyId] != true)  // Irrelevant variant.
-                continue;
-
-            // If between hostPos and breakpoint are any other insertion or deletion, then we keep track of this virtual offset.
-            if (deltaType(tmpIt) == DELTA_TYPE_INS)
-                virtOffset += length(deltaValue(tmpIt, DeltaTypeIns()));
-            else if (deltaType(tmpIt) == DELTA_TYPE_SNP)
-                ++virtOffset;
-            else if (deltaType(tmpIt) == DELTA_TYPE_SV)
-                virtOffset += length(deltaValue(tmpIt, DeltaTypeSV()).i2);
-        }
-        target += (1 + virtOffset + _localEntryPosition(source));
-    }
-    else
-    {
-        setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
-    }
-}
+//
+//// Rebases the target iterator to the source iterator's position based on the common host.
+//template <typename TIter, typename TIterSrc, typename TBranchNodeIt, typename TDeltaMap, typename TProxyId>
+//inline void
+//_mapVirtualToVirtual(TIter & target,
+//                     TIterSrc const & source,
+//                     TBranchNodeIt const & branchNodeIt,
+//                     TDeltaMap const & variantStore,
+//                     TProxyId const & proxyId)
+//{
+//    typedef typename Position<TIter>::Type TPosition;
+//    typedef typename Size<TIter>::Type TSize;
+//    // Check if both journals point to the same reference.
+//    SEQAN_ASSERT_EQ(&host(*target._journalStringPtr), &host(*source._journalStringPtr));
+//
+//    if (source._journalEntriesIterator->segmentSource == SOURCE_PATCH)
+//    {
+//        SEQAN_ASSERT_GEQ(deltaPosition(branchNodeIt), _physicalOriginPosition(source));
+//        if (_physicalOriginPosition(source) == 0)
+//        {
+//            setPosition(target, position(source));
+//            return;
+//        }
+//
+//        unsigned hostPos = _physicalOriginPosition(source) - 1;  // In the patch node -> the first position that is original to the left minus 1.
+//        unsigned mappedVirtPos = hostToVirtualPosition(*target._journalStringPtr, hostPos);
+//        setPosition(target, mappedVirtPos);
+//
+//        SEQAN_ASSERT_EQ(target._journalEntriesIterator->segmentSource, SOURCE_ORIGINAL);  // TODO(rmaerker): Check end condition!
+//
+//        if (_physicalOriginPosition(target) >= deltaPosition(branchNodeIt))
+//        {
+//            while(!atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
+//                (--target)._journalEntriesIterator->segmentSource == SOURCE_PATCH)
+//            {}
+//
+//            if (atBegin(target._journalEntriesIterator, target._journalStringPtr->_journalEntries) &&
+//                target._journalEntriesIterator->segmentSource == SOURCE_PATCH)
+//            {
+//                setPosition(target, static_cast<TPosition>(0));
+//                hostPos = 0;
+//            }
+//            else
+//            {
+//                SEQAN_ASSERT_EQ(target._journalEntriesIterator->segmentSource, SOURCE_ORIGINAL);
+//                _updateSegmentIteratorsLeft(target);
+//                hostPos = _physicalOriginPosition(target);
+//            }
+//        }
+//
+//        TBranchNodeIt tmpIt = const_cast<TBranchNodeIt&>(branchNodeIt);  // We are at this position.
+//        TSize virtOffset = target._journalEntriesIterator->length - _localEntryPosition(target) - 1;
+//        std::cerr << "[LOG] tmpIt = " << *tmpIt << std::endl;
+//        while (!atBegin(tmpIt, variantStore) && deltaPosition(--tmpIt) > hostPos)
+//        {
+//            std::cerr << "[LOG] tmpIt = " << *tmpIt << std::endl;
+//            if (deltaCoverage(tmpIt)[proxyId] != true)  // Irrelevant variant.
+//                continue;
+//
+//            // If between hostPos and breakpoint are any other insertion or deletion, then we keep track of this virtual offset.
+//            if (deltaType(tmpIt) == DELTA_TYPE_INS)
+//                virtOffset += length(deltaValue(tmpIt, DeltaTypeIns()));
+//            else if (deltaType(tmpIt) == DELTA_TYPE_SNP)
+//                ++virtOffset;
+//            else if (deltaType(tmpIt) == DELTA_TYPE_SV)
+//                virtOffset += length(deltaValue(tmpIt, DeltaTypeSV()).i2);
+//        }
+//        target += (1 + virtOffset + _localEntryPosition(source));
+//    }
+//    else
+//    {
+//        setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
+//    }
+//}
 
 // ----------------------------------------------------------------------------
 // Function _mapHostToVirtual()
@@ -413,7 +415,7 @@ template <typename TIterator, typename TValue, typename THostSpec, typename TBuf
 inline void
 _mapHostToVirtual(TIterator & resultIt,
                   String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec> > & js,
-                  TDeltaMap & variantStore,
+                  TDeltaMap const & variantStore,
                   TProxyId const & proxyId,
                   THostPos const & hostPos)
 {
@@ -426,8 +428,8 @@ _mapHostToVirtual(TIterator & resultIt,
     typedef typename Value<TDeltaMap>::Type TMapEntry;
     typedef JournalEntryLtByPhysicalOriginPos<TCargoPos, TCargoSize> TComp;
 
-    typedef typename Iterator<TDeltaMap, Standard>::Type TVarIterator;
-    typedef typename Position<TDeltaMap>::Type TDeltaMapPos;
+    typedef typename Iterator<TDeltaMap const, Standard>::Type TVarIterator;
+    typedef typename Position<TDeltaMap const>::Type TDeltaMapPos;
 
     // We need to set the iterator to the correct position within the proxy sequence given the host pos.
     TJournalEntries & journalEntries = _journalEntries(js);
@@ -529,6 +531,47 @@ _mapHostToVirtual(TIterator & resultIt,
         ++itVar;
     }
     resultIt += virtualOffset + 1;  // Set the iterator to the beginning of the variant.
+}
+
+template <typename TIter, typename TIterSrc, typename TBranchNodeIt, typename TDeltaMap, typename TProxyId>
+inline void
+_mapVirtualToVirtual(TIter & target,
+                     TIterSrc const & source,
+                     TIterSrc const & branchProxyIt,
+                     TBranchNodeIt const & branchNodeIt,
+                     TDeltaMap const & deltaMap,
+                     TProxyId const & proxyId)
+{
+    typedef typename Position<TIter>::Type TPosition;
+    typedef typename Size<TIter>::Type TSize;
+    typedef typename Difference<TIter>::Type TDiff;
+
+    if (source._journalEntriesIterator->segmentSource == SOURCE_ORIGINAL)  // Simpl case: Both branches must cover this position.
+    {
+        setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
+    }
+    else  // Harder case, need to map from patch node to patch node. -> Need to find common anchor position in reference.
+    {
+        // Check special conditions with no common host position.
+        if (source < branchProxyIt) // Case a) The begin of the sourceIt is before the branchProxyIt -> must map into reference based area.
+        {
+            setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
+            return;
+        }
+        TPosition srcHostPos = _physicalOriginPosition(source);
+        if(srcHostPos > deltaPosition(branchNodeIt))  // Case b): Source is right of branch node begin and the physical position is bigger than the branch node position.
+        {
+            setPosition(target, hostToVirtualPosition(*target._journalStringPtr, srcHostPos) +
+                        _localEntryPosition(source));
+        }
+        else  // Case c): Map the host position of the common branch node.
+        {
+            SEQAN_ASSERT(source >= branchProxyIt);
+
+            _mapHostToVirtual(target, *target._journalStringPtr, deltaMap, proxyId, deltaPosition(branchNodeIt));
+            target += source - branchProxyIt;
+        }
+    }
 }
 
 }

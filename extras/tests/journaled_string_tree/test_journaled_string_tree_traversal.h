@@ -34,6 +34,9 @@
 // Test cases for the JST traversal.
 // ==========================================================================
 
+#define DISABLE_COMMON_1
+#define TEST_DEBUG_OUTPUT
+
 #ifndef EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_
 #define EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_
 
@@ -142,15 +145,15 @@ struct GetJstTraverser<DummyCaller_<TContainer> >
 {
     typedef DummyCaller_<TContainer> TDummy_;
     typedef typename GetState<TDummy_>::Type TState;
-    typedef JstTraverser<TContainer, TState, JstTraverserSpec<> > Type;
+    typedef JstTraverser<TContainer, TState, JstTraverserConfig<> > Type;
 };
 
 template <typename TDumyContainer, typename TDelegator, typename TContainer, typename TState, typename TSpec, typename TTag>
 inline typename Size<JstTraverser<TContainer, TState, TSpec> >::Type
-deliverContext(DummyCaller_<TDumyContainer> & /*dummy*/,
-               TDelegator & delegator,
-               JstTraverser<TContainer, TState, TSpec> & traverser,
-               TTag const & /*tag*/)
+notify(DummyCaller_<TDumyContainer> & /*dummy*/,
+       TDelegator & delegator,
+       JstTraverser<TContainer, TState, TSpec> & traverser,
+       TTag const & /*tag*/)
 {
     delegator(traverser);
     return 1;
@@ -192,6 +195,25 @@ initState(DummyCaller_<TContainer> & /*dummy*/)
 // ============================================================================
 
 using namespace seqan;
+
+template <typename TJstTraversalSpecConfig_, typename TConfig_>
+struct GlobalJstConfig
+{
+    typedef typename TJstTraversalSpecConfig_::TContextPosition TContextPosition;
+    typedef typename TJstTraversalSpecConfig_::TFullContext TFullContext;
+
+    static const unsigned DELTA_CONFIG = TConfig_::DELTA_CONFIG;
+    static const unsigned POSITION_CONFIG = TConfig_::POSITION_CONFIG;
+    static const unsigned COVERAGE_CONFIG = TConfig_::COVERAGE_CONFIG;
+};
+
+
+template <typename TContextPosition_, typename TFullContext_>
+struct JstTraversalSpecConfig
+{
+    typedef TContextPosition_ TContextPosition;
+    typedef TFullContext_ TFullContext;
+};
 
 // General configuration struct.
 template <unsigned _DELTA_CONFIG, unsigned _POSITION_CONFIG, unsigned _COVERAGE_CONFIG>
@@ -236,6 +258,43 @@ struct JstConfigGenerator_
     typedef typename JstConfigGenRecursive_<I1, I2, I3, I1, I2, I3>::Type Type;
 };
 
+// Recursively build test types.
+template <typename TTagList1, typename TTagList2, typename TOriginalList2>
+struct TestTypeBuilderHelperRecursive_;
+
+// Recursion anchor.
+template <typename TTag1, typename TTag2, typename TOriginal>
+struct TestTypeBuilderHelperRecursive_<TagList<TTag1, void>, TagList<TTag2, void>, TOriginal>
+{
+    typedef TagList<GlobalJstConfig<TTag1, TTag2> > Type;
+};
+
+// Recursion anchor.
+template <typename TTag1, typename TSubList1, typename TTag2, typename TOriginal>
+struct TestTypeBuilderHelperRecursive_<TagList<TTag1, TSubList1>, TagList<TTag2, void>, TOriginal>
+{
+    typedef TagList<GlobalJstConfig<TTag1, TTag2>,
+                    typename TestTypeBuilderHelperRecursive_<TSubList1, TOriginal, TOriginal>::Type
+                    > Type;
+};
+
+// Recursion.
+template <typename TTag1, typename TSubList1, typename TTag2, typename TSubList2, typename TOriginal>
+struct TestTypeBuilderHelperRecursive_<TagList<TTag1, TSubList1>, TagList<TTag2, TSubList2>, TOriginal>
+{
+    typedef TagList<GlobalJstConfig<TTag1, TTag2>,
+                    typename TestTypeBuilderHelperRecursive_<TagList<TTag1, TSubList1>, TSubList2, TOriginal>::Type
+                    > Type;
+};
+
+// Test Type Builder.
+template <typename TTagList1, typename TTagList2>
+struct TestTypeBuilderHelper_
+{
+    typedef typename TestTypeBuilderHelperRecursive_<TTagList1, TTagList2, TTagList2>::Type Type;
+};
+
+
 // Define test class fixture substitution.
 template <typename TConfig_>
 class JstTraversalTest : public Test
@@ -249,25 +308,39 @@ template <typename T>
 class JstTraversalTestCommon : public JstTraversalTest<T>
 {};
 
+template <typename T>
+class JstTraversalTestCommon2 : public JstTraversalTest<T>
+{};
+
 typedef
-    TagList<JstTraversalConfig<5, 4, 0>,
-    TagList<JstTraversalConfig<5, 4, 1>,
-    TagList<JstTraversalConfig<5, 4, 2>,
-    TagList<JstTraversalConfig<5, 4, 3>,
-    TagList<JstTraversalConfig<5, 4, 4>,
-    TagList<JstTraversalConfig<5, 4, 5>,
-    TagList<JstTraversalConfig<6, 5, 3>,
-    TagList<JstTraversalConfig<7, 5, 3>,
-    TagList<JstTraversalConfig<9, 6, 1>,
-    TagList<JstTraversalConfig<9, 6, 3>,
-    TagList<JstTraversalConfig<9, 6, 4>,
-    TagList<JstTraversalConfig<9, 6, 5>,
-    JstConfigGenerator_<4, 3, 5>::Type
-    > > > > > > > > > > > >
-    JstConfigTypes;
+//    TagList<JstTraversalConfig<5, 4, 0>,
+//    TagList<JstTraversalConfig<5, 4, 1>,
+//    TagList<JstTraversalConfig<5, 4, 2>,
+//    TagList<JstTraversalConfig<5, 4, 3>,
+//    TagList<JstTraversalConfig<5, 4, 4>,
+//    TagList<JstTraversalConfig<5, 4, 5>,
+    TagList<JstTraversalConfig<6, 5, 3> //,
+//    TagList<JstTraversalConfig<7, 5, 3>,
+//    TagList<JstTraversalConfig<9, 6, 1>,
+//    TagList<JstTraversalConfig<9, 6, 3>,
+//    TagList<JstTraversalConfig<9, 6, 4>,
+//    TagList<JstTraversalConfig<9, 6, 5>,
+//    JstConfigGenerator_<4, 3, 5>::Type
+    > //> > > > > > > > > > >
+    JstTestCases;
+
+typedef TagList<JstTraversalSpecConfig<ContextPositionLeft, True> > JstTraversalSpec1;
+typedef TestTypeBuilderHelper_<JstTraversalSpec1, JstTestCases>::Type JstConfigTypes1;
+
+typedef TagList<JstTraversalSpecConfig<ContextPositionRight, False> > JstTraversalSpec2;
+typedef TestTypeBuilderHelper_<JstTraversalSpec2, JstTestCases>::Type JstConfigTypes2;
 
 // Define typed test specific configuration types.
-SEQAN_TYPED_TEST_CASE(JstTraversalTestCommon, JstConfigTypes);
+#ifndef DISABLE_COMMON_1
+SEQAN_TYPED_TEST_CASE(JstTraversalTestCommon, JstConfigTypes1);
+#endif
+
+SEQAN_TYPED_TEST_CASE(JstTraversalTestCommon2, JstConfigTypes2);
 
 // ============================================================================
 // Functions to run the actual tests.
@@ -303,10 +376,12 @@ void _printDebugInfo(TMock const & mockGen, TTester const & dpTester, TSize cons
 }
 
 // With block size and parallel tag.
-template <typename TParallel>
+template <typename TContextPos, typename TFullContext, typename TParallel>
 bool _runTestForConfiguration(unsigned posConf,
                               unsigned varConf,
                               unsigned covConf,
+                              TContextPos,
+                              TFullContext,
                               unsigned refLength,
                               unsigned windowSize,
                               unsigned blockSize,
@@ -320,7 +395,7 @@ bool _runTestForConfiguration(unsigned posConf,
     typedef MockGenerator_<unsigned, char> TMockGenerator;
 
     typedef typename TMockGenerator::TStringTree TStringTree;
-    typedef JstTraverser<TStringTree, Nothing, JstTraverserSpec<> > TTraverser;
+    typedef JstTraverser<TStringTree, Nothing, JstTraverserConfig<TContextPos, TFullContext> > TTraverser;
     typedef DummyCaller_<TStringTree> TDummyCaller;
     typedef GetStringSet<TStringTree>::Type TJournalSet;
     typedef DummyDelegator_<char, TJournalSet> TSequenceAppender;
@@ -356,111 +431,182 @@ bool _runTestForConfiguration(unsigned posConf,
 }
 
 // with block size + no parallel tag.
+template <typename TContextPos, typename TFullContext>
 inline bool _runTestForConfiguration(unsigned posConf,
                                      unsigned varConf,
                                      unsigned covConf,
+                                     TContextPos contextPos,
+                                     TFullContext fullContext,
                                      unsigned refLength,
                                      unsigned windowSize,
                                      unsigned blockSize,
                                      seqan::StringTreeDefault const & stringTreeTag)
 {
-    return _runTestForConfiguration(posConf, varConf, covConf, refLength, windowSize, blockSize, stringTreeTag, seqan::Serial());
+    return _runTestForConfiguration(posConf, varConf, covConf, contextPos, fullContext, refLength, windowSize,
+                                    blockSize, stringTreeTag, seqan::Serial());
 }
 
 // no block size + parallel tag.
-template <typename TParallel>
+template <typename TContextPos, typename TFullContext, typename TParallel>
 inline bool _runTestForConfiguration(unsigned posConf,
                                      unsigned varConf,
                                      unsigned covConf,
+                                     TContextPos contextPos,
+                                     TFullContext fullContext,
                                      unsigned refLength,
                                      unsigned windowSize,
                                      seqan::StringTreeDefault const & stringTreeTag,
                                      seqan::Tag<TParallel> const & parallelTag)
 {
-    return _runTestForConfiguration(posConf, varConf, covConf, refLength, windowSize, 0, stringTreeTag, parallelTag);
+    return _runTestForConfiguration(posConf, varConf, covConf, contextPos, fullContext, refLength, windowSize, 0,
+                                    stringTreeTag, parallelTag);
 }
 
 // no block size + no parallel tag.
+template <typename TContextPos, typename TFullContext>
 inline bool _runTestForConfiguration(unsigned posConf,
                                      unsigned varConf,
                                      unsigned covConf,
+                                     TContextPos contextPos,
+                                     TFullContext fullContext,
                                      unsigned refLength,
                                      unsigned windowSize,
                                      seqan::StringTreeDefault const & stringTreeTag)
 {
-    return _runTestForConfiguration(posConf, varConf, covConf, refLength, windowSize, 0, stringTreeTag);
+    return _runTestForConfiguration(posConf, varConf, covConf, contextPos, fullContext, refLength, windowSize, 0,
+                                    stringTreeTag);
 }
 
 // ============================================================================
 // Test full JST generation in serial mode.
 // ============================================================================
 
-SEQAN_TYPED_TEST(JstTraversalTestCommon, FullSerial)
+template <typename TConfig>
+inline void _testJstTraversalCommonFullSerial(TConfig /*config*/)
 {
-    typedef typename TestFixture::TConfig TConfig;
-
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 3, seqan::StringTreeDefault()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 20, seqan::StringTreeDefault()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 30, seqan::StringTreeDefault()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 50, seqan::StringTreeDefault()));
+}
+
+#ifndef DISABLE_COMMON_1
+SEQAN_TYPED_TEST(JstTraversalTestCommon, FullSerial)
+{
+    _testJstTraversalCommonFullSerial(typename TestFixture::TConfig());
+}
+#endif
+
+SEQAN_TYPED_TEST(JstTraversalTestCommon2, FullSerial)
+{
+    _testJstTraversalCommonFullSerial(typename TestFixture::TConfig());
 }
 
 // ============================================================================
 // Test block-wise JST generation in serial mode.
 // ============================================================================
 
+template <typename TConfig>
+inline void _testJstTraversalCommonBlockSerial(TConfig /*config*/)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 3, 2, seqan::StringTreeDefault()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 20, 2, seqan::StringTreeDefault()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 30, 2, seqan::StringTreeDefault()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 50, 2, seqan::StringTreeDefault()));
+}
+
+#ifndef DISABLE_COMMON_1
 SEQAN_TYPED_TEST(JstTraversalTestCommon, BlockSerial)
 {
-    typedef typename TestFixture::TConfig TConfig;
+    _testJstTraversalCommonBlockSerial(typename TestFixture::TConfig());
+}
+#endif
 
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 3, 2, seqan::StringTreeDefault()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 20, 2, seqan::StringTreeDefault()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 30, 2, seqan::StringTreeDefault()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 50, 2, seqan::StringTreeDefault()));
+SEQAN_TYPED_TEST(JstTraversalTestCommon2, BlockSerial)
+{
+    _testJstTraversalCommonBlockSerial(typename TestFixture::TConfig());
 }
 
 // ============================================================================
 // Test full JST generation in parallel mode.
 // ============================================================================
 
-SEQAN_TYPED_TEST(JstTraversalTestCommon, FullParallel)
+template <typename TConfig>
+inline void _testJstTraversalCommonFullParallel(TConfig /*config*/)
 {
-    typedef typename TestFixture::TConfig TConfig;
-
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 3, seqan::StringTreeDefault(), seqan::Parallel()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 20, seqan::StringTreeDefault(), seqan::Parallel()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 30, seqan::StringTreeDefault(), seqan::Parallel()));
     SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
                                           101, 50, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+#ifndef DISABLE_COMMON_1
+SEQAN_TYPED_TEST(JstTraversalTestCommon, FullParallel)
+{
+    _testJstTraversalCommonFullParallel(typename TestFixture::TConfig());
+}
+#endif
+
+SEQAN_TYPED_TEST(JstTraversalTestCommon2, FullParallel)
+{
+    _testJstTraversalCommonFullParallel(typename TestFixture::TConfig());
 }
 
 // ============================================================================
 // Test block-wise JST generation in parallel mode.
 // ============================================================================
 
+template <typename TConfig>
+inline void _testJstTraversalCommonBlockParallel(TConfig /*config*/)
+{
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 3, 2, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 20, 2, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 30, 2, seqan::StringTreeDefault(), seqan::Parallel()));
+    SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
+                                          typename TConfig::TContextPosition(), typename TConfig::TFullContext(),
+                                          101, 50, 2, seqan::StringTreeDefault(), seqan::Parallel()));
+}
+
+#ifndef DISABLE_COMMON_1
 SEQAN_TYPED_TEST(JstTraversalTestCommon, BlockParallel)
 {
-    typedef typename TestFixture::TConfig TConfig;
+    _testJstTraversalCommonBlockParallel(typename TestFixture::TConfig());
+}
+#endif
 
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 3, 2, seqan::StringTreeDefault(), seqan::Parallel()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 20, 2, seqan::StringTreeDefault(), seqan::Parallel()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 30, 2, seqan::StringTreeDefault(), seqan::Parallel()));
-SEQAN_ASSERT(_runTestForConfiguration(TConfig::DELTA_CONFIG, TConfig::POSITION_CONFIG, TConfig::COVERAGE_CONFIG,
-                                      101, 50, 2, seqan::StringTreeDefault(), seqan::Parallel()));
+SEQAN_TYPED_TEST(JstTraversalTestCommon2, BlockParallel)
+{
+    _testJstTraversalCommonBlockParallel(typename TestFixture::TConfig());
 }
 
 #endif  // EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_

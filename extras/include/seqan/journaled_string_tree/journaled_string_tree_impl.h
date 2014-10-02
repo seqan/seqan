@@ -709,7 +709,6 @@ init(JournaledStringTree<TDeltaMap, TSpec> & jst,
  *
  * @see JournaledStringTree#reinit
  * @see JournaledStringTree#init
-
  */
 
 template <typename TDeltaMap, typename TSpec>
@@ -725,6 +724,25 @@ clear(JournaledStringTree<TDeltaMap, TSpec> & jst)
     jst._activeBlock = 0;
     jst._blockSize = JournaledStringTree<TDeltaMap, TSpec>::REQUIRE_FULL_JOURNAL;
     jst._emptyJournal = true;
+}
+
+/*!
+ * @fn JournaledStringTree#empty
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Checks whether the JST was created already.
+ *
+ * @signature bool empty(jst);
+ *
+ * @param[in] jst    The Journal String Tree to be checked.
+ *
+ * @return bool <tt>true</tt> if the @link JournaledStringTree#create @endlink function was called, otherwise <tt>false</tt>.
+ */
+
+template <typename TDeltaMap, typename TSpec>
+inline bool
+empty(JournaledStringTree<TDeltaMap, TSpec> const & jst)
+{
+    return jst._emptyJournal;
 }
 
 // ----------------------------------------------------------------------------

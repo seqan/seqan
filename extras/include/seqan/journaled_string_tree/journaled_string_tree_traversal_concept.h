@@ -87,11 +87,11 @@ typedef Tag<TraverseStateBranch_> StateTraverseBranch;
  */
 
 /*!
- * @fn JstTraversalConcept#deliverContext
+ * @fn JstTraversalConcept#notify
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Interrupts the traversal and delivers the current sequence context to the caller.
  *
- * @signature TSize deliverContext(caller, delegate, callee, tag);
+ * @signature TSize notify(caller, delegate, callee, tag);
  *
  * @param[in,out] caller   The caller that triggered the traversal.
  * @param[in,out] delegate An additional functor that can be called.
@@ -143,9 +143,9 @@ SEQAN_CONCEPT(JstTraversalConcept,(TCaller))
         state = getState(c);
         setState(c, state);
 
-        // Concept for deliverContext.
-        sameType(deliverContext(c, TDelegate(), traverser, StateTraverseMaster()), size);
-        sameType(deliverContext(c, TDelegate(), traverser, StateTraverseBranch()), size);
+        // Concept for notify.
+        sameType(notify(c, TDelegate(), traverser, StateTraverseMaster()), size);
+        sameType(notify(c, TDelegate(), traverser, StateTraverseBranch()), size);
     }
 };
 

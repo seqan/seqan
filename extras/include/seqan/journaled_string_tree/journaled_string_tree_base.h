@@ -60,12 +60,27 @@ typedef Tag<ContextPositionLeft_> ContextPositionLeft;
 struct ContextPositionRight_;
 typedef Tag<ContextPositionRight_> ContextPositionRight;
 
+// TODO(rmaerker): Need later to distinguish between extension (local search) and global search.
+//// ----------------------------------------------------------------------------
+//// Tag TraversePrefix
+//// ----------------------------------------------------------------------------
+//
+//struct TraversePrefix_;
+//typedef Tag<TraversePrefix_> TraversePrefix;
+//
+//// ----------------------------------------------------------------------------
+//// Tag TraverseInfix
+//// ----------------------------------------------------------------------------
+//
+//struct TraverseInfix_;
+//typedef Tag<TraverseInfix_> TraverseInfix;
+
 // ----------------------------------------------------------------------------
-// Struct JstTraverserSpec
+// Struct JstTraverserConfig
 // ----------------------------------------------------------------------------
 
-template <typename TContextPosition = ContextPositionLeft, typename RequireFullContext = True>
-struct JstTraverserSpec;
+template <typename TContextPosition = ContextPositionLeft, typename TRequireFullContext = True>
+struct JstTraverserConfig;
 
 // ----------------------------------------------------------------------------
 // Tag StringTreeDefault
@@ -73,13 +88,6 @@ struct JstTraverserSpec;
 
 struct DefaultStringTree_;
 typedef Tag<DefaultStringTree_> StringTreeDefault;
-
-// ----------------------------------------------------------------------------
-// Tag StringTreeSparse
-// ----------------------------------------------------------------------------
-
-struct SparseStringTree_;
-typedef Tag<SparseStringTree_> StringTreeSparse;
 
 // ----------------------------------------------------------------------------
 // Class JournaledStringTree
@@ -125,6 +133,13 @@ struct ContextIteratorPosition
 
 template <typename T>
 struct RequireFullContext : True{};
+
+// ----------------------------------------------------------------------------
+// Metafunction ConfigureJstTraversal
+// ----------------------------------------------------------------------------
+
+template <typename TAlgo, typename TType, typename TDirection>
+struct ConfigureJstTraversal;
 
 // ============================================================================
 // Functions
