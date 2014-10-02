@@ -74,33 +74,33 @@ namespace SEQAN_NAMESPACE_MAIN
 ..summary:The Deferred Frequency Index (see Weese and Schulz, "Efficient string mining under constraints via the
 deferred frequency index").
 ..cat:Index
-..general:Spec.IndexDfi
-..signature:Index<TText, IndexDfi< Dfi<TPredHull, TPred> > >
+..general:Spec.IndexWotd
+..signature:Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >
 ..param.TText:The text type.
 ...type:Class.String
 ..param.TPred:An arbitrary frequency predicate
 ..param.TPredHull:A monotonic hull of $TPred$
-..remarks:This index is based on a lazy suffix tree (see @Spec.IndexDfi@).
+..remarks:This index is based on a lazy suffix tree (see @Spec.IndexWotd@).
 All $TPredHull$ sufficing nodes can be iterated using a @Spec.TopDown Iterator@.
 To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterator$ of this index.
 ..include:seqan/index.h
 */
 /*!
  * @class IndexDfi
- * @extends IndexDfi
+ * @extends IndexWotd
  * @headerfile <seqan/index.h>
  * 
  * @brief The Deferred Frequency Index (see Weese and Schulz, "Efficient string mining under constraints via
  *        the deferred frequency index").
  * 
  * @signature template <typename TText, typename TPredHull, typename TPred>
- *            class Index<TText, IndexDfi< Dfi<TPredHull, TPred> > >;
+ *            class Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >;
  * 
  * @tparam TText     The @link TextConcept text @endlink.
  * @tparam TPred     An arbitrary frequency predicate.
  * @tparam TPredHull A monotonic hull of <tt>TPred</tt>
  * 
- * This index is based on a lazy suffix tree (see @link IndexDfi @endlink).  All <tt>TPredHull</tt> sufficing
+ * This index is based on a lazy suffix tree (see @link IndexWotd @endlink).  All <tt>TPredHull</tt> sufficing
  * nodes can be iterated using a @link TopDownIterator @endlink.  To iterate the exact solution set of <tt>TPred</tt>,
  * use a @link TopDownHistoryIterator @endlink of this index.
  */
@@ -196,12 +196,12 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 		typename TPredHull,
 		typename TPred
 	>
-	class Index<TObject, IndexDfi< Dfi<TPredHull, TPred> > >:
-		public Index<TObject, IndexDfi<> > 
+	class Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >:
+		public Index<TObject, IndexWotd<> > 
 	{
 	public:
 		
-		typedef Index<TObject, IndexDfi<> >	TBase;
+		typedef Index<TObject, IndexWotd<> >	TBase;
 
 		// extending base class
 		typedef typename TBase::TText	TText;
@@ -275,9 +275,9 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 		typename TSpec
 	>
 	inline bool nodePredicate(
-		Iter<Index<TText, IndexDfi< Dfi<TPredHull, TPred> > >, TSpec> &it)
+		Iter<Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >, TSpec> &it)
 	{
-		typedef Index<TText, IndexDfi< Dfi<TPredHull, TPred> > > TIndex;
+		typedef Index<TText, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
 		return (dirAt(value(it).node, container(it)) & TIndex::DFI_PRED) != 0;
 	}
 
@@ -288,9 +288,9 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 		typename TSpec
 	>
 	inline bool nodeHullPredicate(
-		Iter<Index<TText, IndexDfi< Dfi<TPredHull, TPred> > >, TSpec> &it)
+		Iter<Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >, TSpec> &it)
 	{
-		typedef Index<TText, IndexDfi< Dfi<TPredHull, TPred> > > TIndex;
+		typedef Index<TText, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
 		return (dirAt(value(it).node, container(it)) & TIndex::DFI_PRED_HULL) != 0;
 	}
 
@@ -300,12 +300,12 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 // to count the frequencies in passing
 
 	template < typename TText, typename TSpec, typename TPredHull, typename TPred >
-	typename Size< Index<StringSet<TText, TSpec>, IndexDfi<Dfi<TPredHull, TPred> > > >::Type
-	_sortFirstDfiBucket(Index<StringSet<TText, TSpec>, IndexDfi<Dfi<TPredHull, TPred> > > &index)
+	typename Size< Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > >::Type
+	_sortFirstWotdBucket(Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > &index)
 	{
 	SEQAN_CHECKPOINT
-		typedef Index<StringSet<TText, TSpec>, IndexDfi<Dfi<TPredHull, TPred> > >	TIndex;
-		typedef typename Fibre<TIndex, DfiSA >::Type			TSA;
+		typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >	TIndex;
+		typedef typename Fibre<TIndex, WotdSA >::Type			TSA;
 		typedef typename TIndex::TCounter						TCounter;
 
 		typedef typename TIndex::TDFIEntry						TDFIEntry;
@@ -390,15 +390,15 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 	// - all buckets are in lexicographical order
 	// - SA[left,right) contains real SA entries (the beginning positions of the suffices)
 	template < typename TText, typename TSpec, typename TPredHull, typename TPred, typename TBeginPos, typename TEndPos, typename TSize >
-	TSize _sortDfiBucket(
-		Index<StringSet<TText, TSpec>, IndexDfi<Dfi<TPredHull, TPred> > > &index,
+	TSize _sortWotdBucket(
+		Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > &index,
 		TBeginPos left, 
 		TEndPos right,
 		TSize prefixLen)
 	{
 	SEQAN_CHECKPOINT
-		typedef Index<StringSet<TText, TSpec>, IndexDfi<Dfi<TPredHull, TPred> > >	TIndex;
-		typedef typename Fibre<TIndex, DfiSA >::Type				TSA;
+		typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >	TIndex;
+		typedef typename Fibre<TIndex, WotdSA >::Type				TSA;
 		typedef typename TIndex::TCounter							TCounter;
 		typedef typename TIndex::TTempSA							TTempSA;
 		typedef typename TIndex::TDFIEntry							TDFIEntry;
@@ -537,15 +537,15 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 	// storing SA links and topology links in Dir
 	template <typename TText, typename TPredHull, typename TPred, typename TSize>
 	inline void 
-	_storeDfiChildren(
-		Index<TText, IndexDfi<Dfi<TPredHull, TPred> > > &index,
+	_storeWotdChildren(
+		Index<TText, IndexWotd<Dfi<TPredHull, TPred> > > &index,
 		TSize dirOfs,
 		TSize lcp)
 	{
 	SEQAN_CHECKPOINT
-		typedef Index<TText, IndexDfi<Dfi<TPredHull, TPred> > >	TIndex;
+		typedef Index<TText, IndexWotd<Dfi<TPredHull, TPred> > >	TIndex;
 
-		typedef typename Fibre<TIndex, DfiDir>::Type		TDir;
+		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename TIndex::TCounter					TCounter;
 		typedef typename TIndex::TDFIEntries				TEntries;
 
@@ -618,11 +618,11 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 
 	template <typename TText, typename TPredHull, typename TPred>
 	inline void
-	_dump(Index<TText, IndexDfi< Dfi<TPredHull, TPred> > > &index)
+	_dump(Index<TText, IndexWotd< Dfi<TPredHull, TPred> > > &index)
 	{
-		typedef IndexDfi< Dfi<TPredHull, TPred> >		TSpec;
+		typedef IndexWotd< Dfi<TPredHull, TPred> >		TSpec;
 		typedef Index<TText, TSpec>							TIndex;
-		typedef typename Fibre<TIndex, DfiDir>::Type		TDir;
+		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename Value<TDir>::Type					TDirValue;
 
 		::std::cout << "  Dir (wotd/Dfi)" << ::std::endl;
@@ -646,10 +646,10 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 
 	template <typename TText, typename TPredHull, typename TPred>
 	inline void
-	_dumpFreq(Index<TText, IndexDfi< Dfi<TPredHull, TPred> > > &index)
+	_dumpFreq(Index<TText, IndexWotd< Dfi<TPredHull, TPred> > > &index)
 	{
 		typedef Dfi<TPredHull, TPred> TSpec;
-		typedef Index<TText, IndexDfi<TSpec> >				TIndex;
+		typedef Index<TText, IndexWotd<TSpec> >				TIndex;
 		typedef typename Value<TIndex>::Type					TValue;
 
 		::std::cout << "  ParentF = (";
@@ -674,9 +674,9 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 // interface for automatic index creation 
 
 	template <typename TText, typename TPredHull, typename TPred>
-	inline bool indexCreate(Index<TText, IndexDfi<Dfi<TPredHull, TPred> > > &index, DfiDir const, Default const)
+	inline bool indexCreate(Index<TText, IndexWotd<Dfi<TPredHull, TPred> > > &index, WotdDir const, Default const)
 	{
-		typedef Index<TText, IndexDfi<Dfi<TPredHull, TPred> > >	TIndex;
+		typedef Index<TText, IndexWotd<Dfi<TPredHull, TPred> > >	TIndex;
 		typedef typename Value<TIndex>::Type							TValue;
 
 		resize(index.childEntry, (unsigned) ValueSize<TValue>::VALUE);
