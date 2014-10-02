@@ -51,8 +51,8 @@ struct Options
     typedef std::string             TString;
     typedef std::vector<TString>    TList;
 
-    CharString          genomeFile;
-    CharString          genomeIndexFile;
+    CharString          contigsFile;
+    CharString          contigsIndexFile;
 
     Pair<CharString>    readsFile;
     TList               readsFormatList;
@@ -374,7 +374,7 @@ inline void loadGenome(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.contigs, toCString(me.options.genomeIndexFile)))
+        if (!open(me.contigs, toCString(me.options.contigsIndexFile)))
             throw RuntimeError("Error while opening reference file.");
     }
     catch (BadAlloc const & /* e */)
@@ -398,7 +398,7 @@ inline void loadGenomeIndex(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.index, toCString(me.options.genomeIndexFile)))
+        if (!open(me.index, toCString(me.options.contigsIndexFile)))
             throw RuntimeError("Error while opening reference index file.");
     }
     catch (BadAlloc const & /* e */)

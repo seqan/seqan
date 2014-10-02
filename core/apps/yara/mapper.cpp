@@ -62,9 +62,8 @@ struct Options;
 #include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
-#include "store_reads.h"
-#include "store_genome.h"
 #include "index_fm.h"
+#include "bits_seqs.h"
 #include "bits_reads.h"
 #include "bits_hits.h"
 #include "bits_context.h"
@@ -204,7 +203,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         return res;
 
     // Parse genome input file.
-    getArgumentValue(options.genomeFile, parser, 0);
+    getArgumentValue(options.contigsFile, parser, 0);
 
     // Parse read input files.
     switch (getArgumentValueCount(parser, 1))
