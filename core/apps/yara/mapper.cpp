@@ -65,6 +65,7 @@ struct Options;
 #include "store_reads.h"
 #include "store_genome.h"
 #include "index_fm.h"
+#include "bits_reads.h"
 #include "bits_hits.h"
 #include "bits_context.h"
 #include "bits_matches.h"
