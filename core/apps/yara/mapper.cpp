@@ -103,15 +103,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDescription(parser);
 
     // Setup mandatory arguments.
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP> <\\fISE-READS FILE\\fP>");
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP> <\\fIPE-READS FILE 1\\fP> <\\fIPE-READS FILE 2\\fP>");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE INDEX PREFIX\\fP> <\\fISE-READS FILE\\fP>");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE INDEX PREFIX\\fP> <\\fIPE-READS FILE 1\\fP> <\\fIPE-READS FILE 2\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, "fasta fa");
-    setHelpText(parser, 0, "A reference genome file.");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTPREFIX, "REFERENCE INDEX PREFIX"));
+    setHelpText(parser, 0, "An indexed reference genome.");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    setValidValues(parser, 1, options.readsExtensionList);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS FILE", true));
+    setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pairs read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
@@ -125,7 +124,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     // Setup output options.
     addSection(parser, "Output Options");
 
-    setOutputFile(parser, options);
+    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
+                                     Default: use the reads filename prefix.",
+                                     ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
 
     addOption(parser, ArgParseOption("os", "output-secondary", "Output suboptimal alignments as secondary alignments. \
                                                                 Default: output suboptimal alignments inside XA tag."));
@@ -221,16 +223,19 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         return ArgumentParser::PARSE_ERROR;
     }
 
-    // Parse reads input type.
-    getInputType(options, options.readsFile.i1);
-
     // Parse output file.
-    getOutputFile(options.outputFile, options, parser, options.readsFile.i1, "");
+    getOptionValue(options.outputFile, parser, "output-file");
+    if (!isSet(parser, "output-file"))
+    {
+        options.outputFile = trimExtension(options.readsFile.i1);
+        appendValue(options.outputFile, '.');
+        append(options.outputFile, "sam");
+    }
 
-    // Parse output format.
-    getOutputFormat(options, options.outputFile);
+    // Parse output options.
     getOptionValue(options.outputSecondary, parser, "output-secondary");
     options.outputHeader = !isSet(parser, "no-header");
+    getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse genome index prefix.
     getIndexPrefix(options, parser);
@@ -263,8 +268,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 #endif
 
     getOptionValue(options.readsCount, parser, "reads-batch");
-
-    getOptionValue(options.rabema, parser, "output-rabema");
 
     if (isSet(parser, "verbose")) options.verbose = 1;
     if (isSet(parser, "vverbose")) options.verbose = 2;
