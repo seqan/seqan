@@ -63,13 +63,13 @@ SEQAN_CONCEPT(StringTreeConcept, (TIndex))
         resizeVertexMap(index, pm);
 
         // capacity
-        TTopDownIterator iter = begin(index, TopDown());
+        TTopDownIterator iter = begin(index, TopDown<>());
     }
 };
 
 
 template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexEsa<TSpec> >)
+SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexEsa<TSpec> >);
 
 /**
 .Spec.VSTree Iterator:

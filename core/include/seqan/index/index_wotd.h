@@ -313,7 +313,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 */
 
 template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexWotd<TSpec> >)
+SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexWotd<TSpec> >);
 
 
 //////////////////////////////////////////////////////////////////////////////
