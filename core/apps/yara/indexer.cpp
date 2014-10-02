@@ -58,14 +58,14 @@
 #include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
+#include "bits_seqs.h"
 #include "bits_matches.h"
-#include "store_genome.h"
 #include "index_fm.h"
 
 using namespace seqan;
 
 // ============================================================================
-// Tags, Classes, Enums
+// Classes
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -74,8 +74,8 @@ using namespace seqan;
 
 struct Options
 {
-    CharString genomeFile;
-    CharString genomeIndexFile;
+    CharString contigsFile;
+    CharString contigsIndexFile;
 
     bool    verbose;
 
@@ -91,12 +91,11 @@ struct Options
 template <typename TIndexSpec, typename TSpec = void>
 struct Indexer
 {
-    typedef Contigs<TSpec>                         TContigs;
-    typedef ContigsLoader<TSpec>                   TContigsLoader;
-    typedef Index<YaraContigsFM, TIndexSpec>       TIndex;
+    typedef SeqStore<Nothing>                       TContigs;
+    typedef Index<YaraContigsFM, TIndexSpec>        TIndex;
 
     TContigs            contigs;
-    TContigsLoader      contigsLoader;
+    SeqFileIn           contigsFile;
     TIndex              index;
     Timer<double>       timer;
 };
@@ -121,7 +120,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP>");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, "fasta fa");
+    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "A reference genome file.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays verbose output."));
@@ -151,7 +150,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.verbose, parser, "verbose");
 
     // Parse contigs input file.
-    getArgumentValue(options.genomeFile, parser, 0);
+    getArgumentValue(options.contigsFile, parser, 0);
 
     // Parse contigs index prefix.
     getIndexPrefix(options, parser);
@@ -163,20 +162,20 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 }
 
 // ----------------------------------------------------------------------------
-// Function loadGenome()
+// Function loadContigs()
 // ----------------------------------------------------------------------------
 
 template <typename TIndexSpec, typename TSpec>
-void loadGenome(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
         std::cout << "Loading reference:\t\t\t" << std::flush;
 
     start(me.timer);
-    open(me.contigsLoader, options.genomeFile);
+    open(me.contigsFile, toCString(options.contigsFile));
     try
     {
-        load(me.contigs, me.contigsLoader);
+        readSeqs(me.contigs, me.contigsFile);
     }
     catch (BadAlloc const & /* e */)
     {
@@ -195,17 +194,17 @@ void loadGenome(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 }
 
 // ----------------------------------------------------------------------------
-// Function saveGenome()
+// Function saveContigs()
 // ----------------------------------------------------------------------------
 
 template <typename TIndexSpec, typename TSpec>
-void saveGenome(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+void saveContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
         std::cout << "Dumping reference:\t\t\t" << std::flush;
 
     start(me.timer);
-    if (!save(me.contigs, toCString(options.genomeIndexFile)))
+    if (!save(me.contigs, toCString(options.contigsIndexFile)))
         throw RuntimeError("Error while dumping reference file.");
     stop(me.timer);
 
@@ -229,8 +228,8 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 
     try
     {
-        // Remove Ns from contigs.
-        removeNs(me.contigs);
+        // Randomize Ns in contigs.
+        randomizeNs(me.contigs);
 
         // IndexFM is built on the reversed contigs.
         reverse(me.contigs);
@@ -273,11 +272,11 @@ template <typename TIndexSpec, typename TSpec>
 void saveIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
-        std::cout << "Dumping genome index:\t\t" << std::flush;
+        std::cout << "Dumping reference index:\t\t" << std::flush;
 
     start(me.timer);
-    if (!save(me.index, toCString(options.genomeIndexFile)))
-        throw RuntimeError("Error while dumping genome index file.");
+    if (!save(me.index, toCString(options.contigsIndexFile)))
+        throw RuntimeError("Error while dumping reference index file.");
     stop(me.timer);
 
     if (options.verbose)
@@ -291,8 +290,8 @@ void saveIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 template <typename TIndexSpec, typename TSpec>
 void runIndexer(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
-    loadGenome(me, options);
-    saveGenome(me, options);
+    loadContigs(me, options);
+    saveContigs(me, options);
     buildIndex(me, options);
     saveIndex(me, options);
 }
