@@ -203,9 +203,9 @@ int main(int argc, const char *argv[])
     {
 		// If nj tree collapse the root
 		if (build == 0)
-            write(oStream, tree, names, true, NewickFormat());
+            writeRecords(oStream, tree, names, true, NewickFormat());
 		else
-            write(oStream, tree, names, false, NewickFormat());
+            writeRecords(oStream, tree, names, false, NewickFormat());
 	}
 
 	return 0;

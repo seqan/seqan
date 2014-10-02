@@ -67,7 +67,7 @@ def main(source_base, binary_base):
               ph.inFile('ex1_a3.sam'),
               '-o', ph.outFile('ex1_merged.bam')],
         to_diff=[(ph.inFile('ex1_merged.bam'),
-                  ph.outFile('ex1_merged.bam'))])
+                  ph.outFile('ex1_merged.bam'), "gunzip")])
     conf_list.append(conf)
 
     # Execute the tests.

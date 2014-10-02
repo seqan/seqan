@@ -7,7 +7,7 @@ VERBOSITY  	1
 
 SEED       	1
 
-OUTPUT FILE	genome.test2.fasta
+OUTPUT FILE	genome.test2.fa
 CONTIG LENS	1000, 100
 
 __SIMULATING GENOME__________________________________________________________
