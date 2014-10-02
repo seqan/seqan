@@ -125,11 +125,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays verbose output."));
 
-    addSection(parser, "Input Options");
+    addSection(parser, "Output Options");
 
     setIndexPrefix(parser);
-    
-    addSection(parser, "Output Options");
 
     setTmpFolder(parser);
 }
@@ -257,6 +255,7 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
                             Specify a bigger temporary folder using the options --tmp-folder.");
     }
 
+    // NOTE(esiragusa): the contigs should be already saved.
 //    reverse(me.contigs);
     stop(me.timer);
 
