@@ -119,7 +119,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "REFERENCE FILE"));
     setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "A reference genome file.");
 
@@ -129,7 +129,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     setIndexPrefix(parser);
 
-    setTmpFolder(parser);
+    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a temporary folder where to construct the index. \
+                                     Default: use the reference genome folder.", ArgParseOption::STRING));
 }
 
 // ----------------------------------------------------------------------------
@@ -153,8 +154,12 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse contigs index prefix.
     getIndexPrefix(options, parser);
 
-    // Parse tmp folder.
-    getTmpFolder(options, parser);
+    // Parse and set temp dir.
+    CharString tmpFolder;
+    getOptionValue(tmpFolder, parser, "tmp-folder");
+    if (!isSet(parser, "tmp-folder"))
+        tmpFolder = getPath(options.contigsFile);
+    setEnv("TMPDIR", tmpFolder);
 
     return seqan::ArgumentParser::PARSE_OK;
 }

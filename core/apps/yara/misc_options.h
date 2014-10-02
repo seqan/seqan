@@ -207,28 +207,6 @@ void setDescription(ArgumentParser & parser)
 }
 
 // ----------------------------------------------------------------------------
-// Function setIndexType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void setIndexType(ArgumentParser & parser, TOptions const & options)
-{
-    addOption(parser, ArgParseOption("x", "index", "Select the genome index type.", ArgParseOption::STRING));
-    setValidValues(parser, "index", options.indexTypeList);
-    setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
-}
-
-// ----------------------------------------------------------------------------
-// Function getIndexType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getIndexType(TOptions & options, ArgumentParser const & parser)
-{
-    getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
-}
-
-// ----------------------------------------------------------------------------
 // Function setIndexPrefix()
 // ----------------------------------------------------------------------------
 
@@ -248,88 +226,6 @@ void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
     getOptionValue(options.contigsIndexFile, parser, "index-prefix");
     if (!isSet(parser, "index-prefix"))
         options.contigsIndexFile = trimExtension(options.contigsFile);
-}
-
-// ----------------------------------------------------------------------------
-// Function getInputType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions, typename TString>
-void getInputType(TOptions & options, TString const & inputFile)
-{
-    TString inputExtension = getExtension(inputFile);
-    typename TOptions::TString inputTypeExtension(toCString(inputExtension));
-    getOptionEnum(options.inputType, inputTypeExtension, options.inputTypeList);
-}
-
-// ----------------------------------------------------------------------------
-// Function getOutputFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions, typename TString>
-void getOutputFormat(TOptions & options, TString const & outputFile)
-{
-    TString outputExtension = getExtension(outputFile);
-    typename TOptions::TString outputFormatExtension(toCString(outputExtension));
-    getOptionEnum(options.outputFormat, outputFormatExtension, options.outputFormatList);
-}
-
-// ----------------------------------------------------------------------------
-// Function setOutputFile()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void setOutputFile(ArgumentParser & parser, TOptions const & options)
-{
-    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
-                                     Default: use the reads filename prefix.",
-                                     ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output-file", options.outputFormatList);
-}
-
-// ----------------------------------------------------------------------------
-// Function getOutputFile()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TOptions, typename TSuffix>
-void getOutputFile(TString & file,
-                   TOptions const & options,
-                   ArgumentParser const & parser,
-                   TString const & from,
-                   TSuffix const & suffix)
-{
-    getOptionValue(file, parser, "output-file");
-    if (!isSet(parser, "output-file"))
-    {
-        file = trimExtension(from);
-        append(file, suffix);
-        appendValue(file, '.');
-        append(file, options.outputFormatList[options.outputFormat]);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function setTmpFolder()
-// ----------------------------------------------------------------------------
-
-void setTmpFolder(ArgumentParser & parser)
-{
-    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a temporary folder where to construct the index. \
-                                     Default: use the reference genome folder.", ArgParseOption::STRING));
-}
-
-// ----------------------------------------------------------------------------
-// Function getTmpFolder()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getTmpFolder(TOptions const & options, ArgumentParser const & parser)
-{
-    CharString tmpFolder;
-    getOptionValue(tmpFolder, parser, "tmp-folder");
-    if (!isSet(parser, "tmp-folder"))
-        tmpFolder = getPath(options.contigsFile);
-    setEnv("TMPDIR", tmpFolder);
 }
 
 #endif  // #ifndef APP_YARA_MISC_OPTIONS_H_
