@@ -42,33 +42,16 @@
 using namespace seqan;
 
 // ============================================================================
-// Functions
+// Functors
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Functor EqualsChar
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): remove this when new tokenization gets into develop.
-
-template <char VALUE>
-struct EqualsChar
-{
-    template <typename TValue>
-    bool operator() (TValue const & val) const
-    {
-        return val == VALUE;
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Composite Functors
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): remove this when new tokenization gets into develop.
-
 typedef EqualsChar<'.'>        IsDot;
-typedef EqualsChar<' '>        IsSpace;
 typedef EqualsChar<'/'>        IsSlash;
 typedef EqualsChar<'\\'>       IsBackSlash;
+
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function setEnv()
