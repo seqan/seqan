@@ -41,38 +41,6 @@
 using namespace seqan;
 
 // ============================================================================
-// Yara Limits
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class YaraBits
-// ----------------------------------------------------------------------------
-
-template <typename TSpec = void>
-struct YaraBits
-{
-    static const unsigned CONTIG_ID   = 8;
-    static const unsigned CONTIG_SIZE = 30;
-    static const unsigned READ_ID     = 21;
-    static const unsigned READ_SIZE   = 14;
-    static const unsigned ERRORS      = 6;
-};
-
-// ----------------------------------------------------------------------------
-// Class YaraLimits
-// ----------------------------------------------------------------------------
-
-template <typename TSpec = void>
-struct YaraLimits
-{
-    static const unsigned CONTIG_ID   = Power<2, YaraBits<TSpec>::CONTIG_ID>::VALUE - 1;
-    static const unsigned CONTIG_SIZE = Power<2, YaraBits<TSpec>::CONTIG_SIZE>::VALUE - 1;
-    static const unsigned READ_ID     = Power<2, YaraBits<TSpec>::READ_ID>::VALUE - 1;
-    static const unsigned READ_SIZE   = Power<2, YaraBits<TSpec>::READ_SIZE>::VALUE - 1;
-    static const unsigned ERRORS      = Power<2, YaraBits<TSpec>::ERRORS>::VALUE - 1;
-};
-
-// ============================================================================
 // String Types
 // ============================================================================
 
