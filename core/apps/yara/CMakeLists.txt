@@ -108,6 +108,7 @@ add_executable(yara_mapper    mapper.cpp
                               misc_timer.h
                               misc_options.h
                               misc_types.h
+                              bits_reads.h
                               bits_hits.h
                               bits_matches.h
                               bits_context.h
