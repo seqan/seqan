@@ -180,8 +180,8 @@ struct SmartFile
         _getCompressionExtensions(extensions,
                                   TFileFormat(),
                                   typename FileFormat<TStream>::Type(),
-                                  true);
-//                                  IsSameType<TDirection, Output>::VALUE);
+//                                  true);
+                                  IsSameType<TDirection, Output>::VALUE);
         return extensions;
     }
 };
