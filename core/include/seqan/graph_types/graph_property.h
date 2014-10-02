@@ -43,7 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @class ExternalPropertyMap External Property Map
  * @brief An external property map.
- * @signature: template<TValue, TSpec>
+ * @signature  template<TValue, TSpec>
                class String<TValue, TSpec>
  * @tparam TValue The type of information stored in the property map.
  * @tparam TSpec The specializing type. Default: @link AllocString @endlink.
@@ -956,7 +956,7 @@ getProperty(TValue TClass:: * const ptr_to_member,
  * @brief Initializes a vertex map with values of an array.
  * @signature void assignVertexMap(g, pm, prop)
  * @param g    A Graph.
- * @param pm   An External Property Map. Tyeps: @link ExternalPropertyMap @endlink
+ * @param pm   An External Property Map. Types: @link ExternalPropertyMap @endlink
  * @param prop An array with properties that are to be assigned to the items in the property map.
  * @section Remarks
  *
