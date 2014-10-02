@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+  
+
+
+  <head>
+    <link rel="stylesheet" type="text/css" href="/chrome/site/css/custom.css" />
+    <title>
+      ReadLayout.svg in trunk/docs2/images
+     – Seqan Trac
+    </title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="search" href="/search" /><link rel="help" href="/wiki/TracGuide" /><link rel="alternate" href="/browser/trunk/docs2/images/ReadLayout.svg?format=txt" type="text/plain" title="Plain Text" /><link rel="alternate" href="/export/14828/trunk/docs2/images/ReadLayout.svg" type="image/svg+xml; charset=iso-8859-15" title="Original Format" /><link rel="next" href="/browser/trunk/seqan/docs2/images/ReadLayout.svg?rev=13035" title="Revision 13035" /><link rel="start" href="/wiki" /><link rel="stylesheet" href="/chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="/chrome/common/css/code.css" type="text/css" /><link rel="stylesheet" href="/chrome/common/css/browser.css" type="text/css" /><link rel="stylesheet" href="/chrome/text_boxes/css/text_boxes.css" type="text/css" /><link rel="prev" href="/browser/trunk/seqan/docs2/images/ReadLayout.svg?rev=11552" title="Revision 11552" /><link rel="shortcut icon" href="/chrome/common/trac.ico" type="image/x-icon" /><link rel="icon" href="/chrome/common/trac.ico" type="image/x-icon" /><link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Search Seqan Trac" /><script type="text/javascript" src="/chrome/common/js/jquery.js"></script><script type="text/javascript" src="/chrome/common/js/babel.js"></script><script type="text/javascript" src="/chrome/common/js/messages/en_US.js"></script><script type="text/javascript" src="/chrome/common/js/trac.js"></script><script type="text/javascript" src="/chrome/common/js/search.js"></script><script type="text/javascript" src="/chrome/common/js/ie_pre7_hacks.js"></script><script type="text/javascript" src="/chrome/common/js/folding.js"></script><script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
+        $("#jumploc input").hide();
+        $("#jumploc select").change(function () {
+          this.parentNode.parentNode.submit();
+        });
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
+      });
+    </script>
+    <!--
+    <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
+    -->
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.seqan.de/"><img src="/static/seqan_trac_banner.png" alt="" height="75" width="215" /></a>
+      </div>
+      <form id="search" action="/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Search" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first">logged in as holtgrew</li><li><a href="/logout">Logout</a></li><li><a href="/wiki/TracGuide">Help/Guide</a></li><li><a href="/about">About Trac</a></li><li class="last"><a href="/prefs">Preferences</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Timeline</a></li><li><a href="/roadmap">Roadmap</a></li><li class="active"><a href="/browser">Browse Source</a></li><li><a href="/report">View Tickets</a></li><li><a href="/newticket">New Ticket</a></li><li><a href="/search">Search</a></li><li class="last"><a href="/admin" title="Administration">Admin</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+              <li class="first"><span>&larr; <a class="prev" href="/browser/trunk/seqan/docs2/images/ReadLayout.svg?rev=11552" title="Revision 11552">Previous Revision</a></span></li><li><span><a class="next" href="/browser/trunk/seqan/docs2/images/ReadLayout.svg?rev=13035" title="Revision 13035">Next Revision</a> &rarr;</span></li><li><a href="/browser/trunk/seqan/docs2/images/ReadLayout.svg?annotate=blame" title="Annotate each line with the last changed revision (this can be time consuming...)">Blame</a></li><li class="last"><a href="/log/trunk/docs2/images/ReadLayout.svg">Revision Log</a></li>
+          </ul>
+        <hr />
+      </div>
+    <div id="content" class="browser">
+          <h1>
+<a class="pathentry first" href="/browser?order=name" title="Go to repository root">source:</a>
+<a class="pathentry" href="/browser/trunk?order=name" title="View trunk">trunk</a><span class="pathentry sep">/</span><a class="pathentry" href="/browser/trunk/docs2?order=name" title="View docs2">docs2</a><span class="pathentry sep">/</span><a class="pathentry" href="/browser/trunk/docs2/images?order=name" title="View images">images</a><span class="pathentry sep">/</span><a class="pathentry" href="/browser/trunk/docs2/images/ReadLayout.svg?order=name" title="View ReadLayout.svg">ReadLayout.svg</a>
+<span class="pathentry sep">@</span>
+  <a class="pathentry" href="/changeset/14828" title="View changeset 14828">14828</a>
+<br style="clear: both" />
+</h1>
+        <div id="jumprev">
+          <form action="" method="get">
+            <div>
+              <label for="rev">
+                View revision:</label>
+              <input type="text" id="rev" name="rev" size="6" />
+            </div>
+          </form>
+        </div>
+        <div id="jumploc">
+          <form action="" method="get">
+            <div class="buttons">
+              <label for="preselected">Visit:</label>
+              <select id="preselected" name="preselected">
+                <option selected="selected"></option>
+                <optgroup label="branches">
+                  <option value="/browser/trunk">trunk</option><option value="/browser/branches/dummy">branches/dummy</option><option value="/browser/branches/masai-0.6.0-bugfix">branches/masai-0.6.0-bugfix</option><option value="/browser/branches/seqan-pre-1.3.1">branches/seqan-pre-1.3.1</option>
+                </optgroup><optgroup label="tags">
+                  <option value="/browser/tags/alf-1.0.1?rev=13729">tags/alf-1.0.1</option><option value="/browser/tags/breakpoint_calculator-0.2.1?rev=13786">tags/breakpoint_calculator-0.2.1</option><option value="/browser/tags/dfi-2.0.1?rev=13739">tags/dfi-2.0.1</option><option value="/browser/tags/gustaf-0.1.0?rev=14048">tags/gustaf-0.1.0</option><option value="/browser/tags/indel_simulator-0.1?rev=13868">tags/indel_simulator-0.1</option><option value="/browser/tags/insegt-1.1.0?rev=13793">tags/insegt-1.1.0</option><option value="/browser/tags/masai-0.4.0?rev=13114">tags/masai-0.4.0</option><option value="/browser/tags/masai-0.6.0?rev=13233">tags/masai-0.6.0</option><option value="/browser/tags/masai-0.6.1?rev=13237">tags/masai-0.6.1</option><option value="/browser/tags/masai-0.6.2?rev=13866">tags/masai-0.6.2</option><option value="/browser/tags/masai-0.7.1?rev=14054">tags/masai-0.7.1</option><option value="/browser/tags/mason-0.1.2?rev=13738">tags/mason-0.1.2</option><option value="/browser/tags/micro_razers-1.0.1?rev=13741">tags/micro_razers-1.0.1</option><option value="/browser/tags/ngs_roi-0.2.1?rev=14493">tags/ngs_roi-0.2.1</option><option value="/browser/tags/ngs_roi-0.2.2?rev=14617">tags/ngs_roi-0.2.2</option><option value="/browser/tags/pair_align-1.1.0?rev=13728">tags/pair_align-1.1.0</option><option value="/browser/tags/rabema-1.2.0?rev=13745">tags/rabema-1.2.0</option><option value="/browser/tags/razers3-3.1.1?rev=13867">tags/razers3-3.1.1</option><option value="/browser/tags/razers-1.1.1?rev=13733">tags/razers-1.1.1</option><option value="/browser/tags/searchjoin-0.2.1?rev=13800">tags/searchjoin-0.2.1</option><option value="/browser/tags/seqan-1.0?rev=13038">tags/seqan-1.0</option><option value="/browser/tags/seqan-1.1?rev=13037">tags/seqan-1.1</option><option value="/browser/tags/seqan-1.3?rev=13039">tags/seqan-1.3</option><option value="/browser/tags/seqan-1.4.0?rev=14070">tags/seqan-1.4.0</option><option value="/browser/tags/seqan-1.4.1?rev=14256">tags/seqan-1.4.1</option><option value="/browser/tags/seqan_tcoffee-1.0.1?rev=13736">tags/seqan_tcoffee-1.0.1</option><option value="/browser/tags/seqcons-0.23.1?rev=13779">tags/seqcons-0.23.1</option><option value="/browser/tags/snp_store-1.0.1?rev=13747">tags/snp_store-1.0.1</option><option value="/browser/tags/splazers-1.1.1?rev=13795">tags/splazers-1.1.1</option><option value="/browser/tags/stellar-1.4.1?rev=13787">tags/stellar-1.4.1</option><option value="/browser/tags/variant_comp-0.1.0?rev=13809">tags/variant_comp-0.1.0</option>
+                </optgroup>
+              </select>
+              <input type="submit" value="Go!" title="Jump to the chosen preselected path" />
+            </div>
+          </form>
+        </div>
+      <table id="info" summary="Revision info">
+        <tr>
+          <th scope="col">Revision <a href="/changeset/11556">11556</a>,
+            <span title="45377 bytes">44.3 KB</span>
+            checked in by weese, <a class="timeline" href="/timeline?from=2012-03-28T00%3A01%3A19%2B02%3A00&amp;precision=second" title="2012-03-28T00:01:19+02:00 in Timeline">2 years</a> ago
+            (<a href="/changeset/11556/trunk/seqan/docs2/images/ReadLayout.svg">diff</a>)</th>
+        </tr>
+        <tr>
+          <td class="message searchable">
+              <p>
+changed image<br />
+</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <ul class="props">
+              <li>
+                  Property <strong>svn:eol-style</strong> set to
+                  <em><code>native</code></em>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+      <div id="preview" class="searchable">
+        
+  <div class="image-file"><img src="/export/14828/trunk/docs2/images/ReadLayout.svg" alt="trunk/seqan/docs2/images/ReadLayout.svg" /></div>
+
+      </div>
+      <div id="help"><strong>Note:</strong> See <a href="/wiki/TracBrowser">TracBrowser</a>
+        for help on using the repository browser.</div>
+      <div id="anydiff">
+        <form action="/diff" method="get">
+          <div class="buttons">
+            <input type="hidden" name="new_path" value="/trunk/docs2/images/ReadLayout.svg" />
+            <input type="hidden" name="old_path" value="/trunk/docs2/images/ReadLayout.svg" />
+            <input type="hidden" name="new_rev" />
+            <input type="hidden" name="old_rev" />
+            <input type="submit" value="View changes..." title="Select paths and revs for Diff" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="first">
+          <a rel="nofollow" href="/browser/trunk/docs2/images/ReadLayout.svg?format=txt">Plain Text</a>
+        </li><li class="last">
+          <a rel="nofollow" href="/export/14828/trunk/docs2/images/ReadLayout.svg">Original Format</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Powered by <a href="/about"><strong>Trac 0.12.5</strong></a><br />
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><a href="http://www.seqan.de">www.seqan.de</a></p>
+    </div>
+  </body>
+</html>
