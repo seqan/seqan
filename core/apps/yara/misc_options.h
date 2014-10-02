@@ -245,9 +245,9 @@ void setIndexPrefix(ArgumentParser & parser)
 template <typename TOptions>
 void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
 {
-    getOptionValue(options.genomeIndexFile, parser, "index-prefix");
+    getOptionValue(options.contigsIndexFile, parser, "index-prefix");
     if (!isSet(parser, "index-prefix"))
-        options.genomeIndexFile = trimExtension(options.genomeFile);
+        options.contigsIndexFile = trimExtension(options.contigsFile);
 }
 
 // ----------------------------------------------------------------------------
@@ -328,7 +328,7 @@ void getTmpFolder(TOptions const & options, ArgumentParser const & parser)
     CharString tmpFolder;
     getOptionValue(tmpFolder, parser, "tmp-folder");
     if (!isSet(parser, "tmp-folder"))
-        tmpFolder = getPath(options.genomeFile);
+        tmpFolder = getPath(options.contigsFile);
     setEnv("TMPDIR", tmpFolder);
 }
 
