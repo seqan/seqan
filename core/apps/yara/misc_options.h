@@ -235,7 +235,7 @@ void getIndexType(TOptions & options, ArgumentParser const & parser)
 void setIndexPrefix(ArgumentParser & parser)
 {
     addOption(parser, ArgParseOption("xp", "index-prefix", "Specify a filename prefix for the reference genome index. \
-                                     Default: use the filename prefix of the reference genome.", ArgParseOption::STRING));
+                                     Default: use the filename prefix of the reference genome.", ArgParseOption::INPUTPREFIX));
 }
 
 // ----------------------------------------------------------------------------
@@ -315,7 +315,7 @@ void getOutputFile(TString & file,
 void setTmpFolder(ArgumentParser & parser)
 {
     addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a temporary folder where to construct the index. \
-                                     Default: use the genome folder.", ArgParseOption::STRING));
+                                     Default: use the reference genome folder.", ArgParseOption::STRING));
 }
 
 // ----------------------------------------------------------------------------
