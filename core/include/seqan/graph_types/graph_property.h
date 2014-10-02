@@ -180,8 +180,8 @@ resizeEdgeMap(Graph<TSpec> const & g,
  * @param pm  The property map
  * @param d   A vertex or edge descriptor that identifies the item in the property map. 
  *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @param val The new value, where thg type of the new value must match the value type of the property map.
-*/
+ * @param val The new value, where the type of the new value must match the value type of the property map.
+ */
 
 /**
 .Function.assignProperty:
@@ -229,7 +229,7 @@ assignProperty(TPropertyMap& pm,
  * @param d   A vertex or edge descriptor that identifies the item in the property map. 
  *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
  * @return TRef Reference to the item in the property map of type @link Reference @endlink.
-*/
+ */
 
 /**
 .Function.property
@@ -284,7 +284,7 @@ property(TPropertyMap const& pm,
  * @param d   A vertex or edge descriptor that identifies the item in the property map. 
  *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
  * @return TValue Reference to the item in the property map of type @link GetValue @endlink.
-*/
+ */
 
 /**
 .Function.getProperty

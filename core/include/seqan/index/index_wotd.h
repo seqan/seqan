@@ -189,6 +189,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 /*!
  * @class IndexWotd
  * @extends Index
+ * @implements StringTreeConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
  *        trees").
@@ -310,6 +311,9 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		typedef typename Size< typename Fibre< Index<TText, IndexWotd<TSpec> >, WotdRawText >::Type >::Type Type;
     };
 */
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexWotd<TSpec> >)
 
 
 //////////////////////////////////////////////////////////////////////////////
