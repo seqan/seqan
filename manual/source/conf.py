@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# SeqAn documentation build configuration file, created by
-# sphinx-quickstart on Wed Sep 17 17:21:55 2014.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -267,6 +263,14 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# -- Options for the Disqus integration -------------------------------------
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    html_context = {
+      'disqus_shortname': 'seqan-manual',
+    }
 
 # -- Options for SeqAn plugins ----------------------------------------------
 

@@ -18,6 +18,8 @@ if (NOT SPHINX_FOUND)
     return ()
 endif (NOT SPHINX_FOUND)
 
+# Add building Sphinx documentation as a test.
+
 add_test (build_manual
           ${SPHINX_EXECUTABLE} -W -n
           -b html -d ${CMAKE_BINARY_DIR}/manual/doctrees
