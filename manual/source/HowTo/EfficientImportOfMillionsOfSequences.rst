@@ -22,7 +22,7 @@ In the next example we are going to open a sequence file, recognize its format, 
 .. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
    :fragment: includes
 
-First we associate our sequence file with the memory mapped string underlying the :dox:`ConcatDirectStringSet` using :dox:`String#open`.
+First we associate our sequence file with the memory mapped string underlying the :dox:`ConcatDirectStringSet` using :dox:`MMapString#open open`.
 
 .. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
    :fragment: open_file
@@ -39,7 +39,7 @@ After calling :dox:`split` the ``multiSeqFile`` StringSet represents the sequenc
    :fragment: reserve
 
 The main loop iterates over each sequence fragment and uses the functions :dox:`assignSeq`, :dox:`assignQual` and :dox:`assignSeqId` to extract sequence data, qualities and id.
-The quality values are encoded in ASCII and have to be converted into integer values between 0 and 62 before assigning it to a :dox:`Dna5Q` character via :dox:`assignQualityValue`.
+The quality values are encoded in ASCII and have to be converted into integer values between 0 and 62 before assigning it to a :dox:`Dna5Q` character via :dox:`AlphabetWithQualitiesConcept#assignQualityValue assignQualityValue`.
 
 .. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
    :fragment: read_sequences
@@ -84,8 +84,8 @@ Program Output
 Remarks
 -------
 
-* We intentionally use :dox:`ContainerConcept#appendValue` to fill the StringSets as for some applications it is more memory efficient to use a :dox:`ConcatDirectStringSet` to store imported sequences and ids.
-  :dox:`ConcatDirectStringSet` consists of only one :dox:`String` concatenating all sequences and a String containing the begin positions which induce less overhead compared to storing millions of single Strings separately on heap with their own begin, end and capacity information.
+* We intentionally use :dox:`ContainerConcept#appendValue appendValue` to fill the StringSets as for some applications it is more memory efficient to use a :dox:`ConcatDirectStringSet` to store imported sequences and ids.
+  The :dox:`ConcatDirectStringSet` consists of only one :dox:`String` concatenating all sequences and a String containing the begin positions which induce less overhead compared to storing millions of single Strings separately on heap with their own begin, end and capacity information.
 * Although not visible in the example, the import functions can of course also import large sequences spanning multiple lines in various formats.
 
 Fragment Store
