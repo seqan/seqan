@@ -9,7 +9,7 @@ VCF I/O
 =======
 
 Learning Objective
-  In this tutorial, you will learn how to use the high-level interface :dox:`VcfStream VcfStream` class to read and write VCF files.
+  In this tutorial, you will learn how to use the high-level interface :dox:`VcfStream` class to read and write VCF files.
 
 Difficulty
   Average
@@ -212,8 +212,8 @@ Assignment 1
      Add error handling using the hints below.
 
    Hints
-      The functions :dox:`VcfStream#readRecord readRecord` and :dox:`VcfStream#writeRecord writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-      The function :dox:`VcfStream#isGood isGood` checks whether the state of a :dox:`VcfStream` is errorneous.
+      The functions :dox:`VcfStream#readRecord` and :dox:`VcfStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
+      The function :dox:`VcfStream#isGood` checks whether the state of a :dox:`VcfStream` is errorneous.
 
    Solution
      .. container:: foldable
@@ -283,7 +283,7 @@ Assignment 2
         The output is
 
         .. code-block:: console
- 
+
            VARIANTS ON CONTIGS
            20  5
 

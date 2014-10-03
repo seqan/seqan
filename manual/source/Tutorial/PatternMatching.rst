@@ -30,15 +30,15 @@ Overview
 
 In the case of approximate searching errors are allowed, which are either only mismatches or also indels.
 Additionally there are filtration algorithms which return potential matches, i.e. ``haystack`` segments possibly containing a pattern match.
-All searching is done by calling the function :dox:`Finder#find find`, which takes at least two arguments:
+All searching is done by calling the function :dox:`Finder#find`, which takes at least two arguments:
 
 #. A :dox:`Finder` that stores all necessary information about the ``haystack`` and the last found position of the ``needle`` within the haystack.
 #. A :dox:`Pattern` that stores all information about the ``needle``.
-   Some variants of :dox:`Finder#find find` support further arguments.
+   Some variants of :dox:`Finder#find` support further arguments.
    The :dox:`Finder` and :dox:`Pattern` classes expect the underlying ``haystack`` and ``needle`` types as first template arguments.
    In addition, a second template argument specifies the search algorithm.
 
-Each call of :dox:`Finder#find find` finds only one match (or potential match) of the ``needle`` within the haystack.
+Each call of :dox:`Finder#find` finds only one match (or potential match) of the ``needle`` within the haystack.
 The :dox:`Finder` can be asked for the begin and end position of the last found match.
 The :dox:`Pattern` can be asked for the number of the found sequence if the ``needle`` is a :dox:`StringSet`.
 Subsequent calls of find can be used to find more occurrences of the ``needle``, until no more occurrences can be found and find returns ``false``.
@@ -139,7 +139,7 @@ Assignment 1
          .. includefrags:: core/demos/tutorial/find/find_assignment1_solution.cpp
 
 	 We use a :dox:`Pattern` specialized with the :dox:`WuManberPattern WuManber` algorithm for the search and initialize it with our ``needles`` string.
-	 For every match found by :dox:`Finder#find find` we output the begin and end position and the match region in the ``haystack`` as well as the index of the found ``needle`` which is returned by ``position(pattern)``.
+	 For every match found by :dox:`Finder#find` we output the begin and end position and the match region in the ``haystack`` as well as the index of the found ``needle`` which is returned by ``position(pattern)``.
 
          .. code-block:: console
 
@@ -155,8 +155,8 @@ Approximate Search
 The approximate search can be used to find segments in the ``haystack`` that are similar to a ``needle`` allowing errors, such as mismatches or indels.
 Note that if only mismatches are allowed, the difference of the end and begin position of a match is the length of the found ``needle``.
 However, in the case of indels this difference may vary and is only a rough estimate for the length.
-Therefore, to find a begin position for a certain end position the :dox:`Finder#findBegin findBegin` interface should be used.
-The usage is similar to :dox:`Finder#find find` and is shown in the next example.
+Therefore, to find a begin position for a certain end position the :dox:`Finder#findBegin` interface should be used.
+The usage is similar to :dox:`Finder#find` and is shown in the next example.
 We want to find all semi-global alignments of a ``needle`` "more" with a :dox:`SimpleScore` of at least -2 using the scoring scheme (0,-2,-1) (match,mismatch,gap).
 
 Again, we create ``haystack`` and ``needle`` strings first:
@@ -167,9 +167,9 @@ Again, we create ``haystack`` and ``needle`` strings first:
 We then create :dox:`Finder` and :dox:`Pattern` objects of these strings and choose :dox:`DPSearchPattern DPSearch` as the specialization in the second template argument of :dox:`Pattern`.
 :dox:`DPSearchPattern DPSearch` expects the scoring function as the first template argument which is :dox:`SimpleScore` in our example.
 The pattern is constructed using the ``needle`` as a template and our scoring object is initialized with the appropriate scores for match, mismatch and gap.
-As in the previous example, the main iteration uses :dox:`Finder#find find` to iterate over all end positions with a minimum best score of -2.
-If such a semi-global alignment end position is found the begin position is searched via :dox:`Finder#findBegin findBegin`.
-Please note that we have to set the minimum score to the score of the match found (:dox:`LocalAlignmentEnumerator#getScore getScore`) in order to find the begin of a best match.
+As in the previous example, the main iteration uses :dox:`Finder#find` to iterate over all end positions with a minimum best score of -2.
+If such a semi-global alignment end position is found the begin position is searched via :dox:`Finder#findBegin`.
+Please note that we have to set the minimum score to the score of the match found (:dox:`LocalAlignmentEnumerator#getScore`) in order to find the begin of a best match.
 We then output all begin and end positions and the corresponding ``haystack`` segment for each match found.
 
 .. includefrags:: core/demos/tutorial/find/find_approx.cpp
@@ -224,7 +224,7 @@ Assignment 2
 	 We again set the ``needle`` to ``"more"``.
 	 We then change the specialization tag of the :dox:`Pattern` to :dox:`MyersPattern Myers` with default arguments.
 	 As :dox:`MyersPattern Myers` algorithm is only applicable to edit distance searches it cannot be specialized or initialized with a scoring scheme.
-	 In SeqAn, edit distance corresponds to the scoring scheme (0,-1,-1) (match, mismatch, gap) and an edit distance of 2 corresponds to a minimum score of -2 given to the :dox:`Finder#find find` function.
+	 In SeqAn, edit distance corresponds to the scoring scheme (0,-1,-1) (match, mismatch, gap) and an edit distance of 2 corresponds to a minimum score of -2 given to the :dox:`Finder#find` function.
 
 	 The program's output is as follows.
 
@@ -264,8 +264,8 @@ We proceed to create a :dox:`Pattern` of the needle and conduct the search in th
 .. includefrags:: core/demos/tutorial/find/find_index.cpp
    :fragment: output
 
-Instead of creating and using a pattern solely storing the ``needle`` we can pass the needle directly to :dox:`Finder#find find`.
-Please note that an :dox:`Index` based :dox:`Finder` has to be reset with :dox:`Finder#clear clear` before conducting another search.
+Instead of creating and using a pattern solely storing the ``needle`` we can pass the needle directly to :dox:`Finder#find`.
+Please note that an :dox:`Index` based :dox:`Finder` has to be reset with :dox:`Finder#clear` before conducting another search.
 
 .. includefrags:: core/demos/tutorial/find/find_index.cpp
    :fragment: output_short
@@ -312,7 +312,7 @@ Specialization :dox:`OpenAddressingQGramIndex Open Adressing QGram Index`
   Supports larger q-grams.
   Needle and q-gram must have the same size.
 
-Besides the :dox:`Finder#find find` interface there is another interface for indices using suffix tree iterators to search exact ``needle`` occurrences described in the tutorial :ref:`tutorial-indices`.
+Besides the :dox:`Finder#find` interface there is another interface for indices using suffix tree iterators to search exact ``needle`` occurrences described in the tutorial :ref:`tutorial-indices`.
 
 Assignment 3
 """"""""""""
@@ -348,5 +348,5 @@ Approximate Filtration
 Currently there are no indices directly supporting an approximate search.
 But nevertheless, there are approximate search filters available that can be used to filter out regions of the ``haystack`` that do not contain an approximate match, see :dox:`SwiftFinder` and :dox:`SwiftPattern`.
 The regions found by these filters potentially contain a match and must be verified afterwards.
-:dox:`Finder#beginPosition beginPosition`, :dox:`Finder#endPosition endPosition` and :dox:`Finder#infix infix` can be used to return the boundaries or sequence of such a potential match.
+:dox:`Finder#beginPosition`, :dox:`Finder#endPosition` and :dox:`Finder#infix` can be used to return the boundaries or sequence of such a potential match.
 For more details on using filters, see the article :ref:`how-to-filter-similar-sequences`.

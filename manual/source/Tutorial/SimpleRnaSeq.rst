@@ -70,7 +70,7 @@ A typical annotation tree looks as follows:
    Annotation tree example
 
 
-In the Fragment Store the tree is represented by :dox:`FragmentStore::annotationStore annotationStore`, :dox:`FragmentStore::annotationTypeStore annotationTypeStore`, :dox:`FragmentStore::annotationKeyStore annotationKeyStore`, and others.
+In the Fragment Store the tree is represented by :dox:`FragmentStore::annotationStore`, :dox:`FragmentStore::annotationTypeStore`, :dox:`FragmentStore::annotationKeyStore`, and others.
 Instead of accessing these tables directly, the :dox:`AnnotationTreeIterator AnnotationTree Iterator` provides a high-level interface to traverse and access the annotation tree.
 
 Interval Tree
@@ -81,8 +81,8 @@ A range query is an operation that returns all tree intervals that overlap a giv
 
 The interval tree implementation provided in SeqAn is based on a :dox:`Tree` which is balanced if all intervals are given at construction time.
 Interval tree nodes are objects of the :dox:`IntervalAndCargo` class and consist of 2 interval boundaries and additional user-defined information, called cargo.
-To construct the tree on a set of given interval nodes use the function :dox:`IntervalTree#createIntervalTree createIntervalTree`.
-The functions :dox:`IntervalTree#addInterval addInterval` and :dox:`IntervalTree#removeInterval removeInterval` should only be used if the interval tree needs to be changed dynamically (as they not yet balance the tree).
+To construct the tree on a set of given interval nodes use the function :dox:`IntervalTree#createIntervalTree`.
+The functions :dox:`IntervalTree#addInterval` and :dox:`IntervalTree#removeInterval` should only be used if the interval tree needs to be changed dynamically (as they not yet balance the tree).
 
 Import Alignments and Gene Annotations from File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -94,7 +94,7 @@ An empty ``FragmentStore`` can simply be created with:
 
    FragmentStore<> store;
 
-Files can be read from disk with the function :dox:`File#read read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`SequenceStream::FileFormat File Format` tag.
+Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`SequenceStream::FileFormat File Format` tag.
 The contents of different files can be loaded with subsequent calls of ``read``.
 As we want the user to specify the files via command line, our application will parse them using the :dox:`ArgumentParser` and store them in an option object.
 
@@ -117,10 +117,10 @@ Assignment 1
         .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment1.cpp
 
    Hint
-     * Open STL `std::fstream <http://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read read` with a SAM or GTF tag.
+     * Open STL `std::fstream <http://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read` with a SAM or GTF tag.
      * `ifstream::open <http://www.cplusplus.com/reference/iostream/ifstream/open>`_ requires the file path to be given as a C-style string (``const char *``).
      * Use `string::c_str <http://www.cplusplus.com/reference/string/string/c_str>`_ to convert the option strings into C-style strings.
-     * The function :dox:`File#read read` expects a stream, a :dox:`FragmentStore` and a tag, i.e. ``Sam()`` or ``Gtf()``.
+     * The function :dox:`File#read` expects a stream, a :dox:`FragmentStore` and a tag, i.e. ``Sam()`` or ``Gtf()``.
 
    Solution
      .. container:: foldable
@@ -134,16 +134,16 @@ Extract Gene Intervals
 Now that the Fragment Store contains the whole annotation tree, we want to traverse the genes and extract the genomic ranges they span.
 In the annotation tree, genes are (the only) children of the root node.
 To efficiently retrieve the genes that overlap read alignments later, we want to use interval trees, one for each contig.
-To construct an interval tree, we first need to collect :dox:`IntervalAndCargo` objects in a string and pass them to :dox:`IntervalTree#createIntervalTree createIntervalTree`.
+To construct an interval tree, we first need to collect :dox:`IntervalAndCargo` objects in a string and pass them to :dox:`IntervalTree#createIntervalTree`.
 See the interval tree demo in ``core/demos/interval_tree.cpp`` for more details.
 As cargo we use the gene's annotation id to later retrieve all gene specific information.
 The strings of ``IntervalAndCargo`` objects should be grouped by ``contigId`` and stored in an (outer) string of strings.
 For the sake of simplicity we don't differ between genes on the forward or reverse strand and instead always consider the corresponding intervals on the forward strand.
 
 To define this string of strings of ``IntervalAndCargo`` objects, we first need to determine the types used to represent an annotation.
-All annotations are stored in the :dox:`FragmentStore::annotationStore annotationStore` which is a Fragment Store member and whose type is :dox:`FragmentStore::TAnnotationStore TAnnotationStore`.
+All annotations are stored in the :dox:`FragmentStore::annotationStore` which is a Fragment Store member and whose type is :dox:`FragmentStore::TAnnotationStore`.
 The value type of the annotation store is the class :dox:`AnnotationStoreElement`.
-Its member typedefs :dox:`AnnotationStoreElement::TPos TPos` and :dox:`AnnotationStoreElement::TId TId` define the types it uses to represent a genomic position or the annotation or contig id:
+Its member typedefs :dox:`AnnotationStoreElement::TPos` and :dox:`AnnotationStoreElement::TId` define the types it uses to represent a genomic position or the annotation or contig id:
 
 .. code-block:: cpp
 
@@ -200,7 +200,7 @@ Assignment 2
      .. container:: foldable
 
         You can assume that all genes are children of the root node, i.e. create an :dox:`AnnotationTreeIterator AnnotationTree Iterator`, [:dox:`AnnotationTreeIterator#goDown go down` to the first gene and :dox:`AnnotationTreeIterator#goRight go right` to visit all other genes.
-        Use :dox:`AnnotationTreeIterator#getAnnotation getAnnotation` to access the gene annotation and :dox:`IteratorAssociatedTypesConcept#value value` to get the annotation id.
+        Use :dox:`AnnotationTreeIterator#getAnnotation` to access the gene annotation and :dox:`IteratorAssociatedTypesConcept#value` to get the annotation id.
 
      .. container:: foldable
 
@@ -211,7 +211,7 @@ Assignment 2
 
            resize(intervals, length(store.contigStore));
 
-        Use :dox:`SequenceConcept#appendValue appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
+        Use :dox:`SequenceConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
 
    Solution
      .. container:: foldable
@@ -281,7 +281,7 @@ Assignment 3
    Hint
      .. container:: foldable
 
-        Use the function :dox:`IntervalTree#createIntervalTree createIntervalTree`.
+        Use the function :dox:`IntervalTree#createIntervalTree`.
 
         **Optional:** Construct the trees in parallel over all contigs with an OpenMP parallel for-loop, see `here <http://developers.sun.com/solaris/articles/openmp.html>`_ for more information about OpenMP.
 
@@ -301,17 +301,17 @@ Therefore we use a string of counters addressed by the annotation id.
 
    String<unsigned> readsPerGene;
 
-For each read alignment we want to determine the overlapping genes by conducting a range query via :dox:`IntervalTree#findIntervals findIntervals` and then increment their counters by 1.
+For each read alignment we want to determine the overlapping genes by conducting a range query via :dox:`IntervalTree#findIntervals` and then increment their counters by 1.
 To address the counter of a gene, we use its annotation id stored as cargo in the interval tree.
 
-Read alignments are stored in the :dox:`FragmentStore::alignedReadStore alignedReadStore`, a string of :dox:`AlignedReadStoreElement AlignedReadStoreElements` objects.
+Read alignments are stored in the :dox:`FragmentStore::alignedReadStore`, a string of :dox:`AlignedReadStoreElement AlignedReadStoreElements` objects.
 Their actual type can simply be determined as follows:
 
 .. code-block:: cpp
 
    typedef Value<TStore::TAlignedReadStore>::Type TAlignedRead;
 
-Given the :dox:`AlignedReadStoreElement::contigId contigId`, :dox:`AlignedReadStoreElement::beginPos beginPos`, and :dox:`AlignedReadStoreElement::endPos endPos` we will retrieve the annotation ids of overlapping genes from the corresponding interval tree.
+Given the :dox:`AlignedReadStoreElement::contigId`, :dox:`AlignedReadStoreElement::beginPos`, and :dox:`AlignedReadStoreElement::endPos` we will retrieve the annotation ids of overlapping genes from the corresponding interval tree.
 
 Your fourth assignment is to implement the count function that performs all the above described steps.
 Optionally, use OpenMP to parallelize the counting.
@@ -328,7 +328,7 @@ Assignment 4
      Use the code template below (click **more...**).
      Implement the function ``countReadsPerGene`` that counts for each gene the number of overlapping reads.
      Therefore determine for each :dox:`AlignedReadStoreElement` begin and end positions (on forward strand) of the alignment and increment the ``readsPerGene`` counter for each overlapping gene.
-     
+
      **Optional:** Use OpenMP to parallelize the function, see :dox:`SEQAN_OMP_PRAGMA`.
 
      .. container:: foldable
@@ -361,12 +361,12 @@ Assignment 4
 
            resize(readsPerGene, length(store.annotationStore), 0);
 
-        Make sure that you search with :dox:`IntervalTree#findIntervals findIntervals` where ``query_begin < query_end`` holds, as opposed to read alignments where ``beginPos`` > ``endPos`` is possible.
+        Make sure that you search with :dox:`IntervalTree#findIntervals` where ``query_begin < query_end`` holds, as opposed to read alignments where ``beginPos`` > ``endPos`` is possible.
 
    Hint
      .. container:: foldable
 
-        The result of a range query is a string of annotation ids given to :dox:`IntervalTree#findIntervals findIntervals` by-reference:
+        The result of a range query is a string of annotation ids given to :dox:`IntervalTree#findIntervals` by-reference:
 
         .. code-block:: cpp
 
@@ -393,7 +393,7 @@ As a gene may have multiple mRNA, we will simply use the maximum of all their ex
 
 Your final assignment is to output the RPKM value for genes with a read counter ``> 0``.
 To compute the exon length of the gene (maximal exon length of all mRNA) use an :dox:`AnnotationTreeIterator AnnotationTree Iterator` and iterate over all mRNA (children of the gene) and all exons (children of mRNA).
-For the number of total mapped reads simply use the number of alignments in the :dox:`FragmentStore::alignedReadStore alignedReadStore`.
+For the number of total mapped reads simply use the number of alignments in the :dox:`FragmentStore::alignedReadStore`.
 Output the gene names and their RPKM values separated by tabs as follows:
 
 .. code-block:: console
@@ -469,5 +469,5 @@ Next Steps
 
 * See :cite:`Mortazavi2008` for further reading.
 * Read the :ref:`tutorial-basic-sam-bam-io` Tutorial and change your program to stream a SAM file instead of loading it as a whole.
-* Change the program such that it attaches the RPKM value as a key-value pair (see :dox:`AnnotationTreeIterator#assignValueByKey assignValueByKey`) to the annotation of each gene and output a GFF file.
+* Change the program such that it attaches the RPKM value as a key-value pair (see :dox:`AnnotationTreeIterator#assignValueByKey`) to the annotation of each gene and output a GFF file.
 * Continue with the :ref:`tutorial` rest of the tutorials]].

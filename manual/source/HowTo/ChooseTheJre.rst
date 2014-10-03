@@ -12,7 +12,7 @@ In order to change the JRE to be used by KNIME go to Eclipse ``Preferences`` and
 
 .. figure:: Preferences.png
 
-Afterwards you can add the right JRE. Under MacOs you choose the entry ``MacOS X VM`` 
+Afterwards you can add the right JRE. Under MacOs you choose the entry ``MacOS X VM``
 
 .. figure:: MacOSJre.png
 

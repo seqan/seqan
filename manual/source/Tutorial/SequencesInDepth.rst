@@ -48,7 +48,7 @@ Specialization :dox:`AllocString Alloc String`
   * **Applications**
     The default string implementation that can be used for general purposes.
   * **Limitations**
-    Changing the :dox:`SequenceConcept#capacity capacity` can be very costly since all values must be copied.
+    Changing the :dox:`SequenceConcept#capacity` can be very costly since all values must be copied.
 
 Specialization :dox:`ArrayString Array String`
   * **Description**
@@ -60,7 +60,7 @@ Specialization :dox:`BlockString Block String`
   * **Description**
     String that stores its sequence characters in blocks.
   * **Applications**
-    The :dox:`SequenceConcept#capacity capacity` of the string can quickly be increased. Good choice for growing strings or stacks.
+    The :dox:`SequenceConcept#capacity` of the string can quickly be increased. Good choice for growing strings or stacks.
   * **Limitations**
     Iteration and random access to values is slightly slower than for :dox:`AllocString Alloc String`.
 
@@ -84,7 +84,7 @@ Specialization :dox:`CStyleString CStyle String`
   * **Description**
     Allows adaption of strings to C-style strings.
   * **Applications**
-    Used for transforming other String classes into C-style strings (i.e. null terminated char arrays). Useful for calling functions of C-libraries. 
+    Used for transforming other String classes into C-style strings (i.e. null terminated char arrays). Useful for calling functions of C-libraries.
   * **Limitations**
     Only sensible if value type is ``char`` or ``wchar_t``.
 
@@ -101,8 +101,8 @@ Overflow Strategies
 The following section will describe how you can improve capacity changes for your sequences.
 
 Each sequence object has a capacity, i.e. the reserved space for this object.
-The capacity can be set explicitly by functions such as :dox:`String#reserve reserve` or :dox:`SequenceConcept#resize resize`.
-It can also bet set implicitly by functions like :dox:`ContainerConcept#append append`, :dox:`AssignableConcept#assign assign`, :dox:`SequenceConcept#insert insert` or :dox:`SequenceConcept#replace replace`, if the operation's result exceeds the length of the target sequence.
+The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`SequenceConcept#resize`.
+It can also bet set implicitly by functions like :dox:`ContainerConcept#append`, :dox:`AssignableConcept#assign`, :dox:`SequenceConcept#insert` or :dox:`SequenceConcept#replace`, if the operation's result exceeds the length of the target sequence.
 
 If the current capacity of a sequence is exceeded by chaning the length, we say that the sequence overflows.
 There are several overflow strategies that determine what actually happens when a string should be expanded beyond its capacity.
@@ -111,18 +111,18 @@ If no overflow strategy is specified, a default overflow strategy is selected de
 
 The following overflow strategies exist:
 
-:dox:`OverflowStrategyTags#Exact Exact`
+:dox:`OverflowStrategyTags#Exact`
   Expand the sequence exactly as far as needed. The capacity is only changed if the current capacity is not large enough.
 
-:dox:`OverflowStrategyTags#Generous Generous`
+:dox:`OverflowStrategyTags#Generous`
   Whenever the capacity is exceeded, the new capacity is chosen somewhat larger than currently needed.
   This way, the number of capacity changes islimited in a way that resizing the sequence only takes amortized constant time.
 
-:dox:`OverflowStrategyTags#Limit Limit`
+:dox:`OverflowStrategyTags#Limit`
   Instead of changing the capacity, the contents are limited to current capacity.
   All values that exceed the capacity are lost.
 
-:dox:`OverflowStrategyTags#Insist Insist`
+:dox:`OverflowStrategyTags#Insist`
   No capacity check is performed, so the user has to ensure that the container's capacity is large enough.
 
 The next example illustrates how the different strategies could be used:

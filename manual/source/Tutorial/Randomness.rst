@@ -39,7 +39,7 @@ First, we include the header ``<seqan/random.h>`` to get access to the module's 
    :fragment: header
 
 During the initialization of the :dox:`Rng` object you have to pass a seed used as a start point for the randomization.
-Finally, function :dox:`Rng#pickRandomNumber pickRandomNumber` picks a random number from a :dox:`Rng`.
+Finally, function :dox:`Rng#pickRandomNumber` picks a random number from a :dox:`Rng`.
 
 .. includefrags:: core/demos/tutorial/random/random_examples.cpp
    :fragment: random-number-generation-raw
@@ -73,7 +73,7 @@ The output of this fragment is:
 
 Also note that you can initialize the :dox:`LogNormalPdf Log-Normal Pdf` either with mean and standard deviation of the log-normal distribution or the underlying normal distribution.
 By default, you initialize it with the mean and standard deviation (mu and sigma) of the underlying normal distribution.
-Use the tags :dox:`LognormalConstructionTags#MuSigma MuSigma` and :dox:`LognormalConstructionTags#MeanStdDev MeanStdDev` in the constructor to select a mode.
+Use the tags :dox:`LognormalConstructionTags#MuSigma` and :dox:`LognormalConstructionTags#MeanStdDev` in the constructor to select a mode.
 
 .. includefrags:: core/demos/tutorial/random/random_examples.cpp
    :fragment: random-number-generation-log-normal

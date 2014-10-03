@@ -120,7 +120,7 @@ You can read from stdin and write to stdout using ``"-"`` as the file name.
 The member ``sequenceNames`` of your :dox:`BedStream` object ``bedIn`` contains the names of the reference sequences that have been seen in records so far.
 This :dox:`StringSet` of :dox:`CharString` thus gets new elements as you read the BED file.
 For the translation between reference names and numeric ids, a cache is used.
-The function :dox:`BedStream#addSequenceName addSequenceName` can be used to register the sequence name with the ``bedOut`` stream.
+The function :dox:`BedStream#addSequenceName` can be used to register the sequence name with the ``bedOut`` stream.
 This will also update the cache.
 
 The BED records are read into :dox:`BedRecord` objects which we will focus on below.
@@ -149,7 +149,7 @@ You can see the output of the program below when called with the input file from
    chr1    16767166    16786584    NM_001145278    0   +   1676725616785385    0   8   104,101,105,82,109,178,76,1248, 0,2960,7198,7388,8421,11166,15146,18170,
 
 To add error handling, we have to check return values.
-The :dox:`BedStream#readRecord readRecord` call returns a status code different from ``0``, indicating an error.
+The :dox:`BedStream#readRecord` call returns a status code different from ``0``, indicating an error.
 
 In `Assignment 1`_, we will add error handling to the program.
 
@@ -167,8 +167,8 @@ Assignment 1
      Add error handling using the hints below.
 
    Hints
-     The functions :dox:`BedStream#readRecord readRecord` and :dox:`BedStream#writeRecord writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-     The function :dox:`BedStream#isGood isGood` checks whether the state of a :dox:`BedStream` is errorneous.
+     The functions :dox:`BedStream#readRecord` and :dox:`BedStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
+     The function :dox:`BedStream#isGood` checks whether the state of a :dox:`BedStream` is errorneous.
 
    Solution
      .. container:: foldable

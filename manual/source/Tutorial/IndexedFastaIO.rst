@@ -58,7 +58,7 @@ Building the Index
 ------------------
 
 The class :dox:`FaiIndex` allows for building and loading FAI indices.
-fo build such an index, we use the function :dox:`FaiIndex#build build` of the class :dox:`FaiIndex`.
+fo build such an index, we use the function :dox:`FaiIndex#build` of the class :dox:`FaiIndex`.
 The first parameter is the :dox:`FaiIndex` object, the second is the path to the FASTA file.
 The function returns an integer indicating the result (as usual, ``0`` for no errors, a value different from ``0`` indicating an error).
 
@@ -83,7 +83,7 @@ The FAI file name will be stored in the :dox:`FaiIndex`.
    if (res != 0)
        std::cerr << "ERROR: Could not build the index!\n";
 
-We can write out the index after building it using the function :dox:`FaiIndex#write write`:
+We can write out the index after building it using the function :dox:`FaiIndex#write`:
 
 .. code-block:: cpp
 
@@ -113,7 +113,7 @@ Assignment 1
    Hints
      .. container:: foldable
 
-	Using the two-parameter variant of :dox:`FaiIndex#build build` is good enough.
+	Using the two-parameter variant of :dox:`FaiIndex#build` is good enough.
 
    Solution
      .. container:: foldable
@@ -123,7 +123,7 @@ Assignment 1
 Using the Index
 ---------------
 
-To load a FAI file, we use the function :dox:`FaiIndex#read read`: We
+To load a FAI file, we use the function :dox:`FaiIndex#read`: We
 pass the :dox:`FaiIndex` object as the first and the path to the
 FASTA file as the second parameter. The function returns an ``int``
 indicating success (value ``0``) or failure (non-``0`` value).
@@ -149,7 +149,7 @@ loaded. Optionally, we can specify an extra path to the FAI file:
    if (res != 0)
        std::cerr << "ERROR: Could not load FAI index path/to/index.fai\n";
 
-After loading the index, we can then use the index to map a sequence id to its (zero-based) position (a position *i* meaning that it is the *i*-th sequence) in the FASTA file using :dox:`FaiIndex#getIdByName getIdByName`.
+After loading the index, we can then use the index to map a sequence id to its (zero-based) position (a position *i* meaning that it is the *i*-th sequence) in the FASTA file using :dox:`FaiIndex#getIdByName`.
 The function gets the :dox:`FaiIndex` to use, the id of the sequence, and an ``unsigned`` position as parameters.
 It returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
@@ -159,7 +159,7 @@ It returns a ``bool`` indicating whether the mapping was successful (``true`` on
    if (getIdByName(faiIndex, "chr1", idx))
        std::cerr << "ERROR: FAI index has no entry for chr1.\n";
 
-Once we have the index for the sequence in the FASTA file, we can then query the :dox:`FaiIndex` for the length of the sequence using :dox:`FaiIndex#sequenceLength sequenceLength`, get the whole sequence using :dox:`FaiIndex#readSequence readSequence`, or get just a part of the sequence using :dox:`FaiIndex#readRegion readRegion`.
+Once we have the index for the sequence in the FASTA file, we can then query the :dox:`FaiIndex` for the length of the sequence using :dox:`FaiIndex#sequenceLength`, get the whole sequence using :dox:`FaiIndex#readSequence`, or get just a part of the sequence using :dox:`FaiIndex#readRegion`.
 
 .. code-block:: cpp
 
@@ -212,5 +212,5 @@ Next Steps
 
 * Read the Wikipedia articles about the `FASTA file format <http://en.wikipedia.org/wiki/FASTA_format>`_ and the `FASTQ file format and quality values <http://en.wikipedia.org/wiki/FASTQ_format>`_ to refresh your knowledge.
 * Read the API documentation of the :dox:`GenomicRegion` class for storing regions (sequence identifier, start and end position).
-  There also is functionality for parsing strings like ``chr1:2,032-3,212`` into :dox:`GenomicRegion GenomicRegion` objects.
+  There also is functionality for parsing strings like ``chr1:2,032-3,212`` into :dox:`GenomicRegion` objects.
 * Continue with the :ref:`tutorial`.

@@ -141,7 +141,7 @@ In order to store the similarities between the pattern and different text positi
    :fragment: score
 
 Note that in contrast to the first two string definitions we do not know the values of the different positions in the string in advance.
-In order to dynamically adjust the length of the new string to the text we can use the function :dox:`SequenceConcept#resize resize`.
+In order to dynamically adjust the length of the new string to the text we can use the function :dox:`SequenceConcept#resize`.
 The resize function is not a member function of the string class because SeqAn is not object oriented in the typical sence (we will see later how we adapt SeqAn to object oriented programming).
 Therefore, instead of writing ``string.resize(newLength)`` we use ``resize(string, newLength)``.
 
@@ -196,7 +196,7 @@ We encapsulate the outer loop in function ``computeScore`` and the inner loop in
 The function computeScore() now contains the fundamental part of the code and can be reused by other functions.
 The input arguments are two strings.
 One is the pattern itself and one is a substring of the text.
-In order to obtain the substring we can use the function :dox:`SegmentableConcept#infix infix` implemented in SeqAn.
+In order to obtain the substring we can use the function :dox:`SegmentableConcept#infix` implemented in SeqAn.
 The function call ``infix(text, i, j)`` generates a substring equal to ``text[i ... j - 1]``, e.g. ``infix(text, 1, 5)`` equals "ello", where ``text`` is "Hello World".
 To be more precise, infix() generates a :dox:`InfixSegment Infix` which can be used as a string, but is implemented using pointers such that no copying is necessary and running time and memory is saved.
 
@@ -361,7 +361,7 @@ Note that the second template argument was removed since we are using the specif
 
 In order to score a mismatch we use the function ``score()`` from the SeqAn library.
 Note that we use the :dox:`Blosum62` matrix as a similarity measure.
-When looking into the documentation of :dox:`Score#score score` you will notice that the score function requires a argument of type :dox:`Score`.
+When looking into the documentation of :dox:`Score#score` you will notice that the score function requires a argument of type :dox:`Score`.
 This object tells the function how to compare two letters and there are several types of scoring schemes available in SeqAn (of course, you can extend this with your own).
 In addition, because they are so frequently used there are shortcuts as well.
 For example :dox:`Blosum62` is really a **shortcut** for ``Score<int, ScoreMatrix<AminoAcid, Blosum62_> >``, which is obviously very helpful.

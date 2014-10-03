@@ -31,7 +31,7 @@ AnnotationStore as Part of the FragmentStore
 
 This section will give you a short introduction to data structures relevant for working with annotations.
 
-In SeqAn, annotations are stored in the so-called :dox:`FragmentStore::annotationStore annotationStore`, which is part of the :dox:`FragmentStore`.
+In SeqAn, annotations are stored in the so-called :dox:`FragmentStore::annotationStore`, which is part of the :dox:`FragmentStore`.
 The annotationStore can only be used together with the FragmentStore, because the latter stores additional information, e.g. the contig names or sequences.
 The FragmentStore is a data structure specifically designed for read mapping, genome assembly or gene annotation.
 
@@ -39,20 +39,20 @@ The FragmentStore can be seen as a database, where each table (called "store") i
 Each row of the table corresponds to an element in the string.
 The position of each element in the string implicitly represents the Id of such element in the table.
 All such strings are members of the class :dox:`FragmentStore`, are always present and empty if unused.
-For example, the member :dox:`FragmentStore::contigStore contigStore` is a string of elements, each one containing among others a contig sequence.
+For example, the member :dox:`FragmentStore::contigStore` is a string of elements, each one containing among others a contig sequence.
 
 For detailed information about the :dox:`FragmentStore` read the :ref:`tutorial-fragment-store` Tutorial.
 
-Accordingly, the :dox:`FragmentStore::annotationStore annotationStore` is a :dox:`String`, where each element represents one annotation.
+Accordingly, the :dox:`FragmentStore::annotationStore` is a :dox:`String`, where each element represents one annotation.
 Each element holds the necessary information, e.g. beginPos, endPos, parentId etc., as data members.
 
-.. Like many other stores, the :dox:`FragmentStore::annotationStore annotationStore` has an associated name store, namely the :dox:`FragmentStore::annotationNameStore annotationNameStore`, to store its element names.
+.. Like many other stores, the :dox:`FragmentStore::annotationStore` has an associated name store, namely the :dox:`FragmentStore::annotationNameStore`, to store its element names.
    The name store is a  StringSet that stores the element name at the position of its id.
 
 AnnotationStore
 ~~~~~~~~~~~~~~~
 
-In this section you will learn how to work with the :dox:`FragmentStore::annotationStore annotationStore` itself.
+In this section you will learn how to work with the :dox:`FragmentStore::annotationStore` itself.
 
 Annotations are represented hierarchically by a tree having at least a root node.
 
@@ -71,7 +71,7 @@ The following entity-relationship diagram shows the tables holding store annotat
 
    Stores involved in gene annotation
 
-The instantiation of an :dox:`FragmentStore::annotationStore annotationStore` happens implicitly with the instantiation of a :dox:`FragmentStore`.
+The instantiation of an :dox:`FragmentStore::annotationStore` happens implicitly with the instantiation of a :dox:`FragmentStore`.
 Therefore we simply type:
 
 .. code-block:: cpp
@@ -83,7 +83,7 @@ Loading an Annotation File
 
 Before we deal with the actual annotation tree, we will first describe how you can easily load annotations from a `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file into the :dox:`FragmentStore`.
 
-An annotation file can be read from an open input stream with the function :dox:`File#read read`.
+An annotation file can be read from an open input stream with the function :dox:`File#read`.
 A tag specifies if we want to read a GFF, GTF or UCSC file.
 The following example shows how to read an GTF file:
 
@@ -96,14 +96,14 @@ The following example shows how to read an GTF file:
 
 The GFF-reader is also able to detect and read GTF files.
 The UCSC Genome Browser uses two seperate files, the ``kownGene.txt`` and ``knownIsoforms.txt``.
-They must be read by two consecutive calls of :dox:`File#read read` (first ``knownGene.txt`` then ``knownIsoforms.txt``).
+They must be read by two consecutive calls of :dox:`File#read` (first ``knownGene.txt`` then ``knownIsoforms.txt``).
 
 .. tip::
 
     An annotation can be loaded without loading the corresponding contigs.
 
     In that case empty contigs are created in the contigStore with names given in the annonation.
-    A subsequent call of :dox:`FragmentStore#loadContigs loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
+    A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
 
 Traversing the Annotation Tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -112,18 +112,18 @@ This section will illustrate how to use iterators to traverse the annotation tre
 
 The annotation tree can be traversed and accessed with the :dox:`AnnotationTreeIterator AnnotationTree Iterator`.
 Again we use the metafunction `dox:ContainerConcept#Iterator Iterator` to determine the appropriate iterator type for our container.
-A new AnnotationTree iterator can be obtained by calling :dox:`ContainerConcept#begin begin` with a reference to the :dox:`FragmentStore` and the ``AnnotationTree`` tag:
+A new AnnotationTree iterator can be obtained by calling :dox:`ContainerConcept#begin` with a reference to the :dox:`FragmentStore` and the ``AnnotationTree`` tag:
 
 .. code-block:: cpp
 
    Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
    it = begin(store, AnnotationTree<>());
 
-The AnnotationTree iterator starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown goDown`, :dox:`AnnotationTreeIterator#goUp goUp`, and :dox:`AnnotationTreeIterator#goRight goRight`.
+The AnnotationTree iterator starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown`, :dox:`AnnotationTreeIterator#goUp`, and :dox:`AnnotationTreeIterator#goRight`.
 These functions return a boolean value that indicates whether the iterator could be moved.
-The functions :dox:`AnnotationTreeIterator#isLeaf isLeaf`, :dox:`AnnotationTreeIterator#isRoot isRoot`, :dox:`AnnotationTreeIterator#isLastChild isLastChild` return the same boolean without moving the iterator.
-With :dox:`AnnotationTreeIterator#goRoot goRoot` or :dox:`AnnotationTreeIterator#goTo goTo` the iterator can be moved to the root node or an arbitrary node given its annotationId.
-If the iterator should not be moved but a new iterator at an adjacent node is required, the functions :dox:`AnnotationTreeIterator#nodeDown nodeDown`, :dox:`AnnotationTreeIterator#nodeUp nodeUp`, :dox:`AnnotationTreeIterator#nodeRight nodeRight` can be used.
+The functions :dox:`AnnotationTreeIterator#isLeaf`, :dox:`AnnotationTreeIterator#isRoot`, :dox:`AnnotationTreeIterator#isLastChild` return the same boolean without moving the iterator.
+With :dox:`AnnotationTreeIterator#goRoot` or :dox:`AnnotationTreeIterator#goTo` the iterator can be moved to the root node or an arbitrary node given its annotationId.
+If the iterator should not be moved but a new iterator at an adjacent node is required, the functions :dox:`AnnotationTreeIterator#nodeDown`, :dox:`AnnotationTreeIterator#nodeUp`, :dox:`AnnotationTreeIterator#nodeRight` can be used.
 
 .. code-block:: cpp
 
@@ -134,8 +134,8 @@ If the iterator should not be moved but a new iterator at an adjacent node is re
    if (isLastChild(it))
        it2 = nodeRight(it);
 
-The AnnotationTree iterator supports a preorder DFS traversal and therefore can also be used in typical begin-end loops with the functions :dox:`RootedRandomAccessIteratorConcept#goBegin goBegin` (== :dox:`AnnotationTreeIterator#goRoot goRoot`), :dox:`RootedRandomAccessIteratorConcept#goEnd goEnd`, :dox:`InputIteratorConcept#goNext goNext`, :dox:`RootedIteratorConcept#atBegin atBegin`, :dox:`RootedIteratorConcept#atEnd atEnd`.
-During a preorder DFS, the descent into subtree can be skipped by :dox:`AnnotationTreeIterator#goNextRight goNextRight`, or :dox:`AnnotationTreeIterator#goNextUp goNextUp` which proceeds with the next sibling or returns to the parent node and proceeds with the next node in preorder DFS.
+The AnnotationTree iterator supports a preorder DFS traversal and therefore can also be used in typical begin-end loops with the functions :dox:`RootedRandomAccessIteratorConcept#goBegin` (== :dox:`AnnotationTreeIterator#goRoot`), :dox:`RootedRandomAccessIteratorConcept#goEnd`, :dox:`InputIteratorConcept#goNext`, :dox:`RootedIteratorConcept#atBegin`, :dox:`RootedIteratorConcept#atEnd`.
+During a preorder DFS, the descent into subtree can be skipped by :dox:`AnnotationTreeIterator#goNextRight`, or :dox:`AnnotationTreeIterator#goNextUp` which proceeds with the next sibling or returns to the parent node and proceeds with the next node in preorder DFS.
 
 .. code-block:: cpp
 
@@ -171,7 +171,7 @@ Asignment 1
 
      Hints
        In the given data the left-most leaf is a child of mRNA and has siblings.
-       You can use the function :dox:`AnnotationTreeIterator#goRight goRight` to traverse over all siblings.
+       You can use the function :dox:`AnnotationTreeIterator#goRight` to traverse over all siblings.
 
      Solution
       Click **more...** to see one possible solution.
@@ -198,7 +198,7 @@ Assignment 2
      Print the results.
 
    Hints
-     After you reached the last child of the first mRNA you can use the functions :dox:`InputIteratorConcept#goNext goNext` and :dox:`AnnotationTreeIterator#goDown goDown` to traverse to the next leaf.
+     After you reached the last child of the first mRNA you can use the functions :dox:`InputIteratorConcept#goNext` and :dox:`AnnotationTreeIterator#goDown` to traverse to the next leaf.
 
    Solution
      Click **more...** to see one possible solution.
@@ -218,13 +218,13 @@ Accessing the Annotation Tree
 
 Let us now have a closer look how to access the information stored in the different stores representing the annotation tree.
 
-To access or modify the node an iterator points at, the iterator returns the node's annotationId by the :dox:`IteratorAssociatedTypesConcept#value value` function (== ``operator*``).
+To access or modify the node an iterator points at, the iterator returns the node's annotationId by the :dox:`IteratorAssociatedTypesConcept#value` function (== ``operator*``).
 With the annotationId the corresponding entry in the annotationStore could be modified manually or by using convenience functions.
-The function :dox:`AnnotationTreeIterator#getAnnotation getAnnotation` returns a reference to the corresponding entry in the annotationStore.
-:dox:`AnnotationTreeIterator#getName getName` and :dox:`AnnotationTreeIterator#setName setName` can be used to retrieve or change the identifier of the annotation element.
-As some annotation file formats don't give every annotation a name, the function :dox:`AnnotationTreeIterator#getUniqueName getUniqueName` returns the name if non-empty or generates one using the type and id.
-The name of the parent node in the tree can be determined with :dox:`AnnotationTreeIterator#getParentName getParentName`.
-The name of the annotation type, e.g. 'mRNA' or 'exon', can be determined and modified with :dox:`AnnotationTreeIterator#getType getType` and :dox:`AnnotationTreeIterator#setType setType`.
+The function :dox:`AnnotationTreeIterator#getAnnotation` returns a reference to the corresponding entry in the annotationStore.
+:dox:`AnnotationTreeIterator#getName` and :dox:`AnnotationTreeIterator#setName` can be used to retrieve or change the identifier of the annotation element.
+As some annotation file formats don't give every annotation a name, the function :dox:`AnnotationTreeIterator#getUniqueName` returns the name if non-empty or generates one using the type and id.
+The name of the parent node in the tree can be determined with :dox:`AnnotationTreeIterator#getParentName`.
+The name of the annotation type, e.g. 'mRNA' or 'exon', can be determined and modified with :dox:`AnnotationTreeIterator#getType` and :dox:`AnnotationTreeIterator#setType`.
 
 Assume we have loaded the file ``example.gtf`` with the following content to the :dox:`FragmentStore` *store* and instantiated the iterator *it* of the corresponding annotation tree.
 
@@ -256,10 +256,10 @@ For our example the output would be:
    begin position: 149
 
 An annotation can not only refer to a region of a contig but also contain additional information given as key-value pairs.
-The value of a key can be retrieved or set by :dox:`AnnotationTreeIterator#getValueByKey getValueByKey` and :dox:`AnnotationTreeIterator#assignValueByKey assignValueByKey`.
-The values of a node can be cleared with :dox:`AnnotationTreeIterator#clearValues clearValues`.
+The value of a key can be retrieved or set by :dox:`AnnotationTreeIterator#getValueByKey` and :dox:`AnnotationTreeIterator#assignValueByKey`.
+The values of a node can be cleared with :dox:`AnnotationTreeIterator#clearValues`.
 
-A new node can be created as first child, last child, or right sibling of the current node with :dox:`AnnotationTreeIterator#createLeftChild createLeftChild`, :dox:`AnnotationTreeIterator#createRightChild createRightChild`, or :dox:`AnnotationTreeIterator#createSibling createSibling`.
+A new node can be created as first child, last child, or right sibling of the current node with :dox:`AnnotationTreeIterator#createLeftChild`, :dox:`AnnotationTreeIterator#createRightChild`, or :dox:`AnnotationTreeIterator#createSibling`.
 All three functions return an iterator to the newly created node.
 
 .. code-block:: cpp
@@ -270,23 +270,23 @@ All three functions return an iterator to the newly created node.
 
 The following list summarizes the functions provided by the AnnotationTree iterator.
 
-:dox:`AnnotationTreeIterator#getAnnotation getAnnotation`, :dox:`IteratorAssociatedTypesConcept#value value`
+:dox:`AnnotationTreeIterator#getAnnotation`, :dox:`IteratorAssociatedTypesConcept#value`
   Return annotation object/id of current node
-:dox:`AnnotationTreeIterator#getName getName`, :dox:`AnnotationTreeIterator#setName setName`, :dox:`AnnotationTreeIterator#getType getType`, :dox:`AnnotationTreeIterator#setType setType`
+:dox:`AnnotationTreeIterator#getName`, :dox:`AnnotationTreeIterator#setName`, :dox:`AnnotationTreeIterator#getType`, :dox:`AnnotationTreeIterator#setType`
   Access name or type of current annotation object
-:dox:`AnnotationTreeIterator#getParentName getParentName`
+:dox:`AnnotationTreeIterator#getParentName`
   Access parent name of current annotation object
-:dox:`AnnotationTreeIterator#clearValues clearValue`, :dox:`AnnotationTreeIterator#getValueByKey getValueByKey`, :dox:`AnnotationTreeIterator#assignValueByKey assignValueByKey`
+:dox:`AnnotationTreeIterator#clearValues clearValue`, :dox:`AnnotationTreeIterator#getValueByKey`, :dox:`AnnotationTreeIterator#assignValueByKey`
   Access associated values
-:dox:`RootedRandomAccessIteratorConcept#goBegin goBegin`, :dox:`RootedRandomAccessIteratorConcept#goEnd goEnd`, :dox:`RootedIteratorConcept#atBegin atBegin`, :dox:`RootedIteratorConcept#atEnd atEnd`
+:dox:`RootedRandomAccessIteratorConcept#goBegin`, :dox:`RootedRandomAccessIteratorConcept#goEnd`, :dox:`RootedIteratorConcept#atBegin`, :dox:`RootedIteratorConcept#atEnd`
   Go to or test for begin/end of DFS traversal
-:dox:`InputIteratorConcept#goNext goNext`, :dox:`AnnotationTreeIterator#goNextRight goNextRight`, :dox:`AnnotationTreeIterator#goNextUp`
+:dox:`InputIteratorConcept#goNext`, :dox:`AnnotationTreeIterator#goNextRight`, :dox:`AnnotationTreeIterator#goNextUp`
   go next, skip subtree or siblings during DFS traversal
-:dox:`AnnotationTreeIterator#goRoot goRoot`, :dox:`AnnotationTreeIterator#goUp goUp`, :dox:`AnnotationTreeIterator#goDown goDown`, :dox:`AnnotationTreeIterator#goRight goRight`
+:dox:`AnnotationTreeIterator#goRoot`, :dox:`AnnotationTreeIterator#goUp`, :dox:`AnnotationTreeIterator#goDown`, :dox:`AnnotationTreeIterator#goRight`
   Navigate through annotation tree
-:dox:`AnnotationTreeIterator#createLeftChild createLeftChild`, :dox:`AnnotationTreeIterator#createRightChild createRightChild`, :dox:`AnnotationTreeIterator#createSibling createSibling`
+:dox:`AnnotationTreeIterator#createLeftChild`, :dox:`AnnotationTreeIterator#createRightChild`, :dox:`AnnotationTreeIterator#createSibling`
   Create new annotation nodes
-:dox:`AnnotationTreeIterator#isRoot isRoot`, :dox:`AnnotationTreeIterator#isLeaf isLeaf`
+:dox:`AnnotationTreeIterator#isRoot`, :dox:`AnnotationTreeIterator#isLeaf`
   Test for root/leaf node
 
 Assignment 3
@@ -356,7 +356,7 @@ Assignment 4
 Write an Annotation File
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-To write an annotation to an open output stream use the function :dox:`File#write write` and specify the file format with a tag ``Gff()`` or ``Gtf()``.
+To write an annotation to an open output stream use the function :dox:`File#write` and specify the file format with a tag ``Gff()`` or ``Gtf()``.
 
 .. code-block:: cpp
 

@@ -23,9 +23,9 @@ Prerequisites
 Virtual String Tree Iterator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The search procedure of :dox:`IndexEsa`, :dox:`IndexWotd IndexWotd`, :dox:`IndexDfi` and :dox:`FMIndex` are suffix array based.
+The search procedure of :dox:`IndexEsa`, :dox:`IndexWotd`, :dox:`IndexDfi` and :dox:`FMIndex` are suffix array based.
 This can be utilized in form of a common iterator interface.
-This common interface is the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`) in SeqAn, which lets you access the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi IndexDfi` as if using a suffix tree (:ref:`suffix-tree` definition) and the :dox:`FMIndex FMIndex` as if using a prefix trie.
+This common interface is the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`) in SeqAn, which lets you access the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as if using a suffix tree (:ref:`glossary-suffix-tree` definition) and the :dox:`FMIndex` as if using a prefix trie.
 
 In the first part of this tutorial we will concentrate on the :dox:`TopDownIterator TopDown Iterator` which is one of the two index iterator specializations (besides the :dox:`BottomUpIterator BottomUp Iterator`).
 The second part will then deal with the DFS.
@@ -34,13 +34,13 @@ Top-Down Iteration
 ~~~~~~~~~~~~~~~~~~
 
 For index based pattern search or algorithms traversing only the upper parts of the suffix tree the :dox:`TopDownIterator TopDown Iterator` or :dox:`TopDownHistoryIterator TopDown History Iterator` is the best solution.
-Both provide the functions :dox:`TopDownIterator#goDown goDown` and :dox:`TopDownIterator#goRight goRight` to go down to the first child node or go to the next sibling.
-The :dox:`TopDownHistoryIterator TopDown History Iterator` additionally provides :dox:`TopDownHistoryIterator#goUp goUp` to go back to the parent node.
-The child nodes in :dox:`IndexEsa IndexEsa` indices are lexicographically sorted from first to last.
+Both provide the functions :dox:`TopDownIterator#goDown` and :dox:`TopDownIterator#goRight` to go down to the first child node or go to the next sibling.
+The :dox:`TopDownHistoryIterator TopDown History Iterator` additionally provides :dox:`TopDownHistoryIterator#goUp` to go back to the parent node.
+The child nodes in :dox:`IndexEsa` indices are lexicographically sorted from first to last.
 For :dox:`IndexWotd` and :dox:`IndexDfi` indices this holds for all children except the first.
 
 In the next example we want to use the :dox:`TopDownIterator TopDown Iterator` to efficiently search a text for exact matches of a pattern.
-We therefore want to use :dox:`TopDownIterator#goDown goDown` which has an overload to go down an edge beginning with a specific character.
+We therefore want to use :dox:`TopDownIterator#goDown` which has an overload to go down an edge beginning with a specific character.
 
 .. important::
 
@@ -59,8 +59,8 @@ Afterwards we create the :dox:`TopDownIterator TopDown Iterator` using the metaf
 .. includefrags:: core/demos/tutorial/index/index_search.cpp
    :fragment: iterator
 
-The main search can then be implemented using the functions :dox:`VSTreeIterator#repLength repLength` and :dox:`VSTreeIterator#representative representative`.
-Since :dox:`TopDownIterator#goDown goDown` might cover more than one character it is necessary to compare parts of the pattern against the representative of the iterator.
+The main search can then be implemented using the functions :dox:`VSTreeIterator#repLength` and :dox:`VSTreeIterator#representative`.
+Since :dox:`TopDownIterator#goDown` might cover more than one character it is necessary to compare parts of the pattern against the representative of the iterator.
 The search can now be implemented as follows.
 The algorithm descends the suffix tree along edges beginning with the corresponding pattern character.
 In each step the ``unseen`` edge characters have to be verified.
@@ -69,7 +69,7 @@ In each step the ``unseen`` edge characters have to be verified.
    :fragment: iteration
 
 If all pattern characters could successfully be compared we end in the topmost node who's leaves point to text positions starting with the pattern.
-Thus, the suffixes represented by this node are the occurrences of our pattern and can be retrieved with :dox:`VSTreeIterator#getOccurrences getOccurrences`.
+Thus, the suffixes represented by this node are the occurrences of our pattern and can be retrieved with :dox:`VSTreeIterator#getOccurrences`.
 
 .. includefrags:: core/demos/tutorial/index/index_search.cpp
    :fragment: output
@@ -84,7 +84,7 @@ Program output:
    9
    22
 
-Alternatively, we could have used :dox:`TopDownIterator#goDown goDown` to go down the path of a pattern instead single characters:
+Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of a pattern instead single characters:
 
 .. includefrags:: core/demos/tutorial/index/index_search2.cpp
    :fragment: output
@@ -129,9 +129,9 @@ Assignment 2
 	:width: 300px
 
      At each node print the text of the edges from the root to the node.
-     You may only use the functions :dox:`TopDownIterator#goDown goDown`, :dox:`TopDownIterator#goRight goRight`, 
-     :dox:`TopDownHistoryIterator#goUp goUp` and :dox:`VSTreeIterator#isRoot isRoot` to navigate and 
-     :dox:`VSTreeIterator#representative representative` which returns the string that represents the node the iterator points to.
+     You may only use the functions :dox:`TopDownIterator#goDown`, :dox:`TopDownIterator#goRight`,
+     :dox:`TopDownHistoryIterator#goUp` and :dox:`VSTreeIterator#isRoot` to navigate and
+     :dox:`VSTreeIterator#representative` which returns the string that represents the node the iterator points to.
 
    Hint
      * Use a :dox:`TopDownHistoryIterator TopDown History Iterator`.
@@ -170,9 +170,9 @@ Assignment 2
 
                     - go up until it is possible to go to a next sibling
                     - stop the whole iteration after reaching the root node
-    
+
          Thus, the DFS walk can be implemented in the following way:
-    
+
             .. includefrags:: core/demos/tutorial/index/iterator_solution2.cpp
 
 Assignment 3
@@ -188,7 +188,7 @@ Assignment 3
      Move the whole program into a template function whose argument specifies the index type and call this function twice, once for the :dox:`IndexEsa` and once for the :dox:`IndexWotd` index.
 
    Solution
-     .. container:: foldable 
+     .. container:: foldable
 
 	We modify the DFS traversal to skip the descent if we walk into a node whose representative is longer than 3.
 	We then proceed to the right and up as long as the representative is longer than 3.
@@ -240,13 +240,13 @@ In order to do so, we create the string "abracadabra" and an index specialized w
 .. includefrags:: core/demos/tutorial/index/index_preorder.cpp
    :fragment: includes
 
-The :dox:`StringTreeConcept#Iterator Iterator` metafunction expects two arguments, the type of the container to be iterated and a specialization tag, as described earlier.
+The :dox:`StringTreeConcept#Iterator` metafunction expects two arguments, the type of the container to be iterated and a specialization tag, as described earlier.
 In this example we chose a :dox:`TopDownHistoryIterator TopDown History Iterator` whose signature in the second template argument is ``TopDown< ParentLinks<Preorder> >``.
 
 .. includefrags:: core/demos/tutorial/index/index_preorder.cpp
    :fragment: initialization
 
-As all DFS suffix tree iterators implement the :dox:`VSTreeIterator VSTree Iterator`, they can be used via :dox:`VSTreeIterator#goNext goNext`, :dox:`VSTreeIterator#atEnd atEnd`, etc.
+As all DFS suffix tree iterators implement the :dox:`VSTreeIterator VSTree Iterator`, they can be used via :dox:`VSTreeIterator#goNext`, :dox:`VSTreeIterator#atEnd`, etc.
 
 .. includefrags:: core/demos/tutorial/index/index_preorder.cpp
    :fragment: iteration
@@ -283,13 +283,13 @@ Program output:
    If solely a postorder traversal is needed the :dox:`BottomUpIterator BottomUp Iterator` should be preferred as it is more memory efficient.
    Please note that the BottomUp Iterator is only applicable to :dox:`IndexEsa` indices.
 
-.. tip:: 
+.. tip::
 
-   A relaxed suffix tree (see :ref:`suffix-tree`) is a suffix tree after removing the $ characters and empty edges.
+   A relaxed suffix tree (see :ref:`glossary-suffix-tree`) is a suffix tree after removing the $ characters and empty edges.
    For some bottom-up algorithms it would be better not to remove empty edges and to have a one-to-one relationship between leaves and suffices.
    In that cases you can use the tags PreorderEmptyEdges or PostorderEmptyEdges instead of Preorder or Postorder or EmptyEdges for the TopDown Iterator.
 
-Note that the :dox:`VSTreeIterator#goNext goNext` is very handy as it simplifies the tree traversal in assignment 2 greatly.
+Note that the :dox:`VSTreeIterator#goNext` is very handy as it simplifies the tree traversal in assignment 2 greatly.
 
 Assignment 4
 """"""""""""
@@ -306,7 +306,7 @@ Assignment 4
      .. container:: foldable
 
 	First we have to create a :dox:`StringSet` of :dox:`CharString` (shortcut for ``String<char>``) and append the 3 strings to it.
-	This could also be done by using :dox:`SequenceConcept#resize resize` and then assigning the members with ``operator[]``.
+	This could also be done by using :dox:`SequenceConcept#resize` and then assigning the members with ``operator[]``.
 	The first template argument of the index class has to be adapted and is now a StringSet.
 
 	.. includefrags:: core/demos/tutorial/index/index_assignment1.cpp
@@ -411,7 +411,7 @@ Assignment 5
 	Its constructor expects the index and optionally a minimum MUM length as a second parameter.
 	The set of all MUMs can be represented by a subset of suffix tree nodes.
 	The iterator will halt in every node that is a MUM of the minimum length.
-	The corresponding match is the node's :dox:`VSTreeIterator#representative representative`.
+	The corresponding match is the node's :dox:`VSTreeIterator#representative`.
 
 	.. includefrags:: core/demos/tutorial/index/index_assignment2.cpp
 	   :fragment: iteration
@@ -432,28 +432,28 @@ We now want to know what can be done with a suffix tree iterator.
 As all iterators are specializations of the general VSTree Iterator class, they inherit all of its functions.
 There are various functions to access the node the iterator points at (some we have already seen), so we concentrate on the most important ones.
 
-:dox:`VSTreeIterator#representative representative`
+:dox:`VSTreeIterator#representative`
   returns the substring that represents the current node, i.e. the concatenation of substrings on the path from the root to the current node
 
-:dox:`VSTreeIterator#getOccurrence getOccurrence`
+:dox:`VSTreeIterator#getOccurrence`
   returns a position where the representative occurs in the text
 
-:dox:`VSTreeIterator#getOccurrences getOccurrences`
+:dox:`VSTreeIterator#getOccurrences`
   returns a string of all positions where the representative occurs in the text
 
-:dox:`VSTreeIterator#isRightTerminal isRightTerminal`
-  tests if the representative is a suffix in the text (corresponds to the shaded nodes in the :ref:`suffix-tree` figures)
+:dox:`VSTreeIterator#isRightTerminal`
+  tests if the representative is a suffix in the text (corresponds to the shaded nodes in the :ref:`glossary-suffix-tree` figures)
 
-:dox:`VSTreeIterator#isLeaf isLeaf`
+:dox:`VSTreeIterator#isLeaf`
   tests if the current node is a tree leaf
 
-:dox:`TopDownIterator#parentEdgeLabel parentEdgeLabel`
+:dox:`TopDownIterator#parentEdgeLabel`
   returns the substring that represents the edge from the current node to its parent (only TopDownHistory Iterator)
 
 .. important::
 
    There is a difference between the functions isLeaf and isRightTerminal.
-   In a relaxed suffix tree (see :ref:`suffix-tree`) a leaf is always a suffix, but not vice versa, as there can be internal nodes a suffix ends in.
+   In a relaxed suffix tree (see :ref:`glossary-suffix-tree`) a leaf is always a suffix, but not vice versa, as there can be internal nodes a suffix ends in.
    For them isLeaf returns false and isRightTerminal returns true.
 
 Property Maps
@@ -461,9 +461,9 @@ Property Maps
 
 Some algorithms require to store auxiliary information (e.g. weights, scores) to the nodes of a suffix tree.
 To attain this goal SeqAn provides so-called property maps, simple Strings of a property type.
-Before storing a property value, these strings must first be resized with :dox:`StringTreeConcept#resizeVertexMap resizeVertexMap`.
-The property value can then be assigned or retrieved via :dox:`VSTreeIterator#assignProperty assignProperty`, :dox:`VSTreeIterator#getProperty getProperty`, or :dox:`VSTreeIterator#property property`.
-It is recommended to call :dox:`StringTreeConcept#resizeVertexMap resizeVertexMap` prior to every call of :dox:`VSTreeIterator#assignProperty assignProperty` to ensure that the property map has sufficient size.
+Before storing a property value, these strings must first be resized with :dox:`StringTreeConcept#resizeVertexMap`.
+The property value can then be assigned or retrieved via :dox:`VSTreeIterator#assignProperty`, :dox:`VSTreeIterator#getProperty`, or :dox:`VSTreeIterator#property`.
+It is recommended to call :dox:`StringTreeConcept#resizeVertexMap` prior to every call of :dox:`VSTreeIterator#assignProperty` to ensure that the property map has sufficient size.
 The following example iterates over all nodes in preorder dfs and recursively assigns the node depth to each node.
 First we create a :dox:`String` of ``int`` to store the node depth for each suffix tree node.
 
@@ -472,8 +472,8 @@ First we create a :dox:`String` of ``int`` to store the node depth for each suff
 
 The main loop iterates over all nodes in preorder DFS, i.e. parents are visited prior children.
 The node depth for the root node is 0 and for all other nodes it is the parent node depth increased by 1.
-The functions :dox:`VSTreeIterator#assignProperty assignProperty`, :dox:`VSTreeIterator#getProperty getProperty` and :dox:`VSTreeIterator#property property` must be called with a :dox:`StringTreeConcept#VertexDescriptor VertexDescriptor`.
-The vertex descriptor of the iterator node is returned by :dox:`VSTreeIterator#value value` and the descriptor of the parent node is returned by :dox:`TopDownIterator#nodeUp nodeUp`.
+The functions :dox:`VSTreeIterator#assignProperty`, :dox:`VSTreeIterator#getProperty` and :dox:`VSTreeIterator#property` must be called with a :dox:`StringTreeConcept#VertexDescriptor`.
+The vertex descriptor of the iterator node is returned by :dox:`VSTreeIterator#value` and the descriptor of the parent node is returned by :dox:`TopDownIterator#nodeUp`.
 
 .. includefrags:: core/demos/tutorial/index/index_property_maps.cpp
    :fragment: iteration
@@ -502,7 +502,7 @@ Program output:
 
 .. tip::
 
-   In SeqAn there is already a function :dox:`TopDownHistoryIterator#nodeDepth nodeDepth` defined to return the node depth.
+   In SeqAn there is already a function :dox:`TopDownHistoryIterator#nodeDepth` defined to return the node depth.
 
 Additional iterators
 ~~~~~~~~~~~~~~~~~~~~

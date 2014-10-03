@@ -55,7 +55,7 @@ The next steps would be to implement the main function of our program and to def
 We first define the type of the input sequences (``TSequence``).
 Then we can define the type of our actual Align object we want to use.
 In an Align object, the gapped sequences are arranged in rows.
-You can use the Metafunction :dox:`Align#Row Row` to get the correct type of the used Gaps objects.
+You can use the Metafunction :dox:`Align#Row` to get the correct type of the used Gaps objects.
 In the following we use the term ``row`` to explicitly refer to a gapped sequence as a member of the Align object.
 We will use the term ``gapped sequence`` to describe functionalities that is related to the Gaps data structure independent of the Align object.
 
@@ -65,15 +65,15 @@ We will use the term ``gapped sequence`` to describe functionalities that is rel
 After defining the types, we can continue to actually construct our own Align object.
 Therefore, we need to resize the alignment object in order to reserve space for the sequences we want to add.
 In our case, we assume a pairwise alignment, hence we reserve space for 2 sequences.
-With the function :dox:`Align#row row`, we get access to the gapped sequence at a specific row in the alignment object.
-This is similar to the :dox:`RandomAccessContainerConcept#value value` function used in :dox:`StringSet String Sets`.
+With the function :dox:`Align#row`, we get access to the gapped sequence at a specific row in the alignment object.
+This is similar to the :dox:`RandomAccessContainerConcept#value` function used in :dox:`StringSet String Sets`.
 Now, we can assign the source to the corresponding gapped sequence.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
    :fragment: init
 
 After assigning the sources to the gapped sequences, we need to add some gaps to make it to look like a real alignment.
-You can use the functions :dox:`Gaps#insertGap insertGap()` and :dox:`Gaps#removeGap removeGap` to insert and delete one gap or :dox:`Gaps#insertGaps insertGaps()` and :dox:`Gaps#removeGaps removeGaps` to insert and delete multiple gaps in a gapped sequence.
+You can use the functions :dox:`Gaps#insertGap insertGap()` and :dox:`Gaps#removeGap` to insert and delete one gap or :dox:`Gaps#insertGaps insertGaps()` and :dox:`Gaps#removeGaps` to insert and delete multiple gaps in a gapped sequence.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
    :fragment: manipulation
@@ -127,7 +127,7 @@ In the first alignment, it seems that the end of the second row is cropped off t
 This effect takes place only in the visualization but is not explicitly applied to the gapped sequence.
 The second alignment is the one we manually constructed.
 Here, you can see that the second row is expanded to its full size while it matches the size of the first row.
-However, it is possible to explicitly crop off the ends of a gapped sequence by using the functions :dox:`Gaps#setClippedBeginPosition setClippedBeginPosition` and :dox:`Gaps#setClippedEndPosition setClippedEndPosition`.
+However, it is possible to explicitly crop off the ends of a gapped sequence by using the functions :dox:`Gaps#setClippedBeginPosition` and :dox:`Gaps#setClippedEndPosition`.
 These functions shrink the gap space and can be understood as defining an infix of the gapped sequence.
 After the clipping, the relative view position changes according to the clipping and so does the mapping of the source positions to the gap space.
 The mapping of the view positions to the source space does not change.
@@ -171,17 +171,17 @@ Iterating over Gapped Sequences
 
 In the last part of this section, we are going to iterate over a :dox:`Gaps` object.
 This can be quite useful if one needs to parse the alignment rows to access position specific information.
-First, we have to define the type of the ``Iterator``, which can be easily done by using the metafunction :dox:`ContainerConcept#Iterator Iterator`.
+First, we have to define the type of the ``Iterator``, which can be easily done by using the metafunction :dox:`ContainerConcept#Iterator`.
 Remember that we iterate over an ``TRow`` object.
-Then we have to construct the iterators ``it`` which points to the begin of ``row1`` using the :dox:`ContainerConcept#begin begin` function and ``itEnd`` which points behind the last value of ``row1`` using the :dox:`ContainerConcept#end end` function.
+Then we have to construct the iterators ``it`` which points to the begin of ``row1`` using the :dox:`ContainerConcept#begin` function and ``itEnd`` which points behind the last value of ``row1`` using the :dox:`ContainerConcept#end` function.
 If you need to refresh the **Iterator Concept** you can read the Tutorial :ref:`tutorial-iterators`.
 While we iterate over the gapped sequence, we can ask if the current value, at which the iterator ``it`` points to, is a gap or not by using the function :dox:`Gaps#isGap isGap()`.
-Use :dox:`AlphabetWithGapsConcept#gapValue gapValue` to print the correct gap symbol.
+Use :dox:`AlphabetWithGapsConcept#gapValue` to print the correct gap symbol.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
    :fragment: iteratingRowClipped
 
-We will now reset the clipping of ``row1`` using :dox:`Gaps#clearClipping clearClipping` and iterate again over it to see its effect.
+We will now reset the clipping of ``row1`` using :dox:`Gaps#clearClipping` and iterate again over it to see its effect.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
    :fragment: iteratingRowClipped2
@@ -210,7 +210,7 @@ Assignment 1
    Hints
      .. container :: foldable
 
-        You can use the function :dox:`Gaps#countGaps countGaps` to count the number of consecutive gaps starting from the current position of the iterator.
+        You can use the function :dox:`Gaps#countGaps` to count the number of consecutive gaps starting from the current position of the iterator.
 
    Solution
        .. container:: foldable
@@ -246,7 +246,7 @@ In the end we define the actual AlignmentGraph type.
 .. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: typedef
 
-We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to the StringSet ``strings`` using the :dox:`SequenceConcept#appendValue appendValue` function and pass the initialized ``strings`` object as a parameter to the constructor of the AlignmentGraph ``alignG``.
+We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to the StringSet ``strings`` using the :dox:`SequenceConcept#appendValue` function and pass the initialized ``strings`` object as a parameter to the constructor of the AlignmentGraph ``alignG``.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: init
@@ -254,8 +254,8 @@ We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to th
 Before we construct the alignment we print the unmodified AlignmentGraph.
 Then we add some alignment information to the graph.
 In order to add an ungapped alignment segment we have to add an edge connecting two nodes of different input sequences.
-To do so we can use the function :dox:`Graph#addEdge addEdge` and specify the two vertices that should be connected.
-Since we do not have any vertices yet, we create them on the fly using the function :dox:`Graph#addVertex addVertex`.
+To do so we can use the function :dox:`Graph#addEdge` and specify the two vertices that should be connected.
+Since we do not have any vertices yet, we create them on the fly using the function :dox:`Graph#addVertex`.
 The function addVertex gets as second parameter the id which points to the the correct input sequence within the ``strings`` object.
 We can use the function :dox:`StringSet#positionToId positionToId()` to receive the id that corresponds to a certain position within the underlying Dependent StringSet of the AlignmentGraph.
 We can access the Dependent StringSet using the function :dox:`Align#stringSet stringSet()`.
@@ -300,7 +300,7 @@ Assignment 2
    Hints
      .. container :: foldable
 
-        The function :dox:`AlignmentGraph#findVertex findVertex` returns the vertex of an AlignmentGraph that covers the given position in the given sequence.
+        The function :dox:`AlignmentGraph#findVertex` returns the vertex of an AlignmentGraph that covers the given position in the given sequence.
 
    Solution
      .. container :: foldable

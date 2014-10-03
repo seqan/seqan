@@ -28,7 +28,7 @@ In SeqAn, there are three kinds of sequences: Strings, Sequence Adaptions and Se
 The :dox:`String` class is one of the most fundamental classes in SeqAn.
 It is designed as a generic data structure that can be instantiated for all kinds of values, both simple (e.g. ``char``, :dox:`Dna`, :dox:`AminoAcid`) and non-simple value types (e.g. :dox:`Tuple`, :dox:`String`).
 With sequence adaptions, SeqAn offers an interface for accessing data types that are not part of SeqAn, namely standard library strings and c-style char arrays.
-Thus those built-in types can be handled in a similar way as SeqAn strings, for example with the :dox:`ContainerConcept#length length` function.
+Thus those built-in types can be handled in a similar way as SeqAn strings, for example with the :dox:`ContainerConcept#length` function.
 :dox:`Segment Segments` are contiguous subsequences that represent parts of other sequences.
 
 This tutorial will deal with the SeqAn sequence classes :dox:`String` and :dox:`Segment`.
@@ -51,7 +51,7 @@ The type of the contained value is specified by the first template argument, e.g
    String<int>   myNumbers;  // A string of integers.
 
 Any type that provides a default constructor, a copy constructor and an assignment operator can be used as the alphabet / contained type of a :dox:`String`.
-This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc., but you can use more complex types, e.g.:dox:`String Strings`, too.
+This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc., but you can use more complex types, e.g. :dox:`String Strings`, too.
 
 .. code-block:: cpp
 
@@ -64,7 +64,7 @@ This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsi
    A set of sequences can either be stored in a sequence of sequences, for example in a ``String< String<char> >``, or in :dox:`StringSet`.
    See the tutorial :ref:`tutorial-string-sets` for more information about the class :dox:`StringSet`.
 
-SeqAn also provides the following types that are useful in bioinformatics: :dox:`AminoAcid`, :dox:`Dna`, dox:`Dna5`, :dox:`DnaQ`, :dox:`Dna5Q`, :dox:`Finite`, :dox:`Iupac`,:dox:`Rna`, :dox:`Rna5`.
+SeqAn also provides the following types that are useful in bioinformatics: :dox:`AminoAcid`, :dox:`Dna`, :dox:`Dna5`, :dox:`DnaQ`, :dox:`Dna5Q`, :dox:`Finite`, :dox:`Iupac`, :dox:`Rna`, :dox:`Rna5`.
 You can find detailed information in the tutorial :ref:`tutorial-alphabets`.
 
 .. code-block:: cpp
@@ -128,11 +128,11 @@ them like STL strings, for example:
 
 Each sequence object has a capacity, i.e. the maximum length of a sequence that can be stored in this object.
 While some sequence types have a fixed capacity, the capacity of other sequence classes like :dox:`AllocString Alloc String` or ``std::basic_string`` can be changed at runtime.
-The capacity can be set explicitly by functions such as :dox:`String#reserve reserve` or :dox:`SequenceConcept#resize resize`.
-It can also be set implicitly by functions like :dox:`SequenceConcept#append append` or :dox:`SequenceConcept#replace replace`, if the operation's result exceeds the length of the target string. 
+The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`SequenceConcept#resize`.
+It can also be set implicitly by functions like :dox:`SequenceConcept#append` or :dox:`SequenceConcept#replace`, if the operation's result exceeds the length of the target string.
 
-In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the new length of the container with :dox:`SequenceConcept#resize resize` to two elements.
-After assigning two elements we append one more element with :dox:`SequenceConcept#appendValue appendValue`.
+In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the new length of the container with :dox:`SequenceConcept#resize` to two elements.
+After assigning two elements we append one more element with :dox:`SequenceConcept#appendValue`.
 In the last step the capacity is implicitly changed.
 
 .. code-block:: cpp
@@ -143,7 +143,7 @@ In the last step the capacity is implicitly changed.
    readList[1] = "AAGATGTCGC";
    appendValue(readList, "TATGCATGAT");
 
-Using the function :dox:`ContainerConcept#length length`, we can now get the length of our strings, e.g.:
+Using the function :dox:`ContainerConcept#length`, we can now get the length of our strings, e.g.:
 
 .. code-block:: cpp
 
@@ -155,13 +155,13 @@ Using the function :dox:`ContainerConcept#length length`, we can now get the len
    3
    10
 
-To empty a :dox:`String`, the function :dox:`SequenceConcept#clear clear` resets the object.
+To empty a :dox:`String`, the function :dox:`SequenceConcept#clear` resets the object.
 
 .. code-block:: cpp
 
    clear(readList);
 
-SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign assign`, :dox:`RandomAccessContainerConcept#assignValue assignValue`, :dox:`RandomAccessContainerConcept#value value`, :dox:`IteratorAssociatedTypesConcept#getValue getValue`, :dox:`ContainerConcept#empty empty`, etc.
+SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign`, :dox:`RandomAccessContainerConcept#assignValue`, :dox:`RandomAccessContainerConcept#value`, :dox:`IteratorAssociatedTypesConcept#getValue`, :dox:`ContainerConcept#empty`, etc.
 The full list of functions you can find in the documentation :dox:`String`.
 
 Assignment 1
@@ -280,7 +280,7 @@ Workshop Assignment 1
    #. Build another String bsChr1 as a copy of chr1, and exchange every 'C' with a 'T', as in a bisulfite treated genome.
    #. Print alignments of the reads and chr1 (or bschr1) using the function ``printAlign`` and the string ``alignPosList``.
 
-   .. code-block:: cpp   
+   .. code-block:: cpp
 
       #include <iostream>
       #include <seqan/sequence.h>
@@ -395,7 +395,7 @@ Suppose we want to branch in a program depending on whether ``a < b``, ``a == b`
 
 In this case, although only one scan would be enough to decide what case is to be applied, each operator ``>`` and ``<`` performs a new comparison.
 SeqAn offers the class :dox:`Lexical` to avoid unnecessary sequence scans.
-Lexicals can store the result of a comparison, for example: 
+Lexicals can store the result of a comparison, for example:
 
 .. code-block:: cpp
 
@@ -414,7 +414,7 @@ SeqAn offers different conversion alternatives.
 
 **Copy conversion.**
 The source sequence is copied into the target sequence.
-This can be done by assignment (``operator=``) or using the function :dox:`AssignableConcept#assign assign`.
+This can be done by assignment (``operator=``) or using the function :dox:`AssignableConcept#assign`.
 
 .. code-block:: cpp
 
@@ -428,9 +428,9 @@ This can be done by assignment (``operator=``) or using the function :dox:`Assig
    acgtgcat
 
 **Move conversion.**
-If the source sequence is not needed any more after the conversion, it is always advisable to use :dox:`AssignableConcept#move move` instead of :dox:`AssignableConcept#assign assign`.
-The function :dox:`AssignableConcept#move move` does not make a copy but can reuse the source sequence storage.
-In some cases, :dox:`AssignableConcept#move move` can also perform an in-place conversion.
+If the source sequence is not needed any more after the conversion, it is always advisable to use :dox:`AssignableConcept#move` instead of :dox:`AssignableConcept#assign`.
+The function :dox:`AssignableConcept#move` does not make a copy but can reuse the source sequence storage.
+In some cases, :dox:`AssignableConcept#move` can also perform an in-place conversion.
 
 .. code-block:: cpp
 
@@ -520,7 +520,7 @@ Assignment 3
      In this task you will compare whole sequences.
      Reuse the code from above. Instead of a ``String<Dna5>`` we will now deal with a ``String<Dna5String>``.
      Build a string which contains the Dna5Strings "ATATANGCGT", "AAGCATGANT" and "TGAAANTGAC".
-     Now check for all elements of the container, if they are lexicographically smaller or bigger than the  given reference sequence "GATGCATGAT" and append them to a appropriate list. 
+     Now check for all elements of the container, if they are lexicographically smaller or bigger than the  given reference sequence "GATGCATGAT" and append them to a appropriate list.
      Print out the final lists.
 
    Hints
@@ -540,13 +540,13 @@ The following section will introduce you into the :dox:`Segment` class of SeqAn.
 
 :dox:`Segment Segments` are contiguous subsequences that represent parts of other sequences.
 Therefore, their functionality is similar to the :dox:`String` functionality.
-In SeqAn, there are three kinds of segments: :dox:`InfixSegment`, :dox:`PrefixSegment PrefixSegment`, and :dox:`SuffixSegment`.
-The metafunctions :dox:`SegmentableConcept#Infix Infix`, :dox:`SegmentableConcept#Prefix Prefix`, and :dox:`SegmentableConcept#Suffix Suffix`, respectively, return the appropriate segment data type for a given sequence type.
+In SeqAn, there are three kinds of segments: :dox:`InfixSegment`, :dox:`PrefixSegment`, and :dox:`SuffixSegment`.
+The metafunctions :dox:`SegmentableConcept#Infix`, :dox:`SegmentableConcept#Prefix`, and :dox:`SegmentableConcept#Suffix`, respectively, return the appropriate segment data type for a given sequence type.
 
-For prefixes, we use the function :dox:`SegmentableConcept#prefix prefix` to build the prefix.
+For prefixes, we use the function :dox:`SegmentableConcept#prefix` to build the prefix.
 The first parameter is the sequence we build the prefix from, the second the **excluding** end position.
-For :dox:`SegmentableConcept#infix infix`\ es, we have to provide both the including start and the excluding end position.
-For :dox:`SegmentableConcept#suffix suffix`\ es, the second parameter of the function denotes the including starting position of the suffix:
+For :dox:`SegmentableConcept#infix`\ es, we have to provide both the including start and the excluding end position.
+For :dox:`SegmentableConcept#suffix`\ es, the second parameter of the function denotes the including starting position of the suffix:
 
 .. code-block:: cpp
 

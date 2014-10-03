@@ -10,7 +10,7 @@ File I/O
 
 Learning Objective
   In this tutorial, you will learn about the new file I/O infrastructure in SeqAn.
-  You will get an overview of the different layers in the library, an introduction on the :dox:`StreamConcept StreamConcept` concept, the :dox:`Stream Stream` class, and :dox:`MMapString MMap-Strings`.
+  You will get an overview of the different layers in the library, an introduction on the :dox:`StreamConcept` concept, the :dox:`Stream` class, and :dox:`MMapString MMap-Strings`.
 
 Difficulty
   Advanced
@@ -24,8 +24,8 @@ Prerequisites
 This tutorial introduces the low-level facilities of file I/O in SeqAn:
 
 * There is a concept called :dox:`StreamConcept` in the SeqAn library that stream data types have to implement.
-  There also is the class :dox:`Stream Stream` that provides implementations of the concept together with its specializations.
-  (If you want to provide your own Stream implementation, you should specialize the class :dox:`Stream Stream`).
+  There also is the class :dox:`Stream` that provides implementations of the concept together with its specializations.
+  (If you want to provide your own Stream implementation, you should specialize the class :dox:`Stream`).
 * Particularly, there are the specializations :dox:`GzFileStream` and :dox:`BZ2FileStream BZ2 FileStream` that provide access to compressed files.
 * Furthermore, SeqAn allows to access memory mapped files using the :dox:`MMapString MMap String` specialization.
 
@@ -45,32 +45,32 @@ The Stream Concept
 
 The stream concept requires the following functions which work on already files (e.g. ``FILE *``, ``std::fstream``, or :dox:`Stream` objects).
 
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| Function                                                | Summary                                                                     |
-+=========================================================+=============================================================================+
-| :dox:`StreamConcept#streamEof streamEof`                | Return whether stream is at end of file.                                    |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamError streamError`            | Return error code of stream.                                                |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamFlush streamFlush`            | Flush stream buffer.                                                        |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamPeek streamPeek`              | Get next character from stream without changing the position in the file.   |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamPut streamPut`                | Write a value to the output, converted to string.                           |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamReadBlock streamBlock`        | Read a block of ``char`` values from the stream.                            |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamReadChar streamReadChar`      | Read one character from the stream.                                         |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamSeek streamSeek`              | Set stream's location.                                                      |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamTell streamTell`              | Retrieve stream's location.                                                 |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
-| :dox:`StreamConcept#streamWriteBlock streamWriteBlock`  | Write an array of ``char`` to the stream.                                   |
-+---------------------------------------------------------+-----------------------------------------------------------------------------+
++--------------------------------------------------+---------------------------------------------------------------------------+
+| Function                                         | Summary                                                                   |
++==================================================+===========================================================================+
+| :dox:`StreamConcept#streamEof`                   | Return whether stream is at end of file.                                  |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamError`                 | Return error code of stream.                                              |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamFlush`                 | Flush stream buffer.                                                      |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamPeek`                  | Get next character from stream without changing the position in the file. |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamPut`                   | Write a value to the output, converted to string.                         |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamReadBlock streamBlock` | Read a block of ``char`` values from the stream.                          |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamReadChar`              | Read one character from the stream.                                       |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamSeek`                  | Set stream's location.                                                    |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamTell`                  | Retrieve stream's location.                                               |
++--------------------------------------------------+---------------------------------------------------------------------------+
+| :dox:`StreamConcept#streamWriteBlock`            | Write an array of ``char`` to the stream.                                 |
++--------------------------------------------------+---------------------------------------------------------------------------+
 
 Not all functions might be available for all streams.
-The metafunction :dox:`StreamConcept#HasStreamFeature HasStreamFeature` provides information about the stream types.
+The metafunction :dox:`StreamConcept#HasStreamFeature` provides information about the stream types.
 
 Stream Adaptions
 ^^^^^^^^^^^^^^^^
@@ -162,7 +162,7 @@ If you are using your own build system, see BuildManual/IntegrationWithYourOwnBu
 Both specializations can be constructed with an already open underlying compressed stream, e.g. you can pass the ``gzFile``/``BZFILE*``, that you want to work on, to the stream.
 They are meant as very thin wrappers around the handle for the compressed stream.
 This has the advantage that you have full access to the compression settings etc. and the wrappers only add error flags and so on when necessary.
-For more convenience, you can also use the :dox:`File#open open` function to open them.
+For more convenience, you can also use the :dox:`File#open` function to open them.
 
 The following example shows (1) how to conditionally enable zlib and bzlib support, (2) how to open ``gzFile`` and ``BZFILE*`` handles for reading and their corresponding wrappers and (3) the possibilities for error checking.
 
@@ -238,7 +238,7 @@ Memory mapped files allow very fast access to files since they enable you to rea
 Wikipedia has a `nice article on memory mapped files <http://en.wikipedia.org/wiki/Memory-mapped_file>`_.
 
 In SeqAn, you access memory mapped files using the :dox:`MMapString` specialization.
-After opening the mapped string using :dox:`File#open open`, you can access its contents as if you were manipulating a normal :dox:`String`.
+After opening the mapped string using :dox:`File#open`, you can access its contents as if you were manipulating a normal :dox:`String`.
 The following shows a simple example:
 
 .. includefrags:: extras/demos/tutorial/file_io/mmap_string_example.cpp

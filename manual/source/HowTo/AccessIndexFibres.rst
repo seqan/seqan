@@ -92,14 +92,14 @@ Creation
 
 In most cases you don't need to create the fibres of an index by hand.
 Most algorithms and data structures create them automatically, e.g. :dox:`Finder` or :dox:`VSTreeIterator`.
-If you want to specify a certain index construction algorithm, have to recreate a fibre or manually access a fibre you can recreate or create on-demand a fibre by :dox:`Index#indexCreate indexCreate` and :dox:`Index#indexRequire indexRequire`.
-If your algorithm should behave differently depending on the presence or absence of a fibre (and the fibre should then not be created), you can test for presence by :dox:`Index#indexSupplied indexSupplied`.
+If you want to specify a certain index construction algorithm, have to recreate a fibre or manually access a fibre you can recreate or create on-demand a fibre by :dox:`Index#indexCreate` and :dox:`Index#indexRequire`.
+If your algorithm should behave differently depending on the presence or absence of a fibre (and the fibre should then not be created), you can test for presence by :dox:`Index#indexSupplied`.
 
 Access
 ------
 
 The type of each fibre can be determined by the metafunction :dox:`Fibre`.
-To access a fibre you can use the function :dox:`Index#getFibre getFibre` whose return type is the result of :dox:`Fibre`.
+To access a fibre you can use the function :dox:`Index#getFibre` whose return type is the result of :dox:`Fibre`.
 The second argument of both functions is a tag to select a specific fibre.
 See the first column in the tables above.
 One fibre in every index is the text to be indexed itself.
@@ -150,5 +150,5 @@ and to access a single values:
 | :dox:`Index#textAt textAt(pos, index)`       | :dox:`Index#indexText indexText(index)[pos]`            |
 +----------------------------------------------+---------------------------------------------------------+
 
-Please note that :dox:`Index#textAt textAt` can also be used if the index text is a :dox:`StringSet`.
+Please note that :dox:`Index#textAt` can also be used if the index text is a :dox:`StringSet`.
 ``pos`` can then be a :dox:`SAValue`.

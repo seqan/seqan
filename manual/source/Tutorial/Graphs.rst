@@ -81,7 +81,7 @@ These descriptors are needed to add the edges afterwards.
 .. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: create-vertices
 
-The function :dox:`Graph#addEdge addEdge` adds an edge to the graph.
+The function :dox:`Graph#addEdge` adds an edge to the graph.
 The arguments of this function are the graph to which the edge is added, the vertices that it connects, and the cargo (which is in our case the distance between the two cities).
 
 .. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
@@ -91,7 +91,7 @@ Once we have created the graph we may want to have a look at it.
 SeqAn offers the possibility to write a graph to a dot file.
 With a tool like `Graphviz <http://www.graphviz.org/>`_ you can then visualize the graph.
 
-The only thing that we have to do is to call the function :dox:`Graph#write write` on a file stream with the tag ``DotDrawing()`` and pass over our graph ``g``.
+The only thing that we have to do is to call the function :dox:`Graph#write` on a file stream with the tag ``DotDrawing()`` and pass over our graph ``g``.
 
 .. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: main-graph-io
@@ -136,7 +136,7 @@ Assignment 2
    Objective
       Write a program which creates a directed graph with the following edges:
       ``(1,0), (0,4), (2,1), (4,1), (5,1), (6,2), (3,2), (2,3), (7,3), (5,4), (6,5), (5,6), (7,6), (7,7)``
-      Use the function :dox:`Graph#addEdges addEdges` instead of adding each edge separately.
+      Use the function :dox:`Graph#addEdges` instead of adding each edge separately.
       Output the graph to the screen.
 
    Solution
@@ -156,7 +156,7 @@ Assignment 2
 	   :fragment: typedefs
 
 	The function :dox:`Graph#addEdges` takes as parameters an array of vertex descriptors and the number of edges.
-	The array of vertex descriptors is sorted in the way predecessor1, successor1, predecessor2, successor2, ... 
+	The array of vertex descriptors is sorted in the way predecessor1, successor1, predecessor2, successor2, ...
 
 	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: main-graph-construction
@@ -269,8 +269,8 @@ Assignment 3
 
 	For the HMM, only the transition probabilities are still missing.
 	A transition is represented by an edge of our HMM graph type.
-	The cargo on these edges correspond to the transition probabilities. 
-	 
+	The cargo on these edges correspond to the transition probabilities.
+
 	Since the sequences always start with an exon, we set the transition probability from the begin state to the exon state to 1.0 calling the already well-known function :dox:`Graph#addEdge`.
 	And also the other transitions can be defined in the same way.
 
@@ -313,7 +313,7 @@ We will now see how to associate the city names with the vertices.
 SeqAn uses :dox:`ExternalPropertyMap External Property Map` to attach auxiliary information to the vertices and edges of a graph.
 The cargo parameter that we used above associated distances to the edges.
 In most scenarios you should use an external property map to attach information to a graph.
-Be aware that the word external is a hint that the information is stored independently of the graph and functions like :dox:`Graph#removeVertex removeVertex` do not affect the property map.
+Be aware that the word external is a hint that the information is stored independently of the graph and functions like :dox:`Graph#removeVertex` do not affect the property map.
 Property maps are simply :dox:`String Strings` of a property type and are indexed via the already well-known vertex and edge descriptors.
 
 Lets see how we can define a vertex property map for the city names.
@@ -335,11 +335,11 @@ But let us first have a quick look at iterators for graph types.
 SeqAn provides six different specializations for graph iterators: :dox:`VertexIterator Vertex Iterator`, :dox:`AdjacencyIterator Adjacency Iterator`, :dox:`DfsPreorderIterator Dfs Preorder Iterator`, and :dox:`BfsIterator Bfs Iterator` for traversing vertices, and :dox:`EdgeIterator Edge Iterator` and :dox:`OutEdgeIterator Out-edge Iterator` for traversing edges.
 Except for the :dox:`VertexIterator Vertex Iterator` and the :dox:`EdgeIterator Edge Iterator` they depend additionally to the graph on a specified edge or vertex.
 
-To output all vertices of our graph in an arbitrary order, we can define an iterator of the specialization :dox:`VertexIterator Vertex Iterator` and determine its type with the metafunction :dox:`ContainerConcept#Iterator Iterator`.
-The functions :dox:`RootedIteratorConcept#atEnd atEnd` and :dox:`InputIteratorConcept#goNext goNext` also work for graph iterators as for all other iterators in SeqAn.
+To output all vertices of our graph in an arbitrary order, we can define an iterator of the specialization :dox:`VertexIterator Vertex Iterator` and determine its type with the metafunction :dox:`ContainerConcept#Iterator`.
+The functions :dox:`RootedIteratorConcept#atEnd` and :dox:`InputIteratorConcept#goNext` also work for graph iterators as for all other iterators in SeqAn.
 
-The :dox:`IteratorAssociatedTypesConcept#value value` of any type of vertex iterator is the vertex descriptor.
-To print out all city names we have to call the function :dox:`ExternalPropertyMap#getProperty getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
+The :dox:`IteratorAssociatedTypesConcept#value` of any type of vertex iterator is the vertex descriptor.
+To print out all city names we have to call the function :dox:`ExternalPropertyMap#getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
 
 .. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: iterate-and-output-properties
@@ -366,7 +366,7 @@ Assignment 4
      Add a vertex map to the program from task 2:
 
      #. The map shall assign a lower-case letter to each of the seven vertices.
-        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`ExternalPropertyMap#assignProperty assignProperty` for each vertex separately).
+        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`ExternalPropertyMap#assignProperty` for each vertex separately).
      #. Show that the graph is not connected by iterating through the graph in depth-first-search ordering.
         Output the properties of the reached vertices.
 
@@ -382,7 +382,7 @@ Assignment 4
 	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: vertex-map
 
-	To iterate through the graph in depth-first-search ordering we have to define an dox:`Container#Iterator` with the specialization :dox:`DfsPreorderIterator`.
+	To iterate through the graph in depth-first-search ordering we have to define an :dox:`Container#Iterator` with the specialization :dox:`DfsPreorderIterator`.
 
 	The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
 
@@ -456,7 +456,7 @@ The cargo of a graph might as well be a string of characters or any other type.
 So, we first have to find out how to access our internal edge map.
 We do not need to copy the information to a new map.
 Instead we can define an object of the type :dox:`InternalMap` of our type ``TCargo``.
-It will automatically find the edge labels in the graph when the function :dox:`ExternalPropertyMap#property property` or :dox:`ExternalPropertyMap#getProperty getProperty` is called on it with the corresponding edge descriptor.
+It will automatically find the edge labels in the graph when the function :dox:`ExternalPropertyMap#property` or :dox:`ExternalPropertyMap#getProperty` is called on it with the corresponding edge descriptor.
 
 The output containers of the shortest-path algorithm are two property maps, ``predMap`` and ``distMap``.
 The ``predMap`` is a vertex map that determines a shortest-paths-tree by mapping the predecessor to each vertex.
@@ -473,7 +473,7 @@ Having defined all these property maps, we can then call the function :dox:`dijk
    dijkstra(g,vertHannover,cargoMap,predMap,distMap);
 
 Finally, we have to output the result.
-Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`ExternalPropertyMap#property property` on the corresponding property map.
+Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`ExternalPropertyMap#property` on the corresponding property map.
 
 .. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: dijkstra-output
@@ -502,7 +502,7 @@ Assignments 5
 	   :fragment: connected-components
 
 	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`ExternalPropertyMap#getProperty`.
-	One way of doing so is to define a dox:`VertexIterator`.
+	One way of doing so is to define a :dox:`VertexIterator`.
 
 	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: output-connected-components
@@ -547,19 +547,19 @@ Assignment 6
 	In `Assignment 3`_ we defined an HMM with three states: exon, splice, and intron.
 
 	The Viterbi path is the sequence of states that is most likely to produce a given output.
-	In SeqAn, it can be calculated with the function :dox:`HmmAlgorithms#viterbiAlgorithm viterbiAlgorithm`.
+	In SeqAn, it can be calculated with the function :dox:`HmmAlgorithms#viterbiAlgorithm`.
 	The produced output for this assignment is the DNA sequence ``s``.
 
-	The first parameter of the function :dox:`HmmAlgorithms#viterbiAlgorithm viterbiAlgorithm` is of course the HMM, and the second parameter is the sequence ``s``.
+	The first parameter of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is of course the HMM, and the second parameter is the sequence ``s``.
 	The third parameter is an output parameter that will be filled by the function.
 	Since we want to compute a sequence of states, this third parameter is a :dox:`String` of :dox:`VertexDescriptor VertexDescriptors` which assigns a state to each character of the sequence ``s``.
 
-	The return value of the function :dox:`HmmAlgorithms#viterbiAlgorithm viterbiAlgorithm` is the overall probability of this sequence of states, the Viterbi path.
+	The return value of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is the overall probability of this sequence of states, the Viterbi path.
 
 	The only thing left is to output the path.
 	The path is usually longer than the given sequence.
 	This is because the HMM may have silent states, e.g. the begin and end state.
-	To check if a state is silent SeqAn provides the function dox:`HmmGraph#isSilent`.
+	To check if a state is silent SeqAn provides the function :dox:`HmmGraph#isSilent`.
 
 	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: viterbi

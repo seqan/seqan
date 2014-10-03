@@ -36,11 +36,11 @@ We will first describe the API for record-wise reading of sequence files and the
 
 We start out by creating a :dox:`RecordReader` object.
 For most cases, the single-pass specialization is the most appropriate one.
-Then, we can read the file record-by-record using the function :dox:`RecordReader#readRecord readRecord`.
+Then, we can read the file record-by-record using the function :dox:`RecordReader#readRecord`.
 
 To this function, we pass the buffers we want to read the record identifier and the sequence into (``id`` and ``seq``).
 This is followed by the ``reader`` object we create with the ``std::fstream`` previously opened.
-The last argument is the tag ``seqan::Fasta()`` which uses the variant of :dox:`RecordReader#readRecord readRecord` for reading FASTA files.
+The last argument is the tag ``seqan::Fasta()`` which uses the variant of :dox:`RecordReader#readRecord` for reading FASTA files.
 
 .. includefrags:: core/demos/tutorial/sequence_io/example1.cpp
 
@@ -84,7 +84,7 @@ Assignment 1
         .. includefrags:: core/demos/tutorial/sequence_io/solution1.cpp
 
 When we want to read a whole sequence (e.g. FASTA or FASTQ) file into memory then we only have to slightly adjust the example from above.
-For example, here is how we can read a whole FASTQ file into memory using the function :dox:`RecordReader#read read` into :dox:`StringSet StringSets` of :dox:`CharString CharStrings` and :dox:`Dna5String Dna5Strings`.
+For example, here is how we can read a whole FASTQ file into memory using the function :dox:`RecordReader#read` into :dox:`StringSet StringSets` of :dox:`CharString CharStrings` and :dox:`Dna5String Dna5Strings`.
 
 .. warning::
 
@@ -175,7 +175,7 @@ Otherwise, you can use a variable of type :dox:`AutoSeqStreamFormat` instead of 
 This function tries to parse the file as different formats on the first some thousand bytes.
 When this succeeds, the successfully recognized file type is stored in the object.
 
-You can then subsequently use the :dox:`AutoSeqStreamFormat` instead of a tag to the functions :dox:`RecordReader#readRecord readRecord` or :dox:`RecordReader#read read`.
+You can then subsequently use the :dox:`AutoSeqStreamFormat` instead of a tag to the functions :dox:`RecordReader#readRecord` or :dox:`RecordReader#read`.
 
 .. includefrags:: core/demos/tutorial/sequence_io/example9.cpp
 
@@ -201,8 +201,8 @@ Assignment 4
 
     Qualities and FASTA files.
 
-    When passing a ``qual`` parameter to :dox:`RecordReader#readRecord readRecord` or :dox:`RecordReader#read read` then this cannot be filled with qualities from the file since FASTA files do not contain any.
-    Instead, the ``qual`` string will be empty after the call to :dox:`RecordReader#readRecord readRecord` and after the call to :dox:`RecordReader#read read`, it will be a string set with empty entries.
+    When passing a ``qual`` parameter to :dox:`RecordReader#readRecord` or :dox:`RecordReader#read` then this cannot be filled with qualities from the file since FASTA files do not contain any.
+    Instead, the ``qual`` string will be empty after the call to :dox:`RecordReader#readRecord` and after the call to :dox:`RecordReader#read`, it will be a string set with empty entries.
     The string set will have a size that is equal to the number of records in the file.
 
 Writing Sequence Files
@@ -210,7 +210,7 @@ Writing Sequence Files
 
 Similar to reading, sequence files can be written record-by-record or as a whole.
 
-For record-wise writing, we use the function :dox:`StreamConcept#writeRecord writeRecord`.
+For record-wise writing, we use the function :dox:`StreamConcept#writeRecord`.
 This function expects as parameters, the :dox:`StreamConcept` to write to, the data to write, followed by the format tag.
 The following example writes an identifier and a sequence :dox:`StringSet` record-by-record to stdout.
 
@@ -283,7 +283,7 @@ The file is kept open as a memory mapped file.
 Then, we can access the identifier, sequence, and quality string of a record using functions such as :dox:`assignSeqId`.
 
 Indexed reading can be done through :dox:`MultiSeqFile` which is a shortcut to a memory mapped string set.
-We open the file using :dox:`File#open open` on its ``concat`` member (which is a :dox:`MMapString MMap String`).
+We open the file using :dox:`File#open` on its ``concat`` member (which is a :dox:`MMapString MMap String`).
 The function :dox:`split` then parses the file contents and sets the separating indexes of the :dox:`StringSet`.
 For this, we need the file format. We could give a specify format in the tag (e.g. ``seqan::Fastq()``) or use :dox:`AutoSeqFormat` together with :dox:`guessFormat`.
 
@@ -309,7 +309,7 @@ After guessing the file type, we can now use this knowledge to compute the start
 .. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
    :fragment: split
 
-After the call to :dox:`split`, we can get the number of sequences in the file using the function :dox:`ContainerConcept#length length`.
+After the call to :dox:`split`, we can get the number of sequences in the file using the function :dox:`ContainerConcept#length`.
 We declare the :dox:`StringSet StringSets` for storing the sequences and sequence ids and reserve the exact space for the number of elements we need.
 
 .. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
@@ -322,7 +322,7 @@ Then, we declare some buffers for storing the sequence id, characters, and the q
 
 Now, we can access the sequence, qualities and ids using the functions :dox:`assignSeq`, :dox:`assignQual`, and :dox:`assignSeqId`.
 Note that these functions still have to do some parsing of the input file.
-The number of sequences is the same as the number of entries in the ``MultiSeqFile`` ``StringSet`` as returned by :dox:`ContainerConcept#length length`.
+The number of sequences is the same as the number of entries in the ``MultiSeqFile`` ``StringSet`` as returned by :dox:`ContainerConcept#length`.
 
 In the following loop, we first extract the sequences, qualities, and the sequence id.
 Then, the qualities are stored in the :dox:`Dna5Q` letters of the string.

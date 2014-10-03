@@ -9,7 +9,7 @@ Parsing
 =======
 
 Learning Objective
-  This tutorial will explain how to use the class :dox:`RecordReader RecordReader` for the parsing of text file fo
+  This tutorial will explain how to use the class :dox:`RecordReader` for the parsing of text file fo
   You will see in-detail examples for parsing TSV-based formats such as GFF and BLAST tabular output and also for parsing the recursive Newick tree format.
 
 Difficulty
@@ -77,17 +77,17 @@ Read the file character-wise, from beginning to the end.
 
 The low-level API for the single-pass reader is as follows:
 
-+--------------------------------------------+---------------------------------------------------------------------------------------+
-| **Function**                               | **Description**                                                                       |
-+============================================+=======================================================================================+
-| :dox:`RecordReader#atEnd atEnd`            | Return ``true`` if the reader is at the end of the file, ``false`` otherwise.         |
-+--------------------------------------------+---------------------------------------------------------------------------------------+
-| :dox:`RecordReader#goNext goNext`          | Advance reader in file, return ``true`` if at end of file, ``false`` otherwise.       |
-+--------------------------------------------+---------------------------------------------------------------------------------------+
-| :dox:`RecordReader#value value`            | Return the character the reader points to at the moment.                              |
-+--------------------------------------------+---------------------------------------------------------------------------------------+
-| :dox:`RecordReader#resultCode resutlCode`  | Return ``int`` with I/O status. 0 for no error, non-0 value for error when reading.   |
-+--------------------------------------------+---------------------------------------------------------------------------------------+
++-------------------------------------------+-------------------------------------------------------------------------------------+
+| **Function**                              | **Description**                                                                     |
++===========================================+=====================================================================================+
+| :dox:`RecordReader#atEnd`                 | Return ``true`` if the reader is at the end of the file, ``false`` otherwise.       |
++-------------------------------------------+-------------------------------------------------------------------------------------+
+| :dox:`RecordReader#goNext`                | Advance reader in file, return ``true`` if at end of file, ``false`` otherwise.     |
++-------------------------------------------+-------------------------------------------------------------------------------------+
+| :dox:`RecordReader#value`                 | Return the character the reader points to at the moment.                            |
++-------------------------------------------+-------------------------------------------------------------------------------------+
+| :dox:`RecordReader#resultCode resutlCode` | Return ``int`` with I/O status. 0 for no error, non-0 value for error when reading. |
++-------------------------------------------+-------------------------------------------------------------------------------------+
 
 The following program shows another example of single-pass I/O.
 We read a text file line-by-line and append the results to a :dox:`String` of :dox:`CharString CharStrings`.
@@ -135,7 +135,7 @@ There are two big types of classes: White-listing/inclusion (``read*X*``) of cer
 The inclusion functions stop after the last read/included character, the exclusion functions stop on the first excluded/not read character.
 
 Most functions have the following interface.
-Note that all functions only **append** to the ``buffer`` argument, so you have to call :dox:`StringSet#clear clear` yourself.
+Note that all functions only **append** to the ``buffer`` argument, so you have to call :dox:`StringSet#clear` yourself.
 This facilitates optimized reading into :dox:`ConcatDirectStringSet Concat Direct StringSets`.
 
 .. code-block:: cpp
@@ -212,57 +212,57 @@ For example, if you have a line-based file format such as TSV, the last line cou
 
 The following functions are available:
 
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| **Function**                                                                                           | **Description**                                                                 |
-+========================================================================================================+=================================================================================+
-| :dox:`FileFormatTokenization#readDigits readDigits`                                                    | Read digit characters.                                                          |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readDna5IgnoringWhitespaces readDna5IgnoringWhitespaces`                  | Read DNA 5 characters, ignore whitespace.                                       |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readLetters readLetters`                                                  | Read letter characters.                                                         |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readLine readLine`                                                        | Read whole line, line break is not written into buffer.                         |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readLineStripTrailingBlanks readLineStripTrailingBlanks`                  | Read whole line, trailing blanks are not written into buffer.                   |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readNChars readNChars`                                                    | Read a fixed number of characters.                                              |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readNCharsIgnoringWhitespace readNCharsIgnoringWhitespace`                | Read a fixed number of characters, whitespace is not written into the buffer.   |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readUntilBlank readUntilBlank`                                            | Read until a blank character occurs.                                            |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readUntilChar readUntilChar`                                              | Read until the given character occurs.                                          |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#readUntilWhitespace readUntilWhitespace`                                  | Read until a whitespace character occurs.                                       |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipBlanks skipBlanks`                                                    | Skip blank characters.                                                          |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipChar skipChar`                                                        | Skip one given character.                                                       |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipLine skipLine`                                                        | Skip from the current position to the end of the line.                          |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipNChars skipNChars`                                                    | Skip a fixed number of characters.                                              |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipNCharsIgnoringWhitespace skipNCharsIgnoringWhitespace`                | Skip a fixed number of characters, ignore whitespace.                           |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilBlank skipUntilBlank`                                            | Skip until a blank character occurs.                                            |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilChar skipUntilChar`                                              | Skip until a certain character occurs                                           |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilGraph skipUntilGraph`                                            | Skip until a graph character occurs.                                            |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilLineBeginsWithChar skipUntilLineBeginsWithChar`                  | Skip until a line begins with a certain character.                              |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilLineBeginsWithOneCharOfStr skipUntilLineBeginsWithOneCharOfStr`  | Skip until a line begins with one character of a given string/list.             |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilLineBeginsWithStr skipUntilLineBeginsWithStr`                    | Skip until a line begins with a certain string.                                 |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilString skipUntilString`                                          | Skip until a certain string is found.                                           |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipUntilWhitespace skipUntilWhitespace`                                  | Skip until a whitespace character is found.                                     |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FileFormatTokenization#skipWhitespaces skipWhitespaces`                                          | Skip until a non-whitespace character is found.                                 |
-+--------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| **Function**                                                      | **Description**                                                               |
++===================================================================+===============================================================================+
+| :dox:`FileFormatTokenization#readDigits`                          | Read digit characters.                                                        |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readDna5IgnoringWhitespaces`         | Read DNA 5 characters, ignore whitespace.                                     |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readLetters`                         | Read letter characters.                                                       |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readLine`                            | Read whole line, line break is not written into buffer.                       |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readLineStripTrailingBlanks`         | Read whole line, trailing blanks are not written into buffer.                 |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readNChars`                          | Read a fixed number of characters.                                            |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readNCharsIgnoringWhitespace`        | Read a fixed number of characters, whitespace is not written into the buffer. |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readUntilBlank`                      | Read until a blank character occurs.                                          |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readUntilChar`                       | Read until the given character occurs.                                        |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#readUntilWhitespace`                 | Read until a whitespace character occurs.                                     |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipBlanks`                          | Skip blank characters.                                                        |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipChar`                            | Skip one given character.                                                     |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipLine`                            | Skip from the current position to the end of the line.                        |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipNChars`                          | Skip a fixed number of characters.                                            |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipNCharsIgnoringWhitespace`        | Skip a fixed number of characters, ignore whitespace.                         |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilBlank`                      | Skip until a blank character occurs.                                          |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilChar`                       | Skip until a certain character occurs                                         |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilGraph`                      | Skip until a graph character occurs.                                          |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilLineBeginsWithChar`         | Skip until a line begins with a certain character.                            |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilLineBeginsWithOneCharOfStr` | Skip until a line begins with one character of a given string/list.           |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilLineBeginsWithStr`          | Skip until a line begins with a certain string.                               |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilString`                     | Skip until a certain string is found.                                         |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipUntilWhitespace`                 | Skip until a whitespace character is found.                                   |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| :dox:`FileFormatTokenization#skipWhitespaces`                     | Skip until a non-whitespace character is found.                               |
++-------------------------------------------------------------------+-------------------------------------------------------------------------------+
 
 In the following example, we read the first two fields of a TSV file from stdin and dump them to stdout.
 
@@ -630,7 +630,7 @@ We also create a simple function to dump the record to a stream.
 .. includefrags:: extras/demos/tutorial/parsing/parse_blastn.cpp
    :fragment: record
 
-Then, we define :dox:`RecordReader#nextIs nextIs` functions for the ``BlastnTabComment`` and ``BlastnTabAlignment`` tags, and their represented record types.
+Then, we define :dox:`RecordReader#nextIs` functions for the ``BlastnTabComment`` and ``BlastnTabAlignment`` tags, and their represented record types.
 
 .. includefrags:: extras/demos/tutorial/parsing/parse_blastn.cpp
    :fragment: next-is
@@ -703,19 +703,19 @@ Double-Pass I/O Using the ``RecordReader``
 The :dox:`DoublePassRecordReader Double-Pass RecordReader` reader's API extends the function described above for the :dox:`SinglePassRecordReader Single-Pass RecordReader`.
 It provides the following additional global interface functions.
 
-+----------------------------------------------------------------+--------------------------------+
-| **Function**                                                   | **Description**                |
-+================================================================+================================+
-| :dox:`DoublePassRecordReader#startFirstPass startFirstPass`    | Start first pass of reading.   |
-+----------------------------------------------------------------+--------------------------------+
-| :dox:`DoublePassRecordReader#startSecondPass startSecondPass`  | Second pass of reading.        |
-+----------------------------------------------------------------+--------------------------------+
++-----------------------------------------------+------------------------------+
+| **Function**                                  | **Description**              |
++===============================================+==============================+
+| :dox:`DoublePassRecordReader#startFirstPass`  | Start first pass of reading. |
++-----------------------------------------------+------------------------------+
+| :dox:`DoublePassRecordReader#startSecondPass` | Second pass of reading.      |
++-----------------------------------------------+------------------------------+
 
-It is used as follows: For each section of the file that is to be read in the next step (one or multiple records), you first call :dox:`DoublePassRecordReader#startFirstPass startFirstPass`.
+It is used as follows: For each section of the file that is to be read in the next step (one or multiple records), you first call :dox:`DoublePassRecordReader#startFirstPass`.
 This memoizes the current position in the file.
 Then, you use the same API as for the single-pass reader to read the file.
-When you are done with this section, you call :dox:`DoublePassRecordReader#startSecondPass startSecondPass`.
-This will reset the position of the reader to the one where :dox:`DoublePassRecordReader#startFirstPass startFirstPass` was called.
+When you are done with this section, you call :dox:`DoublePassRecordReader#startSecondPass`.
+This will reset the position of the reader to the one where :dox:`DoublePassRecordReader#startFirstPass` was called.
 
 Here is an example for using double-pass I/O:
 

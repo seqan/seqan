@@ -65,7 +65,7 @@ Design & Layout Conventions
 
   ::
 
-      .. important:: 
+      .. important::
 
          Important information goes here... 
 
@@ -208,10 +208,10 @@ These levels are
 
 Review
   knowledge fortification (mainly through repetition, optionally with slight variations)
-  
+
 Application
   supervised problem solving (finely grained step-by-step assignment with at least one hint and the interim solution per step)
-  
+
 Transfer
   knowledge transfer (problem solving in a related problem domain / class)
 

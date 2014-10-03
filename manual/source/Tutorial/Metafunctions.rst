@@ -56,7 +56,7 @@ Now the function works for all sequence types ``T`` that store ``AminoAcid`` obj
 To overcome this problem, we must redefine ``temp`` in a way that it can store a value of the correct type.
 The question is: "Given a arbitrary type ``T``, what is the value type of ``T``?"
 
-The metafunction :dox:`ContainerConcept#Value Value` anwers this question: "The value type of ``T`` is given by ``Value<T>::Type``."
+The metafunction :dox:`ContainerConcept#Value` anwers this question: "The value type of ``T`` is given by ``Value<T>::Type``."
 
 Hence, the final version of our function ``exchangeFirstValues`` reads as follows:
 
@@ -80,7 +80,7 @@ The leading "``typename``" becomes necessary since ``Value<T>::Type`` is a type 
 Type Metafunctions
 ------------------
 
-The metafunction :dox:`ContainerConcept#Value Value` is a type metafunction, i.e. it is used to determine a type.
+The metafunction :dox:`ContainerConcept#Value` is a type metafunction, i.e. it is used to determine a type.
 Type metafunctions have the form:
 
 ``typename TypeMetaFunc<T1, T2, ..., TN>::Type``
@@ -152,8 +152,8 @@ Assignment 1
      The container should be specified as a template argument ``T``.
 
    Hint
-     Use the Metafunctions :dox:`ContainerConcept#Value Value` to access the type of the elements in the container.
-     Use the function :dox:`RandomAccessContainerConcept#value value` to assign the values.``
+     Use the Metafunctions :dox:`ContainerConcept#Value` to access the type of the elements in the container.
+     Use the function :dox:`RandomAccessContainerConcept#value` to assign the values.``
 
    Solution
      .. container:: foldable

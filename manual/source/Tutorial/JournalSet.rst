@@ -67,14 +67,14 @@ The specialization takes two parameters: (1) ``TValue`` defines the alphabet typ
 In our scenario we use a ``char`` alphabet and [dox:AllocString Alloc String for the host string and the insertion buffer.
 Additionally, we use a ``Sorted Array`` as the model to manage the recorded differences.
 
-We use the metafunction :dox:`HostedConcept#Host Host` to get the type of the underlying host string used for the Journaled String.
+We use the metafunction :dox:`HostedConcept#Host` to get the type of the underlying host string used for the Journaled String.
 
 .. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: typedef
 
 Now we can define the variables holding data structures.
 First, we construct our host sequence and after that we construct the Journaled String.
-Then, we set the host sequence using the function :dox:`JournaledString#setHost setHost`.
+Then, we set the host sequence using the function :dox:`JournaledString#setHost`.
 Afterwards, we examine the data structure in more detail and print the host sequence the constructed journaled sequence and the nodes of it.
 
 .. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
@@ -98,7 +98,7 @@ Again we print the host, the journaled sequence and the nodes that represent the
 .. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: modification
 
-All of this is followed by calling :dox:`JournaledString#flatten flatten` on our journeld string.
+All of this is followed by calling :dox:`JournaledString#flatten` on our journeld string.
 This call applies all journaled changes to the host sequence.
 Again we print the sequences to see the effects.
 
@@ -126,7 +126,7 @@ Here is the output of our small program.
 
 .. important::
 
-   Be careful when using the :dox:`JournaledString#flatten flatten` function as it modifies the underlying host sequence.
+   Be careful when using the :dox:`JournaledString#flatten` function as it modifies the underlying host sequence.
    This might affect other journaled sequences that share the same host sequence.
    This becomes important especially when working with Journal Sets where a whole set of sequences is journaled to the same reference.
 
@@ -136,7 +136,7 @@ Journaled Set
 The :dox:`JournaledSet` is a specialization of the :dox:`StringSet` which can be used exactly as such but also provides some additional functions optimized to work with :dox:`JournaledString JournaledStrings`.
 The general interface is equal to the interface of the StringSet.
 But it also provides some interfaces specialized for the use of Journaled Strings.
-One of these interfaces is the :dox:`JournaledSet#join join` function which journales a contained Journaled String to the previously set global reference.
+One of these interfaces is the :dox:`JournaledSet#join` function which journales a contained Journaled String to the previously set global reference.
 The following code snippet demonstrates the usage of the Journal Set and how to join a sequence to the previously set reference sequence.
 
 As usual we include the necessary headers.
@@ -149,16 +149,16 @@ The Journal Set is a specialization of the :dox:`OwnerStringSet Owner` concept o
    :fragment: main
 
 In the subsequent steps we want to set a reference sequence to the Journal Set and add some sequences to it.
-We can set the reference sequence by using the function :dox:`JournaledSet#setHost setHost`.
+We can set the reference sequence by using the function :dox:`JournaledSet#setHost`.
 This function stores only a pointer to the given sequence.
 In some cases it might be necessary to copy the reference sequence instead.
-For this purpose you can use the function :dox:`JournaledSet#createHost createHost`.
+For this purpose you can use the function :dox:`JournaledSet#createHost`.
 
 .. includefrags:: extras/demos/tutorial/data_journaling/example_join.cpp
    :fragment: init
 
 Just adding sequences to the Journal Set does not automatically journal them to the global reference sequence of the set.
-One can explicitly trigger this process using the function :dox:`JournaledSet#join join`.
+One can explicitly trigger this process using the function :dox:`JournaledSet#join`.
 This function takes as parameters the Journal Set and the position of the contained Journaled String which is to be journaled to the reference sequence.
 Thus, the programmer is free in the decision which sequence has to be journaled and which not.
 Furthermore, we can use the :dox:`JoinConfig` object to specify the method that shall be used for the journaling process.
@@ -326,7 +326,7 @@ Instead of searching each position in the Journaled String, we only search in ar
 This involves all inserted parts and all parts where the pattern crosses a border to another node.
 So instead of iterating over each position we iterate over the nodes of the Journaled String.
 To do so we have to determine the type of the data structure that is used by the Journaled String to manage the nodes.
-We can use the metafunction :dox:`JournaledString#JournalType JournalType` for this task.
+We can use the metafunction :dox:`JournaledString#JournalType` for this task.
 Afterwards we define an Iterator over the so called ``TJournalEntries`` data structure.
 
 Again we check first whether the pattern fits into our sequence.

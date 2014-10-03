@@ -40,11 +40,11 @@ The image to the right shows an example where three smaller seeds (black diagona
 The first seed lies on the begin diagonal, the lowermost seed on the lower diagonal and the uppermost seed on the upper diagonal.
 
 The :dox:`SimpleSeed Simple Seed` specialization only stores the begin and end positions of the seed (left-uppermost and right-lowermost corners of green surface) in both sequences and the upper and lower diagonal.
-The initial diagonals are not stored. The :dox:`ChainedSeed` specialization additionally stores these information.  
+The initial diagonals are not stored. The :dox:`ChainedSeed` specialization additionally stores these information.
 In most cases, the :dox:`SimpleSeed Simple Seed` class is sufficient since the best alignment around the seeds has to be determined using a banded alignment algorithm of the seed infixes anyway.
 
-You can get/set the begin and end position in the horizontal/vertical sequences using the functions :dox:`Seed#beginPositionH beginPositionH`, :dox:`Seed#beginPositionV beginPositionV`, :dox:`Seed#setBeginPositionH`, and :dox:`Seed#setBeginPositionV setBeginPositionV`.
-The band information can be queried and updated using :dox:`Seed#lowerDiagonal lowerDiagonal`, :dox:`Seed#upperDiagonal`, :dox:`Seed#setLowerDiagonal setLowerDiagonal`, and :dox:`Seed#setUpperDiagonal setUpperDiagonal`.
+You can get/set the begin and end position in the horizontal/vertical sequences using the functions :dox:`Seed#beginPositionH`, :dox:`Seed#beginPositionV`, :dox:`Seed#setBeginPositionH`, and :dox:`Seed#setBeginPositionV`.
+The band information can be queried and updated using :dox:`Seed#lowerDiagonal`, :dox:`Seed#upperDiagonal`, :dox:`Seed#setLowerDiagonal`, and :dox:`Seed#setUpperDiagonal`.
 Note, we use the capital letters 'H' and 'V' to indicate horizontal direction and vertical direction, respectively, while the database is always considered as the horizontal sequence and the query as the vertical sequence in the context of sequence alignments.
 
 The following program gives an example of creating seeds as well as setting and reading properties.
@@ -96,7 +96,7 @@ Seeds are often created quickly using a *k*-mer index: When a *k*-mer of a given
 However, the match can be longer than just *k* characters. To get longer matches, we use **seed extension**.
 
 In the most simple case we simply look for matching characters in both sequences to the left and right end of the seed.
-This is called **match extension** and available through the :dox:`Seed#extendSeed extendSeed` function using the ``MatchExtend`` tag.
+This is called **match extension** and available through the :dox:`Seed#extendSeed` function using the ``MatchExtend`` tag.
 
 .. includefrags:: core/demos/tutorial/seed_and_extend/example3.cpp
    :fragment: example
@@ -226,7 +226,7 @@ The output of the program above can be seen below.
 Note that we have used the ``Single()`` tag for adding the seeds.
 This forces the seeds to be added independent of the current seed set contents.
 
-By using different overloads of the :dox:`SeedSet#addSeed addSeed`, we can use various local chaining strategies when adding seed ``A``.
+By using different overloads of the :dox:`SeedSet#addSeed`, we can use various local chaining strategies when adding seed ``A``.
 
 ``Merge``
   If there is a seed ``B`` that overlaps with ``A`` and the difference in diagonals is smaller than a given threshold then ``A`` can be merged with ``B``.
@@ -237,7 +237,7 @@ By using different overloads of the :dox:`SeedSet#addSeed addSeed`, we can use v
 ``Chaos``
   Following the strategy of Chaos :cite:`Brudno2003b`, if ``A`` is within a certain distance to ``B`` in both sequences and the distance in diagonals is smaller than a given threshold then ``A`` can be chained to ``B``.
 
-The :dox:`SeedSet#addSeed addSeed` function returns a boolean value indicating success in finding a suitable partner for chaining.
+The :dox:`SeedSet#addSeed` function returns a boolean value indicating success in finding a suitable partner for chaining.
 A call using the ``Single`` strategy always yields ``true``.
 
 The following example shows how to use the ``SimpleChain`` strategy.

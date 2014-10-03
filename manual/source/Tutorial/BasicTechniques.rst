@@ -8,7 +8,7 @@
 Basic Techniques
 ----------------
 
-.. todo:: 
+.. todo::
 
    Here should come an easy introduction into STL code. Has low priority
 

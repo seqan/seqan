@@ -138,7 +138,7 @@ Assignment 1
      Write a program that reads in a BGZF compressed file using :dox:`BgzfStream BGZF Stream` and writes the uncompressed data out again.
 
    Hint
-     Use the function :dox:`StreamConcept#streamReadBlock streamReadBlock` and :dox:`StreamConcept#streamWriteBlock streamWriteBlock` for reading and writing data into and from buffers.
+     Use the function :dox:`StreamConcept#streamReadBlock` and :dox:`StreamConcept#streamWriteBlock` for reading and writing data into and from buffers.
 
    Solution
      .. container:: foldable
@@ -261,12 +261,12 @@ Using Indices
 SeqAn also contains support for reading BAM indices with the format ``.bai``.
 These indices can be built using the ``samtools index`` command.
 
-You can read such indices into a :dox:`BaiBamIndex BAI BamIndex` object with the function :dox:`BamIndex#read read`.
+You can read such indices into a :dox:`BaiBamIndex BAI BamIndex` object with the function :dox:`BamIndex#read`.
 Then, you can use the function seqan:"Function.BamIndex#jumpToRegion" to jump within BAM files.
 
 After jumping, the next record that is read is before at the given position.
 This means, you have to manually read as many records up until the one you are looking for is found.
-The reason for this is that the function :dox:`BamIndex#jumpToRegion jumpToRegion` would have to read until it finds the first record that is right from or at the given position.
+The reason for this is that the function :dox:`BamIndex#jumpToRegion` would have to read until it finds the first record that is right from or at the given position.
 This would lead to this record being lost.
 
 .. includefrags:: extras/demos/tutorial/bam_io/example7.cpp
