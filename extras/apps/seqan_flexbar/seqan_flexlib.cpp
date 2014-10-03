@@ -108,7 +108,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     addOption(parser, recordOpt);
 
     seqan::ArgParseOption noQualOpt = seqan::ArgParseOption(
-        "nq", "noQualities", "Force .fasta format for output files.");
+        "nq", "noQualities", "Force .fa format for output files.");
         addOption(parser, noQualOpt);
 
     seqan::ArgParseOption threadOpt = seqan::ArgParseOption(
@@ -129,7 +129,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
-            "o", "output", "Prefix and file ending of output files (prefix$.fasta - $: placeholder which will be determined by the program.).",
+            "o", "output", "Prefix and file ending of output files (prefix$.fa - $: placeholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
         setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
@@ -1524,7 +1524,7 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
             ((programParams.fileCount == 2) &&
             (value(programParams.fileStream2.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE)))
         {
-            std::cerr << "\nQuality trimming requires quality information, please specify fastq files." << std::endl;
+            std::cerr << "\nQuality trimming requires quality information, please specify fq files." << std::endl;
             return 1;
         }
     }
