@@ -679,7 +679,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     resize(highestChrId,length(options.readFNames),0);
     vector< ::std::fstream* > readFileStreams;
     readFileStreams.resize(length(options.readFNames));
-    for(unsigned i = 0; options.inputFormat != 2 && i < length(options.readFNames); ++i)
+    for (unsigned i = 0; options.inputFormat == 0 && i < length(options.readFNames); ++i)
     {
         readFileStreams[i] = new fstream(toCString(options.readFNames[i]), ios_base::in | ios::binary);
         if(!(*(readFileStreams[i])).is_open())
@@ -1107,8 +1107,10 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setValidValues(parser, 0, ".fa .fasta");
     setHelpText(parser, 0, "A reference genome file.");
 
+    std::vector<std::string> alignmentFormats(BamFileIn::getFileFormatExtensions());
+    alignmentFormats.push_back(".gff");
     addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "ALIGNMENTS", true));
-    setValidValues(parser, 1, ".sam .bam .gff");
+    setValidValues(parser, 1, alignmentFormats);
     setHelpText(parser, 1, "Read alignment file(s) sorted by genomic position.");
 
     addDescription(parser, "SNP and Indel Calling in Mapped Read Data.");
