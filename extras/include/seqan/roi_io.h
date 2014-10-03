@@ -54,5 +54,6 @@
 #include <seqan/roi_io/roi_io_context.h>
 #include <seqan/roi_io/read_roi.h>
 #include <seqan/roi_io/write_roi.h>
+#include <seqan/roi_io/roi_file.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
