@@ -287,128 +287,51 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 }
 
 // ----------------------------------------------------------------------------
-// Function configureAnchoring()
+// Function configureMapper()
 // ----------------------------------------------------------------------------
 
 //template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing, typename TStrategy>
-//void configureAnchoring(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-//                        TOutputFormat const & format, TSequencing const & sequencing, TStrategy const & strategy)
+//void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 //{
 //    if (options.anchorOne)
-//        spawnMapper(options, execSpace, threading, format, sequencing, strategy, AnchorOne());
+//        spawnMapper(options, threading, sequencing, strategy, AnchorOne());
 //    else
-//        spawnMapper(options, execSpace, threading, format, sequencing, strategy, AnchorBoth());
+//        spawnMapper(options, threading, sequencing, strategy, AnchorBoth());
 //}
 
-// ----------------------------------------------------------------------------
-// Function configureInputType()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing, typename TStrategy>
-void configureInputType(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                        TOutputFormat const & format, TSequencing const & sequencing, TStrategy const & strategy)
-{
-    switch (options.inputType)
-    {
-    case PLAIN:
-        return spawnMapper(options, execSpace, threading, Nothing(), format, sequencing, strategy);
-
-#ifdef SEQAN_HAS_ZLIB
-    case GZIP:
-        return spawnMapper(options, execSpace, threading, GZFile(), format, sequencing, strategy);
-#endif
-
-#ifdef SEQAN_HAS_BZIP2
-    case BZIP2:
-        return spawnMapper(options, execSpace, threading, BZ2File(), format, sequencing, strategy);
-#endif
-
-    default:
-        return;
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function configureStrategy()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing>
-void configureStrategy(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                       TOutputFormat const & format, TSequencing const & sequencing)
+template <typename TThreading, typename TSequencing>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 {
     switch (options.mappingMode)
     {
     case STRATA:
-        return configureInputType(options, execSpace, threading, format, sequencing, Strata());
+        return spawnMapper(options, threading, sequencing, Strata());
 
     case ALL:
-        return configureInputType(options, execSpace, threading, format, sequencing, All());
+        return spawnMapper(options, threading, sequencing, All());
 
     default:
         return;
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function configureSequencing()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat>
-void configureSequencing(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                         TOutputFormat const & format)
+template <typename TThreading>
+void configureMapper(Options const & options, TThreading const & threading)
 {
     if (options.singleEnd)
-        configureStrategy(options, execSpace, threading, format, SingleEnd());
+        configureMapper(options, threading, SingleEnd());
     else
-        configureStrategy(options, execSpace, threading, format, PairedEnd());
-
-//        configureAnchoring(options, execSpace, threading, format, PairedEnd(), All());
+        configureMapper(options, threading, PairedEnd());
 }
-
-// ----------------------------------------------------------------------------
-// Function configureOutputFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading>
-void configureOutputFormat(Options const & options, TExecSpace const & execSpace, TThreading const & threading)
-{
-    switch (options.outputFormat)
-    {
-    case SAM:
-        return configureSequencing(options, execSpace, threading, Sam());
-
-#ifdef SEQAN_HAS_ZLIB
-    case BAM:
-        return configureSequencing(options, execSpace, threading, Bam());
-#endif
-
-    default:
-        return;
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function configureThreading()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace>
-void configureThreading(Options const & options, TExecSpace const & execSpace)
-{
-#ifdef _OPENMP
-    if (options.threadsCount > 1)
-        configureOutputFormat(options, execSpace, Parallel());
-    else
-#endif
-        configureOutputFormat(options, execSpace, Serial());
-}
-
-// ----------------------------------------------------------------------------
-// Function configureMapper()
-// ----------------------------------------------------------------------------
 
 void configureMapper(Options const & options)
 {
-    configureThreading(options, ExecHost());
+#ifdef _OPENMP
+    if (options.threadsCount > 1)
+        configureMapper(options, Parallel());
+    else
+#endif
+        configureMapper(options, Serial());
 }
 
 // ----------------------------------------------------------------------------
