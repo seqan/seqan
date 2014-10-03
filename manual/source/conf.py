@@ -269,7 +269,7 @@ texinfo_documents = [
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
     html_context = {
-      #'disqus_shortname': 'seqan-manual',
+      'disqus_shortname': 'seqan-manual',
     }
 
 # -- Options for SeqAn plugins ----------------------------------------------
