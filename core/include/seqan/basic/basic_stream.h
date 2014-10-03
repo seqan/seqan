@@ -561,9 +561,27 @@ write(TOValue *ptr, TFwdIterator &iter, TSize n)
     }
 }
 
+// non-chunked fallback
+template <typename TTarget, typename TIValue, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(And< IsSameType<typename Chunk<TTarget>::Type, Nothing>,
+                                 Is<Convertible<typename Value<TTarget>::Type, TIValue> > >, void)
+write(TTarget &target, TIValue *ptr, TSize n)
+{
+    _write(target, ptr, n, Nothing(), Nothing());
+}
+
+// ostream shortcut, source is pointer (e.g. readRawPod)
+template <typename TTarget, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(Is< OutputStreamConcept<TTarget> >, void)
+write(TTarget &target, const char *ptr, TSize n)
+{
+    target.write(ptr, n);
+}
+
 // chunked, source is pointer (e.g. readRawPod)
 template <typename TTarget, typename TIValue, typename TSize>
-inline SEQAN_FUNC_DISABLE_IF(IsSameType<typename Chunk<TTarget>::Type, Nothing>, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Not<IsSameType<typename Chunk<TTarget>::Type, Nothing> >,
+                                 Is<Convertible<typename Value<TTarget>::Type, TIValue> > >, void)
 write(TTarget &target, TIValue *ptr, TSize n)
 {
     typedef Nothing* TNoChunking;
@@ -700,7 +718,8 @@ inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
                                  IsContiguous<TContainer> >, void)
 write(TTarget &target, TContainer const &cont)
 {
-    write(target, begin(cont, Standard()), length(cont));
+    typename Iterator<TContainer const, Standard>::Type iter = begin(cont, Standard());
+    write(target, iter, length(cont));
 }
 
 

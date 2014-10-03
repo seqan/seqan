@@ -201,44 +201,37 @@ TStream & operator<<(TStream & stream, GsiRecord const & record)
 // Function readRecord()                                           [GsiHeader]
 // ---------------------------------------------------------------------------
 
-// Read GSI header line ("@GSI\tVN:1.1") from record reader.
+// Read GSI header line ("@GSI\tVN:1.1") from forward iterator.
 
-template <typename TStream, typename TSpec>
-int readRecord(GsiHeader & header, RecordReader<TStream, TSpec> & reader, Gsi const & /*tag*/)
+template <typename TForwardIter>
+void readRecord(GsiHeader & header, TForwardIter & iter, Gsi const & /*tag*/)
 {
     (void) header;
 
     CharString tmp;
     // Read "@GSI".
-    if (readUntilTabOrLineBreak(tmp, reader) != 0)
-        return 1;  // Could not read header.
+    readUntil(tmp, iter, OrFunctor<IsTab, IsNewline>());
 
     if (tmp != "@GSI")
         std::cerr << "WARNING: File did not begin with \"@GSI\", was: \"" << tmp << "\"" << std::endl;
     // Skip "\t".
-    if (skipChar(reader, '\t') != 0)
-        return 1;  // Next char was not TAB.
+    skipOne(iter, IsTab());
 
     // Read "VN:1.1".
     clear(tmp);
-    if (readUntilTabOrLineBreak(tmp, reader) != 0)
-        return 1;  // Could not read version.
+    readUntil(tmp, iter, OrFunctor<IsTab, IsNewline>());
 
     if (tmp != "VN:1.1")
         std::cerr << "WARNING: Version is not \"VN:1.1\", was: \"" << tmp << "\"" << std::endl;
     // Skip to and after end of line.
-    skipLine(reader);
+    skipLine(iter);
     // Maybe read/skip additional header lines.
-    while (!atEnd(reader) && value(reader) == '@')
-        if (skipLine(reader) != 0)
-            return 1;
+    while (!atEnd(iter) && *iter == '@')
+        skipLine(iter);
 
     // Skipy any trailing comment lines.
-    while (!atEnd(reader) && value(reader) == '#')
-        if (skipLine(reader) != 0)
-            return 1;
-
-    return 0;
+    while (!atEnd(iter) && *iter == '#')
+        skipLine(iter);
 }
 
 // ---------------------------------------------------------------------------
@@ -259,24 +252,20 @@ int readRecord(GsiHeader & header, RecordReader<TStream, TSpec> & reader, Gsi co
 //
 // Returns true iff the record could be successfully read from the file.
 
-template <typename TStream, typename TSpec>
-int readRecord(GsiRecord & record, RecordReader<TStream, TSpec> & reader, Gsi const & /*tag*/)
+template <typename TForwardIter>
+void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 {
     CharString buffer;
 
     // No more records in file.
-    if (atEnd(reader))
-        return 1;
+    if (atEnd(iter))
+        throw seqan::UnexpectedEnd();
 
     // Read read name.
     clear(record);
-    if (readUntilTabOrLineBreak(record.readName, reader) != 0)
-        return 1;
+    readUntil(record.readName, iter, OrFunctor<IsTab, IsNewline>());
 
-    if (value(reader) != '\t')
-        return 1;
-
-    skipChar(reader, '\t');
+    skipOne(iter, IsTab());
 
     // Interpret trailing characters for mate-pair identifier in read name.
     if (length(record.readName) >= 2u && record.readName[length(record.readName) - 2] == '/')
@@ -287,81 +276,49 @@ int readRecord(GsiRecord & record, RecordReader<TStream, TSpec> & reader, Gsi co
         else if (c == '1')
             record.flags = GsiRecord::FLAG_PAIRED | GsiRecord::FLAG_SECOND_MATE;
         else
-            return 1;  // Could not interpret trailing mate indicator.
+            throw seqan::ParseError("Could not interpret trailing mate indicator.");
 
         resize(record.readName, length(record.readName) - 2);
     }
 
-    // Read distance.
-    if (readUntilTabOrLineBreak(buffer, reader) != 0)
-        return 1;
-
-    if (!lexicalCast2(record.distance, buffer))
-        return 1;  // Could not convert distance.
+    // Read distance and perform lexical casting.
+    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+    lexicalCastWithException(record.distance, buffer);
 
     record.originalDistance = record.distance;
-    if (value(reader) != '\t')
-        return 1;
 
-    skipChar(reader, '\t');
+    skipOne(iter, IsTab());
 
     // Read contig name.
-    if (readUntilTabOrLineBreak(record.contigName, reader) != 0)
-        return 1;
+    readUntil(record.contigName, iter, OrFunctor<IsTab, IsNewline>());
 
-    if (value(reader) != '\t')
-        return 1;
-
-    skipChar(reader, '\t');
+    skipOne(iter, IsTab());
 
     // Read 'F'/'R'.
-    clear(buffer);
-    if (readUntilTabOrLineBreak(buffer, reader) != 0)
-        return 1;
-
-    if (buffer != "F" && buffer != "R")
-        return 1;
-
+    resize(buffer, 1, '?');
+    readOne(buffer[0], iter, OrFunctor<EqualsChar<'F'>, EqualsChar<'R'> >());
     record.isForward = (buffer[0] == 'F');
-    if (value(reader) != '\t')
-        return 1;
 
-    skipChar(reader, '\t');
+    skipOne(iter, IsTab());
 
-    // Read first pos.
+    // Read first pos and perform lexical casting.
     clear(buffer);
-    if (readUntilTabOrLineBreak(buffer, reader) != 0)
-        return 1;
+    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+    lexicalCastWithException(record.firstPos, buffer);
 
-    if (!lexicalCast2(record.firstPos, buffer))
-        return 1;
-
-    if (value(reader) != '\t')
-        return 1;
-
-    skipChar(reader, '\t');
+    skipOne(iter, IsTab());
 
     // Read last pos.
     clear(buffer);
-    if (readUntilTabOrLineBreak(buffer, reader) != 0)
-        return 1;
+    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
 
-    if (!lexicalCast2(record.lastPos, buffer))
-        return 1;
+    lexicalCastWithException(record.lastPos, buffer);
 
-    // We only allow '\t' here because output buggy.
-    if (value(reader) != '\t' && value(reader) != '\r' && value(reader) != '\n')
-        return 1;
-
-    if (skipLine(reader) != 0)
-        return 1;  // Skip line.
+    skipLine(iter);
 
     // Skipy any trailing comment lines.
-    while (!atEnd(reader) && value(reader) == '#')
-        if (skipLine(reader) != 0)
-            return 1;
-
-    return 0;
+    while (!atEnd(iter) && *iter == '#')
+        skipLine(iter);
 }
 
 // ---------------------------------------------------------------------------
@@ -375,13 +332,10 @@ int readRecord(GsiRecord & record, RecordReader<TStream, TSpec> & reader, Gsi co
 // stream -- Stream to write to.
 
 template <typename TStream>
-int writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, "@GSI\tVN:1.1\n") != 0)
-        return 1;
-    if (streamPut(stream, "@MATES\tSEP:/\tTYPE:01\n") != 0)
-        return 1;
-    return 0;
+    stream << "@GSI\tVN:1.1\n"
+           << "@MATES\tSEP:/\tTYPE:01\n";
 }
 
 // ---------------------------------------------------------------------------
@@ -397,15 +351,9 @@ int writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*ta
 // str    -- string to write to stream.
 
 template <typename TStream>
-int writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, '#') != 0)
-        return 1;
-    if (streamPut(stream, str) != 0)
-        return 1;
-    if (streamPut(stream, '\n') != 0)
-        return 1;
-    return 0;
+    stream << '#' << str << '\n';
 }
 
 // ---------------------------------------------------------------------------
@@ -420,52 +368,23 @@ int writeRecord(TStream & stream, CharString const & str, Gsi const & /*tag*/)
 // record -- the GsiRecord to write out.
 
 template <typename TStream>
-int writeRecord(TStream & stream, GsiRecord const & record, Gsi const & /*tag*/)
+void writeRecord(TStream & stream, GsiRecord const & record, Gsi const & /*tag*/)
 {
-    if (streamPut(stream, record.readName) != 0)
-        return 1;
+    stream << record.readName;
     if (record.flags & GsiRecord::FLAG_PAIRED)
     {
         if (record.flags & GsiRecord::FLAG_FIRST_MATE)
-        {
-            if (streamPut(stream, "/0") != 0)
-                return 1;
-        }
+            stream << "/0";
         else if (record.flags & GsiRecord::FLAG_SECOND_MATE)
-        {
-            if (streamPut(stream, "/1") != 0)
-                return 1;
-        }
+            stream << "/1";
         else
-        {
-            if (streamPut(stream, "/?") != 0)
-                return 1;
-        }
+            stream << "/?";
     }
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.distance) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.contigName) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, (record.isForward ? 'F' : 'R')) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.firstPos) != 0)
-        return 1;
-    if (streamPut(stream, '\t') != 0)
-        return 1;
-    if (streamPut(stream, record.lastPos) != 0)
-        return 1;
-    if (streamPut(stream, '\n') != 0)
-        return 1;
-
-    return 0;
+    stream << '\t' << record.distance << '\t'
+           << record.contigName << '\t'
+           << (record.isForward ? 'F' : 'R') << '\t'
+           << record.firstPos << '\t'
+           << record.lastPos << '\n';
 }
 
 #endif  // #ifndef SEQAN_CORE_APPS_RABEMA_IO_GSI_H_

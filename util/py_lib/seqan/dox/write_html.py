@@ -513,9 +513,9 @@ class HtmlWriter(object):
                     for s in t:
                         sID = s.title
                         title = proc_doc.splitSecondLevelEntry(s.title)[1]
-                        subentries.append({'type': s.kind, 'title': title, 'id': sID})
-            js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
-                      (repr(entry.title), repr(""), repr(akas), repr(subentries),
+                        subentries.append({'type': s.kind, 'name': s.name, 'title': title, 'id': sID})
+            js.append('  {title:%s,name:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
+                      (repr(entry.title), repr(entry.name), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
                        repr(entry.kind)))
         js.append('];')

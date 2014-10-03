@@ -126,9 +126,7 @@ public:
 
     // Exactly one of the following has to be set.
     //
-    // Path to input SAM file.
-    CharString inSamPath;
-    // Path to input BAM file.
+    // Path to input SAM or BAM file.
     CharString inBamPath;
 
     // Path to output TSV stats file.
@@ -144,10 +142,10 @@ public:
     // Print the missed intervals to stderr for debugging purposes.
     bool showMissedIntervals;
 
-    // Print superflous intervals (intervals found in Sam file but have too bad score).
+    // Print superflous intervals (intervals found in BAM file but have too bad score).
     bool showSuperflousIntervals;
 
-    // Print additional intervals (intervals found in Sam with good score that are not in WIT file).
+    // Print additional intervals (intervals found in BAM with good score that are not in WIT file).
     bool showAdditionalIntervals;
 
     // Print the hit intervals to stderr for debugging purposes.
@@ -357,10 +355,9 @@ void performIntervalLowering(String<GsiRecord> & gsiRecords, int maxError)
 template <typename TPatternSpec>
 int benchmarkReadResult(RabemaStats & result,
                         String<BamAlignmentRecord> const & samRecords,
-                        BamIOContext<StringSet<CharString> > const & bamIOContext,
+                        BamFileIn const & bamFileIn,
                         String<GsiRecord> const & gsiRecords,
-                        StringSet<CharString> const & refSeqNames,
-                        NameStoreCache<StringSet<CharString> > const & refSeqNamesCache,
+                        FaiIndex const & faiIndex,
                         StringSet<Dna5String> const & refSeqs,
                         RefIdMapping const & refIdMapping,
                         RabemaEvaluationOptions const & options,
@@ -445,8 +442,7 @@ int benchmarkReadResult(RabemaStats & result,
 #endif  // DEBUG_RABEMA
 
         // Get index of the sequence from GSI record contig name.
-        if (!getIdByName(refSeqNames, back(pickedGsiRecords).contigName, back(pickedGsiRecords).contigId,
-                         refSeqNamesCache))
+        if (!getIdByName(back(pickedGsiRecords).contigId, faiIndex, back(pickedGsiRecords).contigName))
         {
             std::cerr << "ERROR: Could not find reference sequence for name "
                       << back(pickedGsiRecords).contigName << '\n';
@@ -640,7 +636,7 @@ int benchmarkReadResult(RabemaStats & result,
         unsigned lastPos = hasFlagRC(samRecord) ? length(refSeqs[seqId]) - samRecord.beginPos - 1 : endPos - 1;
 
         if (options.showTryHitIntervals)
-            std::cerr << "TRY HIT\tchr=" << refSeqNames[seqId] << "\tlastPos=" << lastPos << "\tqName="
+            std::cerr << "TRY HIT\tchr=" << sequenceName(faiIndex, seqId) << "\tlastPos=" << lastPos << "\tqName="
                       << samRecord.qName << "\n";
 
         // Try to hit any interval.
@@ -675,7 +671,8 @@ int benchmarkReadResult(RabemaStats & result,
                 if (options.showSuperflousIntervals)
                 {
                     std::cerr << "SUPERFLOUS/INVALID\t";
-                    write2(std::cerr, samRecord, bamIOContext, Sam());
+                    DirectionIterator<std::ostream, Output>::Type cerrIt = directionIterator(std::cerr, Output());
+                    write(cerrIt, samRecord, context(bamFileIn), Sam());
                     std::cerr << "  DISTANCE:        \t" << bestDistance << '\n'
                               << "  ALLOWED DISTANCE:\t" << options.maxError << '\n';
                 }
@@ -687,7 +684,8 @@ int benchmarkReadResult(RabemaStats & result,
             if (options.showAdditionalIntervals || !options.dontPanic)
             {
                 std::cerr << "ADDITIONAL HIT\t";
-                write2(std::cerr, samRecord, bamIOContext, Sam());
+                DirectionIterator<std::ostream, Output>::Type cerrIt = directionIterator(std::cerr, Output());
+                write(cerrIt, samRecord, context(bamFileIn), Sam());
                 std::cerr << '\n';
 
                 for (unsigned i = 0; i < length(filteredGsiRecords); ++i)
@@ -850,39 +848,46 @@ void clearPairedFlags(seqan::BamAlignmentRecord & record)
 //
 // Both the SAM/BAM file and the GSI file have to be sorted by queryname for this to work.
 
-template <typename TStreamOrReader, typename TGsiStream, typename TGsiStreamSpec, typename TPatternSpec,
-          typename TFormat>
+template <typename TForwardIter, typename TPatternSpec>
 int
 compareAlignedReadsToReference(RabemaStats & result,
-                               TStreamOrReader & streamOrReader,  // SAM/BAM
-                               BamIOContext<StringSet<CharString> > & bamIOContext,
-                               StringSet<CharString> const & refNameStore,
-                               NameStoreCache<StringSet<CharString> > const & refNameStoreCache,
+                               BamFileIn & bamFileIn,
+                               FaiIndex const & faiIndex,
                                StringSet<Dna5String> const & refSeqs,
-                               RecordReader<TGsiStream, TGsiStreamSpec> & gsiReader,
+                               TForwardIter & gsiIter,
                                RabemaEvaluationOptions const & options,
-                               TPatternSpec const & tagPattern,
-                               TFormat const & formatTag)
+                               TPatternSpec const & tagPattern)
 {
     // Mapping between ref IDs from SAM/BAM file and reference sequence (from SAM/BAM file to reference sequences).
     RefIdMapping refIdMapping;
-    rebuildMapping(refIdMapping, refNameStore, refNameStoreCache, nameStore(bamIOContext));
+    rebuildMapping(refIdMapping, faiIndex.seqNameStore, faiIndex.seqNameStoreCache,
+                   nameStore(context(bamFileIn)));
 
     // Read in initial SAM/GSI records.
     BamAlignmentRecord samRecord;
-    if (atEnd(streamOrReader) || readRecord(samRecord, bamIOContext, streamOrReader, formatTag) != 0)
-    {
-        std::cerr << "ERROR: Could not read first SAM/BAM record.\n";
-        return 1;
-    }
+    if (!atEnd(bamFileIn))
+        try
+        {
+            readRecord(samRecord, bamFileIn);
+        }
+        catch (IOError const & ioErr)
+        {
+            std::cerr << "ERROR: Could not read first SAM/BAM record.\n";
+            return 1;
+        }
     if (options.ignorePairedFlags)
         clearPairedFlags(samRecord);
     GsiRecord gsiRecord;
-    if (atEnd(gsiReader) || readRecord(gsiRecord, gsiReader, Gsi()) != 0)
-    {
-        std::cerr << "ERROR: Could not read first GSI record.\n";
-        return 1;
-    }
+    if (!atEnd(gsiIter))
+        try
+        {
+            readRecord(gsiRecord, gsiIter, Gsi());
+        }
+        catch (IOError const & ioErr)
+        {
+            std::cerr << "ERROR: Could not read first GSI record.\n";
+            return 1;
+        }
 
     // Current SAM/BAM and GSI records are stored in these arrays.
     String<BamAlignmentRecord> currentSamRecords;
@@ -929,13 +934,17 @@ compareAlignedReadsToReference(RabemaStats & result,
                 seenPairedEnd |= hasFlagMultiple(samRecord);
                 appendValue(currentSamRecords, samRecord);
             }
-            if (atEnd(streamOrReader))
+            if (atEnd(bamFileIn))
             {
                 // At end of SAM/BAM File, do not read next one.
                 samDone = true;
                 continue;
             }
-            if (readRecord(samRecord, bamIOContext, streamOrReader, formatTag) != 0)
+            try
+            {
+                readRecord(samRecord, bamFileIn);
+            }
+            catch (IOError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read SAM/BAM record.\n";
                 return 1;
@@ -950,8 +959,9 @@ compareAlignedReadsToReference(RabemaStats & result,
                 return 1;
             }
             // Rebuild ref ID mapping if we discovered a new reference sequence.
-            if (length(nameStore(bamIOContext)) != length(refIdMapping))
-                rebuildMapping(refIdMapping, refNameStore, refNameStoreCache, nameStore(bamIOContext));
+            if (length(nameStore(context(bamFileIn))) != length(refIdMapping))
+                rebuildMapping(refIdMapping, faiIndex.seqNameStore, faiIndex.seqNameStoreCache,
+                               nameStore(context(bamFileIn)));
         }
 
         // Read in the next block of GSI records.
@@ -961,13 +971,17 @@ compareAlignedReadsToReference(RabemaStats & result,
             seenSingleEnd |= !(gsiRecord.flags & GsiRecord::FLAG_PAIRED);
             seenPairedEnd |= (gsiRecord.flags & GsiRecord::FLAG_PAIRED);
             appendValue(currentGsiRecords, gsiRecord);
-            if (atEnd(gsiReader))
+            if (atEnd(gsiIter))
             {
                 // At end of GSI File, do not read next one.
                 gsiDone = true;
                 continue;
             }
-            if (readRecord(gsiRecord, gsiReader, Gsi()) != 0)
+            try
+            {
+                readRecord(gsiRecord, gsiIter, Gsi());
+            }
+            catch (IOError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read GSI record.\n";
                 return 1;
@@ -986,22 +1000,22 @@ compareAlignedReadsToReference(RabemaStats & result,
         // We collected the records for all queries.  Here, we differentiate between the different cases.
         if (seenSingleEnd)
         {
-            int res = benchmarkReadResult(result, currentSamRecords, bamIOContext, currentGsiRecords, refNameStore,
-                                          refNameStoreCache, refSeqs, refIdMapping, options, tagPattern,
+            int res = benchmarkReadResult(result, currentSamRecords, bamFileIn, currentGsiRecords,
+                                          faiIndex, refSeqs, refIdMapping, options, tagPattern,
                                           /*pairedEnd=*/ false);
             if (res != 0)
                 return 1;
         }
         if (seenPairedEnd)
         {
-            int res = benchmarkReadResult(result, currentSamRecords, bamIOContext, currentGsiRecords, refNameStore,
-                                          refNameStoreCache, refSeqs, refIdMapping, options, tagPattern,
+            int res = benchmarkReadResult(result, currentSamRecords, bamFileIn, currentGsiRecords,
+                                          faiIndex, refSeqs, refIdMapping, options, tagPattern,
                                           /*pairedEnd=*/ true, /*second=*/ false);
             if (res != 0)
                 return 1;
 
-            res = benchmarkReadResult(result, currentSamRecords, bamIOContext, currentGsiRecords, refNameStore,
-                                      refNameStoreCache, refSeqs, refIdMapping, options, tagPattern,
+            res = benchmarkReadResult(result, currentSamRecords, bamFileIn, currentGsiRecords,
+                                      faiIndex, refSeqs, refIdMapping, options, tagPattern,
                                       /*pairedEnd=*/ true, /*second=*/ true);
             if (res != 0)
                 return 1;
@@ -1031,10 +1045,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--reference\\fP \\fIREF.fa\\fP \\fB--in-gsi\\fP \\fIIN.gsi\\fP "
-                 "\\fB--in-sam\\fP \\fIMAPPING.sam\\fP");
-    addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB--reference\\fP \\fIREF.fa\\fP \\fB--in-gsi\\fP \\fIIN.gsi\\fP "
-                 "\\fB--in-bam\\fP \\fIMAPPING.bam\\fP");
+                 "\\fB--in-bam\\fP \\fIMAPPING.{sam,bam}\\fP");
     addDescription(parser,
                    "Compare the SAM/bam output \\fIMAPPING.sam\\fP/\\fIMAPPING.bam\\fP of any read mapper against "
                    "the RABEMA gold standard previously built with \\fBrabema_build_gold_standard\\fP.  The input "
@@ -1062,12 +1073,10 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     setRequired(parser, "in-gsi", true);
     setValidValues(parser, "in-gsi", "gsi gsi.gz");  // GSI (Gold Standard Intervals) Format only.
 
-    addOption(parser, seqan::ArgParseOption("s", "in-sam", "Path to load the read mapper SAM output from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "SAM"));
-    setValidValues(parser, "in-sam", "sam");
-    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper BAM output from.",
+    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
                                             seqan::ArgParseArgument::INPUTFILE, "BAM"));
-    setValidValues(parser, "in-bam", "bam");
+    setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
+    setRequired(parser, "in-bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
                                             seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
     setValidValues(parser, "out-tsv", "rabema_report_tsv");
@@ -1177,14 +1186,6 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res;
 
-    // Check that either "--in-sam" or "--in-bam" was used.
-    if ((!isSet(parser, "in-sam") && !isSet(parser, "in-bam")) ||
-        (isSet(parser, "in-sam") && isSet(parser, "in-bam")))
-    {
-        std::cerr << "You have to specify either --in-sam or --in-bam.\n";
-        return seqan::ArgumentParser::PARSE_ERROR;
-    }
-
     // -----------------------------------------------------------------------
     // Fill BuildGoldStandardOptions Object
     // -----------------------------------------------------------------------
@@ -1196,8 +1197,6 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     if (isSet(parser, "reference"))
         getOptionValue(options.referencePath, parser, "reference");
-    if (isSet(parser, "in-sam"))
-        getOptionValue(options.inSamPath, parser, "in-sam");
     if (isSet(parser, "in-bam"))
         getOptionValue(options.inBamPath, parser, "in-bam");
     if (isSet(parser, "in-gsi"))
@@ -1254,9 +1253,6 @@ int main(int argc, char const ** argv)
 
     double startTime = 0;  // For measuring time below.
 
-    typedef StringSet<CharString>      TNameStore;
-    typedef NameStoreCache<TNameStore> TNameStoreCache;
-
     std::cerr << "==============================================================================\n"
               << "                RABEMA - Read Alignment BEnchMArk\n"
               << "==============================================================================\n"
@@ -1274,7 +1270,6 @@ int main(int argc, char const ** argv)
               << "Trust NM tag          " << yesNo(options.trustNM) << '\n'
               << "Ignore paired flags   " << yesNo(options.ignorePairedFlags) << '\n'
               << "GSI File              " << options.inGsiPath << '\n'
-              << "SAM File              " << options.inSamPath << '\n'
               << "BAM File              " << options.inBamPath << '\n'
               << "Reference File        " << options.referencePath << '\n'
               << "TSV Output File       " << options.outTsvPath << '\n'
@@ -1297,11 +1292,11 @@ int main(int argc, char const ** argv)
     // Open reference FAI index.
     std::cerr << "Reference Index           " << options.referencePath << ".fai ...";
     FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.referencePath)) != 0)
+    if (!open(faiIndex, toCString(options.referencePath)))
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
         std::cerr << "Building Index        " << options.referencePath << ".fai ...";
-        if (build(faiIndex, toCString(options.referencePath)) != 0)
+        if (!build(faiIndex, toCString(options.referencePath)))
         {
             std::cerr << "Could not build FAI index.\n";
             return 1;
@@ -1310,27 +1305,32 @@ int main(int argc, char const ** argv)
         seqan::CharString faiPath = options.referencePath;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
-        if (write(faiIndex, toCString(faiPath)) != 0)
+        try
+        {
+            save(faiIndex, toCString(faiPath));
+            std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
+        }
+        catch (IOError const & ioErr)
         {
             std::cerr << "Could not write FAI index we just built.\n";
             return 1;
         }
-        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
     }
-    else
-    {
-        std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
-    }
+    std::cerr << " OK (" << length(faiIndex.indexEntryStore) << " seqs)\n";
 
     std::cerr << "Reference Sequences       " << options.referencePath << " ...";
     StringSet<Dna5String> refSeqs;
-    resize(refSeqs, length(faiIndex.refNameStore));
-    for (unsigned i = 0; i < length(faiIndex.refNameStore); ++i)
+    resize(refSeqs, length(faiIndex.seqNameStore));
+    for (unsigned i = 0; i < length(faiIndex.seqNameStore); ++i)
     {
         reserve(refSeqs[i], sequenceLength(faiIndex, i), Exact());
-        if (readSequence(refSeqs[i], faiIndex, i) != 0)
+        try
         {
-            std::cerr << "ERROR: Could not read sequence " << faiIndex.refNameStore[i] << ".\n";
+            readSequence(refSeqs[i], faiIndex, i);
+        }
+        catch (IOError const & ioErr)
+        {
+            std::cerr << "ERROR: Could not read sequence " << faiIndex.seqNameStore[i] << ".\n";
             return 0;
         }
     }
@@ -1338,70 +1338,52 @@ int main(int argc, char const ** argv)
 
     // Open gold standard intervals (GSI) file and read in header.
     std::cerr << "Gold Standard Intervals   " << options.inGsiPath << " (header) ...";
-    Stream<GZFile> inGsi;
-    if (!open(inGsi, toCString(options.inGsiPath), "rb"))
+    VirtualStream<char, Input> inGsi;
+    if (!open(inGsi, toCString(options.inGsiPath)))
     {
         std::cerr << "Could not open GSI file.\n";
         return 1;
     }
-    if (!isDirect(inGsi))
-        std::cerr << " (is gzip'ed)";
-    RecordReader<Stream<GZFile>, SinglePass<> > gsiReader(inGsi);
+    if (!isEqual(format(inGsi), Nothing()))
+        std::cerr << " (is compressed)";
+    DirectionIterator<VirtualStream<char, Input>, Input>::Type inGsiIter = directionIterator(inGsi, Input());
     GsiHeader gsiHeader;
-    if (readRecord(gsiHeader, gsiReader, Gsi()) != 0)
+    try
     {
-        std::cerr << "Could not read GSI header.\n";
+        readRecord(gsiHeader, inGsiIter, Gsi());
+        std::cerr << " OK\n";
+    }
+    catch (IOError const & ioErr)
+    {
+        std::cerr << "Could not read GSI header(" << ioErr.what() << ").\n";
         return 1;
     }
-    std::cerr << " OK\n";
 
     // Open SAM/BAM file and read in header.
-    TNameStore refNameStore;
-    TNameStoreCache refNameStoreCache(refNameStore);
-    BamIOContext<TNameStore> bamIOContext(refNameStore, refNameStoreCache);
+    BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inBamPath)))
+    {
+        std::cerr << "Could not open SAM file." << std::endl;
+        return 1;
+    }
     BamHeader bamHeader;
-    std::ifstream inSam;      // Use this for reading SAM.
-    Stream<Bgzf> bamStream;   // Use this for reading BAM.
-    bool fromSam = !empty(options.inSamPath);
-    if (fromSam)
-    {
-        std::cerr << "Alignments                " << options.inSamPath << " (header) ...";
-        inSam.open(toCString(options.inSamPath), std::ios_base::in | std::ios_base::binary);
-        if (!inSam.is_open())
-        {
-            std::cerr << "Could not open SAM file." << std::endl;
-            return 1;
-        }
-    }
-    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
-    if (fromSam)
-    {
-        if (readRecord(bamHeader, bamIOContext, samReader, Sam()) != 0)
-        {
-            std::cerr << "Could not read SAM header.\n";
-            return 1;
-        }
-    }
-    else
+    try
     {
         std::cerr << "Alignments                " << options.inBamPath << " (header) ...";
-        if (!open(bamStream, toCString(options.inBamPath), "r"))
-        {
-            std::cerr << "Could not read BAM header.\n";
-            return 1;
-        }
-        if (readRecord(bamHeader, bamIOContext, bamStream, Bam()) != 0)
-        {
-            std::cerr << "Could not read BAM header.\n";
-            return 1;
-        }
+        readRecord(bamHeader, bamFileIn);
+        std::cerr << " OK\n";
     }
+    catch (IOError const & ioErr)
+    {
+        std::cerr << "Could not read SAM header (" << ioErr.what() << ").\n";
+        return 1;
+    }
+
     // The SAM/BAM file has to be sorted by query name.
     //
     // We do not look at the SAM header for read ordering since samtools sort does not update the SAM header.  This
     // means users would have to update it manually after sorting which is painful.  We will check SAM record order on
     // the fly.
-    std::cerr << " OK\n";
 
     std::cerr << "\nTook " << sysTime() - startTime << "s\n";
 
@@ -1415,24 +1397,12 @@ int main(int argc, char const ** argv)
     // The result will be a list of ids to entries in witStore.
     int res = 0;
     RabemaStats result(options.maxError);
-    if (fromSam)
-    {
-        if (options.distanceMetric == EDIT_DISTANCE)
-            res = compareAlignedReadsToReference(result, samReader, bamIOContext, refNameStore, refNameStoreCache,
-                                                 refSeqs, gsiReader, options, MyersUkkonenReads(), Sam());
-        else  // options.distanceMetric == HAMMING_DISTANCE
-            res = compareAlignedReadsToReference(result, samReader, bamIOContext, refNameStore, refNameStoreCache,
-                                                 refSeqs, gsiReader, options, HammingSimple(), Sam());
-    }
-    else
-    {
-        if (options.distanceMetric == EDIT_DISTANCE)
-            res = compareAlignedReadsToReference(result, bamStream, bamIOContext, refNameStore, refNameStoreCache,
-                                                 refSeqs, gsiReader, options, MyersUkkonenReads(), Bam());
-        else  // options.distanceMetric == HAMMING_DISTANCE
-            res = compareAlignedReadsToReference(result, bamStream, bamIOContext, refNameStore, refNameStoreCache,
-                                                 refSeqs, gsiReader, options, HammingSimple(), Bam());
-    }
+    if (options.distanceMetric == EDIT_DISTANCE)
+        res = compareAlignedReadsToReference(result, bamFileIn, faiIndex, refSeqs,
+                                             inGsiIter, options, MyersUkkonenReads());
+    else  // options.distanceMetric == HAMMING_DISTANCE
+        res = compareAlignedReadsToReference(result, bamFileIn, faiIndex, refSeqs,
+                                             inGsiIter, options, HammingSimple());
     if (res != 0)
         return 1;
 

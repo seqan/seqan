@@ -69,6 +69,7 @@ struct Options;
 #include "bits_context.h"
 #include "bits_matches.h"
 #include "bits_seeds.h"
+#include "bits_bucket.h"
 #include "find_verifier.h"
 #include "find_extender.h"
 #include "mapper_collector.h"
@@ -131,6 +132,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
 
+    addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
+                                                             Read Alignment BEnchMArk (RABEMA)."));
+
     // Setup mapping options.
     addSection(parser, "Mapping Options");
 
@@ -139,17 +143,19 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "error-rate", "10");
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report only cooptimal alignments."));
+    addOption(parser, ArgParseOption("s", "strata-rate", "Consider suboptimal alignments within this error rate from \
+                                                          the optimal one. Please, either specify a strata-rate much \
+                                                          smaller than error-rate, or choose the option all.",
+                                                          ArgParseOption::INTEGER));
+    setMinValue(parser, "strata-rate", "0");
+    setMaxValue(parser, "strata-rate", "10");
+    setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
+    addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report alignments within \
+                                                  the specified strata rate."));
+
+    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
     hideOption(getOption(parser, "quick"));
-
-//    addOption(parser, ArgParseOption("s", "strata-rate", "Report found suboptimal alignments within this error rate from the optimal one.
-//                                                            Note that strata-rate << error-rate.", ArgParseOption::STRING));
-//    setMinValue(parser, "strata-rate", "0");
-//    setMaxValue(parser, "strata-rate", "10");
-//    setDefaultValue(parser, "strata-rate", options.strataRate);
-//    "all", Shortcut for strata-rate = error-rate."));
 
     // Setup paired-end mapping options.
     addSection(parser, "Paired-End / Mate-Pairs Options");
@@ -234,9 +240,15 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
-//    getOptionValue(options.strataRate, parser, "strata-rate");
+    unsigned strataRate;
+    getOptionValue(strataRate, parser, "strata-rate");
+        options.strataRate = strataRate / 100.0;
 
-    if (isSet(parser, "all")) options.mappingMode = ALL;
+    if (isSet(parser, "all"))
+    {
+        options.mappingMode = ALL;
+        options.strataRate = options.errorRate;
+    }
 
     getOptionValue(options.quick, parser, "quick");
 
@@ -251,6 +263,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 #endif
 
     getOptionValue(options.readsCount, parser, "reads-batch");
+
+    getOptionValue(options.rabema, parser, "output-rabema");
 
     if (isSet(parser, "verbose")) options.verbose = 1;
     if (isSet(parser, "vverbose")) options.verbose = 2;

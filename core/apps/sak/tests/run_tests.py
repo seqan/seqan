@@ -52,7 +52,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-o', ph.outFile('adeno.all.fa')],
         to_diff=[(ph.inFile('adeno.all.fa'),
@@ -61,7 +61,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-s', '1',
               '-o', ph.outFile('adeno.seq1.fa')],
@@ -71,7 +71,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-ss', '1-2',
               '-o', ph.outFile('adeno.seq1-2.fa')],
@@ -81,7 +81,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-s', '3',
               '-o', ph.outFile('adeno.seq3.fa')],
@@ -91,7 +91,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-sn', 'gi|9626621',
               '-o', ph.outFile('adeno.sn.fa')],
@@ -101,7 +101,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-s', '1',
               '-i', '5-25',
@@ -112,7 +112,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-ss', '1-2',
               '-i', '5-25',
@@ -123,7 +123,7 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=[ph.inFile('adeno.fasta'),
+        args=[ph.inFile('adeno.fa'),
 #              '-ll', '1000',
               '-s', '1',
               '-rc',
