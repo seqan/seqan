@@ -1,7 +1,7 @@
 // ==========================================================================
-//                 SeqAn - The Library for Sequence Analysis
+//                   NGS: Regions of Interest Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2012-2013, Bernd Jagla, Institut Pasteur
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,29 +31,24 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Facade header for module roi_io.
+// Extend SeqAn records with rID.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
-#define EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
+#ifndef SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
+#define SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
 
-// ===========================================================================
-// Prerequisites.
-// ===========================================================================
+#include <seqan/roi_io.h>
+#include <seqan/gff_io.h>
 
-#include <seqan/basic.h>
-#include <seqan/file.h>
-#include <seqan/sequence.h>
+class MyRoiRecord : public seqan::RoiRecord
+{
+public:
+    int rID;
 
-// ===========================================================================
-// Module Contents
-// ===========================================================================
+    MyRoiRecord() : seqan::RoiRecord(), rID(-1)
+    {}
+};
 
-#include <seqan/roi_io/roi_record.h>
+#endif  // #ifndef SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
 
-#include <seqan/roi_io/roi_io_context.h>
-#include <seqan/roi_io/read_roi.h>
-#include <seqan/roi_io/write_roi.h>
-#include <seqan/roi_io/roi_file.h>
 
-#endif  // EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
