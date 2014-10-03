@@ -69,17 +69,21 @@ typedef Tag<Join_>              Join;
 template <typename TDb, typename TDbQuery, typename TSpec = Search>
 struct Writer
 {
-    typedef Stream<FileStream<File<> > > TStream;
+    typedef std::ofstream                                           TOutputStream;
+    typedef typename DirectionIterator<TOutputStream, Output>::Type TOutputIt;
 
     TDb const       & db;
     TDbQuery /* const */  & query;
-    TStream         stream;
+    TOutputStream   outputFile;
+    TOutputIt       outputIt;
     unsigned long   recordsCount;
+    ReadWriteLock   writeLock;
 
     Writer(TDb /* const */ & db, TDbQuery /* const */ & query) :
         db(db),
         query(query),
-        stream(),
+        outputFile(),
+        outputIt(),
         recordsCount(0)
     {}
 
@@ -112,28 +116,25 @@ struct Writer<TDb, TDb, Join> : public Writer<TDb, TDb>
 };
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//  Function _writeRecord()                                            [Stream]
+//  Function _writeRecord()                                            [Writer]
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TString1, typename TString2>
+template <typename TDb, typename TDbQuery, typename TSpec, typename TString1, typename TString2>
 inline void
-_writeRecord(TStream & stream, TString1 const & id1, TString2 const & id2)
+_writeRecord(Writer<TDb, TDbQuery, TSpec> & writer, TString1 const & id1, TString2 const & id2)
 {
-    SEQAN_OMP_PRAGMA(critical(_searchjoin_writeRecord))
-    {
-        streamWriteBlock(stream, &id1[0], length(id1));
-        streamWriteChar(stream, ':');
-        streamWriteBlock(stream, &id2[0], length(id2));
-        streamWriteChar(stream, '\n');
-    }
+    lockWriting(writer.writeLock);
+
+    write(writer.outputIt, id1);
+    writeValue(writer.outputIt, ':');
+    write(writer.outputIt, id2);
+    writeValue(writer.outputIt, '\n');
+
+    unlockWriting(writer.writeLock);
 }
 
 // ----------------------------------------------------------------------------
@@ -144,21 +145,19 @@ template <typename TDb, typename TDbQuery, typename TSpec>
 inline void
 _write(Writer<TDb, TDbQuery, TSpec> & writer, typename Size<TDb>::Type dbId, typename Size<TDbQuery>::Type queryId)
 {
-    SEQAN_OMP_PRAGMA(atomic)
-    writer.recordsCount++;
+    atomicInc(writer.recordsCount);
 
-    _writeRecord(writer.stream, writer.db.ids[dbId], writer.query.ids[queryId]);
+    _writeRecord(writer, writer.db.ids[dbId], writer.query.ids[queryId]);
 }
 
 template <typename TDb>
 inline void
 _write(Writer<TDb, TDb, Join> & writer, typename Size<TDb>::Type id1, typename Size<TDb>::Type id2)
 {
-    SEQAN_OMP_PRAGMA(atomic)
-    writer.recordsCount += 2;
+    atomicAdd(writer.recordsCount, 2);
 
-    _writeRecord(writer.stream, writer.db.ids[id1], writer.db.ids[id2]);
-    _writeRecord(writer.stream, writer.db.ids[id2], writer.db.ids[id1]);
+    _writeRecord(writer, writer.db.ids[id1], writer.db.ids[id2]);
+    _writeRecord(writer, writer.db.ids[id2], writer.db.ids[id1]);
 }
 
 // ----------------------------------------------------------------------------
@@ -168,7 +167,11 @@ _write(Writer<TDb, TDb, Join> & writer, typename Size<TDb>::Type id1, typename S
 template <typename TDb, typename TDbQuery, typename TSpec, typename TFileName>
 inline bool open(Writer<TDb, TDbQuery, TSpec> & writer, TFileName const & fileName)
 {
-    return open(writer.stream, toCString(fileName), OPEN_RDWR | OPEN_CREATE);
+    if (!open(writer.outputFile, toCString(fileName), OPEN_WRONLY | OPEN_CREATE))
+        return false;
+
+    writer.outputIt = directionIterator(writer.outputFile, Output());
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -178,7 +181,7 @@ inline bool open(Writer<TDb, TDbQuery, TSpec> & writer, TFileName const & fileNa
 template <typename TDb, typename TDbQuery, typename TSpec>
 inline bool close(Writer<TDb, TDbQuery, TSpec> & writer)
 {
-    return close(writer.stream);
+    return close(writer.outputFile);
 }
 
 template <typename TDb>
@@ -191,12 +194,11 @@ inline bool close(Writer<TDb, TDb, Join> & writer)
 
     // Add reflexive closures to the join results.
     for (TDbSSize dbId = 0; dbId < dbSize; ++dbId)
-        _writeRecord(writer.stream, writer.db.ids[dbId], writer.db.ids[dbId]);
+        _writeRecord(writer, writer.db.ids[dbId], writer.db.ids[dbId]);
 
-    SEQAN_OMP_PRAGMA(atomic)
-    writer.recordsCount += dbSize;
+    atomicAdd(writer.recordsCount, dbSize);
 
-    return close(writer.stream);
+    return close(writer.outputFile);
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_WRITER_H_

@@ -262,14 +262,19 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
         return 1;
     }
     // Read local matches in GFF Stellar format.
-    RecordReader<std::fstream, SinglePass<> > recordReader(inStreamMatches);
+    seqan::DirectionIterator<std::fstream, seqan::Input>::Type iter(inStreamMatches);
     LocalMatchStore<> lmStore;
     unsigned i = 0;
-    while (!atEnd(recordReader))
+    while (!atEnd(iter))
     {
-        int res = readRecord(lmStore, recordReader, StellarGff());
-        if (res != 0)
-            std::cerr << "Invalid Stellar GFF record #" << i << '\n';
+        try
+        {
+            readRecord(lmStore, iter, StellarGff());
+        }
+        catch (seqan::IOError const & ioErr)
+        {
+            std::cerr << "Invalid Stellar GFF record #" << i << "(" << ioErr.what() << ")\n";
+        }
         i += 1;
     }
     // Creating Stellar Matches from input

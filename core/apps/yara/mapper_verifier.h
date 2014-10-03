@@ -202,11 +202,11 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getContigId(anchor));
 
     contigBegin.i2 = 0;
-    if (getContigBegin(anchor) + me.options.libraryLength > me.options.libraryError)
-        contigBegin.i2 = getContigBegin(anchor) + me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigBegin()) + me.options.libraryLength > me.options.libraryError)
+        contigBegin.i2 = getMember(anchor, ContigBegin()) + me.options.libraryLength - me.options.libraryError;
     contigBegin.i2 = _min(contigBegin.i2, contigLength);
 
-    contigEnd.i2 = _min(getContigBegin(anchor) + me.options.libraryLength + me.options.libraryError, contigLength);
+    contigEnd.i2 = _min(getMember(anchor, ContigBegin()) + me.options.libraryLength + me.options.libraryError, contigLength);
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
     SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);
@@ -223,12 +223,12 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getContigId(anchor));
 
     contigBegin.i2 = 0;
-    if (getContigEnd(anchor) > me.options.libraryLength + me.options.libraryError)
-        contigBegin.i2 = getContigEnd(anchor) - me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) > me.options.libraryLength + me.options.libraryError)
+        contigBegin.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength - me.options.libraryError;
 
     contigEnd.i2 = 0;
-    if (getContigEnd(anchor) + me.options.libraryError > me.options.libraryLength)
-        contigEnd.i2 = getContigEnd(anchor) - me.options.libraryLength + me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) + me.options.libraryError > me.options.libraryLength)
+        contigEnd.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength + me.options.libraryError;
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
     SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);

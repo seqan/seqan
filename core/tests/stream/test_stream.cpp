@@ -42,6 +42,7 @@
 #include "test_stream_tokenization.h"
 #include "test_stream_file_stream.h"
 #include "test_stream_virtual_stream.h"
+#include "test_stream_write.h"
 
 using namespace seqan;
 
