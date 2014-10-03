@@ -8,6 +8,19 @@
 .folded-out a.fold-out-less { display: inline; }
 .folded-out .foldable      { display: block; }
 
+/* adjustments for fold-out div spacing */
+
+.fold-out-wrapper.folded-in {
+    margin-bottom: 24px;
+    padding-left: 7px;
+}
+.fold-out-wrapper.folded-out {
+    margin-bottom: 24px;
+    padding-left: 5px;
+    border-left: 2px solid #afa6a6;
+}
+.foldable.container { margin-top: 5px; }
+
 /* assignment block */
 
 .container.assignment {
