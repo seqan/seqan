@@ -32,8 +32,10 @@ Follow one of the links below.
 
    zreferences
 
-Indices and tables
-------------------
+.. Generated pages, should not appear
 
-* :ref:`genindex`
-* :ref:`search`
+    Indices and tables
+    ------------------
+
+    * :ref:`genindex`
+    * :ref:`search`
