@@ -860,9 +860,7 @@ public:
     typedef seqan::StringSet<seqan::CharString> TNameStore;
     typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
     typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore nameStore;
     seqan::BamHeader header;
-    TNameStoreCache nameStoreCache;
     TBamIOContext   bamIOContext;
 
     // ----------------------------------------------------------------------
@@ -870,9 +868,9 @@ public:
     // ----------------------------------------------------------------------
 
     // For writing left/right reads.
-    seqan::SequenceStream outSeqsLeft, outSeqsRight;
+    seqan::SeqFileOut outSeqsLeft, outSeqsRight;
     // For writing the final SAM/BAM file.
-    seqan::BamStream outBamStream;
+    std::SEQAN_AUTO_PTR_NAME<seqan::BamFileOut> outBamStream;
 
     MasonSimulatorApp(MasonSimulatorOptions const & options) :
             options(options), rng(options.seed), methRng(options.methSeed),
@@ -881,7 +879,7 @@ public:
                    toCString(options.matOptions.vcfFileName),
                    toCString(options.methFastaInFile),
                    &options.methOptions),
-            contigPicker(rng), nameStoreCache(nameStore), bamIOContext(nameStore, nameStoreCache)
+            contigPicker(rng)
     {}
 
     int run()
@@ -947,8 +945,7 @@ public:
         {
             std::cerr << "  " << sequenceName(vcfMat.faiIndex, rID) << " (allele " << (hID + 1) << ") ";
             contigFragmentCount = 0;
-            if (readSequence(refSeq, vcfMat.faiIndex, rID) != 0)
-                throw MasonIOException("Could not load reference sequence.");
+            readSequence(refSeq, vcfMat.faiIndex, rID);
 
             while (true)  // Execute as long as there are fragments left.
             {
@@ -960,8 +957,10 @@ public:
                     threads[tID].methLevels = &levels;
 
                     // Load the fragment ids to simulate for.
-                    int numRead = fread(&threads[tID].fragmentIds[0], sizeof(int), options.chunkSize,
-                                        fragmentIdSplitter.files[rID * haplotypeCount + hID]);
+                    fragmentIdSplitter.files[rID * haplotypeCount + hID]->read(
+                        reinterpret_cast<char *>(&threads[tID].fragmentIds[0]),
+                        sizeof(int) * options.chunkSize);
+                    int numRead = fragmentIdSplitter.files[rID * haplotypeCount + hID]->gcount();
                     contigFragmentCount += numRead;
                     if (numRead == 0)
                         doBreak = true;
@@ -983,16 +982,15 @@ public:
                 // Write out the temporary sequence.
                 for (int tID = 0; tID < options.numThreads; ++tID)
                 {
-                    if (write2(fragmentSplitter.files[rID * haplotypeCount + hID],
-                               threads[tID].ids, threads[tID].seqs, threads[tID].quals, seqan::Fastq()))
-                        throw MasonIOException("Could not write out temporary sequence.");
+                    typedef seqan::DirectionIterator<std::fstream, seqan::Output>::Type TOutIter;
+                    TOutIter itFastq = directionIterator(*fragmentSplitter.files[rID * haplotypeCount + hID],
+                                                         seqan::Output());
+                    TOutIter itSam = directionIterator(*alignmentSplitter.files[rID * haplotypeCount + hID],
+                                                       seqan::Output());
+                    writeRecord(itFastq, threads[tID].ids, threads[tID].seqs, threads[tID].quals, seqan::Fastq());
                     if (!empty(options.outFileNameSam))
                         for (unsigned i = 0; i < length(threads[tID].alignmentRecords); ++i)
-                        {
-                            if (write2(alignmentSplitter.files[rID * haplotypeCount + hID],
-                                       threads[tID].alignmentRecords[i], bamIOContext, seqan::Sam()) != 0)
-                                throw MasonIOException("Could not write out temporary alignment record.");
-                        }
+                            write(itSam, threads[tID].alignmentRecords[i], bamIOContext, seqan::Sam());
                     std::cerr << '.' << std::flush;
                 }
 
@@ -1016,33 +1014,31 @@ public:
             while (!joiner.atEnd())
             {
                 joiner.get(id, seq, qual);
-                if (writeRecord(outSeqsLeft, id, seq, qual) != 0)
-                    throw MasonIOException("Problem joining sequences.");
+                writeRecord(outSeqsLeft, id, seq, qual);
                 joiner.get(id, seq, qual);
-                if (writeRecord(outSeqsRight, id, seq, qual) != 0)
-                    throw MasonIOException("Problem joining sequences.");
+                writeRecord(outSeqsRight, id, seq, qual);
             }
         else
             while (!joiner.atEnd())
             {
                 joiner.get(id, seq, qual);
-                if (writeRecord(outSeqsLeft, id, seq, qual) != 0)
-                    throw MasonIOException("Problem joining sequences.");
+                writeRecord(outSeqsLeft, id, seq, qual);
             }
         if (!empty(options.outFileNameSam))
         {
             alignmentSplitter.reset();
-            alignmentJoiner.reset(new SamJoiner(alignmentSplitter));
+            alignmentJoiner.reset(new SamJoiner(alignmentSplitter, outBamStream.get()));
 
-            outBamStream.header = alignmentJoiner->header;
+            // Write out header.
+            seqan::BamFileOut & bamFileOut = *outBamStream;
+            writeRecord(bamFileOut, alignmentJoiner->header);
 
             SamJoiner & joiner = *alignmentJoiner.get();  // Shortcut
             seqan::BamAlignmentRecord record;
             while (!joiner.atEnd())
             {
                 joiner.get(record);
-                if (writeRecord(outBamStream, record) != 0)
-                    throw MasonIOException("Problem writing to alignment out file.");
+                writeRecord(bamFileOut, record);
             }
         }
         std::cerr << " OK\n";
@@ -1062,7 +1058,8 @@ public:
         std::cerr << "Distributing fragments to " << seqCount << " contigs (" << haplotypeCount
                   << " haplotypes each) ...";
         for (int i = 0; i < options.numFragments; ++i)
-            fwrite(&i, sizeof(int), 1, fragmentIdSplitter.files[contigPicker.toId(contigPicker.pick())]);
+            fragmentIdSplitter.files[contigPicker.toId(contigPicker.pick())]->write(
+                reinterpret_cast<char *>(&i), sizeof(int));
         fragmentIdSplitter.reset();
         std::cerr << " OK\n";
 
@@ -1083,35 +1080,36 @@ public:
         seqan::BamHeaderRecord vnHeaderRecord;
         vnHeaderRecord.type = seqan::BAM_HEADER_FIRST;
         appendValue(vnHeaderRecord.tags, seqan::Pair<seqan::CharString>("VN", "1.4"));
-        appendValue(header.records, vnHeaderRecord);
-        resize(header.sequenceInfos, numSeqs(vcfMat.faiIndex));
+        appendValue(header, vnHeaderRecord);
         for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
         {
             if (!empty(options.matOptions.vcfFileName))
-                header.sequenceInfos[i].i1 = vcfMat.vcfStream.header.sequenceNames[i];
+                appendName(nameStoreCache(bamIOContext), contigNames(context(vcfMat.vcfFileIn))[i]);
             else
-                header.sequenceInfos[i].i1 = sequenceName(vcfMat.faiIndex, i);
+                appendName(nameStoreCache(bamIOContext), sequenceName(vcfMat.faiIndex, i));
             unsigned idx = 0;
-            if (!getIdByName(vcfMat.faiIndex, header.sequenceInfos[i].i1, idx))
+            if (!getIdByName(idx, vcfMat.faiIndex, nameStore(bamIOContext)[i]))
             {
                 std::stringstream ss;
-                ss << "Could not find " << header.sequenceInfos[i].i1 << " from VCF file in FAI index.";
+                ss << "Could not find " << nameStore(bamIOContext)[i] << " from VCF file in FAI index.";
                 throw MasonIOException(ss.str());
             }
-            header.sequenceInfos[i].i2 = sequenceLength(vcfMat.faiIndex, idx);
-            appendValue(nameStore, sequenceName(vcfMat.faiIndex, idx));
+            appendValue(sequenceLengths(bamIOContext), sequenceLength(vcfMat.faiIndex, idx));
             seqan::BamHeaderRecord seqHeaderRecord;
             seqHeaderRecord.type = seqan::BAM_HEADER_REFERENCE;
-            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("SN", header.sequenceInfos[i].i1));
+            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("SN", nameStore(bamIOContext)[i]));
             std::stringstream ss;
-            ss << header.sequenceInfos[i].i2;
+            ss << sequenceLengths(bamIOContext)[i];
             appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("LN", ss.str().c_str()));
-            appendValue(header.records, seqHeaderRecord);
+            appendValue(header, seqHeaderRecord);
         }
-        refresh(nameStoreCache);
+        refresh(nameStoreCache(bamIOContext));
         for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            if (write2(alignmentSplitter.files[i], header, bamIOContext, seqan::Sam()) != 0)
-                throw MasonIOException("Could not write out SAM header to temporary file.");
+        {
+            seqan::DirectionIterator<std::fstream, seqan::Output>::Type outIter =
+                directionIterator(*alignmentSplitter.files[i], seqan::Output());
+            write(outIter, header, bamIOContext, seqan::Sam());
+        }
     }
 
     // Configure contigPicker.
@@ -1143,27 +1141,25 @@ public:
     void _initOpenOutputFiles()
     {
         std::cerr << "Opening output file " << options.outFileNameLeft << " ...";
-        open(outSeqsLeft, toCString(options.outFileNameLeft), seqan::SequenceStream::WRITE);
-        outSeqsLeft.outputOptions = seqan::SequenceOutputOptions(0);  // also FASTA in one line
-        if (!isGood(outSeqsLeft))
+        if (!open(outSeqsLeft, toCString(options.outFileNameLeft)))
             throw MasonIOException("Could not open left/single-end output file.");
+        context(outSeqsLeft).options.lineLength = 0;
         std::cerr << " OK\n";
 
         if (!options.forceSingleEnd && !empty(options.outFileNameRight))
         {
             std::cerr << "Opening output file " << options.outFileNameRight << " ...";
-            open(outSeqsRight, toCString(options.outFileNameRight), seqan::SequenceStream::WRITE);
-            outSeqsRight.outputOptions = seqan::SequenceOutputOptions(0);  // also FASTA in one line
-            if (!isGood(outSeqsRight))
+            if (!open(outSeqsRight, toCString(options.outFileNameRight)))
                 throw MasonIOException("Could not open right/single-end output file.");
+            context(outSeqsRight).options.lineLength = 0;
             std::cerr << " OK\n";
         }
 
         if (!empty(options.outFileNameSam))
         {
             std::cerr << "Opening output file " << options.outFileNameSam << "...";
-            open(outBamStream, toCString(options.outFileNameSam), seqan::BamStream::WRITE);
-            if (!isGood(outBamStream))
+            outBamStream.reset(new seqan::BamFileOut());
+            if (!open(*outBamStream, toCString(options.outFileNameSam)))
                 throw MasonIOException("Could not open SAM/BAM output file.");
             std::cerr << " OK\n";
         }

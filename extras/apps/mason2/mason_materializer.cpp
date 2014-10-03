@@ -100,7 +100,7 @@ public:
         {
             vcfMat.init();
 
-            if (!open(outStream, toCString(options.outputFileName))
+            if (!open(outStream, toCString(options.outputFileName)))
                 throw MasonIOException("Could not open output file.");
 
             // Open output breakpoints TSV file.
@@ -140,7 +140,7 @@ public:
             while (vcfMat.materializeNext(seq, levels, varInfos, breakpoints, rID, hID))
             {
                 std::stringstream ssName;
-                ssName << vcfMat.vcfStream.header.sequenceNames[rID] << options.haplotypeNameSep << (hID + 1);
+                ssName << contigNames(context(vcfMat.vcfFileIn))[rID] << options.haplotypeNameSep << (hID + 1);
                 std::cerr << " " << ssName.str();
 
                 writeRecord(outStream, ssName.str(), seq);
@@ -161,7 +161,7 @@ public:
             while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
             {
                 std::stringstream ssName;
-                ssName << vcfMat.vcfStream.header.sequenceNames[rID] << options.haplotypeNameSep << (hID + 1);
+                ssName << contigNames(context(vcfMat.vcfFileIn))[rID] << options.haplotypeNameSep << (hID + 1);
                 std::cerr << " " << ssName.str();
 
                 writeRecord(outStream, ssName.str(), seq);

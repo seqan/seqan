@@ -134,14 +134,17 @@ void IdSplitter::close()
 // Function SamJoiner::init()
 // ---------------------------------------------------------------------------
 
-void SamJoiner::init()
+void SamJoiner::init(seqan::BamFileOut * outPtr)
 {
     resize(records, splitter->files.size());
     active.resize(splitter->files.size());
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
+        if (i == 0u && outPtr)  // connect first reader to output stream
+            bamFileIns.push_back(new seqan::BamFileIn(*outPtr, *splitter->files[i]));
+        else
+            bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
 
         // We use a separate header structure and name stores and caches.  Since the headers of all files are equal, we
         // will write out the first one only.
