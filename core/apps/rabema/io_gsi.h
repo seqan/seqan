@@ -314,10 +314,6 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 
     lexicalCastWithException(record.lastPos, buffer);
 
-    // We only allow '\t' here because output buggy.
-    if (*iter != '\t' && *iter != '\r' && *iter != '\n')
-        throw seqan::ParseError("Invalid character.");
-
     skipLine(iter);
 
     // Skipy any trailing comment lines.
