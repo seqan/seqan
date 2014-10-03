@@ -610,7 +610,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiF
     // Open file.
     std::ifstream faiStream(toCString(index.faiFilename));
     if (!faiStream.good())
-        return 1;
+        return false;
     DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(faiStream, Input());
 
     // Read FAI file.

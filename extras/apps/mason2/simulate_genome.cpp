@@ -42,7 +42,7 @@
 //
 // The resulting sequence is written to stream.
 
-int simulateGenome(seqan::SequenceStream & stream, MasonSimulateGenomeOptions const & options)
+int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
     // Initialize RNG and PDF.
     seqan::Rng<seqan::MersenneTwister>  rng(options.seed);
@@ -78,7 +78,11 @@ int simulateGenome(seqan::SequenceStream & stream, MasonSimulateGenomeOptions co
             ++j;
         }
 
-        if (writeRecord(stream, id, contig) != 0)
+        try
+        {
+            writeRecord(stream, id, contig);
+        }
+        catch (seqan::IOError const & ioErr)
         {
             std::cerr << "\nERROR: Could not write contig " << id << " to output file.\n";
             return 1;
@@ -96,9 +100,8 @@ int simulateGenome(seqan::SequenceStream & stream, MasonSimulateGenomeOptions co
 
 int simulateGenome(char const * filename, MasonSimulateGenomeOptions const & options)
 {
-    seqan::SequenceStream stream;
-    open(stream, filename, seqan::SequenceStream::WRITE, seqan::SequenceStream::FASTA);
-    if (!isGood(stream))
+    seqan::SeqFileOut stream;
+    if (!open(stream, filename))
     {
         std::cerr << "ERROR: Could not open " << filename << "for writing!\n";
         return 1;
