@@ -3,12 +3,12 @@ MASON VARIATOR
 
 __OPTIONS_____________________________________________________________________
 
-FASTA IN             	random.fa
+FASTA IN             	random.fasta
 SV SIZE TSV IN       	
 VCF OUT              	random_var2.vcf
-FASTA OUT            	random_var2.fa
+FASTA OUT            	random_var2.fasta
 BREAKPOINT TSV OUT   	random_var2_bp.txt
-METHYLATION IN FILE  	random_meth1.fa
+METHYLATION IN FILE  	random_meth1.fasta
 
 GENERATE VAR IDS     	YES
 
@@ -41,7 +41,7 @@ METHYLATION LEVELS
 
 __PREPARATION_________________________________________________________________
 
-Loading Reference Index random.fa ... OK (2 seqs)
+Loading Reference Index random.fasta ... OK (2 seqs)
 
 __SIMULATION__________________________________________________________________
 

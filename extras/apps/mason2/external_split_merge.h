@@ -228,10 +228,10 @@ public:
     SamJoiner() : splitter(), numActive(0)
     {}
 
-    SamJoiner(IdSplitter & splitter) :
+    SamJoiner(IdSplitter & splitter, seqan::BamFileOut * outPtr) :
             splitter(&splitter), numActive(0)
     {
-        init();
+        init(outPtr);
     }
 
     ~SamJoiner()
@@ -240,7 +240,7 @@ public:
             delete bamFileIns[i];
     }
 
-    void init();
+    void init(seqan::BamFileOut * outPtr);
 
     bool _loadNext(seqan::BamAlignmentRecord & record, unsigned idx);
 
@@ -275,7 +275,7 @@ void FastxJoiner<TTag>::_init()
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        inputIterators.push_back(directionIterator(splitter->files[i], seqan::Input()));
+        inputIterators.push_back(directionIterator(*splitter->files[i], seqan::Input()));
         active[i] = _loadNext(ids[i], seqs[i], quals[i], i);
         numActive += (active[i] != false);
     }
@@ -291,11 +291,7 @@ bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned i
 {
     if (seqan::atEnd(inputIterators[idx]))
         return false;
-    if (readRecord(id, seq, qual, inputIterators[idx], TTag()) != 0)
-    {
-        std::cerr << "ERROR: Problem reading temporary data.\n";
-        exit(1);
-    }
+    readRecord(id, seq, qual, inputIterators[idx], TTag());
     return true;
 }
 

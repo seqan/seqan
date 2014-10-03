@@ -167,6 +167,9 @@ void VcfMaterializer::init()
         if (!open(vcfFileIn, toCString(vcfFileName)))
             throw MasonIOException("Could not open VCF stream.");
 
+        // Read header.
+        readRecord(vcfHeader, vcfFileIn);
+
         // Read first VCF record.
         if (!atEnd(vcfFileIn))
             readRecord(vcfRecord, vcfFileIn);
@@ -193,7 +196,7 @@ void VcfMaterializer::init()
 
         seqan::CharString faiPath = fastaFileName;
         append(faiPath, ".fai");
-        if (save(faiIndex, toCString(faiPath)))
+        if (!save(faiIndex, toCString(faiPath)))
             throw MasonIOException("Could not write FAI index.");
     }
 

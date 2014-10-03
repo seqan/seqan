@@ -104,7 +104,7 @@ void IdSplitter::reset()
     for (unsigned i = 0; i < files.size(); ++i)
         if (files[i] != 0)
         {
-            SEQAN_ASSERT(!ferror(files[i]));
+            SEQAN_ASSERT(files[i]->good());
             files[i]->flush();
             files[i]->seekg(0);
             SEQAN_ASSERT(files[i]->good());
@@ -134,21 +134,21 @@ void IdSplitter::close()
 // Function SamJoiner::init()
 // ---------------------------------------------------------------------------
 
-void SamJoiner::init()
+void SamJoiner::init(seqan::BamFileOut * outPtr)
 {
     resize(records, splitter->files.size());
     active.resize(splitter->files.size());
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
+        if (i == 0u && outPtr)
+            bamFileIns.push_back(new seqan::BamFileIn(*outPtr, *splitter->files[i]));
+        else
+            bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
 
         // We use a separate header structure and name stores and caches.  Since the headers of all files are equal, we
         // will write out the first one only.
         seqan::BamHeader tmpHeader;
-        seqan::StringSet<seqan::CharString> tmpNameStore;
-        seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > tmpNameStoreCache(tmpNameStore);
-        seqan::BamIOContext<seqan::StringSet<seqan::CharString> > tmpContext(tmpNameStore, tmpNameStoreCache);
         readRecord(tmpHeader, *bamFileIns[i]);
         if (i == 0u)
             header = tmpHeader;
