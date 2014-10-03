@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,11 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
+// Smart file for reading/writing files in ROI format.
+// ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_ROI_IO_WRITE_ROI_H_
-#define EXTRAS_INCLUDE_SEQAN_ROI_IO_WRITE_ROI_H_
-
-#include <seqan/stream.h>
+#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
+#define SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 
 namespace seqan {
 
@@ -43,59 +43,61 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Roi_;
-typedef Tag<Roi_> Roi;
+// ============================================================================
+// Typedefs
+// ============================================================================
 
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
+typedef SmartFile<Roi, Input>   RoiFileIn;
+typedef SmartFile<Roi, Output>  RoiFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-// ============================================================================
-// Functions
-// ============================================================================
-
 // ----------------------------------------------------------------------------
-// Function writeRecord()                                           [RoiRecord]
+// Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TTarget>
-int writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Roi, TDirection, TSpec>, TStorageSpec>
 {
-    write(target, record.ref);
-    writeValue(target, '\t');
-    appendNumber(target, record.beginPos + 1);  // 0-based to 1-based
-    writeValue(target, '\t');
-    appendNumber(target, record.endPos);
-    writeValue(target, '\t');
-    write(target, record.name);
-    writeValue(target, '\t');
-    appendNumber(target, record.len);
-    writeValue(target, '\t');
-    writeValue(target, record.strand);
-    writeValue(target, '\t');
-    appendNumber(target, record.countMax);
-    writeValue(target, '\t');
-    for (unsigned i = 0; i < length(record.data); ++i)
-    {
-        write(target, record.data[i]);
-        writeValue(target, '\t');
-    }
+    typedef RoiIOContext Type;
+};
 
-    for (unsigned i = 0; i < length(record.count); ++i)
-    {
-        if (i > 0)
-            writeValue(target, ',');
-        appendNumber(target, record.count[i]);
-    }
-    writeValue(target, '\n');
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
 
-    return 0;
+template <typename TDirection, typename TSpec>
+struct FileFormat<SmartFile<Roi, TDirection, TSpec> >
+{
+    typedef Roi Type;
+};
+
+// ----------------------------------------------------------------------------
+// Function readRecord(); RoiRecord
+// ----------------------------------------------------------------------------
+
+// convient RoiFile variant
+template <typename TSpec>
+inline void
+readRecord(RoiRecord & record, SmartFile<Roi, Input, TSpec> & file)
+{
+    readRecord(record, context(file), file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(); RoiRecord
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiRecord & record)
+{
+    writeRecord(file.iter, record, file.format);
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_ROI_IO_WRITE_ROI_H_
+#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
+

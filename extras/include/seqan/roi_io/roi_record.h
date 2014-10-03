@@ -54,14 +54,10 @@ namespace seqan {
 class RoiRecord
 {
 public:
-    static const int INVALID_REFID = -1;
     static const int INVALID_POS = -1;
 
     // Chromosome that this region is on.
 	CharString ref;
-
-    // The index of the reference.
-    int rID;
 
     // Begin and end position.
 	int beginPos;
@@ -85,7 +81,7 @@ public:
     // Additional data as string.
     seqan::StringSet<seqan::CharString> data;
 
-	RoiRecord() : rID(INVALID_REFID), beginPos(INVALID_POS), endPos(INVALID_POS), strand('.'), len(0), countMax(0)
+	RoiRecord() : beginPos(INVALID_POS), endPos(INVALID_POS), strand('.'), len(0), countMax(0)
     {}
 };
 
