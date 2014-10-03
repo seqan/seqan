@@ -59,11 +59,31 @@ typedef Tag<Roi_> Roi;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function writeRecord()                                           [RoiHeader]
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+void writeRecord(TTarget & target, RoiHeader const &, Roi const & /*tag*/)
+{
+    write(target, "#ROI 0.3\n"
+                  "##ref\t"
+                  "start\t"
+                  "end\t"
+                  "name\t"
+                  "length\t"
+                  "strand\t"
+                  "max_count\t"
+                  "num_reads\t"
+                  "gc_content\t"
+                  "counts\n");
+}
+
+// ----------------------------------------------------------------------------
 // Function writeRecord()                                           [RoiRecord]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
-int writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
+void writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
 {
     write(target, record.ref);
     writeValue(target, '\t');
@@ -92,8 +112,6 @@ int writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
         appendNumber(target, record.count[i]);
     }
     writeValue(target, '\n');
-
-    return 0;
 }
 
 }  // namespace seqan

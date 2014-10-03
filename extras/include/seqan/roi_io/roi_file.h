@@ -87,12 +87,35 @@ readRecord(RoiRecord & record, SmartFile<Roi, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
+// Function readRecord(); RoiHeader
+// ----------------------------------------------------------------------------
+
+// convient RoiFile variant
+template <typename TSpec>
+inline void
+readRecord(RoiHeader & record, SmartFile<Roi, Input, TSpec> & file)
+{
+    readRecord(record, context(file), file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
 // Function write(); RoiRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiRecord & record)
+writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiRecord const & record)
+{
+    writeRecord(file.iter, record, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function write(); RoiRecord
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void
+writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiHeader const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

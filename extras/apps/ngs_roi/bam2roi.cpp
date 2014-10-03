@@ -315,8 +315,8 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.outputFileName << " ...";
-    std::fstream roiOut(toCString(options.outputFileName), std::ios::binary | std::ios::out);
-    if (!roiOut.good())
+    seqan::RoiFileOut roiFileOut;
+    if (!open(roiFileOut, toCString(options.outputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.outputFileName << "\n";
         return 1;
@@ -338,9 +338,9 @@ int main(int argc, char const ** argv)
 
     RoiBuilderOptions roiBuilderOptions(options.verbosity, options.strandSpecific,
                                         options.usePairing, options.linkOverSkipped);
-    RoiBuilder roiBuilderF(roiOut, roiBuilderOptions);
+    RoiBuilder roiBuilderF(roiFileOut, roiBuilderOptions);
     roiBuilderF.writeHeader();  // only once
-    RoiBuilder roiBuilderR(roiOut, roiBuilderOptions);
+    RoiBuilder roiBuilderR(roiFileOut, roiBuilderOptions);
     // Set the reference sequence names.
     seqan::BamHeader header;
     readRecord(header, bamFileIn);
