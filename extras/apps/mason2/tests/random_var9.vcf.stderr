@@ -6,7 +6,7 @@ __OPTIONS_____________________________________________________________________
 FASTA IN             	adeno_virus.fa
 SV SIZE TSV IN       	
 VCF OUT              	random_var9.vcf
-FASTA OUT            	random_var9.fa
+FASTA OUT            	random_var9.fasta
 BREAKPOINT TSV OUT   	
 METHYLATION IN FILE  	
 

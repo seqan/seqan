@@ -8,8 +8,8 @@ VERBOSITY          	NORMAL
 
 SEED               	33
 
-FASTA IN FILE      	random.fa
-METH FASTA OUT FILE	random_meth1.fa
+FASTA IN FILE      	random.fasta
+METH FASTA OUT FILE	random_meth1.fasta
 
 METHYLATION LEVELS OPTIONS
   VERBOSITY      	NORMAL
@@ -26,8 +26,8 @@ METHYLATION LEVELS OPTIONS
 
 __PREPARATION_________________________________________________________________
 
-Loading Reference Index random.fa ... OK (2 seqs)
-Opening output File random_meth1.fa ... OK
+Loading Reference Index random.fasta ... OK (2 seqs)
+Opening output File random_meth1.fasta ... OK
 
 __SIMULATION__________________________________________________________________
 
