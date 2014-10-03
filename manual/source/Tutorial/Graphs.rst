@@ -64,7 +64,7 @@ And when we remove an edge we also remove the distance.
 Each vertex and each edge in a graph is identified by a so-called descriptor.
 The type of the descriptors is returned by the metafunction :dox:`VertexDescriptor`.
 In our example, we define a type ``TVertexDescriptor`` by calling :dox:`VertexDescriptor` on our graph type.
-Analogously, there is the metafunction :dox:`Graph#EdgeDescriptor Edge Descriptor` for edge descriptors.
+Analogously, there is the metafunction :dox:`Graph#EdgeDescriptor` for edge descriptors.
 
 We can now create the graph ``g`` of our type ``TGraph``.
 
@@ -74,7 +74,7 @@ We can now create the graph ``g`` of our type ``TGraph``.
 
 For our example, we add five vertices for the five cities, and six edges connecting the cities.
 
-Vertices can be added to ``g`` by a call to the function :dox:`Graph#addVertex addVertex`.
+Vertices can be added to ``g`` by a call to the function :dox:`Graph#addVertex`.
 The function returns the descriptor of the created vertex.
 These descriptors are needed to add the edges afterwards.
 

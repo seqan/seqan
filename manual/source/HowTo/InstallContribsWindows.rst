@@ -5,8 +5,8 @@
 
 .. _how-to-install-contribs-on-windows:
 
-How To: Install Contribs On Windows
------------------------------------
+Installing Contribs On Windows
+------------------------------
 
 Download Contribs
 ~~~~~~~~~~~~~~~~~

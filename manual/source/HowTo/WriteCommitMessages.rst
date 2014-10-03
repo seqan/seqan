@@ -5,8 +5,8 @@
 
 .. _how-to-write-commit-messages:
 
-How To: Write Commit Messages
------------------------------
+Writing Commit Messages
+-----------------------
 
 Format
 ~~~~~~

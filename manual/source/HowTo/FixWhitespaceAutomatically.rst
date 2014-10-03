@@ -5,8 +5,8 @@
 
 .. _how-to-fix-whitespace-automatically:
 
-How To: Fix Whitespace Automatically
-====================================
+Fixing Whitespace Automatically
+===============================
 
 This page describes how to use `Universal Indent GUI <http://universalindent.sourceforge.net/>`_ and `Uncrustify <http://uncrustify.sourceforge.net/>`_ to automatically fix whitespace such that code resembles the :ref:`style-guide-cpp` more closely.
 

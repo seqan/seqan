@@ -5,8 +5,8 @@
 
 .. _how-to-getting-started-with-cuda:
 
-How To: Getting Started with CUDA
----------------------------------
+Getting Started with CUDA
+-------------------------
 
 Requirements
 ~~~~~~~~~~~~

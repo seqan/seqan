@@ -5,8 +5,8 @@
 
 .. _how-to-write-app-tests:
 
-How To: Write App Tests
------------------------
+Writing App Tests
+-----------------
 
 This HowTo describes the basics of writing your own app tests.
 

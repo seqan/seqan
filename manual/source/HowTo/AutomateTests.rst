@@ -4,8 +4,8 @@
    
 .. _how-to-automate-tests-with-ctest:
 
-How To: Automate Tests With CTest
----------------------------------
+Automating Tests With CTest
+---------------------------
 
 The dashboard lives at `the SeqAn CDash site <http://www.seqan.de/cdash/index.php?project=SeqAn>`_.
 

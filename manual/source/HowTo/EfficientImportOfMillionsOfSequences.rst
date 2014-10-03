@@ -5,8 +5,8 @@
 
 .. _how-to-efficiently-import-millions-of-sequences:
 
-How To: Efficiently Import Millions Of Sequences
-================================================
+Efficiently Importing Millions Of Sequences
+===========================================
 
 Memory Mapped Files
 -------------------

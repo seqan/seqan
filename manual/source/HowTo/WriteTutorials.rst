@@ -1,7 +1,7 @@
 .. _how-to-write-tutorials:
 
-How To: Write Tutorials
-=======================
+Writing Tutorials
+=================
 
 At the bottom, you can find a `Tutorial Template`_ for starting a new tutorial.
 

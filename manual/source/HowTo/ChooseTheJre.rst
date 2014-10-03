@@ -5,8 +5,8 @@
 
 .. _how-to-choose-the-jre-version:
 
-How To: Choose The JRE Version
-==============================
+Choosing The JRE Version
+========================
 
 In order to change the JRE to be used by KNIME go to Eclipse ``Preferences`` and select the ``Java`` menu.
 
