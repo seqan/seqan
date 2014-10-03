@@ -167,12 +167,12 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("if", "input-file", "SAM/BAM formatted file.  Must be sorted by coordinate.",
                                             seqan::ArgParseOption::INPUTFILE));
-    setValidValues(parser, "input-file", "sam bam");
+    setValidValues(parser, "input-file", seqan::BamFileIn::getFileFormatExtensions());
     setRequired(parser, "input-file");
 
     addOption(parser, seqan::ArgParseOption("of", "output-file", "Output file with regions of interest.",
                                             seqan::ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output-file", "roi");
+    setValidValues(parser, "output-file", seqan::RoiFileIn::getFileFormatExtensions());
     setRequired(parser, "output-file");
 
     // -----------------------------------------------------------------------
@@ -304,8 +304,8 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-	seqan::BamFileIn bamStream;
-    if (!open(bamStream, toCString(options.inputFileName)))
+	seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.inputFileName << "\n";
         return 1;
@@ -315,8 +315,8 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.outputFileName << " ...";
-    std::fstream roiOut(toCString(options.outputFileName), std::ios::binary | std::ios::out);
-    if (!roiOut.good())
+    seqan::RoiFileOut roiFileOut;
+    if (!open(roiFileOut, toCString(options.outputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.outputFileName << "\n";
         return 1;
@@ -338,29 +338,25 @@ int main(int argc, char const ** argv)
 
     RoiBuilderOptions roiBuilderOptions(options.verbosity, options.strandSpecific,
                                         options.usePairing, options.linkOverSkipped);
-    RoiBuilder roiBuilderF(roiOut, roiBuilderOptions);
+    RoiBuilder roiBuilderF(roiFileOut, roiBuilderOptions);
     roiBuilderF.writeHeader();  // only once
-    RoiBuilder roiBuilderR(roiOut, roiBuilderOptions);
+    RoiBuilder roiBuilderR(roiFileOut, roiBuilderOptions);
     // Set the reference sequence names.
-    BamHeader header;
-    readRecord(header, bamStream);
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
-        appendValue(roiBuilderF.refNames, header.sequenceInfos[i].i1);
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
-        appendValue(roiBuilderR.refNames, header.sequenceInfos[i].i1);
+    seqan::BamHeader header;
+    readRecord(header, bamFileIn);
+    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
+    {
+        appendValue(roiBuilderF.refNames, nameStore(context(bamFileIn))[i]);
+        appendValue(roiBuilderR.refNames, nameStore(context(bamFileIn))[i]);
+    }
 
     // TODO(holtgrew): This is only suited for the Illumina mate pair protocol at the moment (--> <--).
-
     int oldRId = 0;
     int oldPos = 0;
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, bamStream) != 0)
-        {
-            std::cerr << "\nERROR: Problem reading from BAM input!\n";
-            return 1;
-        }
+        readRecord(record, bamFileIn);
 
         // Break if record is unmapped.
         if (hasFlagUnmapped(record))
