@@ -59,7 +59,7 @@ Functionality
 ~~~~~~~~~~~~~
 
 In SeqAn, alphabets are value types that can take a limited number of values and which hence can be mapped to a range of natural numbers.
-We can retrieve the number of different values of an alphabet, the alphabet size, by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize`.
+We can retrieve the number of different values of an alphabet, the alphabet size, by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
 
 .. code-block:: cpp
 
@@ -72,7 +72,7 @@ We can retrieve the number of different values of an alphabet, the alphabet size
 
    Alphabet size of Dna: 4
 
-Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue BitsPerValue` can be used to determine the number of bits needed to store a value of a given alphabet.
+Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue` can be used to determine the number of bits needed to store a value of a given alphabet.
 
 .. code-block:: cpp
 
@@ -84,7 +84,7 @@ Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue BitsPerVal
 
    Number of bits needed to store a value of type Dna: 2
 
-The order of a character in the alphabet (i.e. its corresponding natural number) can be retrieved by calling the function :dox:`FiniteOrderedAlphabetConcept#ordValue ordValue`.
+The order of a character in the alphabet (i.e. its corresponding natural number) can be retrieved by calling the function :dox:`FiniteOrderedAlphabetConcept#ordValue`.
 See each specialization's documentation for the ordering of the alphabet's values.
 
 .. code-block:: cpp
@@ -106,11 +106,11 @@ See each specialization's documentation for the ordering of the alphabet's value
    G: 2
    T: 3
 
-.. tip:: 
+.. tip::
 
-    The return value of the :dox:`FiniteOrderedAlphabetConcept#ordValue ordValue` function is determined by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize`.
-    :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize` returns the type which uses the least amount of memory while being able to represent all possible values.
-    E.g. :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize` of :dox:`Dna` returns an ``_uint8`` which is able to represent 256 different characters.
+    The return value of the :dox:`FiniteOrderedAlphabetConcept#ordValue` function is determined by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
+    :dox:`FiniteOrderedAlphabetConcept#ValueSize` returns the type which uses the least amount of memory while being able to represent all possible values.
+    E.g. :dox:`FiniteOrderedAlphabetConcept#ValueSize` of :dox:`Dna` returns an ``_uint8`` which is able to represent 256 different characters.
     However, note that ``std::cout`` has no visible symbol for printing all values on the screen, hence a cast to ``unsigned`` might be necessary.
 
 Assignment 1
@@ -150,7 +150,7 @@ Assignment 1
         }
 
    Hints
-     You will need the Metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize`.
+     You will need the Metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
 
    Solution
      Click **more...** to see the solution.

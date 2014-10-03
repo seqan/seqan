@@ -84,7 +84,7 @@ If we know q at compile time, then we can specify it in a template parameter and
 The question is now, whether we can speed up the above ``hashAll`` functions for specializations of the class ``shape`` like ungapped shapes.
 A little thinking yields a positive answer to that question.
 Indeed, for ungapped shapes, we can incrementally compute the next hash value form a given hashvalue in constant time using the formula ``hash(a_{i+1}...a{_i+q})=hash(a_{i}...a_{i+q−1})|Σ|−a_{i}|Σ|^q +a_{i+q``}, that means when shifting the shape along the sequence, we have to subtract the effect of the leftmost letter and add the effect of the rightmost letter, all scaled with the corresponding factor. All digits in between are *shifted* by multiplying them with the alphabet size.
-Obviously this allows for a much more efficient implementation of the ``hashAll`` function. This functionality can be encoded in the following function :dox:`Shape#hashNext hashNext`.
+Obviously this allows for a much more efficient implementation of the ``hashAll`` function. This functionality can be encoded in the following function :dox:`Shape#hashNext`.
 
 .. code-block:: cpp
 

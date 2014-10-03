@@ -139,7 +139,7 @@ Obtaining the Demo Workflow Plugin Directory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Please download the file :download:`workflow_plugin_dir.zip <workflow_plugin_dir.zip>` and look around in the archive.
-Also have a look into ``binaries_*_*.zip`` files in *payload*. 
+Also have a look into ``binaries_*_*.zip`` files in *payload*.
 The structure of this ZIP file is explained below in :ref:`Anatomy of a Plugin Directory <how-to-generate-knime-nodes-for-external-tools-anatomy-of-a-plugin-directory>`.
 
 Creating an Exclipse Plugin from the Plugin Directory
@@ -169,7 +169,7 @@ In the next dialog, click ``Browse...`` next to ``Select root directory``.
 
 .. figure:: GwnImport2.png
 
-Then, select the directory of your "GenericWorkflowNodes" checkout. 
+Then, select the directory of your "GenericWorkflowNodes" checkout.
 The final dialog should then look as follows.
 
 Clicking finish will import (1) the GKN classes themselves and (2) your generated plugin's classes.

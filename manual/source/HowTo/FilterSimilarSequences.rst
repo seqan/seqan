@@ -13,7 +13,7 @@ Using Swift
 In the next example we are going to use the **Swift** filter to efficiently find pairs of similar reads.
 The Swift algorithms searches for so-called epsilon matches, local alignments, of two sequences with an error rate below a certain epsilon threshold.
 
-The Swift implementation in SeqAn provides a :dox:`Finder#find find` interface and requires the :dox:`Finder` and :dox:`Pattern` to be specialized with ``Swift<..>``.
+The Swift implementation in SeqAn provides a :dox:`Finder#find` interface and requires the :dox:`Finder` and :dox:`Pattern` to be specialized with ``Swift<..>``.
 Millions of sequences can be searched simultaneously with one :dox:`SwiftPattern Swift Pattern` in a :dox:`SwiftFinder Swift Finder` of a single haystack sequence.
 The error rate of a local alignment is the number of errors divided by the length of the needle sequence part of the match.
 There are currently two version of the Swift algorithm implemented in Seqan, ``SwiftSemiGlobal`` and ``SwiftLocal``.
@@ -29,13 +29,13 @@ The following program searches for semi-global alignments between pairs of reads
 .. includefrags:: core/demos/howto/filter_similar_sequences.cpp
    :fragment: includes
 
-First we loads reads from a file into a :dox:`FragmentStore` with :dox:`FragmentStore#loadReads loadReads`.
+First we loads reads from a file into a :dox:`FragmentStore` with :dox:`FragmentStore#loadReads`.
 
 .. includefrags:: core/demos/howto/filter_similar_sequences.cpp
    :fragment: load_reads
 
 Swift uses a q-gram index of the needle sequences.
-Thus, we have to specialize the :dox:`SwiftSemiGlobalPattern Swift Semi Global Pattern` with a :dox:`IndexQGram` index of the needle :dox:`StringSet` in the first template argument, create the index over the :dox:`FragmentStore::readSeqStore readSeqStore` and pass the index to the :dox:`SwiftSemiGlobalPattern Pattern` constructor.
+Thus, we have to specialize the :dox:`SwiftSemiGlobalPattern Swift Semi Global Pattern` with a :dox:`IndexQGram` index of the needle :dox:`StringSet` in the first template argument, create the index over the :dox:`FragmentStore::readSeqStore` and pass the index to the :dox:`SwiftSemiGlobalPattern Pattern` constructor.
 :dox:`SwiftSemiGlobalFinder Swift Semi Global Finder` and :dox:`SwiftSemiGlobalPattern Swift Semi Global Pattern` classes have to be specialized with ``SwiftSemiGlobal`` in the second template argument.
 
 .. note::

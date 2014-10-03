@@ -9,7 +9,7 @@ GFF and GTF I/O
 ===============
 
 Learning Objective
-  In this tutorial, you will learn how to use the high-level interface :dox:`GffStream GffStream` class to read and write GFF and GTF files.
+  In this tutorial, you will learn how to use the high-level interface :dox:`GffStream` class to read and write GFF and GTF files.
 
 Difficulty
   Average
@@ -169,7 +169,7 @@ You can see the output of the program below when called with the input file from
    ctg123  .   CDS         7000    7600    .   +   1   ID=cds00004;Parent=mRNA00003
 
 To add error handling, we have to check return values.
-The :dox:`GffStream#readRecord readRecord` call returns a status code different from ``0``, indicating an error.
+The :dox:`GffStream#readRecord` call returns a status code different from ``0``, indicating an error.
 
 In `Assignment 1`_, we will add error handling to the program.
 
@@ -187,8 +187,8 @@ Assignment 1
      Add error handling using the hints below.
 
    Hints
-     The functions :dox:`GffStream#readRecord readRecord` and :dox:`GffStream#writeRecord writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-     The function :dox:`GffStream#isGood isGood` checks whether the state of a :dox:`GffStream` is errorneous.
+     The functions :dox:`GffStream#readRecord` and :dox:`GffStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
+     The function :dox:`GffStream#isGood` checks whether the state of a :dox:`GffStream` is errorneous.
 
    Solution
      .. container:: foldable
@@ -295,7 +295,7 @@ GFF and GTF
 -----------
 
 The class :dox:`GffStream` transparently reads files in both GFF and GTF format.
-When writing, you can select the output format with the third parameter to the constructor :dox:`GffStream` or the function :dox:`GffStream#open open`.
+When writing, you can select the output format with the third parameter to the constructor :dox:`GffStream` or the function :dox:`GffStream#open`.
 When using ``GffStream::GFF``, GFF 3 is used, when using ``GffStream::GTF``, the GTF format.
 The default is to use ``GffStream::GFF``.
 

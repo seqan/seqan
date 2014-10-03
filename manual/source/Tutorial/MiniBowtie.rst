@@ -194,7 +194,7 @@ Assignment 2
    Hint
      .. container:: foldable
 
-        You can obtain the correct iterator type using the metafunction :dox:`ContainerConcept#Iterator Iterator`.
+        You can obtain the correct iterator type using the metafunction :dox:`ContainerConcept#Iterator`.
 
         .. code-block:: cpp
 
@@ -246,18 +246,18 @@ Assignment 3
 
    Hint
      Make a copy of the iterator before following the path of the substituted character.
-     Doing so saves time and keeps the code simple because you do not need to use :dox:`TopDownHistoryIterator#goUp goUp`.
+     Doing so saves time and keeps the code simple because you do not need to use :dox:`TopDownHistoryIterator#goUp`.
 
    Hint
      .. container:: foldable
 
-       :dox:`TopDownIterator#goDown goDown` returns a boolean indicating if a path exists or not.
+       :dox:`TopDownIterator#goDown` returns a boolean indicating if a path exists or not.
        In addition, you do not need to go through the steps of the pseudo code if the second pattern half was not found!
 
    Hint
      .. container:: foldable
 
-       :dox:`OrderedAlphabetConcept#MinValue MinValue` returns the lowest value of an alphabet, while :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize` returns the number of different values of a data type.
+       :dox:`OrderedAlphabetConcept#MinValue` returns the lowest value of an alphabet, while :dox:`FiniteOrderedAlphabetConcept#ValueSize` returns the number of different values of a data type.
 
    Solution
      .. container:: foldable
@@ -288,8 +288,8 @@ Assignment 4
 So this is already the fundamental part of our program.
 What's left to do is to write the result into a SAM file.
 In order to do so, we make use of the :dox:`FragmentStore`.
-Everything we need to do is to fill the :dox:`FragmentStore::alignedReadStore alignedReadStore` which is a member of the :dox:`FragmentStore`.
-This is very easy, because we only need to append a new value of type :dox:`AlignedReadStoreElement::AlignedReadStoreElement AlignedReadStoreElement` specifying the match id, the pattern id, the id of the contig, as well as the begin and end position of the match in the reference.
+Everything we need to do is to fill the :dox:`FragmentStore::alignedReadStore` which is a member of the :dox:`FragmentStore`.
+This is very easy, because we only need to append a new value of type :dox:`AlignedReadStoreElement::AlignedReadStoreElement` specifying the match id, the pattern id, the id of the contig, as well as the begin and end position of the match in the reference.
 
 An ``addMatchToStore`` function could look like this:
 

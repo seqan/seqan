@@ -24,11 +24,11 @@ Preview with Universal Indent GUI
 
 When started, the program will present you with a window like the following.
 
-.. figure:: uig-1.png 
+.. figure:: uig-1.png
 
 First, we set the indenter to Uncrustify.
 
-.. figure:: uig-2.png 
+.. figure:: uig-2.png
 
 
 Then, we load SeqAn's *uncrustify.cfg* which is located in *${CHECKOUT}/misc*. We can do so by selecting `Indenter > Load Indenter Config File` in the program menu.

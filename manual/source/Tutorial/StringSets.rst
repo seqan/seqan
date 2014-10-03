@@ -26,7 +26,7 @@ This tutorial will introduce you to the SeqAn class :dox:`StringSet`, its backgr
 Background
 ~~~~~~~~~~
 
-One advantage of using :dox:`StringSet` is that it supports the function :dox:`StringSet#concat concat` that returns a *concatenator* of all sequences in the string set.
+One advantage of using :dox:`StringSet` is that it supports the function :dox:`StringSet#concat` that returns a *concatenator* of all sequences in the string set.
 A *concatenator* is an object that represents the concatenation of a set of strings.
 This way, it is possible to build up index data structures for multiple sequences by using the same construction methods as for single sequences.
 
@@ -46,13 +46,13 @@ Hence, the sequences do not need to be copied when a concatenator is created.
 One string can be an element of several :dox:`DependentStringSet Dependent StringSets`.
 Typical tasks are, e.g., to find a specific string in a string set, or to test whether the strings in two string sets are the same.
 Therefore a mechanism to identify the strings in the string set is needed, and, for performance reasons, this identification should not involve string comparisons.
-SeqAn solves this problem by introducing *ids*, which are by default ``unsigned int`` values. 
+SeqAn solves this problem by introducing *ids*, which are by default ``unsigned int`` values.
 
 The following list lists the different :dox:`StringSet` specializations:
 
 Specialization ``Owner<ConcatDirect>``
   The sequences are stored as parts of a long string.
-  Since the sequences are already concatenated, :dox:`StringSet#concat concat` just needs to return this string.
+  Since the sequences are already concatenated, :dox:`StringSet#concat` just needs to return this string.
   The string set also stores lengths and starting positions of the strings.
   Inserting new strings into the set or removing strings from the set is more expensive than for the default :dox:`OwnerStringSet` specialization, since this involves moving all subsequent sequences in memory.
 
@@ -72,7 +72,7 @@ Specialization ``Dependent<Generous>``
 Building String Sets
 ~~~~~~~~~~~~~~~~~~~~
 
-Use the function :dox:`SequenceConcept#appendValue appendValue` to append strings to string sets.
+Use the function :dox:`SequenceConcept#appendValue` to append strings to string sets.
 
 .. code-block:: cpp
 
@@ -87,8 +87,8 @@ Functionality
 
 This section will give you a short overview of the functionality of the class :dox:`StringSet`.
 
-There are two ways for accessing the sequences in a string set: (1) the function :dox:`RandomAccessContainerConcept#value value` returns a reference to the sequence at a specific *position* within the sequence of sequences, and (2) :dox:`StringSet#valueById valueById` accesses a sequence given its *id*.
-We can retrieve the *id* of a sequence in a :dox:`StringSet` with the function :dox:`StringSet#positionToId positionToId`.
+There are two ways for accessing the sequences in a string set: (1) the function :dox:`RandomAccessContainerConcept#value` returns a reference to the sequence at a specific *position* within the sequence of sequences, and (2) :dox:`StringSet#valueById` accesses a sequence given its *id*.
+We can retrieve the *id* of a sequence in a :dox:`StringSet` with the function :dox:`StringSet#positionToId`.
 
 .. code-block:: cpp
 
@@ -111,7 +111,7 @@ We can retrieve the *id* of a sequence in a :dox:`StringSet` with the function :
 
 In the case of :dox:`OwnerStringSet Owner StringSets`, id and position of a string are always the same, but for :dox:`DependentStringSet Dependent StringSets`, the ids can differ from the positions.
 For example, if a :dox:`DependentStringSet Dependent StringSet` is used to represent subsets of strings that are stored in :dox:`OwnerStringSet Owner StringSets`, one can use the position of the string within the :dox:`OwnerStringSet Owner StringSet` as id of the strings.
-With the function :dox:`StringSet#assignValueById assignValueById`, we can add the string with a given id from the source string set to the target string set.
+With the function :dox:`StringSet#assignValueById`, we can add the string with a given id from the source string set to the target string set.
 
 .. code-block:: cpp
 
@@ -135,7 +135,7 @@ With the function :dox:`StringSet#assignValueById assignValueById`, we can add t
    Position 0: CGCG
    Id       0: TATA
 
-With the function :dox:`StringSet#positionToId positionToId` we can show that, in this case, the position and the id of a string are different.
+With the function :dox:`StringSet#positionToId` we can show that, in this case, the position and the id of a string are different.
 
 
 .. code-block:: cpp
@@ -170,8 +170,8 @@ The following example illustrates, how to iterate over the :dox:`StringSet`.
    TATA
    CGCG
 
-If we want to iterate over the contained :dox:`String Strings` as well, as if the :dox:`StringSet` would be one sequence, we can use the function :dox:`StringSet#concat concat` to get the concatenation of all sequences.
-Therefore we first use the metafunction :dox:`StringSet#Concatenator Concatenator` to receive the type of the concatenation.
+If we want to iterate over the contained :dox:`String Strings` as well, as if the :dox:`StringSet` would be one sequence, we can use the function :dox:`StringSet#concat` to get the concatenation of all sequences.
+Therefore we first use the metafunction :dox:`StringSet#Concatenator` to receive the type of the concatenation.
 Then, we can simply build an iterator for this type and iterate over the concatenation of all strings.
 
 .. code-block:: cpp
@@ -219,7 +219,7 @@ Assignment 2
       Application
 
     Objective
-      In this task you will test, whether a :dox:`DependentStringSet Dependent StringSet` contains a string without comparing the actual sequences. 
+      In this task you will test, whether a :dox:`DependentStringSet Dependent StringSet` contains a string without comparing the actual sequences.
       Use the given code frame below and adjust it in the following way:
 
       #. Build a :dox:`OwnerStringSet Owner StringSet` to store the given strings.
@@ -252,7 +252,7 @@ Assignment 2
          }
 
    Hints
-     You can use the SeqAn functions :dox:`StringSet#positionToId positionToId` and :dox:`StringSet#assignValueById assignValueById`.
+     You can use the SeqAn functions :dox:`StringSet#positionToId` and :dox:`StringSet#assignValueById`.
 
    Solution
      Click **more...** to see the solution.

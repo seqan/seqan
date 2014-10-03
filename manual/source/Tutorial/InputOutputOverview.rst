@@ -136,9 +136,9 @@ The Implementation Support layers contain:
 
 #. Adaptions of system library provided file and stream routines to the
    SeqAn :dox:`StreamConcept` concept.
-#. The :dox:`RecordReader RecordReader` hierarchy for wrapping streams.
+#. The :dox:`RecordReader` hierarchy for wrapping streams.
    They provide functionality that is important for the efficient implementation of I/O code.
-#. Code for tokenization and parsing, based on :dox:`RecordReader RecordReader` objects.
+#. Code for tokenization and parsing, based on :dox:`RecordReader` objects.
 #. Conversion from textual number representations to numeric values (aka "lexical casting").
 
 The Implementation Support Layers will be described in detail in the :ref:`tutorial-parsing` Tutorial.

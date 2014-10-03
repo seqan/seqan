@@ -47,7 +47,7 @@ Modern C++ (C++98)
 
 C++ is sometimes described as a language that most people know only 20% of but everyone knows a different 20%.
 This section gives an overview over some C++98 idioms we use.
-This might be no news if you are a seasoned C++ programmer who is apt at using the STL and Boost libraries. 
+This might be no news if you are a seasoned C++ programmer who is apt at using the STL and Boost libraries.
 However, programmers coming from C and Java might find them interesting.
 
 References

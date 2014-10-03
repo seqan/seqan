@@ -9,7 +9,7 @@ Basic SAM and BAM I/O
 =====================
 
 Learning Objective
-  In this tutorial, you will learn how to use the high-level interface :dox:`BamStream BamStream` class to read and write SAM and BAM files.
+  In this tutorial, you will learn how to use the high-level interface :dox:`BamStream` class to read and write SAM and BAM files.
 
 Difficulty
   Average
@@ -121,7 +121,7 @@ Notes:
   The first and second mate are discriminated by the FLAG values.
 * When the FLAG indicates that SEQ is reverse-complemented, then QUAL is reversed.
 * Positions in the SAM file are 1-based.
-  When read into a :dox:`BamAlignmentRecord BamAlignmentRecord` (see below), the positions become 0-based.
+  When read into a :dox:`BamAlignmentRecord` (see below), the positions become 0-based.
 * The qualities must be stored as ASCII PRED-encoded qualities.
 * The query and reference names must not contain whitespace.
   It is common to trim query and reference ids at the first space.
@@ -179,8 +179,8 @@ For example, if the file contains trailing empty lines, the program will loop in
    ...
 
 We can fix this problem by introducing error handling.
-The :dox:`BamStream#readRecord readRecord` call returns a status code different from ``0``, indicating an error because an empty line does not form a valid SAM record line.
-However, it stops processing as soon as an errernous record is detected which makes the call to :dox:`BamStream#atEnd atEnd` return ``false`` and run in an infinite loop
+The :dox:`BamStream#readRecord` call returns a status code different from ``0``, indicating an error because an empty line does not form a valid SAM record line.
+However, it stops processing as soon as an errernous record is detected which makes the call to :dox:`BamStream#atEnd` return ``false`` and run in an infinite loop
 
 In Assignment 1, we will add error handling to the program.
 
@@ -198,8 +198,8 @@ Assignment 1
      Add error handling using the hints below.
 
    Hints
-      The functions :dox:`BamStream#readRecord readRecord` and :dox:`BamStream#writeRecord writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-      The function :dox:`BamStream#isGood isGood` checks whether the state of a :dox:`BamStream` is errorneous.
+      The functions :dox:`BamStream#readRecord` and :dox:`BamStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
+      The function :dox:`BamStream#isGood` checks whether the state of a :dox:`BamStream` is errorneous.
 
    Solution
       .. container:: foldable
@@ -247,7 +247,7 @@ Note that we use the :dox:`CigarElement` class to store entries in the CIGAR str
 The static members ``INVALID_POS``, ``INVALID_REFID``, and ``INVALID_LEN`` store sentinel values for marking positions, reference sequence ids, and lengths as invalid or N/A.
 
 An important related type is the enum :dox:`BamFlags` that provides constants for bit operations on the ``flag`` field.
-The functions :dox:`BamAlignmentRecord#hasFlagAllProper hasFlagAllProper`, :dox:`BamAlignmentRecord#hasFlagDuplicate hasFlagDuplicate`, :dox:`BamAlignmentRecord#hasFlagFirst hasFlagFirst`, :dox:`BamAlignmentRecord#hasFlagLast hasFlagLast`, :dox:`BamAlignmentRecord#hasFlagMultiple hasFlagMultiple`, :dox:`BamAlignmentRecord#hasFlagNextRC hasFlagNextRC`, :dox:`BamAlignmentRecord#hasFlagNextUnmapped hasFlagNextUnmapped`, :dox:`BamAlignmentRecord#hasFlagQCNoPass hasFlagQCNoPass`, :dox:`BamAlignmentRecord#hasFlagRC hasFlagRC`, :dox:`BamAlignmentRecord#hasFlagSecondary hasFlagSecondary`, :dox:`BamAlignmentRecord#hasFlagUnmapped hasFlagUnmapped`, and :dox:`BamAlignmentRecord#hasFlagSupplementary hasFlagSupplementary` allow for easy reading of flags.
+The functions :dox:`BamAlignmentRecord#hasFlagAllProper`, :dox:`BamAlignmentRecord#hasFlagDuplicate`, :dox:`BamAlignmentRecord#hasFlagFirst`, :dox:`BamAlignmentRecord#hasFlagLast`, :dox:`BamAlignmentRecord#hasFlagMultiple`, :dox:`BamAlignmentRecord#hasFlagNextRC`, :dox:`BamAlignmentRecord#hasFlagNextUnmapped`, :dox:`BamAlignmentRecord#hasFlagQCNoPass`, :dox:`BamAlignmentRecord#hasFlagRC`, :dox:`BamAlignmentRecord#hasFlagSecondary`, :dox:`BamAlignmentRecord#hasFlagUnmapped`, and :dox:`BamAlignmentRecord#hasFlagSupplementary` allow for easy reading of flags.
 
 For example, the following loop sums up the length of the sequences that did not align:
 
@@ -270,7 +270,7 @@ For example, the following loop sums up the length of the sequences that did not
      Extend the result of Assignment 1 by counting the number of unmapped reads.
 
    Hints
-     Use the function :dox:`BamAlignmentRecord#hasFlagUnmapped hasFlagUnmapped`.
+     Use the function :dox:`BamAlignmentRecord#hasFlagUnmapped`.
 
    Solution
      .. container:: foldable
@@ -381,7 +381,7 @@ This class also performs the necessary casting when reading and writing tag list
    seqan::BamAlignmentRecord record;
    seqan::BamTagsDict tagsDict(record.tags);
 
-We can add a tag using the function :dox:`BamTagsDict#setTagValue setTagValue`.
+We can add a tag using the function :dox:`BamTagsDict#setTagValue`.
 When setting an already existing tag's value, its value will be overwritten.
 Note that in the following, we give the tags value in SAM format because it is easier to read, although they are stored in BAM format internally.
 
@@ -394,7 +394,7 @@ Note that in the following, we give the tags value in SAM format because it is e
    setTagValue(tagsDict, "NM", 3);
    // => tags: "NM:i:3 NH:i:1"
 
-The first parameter to :dox:`BamTagsDict#setTagValue setTagValue` is the :dox:`BamTagsDict`, the second one is a two-character string with the key, and the third one is the value.
+The first parameter to :dox:`BamTagsDict#setTagValue` is the :dox:`BamTagsDict`, the second one is a two-character string with the key, and the third one is the value.
 Note that the type of tag entry will be taken automatically from the type of the third parameter.
 
 Reading values is slightly more complex because we have to handle the case that the value is not present.
@@ -407,7 +407,7 @@ First, we get the index of the tag in the tag list.
    if (keyFound)
        std::cerr << "ERROR: Unknown key!\n";
 
-Then, we can read the value from the :dox:`BamTagsDict` using the function :dox:`BamTagsDict#extractTagValue extractTagValue`.
+Then, we can read the value from the :dox:`BamTagsDict` using the function :dox:`BamTagsDict#extractTagValue`.
 
 .. code-block:: cpp
 
@@ -419,7 +419,7 @@ Then, we can read the value from the :dox:`BamTagsDict` using the function :dox:
 The function returns a ``bool`` that is ``true`` on success and ``false`` otherwise.
 The extraction can fail if the index is out of bounds or the value in the dictionary cannot be cast to the type of the first parameter.
 
-The value in the tags dictionary will be casted to the type of the first parameter (result parameter) of :dox:`BamTagsDict#extractTagValue extractTagValue`:
+The value in the tags dictionary will be casted to the type of the first parameter (result parameter) of :dox:`BamTagsDict#extractTagValue`:
 
 .. code-block:: cpp
 

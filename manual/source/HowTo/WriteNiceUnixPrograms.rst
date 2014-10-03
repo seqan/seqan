@@ -28,7 +28,7 @@ Explanation & Reasoning
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``main()`` function should return an integer indicating whether the program completed running successfully or not.
-A value of ``0`` indicates that no error occurred, a value not equal to ``0`` indicates that an error occurred. 
+A value of ``0`` indicates that no error occurred, a value not equal to ``0`` indicates that an error occurred.
 You might consider returning different values for different kinds of errors, e.g. ``2`` for I/O errors, ``3`` for logic errors and ``1`` as a catch-all for any all errors.
 
 This makes it easy for a calling script/program to check whether the program executed successfully.
@@ -95,18 +95,18 @@ Fixing the program install directory at configure time is OK.
 Explanation
 ^^^^^^^^^^^
 
-Most Unix programs are configured with a ``$PREFIX`` variable (e.g. setting ``--prefix=`` in the ``./configure`` script) and assume that all paths are relative to the given one. 
+Most Unix programs are configured with a ``$PREFIX`` variable (e.g. setting ``--prefix=`` in the ``./configure`` script) and assume that all paths are relative to the given one.
 For example, the Apache 2 web server reads its configuration from the director\ ``${PREFIX}/apache2``.
-This is a reasonable assumption. Another reasonable assumption is that the current working directory is writeable. 
+This is a reasonable assumption. Another reasonable assumption is that the current working directory is writeable.
 However, temporary files should be stored in ``${TMPDIR}`` or ``/tmp`` (see the related section).
 
 Non-reasonable assumptions are:
 
-*  *The program is executed in the directory the binary resides in.* 
+*  *The program is executed in the directory the binary resides in.*
    For example, program ``prog`` at path ``/path/to/prog`` should not assume that the working directory is ``/path/to`` when it is executed.
    Especially, do not assume that the directory the binary resides in is writeable.
    If your program is installed in ``/usr/bin``, this path is non-writeable for normal users on Unix.
-*  A program *must* be in a given specific path fixed at *code writing time*. 
+*  A program *must* be in a given specific path fixed at *code writing time*.
    While it is reasonable for the user to give an install path at *configure-time*, the user should be able to install the program in any directory, including ``/opt``, his ``${HOME}`` directory or ``/some-weird-path/the/sys/admin/gave``.
 
 Best practice is:
@@ -225,7 +225,7 @@ Do not require that the current working directory is in any relation to the dire
 Explanation
 ^^^^^^^^^^^
 
-Some programs must be called with ``./program``, e.g. the current working directory. 
+Some programs must be called with ``./program``, e.g. the current working directory.
 This makes it harder to use the program when
 installed centrally and when multiple instances are called at the same time on the same file system.
 This makes it harder to use in complex software pipelines.

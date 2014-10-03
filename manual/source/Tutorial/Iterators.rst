@@ -30,10 +30,10 @@ Defining Iterators
 
 This section will show you how to define different kinds of iterators.
 
-The metafunction :dox:`ContainerConcept#Iterator Iterator` can be used to determine the appropriate iterator type for a given a container.
+The metafunction :dox:`ContainerConcept#Iterator` can be used to determine the appropriate iterator type for a given a container.
 Some containers offer several kinds of iterators, which can be selected by an optional argument of Iterator.
-For example, the tag :dox:`ContainerIteratorTags#Standard Standard` can be used to get an iterator type that resembles the C++ standard random access iterator.
-The more elaborated :dox:`ContainerIteratorTags#Rooted Rooted` iterator, i.e., an iterator that knows its container, can be selected by specifying the :dox:`ContainerIteratorTags#Rooted Rooted` tag.
+For example, the tag :dox:`ContainerIteratorTags#Standard` can be used to get an iterator type that resembles the C++ standard random access iterator.
+The more elaborated :dox:`ContainerIteratorTags#Rooted` iterator, i.e., an iterator that knows its container, can be selected by specifying the :dox:`ContainerIteratorTags#Rooted` tag.
 The construction of an iterator in SeqAn, e.g. for a :dox:`DnaString Dna String`, could look like the following:
 
 .. code-block:: cpp
@@ -44,13 +44,13 @@ The construction of an iterator in SeqAn, e.g. for a :dox:`DnaString Dna String`
 
 .. tip::
 
-   The default iterator implementation is :dox:`ContainerIteratorTags#Standard Standard`.
+   The default iterator implementation is :dox:`ContainerIteratorTags#Standard`.
    Rooted iterators offer some convenience for the user.
-   They offer additional functions like :dox:`RootedIteratorConcept#container container` for determining the container on which the iterator works, and they simplify the interface for other functions like :dox:`RootedIteratorConcept#atEnd atEnd`.
+   They offer additional functions like :dox:`RootedIteratorConcept#container` for determining the container on which the iterator works, and they simplify the interface for other functions like :dox:`RootedIteratorConcept#atEnd`.
    Moreover, rooted iterators may change the container’s length or capacity, which makes it possible to implement a more intuitive variant of a remove algorithm.
 
    While rooted iterators can usually be converted into standard iterators, it is not always possible to convert standard iterators back into rooted iterators, since standard iterators may lack the information about the container they work on.
-   Therefore, many functions that return iterators like :dox:`ContainerConcept#begin begin` or :dox:`ContainerConcept#end end` return rooted iterators instead of standard iterators; this way, they can be used to set both rooted and standard iterator variables.
+   Therefore, many functions that return iterators like :dox:`ContainerConcept#begin` or :dox:`ContainerConcept#end` return rooted iterators instead of standard iterators; this way, they can be used to set both rooted and standard iterator variables.
    Alternatively it is possible to specify the returned iterator type explicitly by passing the iterator kind as a tag argument, e.g. ``begin(str, Standard())``.
 
 Traversing Containers
@@ -59,12 +59,12 @@ Traversing Containers
 In this section you will learn how to iterate over a container using the basic functionality of iterators.
 
 An iterator always points to one value of the container.
-The function :dox:`RandomAccessContainerConcept#value value`, which is equivalent to the ``operator*``, can be used to access this value by reference.
-In contrast :dox:`RandomAccessContainerConcept#getValue getValue` return a copy of the value.
-Functions like :dox:`InputIteratorConcept#goNext goNext` or :dox:`BidirectionalIteratorConcept#goPrevious goPrevious`, which are equivalent to ``operator++`` and ``operator--`` respectively, can be used to move the iterator to other values within the container.
+The function :dox:`RandomAccessContainerConcept#value`, which is equivalent to the ``operator*``, can be used to access this value by reference.
+In contrast :dox:`RandomAccessContainerConcept#getValue` return a copy of the value.
+Functions like :dox:`InputIteratorConcept#goNext` or :dox:`BidirectionalIteratorConcept#goPrevious`, which are equivalent to ``operator++`` and ``operator--`` respectively, can be used to move the iterator to other values within the container.
 
-The functions :dox:`ContainerConcept#begin begin` and :dox:`ContainerConcept#end end`, applied to a container, return iterators to the begin and to the end of the container.
-Note that similar to C++ standard library iterators, the iterator returned by :dox:`ContainerConcept#end end` does not point to the last value of the container but to the position behind the last one.
+The functions :dox:`ContainerConcept#begin` and :dox:`ContainerConcept#end`, applied to a container, return iterators to the begin and to the end of the container.
+Note that similar to C++ standard library iterators, the iterator returned by :dox:`ContainerConcept#end` does not point to the last value of the container but to the position behind the last one.
 If the container is empty then ``end() == begin()``.
 
 The following code prints out a sequence and demonstrates how to iterate over a string.
@@ -91,8 +91,8 @@ The following program demonstrates the usage of iterators.
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: includes
 
-The metafunction :dox:`ContainerConcept#Iterator Iterator` returns the iterator type for a given container type.
-In this case the default implementation :dox:`ContainerIteratorTags#Standard Standard` is used.
+The metafunction :dox:`ContainerConcept#Iterator` returns the iterator type for a given container type.
+In this case the default implementation :dox:`ContainerIteratorTags#Standard` is used.
 
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: metafunctions
@@ -102,26 +102,26 @@ We can use iterators to iterate over the elements of a container, e.g.  to print
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: iterators
 
-Instead of comparing the two iterators ``it`` and ``itEnd``, we could also use the function :dox:`RootedIteratorConcept#atEnd atEnd` to check whether we reached the end of the container.
+Instead of comparing the two iterators ``it`` and ``itEnd``, we could also use the function :dox:`RootedIteratorConcept#atEnd` to check whether we reached the end of the container.
 
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: standard-iterators
 
 Next we will use :dox:`RootedIteratorConcept Rooted Iterators`.
-Since :dox:`RootedIteratorConcept Rooted Iterators` know their container, the functions :dox:`RootedRandomAccessIteratorConcept#goBegin goBegin` and :dox:`RootedIteratorConcept#atEnd atEnd` do not need to get the container as an argument.
+Since :dox:`RootedIteratorConcept Rooted Iterators` know their container, the functions :dox:`RootedRandomAccessIteratorConcept#goBegin` and :dox:`RootedIteratorConcept#atEnd` do not need to get the container as an argument.
 The following example prints for each element of the :dox:`Dna5String Dna5 String` ``genome`` its complement:
 
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: rooted-iterators
 
-Some iterators support iteration in reverse order with :dox:`BidirectionalIteratorConcept#goPrevious goPrevious` as you can see in the next example.
-Note that :dox:`BidirectionalIteratorConcept#goPrevious goPrevious` is called before the value of ``it2`` is accessed.
+Some iterators support iteration in reverse order with :dox:`BidirectionalIteratorConcept#goPrevious` as you can see in the next example.
+Note that :dox:`BidirectionalIteratorConcept#goPrevious` is called before the value of ``it2`` is accessed.
 Remember that the end position of a container is always the position behind the last item in the container.
 
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: iterator-reverse
 
-:dox:`RandomAccessContainerConcept#assignValue assignValue` can be used to change the value of an iterator.
+:dox:`RandomAccessContainerConcept#assignValue` can be used to change the value of an iterator.
 
 .. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: assign-value
@@ -147,7 +147,7 @@ Assignment 1
    Objective
      Copy the code below, which replaces all N's of a given :dox:`String` with A's.
      Adjust the code to use iterators to traverse the container.
-     Use the :dox:`ContainerIteratorTags#Standard Standard` iterator.
+     Use the :dox:`ContainerIteratorTags#Standard` iterator.
 
      .. code-block::cpp
 
@@ -185,7 +185,7 @@ Assignment 2
      Application
 
    Objective
-     Use the code from above and change the :dox:`ContainerIteratorTags#Standard Standard` to a :dox:`ContainerIteratorTags#Rooted Rooted` iterator.
+     Use the code from above and change the :dox:`ContainerIteratorTags#Standard` to a :dox:`ContainerIteratorTags#Rooted` iterator.
      Try to shorten the code wherever possible.
 
    Solution

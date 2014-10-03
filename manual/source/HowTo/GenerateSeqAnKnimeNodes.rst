@@ -416,7 +416,7 @@ Here is a description of the tags and the attributes:
   If the type is ``string`` and the restriction field equals ``"true,false"``, then the parameter is a boolean and set in case ``true`` is selected in the GUI.
   A good example for this would be the ``-l`` flag of the ``ls`` program.
 
-.. tip:: 
+.. tip::
 
     If a ``<clielement>`` does provides an empty ``optionIdentifier`` then it is a positional argument without a flag (examples for parameters with flags are ``-n 1``, ``--number 1``).
 

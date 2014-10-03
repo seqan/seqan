@@ -20,9 +20,9 @@ The following picture and list show the easiest transformations between the coor
 .. figure:: gaps_transformations.png
    :align: center
 
-#. Translate between view (gapped clipped) position and source (ungaped unclipped) position using the functions :dox:`Gaps#toSourcePosition toSourcePosition` and :dox:`Gaps#toViewPosition toViewPosition`.
-#. Translate between clipped and unclipped gapped position by adding/subtracting :dox:`Gaps#clippedBeginPosition clippedBeginPosition` of the gaps object.
-#. Translate between clipped ungapped and unclipped ungapped position by adding/subtracting :dox:`Gaps#beginPosition beginPosition` of the gaps object.
+#. Translate between view (gapped clipped) position and source (ungaped unclipped) position using the functions :dox:`Gaps#toSourcePosition` and :dox:`Gaps#toViewPosition`.
+#. Translate between clipped and unclipped gapped position by adding/subtracting :dox:`Gaps#clippedBeginPosition` of the gaps object.
+#. Translate between clipped ungapped and unclipped ungapped position by adding/subtracting :dox:`Gaps#beginPosition` of the gaps object.
 
 All other transformations are most easily done following one of the paths from the picture above.
 

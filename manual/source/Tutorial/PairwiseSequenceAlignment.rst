@@ -137,7 +137,7 @@ Assignment 1
         header file defining all algorithms and data structures we want to use.
         After we added the namespace and opened the `main` body we define our types we want to use in this function.
         We use an :dox:`String` with the :dox:`Dna` alphabet, since we know that we work with DNA sequences.
-        The second type is our :dox:`Align` object storing the alignment later on. 
+        The second type is our :dox:`Align` object storing the alignment later on.
 
         .. includefrags:: core/demos/tutorial/alignments/alignment_global_assignment1.cpp
            :fragment: main
@@ -165,7 +165,7 @@ Assignment 1
         .. code-block:: console
 
            Score: 16
-                 0     .    :    .   
+                 0     .    :    .
                    AAATGACGGAT----TG
                    |   | |||||    ||
                    A---GTCGGATCTACTG
@@ -275,9 +275,9 @@ Assignment 2
 
            Score: 3
            Alignment matrix:
-                 0     .    :    
+                 0     .    :
                    AAATGACGGATTG
-                      ||  |||   
+                      ||  |||
                    ---TG--GGA---
 
 Specialized Alignments
@@ -300,7 +300,7 @@ MyersHirschberg
   The MyersHirschberg is an combination of the rapid MyersBitVector and the space efficient Hirschberg algorithm, which additionally enables the computation of an alignment.
   It only works with the Levenshtein distance and for Align objects.
 
-.. tip:: 
+.. tip::
    In SeqAn you can omit the computation of the traceback to get only the score by using the function :dox:`globalAlignmentScore`.
    This way you can use the alignment algorithms for verification purposes, etc.
 
@@ -344,7 +344,7 @@ Assignment 3
    Hint
      You can use an iterator to iterate over a row.
      Use the metafunction :dox:`Align#Row` to get the type of the row used by the Align object.
-     Use the function :dox:`Gaps#isGap isGap` to check whether the current value of the iterator is a gap or not.
+     Use the function :dox:`Gaps#isGap` to check whether the current value of the iterator is a gap or not.
      The gaps are already in the view space.
 
    Solution
@@ -379,18 +379,18 @@ Assignment 3
         .. code-block:: console
 
            Score: -6
-                 0     .    :    .  
+                 0     .    :    .
                    AAGU--GA-CUUAUUG
                    | ||  || || | ||
                    A-GUCGGAUCU-ACUG
 
 
 
-           Row 0 contains gaps at positions: 
+           Row 0 contains gaps at positions:
            4
            5
            8
-           Row 1 contains gaps at positions: 
+           Row 1 contains gaps at positions:
            1
            11
 
@@ -413,7 +413,7 @@ Let's start with initializing the :dox:`Align` object to contain the two sequenc
 
 Now the best alignment given the scoring parameters is computed by the function :dox:`localAlignment`.
 The returned score value is printed directly, and the alignment itself in the next line.
-The functions :dox:`Gaps#clippedBeginPosition clippedBeginPosition`and :dox:`Gaps#clippedEndPosition clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
+The functions :dox:`Gaps#clippedBeginPosition` and :dox:`Gaps#clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
 
 .. includefrags:: core/demos/tutorial/alignments/alignment_pairwise_local.cpp
    :fragment: ali1
@@ -583,7 +583,7 @@ Assignment 5
 
    Hint
     * The first step would be to verify at which positions in the text the pattern matches with at most 2 errors.
-    * Use the :dox:`SegmentableConcept#infix infix` function to return a subsequence of a string.
+    * Use the :dox:`SegmentableConcept#infix` function to return a subsequence of a string.
     * A CIGAR string is a different representation of an alignment.
       It consists of a number followed by an operation.
       The number indicates how many consecutive operations of the same type are executed.
@@ -678,7 +678,7 @@ Assignment 5
          .. includefrags:: core/demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
             :fragment: cigarMatch
 
-         In a similar procedure we determine the consecutive substitutions. 
+         In a similar procedure we determine the consecutive substitutions.
          Finally we print out the position of the hit, its total number of edits and the corresponding cigar string.
 
          .. includefrags:: core/demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp

@@ -214,7 +214,7 @@ These tutorials explain how to use the I/O functionality in SeqAn beyond the bas
 The tutorials are targeted at developers that either want to use the lower level I/O routines in SeqAn or write their own parsers.
 We recommended to start out reading the I/O Overview and then jump to the chapter that interests you most.
 In this Section we introduce the three main techniques of programming in SeqAn, namely the ''global function interface'', the use of
-''Metafunctions'', and the concept of  ''Template subclassing''. 
+''Metafunctions'', and the concept of  ''Template subclassing''.
 
 :ref:`tutorial-input-output-overview`
   This article gives an overview of the I/O functionality in SeqAn.
@@ -273,10 +273,10 @@ There are plenty of information completing your knowledge about SeqAn so have a 
 
 .. rubric:: :rubric-heading2:`Frequently used Software Techniques`
 
-We assume that the user is acquainted with the basic data types of SeqAn, the introductory example and the demo programs. 
+We assume that the user is acquainted with the basic data types of SeqAn, the introductory example and the demo programs.
 Also you should be acquainted with the STL and template programming.
 In this Section we introduce the three main techniques of programming in SeqAn, namely the *global function interface*, the use of
-*Metafunctions*, and the concept of *Template subclassing*. 
+*Metafunctions*, and the concept of *Template subclassing*.
 
 :ref:`tutorial-basic-techniques`
   Here we remind you of the basics of template programming and the use of the STL.
@@ -288,4 +288,4 @@ In this Section we introduce the three main techniques of programming in SeqAn, 
   In this section you find a short example that illustrates the power of template subclassing.
 
 :ref:`tutorial-global-function-interface`
-  In this section you find a useful piece of code that shows you the flexibility of the global function interface. 
+  In this section you find a useful piece of code that shows you the flexibility of the global function interface.

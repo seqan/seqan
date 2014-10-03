@@ -1,4 +1,4 @@
-.. _suffix-tree:
+.. _glossary-suffix-tree:
 
 Suffix Tree
 -----------

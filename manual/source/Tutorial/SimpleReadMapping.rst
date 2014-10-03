@@ -59,13 +59,13 @@ We will now use some typedefs for the FragmentStore and SWIFT filter to get shor
 .. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
    :fragment: typedefs
 
-We define the global constant ``EPSILON``, the allowed error rate.
+We define the global constant ``EPSILON`` (:math:`\vareps`), the allowed error rate.
 
 .. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
    :fragment: global-constants
 
 Evaluate the arguments from the command line.
-Use the functions :dox:`FragmentStore#loadContigs loadContigs` and :dox:`FragmentStore#loadReads loadReads` to load the reference sequence (possibly more than one if the FASTA file contains more than one sequence) and reads into the FragmentStore.
+Use the functions :dox:`FragmentStore#loadContigs` and :dox:`FragmentStore#loadReads` to load the reference sequence (possibly more than one if the FASTA file contains more than one sequence) and reads into the FragmentStore.
 Note that these functions will automatically guess the file type for you.
 
 .. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
@@ -77,14 +77,14 @@ Initialize :dox:`Finder` and :dox:`Pattern` for the q-gram index used by the swi
    :fragment: pattern-finder
 
 Now, iterate over all input sequence contigs and enumerate all SWIFT hits.
-These hits will contain all possible matches of the reads in the FragmentStore with up to *floor(EPSILON \* :dox:`ContainerConcept#length length(read)`)* errors.
+These hits will contain all possible matches of the reads in the FragmentStore with up to :math:`\varepsilon \cdot \ell` (with :math:`\ell =` :dox:`ContainerConcept#length length(read)`) errors.
 Mismatches and indels are taken into consideration.
 
 .. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
    :fragment: swift
 
 Now, verify each possible match using a :dox:`HammingSimplePattern`.
-The verified matches will have Hamming distance < *floor(EPSILON \* :dox:`ContainerConcept#length length(read)`)*, edit distance is not considered.
+The verified matches will have Hamming distance :math:`< \lfloor \varepsilon \cdot \ell \rfloor`, edit distance is not considered.
 
 .. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
    :fragment: verification
@@ -138,9 +138,9 @@ with indels so you only have to adjust the verification step.
 
 Hint
   Use the :dox:`MyersPattern Myers Pattern` for the approximate search.
-  Don't forget to call :dox:`Finder#findBegin findBegin` using the score (:dox:`MyersPattern#getScore getScore`) of the last hit as the find begin score.
+  Don't forget to call :dox:`Finder#findBegin` using the score (:dox:`MyersPattern#getScore`) of the last hit as the find begin score.
   You can use one Myers Pattern object per read sequence to only perform the precomputation once.
-  If you reuse your finder object, don't forget to call :dox:`Finder#clear clear`.
+  If you reuse your finder object, don't forget to call :dox:`Finder#clear`.
 
 Task 3: Find Matches On Reverse-Complement
 """"""""""""""""""""""""""""""""""""""""""
@@ -158,4 +158,4 @@ Hint
 Task 4: Allow Other Output Formats
 """"""""""""""""""""""""""""""""""
 
-Read the documentation on the function :dox:`FragmentStore#write write` of the class :dox:`FragmentStore`.
+Read the documentation on the function :dox:`FragmentStore#write` of the class :dox:`FragmentStore`.

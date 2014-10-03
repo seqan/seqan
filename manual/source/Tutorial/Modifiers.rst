@@ -106,7 +106,7 @@ The result is:
 
 .. code-block:: cpp
 
-   std::cout << myString << '\n'; 
+   std::cout << myString << '\n';
    std::cout << myModifier << '\n';
 
 .. code-block:: console
@@ -160,7 +160,7 @@ Assignment 1
     .. includefrags:: core/demos/tutorial/modifiers/assignment1.cpp
 
    Solution
-      .. container:: foldable 
+      .. container:: foldable
 
          .. includefrags:: core/demos/tutorial/modifiers/assignment1_solution.cpp
 
@@ -201,9 +201,9 @@ The Modified Iterator
 We have seen how a :dox:`ModifiedString` can be used to modify strings without touching or copying original data.
 The same can be done with iterators.
 The :dox:`ModifiedIterator` implements the :dox:`RandomAccessIteratorConcept Iterator` concept and thus can be used in every algorithm or data structure that expects an iterator.
-In fact, we have already used the :dox:`ModifiedIterator` unknowingly in the examples above, as in our cases the :dox:`ModifiedString` returns a corresponding :dox:`ModifiedIterator` via the :dox:`ContainerConcept#Iterator Iterator` meta-function.
-The main work is done in the :dox:`ModifiedIterator`, whereas the :dox:`ModifiedString` only overloads the :dox:`ContainerConcept#begin begin` and :dox:`ContainerConcept#end end`.
-Normally, you are going to use the :dox:`ModifiedString` and maybe the result of its :dox:`ContainerConcept#Iterator Iterator` meta-function instead of a :dox:`ModifiedIterator` directly.
+In fact, we have already used the :dox:`ModifiedIterator` unknowingly in the examples above, as in our cases the :dox:`ModifiedString` returns a corresponding :dox:`ModifiedIterator` via the :dox:`ContainerConcept#Iterator` meta-function.
+The main work is done in the :dox:`ModifiedIterator`, whereas the :dox:`ModifiedString` only overloads the :dox:`ContainerConcept#begin` and :dox:`ContainerConcept#end`.
+Normally, you are going to use the :dox:`ModifiedString` and maybe the result of its :dox:`ContainerConcept#Iterator` meta-function instead of a :dox:`ModifiedIterator` directly.
 
 Nested Modifiers
 ~~~~~~~~~~~~~~~~

@@ -1,7 +1,7 @@
 .. sidebar:: ToC
 
    .. contents::
-   
+
 .. _how-to-automate-tests-with-ctest:
 
 Automating Tests With CTest

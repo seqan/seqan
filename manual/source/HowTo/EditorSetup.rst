@@ -1,7 +1,7 @@
 .. sidebar:: ToC
 
    .. contents::
-   
+
 
 .. _how-to-setup-your-editor:
 

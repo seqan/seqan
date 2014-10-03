@@ -1,12 +1,14 @@
-SeqAn Documentation
-===================
+SeqAn Manual
+============
 
-This is the documentation of the SeqAn library.
+This is the manual of the SeqAn library.
 Follow one of the links below.
 
-:ref:`tutorial` (**start here**)
-  Jump right into using SeqAn using our **tutorials**!
+:ref:`tutorial`
   Each tutorial takes 30 to 60 minutes of your time for learning how to use SeqAn.
+  Jump right into using SeqAn using our tutorials!
+
+  * Detailed installation descriptions are available in the :ref:`tutorial-getting-started` Tutorial.
 
 :ref:`how-to`
   Use these short and target-oriented articles to solve common, specific problems.
@@ -20,6 +22,16 @@ Follow one of the links below.
 :ref:`style-guide`
   Please follow these style guides for SeqAn library and application code.
 
+:ref:`glossary`
+  These pages contain definitions of various terms.
+
+API Documentation
+-----------------
+
+.. TODO Update this with s/dev3/1.5.0/ after putting the docs there.
+
+The API documentation can be found on `here <http://docs.seqan.de/seqan/dev3>`_.
+
 .. toctree::
    :hidden:
    :maxdepth: 2
@@ -29,6 +41,7 @@ Follow one of the links below.
    Infrastructure
    BuildManual
    StyleGuide
+   Glossary
 
    zreferences
 

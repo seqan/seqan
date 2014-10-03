@@ -9,7 +9,7 @@ Parsing Command Line Arguments
 ------------------------------
 
 Learning Objective
-  You will learn how to use the :dox:`ArgumentParser ArgumentParser` class to parse command line arguments.
+  You will learn how to use the :dox:`ArgumentParser` class to parse command line arguments.
   This tutorial is a walk-through with links into the API documentation and also meant as a source for copy-and-paste code.
 
 Difficulty
@@ -156,7 +156,7 @@ After inclusion, we can create an :dox:`ArgumentParser` object:
 
    seqan::ArgumentParser parser("modify_string");
 
-Then, we define a positional argument using the function :dox:`ArgumentParser#addArgument addArgument`.
+Then, we define a positional argument using the function :dox:`ArgumentParser#addArgument`.
 The function accepts the parser and an :dox:`ArgParseArgument` object.
 We call the :dox:`ArgParseArgument` constructor with three parameters: the type of the argument (a string), and a label for the documentation.
 
@@ -165,7 +165,7 @@ We call the :dox:`ArgParseArgument` constructor with three parameters: the type 
    addArgument(parser, seqan::ArgParseArgument(
        seqan::ArgParseArgument::STRING, "TEXT"));
 
-Then, we add options to the parser using :dox:`ArgumentParser#addOption addOption`.
+Then, we add options to the parser using :dox:`ArgumentParser#addOption`.
 We pass the parser and an :dox:`ArgParseOption` object.
 
 .. code-block:: console
@@ -177,7 +177,7 @@ We pass the parser and an :dox:`ArgParseOption` object.
        "U", "uppercase", "Select to-uppercase as operation."));
 
 The :dox:`ArgParseOption` constructor is called in two different variants.
-Within the first :dox:`ArgumentParser#addOption addOption` call, we construct an integer option with a short and long name, a documentation string, and give it the label "INT".
+Within the first :dox:`ArgumentParser#addOption` call, we construct an integer option with a short and long name, a documentation string, and give it the label "INT".
 The second option is a flag (indicated by not giving a type) with a short and a long name and a description.
 
 .. tip::
@@ -194,7 +194,7 @@ The second option is a flag (indicated by not giving a type) with a short and a 
 If the option ``a`` is not a list then the occurence ``-a 3`` overwrites all previous settings.
 
 However, if ``a`` is marked to be a list, then all values (``1``, ``2``, and ``3``) are stored as its values.
-We can get the number of elements using the function :dox:`ArgumentParser#getOptionValueCount getOptionValueCount` and then access the individual arguments using the function :dox:`ArgumentParser#getOptionValue getOptionValue`.
+We can get the number of elements using the function :dox:`ArgumentParser#getOptionValueCount` and then access the individual arguments using the function :dox:`ArgumentParser#getOptionValue`.
 You can mark an option and arguments to be lists by using the ``isList`` parameter to the :dox:`ArgParseArgument` and :dox:`ArgParseOption` constructors.
 
 For arguments, only the first or the last argument or none can be a list but not both.
@@ -207,7 +207,7 @@ Consider this program call:
 For example, if the program has three arguments and the first one is a list then ``arg0`` and ``arg1`` would be the content of the first argument.
 If it has two arguments and the last one is a list then ``arg1``, ``arg2``, and ``arg3`` would be the content of the last argument.
 
-Next, we parse the command line using :dox:`ArgumentParser#parse parse`.
+Next, we parse the command line using :dox:`ArgumentParser#parse`.
 
 .. code-block:: cpp
 
@@ -229,8 +229,8 @@ Otherwise, the method ``main()`` is left with ``1`` in case of errors and with `
        return res == seqan::ArgumentParser::PARSE_ERROR;
 
 Finally, we access the values from the command line using the :dox:`ArgumentParser`.
-The function :dox:`ArgumentParser#getOptionValue getOptionValue` allows us to access the values from the command line after casting into C++ types.
-The function :dox:`ArgumentParser#isSet isSet` allows us to query whether a given argument was set on the command line.
+The function :dox:`ArgumentParser#getOptionValue` allows us to access the values from the command line after casting into C++ types.
+The function :dox:`ArgumentParser#isSet` allows us to query whether a given argument was set on the command line.
 
 .. code-block:: cpp
 
@@ -330,7 +330,7 @@ Using Default Values
 ^^^^^^^^^^^^^^^^^^^^
 
 Would it not be nice if we could specify a default value for ``--period``, so it is ``1`` if not specified and simply each character is modified?
-We can do this by using the function :dox:`ArgumentParser#setDefaultValue setDefaultValue`:
+We can do this by using the function :dox:`ArgumentParser#setDefaultValue`:
 
 .. code-block:: cpp
 
@@ -710,7 +710,7 @@ In this section, we will give some examples.
 Setting Minimum and Maximum Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The functions :dox:`ArgParseArgument#setMinValue setMinValue` and :dox:`ArgParseArgument#setMaxValue setMaxValue` allow to give a smallest and/or largest value for a given option.
+The functions :dox:`ArgParseArgument#setMinValue` and :dox:`ArgParseArgument#setMaxValue` allow to give a smallest and/or largest value for a given option.
 Of course, this only works with integer- and double-typed command line options.
 
 We can pass both the short and the long option name to these functions.
@@ -737,7 +737,7 @@ Assignment 4
       Reproduction
 
     Objective
-       Use the function :dox:`ArgParseArgument#setMinValue setMinValue` to set a minimal value of ``1`` for the parameter ``--period``.
+       Use the function :dox:`ArgParseArgument#setMinValue` to set a minimal value of ``1`` for the parameter ``--period``.
 
     Solution
       .. container:: foldable
@@ -859,7 +859,7 @@ Assignment 4
 Marking Options as Required
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We can mark options as being required using the function :dox:`ArgumentParser#setRequired setRequired`:
+We can mark options as being required using the function :dox:`ArgumentParser#setRequired`:
 
 .. code-block:: cpp
 
@@ -874,7 +874,7 @@ Setting List of Valid Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sometimes, it is useful to give a list of valid values for a command line option.
-You can give it as a space-separated list in a string to :dox:`ArgumentParser#setValidValues setValidValues`.
+You can give it as a space-separated list in a string to :dox:`ArgumentParser#setValidValues`.
 The check whether the value from the command line is valid is case sensitive.
 
 .. code-block:: cpp
@@ -1099,7 +1099,7 @@ The user can now use the parameter as follows:
 
    # modify_string -r 5 10 ...
 
-We use the four-parameter variant with an integer index of :dox:`ArgumentParser#getOptionValue getOptionValue` to access the entries in the tuple given on the command line.
+We use the four-parameter variant with an integer index of :dox:`ArgumentParser#getOptionValue` to access the entries in the tuple given on the command line.
 
 .. code-block:: cpp
 

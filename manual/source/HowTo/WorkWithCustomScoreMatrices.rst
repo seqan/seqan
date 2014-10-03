@@ -24,7 +24,7 @@ This consists of three steps:
 * defining a tag struct
 * specializing the class ``ScoringMatrixData_`` with your tag
 
-Note how we use enum values to compute the matrix size which itself is retrieved from the :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize` metafunction.
+Note how we use enum values to compute the matrix size which itself is retrieved from the :dox:`FiniteOrderedAlphabetConcept#ValueSize` metafunction.
 
 .. includefrags:: core/demos/howto/scores/init_score.cpp
    :fragment: user-defined-matrix

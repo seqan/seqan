@@ -117,7 +117,7 @@ The following line of code shows how the :dox:`Finder` is initialized.
    Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
    Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
 
-After initialization it is possible to use the :dox:`Finder#find find` function in order to trigger a search for all occurrences of a given pattern in the underlying :dox:`String` or :dox:`StringSet`.
+After initialization it is possible to use the :dox:`Finder#find` function in order to trigger a search for all occurrences of a given pattern in the underlying :dox:`String` or :dox:`StringSet`.
 In this example, we search for the pattern ``ACGT``:
 
 .. code-block:: cpp
@@ -128,12 +128,12 @@ In this example, we search for the pattern ``ACGT``:
 
    find(esaFinder, "ACGT");
 
-Calling the function :dox:`Finder#find find` invokes the localization of all occurrences of a given pattern.
+Calling the function :dox:`Finder#find` invokes the localization of all occurrences of a given pattern.
 It works by modifying pointers of the ``Finder`` to tables of the index.
 For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to the first and last suffix array entry that stores an occurrence of the pattern.
 
-The return value of the :dox:`Finder#find find` function tells us whether or not a given pattern occurs in the text.
-Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
+The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text.
+Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
 
 .. code-block:: cpp
 
@@ -154,8 +154,8 @@ Furthermore, if there are several instances of a pattern, consecutive calls of :
    }
 
 The above code is not very useful, since we do not know the locations of the first, second or third pattern occurrence.
-The function :dox:`Finder#position position` will help here.
-:dox:`Finder#position position` called on a finder returns the location of the ``x``\ th pattern, where ``x`` can be the first, second, or any other occurrence of the pattern.
+The function :dox:`Finder#position` will help here.
+:dox:`Finder#position` called on a finder returns the location of the ``x``\ th pattern, where ``x`` can be the first, second, or any other occurrence of the pattern.
 
 .. code-block:: cpp
 
@@ -195,7 +195,7 @@ Assignment 2
      Write a small program that prints the locations of all occurrences of ``"TATAA"`` in ``"TTATTAAGCGTATAGCCCTATAAATATAA"``.
 
    Hints
-    Use the :dox:`Finder#find find` function as the conditional instruction of a <tt>while</tt> loop.
+    Use the :dox:`Finder#find` function as the conditional instruction of a <tt>while</tt> loop.
 
    Solution
      .. container:: foldable
@@ -209,7 +209,7 @@ One last remark is necessary.
 
 .. important::
 
-    If you search for two different patterns with the same :dox:`Finder` object, you have to call the :dox:`Finder#clear clear` function of the finder between the search for the two patterns.
+    If you search for two different patterns with the same :dox:`Finder` object, you have to call the :dox:`Finder#clear` function of the finder between the search for the two patterns.
     Otherwise the behavior is undefined.
 
 Handling Multiple Sequences (StringSets)
@@ -220,11 +220,11 @@ A character position of a :dox:`StringSet` can be one of the following:
 
 #. A local position (default), i.e. a :dox:`Pair` (seqNo, seqOfs) where seqNo identifies the string within the :dox:`StringSet` and the seqOfs identifies the position within this string.
 #. A global position, i.e. a single integer value between 0 and the sum of string lengths minus 1.
-   This integer is the position in the gapless concatenation of all strings in the :dox:`StringSet StringSet` to a single string.``
+   This integer is the position in the gapless concatenation of all strings in the :dox:`StringSet` to a single string.``
 
-For indices, the meta-function :dox:`SAValue` determines, which position type (local or global) will be used for internal index tables (suffix array, q-gram array) and what type of position is returned by functions like :dox:`Finder#position position` of a :dox:`Finder`.
+For indices, the meta-function :dox:`SAValue` determines, which position type (local or global) will be used for internal index tables (suffix array, q-gram array) and what type of position is returned by functions like :dox:`Finder#position` of a :dox:`Finder`.
 :dox:`SAValue` returns a :dox:`Pair` (local position) by default, but could be specialized to return an integer type (global position) for some applications.
-If you want to write algorithms for both variants you should use the functions :dox:`TextConcept#posLocalize posLocalize`, :dox:`TextConcept#posGlobalize posGlobalize`, :dox:`TextConcept#getSeqNo getSeqNo`, and :dox:`TextConcept#getSeqOffset getSeqOffset`.
+If you want to write algorithms for both variants you should use the functions :dox:`TextConcept#posLocalize`, :dox:`TextConcept#posGlobalize`, :dox:`TextConcept#getSeqNo`, and :dox:`TextConcept#getSeqOffset`.
 
 Storing and Loading
 ^^^^^^^^^^^^^^^^^^^
@@ -244,7 +244,7 @@ or
    open(index, fileName);
 
 If you have built your q-gram index with variable shapes (i.e. :dox:`SimpleShape` :dox:`GenericShape`), you have to keep in mind that q or the shape is not stored or loaded.
-This must be done manually directly before or after loading with :dox:`Shape#resize resize` oder :dox:`Shape#stringToShape stringToShape`.
+This must be done manually directly before or after loading with :dox:`Shape#resize` oder :dox:`Shape#stringToShape`.
 
 A newly instantiated index is initially empty.
 If you assign a text to be indexed, solely the text fibre is set.

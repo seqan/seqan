@@ -82,14 +82,14 @@ The following figure shows which tables represent the multiple read alignment:
    ***Figure 2:*** Stores used to represent a multiple read alignment
 
 
-The main table is the :dox:`FragmentStore::alignedReadStore alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
+The main table is the :dox:`FragmentStore::alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
 Each entry is an alignment of a read (``readId``) and a contig (``contigId``).
 Introduced gaps are stored as a string of gap anchors in the ``gaps`` member of the alignedReadStore entry and the contigStore entry.
 The begin and end positions of the alignment are given by the ``beginPos`` and ``endPos`` members which are 0-based positions on the forward strand in gap space, i.e. positions in the gapped contig sequence.
 If the read is aligned to the reverse strand it holds ``endPos < beginPos``.
 However, the gaps are always related to the forward strand.
-Additional information, e.g. the number of errors, an alignment score or additional alignment tags, are stored in the tables :dox:`FragmentStore::alignQualityStore alignQualityStore` and :dox:`FragmentStore::alignedReadTagStore alignedReadTagStore` at position ``id``, where ``id`` is a unique id of the :dox:`AlignedReadStoreElement`.
-Paired-end or mate pair alignments are represented by two entries in the :dox:`FragmentStore::alignedReadStore alignedReadStore` that have the same ``pairMatchId`` value (unequal to ``INVALID_ID``).
+Additional information, e.g. the number of errors, an alignment score or additional alignment tags, are stored in the tables :dox:`FragmentStore::alignQualityStore` and :dox:`FragmentStore::alignedReadTagStore` at position ``id``, where ``id`` is a unique id of the :dox:`AlignedReadStoreElement`.
+Paired-end or mate pair alignments are represented by two entries in the :dox:`FragmentStore::alignedReadStore` that have the same ``pairMatchId`` value (unequal to ``INVALID_ID``).
 For orphaned read alignments holds ``pairMatchId == INVALID_ID``.
 
 ::
@@ -100,19 +100,19 @@ For orphaned read alignments holds ``pairMatchId == INVALID_ID``.
      read1   ACACGGT        [2-9[
      read2     ACGGTT-G     [4-12[
 
-The :dox:`FragmentStore::alignedReadStore alignedReadStore` is the only store where the id (alignId in the figure) of an element is not implicitly given by its position.
+The :dox:`FragmentStore::alignedReadStore` is the only store where the id (alignId in the figure) of an element is not implicitly given by its position.
 The reason for this is that it is necessary in many cases to rearrange the elements of the alignedReadStore, e.g. increasingly by (contigId,beginPos), by readId or pairMatchId.
 This can be done by :dox:`sortAlignedReads`.
 If it is necessary to address an element by its id, the elements must be sorted by id first.
-In the case that ids are not contiguously increasing, e.g. because some elements where removed, they must be renamed by a prior call of :dox:`FragmentStore#compactAlignedReads compactAlignedReads`.
-Analogously the function :dox:`FragmentStore#compactPairMatchIds compactPairMatchIds` renames ``pairMatchId`` values contiguously and replaces values that occur in only one alignment by ``INVALID_ID``.
+In the case that ids are not contiguously increasing, e.g. because some elements where removed, they must be renamed by a prior call of :dox:`FragmentStore#compactAlignedReads`.
+Analogously the function :dox:`FragmentStore#compactPairMatchIds` renames ``pairMatchId`` values contiguously and replaces values that occur in only one alignment by ``INVALID_ID``.
 
 Display Aligned Reads
 ^^^^^^^^^^^^^^^^^^^^^
 
 The multiple read alignment can be displayed in text form or in a scalable graphics format (SVG).
-Therefore first a stairs layout of the reads must be computed via :dox:`AlignedReadLayout#layoutAlignment layoutAlignment` and stored in an :dox:`AlignedReadLayout`.
-The function :dox:`AlignedReadLayout#printAlignment printAlignment` can then be used to output a window (beginPos,endPos,firstLine,lastLine) of the read alignment against a contig either to a stream or ``SVGFile``.
+Therefore first a stairs layout of the reads must be computed via :dox:`AlignedReadLayout#layoutAlignment` and stored in an :dox:`AlignedReadLayout`.
+The function :dox:`AlignedReadLayout#printAlignment` can then be used to output a window (beginPos,endPos,firstLine,lastLine) of the read alignment against a contig either to a stream or ``SVGFile``.
 The following small example demonstrates how to first load two contigs from a Fasta file and then import a read alignment given in SAM format:
 
 .. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
@@ -184,7 +184,7 @@ This can be done by the following typedefs:
 .. includefrags:: core/demos/tutorial/store/store_access_aligned_reads.cpp
    :fragment: typedefs
 
-Now we want to extract and output the alignments from the :dox:`FragmentStore::alignedReadStore alignedReadStore` at position 140,144,...,156.
+Now we want to extract and output the alignments from the :dox:`FragmentStore::alignedReadStore` at position 140,144,...,156.
 First we store a reference of the alignedRead in ar as we need to access it multiple times.
 The read sequence is neither stored in the readStore or alignedReadStore as many short sequences can more efficiently be stored in a separate :dox:`StringSet` like the readSeqStore.
 We copy the read sequence into a local variable (defined outside the loop to save allocations/deallocations) as we need to compute the reverse-complement for reads that align to the reverse strand.
@@ -302,60 +302,60 @@ Traversing the Annotation Tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The annotation tree can be traversed and accessed with the :dox:`AnnotationTreeIterator AnnotationTree Iterator`.
-A new iterator can be created with :dox:`ContainerConcept#begin begin` given a reference to the :dox:`FragmentStore` and the tag ``AnnotationTree``:
+A new iterator can be created with :dox:`ContainerConcept#begin` given a reference to the :dox:`FragmentStore` and the tag ``AnnotationTree``:
 
 .. code-block:: cpp
 
    Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
    it = begin(store, AnnotationTree<>());
 
-It starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown goDown`, :dox:`AnnotationTreeIterator#goUp goUp`, and :dox:`AnnotationTreeIterator#goRight goRight`.
+It starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown`, :dox:`AnnotationTreeIterator#goUp`, and :dox:`AnnotationTreeIterator#goRight`.
 These functions return a boolean value that indicates whether the iterator could be moved.
-The functions :dox:`AnnotationTreeIterator#isLeaf isLeaf`, :dox:`AnnotationTreeIterator#isRoot isRoot`, :dox:`AnnotationTreeIterator#isLastChild isLastChild` return the same boolean without moving the iterator.
-With :dox:`AnnotationTreeIterator#goRoot goRoot` or :dox:`AnnotationTreeIterator#goTo goTo` it can be moved to the root node or an arbitrary node given its annotationId.
-If the iterator should not be moved but a new iterator at an adjacent nodes is required, the functions :dox:`AnnotationTreeIterator#nodeDown nodeDown`, :dox:`AnnotationTreeIterator#nodeUp nodeUp`, :dox:`AnnotationTreeIterator#nodeRight nodeRight` can be used.
+The functions :dox:`AnnotationTreeIterator#isLeaf`, :dox:`AnnotationTreeIterator#isRoot`, :dox:`AnnotationTreeIterator#isLastChild` return the same boolean without moving the iterator.
+With :dox:`AnnotationTreeIterator#goRoot` or :dox:`AnnotationTreeIterator#goTo` it can be moved to the root node or an arbitrary node given its annotationId.
+If the iterator should not be moved but a new iterator at an adjacent nodes is required, the functions :dox:`AnnotationTreeIterator#nodeDown`, :dox:`AnnotationTreeIterator#nodeUp`, :dox:`AnnotationTreeIterator#nodeRight` can be used.
 
-The AnnotationTree iterator supports a preorder DFS traversal and therefore can also be used in typical begin-end loops with the functions :dox:`RootedRandomAccessIteratorConcept#goBegin goBegin` (== :dox:`AnnotationTreeIterator#goRoot goRoot`), :dox:`RootedRandomAccessIteratorConcept#goEnd goEnd`, :dox:`InputIteratorConcept#goNext goNext`, :dox:`RootedIteratorConcept#atBegin atBegin`, :dox:`RootedIteratorConcept#atEnd atEnd`.
-During a preorder DFS, the descent into subtree can be skipped by :dox:`AnnotationTreeIterator#goNextRight goNextRight`, or :dox:`AnnotationTreeIterator#goNextUp goNextUp` which proceeds with the next sibling or returns to the parent node and proceeds with the next node in preorder DFS.
+The AnnotationTree iterator supports a preorder DFS traversal and therefore can also be used in typical begin-end loops with the functions :dox:`RootedRandomAccessIteratorConcept#goBegin` (== :dox:`AnnotationTreeIterator#goRoot`), :dox:`RootedRandomAccessIteratorConcept#goEnd`, :dox:`InputIteratorConcept#goNext`, :dox:`RootedIteratorConcept#atBegin`, :dox:`RootedIteratorConcept#atEnd`.
+During a preorder DFS, the descent into subtree can be skipped by :dox:`AnnotationTreeIterator#goNextRight`, or :dox:`AnnotationTreeIterator#goNextUp` which proceeds with the next sibling or returns to the parent node and proceeds with the next node in preorder DFS.
 
 Accessing the Annotation Tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To access or modify the node an iterator points at, the iterator returns the node's annotationId by the :dox:`IteratorAssociatedTypesConcept#value value` function (== operator*).
+To access or modify the node an iterator points at, the iterator returns the node's annotationId by the :dox:`IteratorAssociatedTypesConcept#value` function (== operator*).
 With the annotationId the corresponding entry in the annotationStore could be modified manually or by using convenience functions.
-The function :dox:`AnnotationTreeIterator#getAnnotation getAnnotation` returns a reference to the corresponding entry in the annotationStore.
-:dox:`AnnotationTreeIterator#getName getName` and :dox:`AnnotationTreeIterator#setName setName` can be used to retrieve or change the identifier of the annotation element.
-As some annotation file formats don't give every annotation a name, the function :dox:`AnnotationTreeIterator#getUniqueName getUniqueName` returns the name if non-empty or generates one using the type and id. The name of the parent node in the tree can be determined with :dox:`AnnotationTreeIterator#getParentName getParentName`.
-The name of the annotation type, e.g. 'mRNA' or 'exon', can be determined and modified with :dox:`AnnotationTreeIterator#getType getType` and :dox:`AnnotationTreeIterator#setType setType`.
+The function :dox:`AnnotationTreeIterator#getAnnotation` returns a reference to the corresponding entry in the annotationStore.
+:dox:`AnnotationTreeIterator#getName` and :dox:`AnnotationTreeIterator#setName` can be used to retrieve or change the identifier of the annotation element.
+As some annotation file formats don't give every annotation a name, the function :dox:`AnnotationTreeIterator#getUniqueName` returns the name if non-empty or generates one using the type and id. The name of the parent node in the tree can be determined with :dox:`AnnotationTreeIterator#getParentName`.
+The name of the annotation type, e.g. 'mRNA' or 'exon', can be determined and modified with :dox:`AnnotationTreeIterator#getType` and :dox:`AnnotationTreeIterator#setType`.
 
 An annotation can not only reference a region of a contig but also contain additional information given as key-value pairs.
-The value of a key can be retrieved or set by :dox:`AnnotationTreeIterator#getValueByKey getValueByKey` and :dox:`AnnotationTreeIterator#assignValueByKey assignValueByKeq`.
-The values of a node can be cleared with :dox:`AnnotationTreeIterator#clearValues clearValues`.
+The value of a key can be retrieved or set by :dox:`AnnotationTreeIterator#getValueByKey` and :dox:`AnnotationTreeIterator#assignValueByKey assignValueByKeq`.
+The values of a node can be cleared with :dox:`AnnotationTreeIterator#clearValues`.
 
-A new node can be created as first child, last child, or right sibling of the current node with :dox:`AnnotationTreeIterator#createLeftChild createLeftChile`, :dox:`AnnotationTreeIterator#createRightChild createRightChild`, or :dox:`AnnotationTreeIterator#createSibling createSibling`.
+A new node can be created as first child, last child, or right sibling of the current node with :dox:`AnnotationTreeIterator#createLeftChild createLeftChile`, :dox:`AnnotationTreeIterator#createRightChild`, or :dox:`AnnotationTreeIterator#createSibling`.
 All three functions return an iterator to the newly created node.
 
 The following tables summarizes the functions provided by the AnnotationTree iterator:
 
-+----------------------------------------+---------------------------------------------------------+
-| Function                               | Description                                             |
-+========================================+=========================================================+
-| getAnnotation, value                   | Return annotation object/id of current node             |
-+----------------------------------------+---------------------------------------------------------+
-| [get/set]Name, [get|set]Type           | Access name or type of current annotation object        |
-+----------------------------------------+---------------------------------------------------------+
-| clearValues, [get/set]ValueByKey       | Access associated values                                |
-+----------------------------------------+---------------------------------------------------------+
-| goBegin, goEnd, atBegin, atEnd         | Go to or test for begin/end of DFS traversal            |
-+----------------------------------------+---------------------------------------------------------+
-| goNext, goNextRight, goNextUp          | go next, skip subtree or siblings during DFS traversal  |
-+----------------------------------------+---------------------------------------------------------+
-| goRoot, goUp, goDown, goRight          | Navigate through annotation tree                        |
-+----------------------------------------+---------------------------------------------------------+
-| create[Left/Right]Child, createSibling | Create new annotation nodes                             |
-+----------------------------------------+---------------------------------------------------------+
-| isRoot, isLeaf                         | Test for root/leaf node                                 |
-+----------------------------------------+---------------------------------------------------------+
++----------------------------------------+--------------------------------------------------------+
+| Function                               | Description                                            |
++========================================+========================================================+
+| getAnnotation, value                   | Return annotation object/id of current node            |
++----------------------------------------+--------------------------------------------------------+
+| [get/set]Name, [get/set]Type           | Access name or type of current annotation object       |
++----------------------------------------+--------------------------------------------------------+
+| clearValues, [get/set]ValueByKey       | Access associated values                               |
++----------------------------------------+--------------------------------------------------------+
+| goBegin, goEnd, atBegin, atEnd         | Go to or test for begin/end of DFS traversal           |
++----------------------------------------+--------------------------------------------------------+
+| goNext, goNextRight, goNextUp          | go next, skip subtree or siblings during DFS traversal |
++----------------------------------------+--------------------------------------------------------+
+| goRoot, goUp, goDown, goRight          | Navigate through annotation tree                       |
++----------------------------------------+--------------------------------------------------------+
+| create[Left/Right]Child, createSibling | Create new annotation nodes                            |
++----------------------------------------+--------------------------------------------------------+
+| isRoot, isLeaf                         | Test for root/leaf node                                |
++----------------------------------------+--------------------------------------------------------+
 
 
 File I/O
@@ -364,18 +364,18 @@ File I/O
 Reads and Contigs
 """""""""""""""""
 
-To efficiently load reads, use the function :dox:`FragmentStore#loadReads loadReads` which auto-detects the file format, supporting Fasta, Fastq, QSeq and Raw (see :dox:`AutoSeqFormat`), and uses memory mapping to efficiently load millions of reads, their names and quality values.
-If not only one but two file names are given, :dox:`FragmentStore#loadReads loadReads` loads mate pairs or paired-end reads stored in two separate files.
+To efficiently load reads, use the function :dox:`FragmentStore#loadReads` which auto-detects the file format, supporting Fasta, Fastq, QSeq and Raw (see :dox:`AutoSeqFormat`), and uses memory mapping to efficiently load millions of reads, their names and quality values.
+If not only one but two file names are given, :dox:`FragmentStore#loadReads` loads mate pairs or paired-end reads stored in two separate files.
 Both files are required to contain the same number or reads and reads stored at the same line in both files are interpreted as pairs.
-The function internally uses :dox:`FragmentStore#appendRead appendRead` or :dox:`FragmentStore#appendMatePair appendMatePair` and reads distributed over multiple files can be loaded with consecutive calls of  :dox:`FragmentStore#loadReads loadReads`.
+The function internally uses :dox:`FragmentStore#appendRead` or :dox:`FragmentStore#appendMatePair` and reads distributed over multiple files can be loaded with consecutive calls of  :dox:`FragmentStore#loadReads`.
 
-Contigs can be loaded with the function :dox:`FragmentStore#loadContigs loadContigs`.
+Contigs can be loaded with the function :dox:`FragmentStore#loadContigs`.
 The function loads all contigs given in a single file or multiple files given a single file name or a :dox:`StringSet` of file names.
-The function has an additional boolean parameter ``loadSeqs`` to load immediately load the contig sequence or if ``false`` load the sequence later with :dox:`FragmentStore#loadContig loadContig` to save memory, given the corresponding ``contigId``.
-If the contig is accessed by multiple instances/threads the functions :dox:`FragmentStore#lockContig lockContig` and :dox:`FragmentStore#unlockContig unlockContig` can be used to ensure that the contig is loaded and release it after use.
-The function :dox:`FragmentStore#unlockAndFreeContig unlockAndFreeContig` can be used to clear the contig sequence and save memory if the contig is not locked by any instance.
+The function has an additional boolean parameter ``loadSeqs`` to load immediately load the contig sequence or if ``false`` load the sequence later with :dox:`FragmentStore#loadContig` to save memory, given the corresponding ``contigId``.
+If the contig is accessed by multiple instances/threads the functions :dox:`FragmentStore#lockContig` and :dox:`FragmentStore#unlockContig` can be used to ensure that the contig is loaded and release it after use.
+The function :dox:`FragmentStore#unlockAndFreeContig` can be used to clear the contig sequence and save memory if the contig is not locked by any instance.
 
-To write all contigs to an open output stream use :dox:`FragmentStore#writeContigs writeContigs`.
+To write all contigs to an open output stream use :dox:`FragmentStore#writeContigs`.
 
 Multiple Read Alignments
 """"""""""""""""""""""""
@@ -396,11 +396,11 @@ and written to an open output stream with:
 
 As SAM supports a multiple read alignment (with padding operations in the CIGAR string) but does not enforce its use.
 That means that a typical SAM file represents a set of pairwise (not multiple) alignments.
-To convert all the pairwise alignments into a multiple alignments of all reads, :dox:`FragmentStore#read read` internally calls the function :dox:`FragmentStore#convertPairWiseToGlobalAlignment convertPairWiseToGlobalAlignment`.
-A prior call to :dox:`FragmentStore#loadReads loadReads` is not necessary (but possible) as SAM contains the read names, sequences and quality values.
+To convert all the pairwise alignments into a multiple alignments of all reads, :dox:`FragmentStore#read` internally calls the function :dox:`FragmentStore#convertPairWiseToGlobalAlignment`.
+A prior call to :dox:`FragmentStore#loadReads` is not necessary (but possible) as SAM contains the read names, sequences and quality values.
 Contigs can be loaded at any time.
 If they are not loaded before reading a SAM file, empty sequences are created with the names referred in the SAM file.
-A subsequent call of :dox:`FragmentStore#loadContigs loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
+A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
 
 Annotations
 ^^^^^^^^^^^
@@ -413,10 +413,10 @@ A annotation file can be read from an open input stream with:
    read(file, store, Ucsc());   // reads a 'knownGene.txt' or 'knownIsoforms.txt' file
 
 The GFF-reader is also able to detect and read GTF files.
-As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#read read` (first knownGene.txt then knownIsoforms.txt).
+As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#read` (first knownGene.txt then knownIsoforms.txt).
 An annotation can be loaded without loading the corresponding contigs.
 In that case empty contigs are created in the contigStore with names given in the annonation.
-A subsequent call of :dox:`FragmentStore#loadContigs loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
+A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
 
 To write an annotation to an open output stream use:
 
@@ -435,65 +435,65 @@ The Fragment Store consists of the following tables:
 Read Stores
 """""""""""
 
-+---------------------------------------------------+-----------------------------+--------------------------------------------------------------+
-| Store                                             | Description                 | Details                                                      |
-+===================================================+=============================+==============================================================+
-| :dox:`FragmentStore::readStore readStore`         | Reads                       | String mapping from ``readId`` to ``matePairId``             |
-+---------------------------------------------------+-----------------------------+--------------------------------------------------------------+
-| :dox:`FragmentStore::readSeqStore readSeqStore`   | Read sequences              | String mapping from ``readId`` to ``readSeq``                |
-+---------------------------------------------------+-----------------------------+--------------------------------------------------------------+
-| :dox:`FragmentStore::matePairStore matePairStore` | Mate-pairs / pairs of reads | String mapping from ``matePairId`` to ``<readId[2], libId>`` |
-+---------------------------------------------------+-----------------------------+--------------------------------------------------------------+
-| :dox:`FragmentStore::libraryStore libraryStore`   | Mate-pair libraries         | String mapping from ``libId`` to ``<mean, std>``             |
-+---------------------------------------------------+-----------------------------+--------------------------------------------------------------+
++-------------------------------------+-----------------------------+--------------------------------------------------------------+
+| Store                               | Description                 | Details                                                      |
++=====================================+=============================+==============================================================+
+| :dox:`FragmentStore::readStore`     | Reads                       | String mapping from ``readId`` to ``matePairId``             |
++-------------------------------------+-----------------------------+--------------------------------------------------------------+
+| :dox:`FragmentStore::readSeqStore`  | Read sequences              | String mapping from ``readId`` to ``readSeq``                |
++-------------------------------------+-----------------------------+--------------------------------------------------------------+
+| :dox:`FragmentStore::matePairStore` | Mate-pairs / pairs of reads | String mapping from ``matePairId`` to ``<readId[2], libId>`` |
++-------------------------------------+-----------------------------+--------------------------------------------------------------+
+| :dox:`FragmentStore::libraryStore`  | Mate-pair libraries         | String mapping from ``libId`` to ``<mean, std>``             |
++-------------------------------------+-----------------------------+--------------------------------------------------------------+
 
 
 Contig Stores
 """""""""""""
 
-+-------------------------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
-| Store                                                 | Description                                      | Details                                                                         |
-+=======================================================+==================================================+=================================================================================+
-| :dox:`FragmentStore::contigStore contigStore`         | Contig sequences with gaps                       | String that maps from ``contigId`` to ``<contigSeq, contigGaps, contigFileId>`` |
-+-------------------------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
-| :dox:`FragmentStore::contigFileStore contigFileStore` | Stores information how to load contigs on-demand | String that maps from ``contigFileId`` to ``<fileName, firstContigId>``         |
-+-------------------------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
++---------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
+| Store                                 | Description                                      | Details                                                                         |
++=======================================+==================================================+=================================================================================+
+| :dox:`FragmentStore::contigStore`     | Contig sequences with gaps                       | String that maps from ``contigId`` to ``<contigSeq, contigGaps, contigFileId>`` |
++---------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
+| :dox:`FragmentStore::contigFileStore` | Stores information how to load contigs on-demand | String that maps from ``contigFileId`` to ``<fileName, firstContigId>``         |
++---------------------------------------+--------------------------------------------------+---------------------------------------------------------------------------------+
 
 Read Alignment Stores
 """""""""""""""""""""
 
-+---------------------------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
-| Store                                                         | Description                             | Details                                                                                 |
-+===============================================================+=========================================+=========================================================================================+
-| :dox:`FragmentStore::alignedReadStore alignedReadStore`       | Alignments of reads against contigs     | String that stores ``<alignId, readId, contigId, pairMatchId, beginPos, endPos, gaps>`` |
-+---------------------------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
-| :dox:`FragmentStore::alignedReadTagStore alignedReadTagStore` | Additional alignment tags (used in SAM) | String that maps from ``alignId`` to ``alignTag``                                       |
-+---------------------------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
-| :dox:`FragmentStore::alignQualityStore alignQualityStore`     | Mapping quality of read alignments      | String that maps from ``alignId`` to ``<pairScore, score, errors>``                     |
-+---------------------------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
++-------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
+| Store                                     | Description                             | Details                                                                                 |
++===========================================+=========================================+=========================================================================================+
+| :dox:`FragmentStore::alignedReadStore`    | Alignments of reads against contigs     | String that stores ``<alignId, readId, contigId, pairMatchId, beginPos, endPos, gaps>`` |
++-------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
+| :dox:`FragmentStore::alignedReadTagStore` | Additional alignment tags (used in SAM) | String that maps from ``alignId`` to ``alignTag``                                       |
++-------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
+| :dox:`FragmentStore::alignQualityStore`   | Mapping quality of read alignments      | String that maps from ``alignId`` to ``<pairScore, score, errors>``                     |
++-------------------------------------------+-----------------------------------------+-----------------------------------------------------------------------------------------+
 
 
 Annotation Stores
 """""""""""""""""
 
-+-------------------------------------------------------+-------------------------------+----------------------------------------------------------------------------------------------------------------------------+
-| Store                                                 | Description                   | Details                                                                                                                    |
-+=======================================================+===============================+============================================================================================================================+
-| :dox:`FragmentStore::annotationStore annotationStore` | Annotations of contig regions | String that maps from ``annoId`` to ``<contigId, typeId, beginPos, endPos, parentId, lastChildId, nextSiblingId, values>`` |
-+-------------------------------------------------------+-------------------------------+----------------------------------------------------------------------------------------------------------------------------+
++---------------------------------------+-------------------------------+----------------------------------------------------------------------------------------------------------------------------+
+| Store                                 | Description                   | Details                                                                                                                    |
++=======================================+===============================+============================================================================================================================+
+| :dox:`FragmentStore::annotationStore` | Annotations of contig regions | String that maps from ``annoId`` to ``<contigId, typeId, beginPos, endPos, parentId, lastChildId, nextSiblingId, values>`` |
++---------------------------------------+-------------------------------+----------------------------------------------------------------------------------------------------------------------------+
 
 
 Name Stores
 """""""""""
 
-+---------------------------------------------------------------+-------------------------------+------------------------------------------------------+
-| :dox:`FragmentStore::annotationNameStore annotationNameStore` | Annotation names              | String that maps from ``annoId`` to ``annoName``     |
-+===============================================================+===============================+======================================================+
-| :dox:`FragmentStore::readNameStore readNameStore`             | Read identifiers (Fasta ID)   | String that maps from ``readId`` to ``readName``     |
-+---------------------------------------------------------------+-------------------------------+------------------------------------------------------+
-| :dox:`FragmentStore::contigNameStore contigNameStore`         | Contig identifiers (Fasta ID) | String that maps from ``contigId`` to ``contigName`` |
-+---------------------------------------------------------------+-------------------------------+------------------------------------------------------+
-| :dox:`FragmentStore::matePairNameStore matePairNameStore`     | Mate-pair identifiers         | String that maps from ``contigId`` to ``contigName`` |
-+---------------------------------------------------------------+-------------------------------+------------------------------------------------------+
-| :dox:`FragmentStore::libraryNameStore libraryNameStore`       | Mate-pair library identifiers | String that maps from ``libId`` to ``libName``       |
-+---------------------------------------------------------------+-------------------------------+------------------------------------------------------+
++-------------------------------------------+-------------------------------+------------------------------------------------------+
+| :dox:`FragmentStore::annotationNameStore` | Annotation names              | String that maps from ``annoId`` to ``annoName``     |
++===========================================+===============================+======================================================+
+| :dox:`FragmentStore::readNameStore`       | Read identifiers (Fasta ID)   | String that maps from ``readId`` to ``readName``     |
++-------------------------------------------+-------------------------------+------------------------------------------------------+
+| :dox:`FragmentStore::contigNameStore`     | Contig identifiers (Fasta ID) | String that maps from ``contigId`` to ``contigName`` |
++-------------------------------------------+-------------------------------+------------------------------------------------------+
+| :dox:`FragmentStore::matePairNameStore`   | Mate-pair identifiers         | String that maps from ``contigId`` to ``contigName`` |
++-------------------------------------------+-------------------------------+------------------------------------------------------+
+| :dox:`FragmentStore::libraryNameStore`    | Mate-pair library identifiers | String that maps from ``libId`` to ``libName``       |
++-------------------------------------------+-------------------------------+------------------------------------------------------+

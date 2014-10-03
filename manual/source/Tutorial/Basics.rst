@@ -12,9 +12,9 @@ Alphabets
 ~~~~~~~~~
 
 In SeqAn, alphabets are value types that can take a limited number of values and which hence can be mapped to a range of natural numbers.
-We can retrieve the number of different values of an alphabet, the alphabet size, by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize`.
-Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue BitsPerValue` can be used to determine the number of bits needed to store a value of a given alphabet.
-The order of a character in the alphabet (i.e. its corresponding natural number) can be retrieved by calling the function :dox:`FiniteOrderedAlphabetConcept#ordValue ordValue`.
+We can retrieve the number of different values of an alphabet, the alphabet size, by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
+Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue` can be used to determine the number of bits needed to store a value of a given alphabet.
+The order of a character in the alphabet (i.e. its corresponding natural number) can be retrieved by calling the function :dox:`FiniteOrderedAlphabetConcept#ordValue`.
 In SeqAn, several standard alphabets are already predefined, for example :dox:`Dna` :dox:`Dna5`, :dox:`Rna`, :dox:`Rna5`, :dox:`Iupac`, :dox:`AminoAcid`, ....
 
 Let's start with a simple task. We want to write a program that outputs all letters of the predefined :dox:`AminoAcid` alphabet.
@@ -48,20 +48,20 @@ Iterators
 ~~~~~~~~~
 
 An iterator is an object that is used to browse through the values of a container.
-The metafunction :dox:`ContainerConcept#Iterator Iterator` can be used to determine an appropriate iterator type given a container. 
-Some containers offer several kinds of iterators, which can be selected by an optional argument of Iterator. 
-For example, the tag :dox:`ContainerIteratorTags#Standard Standard` can be used to get an iterator type that resembles the C++ standard random access iterator.
-The more elaborated :dox:`RootedIteratorConcept Rooted\ Iterator`, i.e., an iterator that knows its container, can be selected by specifying the :dox:`ContainerIteratorTags#Rooted Rooted` tag.
+The metafunction :dox:`ContainerConcept#Iterator` can be used to determine an appropriate iterator type given a container.
+Some containers offer several kinds of iterators, which can be selected by an optional argument of Iterator.
+For example, the tag :dox:`ContainerIteratorTags#Standard` can be used to get an iterator type that resembles the C++ standard random access iterator.
+The more elaborated :dox:`RootedIteratorConcept Rooted\ Iterator`, i.e., an iterator that knows its container, can be selected by specifying the :dox:`ContainerIteratorTags#Rooted` tag.
 
-Rooted iterators offer some convenience for the user: They offer additional functions like :dox:`RootedIteratorConcept#container container` for determining the container on which the iterator works, and they simplify the interface for other functions like :dox:`RootedIteratorConcept#atEnd atEnd`.
+Rooted iterators offer some convenience for the user: They offer additional functions like :dox:`RootedIteratorConcept#container` for determining the container on which the iterator works, and they simplify the interface for other functions like :dox:`RootedIteratorConcept#atEnd`.
 Moreover, rooted iterators may change the container’s length or capacity, which makes it possible to implement a more intuitive variant of a remove algorithm.
 
 While rooted iterators can usually be converted into standard iterators, it is not always possible to convert standard iterators back into rooted iterators, since standard iterators may lack the information about the container they work on.
-Therefore, many functions that return iterators like :dox:`ContainerConcept#begin begin` or :dox:`ContainerConcept#end end` return rooted iterators instead of standard iterators; this way, they can be used to set both rooted and standard iterator variables.
+Therefore, many functions that return iterators like :dox:`ContainerConcept#begin` or :dox:`ContainerConcept#end` return rooted iterators instead of standard iterators; this way, they can be used to set both rooted and standard iterator variables.
 Alternatively it is possible to specify the returned iterator type explicitly by passing the iterator kind as a tag argument.
 
-The following code piece shows examples for creating Iterators for :dox:`ContainerConcept Containers`. 
-If no iterator kind is specified, the metafunction :dox:`ContainerConcept#Iterator Iterator` assumes :dox:`ContainerIteratorTags#Standard Standard` and the function :dox:`ContainerConcept#begin begin` assumes :dox:`ContainerIteratorTags#Rooted Rooted`.
+The following code piece shows examples for creating Iterators for :dox:`ContainerConcept Containers`.
+If no iterator kind is specified, the metafunction :dox:`ContainerConcept#Iterator` assumes :dox:`ContainerIteratorTags#Standard` and the function :dox:`ContainerConcept#begin` assumes :dox:`ContainerIteratorTags#Rooted`.
 Both ``it1`` and ``it2`` are standard iterators, whereas ``it3`` and ``it4`` are rooted iterators.
 
 .. code-block:: cpp
@@ -74,7 +74,7 @@ Both ``it1`` and ``it2`` are standard iterators, whereas ``it3`` and ``it4`` are
 
 .. comment
 
-    An iterator is stable if it stays valid even if its container is expanded, otherwise it is unstable. For example, the standard iterator of :dox:`AllocString` – which is a simple pointer to a value in the string – is unstable, since during the expansion of an Alloc String, all values are moved to new memory addresses. 
+    An iterator is stable if it stays valid even if its container is expanded, otherwise it is unstable. For example, the standard iterator of :dox:`AllocString` – which is a simple pointer to a value in the string – is unstable, since during the expansion of an Alloc String, all values are moved to new memory addresses.
     A typical implementation of stable iterators for strings stores the position instead of a pointer to the current value.
     The :dox:`Iterator` metafunction called with the [seqan:"Tag.Iterator Spec" Stable] tag returns a type for stable iterators.
 
@@ -105,7 +105,7 @@ Assignment 1
       .. container:: foldable
 
          In this assignment we practice the use of alphabets, iterators and metafunctions in SeqAn. We start by including the seqan basic header and enter the namespace ``seqan`` to avoid writing it as a prefix (as we do with the namespace ``std`` in this example).
-         In the ``main`` function we first define a a type ``TAmincoAcidString`` which is a ``String<AminoAcid>`` (Note the SeqAn naming conventions). 
+         In the ``main`` function we first define a a type ``TAmincoAcidString`` which is a ``String<AminoAcid>`` (Note the SeqAn naming conventions).
          Then we define a variable ``sourceSeq`` of this type and initialize it with a string constant.
 
          .. comment
@@ -115,22 +115,22 @@ Assignment 1
          .. includefrags:: core/demos/tutorial/basics/strings.cpp
             :fragment: create-string
 
-         Then we define an iterator type using the Seqan metafunction :dox:`ContainerConcept#Iterator Iterator`.
-         Using the correct iterator we iterate over our amino acid string using the Seqan functions :dox:`ContainerConcept#begin begin`, :dox:`ContainerConcept#end end`, and :dox:`InputIteratorConcept#goNext goNext`. 
-         In the body of the while loop we use the SeqAn function :dox:`IteratorAssociatedTypesConcept#value value` to access the value the iterator is pointing to.
+         Then we define an iterator type using the Seqan metafunction :dox:`ContainerConcept#Iterator`.
+         Using the correct iterator we iterate over our amino acid string using the Seqan functions :dox:`ContainerConcept#begin`, :dox:`ContainerConcept#end`, and :dox:`InputIteratorConcept#goNext`.
+         In the body of the while loop we use the SeqAn function :dox:`IteratorAssociatedTypesConcept#value` to access the value the iterator is pointing to.
          Note that this function returns a reference which allows us to replace the occurrence of all ``R``'s with ``A``'s.
          So at this point we have solved parts a) and b) of the assignment.
 
          .. includefrags:: core/demos/tutorial/basics/strings.cpp
             :fragment: iterate-and-replace
 
-         In the next part of the code we want to count, how often a specific letter of the alphabet occurs in the string. 
-         To obtain the size type of the used alphabet we call the SeqAn metafunction :dox:ContainerConcept#Size Size` and define a :dox:`String` of that type to hold the counters. 
+         In the next part of the code we want to count, how often a specific letter of the alphabet occurs in the string.
+         To obtain the size type of the used alphabet we call the SeqAn metafunction :dox:`ContainerConcept#Size Size` and define a :dox:`String` of that type to hold the counters.
          The :dox:`String` has here basically the same functionality as a STL ``vector``.
-         Since alphabets are mapped to a contiguous interval of the natural numbers, we can initialize the counter up to the size of the alphabet which we obtain by a call to the SeqAn metafunction :dox:ContainerConcept#ValueSize ValueSize`.
+         Since alphabets are mapped to a contiguous interval of the natural numbers, we can initialize the counter up to the size of the alphabet which we obtain by a call to the SeqAn metafunction :dox:`ContainerConcept#ValueSize ValueSize`.
          We then iterate over the amino acid string and increment the counter for the corresponding letter of the alphabet.
-         In order to know the corresponding natural number of an alphabet letter, we use the SeqAn function :dox:`FiniteOrderedAlphabetConcept#ordValue ordValue`.
-         Note the use of the :dox:`IteratorAssociatedTypesConcept#value value` function.
+         In order to know the corresponding natural number of an alphabet letter, we use the SeqAn function :dox:`FiniteOrderedAlphabetConcept#ordValue`.
+         Note the use of the :dox:`IteratorAssociatedTypesConcept#value` function.
          In this example one could also use the ``operator[]`` to write ``counter[ordValue(value(it))]++``.
 
          .. includefrags:: core/demos/tutorial/basics/strings.cpp
@@ -180,14 +180,14 @@ Controlling memory allocation is one of the big advantages of C++ compared to ot
 Depending on the size of objects and the pattern they are allocated during the program execution, certain memory allocation strategies have advantages compared to others.
 SeqAn supports a variety of memory allocation strategies.
 
-The two functions :dox:`Allocator#allocate allocate` and :dox:`Allocator#deallocate deallocate` are used in SeqAn to allocate and deallocate dynamic memory.
+The two functions :dox:`Allocator#allocate` and :dox:`Allocator#deallocate` are used in SeqAn to allocate and deallocate dynamic memory.
 Both functions take an allocator as an argument.
 An :dox:`Allocator` is an object that is responsible for allocated memory.
-The default implementations of :dox:`Allocator#allocate allocate` and :dox:`Allocator#deallocate deallocate` completely ignore the allocator but simply call the basic operators ``new`` and ``delete``.
+The default implementations of :dox:`Allocator#allocate` and :dox:`Allocator#deallocate` completely ignore the allocator but simply call the basic operators ``new`` and ``delete``.
 Although in principle every kind of object can be used as allocator, typically the object that stores the pointer to the allocated memory is used as allocator.
 For example, if memory is allocated for an :dox:`AllocString Alloc String`, this string itself acts as allocator.
 A memory block should be deallocated using the same allocator object as it was allocated for.
-The following allocators are available in SeqAn and support the :dox:`Allocator#clear clear` function.
+The following allocators are available in SeqAn and support the :dox:`Allocator#clear` function.
 This function deallocates at once all memory blocks that were previously
 allocated.
 
@@ -198,15 +198,15 @@ allocated.
 | :dox:`MultiPoolAllocator Multi Pool Allocator`
 |    Allocator that pools memory blocks. Only blocks up to a certain size are pooled. The user can specify the size limit in a template argument.
 
-The function :dox:`Allocator#allocate allocate` has an optional argument to specify the intended allocator usage for the requested memory.
+The function :dox:`Allocator#allocate` has an optional argument to specify the intended allocator usage for the requested memory.
 The user can
-thereby specialize :dox:`Allocator#allocate allocate` for different allocator applications.
-For example, the tag :dox:`AllocatorUsageTags#TagAllocateTemp TagAllocateTemp` specifies that the memory will only be used temporarily, whereas :dox:`AllocatorUsageTags#TagAllocateStorage TagAllocateStorage` indicates that the memory will be used in the long run for storing values of a container.
+thereby specialize :dox:`Allocator#allocate` for different allocator applications.
+For example, the tag :dox:`AllocatorUsageTags#TagAllocateTemp` specifies that the memory will only be used temporarily, whereas :dox:`AllocatorUsageTags#TagAllocateStorage` indicates that the memory will be used in the long run for storing values of a container.
 
-SeqAn also offers more complex allocators which support the function :dox:`Allocator#clear clear`.
+SeqAn also offers more complex allocators which support the function :dox:`Allocator#clear`.
 The library predefines some allocator specializations for different uses (see above).
 Most of these allocators are pool allocators.
-A pool allocator implements its own memory management. 
+A pool allocator implements its own memory management.
 It reserves storage for multiple memory blocks at a time and recycles deallocated blocks.
 This reduces the number of expensive ``new`` and ``delete`` calls and speeds up the allocation and deallocation.
 

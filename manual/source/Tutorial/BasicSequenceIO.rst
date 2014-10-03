@@ -46,8 +46,8 @@ Note that you can also pass ``"-"`` as the file name.
 This will open the standard input when reading and the standard output when writing.
 
 After construction, the ``seqStream`` object is ready for reading.
-We use the function :dox:`SequenceStream#readRecord readRecord` to read the first record from the file.
-:dox:`SequenceStream#readRecord readRecord` always reads the next record in the file.
+We use the function :dox:`SequenceStream#readRecord` to read the first record from the file.
+:dox:`SequenceStream#readRecord` always reads the next record in the file.
 
 .. tip::
 
@@ -62,7 +62,7 @@ We use the function :dox:`SequenceStream#readRecord readRecord` to read the firs
 
 Note that we do not have to close the file manually.
 The :dox:`SequenceStream` object will automatically close any open files when it goes out of scope and it is destructred.
-If you want to force a file to be closed, you can use the function :dox:`SequenceStream#close close`.
+If you want to force a file to be closed, you can use the function :dox:`SequenceStream#close`.
 
 Adding Error Handling
 ---------------------
@@ -110,13 +110,13 @@ Let us add some error handling.
 At the very least, we should detect errors.
 If possible, we should try to recover from the error (sometimes it is possible to return default values instead of loading values from a file) or otherwise stop the current task in an organized fashion and notify the user about the problem.
 
-We can use the Function :dox:`SequenceStream#isGood isGood` to check whether the :dox:`SequenceStream` object is ready for any more reading.
+We can use the Function :dox:`SequenceStream#isGood` to check whether the :dox:`SequenceStream` object is ready for any more reading.
 After the creation of the object, this function indicates whether the file could be opened successfully by returning ``true``.
-The function :dox:`SequenceStream#readRecord readRecord` returns an ``int`` that indicates whether the reading was successful.
+The function :dox:`SequenceStream#readRecord` returns an ``int`` that indicates whether the reading was successful.
 If everything went fine, it returns ``0``, and a different value otherwise.
 
-Note that :dox:`SequenceStream#isGood isGood` queries the state of the stream and returns a ``bool`` indicating whether the stream is ready for reading/writing (``true`` for "is good" and ``false`` for "is not good").
-:dox:`SequenceStream#readRecord readRecord`, on the other hand, returns an ``int`` indicating whether there was any error (``0`` for "is good" and a non-\ ``0`` value for "is not good", as it is customary in Unix programming).
+Note that :dox:`SequenceStream#isGood` queries the state of the stream and returns a ``bool`` indicating whether the stream is ready for reading/writing (``true`` for "is good" and ``false`` for "is not good").
+:dox:`SequenceStream#readRecord`, on the other hand, returns an ``int`` indicating whether there was any error (``0`` for "is good" and a non-\ ``0`` value for "is not good", as it is customary in Unix programming).
 
 The program will now read as follows:
 
@@ -150,7 +150,7 @@ Assignment 3
      Change your program from above to loop over all sequences and print them in the same fashion.
 
    Hint
-     You can use the function :dox:`SequenceStream#atEnd atEnd` to check whether a :dox:`SequenceStream` object is at the end of the file.
+     You can use the function :dox:`SequenceStream#atEnd` to check whether a :dox:`SequenceStream` object is at the end of the file.
 
    Solution
      .. container:: foldable
@@ -177,7 +177,7 @@ There are three major usage patterns for sequence I/O:
 #. We want to read a **batch of records** into memory, e.g. 100k records at a time.
    Then, we perform some computation on the records, for example in parallel with 4 threads on 25k records each.
 
-These use cases are supported by the functions :dox:`SequenceStream#readAll readAll`, :dox:`SequenceStream#readRecord readRecord`, and :dox:`SequenceStream#readBatch readBatch`.
+These use cases are supported by the functions :dox:`SequenceStream#readAll`, :dox:`SequenceStream#readRecord`, and :dox:`SequenceStream#readBatch`.
 
 Each of these functions is available in two variants.
 The first accepting only the sequence identifier and sequence characters besides the :dox:`SequenceStream` object and the second also accepting the a :dox:`CharString` for the PHRED base qualities.
@@ -190,7 +190,7 @@ The qualities are simply stored directly in the sequence characters.
 As to be expected, when there are characters in the file that are not valid characters in the :dox:`String` then the alphabet-dependent conversion is performed.
 For example, for :dox:`Dna` and :dox:`Rna` this means a conversion of the invalid character to ``'A'``, and for :dox:`Dna5 Dna5 and [dox:Rna5 Rna5` this means a conversion to ``'N'``.
 
-Here is an example for using :dox:`SequenceStream#readRecord readRecord`:
+Here is an example for using :dox:`SequenceStream#readRecord`:
 
 .. code-block:: cpp
 
@@ -204,8 +204,8 @@ Here is an example for using :dox:`SequenceStream#readRecord readRecord`:
    res = readRecord(id, seq, seqStream);
    res = readRecord(id, seq, qual, seqStream);
 
-The functions :dox:`SequenceStream#readAll readAll` and :dox:`SequenceStream#readBatch readBatch` use :dox:`StringSet` instead of :dox:`String`.
-The function :dox:`SequenceStream#readBatch readBatch` reads up to the given number of records.
+The functions :dox:`SequenceStream#readAll` and :dox:`SequenceStream#readBatch` use :dox:`StringSet` instead of :dox:`String`.
+The function :dox:`SequenceStream#readBatch` reads up to the given number of records.
 It is not an error if there are less records.
 
 .. code-block:: cpp
@@ -232,7 +232,7 @@ Assignment 4
      Application
 
    Objective
-     Change your result of Assignment 3 to use the variant of :dox:`SequenceStream#readRecord readRecord` that also reads in the qualities and writes them next to the sequences.
+     Change your result of Assignment 3 to use the variant of :dox:`SequenceStream#readRecord` that also reads in the qualities and writes them next to the sequences.
      Create the following FASTQ file ``example.fq``.
 
      ::
@@ -316,13 +316,13 @@ Assignment 5
         .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution5.cpp
 
 There are two functions for writing to sequence files using :dox:`SequenceStream`.
-One, :dox:`SequenceStream#writeRecord writeRecord`, for writing one sequence record from :dox:`String Strings`, and another one, :dox:`SequenceStream#writeAll writeAll`, for writing all sequences from :dox:`StringSet StringSets`.
+One, :dox:`SequenceStream#writeRecord`, for writing one sequence record from :dox:`String Strings`, and another one, :dox:`SequenceStream#writeAll`, for writing all sequences from :dox:`StringSet StringSets`.
 
 Again, they come in one variant with and another variant without base qualities.
 When writing to a FASTQ file using the function without qualities, the PHRED score 40 is written for each character (``'I'``) and when writing to a FASTA file with the variant with qualities, the qualities are ignored.
 When using :dox:`DnaQ` or :dox:`Dna5Q`, the variant without qualities parameter writes out the qualities stored in the sequence characters themselves.
 
-Here is an example for using :dox:`SequenceStream#writeRecord writeRecord`:
+Here is an example for using :dox:`SequenceStream#writeRecord`:
 
 .. code-block:: cpp
 
@@ -335,7 +335,7 @@ Here is an example for using :dox:`SequenceStream#writeRecord writeRecord`:
    res = writeRecord(seqStream, id, seq);
    res = writeRecord(seqStream, id, seq, qual);
 
-And here is an example for using :dox:`SequenceStream#writeAll writeAll`:
+And here is an example for using :dox:`SequenceStream#writeAll`:
 
 .. code-block:: cpp
 
@@ -357,7 +357,7 @@ Assignment 6
      Application
 
    Objective
-     Change the result of Assignment 5 to store the data for the two records in :dox:`StringSet StringSets` and write them out using :dox:`SequenceStream#writeAll writeAll`.
+     Change the result of Assignment 5 to store the data for the two records in :dox:`StringSet StringSets` and write them out using :dox:`SequenceStream#writeAll`.
 
    Solution
      .. container:: foldable
