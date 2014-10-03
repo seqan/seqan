@@ -84,11 +84,22 @@ char const * FileFormatExtensions<Roi, T>::VALUE[1] =
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function readRecord()                                            [RoiHeader]
+// ----------------------------------------------------------------------------
+
+template <typename TForwardIter>
+void readRecord(RoiHeader &, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
+{
+    while (!atEnd(iter) && *iter == '#')
+        skipLine(iter);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord()                                            [RoiRecord]
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
-inline void readRecord(RoiRecord & record, RoiIOContext & context, TForwardIter & iter, Roi const & /*tag*/)
+void readRecord(RoiRecord & record, RoiIOContext & context, TForwardIter & iter, Roi const & /*tag*/)
 {
     typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 
