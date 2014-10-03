@@ -525,6 +525,13 @@ context(SmartFile<TFileType, TDirection, TSpec> & file)
     return file.context;
 }
 
+template <typename TFileType, typename TDirection, typename TSpec>
+inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type const &
+context(SmartFile<TFileType, TDirection, TSpec> const & file)
+{
+    return file.context;
+}
+
 // ----------------------------------------------------------------------------
 // Function getFileFormatExtensions()
 // ----------------------------------------------------------------------------

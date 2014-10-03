@@ -324,7 +324,7 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader const & header)
 {
     write(file.iter, header, context(file), file.format);
 }
@@ -337,7 +337,7 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
-      BamAlignmentRecord & /* record */,
+      BamAlignmentRecord const & /* record */,
       BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
 {
@@ -347,7 +347,7 @@ write(TTarget & /* target */,
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 write(TTarget & target,
-      BamAlignmentRecord & record,
+      BamAlignmentRecord const & record,
       BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
       TagSelector<TTagList> const & format)
 {
@@ -361,7 +361,7 @@ write(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
 {
     write(file.iter, record, context(file), file.format);
 }

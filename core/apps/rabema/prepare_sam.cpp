@@ -206,47 +206,55 @@ int main(int argc, char const ** argv)
         return res == seqan::ArgumentParser::PARSE_ERROR;
 
     // Open SAM file for reading.
-    std::ifstream inSam(toCString(options.inputFile), std::ios::in | std::ios::binary);
-    if (!inSam.good())
+    BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inputFile)))
     {
         std::cerr << "Could not open file " << argv[1] << " for reading.\n";
         return 1;
     }
-    RecordReader<std::ifstream, SinglePass<> > reader(inSam);
 
     // Read header.
-    typedef StringSet<CharString>      TNameStore;
-    typedef NameStoreCache<TNameStore> TNameStoreCache;
-
-    TNameStore refNameStore;
-    TNameStoreCache refNameStoreCache(refNameStore);
-    BamIOContext<TNameStore> context(refNameStore, refNameStoreCache);
-
     BamHeader header;
-    if (readRecord(header, context, reader, Sam()) != 0)
+    try
     {
-        std::cerr << "ERROR: Could not read header from SAM file.\n";
+        readRecord(header, bamFileIn);
+    }
+    catch (IOError const & ioErr)
+    {
+        std::cerr << "ERROR: Could not read header from SAM file (" << ioErr.what() << ").\n";
         return 1;
     }
 
-    std::ofstream outSam(toCString(options.outputFile), std::ios::out | std::ios::binary);
-    if (!outSam.good())
+    BamFileOut bamFileOut(bamFileIn);
+    if (!open(bamFileOut, toCString(options.outputFile)))
     {
         std::cerr << "Could not open file " << options.outputFile << " for writing.\n";
         return 1;
     }
 
-    write2(outSam, header, context, Sam());
+    try
+    {
+        writeRecord(bamFileOut, header);
+    }
+    catch (IOError const & ioErr)
+    {
+        std::cerr << "ERROR writing SAM header!\n";
+        return 1;
+    }
 
     // Read file in chunks, one for each query name.
     String<BamAlignmentRecord> records;
     BamAlignmentRecord record;
-    while (!atEnd(reader))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, context, reader, Sam()) != 0)
+        try
+        {
+            readRecord(record, bamFileIn);
+        }
+        catch (IOError const & ioError)
         {
             std::cerr << "ERROR reading SAM record!\n";
-            return 0;
+            return 1;
         }
 
         if (!empty(records) && record.qName != back(records).qName)
@@ -265,8 +273,7 @@ int main(int argc, char const ** argv)
                 std::cerr << "Could not fix records!\n";
                 return 1;
             }
-            for (unsigned i = 0; i < length(records); ++i)
-                write2(outSam, records[i], context, Sam());
+            writeRecords(bamFileOut, records);
             clear(records);
         }
 
@@ -277,8 +284,16 @@ int main(int argc, char const ** argv)
         std::cerr << "Could not fix records!\n";
         return 1;
     }
-    for (unsigned i = 0; i < length(records); ++i)
-        write2(outSam, records[i], context, Sam());
+    try
+    {
+        for (unsigned i = 0; i < length(records); ++i)
+            writeRecord(bamFileOut, records[i]);
+    }
+    catch (IOError const & ioError)
+    {
+        std::cerr << "ERROR writing SAM record!\n";
+        return 1;
+    }
 
     return 0;
 }

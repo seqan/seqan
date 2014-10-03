@@ -146,7 +146,7 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
 }
 
 inline __uint32
-updateLengths(BamAlignmentRecord & record)
+updateLengths(BamAlignmentRecord const & record)
 {
     // update internal lengths.
     record._l_qname = length(record.qName) + 1;
@@ -162,7 +162,7 @@ updateLengths(BamAlignmentRecord & record)
 template <typename TTarget>
 inline void
 _writeBamRecord(TTarget & target,
-                BamAlignmentRecord & record,
+                BamAlignmentRecord const & record,
                 Bam const & /*tag*/)
 {
     typedef typename Iterator<String<CigarElement<> > const, Standard>::Type __restrict__   TCigarIter;
@@ -233,7 +233,7 @@ _writeBamRecord(TTarget & target,
 template <typename TTarget>
 inline void
 _writeBamRecordWrapper(TTarget & target,
-                       BamAlignmentRecord & record,
+                       BamAlignmentRecord const & record,
                        Nothing & /* range */,
                        __uint32 size,
                        Bam const & tag)
@@ -245,7 +245,7 @@ _writeBamRecordWrapper(TTarget & target,
 template <typename TTarget, typename TOValue>
 inline void
 _writeBamRecordWrapper(TTarget & target,
-                       BamAlignmentRecord & record,
+                       BamAlignmentRecord const & record,
                        Range<TOValue*> & range,
                        __uint32 size,
                        Bam const & tag)
@@ -265,7 +265,7 @@ _writeBamRecordWrapper(TTarget & target,
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
-           BamAlignmentRecord & record,
+           BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            Bam const & tag)
 {
