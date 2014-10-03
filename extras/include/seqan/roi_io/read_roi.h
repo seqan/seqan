@@ -88,10 +88,58 @@ char const * FileFormatExtensions<Roi, T>::VALUE[1] =
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
-void readRecord(RoiHeader &, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
+void readRecord(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
 {
-    while (!atEnd(iter) && *iter == '#')
-        skipLine(iter);
+    typedef OrFunctor<IsTab, IsNewline> TNextEntry;
+
+    // skip first hash
+    skipOne(iter, EqualsChar<'#'>());
+    if (!atEnd(iter) && *iter != '#')
+        skipLine(iter);  // skip ROI line if any.
+
+    // check if column header present
+    if (!atEnd(iter) && *iter != '#')
+        return;  // no header
+    // skip run of hashes
+    skipUntil(iter, NotFunctor<EqualsChar<'#'> >());
+
+    // skip REF\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip START\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip END\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip NAME\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip LENGTH\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip STRAND\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip MAX_COUNT
+    skipUntil(iter, TNextEntry());
+
+    do
+    {
+        resize(header.extraColumns, length(header.extraColumns) + 1);
+        skipOne(iter, EqualsChar<'\t'>());
+        readUntil(header.extraColumns[length(header.extraColumns) - 1], iter, TNextEntry());
+    }
+    while (!atEnd(iter) && !IsNewline()(*iter));
+
+    resize(header.extraColumns, length(header.extraColumns) - 1);
+    skipLine(iter);
 }
 
 // ----------------------------------------------------------------------------
