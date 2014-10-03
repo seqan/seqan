@@ -154,7 +154,7 @@ inline void write(TTarget & target,
     writeValue(target, '\t');
 
     if (record.rID == BamAlignmentRecord::INVALID_REFID)
-        writeValue(target, '*');
+        writeValue(target, '0');
     else
         appendNumber(target, record.beginPos + 1);
 
