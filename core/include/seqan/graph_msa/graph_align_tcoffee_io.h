@@ -1136,36 +1136,37 @@ _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TCargo, typename TSpec, typename TNames>
-void 
-write(TFile & file,
-	  Graph<Tree<TCargo, TSpec> >& guideTree,
-	  TNames& names,
-	  bool collapseRoot,
-	  NewickFormat) 
+template<typename TTarget, typename TCargo, typename TSpec, typename TNames>
+inline void
+writeRecords(TTarget & target,
+             Graph<Tree<TCargo, TSpec> >& guideTree,
+             TNames& names,
+             bool collapseRoot,
+             NewickFormat)
 {
-//IOREV _nodoc_ _notinlined_ specialization not documented
+//IOREV _nodoc_ specialization not documented
 	//typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
 	//typedef typename Size<TGuideTree>::Type TSize;
 	//typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
+    typename DirectionIterator<TTarget, Output>::Type iter = directionIterator(target, Output());
 
 	String<char> myNewickString;
 	_buildNewickString(guideTree, names, myNewickString, getRoot(guideTree), collapseRoot);
-	write(file, myNewickString);
-	write(file, ";\n");	
+	write(iter, myNewickString);
+	write(iter, ";\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TCargo, typename TSpec, typename TNames>
-void 
-write(TFile & file,
-	  Graph<Tree<TCargo, TSpec> >& guideTree,
-	  TNames& names,
-	  NewickFormat) 
+template<typename TTarget, typename TCargo, typename TSpec, typename TNames>
+inline void
+writeRecords(TTarget & target,
+             Graph<Tree<TCargo, TSpec> >& guideTree,
+             TNames& names,
+             NewickFormat)
 {
-//IOREV _nodoc_ _notinlined_ specialization not documented
-	write(file,guideTree, names, false, NewickFormat());
+//IOREV _nodoc_ specialization not documented
+	write(target, guideTree, names, false, NewickFormat());
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN

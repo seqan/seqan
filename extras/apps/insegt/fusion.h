@@ -502,7 +502,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 			{if (getValue(itC) >= thresholdCount && getValue(itN) >= thresholdRPKM)
 				{
 					// contig-name
-					streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, currentElement.contigId));
+					tupleOutput_Fusion << getValue(fragStore.contigNameStore, currentElement.contigId);
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -510,21 +510,19 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							streamPut(tupleOutput_Fusion, "^");
-							streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, getValue(fragStore.annotationStore, getValue(itId)).contigId));
+							tupleOutput_Fusion << '^'
+                                               << getValue(fragStore.contigNameStore,
+                                                           getValue(fragStore.annotationStore,
+                                                                    getValue(itId)).contigId);
 						}
 					}
-					streamPut(tupleOutput_Fusion, '\t');
+					tupleOutput_Fusion << '\t';
 				
 					// parent-name
 					if (currentElement.parentId == INVALID_ID )
-					{
-						streamPut(tupleOutput_Fusion, "NO_PARENT");
-					}
+						tupleOutput_Fusion << "NO_PARENT";
 					else
-					{
-						streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, currentElement.parentId));
-					}
+						tupleOutput_Fusion << getValue(fragStore.annotationNameStore, currentElement.parentId);
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
@@ -532,77 +530,58 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						{
 							goNext(itId);
 							if (getValue(fragStore.annotationStore, getValue(itId)).parentId == INVALID_ID)
-							{
-								streamPut(tupleOutput_Fusion, "^");
-								streamPut(tupleOutput_Fusion, "NO_PARENT");
-							}
+								tupleOutput_Fusion << "^NO_PARENT";
 							else
-							{
-								streamPut(tupleOutput_Fusion, "^");
-								streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(fragStore.annotationStore, getValue(itId)).parentId));
-							}
+								tupleOutput_Fusion << "^"
+                                                   << getValue(fragStore.annotationNameStore, getValue(fragStore.annotationStore, getValue(itId)).parentId);
 						}
 					}
-					streamPut(tupleOutput_Fusion, '\t');
+					tupleOutput_Fusion << '\t';
 
 					// orientation
 					if ( currentElement.beginPos <= currentElement.endPos )
-					{
-						streamPut(tupleOutput_Fusion, "+");
-					}
+						tupleOutput_Fusion << "+";
 					else
-					{
-						streamPut(tupleOutput_Fusion, "-");
-					}
+						tupleOutput_Fusion << "-";
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							streamPut(tupleOutput_Fusion, "^");
+							tupleOutput_Fusion << "^";
 							if ( getValue(fragStore.annotationStore, getValue(itId)).beginPos <= getValue(fragStore.annotationStore, getValue(itId)).endPos )
-							{
-								streamPut(tupleOutput_Fusion, "+");
-							}
+								tupleOutput_Fusion << "+";
 							else
-							{
-								streamPut(tupleOutput_Fusion, "-");
-							}
+								tupleOutput_Fusion << "-";
 						}
 					}
-					streamPut(tupleOutput_Fusion, "\t");
+					tupleOutput_Fusion << "\t";
 				
 					// first annotationId of tuple
-					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, position(itCountStore, tupleCountStore_Fusion)));
+					tupleOutput_Fusion << getValue(fragStore.annotationNameStore, position(itCountStore, tupleCountStore_Fusion));
 			
 					// other annotationIds of first read
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
 					for ( ; itId != itIdEnd && getValue(itId) != INVALID_ID; goNext(itId))
 					{
-						streamPut(tupleOutput_Fusion, ":");
-						streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
+						tupleOutput_Fusion << ":" << getValue(fragStore.annotationNameStore, getValue(itId));
 					}
 					goNext(itId);
-					streamPut(tupleOutput_Fusion, "^");
+					tupleOutput_Fusion << "^";
 		
 					// annotationIds of second read
-					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
+					tupleOutput_Fusion << getValue(fragStore.annotationNameStore, getValue(itId));
 					goNext(itId);
 					for ( ; itId != itIdEnd; goNext(itId))
-					{
-						streamPut(tupleOutput_Fusion, ":");
-						streamPut(tupleOutput_Fusion,getValue(fragStore.annotationNameStore, getValue(itId)) );
-					}
-					streamPut(tupleOutput_Fusion, '\t');
+						tupleOutput_Fusion << ":" << getValue(fragStore.annotationNameStore, getValue(itId));
+					tupleOutput_Fusion << '\t';
 					
 					// tuple count
-					streamPut(tupleOutput_Fusion, getValue(itC));
-					streamPut(tupleOutput_Fusion, '\t');
+					tupleOutput_Fusion << *itC << '\t';
 					// normalized tuple count
-					_streamPutDouble(tupleOutput_Fusion, getValue(itN));
-					streamPut(tupleOutput_Fusion, '\n');
+					tupleOutput_Fusion << formattedNumber("%f", *itN) << '\n';
 				}
 			}
 		}

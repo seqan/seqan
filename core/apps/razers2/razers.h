@@ -471,7 +471,7 @@ inline int estimateReadLength(SeqFileIn &seqFile)
     resize(buffer, len);
 
     // parse record from buffer
-    typename DirectionIterator<TBuffer, Input>::Type iter = directionIterator(buffer, Input());
+    DirectionIterator<TBuffer, Input>::Type iter = directionIterator(buffer, Input());
     CharString fastaId, seq;
     readRecord(fastaId, seq, iter, seqFile.format);
     return length(seq);

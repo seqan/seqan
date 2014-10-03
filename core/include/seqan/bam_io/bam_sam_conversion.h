@@ -132,7 +132,6 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             appendRawPod(target, (__uint32)nEntries);
 
             // Write out array values.
-            typedef typename Infix<CharString>::Type TBufferInfix;
             size_t startPos = 1;
             for (unsigned i = 0; i < nEntries; ++i)
             {

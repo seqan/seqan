@@ -280,12 +280,11 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     typedef TString const TConstString;
 
     // Test IsContiguous<>::VALUE
-    // WATCHOUT ! SHOULDN'T WE TEST TRUE IN THE TWO ASSERTS
 	{
         bool b = IsContiguous<TString>::VALUE;
-        SEQAN_ASSERT_NOT(b);
+        SEQAN_ASSERT(b);
         b = IsContiguous<TConstString>::VALUE;
-        SEQAN_ASSERT_NOT(b);
+        SEQAN_ASSERT(b);
     }
     // Test Value<>::VALUE
     {
@@ -317,22 +316,22 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     // Test Iterator<, Rooted>::VALUE
     {
         typedef Iterator<TString, Rooted>::Type TIterator;
-        typedef Iter<TString, AdaptorIterator<Iter<TString, StdIteratorAdaptor> > > TExpected;
+        typedef Iter<TString, AdaptorIterator<Iterator<TString, Standard>::Type> > TExpected;
         bool b = IsSameType<TIterator, TExpected>::VALUE;
         SEQAN_ASSERT(b);
         typedef Iterator<TConstString, Rooted>::Type TConstIterator;
-        typedef Iter<TConstString, AdaptorIterator<Iter<TConstString, StdIteratorAdaptor> > > TExpectedConst;
+        typedef Iter<TConstString, AdaptorIterator<Iterator<TConstString, Standard>::Type> > TExpectedConst;
         b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Test Iterator<, Standard>::VALUE
     {
         typedef Iterator<TString, Standard>::Type TIterator;
-        typedef Iter<TString, StdIteratorAdaptor> TExpected;
+        typedef Value<TString>::Type * TExpected;
         bool b = IsSameType<TIterator, TExpected>::VALUE;
         SEQAN_ASSERT(b);
         typedef Iterator<TConstString, Standard>::Type TConstIterator;
-        typedef Iter<TConstString, StdIteratorAdaptor> TExpectedConst;
+        typedef Value<TConstString>::Type const * TExpectedConst;
         b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
         SEQAN_ASSERT(b);
     }
