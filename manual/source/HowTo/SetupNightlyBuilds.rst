@@ -1,7 +1,7 @@
 .. _how-to-setup-nightly-builds:
 
-How To: Setup Nightly Builds
-----------------------------
+Setup Nightly Builds
+--------------------
 
 Subversion Repository
 ~~~~~~~~~~~~~~~~~~~~~

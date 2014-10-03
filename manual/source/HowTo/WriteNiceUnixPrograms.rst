@@ -5,8 +5,8 @@
 
 .. _how-to-rite-nice-unix-programs:
 
-How To: Write Nice Unix Programs
---------------------------------
+Writing Nice Unix Programs
+--------------------------
 
 In Bioinformatics, many programs are of "academic" quality, i.e. they are written to present a new method.
 The implementation is often "only" used by other academics who, since they do not pay for the program, are willing to take some glitches for granted.

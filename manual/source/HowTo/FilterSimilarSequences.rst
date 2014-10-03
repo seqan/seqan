@@ -4,8 +4,8 @@
 
 .. _how-to-filter-similar-sequences:
 
-How To: Filter Similar Sequences
-================================
+Filtering Similar Sequences
+===========================
 
 Using Swift
 -----------

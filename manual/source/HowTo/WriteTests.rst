@@ -5,8 +5,8 @@
 
 .. _how-to-write-tests:
 
-How To: Write Tests
--------------------
+Writing Tests
+-------------
 
 This page describes how to write tests for the SeqAn library.
 Each test program defines a *Test Suite*, a collection of related *Tests*.

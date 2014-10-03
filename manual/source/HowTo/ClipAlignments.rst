@@ -5,8 +5,8 @@
 
 .. _how-to-clip-alignments:
 
-How To: Compute Positions In Clipped Alignments
-===============================================
+Computing Positions In Clipped Alignments
+=========================================
 
 This page describes how to compute view and source positions in an unclipped and clipped :dox:`Align`.
 

@@ -4,8 +4,8 @@
 
 .. _how-to-generate-seqan-knime-nodes:
 
-How To: Generate SeqAn KNIME Nodes
-==================================
+Generating SeqAn KNIME Nodes
+============================
 
 Learning Objective
   You will learn how to import applications written in SeqAn into the KNIME Eclipse plugin.
@@ -344,74 +344,73 @@ We do not describe the files ``descriptors/samtools_sam_to_bam.ctd`` and ``descr
 
 Here is a description of the tags and the attributes:
 
-/tool
+``/tool``
   The root tag.
-
-/tool@name
+``/tool@name``
   The CamelCase name of the tool as shown in KNIME and part of the class name.
-/tool@version
+``/tool@version``
   The version of the tool.
-/toll@category
+/toll@category``
   The path to the tool's category.
-/tool/executableName
+``/tool/executableName``
   The name of the executable in the payload ZIP's ``bin`` dir.
-/tool/description
+``/tool/description``
   Description of the tool.
-/tool/manual
+``/tool/manual``
   Long description for the tool.
-/tool/docurl
+``/tool/docurl``
   URL to the tool's documentation.
-/tool/cli
+``/tool/cli``
   Container for the ``<clielement>`` tags.
   These tags describe the command line options and arguments of the tool.
   The command line options and arguments can be mapped to parameters which are configurable through the UI.
   The parameters are stored in ``/tool/PARAMETERS``
-/tool/cli/clielement
+``/tool/cli/clielement``
   There is one entry for each command line argument and option.
-/tool/cli/clielement@optionIdentifier
+``/tool/cli/clielement@optionIdentifier``
   The identifier of the option on the command line.
   For example, for the ``-l``` option of ``ls``, this is ``-l``.
-/tool/cli/clielement@isList
+``/tool/cli/clielement@isList``
   Whether or not the parameter is a list and multiple values are possible.
   One of ``true`` and ``false``.
-/tool/cli/clielement/mapping
+``/tool/cli/clielement/mapping``
   Provides the mapping between a CLI element and a PARAMETER.
-/tool/cli/clielement/mapping@referenceName
+``/tool/cli/clielement/mapping@referenceName``
   The path of the parameter.
   The parameters ``<ITEM>``\ s in ``/tool/PARAMETERS`` are stored in nested ``<NODE>`` tags and this gives the path to the specific parameter.
-/tool/PARAMETERS
+``/tool/PARAMETERS``
   Container for the ``<NODE>`` and ``<ITEM>`` tags.
   The ``<PARAMETERS>`` tag is in a diferent namespace and provides its own XSI.
-/tool/PARAMETERS@version
+``/tool/PARAMETERS@version``
   Format version of the ``<PARAMETERS>`` section.
-/tool/PARAMETERS/.../NODE
+``/tool/PARAMETERS/.../NODE``
   A node in the parameter tree.
   You can use such nodes to organize the parameters in a hierarchical fashion.
-/tool/PARAMETERS/.../NODE@advanced
+``/tool/PARAMETERS/.../NODE@advanced``
   Boolean that marks an option as advanced.
-/tool/PARAMETERS/.../NODE@name
+``/tool/PARAMETERS/.../NODE@name``
   Name of the parameter section.
-/tool/PARAMETERS/.../NODE@description
+``/tool/PARAMETERS/.../NODE@description``
   Documentation of the parameter section.
-/tool/PARAMETERS/.../ITEM
+``/tool/PARAMETERS/.../ITEM``
   Description of one command line option or argument.
-/tool/PARAMETERS/.../ITEM@name
+``/tool/PARAMETERS/.../ITEM@name``
   Name of the option.
-/tool/PARAMETERS/.../ITEM@value
+``/tool/PARAMETERS/.../ITEM@value``
   Default value of the option.
   When a default value is given, it is passed to the program, regardless of whether the user touched the default value or not.
-/tool/PARAMETERS/.../ITEM@type
+``/tool/PARAMETERS/.../ITEM@type``
   Type of the parameter.
   Can be one of ``string``, ``int``, ``double``, ``input-file``, ``output-path``, ``input-prefix``, or ``output-prefix``.
   Booleans are encoded as ``string`` with the ``restrictions`` attribute set to ``"true,false"``.
-/tool/PARAMETERS/.../ITEM@required
+``/tool/PARAMETERS/.../ITEM@required``
   Boolean that states whether the parameter is required or not.
-/tool/PARAMETERS/.../ITEM@description
+``/tool/PARAMETERS/.../ITEM@description``
   Documentation for the user.
-/tool/PARAMETERS/.../ITEM@supported_formats
+``/tool/PARAMETERS/.../ITEM@supported_formats``
   A list of supported file formats.
   Example: ``"*.bam,*.sam"``.
-/tool/PARAMETERS/.../ITEM@restrictions
+``/tool/PARAMETERS/.../ITEM@restrictions``
   In case of ``int`` or ``double`` types, the restrictions have the form ``min:``, ``:max``, ``min:max`` and give the smallest and/or largest number a value can have.
   In the case of ``string`` types, restrictions gives the list of allowed values, e.g. ``one,two,three``.
   If the type is ``string`` and the restriction field equals ``"true,false"``, then the parameter is a boolean and set in case ``true`` is selected in the GUI.

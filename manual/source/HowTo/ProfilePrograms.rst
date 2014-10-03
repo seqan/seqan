@@ -5,8 +5,8 @@
 
 .. _how-to-profile-programs:
 
-How To: Profile Programs
-------------------------
+Profiling Programs
+------------------
 
 Linux Perf Tools (Linux)
 ~~~~~~~~~~~~~~~~~~~~~~~~

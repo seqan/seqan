@@ -5,8 +5,8 @@
 
 .. _how-to-work-with-custom-score-matrices:
 
-How To: Work With Custom Score Matrices
-=======================================
+Working With Custom Score Matrices
+==================================
 
 This How To describes how to create new scoring matrices for Amino Acids and DNA alphabets and how to load score matrices from files.
 

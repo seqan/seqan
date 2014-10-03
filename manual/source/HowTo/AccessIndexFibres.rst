@@ -5,8 +5,8 @@
 
 .. _how-to-access-index-fibres:
 
-How To: Access Index Fibres
-===========================
+Accessing Index Fibres
+======================
 
 Overview
 --------

@@ -5,8 +5,8 @@
 
 .. _how-to-use-parallel-build-directories:
 
-How To: Use Parallel Build Directories
---------------------------------------
+Using Parallel Build Directories
+--------------------------------
 
 Motivation
 ~~~~~~~~~~

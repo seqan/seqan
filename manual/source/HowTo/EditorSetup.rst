@@ -5,8 +5,8 @@
 
 .. _how-to-setup-your-editor:
 
-How To: Setup Your Editor
--------------------------
+Setup Your Editor
+-----------------
 
 This page describes how to adjust your editor to the :ref:`SeqAn C++ Style <style-guide-cpp>`.
 

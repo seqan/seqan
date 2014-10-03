@@ -9,8 +9,8 @@
 
    <br />
 
-How To: Generate KNIME Nodes for External Tools
------------------------------------------------
+Generating KNIME Nodes for External Tools
+-----------------------------------------
 
 Prerequisites
 ~~~~~~~~~~~~~

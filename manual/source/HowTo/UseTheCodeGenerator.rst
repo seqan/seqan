@@ -5,8 +5,8 @@
 
 .. _how-to-use-the-code-generator:
 
-How To: Use The Code Generator
-------------------------------
+Using The Code Generator
+------------------------
 
 SeqAn comes with a code generator to create new sandboxes, library modules, apps, tests, and demos.
 You must have Python (>= 2.5) installed to use this generator.
