@@ -273,7 +273,8 @@ int main(int argc, char const ** argv)
                 std::cerr << "Could not fix records!\n";
                 return 1;
             }
-            writeRecords(bamFileOut, records);
+            for (unsigned i = 0; i < length(records); ++i)
+                writeRecord(bamFileOut, records[i]);
             clear(records);
         }
 
@@ -286,7 +287,8 @@ int main(int argc, char const ** argv)
     }
     try
     {
-        writeRecords(bamFileOut, records);
+        for (unsigned i = 0; i < length(records); ++i)
+            writeRecord(bamFileOut, records[i]);
     }
     catch (IOError const & ioError)
     {
