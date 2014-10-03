@@ -273,8 +273,7 @@ int main(int argc, char const ** argv)
                 std::cerr << "Could not fix records!\n";
                 return 1;
             }
-            for (unsigned i = 0; i < length(records); ++i)
-                writeRecord(bamFileOut, records[i]);
+            writeRecords(bamFileOut, records);
             clear(records);
         }
 
