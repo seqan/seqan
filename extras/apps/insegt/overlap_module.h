@@ -20,7 +20,10 @@
 
 #ifndef SEQAN_HEADER_OVERLAP_MODULE_H
 #define SEQAN_HEADER_OVERLAP_MODULE_H
-//#define DEBUG_OVERLAP_MODULE
+// #define DEBUG_OVERLAP_MODULE
+
+#include <seqan/bam_io.h>
+#include <seqan/store.h>
 
 namespace SEQAN_NAMESPACE_MAIN
 {
@@ -832,35 +835,18 @@ ngsOverlapper(TOptions &options)
 	std::cout << "load Sam..." << std::endl;
 #endif 
 	// read aligned reads in FragmentStore from Sam files
-	std::fstream fileSAM;
-	fileSAM.open(toCString(options.nameSAM), std::ios_base::in | std::ios_base::binary);
-	if(!fileSAM.is_open()) return false;
-	read(fileSAM, fragStore, Sam());
-	fileSAM.close();
-
-	std::fstream fileGFF;
-	fileGFF.open(toCString(options.nameGFF), std::ios_base::in | std::ios_base::binary);
-	if(!fileGFF.is_open()) return false;
-
-	// readAnnotations from Gff or Gtf:
-	if (options.gtf == 0)
-	{
+    BamFileIn inSam(toCString(options.nameSAM));
+    readRecords(fragStore, inSam);
 #ifdef DEBUG_OVERLAP_MODULE
-		SEQAN_PROTIMESTART(find2_time);	
-		std::cout << "load Gff..." << std::endl;
+	std::cout << "  loaded " << length(fragStore.readSeqStore) << " read records" << std::endl;
 #endif 
-	    read(fileGFF, fragStore, Gtf());
-	    fileGFF.close();
-	}
-	else
-	{
+
 #ifdef DEBUG_OVERLAP_MODULE
-		SEQAN_PROTIMESTART(find2_time);	
-		std::cout << "load Gff..." << std::endl;
+	SEQAN_PROTIMESTART(find2_time);
 #endif 
-	    read(fileGFF, fragStore, Gff());
-	    fileGFF.close();
-	}
+    // read annotations from GFF or GTF
+    GffFileIn inGff(toCString(options.nameGFF));
+    readRecords(fragStore, inGff);
 
 	adjustParentEntries(fragStore);
 

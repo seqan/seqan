@@ -11,16 +11,16 @@ VERBOSITY               	NORMAL
 SEED                    	0
 METHYLATION SEED        	0
 
-OUTPUT FILE             	materializer.random_var2.fasta
+OUTPUT FILE             	materializer.random_var2.fa
 BREAKPOINT TSV OUT      	
-METHYLATION LEVEL INPUT 	random_meth1.fasta
-METHYLATION LEVEL OUTPUT	materializer.random_meth2.fasta
+METHYLATION LEVEL INPUT 	random_meth1.fa
+METHYLATION LEVEL OUTPUT	materializer.random_meth2.fa
 
 HAPLOTYPE NAME SEP      	/
 
 MATERIALIZER OPTIONS
   VERBOSITY         	NORMAL
-  REFERENCE FASTA   	random.fasta
+  REFERENCE FASTA   	random.fa
   VARIANTS VCF      	random_var2.vcf
 
 METHYLATION LEVELS OPTIONS

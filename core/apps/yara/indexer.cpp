@@ -55,8 +55,10 @@
 // ----------------------------------------------------------------------------
 
 #include "misc_timer.h"
+#include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
+#include "bits_matches.h"
 #include "store_genome.h"
 #include "index_fm.h"
 
@@ -182,10 +184,10 @@ void loadGenome(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     }
     stop(me.timer);
 
-    if (length(me.contigs.seqs) > YaraLimits<TSpec>::CONTIG_ID)
+    if (length(me.contigs.seqs) > MemberLimits<Match<TSpec>, ContigId>::VALUE)
         throw RuntimeError("Maximum number of contigs exceeded.");
 
-    if (maxLength(me.contigs.seqs) > YaraLimits<TSpec>::CONTIG_SIZE)
+    if (maxLength(me.contigs.seqs) > MemberLimits<Match<TSpec>, ContigSize>::VALUE)
         throw RuntimeError("Maximum contig length exceeded.");
 
     if (options.verbose)

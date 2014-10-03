@@ -1671,7 +1671,7 @@ appendMatePair(
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn FragmentStore#compactAlignedRead
+ * @fn FragmentStore#compactAlignedReads
  * @brief Remove invalid aligned reads and rename the alignId's sequentially beginning with 0.
  *
  * @signature TSize compactAlignedReads(store);
