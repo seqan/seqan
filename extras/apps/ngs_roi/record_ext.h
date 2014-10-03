@@ -37,6 +37,9 @@
 #ifndef SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
 #define SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
 
+#include <seqan/roi_io.h>
+#include <seqan/gff_io.h>
+
 class MyRoiRecord : public seqan::RoiRecord
 {
 public:
@@ -45,17 +48,6 @@ public:
     MyRoiRecord() : seqan::RoiRecord(), rID(-1)
     {}
 };
-
-/*
-class MyRoiRecord : public seqan::RoiRecord
-{
-public:
-    int rID;
-
-    MyRoiRecord() : seqan::RoiRecord(), rID(-1)
-    {}
-};
-*/
 
 #endif  // #ifndef SANDBOX_JAGLA_APPS_BAM2ROI_RECORD_EXT_H_
 

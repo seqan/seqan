@@ -182,7 +182,10 @@ void RoiBuilder::pushRecord(seqan::BamAlignmentRecord const & record)
 
 void RoiBuilder::writeHeader()
 {
-    seqan::writeRecord(roiFileOut, seqan::RoiHeader());
+    seqan::RoiHeader header;
+    appendValue(header.extraColumns, "num_reads");
+    appendValue(header.extraColumns, "gc_content");
+    seqan::writeRecord(roiFileOut, header);
 }
 
 // ---------------------------------------------------------------------------

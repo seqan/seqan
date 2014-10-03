@@ -36,31 +36,6 @@
 #include "project_spliced.h"
 
 // ---------------------------------------------------------------------------
-// Helper Function splitString()
-// ---------------------------------------------------------------------------
-
-// Split the string str into substrings using the given splitter character (e.g. ',').
-
-void splitString(seqan::StringSet<seqan::CharString> & out, seqan::CharString const & str, char splitter)
-{
-    if (empty(str))
-        return;
-
-    typedef seqan::Position<seqan::CharString>::Type TPos;
-    TPos beginPos = 0, endPos = 0;
-    for (; endPos < length(str); ++endPos)
-    {
-        if (str[endPos] == splitter && endPos >= beginPos)
-        {
-            appendValue(out, infix(str, beginPos, endPos));
-            beginPos = endPos + 1;
-        }
-    }
-    if (endPos >= beginPos)
-            appendValue(out, infix(str, beginPos, endPos));
-}
-
-// ---------------------------------------------------------------------------
 // Member Function ProjectSplicedRoi::~ProjectSplicedRoi()
 // ---------------------------------------------------------------------------
 
@@ -210,7 +185,7 @@ void ProjectSplicedRoi::pushGff(seqan::GffRecord const & record)
     for (unsigned i = 0; i < length(record.tagName); ++i)
         if (record.tagName[i] == groupBy)
         {
-            splitString(groups, record.tagValue[i], ',');
+            strSplit(groups, record.tagValue[i], seqan::EqualsChar<','>());
             break;
         }
     gffGroups.push_back(groups);
@@ -307,7 +282,6 @@ void ProjectSplicedRoi::writeCurrentGroup()
 
     // Create resulting ROI.
     seqan::RoiRecord record;
-    record.rID = gffRecords.front().rID;
     record.ref = gffRecords.front().ref;
     record.beginPos = front(pairs).i1;
     record.endPos = back(pairs).i2;
@@ -369,9 +343,9 @@ void ProjectSplicedRoi::writeCurrentGroup()
     for (unsigned i = 0; i < length(record.count); ++i)
         record.countMax = std::max(record.countMax, record.count[i]);
 
-    writeRecord(out, record, seqan::Roi());
+    writeRecord(roiFileOut, record);
     if (verbosity >= 3)
-        std::cerr << "RESULT\trecord.rID = " << record.rID << ", record.ref == " << record.ref << "\n";
+        std::cerr << "RESULT\t record.ref == " << record.ref << "\n";
 }
 
 // ---------------------------------------------------------------------------

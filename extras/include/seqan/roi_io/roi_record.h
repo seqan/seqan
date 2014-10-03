@@ -49,7 +49,11 @@ namespace seqan {
 // Class RoiHeader
 // ----------------------------------------------------------------------------
 
-class RoiHeader {};
+class RoiHeader
+{
+public:
+    seqan::StringSet<seqan::CharString> extraColumns;
+};
 
 // ----------------------------------------------------------------------------
 // Class RoiRecord

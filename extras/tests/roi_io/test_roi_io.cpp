@@ -40,7 +40,7 @@
 
 SEQAN_DEFINE_TEST(test_roi_read_roi_record)
 {
-    seqan::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+    seqan::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
     seqan::DirectionIterator<seqan::String<char>, seqan::Input>::Type iter = begin(inString);
 
     seqan::RoiRecord record;
@@ -54,6 +54,9 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record)
     SEQAN_ASSERT_EQ(record.len, 3u);
     SEQAN_ASSERT_EQ(record.name, "region0");
     SEQAN_ASSERT_EQ(record.countMax, 4u);
+    SEQAN_ASSERT_EQ(length(record.data), 2u);
+    SEQAN_ASSERT_EQ(record.data[0], "0.55");
+    SEQAN_ASSERT_EQ(record.data[1], "33");
     SEQAN_ASSERT_EQ(length(record.count), 3u);
     SEQAN_ASSERT_EQ(record.count[0], 1u);
     SEQAN_ASSERT_EQ(record.count[1], 2u);
@@ -69,6 +72,8 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     record.strand = '+';
     record.len = 3;
     record.name = "region0";
+    appendValue(record.data, "0.55");
+    appendValue(record.data, "33");
     record.countMax = 4;
     appendValue(record.count, 1);
     appendValue(record.count, 2);
@@ -77,7 +82,7 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     seqan::String<char> outString;
     writeRecord(outString, record, seqan::Roi());
 
-    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t1,2,4\n";
+    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
 
     SEQAN_ASSERT_EQ(expected, outString);
 

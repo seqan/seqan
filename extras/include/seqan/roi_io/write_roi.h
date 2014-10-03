@@ -63,19 +63,22 @@ typedef Tag<Roi_> Roi;
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
-void writeRecord(TTarget & target, RoiHeader const &, Roi const & /*tag*/)
+void writeRecord(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
 {
     write(target, "#ROI 0.3\n"
                   "##ref\t"
-                  "start\t"
-                  "end\t"
-                  "name\t"
+                  "begin_pos\t"
+                  "end_pos\t"
+                  "region_name\t"
                   "length\t"
                   "strand\t"
-                  "max_count\t"
-                  "num_reads\t"
-                  "gc_content\t"
-                  "counts\n");
+                  "max_count\t");
+    for (unsigned i = 0; i < length(header.extraColumns); ++i)
+    {
+        write(target, header.extraColumns[i]);
+        write(target, "\t");
+    }
+    write(target, "counts\n");
 }
 
 // ----------------------------------------------------------------------------
