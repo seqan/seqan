@@ -610,7 +610,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiF
     // Open file.
     std::ifstream faiStream(toCString(index.faiFilename));
     if (!faiStream.good())
-        return false;
+        return false;  // problem opening
     DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(faiStream, Input());
 
     // Read FAI file.
@@ -755,14 +755,14 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
  * @fn FaiIndex#build
  * @brief Create a FaiIndex from FASTA file.
  *
- * @signature int build(faiIndex, seqFileName[, faiFileName]);
+ * @signature bool build(faiIndex, seqFileName[, faiFileName]);
  *
  * @param[out] faiIndex    The FaiIndex to build into.
  * @param[in]  seqFileName Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
  * @param[in]  faiFileName Path to the FAI file to use as the index file.  Type: <tt>char const *</tt>.
  *                         Default: <tt>"${seqFileName}.fai"</tt>.
  *
- * @return int 0 on success, non-0 on errors.
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
 
 /**
