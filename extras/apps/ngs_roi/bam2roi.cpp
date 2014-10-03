@@ -304,8 +304,8 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-	seqan::BamFileIn bamStream;
-    if (!open(bamStream, toCString(options.inputFileName)))
+	seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.inputFileName << "\n";
         return 1;
@@ -342,25 +342,21 @@ int main(int argc, char const ** argv)
     roiBuilderF.writeHeader();  // only once
     RoiBuilder roiBuilderR(roiOut, roiBuilderOptions);
     // Set the reference sequence names.
-    BamHeader header;
-    readRecord(header, bamStream);
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
-        appendValue(roiBuilderF.refNames, header.sequenceInfos[i].i1);
-    for (unsigned i = 0; i < length(header.sequenceInfos); ++i)
-        appendValue(roiBuilderR.refNames, header.sequenceInfos[i].i1);
+    seqan::BamHeader header;
+    readRecord(header, bamFileIn);
+    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
+    {
+        appendValue(roiBuilderF.refNames, nameStore(context(bamFileIn))[i]);
+        appendValue(roiBuilderR.refNames, nameStore(context(bamFileIn))[i]);
+    }
 
     // TODO(holtgrew): This is only suited for the Illumina mate pair protocol at the moment (--> <--).
-
     int oldRId = 0;
     int oldPos = 0;
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, bamStream) != 0)
-        {
-            std::cerr << "\nERROR: Problem reading from BAM input!\n";
-            return 1;
-        }
+        readRecord(record, bamFileIn);
 
         // Break if record is unmapped.
         if (hasFlagUnmapped(record))
