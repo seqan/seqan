@@ -53,16 +53,8 @@ struct Options
 
     CharString          contigsFile;
     CharString          contigsIndexFile;
-
     Pair<CharString>    readsFile;
-    TList               readsFormatList;
-    InputType           inputType;
-    TList               inputTypeList;
-    TList               readsExtensionList;
-
     CharString          outputFile;
-    OutputFormat        outputFormat;
-    TList               outputFormatList;
     bool                outputSecondary;
     bool                outputHeader;
 
@@ -88,8 +80,6 @@ struct Options
     CharString          version;
 
     Options() :
-        inputType(PLAIN),
-        outputFormat(SAM),
         outputSecondary(false),
         outputHeader(true),
         mappingMode(STRATA),
@@ -107,35 +97,6 @@ struct Options
         rabema(false),
         verbose(0)
     {
-        appendValue(readsFormatList, "fastq");
-        appendValue(readsFormatList, "fasta");
-        appendValue(readsFormatList, "fa");
-
-        appendValue(inputTypeList, "");
-#ifdef SEQAN_HAS_ZLIB
-        appendValue(inputTypeList, "gz");
-#endif
-#ifdef SEQAN_HAS_BZIP2
-        appendValue(inputTypeList, "bz2");
-#endif
-
-        readsExtensionList = readsFormatList;
-#ifdef SEQAN_HAS_ZLIB
-        appendValue(readsExtensionList, "fastq.gz");
-        appendValue(readsExtensionList, "fasta.gz");
-        appendValue(readsExtensionList, "fa.gz");
-#endif
-#ifdef SEQAN_HAS_BZIP2
-        appendValue(readsExtensionList, "fastq.bz2");
-        appendValue(readsExtensionList, "fasta.bz2");
-        appendValue(readsExtensionList, "fa.bz2");
-#endif
-
-        appendValue(outputFormatList, "sam");
-#ifdef SEQAN_HAS_ZLIB
-        appendValue(outputFormatList, "bam");
-#endif
-
         appendValue(libraryOrientationList, "fwd-rev");
         appendValue(libraryOrientationList, "fwd-fwd");
         appendValue(libraryOrientationList, "rev-rev");
@@ -146,20 +107,13 @@ struct Options
 // Mapper Configuration
 // ----------------------------------------------------------------------------
 
-template <typename TExecSpace_      = ExecHost,
-          typename TThreading_      = Parallel,
-          typename TInputType_      = Nothing,
-          typename TOutputFormat_   = Sam,
+template <typename TThreading_      = Parallel,
           typename TSequencing_     = SingleEnd,
           typename TStrategy_       = Strata,
-//          typename TAnchoring_      = Nothing,
           unsigned BUCKETS_         = 3>
-struct ReadMapperConfig : public ContigsConfig<YaraStringSpec>, public ReadsConfig<void>
+struct ReadMapperConfig
 {
-    typedef TExecSpace_     TExecSpace;
     typedef TThreading_     TThreading;
-    typedef TInputType_     TInputType;
-    typedef TOutputFormat_  TOutputFormat;
     typedef TSequencing_    TSequencing;
     typedef TStrategy_      TStrategy;
 //    typedef TAnchoring_     TAnchoring;
@@ -1190,26 +1144,13 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 // Function spawnMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TExecSpace,
-          typename TThreading,
-          typename TInputType,
-          typename TOutputFormat,
-          typename TSequencing,
-          typename TStrategy>
+template <typename TThreading, typename TSequencing, typename TStrategy>
 inline void spawnMapper(Options const & options,
-                        TExecSpace const & /* tag */,
                         TThreading const & /* tag */,
-                        TInputType const & /* tag */,
-                        TOutputFormat const & /* tag */,
                         TSequencing const & /* tag */,
                         TStrategy const & /* tag */)
 {
-    typedef ReadMapperConfig<TExecSpace,
-                             TThreading,
-                             TInputType,
-                             TOutputFormat,
-                             TSequencing,
-                             TStrategy> TConfig;
+    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy>    TConfig;
 
     Mapper<void, TConfig> mapper(options);
     runMapper(mapper);
