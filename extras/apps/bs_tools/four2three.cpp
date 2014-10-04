@@ -57,7 +57,7 @@ struct AppOptions
         ctConversion(true)
     {}
 };
- 
+
 ArgumentParser::ParseResult
 parseCommandLine(AppOptions & options, int argc, char const ** argv)
 {
@@ -75,10 +75,10 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "SEQUENCES"));
     setHelpText(parser, 0, "A sequence file containing reads or genome.");
-    setValidValues(parser, 0, ".fa .fasta .fastq .fq");
+    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
 
     addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", ".fa .fasta .fastq .fq");
+    setValidValues(parser, "o", SeqFileOut::getFileFormatExtensions());
     setRequired(parser, "output-file", true);
     addOption(parser, ArgParseOption("ga", "ga-conversion", "Convert Gs to As, instead of Cs to Ts."));
 
@@ -99,7 +99,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Only extract  options if the program will continue after parseCommandLine()
     if (res != ArgumentParser::PARSE_OK)
         return res;
-            
+
     getArgumentValue(options.inputFileName, parser, 0);
     getOptionValue(options.outputFileName, parser, "output-file");
 
