@@ -135,7 +135,7 @@ namespace seqan {
  * @code{.cpp}
  * if (openMode & OPEN_MASK == OPEN_READ)
  *     // do something if opened in read-only mode
- * @endlink
+ * @endcode
  *
  * @val FileOpenMode OPEN_RDONLY
  * @brief Open in read-only mode.
