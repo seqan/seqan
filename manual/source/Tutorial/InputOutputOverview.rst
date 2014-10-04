@@ -9,7 +9,7 @@ I/O Overview
 ============
 
 Learning Objective
-  This article will give you an overview of the I/O infrastruction in SeqAn.``
+  This article will give you an overview of the I/O infrastruction in SeqAn.
   You will learn how the different pieces work together and how to open files for reading/writing and create ``RecordReader`` objects for reading.
 
 Difficulty
