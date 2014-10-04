@@ -30,26 +30,27 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
 add_executable (test_align
-               test_align.cpp
-               test_align_stream.h
-               test_align_gaps.h
-               test_align_gaps_iterator.h
-               test_alignment_dp_band.h
-               test_alignment_dp_formula.h
-               test_alignment_dp_cell.h
-               test_alignment_dp_profile.h
-               test_alignment_dp_matrix.h
-               test_alignment_dp_matrix_navigator.h
-               test_alignment_dp_trace_segment.h
-               test_alignment_dp_adapt_tracesegments.h
-               test_alignment_dp_traceback.h
-               test_alignment_algorithms_band_position.h
-               test_alignment_algorithms_global.h
-               test_alignment_algorithms_local.h
-               test_alignment_algorithms_global_banded.h
-               test_alignment_algorithms_local_banded.h
-               test_align_global_alignment_specialized.h
-               test_evaluate_alignment.h)
+                test_align.cpp
+                test_align_stream.h
+                test_align_fragment.h
+                test_align_gaps.h
+                test_align_gaps_iterator.h
+                test_alignment_dp_band.h
+                test_alignment_dp_formula.h
+                test_alignment_dp_cell.h
+                test_alignment_dp_profile.h
+                test_alignment_dp_matrix.h
+                test_alignment_dp_matrix_navigator.h
+                test_alignment_dp_trace_segment.h
+                test_alignment_dp_adapt_tracesegments.h
+                test_alignment_dp_traceback.h
+                test_alignment_algorithms_band_position.h
+                test_alignment_algorithms_global.h
+                test_alignment_algorithms_local.h
+                test_alignment_algorithms_global_banded.h
+                test_alignment_algorithms_local_banded.h
+                test_align_global_alignment_specialized.h
+                test_evaluate_alignment.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align ${SEQAN_LIBRARIES})
