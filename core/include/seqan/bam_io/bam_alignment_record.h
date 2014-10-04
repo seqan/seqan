@@ -152,13 +152,13 @@ enum BamFlags
 
 /*!
  * @var __uint32 BamAlignmentRecord::INVALID_POS
- * @brief Static member with invalid sentinel/position value.
+ * @brief Static member with invalid sentinel/position value (-1).
  *
  * @var __uint32 BamAlignmentRecord::INVALID_REFID
- * @brief Static member with invalid sentinel/position value.
+ * @brief Static member with invalid sentinel/position value (-1).
  *
  * @var __uint32 BamAlignmentRecord::INVALID_LEN
- * @brief Static member with invalid/sentinel reference ids (-1 as in BAM/SAM).
+ * @brief Static member with invalid/sentinel reference ids (0 as in BAM/SAM).
  *
  * @var CharString BamAlignmentRecord::qName
  * @brief The query/read name.
@@ -172,10 +172,10 @@ enum BamFlags
  * See @link BamFlags @endlink for flag constants and also see the <tt>hasFlag*()</tt> functions.
  *
  * @var __int32 BamAlignmentRecord::rID
- * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*').
+ * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*' in SAM).
  *
  * @var __int32 BamAlignmentRecord::beginPos
- * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '*').
+ * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '0' in SAM).
  *
  * @var __uint8 BamAlignmentRecord::mapQ;
  * @brief Mapping quality (255 for '*').
@@ -309,9 +309,9 @@ enum BamFlags
 class BamAlignmentRecord
 {
 public:
-    static __int32 const INVALID_POS = 2147483647;  // TODO(holtgrew): Should be MaxValue<__int32>::VALUE, but that is not a constant expression :(
+    static __int32 const INVALID_POS = -1;
     static __int32 const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
-    static __int32 const INVALID_LEN = 2147483647;
+    static __int32 const INVALID_LEN = 0;
     static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
     __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
