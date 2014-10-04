@@ -104,7 +104,7 @@ void testInitStringParser(CommandLineParser & parser)
 
 void testInFileTypeParser(CommandLineParser & parser)
 {
-    addOption(parser, CommandLineOption("i", "in", "set a input file", OptionType::Label | OptionType::INPUTFILE));
+    addOption(parser, CommandLineOption("i", "in", "set a input file", OptionType::Label | OptionType::INPUT_FILE));
 }
 
 void testOutFileTypeParser(CommandLineParser & parser)

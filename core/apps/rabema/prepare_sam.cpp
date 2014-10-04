@@ -168,7 +168,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     // Define Options.
     addOption(parser, seqan::ArgParseOption(
             "i", "in-file", "Path to the input file.",
-            seqan::ArgParseArgument::INPUTFILE, "IN.sam"));
+            seqan::ArgParseArgument::INPUT_FILE, "IN.sam"));
     setValidValues(parser, "in-file", "sam");
     setRequired(parser, "in-file");
 

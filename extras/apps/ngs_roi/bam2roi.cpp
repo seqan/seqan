@@ -166,7 +166,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addSection(parser, "Input / Output Parameters");
 
     addOption(parser, seqan::ArgParseOption("if", "input-file", "SAM/BAM formatted file.  Must be sorted by coordinate.",
-                                            seqan::ArgParseOption::INPUTFILE));
+                                            seqan::ArgParseOption::INPUT_FILE));
     setValidValues(parser, "input-file", seqan::BamFileIn::getFileFormatExtensions());
     setRequired(parser, "input-file");
 

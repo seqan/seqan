@@ -146,13 +146,13 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addDescription(parser, "This program reads three-letter mappings of bisulfite reads and computes local pairwise four-letter realignments using an advanced statistical alignment model.");
 
     // We require ... arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTS"));
     setHelpText(parser, 0, "SAM input file containing three-letter read alignments (must be sorted by query names).");
     setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME"));
     setHelpText(parser, 1, "A reference genome file.");
     setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
     setHelpText(parser, 2, "Either one (single-end) or two (paired-end) read files.");
     setValidValues(parser, 2, SeqFileIn::getFileFormatExtensions());
 

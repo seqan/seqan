@@ -90,12 +90,12 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
                            "provided sam files stating that it mapped. Afterwards a file is generated containing a row"
                            " for each read which contains the read ID and the index of the mapped references.");
 
-    addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUTFILE, 
+    addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUT_FILE, 
                                      "FILE", true));
     setValidValues(parser, "mapping", BamFileIn::getFileFormatExtensions());
     setRequired(parser, "mapping");
     addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).", 
-                                     ArgParseOption::INPUTFILE, "FILE"));
+                                     ArgParseOption::INPUT_FILE, "FILE"));
     setValidValues(parser, "reads", SeqFileIn::getFileFormatExtensions());
     setRequired(parser, "reads");
 
