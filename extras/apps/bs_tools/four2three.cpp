@@ -57,7 +57,7 @@ struct AppOptions
         ctConversion(true)
     {}
 };
- 
+
 ArgumentParser::ParseResult
 parseCommandLine(AppOptions & options, int argc, char const ** argv)
 {
@@ -99,7 +99,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Only extract  options if the program will continue after parseCommandLine()
     if (res != ArgumentParser::PARSE_OK)
         return res;
-            
+
     getArgumentValue(options.inputFileName, parser, 0);
     getOptionValue(options.outputFileName, parser, "output-file");
 
