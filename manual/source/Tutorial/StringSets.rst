@@ -20,7 +20,7 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`
 
-A set of sequences can either be stored in a sequence of sequences, for example in a `String<String<char> >``, or in a :dox:`StringSet`.
+A set of sequences can either be stored in a sequence of sequences, for example in a ``String<String<char> >``, or in a :dox:`StringSet`.
 This tutorial will introduce you to the SeqAn class :dox:`StringSet`, its background and how to use it.
 
 Background
