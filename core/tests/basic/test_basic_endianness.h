@@ -1,8 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
-// Copyright (c) 2013 NVIDIA Corporation
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,60 +29,54 @@
 // DAMAGE.
 //
 // ==========================================================================
-
-/*!
- * @macro PLATFORM_WINDOWS
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler targets Windows (MSVC or MinGW).
- *
- * @signature #define PLATFORM_WINDOWS
- *
- * @macro PLATFORM_WINDOWS_MINGW
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler is MinGW.
- *
- * @signature #define PLATFORM_WINDOWS_MINGW
- */
-
-#ifndef PLATFORM_WINDOWS
-#define PLATFORM_WINDOWS
-
-#define PLATFORM_WINDOWS_MINGW
-
-#define finline __inline__
-
-// The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
-// whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 1
-#define SEQAN_IS_32_BIT 0
-#else  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 0
-#define SEQAN_IS_32_BIT 1
-#endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-
-#include <inttypes.h>
-
-// Define unsigned variants of builtin Windows compiler types.
-typedef unsigned __int64 __uint64;
-typedef unsigned __int32 __uint32;
-typedef unsigned __int16 __uint16;
-typedef unsigned __int8 __uint8;
-
-// Define ftello
-#ifndef ftello
-#define ftello(fp) ftell(fp)
-#endif  // #ifndef ftello
-
-// detect C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Define Endianness.
+// Unit tests for basic endianness.
 // ==========================================================================
 
-#define SEQAN_LITTLE_ENDIAN 1
+#ifndef EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_
+#define EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_
 
-#endif  // #ifndef PLATFORM_WINDOWS
+#include <seqan/basic.h>
+
+template <typename TVal>
+TVal _testToHostByteOrder(TVal val)
+{
+    return endianSwap(val, seqan::HostByteOrder(), seqan::HostByteOrder());
+}
+
+template <typename TVal>
+TVal _testToOtherByteOrder(TVal val)
+{
+    return endianSwap(val, seqan::LittleEndian(), seqan::BigEndian());
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_8)
+{
+    __uint8 x = 0x12;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint8)0x12);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint8)0x12);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_16)
+{
+    __uint16 x = 0x1234;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint16)0x1234);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint16)0x3412);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_32)
+{
+    __uint32 x = 0x12345678;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint32)0x12345678);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint32)0x78563412);
+}
+
+SEQAN_DEFINE_TEST(test_basic_endianness_endian_swap_64)
+{
+    __uint64 x = 0x123456789ABCDEF0;
+    SEQAN_ASSERT_EQ(_testToHostByteOrder(x), (__uint64)0x123456789ABCDEF0);
+    SEQAN_ASSERT_EQ(_testToOtherByteOrder(x), (__uint64)0xF0DEBC9A78563412);
+}
+
+#endif  // EXTRAS_TESTS_BASIC_TEST_BASIC_ENDIANNESS_H_

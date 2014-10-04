@@ -215,11 +215,12 @@ struct FunctorTestAllZeros<String<bool, Packed<THostSpec> > >
     typedef typename Host<TPackedString>::Type TPackedHost;
     typedef typename Value<TPackedHost>::Type TPackedHostValue;
     typedef typename Size<TPackedHostValue>::Type TSize;
+	typedef typename TPackedHostValue::TBitVector TBitVector;
 
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllZeros(TShift const & shift) : _wastedBits(shift)
+	FunctorTestAllZeros(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -255,7 +256,7 @@ struct FunctorTestAllOnes<String<bool, Packed<THostSpec> > >
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllOnes(TShift const & shift) : _wastedBits(shift)
+    FunctorTestAllOnes(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -1329,6 +1330,28 @@ reserve(
     return capacity(seq);
 }
 
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline bool operator==(String<TValue, Packed<TSpec> > const & lhs,
+                       String<TValue, Packed<TSpec> > const & rhs)
+{
+    return testEqual(lhs, rhs);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline bool operator!=(String<TValue, Packed<TSpec> > const & lhs,
+                       String<TValue, Packed<TSpec> > const & rhs)
+{
+    return !testEqual(lhs, rhs);
+}
+
 // ****************************************************************************
 // Functions for Packed String Iter
 // ****************************************************************************
@@ -1752,8 +1775,8 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     TConstPackedHostIterator itBegin = begin(host(obj), Standard());
 
     // We need to treat the last value differently, because it's possible not all bits are in use.
-    TBitVector lastVal = it->i & (~static_cast<TBitVector>(0) <<
-                                  (BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+	TBitVector lastVal = BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE);
+	lastVal = it->i & (~static_cast<TBitVector>(0)) << ((lastVal == BitsPerValue<TBitVector>::VALUE) ? 0 : lastVal);
 
     if (!testAllZeros(lastVal))
         return (((it - itBegin) - 1) * BitsPerValue<TBitVector>::VALUE) +
@@ -1796,9 +1819,18 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
 
     // If last element is not 0, we return the last position. Note, that we do not check for the returned index to be
     // bigger than the length of the string. The caller has to do this.
-    TBitVector lastVal = (it != itEnd) ? it->i :
-             it->i & (~static_cast<TBitVector>(0) << (BitsPerValue<TBitVector>::VALUE -
-                                                      (length(obj) % BitsPerValue<TBitVector>::VALUE)));
+
+    TBitVector lastVal;
+	if (it != itEnd)
+	{
+		lastVal = it->i;
+	}
+	else
+	{
+		lastVal = BitsPerValue<TBitVector>::VALUE - (length(obj) % BitsPerValue<TBitVector>::VALUE);
+		lastVal = it->i & (~static_cast<TBitVector>(0) << ((lastVal == BitsPerValue<TBitVector>::VALUE) ? 0 : lastVal));
+	}
+
     if (testAllZeros(lastVal))
         return length(obj);
     return ((it - itBegin) * BitsPerValue<TBitVector>::VALUE) + (BitsPerValue<TBitVector>::VALUE - 1) - bitScanReverse(lastVal);
@@ -2003,6 +2035,41 @@ testAllOnes(String<bool, Packed<THostSpec> > const & obj)
 
     return _packedStringTestAll(obj, FunctorTestAllOnes<TPackedString>((TTraits::VALUES_PER_HOST_VALUE -
                                      (length(obj) % TTraits::VALUES_PER_HOST_VALUE))));
+}
+
+// ----------------------------------------------------------------------------
+// Function testEqual()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec>
+inline bool
+testEqual(String<TValue, Packed<THostSpec> > const & lhs,
+          String<TValue, Packed<THostSpec> > const & rhs)
+{
+    typedef String<TValue, Packed<THostSpec> > TPackedString;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
+    typedef PackedTraits_<TPackedString> TPackedTraits;
+    typedef typename TPackedTraits::THostValue THostValue;
+    typedef typename THostValue::TBitVector TBitVector;
+
+    static const TBitVector ACTIVE_BITS = ~static_cast<TBitVector>(0) >> TPackedTraits::WASTED_BITS;
+
+    if (empty(host(lhs)) || empty(host(rhs)))
+        return (empty(host(lhs)) && empty(host(rhs))) ? true : false;
+
+    TConstPackedHostIterator itLOperand = begin(host(lhs), Standard());
+    TConstPackedHostIterator itROperand = begin(host(rhs), Standard());
+    TConstPackedHostIterator itEndLOperand = end(host(lhs), Standard()) - 1;
+
+    if (*itLOperand != *itROperand)
+        return false;  // Lengths are not equal.
+
+    TBitVector maskE = ACTIVE_BITS & ~(ACTIVE_BITS >> (BitsPerValue<TValue>::VALUE * (length(lhs) % TPackedTraits::VALUES_PER_HOST_VALUE)));
+    while (++itLOperand != itEndLOperand && !((*itLOperand ^ *(++itROperand)) & ACTIVE_BITS))
+    {}
+
+    return (itLOperand != itEndLOperand) ? false : !((*itLOperand ^ *(++itROperand)) & maskE);
 }
 
 // ----------------------------------------------------------------------------

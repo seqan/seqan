@@ -306,39 +306,26 @@ findJournalEntry(JournalEntries<TCargo, SortedArray> & journalEntries,
     return *findInJournalEntries(journalEntries, pos);
 }
 
+// ----------------------------------------------------------------------------
+// Function _doRecordInsertion()
+// ----------------------------------------------------------------------------
 
-template <typename TCargo>
+template <typename TCargo, typename TIterator>
 inline
-void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
-                     typename Position<TCargo>::Type virtualPosition,
-                     typename Position<TCargo>::Type physicalBeginPos,
-                     typename Size<TCargo>::Type len)
+void _doRecordInsertion(JournalEntries<TCargo, SortedArray> & tree,
+                        TIterator iter,
+                        typename Position<TCargo>::Type virtualPosition,
+                        typename Position<TCargo>::Type physicalBeginPos,
+                        typename Size<TCargo>::Type len)
 {
     typedef typename Position<TCargo>::Type TPos;
-    typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
 
-	//std::cerr << __FILE__ << ":" << __LINE__ << " -- INSERT(" << virtualPosition << ", " << physicalBeginPos << ", " << len << ")" << std::endl;
-    //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
-
-    // Handle special case that the entry list is empty.
-    if (empty(tree._journalNodes))
-    {
-        SEQAN_ASSERT_EQ(virtualPosition, 0u);
-        if (len == 0)
-            return;
-        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, 0, len));
-        return;
-    }
-
-    // Find position in sorted array of nodes to insert in.
-    TIterator iter = findInJournalEntries(tree, virtualPosition);
     // TODO(holtgrew): Maybe move and update entries right of pos at the same time?
-
     // Create new journal entries.
-	if (iter->virtualPosition + iter->length > virtualPosition)
+    if (iter->virtualPosition + iter->length > virtualPosition)
     {
-		TPos pos = iter - begin(tree._journalNodes, Standard());
-		TPos shiftRightOf = pos;
+        TPos pos = iter - begin(tree._journalNodes, Standard());
+        TPos shiftRightOf = pos;
         // Found node that contains virtualPos.
         SEQAN_ASSERT_LEQ(iter->virtualPosition, virtualPosition);
         if (iter->virtualPosition == virtualPosition)
@@ -348,7 +335,7 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
             if (iter != begin(tree._journalNodes, Standard()))
                 physicalOriginPosition = (iter - 1)->physicalOriginPosition;
             insertValue(tree._journalNodes, pos, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, physicalOriginPosition, len));
-			shiftRightOf += 1;
+            shiftRightOf += 1;
         }
         else
         {
@@ -364,7 +351,7 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
             buffer[2] = TCargo(iter->segmentSource, iter->physicalPosition + offset, virtualPosition + len, physicalOriginPos1, iter->length - offset);
             // Insert new journal entries.
             replace(tree._journalNodes, pos, pos + 1, buffer);
-			shiftRightOf += 3;
+            shiftRightOf += 3;
         }
         // Update journal entries right of pos.
         for (TIterator it = begin(tree._journalNodes, Standard()) + shiftRightOf, itend = end(tree._journalNodes, Standard()); it != itend; ++it)
@@ -377,7 +364,7 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
     else
     {
         // Insert at end.
-		SEQAN_ASSERT_EQ(virtualPosition, iter->virtualPosition + iter->length);
+        SEQAN_ASSERT_EQ(virtualPosition, iter->virtualPosition + iter->length);
         TPos physicalOriginPosition = back(tree._journalNodes).physicalOriginPosition;
         appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, physicalOriginPosition, len));
     }
@@ -386,134 +373,119 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
     SEQAN_ASSERT(_checkSortedArrayTree(tree));
 }
 
-template <typename TCargo>
+// ----------------------------------------------------------------------------
+// Function _doRecordErase()
+// ----------------------------------------------------------------------------
+
+template <typename TCargo, typename TIter>
 inline
-void recordErase(JournalEntries<TCargo, SortedArray> & tree,
-                 typename Position<TCargo>::Type pos,
-                 typename Position<TCargo>::Type posEnd)
+void _doRecordErase(JournalEntries<TCargo, SortedArray> & tree,
+                    TIter it,
+                    typename Position<TCargo>::Type pos,
+                    typename Position<TCargo>::Type posEnd)
 {
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos;
-    typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
-//	std::cerr << __FILE__ << ":" << __LINE__ << " -- ERASE(" << pos << ", " << posEnd << ")" << std::endl;
-//    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
-
-    // Handle special case of removing all of the singleton existing entry.
-    if (length(tree._journalNodes) == 1 && pos == 0 && (TPos)front(tree._journalNodes).length == posEnd)
-    {
-        clear(tree._journalNodes);
-        return;
-    }
-    // Handle case of an empty journal.
-    if (empty(tree._journalNodes))
-    {
-        SEQAN_ASSERT_EQ(pos, 0u);
-        SEQAN_ASSERT_EQ(posEnd, 0u);
-        return;
-    }
-
-    // Find node.
-    TIter it = findInJournalEntries(tree, pos);
 
     // We will shift the virtual positions of all entries right of and
     // including beginShiftPos by delta positions to the left.
     TPos delta = 0;
     TPos beginShiftPos = 0;
 
-	TPos itPos = it - begin(tree._journalNodes, Standard());
-	if (it->virtualPosition == pos && (TPos)it->length == posEnd - pos)
+    TPos itPos = it - begin(tree._journalNodes, Standard());
+    if (it->virtualPosition == pos && (TPos)it->length == posEnd - pos)
     {
-		// Remove the whole entry.
-		erase(tree._journalNodes, itPos);
-		delta = posEnd - pos;
-		beginShiftPos = itPos;
-	}
+        // Remove the whole entry.
+        erase(tree._journalNodes, itPos);
+        delta = posEnd - pos;
+        beginShiftPos = itPos;
+    }
     else if (it->virtualPosition == pos && (TPos)it->length > posEnd - pos)
     {
-		// Remove a prefix of the entry.
-		SEQAN_ASSERT_LT(pos, it->virtualPosition + it->length);
-		delta = posEnd - pos;
-		it->physicalPosition += delta;
+        // Remove a prefix of the entry.
+        SEQAN_ASSERT_LT(pos, it->virtualPosition + it->length);
+        delta = posEnd - pos;
+        it->physicalPosition += delta;
         if (it->segmentSource == SOURCE_ORIGINAL)
             it->physicalOriginPosition += delta;
-		it->length -= delta;
-		beginShiftPos = itPos + 1;
-	}
+        it->length -= delta;
+        beginShiftPos = itPos + 1;
+    }
     else if (it->virtualPosition < pos && it->virtualPosition + it->length == posEnd)
     {
-		// Remove a suffix of the entry.
-		SEQAN_ASSERT_GT(pos, it->virtualPosition);
-		delta = posEnd - pos;
-		it->length -= delta;
-		beginShiftPos = itPos + 1;
-	}
+        // Remove a suffix of the entry.
+        SEQAN_ASSERT_GT(pos, it->virtualPosition);
+        delta = posEnd - pos;
+        it->length -= delta;
+        beginShiftPos = itPos + 1;
+    }
     else if (it->virtualPosition < pos && it->virtualPosition + it->length > posEnd)
     {
-		// Remove a true infix of the entry.
-		TSize prefixLength = pos - it->virtualPosition;
-		TSize suffixLength = it->length - prefixLength - (posEnd - pos);
-		TSize removedInfixLength = posEnd - pos;
-		// Update the left part, this must be done before the iterator is possibly invalidate because of copied memory.
-		it->length -= removedInfixLength + suffixLength;
-		// Insert a new entry for the right part.
+        // Remove a true infix of the entry.
+        TSize prefixLength = pos - it->virtualPosition;
+        TSize suffixLength = it->length - prefixLength - (posEnd - pos);
+        TSize removedInfixLength = posEnd - pos;
+        // Update the left part, this must be done before the iterator is possibly invalidate because of copied memory.
+        it->length -= removedInfixLength + suffixLength;
+        // Insert a new entry for the right part.
         TPos physicalHostPos = it->physicalPosition;
         if (it->segmentSource == SOURCE_ORIGINAL)
             physicalHostPos += prefixLength + removedInfixLength;
-		TCargo tmpEntry(it->segmentSource, it->physicalPosition + prefixLength + removedInfixLength, it->virtualPosition + prefixLength, physicalHostPos, suffixLength);
-		insertValue(tree._journalNodes, itPos + 1, tmpEntry);
-		// Set shift position and delta.
-		delta = removedInfixLength;
-		beginShiftPos = itPos + 2;
-	}
+        TCargo tmpEntry(it->segmentSource, it->physicalPosition + prefixLength + removedInfixLength, it->virtualPosition + prefixLength, physicalHostPos, suffixLength);
+        insertValue(tree._journalNodes, itPos + 1, tmpEntry);
+        // Set shift position and delta.
+        delta = removedInfixLength;
+        beginShiftPos = itPos + 2;
+    }
     else
     {
-		// Remove more than one entry.
-		TPos rmBeginPos = itPos;
-		TPos rmEndPos = itPos;
-		if (it->virtualPosition != pos)
+        // Remove more than one entry.
+        TPos rmBeginPos = itPos;
+        TPos rmEndPos = itPos;
+        if (it->virtualPosition != pos)
         {
-			// Do not remove all of first.
-			delta += it->length - (pos - it->virtualPosition);
-			rmBeginPos += 1;
-			rmEndPos += 1;
-			it->length = (pos - it->virtualPosition);
-		}
+            // Do not remove all of first.
+            delta += it->length - (pos - it->virtualPosition);
+            rmBeginPos += 1;
+            rmEndPos += 1;
+            it->length = (pos - it->virtualPosition);
+        }
         else
         {
-			// Remove all of first.
-			delta = it->length;
-			rmEndPos += 1;
-		}
-		it += 1;
-		while (posEnd > it->virtualPosition + it->length)
+            // Remove all of first.
+            delta = it->length;
+            rmEndPos += 1;
+        }
+        it += 1;
+        while (posEnd > it->virtualPosition + it->length)
         {
-			rmEndPos += 1;
-			delta += it->length;
-			it += 1;
-		}
-		if (it->virtualPosition + it->length == posEnd)
+            rmEndPos += 1;
+            delta += it->length;
+            it += 1;
+        }
+        if (it->virtualPosition + it->length == posEnd)
         {
-			// Remove all of last.
-			rmEndPos += 1;
-			delta += it->length;
-			beginShiftPos = rmBeginPos;
-		}
+            // Remove all of last.
+            rmEndPos += 1;
+            delta += it->length;
+            beginShiftPos = rmBeginPos;
+        }
         else
         {
-			// Do not remove all of last.
-			SEQAN_ASSERT_GT(it->virtualPosition + it->length, posEnd);
-			TSize tmpDelta = delta;
-			delta += posEnd - it->virtualPosition;
-			it->physicalPosition += posEnd - it->virtualPosition;
+            // Do not remove all of last.
+            SEQAN_ASSERT_GT(it->virtualPosition + it->length, posEnd);
+            TSize tmpDelta = delta;
+            delta += posEnd - it->virtualPosition;
+            it->physicalPosition += posEnd - it->virtualPosition;
             if (it->segmentSource == SOURCE_ORIGINAL)
                 it->physicalOriginPosition = it->physicalPosition;
-			it->length -= posEnd - it->virtualPosition;
-			// We update this entry manually.
-			it->virtualPosition -= tmpDelta;
-			beginShiftPos = rmBeginPos + 1;
-		}
-		erase(tree._journalNodes, rmBeginPos, rmEndPos);
-	}
+            it->length -= posEnd - it->virtualPosition;
+            // We update this entry manually.
+            it->virtualPosition -= tmpDelta;
+            beginShiftPos = rmBeginPos + 1;
+        }
+        erase(tree._journalNodes, rmBeginPos, rmEndPos);
+    }
 
     // Perform left-shift of the virtual positions.
     for (TIter it = begin(tree._journalNodes, Standard()) + beginShiftPos; it != end(tree._journalNodes, Standard()); ++it) {
@@ -529,11 +501,80 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
         if (it != begin(tree._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
             it->physicalOriginPosition = (it - 1)->physicalOriginPosition;
     }
-//	std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
+//  std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 
     SEQAN_ASSERT(_checkSortedArrayTree(tree));
 }
 
+// ----------------------------------------------------------------------------
+// Function recordInsertion()
+// ----------------------------------------------------------------------------
+
+template <typename TCargo>
+inline
+void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
+                     typename Position<TCargo>::Type virtualPosition,
+                     typename Position<TCargo>::Type physicalBeginPos,
+                     typename Size<TCargo>::Type len)
+{
+    typedef typename Position<TCargo>::Type TPos SEQAN_TYPEDEF_FOR_DEBUG;
+    typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
+
+    //std::cerr << __FILE__ << ":" << __LINE__ << " -- INSERT(" << virtualPosition << ", " << physicalBeginPos << ", " << len << ")" << std::endl;
+    //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
+
+    // Handle special case that the entry list is empty.
+    if (empty(tree._journalNodes))
+    {
+        SEQAN_ASSERT_EQ(virtualPosition, static_cast<TPos>(0));
+        if (len == 0)
+            return;
+        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, 0, len));
+        return;
+    }
+
+    // Find position in sorted array of nodes to insert in.
+    TIterator iter = findInJournalEntries(tree, virtualPosition);
+    _doRecordInsertion(tree, iter, virtualPosition, physicalBeginPos, len);
+}
+
+// ----------------------------------------------------------------------------
+// Function recordErase()
+// ----------------------------------------------------------------------------
+
+template <typename TCargo>
+inline
+void recordErase(JournalEntries<TCargo, SortedArray> & tree,
+                 typename Position<TCargo>::Type pos,
+                 typename Position<TCargo>::Type posEnd)
+{
+    typedef typename Position<TCargo>::Type TPos;
+    typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
+//  std::cerr << __FILE__ << ":" << __LINE__ << " -- ERASE(" << pos << ", " << posEnd << ")" << std::endl;
+//    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
+
+    // Handle special case of removing all of the singleton existing entry.
+    if (length(tree._journalNodes) == 1 && pos == 0 && (TPos)front(tree._journalNodes).length == posEnd)
+    {
+        clear(tree._journalNodes);
+        return;
+    }
+    // Handle case of an empty journal.
+    if (empty(tree._journalNodes))
+    {
+        SEQAN_ASSERT_EQ(pos, static_cast<TPos>(0));
+        SEQAN_ASSERT_EQ(posEnd, static_cast<TPos>(0));
+        return;
+    }
+
+    // Find node.
+    TIter it = findInJournalEntries(tree, pos);
+    _doRecordErase(tree, it, pos, posEnd);
+}
+
+// ----------------------------------------------------------------------------
+// Function virtualToHostPosition()
+// ----------------------------------------------------------------------------
 
 template <typename TNode, typename TJournalSpec, typename TPos>
 inline

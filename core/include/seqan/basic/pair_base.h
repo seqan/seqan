@@ -219,8 +219,16 @@ struct Value<Pair<T1, T2, TSpec>, 1>
 template <typename T1, typename T2, typename TSpec>
 struct Value<Pair<T1, T2, TSpec>, 2>
 {
-        typedef T2 Type;
+    typedef T2 Type;
 };
+
+template <typename T1, typename T2, typename TSpec>
+struct Value<Pair<T1, T2, TSpec> const, 1> :
+    Value<Pair<T1 const, T2 const, TSpec>, 1> {};
+
+template <typename T1, typename T2, typename TSpec>
+struct Value<Pair<T1, T2, TSpec> const, 2> :
+    Value<Pair<T1 const, T2 const, TSpec>, 2> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Spec

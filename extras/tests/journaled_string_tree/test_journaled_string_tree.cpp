@@ -2,7 +2,6 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
-// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,60 +29,50 @@
 // DAMAGE.
 //
 // ==========================================================================
-
-/*!
- * @macro PLATFORM_WINDOWS
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler targets Windows (MSVC or MinGW).
- *
- * @signature #define PLATFORM_WINDOWS
- *
- * @macro PLATFORM_WINDOWS_MINGW
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler is MinGW.
- *
- * @signature #define PLATFORM_WINDOWS_MINGW
- */
-
-#ifndef PLATFORM_WINDOWS
-#define PLATFORM_WINDOWS
-
-#define PLATFORM_WINDOWS_MINGW
-
-#define finline __inline__
-
-// The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
-// whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 1
-#define SEQAN_IS_32_BIT 0
-#else  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 0
-#define SEQAN_IS_32_BIT 1
-#endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-
-#include <inttypes.h>
-
-// Define unsigned variants of builtin Windows compiler types.
-typedef unsigned __int64 __uint64;
-typedef unsigned __int32 __uint32;
-typedef unsigned __int16 __uint16;
-typedef unsigned __int8 __uint8;
-
-// Define ftello
-#ifndef ftello
-#define ftello(fp) ftell(fp)
-#endif  // #ifndef ftello
-
-// detect C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// ==========================================================================
-// Define Endianness.
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#define SEQAN_LITTLE_ENDIAN 1
+#include <seqan/basic.h>
+#include <seqan/file.h>
 
-#endif  // #ifndef PLATFORM_WINDOWS
+#include "test_delta_map.h"
+#include "test_journaled_string_tree.h"
+
+SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
+{
+    // Tests for delta map.
+
+    SEQAN_CALL_TEST(test_delta_map_insert);
+    SEQAN_CALL_TEST(test_delta_map_length);
+    SEQAN_CALL_TEST(test_delta_map_empty);
+    SEQAN_CALL_TEST(test_delta_map_coverage_size);
+    SEQAN_CALL_TEST(test_delta_map_set_coverage_size);
+    SEQAN_CALL_TEST(test_delta_map_iterator);
+    SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
+    SEQAN_CALL_TEST(test_delta_map_iterator_assign);
+    SEQAN_CALL_TEST(test_delta_map_iterator_value);
+    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
+    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
+    SEQAN_CALL_TEST(test_delta_map_iterator_delta_value);
+    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
+
+    // Tests for journaled string tree
+    SEQAN_CALL_TEST(test_journaled_string_tree_container_mf);
+    SEQAN_CALL_TEST(test_journaled_string_tree_get_string_tree_mf);
+    SEQAN_CALL_TEST(test_journaled_string_tree_host_mf);
+    SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
+    SEQAN_CALL_TEST(test_journaled_string_tree_init);
+    SEQAN_CALL_TEST(test_journaled_string_tree_reinit);
+    SEQAN_CALL_TEST(test_journaled_string_tree_container);
+    SEQAN_CALL_TEST(test_journaled_string_tree_string_set);
+    SEQAN_CALL_TEST(test_journaled_string_tree_full_journal_required);
+    SEQAN_CALL_TEST(test_journaled_string_tree_set_block_size);
+    SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
+    SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
+    SEQAN_CALL_TEST(test_journaled_string_tree_host);
+    SEQAN_CALL_TEST(test_journaled_string_tree_local_to_global_pos);
+
+    SEQAN_CALL_TEST(test_journaled_string_tree_save_open);
+    SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
+}
+SEQAN_END_TESTSUITE

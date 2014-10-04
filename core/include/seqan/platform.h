@@ -83,4 +83,55 @@
 #define SEQAN_CXX11_STL
 #endif
 
-#endif
+// ==========================================================================
+// Define Endianness.
+// ==========================================================================
+
+// Check endianness for most platforms using GNU C library.
+#ifdef __LITTLE_ENDIAN__  // LITTLE_ENDIAN
+#define SEQAN_LITTLE_ENDIAN __LITTLE_ENDIAN__
+#elif defined(__BIG_ENDIAN__)  // BIG_ENDIAN
+#define SEQAN_LITTLE_ENDIAN !__BIG_ENDIAN__
+#elif defined(__BYTE_ORDER__)  // Check via set byte order.
+#ifdef __ORDER_LITTLE_ENDIAN__
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define SEQAN_LITTLE_ENDIAN 1
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define SEQAN_LITTLE_ENDIAN 0
+#endif  // if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__.
+#endif  // ifdef __ORDER_LITTLE_ENDIAN__
+#endif  // ifdef __LITTLE_ENDIAN__
+
+// Check other platforms if endianness could not be determined.
+#ifndef SEQAN_LITTLE_ENDIAN
+#ifdef __ARMEL__
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(__THUMBEL__)
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(__AARCH64EL__)
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(_MIPSEL)
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(__MIPSEL)
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(__MIPSEL__)
+#define SEQAN_LITTLE_ENDIAN 1
+#elif defined(__ARMEB__)
+#define SEQAN_LITTLE_ENDIAN 0
+#elif defined(__THUMBEB__)
+#define SEQAN_LITTLE_ENDIAN 0
+#elif defined(__AARCH64EB__)
+#define SEQAN_LITTLE_ENDIAN 0
+#elif defined(_MIPSEB)
+#define SEQAN_LITTLE_ENDIAN 0
+#elif defined(__MIPSEB)
+#define SEQAN_LITTLE_ENDIAN 0
+#elif defined(__MIPSEB__)
+#define SEQAN_LITTLE_ENDIAN 0
+#else  // SEQAN_LITTLE_ENDIAN - no known endianness.
+#define SEQAN_LITTLE_ENDIAN 1
+#warning "Could not determine endianness for the host system or host's endianness is not supported!"
+#endif  // Macro checks.
+#endif  // SEQAN_LITTLE_ENDIAN.
+
+#endif  // SEQAN_PLATFORM_H

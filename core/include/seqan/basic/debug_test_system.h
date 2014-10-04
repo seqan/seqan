@@ -808,6 +808,33 @@ const char * tempFileName()
 #endif  // ifdef PLATFORM_WINDOWS
 }
 
+// Extracts the parent path.
+inline
+const char * extractParentPath(const char * path)
+{
+    static char pathBuffer[1000];
+
+    unsigned pos = strlen(path);
+    if (pos == 0)   // Empty path.
+        return path;
+
+    if (path[pos - 1] == '\\' || path[pos - 1] == '/')  // Go to next subpath.
+        --pos;
+
+    for (; pos > 0; --pos)
+    {
+        if (path[pos - 1] == '\\' || path[pos - 1] == '/')
+            break;
+    }
+
+    if (pos == 0)  // Found no parent -> Windows systems.
+        pos = strlen(path);
+
+    strncpy(pathBuffer, path, pos);  // Then add tmp buffer to static path buffer, so we have a correct 0-terminated c-style string.
+    pathBuffer[pos] = '\0';
+    return pathBuffer;  // Return the buffer.
+}
+
 // Initialize the testing infrastructure.
 //
 // Used through SEQAN_BEGIN_TESTSUITE(test_name)
@@ -3099,6 +3126,37 @@ fclose(f);
 
 // Returns a temporary filename.
 #define SEQAN_TEMP_FILENAME() (::seqan::ClassTest::tempFileName())
+
+/*!
+ * @macro SEQAN_PARENT_PATH
+ * @headerfile <seqan/basic.h>
+ * @brief Extracts the parent path of the given path name.
+ *
+ * @signature TCharType SEQAN_PARENT_PATH(p);
+ * @param p the path to extract the parent path for.
+ *
+ * @return TCharType <tt>char const *</tt>, string with the name of the parent path.
+ *
+ * @section Remarks
+ *
+ * The returned path always includes the root.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * const char *parentDir = SEQAN_EXTRACT_PATH(__FILE__);
+ * DIR *dir;
+ * struct dirent *ent;
+ * dir = opendir(parentDir); // Open paren dir.
+ * while ((ent = readdir(dir)) != NULL)  // List all files in paren dir.
+ *     printf ("%s\n", ent->d_name);
+ * closedir(dir);
+ * @endcode
+ * @see SEQAN_PATH_TO_ROOT
+ */
+
+// Returns parent path.
+#define SEQAN_PARENT_PATH(x) (::seqan::ClassTest::extractParentPath(x))
 
 
 /**

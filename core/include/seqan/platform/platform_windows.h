@@ -137,4 +137,10 @@ inline T round(T const & x)
 #define ftello(fp) ftell(fp)
 #endif  // #ifndef ftello
 
+// ==========================================================================
+// Define Endianness.
+// ==========================================================================
+
+#define SEQAN_LITTLE_ENDIAN 1
+
 #endif  // #ifndef PLATFORM_WINDOWS
