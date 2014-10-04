@@ -81,9 +81,9 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // We require two arguments.
     addDescription(parser, "Input to INSEGT is a SAM file containing the alignments and"
                           " a file containing the annotations of the reference genome, either in GFF or GTF format.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, "sam");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 1, "gff gtf");
     // Define Options -- Section Modification Options
 

@@ -681,11 +681,11 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUTFILE, "ROI"));
+    addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUT_FILE, "ROI"));
     setRequired(parser, "in-roi");
     setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileFormatExtensions());
 
-    addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUTFILE, "FILE"));
+    addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setRequired(parser, "in-features");
     std::vector<std::string> extensions = seqan::BedFileIn::getFileFormatExtensions();
     std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileFormatExtensions();
@@ -699,7 +699,7 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("g", "genome",
                                             "Path to FASTA file with genome; optional.  When given, this is used for "
                                             "computing the overall region's C+G content.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "genome", "fasta fa");
 
     // -----------------------------------------------------------------------

@@ -59,7 +59,7 @@ struct OptionType
         Label = 32,                 // automatically print a label for the argument(s) on the help screen
         List = 64,                  // option is a list of values
         Hidden = 128,               // hide this option from the help screen
-        INPUTFILE = 256,            // this option is an input file .. is implicitly also a string, since paths/filenames are strings
+        INPUT_FILE = 256,            // this option is an input file .. is implicitly also a string, since paths/filenames are strings
         OUTPUTFILE = 512            // this option is an output file .. is implicitly also a string, since paths/filenames are strings
     };
 };
@@ -103,7 +103,7 @@ Although not suggested the short-name can contain more than 1 character.
 ...table:$OptionType::Label$|32|Automatically print a label for the argument(s) on the help screen
 ...table:$OptionType::List$|64|Option is a list of values
 ...table:$OptionType::Hidden$|128|Hide this option from the help screen
-...table:$OptionType::INPUTFILE$|256|Argument is an input file
+...table:$OptionType::INPUT_FILE$|256|Argument is an input file
 ...table:$OptionType::OUTPUTFILE$|512|Argument is an output file
 ..param.defaultValue:The default value of this option.
 ...default:No default value.
@@ -259,7 +259,7 @@ addArgumentText(CommandLineOption const & opt, CharString const & text)
 inline bool
 isStringOption(CommandLineOption const & me)
 {
-    return (me.optionType & (OptionType::String | OptionType::INPUTFILE | OptionType::OUTPUTFILE)) != 0;
+    return (me.optionType & (OptionType::String | OptionType::INPUT_FILE | OptionType::OUTPUTFILE)) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -435,7 +435,7 @@ isOptionList(CommandLineOption const & me)
 inline bool
 isInputFile(CommandLineOption const & me)
 {
-    return (me.optionType & OptionType::INPUTFILE) != 0;
+    return (me.optionType & OptionType::INPUT_FILE) != 0;
 }
 
 // ----------------------------------------------------------------------------

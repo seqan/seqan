@@ -90,7 +90,7 @@
         addDescription(parser, "This is a very simple KNIME node providing an input and output port. The code should be modified such that the node does something useful");
 
         // We require one argument.
-        addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+        addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
         setValidValues(parser, 0, "fastq fq");
 
         addOption(parser, seqan::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
@@ -178,7 +178,7 @@
             std::cout << "<u>OPTIONS</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u><u>_</u>_\n"
                       << '\n'
                       << "VERBOSITY\t" << options.verbosity << '\n'
-                      << "INPUTFILE\t" << options.inputFile << "\n\n"
+                      << "INPUT_FILE\t" << options.inputFile << "\n\n"
                       << "OUTPUTFILE\t" << options.outputFile << "\n\n";
         }
 

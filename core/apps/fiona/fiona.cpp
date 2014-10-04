@@ -5100,7 +5100,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                    "The reads are read from the file \\fIIN.{fq,fa}\\fP and are written to \\fIOUT.fa\\fP.");
 
     // Fiona gets two parameters:  The paths to the input and the output files.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
     setValidValues(parser, 0, "fa fasta fq fastq");
     setHelpText(parser, 0, "An input file with reads to be corrected.");
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUTFILE, "OUT"));

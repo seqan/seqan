@@ -116,7 +116,7 @@ setupCommandLineParser(ArgumentParser & parser)
                    "is guessed from the file extension.");
     addDescription(parser, "(c) 2012 by Birte Kehr");
     
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTFILE"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTFILE"));
     //setValidValues(parser, 0, "xmfa maf"); // allow only *.xmfa and *.maf files as input
 
     addSection(parser, "Main Options");

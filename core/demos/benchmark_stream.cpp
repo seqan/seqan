@@ -321,7 +321,7 @@ int main(int argc, char const ** argv)
     addOption(parser, ArgParseOption("n", "non-concat", "Do not use concat direct string for document-mmapped version."));
     addOption(parser, ArgParseOption("s", "multi-seq", "Use MultiSeqFile to read input."));
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "IN"));
 
     // -----------------------------------------------------------------------
     // Parse And Check Command Line Parameters

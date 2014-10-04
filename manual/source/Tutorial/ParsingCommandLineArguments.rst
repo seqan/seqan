@@ -895,7 +895,7 @@ Input/Output File Names
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 We could use ``ArgParseArgument::STRING`` to specify input and output files.
-However, there are two special argument/option types ``ArgParseArgument::INPUTFILE`` and ``ArgParseArgument::OUTPUTFILE`` that are more suitable:
+However, there are two special argument/option types ``ArgParseArgument::INPUT_FILE`` and ``ArgParseArgument::OUTPUTFILE`` that are more suitable:
 
 #. In the near future, we plan to add basic checks for whether input files exist and are readable by the user.
    You will still have to check whether opening was successful when actually doing this but the program will fail earlier if the source file or target location are not accessible.
@@ -909,7 +909,7 @@ Here is an example for defining input and output file arguments:
 
    addOption(parser, seqan::ArgParseOption(
        "I", "input-file", "Path to the input file",
-       seqan::ArgParseArgument::INPUTFILE, "IN"));
+       seqan::ArgParseArgument::INPUT_FILE, "IN"));
    addOption(parser, seqan::ArgParseOption(
        "O", "output-file", "Path to the output file",
        seqan::ArgParseArgument::OUTPUTFILE, "OUT"));
@@ -982,7 +982,7 @@ Assignment 5
 		addOption(parser, seqan::ArgParseOption(
 		    "I", "input-file",
 		    "A text file that will printed with the modifications applied.",
-		    seqan::ArgParseArgument::INPUTFILE));
+		    seqan::ArgParseArgument::INPUT_FILE));
 		setValidValues(parser, "input-file", "txt");
 		setRequired(parser, "input-file");
 
