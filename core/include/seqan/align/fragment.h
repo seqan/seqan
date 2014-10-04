@@ -29,13 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_IMPL_FRAGMENT_H
-#define SEQAN_HEADER_GRAPH_IMPL_FRAGMENT_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Fragment Specs
@@ -44,7 +45,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @class ExactFragment
  * @extends Fragment
- * @headerfile <seqan/graph_types.h>
+ * @headerfile <seqan/align.h>
  * @brief A type for ungapped, pairwise segment matches.
  *
  * @signature template <[typename TSize[, typename TSpec]]>
@@ -64,7 +65,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...metafunction:Metafunction.Size
 ..param.TSpec:The specializing type for the graph.
 ...metafunction:Metafunction.Spec
-..include:seqan/graph_types.h
+..include:seqan/align.h
 ..see:Spec.ExactReversableFragment
 */
 
@@ -75,7 +76,7 @@ struct ExactFragment;
 /*!
  * @class ExactReversableFragment
  * @extends Fragment
- * @headerfile <seqan/graph_types.h>
+ * @headerfile <seqan/align.h>
  * @brief A type for ungapped, pairwise segment matches that maybe in reverse orientation.
  *
  * Compared to the @link ExactFragment @endlink specialzing type of @link Fragment @endlink, a @link
@@ -100,7 +101,7 @@ struct ExactFragment;
 ..param.TSpec:The specializing type for the graph.
 ...metafunction:Metafunction.Spec
 ..remarks:Compared to the @Spec.ExactFragment@ specialzing type of @Class.Fragment@, a @Spec.ExactReversableFragment@ stores an additional bool value to indicate whether a match is in reverse orientation or not.
-..include:seqan/graph_types.h
+..include:seqan/align.h
 ..see:Spec.ExactFragment
 */
 
@@ -114,7 +115,7 @@ struct ExactReversableFragment;
 
 /*!
  * @class Fragment
- * @headerfile <seqan/graph_types.h>
+ * @headerfile <seqan/align.h>
  * @brief A type for pairwise segment matches.
  *
  * @signature template <[typename TSize[, typename TSpec]]>
@@ -149,7 +150,7 @@ struct ExactReversableFragment;
 ..param.TSpec:The specializing type.
 ...metafunction:Metafunction.Spec
 ...default:@Spec.ExactFragment@
-..include:seqan/graph_types.h
+..include:seqan/align.h
 ..example:A small example using fragments.
 ..example.code:
 // Construct fragment.
@@ -716,6 +717,6 @@ inline bool operator>(Fragment<TSize, ExactFragment<TSpec> > const & lhs,
     return false;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_

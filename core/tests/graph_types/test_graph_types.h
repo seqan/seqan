@@ -1458,110 +1458,6 @@ void Test_Tree() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Test_Fragment() {
-	// Test Fragment
-	typedef String<char> TString;
-	typedef StringSet<TString, Dependent<> > TStringSet;
-	typedef	Id<TStringSet>::Type TId;
-	typedef	Size<TStringSet>::Type TSize;
-	
-	TStringSet str;
-	TString str0("annual");	assignValueById(str, str0);
-	TString str1("anneal"); assignValueById(str, str1);
-
-	// Fragment: SeqId1, Begin1, SeqId2, Begin2, Length of Fragment
-	Fragment<> f(0,4,1,4,2);
-	SEQAN_ASSERT(f.seqId1 == 0);
-	SEQAN_ASSERT(f.begin1 == 4);
-	SEQAN_ASSERT(f.seqId2 == 1);
-	SEQAN_ASSERT(f.begin2 == 4);
-	SEQAN_ASSERT(f.len == 2);
-	SEQAN_ASSERT(fragmentBegin(f, 0) == 4);
-	SEQAN_ASSERT(fragmentBegin(f, 1) == 4);
-	SEQAN_ASSERT(fragmentLength(f, 0) == 2);
-	SEQAN_ASSERT(fragmentLength(f, 1) == 2);
-	SEQAN_ASSERT(sequenceId(f, 0) == 0);
-	SEQAN_ASSERT(sequenceId(f, 1) == 1);
-	SEQAN_ASSERT(label(f, str, 0) == "al");
-	SEQAN_ASSERT(label(f, str, 1) == "al");
-	TId id2;
-	TSize pos2;
-	getProjectedPosition(f, 0, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 5);
-	SEQAN_ASSERT(id2 == 1);
-	getProjectedPosition(f, 1, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 5);
-	SEQAN_ASSERT(id2 == 0);
-
-	// Reversable Fragment
-	typedef Fragment<Size<Fragment<> >::Type, ExactReversableFragment<> > TRevFrag;
-	TRevFrag fRev(0,4,1,4,2);
-	SEQAN_ASSERT(fRev.seqId1 == 0);
-	SEQAN_ASSERT(fRev.begin1 == 4);
-	SEQAN_ASSERT(fRev.seqId2 == 1);
-	SEQAN_ASSERT(fRev.begin2 == 4);
-	SEQAN_ASSERT(fRev.len == 2);
-	SEQAN_ASSERT(fragmentBegin(fRev, 0) == 4);
-	SEQAN_ASSERT(fragmentBegin(fRev, 1) == 4);
-	SEQAN_ASSERT(fragmentLength(fRev, 0) == 2);
-	SEQAN_ASSERT(fragmentLength(fRev, 1) == 2);
-	SEQAN_ASSERT(sequenceId(fRev, 0) == 0);
-	SEQAN_ASSERT(sequenceId(fRev, 1) == 1);
-	SEQAN_ASSERT(label(fRev, str, 0) == "al");
-	SEQAN_ASSERT(label(fRev, str, 1) == "al");
-	SEQAN_ASSERT(!isReversed(fRev));
-	getProjectedPosition(fRev, 0, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 5);
-	SEQAN_ASSERT(id2 == 1);
-	getProjectedPosition(fRev, 1, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 5);
-	SEQAN_ASSERT(id2 == 0);
-	TRevFrag fRev2(0,4,1,4,2, true);
-	SEQAN_ASSERT(fRev2.seqId1 == 0);
-	SEQAN_ASSERT(fRev2.begin1 == 4);
-	SEQAN_ASSERT(fRev2.seqId2 == 1);
-	SEQAN_ASSERT(fRev2.begin2 == 4);
-	SEQAN_ASSERT(fRev2.len == 2);
-	SEQAN_ASSERT(fragmentBegin(fRev2, 0) == 4);
-	SEQAN_ASSERT(fragmentBegin(fRev2, 1) == 4);
-	SEQAN_ASSERT(fragmentLength(fRev2, 0) == 2);
-	SEQAN_ASSERT(fragmentLength(fRev2, 1) == 2);
-	SEQAN_ASSERT(sequenceId(fRev2, 0) == 0);
-	SEQAN_ASSERT(sequenceId(fRev2, 1) == 1);
-	SEQAN_ASSERT(label(fRev2, str, 0) == "al");
-	SEQAN_ASSERT(label(fRev2, str, 1) == "al");
-	SEQAN_ASSERT(isReversed(fRev2));
-	getProjectedPosition(fRev2, 0, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 4);
-	SEQAN_ASSERT(id2 == 1);
-	getProjectedPosition(fRev2, 1, 5, id2, pos2);
-	SEQAN_ASSERT(pos2 == 4);
-	SEQAN_ASSERT(id2 == 0);
-
-	// Fragment: SeqId1, Begin1, SeqId2, Begin2, Length of Fragment
-	Fragment<> f2(0,0,1,4,1);
-	SEQAN_ASSERT(f2.seqId1 == 0);
-	SEQAN_ASSERT(f2.begin1 == 0);
-	SEQAN_ASSERT(f2.seqId2 == 1);
-	SEQAN_ASSERT(f2.begin2 == 4);
-	SEQAN_ASSERT(f2.len == 1);
-	SEQAN_ASSERT(fragmentBegin(f2, 0) == 0);
-	SEQAN_ASSERT(fragmentBegin(f2, 1) == 4);
-	SEQAN_ASSERT(fragmentLength(f2, 0) == 1);
-	SEQAN_ASSERT(fragmentLength(f2, 1) == 1);
-	SEQAN_ASSERT(fragmentLength(f2) == 1);
-	SEQAN_ASSERT(label(f2, str, 0) == "a");
-	SEQAN_ASSERT(label(f2, str, 1) == "a");
-	getProjectedPosition(f2, 0, 0, id2, pos2);
-	SEQAN_ASSERT(pos2 == 4);
-	SEQAN_ASSERT(id2 == 1);
-	getProjectedPosition(f2, 1, 4, id2, pos2);
-	SEQAN_ASSERT(pos2 == 0);
-	SEQAN_ASSERT(id2 == 0);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 void Test_Hmm() {
 	typedef double TProbability;
 	typedef Dna TAlphabet;
@@ -1734,7 +1630,6 @@ void Test_GraphTypes() {
 	Test_Automaton();	// Automatons
 	Test_WordGraph();	// Word Graph
 	Test_Tree();		// Trees
-	Test_Fragment();	// Fragment
 	Test_Hmm();			// Hmm
 }
 
