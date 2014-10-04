@@ -7,6 +7,6 @@ After reading the Tutorial we recommend to read some of the following HowTos:
 
 .. toctree::
    :glob:
-   :maxdepth: 2
+   :maxdepth: 1
 
    HowTo/*
