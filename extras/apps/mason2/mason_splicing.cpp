@@ -348,9 +348,9 @@ public:
         clear(tIDs);
 
         seqan::CharString groupNames;
-        for (unsigned i = 0; i < length(record.tagName); ++i)
-            if (record.tagName[i] == options.gffGroupBy)
-                groupNames = record.tagValue[i];
+        for (unsigned i = 0; i < length(record.tagNames); ++i)
+            if (record.tagNames[i] == options.gffGroupBy)
+                groupNames = record.tagValues[i];
         if (empty(groupNames))
             return;  // Record has no group names.
 

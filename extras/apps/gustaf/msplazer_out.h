@@ -264,36 +264,36 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     else
         record.strand = '-';
 
-    appendValue(record.tagName, "ID");
-    appendValue(record.tagValue, toString(id));
+    appendValue(record.tagNames, "ID");
+    appendValue(record.tagValues, toString(id));
     if (bp.svtype == 1) // 1=insertion
     {
-        appendValue(record.tagName, "size");
-        appendValue(record.tagValue, '-' + toString(length(bp.insertionSeq)));
-        appendValue(record.tagName, "seq");
-        appendValue(record.tagValue, bp.insertionSeq);
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, '-' + toString(length(bp.insertionSeq)));
+        appendValue(record.tagNames, "seq");
+        appendValue(record.tagValues, bp.insertionSeq);
     }
     else if (bp.svtype == 2 || bp.svtype == 8) // 2=deletion;8=breakend
     {
-        appendValue(record.tagName, "size");
-        appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
     }
     else
     {
-        appendValue(record.tagName, "endChr");
+        appendValue(record.tagNames, "endChr");
         _getShortId(sId, bp.endSeqId);
-        appendValue(record.tagValue, sId);
-        appendValue(record.tagName, "endPos");
-        appendValue(record.tagValue, toString(bp.endSeqPos));
-        appendValue(record.tagName, "endStrand");
+        appendValue(record.tagValues, sId);
+        appendValue(record.tagNames, "endPos");
+        appendValue(record.tagValues, toString(bp.endSeqPos));
+        appendValue(record.tagNames, "endStrand");
         if (bp.endSeqStrand)
-            appendValue(record.tagValue, '+');
+            appendValue(record.tagValues, '+');
         else
-            appendValue(record.tagValue, '-');
+            appendValue(record.tagValues, '-');
     }
-    appendValue(record.tagName, "support");
-    appendValue(record.tagValue, toString(bp.support));
-    appendValue(record.tagName, "supportIds");
+    appendValue(record.tagNames, "support");
+    appendValue(record.tagValues, toString(bp.support));
+    appendValue(record.tagNames, "supportIds");
 
     std::stringstream s;
     for (unsigned i = 0; i < length(bp.supportIds); ++i)
@@ -302,9 +302,9 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
         s << ',';
     }
 
-    appendValue(record.tagValue, s.str());
-    appendValue(record.tagName, "breakpoint");
-    appendValue(record.tagValue, toString(bp.readStartPos + 1));
+    appendValue(record.tagValues, s.str());
+    appendValue(record.tagNames, "breakpoint");
+    appendValue(record.tagValues, toString(bp.readStartPos + 1));
 }
 
 // Breakpoint writing call
