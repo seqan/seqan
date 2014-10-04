@@ -158,7 +158,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Options");
     addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", ".sam");
+    setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
     setRequired(parser, "output-file", true);
 
     addOption(parser, ArgParseOption("e3", "max3-error", "Max. error rate in 3-letter alphabet.", ArgParseArgument::DOUBLE));
