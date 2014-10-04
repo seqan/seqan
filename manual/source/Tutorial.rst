@@ -118,7 +118,7 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
   This tutorial introduces you to SeqAn's alphabets, or in other words, the contained types of sequences.
 
 :ref:`tutorial-string-sets`
-  StringSets This tutorial introduces you to SeqAn's ``String Set``, an efficient data structure to store a set of sequences.
+  StringSets This tutorial introduces you to SeqAn's ``StringSet``, an efficient data structure to store a set of sequences.
 
 :ref:`tutorial-sequences-in-depth`
   In this tutorial you will learn how to optimize the work with sequences, using different specializations of Strings and different overflow strategies for capacity changes.
