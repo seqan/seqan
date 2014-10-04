@@ -185,19 +185,19 @@ char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
  * phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of
  * this feature to reach the first base of the next codon
  * 
- * @var TCharStringSet GffRecord::tagName;
+ * @var TCharStringSet GffRecord::tagNames;
  * @brief The names of the attributes of the record, StringSet of CharString.
  * 
  * @section Remarks
  * 
- * For each value there is a name associated in GffRecord::tagName.
+ * For each value there is a name associated in GffRecord::tagNames.
  *
- * @var TCharStringSet GffRecord::tagValue;
+ * @var TCharStringSet GffRecord::tagValues;
  * @brief The values of the attributes of the record, StringSet of CharString.
  * 
  * @section Remarks
  * 
- * For each name there is a value associated in GffRecord::tagValue.
+ * For each name there is a value associated in GffRecord::tagValues.
  */
 
 /**
@@ -257,17 +257,17 @@ char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
 ..remarks:For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame. The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon
 ..type:nolink:$char$
 
-.Memvar.GffRecord#tagName
+.Memvar.GffRecord#tagNames
 ..class:Class.GffRecord
 ..summary:The names of the attributes of the record.
 ..type:Class.StringSet
-..remarks:For each name there is a value associated in $Memvar.GffRecord#tagValue$
+..remarks:For each name there is a value associated in $Memvar.GffRecord#tagValues$
 
-.Memvar.GffRecord#tagValue
+.Memvar.GffRecord#tagValues
 ..class:Class.GffRecord
 ..summary:The values of the attributes of the record.
 ..type:Class.StringSet
-..remarks:For each value there is a name associated in $Memvar.GffRecord#tagName$
+..remarks:For each value there is a name associated in $Memvar.GffRecord#tagNames$
 */
 
 struct GffRecord
@@ -288,8 +288,8 @@ struct GffRecord
     CharString type;
 
     // A list of feature attributes in the format tag=value.
-    StringSet<CharString> tagName;
-    StringSet<CharString> tagValue;
+    StringSet<CharString> tagNames;
+    StringSet<CharString> tagValues;
 
     // The start and end of the feature, in 1-based integer coordinates, relative to the landmark given in column 1
     __uint32 beginPos;
@@ -422,8 +422,8 @@ inline void clear(GffRecord & record)
     clear(record.ref);
     clear(record.source);
     clear(record.type);
-    clear(record.tagName);
-    clear(record.tagValue);
+    clear(record.tagNames);
+    clear(record.tagValues);
 }
 
 // ----------------------------------------------------------------------------
@@ -533,8 +533,8 @@ readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
         // Read next key/value pair.
         _parseReadGffKeyValue(_value, _key, iter);
 
-        appendValue(record.tagName, _key);
-        appendValue(record.tagValue, _value);
+        appendValue(record.tagNames, _key);
+        appendValue(record.tagValues, _value);
 
         clear(_key);
         clear(_value);
@@ -682,7 +682,7 @@ inline void
 _writeAttributes(TTarget & target, GffRecord const & record, TTag const & tag)
 {
     const char separatorBetweenTagAndValue = (IsSameType<TTag, Gff>::VALUE)? '=' : ' ';
-    for (unsigned i = 0; i < length(record.tagName); ++i)
+    for (unsigned i = 0; i < length(record.tagNames); ++i)
     {
         if (i != 0)
         {
@@ -692,17 +692,17 @@ _writeAttributes(TTarget & target, GffRecord const & record, TTag const & tag)
             _writeAdditionalSeperator(target, tag);
        }
 
-        _writePossiblyInQuotes(target, record.tagName[i], GffRecordKeyMustBeQuoted_<TTag>());
+        _writePossiblyInQuotes(target, record.tagNames[i], GffRecordKeyMustBeQuoted_<TTag>());
 
-        if (!empty(record.tagValue[i]))
+        if (!empty(record.tagValues[i]))
         {
             writeValue(target, separatorBetweenTagAndValue);
-            _writePossiblyInQuotes(target, record.tagValue[i], GffRecordValueMustBeQuoted_<TTag>());
+            _writePossiblyInQuotes(target, record.tagValues[i], GffRecordValueMustBeQuoted_<TTag>());
         }
     }
 
     // In GTF files each (especially the last) attribute must end with a semi-colon
-    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagName))
+    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagNames))
         writeValue(target, ';');
 
     return;
