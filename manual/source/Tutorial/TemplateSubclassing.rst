@@ -31,7 +31,7 @@ The technique of template subclassing may be summarized as follows:
 Example: Generic q-gram hashing
 -------------------------------
 
-In many applications in Bioinformatics so called q-grams are used.
+In many applications in bioinformatics so called q-grams are used.
 A short string of length q can be interpreted as a number to the base of the cardinality of the alphabet.
 So for example for the Dna alphabet ``cgta=0*1+3*4+2*16+1*64=108``.
 q-grams can be gapped or ungapped.

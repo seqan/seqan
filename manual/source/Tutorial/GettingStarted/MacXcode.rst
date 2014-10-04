@@ -221,8 +221,8 @@ Replace its contents with the following:
     int main(int, char const **)
     {
         std::cout << "Hello World!" << std::endl;
-        seqan::CharString mySeqanString = "Hello SeqAn!";
-        std::cout << mySeqanString << std::endl;
+        seqan::CharString mySeqAnString = "Hello SeqAn!";
+        std::cout << mySeqAnString << std::endl;
         return 1;
     }
 

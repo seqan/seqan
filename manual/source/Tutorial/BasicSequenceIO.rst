@@ -53,7 +53,7 @@ We use the function :dox:`SequenceStream#readRecord` to read the first record fr
 
    FASTA/FASTQ and Record-Based Files
 
-   Most files in Bioinformatics have a record-based structure.
+   Most files in bioinformatics have a record-based structure.
    Often, a file format requires or allows for a header that contains information about the file format.
    Then, the file contains a list of records, one after another.
 
@@ -394,7 +394,7 @@ On Windows, you will need to follow :ref:`how-to-install-contribs-on-windows` to
 
 You can check whether you have installed the libraries to use zlib and libbz2 by running CMake again.
 Simply call ``cmake .`` in your build directory.
-At the end of the output, there will be a section "Seqan Features".
+At the end of the output, there will be a section "SeqAn Features".
 If you can read ``ZLIB - FOUND`` and ``BZIP2 - FOUND`` then you can use zlib and libbz2 in your programs.
 
 Congratulations, you have now learned to write simple and robust sequence I/O code using SeqAn!

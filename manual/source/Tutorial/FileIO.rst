@@ -152,7 +152,7 @@ Use the following :dox:`Stream` specializations to read and write zlib and bzlib
 
 zlib files have a decent compression ratio and support quite fast compression and decompression.
 bz2 files are fairly slow to read and write, although the compression ratio is better.
-For most Bioinformatics applications, you will prefer zlib over bzlib.
+For most bioinformatics applications, you will prefer zlib over bzlib.
 
 If you are using SeqAn's build system, *zlib* and *libbz2* will be detected automatically.
 On Linux and Mac Os X, these libraries are usually already installed.

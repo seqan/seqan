@@ -22,7 +22,7 @@ Prerequisites
 
 Apart from pairwise alignments, also multiple sequence alignments can be computed in SeqAn.
 The easiest way to do this is by using the function :dox:`globalMsaAlignment`.
-This function computes a heuristic alignment based on a consistency-based progressive alignment strategy as described in `Seqan::TCoffee <http://bioinformatics.oxfordjournals.org/cgi/content/abstract/24/16/i187>`_ paper.
+This function computes a heuristic alignment based on a consistency-based progressive alignment strategy as described in `SeqAn::TCoffee <http://bioinformatics.oxfordjournals.org/cgi/content/abstract/24/16/i187>`_ paper.
 
 In the following example, we align four amino acid sequences using the :dox:`AlignmentGraph` data structure and the :dox:`Blosum62` scoring matrix with gap extension penalty -11 and gap open penalty -1.
 The required header for multiple sequence alignments is ``<seqan/graph_msa.h>``.
