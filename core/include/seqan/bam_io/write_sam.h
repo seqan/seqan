@@ -69,6 +69,7 @@ int write2(TStream & stream,
     streamPut(stream, headerTypes[header.type]);
     if (header.type == BAM_HEADER_COMMENT)
     {
+        streamPut(stream, '\t');
         streamPut(stream, header.tags[0].i2);
     }
     else
