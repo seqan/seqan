@@ -115,8 +115,8 @@ Assignment 1
          .. includefrags:: core/demos/tutorial/basics/strings.cpp
             :fragment: create-string
 
-         Then we define an iterator type using the Seqan metafunction :dox:`ContainerConcept#Iterator`.
-         Using the correct iterator we iterate over our amino acid string using the Seqan functions :dox:`ContainerConcept#begin`, :dox:`ContainerConcept#end`, and :dox:`InputIteratorConcept#goNext`.
+         Then we define an iterator type using the SeqAn metafunction :dox:`ContainerConcept#Iterator`.
+         Using the correct iterator we iterate over our amino acid string using the SeqAn functions :dox:`ContainerConcept#begin`, :dox:`ContainerConcept#end`, and :dox:`InputIteratorConcept#goNext`.
          In the body of the while loop we use the SeqAn function :dox:`IteratorAssociatedTypesConcept#value` to access the value the iterator is pointing to.
          Note that this function returns a reference which allows us to replace the occurrence of all ``R``'s with ``A``'s.
          So at this point we have solved parts a) and b) of the assignment.

@@ -16,7 +16,7 @@ The Swift algorithms searches for so-called epsilon matches, local alignments, o
 The Swift implementation in SeqAn provides a :dox:`Finder#find` interface and requires the :dox:`Finder` and :dox:`Pattern` to be specialized with ``Swift<..>``.
 Millions of sequences can be searched simultaneously with one :dox:`SwiftPattern Swift Pattern` in a :dox:`SwiftFinder Swift Finder` of a single haystack sequence.
 The error rate of a local alignment is the number of errors divided by the length of the needle sequence part of the match.
-There are currently two version of the Swift algorithm implemented in Seqan, ``SwiftSemiGlobal`` and ``SwiftLocal``.
+There are currently two version of the Swift algorithm implemented in SeqAn, ``SwiftSemiGlobal`` and ``SwiftLocal``.
 Both can be used to search epsilon-matches of a certain minimum length.
 
 .. hint::

@@ -114,16 +114,16 @@ For example:
 The ``read*`` And ``skip*`` Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The parsing functionality in SeqAn built on top of the :dox:`StreamConcept` concept and :dox:`RecordReader` class is optimized for reading Bioinformatics text file formats.
+The parsing functionality in SeqAn built on top of the :dox:`StreamConcept` concept and :dox:`RecordReader` class is optimized for reading bioinformatics text file formats.
 
 These formats mostly consist of fairly flat data files, i.e. a sequence of records, each having very few levels of subrecords.
 A typical example are FASTQ files where one record consists of adjacent lines, containing the identifier, sequence, and qualities.
 Another example are TSV (tab-separated-values) files where each record spans a line and there possibly is a header.
 SAM is an example for a TSV file with a header at the top of the file.
 
-The main challenge in reading Bioinformatics files is their size.
+The main challenge in reading bioinformatics files is their size.
 When parsing a word processor document file, a HTML document, or a computer program, the input file is typically not larger than some MB.
-In Bioinformatics, files having multiple GB are not uncommon, e.g. NGS data or the sequence of the human genome.
+In bioinformatics, files having multiple GB are not uncommon, e.g. NGS data or the sequence of the human genome.
 
 Thus, in SeqAn, the files are parsed "on the fly" as they are read.
 Using compiler nomenclauture, bioinformatics parsers often only have to be `tokenizers <http://en.wikipedia.org/wiki/Tokenizing>`_.

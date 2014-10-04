@@ -183,8 +183,8 @@ Open the file ``sandbox/my_sandbox/apps/first_app/first_app.cpp`` (in ``seqan-tr
     int main(int, char const **)
     {
         std::cout << "Hello World!" << std::endl;
-        seqan::CharString mySeqanString = "Hello SeqAn!";
-        std::cout << mySeqanString << std::endl;
+        seqan::CharString mySeqAnString = "Hello SeqAn!";
+        std::cout << mySeqAnString << std::endl;
         return 1;
     }
 

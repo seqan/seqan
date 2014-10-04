@@ -8,7 +8,7 @@
 Writing Nice Unix Programs
 --------------------------
 
-In Bioinformatics, many programs are of "academic" quality, i.e. they are written to present a new method.
+In bioinformatics, many programs are of "academic" quality, i.e. they are written to present a new method.
 The implementation is often "only" used by other academics who, since they do not pay for the program, are willing to take some glitches for granted.
 
 This page tries to help academic software developers in writing better Unix programs.
@@ -163,7 +163,7 @@ While many program's steps might add to flexibility, a tool is easier to use if 
 Explanation
 ^^^^^^^^^^^
 
-Some Bioinformatics programs consist of many steps, e.g. (1) building an index (e.g. k-mer or suffix array) (2) perform a search, and (3) combine multiple search results to one.
+Some bioinformatics programs consist of many steps, e.g. (1) building an index (e.g. k-mer or suffix array) (2) perform a search, and (3) combine multiple search results to one.
 While this might enable the flexible usage of the program it complicates its usage.
 Please also provide a way to call your program that creates an output from the input files with one program call.
 

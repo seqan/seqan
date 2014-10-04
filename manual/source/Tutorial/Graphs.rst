@@ -249,7 +249,7 @@ Assignment 3
 	Now we can start with defining the states.
 	States are represented by the vertices of the HMM-specialized graph.
 
-	The initial and terminating states of an HMM in Seqan are always silent, i.e. they do not generate characters.
+	The initial and terminating states of an HMM in SeqAn are always silent, i.e. they do not generate characters.
 	That is why we have to define an extra begin state and tell the program that this is the initial state of the HMM.
 	The latter is done by calling the function :dox:`HmmGraph#assignBeginState`.
 
@@ -493,7 +493,7 @@ Assignments 5
    Solution
      .. container:: foldable
 
-	Seqan provides the function :dox:`stronglyConnectedComponents` to compute the connected components of a directed graph.
+	SeqAn provides the function :dox:`stronglyConnectedComponents` to compute the connected components of a directed graph.
 	The first parameter of this function is of course the graph.
 	The second parameter is an output parameter.
 	It is a vertex map that will map a component id to each vertex. Vertices that share the same id are in the same component.

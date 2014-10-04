@@ -196,8 +196,8 @@ Open the file ``C:\Users\seqan_dev\Development\seqan-trunk\sandbox\my_sandbox\fi
     int main(int, char const **)
     {
         std::cout << "Hello World!" << std::endl;
-        seqan::CharString mySeqanString = "Hello SeqAn!";
-        std::cout << mySeqanString << std::endl;
+        seqan::CharString mySeqAnString = "Hello SeqAn!";
+        std::cout << mySeqAnString << std::endl;
         return 1;
     }
 
