@@ -556,6 +556,34 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 ..include:seqan/align.h
 */
 
+template <typename TSequence, typename TSpec, typename TPos>
+bool isGap(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+{
+    return isGap(iter(gaps, clippedViewPos, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// Function isCharacter()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#isCharacer
+ * @brief Query positions in a Gaps object for being a character.
+ *
+ * @signature bool isGap(gaps, viewPos);
+ *
+ * @param[in] gaps    The Gaps object to query.
+ * @param[in] viewPos The view position (including clipping and gaps).
+ *
+ * @return bool The query result.
+ */
+
+template <typename TSequence, typename TSpec, typename TPos>
+bool isCharacter(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+{
+    return isCharacter(iter(gaps, clippedViewPos, Standard()));
+}
+
 // ----------------------------------------------------------------------------
 // Function insertGaps()
 // ----------------------------------------------------------------------------
@@ -740,6 +768,13 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 ..include:seqan/align.h
 */
 
+template <typename TSequence, typename TSpec, typename TPos>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+{
+    return countGaps(iter(gaps, clippedViewPos, Standard()));
+}
+
 // ----------------------------------------------------------------------------
 // Function countLeadingGaps()
 // ----------------------------------------------------------------------------
@@ -800,6 +835,13 @@ countTrailingGaps(TGaps const & gaps)
  * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt> (Metafunction: @link
  *               ContainerConcept#Size @endlink).
  */
+
+template <typename TSequence, typename TSpec, typename TPos>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+{
+    return countCharacters(iter(gaps, clippedViewPos, Standard()));
+}
 
 // ----------------------------------------------------------------------------
 // Function setClippedBeginPosition()
