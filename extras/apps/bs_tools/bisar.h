@@ -305,7 +305,7 @@ writeBsAlignment(TStream & stream,
     SEQAN_PUT_TAB;
 
     if (store.alignedReadStore[bestId].contigId == TAlignedRead::INVALID_ID)
-        res = streamPut(stream, '*');
+        res = streamPut(stream, '0');
     else
         res = streamPut(stream, record.beginPos + 1);
     if (res != 0)
@@ -362,7 +362,7 @@ writeBsAlignment(TStream & stream,
     SEQAN_PUT_TAB;
 
     if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        res = streamPut(stream, '*');
+        res = streamPut(stream, '0');
     else 
         res = streamPut(stream, record.tLen);
 
