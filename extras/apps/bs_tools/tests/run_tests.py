@@ -227,9 +227,9 @@ def main(source_base, binary_base):
     # ============================================================
     failures = 0
     for conf in conf_list:
-        res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join([os.path.basename(conf.program)] + conf.args),
+        print ' '.join([os.path.basename(conf.program)] + conf.args)
+        res = app_tests.runTest(conf)
         if res:
              print 'OK'
         else:
