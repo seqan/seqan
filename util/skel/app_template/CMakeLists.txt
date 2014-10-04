@@ -23,7 +23,8 @@ find_package (SeqAn REQUIRED)
 # ----------------------------------------------------------------------------
 
 # Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
+include_directories (${SEQAN_INCLUDE_DIRS_MAIN})
+include_directories (SYSTEM ${SEQAN_INCLUDE_DIRS_DEPS})
 
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
