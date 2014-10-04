@@ -50,6 +50,7 @@ typedef Finder<TContigSeq, Swift<SwiftSemiGlobal> > TFinder;
 typedef FragmentStore<>::TAlignedReadStore TAlignedReadStore;
 typedef Value<TAlignedReadStore>::Type TAlignedRead;
 
+//FRAGMENT(global-constants)
 const double EPSILON = 0.08;
 
 //FRAGMENT(main-input)

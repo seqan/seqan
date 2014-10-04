@@ -80,6 +80,41 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_header)
     testBamIOBamStreamReadHeader("/core/tests/bam_io/small.bam");
 }
 
+// Issue 489 reports a problems with reading/writing comment lines in SAM header.
+SEQAN_DEFINE_TEST(test_bam_io_bam_stream_issue_489)
+{
+    seqan::CharString inFilePath = SEQAN_PATH_TO_ROOT();
+    append(inFilePath, "/core/tests/bam_io/sam_with_comments.sam");
+
+    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
+    append(tmpPath, ".sam");
+
+    // Open input stream, BamStream can read SAM and BAM files.
+    seqan::BamStream bamStreamIn(toCString(inFilePath));
+    SEQAN_ASSERT(isGood(bamStreamIn));
+    // Open output stream, "-" means stdin on if reading, else stdout.
+    seqan::BamStream bamStreamOut(toCString(tmpPath), seqan::BamStream::WRITE);
+    SEQAN_ASSERT(isGood(bamStreamOut));
+    // Copy header.  The header is automatically written out before the first record.
+    bamStreamOut.header = bamStreamIn.header;
+
+    seqan::BamAlignmentRecord record;
+    while (!atEnd(bamStreamIn))
+    {
+        SEQAN_ASSERT_EQ(readRecord(record, bamStreamIn), 0);
+        // Handle the case that the reference name was not in the header.
+        if (record.rID >= (int)length(nameStore(bamStreamOut.bamIOContext)))
+            appendName(nameStore(bamStreamOut.bamIOContext),
+                       nameStore(bamStreamIn.bamIOContext)[record.rID],
+                       nameStoreCache(bamStreamOut.bamIOContext));
+        SEQAN_ASSERT_EQ(writeRecord(bamStreamOut, record), 0);
+    }
+    close(bamStreamOut);  // flushes
+
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(inFilePath)));
+}
+
+
 // ---------------------------------------------------------------------------
 // Read Records
 // ---------------------------------------------------------------------------
@@ -154,7 +189,7 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].count, 4u);
     SEQAN_ASSERT_EQ(alignments[2].cigar[2].operation, 'M');
     SEQAN_ASSERT_EQ(alignments[2].rNextId, -1);
-    SEQAN_ASSERT_EQ(alignments[2].pNext, 2147483647);
+    SEQAN_ASSERT_EQ(alignments[2].pNext, -1);
     SEQAN_ASSERT_EQ(alignments[2].tLen, 0);
     SEQAN_ASSERT_EQ(alignments[2].seq, "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
@@ -400,7 +435,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
     seqan::BamStream bamStream(toCString(filePath));
     SEQAN_ASSERT(isGood(bamStream));
 
-    SEQAN_ASSERT_EQ(fileSize(bamStream), 181u);
+    SEQAN_ASSERT_EQ(fileSize(bamStream), 180u);
     SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
 
     seqan::BamAlignmentRecord record;

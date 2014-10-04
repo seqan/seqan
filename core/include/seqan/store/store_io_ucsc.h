@@ -163,7 +163,7 @@ _readOneAnnotation(
     if (readUntilWhitespace(temp, reader))
         return false;
 
-    if (temp[0] != '+' && temp[0] != '-' && length(temp) == 1u)
+    if (empty(temp))
     {
         ctx.format = ctx.KNOWN_ISOFORMS;
         insert(ctx.transName, 0, "GENE");
