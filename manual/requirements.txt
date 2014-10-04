@@ -1,0 +1,3 @@
+seqansphinx>=0.2.1
+sphinx_rtd_theme
+sphinxcontrib-bibtex

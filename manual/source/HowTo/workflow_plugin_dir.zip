@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+  
+
+
+  <head>
+    <link rel="stylesheet" type="text/css" href="/chrome/site/css/custom.css" />
+    <title>
+      workflow_plugin_dir.zip on HowTo/GenerateKnimeNodesExternalTools – Attachment
+     – Seqan Trac
+    </title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="search" href="/search" /><link rel="help" href="/wiki/TracGuide" /><link rel="alternate" href="/raw-attachment/wiki/HowTo/GenerateKnimeNodesExternalTools/workflow_plugin_dir.zip" type="application/zip; charset=iso-8859-15" title="Original Format" /><link rel="up" href="/wiki/HowTo/GenerateKnimeNodesExternalTools" title="HowTo/GenerateKnimeNodesExternalTools" /><link rel="start" href="/wiki" /><link rel="stylesheet" href="/chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="/chrome/common/css/code.css" type="text/css" /><link rel="stylesheet" href="/chrome/text_boxes/css/text_boxes.css" type="text/css" /><link rel="shortcut icon" href="/chrome/common/trac.ico" type="image/x-icon" /><link rel="icon" href="/chrome/common/trac.ico" type="image/x-icon" /><link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Search Seqan Trac" /><script type="text/javascript" src="/chrome/common/js/jquery.js"></script><script type="text/javascript" src="/chrome/common/js/babel.js"></script><script type="text/javascript" src="/chrome/common/js/messages/en_US.js"></script><script type="text/javascript" src="/chrome/common/js/trac.js"></script><script type="text/javascript" src="/chrome/common/js/search.js"></script><script type="text/javascript" src="/chrome/common/js/ie_pre7_hacks.js"></script><script type="text/javascript" src="/chrome/common/js/folding.js"></script><script type="text/javascript">
+        jQuery(document).ready(function($) {
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
+        });
+      </script>
+    <!--
+    <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
+    -->
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://trac.seqan.de/"><img src="/static/seqan_trac_banner.png" alt="" height="75" width="215" /></a>
+      </div>
+      <form id="search" action="/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Search" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first">logged in as rmaerker</li><li><a href="/logout">Logout</a></li><li><a href="/wiki/TracGuide">Help/Guide</a></li><li><a href="/about">About Trac</a></li><li class="last"><a href="/prefs">Preferences</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Timeline</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/browser">Browse Source</a></li><li><a href="/report">View Tickets</a></li><li><a href="/newticket">New Ticket</a></li><li><a href="/search">Search</a></li><li class="last"><a href="/admin" title="Administration">Admin</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+              <li class="last first"><a href="/wiki/HowTo/GenerateKnimeNodesExternalTools">Back to HowTo/GenerateKnimeNodesExternalTools</a></li>
+          </ul>
+        <hr />
+      </div>
+    <div id="content" class="attachment">
+        <h1><a href="/wiki/HowTo/GenerateKnimeNodesExternalTools">HowTo/GenerateKnimeNodesExternalTools</a>: workflow_plugin_dir.zip</h1>
+        <table id="info" summary="Description">
+          <tbody>
+            <tr>
+              <th scope="col">File workflow_plugin_dir.zip,
+                <span title="808808 bytes">789.9 KB</span>
+                (added by holtgrew, <a class="timeline" href="/timeline?from=2013-08-20T13%3A29%3A13%2B02%3A00&amp;precision=second" title="2013-08-20T13:29:13+02:00 in Timeline">13 months</a> ago)</th>
+            </tr>
+            <tr>
+              <td class="message searchable">
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="preview" class="searchable">
+          
+    <p>
+        <strong>HTML preview not available</strong>, since the file size exceeds 262144 bytes.
+      Try <a href="/raw-attachment/wiki/HowTo/GenerateKnimeNodesExternalTools/workflow_plugin_dir.zip">downloading</a> the file instead.
+    </p>
+
+        </div>
+          <div class="buttons">
+            <form method="get" action="">
+              <div id="delete">
+                <input type="hidden" name="action" value="delete" />
+                <input type="submit" value="Delete attachment" />
+              </div>
+            </form>
+          </div>
+    </div>
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="/raw-attachment/wiki/HowTo/GenerateKnimeNodesExternalTools/workflow_plugin_dir.zip">Original Format</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Powered by <a href="/about"><strong>Trac 0.12.5</strong></a><br />
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><a href="http://www.seqan.de">www.seqan.de</a></p>
+    </div>
+  </body>
+</html>

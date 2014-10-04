@@ -1,0 +1,50 @@
+/* hiding and showing links */
+
+.folded-in a.fold-out-more { display: inline; }
+.folded-in a.fold-out-less { display: none; }
+.folded-in .foldable      { display: none; }
+
+.folded-out a.fold-out-more { display: none; }
+.folded-out a.fold-out-less { display: inline; }
+.folded-out .foldable      { display: block; }
+
+/* adjustments for fold-out div spacing */
+
+.fold-out-wrapper.folded-in {
+    margin-bottom: 24px;
+    padding-left: 7px;
+}
+.fold-out-wrapper.folded-out {
+    margin-bottom: 24px;
+    padding-left: 5px;
+    border-left: 2px solid #afa6a6;
+}
+.foldable.container { margin-top: 5px; }
+
+/* assignment block */
+
+.container.assignment {
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
+  background-image: url(data:image/png;base64,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);
+  background-color: #EEEEDD;
+  padding: 5px;
+  padding-left: 70px;
+  border: 1px solid #707272;
+  margin-bottom: 10px;
+}
+
+/* Hide "Contents" in ToC box */
+
+p.topic-title { display: none; }
+p.sidebar-title { margin-bottom: 7px !important; }
+
+/* Console Output */
+
+.highlight-console { background: black !important; color: lightgray; font-family: monospace; font-weight: bolder; }
+
+/* Display rubric headings on Tutorial in larger size */
+
+.rubric > .rubric-heading1 { font-weight:bolder; font-size: 1.4em; }
+.rubric > .rubric-heading2 { font-weight:bolder; font-size: 1.1em; }
+
