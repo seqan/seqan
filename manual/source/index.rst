@@ -11,6 +11,10 @@ It contains algorithms and data structures for
 * sequence alignment, and
 * much more.
 
+Table Of Contents
+-----------------
+
+
 :ref:`tutorial`
   Each tutorial takes 30 to 60 minutes of your time for learning how to use SeqAn.
   Jump right into using SeqAn using our tutorials!
