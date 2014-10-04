@@ -252,6 +252,42 @@ insertGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 }
 
 // ----------------------------------------------------------------------------
+// Function isCharacter()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#isCharacter
+ * @brief Query an iterator for being at a character
+ *
+ * @signature bool isCharacter(it);
+ *
+ * @param[in] it Iterator to query for pointing at a character.
+ *
+ * @return bool <tt>true</tt> if <tt>it</tt> is at a character and <tt>false</tt> otherwise.
+ */
+
+template <typename TGaps, typename TSpec>
+bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+	return !isGap(it);
+}
+
+// ----------------------------------------------------------------------------
+// Function countCharacters()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#countCharacters
+ * @brief Count characters at iterator.
+ *
+ * @signature TSize countCharacters(it);
+ *
+ * @param[in] it Iterator for counting characters at.
+ *
+ * @return TSize Number of characters.
+ */
+
+// ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
 
