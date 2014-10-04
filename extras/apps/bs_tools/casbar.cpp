@@ -1009,18 +1009,18 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
 
     // We require two arguments.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
-    setValidValues(parser, 0, ".fasta .fa");
+    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
-    setValidValues(parser, 1, ".sam");
+    setValidValues(parser, 1, BamFileIn::getFileFormatExtensions());
     setHelpText(parser, 1, "SAM input file containing four-letter read alignments (must be sorted by coordinates).");
 
     addSection(parser, "Options");
     addOption(parser, ArgParseOption("o", "output", "Output file for SNPs.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "output", ".vcf");
+    setValidValues(parser, "output", VcfFileOut::getFileFormatExtensions());
     setRequired(parser, "output", true);
     addOption(parser, ArgParseOption("b", "bed", "Bed output file for methylation level calls.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "bed", ".bed");
+    setValidValues(parser, "bed", BedFileOut::getFileFormatExtensions());
     setRequired(parser, "bed", true);
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
