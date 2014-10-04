@@ -148,13 +148,13 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // We require ... arguments.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
     setHelpText(parser, 0, "SAM input file containing three-letter read alignments (must be sorted by query names).");
-    setValidValues(parser, 0, ".sam");
+    setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
     setHelpText(parser, 1, "A reference genome file.");
-    setValidValues(parser, 1, ".fa .fasta");
+    setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
     setHelpText(parser, 2, "Either one (single-end) or two (paired-end) read files.");
-    setValidValues(parser, 2, ".fastq .fq");
+    setValidValues(parser, 2, SeqFileIn::getFileFormatExtensions());
 
     addSection(parser, "Options");
     addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
