@@ -30,7 +30,8 @@ endif ()
 # ----------------------------------------------------------------------------
 
 # Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories (${SEQAN_INCLUDE_DIRS})
+include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
