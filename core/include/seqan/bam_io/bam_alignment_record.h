@@ -227,17 +227,17 @@ enum BamFlags
 
 .Memvar.BamAlignmentRecord#INVALID_POS
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel position value.
+..summary:Static member with invalid/sentinel position value (-1).
 ..type:nolink:$__uint32$
 
 .Memvar.BamAlignmentRecord#INVALID_REFID
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel reference id (-1 as in BAM/SAM).
+..summary:Static member with invalid/sentinel reference id (-1).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#INVALID_LEN
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel position value.
+..summary:Static member with invalid/sentinel position value (0 as in BAM/SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#qName
@@ -252,12 +252,12 @@ enum BamFlags
 
 .Memvar.BamAlignmentRecord#rID
 ..class:Class.BamAlignmentRecord
-..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*').
+..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*' in SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#beginPos
 ..class:Class.BamAlignmentRecord
-..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*').
+..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*' in SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#mapQ
