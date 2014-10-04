@@ -186,10 +186,12 @@ int readRecord(BamHeaderRecord & record,
         if (res != 0)
             return res;
         CharString &buffer = context.buffer;
+        clear(buffer);
         res = readLine(buffer, reader);
         if (res != 0)
             return res;
         appendValue(record.tags, Pair<CharString>(CharString(), buffer));
+        return 0;  // done, do not skip line a second time below
     }
     else
     {
