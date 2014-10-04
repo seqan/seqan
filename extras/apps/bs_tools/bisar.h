@@ -271,22 +271,17 @@ writeBsAlignment(seqan::BamFileOut & bamFileOut,
         avgQual = avgQual/(i+1);
     }
 
-    // TODO(holtgrew): Creating a copy of record here such that we can modify it.
-    //                 Previously, the code generated the SAM output manually.
-
-    seqan::BamAlignmentRecord recordCopy(record);
-
     if (store.alignedReadStore[bestId].contigId == TAlignedRead::INVALID_ID)
     {
-        recordCopy.rID = seqan::BamAlignmentRecord::INVALID_REFID;
-        recordCopy.beginPos = -1;
+        record.rID = seqan::BamAlignmentRecord::INVALID_REFID;
+        record.beginPos = -1;
     }
     else
     {
-        recordCopy.rID = store.alignedReadStore[bestId].contigId;
+        record.rID = store.alignedReadStore[bestId].contigId;
     }
 
-    seqan::BamTagsDict tagsDict(recordCopy.tags);
+    seqan::BamTagsDict tagsDict(record.tags);
     setTagValue(tagsDict, "NM", (int)store.alignQualityStore[bestId].errors);
     if (!empty(md))
         setTagValue(tagsDict, "MD", md);
@@ -297,7 +292,7 @@ writeBsAlignment(seqan::BamFileOut & bamFileOut,
     Times::instance().time_writeBsAlignment += (sysTime() - timeStamp);
 #endif
 
-    writeRecord(bamFileOut, recordCopy);
+    writeRecord(bamFileOut, record);
 
     return 0;
 }
