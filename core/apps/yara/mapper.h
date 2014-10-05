@@ -132,7 +132,7 @@ struct MapperTraits
     typedef typename TConfig::TStrategy                             TStrategy;
 //    typedef typename TConfig::TAnchoring                            TAnchoring;
 
-    typedef SeqStore<Nothing>                                       TContigs;
+    typedef SeqStore<void, YaraContigsConfig>                       TContigs;
     typedef typename TContigs::TSeqs                                TContigSeqs;
     typedef typename Value<TContigSeqs>::Type                       TContig;
     typedef typename StringSetPosition<TContigSeqs>::Type           TContigsPos;
@@ -141,7 +141,7 @@ struct MapperTraits
     typedef typename Size<TIndex>::Type                             TIndexSize;
     typedef typename Fibre<TIndex, FibreSA>::Type                   TSA;
 
-    typedef SeqStore<TSequencing>                                   TReads;
+    typedef SeqStore<void, YaraReadsConfig>                         TReads;
     typedef typename If<IsSameType<TSequencing, PairedEnd>,
                         Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
     typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;

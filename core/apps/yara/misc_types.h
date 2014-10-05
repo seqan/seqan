@@ -233,4 +233,22 @@ appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource co
 }
 }
 
+// ----------------------------------------------------------------------------
+// Reads SeqsStore Config
+// ----------------------------------------------------------------------------
+
+typedef SeqConfig<void>         YaraReadsConfig;
+
+// ----------------------------------------------------------------------------
+// Contigs SeqsStore Config
+// ----------------------------------------------------------------------------
+
+struct YaraContigsConfig
+{
+    typedef Dna5                            TAlphabet;
+    typedef Packed<Alloc<> >                TSeqSpec;
+    typedef Owner<ConcatDirect<> >          TSeqsSpec;
+    typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
+};
+
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_
