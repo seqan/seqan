@@ -417,8 +417,10 @@ inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & /* me */, TReadId /
 template <typename TSpec, typename Traits, typename TReadId>
 inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId, PairedEnd)
 {
-    me.record.flag |= BAM_FLAG_NEXT_UNMAPPED;
     me.record.flag |= BAM_FLAG_MULTIPLE;
+
+    if (!isMapped(me.ctx, getMateId(me.reads.seqs, readId)))
+        me.record.flag |= BAM_FLAG_NEXT_UNMAPPED;
 
     if (isFirstMate(me.reads.seqs, readId))
         me.record.flag |= BAM_FLAG_FIRST;
@@ -433,7 +435,6 @@ inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId,
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillMatePosition(MatchesWriter<TSpec, Traits> & me, TMatch const & match, TMatch const & mate)
 {
-    me.record.flag &= ~BAM_FLAG_NEXT_UNMAPPED;
     me.record.flag |= BAM_FLAG_ALL_PROPER;
 
     if (onReverseStrand(mate))
