@@ -48,11 +48,11 @@ using namespace seqan;
 // String Spec
 // ----------------------------------------------------------------------------
 
-//#ifndef YARA_INDEXER
-//typedef MMap<>  YaraStringSpec;
-//#else
+#ifndef YARA_INDEXER
+typedef MMap<>  YaraStringSpec;
+#else
 typedef Alloc<> YaraStringSpec;
-//#endif
+#endif
 
 // ============================================================================
 // Index Types
@@ -239,6 +239,14 @@ appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource co
 
 typedef SeqConfig<void>         YaraReadsConfig;
 
+//struct YaraReadsConfig
+//{
+//    typedef Dna5                    TAlphabet;
+//    typedef Alloc<>                 TSeqSpec;
+//    typedef Owner<ConcatDirect<> >  TSeqsSpec;
+//    typedef Owner<ConcatDirect<> >  TSeqNamesSpec;
+//};
+
 // ----------------------------------------------------------------------------
 // Contigs SeqsStore Config
 // ----------------------------------------------------------------------------
@@ -246,7 +254,7 @@ typedef SeqConfig<void>         YaraReadsConfig;
 struct YaraContigsConfig
 {
     typedef Dna5                            TAlphabet;
-    typedef Packed<Alloc<> >                TSeqSpec;
+    typedef Packed<YaraStringSpec>          TSeqSpec;
     typedef Owner<ConcatDirect<> >          TSeqsSpec;
     typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
 };
