@@ -173,7 +173,8 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file)
+                        SmartFile<Fastq, Input, TSpec> & file,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     typedef typename Value<TSeqStringSet>::Type TSeqString;
     typedef typename Value<TSeqString>::Type TValue;
@@ -185,7 +186,7 @@ inline void readRecords(TIdStringSet & meta,
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
     seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
-    while (!atEnd(file))
+    for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
         readRecord(context(file).buffer[0], seqBuffer, file);
         appendValue(meta, context(file).buffer[0]);
@@ -217,7 +218,8 @@ template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file)
+                        SmartFile<Fastq, Input, TSpec> & file,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     typedef typename Value<TSeqStringSet>::Type TSeqString;
 
@@ -228,7 +230,7 @@ inline void readRecords(TIdStringSet & meta,
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
     std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
 
-    while (!atEnd(file))
+    for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
         readRecord(context(file).buffer[0], seqBuffer, context(file).buffer[2], file);
         appendValue(meta, context(file).buffer[0]);
