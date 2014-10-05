@@ -1,8 +1,7 @@
-
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
@@ -42,35 +42,111 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-class UcscRecord;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class UcscRecord
+// ----------------------------------------------------------------------------
+
 /*!
  * @class UcscRecord
+ * @implements DefaultConstructibleConcept
+ * @implements CopyConstructibleConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/ucsc_io.h>
+ * @brief Represent the information for one UCSC gene annotation record.
+ *
+ * @signature class UcscRecord;
+ *
+ * The UCSC genome browser server allows the download of a set of the known genes and isoforms used in the browser.
+ * These files can be downloaded from the UCSC FTP's <tt>goldenPath</tt> folder, e.g. the one for <a
+ * href="http://hgdownload.cse.ucsc.edu/goldenpath/hg19/">hg19</a>.
+ *
+ * To load the annotations, you need to download both the <tt>knownGenes.txt.gz</tt> and the
+ * <tt>knownIsoforms.txt.gz</tt> files from the UCSC <tt>goldenPath</tt> database.  These files can then be read record
+ * by record into a <tt>UcscRecord</tt>.  This record type is capable of representing records from either file type.
  */
-
-// TODO(holtgrew): Flesh out documentation.
 
 class UcscRecord
 {
 public:
 
-    CharString      transName;
-    CharString      contigName;
-    __int64         cdsBegin;
-    __int64         cdsEnd;
+    /*!
+     * @var CharString UcscRecord::transName
+     * @brief Name of the transcript.
+     */
+    CharString transName;
+
+    /*!
+     * @var CharString UcscRecord::contigName
+     * @brief Name of the contig of the genomic location.
+     */
+    CharString contigName;
+
+    /*!
+     * @var __int64 UcscRecord::cdsBegin
+     * @brief Start of the coding region (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
+     */
+    __int64 cdsBegin;
+
+    /*!
+     * @var __int64 UcscRecord::cdsEnd
+     * @brief End of the coding region, defaults to <tt>-1</tt>.
+     */
+    __int64 cdsEnd;
+
+    /*!
+     * @var CharString UcscRecord::exonBegin
+     * @brief Start of the exon (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
+     */
     String<__int64> exonBegin;
+
+    /*!
+     * @var CharString UcscRecord::exonEnd
+     * @brief End of the exon, defaults to <tt>-1</tt>.
+     */
     String<__int64> exonEnd;
-    CharString      proteinName;
 
-    __uint64        annotationBeginPos;
-    __uint64        annotationEndPos;
+    /*!
+     * @var CharString UcscRecord::proteinName
+     * @brief Name of the coded protein.
+     */
+    CharString proteinName;
 
-    enum {KNOWN_GENE, KNOWN_ISOFORMS} format;
+    /*!
+     * @var __uint64 UcscRecord::annotationBeginPos
+     * @brief Start of the annotation (<tt>0</tt>-based, defaults to <tt>-1</tt>).
+     */
+    __uint64 annotationBeginPos;
+
+    /*!
+     * @var CharString UcscRecord::annotationEndPos
+     * @brief End position of the annotation, defaults to <tt>-1</tt>.
+     */
+    __uint64 annotationEndPos;
+
+    /*!
+     * @enum UcscRecord::Format
+     * @brief Enum for selecting the represented table
+     *
+     * @var UcscRecord::Format KNOWN_GENE
+     * @brief UcscRecord represents record from the <tt>knownGenes.txt.gz</tt>
+     *
+     * @var UcscRecord::Format KNOWN_ISOFORMS
+     * @brief UcscRecord represents record from the <tt>knownIsoforms.txt.gz</tt>
+     */
+    enum Format { KNOWN_GENE, KNOWN_ISOFORMS };
+
+    /*!
+     * @var UcscRecord::Format UcscRecord::format
+     * @brief The records format, defaults to <tt>KNOWN_GENE</tt>.
+     */
+    Format format;
+
+    UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0), format(KNOWN_GENE)
+    {}
 };
 
 // ============================================================================
