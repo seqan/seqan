@@ -374,7 +374,7 @@ inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, SingleEnd)
 template <typename TSpec, typename TConfig>
 inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 {
-    open(me.readsFile, Pair<const char *>(toCString(me.options.readsFile.i1), toCString(me.options.readsFile.i2)));
+    open(me.readsFile, toCString(me.options.readsFile.i1), toCString(me.options.readsFile.i2));
 }
 
 // ----------------------------------------------------------------------------
