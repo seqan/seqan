@@ -48,6 +48,13 @@ class UcscRecord;
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class UcscRecord
+ * @headerfile <seqan/ucsc_io.h>
+ */
+
+// TODO(holtgrew): Flesh out documentation.
+
 class UcscRecord
 {
 public:
@@ -79,18 +86,15 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamAlignmentRecord#clear
- * @brief Clear BamAlignmentRecord.
+ * @fn UcscRecord#clear
+ * @brief Clear UcscRecord.
  *
  * @signature void clear(record);
  *
- * @param record The BamAlignmentRecord to clear.
+ * @param record The UcscRecord to clear.
  *
  * Clears all strings and resets it to default initialization state.
  */
-
-///.Function.clear.param.object.type:Class.BamAlignmentRecord
-///.Function.clear.class:Class.BamAlignmentRecord
 
 inline void clear(UcscRecord & record)
 {

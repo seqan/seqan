@@ -161,7 +161,7 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamStream#jumpToRegion
+ * @fn BamFileIn#jumpToRegion
  * @brief Seek in BamStream using an index.
  *
  * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
@@ -356,7 +356,7 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamStream#jumpToOrphans
+ * @fn BamFileIn#jumpToOrphans
  * @brief Seek to orphans block in BamStream using an index.
  *
  * @signature bool jumpToOrphans(stream, hasAlignments, index);
