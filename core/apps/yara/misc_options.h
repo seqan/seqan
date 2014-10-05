@@ -206,26 +206,4 @@ void setDescription(ArgumentParser & parser)
     addDescription(parser, "(c) Copyright 2013 by NVIDIA Corporation.");
 }
 
-// ----------------------------------------------------------------------------
-// Function setIndexPrefix()
-// ----------------------------------------------------------------------------
-
-void setIndexPrefix(ArgumentParser & parser)
-{
-    addOption(parser, ArgParseOption("xp", "index-prefix", "Specify a filename prefix for the reference genome index. \
-                                     Default: use the filename prefix of the reference genome.", ArgParseOption::INPUTPREFIX));
-}
-
-// ----------------------------------------------------------------------------
-// Function getIndexPrefix()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
-{
-    getOptionValue(options.contigsIndexFile, parser, "index-prefix");
-    if (!isSet(parser, "index-prefix"))
-        options.contigsIndexFile = trimExtension(options.contigsFile);
-}
-
 #endif  // #ifndef APP_YARA_MISC_OPTIONS_H_

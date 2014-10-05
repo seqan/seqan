@@ -116,11 +116,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Displays diagnostic output per batch of reads."));
 
-////     Setup index options.
-//    addSection(parser, "Input Options");
-//
-//    setIndexPrefix(parser);
-
     // Setup output options.
     addSection(parser, "Output Options");
 
@@ -236,9 +231,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.outputSecondary, parser, "output-secondary");
     options.outputHeader = !isSet(parser, "no-header");
     getOptionValue(options.rabema, parser, "output-rabema");
-
-//    // Parse genome index prefix.
-//    getIndexPrefix(options, parser);
 
     // Parse mapping options.
     unsigned errorRate;

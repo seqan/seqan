@@ -127,10 +127,11 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addSection(parser, "Output Options");
 
-    setIndexPrefix(parser);
+    addOption(parser, ArgParseOption("op", "output-prefix", "Specify a filename prefix for the reference genome index. \
+                                     Default: use the filename prefix of the reference genome.", ArgParseOption::OUTPUTPREFIX));
 
-    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a temporary folder where to construct the index. \
-                                     Default: use the reference genome folder.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("td", "tmp-dir", "Specify a temporary directory where to construct the index. \
+                                     Default: use the output directory.", ArgParseOption::STRING));
 }
 
 // ----------------------------------------------------------------------------
@@ -152,14 +153,16 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getArgumentValue(options.contigsFile, parser, 0);
 
     // Parse contigs index prefix.
-    getIndexPrefix(options, parser);
+    getOptionValue(options.contigsIndexFile, parser, "output-prefix");
+    if (!isSet(parser, "output-prefix"))
+        options.contigsIndexFile = trimExtension(options.contigsFile);
 
     // Parse and set temp dir.
-    CharString tmpFolder;
-    getOptionValue(tmpFolder, parser, "tmp-folder");
-    if (!isSet(parser, "tmp-folder"))
-        tmpFolder = getPath(options.contigsFile);
-    setEnv("TMPDIR", tmpFolder);
+    CharString tmpDir;
+    getOptionValue(tmpDir, parser, "tmp-dir");
+    if (!isSet(parser, "tmp-dir"))
+        tmpDir = getPath(options.contigsIndexFile);
+    setEnv("TMPDIR", tmpDir);
 
     return seqan::ArgumentParser::PARSE_OK;
 }
