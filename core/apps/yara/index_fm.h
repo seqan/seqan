@@ -41,7 +41,7 @@
 // ----------------------------------------------------------------------------
 // Function indexRequire()
 // ----------------------------------------------------------------------------
-// This function is overloaded to avoid building the index except for Wotd Dir.
+// This function is overloaded to avoid building the index.
 
 #ifndef YARA_INDEXER
 namespace seqan {
@@ -103,43 +103,43 @@ inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & 
 }
 
 // ----------------------------------------------------------------------------
-// Function assign()                                                  [FMIndex]
+// Function assign()
 // ----------------------------------------------------------------------------
-// This function is overloaded to avoid the text.
-
-namespace seqan {
-template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig, typename TText2, typename TSSetSpec2,
-          typename TOccSpec2, typename TSpec2>
-inline void
-assign(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index,
-       Index<StringSet<TText2, TSSetSpec2>, FMIndex<TOccSpec2, TSpec2> > const & source)
-{
-    assign(indexLF(index), indexLF(source));
-    assign(indexSA(index), indexSA(source));
-
-    // Set the CSA pointer to LF.
-    setFibre(indexSA(index), indexLF(index), FibreLF());
-}
-}
+// This function is overloaded to avoid assigning the text.
+//
+//namespace seqan {
+//template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig, typename TText2, typename TSSetSpec2,
+//          typename TOccSpec2, typename TSpec2>
+//inline void
+//assign(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index,
+//       Index<StringSet<TText2, TSSetSpec2>, FMIndex<TOccSpec2, TSpec2> > const & source)
+//{
+//    assign(indexLF(index), indexLF(source));
+//    assign(indexSA(index), indexSA(source));
+//
+//    // Set the CSA pointer to LF.
+//    setFibre(indexSA(index), indexLF(index), FibreLF());
+//}
+//}
 
 // ----------------------------------------------------------------------------
 // Function view()
 // ----------------------------------------------------------------------------
-// This function is overloaded to avoid the text.
-
-namespace seqan {
-template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
-typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type
-view(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index)
-{
-    typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type indexView;
-
-    indexLF(indexView) = view(indexLF(index));
-    indexSA(indexView) = view(indexSA(index));
-
-    return indexView;
-}
-}
+// This function is overloaded to avoid constructing the view of the text.
+//
+//namespace seqan {
+//template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
+//typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type
+//view(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index)
+//{
+//    typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type indexView;
+//
+//    indexLF(indexView) = view(indexLF(index));
+//    indexSA(indexView) = view(indexSA(index));
+//
+//    return indexView;
+//}
+//}
 
 // ----------------------------------------------------------------------------
 // Function _getNodeByChar()
