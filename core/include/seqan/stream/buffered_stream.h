@@ -41,6 +41,13 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
+class BufferedStreamBuf;
+
+// ============================================================================
 // Tags, Enums
 // ============================================================================
 
@@ -52,9 +59,22 @@ namespace seqan {
 // Classes
 // ============================================================================
 
-template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
-class BufferedStreamBuf;
+// ----------------------------------------------------------------------------
+// Class BufferedStream
+// ----------------------------------------------------------------------------
 
+/*!
+ * @class BufferedStream
+ * @extends BasicStream
+ * @headerfile <seqan/stream.h>
+ * @brief Adds a buffer to another @link StreamConcept stream @endlink.
+ *
+ * @signature template <typename TUnbufferedStream, TDirection>
+ *            class BufferedStream;
+ *
+ * @tparam TUnbufferedStream The type of the unbuffered @link StreamConcept stream @endlink to wrap.
+ * @tparam TDirection        The stream direction, one of @link StreamDirectionTags @endlink.
+ */
 
 template <typename TUnbufferedStream, typename TDirection>
 class BufferedStream :
@@ -72,27 +92,56 @@ protected:
     BufferedStreamBuf<TValue, TDirection, TTraits> buf;
 
 public:
+
+    /*!
+     * @fn BufferedStream::BufferedStream
+     * @brief Default constructor and construction from to-be-wrapped unbuffered stream.
+     *
+     * @signature BufferedStream::BufferedStream();
+     * @signature BufferedStream::BufferedStream(unbufferedStream);
+     *
+     * @param[in] stream The to-be-wrapped stream.
+     */
     BufferedStream() :
         TBasicStream(&buf)
     {}
 
-    explicit
-    BufferedStream(TUnbufferedStream &stream) :
-        TBasicStream(&buf),
-        buf(stream.rdbuf())
+    explicit BufferedStream(TUnbufferedStream & stream) :
+        TBasicStream(&buf), buf(stream.rdbuf())
     {}
 
-    void setStreamBuf(TStreamBuf &streamBuf)
+    /*!
+     * @fn BufferedStream::setStreamBuf
+     * @brief Set the stream buffer of the BufferedStream.
+     *
+     * @signature void BufferedStream::setStreamBuf(streamBuf);
+     *
+     * @param[in] streamBuf The <tt>std::basic_streambuf&lt;&gt;</tt> to use.
+     */
+    void setStreamBuf(TStreamBuf & streamBuf)
     {
         buf.setStreamBuf(streamBuf);
     }
 
-    void setStream(TUnbufferedStream &stream)
+    /*!
+     * @fn BufferedStream::setStream
+     * @brief Set the underlying stream to wrap.
+     *
+     * @signature void BufferedStream::setStream(stream);
+     *
+     * @param[in] stream The <tt>TUnbufferedStream</tt> to use.
+     */
+    void setStream(TUnbufferedStream & stream)
     {
         setStreamBuf(*stream.rdbuf());
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class BufferedStream
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Implementation detail, should thus be called BufferedStreamBuf_ or documented.
 
 template <typename TValue, typename TDirection, typename TTraits>
 class BufferedStreamBuf :

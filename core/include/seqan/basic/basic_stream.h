@@ -106,13 +106,91 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 // Concept StreamConcept
 // --------------------------------------------------------------------------
 
+/*!
+ * @concept StreamConcept
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Base concept for streams.
+ *
+ * @signature concept StreamConcept;
+ */
+
+/*!
+ * @mfn StreamConcept#Value
+ * @brief Metafunction for retrieving atomic value type of a stream.
+ *
+ * @signature Value<TStream>::Type;
+ *
+ * @tparam TStream The stream type to query for its value type.
+ * @return Type    The resulting value type.
+ */
+
+/*!
+ * @mfn StreamConcept#Size
+ * @brief Metafunction for retrieving atomic size type of a stream.
+ *
+ * @signature Size<TStream>::Type;
+ *
+ * @tparam TStream The stream type to query for its size type.
+ * @return Type    The resulting size type.
+ */
+
+/*!
+ * @mfn StreamConcept#Position
+ * @brief Metafunction for retrieving atomic position type of a stream.
+ *
+ * @signature Position<TStream>::Type;
+ *
+ * @tparam TStream The stream type to query for its position type.
+ * @return Type    The resulting position type.
+ */
+
+/*!
+ * @fn StreamConcept#position
+ * @brief Return current stream position.
+ *
+ * @signature TPosition position(stream);
+ *
+ * @param[in] stream The stream to query.
+ * @return TPosition Current position in stream, see @link StreamConcept#Position Position @endlink.
+ */
+
+/*!
+ * @fn StreamConcept#setPosition
+ * @brief Set stream position.
+ *
+ * @signature void setPosition(stream, pos);
+ *
+ * @param[in,out] stream The stream to update
+ * @param[in]     pos    The positoin to set.
+ */
+
+/*!
+ * @fn StreamConcept#atEnd
+ * @brief Return whether stream is at the end.
+ *
+ * @signature bool atEnd(stream);
+ *
+ * @param[in] stream The SmartFile to check.
+ * @return bool <tt>true</tt> if the file at EOF, <tt>false</tt> otherwise.
+ */
+
 SEQAN_CONCEPT(StreamConcept, (TStream))
-{
-};
+{};
 
 // --------------------------------------------------------------------------
 // Concept InputStreamConcept
 // --------------------------------------------------------------------------
+
+/*!
+ * @concept InputStreamConcept Input StreamConcept
+ * @extends StreamConcept
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature concept InputStreamConcept : StreamConcept;
+ *
+ * @brief Concept for input streams (for reading).
+ */
 
 SEQAN_CONCEPT_REFINE(InputStreamConcept, (TStream), (StreamConcept))
 {
@@ -130,6 +208,16 @@ SEQAN_CONCEPT_REFINE(InputStreamConcept, (TStream), (StreamConcept))
 // Concept OutputStreamConcept
 // --------------------------------------------------------------------------
 
+/*!
+ * @concept OutputStreamConcept Output StreamConcept
+ * @extends StreamConcept
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature concept OutputStreamConcept : StreamConcept;
+ *
+ * @brief Concept for output streams (for writing).
+ */
+
 SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
 {
     typedef typename Value<TStream>::Type       TValue;
@@ -146,6 +234,16 @@ SEQAN_CONCEPT_REFINE(OutputStreamConcept, (TStream), (StreamConcept))
 // Concept BidirectionalStreamConcept
 // --------------------------------------------------------------------------
 
+/*!
+ * @concept BidirectionalStreamConcept Bidirectional StreamConcept
+ * @extends StreamConcept
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature concept BidirectionalStreamConcept : StreamConcept;
+ *
+ * @brief Concept for bidirectional streams (both for reading and writing).
+ */
+
 SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)(OutputStreamConcept))
 {};
 
@@ -157,15 +255,42 @@ SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)
 // Struct FormattedNumber
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class FormattedNumber
+ * @implements NumberConcept
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Helper class for storing a numeric value together with a
+ *        <a href="http://www.cplusplus.com/reference/cstdio/printf/">printf format string</a>.
+ *
+ * @signature template <typename TValue>
+ *            struct FormattedNumber;
+ *
+ * @tparam The numeric value type.
+ */
+
 template <typename TValue>
 struct FormattedNumber
 {
-    char const *format;
+    char const * format;
     TValue value;
 
-    FormattedNumber(char const *format, TValue const &value) :
-        format(format),
-        value(value)
+    /*!
+     * @fn FormattedNumber::FormattedNumber
+     * @brief Constructor.
+     *
+     * @signature FormattedNumber::FormattedNumber(format, value);
+     *
+     * @param[in] format A <tt>char const *</tt> for the format string.
+     * @param[in] value  The <tt>TValue</tt> to store.
+     *
+     * The constructed FormattedNumber object store the <tt>format</tt> pointer "as is".  This means that you are
+     * responsible for keeping this pointer valid until the object is deconstructed.  Passing in a C string literal
+     * (as in <tt>FormattedNumber&lt;double&gt;("%.2f", 1.234)</tt> is fine.
+     */
+
+    FormattedNumber(char const * format, TValue const & value) :
+        format(format), value(value)
     {}
 
     operator TValue() const
@@ -186,10 +311,30 @@ struct Is< NumberConcept< FormattedNumber<TValue> > > :
 // Exception ParseError
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class ParseError
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Exception class for parser errors.
+ *
+ * @signature struct ParserError : RuntimeError;
+ */
+
 struct ParseError : RuntimeError
 {
+    /*!
+     * @fn ParseError::ParseError
+     * @headerfile <seqan/basic.h>
+     *
+     * @brief Constructor.
+     *
+     * @signature ParseError::ParseError(message);
+     *
+     * @param[in] message The error message to use, <tt>std::string</tt> or <tt>char const * </tt>.
+     */
+
     template <typename TString>
-    ParseError(TString const &message):
+    ParseError(TString const & message) :
         RuntimeError(message)
     {}
 };
@@ -198,9 +343,27 @@ struct ParseError : RuntimeError
 // Exception UnexpectedEnd
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class UnexpectedEnd
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Exception class for "unexpected end of input" errors.
+ *
+ * @signature struct UnexpectedEnd : RuntimeError;
+ */
+
 struct UnexpectedEnd : ParseError
 {
-    UnexpectedEnd():
+    /*!
+     * @fn UnexpectedEnd::UnexpectedEnd
+     * @headerfile <seqan/basic.h>
+     *
+     * @brief Default constructor, makes the object use a default message.
+     *
+     * @signature UnexpectedEnd::UnexpectedEnd();
+     */
+
+    UnexpectedEnd() :
         ParseError("Unexpected end of input.")
     {}
 };
@@ -209,8 +372,28 @@ struct UnexpectedEnd : ParseError
 // Exception EmptyFieldError
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class EmptyFieldError
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Exception class for "empty field" errors.
+ *
+ * @signature struct EmptyFieldError : RuntimeError;
+ */
+
 struct EmptyFieldError : ParseError
 {
+    /*!
+     * @fn EmptyFieldError::EmptyFieldError
+     * @headerfile <seqan/basic.h>
+     *
+     * @brief Construct the exception with <tt>fieldName + " field was empty."</tt>.
+     *
+     * @signature EmptyFieldEror::EmptyFieldError(fieldName);
+     *
+     * @param[in] fieldName The field name to use for the message, <tt>std::string</tt>.
+     */
+
     EmptyFieldError(std::string fieldName):
         ParseError(fieldName + " field was empty.")
     {}
@@ -224,6 +407,16 @@ struct EmptyFieldError : ParseError
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn StreamConcept#DirectionIterator
+ * @brief Return the direction iterator for the given direction.
+ *
+ * @signature DirectionIterator<TStream>::Type;
+ *
+ * @tparam TStream The stream to query for its direction iterator.
+ * @result Type    The resulting direction iterator.
+ */
+
 template <typename TObject, typename TDirection>
 struct DirectionIterator :
     If<Is<StreamConcept<TObject> >,
@@ -234,6 +427,22 @@ struct DirectionIterator :
 // --------------------------------------------------------------------------
 // Metafunction BasicStream
 // --------------------------------------------------------------------------
+
+/*!
+ * @class BasicStream
+ * @implements StreamConcept
+ * @brief Base class for reading from and writing to files.
+ *
+ * @signature template <typename TValue, typename TDirection[, typename TTraits]>
+ *            struct BasicStream;
+ *
+ * @tparam TValue     The atomic value type of the stream.
+ * @tparam TDirection The direction of the stream, one of the @link DirectionTags @endlink.
+ * @tparam TTraits    The traits to use for the atomic values, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
+ *
+ * In the current implementation, <tt>BasicStream</tt> inherits from <tt>std::basic_istream</tt>,
+ * <tt>std::basic_ostream</tt>, or <tt>std::basic_iostream</tt>, depending on the selected <tt>TDirection</tt>.
+ */
 
 template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
 struct BasicStream :
@@ -251,6 +460,18 @@ struct BasicStream :
 // --------------------------------------------------------------------------
 // Metafunction IosOpenMode
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn IosOpenMode
+ * @headerfile <seqan/basic.h>
+ * @brief Return the <tt>std::ios</tt> open mode for a direction.
+ *
+ * @signature IosOpenMode<TDirection[, TDummy]>::Type;
+ *
+ * @tparam TDirection The direction to query for the open mode, one of the @link DirectionTags @endlink.
+ * @tparam TDummy     Implementation detail, defaults to <tt>void</tt> and is ignored.
+ * @return Type       The resulting open mode of type <tt>const int</tt>.
+ */
 
 template <typename TDirection, typename TDummy = void>
 struct IosOpenMode;
@@ -274,7 +495,6 @@ struct IosOpenMode<Bidirectional, TDummy>
     static const int VALUE;
 };
 
-
 template <typename TDummy>
 const int IosOpenMode<Input, TDummy>::VALUE = std::ios::in;
 
@@ -288,6 +508,23 @@ const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::o
 // --------------------------------------------------------------------------
 // Metafunction MagicHeader
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn MagicHeader
+ * @headerfile <seqan/basic.h>
+ * @brief Returns the magic header for a file format tag.
+ *
+ * The magic header is used for recognizing files from the first few bytes.
+ *
+ * @signature MagicHeader<TTag[, TDummy]>::VALUE;
+ *
+ * @tparam TTag   The file format tag to use for the query.
+ * @tparam TDummy Implementation detail, defaults to <tt>void</tt> and is ignored.
+ * @return VALUE  The magic header string, of type <tt>char const *</tt>.
+ *
+ * This metafunction must be implemented in the modules implementing the file I/O.  The metafunction is predefined when
+ * <tt>TTag</tt> is @link Nothing @endlink.  In this case, <tt>VALUE</tt> is <tt>NULL</tt>.
+ */
 
 template <typename TTag, typename T = void>
 struct MagicHeader;
@@ -305,6 +542,21 @@ char const * MagicHeader<Nothing, T>::VALUE = NULL;
 // Metafunction FileFormatExtensions
 // --------------------------------------------------------------------------
 
+/*!
+ * @mfn FileFormatExtensions
+ * @headerfile <seqan/basic.h>
+ * @brief Returns an array of file format extension strings for file foramt tag.
+ *
+ * @signature FileFormatExtensions<TFormat[, TDummy]>::VALUE;
+ *
+ * @tparam TTag   The file format tag to use for the query.
+ * @tparam TDummy Implementation detail, defaults to <tt>void</tt> and is ignored.
+ * @return VALUE  The array of file format extension, of type <tt>char const *[]</tt>.
+ *
+ * This metafunction must be implemented in the modules implementing the file I/O.  The metafunction is predefined when
+ * <tt>TTag</tt> is @link Nothing @endlink.  In this case, <tt>VALUE</tt> is <tt>{""}</tt>.
+ */
+
 // TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
 template <typename TFormat, typename T = void>
 struct FileFormatExtensions;
@@ -318,8 +570,8 @@ struct FileFormatExtensions<Nothing, T>
 template <typename T>
 char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
 {
-    ""
-};              // default output extension
+    ""  // default output extension
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction IntegerFormatString_
@@ -399,8 +651,18 @@ const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function writeValue()
+// Function writeValue()                                     [ContainerConcept]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ContainerConcept#writeValue
+ * @brief Allow to append to a container just like writing to a @link StreamConcept stream @endlink.
+ *
+ * @signature void writeValue(container, val);
+ *
+ * @param[in,out] container to append to.
+ * @param[in]     val       The value to append.
+ */
 
 // resizable containers
 template <typename TSequence, typename TValue>
@@ -409,6 +671,23 @@ writeValue(TSequence &cont, TValue val)
 {
     appendValue(cont, val);
 }
+
+// ----------------------------------------------------------------------------
+// Function writeValue()                                                [Range]
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Range#writeValue
+ * @brief Allow to write to a Range just like writing to a @link StreamConcept stream @endlink.
+ *
+ * @signature void writeValue(range, val);
+ *
+ * <tt>val</tt> will be assigned to the first element of the range.  Then, the beginning of the range will be advanced
+ * by one.
+ *
+ * @param[in,out] range to append to.
+ * @param[in]     val   The value to append.
+ */
 
 // Range
 template <typename TIterator, typename TValue>
@@ -420,13 +699,26 @@ writeValue(Range<TIterator> &range, TValue val)
 }
 
 // ----------------------------------------------------------------------------
-// Function writeValue(Iter)
+// Function writeValue()                                                 [Iter]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Iter#writeValue
+ * @brief Allows writing single values to iterators.
+ *
+ * @signature void writeValue(iter, val);
+ *
+ * @param[in,out] iter The iterator to write to.
+ * @param[in]     val  The value to write the to the iterator.
+ *
+ * If the host of <tt>iter</tt> is a @link ContainerConcept @endlink then container is resized to make space for the
+ * item.
+ */
 
 // resizable containers
 template <typename TSequence, typename TSpec, typename TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
-writeValue(Iter<TSequence, TSpec> &iter, TValue val)
+writeValue(Iter<TSequence, TSpec> & iter, TValue val)
 {
     typedef Iter<TSequence, TSpec> TIter;
 
@@ -451,7 +743,7 @@ writeValue(Iter<TSequence, TSpec> &iter, TValue val)
 // non-resizable containers
 template <typename TNoSequence, typename TSpec, typename TValue>
 inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<TNoSequence> >, void)
-writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
+writeValue(Iter<TNoSequence, TSpec> & iter, TValue val)
 {
     SEQAN_ASSERT_LT(position(iter), length(container(iter)));
 
@@ -459,9 +751,32 @@ writeValue(Iter<TNoSequence, TSpec> &iter, TValue val)
     ++iter;
 }
 
+// ----------------------------------------------------------------------------
+// Function writeValue()                                              [pointer]
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Introduce @adaption dox type.
+
+/*!
+ * @class PointerToBidirectionalDirectionIteratorAdaption Pointer adaption to bidirectional iterator.
+ * @brief Allows to use plain pointers just like bidirectional iterators.
+ */
+
+/*!
+ * @fn PointerToBidirectionalDirectionIteratorAdaption#writeValue
+ * @brief Allows to use pointers for reading and writing just as from bidirectional direction iterators.
+ *
+ * @signature void writeValue(pointer, val);
+ *
+ * @param[in,out] iter The pointer to write to, usually a <tt>char *</tt>.
+ * @param[in]     val  The value to write the to the pointer's value.
+ *
+ * This function is equivalent to <tt>*iter++ = val</tt>.
+ */
+
 template <typename TTargetValue, typename TValue>
 inline void
-writeValue(TTargetValue * &iter, TValue val)
+writeValue(TTargetValue * & iter, TValue val)
 {
     *iter++ = val;
 }
@@ -649,6 +964,23 @@ write(TOValue * &optr, TIValue *iptr, TSize n)
 // ----------------------------------------------------------------------------
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Why is TSize required to be an integer and not simply size_t here?
+// TODO(holtgrew): A lot of overloads for this function are undocumented. What can be written to? ForwardIteratorConcept?
+// TODO(holtgrew): Everything below is undocumented.
+
+/*!
+ * @fn ContainerConcept#write
+ * @brief Allows writing to containers, just as writing with @link Iter#write @endlink.
+ *
+ * @signature void write(container, iter, n);
+ *
+ * @param[in,out] container The container to append to.
+ * @param[in,out] iter      The @link ForwardIteratorConcept forward iterator @endlink to take the values from.
+ * @param[in]     n         Number of elements to write from <tt>iter</tt>.
+ *
+ * This function reads <tt>n</tt> values from <tt>iter</tt> and appends them to the back of <tt>container</tt>.
+ */
 
 //TODO(singer): Enable this!
 template <typename TTarget, typename TFwdIterator, typename TSize>

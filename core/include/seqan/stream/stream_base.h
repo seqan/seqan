@@ -51,11 +51,42 @@ namespace seqan {
 // Compression Type Tags
 // --------------------------------------------------------------------------
 
+/*!
+ * @defgroup FileCompressionTags File Compression Tags
+ * @brief Tags for describing file compression formats.
+ */
+
+/*!
+ * @tag FileCompressionTags#GZFile
+ * @headerfile <seqan/stream.h>
+ * @brief File compression using the popular <a href="http://gzip.org">gzip</a> format.
+ * @signature typedef Tag<GZFile_> GZFile;
+ */
+
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
 
+/*!
+ * @tag FileCompressionTags#BgzFile
+ * @headerfile <seqan/stream.h>
+ * @signature typedef Tag<BgzfFile_> BgzfFile;
+ * @brief File compression using the BGZF (Block GZip Format).
+ *
+ * The file format is described in the <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">SAM file format
+ * description</a>.
+ */
+
 struct BgzfFile_;
 typedef Tag<BgzfFile_> BgzfFile;
+
+/*!
+ * @tag FileCompressionTags#BZ2File
+ * @headerfile <seqan/stream.h>
+ *
+ * @brief File compression using the popular <a href="http://bzip.org">bzip2</a> format.
+ *
+ * @signature typedef Tag<BZ2File_> BZ2File;
+ */
 
 struct BZ2File_;
 typedef Tag<BZ2File_> BZ2File;
