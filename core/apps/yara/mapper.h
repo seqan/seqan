@@ -51,7 +51,6 @@ struct Options
     typedef std::string             TString;
     typedef std::vector<TString>    TList;
 
-    CharString          contigsFile;
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
     CharString          outputFile;
@@ -128,38 +127,34 @@ struct ReadMapperConfig
 template <typename TSpec, typename TConfig>
 struct MapperTraits
 {
-    typedef typename TConfig::TExecSpace                            TExecSpace;
     typedef typename TConfig::TThreading                            TThreading;
-    typedef typename TConfig::TOutputFormat                         TOutputFormat;
     typedef typename TConfig::TSequencing                           TSequencing;
     typedef typename TConfig::TStrategy                             TStrategy;
 //    typedef typename TConfig::TAnchoring                            TAnchoring;
 
-    typedef Contigs<void, TConfig>                                  TContigs;
-    typedef typename TContigs::TContigSeqs                          TContigSeqs;
+    typedef SeqStore<Nothing>                                       TContigs;
+    typedef typename TContigs::TSeqs                                TContigSeqs;
     typedef typename Value<TContigSeqs>::Type                       TContig;
     typedef typename StringSetPosition<TContigSeqs>::Type           TContigsPos;
 
-    typedef Index<YaraContigsFM, YaraIndexSpec>                     THostIndex;
-    typedef typename Space<THostIndex, TExecSpace>::Type            TIndex;
+    typedef Index<YaraContigsFM, YaraIndexSpec>                     TIndex;
     typedef typename Size<TIndex>::Type                             TIndexSize;
     typedef typename Fibre<TIndex, FibreSA>::Type                   TSA;
 
-    typedef Reads<TSequencing, TConfig>                             TReads;
-    typedef Pair<TReads>                                            TReadsBuckets;
-    typedef ReadsLoader<TSequencing, TConfig>                       TReadsLoader;
-    typedef LoadReadsWorker<TSequencing, TConfig>                   TLoadReadsWorker;
-    typedef Thread<TLoadReadsWorker>                                TReadsLoaderThread;
-    typedef typename TReads::TReadSeqs                              THostReadSeqs;
-    typedef typename Space<THostReadSeqs, TExecSpace>::Type         TReadSeqs;
+    typedef SeqStore<TSequencing>                                   TReads;
+
+    typedef typename If<IsSameType<TSequencing, PairedEnd>, Pair<SeqFileIn>, SeqFileIn>::Type TReadsFiles;
+    typedef PrefetchedFile<TReadsFiles, TReads, TThreading>         TPrefetchedReads;
+
+    typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
     typedef typename Size<TReadSeqs>::Type                          TReadSeqsSize;
     typedef String<TReadSeqsSize>                                   TSeedsCount;
 
-    typedef typename TContigs::TContigNames                         TContigNames;
-    typedef typename TContigs::TContigNamesCache                    TContigNamesCache;
-    typedef Stream<FileStream<File<MMap<> > > >                     TOutputStream;
-    typedef BamIOContext<TContigNames, TContigNamesCache>           TOutputContext;
+//    typedef typename TContigs::TSeqNames                            TContigNames;
+//    typedef typename TContigs::TSeqNamesCache                       TContigNamesCache;
+//    typedef Stream<FileStream<File<MMap<> > > >                     TOutputStream;
+//    typedef BamIOContext<TContigNames, TContigNamesCache>           TOutputContext;
 
     typedef ReadsContext<TSpec, TConfig>                            TReadsContext;
 
@@ -192,7 +187,7 @@ struct MapperTraits
 template <typename TValue>
 struct Stats
 {
-    TValue loadGenome;
+    TValue loadContigs;
     TValue loadReads;
     TValue collectSeeds;
     TValue findSeeds;
@@ -210,7 +205,7 @@ struct Stats
     unsigned long pairedReads;
 
     Stats() :
-        loadGenome(0),
+        loadContigs(0),
         loadReads(0),
         collectSeeds(0),
         findSeeds(0),
@@ -243,14 +238,11 @@ struct Mapper
 
     typename Traits::TContigs           contigs;
     typename Traits::TIndex             index;
-    typename Traits::TReadsBuckets      readsBuckets;
     typename Traits::TReads *           reads;
-    typename Traits::TReadsLoader       readsLoader;
-    typename Traits::TLoadReadsWorker   loadReadsWorker;
-    typename Traits::TReadsLoaderThread readsLoaderThread;
 
-    typename Traits::TOutputStream      outputStream;
-    typename Traits::TOutputContext     outputCtx;
+    typename Traits::TPrefetchedReads   readsFile;
+    BamFileOut                          outputFile;
+//    typename Traits::TOutputContext     outputCtx;
 
     typename Traits::TReadsContext      ctx;
     typename Traits::TSeedsBuckets      seeds;
@@ -268,11 +260,8 @@ struct Mapper
 
     Mapper(Options const & options) :
         options(options),
-        readsBuckets(),
-        reads(&readsBuckets.i1),
-        loadReadsWorker(&readsBuckets.i2, readsLoader, options.readsCount),
-        readsLoaderThread(loadReadsWorker),
-        outputCtx(contigs.names, contigs.namesCache)
+        readsFile(options.readsCount)
+//        outputCtx(contigs.names, contigs.namesCache)
     {};
 };
 
@@ -319,11 +308,11 @@ inline void configureThreads(Mapper<TSpec, TConfig> & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function loadGenome()
+// Function loadContigs()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig>
-inline void loadGenome(Mapper<TSpec, TConfig> & me)
+inline void loadContigs(Mapper<TSpec, TConfig> & me)
 {
     start(me.timer);
     try
@@ -336,18 +325,18 @@ inline void loadGenome(Mapper<TSpec, TConfig> & me)
         throw RuntimeError("Insufficient memory to load the reference.");
     }
     stop(me.timer);
-    me.stats.loadGenome += getValue(me.timer);
+    me.stats.loadContigs += getValue(me.timer);
 
     if (me.options.verbose > 1)
         std::cout << "Loading reference:\t\t\t" << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
-// Function loadGenomeIndex()
+// Function loadContigsIndex()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig>
-inline void loadGenomeIndex(Mapper<TSpec, TConfig> & me)
+inline void loadContigsIndex(Mapper<TSpec, TConfig> & me)
 {
     start(me.timer);
     try
@@ -360,7 +349,7 @@ inline void loadGenomeIndex(Mapper<TSpec, TConfig> & me)
         throw RuntimeError("Insufficient memory to load the reference index.");
     }
     stop(me.timer);
-    me.stats.loadGenome += getValue(me.timer);
+    me.stats.loadContigs += getValue(me.timer);
 
     if (me.options.verbose > 1)
         std::cout << "Loading reference index:\t\t" << me.timer << std::endl;
@@ -374,22 +363,28 @@ template <typename TSpec, typename TConfig>
 inline void openReads(Mapper<TSpec, TConfig> & me)
 {
     _openReadsImpl(me, typename TConfig::TSequencing());
-
-    // Preload one batch of reads.
-    if (IsSameType<typename TConfig::TThreading, Parallel>::VALUE)
-        run(me.readsLoaderThread);
-}
-
-template <typename TSpec, typename TConfig, typename TSequencing>
-inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, TSequencing const & /*tag */)
-{
-    open(me.readsLoader, me.options.readsFile);
 }
 
 template <typename TSpec, typename TConfig>
-inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, SingleEnd const & /* tag */)
+inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, SingleEnd)
 {
-    open(me.readsLoader, me.options.readsFile.i1);
+    open(me.readsFile, toCString(me.options.readsFile.i1));
+}
+
+template <typename TSpec, typename TConfig>
+inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
+{
+    open(me.readsFile, Pair<const char *>(toCString(me.options.readsFile.i1), toCString(me.options.readsFile.i2)));
+}
+
+// ----------------------------------------------------------------------------
+// Function closeReads()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig>
+inline void closeReads(Mapper<TSpec, TConfig> & me)
+{
+    close(me.readsFile);
 }
 
 // ----------------------------------------------------------------------------
@@ -402,19 +397,8 @@ inline void loadReads(Mapper<TSpec, TConfig> & me)
 {
     start(me.timer);
 
-    if (IsSameType<typename TConfig::TThreading, Parallel>::VALUE)
-    {
-        // Wait next batch of reads.
-        waitFor(me.readsLoaderThread);
-
-        // Make next batch of reads the current one.
-        std::swap(me.reads, me.readsLoaderThread.worker.reads);
-    }
-    else
-    {
-        // Sync load.
-        load(value(me.reads), me.readsLoader, me.options.readsCount);
-    }
+//    readRecords(me.reads, me.readsFile);
+    me.reads = getRecords(me.readsFile);
 
     if (maxLength(me.reads->seqs, typename TConfig::TThreading()) > MemberLimits<Match<void>, ReadSize>::VALUE)
         throw RuntimeError("Maximum read length exceeded.");
@@ -432,10 +416,6 @@ inline void loadReads(Mapper<TSpec, TConfig> & me)
         std::cout << "Loading reads:\t\t\t" << me.timer << std::endl;
         std::cout << "Reads count:\t\t\t" << getReadsCount(me.reads->seqs) << std::endl;
     }
-
-    // Preload next batch of reads.
-    if (IsSameType<typename TConfig::TThreading, Parallel>::VALUE)
-        run(me.readsLoaderThread);
 }
 
 // ----------------------------------------------------------------------------
@@ -449,15 +429,13 @@ inline void clearReads(Mapper<TSpec, TConfig> & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function initOutput()
+// Function openOutputFile()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig>
-inline void initOutput(Mapper<TSpec, TConfig> & me)
+inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 {
-    typedef MapperTraits<TSpec, TConfig>            TTraits;
-
-    if (!open(me.outputStream, toCString(me.options.outputFile), OPEN_RDWR | OPEN_CREATE))
+    if (!open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE))
         throw RuntimeError("Error while opening output file.");
 
     if (me.options.outputHeader)
@@ -465,11 +443,21 @@ inline void initOutput(Mapper<TSpec, TConfig> & me)
         BamHeader header;
 
         // Fill header.
-        fillHeader(header, me.options, me.contigs.seqs, me.contigs.names);
+//        fillHeader(header, me.options, me.contigs.seqs, me.contigs.names);
 
-        // Write header to stream.
-        write2(me.outputStream, header, me.outputCtx, typename TTraits::TOutputFormat());
+        // Write header.
+        writeRecord(me.outputFile, header);
     }
+}
+
+// ----------------------------------------------------------------------------
+// Function closeOutputFile()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig>
+inline void closeOutputFile(Mapper<TSpec, TConfig> & me)
+{
+    close(me.outputFile);
 }
 
 // ----------------------------------------------------------------------------
@@ -781,9 +769,9 @@ inline void clearMatches(Mapper<TSpec, TConfig> & me)
     clear(me.matchesSet);
     clear(me.bestMatchesSet);
     clear(me.suboptimalMatchesSet);
+
     clear(me.matches);
     shrinkToFit(me.matches);
-
     clear(me.primaryMatches);
     shrinkToFit(me.primaryMatches);
 }
@@ -940,19 +928,19 @@ inline void clearAlignments(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void writeMatches(Mapper<TSpec, TConfig> & me)
 {
-    typedef MapperTraits<TSpec, TConfig>        TTraits;
-    typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
-
-    start(me.timer);
-    TMatchesWriter writer(me.outputStream, me.outputCtx,
-                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
-                          me.ctx, me.contigs, value(me.reads),
-                          me.options);
-    stop(me.timer);
-    me.stats.writeMatches += getValue(me.timer);
-
-    if (me.options.verbose > 1)
-        std::cout << "Output time:\t\t\t" << me.timer << std::endl;
+//    typedef MapperTraits<TSpec, TConfig>        TTraits;
+//    typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
+//
+//    start(me.timer);
+//    TMatchesWriter writer(me.outputStream, me.outputCtx,
+//                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
+//                          me.ctx, me.contigs, value(me.reads),
+//                          me.options);
+//    stop(me.timer);
+//    me.stats.writeMatches += getValue(me.timer);
+//
+//    if (me.options.verbose > 1)
+//        std::cout << "Output time:\t\t\t" << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1043,7 +1031,7 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
         collectSeeds<2>(me, readSeqs);
         findSeeds<2>(me, 2);
         rankSeeds(me);
-    // TODO(esiragusa): filter out hits with distance < 2.
+        // TODO(esiragusa): filter out hits with distance < 2.
         extendHits<2>(me, 2);
         clearHits(me);
         clearSeeds(me);
@@ -1070,7 +1058,7 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     TValue total = getValue(timer) / 100.0;
 
     std::cout << "Total time:\t\t\t" << getValue(timer) << " sec" << std::endl;
-    std::cout << "Genome loading time:\t\t" << me.stats.loadGenome << " sec" << "\t\t" << me.stats.loadGenome / total << " %" << std::endl;
+    std::cout << "Genome loading time:\t\t" << me.stats.loadContigs << " sec" << "\t\t" << me.stats.loadContigs / total << " %" << std::endl;
     std::cout << "Reads loading time:\t\t" << me.stats.loadReads << " sec" << "\t\t" << me.stats.loadReads / total << " %" << std::endl;
     std::cout << "Seeding time:\t\t\t" << me.stats.collectSeeds << " sec" << "\t\t" << me.stats.collectSeeds / total << " %" << std::endl;
     std::cout << "Filtering time:\t\t\t" << me.stats.findSeeds << " sec" << "\t\t" << me.stats.findSeeds / total << " %" << std::endl;
@@ -1109,14 +1097,12 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 
     if (me.options.verbose > 1) printRuler(std::cout);
 
-    loadGenome(me);
-    loadGenomeIndex(me);
+    loadContigs(me);
+    loadContigsIndex(me);
 
-    // Open reads file.
+    // Open output file and write header.
+    openOutputFile(me);
     openReads(me);
-
-    // Open and init output file.
-    initOutput(me);
 
     // Process reads in blocks.
     while (true)
@@ -1128,11 +1114,8 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
         clearReads(me);
     }
 
-    // Close output file.
-    close(me.outputStream);
-
-    // Close reads file.
-    close(me.readsLoader);
+    closeReads(me);
+    closeOutputFile(me);
 
     stop(timer);
 

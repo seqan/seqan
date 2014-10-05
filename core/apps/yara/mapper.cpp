@@ -80,7 +80,7 @@ struct Options;
 #include "mapper_verifier.h"
 #include "mapper_selector.h"
 #include "mapper_aligner.h"
-#include "mapper_writer.h"
+//#include "mapper_writer.h"
 #include "mapper.h"
 
 using namespace seqan;
@@ -116,10 +116,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Displays diagnostic output per batch of reads."));
 
-    // Setup index options.
-    addSection(parser, "Input Options");
-
-    setIndexPrefix(parser);
+////     Setup index options.
+//    addSection(parser, "Input Options");
+//
+//    setIndexPrefix(parser);
 
     // Setup output options.
     addSection(parser, "Output Options");
@@ -204,8 +204,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     if (res != ArgumentParser::PARSE_OK)
         return res;
 
-    // Parse genome input file.
-    getArgumentValue(options.contigsFile, parser, 0);
+    // Parse indexed genome input file.
+    getArgumentValue(options.contigsIndexFile, parser, 0);
 
     // Parse read input files.
     switch (getArgumentValueCount(parser, 1))
@@ -237,8 +237,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     options.outputHeader = !isSet(parser, "no-header");
     getOptionValue(options.rabema, parser, "output-rabema");
 
-    // Parse genome index prefix.
-    getIndexPrefix(options, parser);
+//    // Parse genome index prefix.
+//    getIndexPrefix(options, parser);
 
     // Parse mapping options.
     unsigned errorRate;
