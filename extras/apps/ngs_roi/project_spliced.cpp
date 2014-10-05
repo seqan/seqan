@@ -143,9 +143,9 @@ void ProjectSplicedRoi::updateRanges(seqan::GffRecord const & record)
 {
     // Get group name (possibly comma separated list).
     seqan::CharString groupNames;
-    for (unsigned i = 0; i < length(record.tagName); ++i)
-        if (record.tagName[i] == groupBy)
-            groupNames = record.tagValue[i];
+    for (unsigned i = 0; i < length(record.tagNames); ++i)
+        if (record.tagNames[i] == groupBy)
+            groupNames = record.tagValues[i];
     if (empty(groupNames))
         return;  // Record has no group names.
 
@@ -182,10 +182,10 @@ void ProjectSplicedRoi::pushGff(seqan::GffRecord const & record)
     gffRecords.push_back(record);
     // Get string set of group names for the record.
     seqan::StringSet<seqan::CharString> groups;
-    for (unsigned i = 0; i < length(record.tagName); ++i)
-        if (record.tagName[i] == groupBy)
+    for (unsigned i = 0; i < length(record.tagNames); ++i)
+        if (record.tagNames[i] == groupBy)
         {
-            strSplit(groups, record.tagValue[i], seqan::EqualsChar<','>());
+            strSplit(groups, record.tagValues[i], seqan::EqualsChar<','>());
             break;
         }
     gffGroups.push_back(groups);
