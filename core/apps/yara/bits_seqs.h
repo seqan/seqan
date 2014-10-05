@@ -43,6 +43,243 @@
 #include <seqan/seq_io.h>
 #include <seqan/random.h>
 
+
+namespace seqan {
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, Pair<const char *> const & fileName)
+{
+    return open(me.i1, fileName.i1) && open(me.i2, fileName.i2);
+}
+
+// ----------------------------------------------------------------------------
+// Function close()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline void close(Pair<SmartFile<TFileType, TDirection, TSpec> > & me)
+{
+    close(me.i1);
+    close(me.i2);
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline bool atEnd(Pair<SmartFile<TFileType, TDirection, TSpec> > const & me)
+{
+    return atEnd(me.i1) || atEnd(me.i2);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords()
+// ----------------------------------------------------------------------------
+
+template <typename TRecords, typename TFileType, typename TDirection, typename TSpec>
+inline void readRecords(TRecords & records,
+                        Pair<SmartFile<TFileType, TDirection, TSpec> > & me,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+{
+    readRecords(records, me.i1, maxRecords);
+    readRecords(records, me.i2, maxRecords);
+}
+
+// ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class PrefetchedFile<Serial>
+// ----------------------------------------------------------------------------
+// Serial implies no prefetching.
+
+template <typename TFile, typename TRecords, typename TThreading = Serial>
+struct PrefetchedFile
+{
+    TFile       file;
+    TRecords    records;
+    __uint64    maxRecords;
+
+    PrefetchedFile() :
+        file(),
+        records(),
+        maxRecords()
+    {}
+
+    PrefetchedFile(__uint64 maxRecords) :
+        file(),
+        records(),
+        maxRecords(maxRecords)
+    {}
+
+    void operator()()
+    {
+        readRecords(_toParameter(records), file, maxRecords);
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Class PrefetchedFile<Parallel>
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+struct PrefetchedFile<TFile, TRecords, Parallel>
+{
+    typedef PrefetchedFile<TFile, TRecords *, Serial> TWorker;
+
+    Pair<TRecords>      recordsQueue;
+    TRecords *          records;
+    TWorker             _worker;
+    Thread<TWorker>     reader;
+
+    PrefetchedFile(__uint64 maxRecords) :
+        records(&recordsQueue.i1),
+        _worker(maxRecords),
+        reader(_worker)
+    {
+        reader.worker.records = &recordsQueue.i2;
+    }
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function open<Serial>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords, typename TThreading>
+inline bool open(PrefetchedFile<TFile, TRecords, TThreading> & me, const char * fileName)
+{
+    return open(me.file, fileName);
+}
+
+// ----------------------------------------------------------------------------
+// Function open<Parallel>()
+// ----------------------------------------------------------------------------
+// Prefetches the first batch of records.
+
+template <typename TFile, typename TRecords>
+inline bool open(PrefetchedFile<TFile, TRecords, Parallel> & me, const char * fileName)
+{
+    bool status = open(me.reader.worker, fileName);
+    run(me.reader);
+    return status;
+}
+
+// ----------------------------------------------------------------------------
+// Function open<Pair<TFile>, Serial>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords, typename TThreading>
+inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, Pair<const char *> const & fileName)
+{
+    return open(me.file, fileName);
+}
+
+// ----------------------------------------------------------------------------
+// Function open<Pair<TFile>, Parallel>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, Pair<const char *> const & fileName)
+{
+    bool status = open(me.reader.worker, fileName);
+    run(me.reader);
+    return status;
+}
+
+// ----------------------------------------------------------------------------
+// Function close<Serial>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords, typename TThreading>
+inline void close(PrefetchedFile<TFile, TRecords, TThreading> & me)
+{
+    close(me.file);
+}
+
+// ----------------------------------------------------------------------------
+// Function close<Parallel>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+inline void close(PrefetchedFile<TFile, TRecords, Parallel> & me)
+{
+    close(me.reader);
+    close(me.reader.worker);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords<Serial>()
+// ----------------------------------------------------------------------------
+
+//template <typename TFile, typename TRecords, typename TThreading>
+//inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, TThreading> & me)
+//{
+//    readRecords(records, me.file, me.maxRecords);
+//}
+
+// ----------------------------------------------------------------------------
+// Function readRecords<Parallel>()
+// ----------------------------------------------------------------------------
+
+//template <typename TFile, typename TRecords>
+//inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, Parallel> & me)
+//{
+//    readRecords(me.records, me.file, me.maxRecords);
+//    std::swap(records, me.records);
+//}
+
+// ----------------------------------------------------------------------------
+// Function getRecords<Serial>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords, typename TThreading>
+inline TRecords * getRecords(PrefetchedFile<TFile, TRecords, TThreading> & me)
+{
+    readRecords(me.records, me.file, me.maxRecords);
+
+    return &me.records;
+}
+
+// ----------------------------------------------------------------------------
+// Function getRecords<Parallel>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+inline TRecords * getRecords(PrefetchedFile<TFile, TRecords, Parallel> & me)
+{
+    // Wait the next batch of records.
+    waitFor(me.reader);
+
+    // Make the next batch of records.
+    std::swap(me.records, me.reader.worker.records);
+
+    // Read the next batch of records.
+    run(me.reader);
+
+    return me.records;
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
+}
+
+
 using namespace seqan;
 
 // ============================================================================
@@ -53,7 +290,7 @@ using namespace seqan;
 // Class SeqConfig
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = SingleEnd>
+template <typename TSpec = void>
 struct SeqConfig
 {
     typedef Dna5Q                   TAlphabet;
@@ -75,7 +312,7 @@ struct SeqConfig<Nothing>
 // Class SeqStore
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = SingleEnd, typename TConfig = SeqConfig<TSpec> >
+template <typename TSpec = void, typename TConfig = SeqConfig<TSpec> >
 struct SeqStore
 {
     typedef typename TConfig::TAlphabet                 TAlphabet;
@@ -99,29 +336,6 @@ struct SeqStore
     {}
 };
 
-//// ----------------------------------------------------------------------------
-//// Class LoadReadsWorker
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSpec, typename TConfig>
-//struct LoadReadsWorker
-//{
-//    SeqStore<TSpec, TConfig> *         reads;
-//    ReadsLoader<TSpec, TConfig> &   readsLoader;
-//    unsigned                        readsCount;
-//
-//    LoadReadsWorker(SeqStore<TSpec, TConfig> * reads, ReadsLoader<TSpec, TConfig> & readsLoader, unsigned readsCount) :
-//        reads(reads),
-//        readsLoader(readsLoader),
-//        readsCount(readsCount)
-//    {}
-//
-//    void operator() ()
-//    {
-//        load(*reads, readsLoader, readsCount);
-//    }
-//};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -135,7 +349,7 @@ inline void clear(SeqStore<TSpec, TConfig> & me)
 {
     clear(me.seqs);
     clear(me.names);
-    clear(me.namesCache);
+//    clear(me.namesCache);
 }
 
 // ----------------------------------------------------------------------------
@@ -163,7 +377,7 @@ inline bool open(SeqStore<TSpec, TConfig> & me, TFileName const & fileName)
     name = fileName;    append(name, ".rid");
     if (!open(me.names, toCString(name))) return false;
 
-    refresh(me.namesCache);
+//    refresh(me.namesCache);
 
     return true;
 }
@@ -187,81 +401,19 @@ inline bool save(SeqStore<TSpec, TConfig> const & me, TFileName const & fileName
 }
 
 // ----------------------------------------------------------------------------
-// Function open()
-// ----------------------------------------------------------------------------
-
-//template <typename TStream, typename TFileName>
-//void open(Pair<TStream> & me, Pair<TFileName> const & readsFile)
-//{
-//    open(me.i1, readsFile.i1, OPEN_RDONLY);
-//    open(me.i2, readsFile.i2, OPEN_RDONLY);
-//}
-
-// ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
-//
-template <typename TSpec, typename TConfig, typename TSeqFileIn>
-inline void readSeqs(SeqStore<TSpec, TConfig> & me, TSeqFileIn & fileIn)
+
+template <typename TSpec, typename TConfig, typename TFileSpec>
+inline void readRecords(SeqStore<TSpec, TConfig> & me,
+                        SmartFile<Fastq, Input, TFileSpec> & fileIn,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
-    // Compute file size.
-//    loader._file.seekg(0, std::ios::end);
-//    loader._fileSize = loader._file.tellg();
-//    loader._file.seekg(0, std::ios::beg);
+    readRecords(me.names, me.seqs, fileIn, maxRecords);
 
-    // Reserve space for contigs.
-//    reserve(me, loader._fileSize);
-
-    readRecords(me.names, me.seqs, fileIn);
-
-//    CharString contigName;
-//    Dna5String contigSeq;
-
-//    // Read records.
-//    while (!atEnd(fileIn))
-//    {
-//        if (readRecord(contigName, contigSeq, *(loader._reader), loader._fileFormat) != 0)
-//            throw RuntimeError("Error while reading contig.");
-//
-//        appendValue(me.seqs, contigSeq);
-//        appendValue(me.names, contigName);
-//    }
-
-    refresh(me.namesCache);
+//    appendValue(reads.names, prefix(seqName, lastOf(seqName, IsSpace())), Generous());
+//    refresh(me.namesCache);
 }
-
-//template <typename TSpec, typename TConfig, typename TSize>
-//void load(SeqStore<TSpec, TConfig> & reads, TStream<TSpec, TConfig> & me, TSize count)
-//{
-//    _load(reads, count, *(me._reader), me._fileFormat);
-//}
-
-//template <typename TConfig, typename TSize>
-//void load(SeqStore<PairedEnd, TConfig> & reads, ReadsLoader<PairedEnd, TConfig> & me, TSize count)
-//{
-//    _load(reads, count, *(me._reader.i1), me._fileFormat.i1);
-//    _load(reads, count, *(me._reader.i2), me._fileFormat.i2);
-//}
-//
-//template <typename TSpec, typename TConfig, typename TSize, typename TReader, typename TFormat>
-//void _load(SeqStore<TSpec, TConfig> & reads, TSize count, TReader & reader, TFormat & format)
-//{
-//    typedef SeqStore<TSpec, TConfig>           TSeqStore;
-//    typedef typename TSeqStore::TSeq       TSeq;
-//
-//    CharString  seqName;
-//    TSeq    seq;
-//
-//    // Read records.
-//    for (; count > 0 && !atEnd(reader); count--)
-//    {
-//        if (readRecord(seqName, seq, reader, format) != 0)
-//            throw RuntimeError("Error while reading read record.");
-//
-//        appendValue(reads.seqs, seq, Generous());
-//        appendValue(reads.names, prefix(seqName, lastOf(seqName, IsSpace())), Generous());
-//    }
-//}
 
 // ----------------------------------------------------------------------------
 // Function randomizeNs()
@@ -336,5 +488,6 @@ void appendReverseComplement(SeqStore<TSpec, TConfig> & me)
         reverseComplement(back(me.seqs));
     }
 }
+
 
 #endif  // #ifndef APP_YARA_BITS_READS_H_

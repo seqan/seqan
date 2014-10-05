@@ -176,9 +176,18 @@ void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 
     start(me.timer);
     open(me.contigsFile, toCString(options.contigsFile));
+
+    // Compute file size.
+//    me.contigsFile.seekg(0, std::ios::end);
+//    unsigned fileSize = me.contigsFile.tellg();
+//    me.contigsFile.seekg(0, std::ios::beg);
+
+    // Reserve space for contigs.
+//    reserve(me.contigs, fileSize);
+
     try
     {
-        readSeqs(me.contigs, me.contigsFile);
+        readRecords(me.contigs, me.contigsFile);
     }
     catch (BadAlloc const & /* e */)
     {
