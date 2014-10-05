@@ -142,9 +142,9 @@ struct MapperTraits
     typedef typename Fibre<TIndex, FibreSA>::Type                   TSA;
 
     typedef SeqStore<TSequencing>                                   TReads;
-
-    typedef typename If<IsSameType<TSequencing, PairedEnd>, Pair<SeqFileIn>, SeqFileIn>::Type TReadsFiles;
-    typedef PrefetchedFile<TReadsFiles, TReads, TThreading>         TPrefetchedReads;
+    typedef typename If<IsSameType<TSequencing, PairedEnd>,
+                        Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
+    typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;
 
     typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
@@ -240,7 +240,7 @@ struct Mapper
     typename Traits::TIndex             index;
     typename Traits::TReads *           reads;
 
-    typename Traits::TPrefetchedReads   readsFile;
+    typename Traits::TReadsFile         readsFile;
     BamFileOut                          outputFile;
 //    typename Traits::TOutputContext     outputCtx;
 
