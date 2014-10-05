@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,63 +30,137 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan
+{
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Tag Ucsc
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 struct Ucsc_;
 
 /*!
- * @tag Ucsc
- * @headerfile <seqan/store.h>
- * @brief UCSC Genome browser annotation file (aka knownGene format).
- *
- * @signature typedef Tag<Ucsc<UcscKnownGene_> > const Ucsc;
+ * @defgroup UcscTags
+ * @brief Tags for UCSC I/O.
  */
 
-/**
-.Tag.File Format.tag.Ucsc:
-    Ucsc Genome Browser annotation file (a.k.a. knownGene format).
-..include:seqan/store.h
-*/
+/*!
+ * @tag UcscTags#Ucsc
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief UCSC Genome browser annotation file (aka knownGene format).
+ *
+ * @signature typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
+ */
 
 struct UcscKnownGene_;
 typedef Tag<Ucsc_<UcscKnownGene_> > Ucsc;
 
+// ----------------------------------------------------------------------------
+// Tag Ucsc
+// ----------------------------------------------------------------------------
+
 /*!
- * @tag UcscIsoforms
- * @headerfile <seqan/store.h>
- * @brief UCSC Genome browser annotation file (aka knownIsoforms format).
+ * @tag UcscTags#UcscIsoforms
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief UCSC Genome browser annotation file (aka knownGene format).
  *
- * @signature typedef Tag<Ucsc<UcscKnownIsoforms_> > const UcscIsoforms;
+ * @signature typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
  */
 
-/**
-.Tag.File Format.tag.UcscIsoforms:
-    Ucsc Genome Browser isoforms file (a.k.a. knownIsoforms format).
-..include:seqan/store.h
-*/
-struct UcscKnownIsoforms_;
-typedef Tag<Ucsc_<UcscKnownIsoforms_> > UcscIsoforms;
+struct UcscIsoforms_;
+typedef Tag<Ucsc_<UcscIsoforms_> > UcscIsoforms;
 
-//////////////////////////////////////////////////////////////////////////////
-// Read Ucsc
-//////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+// Class UcscIOContext
+// ----------------------------------------------------------------------------
 
-struct UcscContext
+/*!
+ * @class UcscIOContext
+ * @headerfile <sean/ucsc_io.h>
+ * @brief Context to use for UCSC file I/O.
+ *
+ * @signature struct UcscIOContext;
+ */
+struct UcscIOContext
 {
-    String<char> buffer;
+    /*!
+     * @var CharString UcscIOContext::buffer
+     * @brief Buffer used during UCSC I/O.
+     */
+    CharString buffer;
 };
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Ucsc, T> : public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Ucsc, T>
+{
+    static char const * VALUE[2];  // default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Ucsc, T>::VALUE[2] =
+{
+    ".txt",     // default output extension
+    ".tsv"
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function readRecod
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn UcscFileIO#readRecord
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief Low-level reading for @link UcscRecord @endlink.
+ *
+ * @signature void recordRecord(record, ucscIOContext, iter, tag);
+ *
+ * @param[out]    record       The @link UcscRecord @endlink to store results in.
+ * @param[in,out] uscscContext The @link UcscIOContext @endlink to use during the rading.
+ * @param[in,out] iter         The @link ForwadIteratorConcept forward iterator @endlink to read from.
+ * @param[in]     tag          Fixed to @link Ucsc @endlink.
+ *
+ * @throw IOError    in the case of I/O errors
+ * @throw ParseError in the case of problems with parsing
+ */
 template <typename TForwardIter>
-inline void
-readRecord(UcscRecord & record,
-           TForwardIter & iter,
-           UcscContext & ucscContext)
+void readRecord(UcscRecord & record,
+                UcscIOContext & ucscIOContext,
+                TForwardIter & iter,
+                Ucsc const & /*tag*/)
 {
     OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> > nextRecord;
 
@@ -124,44 +198,44 @@ readRecord(UcscRecord & record,
     record.format = record.KNOWN_GENE;
 
     // read column 4: transcript begin position
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-    record.annotationBeginPos = lexicalCast<__uint64>(ucscContext.buffer);
+    clear(ucscIOContext.buffer);
+    readUntil(ucscIOContext.buffer, iter, nextRecord);
+    record.annotationBeginPos = lexicalCast<__uint64>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 5: transcript end position
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-    record.annotationEndPos = lexicalCast<__uint64>(ucscContext.buffer);
+    clear(ucscIOContext.buffer);
+    readUntil(ucscIOContext.buffer, iter, nextRecord);
+    record.annotationEndPos = lexicalCast<__uint64>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-    record.cdsBegin = lexicalCast<__uint64>(ucscContext.buffer);
+    clear(ucscIOContext.buffer);
+    readUntil(ucscIOContext.buffer, iter, nextRecord);
+    record.cdsBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 7: CDS end position
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-    record.cdsEnd = lexicalCast<__uint64>(ucscContext.buffer);
+    clear(ucscIOContext.buffer);
+    readUntil(ucscIOContext.buffer, iter, nextRecord);
+    record.cdsEnd = lexicalCast<__uint64>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 8: exon count
     unsigned int exons;
-    clear(ucscContext.buffer);
-    readUntil(ucscContext.buffer, iter, nextRecord);
-    exons = lexicalCast<unsigned int>(ucscContext.buffer);
+    clear(ucscIOContext.buffer);
+    readUntil(ucscIOContext.buffer, iter, nextRecord);
+    exons = lexicalCast<unsigned int>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 9: exon begin positions
     for (unsigned int i = 0; i < exons; ++i)
     {
-        clear(ucscContext.buffer);
-        readUntil(ucscContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+        clear(ucscIOContext.buffer);
+        readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempBegin;
-        tempBegin = lexicalCast<__uint64>(ucscContext.buffer);
+        tempBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
     }
@@ -170,11 +244,11 @@ readRecord(UcscRecord & record,
     // read column 10: exon end positions
     for (unsigned int i = 0; i < exons; ++i)
     {
-        clear(ucscContext.buffer);
-        readUntil(ucscContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+        clear(ucscIOContext.buffer);
+        readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempEnd;
-        tempEnd =  lexicalCast<__uint64>(ucscContext.buffer);
+        tempEnd =  lexicalCast<__uint64>(ucscIOContext.buffer);
         appendValue(record.exonEnd, tempEnd);
         skipOne(iter);
     }
@@ -205,14 +279,30 @@ readRecord(UcscRecord & record,
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Write Ucsc
-//////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+// Function writeRecord
+// ----------------------------------------------------------------------------
 
-template <typename TTarget>
-inline void
-writeRecord(TTarget & target,
-            UcscRecord & record)
+// TODO(holtgrew): Dave/Enrico: please verify the type of target here
+
+/*!
+ * @fn UcscFileIO#writeRecord
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief Low-level writing of @link UcscRecord @endlink.
+ *
+ * @signature void writeRecord(target, record, tag);
+ *
+ * @param[in,out] @link OutputIteratorConcept Output iterator @endlink or @link ContainerConcept container @endlink to
+ *                write to.
+ * @param[in]     record @link UcscRecord @endlink to write.
+ * @param[in]     tag          Fixed to @link Ucsc @endlink.
+ *
+ * @throw IOError in case of I/O problems
+ */
+template <typename TTarget, typename TInnerTag>
+void writeRecord(TTarget & target,
+                 UcscRecord const & record,
+                 Tag<Ucsc_<TInnerTag> > const & /*tag*/)
 {
     unsigned suf = 0;
     if (record.format == record.KNOWN_ISOFORMS && length(record.transName) >= 4 && prefix(record.transName, 4) == "GENE")
@@ -310,6 +400,6 @@ writeRecord(TTarget & target,
     writeValue(target, '\n');
 }
 
-} // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
-#endif //#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
