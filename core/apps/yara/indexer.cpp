@@ -120,7 +120,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, "fasta fa");
     setHelpText(parser, 0, "A reference genome file.");
 

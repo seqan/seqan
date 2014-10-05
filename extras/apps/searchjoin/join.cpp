@@ -114,7 +114,7 @@ void setupArgumentParser(ArgumentParser & parser)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIERRORS\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     addArgument(parser, ArgParseArgument(ArgParseArgument::INTEGER));
 
     // Set errors range to [0,32].

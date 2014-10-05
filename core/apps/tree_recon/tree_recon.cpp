@@ -99,7 +99,7 @@ int main(int argc, const char *argv[])
     addDescription(parser, "Reconstruct phylogenetic tree from Phylip matrix \\fIIN.DIST\\fP.");
 
 	addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUTFILE, "FILE"));
+    addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUT_FILE, "FILE"));
     setRequired(parser, "matrix");
     setValidValues(parser, "matrix", "dist");
 	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUTFILE, "FILE"));

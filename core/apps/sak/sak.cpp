@@ -148,7 +148,7 @@ parseArgs(SakOptions & options,
     addDescription(parser, "Original SAK tool by David Weese. Rewrite by Manuel Holtgrewe.");
 
     // The only argument is the input file.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
     setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());

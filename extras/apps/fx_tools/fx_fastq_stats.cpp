@@ -249,7 +249,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                    "each column/position with statistics on the nucleotides and qualities.");
 
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUTFILE, "INPUT"));
+    addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUT_FILE, "INPUT"));
     setValidValues(parser, "input", "fastq fq");
     setRequired(parser, "input");
     addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUTFILE, "OUTPUT"));

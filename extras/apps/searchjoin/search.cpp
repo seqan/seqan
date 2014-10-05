@@ -139,8 +139,8 @@ void setupArgumentParser(ArgumentParser & parser)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIQUERY FILE\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
 
     addSection(parser, "Options");
 

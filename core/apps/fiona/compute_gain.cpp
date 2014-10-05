@@ -794,21 +794,21 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUTFILE,
+    addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUT_FILE,
                                             "GENOME.fa"));
     setRequired(parser, "genome");
     setValidValues(parser, "genome", "fa fasta");
 
-    addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
+    addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
                                             "PRE.{sam,bam}"));
     setRequired(parser, "pre");
     setValidValues(parser, "pre", "sam bam");
 
-    addOption(parser, seqan::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan::ArgParseOption::INPUTFILE,
+    addOption(parser, seqan::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
                                             "POST.sam"));
     setValidValues(parser, "post-sam", "sam");
 
-    addOption(parser, seqan::ArgParseOption("", "post", "Post-correction FASTQ or FASTA file.", seqan::ArgParseOption::INPUTFILE,
+    addOption(parser, seqan::ArgParseOption("", "post", "Post-correction FASTQ or FASTA file.", seqan::ArgParseOption::INPUT_FILE,
                                             "POST.fq"));
     setValidValues(parser, "post", "fastq fq fastq.gz fq.gz fasta fa fasta.gz fa.gz");
 
