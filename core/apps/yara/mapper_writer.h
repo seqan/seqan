@@ -48,13 +48,11 @@ using namespace seqan;
 template <typename TSpec, typename Traits>
 struct MatchesWriter
 {
-    typedef typename Traits::TContigs          TContigs;
     typedef typename Traits::TReads            TReads;
     typedef typename Traits::TMatchesSet       TMatchesSet;
     typedef typename Traits::TMatches          TMatches;
     typedef typename Traits::TCigarSet         TCigarSet;
     typedef typename Traits::TOutputFile       TOutputFile;
-//    typedef typename Traits::TOutputContext    TOutputContext;
     typedef typename Traits::TReadsContext     TReadsContext;
 
     // Thread-private data.
@@ -64,33 +62,27 @@ struct MatchesWriter
 
     // Shared-memory read-write data.
     TOutputFile &           outputFile;
-//    TOutputContext &        outputCtx;
 
     // Shared-memory read-only data.
     TMatchesSet const &     matchesSet;
     TMatches const &        primaryMatches;
     TCigarSet const &       cigarSet;
     TReadsContext const &   ctx;
-    TContigs const &        contigs;
     TReads const &          reads;
     Options const &         options;
 
     MatchesWriter(TOutputFile & outputFile,
-//                  TOutputContext & outputCtx,
                   TMatchesSet const & matchesSet,
                   TMatches const & primaryMatches,
                   TCigarSet const & cigarSet,
                   TReadsContext const & ctx,
-                  TContigs const & contigs,
                   TReads const & reads,
                   Options const & options) :
         outputFile(outputFile),
-//        outputCtx(outputCtx),
         matchesSet(matchesSet),
         primaryMatches(primaryMatches),
         cigarSet(cigarSet),
         ctx(ctx),
-        contigs(contigs),
         reads(reads),
         options(options)
     {
@@ -536,13 +528,13 @@ template <typename TSpec, typename Traits, typename TThreading>
 inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, TThreading const & /* tag */)
 {
     writeRecord(me.outputFile, me.record);
-//    write2(me.outputFile, me.record, me.outputCtx, typename Traits::TOutputFormat());
 }
 
 //template <typename TSpec, typename Traits>
 //inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
 //{
-//    write2(me.recordBuffer, me.record, me.outputCtx, typename Traits::TOutputFormat());
+//    writeRecord(me.recordBufferIt, me.record);
+////    write(me.recordBufferIt, me.record, context(me.outputFile), me.outputFile.format);
 //
 //    if (length(me.recordBuffer) > Power<2, 16>::VALUE)
 //        _writeRecordBufferImpl(me, Parallel());
@@ -552,15 +544,16 @@ inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, TThreading const
 // Function _writeRecordBufferImpl()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TThreading>
-inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & /* me */, TThreading const & /* tag */) {}
-
-template <typename TSpec, typename Traits>
-inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
-{
+//template <typename TSpec, typename Traits, typename TThreading>
+//inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & /* me */, TThreading const & /* tag */) {}
+//
+//template <typename TSpec, typename Traits>
+//inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
+//{
 //    SEQAN_OMP_PRAGMA(critical(MatchesWriter_writeRecord))
-//    streamWriteBlock(me.outputFile, begin(me.recordBuffer, Standard()), length(me.recordBuffer));
+//    write(me.outputFile, me.recordBuffer);
+//
 //    clear(me.recordBuffer);
-}
+//}
 
 #endif  // #ifndef APP_YARA_MAPPER_WRITER_H_
