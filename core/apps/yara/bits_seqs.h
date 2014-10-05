@@ -55,9 +55,9 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, Pair<const char *> const & fileName)
+inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, const char * fileName1, const char * fileName2)
 {
-    return open(me.i1, fileName.i1) && open(me.i2, fileName.i2);
+    return open(me.i1, fileName1) && open(me.i2, fileName2);
 }
 
 // ----------------------------------------------------------------------------
@@ -183,9 +183,9 @@ inline bool open(PrefetchedFile<TFile, TRecords, Parallel> & me, const char * fi
 // ----------------------------------------------------------------------------
 
 template <typename TFile, typename TRecords, typename TThreading>
-inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, Pair<const char *> const & fileName)
+inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, const char * fileName1, const char * fileName2)
 {
-    return open(me.file, fileName);
+    return open(me.file, fileName1, fileName2);
 }
 
 // ----------------------------------------------------------------------------
@@ -193,9 +193,9 @@ inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, Pair<co
 // ----------------------------------------------------------------------------
 
 template <typename TFile, typename TRecords>
-inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, Pair<const char *> const & fileName)
+inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, const char * fileName1, const char * fileName2)
 {
-    bool status = open(me.reader.worker, fileName);
+    bool status = open(me.reader.worker, fileName1, fileName2);
     run(me.reader);
     return status;
 }
