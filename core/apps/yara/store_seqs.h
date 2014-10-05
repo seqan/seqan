@@ -152,6 +152,20 @@ inline bool save(SeqStore<TSpec, TConfig> const & me, TFileName const & fileName
     return true;
 }
 
+// --------------------------------------------------------------------------
+// Function swap()
+// --------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig>
+void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
+{
+    using std::swap;
+
+    swap(a.seqs, b.seqs);
+    swap(a.names, b.names);
+//    swap(a.namesCache, b.namesCache);
+}
+
 // ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
