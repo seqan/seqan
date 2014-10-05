@@ -47,18 +47,17 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/store.h>
 #include <seqan/index.h>
 
 // ----------------------------------------------------------------------------
 // App headers
 // ----------------------------------------------------------------------------
 
+#include "store_seqs.h"
 #include "misc_timer.h"
 #include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
-#include "bits_seqs.h"
 #include "bits_matches.h"
 #include "index_fm.h"
 
