@@ -928,9 +928,9 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
     typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
 
     start(me.timer);
-    TMatchesWriter writer(me.outputFile, //me.outputCtx,
+    TMatchesWriter writer(me.outputFile,
                           me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
-                          me.ctx, me.contigs, value(me.reads),
+                          me.ctx, value(me.reads),
                           me.options);
     stop(me.timer);
     me.stats.writeMatches += getValue(me.timer);
