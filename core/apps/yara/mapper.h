@@ -234,7 +234,7 @@ struct Mapper
 
     typename Traits::TContigs           contigs;
     typename Traits::TIndex             index;
-    typename Traits::TReads *           reads;
+    typename Traits::TReads             reads;
 
     typename Traits::TReadsFile         readsFile;
     typename Traits::TOutputFile        outputFile;
@@ -391,24 +391,23 @@ inline void loadReads(Mapper<TSpec, TConfig> & me)
 {
     start(me.timer);
 
-//    readRecords(me.reads, me.readsFile);
-    me.reads = getRecords(me.readsFile);
+    readRecords(me.reads, me.readsFile);
 
-    if (maxLength(me.reads->seqs, typename TConfig::TThreading()) > MemberLimits<Match<void>, ReadSize>::VALUE)
+    if (maxLength(me.reads.seqs, typename TConfig::TThreading()) > MemberLimits<Match<void>, ReadSize>::VALUE)
         throw RuntimeError("Maximum read length exceeded.");
 
     // Append reverse complemented reads.
-    appendReverseComplement(value(me.reads));
+    appendReverseComplement(me.reads);
 
     stop(me.timer);
 
     me.stats.loadReads += getValue(me.timer);
-    me.stats.loadedReads += getReadsCount(me.reads->seqs);
+    me.stats.loadedReads += getReadsCount(me.reads.seqs);
 
     if (me.options.verbose > 1)
     {
         std::cout << "Loading reads:\t\t\t" << me.timer << std::endl;
-        std::cout << "Reads count:\t\t\t" << getReadsCount(me.reads->seqs) << std::endl;
+        std::cout << "Reads count:\t\t\t" << getReadsCount(me.reads.seqs) << std::endl;
     }
 }
 
@@ -419,7 +418,7 @@ inline void loadReads(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void clearReads(Mapper<TSpec, TConfig> & me)
 {
-    clear(value(me.reads));
+    clear(me.reads);
 }
 
 // ----------------------------------------------------------------------------
@@ -893,9 +892,9 @@ inline void alignMatches(Mapper<TSpec, TConfig> & me)
     typename TTraits::TCigarLimits cigarLimits;
 
     if (me.options.rabema)
-        TLinearAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+        TLinearAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
     else
-        TAffineAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+        TAffineAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
 
     stop(me.timer);
     me.stats.alignMatches += getValue(me.timer);
@@ -928,10 +927,10 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
     typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
 
     start(me.timer);
-    TMatchesWriter writer(me.outputFile,
-                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
-                          me.ctx, value(me.reads),
-                          me.options);
+//    TMatchesWriter writer(me.outputFile,
+//                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
+//                          me.ctx, me.reads,
+//                          me.options);
     stop(me.timer);
     me.stats.writeMatches += getValue(me.timer);
 
@@ -946,7 +945,7 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void mapReads(Mapper<TSpec, TConfig> & me)
 {
-    _mapReadsImpl(me, me.reads->seqs, typename TConfig::TStrategy());
+    _mapReadsImpl(me, me.reads.seqs, typename TConfig::TStrategy());
 }
 
 // ----------------------------------------------------------------------------
@@ -1105,7 +1104,7 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
     {
         if (me.options.verbose > 1) printRuler(std::cout);
         loadReads(me);
-        if (empty(me.reads->seqs)) break;
+        if (empty(me.reads.seqs)) break;
         mapReads(me);
         clearReads(me);
     }
