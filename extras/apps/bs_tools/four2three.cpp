@@ -73,7 +73,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fISEQUENCE FILE\\fP\"");
     addDescription(parser, "This program converts four-letter sequences into three-letter sequences for bisulfite sequence analysis.");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "SEQUENCES"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "SEQUENCES"));
     setHelpText(parser, 0, "A sequence file containing reads or genome.");
     setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
 

@@ -181,7 +181,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
 
     // We require one argument.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "INFILE", true));
     setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
 #if SEQAN_HAS_ZLIB
     setHelpText(parser, 0, "Input SAM or BAM file (or - for stdin).");

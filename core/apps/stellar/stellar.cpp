@@ -500,9 +500,9 @@ void _setParser(ArgumentParser & parser)
                    "sequences from file 2 as queries.");
     addDescription(parser, "(c) 2010-2012 by Birte Kehr");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 1"));
     setValidValues(parser, 0, "fa fasta");  // allow only fasta files as input
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 2"));
     setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
 
     addSection(parser, "Main Options");

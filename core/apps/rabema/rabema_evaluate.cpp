@@ -1063,18 +1063,18 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     //                                         seqan::ArgParseArgument::STRING, false, "GSI"));
     // setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
     setValidValues(parser, "reference", "fa fasta");
     setRequired(parser, "reference", true);
     addOption(parser, seqan::ArgParseOption("g", "in-gsi",
                                             "Path to load gold standard intervals from. If compressed using gzip, "
                                             "the file will be decompressed on the fly.",
-                                            seqan::ArgParseArgument::INPUTFILE, "GSI"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "GSI"));
     setRequired(parser, "in-gsi", true);
     setValidValues(parser, "in-gsi", "gsi gsi.gz");  // GSI (Gold Standard Intervals) Format only.
 
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "BAM"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
     setRequired(parser, "in-bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",

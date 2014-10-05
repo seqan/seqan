@@ -140,7 +140,7 @@ void setupStringParser(ArgumentParser & parser)
 
 void setupInputFileParser(ArgumentParser & parser)
 {
-    addOption(parser, ArgParseOption("i", "in", "set an input file", ArgParseArgument::INPUTFILE));
+    addOption(parser, ArgParseOption("i", "in", "set an input file", ArgParseArgument::INPUT_FILE));
 }
 
 void setupOutputFileParser(ArgumentParser & parser)
@@ -755,7 +755,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE));
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE));
         setValidValues(parser, "long", ".fa .TXT");
 
         SEQAN_ASSERT_NOT(hasOption(parser, "short-file-ext"));
@@ -772,7 +772,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE,
                                          "label", false, 2));
         setValidValues(parser, "long", ".fa .TXT");
 
@@ -790,7 +790,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE,
                                          "label", true));
         setValidValues(parser, "long", ".fa .TXT");
 
@@ -1066,7 +1066,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     // No list, one value.
     {
         ArgumentParser parser;
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
         setValidValues(parser, 0, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
@@ -1083,7 +1083,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     // List, one value.
     {
         ArgumentParser parser;
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "LABEL", true));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "LABEL", true));
         setValidValues(parser, 0, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
@@ -1099,7 +1099,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     {
         ArgumentParser parser;
         addArgument(parser, ArgParseArgument(ArgParseArgument::DOUBLE));
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
         setValidValues(parser, 1, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-2-file-ext"));

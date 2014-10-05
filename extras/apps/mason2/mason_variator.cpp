@@ -1682,26 +1682,26 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addSection(parser, "Input / Output");
 
     // addOption(parser, seqan::ArgParseOption("iv", "in-vcf", "VCF file to load variations from.",
-    //                                         seqan::ArgParseOption::INPUTFILE, "VCF"));
+    //                                         seqan::ArgParseOption::INPUT_FILE, "VCF"));
     // setValidValues(parser, "in-vcf", "vcf");
 
     addOption(parser, seqan::ArgParseOption("ir", "in-reference", "FASTA file with reference.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "in-reference", "fasta fa");
     setRequired(parser, "in-reference");
 
     addOption(parser, seqan::ArgParseOption("it", "in-variant-tsv",
                                             "TSV file with variants to simulate.  See Section on the Variant TSV File below.",
-                                            seqan::ArgParseOption::INPUTFILE, "VCF"));
+                                            seqan::ArgParseOption::INPUT_FILE, "VCF"));
     setValidValues(parser, "in-variant-tsv", "tsv txt");
 
     addOption(parser, seqan::ArgParseOption("ov", "out-vcf", "VCF file to write simulated variations to.",
-                                            seqan::ArgParseOption::INPUTFILE, "VCF"));
+                                            seqan::ArgParseOption::INPUT_FILE, "VCF"));
     setRequired(parser, "out-vcf");
     setValidValues(parser, "out-vcf", "vcf");
 
     addOption(parser, seqan::ArgParseOption("of", "out-fasta", "FASTA file to write simulated haplotypes to.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "out-fasta", "fasta fa");
 
     addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
@@ -1801,7 +1801,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "Path to load original methylation levels from.  "
                                             "Methylation levels are simulated if omitted.",
-                                            seqan::ArgParseOption::INPUTFILE, "FILE"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setValidValues(parser, "meth-fasta-in", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "

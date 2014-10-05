@@ -1103,13 +1103,13 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIALIGNMENT FILE\\fP> [<\\fIALIGNMENT FILE\\fP> ...]");
 
     // We require two mandatory arguments: genome file and read file(s)
-    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "GENOME"));
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "GENOME"));
     setValidValues(parser, 0, ".fa .fasta");
     setHelpText(parser, 0, "A reference genome file.");
 
     std::vector<std::string> alignmentFormats(BamFileIn::getFileFormatExtensions());
     alignmentFormats.push_back(".gff");
-    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "ALIGNMENTS", true));
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "ALIGNMENTS", true));
     setValidValues(parser, 1, alignmentFormats);
     setHelpText(parser, 1, "Read alignment file(s) sorted by genomic position.");
 

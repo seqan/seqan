@@ -107,10 +107,10 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
         "-rc -o adeno_modified_reads_joinedMates.fa");
 
     // We require two arguments.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE(S)", true));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "FASTA/FASTQ FILE(S)", true));
     setValidValues(parser, 0, "fa fasta fq fastq");
     /*
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE 2"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "FASTA/FASTQ FILE 2"));
     setValidValues(parser, 1, "fasta fa fastq fq");
     */
 

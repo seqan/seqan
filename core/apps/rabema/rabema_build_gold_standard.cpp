@@ -1000,11 +1000,11 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     setValidValues(parser, "out-gsi", "gsi gsi.gz");
     setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
     setRequired(parser, "reference", true);
     setValidValues(parser, "reference", "fa fasta");
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
-                                            seqan::ArgParseArgument::INPUTFILE, "BAM"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
 
     addSection(parser, "Gold Standard Parameters");

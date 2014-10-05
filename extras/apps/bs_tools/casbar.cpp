@@ -1008,10 +1008,10 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addDescription(parser, "SNP and methylation level calling in mapped bisulfite read data.");
 
     // We require two arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME"));
     setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTS"));
     setValidValues(parser, 1, BamFileIn::getFileFormatExtensions());
     setHelpText(parser, 1, "SAM input file containing four-letter read alignments (must be sorted by coordinates).");
 
