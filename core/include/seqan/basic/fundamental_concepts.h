@@ -45,6 +45,14 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+// TODO(holtgrew): Document all the other concepts as well.
+
+/*!
+ * @concept NumberConcept
+ * @headerfile <seqan/basic.h>
+ * @brief Concept for numbers.
+ */
+
 SEQAN_CONCEPT(FundamentalConcept, (T));
 SEQAN_CONCEPT(IntegralConcept, (T));
 SEQAN_CONCEPT(NumberConcept, (T));
