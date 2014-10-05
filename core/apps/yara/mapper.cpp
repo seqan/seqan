@@ -51,19 +51,20 @@ struct Options;
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include <seqan/store.h>
 #include <seqan/parallel.h>
 
 // ----------------------------------------------------------------------------
 // App headers
 // ----------------------------------------------------------------------------
 
+#include "file_pair.h"
+#include "file_prefetched.h"
+#include "store_seqs.h"
 #include "misc_timer.h"
 #include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
 #include "index_fm.h"
-#include "bits_seqs.h"
 #include "bits_reads.h"
 #include "bits_hits.h"
 #include "bits_context.h"

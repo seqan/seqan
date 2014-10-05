@@ -35,250 +35,11 @@
 // This file contains the SeqStore class.
 // ==========================================================================
 
-#ifndef APP_YARA_BITS_SEQS_H_
-#define APP_YARA_BITS_SEQS_H_
+#ifndef APP_YARA_STORE_SEQS_H_
+#define APP_YARA_STORE_SEQS_H_
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 #include <seqan/random.h>
-
-
-namespace seqan {
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function open()
-// ----------------------------------------------------------------------------
-
-template <typename TFileType, typename TDirection, typename TSpec>
-inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, const char * fileName1, const char * fileName2)
-{
-    return open(me.i1, fileName1) && open(me.i2, fileName2);
-}
-
-// ----------------------------------------------------------------------------
-// Function close()
-// ----------------------------------------------------------------------------
-
-template <typename TFileType, typename TDirection, typename TSpec>
-inline void close(Pair<SmartFile<TFileType, TDirection, TSpec> > & me)
-{
-    close(me.i1);
-    close(me.i2);
-}
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-template <typename TFileType, typename TDirection, typename TSpec>
-inline bool atEnd(Pair<SmartFile<TFileType, TDirection, TSpec> > const & me)
-{
-    return atEnd(me.i1) || atEnd(me.i2);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords()
-// ----------------------------------------------------------------------------
-
-template <typename TRecords, typename TFileType, typename TDirection, typename TSpec>
-inline void readRecords(TRecords & records,
-                        Pair<SmartFile<TFileType, TDirection, TSpec> > & me,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
-{
-    readRecords(records, me.i1, maxRecords);
-    readRecords(records, me.i2, maxRecords);
-}
-
-// ============================================================================
-// Classes
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class PrefetchedFile<Serial>
-// ----------------------------------------------------------------------------
-// Serial implies no prefetching.
-
-template <typename TFile, typename TRecords, typename TThreading = Serial>
-struct PrefetchedFile
-{
-    TFile       file;
-    TRecords    records;
-    __uint64    maxRecords;
-
-    PrefetchedFile() :
-        file(),
-        records(),
-        maxRecords()
-    {}
-
-    PrefetchedFile(__uint64 maxRecords) :
-        file(),
-        records(),
-        maxRecords(maxRecords)
-    {}
-
-    void operator()()
-    {
-        readRecords(_toParameter(records), file, maxRecords);
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Class PrefetchedFile<Parallel>
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-struct PrefetchedFile<TFile, TRecords, Parallel>
-{
-    typedef PrefetchedFile<TFile, TRecords *, Serial> TWorker;
-
-    Pair<TRecords>      recordsQueue;
-    TRecords *          records;
-    TWorker             _worker;
-    Thread<TWorker>     reader;
-
-    PrefetchedFile(__uint64 maxRecords) :
-        records(&recordsQueue.i1),
-        _worker(maxRecords),
-        reader(_worker)
-    {
-        reader.worker.records = &recordsQueue.i2;
-    }
-};
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function open<Serial>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords, typename TThreading>
-inline bool open(PrefetchedFile<TFile, TRecords, TThreading> & me, const char * fileName)
-{
-    return open(me.file, fileName);
-}
-
-// ----------------------------------------------------------------------------
-// Function open<Parallel>()
-// ----------------------------------------------------------------------------
-// Prefetches the first batch of records.
-
-template <typename TFile, typename TRecords>
-inline bool open(PrefetchedFile<TFile, TRecords, Parallel> & me, const char * fileName)
-{
-    bool status = open(me.reader.worker, fileName);
-    run(me.reader);
-    return status;
-}
-
-// ----------------------------------------------------------------------------
-// Function open<Pair<TFile>, Serial>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords, typename TThreading>
-inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, const char * fileName1, const char * fileName2)
-{
-    return open(me.file, fileName1, fileName2);
-}
-
-// ----------------------------------------------------------------------------
-// Function open<Pair<TFile>, Parallel>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, const char * fileName1, const char * fileName2)
-{
-    bool status = open(me.reader.worker, fileName1, fileName2);
-    run(me.reader);
-    return status;
-}
-
-// ----------------------------------------------------------------------------
-// Function close<Serial>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords, typename TThreading>
-inline void close(PrefetchedFile<TFile, TRecords, TThreading> & me)
-{
-    close(me.file);
-}
-
-// ----------------------------------------------------------------------------
-// Function close<Parallel>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-inline void close(PrefetchedFile<TFile, TRecords, Parallel> & me)
-{
-    close(me.reader);
-    close(me.reader.worker);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords<Serial>()
-// ----------------------------------------------------------------------------
-
-//template <typename TFile, typename TRecords, typename TThreading>
-//inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, TThreading> & me)
-//{
-//    readRecords(records, me.file, me.maxRecords);
-//}
-
-// ----------------------------------------------------------------------------
-// Function readRecords<Parallel>()
-// ----------------------------------------------------------------------------
-
-//template <typename TFile, typename TRecords>
-//inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, Parallel> & me)
-//{
-//    readRecords(me.records, me.file, me.maxRecords);
-//    std::swap(records, me.records);
-//}
-
-// ----------------------------------------------------------------------------
-// Function getRecords<Serial>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords, typename TThreading>
-inline TRecords * getRecords(PrefetchedFile<TFile, TRecords, TThreading> & me)
-{
-    readRecords(me.records, me.file, me.maxRecords);
-
-    return &me.records;
-}
-
-// ----------------------------------------------------------------------------
-// Function getRecords<Parallel>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-inline TRecords * getRecords(PrefetchedFile<TFile, TRecords, Parallel> & me)
-{
-    // Wait the next batch of records.
-    waitFor(me.reader);
-
-    // Make the next batch of records.
-    std::swap(me.records, me.reader.worker.records);
-
-    // Read the next batch of records.
-    run(me.reader);
-
-    return me.records;
-}
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-}
-
 
 using namespace seqan;
 
@@ -297,15 +58,6 @@ struct SeqConfig
     typedef Alloc<>                 TSeqSpec;
     typedef Owner<ConcatDirect<> >  TSeqsSpec;
     typedef Owner<ConcatDirect<> >  TSeqNamesSpec;
-};
-
-template <>
-struct SeqConfig<Nothing>
-{
-    typedef Dna5                            TAlphabet;
-    typedef Packed<Alloc<> >                TSeqSpec;
-    typedef Owner<ConcatDirect<> >          TSeqsSpec;
-    typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
 };
 
 // ----------------------------------------------------------------------------
@@ -327,12 +79,12 @@ struct SeqStore
 
     TSeqs           seqs;
     TSeqNames       names;
-    TSeqNamesCache  namesCache;
+//    TSeqNamesCache  namesCache;
 
     SeqStore() :
         seqs(),
-        names(),
-		namesCache(names)
+        names()//,
+//		namesCache(names)
     {}
 };
 
@@ -490,4 +242,4 @@ void appendReverseComplement(SeqStore<TSpec, TConfig> & me)
 }
 
 
-#endif  // #ifndef APP_YARA_BITS_READS_H_
+#endif  // #ifndef APP_YARA_STORE_SEQS_H_
