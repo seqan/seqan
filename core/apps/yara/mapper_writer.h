@@ -53,18 +53,18 @@ struct MatchesWriter
     typedef typename Traits::TMatchesSet       TMatchesSet;
     typedef typename Traits::TMatches          TMatches;
     typedef typename Traits::TCigarSet         TCigarSet;
-    typedef typename Traits::TOutputStream     TOutputStream;
-    typedef typename Traits::TOutputContext    TOutputContext;
+    typedef typename Traits::TOutputFile       TOutputFile;
+//    typedef typename Traits::TOutputContext    TOutputContext;
     typedef typename Traits::TReadsContext     TReadsContext;
 
     // Thread-private data.
     BamAlignmentRecord      record;
-    CharString              recordBuffer;
+//    CharString              recordBuffer;
     CharString              xa;
 
     // Shared-memory read-write data.
-    TOutputStream &         outputStream;
-    TOutputContext &        outputCtx;
+    TOutputFile &           outputFile;
+//    TOutputContext &        outputCtx;
 
     // Shared-memory read-only data.
     TMatchesSet const &     matchesSet;
@@ -75,8 +75,8 @@ struct MatchesWriter
     TReads const &          reads;
     Options const &         options;
 
-    MatchesWriter(TOutputStream & outputStream,
-                  TOutputContext & outputCtx,
+    MatchesWriter(TOutputFile & outputFile,
+//                  TOutputContext & outputCtx,
                   TMatchesSet const & matchesSet,
                   TMatches const & primaryMatches,
                   TCigarSet const & cigarSet,
@@ -84,8 +84,8 @@ struct MatchesWriter
                   TContigs const & contigs,
                   TReads const & reads,
                   Options const & options) :
-        outputStream(outputStream),
-        outputCtx(outputCtx),
+        outputFile(outputFile),
+//        outputCtx(outputCtx),
         matchesSet(matchesSet),
         primaryMatches(primaryMatches),
         cigarSet(cigarSet),
@@ -106,22 +106,8 @@ struct MatchesWriter
 
     ~MatchesWriter()
     {
-        if (!empty(recordBuffer))
-            _writeRecordBufferImpl(*this, typename Traits::TThreading());
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Class QualityExtractor
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): remove this when new tokenization gets into develop.
-
-template <typename TValue>
-struct QualityExtractor : public std::unary_function<TValue, char>
-{
-    inline char operator()(TValue const & x) const
-    {
-        return '!' + static_cast<char>(getQualityValue(x));
+//        if (!empty(recordBuffer))
+//            _writeRecordBufferImpl(*this, typename Traits::TThreading());
     }
 };
 
@@ -133,39 +119,36 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // Function fillHeader()
 // ----------------------------------------------------------------------------
 
-template <typename TContigSeqs, typename TOptions, typename TContigNames>
-inline void fillHeader(BamHeader & header, TOptions const & options, TContigSeqs const & seqs, TContigNames const & names)
+template <typename TOptions>
+inline void fillHeader(BamHeader & header, TOptions const & options)
 {
-    typedef typename Iterator<TContigSeqs const, Standard>::Type    TContigSeqsIter;
-    typedef typename Iterator<TContigNames const, Standard>::Type   TContigNamesIter;
-
-    typedef BamHeader::TSequenceInfo                                TSequenceInfo;
-    typedef BamHeaderRecord::TTag                                   TTag;
+    typedef BamHeaderRecord::TTag   TTag;
 
     // Fill first header line.
     BamHeaderRecord firstRecord;
     firstRecord.type = BAM_HEADER_FIRST;
     appendValue(firstRecord.tags, TTag("VN", "1.4"));
     appendValue(firstRecord.tags, TTag("SO", "unsorted"));
-    appendValue(header.records, firstRecord);
-
-    // Fill sequence info header line.
-    TContigSeqsIter sit = begin(seqs, Standard());
-    TContigSeqsIter sitEnd = end(seqs, Standard());
-    TContigNamesIter nit = begin(names, Standard());
-    TContigNamesIter nitEnd = end(names, Standard());
-
-    for (; sit != sitEnd && nit != nitEnd; ++sit, ++nit)
-        appendValue(header.sequenceInfos, TSequenceInfo(*nit, length(*sit)));
+    appendValue(header, firstRecord);
 
     // Fill program header line.
     BamHeaderRecord pgRecord;
     pgRecord.type = BAM_HEADER_PROGRAM;
-    appendValue(pgRecord.tags, TTag("ID", "SeqAn"));
+    appendValue(pgRecord.tags, TTag("ID", "Yara"));
     appendValue(pgRecord.tags, TTag("PN", "Yara"));
     appendValue(pgRecord.tags, TTag("VN", options.version));
     appendValue(pgRecord.tags, TTag("CL", options.commandLine));
-    appendValue(header.records, pgRecord);
+    appendValue(header, pgRecord);
+
+    // Fill read group header line.
+    BamHeaderRecord rgRecord;
+    rgRecord.type = BAM_HEADER_READ_GROUP;
+    appendValue(rgRecord.tags, TTag("ID", "none"));
+//    appendValue(rgRecord.tags, TTag("PI", options.libraryLength));
+    appendValue(rgRecord.tags, TTag("PG", "Yara"));
+    appendValue(header, rgRecord);
+
+    // NOTE(esiragusa): Reference header line is filled by writeRecord().
 }
 
 // ----------------------------------------------------------------------------
@@ -222,6 +205,11 @@ inline void appendAlignments(BamAlignmentRecord & record, TString const & xa)
     if (!empty(xa)) appendTagValue(record.tags, "XA", xa, 'Z');
 }
 
+inline void appendReadGroup(BamAlignmentRecord & record)
+{
+    appendTagValue(record.tags, "RG", "none", 'Z');
+}
+
 // ----------------------------------------------------------------------------
 // Function _writeMatchesImpl()
 // ----------------------------------------------------------------------------
@@ -253,6 +241,7 @@ inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId
     _fillReadSeqQual(me, readId);
     _fillMapq(me, 0u);
     _fillMateInfo(me, readId);
+    appendReadGroup(me.record);
     me.record.flag |= BAM_FLAG_UNMAPPED;
     _writeRecord(me);
 }
@@ -363,18 +352,15 @@ inline void _writeSecondaryImpl(MatchesWriter<TSpec, Traits> & me, TMatches cons
 template <typename TSpec, typename Traits, typename TMatches>
 inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
 {
-    typedef typename Iterator<TMatches const, Standard>::Type   TIter;
-
-    TIter itEnd = end(matches, Standard());
-    for (TIter it = begin(matches, Standard()); it != itEnd; ++it)
+    forEach(matches, [&](typename Value<TMatches const>::Type const & match)
     {
         clear(me.record);
-        _fillReadName(me, getReadSeqId(*it, me.reads.seqs));
-        _fillReadPosition(me, *it);
-        appendExtraPosition(me.record, getMember(*it, ContigEnd()));
+        _fillReadName(me, getReadSeqId(match, me.reads.seqs));
+        _fillReadPosition(me, match);
+        appendExtraPosition(me.record, getMember(match, ContigEnd()));
         me.record.flag |= BAM_FLAG_SECONDARY;
         _writeRecord(me);
-    }
+    });
 }
 
 // ----------------------------------------------------------------------------
@@ -496,6 +482,7 @@ inline void _fillReadInfo(MatchesWriter<TSpec, Traits> & me, TMatches const & ma
     appendCooptimalCount(me.record, bestCount);
     appendSuboptimalCount(me.record, length(matches) - bestCount);
     appendType(me.record, bestCount == 1);
+    appendReadGroup(me.record);
     // Set number of secondary alignments and hit index.
 //    appendTagValue(me.record.tags, "NH", 1, 'i');
 //    appendTagValue(me.record.tags, "HI", 1, 'i');
@@ -520,24 +507,19 @@ inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches,
 template <typename TSpec, typename Traits, typename TMatches>
 inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
 {
-    typedef typename Iterator<TMatches const, Standard>::Type   TIter;
-
-    TIter itEnd = end(matches, Standard());
-    for (TIter it = begin(matches, Standard()); it != itEnd; ++it)
+    forEach(matches, [&](typename Value<TMatches const>::Type const & match)
     {
-        append(me.xa, nameStore(me.outputCtx)[getMember(*it, ContigId())]);
+        append(me.xa, nameStore(context(me.outputFile))[getMember(match, ContigId())]);
         appendValue(me.xa, ',');
-        // TODO(esiragusa): convert contig begin and end to string.
-//        append(me.xa, getContigBegin(*it) + 1);
-//        appendValue(me.xa, ',');
-//        append(me.xa, getContigEnd(*it) + 1);
-//        appendValue(me.xa, ',');
-        appendValue(me.xa, onForwardStrand(*it) ? '+' : '-');
+        writeValue(me.xa, getMember(match, ContigBegin()) + 1);
         appendValue(me.xa, ',');
-        // TODO(esiragusa): convert errors to string.
-        appendValue(me.xa, '0' + getMember(*it, Errors()));
+        writeValue(me.xa, getMember(match, ContigEnd()) + 1);
+        appendValue(me.xa, ',');
+        appendValue(me.xa, onForwardStrand(match) ? '+' : '-');
+        appendValue(me.xa, ',');
+        writeValue(me.xa, getMember(match, Errors()));
         appendValue(me.xa, ';');
-    }
+    });
 }
 
 // ----------------------------------------------------------------------------
@@ -553,17 +535,18 @@ inline void _writeRecord(MatchesWriter<TSpec, Traits> & me)
 template <typename TSpec, typename Traits, typename TThreading>
 inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, TThreading const & /* tag */)
 {
-    write2(me.outputStream, me.record, me.outputCtx, typename Traits::TOutputFormat());
+    writeRecord(me.outputFile, me.record);
+//    write2(me.outputFile, me.record, me.outputCtx, typename Traits::TOutputFormat());
 }
 
-template <typename TSpec, typename Traits>
-inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
-{
-    write2(me.recordBuffer, me.record, me.outputCtx, typename Traits::TOutputFormat());
-
-    if (length(me.recordBuffer) > Power<2, 16>::VALUE)
-        _writeRecordBufferImpl(me, Parallel());
-}
+//template <typename TSpec, typename Traits>
+//inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
+//{
+//    write2(me.recordBuffer, me.record, me.outputCtx, typename Traits::TOutputFormat());
+//
+//    if (length(me.recordBuffer) > Power<2, 16>::VALUE)
+//        _writeRecordBufferImpl(me, Parallel());
+//}
 
 // ----------------------------------------------------------------------------
 // Function _writeRecordBufferImpl()
@@ -575,9 +558,9 @@ inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & /* me */, TThr
 template <typename TSpec, typename Traits>
 inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
 {
-    SEQAN_OMP_PRAGMA(critical(MatchesWriter_writeRecord))
-    streamWriteBlock(me.outputStream, begin(me.recordBuffer, Standard()), length(me.recordBuffer));
-    clear(me.recordBuffer);
+//    SEQAN_OMP_PRAGMA(critical(MatchesWriter_writeRecord))
+//    streamWriteBlock(me.outputFile, begin(me.recordBuffer, Standard()), length(me.recordBuffer));
+//    clear(me.recordBuffer);
 }
 
 #endif  // #ifndef APP_YARA_MAPPER_WRITER_H_
