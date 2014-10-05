@@ -145,16 +145,12 @@ struct MapperTraits
     typedef typename If<IsSameType<TSequencing, PairedEnd>,
                         Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
     typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;
+    typedef BamFileOut                                              TOutputFile;
 
     typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
     typedef typename Size<TReadSeqs>::Type                          TReadSeqsSize;
     typedef String<TReadSeqsSize>                                   TSeedsCount;
-
-//    typedef typename TContigs::TSeqNames                            TContigNames;
-//    typedef typename TContigs::TSeqNamesCache                       TContigNamesCache;
-//    typedef Stream<FileStream<File<MMap<> > > >                     TOutputStream;
-//    typedef BamIOContext<TContigNames, TContigNamesCache>           TOutputContext;
 
     typedef ReadsContext<TSpec, TConfig>                            TReadsContext;
 
@@ -241,8 +237,7 @@ struct Mapper
     typename Traits::TReads *           reads;
 
     typename Traits::TReadsFile         readsFile;
-    BamFileOut                          outputFile;
-//    typename Traits::TOutputContext     outputCtx;
+    typename Traits::TOutputFile        outputFile;
 
     typename Traits::TReadsContext      ctx;
     typename Traits::TSeedsBuckets      seeds;
@@ -261,7 +256,6 @@ struct Mapper
     Mapper(Options const & options) :
         options(options),
         readsFile(options.readsCount)
-//        outputCtx(contigs.names, contigs.namesCache)
     {};
 };
 
@@ -438,12 +432,14 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
     if (!open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE))
         throw RuntimeError("Error while opening output file.");
 
+//    setNameStore(context(me.outputFile), ...);
+
     if (me.options.outputHeader)
     {
         BamHeader header;
 
         // Fill header.
-//        fillHeader(header, me.options, me.contigs.seqs, me.contigs.names);
+        fillHeader(header, me.options);
 
         // Write header.
         writeRecord(me.outputFile, header);
@@ -928,19 +924,19 @@ inline void clearAlignments(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void writeMatches(Mapper<TSpec, TConfig> & me)
 {
-//    typedef MapperTraits<TSpec, TConfig>        TTraits;
-//    typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
-//
-//    start(me.timer);
-//    TMatchesWriter writer(me.outputStream, me.outputCtx,
-//                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
-//                          me.ctx, me.contigs, value(me.reads),
-//                          me.options);
-//    stop(me.timer);
-//    me.stats.writeMatches += getValue(me.timer);
-//
-//    if (me.options.verbose > 1)
-//        std::cout << "Output time:\t\t\t" << me.timer << std::endl;
+    typedef MapperTraits<TSpec, TConfig>        TTraits;
+    typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
+
+    start(me.timer);
+    TMatchesWriter writer(me.outputFile, //me.outputCtx,
+                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
+                          me.ctx, me.contigs, value(me.reads),
+                          me.options);
+    stop(me.timer);
+    me.stats.writeMatches += getValue(me.timer);
+
+    if (me.options.verbose > 1)
+        std::cout << "Output time:\t\t\t" << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
