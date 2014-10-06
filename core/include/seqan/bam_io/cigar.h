@@ -715,8 +715,11 @@ cigarToGapAnchorContig(TCigarString const & cigar, TGaps & gaps)
             case 'D':
             case 'M':
             case 'N':
-            case 'S':
                 it += cigar[i].count;
+                atBegin = false;
+                break;
+            case 'S':
+                beginGaps += cigar[i].count;
                 atBegin = false;
         }
     }

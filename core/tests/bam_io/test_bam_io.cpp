@@ -48,6 +48,7 @@
 #include "test_bam_index.h"
 #endif  // #if SEQAN_HAS_ZLIB
 #include "test_bam_stream.h"
+#include "test_bam_cigar.h"
 
 SEQAN_BEGIN_TESTSUITE(test_bam_io)
 {
@@ -174,5 +175,8 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
 
     // Issue 489
     SEQAN_CALL_TEST(test_bam_io_bam_stream_issue_489);
+
+    // Test BAM I/O.
+    SEQAN_CALL_TEST(test_bam_io_bam_record_to_alignment);
 }
 SEQAN_END_TESTSUITE
