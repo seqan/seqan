@@ -101,6 +101,34 @@ struct PrefixAligner_<TPrefix, HammingDistance>
 
 // ============================================================================
 
+/*!
+ * @class BacktrackingFinder Backtracking Finder
+ * @headerfile <seqan/index.h>
+ *
+ * @brief Provides index-based approximate string search via backtracking, together with @link BacktrackingPattern @endlink.
+ *
+ * @signature template <typename TIndex, typename TDistance, typename TSpec>
+ *            class Finder<TIndex, Backtracking<TDistance, TSpec> >;
+ *
+ * @tparam TIndex    The @link Index @endlink to use for the search.
+ * @tparam TDistance Tag to select the distance, defaults to @link HammingDistance @endlink.
+ * @tparam TSpec     Tag to select the further specialization, defaults to @link BacktrackingSemiGlobal @endlink.
+ */
+
+/*!
+ * @class BacktrackingPattern Backtracking Pattern
+ * @headerfile <seqan/index.h>
+ *
+ * @brief Provides index-based approximate string search via backtracking, together with @link BacktrackingFinder @endlink.
+ *
+ * @signature template <typename TIndex, typename TDistance, typename TSpec>
+ *            class Pattern<TNeedle, Backtracking<TDistance, TSpec> >;
+ *
+ * @tparam TNeedle   A @link TextConcept text @endlink to use for the search.
+ * @tparam TDistance Tag to select the distance, defaults to @link HammingDistance @endlink.
+ * @tparam TSpec     Tag to select the further specialization, defaults to @link BacktrackingSemiGlobal @endlink.
+ */
+
 /**
 .Spec.Backtracking:
 ..summary:Provides approximate string matching via backtracking on a substring index.
