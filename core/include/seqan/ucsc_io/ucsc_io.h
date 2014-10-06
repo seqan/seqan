@@ -55,12 +55,12 @@ template <typename TSpec>
 struct Ucsc_;
 
 /*!
- * @defgroup UcscTags
+ * @defgroup UcscFileIO
  * @brief Tags for UCSC I/O.
  */
 
 /*!
- * @tag UcscTags#Ucsc
+ * @tag UcscFileIO#Ucsc
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser annotation file (aka knownGene format).
  *
@@ -75,7 +75,7 @@ typedef Tag<Ucsc_<UcscKnownGene_> > Ucsc;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag UcscTags#UcscIsoforms
+ * @tag UcscFileIO#UcscIsoforms
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser annotation file (aka knownGene format).
  *
@@ -292,10 +292,10 @@ void readRecord(UcscRecord & record,
  *
  * @signature void writeRecord(target, record, tag);
  *
- * @param[in,out] @link OutputIteratorConcept Output iterator @endlink or @link ContainerConcept container @endlink to
- *                write to.
+ * @param[in,out] target @link OutputIteratorConcept Output iterator @endlink or @link ContainerConcept container
+ *                       @endlink to write to.
  * @param[in]     record @link UcscRecord @endlink to write.
- * @param[in]     tag          Fixed to @link Ucsc @endlink.
+ * @param[in]     tag    Fixed to @link Ucsc @endlink.
  *
  * @throw IOError in case of I/O problems
  */
