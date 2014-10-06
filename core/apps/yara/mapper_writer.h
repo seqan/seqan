@@ -534,7 +534,6 @@ inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, TThreading const
 template <typename TSpec, typename Traits>
 inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
 {
-    writeRecord(me.recordBuffer, me.record);
     write(me.recordBuffer, me.record, context(me.outputFile), me.outputFile.format);
 
     if (length(me.recordBuffer) > Power<2, 16>::VALUE)
