@@ -41,6 +41,68 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+SEQAN_DEFINE_TEST(testEmptyIndex)
+{
+    typedef String<Dna5> TString;
+    typedef Index<TString> TIndex;
+
+    TIndex index;
+
+    Iterator<TIndex, TopDown<> >::Type iterator(index);
+
+}
+
+SEQAN_DEFINE_TEST(testIssue509)
+{
+    // goDown causes assertion on small index #509
+    // Originally by John on Trac
+    typedef String<Dna5> TString;
+    typedef StringSet<TString> TStrings;
+    typedef Index<TStrings> TIndex;
+
+    TStrings seqs;
+    TString seq("A");
+    appendValue(seqs, seq);
+    TIndex index(seqs);
+
+    Iterator<TIndex, TopDown<> >::Type iterator(index);
+    SEQAN_ASSERT(isRoot(iterator));
+    SEQAN_ASSERT_NOT(isLeaf(iterator));
+
+    SEQAN_ASSERT(goDown(iterator));
+    SEQAN_ASSERT_NOT(isRoot(iterator));
+    SEQAN_ASSERT(isLeaf(iterator));
+
+    goRoot(iterator);
+    SEQAN_ASSERT(isRoot(iterator));
+    SEQAN_ASSERT_NOT(isLeaf(iterator));
+    SEQAN_ASSERT(goDown(iterator, seq));
+}
+
+SEQAN_DEFINE_TEST(testIssue509b)
+{
+    // goDown causes assertion on small index #509
+    // Originally by John on Trac
+    typedef String<Dna5> TString;
+    typedef Index<TString> TIndex;
+
+    TString seq("A");
+    TIndex index(seq);
+
+    Iterator<TIndex, TopDown<> >::Type iterator(index);
+    SEQAN_ASSERT(isRoot(iterator));
+    SEQAN_ASSERT_NOT(isLeaf(iterator));
+
+    SEQAN_ASSERT(goDown(iterator));
+    SEQAN_ASSERT_NOT(isRoot(iterator));
+    SEQAN_ASSERT(isLeaf(iterator));
+
+    goRoot(iterator);
+    SEQAN_ASSERT(isRoot(iterator));
+    SEQAN_ASSERT_NOT(isLeaf(iterator));
+    SEQAN_ASSERT(goDown(iterator, seq));
+}
+
 SEQAN_DEFINE_TEST(testBuild)
 {
 		typedef String<char> TText;

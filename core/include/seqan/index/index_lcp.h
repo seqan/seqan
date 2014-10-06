@@ -290,7 +290,7 @@ namespace SEQAN_NAMESPACE_MAIN
         #endif
 
 		TSize n = length(s);
-        if (n < 2) return;
+        if (n == 0) return;
 
         #ifdef SEQAN_DEBUG_INDEX
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;	// for lcpMax, lcpMean, |Sigma|
@@ -354,7 +354,7 @@ namespace SEQAN_NAMESPACE_MAIN
         #endif
 
 		TSize n = length(s);
-        if (n < 2) return;
+        if (n == 0) return;
 
         #ifdef SEQAN_DEBUG_INDEX
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;	// for lcpMax, lcpMean, |Sigma|
@@ -449,7 +449,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TText &s = concat(sset);
 		TSize n = length(s);
 		
-        if (n < 2) return;
+        if (n == 0) return;
 
         #ifdef SEQAN_DEBUG_INDEX
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;	// for lcpMax, lcpMean, |Sigma|
