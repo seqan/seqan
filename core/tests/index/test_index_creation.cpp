@@ -55,6 +55,7 @@ using namespace seqan;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {
+	SEQAN_CALL_TEST(testIssue519);
 	SEQAN_CALL_TEST(testIndexCreation);
 }
 SEQAN_END_TESTSUITE
