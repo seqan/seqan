@@ -106,11 +106,11 @@ struct StorageSwitch<TObject, Dependent<TSpec> >
  *     @endlink.  This context can be used for storing contig and sample names, in the case of VCF I/O, for example,
  *     @link NameStoreCache @endlink objects, and buffers.  Each SmartFile has exactly one context.</li>
  * <li>The context type can be constructed both as dependent and independent using @link SmartFile#SmartFileContext
- *     SmartFileContext.  Each SmartFile stores an independent context and a dependent context.  When constructing
- *     with another SmartFile or another SmartFile's context, the dependent context of this SmartFile is set
- *     to depend on the dependent context of the other Smart File.  Otherwise, it is set to depend on this SmartFile's
- *     independent context.  This allows chaining of contexts, e.g. for updating the contig names of an output
- *     smart file from an input smart file.</li>
+ *     SmartFileContext @endlink.  Each SmartFile stores an independent context and a dependent context.  When
+ *     constructing with another SmartFile or another SmartFile's context, the dependent context of this SmartFile is
+ *     set to depend on the dependent context of the other Smart File.  Otherwise, it is set to depend on this
+ *     SmartFile's independent context.  This allows chaining of contexts, e.g. for updating the contig names of an
+ *     output smart file from an input smart file.</li>
  * </ul>
  */
 

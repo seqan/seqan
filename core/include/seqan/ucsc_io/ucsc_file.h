@@ -47,8 +47,33 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Typedef UcscFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class UcscFileIn
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ *
+ * @signature typedef SmartFile<Ucsc, Input> UcscFileIn;
+ */
 typedef SmartFile<Ucsc, Input>   UcscFileIn;
-typedef SmartFile<Ucsc, Output>  UcscFileOut;
+
+// ----------------------------------------------------------------------------
+// Typedef UcscFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class UcscFileInOut
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ *
+ * @signature typedef SmartFile<Ucsc, Output> UcscFileOut;
+ */
+typedef SmartFile<Ucsc, Output> UcscFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -78,6 +103,17 @@ struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
 // Function readRecord(); UcscRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn UcscFileIn#readRecord
+ * @brief Reading records from a UcscFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] record The resulting @link UcscRecord @endlink.
+ * @param[out] file   The UcscFileIn to read from.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TSpec>
 void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 {
@@ -88,6 +124,17 @@ void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 // Function write(); UcscRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn UcscFileIn#writeRecord
+ * @brief Writing records to a UcscFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] file   The UcscFileIn to write to.
+ * @param[out] record The @link UcscRecord @endlink to write out.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TSpec>
 void writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord & record)
 {
