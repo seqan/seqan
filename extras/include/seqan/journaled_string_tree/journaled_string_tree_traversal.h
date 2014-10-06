@@ -790,7 +790,8 @@ position(JstTraverser<TContainer, TState,  JstTraverserConfig<TContextPos, TCont
                 TSize seqId = it - itBegin;
                 TJournalStringIt journalIt;
                 // This is ok, since we do not change the underlying string.
-                journalIt._journalStringPtr = &value(stringSet(container(traverser)), seqId);
+                journalIt._journalStringPtr = &traverser._haystackPtr->_journalSet[seqId];
+                journalIt = begin(*journalIt._journalStringPtr, Standard());
                 _mapVirtualToVirtual(journalIt, traverser._branchIt, top(traverser._branchStack)._proxyIter,
                                      traverser._traverserCore._branchNodeIt, container(container(traverser)), seqId);
 //                if (IsSameType<TContextPos, ContextPositionRight>::VALUE)
@@ -1355,10 +1356,10 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<TCont
     SEQAN_ASSERT_GEQ(top(traverser._branchStack)._branchProxyId, 0u);
     SEQAN_ASSERT_LT(top(traverser._branchStack)._branchProxyId, length(stringSet(container(traverser))));
 
-    TJournalString & proxySeq = value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
-    TJournalStringIterator branchBeginIt;
+//    TJournalString & proxySeq = value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
+    top(traverser._branchStack)._proxyIter = begin(value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId), Standard());
 
-    _mapHostToVirtual(top(traverser._branchStack)._proxyIter, proxySeq, container(container(traverser)), top(traverser._branchStack)._branchProxyId,
+    _mapHostToVirtual(top(traverser._branchStack)._proxyIter, container(container(traverser)), top(traverser._branchStack)._branchProxyId,
                       deltaPosition(traverser._traverserCore._branchNodeIt));  // Maybe this can be simplified.
 
     top(traverser._branchStack)._mappedHostPos = deltaPosition(traverser._traverserCore._branchNodeIt) + 1;
@@ -1440,7 +1441,7 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<TCont
 
         // It might be necessary to select from the host position instead of the virtual mapping.
         if (deltaType(traverser._traverserCore._branchNodeIt) == DELTA_TYPE_DEL)
-            _mapHostToVirtual(targetIt, value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId),
+            _mapHostToVirtual(targetIt,
                               container(container(traverser)), top(traverser._branchStack)._branchProxyId,
                               deltaPosition(traverser._traverserCore._branchNodeIt));
         else
@@ -1489,10 +1490,10 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<
     SEQAN_ASSERT_GEQ(top(traverser._branchStack)._branchProxyId, 0u);
     SEQAN_ASSERT_LT(top(traverser._branchStack)._branchProxyId, length(stringSet(container(traverser))));
 
-    TJournalString & proxySeq = value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
-    TJournalStringIterator branchBeginIt;
+//    TJournalString & proxySeq = value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
+    top(traverser._branchStack)._proxyIter = begin(value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId), Standard());
 
-    _mapHostToVirtual(top(traverser._branchStack)._proxyIter, proxySeq, container(container(traverser)), top(traverser._branchStack)._branchProxyId,
+    _mapHostToVirtual(top(traverser._branchStack)._proxyIter, container(container(traverser)), top(traverser._branchStack)._branchProxyId,
                       deltaPosition(traverser._traverserCore._branchNodeIt));
 
     top(traverser._branchStack)._mappedHostPos = deltaPosition(traverser._traverserCore._branchNodeIt) + 1;
@@ -1550,7 +1551,7 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<
 
         // It might be necessary to select from the host position instead of the virtual mapping.
         if (deltaType(traverser._traverserCore._branchNodeIt) == DELTA_TYPE_DEL)
-            _mapHostToVirtual(targetIt, value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId),
+            _mapHostToVirtual(targetIt,
                               container(container(traverser)), top(traverser._branchStack)._branchProxyId,
                               deltaPosition(traverser._traverserCore._branchNodeIt));
         else

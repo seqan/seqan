@@ -410,16 +410,16 @@ _syncToMergePoint(TCoverage & target,
 // Function _mapHostToVirtual()
 // ----------------------------------------------------------------------------
 
-template <typename TIterator, typename TValue, typename THostSpec, typename TBuffSpec, typename TDeltaMap,
+template <typename TIterator, /*typename TValue, typename THostSpec, typename TBuffSpec,*/ typename TDeltaMap,
           typename TProxyId, typename THostPos>
 inline void
 _mapHostToVirtual(TIterator & resultIt,
-                  String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec> > & js,
+//                  String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec> > const & js,
                   TDeltaMap const & variantStore,
                   TProxyId const & proxyId,
                   THostPos const & hostPos)
 {
-    typedef String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec> > TJournalString;
+    typedef typename Container<TIterator>::Type TJournalString;
     typedef typename JournalType<TJournalString>::Type TJournalEntries;
     typedef typename Value<TJournalEntries>::Type TCargo;
     typedef typename Iterator<TJournalEntries>::Type TEntriesIterator;
@@ -432,15 +432,7 @@ _mapHostToVirtual(TIterator & resultIt,
     typedef typename Position<TDeltaMap const>::Type TDeltaMapPos;
 
     // We need to set the iterator to the correct position within the proxy sequence given the host pos.
-    TJournalEntries & journalEntries = _journalEntries(js);
-
-    if (empty(journalEntries._journalNodes))
-    {
-        resultIt = end(js, Standard());  // Put the iterator into a valid state.
-        return;
-    }
-
-    resultIt = begin(js, Standard());
+    TJournalEntries & journalEntries = _journalEntries(*resultIt._journalStringPtr);
 
     TCargo refCargo;
     refCargo.physicalOriginPosition = hostPos;
@@ -543,8 +535,6 @@ _mapVirtualToVirtual(TIter & target,
                      TProxyId const & proxyId)
 {
     typedef typename Position<TIter>::Type TPosition;
-    typedef typename Size<TIter>::Type TSize;
-    typedef typename Difference<TIter>::Type TDiff;
 
     if (source._journalEntriesIterator->segmentSource == SOURCE_ORIGINAL)  // Simpl case: Both branches must cover this position.
     {
@@ -568,7 +558,7 @@ _mapVirtualToVirtual(TIter & target,
         {
             SEQAN_ASSERT(source >= branchProxyIt);
 
-            _mapHostToVirtual(target, *target._journalStringPtr, deltaMap, proxyId, deltaPosition(branchNodeIt));
+            _mapHostToVirtual(target, deltaMap, proxyId, deltaPosition(branchNodeIt));
             target += source - branchProxyIt;
         }
     }

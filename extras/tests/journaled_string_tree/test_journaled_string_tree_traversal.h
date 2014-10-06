@@ -34,8 +34,8 @@
 // Test cases for the JST traversal.
 // ==========================================================================
 
-#define DISABLE_COMMON_1
-#define TEST_DEBUG_OUTPUT
+#define DISABLE_COMMON_2
+//#define TEST_DEBUG_OUTPUT
 
 #ifndef EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_
 #define EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_
@@ -313,20 +313,20 @@ class JstTraversalTestCommon2 : public JstTraversalTest<T>
 {};
 
 typedef
-//    TagList<JstTraversalConfig<5, 4, 0>,
-//    TagList<JstTraversalConfig<5, 4, 1>,
-//    TagList<JstTraversalConfig<5, 4, 2>,
-//    TagList<JstTraversalConfig<5, 4, 3>,
-//    TagList<JstTraversalConfig<5, 4, 4>,
-//    TagList<JstTraversalConfig<5, 4, 5>,
-    TagList<JstTraversalConfig<6, 5, 3> //,
-//    TagList<JstTraversalConfig<7, 5, 3>,
-//    TagList<JstTraversalConfig<9, 6, 1>,
-//    TagList<JstTraversalConfig<9, 6, 3>,
-//    TagList<JstTraversalConfig<9, 6, 4>,
-//    TagList<JstTraversalConfig<9, 6, 5>,
-//    JstConfigGenerator_<4, 3, 5>::Type
-    > //> > > > > > > > > > >
+    TagList<JstTraversalConfig<5, 4, 0>,
+    TagList<JstTraversalConfig<5, 4, 1>,
+    TagList<JstTraversalConfig<5, 4, 2>,
+    TagList<JstTraversalConfig<5, 4, 3>,
+    TagList<JstTraversalConfig<5, 4, 4>,
+    TagList<JstTraversalConfig<5, 4, 5>,
+    TagList<JstTraversalConfig<6, 5, 3> ,
+    TagList<JstTraversalConfig<7, 5, 3>,
+    TagList<JstTraversalConfig<9, 6, 1>,
+    TagList<JstTraversalConfig<9, 6, 3>,
+    TagList<JstTraversalConfig<9, 6, 4>,
+    TagList<JstTraversalConfig<9, 6, 5>,
+    JstConfigGenerator_<4, 3, 5>::Type
+    > > > > > > > > > > > >
     JstTestCases;
 
 typedef TagList<JstTraversalSpecConfig<ContextPositionLeft, True> > JstTraversalSpec1;
@@ -340,7 +340,9 @@ typedef TestTypeBuilderHelper_<JstTraversalSpec2, JstTestCases>::Type JstConfigT
 SEQAN_TYPED_TEST_CASE(JstTraversalTestCommon, JstConfigTypes1);
 #endif
 
+#ifndef DISABLE_COMMON_2
 SEQAN_TYPED_TEST_CASE(JstTraversalTestCommon2, JstConfigTypes2);
+#endif
 
 // ============================================================================
 // Functions to run the actual tests.
@@ -505,10 +507,12 @@ SEQAN_TYPED_TEST(JstTraversalTestCommon, FullSerial)
 }
 #endif
 
+#ifndef DISABLE_COMMON_2
 SEQAN_TYPED_TEST(JstTraversalTestCommon2, FullSerial)
 {
     _testJstTraversalCommonFullSerial(typename TestFixture::TConfig());
 }
+#endif
 
 // ============================================================================
 // Test block-wise JST generation in serial mode.
@@ -538,10 +542,12 @@ SEQAN_TYPED_TEST(JstTraversalTestCommon, BlockSerial)
 }
 #endif
 
+#ifndef DISABLE_COMMON_2
 SEQAN_TYPED_TEST(JstTraversalTestCommon2, BlockSerial)
 {
     _testJstTraversalCommonBlockSerial(typename TestFixture::TConfig());
 }
+#endif
 
 // ============================================================================
 // Test full JST generation in parallel mode.
@@ -571,10 +577,12 @@ SEQAN_TYPED_TEST(JstTraversalTestCommon, FullParallel)
 }
 #endif
 
+#ifndef DISABLE_COMMON_2
 SEQAN_TYPED_TEST(JstTraversalTestCommon2, FullParallel)
 {
     _testJstTraversalCommonFullParallel(typename TestFixture::TConfig());
 }
+#endif
 
 // ============================================================================
 // Test block-wise JST generation in parallel mode.
@@ -604,9 +612,11 @@ SEQAN_TYPED_TEST(JstTraversalTestCommon, BlockParallel)
 }
 #endif
 
+#ifndef DISABLE_COMMON_2
 SEQAN_TYPED_TEST(JstTraversalTestCommon2, BlockParallel)
 {
     _testJstTraversalCommonBlockParallel(typename TestFixture::TConfig());
 }
+#endif
 
 #endif  // EXTRAS_TESTS_TEST_JOURNALED_STRING_TREE_TRAVERSAL_2_H_
