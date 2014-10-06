@@ -145,7 +145,7 @@ struct MapperTraits
     typedef typename If<IsSameType<TSequencing, PairedEnd>,
                         Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
     typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;
-    typedef BamFileOut                                              TOutputFile;
+    typedef SmartFile<Bam, Output, YaraContigs>                     TOutputFile;
 
     typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
@@ -428,10 +428,17 @@ inline void clearReads(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 {
+    typedef MapperTraits<TSpec, TConfig>            TTraits;
+    typedef typename TTraits::TContigSeqs           TContigSeqs;
+    typedef typename Value<TContigSeqs>::Type       TContigSeq;
+
     if (!open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE))
         throw RuntimeError("Error while opening output file.");
 
-//    setNameStore(context(me.outputFile), ...);
+    setNameStore(context(me.outputFile), me.contigs.names);
+
+    resize(sequenceLengths(context(me.outputFile)), length(me.contigs.seqs));
+    transform(sequenceLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
 
     if (me.options.outputHeader)
     {
@@ -927,10 +934,10 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
     typedef MatchesWriter<TSpec, TTraits>       TMatchesWriter;
 
     start(me.timer);
-//    TMatchesWriter writer(me.outputFile,
-//                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
-//                          me.ctx, me.reads,
-//                          me.options);
+    TMatchesWriter writer(me.outputFile,
+                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
+                          me.ctx, me.reads,
+                          me.options);
     stop(me.timer);
     me.stats.writeMatches += getValue(me.timer);
 

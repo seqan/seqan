@@ -259,4 +259,14 @@ struct YaraContigsConfig
     typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
 };
 
+namespace seqan {
+template <typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, Output, YaraContigs>, TStorageSpec>
+{
+    typedef StringSet<CharString, Owner<ConcatDirect<__uint32> > >  TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
+    typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+};
+}
+
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_
