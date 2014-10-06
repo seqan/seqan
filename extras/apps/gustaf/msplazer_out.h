@@ -269,7 +269,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     if (bp.svtype == 1) // 1=insertion
     {
         appendValue(record.tagNames, "size");
-        appendValue(record.tagValues, '-' + toString(length(bp.insertionSeq)));
+        appendValue(record.tagValues, "-" + toString(length(bp.insertionSeq)));
         appendValue(record.tagNames, "seq");
         appendValue(record.tagValues, bp.insertionSeq);
     }
@@ -287,9 +287,9 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
         appendValue(record.tagValues, toString(bp.endSeqPos));
         appendValue(record.tagNames, "endStrand");
         if (bp.endSeqStrand)
-            appendValue(record.tagValues, '+');
+            appendValue(record.tagValues, "+");
         else
-            appendValue(record.tagValues, '-');
+            appendValue(record.tagValues, "-");
     }
     appendValue(record.tagNames, "support");
     appendValue(record.tagValues, toString(bp.support));
