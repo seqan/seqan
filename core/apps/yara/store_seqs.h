@@ -75,16 +75,13 @@ struct SeqStore
     typedef String<TAlphabet, TSeqSpec>                 TSeq;
     typedef StringSet<TSeq, TSeqsSpec>                  TSeqs;
 	typedef StringSet<CharString, TSeqNamesSpec>        TSeqNames;
-	typedef NameStoreCache<TSeqNames, CharString>       TSeqNamesCache;
 
     TSeqs           seqs;
     TSeqNames       names;
-//    TSeqNamesCache  namesCache;
 
     SeqStore() :
         seqs(),
-        names()//,
-//		namesCache(names)
+        names()
     {}
 };
 
@@ -101,7 +98,6 @@ inline void clear(SeqStore<TSpec, TConfig> & me)
 {
     clear(me.seqs);
     clear(me.names);
-//    clear(me.namesCache);
 }
 
 // ----------------------------------------------------------------------------
@@ -128,8 +124,6 @@ inline bool open(SeqStore<TSpec, TConfig> & me, TFileName const & fileName)
 
     name = fileName;    append(name, ".rid");
     if (!open(me.names, toCString(name))) return false;
-
-//    refresh(me.namesCache);
 
     return true;
 }
@@ -163,7 +157,6 @@ void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
 
     swap(a.seqs, b.seqs);
     swap(a.names, b.names);
-//    swap(a.namesCache, b.namesCache);
 }
 
 // ----------------------------------------------------------------------------
@@ -176,9 +169,6 @@ inline void readRecords(SeqStore<TSpec, TConfig> & me,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     readRecords(me.names, me.seqs, fileIn, maxRecords);
-
-//    appendValue(reads.names, prefix(seqName, lastOf(seqName, IsSpace())), Generous());
-//    refresh(me.namesCache);
 }
 
 // ----------------------------------------------------------------------------
