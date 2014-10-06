@@ -57,7 +57,7 @@ struct MatchesWriter
 
     // Thread-private data.
     BamAlignmentRecord      record;
-//    CharString              recordBuffer;
+    CharString              recordBuffer;
     CharString              xa;
 
     // Shared-memory read-write data.
@@ -504,13 +504,13 @@ inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
     {
         append(me.xa, nameStore(context(me.outputFile))[getMember(match, ContigId())]);
         appendValue(me.xa, ',');
-        writeValue(me.xa, getMember(match, ContigBegin()) + 1);
+        appendNumber(me.xa, getMember(match, ContigBegin()) + 1);
         appendValue(me.xa, ',');
-        writeValue(me.xa, getMember(match, ContigEnd()) + 1);
+        appendNumber(me.xa, getMember(match, ContigEnd()) + 1);
         appendValue(me.xa, ',');
         appendValue(me.xa, onForwardStrand(match) ? '+' : '-');
         appendValue(me.xa, ',');
-        writeValue(me.xa, getMember(match, Errors()));
+        appendNumber(me.xa, getMember(match, Errors()));
         appendValue(me.xa, ';');
     });
 }
@@ -531,30 +531,30 @@ inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, TThreading const
     writeRecord(me.outputFile, me.record);
 }
 
-//template <typename TSpec, typename Traits>
-//inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
-//{
-//    writeRecord(me.recordBufferIt, me.record);
-////    write(me.recordBufferIt, me.record, context(me.outputFile), me.outputFile.format);
-//
-//    if (length(me.recordBuffer) > Power<2, 16>::VALUE)
-//        _writeRecordBufferImpl(me, Parallel());
-//}
+template <typename TSpec, typename Traits>
+inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
+{
+    writeRecord(me.recordBuffer, me.record);
+    write(me.recordBuffer, me.record, context(me.outputFile), me.outputFile.format);
+
+    if (length(me.recordBuffer) > Power<2, 16>::VALUE)
+        _writeRecordBufferImpl(me, Parallel());
+}
 
 // ----------------------------------------------------------------------------
 // Function _writeRecordBufferImpl()
 // ----------------------------------------------------------------------------
 
-//template <typename TSpec, typename Traits, typename TThreading>
-//inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & /* me */, TThreading const & /* tag */) {}
-//
-//template <typename TSpec, typename Traits>
-//inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
-//{
-//    SEQAN_OMP_PRAGMA(critical(MatchesWriter_writeRecord))
-//    write(me.outputFile, me.recordBuffer);
-//
-//    clear(me.recordBuffer);
-//}
+template <typename TSpec, typename Traits, typename TThreading>
+inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, TThreading const & /* tag */) {}
+
+template <typename TSpec, typename Traits>
+inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
+{
+    SEQAN_OMP_PRAGMA(critical(MatchesWriter_writeRecord))
+    write(me.outputFile.stream, me.recordBuffer);
+
+    clear(me.recordBuffer);
+}
 
 #endif  // #ifndef APP_YARA_MAPPER_WRITER_H_
