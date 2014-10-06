@@ -102,7 +102,7 @@ public:
     TVertexDescriptor_ data_begin;
     TVertexDescriptor_ data_end;
 
-    Graph() : data_begin(), end_data()
+    Graph() : data_begin(), data_end()
     {}
 
     ~Graph()
