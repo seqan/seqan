@@ -160,10 +160,21 @@ struct FileFormat<SmartFile<Fastq, Output, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+                                Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
 readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, file.iter, file.format);
+}
+
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+                                HasQualities<typename Value<TSeqString>::Type> >, void)
+readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
+{
+
+    readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
+    assignQualities(seq, context(file).buffer[2]);
 }
 
 // ----------------------------------------------------------------------------
