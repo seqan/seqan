@@ -364,13 +364,15 @@ inline void openReads(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, SingleEnd)
 {
-    open(me.readsFile, toCString(me.options.readsFile.i1));
+    if (!open(me.readsFile, toCString(me.options.readsFile.i1)))
+        throw RuntimeError("Error while opening reads file.");
 }
 
 template <typename TSpec, typename TConfig>
 inline void _openReadsImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 {
-    open(me.readsFile, toCString(me.options.readsFile.i1), toCString(me.options.readsFile.i2));
+    if (!open(me.readsFile, toCString(me.options.readsFile.i1), toCString(me.options.readsFile.i2)))
+        throw RuntimeError("Error while opening reads file.");
 }
 
 // ----------------------------------------------------------------------------
