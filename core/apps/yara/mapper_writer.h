@@ -135,7 +135,7 @@ inline void fillHeader(BamHeader & header, TOptions const & options)
     // Fill read group header line.
     BamHeaderRecord rgRecord;
     rgRecord.type = BAM_HEADER_READ_GROUP;
-    appendValue(rgRecord.tags, TTag("ID", "none"));
+    appendValue(rgRecord.tags, TTag("ID", options.readGroup));
 //    appendValue(rgRecord.tags, TTag("PI", options.libraryLength));
     appendValue(rgRecord.tags, TTag("PG", "Yara"));
     appendValue(header, rgRecord);
@@ -197,9 +197,10 @@ inline void appendAlignments(BamAlignmentRecord & record, TString const & xa)
     if (!empty(xa)) appendTagValue(record.tags, "XA", xa, 'Z');
 }
 
-inline void appendReadGroup(BamAlignmentRecord & record)
+template <typename TString>
+inline void appendReadGroup(BamAlignmentRecord & record, TString const & rg)
 {
-    appendTagValue(record.tags, "RG", "none", 'Z');
+    appendTagValue(record.tags, "RG", rg, 'Z');
 }
 
 // ----------------------------------------------------------------------------
@@ -233,7 +234,7 @@ inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId
     _fillReadSeqQual(me, readId);
     _fillMapq(me, 0u);
     _fillMateInfo(me, readId);
-    appendReadGroup(me.record);
+    appendReadGroup(me.record, me.options.readGroup);
     me.record.flag |= BAM_FLAG_UNMAPPED;
     _writeRecord(me);
 }
@@ -486,7 +487,7 @@ inline void _fillReadInfo(MatchesWriter<TSpec, Traits> & me, TMatches const & ma
     appendCooptimalCount(me.record, bestCount);
     appendSuboptimalCount(me.record, length(matches) - bestCount);
     appendType(me.record, bestCount == 1);
-    appendReadGroup(me.record);
+    appendReadGroup(me.record, me.options.readGroup);
     // Set number of secondary alignments and hit index.
 //    appendTagValue(me.record.tags, "NH", 1, 'i');
 //    appendTagValue(me.record.tags, "HI", 1, 'i');

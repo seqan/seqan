@@ -125,13 +125,18 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                      ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
 
-    addOption(parser, ArgParseOption("os", "output-secondary", "Output suboptimal alignments as secondary alignments. \
-                                                                Default: output suboptimal alignments inside XA tag."));
+    addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
+                                     ArgParseOption::STRING));
+    setDefaultValue(parser, "read-group", options.readGroup);
 
     addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
 
+    addOption(parser, ArgParseOption("os", "output-secondary", "Output suboptimal alignments as secondary alignments. \
+                                                                Default: output suboptimal alignments inside XA tag."));
+
     addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
                                                              Read Alignment BEnchMArk (RABEMA)."));
+
 
     // Setup mapping options.
     addSection(parser, "Mapping Options");
@@ -229,8 +234,9 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     }
 
     // Parse output options.
-    getOptionValue(options.outputSecondary, parser, "output-secondary");
+    getOptionValue(options.readGroup, parser, "read-group");
     options.outputHeader = !isSet(parser, "no-header");
+    getOptionValue(options.outputSecondary, parser, "output-secondary");
     getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.

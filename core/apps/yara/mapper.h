@@ -56,6 +56,7 @@ struct Options
     CharString          outputFile;
     bool                outputSecondary;
     bool                outputHeader;
+    CharString          readGroup;
 
     MappingMode         mappingMode;
     float               errorRate;
@@ -81,6 +82,7 @@ struct Options
     Options() :
         outputSecondary(false),
         outputHeader(true),
+        readGroup("none"),
         mappingMode(STRATA),
         errorRate(0.05f),
         strataRate(0.00f),
@@ -437,6 +439,7 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 
     setNameStore(context(me.outputFile), me.contigs.names);
 
+    // Fill contig lengths.
     resize(sequenceLengths(context(me.outputFile)), length(me.contigs.seqs));
     transform(sequenceLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
 
