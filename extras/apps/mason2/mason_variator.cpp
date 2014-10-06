@@ -143,7 +143,7 @@ struct MasonVariatorOptions
     MethylationLevelSimulatorOptions methSimOptions;
 
     MasonVariatorOptions() :
-            verbosity(1), seed(0), genVarIDs(true),
+            verbosity(1), seed(0), genVarIDs(true), numHaplotypes(0),
             snpRate(0), smallIndelRate(0), minSmallIndelSize(0), maxSmallIndelSize(0), svIndelRate(0),
             svInversionRate(0), svTranslocationRate(0), svDuplicationRate(0), minSVSize(0), maxSVSize(0)
     {}
