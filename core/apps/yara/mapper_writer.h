@@ -362,7 +362,18 @@ inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & 
 template <typename TSpec, typename Traits, typename TReadSeqId>
 inline void _fillReadName(MatchesWriter<TSpec, Traits> & me, TReadSeqId readSeqId)
 {
-    me.record.qName = me.reads.names[getReadId(me.reads.seqs, readSeqId)];
+    typedef MatchesWriter<TSpec, Traits>                        TMatchesWriter;
+    typedef typename TMatchesWriter::TReads                     TReads;
+    typedef typename TReads::TSeqNames const                    TSeqNames;
+    typedef typename Value<TSeqNames>::Type                     TSeqName;
+    typedef typename DirectionIterator<TSeqName, Input>::Type   TSeqNameIt;
+
+    TSeqName const & seqName = me.reads.names[getReadId(me.reads.seqs, readSeqId)];
+
+    TSeqNameIt seqNameIt = begin(seqName);
+    readUntil(me.record.qName, seqNameIt, OrFunctor<IsSpace, IsSlash>());
+
+//    me.record.qName = prefix(seqName, lastOf(seqName, IsSpace()));
 }
 
 // ----------------------------------------------------------------------------
