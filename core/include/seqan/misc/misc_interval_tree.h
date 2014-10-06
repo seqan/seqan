@@ -140,10 +140,8 @@ public:
 .Memfunc.IntervalAndCargo#IntervalAndCargo:
 ..signature:IntervalAndCargo()
      */
-    IntervalAndCargo()
-    {
-SEQAN_CHECKPOINT
-    }
+    IntervalAndCargo() : i1(), i2(), cargo()
+    {}
 
     /**
 .Memfunc.IntervalAndCargo#IntervalAndCargo:
@@ -227,9 +225,8 @@ public:
 ..class:Class.PointAndCargo
 ..signature:PointAndCargo(point, cargo)
     */
-	PointAndCargo() {
-SEQAN_CHECKPOINT
-	}
+	PointAndCargo() : point(), cargo()
+	{}
 
     /**
 .Memfunc.PointAndCargo#PointAndCargo
@@ -243,9 +240,7 @@ SEQAN_CHECKPOINT
     */
 	PointAndCargo(TValue point, TCargo cargo):
 		point(point), cargo(cargo)
-	{
-SEQAN_CHECKPOINT
-	}
+	{}
 };
 
 ///////////////////////////////////////////////////////////////////////////
