@@ -98,8 +98,8 @@ struct MatchesWriter
 
     ~MatchesWriter()
     {
-//        if (!empty(recordBuffer))
-//            _writeRecordBufferImpl(*this, typename Traits::TThreading());
+        if (!empty(recordBuffer))
+            _writeRecordBufferImpl(*this, typename Traits::TThreading());
     }
 };
 
@@ -545,7 +545,7 @@ inline void _writeRecordImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename Traits, typename TThreading>
-inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, TThreading const & /* tag */) {}
+inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & /* me */, TThreading const & /* tag */) {}
 
 template <typename TSpec, typename Traits>
 inline void _writeRecordBufferImpl(MatchesWriter<TSpec, Traits> & me, Parallel)
