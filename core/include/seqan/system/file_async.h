@@ -937,6 +937,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
 			SEQAN_PROTIMESTART(tw);
 			result = aio_suspend(&cblist, 1, &ts);
+			(void)result;  // never used
 			SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 		}
 
