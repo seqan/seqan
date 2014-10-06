@@ -55,6 +55,9 @@ using namespace seqan;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {
+	SEQAN_CALL_TEST(testEmptyIndex);
+	SEQAN_CALL_TEST(testIssue509);
+	SEQAN_CALL_TEST(testIssue509b);
 	SEQAN_CALL_TEST(testSTreeIterators_Wotd);
 	SEQAN_CALL_TEST(testSTreeIterators_WotdOriginal);
 	SEQAN_CALL_TEST(testSTreeIterators_Esa);
