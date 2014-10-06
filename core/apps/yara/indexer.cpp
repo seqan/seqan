@@ -126,7 +126,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("op", "output-prefix", "Specify a filename prefix for the reference genome index. \
+    addOption(parser, ArgParseOption("o", "output-prefix", "Specify a filename prefix for the reference genome index. \
                                      Default: use the filename prefix of the reference genome.", ArgParseOption::OUTPUTPREFIX));
 
     addOption(parser, ArgParseOption("td", "tmp-dir", "Specify a temporary directory where to construct the index. \
