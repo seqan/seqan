@@ -314,7 +314,7 @@ readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
-    SEQAN_ASSERT_EQ((__int32)0 - 1, BamAlignmentRecord::INVALID_POS);
+    SEQAN_ASSERT_EQ((__int32)0 - 1, (__int32)BamAlignmentRecord::INVALID_POS);
     readUntil(buffer, iter, nextEntry);
     record.beginPos = (__int32)lexicalCast<__uint32>(buffer) - 1;
     skipOne(iter, IsTab());
