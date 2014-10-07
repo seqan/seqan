@@ -81,10 +81,49 @@ namespace seqan {
  */
 
 /*!
- * @fn SimpleType::SimpleType
- * @brief The constructor.
+ * @var TValue SimpleType::value
+ * @brief The internal value storage of the SimpleType object.
  *
- * @signature SimpleType::SimpleType()
+ * @important Do not modify this value directly.  SimpleType implements conversion operators for all numeric types, so
+ *            you can simply assign and cast the SimpleType to all built-in numeric types.
+ *
+ * Stores the value of the SimpleType, is of type <tt>TValue</tt>.  Valid values are from <tt>0</tt> to @link
+ * FiniteOrderedAlphabetConcept#ValueSize @endlink minus one.
+ */
+
+/*!
+ * @fn SimpleType::SimpleType
+ * @brief Constructor of SimpleType type.
+ *
+ * @signature SimpleType::SimpleType();
+ * @signature SimpleType::SimpleType(other);
+ * @signature template <typename TParam> SimpleType::SimpleType(param);
+ *
+ * @param[in] other Other SimpleType to copy construct with.
+ * @param[in] param Any value of type <tt>TParam</tt> that can be assigned to the SimpleType object.
+ *
+ * The default constructor initializes the SimpleType object with the value <tt>0</tt> and the copy constructor copies
+ * over the value of the SimpleType.
+ *
+ * When constructing with a <tt>param</tt> that is not a SimpleType then <tt>param</tt> is assigned to the SimpleType
+ * object, using @link AssignableConcept#assign assign @endlink.  This function can be overloaded differently for each
+ * type.  You can expect the following behaviour for all SimpleType objects, however:
+ *
+ * <ul>
+ * <li>If <tt>param</tt> is a builtin integer then this value is directly assigned to the @link SimpleType::value value
+ *     @endlink member of the SimpleType object.  Note that this can allow an invalid assignment, e.g., when assigning
+ *     <tt>42</tt> to a @link Dna @endlink object.</li>
+ * <li>If <tt>param</tt> is a <tt>char</tt> then this character value is converted to the appropriate value and written
+ *     to the @link SimpleType::value value @endlink member.  For example, assigning <tt>'A'</tt> or <tt>'a'</tt> to
+ *     a SimpleType object assigns <tt>0</tt> to the @link SimpleType::value value @endlink member.</li>
+ * </ul>
+ *
+ * @section Example
+ *
+ * The following example shows construction of a @link Dna @endlink (specialization of SimpleType) object with from
+ * <tt>char</tt> and integer values.
+ *
+ * @snippet demos/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
 /**
@@ -275,6 +314,18 @@ struct IsSimple<SimpleType<TValue, TSpec> >
 {
     typedef True Type;
 };
+
+// ----------------------------------------------------------------------------
+// Concept Convertible
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TSource>
+struct Is< Convertible<SimpleType<TValue, TSpec>, TSource> > :
+    Is< FundamentalConcept<TSource> > {};
+
+template <typename TTarget, typename TValue, typename TSpec>
+struct Is< Convertible<TTarget, SimpleType<TValue, TSpec> > > :
+    Is< FundamentalConcept<TTarget> > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value

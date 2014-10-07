@@ -33,8 +33,8 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
     setVersion(parser, "1.0");
     setDate(parser, "Sep 2012");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIANNOTATION FILE\\fP> <\\fIREAD ALIGNMENT FILE\\fP>");
 
     // Parse command line
@@ -56,29 +56,30 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
 //
 bool loadFiles(TStore & store, Options const & options)
 {
-    std::ifstream alignmentFile(options.alignmentFileName.c_str());
-    if (!alignmentFile.good())
+    BamFileIn alignmentFile;
+    if (!open(alignmentFile, options.alignmentFileName.c_str()))
     {
         std::cerr << "Couldn't open alignment file " << options.alignmentFileName << std::endl;
         return false;
     }
     std::cerr << "Loading read alignments ..... " << std::flush;
-    read(alignmentFile, store, Sam());
+    readRecords(store, alignmentFile);
     std::cerr << "[" << length(store.alignedReadStore) << "]" << std::endl;
 
     // load annotations
-    std::ifstream annotationFile(options.annotationFileName.c_str());
-    if (!annotationFile.good())
+    GffFileIn annotationFile;
+    if (!open(annotationFile, options.annotationFileName.c_str()))
     {
         std::cerr << "Couldn't open annotation file" << options.annotationFileName << std::endl;
         return false;
     }
     std::cerr << "Loading genome annotation ... " << std::flush;
-    read(annotationFile, store, Gtf());
+    readRecords(store, annotationFile);
     std::cerr << "[" << length(store.annotationStore) << "]" << std::endl;
 
     return true;
 }
+
 
 //
 // 3. Extract intervals from gene annotations (grouped by contigId)

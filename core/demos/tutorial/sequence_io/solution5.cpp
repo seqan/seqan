@@ -13,9 +13,9 @@ int main()
     appendValue(quals, "IIIIIIIIIHII");
     appendValue(quals, "IIIIIIIIIHII");
 
+    seqan::DirectionIterator<std::ostream, seqan::Output>::Type iter(std::cout);
     for (unsigned i = 0; i < length(ids); ++i)
-        if (seqan::writeRecord(std::cout, ids[i], seqs[i], quals[i], seqan::Fastq()) != 0)
-            return 1;  // Error writing.
+        writeRecord(iter, ids[i], seqs[i], quals[i], seqan::Fastq());
 
     return 0;
 }

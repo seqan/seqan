@@ -334,12 +334,12 @@ void MaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     addSection(parser, "Apply VCF Variants to Reference");
 
     addOption(parser, seqan::ArgParseOption("ir", "input-reference", "Path to FASTA file to read the reference from.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.fa"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "input-reference", "fa fasta");
     setRequired(parser, "input-reference");
 
     addOption(parser, seqan::ArgParseOption("iv", "input-vcf", "Path to the VCF file with variants to apply.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.vcf"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.vcf"));
     setValidValues(parser, "input-vcf", "vcf");
 }
 
@@ -606,7 +606,7 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
                                             "Path to file with Illumina error profile.  The file must be a text file "
                                             "with floating point numbers separated by space, each giving a positional "
                                             "error rate.",
-                                            seqan::ArgParseOption::INPUTFILE, "FILE"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setValidValues(parser, "illumina-error-profile-file", "txt");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-prob-insert",
@@ -699,12 +699,12 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
 
     addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.fq"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
     setValidValues(parser, "illumina-left-template-fastq", "fq fastq fq.gz fastq.gz");
 
     addOption(parser, seqan::ArgParseOption("", "illumina-right-template-fastq",
                                             "FASTQ file to use for a template for right-end reads.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.fq"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
     setValidValues(parser, "illumina-right-template-fastq", "fq fastq fq.gz fastq.gz");
 }
 
@@ -1112,7 +1112,7 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
     setMinValue(parser, "num-fragments", "1");
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
     setValidValues(parser, "meth-fasta-in", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
@@ -1327,7 +1327,7 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     setDefaultValue(parser, "haplotype-name-sep", "/");
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
     setValidValues(parser, "meth-fasta-in", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "FASTA file with methylation levels of the output file.",
@@ -1438,16 +1438,16 @@ void MasonSplicingOptions::addOptions(seqan::ArgumentParser & parser) const
 
     addOption(parser, seqan::ArgParseOption("ig", "in-gff", "Path to input GFF or GTF file, must be "
                                             "sorted by reference name.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.gff"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.gff"));
     setValidValues(parser, "in-gff", "gff gtf");
     setRequired(parser, "in-gff");
 
     addOption(parser, seqan::ArgParseOption("", "gff-type", "Splicing will filter to the records that have this type.",
-                                            seqan::ArgParseOption::INPUTFILE, "TYPE"));
+                                            seqan::ArgParseOption::INPUT_FILE, "TYPE"));
     setDefaultValue(parser, "gff-type", "exon");
 
     addOption(parser, seqan::ArgParseOption("", "gff-group-by", "Assign features to their parent using the tag "
-                                            "with this name.", seqan::ArgParseOption::INPUTFILE, "KEY"));
+                                            "with this name.", seqan::ArgParseOption::INPUT_FILE, "KEY"));
     setDefaultValue(parser, "gff-group-by", "Parent");
 
     // Add options of the component options.
@@ -1533,7 +1533,7 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan::ArgParseOption("i", "in", "Path to input file.",
-                                            seqan::ArgParseOption::INPUTFILE, "OUT"));
+                                            seqan::ArgParseOption::INPUT_FILE, "OUT"));
     setRequired(parser, "in");
     setValidValues(parser, "in", "fa fasta");
 
@@ -1649,12 +1649,12 @@ void MasonMethylationOptions::addOptions(seqan::ArgumentParser & parser) const
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan::ArgParseOption("i", "in", "Input FASTA file with genome.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.fa"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
     setRequired(parser, "in");
     setValidValues(parser, "in", "fa fasta");
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Input FASTA file with genome.",
-                                            seqan::ArgParseOption::INPUTFILE, "OUT.fa"));
+                                            seqan::ArgParseOption::INPUT_FILE, "OUT.fa"));
     setRequired(parser, "out");
     setValidValues(parser, "out", "fa fasta");
 

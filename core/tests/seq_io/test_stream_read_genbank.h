@@ -322,34 +322,30 @@ void testHelperReadGenBankSingle(TRecordReader & reader)
     // First record.
     
     // Read GENBANK headers, split ID header, skip rest.
-    SEQAN_ASSERT_EQ(readRecord(buffer, reader, GenBankHeader()), 0);
-    SEQAN_ASSERT_EQ(buffer, CharString("LOCUS       SCU49845     5028 bp    DNA             PLN       21-JUN-1999"));
-    splitGenBankHeader(k, v, buffer);
+    readRecord(k, v, reader, GenBankHeader());
     SEQAN_ASSERT_EQ(k, CharString("LOCUS"));
     SEQAN_ASSERT_EQ(v, CharString("SCU49845     5028 bp    DNA             PLN       21-JUN-1999"));
     while (nextIs(reader, GenBankHeader()))
-        SEQAN_ASSERT_EQ(readRecord(buffer, reader, GenBankHeader()), 0);
+        readRecord(k, v, reader, GenBankHeader());
 
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
     DnaString seq;
-    SEQAN_ASSERT_EQ(readRecord(seq, reader, GenBankSequence()), 0);
+    readRecord(seq, reader, GenBankSequence());
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
     // Second record.
 
     // Read GENBANK headers, split ID header, skip rest.
-    SEQAN_ASSERT_EQ(readRecord(buffer, reader, GenBankHeader()), 0);
-    SEQAN_ASSERT_EQ(buffer, CharString("LOCUS       AB031069     2487 bp    mRNA            PRI       27-MAY-2000"));
-    splitGenBankHeader(k, v, buffer);
+    readRecord(k, v, reader, GenBankHeader());
     SEQAN_ASSERT_EQ(k, CharString("LOCUS"));
     SEQAN_ASSERT_EQ(v, CharString("AB031069     2487 bp    mRNA            PRI       27-MAY-2000"));
     while (nextIs(reader, GenBankHeader()))
-        SEQAN_ASSERT_EQ(readRecord(buffer, reader, GenBankHeader()), 0);
+        readRecord(k, v, reader, GenBankHeader());
 
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
-    SEQAN_ASSERT_EQ(readRecord(seq, reader, GenBankSequence()), 0);
+    readRecord(seq, reader, GenBankSequence());
     SEQAN_ASSERT_EQ(length(seq), 2487u);
 
     SEQAN_ASSERT(atEnd(reader));
@@ -363,40 +359,24 @@ void testHelperReadGenBankRecord(TRecordReader & reader)
     CharString id;
     Dna5String seq;
 
-    SEQAN_ASSERT_EQ(readRecord(id, seq, reader, GenBank()), 0);
+    readRecord(id, seq, reader, GenBank());
     SEQAN_ASSERT_EQ(id, CharString("U49845.1  GI:1293613"));
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
-    SEQAN_ASSERT_EQ(readRecord(id, seq, reader, GenBank()), 0);
+    readRecord(id, seq, reader, GenBank());
     SEQAN_ASSERT_EQ(id, CharString("AB031069.1  GI:8100074"));
     SEQAN_ASSERT_EQ(length(seq), 2487u);
-}
-
-template <typename TRecordReader>
-void testHelperReadGenBankBatch(TRecordReader & reader)
-{
-    using namespace seqan;
-
-    StringSet<CharString> ids;
-    StringSet<CharString> seqs;
-
-    SEQAN_ASSERT_EQ(read2(ids, seqs, reader, GenBank()), 0);
-    
-    SEQAN_ASSERT_EQ(ids[0], CharString("U49845.1  GI:1293613"));
-    SEQAN_ASSERT_EQ(length(seqs[0]), 5028u);
-    SEQAN_ASSERT_EQ(ids[1], CharString("AB031069.1  GI:8100074"));
-    SEQAN_ASSERT_EQ(length(seqs[1]), 2487u);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_char_array_stream)
 {
     using namespace seqan;
     
-    typedef Stream<CharArray<char const *> > TStream;
+    typedef CharString TStream;
 
     char const * genbankString = testHelperReturnGenBankFile();
-    TStream stream(genbankString, genbankString + strlen(genbankString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
+    TStream stream = genbankString;
+    DirectionIterator<TStream, Input>::Type reader = directionIterator(stream, Input());
 
     testHelperReadGenBankSingle(reader);
 }
@@ -405,26 +385,13 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_record_char_array_stream)
 {
     using namespace seqan;
     
-    typedef Stream<CharArray<char const *> > TStream;
+    typedef CharString TStream;
 
     char const * genbankString = testHelperReturnGenBankFile();
-    TStream stream(genbankString, genbankString + strlen(genbankString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
+    TStream stream = genbankString;
+    DirectionIterator<TStream, Input>::Type reader = directionIterator(stream, Input());
 
     testHelperReadGenBankRecord(reader);
-}
-
-SEQAN_DEFINE_TEST(test_stream_read_genbank_batch_char_array_stream)
-{
-    using namespace seqan;
-    
-    typedef Stream<CharArray<char const *> > TStream;
-
-    char const * genbankString = testHelperReturnGenBankFile();
-    TStream stream(genbankString, genbankString + strlen(genbankString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
-
-    testHelperReadGenBankBatch(reader);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_mmap)
@@ -435,7 +402,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
+    DirectionIterator<TString, Input>::Type reader = directionIterator(mmapString, Input());
 
     testHelperReadGenBankSingle(reader);
 }
@@ -448,22 +415,9 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_batch_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
+    DirectionIterator<TString, Input>::Type reader = directionIterator(mmapString, Input());
 
     testHelperReadGenBankRecord(reader);
-}
-
-SEQAN_DEFINE_TEST(test_stream_read_genbank_single_batch_concat_mmap)
-{
-    using namespace seqan;
-
-    typedef String<char, MMap<> > TString;
-
-    TString mmapString;
-    mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
-
-    testHelperReadGenBankBatch(reader);
 }
 
 #endif  // TEST_STREAM_TEST_STREAM_READ_GENBANK_H_

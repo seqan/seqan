@@ -1362,7 +1362,7 @@ template <
 int _mapMatePairReadsParallel(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy>  const & mode,
     TFilterSpec)
@@ -1371,7 +1371,7 @@ int _mapMatePairReadsParallel(
     typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;
 
     typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
-    typedef RazerSOptions<TSpec> TOptions;
+    typedef RazerSCoreOptions<TSpec> TOptions;
 
     typedef typename Value<TReadSeqStore>::Type         TRead;
     typedef StringSet<TRead>                            TReadSet;
@@ -1647,7 +1647,7 @@ template <
 int _mapMatePairReadsParallel(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> const & mode)
 {

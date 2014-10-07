@@ -9,20 +9,17 @@ int main(int argc, char const ** argv)
     if (argc != 2)
         return 1;  // Invalid number of arguments.
 
-    // Open file and create RecordReader.
-    std::fstream in(argv[1], std::ios::binary | std::ios::in);
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(in);
+    // Open file
+    seqan::SeqFileIn inFile(argv[1]);
 
     // Read file record-wise.
     seqan::CharString id;
     seqan::CharString seq;
-    while (!atEnd(reader))
+    while (!atEnd(inFile))
     {
-        if (readRecord(id, seq, reader, seqan::Fastq()) != 0)
-            return 1;  // Could not record from file.
-
+        readRecord(id, seq, inFile);
         std::cout << id << "\t" << seq << "\n";
     }
-    
+
     return 0;
 }

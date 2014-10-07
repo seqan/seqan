@@ -1,7 +1,7 @@
 ///A tutorial about the use of iterators.
 #include <iostream>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 int main()
 {

@@ -1,5 +1,5 @@
 // FRAGMENT(header)
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 #include <seqan/sequence.h>

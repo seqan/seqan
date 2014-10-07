@@ -31,7 +31,7 @@
 #include <iostream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/store.h>
 
@@ -50,6 +50,7 @@ typedef Finder<TContigSeq, Swift<SwiftSemiGlobal> > TFinder;
 typedef FragmentStore<>::TAlignedReadStore TAlignedReadStore;
 typedef Value<TAlignedReadStore>::Type TAlignedRead;
 
+//FRAGMENT(global-constants)
 const double EPSILON = 0.08;
 
 //FRAGMENT(main-input)
@@ -93,8 +94,8 @@ int main(int argc, char *argv[]) {
 
 //FRAGMENT(main-output)
     // 4) Write out Sam file.
-    std::ofstream samFile(argv[3], std::ios_base::out);
-    write(samFile, fragStore, Sam());
+    BamFileOut bamFile(argv[3]);
+    writeRecords(bamFile, fragStore);
 
     return 0;
 }

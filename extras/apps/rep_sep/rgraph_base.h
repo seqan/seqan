@@ -80,7 +80,7 @@ void addColumn(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> &
 {
 	typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
 	TCargoColumnInfo col_info(pos,col);
-    append(me.spanned_columns, col_info);
+    appendValue(me.spanned_columns, col_info);
 }
 
 //////////////////////////////////////////////////////////////////////////////

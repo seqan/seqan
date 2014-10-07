@@ -40,7 +40,7 @@
 #include <seqan/roi_io.h>
 #include <seqan/consensus.h>
 
-#define VERSION_ROI_H "0.3"
+#include "record_ext.h"
 
 // ============================================================================
 // Forwards
@@ -91,14 +91,14 @@ public:
     // The reference sequence names.
     seqan::StringSet<seqan::CharString> refNames;
 
-    // The stream to use for writing.
-    std::ostream & out;
+    // The RoiFileOut to use for writing.
+    seqan::RoiFileOut & roiFileOut;
 
     // The options to use for building the ROI file.
     RoiBuilderOptions options;
 
     // The next ROI record to be written.
-    seqan::RoiRecord currentRoi;
+    MyRoiRecord currentRoi;
 
     // The current profile of the ROI.  Required for C+G content computation.
     typedef seqan::ProfileChar<seqan::Dna5, int> TProfileChar;
@@ -112,7 +112,8 @@ public:
     // The number of reads in the current ROI.
     int readsInCurrentRoi;
 
-    RoiBuilder(std::ostream & out, RoiBuilderOptions const & options) : out(out), options(options), readsInCurrentRoi(0)
+    RoiBuilder(seqan::RoiFileOut & roiFileOut, RoiBuilderOptions const & options) :
+        roiFileOut(roiFileOut), options(options), readsInCurrentRoi(0)
     {}
 
     ~RoiBuilder()
@@ -131,7 +132,7 @@ private:
     int writeCurrentRecord();
 
     // Write the given roi record to text file with the given profile, doing some computation.
-    int writeRecord(seqan::RoiRecord & record,
+    int writeRecord(MyRoiRecord & record,
                     seqan::String<TProfileChar> const & profile);
 
     // Extend the current ROI.

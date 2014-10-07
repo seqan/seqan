@@ -106,7 +106,7 @@ void  Test_GraphDrawing()
 
     {
         std::stringstream sstream;
-        write(sstream, automat, DotDrawing());
+        writeRecords(sstream, automat, DotDrawing());
         char const * EXPECTED =
                 "digraph G {\n"
                 "\n"
@@ -191,7 +191,7 @@ void  Test_GraphDrawing()
                 "12 -> 13 [label = \"y\"];\n"
                 "\n"
                 "}\n";
-        write(sstream, trie, nodeMap, edgeMap, DotDrawing());
+        writeRecords(sstream, trie, nodeMap, edgeMap, DotDrawing());
         SEQAN_ASSERT_EQ(EXPECTED, sstream.str());
     }
 
@@ -238,7 +238,7 @@ void  Test_GraphDrawing()
                 "7 -> 6 [label = \"G\"];\n"
                 "\n"
                 "}\n";
-        write(sstream, wordGr,DotDrawing());
+        writeRecords(sstream, wordGr,DotDrawing());
         SEQAN_ASSERT_EQ(EXPECTED, sstream.str());
     }
 }

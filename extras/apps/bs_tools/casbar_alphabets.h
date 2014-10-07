@@ -1,7 +1,7 @@
 /*==========================================================================
 
 
-  
+
 ==========================================================================*/
 
 #ifndef CORE_APPS_BS_TOOLS_CASBAR_ALPHABETS_H_
@@ -71,13 +71,13 @@ char const TranslateTableAsciiToDnaM_<T>::VALUE[256] =
 //   ,   A,   B,   C,   D,   E,   F,   G,   H,   I,   J,   K,   L,   M,   N,   O,
 
     0,   0,   0,   0,   3,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //5
-//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,    
+//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,
 
     0,   0,   0,   1,   4,   0,   0,   2,   5,   0,   0,   0,   0,   0,   0,   0, //6
 //   ,   a,   b,   c,   d,   e,   f,   g,   h,   i,   j,   k,   l,   m,   n,   o,
 
     0,   0,   0,   0,   3,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //7
-//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,   
+//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,
 
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //8
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //9
@@ -96,9 +96,9 @@ struct TranslateTableDnaMToDna_
 };
 
 template <typename T>
-char const TranslateTableDnaMToDna_<T>::VALUE[6] = 
+char const TranslateTableDnaMToDna_<T>::VALUE[6] =
 {
-    0,   1,   2,   3,   1,   2      // 
+    0,   1,   2,   3,   1,   2      //
 };
 
 template <typename T = void>
@@ -108,7 +108,7 @@ struct TranslateTableByteToDnaM_
 };
 
 template <typename T>
-char const TranslateTableByteToDnaM_<T>::VALUE[256] = 
+char const TranslateTableByteToDnaM_<T>::VALUE[256] =
 {
     0,   1,   2,   3,   4,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -132,7 +132,7 @@ char const TranslateTableByteToDnaM_<T>::VALUE[256] =
 // Assignment / Conversion Functions
 // ============================================================================
 
-inline void assign(char & c_target, 
+inline void assign(char & c_target,
                    DnaM const & source)
 {
     c_target = TranslateTableDnaMToAscii_<>::VALUE[source.value];
@@ -221,16 +221,16 @@ char const TranslateTableDnaMRToAscii_<T>::VALUE[11] = {'A', 'C', 'G', 'T', 'a',
 
 
 
-// ProfileChar<DnaMR, double> 
+// ProfileChar<DnaMR, double>
 inline bool
 empty(ProfileChar<DnaMR, double> const & source)
 {
     for (unsigned i = 0; i < 8; ++i)
-        if (source.count[i] > 0.00001)  
+        if (source.count[i] > 0.00001)
             return false;
     if ((int)source.count[8] >= 0 && (int)source.count[8] <= 3) return false;
     return true;
 }
 
 }
-#endif 
+#endif

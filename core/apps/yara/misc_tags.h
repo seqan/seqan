@@ -42,26 +42,6 @@
 using namespace seqan;
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction Space
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TSpec = void>
-struct Space
-{
-    typedef TObject Type;
-};
-
-template <typename TObject>
-struct Space<TObject, ExecDevice>
-{
-    typedef typename Device<TObject>::Type  Type;
-};
-
-// ============================================================================
 // Enums
 // ============================================================================
 
@@ -73,16 +53,6 @@ enum MappingMode
 enum LibraryOrientation
 {
     FWD_REV, FWD_FWD, REV_REV, ANY
-};
-
-enum InputType
-{
-    PLAIN, GZIP, BZIP2
-};
-
-enum OutputFormat
-{
-    SAM, BAM
 };
 
 // ============================================================================

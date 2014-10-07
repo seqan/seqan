@@ -36,6 +36,7 @@
 
 #include <seqan/basic/basic_debug.h>
 #include <seqan/basic/basic_aggregate.h>
+#include <seqan/stream.h>
 
 #include "test_basic_aggregate.h"
 

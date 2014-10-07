@@ -206,9 +206,8 @@ bool loadReadsSam(
 	bool countN = !(options.matchN || options.outputFormat == 1 );
 	if (!empty(CharString(options.outputUnmapped))) countN = false;
 
-	::std::ifstream file;
-	file.open(fileName, ::std::ios_base::in | ::std::ios_base::binary);
-	if (!file.is_open()) return false;
+	BamFileIn file;
+	if (!open(file, fileName)) return false;
 
 	options.maxReadRegionsEnd = 0;
 	options.minReadRegionsStart = maxValue<int>();
@@ -225,39 +224,22 @@ bool loadReadsSam(
     //TReadName lastQname;
     //bool lastWasAnchored = false;
 	int kickoutcount = 0;
-    RecordReader<std::ifstream, SinglePass<> > reader(file);
-
-    // Setup name store, cache, and BAM I/O context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   bamIOContext(nameStore, nameStoreCache);
 
     // Read header.
     BamHeader header;
-    if (readRecord(header, bamIOContext, reader, Sam()) != 0)
-    {
-        std::cerr << "ERROR: Could not read header from SAM file " << fileName << "\n";
-        return false;
-    }
+    readRecord(header, file);
 
     // Read records.
     BamAlignmentRecord record;
-    while (!atEnd(reader))
+    while (!atEnd(file))
     {
-        if (readRecord(record, bamIOContext, reader, Sam()) != 0)
-        {
-            std::cerr << "ERROR: Problem while reading sam record from " << fileName << "\n";
-            return false;
-        }
+        readRecord(record, file);
         if (record.rID == -1)
             continue;  // Skip if orphan.
 
         // Get the query name, remove everything after the first space.
         TReadName qname = record.qName;
-        trimAfterSpace(qname);
+        cropAfterFirst(qname, IsWhitespace());
 
         // Evaluate flag.
         if (!hasFlagMultiple(record) || !hasFlagUnmapped(record))
@@ -269,7 +251,7 @@ bool loadReadsSam(
 
         // Read reference name.  Same behaviour as for query name:  Read up to
         // the first whitespace character and skip to next tab char.
-        String<char> chrname = nameStore[record.rID];
+        String<char> chrname = nameStore(context(file))[record.rID];
         //need gnameToIdMap !!
 
         // Get read begin position.
@@ -2216,19 +2198,16 @@ int mapSplicedReads(
 	options.timeMapReads = 0;
 	options.timeDumpResults = 0;
 	
-	unsigned filecount = 0;
 	unsigned numFiles = length(genomeFileNameList);
 	unsigned gseqNo = 0;
 	
 	// open genome files, one by one	
-	while (filecount < numFiles)
+	for (unsigned filecount = 0; filecount < numFiles; ++filecount)
 	{
 		// open genome file	
-		::std::ifstream file;
-		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
-		if (!file.is_open())
+		SeqFileIn file;
+		if (!open(file, toCString(genomeFileNameList[filecount])))
 			return RAZERS_GENOME_FAILED;
-        RecordReader<std::ifstream, SinglePass<> > reader(file);
 
 		// remove the directory prefix of current genome file
 		::std::string genomeFile(toCString(genomeFileNameList[filecount]));
@@ -2244,19 +2223,14 @@ int mapSplicedReads(
 		SEQAN_PROTIMESTART(find_time);
 
 		// iterate over genome sequences
-		for(; !atEnd(reader); ++gseqNo)
+		for(; !atEnd(file); ++gseqNo)
 		{
-            if (readRecord(id, genome, reader, Fasta()) != 0)
-            {
-                std::cerr << "ERROR: Problem reading sequence from " << genomeFileNameList[filecount] << "\n";
-                return 1;
-            }
+            readRecord(id, genome, file);               // read Fasta id and sequence
 			if (options.genomeNaming == 0)
             {
-                trimAfterSpace(id);
+                cropAfterFirst(id, IsWhitespace());     // crop id after the first whitespace
 				appendValue(genomeNames, id, Generous());
             }
-			
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
 			if (options.forward)
@@ -2271,7 +2245,6 @@ int mapSplicedReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		++filecount;
 	}
 
 	compactSplicedMatches(matches, cnts, options, false, swiftPatternL, swiftPatternR);

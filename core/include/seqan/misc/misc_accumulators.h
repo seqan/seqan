@@ -55,14 +55,14 @@ template <typename T, typename TTag> struct Result;
 // Tags, Classes, Enums
 // ============================================================================
 
-struct Average_;
-typedef Tag<Average_> Average;
+struct AccuAverage_;
+typedef Tag<AccuAverage_> AccuAverage;
 
-struct Sum_;
-typedef Tag<Sum_> Sum;
+struct AccuSum_;
+typedef Tag<AccuSum_> AccuSum;
 
-struct Count_;
-typedef Tag<Count_> Count;
+struct AccuCount_;
+typedef Tag<AccuCount_> AccuCount;
 
 /*!
  * @class Accumulator
@@ -102,7 +102,7 @@ struct Accumulator;
  * @brief Accumulator for computing averages.
  * 
  * @signature template <typename TValue>
- *            struct Accumulator<TValue, Average>;
+ *            struct Accumulator<TValue, AccuAverage>;
  * 
  * @tparam TValue The type of the values to compute the average of.
  * 
@@ -113,7 +113,7 @@ struct Accumulator;
  * This program shows how to use the Average Accumulator.
  * 
  * @code{.cpp}
- * Accumulator<int, Average> acc;
+ * Accumulator<int, AccuAverage> acc;
  * push(acc, 1);
  * push(acc, 2);
  * push(acc, 3);
@@ -142,7 +142,7 @@ struct Accumulator;
 ..remarks:The average of an empty sequence is defined to be 0.
 ..example.text:This program shows how to use the Average Accumulator.
 ..example.code:
-Accumulator<int, Average> acc;
+Accumulator<int, AccuAverage> acc;
 push(acc, 1);
 push(acc, 2);
 push(acc, 3);
@@ -158,11 +158,11 @@ count:   3
 */
 
 template <typename TValue>
-struct Accumulator<TValue, Average>
+struct Accumulator<TValue, AccuAverage>
 {
-    typedef typename Result<Accumulator<TValue, Average>, Sum>::Type TSum_;
+    typedef typename Result<Accumulator<TValue, AccuAverage>, AccuSum>::Type TAccuSum_;
 
-    TSum_ sum_;
+    TAccuSum_ sum_;
     unsigned count_;
 
     Accumulator() : sum_(0), count_(0) {}
@@ -191,13 +191,13 @@ struct Accumulator<TValue, Average>
 ///.Metafunction.Value.class:Class.Accumulator
 
 template <typename TValue>
-struct Value<Accumulator<TValue, Average> >
+struct Value<Accumulator<TValue, AccuAverage> >
 {
     typedef double Type;
 };
 
 template <typename TValue>
-struct Value<Accumulator<TValue, Average> const > : Value<Accumulator<TValue, Average> >
+struct Value<Accumulator<TValue, AccuAverage> const > : Value<Accumulator<TValue, AccuAverage> >
 {};
 
 // ----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ struct Value<Accumulator<TValue, Average> const > : Value<Accumulator<TValue, Av
 ..signature:Result<T, TTag>::Type
 ..param.T:The type to query
 ..param.TTag:The type of the result to query.
-...remarks:E.g. $Average$, $Sum$, $Count$.
+...remarks:E.g. $AccuAverage$, $AccuSum$, $AccuCount$.
 ..include:seqan/misc/misc_accumulators.h
  */
 
@@ -238,27 +238,27 @@ struct Result;
 ///.Metafunction.Result.param.T.type:Class.Accumulator
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average>, Average>
+struct Result<Accumulator<TValue, AccuAverage>, AccuAverage>
 {
     typedef double Type;
 };
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average> const, Average> : Result<Accumulator<TValue, Average>, Average>
+struct Result<Accumulator<TValue, AccuAverage> const, AccuAverage> : Result<Accumulator<TValue, AccuAverage>, AccuAverage>
 {};
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average>, Count>
+struct Result<Accumulator<TValue, AccuAverage>, AccuCount>
 {
     typedef unsigned Type;
 };
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average> const, Count> : Result<Accumulator<TValue, Average>, Count>
+struct Result<Accumulator<TValue, AccuAverage> const, AccuCount> : Result<Accumulator<TValue, AccuAverage>, AccuCount>
 {};
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average>, Sum>
+struct Result<Accumulator<TValue, AccuAverage>, AccuSum>
 {
     typedef typename IfC<Is<IntegerConcept<TValue> >::VALUE,
                          __int64,
@@ -266,7 +266,7 @@ struct Result<Accumulator<TValue, Average>, Sum>
 };
 
 template <typename TValue>
-struct Result<Accumulator<TValue, Average> const, Sum> : Result<Accumulator<TValue, Average>, Sum>
+struct Result<Accumulator<TValue, AccuAverage> const, AccuSum> : Result<Accumulator<TValue, AccuAverage>, AccuSum>
 {};
 
 // ============================================================================
@@ -324,7 +324,7 @@ struct Result<Accumulator<TValue, Average> const, Sum> : Result<Accumulator<TVal
 
 template <typename TValue>
 inline void
-clear(Accumulator<TValue, Average> & accumulator)
+clear(Accumulator<TValue, AccuAverage> & accumulator)
 {
     accumulator.sum_ = 0;
     accumulator.count_ = 0;
@@ -336,10 +336,10 @@ clear(Accumulator<TValue, Average> & accumulator)
 
 template <typename TValue, typename TValue2>
 inline void
-push(Accumulator<TValue, Average> & acc, TValue2 value)
+push(Accumulator<TValue, AccuAverage> & acc, TValue2 value)
 {
-    typedef typename Result<Accumulator<TValue, Average>, Sum>::Type TSum;
-    acc.sum_ += static_cast<TSum>(value);
+    typedef typename Result<Accumulator<TValue, AccuAverage>, AccuSum>::Type TAccuSum;
+    acc.sum_ += static_cast<TAccuSum>(value);
     acc.count_ += 1;
 }
 
@@ -371,10 +371,10 @@ push(Accumulator<TValue, Average> & acc, TValue2 value)
 */
 
 template <typename TValue>
-inline typename Result<Accumulator<TValue, Average>, Average>::Type
-average(Accumulator<TValue, Average> const & acc)
+inline typename Result<Accumulator<TValue, AccuAverage>, AccuAverage>::Type
+average(Accumulator<TValue, AccuAverage> const & acc)
 {
-    typedef typename Result<Accumulator<TValue, Average>, Average>::Type TResult;
+    typedef typename Result<Accumulator<TValue, AccuAverage>, AccuAverage>::Type TResult;
     if (acc.count_ == 0u)
         return 0;
     return static_cast<TResult>(acc.sum_ / static_cast<TResult>(acc.count_));
@@ -408,8 +408,8 @@ average(Accumulator<TValue, Average> const & acc)
 */
 
 template <typename TValue>
-inline typename Result<Accumulator<TValue, Average>, Sum>::Type
-sum(Accumulator<TValue, Average> const & acc)
+inline typename Result<Accumulator<TValue, AccuAverage>, AccuSum>::Type
+sum(Accumulator<TValue, AccuAverage> const & acc)
 {
     return acc.sum_;
 }
@@ -442,8 +442,8 @@ sum(Accumulator<TValue, Average> const & acc)
 */
 
 template <typename TValue>
-inline typename Result<Accumulator<TValue, Average>, Count>::Type
-count(Accumulator<TValue, Average> const & acc)
+inline typename Result<Accumulator<TValue, AccuAverage>, AccuCount>::Type
+count(Accumulator<TValue, AccuAverage> const & acc)
 {
     return acc.count_;
 }

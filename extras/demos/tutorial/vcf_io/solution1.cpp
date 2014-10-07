@@ -3,34 +3,37 @@
 
 int main()
 {
-    // Open input stream
-    seqan::VcfStream vcfIn("example.vcf");
-    if (!isGood(vcfIn))
+    try
     {
-        std::cerr << "ERROR: Could not open example.vcf\n";
+        // Open input stream.
+        seqan::VcfFileIn vcfIn("example.vcf");
+        // Open output stream
+        seqan::VcfFileOut vcfOut(vcfIn);
+        open(vcfOut, std::cout, seqan::Vcf());
+
+        // Copy over header.
+        seqan::VcfHeader header;
+        readRecord(header, vcfIn);
+        writeRecord(vcfOut, header);
+
+        // Read the file record by record.
+        seqan::VcfRecord record;
+        while (!atEnd(vcfIn))
+        {
+            readRecord(record, vcfIn);
+            writeRecord(vcfOut, record);
+        }
+    }
+    catch (seqan::IOError &e)
+    {
+        std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
         return 1;
     }
-    // Open output stream, filename "-" means stdout.
-    seqan::VcfStream vcfOut("-", seqan::VcfStream::WRITE);
-
-    // Copy over header.
-    vcfOut.header = vcfIn.header;
-
-    // Read the file record by record.
-    seqan::VcfRecord record;
-    while (!atEnd(vcfIn))
+    catch (seqan::ParseError &e)
     {
-        if (readRecord(record, vcfIn) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from example.vcf\n";
-            return 1;
-        }
-        if (writeRecord(vcfOut, record) != 0)
-        {
-            std::cerr << "ERROR: Problem writing to stdout.\n";
-            return 1;
-        }
+        std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
+        return 1;
     }
-    
+
     return 0;
 }

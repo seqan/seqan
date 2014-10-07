@@ -217,7 +217,7 @@ findRepeats(repeats, text, 3);
  * @signature void findRepeats(repeatString, text, minRepeatLength[, maxPeriod]);
  * 
  * @param[out] repeatString    A @link String @endlink of @link Repeat @endlink objects.
- * @param[in]  text            The text to search repeats in.  Types: @link SequenceConcept @endlink
+ * @param[in]  text            The text to search repeats in.  Types: @link ContainerConcept @endlink
  * @param[in]  minRepeatLength The minimum length each reported repeat must have.
  * @param[in]  maxPeriod       Optionally, the maximal period that reported repeats can have. Default: 1
  * 

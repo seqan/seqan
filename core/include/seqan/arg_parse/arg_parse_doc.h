@@ -48,6 +48,17 @@ namespace seqan {
 // Function getAppName()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getAppName
+ * @brief Return program name of ArgumentParser.
+ *
+ * @signature TCharStringRef getAppName(parser);
+ *
+ * @param[in] parser The ArgumentParser to get the app name for.
+ *
+ * @return TCharStringRef The app name, const-ref to @link CharString @endlink.
+ */
+
 /**
 .Function.ArgumentParser#getAppName
 ..class:Class.ArgumentParser
@@ -86,6 +97,18 @@ inline void _parseAppName(ArgumentParser & parser, std::string const & candidate
 // Helper Function _addLine()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#addLine
+ * @brief Adds a line of text to the help output of the ArgumentParser.
+ *
+ * The line of text will be added to the block of the options.
+ *
+ * @signature void addLine(parser, line);
+ *
+ * @param[in,out] parser The ArgumentParser to add the line to.
+ * @param[in]     line   The line of text to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ */
+
 /**
 .Function.ArgumentParser#addLine:
 ..class:Class.ArgumentParser
@@ -109,6 +132,29 @@ inline void addLine(ArgumentParser & me, TString const & line)
 // ----------------------------------------------------------------------------
 // Function addSection()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addSection
+ * @brief Begins a new section of the option block of the ArgumentParser help output.
+ *
+ * @signature void addSection(parser, title);
+ *
+ * @param[in,out] parser The ArgumentParser to add the line to.
+ * @param[in]     title  The title to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ *
+ * @code{.cpp}
+ * ArgumentParser parser;
+ * 
+ * [...] // init parser
+ * 
+ * addSection(parser, "In-/Output-Options");
+ * addOption("i", ... );
+ * addOption("o", ... );
+ * 
+ * addSection(parser, "Other Options");
+ * addOption("x", ... );
+ * @endcode
+ */
 
 /**
 .Function.ArgumentParser#addSection:
@@ -145,6 +191,16 @@ inline void addSection(ArgumentParser & me, TString const & line)
 // ----------------------------------------------------------------------------
 // Function addUsageLine()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addUseLine
+ * @brief Adds a line of text to the usage output of the ArgumentParser.
+ *
+ * @signature void addUsageLine(parser, line);
+ *
+ * @param[in,out] parser The ArgumentParser to add the line to.
+ * @param[in]     line   The line to add, a <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#addUsageLine:
@@ -183,6 +239,16 @@ inline void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
 // Function addDescription()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#addDescription
+ * @brief Appends a description paragraph to the ArgumentParser documentation.
+ *
+ * @signature void addDescription(parser, description);
+ *
+ * @param[in,out] parser      The ArgumentParser to add the line to.
+ * @param[in]     description The description text, a <tt>std::string</tt>.
+ */
+
 /**
 .Function.ArgumentParser#addDescription
 ..class:Class.ArgumentParser
@@ -204,6 +270,16 @@ inline void addDescription(ArgumentParser & me, std::string const & description)
 // ----------------------------------------------------------------------------
 // Function setAppName()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setAppName
+ * @brief Sets application name of ArgumentParser.
+ *
+ * @signature void setAppName(parser, name);
+ *
+ * @param[in,out] parser The ArgumentParser to set the name of.
+ * @param[in]     name   The application name, <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#setAppName
@@ -227,6 +303,16 @@ inline void setAppName(ArgumentParser & me, std::string const & name)
 // Function setShortDescription()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setShortDescription
+ * @brief Sets shortDescription of ArgumentParser.
+ *
+ * @signature void setShortDescription(parser, desc);
+ *
+ * @param[in,out] parser The ArgumentParser to set the short description of.
+ * @param[in]     desc   The short description, <tt>std::string</tt>.
+ */
+
 /**
 .Function.ArgumentParser#setShortDescription
 ..class:Class.ArgumentParser
@@ -249,6 +335,17 @@ inline void setShortDescription(ArgumentParser & me, std::string const & descrip
 // Function getShortDescription()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getShortDescription
+ * @brief Returns the short description.
+ *
+ * @signature CharString getShortDescription(parser);
+ *
+ * @param[in,out] parser The ArgumentParser to get short description for.
+ *
+ * @return CharString A @link CharString @endlink with the short description.
+ */
+
 /**
 .Function.ArgumentParser#getShortDescription
 ..class:Class.ArgumentParser
@@ -269,6 +366,16 @@ inline CharString getShortDescription(ArgumentParser const & me)
 // ----------------------------------------------------------------------------
 // Function setVersion()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setVersion
+ * @brief Sets version of ArgumentParser.
+ *
+ * @signature void setVersion(parser, version);
+ *
+ * @param[in,out] parser  The ArgumentParser to set the version of.
+ * @param[in]     version The version string to set, <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#setVersion
@@ -294,6 +401,17 @@ inline void setVersion(ArgumentParser & me, std::string const & versionString)
 // Function getVersion()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getVersion
+ * @brief Returns the version string.
+ *
+ * @signature TCharStringRef getVersion(parser);
+ *
+ * @param[in,out] parser The ArgumentParser to get the version string from.
+ *
+ * @return TCharString A const-ref to a @link CharString @endlink with the version string.
+ */
+
 /**
 .Function.ArgumentParser#getVersion
 ..class:Class.ArgumentParser
@@ -315,6 +433,16 @@ inline CharString const & getVersion(ArgumentParser const & me)
 // --------------------------------------------------------------------------
 // Function setCategory()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setCategory
+ * @brief Sets category of ArgumentParser.
+ *
+ * @signature void setCategory(parser, category);
+ *
+ * @param[in,out] parser  The ArgumentParser to set the category of.
+ * @param[in]     category The category to set, <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#setCategory
@@ -339,6 +467,17 @@ inline void setCategory(ArgumentParser & parser, CharString const & category)
 // Function getCategory()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getCategory
+ * @brief Returns the category.
+ *
+ * @signature TCharStringRef getCategory(parser);
+ *
+ * @param[in,out] parser The ArgumentParser to get the category from.
+ *
+ * @return TCharString A const-ref to a @link CharString @endlink with the category.
+ */
+
 /**
 .Function.ArgumentParser#getCategory
 ..class:Class.ArgumentParser
@@ -361,6 +500,16 @@ inline CharString const & getCategory(ArgumentParser const & parser)
 // Function setDate()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setDate
+ * @brief Sets date string of ArgumentParser.
+ *
+ * @signature void setDate(parser, date);
+ *
+ * @param[in,out] parser The ArgumentParser to set the date string of.
+ * @param[in]     date   The date string to set, <tt>std::string</tt>.
+ */
+
 /**
 .Function.ArgumentParser#setDate
 ..class:Class.ArgumentParser
@@ -382,6 +531,16 @@ inline void setDate(ArgumentParser & me, std::string const & date)
 // ----------------------------------------------------------------------------
 // Function addTextSection()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addTextSection
+ * @brief Add a text section to the ArgumentParser.
+ *
+ * @signature void addTextSection(parser, title);
+ *
+ * @param[in,out] parser The ArgumentParser to add the text section title to.
+ * @param[in]     title  The section title to add, <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#addTextSection
@@ -406,6 +565,16 @@ inline void addTextSection(ArgumentParser & me, std::string const & title)
 // Function addTextSubSection()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#addTextSubSection
+ * @brief Add a text sub section to the ArgumentParser.
+ *
+ * @signature void addTextSubSection(parser, title);
+ *
+ * @param[in,out] parser The ArgumentParser add the subsection title to of.
+ * @param[in]     title  The sub section title to add, <tt>std::string</tt>.
+ */
+
 /**
 .Function.ArgumentParser#addTextSubSection
 ..class:Class.ArgumentParser
@@ -429,6 +598,16 @@ inline void addTextSubSection(ArgumentParser & me, std::string const & title)
 // Function addText()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#addText
+ * @brief Add text to an ArgumentParser.
+ *
+ * @signature void addText(parser, text);
+ *
+ * @param[in,out] parser ArgumentParser to add text to.
+ * @param[in]     text   The <tt>std::string</tt> to add to the parser.
+ */
+
 /**
 .Function.ArgumentParser#addText
 ..class:Class.ArgumentParser
@@ -450,6 +629,17 @@ inline void addText(ArgumentParser & me, std::string const & text)
 // ----------------------------------------------------------------------------
 // Function addListItem()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addListItem
+ * @brief Appends a list item to the ArgumentParser
+ *
+ * @signature void addListItem(parser, item, description);
+ *
+ * @param[in,out] parser      The ArgumentParser to add the list item to.
+ * @param[in]     item        The item to add, <tt>std::string</tt>.
+ * @param[in]     description The item to add, <tt>std::string</tt>.
+ */
 
 /**
 .Function.ArgumentParser#addListItem
@@ -475,6 +665,16 @@ inline void addListItem(ArgumentParser & me, std::string const & item, std::stri
 // ----------------------------------------------------------------------------
 // Function printShortHelp()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#printShortHelp
+ * @brief Prints a short help message for the parser to a stream.
+ *
+ * @signature void printShortHelp(parser, out);
+ *
+ * @param[in,out] parser The ArgumentParser to print help for.
+ * @param[in,out] out    The <tt>std::ostream</tt> to print help to.
+ */
 
 /**
 .Function.ArgumentParser#printShortHelp
@@ -511,6 +711,16 @@ inline void printShortHelp(ArgumentParser const & me)
 // ----------------------------------------------------------------------------
 // Function printVersion()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#printVersion
+ * @brief Prints the version information of the parser to a stream.
+ *
+ * @signature void printVersion(parser, stream);
+ *
+ * @param[in,out] parser The ArgumenParser to print for.
+ * @param[in,out] stream The <tt>std::ostream</tt> to print to.
+ */
 
 /**
 .Function.ArgumentParser#printVersion
@@ -631,6 +841,19 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
 // ----------------------------------------------------------------------------
 // Function printHelp()
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Parameter order.
+
+/*!
+ * @fn ArgumentParser#printHelp
+ * @brief Prints the complete help message for the parser.
+ *
+ * @signature void printHelp(parser, out, format);
+ *
+ * @param[in,out] parser The ArgumentParser print the help for.
+ * @param[out]    out    The output stream to print to (<tt>std::ostream</tt>).
+ * @param[in]     format The format to print, one of "html", "man", and "txt".
+ */
 
 /**
 .Function.ArgumentParser#printHelp

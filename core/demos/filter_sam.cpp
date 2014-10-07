@@ -14,7 +14,7 @@
 #include <fstream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/store.h>
 #include <seqan/random.h>
 #include <seqan/misc/misc_cmdparser.h>
@@ -33,7 +33,7 @@ struct Options
 };
 
 struct SortAlignmentDistance_;
-typedef Tag<SortAlignmentDistance_> SortAlignmentDistance;
+typedef seqan::Tag<SortAlignmentDistance_> SortAlignmentDistance;
 
 template <typename TAlignedRead, typename TDistanceString>
 struct LessAlignedReadDistance
@@ -73,8 +73,8 @@ void performWork(Options const & options)
         std::cerr << "  loaded " << length(fragmentStore.contigStore) << " contigs" << std::endl;
     }
     std::cerr << "Loading alignments..." << std::endl;
-    std::ifstream ins(toCString(options.samFilename));
-    read(ins, fragmentStore, Sam());
+    BamFileIn ins(toCString(options.samFilename));
+    readRecords(fragmentStore, ins);
     std::cerr << "  loaded " << length(fragmentStore.alignedReadStore) << " alignments" << std::endl;
 
     // Compute distances with reference.
@@ -127,14 +127,12 @@ void performWork(Options const & options)
 
     // Write out the fragment store.
     std::cerr << "Writing alignments..." << std::endl;
-    std::ostream * outStream;
+    BamFileOut outFile;
     if (empty(options.outputFilename))
-        outStream = &std::cout;
+        open(outFile, std::cout);
     else
-        outStream = new std::ofstream(toCString(options.outputFilename));
-    write(*outStream, fragmentStore, Sam());
-    if (empty(options.outputFilename))
-        delete outStream;
+        open(outFile, toCString(options.outputFilename));
+    writeRecords(outFile, fragmentStore);
 }
 
 int main(int argc, char const ** argv)

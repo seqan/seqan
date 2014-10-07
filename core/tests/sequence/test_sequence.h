@@ -40,7 +40,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 // --------------------------------------------------------------------------
 // CountingChar is used to test sequences of non simple data types.

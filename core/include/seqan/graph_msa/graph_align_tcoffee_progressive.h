@@ -359,7 +359,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 	//std::fstream strm;
 	//strm.open("Z:\\my_graph.dot", std::ios_base::out | std::ios_base::trunc);
-	//write(strm,matchGraph,DotDrawing());
+	//writeRecords(strm,matchGraph,DotDrawing());
 	//strm.close();
 
 	TCargo val = weightedBipartiteMatching(matchGraph, vertexMap, weights, edges);

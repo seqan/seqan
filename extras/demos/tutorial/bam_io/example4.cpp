@@ -1,59 +1,37 @@
 #include <iostream>
 #include <fstream>
 
-#include <seqan/bam_io.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
+#include <seqan/bam_io.h>
 
-int main(int argc, char const ** argv)
+int main(int argc, char const * argv[])
 {
     if (argc != 3)
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.sam OUT.sam\n";
+        std::cerr << "USAGE: " << argv[0] << " IN.[sam|bam] OUT.[sam|bam]\n";
         return 1;
     }
 
-    // Open std::fstream for reading.
-    std::fstream inStream(argv[1], std::ios::binary | std::ios::in);
-    if (!inStream.good())
+    // Open BamFileIn for reading.
+    seqan::BamFileIn inFile;
+    if (!open(inFile, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
         return 1;
     }
 
-    // Open std::fstream for writing.
-    std::fstream outStream(argv[2], std::ios::binary | std::ios::out);
-    if (!outStream.good())
+    // Open BamFileOut for writing. Give inFile to share its BamIoContext
+    seqan::BamFileOut outFile(inFile);
+    if (!open(outFile, argv[2]))
     {
         std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
         return 1;
     }
 
-    // Setup RecordReader.
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inStream);
-
-    // Setup name store, cache, and BAM I/O context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   context(nameStore, nameStoreCache);
-
     // Read header.
     seqan::BamHeader header;
-    if (readRecord(header, context, reader, seqan::Sam()) != 0)
-    {
-        std::cerr << "ERROR: Could not read header from SAM file " << argv[1] << "\n";
-        return 1;
-    }
-
-    // Write out header again.
-    if (write2(outStream, header, context, seqan::Sam()) != 0)
-    {
-        std::cerr << "ERROR: Could not write header to SAM file " << argv[2] << "\n";
-        return 1;
-    }
+    readRecord(header, inFile);
+    writeRecord(outFile, header);
 
     return 0;
 }

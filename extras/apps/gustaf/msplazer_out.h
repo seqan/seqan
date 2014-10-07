@@ -264,36 +264,36 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     else
         record.strand = '-';
 
-    appendValue(record.tagName, "ID");
-    appendValue(record.tagValue, toString(id));
+    appendValue(record.tagNames, "ID");
+    appendValue(record.tagValues, toString(id));
     if (bp.svtype == 1) // 1=insertion
     {
-        appendValue(record.tagName, "size");
-        appendValue(record.tagValue, '-' + toString(length(bp.insertionSeq)));
-        appendValue(record.tagName, "seq");
-        appendValue(record.tagValue, bp.insertionSeq);
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, "-" + toString(length(bp.insertionSeq)));
+        appendValue(record.tagNames, "seq");
+        appendValue(record.tagValues, bp.insertionSeq);
     }
     else if (bp.svtype == 2 || bp.svtype == 8) // 2=deletion;8=breakend
     {
-        appendValue(record.tagName, "size");
-        appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
     }
     else
     {
-        appendValue(record.tagName, "endChr");
+        appendValue(record.tagNames, "endChr");
         _getShortId(sId, bp.endSeqId);
-        appendValue(record.tagValue, sId);
-        appendValue(record.tagName, "endPos");
-        appendValue(record.tagValue, toString(bp.endSeqPos));
-        appendValue(record.tagName, "endStrand");
+        appendValue(record.tagValues, sId);
+        appendValue(record.tagNames, "endPos");
+        appendValue(record.tagValues, toString(bp.endSeqPos));
+        appendValue(record.tagNames, "endStrand");
         if (bp.endSeqStrand)
-            appendValue(record.tagValue, '+');
+            appendValue(record.tagValues, "+");
         else
-            appendValue(record.tagValue, '-');
+            appendValue(record.tagValues, "-");
     }
-    appendValue(record.tagName, "support");
-    appendValue(record.tagValue, toString(bp.support));
-    appendValue(record.tagName, "supportIds");
+    appendValue(record.tagNames, "support");
+    appendValue(record.tagValues, toString(bp.support));
+    appendValue(record.tagNames, "supportIds");
 
     std::stringstream s;
     for (unsigned i = 0; i < length(bp.supportIds); ++i)
@@ -302,9 +302,9 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
         s << ',';
     }
 
-    appendValue(record.tagValue, s.str());
-    appendValue(record.tagName, "breakpoint");
-    appendValue(record.tagValue, toString(bp.readStartPos + 1));
+    appendValue(record.tagValues, s.str());
+    appendValue(record.tagNames, "breakpoint");
+    appendValue(record.tagValues, toString(bp.readStartPos + 1));
 }
 
 // Breakpoint writing call
@@ -314,15 +314,17 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
 {
     // Creating GFF record and writing to gff file
     std::string fn_gff = toString(msplazerOptions.gffOutFile);
-    GffStream gffOut(fn_gff.c_str(), GffStream::WRITE);
+    seqan::GffFileOut gffOut;
+    if (!open(gffOut, fn_gff.c_str()))
+    {
+        std::cerr << "Error: Could not open file\n";
+        return 1;
+    }
     if (length(globalBreakpoints) == 0)
     {
         std::cerr << "Empty output list, skip writing gff" << std::endl;
         return 1;
     }
-
-    if (!isGood(gffOut))
-        std::cerr << "Error while opening gff breakpoint file!" << std::endl;
 
     GffRecord gff_record;
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
@@ -337,8 +339,14 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             _fillGffRecord(gff_record, tempBP, i);
             // _fillGffRecord(gff_record, globalBreakpoints[i], i);
             // Write record
-            if (writeRecord(gffOut, gff_record) != 0)
-                std::cerr << "Error while writing breakpoint gff record!" << std::endl;
+            try
+            {
+                writeRecord(gffOut, gff_record);
+            }
+            catch (seqan::IOError const & ioErr)
+            {
+                std::cerr << "Error while writing breakpoint gff record (" << ioErr.what() << ")!\n";
+            }
             clear(gff_record);
         }
     }
@@ -618,7 +626,7 @@ inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref
 }
 
 template <typename TBreakpoint, typename TSequence>
-inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequence & ref, TSequence & ref2, unsigned id, unsigned id2, unsigned bp_id)
+inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSequence & ref, TSequence & ref2, unsigned id, unsigned id2, unsigned bp_id)
 {
     // Translocation is encoded with 6 breakend entries (or 4 in the case where the "middle" position
     // of the translocation is not known)
@@ -681,7 +689,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         appendValue(record.alt, '.');
 
     // Write record and clear REF and ALT values
-    if (writeRecord(vcfOut, record) != 0)
+    try
+    {
+        writeRecord(vcfOut, record);
+    }
+    catch (seqan::IOError const & ioErr)
     {
         std::cerr << "Error while writing breakpoint translocation entry 1 vcf record!" << std::endl;
         return 1;
@@ -722,7 +734,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     appendValue(record.alt, ref[bp.startSeqPos]);
 
     // Write record and clear REF and ALT values
-    if (writeRecord(vcfOut, record) != 0)
+    try
+    {
+        writeRecord(vcfOut, record);
+    }
+    catch (seqan::IOError const & ioErr)
     {
         std::cerr << "Error while writing breakpoint translocation entry 2 vcf record!" << std::endl;
         return 1;
@@ -765,7 +781,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         }
 
         // Write record and clear REF and ALT values
-        if (writeRecord(vcfOut, record) != 0)
+        try
+        {
+            writeRecord(vcfOut, record);
+        }
+        catch (seqan::IOError const & ioErr)
         {
             std::cerr << "Error while writing breakpoint translocation entry 3 vcf record!" << std::endl;
             return 1;
@@ -795,7 +815,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         appendValue(record.alt, ref[bp.dupMiddlePos]);
 
         // Write record and clear REF and ALT values
-        if (writeRecord(vcfOut, record) != 0)
+        try
+        {
+            writeRecord(vcfOut, record);
+        }
+        catch (seqan::IOError const & ioErr)
         {
             std::cerr << "Error while writing breakpoint translocation entry 4 vcf record!" << std::endl;
             return 1;
@@ -837,7 +861,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     }
 
     // Write record and clear REF and ALT values
-    if (writeRecord(vcfOut, record) != 0)
+    try
+    {
+        writeRecord(vcfOut, record);
+    }
+    catch (seqan::IOError const & ioErr)
     {
         std::cerr << "Error while writing breakpoint translocation entry 5 vcf record!" << std::endl;
         return 1;
@@ -881,7 +909,11 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     }
 
     // Write record and clear REF and ALT values
-    if (writeRecord(vcfOut, record) != 0)
+    try
+    {
+        writeRecord(vcfOut, record);
+    }
+    catch (seqan::IOError const & ioErr)
     {
         std::cerr << "Error while writing breakpoint translocation entry 6 vcf record!" << std::endl;
         return 1;
@@ -893,37 +925,41 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
 }
 
 template <typename TSequence, typename TId>
-void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, StringSet<TId> & databaseIDs, MSplazerOptions const & msplOpt)
+void _fillVcfHeader(seqan::VcfHeader & vcfHeader,
+                    seqan::VcfFileOut & vcfFileOut,
+                    StringSet<TSequence> & databases,
+                    StringSet<TId> & databaseIDs,
+                    MSplazerOptions const & msplOpt)
 {
     // Header record entries
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("source", "GUSTAF"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reference", msplOpt.databaseFile));
+    appendValue(vcfHeader, VcfHeaderRecord("fileformat", "VCFv4.1"));
+    appendValue(vcfHeader, VcfHeaderRecord("source", "GUSTAF"));
+    appendValue(vcfHeader, VcfHeaderRecord("reference", msplOpt.databaseFile));
     for (unsigned i = 0; i < length(msplOpt.queryFile); ++i)
-        appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile[i]));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, VcfHeaderRecord("reads", msplOpt.queryFile[i]));
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=IMPRECISE,Number=0,Type=Flag,Description=\"Imprecise structural variation\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record (for DUP last position of duplicated sequence)\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=SVLEN,Number=.,Type=Integer,Description=\"Difference in length between REF and ALT alleles\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">"));
-    // appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    // appendValue(vcfHeader, seqan::VcfHeaderRecord(
     //            "INFO", "<ID=BND,Description=\"Breakend\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=EVENT,Number=1,Type=String,Description=\"Event identifier for breakends.\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "INFO", "<ID=TARGETPOS,Number=1,Type=String,Description=\"Target position for duplications (position before inserted sequence).\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord(
+    appendValue(vcfHeader, VcfHeaderRecord(
             "INFO", "<ID=BM,Number=1,Type=Integer,Description=\"Breakpoint Mate: similar breakpoints have same ID\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord(
+    appendValue(vcfHeader, VcfHeaderRecord(
             "INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Number of Supporting Reads/Read Depth for Variant\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
             "ALT", "<ID=INV,Description=\"Inversion\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
                 "ALT", "<ID=DUP,Description=\"Duplication\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(vcfHeader, seqan::VcfHeaderRecord(
                 "ALT", "<ID=DUP:TANDEM,Description=\"Tandem Duplication\">"));
 
     // Fill sequence names
@@ -936,11 +972,10 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
         ss << length(databases[i]);
         append(contigStr, ss.str());
         append(contigStr, ">");
-        appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("contig", contigStr));
-        appendName(*vcfStream._context.sequenceNames,
-                   databaseIDs[i],
-                   vcfStream._context.sequenceNamesCache);
+        appendValue(vcfHeader, seqan::VcfHeaderRecord("contig", contigStr));
 
+        appendName(contigNames(context(vcfFileOut)), databaseIDs[i],
+                   contigNamesCache(context(vcfFileOut)));
     }
 }
 
@@ -967,16 +1002,26 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
 {
     // Creating GFF record and writing to gff file
     std::string fn_vcf = toString(msplazerOptions.vcfOutFile);
-    VcfStream vcfOut(fn_vcf.c_str(), VcfStream::WRITE);
+    seqan::VcfFileOut vcfOut;
     if (length(globalBreakpoints) == 0)
     {
         std::cerr << "Empty output list, skip writing vcf" << std::endl;
         return 1;
     }
 
-    if (!isGood(vcfOut))
+    if (!open(vcfOut, fn_vcf.c_str()))
         std::cerr << "Error while opening vcf breakpoint file!" << std::endl;
-    _fillVcfHeader(vcfOut, databases, databaseIDs, msplazerOptions);
+    seqan::VcfHeader vcfHeader;
+    _fillVcfHeader(vcfHeader, vcfOut, databases, databaseIDs, msplazerOptions);
+    try
+    {
+        writeRecord(vcfOut, vcfHeader);
+    }
+    catch (seqan::IOError const & ioErr)
+    {
+        std::cerr << "Error writing VCF record.\n";
+        return false;
+    }
 
     VcfRecord vcf_record;
     __int32 id = maxValue<int>();
@@ -993,8 +1038,15 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             {
                 // Fill and write record
                 if (_fillVcfRecord(vcf_record, bp, databases[id], id))
-                    if (writeRecord(vcfOut, vcf_record) != 0)
+                    try
+                    {
+                        writeRecord(vcfOut, vcf_record);
+                    }
+                    catch (seqan::IOError const & ioErr)
+                    {
                         std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+                        return false;
+                    }
                 clear(vcf_record);
             } else
             {

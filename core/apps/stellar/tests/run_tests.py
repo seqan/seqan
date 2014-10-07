@@ -203,9 +203,9 @@ def main(source_base, binary_base):
     # ============================================================
     failures = 0
     for conf in conf_list:
+        print ' '.join(['stellar'] + conf.args)
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join(['stellar'] + conf.args),
         if res:
              print 'OK'
         else:

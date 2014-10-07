@@ -42,44 +42,35 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>      // For printing SeqAn Strings.
-#include <seqan/stream.h>
+#include <seqan/seq_io.h>
 
 template <typename TStream>
 void convertToHardMasked(TStream & stream, char const * filename)
 {
     using namespace seqan;
 
-    std::fstream in(filename, std::ios::binary | std::ios::in);
-    if (!in.good())
-    {
-        std::cerr << "ERROR: Could not open " << filename << '\n';
-        return;
-    }
+    SeqFileIn inFile(filename);
 
-    RecordReader<std::fstream, SinglePass<> > reader(in);
-    CharString buffer;
+    String<char> meta;
+    String<char> seq;
 
-    while (!atEnd(reader))
+    while (!atEnd(inFile))
     {
-        clear(buffer);
-        int res = readLine(buffer, reader);
-        if (res != 0)
-        {
-            std::cerr << "ERROR: Could not read from " << filename << '\n';
-            return;
-        }
+        clear(meta);
+        clear(seq);
+
+        readRecord(meta, seq, inFile);
 
         // Header lines are not touched.
-        if (front(buffer) != '>')
+        if (front(seq) != '>')
         {
             typedef typename Iterator<CharString, Rooted>::Type TIter;
-            for (TIter it = begin(buffer, Rooted()); !atEnd(it); goNext(it))
+            for (TIter it = begin(seq, Rooted()); !atEnd(it); goNext(it))
                 if (std::islower(*it))
                     *it = 'N';
         }
 
-        stream << buffer << '\n';
+        stream << meta << '\n' << seq << '\n';
     }
 }
 

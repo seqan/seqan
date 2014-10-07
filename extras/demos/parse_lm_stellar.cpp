@@ -60,19 +60,21 @@ int main(int argc, char const ** argv)
     }
 
     // Read local matches in GFF Stellar format.
-    RecordReader<std::fstream, SinglePass<> > recordReader(inStream);
+    DirectionIterator<std::fstream, Input>::Type reader(inStream);
     LocalMatchStore<> lmStore;
     int i = 0;
-    while (!atEnd(recordReader))
+    try
     {
-        int res = readRecord(lmStore, recordReader, StellarGff());
-        if (res != 0)
+        while (!atEnd(reader))
         {
-            std::cerr << "Invalid Stellar GFF record #" << i << '\n';
-            return 1;
+            readRecord(lmStore, reader, StellarGff());
+            i++;
         }
-
-        i += 1;
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cerr << "Invalid Stellar GFF record #" << i << ": " << e.what() << '\n';
+        return 1;
     }
 
     // Dump records to stdout again.
@@ -80,15 +82,15 @@ int main(int argc, char const ** argv)
               << "#db\tdb_beg\tdb_end\t+/-\tquery\tq_beg\tq_end\tcigar\n";
     for (unsigned i = 0; i < length(lmStore.matchStore); ++i)
     {
-        
+
         std::cout << lmStore.sequenceNameStore[lmStore.matchStore[i].subjectId] << "\t"
                   << lmStore.matchStore[i].subjectBeginPos << "\t"
                   << lmStore.matchStore[i].subjectEndPos << "\t";
-		if (lmStore.matchStore[i].subjectBeginPos < lmStore.matchStore[i].subjectEndPos)
-			std::cout << "+\t";
-		else
-			std::cout << "-\t";
-		std::cout << lmStore.sequenceNameStore[lmStore.matchStore[i].queryId] << "\t"
+        if (lmStore.matchStore[i].subjectBeginPos < lmStore.matchStore[i].subjectEndPos)
+            std::cout << "+\t";
+        else
+            std::cout << "-\t";
+        std::cout << lmStore.sequenceNameStore[lmStore.matchStore[i].queryId] << "\t"
                   << lmStore.matchStore[i].queryBeginPos << "\t"
                   << lmStore.matchStore[i].queryEndPos << "\t";
 
