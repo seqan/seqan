@@ -81,6 +81,37 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_header)
     testBamIOBamFileReadHeader("/core/tests/bam_io/small.bam");
 }
 
+// Issue 489 reports a problems with reading/writing comment lines in SAM header.
+SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
+{
+    seqan::CharString inFilePath = SEQAN_PATH_TO_ROOT();
+    append(inFilePath, "/core/tests/bam_io/sam_with_comments.sam");
+
+    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
+    append(tmpPath, ".sam");
+
+    // Open input stream, BamStream can read SAM and BAM files.
+    seqan::BamFileIn bamFileIn(toCString(inFilePath));
+    // Open output stream, "-" means stdin on if reading, else stdout.
+    seqan::BamFileOut bamFileOut(bamFileIn, toCString(tmpPath));
+    // Copy header.  The header is automatically written out before the first record.
+
+    BamHeader header;
+    readRecord(header, bamFileIn);
+    writeRecord(bamFileOut, header);
+
+    seqan::BamAlignmentRecord record;
+    while (!atEnd(bamFileIn))
+    {
+        readRecord(record, bamFileIn);
+        writeRecord(bamFileOut, record);
+    }
+    close(bamFileOut);  // flushes
+
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(inFilePath)));
+}
+
+
 // ---------------------------------------------------------------------------
 // Read Records
 // ---------------------------------------------------------------------------
