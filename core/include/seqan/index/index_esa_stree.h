@@ -69,7 +69,10 @@ SEQAN_CONCEPT(StringTreeConcept, (TIndex))
 
 
 template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexEsa<TSpec> >);
+SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> >), (StringTreeConcept));
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 /**
 .Spec.VSTree Iterator:
