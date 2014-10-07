@@ -90,14 +90,14 @@ struct FragStoreSAMContext
     BamAlignmentRecord bamRecord;
 };
 
-template <typename TPos, typename TId>
+template <typename TId>
 struct MatchMateInfo_
 {
     TId     readId;
-    TId     contigId;
+    __int32 contigId;
     TId     pairMatchId;
     TId     matePairId;//:(sizeof(TId)*8-1);
-    TPos    beginPos;
+    __int32 beginPos;
     bool    reversed;
 };
 
@@ -305,11 +305,10 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
             FragStoreImportFlags const & importFlags)
 {
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-    typedef typename TFragmentStore::TContigPos TContigPos;
     typedef typename Id<TFragmentStore>::Type TId;
     
     // data structure to temporarily store the gaps that need to be inserted in the contig sequences
-    typedef MatchMateInfo_<TContigPos, TId> TMatchMateInfo;
+    typedef MatchMateInfo_<TId> TMatchMateInfo;
     typedef String<TMatchMateInfo> TMatchMateInfos;
     typedef StringSet<String<typename TFragmentStore::TContigGapAnchor>, Owner<ConcatDirect<> > > TContigAnchorGaps;
 

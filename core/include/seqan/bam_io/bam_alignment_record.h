@@ -184,14 +184,14 @@ typedef TagList<int,
  */
 
 /*!
- * @var __uint32 BamAlignmentRecord::INVALID_POS;
- * @brief Static member with invalid sentinel/position value.
+ * @var __uint32 BamAlignmentRecord::INVALID_POS
+ * @brief Static member with invalid sentinel/position value (-1).
  *
- * @var __uint32 BamAlignmentRecord::INVALID_REFID;
- * @brief Static member with invalid sentinel/position value.
+ * @var __uint32 BamAlignmentRecord::INVALID_REFID
+ * @brief Static member with invalid sentinel/position value (-1).
  *
- * @var __uint32 BamAlignmentRecord::INVALID_LEN;
- * @brief Static member with invalid/sentinel reference ids (-1 as in BAM/SAM).
+ * @var __uint32 BamAlignmentRecord::INVALID_LEN
+ * @brief Static member with invalid/sentinel reference ids (0 as in BAM/SAM).
  *
  * @var CharString BamAlignmentRecord::qName;
  * @brief The query/read name.
@@ -204,11 +204,11 @@ typedef TagList<int,
  *
  * See @link BamFlags @endlink for flag constants and also see the <tt>hasFlag*()</tt> functions.
  *
- * @var __int32 BamAlignmentRecord::rID;
- * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*').
+ * @var __int32 BamAlignmentRecord::rID
+ * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*' in SAM).
  *
- * @var __int32 BamAlignmentRecord::beginPos;
- * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '*').
+ * @var __int32 BamAlignmentRecord::beginPos
+ * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '0' in SAM).
  *
  * @var __uint8 BamAlignmentRecord::mapQ;
  * @brief Mapping quality (255 for '*').
@@ -260,17 +260,17 @@ typedef TagList<int,
 
 .Memvar.BamAlignmentRecord#INVALID_POS
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel position value.
+..summary:Static member with invalid/sentinel position value (-1).
 ..type:nolink:$__uint32$
 
 .Memvar.BamAlignmentRecord#INVALID_REFID
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel reference id (-1 as in BAM/SAM).
+..summary:Static member with invalid/sentinel reference id (-1).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#INVALID_LEN
 ..class:Class.BamAlignmentRecord
-..summary:Static member with invalid/sentinel position value.
+..summary:Static member with invalid/sentinel position value (0 as in BAM/SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#qName
@@ -285,12 +285,12 @@ typedef TagList<int,
 
 .Memvar.BamAlignmentRecord#rID
 ..class:Class.BamAlignmentRecord
-..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*').
+..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*' in SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#beginPos
 ..class:Class.BamAlignmentRecord
-..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*').
+..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*' in SAM).
 ..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#mapQ

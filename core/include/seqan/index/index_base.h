@@ -1483,7 +1483,9 @@ I	ISSISSIPPI*/
 ..include:seqan/index.h
 */
 
-/*!
+// TODO(weese): I disabled the doc, as we don't want to encourage users to use it
+
+/*
  * @fn IndexEsa#rawsaAt
  * @headerfile <seqan/index.h>
  * @note Advanced functionality, not commonly used.
@@ -1648,12 +1650,12 @@ I	ISSISSIPPI*/
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>value(indexBwt(..), ..)</tt>.
  * 
- * @signature TReference bwtAt(position, index);
+ * @signature TValue bwtAt(position, index);
  * 
  * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
  * @param[in] position A position in the array on which the value should be accessed.
  * 
- * @return TReference A reference or proxy to the value.
+ * @return TValue A reference or proxy to the value.
  */
 
 	template <typename TPos, typename TIndex>
@@ -1797,11 +1799,11 @@ I	ISSISSIPPI
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaRawText@ fibre (concatenated input text).
 ..include:seqan/index.h
 */
-//TODO(singer) The RawText Fibre exist for more then the Esa index
+
 /*!
- * @fn IndexEsa#indexRawText
+ * @fn Index#indexRawText
  * @headerfile <seqan/index.h>
- * @brief Shortcut for <tt>$getFibre(.., EsaRawText)</tt>.
+ * @brief Shortcut for <tt>$getFibre(.., FibreRawText)</tt>.
  *
  * @signature TFibre indexRawText(position, index);
  *
@@ -1908,6 +1910,7 @@ I	ISSISSIPPI*/
 */
 
 // TODO(singer): should this be documented? 
+// TODO(weese): better not, we don't want to encourage users to use it
 /*
  * @fn Index#indexRawSA
  * @headerfile <seqan/index.h>
@@ -2019,7 +2022,7 @@ I	ISSISSIPPI*/
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaBwt@ fibre (Burrows-Wheeler table).
 ..include:seqan/index.h
 */
-/*
+/*!
  * @fn IndexEsa#indexBwt
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., EsaBwt)</tt>.
@@ -2028,7 +2031,7 @@ I	ISSISSIPPI*/
  *
  * @param[in] index The @link IndexEsa @endlink object holding the fibre.
  *
- * @return TBwt A reference to the @link IndexEsaFibres.EsaBwt @endlink fibre (Burrows-Wheeler table).
+ * @return TBwt A reference to the @link IndexEsaFibres#EsaBwt @endlink fibre (Burrows-Wheeler table).
  */
 
 	template <typename TText, typename TSpec>

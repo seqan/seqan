@@ -200,25 +200,25 @@ void readRecord(UcscRecord & record,
     // read column 4: transcript begin position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationBeginPos = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.annotationBeginPos = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 5: transcript end position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationEndPos = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.annotationEndPos = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.cdsBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 7: CDS end position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsEnd = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.cdsEnd = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 8: exon count
@@ -235,7 +235,7 @@ void readRecord(UcscRecord & record,
         readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempBegin;
-        tempBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
+        tempBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
     }
@@ -248,8 +248,8 @@ void readRecord(UcscRecord & record,
         readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempEnd;
-        tempEnd =  lexicalCast<__uint64>(ucscIOContext.buffer);
-        appendValue(record.exonEnd, tempEnd);
+        tempEnd =  lexicalCast<__uint32>(ucscIOContext.buffer);
+        appendValue(record.exonEnds, tempEnd);
         skipOne(iter);
     }
     skipOne(iter, IsTab());
@@ -264,7 +264,7 @@ void readRecord(UcscRecord & record,
     // adapt positions
     if (orientation == '-')
     {
-        __uint64 tmp = record.annotationBeginPos;
+        __uint32 tmp = record.annotationBeginPos;
         record.annotationBeginPos = record.annotationEndPos;
         record.annotationEndPos = tmp;
         tmp = record.cdsBegin;
@@ -273,8 +273,8 @@ void readRecord(UcscRecord & record,
         for (unsigned int i = 0; i < exons; ++i)
         {
             tmp = record.exonBegin[i];
-            record.exonBegin[i] = record.exonEnd[i];
-            record.exonEnd[i] = tmp;
+            record.exonBegin[i] = record.exonEnds[i];
+            record.exonEnds[i] = tmp;
         }
     }
 }
@@ -325,8 +325,8 @@ void writeRecord(TTarget & target,
     writeValue(target, '\t');
 
     // write column 3: orientation
-    __uint64 transBeginPos, transEndPos;
-    __uint64 cdsBeginPos, cdsEndPos;
+    __uint32 transBeginPos, transEndPos;
+    __uint32 cdsBeginPos, cdsEndPos;
     if (record.annotationBeginPos < record.annotationEndPos)
     {
         writeValue(target, '+');
@@ -370,7 +370,7 @@ void writeRecord(TTarget & target,
     // write column 9: exon begin positions
     for (unsigned i = 0; i < length(record.exonBegin); ++i)
     {
-        appendNumber(target, _min(record.exonBegin[i], record.exonEnd[i]));
+        appendNumber(target, _min(record.exonBegin[i], record.exonEnds[i]));
         writeValue(target, ',');
     }
     writeValue(target, '\t');
@@ -378,7 +378,7 @@ void writeRecord(TTarget & target,
     // write column 10: exon end positions
     for (unsigned i = 0; i < length(record.exonBegin); ++i)
     {
-        appendNumber(target, _max(record.exonBegin[i], record.exonEnd[i]));
+        appendNumber(target, _max(record.exonBegin[i], record.exonEnds[i]));
         writeValue(target, ',');
     }
     writeValue(target, '\t');
