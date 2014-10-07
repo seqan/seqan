@@ -324,7 +324,7 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader const & header)
 {
     write(file.iter, header, context(file), file.format);
 }
@@ -337,7 +337,7 @@ writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader & header)
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 write(TTarget & /* target */,
-      BamAlignmentRecord & /* record */,
+      BamAlignmentRecord const & /* record */,
       BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
       TagSelector<> const & /* format */)
 {
@@ -347,7 +347,7 @@ write(TTarget & /* target */,
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
 write(TTarget & target,
-      BamAlignmentRecord & record,
+      BamAlignmentRecord const & record,
       BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
       TagSelector<TTagList> const & format)
 {
@@ -361,7 +361,7 @@ write(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord & record)
+writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
 {
     write(file.iter, record, context(file), file.format);
 }
@@ -383,79 +383,6 @@ writeRecords(SmartFile<Bam, Output, TSpec> & file, TRecords const & records)
     for (int i = 0; i < (int)length(records); ++i)
         write(file.iter, buffers[i]);
 }
-
-// ----------------------------------------------------------------------------
-// Function jumpToRegion()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn BamStream#jumpToRegion
- * @brief Seek in BamStream using an index.
- *
- * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
- * jumps to the first alignment in this region, if any.
- *
- * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
- *
- * @param[in,out] stream        The @link BamStream @endlink to jump with.
- * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
- *                              alignments.
- * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
- * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
- * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
- * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
- *
- * @return bool true if seeking was successful, false if not.
- *
- * @section Remarks
- *
- * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
- *
- * @see BamIndex#jumpToRegion
- */
-
-#if SEQAN_HAS_ZLIB___disabled
-inline bool jumpToRegion(BamStream & bamIO, bool & hasAlignments, __int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index)
-{
-    if (bamIO._format != BamStream::BAM)
-        return false;  // Can only jump in BAM files.
-    if (bamIO._mode != BamStream::READ)
-        return false;  // Can only jump when reading.
-
-    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
-    return s->jumpToRegion(hasAlignments, refId, pos, posEnd, index, bamIO.bamIOContext);
-}
-#endif  // #if SEQAN_HAS_ZLIB
-
-// ----------------------------------------------------------------------------
-// Function jumpToOrphans()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn BamStream#jumpToOrphans
- * @brief Seek to orphans block in BamStream using an index.
- *
- * @signature bool jumpToOrphans(stream, hasAlignments, index);
- *
- * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
- * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
- * @param[in]     index          The index to use for jumping.
- *
- * @see BamIndex#jumpToOrphans
- */
-
-#if SEQAN_HAS_ZLIB___disabled
-inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
-{
-    if (bamIO._format != BamStream::BAM)
-        return false;  // Can only jump in BAM files.
-    if (bamIO._mode != BamStream::READ)
-        return false;  // Can only jump when reading.
-
-    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
-    return s->jumpToOrphans(index, bamIO.bamIOContext);
-}
-#endif  // #if SEQAN_HAS_ZLIB
 
 }  // namespace seqan
 

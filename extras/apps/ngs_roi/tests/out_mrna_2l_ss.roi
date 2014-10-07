@@ -1,5 +1,5 @@
 #ROI 0.3
-##ref	start	end	name	length	strand	max_count	num_reads	gc_content	counts
+##ref	begin_pos	end_pos	region_name	length	strand	max_count	num_reads	gc_content	counts
 2L	35	60	region_0	26	+	2	2	0.4230	1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 2L	9	48	region_1	40	-	2	2	0.4500	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1
 2L	94	138	region_2	45	-	3	3	0.4000	1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1

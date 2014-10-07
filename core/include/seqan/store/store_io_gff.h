@@ -127,10 +127,10 @@ _readOneAnnotation(
 
     // skip column 8
     // read column 9: name
-    for (unsigned i = 0; i < length(record.tagName); ++i)
+    for (unsigned i = 0; i < length(record.tagNames); ++i)
     {
-        ctx._key = record.tagName[i];
-        ctx._value = record.tagValue[i];
+        ctx._key = record.tagNames[i];
+        ctx._value = record.tagValues[i];
         if (ctx._key == "ID")
         {
             ctx.annotationName = ctx._value;
@@ -405,28 +405,28 @@ _writeOneAnnotation(
     // write column 9.1: annotation id
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
-        appendValue(record.tagName, "ID");
-        appendValue(record.tagValue, getAnnoName(store, id));
+        appendValue(record.tagNames, "ID");
+        appendValue(record.tagValues, getAnnoName(store, id));
     }
     else if (annotation.lastChildId != TAnnotation::INVALID_ID)
     {
-        appendValue(record.tagName, "ID");
-        appendValue(record.tagValue, getAnnoUniqueName(store, id));
+        appendValue(record.tagNames, "ID");
+        appendValue(record.tagValues, getAnnoUniqueName(store, id));
     }
 
     // write column 9.2: parent id
     if (store.annotationStore[annotation.parentId].typeId > 1)  // ignore root/deleted nodes
     {
-        appendValue(record.tagName, "Parent");
-        appendValue(record.tagValue, getAnnoUniqueName(store, annotation.parentId));
+        appendValue(record.tagNames, "Parent");
+        appendValue(record.tagValues, getAnnoUniqueName(store, annotation.parentId));
     }
 
     // write column 9.3-...: key, value pairs
     for (unsigned keyId = 0; keyId < length(annotation.values); ++keyId)
         if (!empty(annotation.values[keyId]))
         {
-            appendValue(record.tagName, store.annotationKeyStore[keyId]);
-            appendValue(record.tagValue, annotation.values[keyId]);
+            appendValue(record.tagNames, store.annotationKeyStore[keyId]);
+            appendValue(record.tagValues, annotation.values[keyId]);
         }
 
     return true;
@@ -464,28 +464,28 @@ _writeOneAnnotation(
     if (geneId < length(store.annotationStore) &&
         (valueId = annotationGetValueIdByKey(store, store.annotationStore[geneId], "gene_name")) != TAnnotation::INVALID_ID)
     {
-        appendValue(record.tagName, "gene_name");
-        appendValue(record.tagValue, store.annotationStore[geneId].values[valueId]);
+        appendValue(record.tagNames, "gene_name");
+        appendValue(record.tagValues, store.annotationStore[geneId].values[valueId]);
     }
     if (transcriptId < length(store.annotationStore) &&
         (valueId = annotationGetValueIdByKey(store, store.annotationStore[transcriptId], "transcript_name")) != TAnnotation::INVALID_ID)
     {
-        appendValue(record.tagName, "transcript_name");
-        appendValue(record.tagValue, store.annotationStore[transcriptId].values[valueId]);
+        appendValue(record.tagNames, "transcript_name");
+        appendValue(record.tagValues, store.annotationStore[transcriptId].values[valueId]);
     }
 
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
-        appendValue(record.tagName, "ID");
-        appendValue(record.tagValue, getAnnoName(store, id));
+        appendValue(record.tagNames, "ID");
+        appendValue(record.tagValues, getAnnoName(store, id));
     }
 
     // write key, value pairs
     for (unsigned keyId = 0; keyId < length(annotation.values); ++keyId)
         if (!empty(annotation.values[keyId]))
         {
-            appendValue(record.tagName, store.annotationKeyStore[keyId]);
-            appendValue(record.tagValue, annotation.values[keyId]);
+            appendValue(record.tagNames, store.annotationKeyStore[keyId]);
+            appendValue(record.tagValues, annotation.values[keyId]);
         }
 
     // The GTF format version 2.2 requires the keys gene_id and transcript_id to be the last keys of line
@@ -493,14 +493,14 @@ _writeOneAnnotation(
 
     if (geneId < length(store.annotationStore))
     {
-        appendValue(record.tagName, "gene_id");
-        appendValue(record.tagValue, getAnnoUniqueName(store, geneId));
+        appendValue(record.tagNames, "gene_id");
+        appendValue(record.tagValues, getAnnoUniqueName(store, geneId));
     }
 
     if (transcriptId < length(store.annotationStore))
     {
-        appendValue(record.tagName, "transcript_id");
-        appendValue(record.tagValue, getAnnoUniqueName(store, transcriptId));
+        appendValue(record.tagNames, "transcript_id");
+        appendValue(record.tagValues, getAnnoUniqueName(store, transcriptId));
     }
     return true;
 }

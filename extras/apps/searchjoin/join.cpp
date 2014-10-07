@@ -100,13 +100,13 @@ struct Options
 void setupArgumentParser(ArgumentParser & parser)
 {
     setAppName(parser, "join");
-    setShortDescription(parser, "Masai Join");
+    setShortDescription(parser, "EDBT/ICDT 2013 Join");
     setCategory(parser, "Databases");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.2 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.3 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.2");
+    setVersion(parser, "0.3");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
@@ -114,7 +114,7 @@ void setupArgumentParser(ArgumentParser & parser)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIERRORS\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     addArgument(parser, ArgParseArgument(ArgParseArgument::INTEGER));
 
     // Set errors range to [0,32].
@@ -139,7 +139,6 @@ void setupArgumentParser(ArgumentParser & parser)
 
     // Add output file option.
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file.", ArgParseOption::STRING));
-    setRequired(parser, "output-file", false);
     setDefaultValue(parser, "output-file", "result_track2.out");
 
     // Add online join option.

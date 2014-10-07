@@ -39,14 +39,14 @@ samtools view gold-adeno-edit-08.by_coordinate.bam > gold-adeno-edit-08.by_coord
 # Build Gold Standard
 # ============================================================
 
-${RABEMA_BUILD} --distance-metric hamming -e 8 -o gold-adeno-hamming-08.gsi --reference adeno-genome.fa --in-sam gold-adeno-hamming-08.by_coordinate.sam > gold-adeno-hamming-08.stdout
-${RABEMA_BUILD} --distance-metric edit    -e 8 -o gold-adeno-edit-08.gsi    --reference adeno-genome.fa --in-sam gold-adeno-edit-08.by_coordinate.sam > gold-adeno-edit-08.stdout
+${RABEMA_BUILD} --distance-metric hamming -e 8 -o gold-adeno-hamming-08.gsi --reference adeno-genome.fa --in-bam gold-adeno-hamming-08.by_coordinate.sam > gold-adeno-hamming-08.stdout
+${RABEMA_BUILD} --distance-metric edit    -e 8 -o gold-adeno-edit-08.gsi    --reference adeno-genome.fa --in-bam gold-adeno-edit-08.by_coordinate.sam > gold-adeno-edit-08.stdout
 
 # ============================================================
 # Compare Against Gold Standard
 # ============================================================
 
-${RABEMA_EVALUATE} --distance-metric hamming -e 8 --reference adeno-genome.fa --in-sam razers2-adeno-hamming-08.sam --in-gsi gold-adeno-hamming-08.gsi > razers2-adeno-hamming-08.stdout
-${RABEMA_EVALUATE} --distance-metric hamming -e 8 --reference adeno-genome.fa --in-sam razers2-adeno-hamming-04.sam --in-gsi gold-adeno-hamming-08.gsi > razers2-adeno-hamming-04.stdout
-${RABEMA_EVALUATE} --distance-metric edit    -e 8 --reference adeno-genome.fa --in-sam razers2-adeno-edit-08.sam    --in-gsi gold-adeno-edit-08.gsi > razers2-adeno-edit-08.stdout
-${RABEMA_EVALUATE} --distance-metric edit    -e 8 --reference adeno-genome.fa --in-sam razers2-adeno-edit-04.sam    --in-gsi gold-adeno-edit-08.gsi > razers2-adeno-edit-04.stdout
+${RABEMA_EVALUATE} --distance-metric hamming -e 8 --reference adeno-genome.fa --in-bam razers2-adeno-hamming-08.sam --in-gsi gold-adeno-hamming-08.gsi > razers2-adeno-hamming-08.stdout
+${RABEMA_EVALUATE} --distance-metric hamming -e 8 --reference adeno-genome.fa --in-bam razers2-adeno-hamming-04.sam --in-gsi gold-adeno-hamming-08.gsi > razers2-adeno-hamming-04.stdout
+${RABEMA_EVALUATE} --distance-metric edit    -e 8 --reference adeno-genome.fa --in-bam razers2-adeno-edit-08.sam    --in-gsi gold-adeno-edit-08.gsi > razers2-adeno-edit-08.stdout
+${RABEMA_EVALUATE} --distance-metric edit    -e 8 --reference adeno-genome.fa --in-bam razers2-adeno-edit-04.sam    --in-gsi gold-adeno-edit-08.gsi > razers2-adeno-edit-04.stdout

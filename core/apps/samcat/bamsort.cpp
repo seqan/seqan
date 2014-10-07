@@ -436,7 +436,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setValidValues(parser, "output", BamOnlyFileOut::getFileFormatExtensions());
 
     // We require one argument.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "INFILE"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "INFILE"));
     setValidValues(parser, 0, BamOnlyFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
 	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));

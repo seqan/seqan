@@ -108,7 +108,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     addOption(parser, recordOpt);
 
     seqan::ArgParseOption noQualOpt = seqan::ArgParseOption(
-        "nq", "noQualities", "Force .fasta format for output files.");
+        "nq", "noQualities", "Force .fa format for output files.");
         addOption(parser, noQualOpt);
 
     seqan::ArgParseOption threadOpt = seqan::ArgParseOption(
@@ -129,7 +129,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
-            "o", "output", "Prefix and file ending of output files (prefix$.fasta - $: placeholder which will be determined by the program.).",
+            "o", "output", "Prefix and file ending of output files (prefix$.fa - $: placeholder which will be determined by the program.).",
             seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
         setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
@@ -215,13 +215,13 @@ void ArgumentParserBuilder::addDemultiplexingOptions(seqan::ArgumentParser & par
     
     seqan::ArgParseOption barcodeFileOpt = seqan::ArgParseOption(
         "b", "barcodes", "FastA file containing the used barcodes and their IDs. Necessary for demutiplexing.",
-        seqan::ArgParseArgument::INPUTFILE, "BARCODE_FILE");
+        seqan::ArgParseArgument::INPUT_FILE, "BARCODE_FILE");
     setValidValues(barcodeFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, barcodeFileOpt);
 
     seqan::ArgParseOption multiplexFileOpt = seqan::ArgParseOption(
         "x", "multiplex", "FastA/FastQ file containing the barcode for each read.",
-        seqan::ArgParseArgument::INPUTFILE, "MULTIPLEX_FILE");
+        seqan::ArgParseArgument::INPUT_FILE, "MULTIPLEX_FILE");
     setValidValues(multiplexFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, multiplexFileOpt);
     
@@ -247,7 +247,7 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
     seqan::ArgParseOption adapterFileOpt = seqan::ArgParseOption(
         "a", "adapters", "FastA file containing the two adapter sequences. "
         "The adapters according to the layout: 5'-adapter1-read-adapter2-3'.",
-        seqan::ArgParseArgument::INPUTFILE, "ADAPTER_FILE");
+        seqan::ArgParseArgument::INPUT_FILE, "ADAPTER_FILE");
     setValidValues(adapterFileOpt, SeqFileIn::getFileFormatExtensions());
     addOption(parser, adapterFileOpt);
 
@@ -361,7 +361,7 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
 #endif
     seqan::setVersion(parser, version);
 
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
@@ -413,7 +413,7 @@ void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
 #endif
     seqan::setVersion(parser, version);
 
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
@@ -466,7 +466,7 @@ void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
 #endif
     seqan::setVersion(parser, version);
 
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
@@ -519,7 +519,7 @@ void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
 #endif
     seqan::setVersion(parser, version);
 
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
@@ -578,7 +578,7 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 #endif
     seqan::setVersion(parser, version);
 
-    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE, "READS", true);
+    seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
@@ -1524,7 +1524,7 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
             ((programParams.fileCount == 2) &&
             (value(programParams.fileStream2.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE)))
         {
-            std::cerr << "\nQuality trimming requires quality information, please specify fastq files." << std::endl;
+            std::cerr << "\nQuality trimming requires quality information, please specify fq files." << std::endl;
             return 1;
         }
     }

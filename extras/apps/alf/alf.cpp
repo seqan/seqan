@@ -73,7 +73,7 @@ int main(int argc, const char * argv[])
 
     // Options Section: Input / Output parameters.
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan::ArgParseArgument::INPUTFILE));
+    addOption(parser, seqan::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "input-file", "fa fasta");
     setRequired(parser, "input-file");
     addOption(parser, seqan::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan::ArgParseArgument::OUTPUTFILE));

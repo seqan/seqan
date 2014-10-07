@@ -82,13 +82,13 @@ SEQAN_DEFINE_TEST(test_argument_double_label)
 
 SEQAN_DEFINE_TEST(test_argument_inputfile_label)
 {
-    ArgParseArgument arg1(ArgParseArgument::INPUTFILE);
+    ArgParseArgument arg1(ArgParseArgument::INPUT_FILE);
     SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE");
 
     arg1._numberOfValues = 2;
     SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE FILE");
 
-    ArgParseArgument arg2(ArgParseArgument::INPUTFILE);
+    ArgParseArgument arg2(ArgParseArgument::INPUT_FILE);
     SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "FILE");
 }
 
@@ -189,7 +189,7 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
                          _checkValue(arg),
                          "the given value 'not-this-or-that' is not in the list of allowed values [this, that]");
 
-    ArgParseArgument filearg(ArgParseArgument::INPUTFILE);
+    ArgParseArgument filearg(ArgParseArgument::INPUT_FILE);
     setValidValues(filearg, ".txt .fasta");
 
     _assignArgumentValue(filearg, "textfile.txt");

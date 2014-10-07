@@ -86,47 +86,43 @@ Note: If edges do not store ids external property maps do not work.
 template<typename TAlphabet, typename TCargo, typename TSpec>
 class Graph<Hmm<TAlphabet, TCargo, TSpec> > 
 {
-	public:
-		typedef typename VertexDescriptor<Graph>::Type TVertexDescriptor_;
-		
-		//HMM Model
-		Graph<Directed<TCargo, TSpec> > data_model;
+public:
+    typedef typename VertexDescriptor<Graph>::Type TVertexDescriptor_;
 
-		//Emission probabilities
-		String<TCargo> data_emission;
+    // HMM Model
+    Graph<Directed<TCargo, TSpec> > data_model;
 
-		//Silent state map
-		String<bool> data_silent;
+    // Emission probabilities
+    String<TCargo> data_emission;
 
-		//Begin and end state
-		TVertexDescriptor_ data_begin;
-		TVertexDescriptor_ data_end;
+    // Silent state map
+    String<bool> data_silent;
 
-	
-//____________________________________________________________________________
+    // Begin and end state
+    TVertexDescriptor_ data_begin;
+    TVertexDescriptor_ data_end;
 
-		Graph() {
-		}
+    Graph() : data_begin(), data_end()
+    {}
 
+    ~Graph()
+    {
+        clear(*this);
+    }
 
-		~Graph() {
-			SEQAN_CHECKPOINT
-			clear(*this);
-		}
+    Graph(Graph const & _other)
+    {
+        _copyGraph(_other, *this);
+    }
 
-		Graph(Graph const & _other) 
-		{
-			SEQAN_CHECKPOINT
-			_copyGraph(_other, *this);	
-		}
-	
-		Graph const& operator = (Graph const & _other) {
-			SEQAN_CHECKPOINT
-			if (this == &_other) return *this;
-			clear(*this);
-			_copyGraph(_other, *this);
-			return *this;
-		}
+    Graph const& operator = (Graph const & _other)
+    {
+        if (this == &_other)
+            return *this;
+        clear(*this);
+        _copyGraph(_other, *this);
+        return *this;
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1049,7 +1045,7 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn HmmGraph#emissionsProbability
+ * @fn HmmGraph#emissionProbability
  * @brief Returns a reference to the emissions probability.
  *
  * @signature TCargo emissionProbability(hmm, state, symbol);

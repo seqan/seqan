@@ -61,9 +61,7 @@ struct HitsExtender
     typedef typename Traits::TRanks            TRanks;
     typedef typename Traits::TSA               TSA;
 
-    typedef AlignTextBanded<FindPrefix, NMatchesNone_, NMatchesNone_> TMyersSpec;
-    typedef Myers<TMyersSpec, True, void>               TAlgorithm;
-    typedef Extender<TContigSeqs, TReadSeq, TAlgorithm> TExtender;
+    typedef Extender<TContigSeqs, TReadSeq, EditDistance> TExtender;
 
     // Thread-private data.
     TExtender           extender;
@@ -114,10 +112,10 @@ struct HitsExtender
         _extendHitImpl(*this, hitsIt, typename Traits::TStrategy());
     }
 
-    template <typename TMatchPos, typename TMatchErrors>
-    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TMatchErrors matchErrors)
+    template <typename TMatchPos, typename TErrors>
+    void operator() (TMatchPos matchBegin, TMatchPos matchEnd, TErrors errors)
     {
-        _addMatchImpl(*this, matchBegin, matchEnd, matchErrors);
+        _addMatchImpl(*this, matchBegin, matchEnd, errors);
     }
 };
 
@@ -226,6 +224,8 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
 {
     typedef typename Traits::TReadSeqs                  TReadSeqs;
     typedef typename Size<TReadSeqs>::Type              TReadId;
+    typedef typename Traits::TReadSeq                   TReadSeq;
+    typedef typename Size<TReadSeq>::Type               TReadSeqSize;
 
     typedef typename Traits::TSeeds                     TSeeds;
     typedef typename Id<TSeeds>::Type                   TSeedId;
@@ -239,8 +239,10 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
     typedef typename Traits::TRanks                     TRanks;
     typedef typename Reference<TRanks const>::Type      TRank;
 
-    // Get readSeqId.
+    // Get readId.
     TReadId readId = position(it);
+    TReadSeqSize readLength = length(me.readSeqs[readId]);
+    TReadSeqSize readStrata = getReadStrata(me.options, readLength);
 
     TReadId fwdSeqId = getFirstMateFwdSeqId(me.readSeqs, readId);
     TReadId revSeqId = getFirstMateRevSeqId(me.readSeqs, readId);
@@ -273,7 +275,7 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
             _extendHitImpl(me, it, All());
 
         // Mark mapped reads.
-        if (getMinErrors(me.ctx, readId) <= seedRank * (me.seedErrors + 1))
+        if (getMinErrors(me.ctx, readId) + readStrata <= seedRank * (me.seedErrors + 1))
             setMapped(me.ctx, readId);
     }
 }
@@ -296,7 +298,7 @@ inline void _addMatchImpl(HitsExtender<TSpec, Traits> & me,
     me.prototype.errors = matchErrors;
     appendValue(me.matches, me.prototype, Generous(), typename Traits::TThreading());
 
-    TReadSeqId readId = getReadId(me.prototype);
+    TReadSeqId readId = getMember(me.prototype, ReadId());
     setMinErrors(me.ctx, readId, matchErrors);
 }
 

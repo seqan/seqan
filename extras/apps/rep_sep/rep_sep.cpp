@@ -76,7 +76,7 @@ parseCommandLine(RepSepOptions & options, int argc, char const ** argv)
     setShortDescription(parser, "Repeat Seperation Tool -- Copyright (c) 2009, Stephan Aiche");
 
     // needed input file
-    addOption(parser, ArgParseOption("a", "assembly", "Input assembly filename.", ArgParseArgument::INPUTFILE));
+    addOption(parser, ArgParseOption("a", "assembly", "Input assembly filename.", ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "assembly", "afg");
     setRequired(parser, "assembly");
 

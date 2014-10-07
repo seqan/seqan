@@ -127,6 +127,11 @@ struct SmartFile
         context(otherCtx)
     {}
 
+    explicit
+    SmartFile(SmartFile &other) :
+        context(other.context)
+    {}
+
     SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         context(otherCtx)
     {
@@ -175,8 +180,8 @@ struct SmartFile
         _getCompressionExtensions(extensions,
                                   TFileFormat(),
                                   typename FileFormat<TStream>::Type(),
-                                  true);
-//                                  IsSameType<TDirection, Output>::VALUE);
+//                                  true);
+                                  IsSameType<TDirection, Output>::VALUE);
         return extensions;
     }
 };
@@ -516,6 +521,13 @@ setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
 template <typename TFileType, typename TDirection, typename TSpec>
 inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
 context(SmartFile<TFileType, TDirection, TSpec> & file)
+{
+    return file.context;
+}
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type const &
+context(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
     return file.context;
 }

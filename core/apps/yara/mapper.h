@@ -68,7 +68,7 @@ struct Options
 
     MappingMode         mappingMode;
     float               errorRate;
-//    unsigned            strataRate;
+    float               strataRate;
     bool                quick;
 
     bool                singleEnd;
@@ -81,6 +81,7 @@ struct Options
     unsigned            readsCount;
     unsigned            threadsCount;
     unsigned            hitsThreshold;
+    bool                rabema;
     unsigned            verbose;
 
     CharString          commandLine;
@@ -93,7 +94,7 @@ struct Options
         outputHeader(true),
         mappingMode(STRATA),
         errorRate(0.05f),
-//        strataRate(0),
+        strataRate(0.00f),
         quick(false),
         singleEnd(true),
         libraryLength(200),
@@ -103,6 +104,7 @@ struct Options
         readsCount(100000),
         threadsCount(1),
         hitsThreshold(300),
+        rabema(false),
         verbose(0)
     {
         appendValue(readsFormatList, "fastq");
@@ -304,6 +306,7 @@ struct Mapper
     typename Traits::TMatches           matches;
     typename Traits::TMatchesSet        matchesSet;
     typename Traits::TMatchesSet        bestMatchesSet;
+    typename Traits::TMatchesSet        suboptimalMatchesSet;
     typename Traits::TMatches           primaryMatches;
 
     typename Traits::TCigar             cigars;
@@ -331,7 +334,20 @@ struct Mapper
 template <typename TReadSeqSize>
 inline TReadSeqSize getReadErrors(Options const & options, TReadSeqSize readSeqLength)
 {
-    return std::min((TReadSeqSize)(readSeqLength * options.errorRate), (TReadSeqSize)YaraLimits<void>::ERRORS);
+    return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
+                    (TReadSeqSize)MemberLimits<Match<void>, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function getReadStrata()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of strata for a given read sequence.
+
+template <typename TReadSeqSize>
+inline TReadSeqSize getReadStrata(Options const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.strataRate),
+                    (TReadSeqSize)MemberLimits<Match<void>, Errors>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -446,7 +462,7 @@ inline void loadReads(Mapper<TSpec, TConfig> & me)
         load(value(me.reads), me.readsLoader, me.options.readsCount);
     }
 
-    if (maxLength(me.reads->seqs, typename TConfig::TThreading()) > YaraLimits<TSpec>::READ_SIZE)
+    if (maxLength(me.reads->seqs, typename TConfig::TThreading()) > MemberLimits<Match<void>, ReadSize>::VALUE)
         throw RuntimeError("Maximum read length exceeded.");
 
     // Append reverse complemented reads.
@@ -745,8 +761,8 @@ inline void aggregateMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
     // Bucket sort matches by readId.
     start(me.timer);
     setHost(me.matchesSet, me.matches);
-    sort(me.matches, MatchSorter<TMatch, SortReadId>(), typename TConfig::TThreading());
-    bucket(me.matchesSet, Getter<TMatch, SortReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
+    sort(me.matches, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
+    bucket(me.matchesSet, Getter<TMatch, ReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
 
@@ -810,6 +826,7 @@ inline void clearMatches(Mapper<TSpec, TConfig> & me)
 {
     clear(me.matchesSet);
     clear(me.bestMatchesSet);
+    clear(me.suboptimalMatchesSet);
     clear(me.matches);
     shrinkToFit(me.matches);
 
@@ -829,11 +846,12 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     typedef typename Iterator<TMatchesSet, Standard>::Type  TMatchesIt;
     typedef typename Value<TMatchesSet>::Type               TMatches;
     typedef PairsSelector<TSpec, TTraits>                   TPairsSelector;
+    typedef typename Size<TReadSeqs>::Type                  TReadId;
 
     // Sort matches by errors.
     start(me.timer);
-    iterate(me.matchesSet, sortMatches<TMatchesIt, SortErrors>, Standard(), typename TTraits::TThreading());
-//    forEach(me.matchesSet, sortMatches<TMatches, SortErrors>, typename TTraits::TThreading());
+    iterate(me.matchesSet, sortMatches<TMatchesIt, Errors>, Standard(), typename TTraits::TThreading());
+//    forEach(me.matchesSet, sortMatches<TMatches, Errors>, typename TTraits::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
     if (me.options.verbose > 1)
@@ -841,11 +859,62 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
     // Select all co-optimal matches.
     assign(me.bestMatchesSet, me.matchesSet);
-    removeSuboptimal(me.bestMatchesSet, typename TTraits::TThreading());
+    clipMatches(me.bestMatchesSet, countMatchesInBestStratum<TMatches>, typename TTraits::TThreading());
+
+    // Select all sub-optimal matches.
+    assign(me.suboptimalMatchesSet, me.matchesSet);
+    clipMatches(me.suboptimalMatchesSet, [&](TMatches const & matches)
+    {
+        if (empty(matches)) return typename Size<TMatches>::Type(0);
+
+        TReadId readId = getMember(front(matches), ReadId());
+
+        return countMatchesInStrata(matches, getReadStrata(me.options, length(readSeqs[readId])));
+    },
+    typename TTraits::TThreading());
+
+    // Initialize primary matches.
+    resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
+    forEach(me.primaryMatches, setInvalid<void>, typename TTraits::TThreading());
+
+    // Try to pair mates.
+    if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
+    {
+        start(me.timer);
+
+        // Concordant pairs of first co-optimal match with second sub-optimal match.
+        TPairsSelector selectorOptSubConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.suboptimalMatchesSet, me.options);
+        // Concordant pairs of first sub-optimal match with second co-optimal match.
+        TPairsSelector selectorSubOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.suboptimalMatchesSet, me.bestMatchesSet, me.options);
+
+        // Mark paired mates as properly paired.
+        iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
+        {
+            if (isValid(*matchesIt)) setPaired(me.ctx, getMember(*matchesIt, ReadId()));
+        },
+        Standard(), typename TTraits::TThreading());
+
+        // Concordant co-optimal matches on the same chromosome outside of the expected insert size.
+        Options pairing = me.options;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
+
+        // Any pair of co-optimal matches on the same chromosome.
+        pairing.libraryOrientation = ANY;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
+
+        stop(me.timer);
+        me.stats.selectPairs += getValue(me.timer);
+    }
 
     // Randomly choose primary matches among co-optimal ones.
-    resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
-    transform(me.primaryMatches, me.bestMatchesSet, MatchesPicker<TMatches>(), Serial());
+    MatchesPicker<TMatches> picker;
+    iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
+    {
+        if (!isValid(*matchesIt)) *matchesIt = picker(me.bestMatchesSet[position(matchesIt, me.primaryMatches)]);
+    },
+    Standard(), Serial());
 
     unsigned long mappedReads = 0;
     if (me.options.verbose > 0)
@@ -856,14 +925,6 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     }
     if (me.options.verbose > 1)
         std::cout << "Mapped reads:\t\t\t" << mappedReads << std::endl;
-
-    // Try to pair co-optimal matches.
-    if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
-
-    start(me.timer);
-    TPairsSelector selector(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.options);
-    stop(me.timer);
-    me.stats.selectPairs += getValue(me.timer);
 
     unsigned long pairedReads = 0;
     if (me.options.verbose > 0)
@@ -885,13 +946,19 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 template <typename TSpec, typename TConfig>
 inline void alignMatches(Mapper<TSpec, TConfig> & me)
 {
-    typedef MapperTraits<TSpec, TConfig>        TTraits;
-    typedef MatchesAligner<TSpec, TTraits>      TMatchesAligner;
+    typedef MapperTraits<TSpec, TConfig>            TTraits;
+    typedef MatchesAligner<LinearGaps, TTraits>     TLinearAligner;
+    typedef MatchesAligner<AffineGaps , TTraits>    TAffineAligner;
 
     start(me.timer);
     setHost(me.cigarSet, me.cigars);
     typename TTraits::TCigarLimits cigarLimits;
-    TMatchesAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+
+    if (me.options.rabema)
+        TLinearAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+    else
+        TAffineAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads->seqs, me.options);
+
     stop(me.timer);
     me.stats.alignMatches += getValue(me.timer);
 
@@ -924,7 +991,7 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 
     start(me.timer);
     TMatchesWriter writer(me.outputStream, me.outputCtx,
-                          me.matchesSet, me.primaryMatches, me.cigarSet,
+                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
                           me.ctx, me.contigs, value(me.reads),
                           me.options);
     stop(me.timer);
