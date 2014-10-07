@@ -50,6 +50,20 @@ namespace seqan {
  */
 
 // ===========================================================================
+// Concepts
+// ===========================================================================
+
+// ----------------------------------------------------------------------------
+// Concept StringConcept
+// ----------------------------------------------------------------------------
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc>), (StringConcept));           // resizable container
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc> const), (ContainerConcept));  // read-only container
+
+// ===========================================================================
 // Metafunctions
 // ===========================================================================
 
@@ -73,11 +87,11 @@ struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const
 ///.Metafunction.IsContiguous.param.T.type:Adaption.std::basic_string
 ///.Metafunction.IsContiguous.class:Adaption."std::basic_string"
 
+// std::string can be assumed to be contigous, see
+// http://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
 template <typename TChar, typename TCharTraits, typename TAlloc>
-struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    enum { VALUE = false };
-};
+struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > :
+    True {};
 
 template <typename  TChar, typename TCharTraits, typename TAlloc>
 struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> const>
@@ -131,31 +145,15 @@ struct Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>
 ///.Metafunction.Iterator.class:Adaption.std::basic_string
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Rooted>
-{
-    typedef std::basic_string<TChar, TCharTraits, TAlloc> TString_;
-    typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Rooted>
-{
-    typedef std::basic_string<TChar, TCharTraits, TAlloc> const TString_;
-    typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
 struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
 {
-    typedef Iter< std::basic_string<TChar, TCharTraits, TAlloc>, StdIteratorAdaptor > Type;
+    typedef TChar * Type;
 };
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
 {
-    typedef Iter< std::basic_string<TChar, TCharTraits, TAlloc> const, StdIteratorAdaptor > Type;
+    typedef TChar const * Type;
 };
 
 ///.Metafunction.Position.param.T.type:Adaption.std::basic_string
@@ -220,21 +218,22 @@ getObjectId(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
 ///.Function.begin.param.object.type:Adaption.std::basic_string
 ///.Function.begin.class:Adaption.std::basic_string
 
+// Based on http://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
+// we can rely on contiguous memory
+
 template <typename TChar, typename TCharTraits, typename TAlloc>
 inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type
 begin(std::basic_string<TChar, TCharTraits, TAlloc> & me,
       Standard)
 {
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type(me.begin());
+    return &me[0];
 }
 template <typename TChar, typename TCharTraits, typename TAlloc>
 inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
 begin(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
       Standard)
 {
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type(me.begin());
+    return me.data();
 }
 
 ///.Function.end.param.object.type:Adaption.std::basic_string
@@ -245,16 +244,14 @@ inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standar
 end(std::basic_string<TChar, TCharTraits, TAlloc> & me,
     Standard)
 {
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type(me.end());
+    return &me[me.size()];
 }
 template <typename TChar, typename TCharTraits, typename TAlloc>
 inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
 end(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
     Standard)
 {
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type(me.end());
+    return me.data() + me.size();
 }
 
 ///.Function.value.param.container.type:Adaption.std::basic_string

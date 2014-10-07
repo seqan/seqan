@@ -594,7 +594,7 @@ backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  *
  * @param[in] hmm     The @link HmmGraph @endlink to use.
  * @param[out] seq    A @link StringSet @endlink of alphabet sequences.
- * @param[out] states A @link SequenceConcept @endlink object of state sequences.
+ * @param[out] states A @link ContainerConcept @endlink object of state sequences.
  * @param[in]  numSeq The number of sequences to generate.
  * @param[in]  maxLen The maximum length of the sequences.  The sequences might be shorter if the ends tate is reached
  *                    before maxLen.

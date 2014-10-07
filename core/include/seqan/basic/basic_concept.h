@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // Facade header for sub module basic_concept.

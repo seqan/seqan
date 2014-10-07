@@ -1,33 +1,68 @@
 #include <seqan/basic.h>
-#include <seqan/seq_io.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
 
 using namespace seqan;
 
 int main(int argc, char ** argv)
 {
-    CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/core/demos/seq_io/example.fa");
+    CharString path;
 
-    // Open file and check for errors.
-    SequenceStream seqStream(toCString(path));
-    if (!isGood(seqStream))
+    if (argc > 1)
     {
-        std::cerr << "ERROR: Could not open " << path << " for reading.\n";
+        path = argv[1];
+    }
+    else
+    {
+        path = SEQAN_PATH_TO_ROOT();
+        append(path, "/core/tests/seq_io/test_dna.fq");
+    }
+
+    SeqFileIn file;
+    if (!open(file, toCString(path)))
+    {
+        std::cerr << "Can't open the file." << std::endl;
         return 1;
     }
 
-    // Read from file and print the result to stdout.
-    seqan::CharString id, seq;
-    while (!atEnd(seqStream))
+    CharString id;
+    DnaString seq;
+    CharString qual;
+
+    Size<CharString>::Type records = 0;
+    Size<CharString>::Type bases = 0;
+
+    double start, finish;
+
+    start = sysTime();
+
+    while (!atEnd(file))
     {
-        if (readRecord(id, seq, seqStream) != 0)
+        try
         {
-            std::cerr << "Problem reading from " << path << "\n";
-            return 1;
+            readRecord(id, seq, qual, file);
         }
-        std::cout << id << "\t" << seq << "\n";
+        catch (UnexpectedEnd &)
+        {
+            break;
+        }
+        catch (ParseError & e)
+        {
+            std::cerr << "Record #" << records + 1 << ": " << e.what() << std::endl;
+            continue;
+        }
+
+        records += 1;
+        bases += length(seq);
     }
+
+    finish = sysTime();
+
+    close(file);
+
+    std::cout << finish - start << " sec" << std::endl;
+    std::cout << records << " records" << std::endl;
+    std::cout << bases << " bases" << std::endl;
 
     return 0;
 }

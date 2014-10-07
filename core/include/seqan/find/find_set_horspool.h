@@ -52,7 +52,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, SetHorspool>;
  * 
- * @tparam TNeedle The needle type, a string of keywords.  Types: @link SequenceConcept @endlink.
+ * @tparam TNeedle The needle type, a string of keywords.  Types: @link ContainerConcept @endlink.
  * 
  * The types of all keywords in the needle and the haystack have to match.
  */
@@ -186,7 +186,7 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
 	_createTrieNodeNames(me.data_reverseTrie, me.data_terminalStateMap, nodeMap);
 	String<String<char> > edgeMap;
 	_createEdgeNames(me.data_reverseTrie,edgeMap);
-	write(strm,me.data_reverseTrie,nodeMap,edgeMap,DotDrawing());
+	writeRecords(strm,me.data_reverseTrie,nodeMap,edgeMap,DotDrawing());
 	strm.close();
 	*/
 }

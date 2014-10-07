@@ -33,7 +33,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_align_stream.h"
 #include "test_align_fragment.h"

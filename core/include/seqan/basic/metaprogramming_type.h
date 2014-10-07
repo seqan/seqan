@@ -271,6 +271,61 @@ struct RemoveReference<T &> : RemoveReference<T> {};
 #endif
 
 // ----------------------------------------------------------------------------
+// Metafunction RemoveReference
+// ----------------------------------------------------------------------------
+
+/*!
+ * @mfn RemovePointer
+ * @headerfile <seqan/basic.h>
+ * @brief Converts a (pointer) type into the same type without a pointer.
+ *
+ * @signature RemovePointer<T>::Type;
+ *
+ * @tparam T The input type.
+ *
+ * @return Type A corresponding non-pointer type, e.g. <tt>int</tt> for <tt>T = *int</tt>.
+ */
+
+#ifdef SEQAN_CXX11_STANDARD
+
+template <typename T>
+struct RemovePointer
+{
+	typedef typename std::remove_pointer<T>::type Type;
+};
+
+#else
+
+template <typename T>
+struct RemovePointer
+{
+	typedef T Type;
+};
+
+template <typename T>
+struct RemovePointer<T *>
+{
+    typedef T Type;
+};
+
+template <typename T>
+struct RemovePointer<T * const>
+{
+    typedef T Type;
+};
+
+#endif
+
+template <typename T>
+struct IsPointer : False {};
+
+template <typename T>
+struct IsPointer<T *> : True {};
+
+template <typename T>
+struct IsPointer<T * const> : True {};
+
+// ----------------------------------------------------------------------------
 // Metafunction RemoveConst
 // ----------------------------------------------------------------------------
 

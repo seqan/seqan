@@ -106,8 +106,9 @@ public:
     seqan::FaiIndex faiIndex;
     // The FAI Index to load the methylation sequences from.
     seqan::FaiIndex methFaiIndex;
-    // The VCF stream to load from.
-    seqan::VcfStream vcfStream;
+    // The VCF stream to load from and the VCF heade.r
+    seqan::VcfFileIn vcfFileIn;
+    seqan::VcfHeader vcfHeader;
     // The current VCF record.  rID == INVALID_REFID if invalid, used for termination.
     seqan::VcfRecord vcfRecord;
 

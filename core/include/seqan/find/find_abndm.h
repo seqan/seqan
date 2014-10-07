@@ -85,7 +85,7 @@ inline void _printMask(String <unsigned> const &  mask,unsigned start, unsigned 
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, AbndmAlgo>;
  *
- * @tparam TNeedle The needle type.  Type @link SequenceConcept @endlink.
+ * @tparam TNeedle The needle type.  Type @link ContainerConcept @endlink.
  *
  * @note The types of the needle and the haystack have to match.
  */

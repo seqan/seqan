@@ -36,7 +36,7 @@
 #define SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
 

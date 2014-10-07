@@ -148,10 +148,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         ~Thread() 
         {
-            if (*this) {
-                cancel();
-                wait();
-            }
+            if (*this)
+                close();
         }
 
         inline bool open()
@@ -160,7 +158,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline bool close() {
-            return cancel() && wait() && !(hThread == NULL);
+            return cancel() && wait() && !(hThread = NULL);
         }
 
         inline bool cancel() {
@@ -168,11 +166,11 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline bool wait() {
-            return !(pthread_join(data, NULL));
+            return !(pthread_join(data, NULL)) && !(hThread = NULL);
         }
 
         inline bool wait(void* &retVal) {
-            return !(pthread_join(data, &retVal));
+            return !(pthread_join(data, &retVal)) && !(hThread = NULL);
         }
 
         inline bool detach() {

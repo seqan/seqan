@@ -38,7 +38,7 @@
 #include <iostream>
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>  // for output
+#include <seqan/stream.h>  // for output
 
 int main()
 {

@@ -36,6 +36,7 @@
 #define CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_
 
 #include <seqan/basic.h>
+#include <seqan/stream.h>
 #include <seqan/consensus.h>
 
 template <typename TScoringScheme>
@@ -256,9 +257,8 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
 
     // Read in SAM and FASTA.
     seqan::FragmentStore<> store;
-    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fSamIn.good());
-    read(fSamIn, store, seqan::Sam());
+    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    readRecords(store, fSamIn);
 
     // Write out CGB file.
     std::fstream fCgbOut(toCString(outPathCgb), std::ios::binary | std::ios::out);
@@ -268,7 +268,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
     // Compare result.
     seqan::CharString goldPathCgb = SEQAN_PATH_TO_ROOT();
     append(goldPathCgb, "/core/tests/consensus/sam_to_cgb_result.cgb");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathCgb), toCString(goldPathCgb)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathCgb), toCString(goldPathCgb)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
@@ -281,9 +281,8 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
 
     // Read in SAM and FASTA.
     seqan::FragmentStore<> store;
-    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fSamIn.good());
-    read(fSamIn, store, seqan::Sam());
+    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    readRecords(store, fSamIn);
 
     // Write out FRG file.
     std::fstream fFrgOut(toCString(outPathFrg), std::ios::binary | std::ios::out);
@@ -309,9 +308,8 @@ SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
     // Read in SAM and FASTA.
     seqan::FragmentStore<> store;
     SEQAN_ASSERT(loadContigs(store, toCString(inPathFasta)));
-    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fSamIn.good());
-    read(fSamIn, store, seqan::Sam());
+    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    readRecords(store, fSamIn);
 
     // Write out FASTA file.
     std::fstream fFastaOut(toCString(outPathFasta), std::ios::binary | std::ios::out);
@@ -331,23 +329,23 @@ SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
     append(inPathFasta, "/core/tests/consensus/simulated_reads.fasta");
     std::string filePath(toCString(inPathFasta));
     // Get path to temporary file.
-    seqan::CharString outPathSam = SEQAN_TEMP_FILENAME();
+    std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
 
     // Read in FASTA file.
     seqan::FragmentStore<> store;
     std::fstream fFastaIn(toCString(inPathFasta), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fFastaIn.good());
-    SEQAN_ASSERT_EQ(_convertSimpleReadFile(fFastaIn, store, filePath, false), 0);
+    _convertSimpleReadFile(fFastaIn, store, filePath, false);
 
     // Write out as SAM.
-    std::fstream fSamOut(toCString(outPathSam), std::ios::binary | std::ios::out);
-    write(fSamOut, store, seqan::Sam());
-    fSamOut.close();
+    seqan::BamFileOut fSamOut(outPathSam.c_str());
+    writeRecords(fSamOut, store);
+    close(fSamOut);
 
     // Compare result.
     seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
     append(goldPathSam, "/core/tests/consensus/reads_to_sam_read_result.sam");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathSam), toCString(goldPathSam)));
+    SEQAN_ASSERT(seqan::_compareTextFiles(outPathSam.c_str(), toCString(goldPathSam)));
 }
 
 #endif  // #ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_

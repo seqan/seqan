@@ -312,7 +312,7 @@ inline void _sortHits(THits & /* hits */, Exact, TThreading const & /* threading
 template <typename THits, typename TThreading>
 inline void _sortHits(THits & hits, HammingDistance, TThreading const & threading)
 {
-    return stableSort(hits, threading);
+    return sort(hits, threading);
 }
 
 // ----------------------------------------------------------------------------

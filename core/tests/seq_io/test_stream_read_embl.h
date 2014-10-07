@@ -295,119 +295,86 @@ char const * testHelperReturnEmblFile()
     return result;
 }
 
-template <typename TRecordReader>
-void testHelperReadEmblSingle(TRecordReader & reader)
+template <typename TFwdIterator>
+void testHelperReadEmblSingle(TFwdIterator & iter)
 {
     using namespace seqan;
     
-    CharString buffer, k, v;
+    CharString k, v;
 
     // First record.
     
     // Read EMBL headers, split ID header, skip rest.
-    SEQAN_ASSERT_EQ(readRecord(buffer, reader, EmblHeader()), 0);
-    SEQAN_ASSERT_EQ(buffer, CharString("ID   SC10H5 standard; DNA; PRO; 4870 BP."));
-    splitEmblHeader(k, v, buffer);
+    readRecord(k, v, iter, EmblHeader());
     SEQAN_ASSERT_EQ(k, CharString("ID"));
     SEQAN_ASSERT_EQ(v, CharString("SC10H5 standard; DNA; PRO; 4870 BP."));
-    while (nextIs(reader, EmblHeader()))
-        SEQAN_ASSERT_EQ(readRecord(buffer, reader, EmblHeader()), 0);
+    while (nextIs(iter, EmblHeader()))
+        readRecord(k, v, iter, EmblHeader());
 
     // Read EMBL sequence.
-    SEQAN_ASSERT(nextIs(reader, EmblSequence()));
+    SEQAN_ASSERT(nextIs(iter, EmblSequence()));
     DnaString seq;
-    SEQAN_ASSERT_EQ(readRecord(seq, reader, EmblSequence()), 0);
+    readRecord(seq, iter, EmblSequence());
     SEQAN_ASSERT_EQ(length(seq), 4870u);
 
     // Second record.
 
     // Read EMBL headers, split ID header, skip rest.
-    SEQAN_ASSERT_EQ(readRecord(buffer, reader, EmblHeader()), 0);
-    SEQAN_ASSERT_EQ(buffer, CharString("ID   AB000263 standard; RNA; PRI; 368 BP."));
-    splitEmblHeader(k, v, buffer);
+    readRecord(k, v, iter, EmblHeader());
     SEQAN_ASSERT_EQ(k, CharString("ID"));
     SEQAN_ASSERT_EQ(v, CharString("AB000263 standard; RNA; PRI; 368 BP."));
-    while (nextIs(reader, EmblHeader()))
-        SEQAN_ASSERT_EQ(readRecord(buffer, reader, EmblHeader()), 0);
+    while (nextIs(iter, EmblHeader()))
+        readRecord(k, v, iter, EmblHeader());
 
     // Read EMBL sequence.
-    SEQAN_ASSERT(nextIs(reader, EmblSequence()));
-    SEQAN_ASSERT_EQ(readRecord(seq, reader, EmblSequence()), 0);
+    SEQAN_ASSERT(nextIs(iter, EmblSequence()));
+    readRecord(seq, iter, EmblSequence());
     SEQAN_ASSERT_EQ(length(seq), 368u);
 
-    SEQAN_ASSERT(atEnd(reader));
+    SEQAN_ASSERT(atEnd(iter));
 }
 
-template <typename TRecordReader>
-void testHelperReadEmblRecord(TRecordReader & reader)
+template <typename TFwdIterator>
+void testHelperReadEmblRecord(TFwdIterator & iter)
 {
     using namespace seqan;
 
     CharString id;
     Dna5String seq;
 
-    SEQAN_ASSERT_EQ(readRecord(id, seq, reader, Embl()), 0);
+    readRecord(id, seq, iter, Embl());
     SEQAN_ASSERT_EQ(id, CharString("SC10H5 standard; DNA; PRO; 4870 BP."));
     SEQAN_ASSERT_EQ(length(seq), 4870u);
 
-    SEQAN_ASSERT_EQ(readRecord(id, seq, reader, Embl()), 0);
+    readRecord(id, seq, iter, Embl());
     SEQAN_ASSERT_EQ(id, CharString("AB000263 standard; RNA; PRI; 368 BP."));
     SEQAN_ASSERT_EQ(length(seq), 368u);
-}
-
-template <typename TRecordReader>
-void testHelperReadEmblBatch(TRecordReader & reader)
-{
-    using namespace seqan;
-
-    StringSet<CharString> ids;
-    StringSet<CharString> seqs;
-
-    SEQAN_ASSERT_EQ(read2(ids, seqs, reader, Embl()), 0);
-    
-    SEQAN_ASSERT_EQ(ids[0], CharString("SC10H5 standard; DNA; PRO; 4870 BP."));
-    SEQAN_ASSERT_EQ(length(seqs[0]), 4870u);
-    SEQAN_ASSERT_EQ(ids[1], CharString("AB000263 standard; RNA; PRI; 368 BP."));
-    SEQAN_ASSERT_EQ(length(seqs[1]), 368u);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_char_array_stream)
 {
     using namespace seqan;
     
-    typedef Stream<CharArray<char const *> > TStream;
+    typedef CharString TStream;
 
     char const * emblString = testHelperReturnEmblFile();
-    TStream stream(emblString, emblString + strlen(emblString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
+    TStream stream = emblString;
+    DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
-    testHelperReadEmblSingle(reader);
+    testHelperReadEmblSingle(iter);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_record_char_array_stream)
 {
     using namespace seqan;
     
-    typedef Stream<CharArray<char const *> > TStream;
+    typedef CharString TStream;
 
     char const * emblString = testHelperReturnEmblFile();
-    TStream stream(emblString, emblString + strlen(emblString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
+    TStream stream = emblString;
+    DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
-    testHelperReadEmblRecord(reader);
-}
-
-SEQAN_DEFINE_TEST(test_stream_read_embl_batch_char_array_stream)
-{
-    using namespace seqan;
-    
-    typedef Stream<CharArray<char const *> > TStream;
-
-    char const * emblString = testHelperReturnEmblFile();
-    TStream stream(emblString, emblString + strlen(emblString));
-    RecordReader<TStream, SinglePass<> > reader(stream);
-
-    testHelperReadEmblBatch(reader);
+    testHelperReadEmblRecord(iter);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_mmap)
@@ -418,9 +385,9 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
+    DirectionIterator<TString, Input>::Type iter = directionIterator(mmapString, Input());
 
-    testHelperReadEmblSingle(reader);
+    testHelperReadEmblSingle(iter);
 }
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_mmap)
@@ -431,22 +398,9 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
+    DirectionIterator<TString, Input>::Type iter = directionIterator(mmapString, Input());
 
-    testHelperReadEmblRecord(reader);
-}
-
-SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_concat_mmap)
-{
-    using namespace seqan;
-
-    typedef String<char, MMap<> > TString;
-
-    TString mmapString;
-    mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
-
-    testHelperReadEmblBatch(reader);
+    testHelperReadEmblRecord(iter);
 }
 
 #endif  // TEST_STREAM_TEST_STREAM_READ_EMBL_H_

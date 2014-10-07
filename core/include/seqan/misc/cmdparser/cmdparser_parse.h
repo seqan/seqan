@@ -76,8 +76,7 @@ bool parse(CommandLineParser & me, int argc, const char * argv[], TErrorStream &
 
             if (len == 1)
             {
-                streamPut(estream, me._appName);
-                streamPut(estream, ": invalid option '-'\n");
+                estream <<  me._appName << ": invalid option '-'\n";
                 return false;
             }
             else if (inParam[1] != '-') // maybe a combination of multiple bool opts

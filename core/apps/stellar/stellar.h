@@ -64,7 +64,6 @@ _appendNegativeSegment(TAlign const & align,
                        TPos & pos, TPos len, 
                        Score<TScoreValue> const & scoreMatrix, 
                        String<Triple<TPos, TPos, TScoreValue> > & queue) {
-SEQAN_CHECKPOINT
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
     TPos beginPos = pos;
 
@@ -91,7 +90,6 @@ _appendPositiveSegment(TAlign const & align,
                        TPos & pos, TPos len, 
                        Score<TScoreValue> const & scoreMatrix, 
                        String<Triple<TPos, TPos, TScoreValue> > & queue) {
-SEQAN_CHECKPOINT
     if (pos == len) return;
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
     TPos beginPos = pos;
@@ -112,7 +110,6 @@ SEQAN_CHECKPOINT
 template<typename TMerger>
 inline bool
 _negativeMerge(String<TMerger> & queue) {
-SEQAN_CHECKPOINT
     typedef typename Value<TMerger, 1>::Type TPos;
     TPos len = length(queue);
     if (len < 3) return false;
@@ -137,7 +134,6 @@ SEQAN_CHECKPOINT
 template<typename TMerger>
 inline bool
 _positiveMerge(String<TMerger> & queue) {
-SEQAN_CHECKPOINT
     typedef typename Value<TMerger, 1>::Type TPos;
     TPos len = length(queue);
     if (len < 5) return false;
@@ -169,7 +165,6 @@ _splitAtXDrops(TAlign & align,
                TScoreValue1 scoreDropOff,
                TScoreValue2 minScore,
                String<TAlign> & alignmentString) {
-SEQAN_CHECKPOINT
     typedef typename Position<Row<TAlign> >::Type TPos;
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
     
@@ -234,7 +229,6 @@ SEQAN_CHECKPOINT
 template<typename TMatch, typename TSize>
 bool
 checkOverlap(TMatch & matchA, TMatch & matchB, TSize minLength) {
-SEQAN_CHECKPOINT
 	// check id and orienation
 	if (matchA.id != matchB.id || matchA.orientation != matchB.orientation) return false;
 	if (matchA.id == TMatch::INVALID_ID || matchB.id == TMatch::INVALID_ID) return false;
@@ -400,7 +394,6 @@ _insertMatch(QueryMatches<StellarMatch<TSource, TId> > & queryMatches,
 			 TSize1 disableThresh,
 			 TSize1 & compactThresh,
 			 TSize1 numMatches) {
-SEQAN_CHECKPOINT
 
 	appendValue(queryMatches.matches, match);
 
@@ -442,7 +435,6 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
 			   bool dbStrand,
 			   QueryMatches<StellarMatch<TSource, TId> > & matches,
 			   BandedGlobal) {
-SEQAN_CHECKPOINT
 	typedef Segment<TInfix, InfixSegment> TSegment;
 	typedef typename StellarMatch<TSource, TId>::TAlign TAlign;
 
@@ -510,7 +502,6 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
 			   bool dbStrand,
 			   QueryMatches<StellarMatch<TSource, TId> > & matches,
 			   BandedGlobalExtend) {
-SEQAN_CHECKPOINT
 	typedef Segment<TInfix, InfixSegment> TSegment;
 	typedef typename StellarMatch<TSource, TId>::TAlign TAlign;
 
@@ -569,7 +560,6 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
 			   bool dbStrand,
 			   QueryMatches<StellarMatch<TSource, TId> > & matches,
 			   TTag tag) {
-SEQAN_CHECKPOINT
 	typedef Segment<TInfix, InfixSegment> TSegment;
 	typedef typename StellarMatch<TSource, TId>::TAlign TAlign;
 
@@ -672,7 +662,6 @@ void stellar(Finder<TText, Swift<SwiftLocal> > & finder,
 			 bool dbStrand,
              StringSet<QueryMatches<StellarMatch<TSource, TId> > > & matches,
 			 TTag tag) {
-SEQAN_CHECKPOINT
 	typedef StellarMatch<TSource, TId> TMatch;
 	typedef typename GetSequenceByNo<StringSet<TText, TStringSetSpec> >::Type TPatternSeq;
 	typedef typename Infix<TText>::Type TInfix;
@@ -747,7 +736,6 @@ void stellar(Finder<TText, Swift<SwiftLocal> > & finder,
              TDrop xDrop,
              StringSet<QueryMatches<StellarMatch<TSource, TId> > > & matches,
 			 TTag tag) {
-SEQAN_CHECKPOINT
 	unsigned maxValue = (unsigned)-1;
 	unsigned compactThresh = 1000;
 	TId id = "db";

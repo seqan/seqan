@@ -3,7 +3,7 @@
 #include <seqan/basic.h>
 #include <seqan/align.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>  // for printint strings
+#include <seqan/stream.h>  // for printint strings
 
 using namespace seqan;
 

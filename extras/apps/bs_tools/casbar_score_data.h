@@ -4,7 +4,7 @@
 namespace seqan {
 
 struct Bs_;
-typedef Tag<Bs_>   Bs; 
+typedef Tag<Bs_>   Bs;
 
 
 // normalized for columns
@@ -21,14 +21,14 @@ struct SeqErrorFreqsN<TValue, BsNonSimple> {    // TODO -> BsNonSimple
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-                        // Column sum must be 1   (in the current model) 
+
+                        // Column sum must be 1   (in the current model)
         static TValue const _data[TAB_SIZE] = {
                 // To A, C, G, T, N (ref?)
                         0,            (0.14/0.38),   (0.05/0.16),    (0.05/0.21),    0,    // From A
                        (0.13/0.25),    0,            (0.02/0.16),    (0.04/0.21),    0,    // C
                        (0.04/0.25),   (0.08/0.38),    0,             (0.12/0.21),    0,
-                       (0.08/0.25),   (0.15/0.38),   (0.09/0.16),     0,             0,    
+                       (0.08/0.25),   (0.15/0.38),   (0.09/0.16),     0,             0,
                        0,              0,             0,              0,             0      // N?
         };
         return _data;
@@ -46,15 +46,15 @@ struct SeqErrorFreqsN<TValue, BsSimple> {
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-        TValue fE = 1.0/3.0;                        // Column sum must be 1    
+
+        TValue fE = 1.0/3.0;                        // Column sum must be 1
         static TValue const _data[TAB_SIZE] = {
                 // To A, C, G, T, N (ref?)
                       0,    fE,   fE,   fE, 1.0/4.0,    // From A
                       fE,   0,    fE,   fE, 1.0/4.0,    // C
                       fE,   fE,   0,    fE, 1.0/4.0,
-                      fE,   fE,   fE,   0,  1.0/4.0,    
-                      0,    0,    0,    0,  0 
+                      fE,   fE,   fE,   0,  1.0/4.0,
+                      0,    0,    0,    0,  0
         };
         return _data;
     }
@@ -63,8 +63,8 @@ struct SeqErrorFreqsN<TValue, BsSimple> {
 
 template <typename TValue = double, typename TSpec = BsNonSimple>
 struct ReadBaseFreqs;
-// Corresponding to original top and bottom 
-// strands 
+// Corresponding to original top and bottom
+// strands
 template <typename TValue>
 struct ReadBaseFreqs<TValue, BsNonSimple> {
     enum {
@@ -74,8 +74,8 @@ struct ReadBaseFreqs<TValue, BsNonSimple> {
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-        TValue f = 0.9/4.0;                       
+
+        TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    // TODO bs case
         return _data;
     }
@@ -90,8 +90,8 @@ struct ReadBaseFreqs<TValue, BsSimple> {
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-        TValue f = 0.9/4.0;                       
+
+        TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    // TODO bs case
         return _data;
     }
@@ -112,7 +112,7 @@ struct RefBaseFreqs<TValue, BsNonSimple> {
         SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
-        static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    
+        static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};
         return _data;
     }
 };
@@ -128,7 +128,7 @@ struct RefBaseFreqs<TValue, BsSimple> {
         SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
-        static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    
+        static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};
         return _data;
     }
 };

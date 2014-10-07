@@ -51,7 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, WuManber>;
  *
- * @tparam TNeedle The type of the needle to search for.  Type: @link SequenceConcept @endlink.
+ * @tparam TNeedle The type of the needle to search for.  Type: @link ContainerConcept @endlink.
  */
 
 /**

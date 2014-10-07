@@ -76,8 +76,8 @@ struct QualityValueSize<TValue const> : QualityValueSize<TValue>
 template <typename TValue>
 struct HasQualities
 {
-    enum { VALUE = false };
     typedef False Type;
+    static const bool VALUE = false;
 };
 
 // ============================================================================
