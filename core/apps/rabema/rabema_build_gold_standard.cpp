@@ -1116,9 +1116,6 @@ int main(int argc, char const ** argv)
 
     double startTime = 0;  // For measuring time below.
 
-    typedef StringSet<CharString>      TNameStore;
-    typedef NameStoreCache<TNameStore> TNameStoreCache;
-
     std::cerr << "==============================================================================\n"
               << "                RABEMA - Read Alignment BEnchMArk\n"
               << "==============================================================================\n"

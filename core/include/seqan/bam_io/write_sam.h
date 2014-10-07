@@ -153,10 +153,8 @@ inline void write(TTarget & target,
 
     writeValue(target, '\t');
 
-    if (record.rID == BamAlignmentRecord::INVALID_REFID)
-        writeValue(target, '0');
-    else
-        appendNumber(target, record.beginPos + 1);
+    SEQAN_ASSERT_EQ((__int32)BamAlignmentRecord::INVALID_POS + 1, (__int32)0);
+    appendNumber(target, record.beginPos + 1);
 
     writeValue(target, '\t');
 
@@ -183,10 +181,7 @@ inline void write(TTarget & target,
 
     writeValue(target, '\t');
 
-    if (record.pNext == BamAlignmentRecord::INVALID_POS)
-        writeValue(target, '0');
-    else
-        appendNumber(target, record.pNext + 1);
+    appendNumber(target, record.pNext + 1);
 
     writeValue(target, '\t');
 

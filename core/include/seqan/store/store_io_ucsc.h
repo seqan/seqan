@@ -91,7 +91,7 @@ _storeOneAnnotationKnownGene(
         exon.contigId = contigId;
         exon.typeId = TFragmentStore::ANNO_EXON;
         exon.beginPos = record.exonBegin[i];
-        exon.endPos = record.exonEnd[i];
+        exon.endPos = record.exonEnds[i];
         _adjustParent(transcript, exon);
     }
     if (geneId != 0)
@@ -198,7 +198,7 @@ _retrieveOneAnnotation(
 
     clear(record.proteinName);
     clear(record.exonBegin);
-    clear(record.exonEnd);
+    clear(record.exonEnds);
 
     record.annotationBeginPos = annotation.beginPos;
     record.annotationEndPos = annotation.endPos;
@@ -219,7 +219,7 @@ _retrieveOneAnnotation(
         if (anno.typeId == TFragmentStore::ANNO_EXON)
         {
             appendValue(record.exonBegin, anno.beginPos, Generous());
-            appendValue(record.exonEnd, anno.endPos, Generous());
+            appendValue(record.exonEnds, anno.endPos, Generous());
         }
     }
     while (i != lastChildId);

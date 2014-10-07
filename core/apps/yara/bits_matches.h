@@ -685,7 +685,7 @@ findMatch(TMatches const & matches, TMatch const & match)
 //{
 //    typedef typename Value<TMatches>::Type  TMatch;
 //
-//    stableSort(matches, MatchSorter<TMatch, TKey>());
+//    sort(matches, MatchSorter<TMatch, TKey>());
 //}
 
 template <typename TIterator, typename TKey>
@@ -695,7 +695,7 @@ inline void sortMatches(TIterator & it)
     typedef typename Value<TMatches>::Type  TMatch;
 
     TMatches matches = value(it);
-    stableSort(matches, MatchSorter<TMatch, TKey>());
+    sort(matches, MatchSorter<TMatch, TKey>());
 }
 
 // ----------------------------------------------------------------------------

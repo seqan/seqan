@@ -31,82 +31,62 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// This file contains tags.
+// This file contains functions to read a Pair of SmartFiles.
 // ==========================================================================
 
-#ifndef APP_YARA_MISC_TAGS_H_
-#define APP_YARA_MISC_TAGS_H_
+#ifndef APP_YARA_FILE_PAIR_H_
+#define APP_YARA_FILE_PAIR_H_
 
-#include <seqan/basic.h>
-
-using namespace seqan;
+namespace seqan {
 
 // ============================================================================
-// Enums
+// Functions
 // ============================================================================
 
-enum MappingMode
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, const char * fileName1, const char * fileName2)
 {
-    STRATA, ALL
-};
+    return open(me.i1, fileName1) && open(me.i2, fileName2);
+}
 
-enum LibraryOrientation
+// ----------------------------------------------------------------------------
+// Function close()
+// ----------------------------------------------------------------------------
+
+template <typename TFileType, typename TDirection, typename TSpec>
+inline void close(Pair<SmartFile<TFileType, TDirection, TSpec> > & me)
 {
-    FWD_REV, FWD_FWD, REV_REV, ANY
-};
-
-// ============================================================================
-// Tags
-// ============================================================================
+    close(me.i1);
+    close(me.i2);
+}
 
 // ----------------------------------------------------------------------------
-// Mapping Strategy Tags
+// Function atEnd()
 // ----------------------------------------------------------------------------
 
-struct Strata_;
-struct All_;
-
-typedef Tag<Strata_>    Strata;
-typedef Tag<All_>       All;
-
-// ----------------------------------------------------------------------------
-// Pairing Strategy Tags
-// ----------------------------------------------------------------------------
-
-struct AnchorOne_;
-struct AnchorBoth_;
-
-typedef Tag<AnchorBoth_>    AnchorOne;
-typedef Tag<AnchorOne_>     AnchorBoth;
+template <typename TFileType, typename TDirection, typename TSpec>
+inline bool atEnd(Pair<SmartFile<TFileType, TDirection, TSpec> > const & me)
+{
+    return atEnd(me.i1) || atEnd(me.i2);
+}
 
 // ----------------------------------------------------------------------------
-// Sequencing Technologies Tags
+// Function readRecords()
 // ----------------------------------------------------------------------------
 
-struct SingleEnd_;
-struct PairedEnd_;
+template <typename TRecords, typename TFileType, typename TDirection, typename TSpec>
+inline void readRecords(TRecords & records,
+                        Pair<SmartFile<TFileType, TDirection, TSpec> > & me,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+{
+    readRecords(records, me.i1, maxRecords);
+    readRecords(records, me.i2, maxRecords);
+}
 
-typedef Tag<SingleEnd_>     SingleEnd;
-typedef Tag<PairedEnd_>     PairedEnd;
+}
 
-// ----------------------------------------------------------------------------
-// Paired-End / Mate-Pairs Tags
-// ----------------------------------------------------------------------------
-
-struct LeftMate_;
-struct RightMate_;
-
-typedef Tag<LeftMate_>      LeftMate;
-typedef Tag<RightMate_>     RightMate;
-
-struct FwdRev_;
-struct RevFwd_;
-struct FwdFwd_;
-struct RevRev_;
-
-typedef Tag<FwdRev_>        FwdRev;
-typedef Tag<RevFwd_>        RevFwd;
-typedef Tag<FwdFwd_>        FwdFwd;
-typedef Tag<RevRev_>        RevRev;
-
-#endif  // #ifndef APP_YARA_MISC_TAGS_H_
+#endif  // #ifndef APP_YARA_FILE_PAIR_H_

@@ -141,7 +141,7 @@ struct NameStoreLess_
  * @param[in] nameStore A NameStore for which a pointer is stored.
  */
 
-template <typename TNameStore, typename TName = typename Value<TNameStore>::Type>
+template <typename TNameStore, typename TName = String<typename Value<typename Value<TNameStore>::Type>::Type> >
 class NameStoreCache
 {
 public:
