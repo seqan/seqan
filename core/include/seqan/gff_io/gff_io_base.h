@@ -50,23 +50,19 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @defgroup GffIO GFF I/O
+ * @defgroup GffFileIO GFF and GTF File I/O
  * @brief I/O functionality for the GFF and GTF file formats.
+ *
+ * Both the GFF and the GTF file format are represendted by @link GffRecord @endlink in SeqAn.  The tags and functions
+ * in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
  */
 
 /*!
- * @tag GffIO#Gff
+ * @tag GffFileIO#Gff
  * @brief Tag for selecting the GFF format.
  *
  * @signature typedef Tag<TagGff_> Gff;
  */
-
-/**
-.Tag.File Format.tag.Gff:
-    Gff annotation file.
-..include:seqan/gff_io.h
-*/
-
 struct TagGff_;
 typedef Tag<TagGff_> Gff;
 
@@ -75,18 +71,11 @@ typedef Tag<TagGff_> Gff;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag GffIO#Gtf
+ * @tag GffFileIO#Gtf
  * @brief Tag for selecting the GTF format.
  *
  * @signature typedef Tag<TagGtf_> Gtf;
  */
-
-/**
-.Tag.File Format.tag.Gtf:
-    Gtf annotation file.
-..include:seqan/gff_io.h
-*/
-
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
 
@@ -136,175 +125,109 @@ char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
 
 /*!
  * @class GffRecord
+ * @implements DefaultConstructibleConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/gff_io.h>
- * @brief Represent a record from a Gff file.
+ * @brief Represent a record from a GFF or GTF file.
  *
  * @signature class GffRecord;
- *
- * @var __int32 GffRecord::INVALID_POS;
- * @brief Static member with invalid/sentinel position value.
- *
- * @var __int32 GffRecord::INVALID_IDX;
- * @brief Static member with invalid/sentinel rID value.
- *
- * @fn GffRecord::INVALID_SCORE
- * @brief Returns invalid score (NaN float value).
- *
- * @signature float GffRecord::INVALID_SCORE();
- * 
- * @var CharString GffRecord::ref;
- * @brief The sequence name of the record.
- *
- * @var __int32 GffRecord::rID;
- * @brief Integer representing ref, defaults to INVALID_IDX.
- * 
- * @var CharString GffRecord::source;
- * @brief The source of the record.
- * 
- * @var CharString GffRecord::type;
- * @brief The type of the record.
- * 
- * @var __int32 GffRecord::beginPos;
- * @brief The begin position of the record.
- * 
- * @var __int32 GffRecord::endPos;
- * @brief The end position of the record.
- * 
- * @var float GffRecord::score;
- * @brief The score of the record.
- * 
- * @var char GffRecord::strand;
- * @brief The strand the record belongs to.
- * 
- * @var char GffRecord::phase;
- * @brief The phase of the record.
- * 
- * @section Remarks
- * 
- * For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.  The
- * phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of
- * this feature to reach the first base of the next codon
- * 
- * @var TCharStringSet GffRecord::tagNames;
- * @brief The names of the attributes of the record, StringSet of CharString.
- * 
- * @section Remarks
- * 
- * For each value there is a name associated in GffRecord::tagNames.
- *
- * @var TCharStringSet GffRecord::tagValues;
- * @brief The values of the attributes of the record, StringSet of CharString.
- * 
- * @section Remarks
- * 
- * For each name there is a value associated in GffRecord::tagValues.
  */
-
-/**
-.Class.GffRecord
-..cat:BAM I/O
-..summary:Represent a record from a Gff file.
-..include:seqan/gff_io.h
-
-.Memvar.GffRecord#INVALID_POS
-..class:Class.GffRecord
-..summary:Static member with invalid/sentinel position value.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#INVALID_SCORE
-..class:Class.GffRecord
-..summary:Static member with invalid score value.
-..type:nolink:$float$
-
-.Memvar.GffRecord#ref
-..class:Class.GffRecord
-..summary:The sequence id of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#source
-..class:Class.GffRecord
-..summary:The source of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#type
-..class:Class.GffRecord
-..summary:The type of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#beginPos
-..class:Class.GffRecord
-..summary:The begin position of the record.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#endPos
-..class:Class.GffRecord
-..summary:The end position of the record.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#score
-..class:Class.GffRecord
-..summary:The score of the record.
-..type:nolink:$float$
-
-.Memvar.GffRecord#strand
-..class:Class.GffRecord
-..summary:The strand the record belongs to.
-..type:nolink:$char$
-
-.Memvar.GffRecord#phase
-..class:Class.GffRecord
-..summary:The phase of the record.
-..remarks:For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame. The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon
-..type:nolink:$char$
-
-.Memvar.GffRecord#tagNames
-..class:Class.GffRecord
-..summary:The names of the attributes of the record.
-..type:Class.StringSet
-..remarks:For each name there is a value associated in $Memvar.GffRecord#tagValues$
-
-.Memvar.GffRecord#tagValues
-..class:Class.GffRecord
-..summary:The values of the attributes of the record.
-..type:Class.StringSet
-..remarks:For each value there is a name associated in $Memvar.GffRecord#tagNames$
-*/
-
 struct GffRecord
 {
+    /*!
+     * @var __int32 GffRecord::INVALID_IDX;
+     * @brief Static member with invalid/sentinel rID value.
+     */
     static __int32 const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<__int32>::VALUE, but that is not a constant expression :(
-    static __int32 const INVALID_IDX = -1;
 
-    // The member descriptions are taken from: http://gmod.org/wiki/GFF
-
-    // TODO(singer): Maybe use a I/O context object and store ids as integers
-    // The ID of the landmark used to establish the coordinate system for the current feature.
+    /*!
+     * @var CharString GffRecord::ref;
+     * @brief The sequence name of the record.
+     *
+     * The ID of the landmark used to establish the coordinate system for the current feature, most often the
+     * contig/chromosome name.
+     */
     CharString ref;
 
-    // The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this feature.
+    /*!
+     * @var CharString GffRecord::source;
+     * @brief The source of the record.
+     *
+     * The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this
+     * feature.
+     */
     CharString source;
 
-    // The type of the feature
+    /*!
+     * @var CharString GffRecord::type;
+     * @brief The type of the record.
+     */
     CharString type;
 
-    // A list of feature attributes in the format tag=value.
+    /*!
+     * @var TCharStringSet GffRecord::tagNames;
+     * @brief The names of the attributes of the record, StringSet of CharString.
+     *
+     * For each value there is a name associated in @link GffRecord::tagNames tagNames @endlink.
+     */
     StringSet<CharString> tagNames;
+
+    /*!
+     * @var TCharStringSet GffRecord::tagValues;
+     * @brief The values of the attributes of the record, StringSet of CharString.
+     *
+     * @section Remarks
+     *
+     * For each name there is a value associated in GffRecord::tagValues.
+     */
     StringSet<CharString> tagValues;
 
-    // The start and end of the feature, in 1-based integer coordinates, relative to the landmark given in column 1
+    /*!
+     * @var __int32 GffRecord::beginPos;
+     * @brief The begin position of the record.
+     */
     __uint32 beginPos;
+
+    /*!
+     * @var __int32 GffRecord::endPos;
+     * @brief The end position of the record.
+     *
+     * GFF and GTF use 1-based positions in text, but they are stored as 0-based coordinates.
+     */
     __uint32 endPos;
 
-    // The score of the feature
+    /*!
+     * @var float GffRecord::score;
+     * @brief The score of the record.
+     */
     float score;
 
-    // The strand of the feature. + for positive strand (relative to the landmark), - for minus strand, and . for features that are not stranded.
+    /*!
+     * @var char GffRecord::strand;
+     * @brief The strand the record belongs to.
+     *
+     * The strand of the feature. + for positive strand (relative to the landmark), - for minus strand, and . for
+     * features that are not stranded.
+     */
     char strand;
 
-    // For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.
-    // The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon.
+    /*!
+     * @var char GffRecord::phase;
+     * @brief The phase of the record.
+     *
+     * For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.
+     * The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the
+     * beginning of this feature to reach the first base of the next codon.
+     */
     char phase;
 
+    // TODO(holtgrew): C++11 will have a nan() function, use this instead then.
+    /*!
+     * @fn GffRecord::INVALID_SCORE
+     * @brief Returns invalid score (NaN float value).
+     *
+     * The term <tt>x != x</tt> (for <tt>float x</tt> is only true if <tt>x</tt> is a NaN.
+     */
     static float INVALID_SCORE()
     {
         union
@@ -399,26 +322,19 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 /*!
  * @fn GffRecord#clear
  * @brief Reset a @link GffRecord @endlink object.
- * 
+ *
  * @signature void clear(record);
- * 
+ *
  * @param[in,out] record The GffRecord to reset.
  */
-
-/**
-.Function.GffRecord#clear
-..class:Class.GffRecord
-..cat:Input/Output
-..signature:clear(record)
-..param.record:The @Class.GffRecord@ to reset.
-...type:Class.GffRecord
-..summary:Reset a @Class.GffRecord@ object.
-..include:seqan/gff_io.h
-*/
-
-//TODO(singer): dont we need to reset beginPos, score ...
 inline void clear(GffRecord & record)
 {
+    record.beginPos = -1;
+    record.endPos = -1;
+    record.score = record.INVALID_SCORE();
+    record.strand = '.';
+    record.phase = '.';
+
     clear(record.ref);
     clear(record.source);
     clear(record.type);
@@ -430,38 +346,22 @@ inline void clear(GffRecord & record)
 // Function readRecord
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Add variant with tags?
+
 /*!
- * @fn GffIO#readRecord
+ * @fn GffFileIO#readRecord
  * @brief Read one GFF/GTF record from a SinglePassRecordReader.
  *
- * @signature int readRecord(record, reader[, context[, tag]]);
+ * @signature void readRecord(record, context, iter);
  *
  * @param[out]    record  The GffRecord to write the results to.
- * @param[in,out] reader  The SinglePassRecordReader to use for reading.
- * @param[in,out] context The GffIOContext to use for reading.  If present then ref will be translated to rID using the
- *                        reference name store from context.
- * @param[in]     tag     The format to read from, one of Gtf and Gff.  Note that the parser transparently parses both
- *                        GFF and GTF.
+ * @param[in,out] context A CharString to use for buffers.
+ * @param[in,out] iter    A @link ForwardIteratorConcept forward iterator @endlink to use for reading.
  *
- * @return int A status code, 0 on success, a different value on failures.
+ * @throws IOError if something went wrong.
  */
-
-/**
-.Function.GffRecord#readRecord
-..class:Class.GffRecord
-..cat:Input/Output
-..summary:Read one gff record.
-..signature:readRecord(record, reader)
-..param.record:The gff record.
-...type:Class.GffRecord
-..param.reader: The record reader object.
-...type:Class.RecordReader
-..include:seqan/gff_io.h
-*/
-
 template <typename TFwdIterator>
-inline void
-readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
+void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 
@@ -515,7 +415,7 @@ readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 
     // read column 8: phase
     readOne(record.phase, iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
-    
+
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
     {
@@ -590,34 +490,22 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord
+// Function writeRecord()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn GffIO#writeRecord
- * @brief Writes on GFF/GTF record to a stream.
+ * @fn GffFileIO#writeRecord
+ * @brief Writes a @link GffRecord @endlink to a stream as GFF or GTF.
  *
- * @signature int writeRecord(stream, record[, context[, tag]]);
+ * @signature void writeRecord(stream, record, tag);
  *
- * @param[in,out] stream  The @link StreamConcept @endlink to write to.
- * @param[in]     record  The @link GffRecord @endlink to write.
- * @param[in]     context Optional @link GffIOContext @endlink to use for reference ids.
+ * @param[in,out] stream  The @link OutputIteratorConcept output iterator @endlink to write to.
+ * @param[in]     record  The @link GffRecord @endlink to write out.
+ * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @link or @link GffFileIO#Gtf
+ *                        @endlink.
  *
- * @return int A status code, 0 on success, a different value on errors.
+ * @throws IOError if something went wrong.
  */
-
-/**
-.Function.GffRecord#writeRecord
-..class:Class.GffRecord
-..cat:Input/Output
-..summary:Writes one gff record to a stream.
-..signature:writeRecord(TSreamm stream, GffRecord record)
-..param.stream:The output stream.
-...type:Concept.StreamConcept
-..param.record:The gff record.
-...type:Class.GffRecord
-..include:seqan/gff_io.h
-*/
 
 template <typename TFormatTag>
 struct GffRecordKeyMustBeQuoted_;

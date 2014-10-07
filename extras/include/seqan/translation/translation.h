@@ -477,10 +477,8 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *                              to Dna5.
  * @param[in]       frame       The @link TranslationFrames @endlink, defaults to SINGLE_FRAME.
  * @param[in]       geneticCode The @link GeneticCode @endlink to use, defaults
- * to GeneticCode<CANONICAL>
- * (use to specify GeneticCode at compile-time)
- * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use
- * (use to specify GenetiCode at run-time)
+ *                              to GeneticCode&lt;CANONICAL&gt; (use to specify GeneticCode at compile-time)
+ * @param[in]       geneticCodeSpec The @link GeneticCodeSpec @endlink to use (use to specify GenetiCode at run-time)
  * @param[in]       TParallelism Whether to use SMP or not, see @link ParallelismTags @endlink .
  *
  * @return int 0 on success, and -1 on incompatible parameters (e.g. multiple frames but target type not StringSet).

@@ -40,6 +40,13 @@
 
 namespace seqan {
 
+/*!
+ * @defgroup FastaFastqIO FASTA and FASTQ I/O
+ * @brief
+ */
+
+// TODO(holtgrew): Complete description of group.
+
 // ============================================================================
 // Tags
 // ============================================================================

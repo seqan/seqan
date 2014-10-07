@@ -55,6 +55,8 @@ struct SmartFileContext;
 // Classes
 // ============================================================================
 
+// TODO(holtgrew): Document or mark as internal by adding underscore. Add an explaining sentence anyway.
+
 template <typename TObject, typename TStorageSpec>
 struct StorageSwitch
 {
@@ -71,6 +73,47 @@ struct StorageSwitch<TObject, Dependent<TSpec> >
 // Class SmartFile
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Dave/Enrico, please double-check, especially the context stuff.
+// TODO(holtgrew): We definitely need extensive explanation and tutorials for this, especially the context stuff.
+
+/*!
+ * @class SmartFile
+ * @implements InputStreamConcept
+ * @implements OutputStreamConcept
+ * @headerfile <seqan/stream.h>
+ * @brief Base class for high-level I/O functions.
+ *
+ * @signature template <typename TFileType, typename TDirection[, typename TSpec]>
+ *            struct SmartFile;
+ *
+ * @tparam TFileType  A type specifying the file format.
+ * @tparam TDirection The direction of the file, one of @link DirectionTags#Input Input
+ *                    @endlink and @link DirectionTags#Output @endlink.
+ * @tparam TSpec      A tag for the specialization, defauls to <tt>void</tt>.
+ *
+ * It depends on <tt>TDirection</tt> whether it implements @link InputStreamConcept @endlink or
+ * @link OutputStreamConcept @endlink.
+ *
+ * SmartFile bundles the necessary information for easily building (aka metaprogramming) easy-to use high-level I/O
+ * functionality:
+ *
+ * <ul>
+ * <li>An underlying @link VirtualStream @endlink that is used for the I/O and allows attaching to
+ *     already open streams as well as opening and owning the stream.  Further, transparent
+ *     access to compressed files is possible.</li>
+ * <li>A @link StreamConcept#DirectionIterator direction iterator @endlink for reading/writing.</li>
+ * <li>A <b>context</b> used for the I/O.  The context object can be retrieved using @link SmartFile#context context
+ *     @endlink.  This context can be used for storing contig and sample names, in the case of VCF I/O, for example,
+ *     @link NameStoreCache @endlink objects, and buffers.  Each SmartFile has exactly one context.</li>
+ * <li>The context type can be constructed both as dependent and independent using @link SmartFile#SmartFileContext
+ *     SmartFileContext @endlink.  Each SmartFile stores an independent context and a dependent context.  When
+ *     constructing with another SmartFile or another SmartFile's context, the dependent context of this SmartFile is
+ *     set to depend on the dependent context of the other Smart File.  Otherwise, it is set to depend on this
+ *     SmartFile's independent context.  This allows chaining of contexts, e.g. for updating the contig names of an
+ *     output smart file from an input smart file.</li>
+ * </ul>
+ */
+
 template <typename TFileType, typename TDirection, typename TSpec = void>
 struct SmartFile
 {
@@ -86,13 +129,35 @@ struct SmartFile
     TOwnerContext       data_context;
     TDependentContext   context;
 
-    SmartFile() :
-        context(data_context)
+    // TODO(holtgrew): Only documented first few constructors, must be extended after describing the contexts concept.
+    /*!
+     * @fn SmartFile::SmartFile
+     * @brief Provides default construction.
+     *
+     * @signature SmartFile::SmartFile();
+     * @signature SmartFile::SmartFile(fileName[, openMode]);
+     * @signature SmartFile::SmartFile(stream);
+     * @signature SmartFile::SmartFile(other);
+     * @signature SmartFile::SmartFile(otherContext);
+     * @signature SmartFile::SmartFile(otherContext, fileName[, openMode]);
+     * @signature SmartFile::SmartFile(otherContext, stream);
+     *
+     * @param[in] fileName     Path to file to open, <tt>char const *</tt>.
+     * @param[in] openMode     Optionally, the file open mode, default obtained from <tt>TDirection</tt>.
+     * @param[in] stream       A <tt>std::basic_istream&lt;&gt;</tt> to read from or <tt>std::basic_ostream&lt;&gt;</tt>
+     *                         to write to, depending on <tt>TDirection</tt>.
+     * @param[in] other        A second SmartFile, this SmartFile's dependent context will depend on <tt>other</tt>'s
+     *                         dependent context.
+     * @param[in] otherContext The dependent context of another SmartFile, this SmartFile's dependent context will depend on <tt>otherContext</tt>.
+     *
+     * @throw IOError The variants that accept the <tt>fileName</tt> parameter throw an exception of this
+     *                type in case opening the file fails.
+     */
+    SmartFile() : context(data_context)
     {}
 
     // filename based c'tors
-    explicit
-    SmartFile(const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+    explicit SmartFile(const char * fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
         context(data_context)
     {
         _open(*this, fileName, openMode, True());
@@ -167,11 +232,27 @@ struct SmartFile
         close(*this);
     }
 
+    /*!
+     * @fn SmartFile::operatorTDependentContext SmartFile::operator TDependentContext
+     * @brief Allows conversion to a dependent context for the SmartFile
+     * @signature TDependentContext & SmartFile::operator TDependentContext();
+     *
+     * @return TDependentContext The dependent context of this SmartFile.
+     */
+
     operator TDependentContext & ()
     {
         return context;
     }
 
+    /*!
+     * @fn SmartFile::getFileFormatExtensions
+     * @brief Static function that returns a list of allowed file format extension.
+     *
+     * @signature TExtensionVector getFileFormatExtensions()
+     *
+     * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
+     */
     static std::vector<std::string>
     getFileFormatExtensions()
     {
@@ -213,6 +294,18 @@ struct DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>
 // ----------------------------------------------------------------------------
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn SmartFile#SmartFileContext
+ * @brief Returns the context type for a SmartFile.
+ *
+ * @signature SmartFileContext<TSmartFile, TStorageSpec>::Type
+ *
+ * @tparam TSmartFile   The SmartFile to query.
+ * @tparam TStorageSpec The storage specification, passed as specialization to any @link StringSet @endlink
+ *                      contained in the context.
+ * @tparam Type         The resulting smart file context type.
+ */
 
 template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext
@@ -263,6 +356,8 @@ directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection con
 // Function format()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Document me, including demo snippet showing isEqual()...
+
 template <typename TFileType, typename TDirection, typename TSpec>
 inline typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type &
 format(SmartFile<TFileType, TDirection, TSpec> & file)
@@ -274,6 +369,8 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 // Function setFormat()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Document me, including demo snippet.
+
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
 inline void
 setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
@@ -284,6 +381,8 @@ setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
 // ----------------------------------------------------------------------------
 // Function guessFormat()
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document me, including demo snippet.
 
 template <typename TFileType, typename TSpec>
 inline bool guessFormat(SmartFile<TFileType, Input, TSpec> & file)
@@ -352,8 +451,15 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 }
 
 // --------------------------------------------------------------------------
-// Function open(stream)
+// Function open()
 // --------------------------------------------------------------------------
+
+// TODO(holtgrew): Complete me, the combination of formats etc are a bit hard to grasp quickly.
+
+/*!
+ * @fn SmartFile#open
+ * @brief Open a SmartFile
+ */
 
 template <typename TFileType, typename TDirection, typename TSpec,
           typename TStream, typename TCompressionFormat, typename TThrowExceptions>
@@ -460,6 +566,16 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 // Function close()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SmartFile#close
+ * @brief Close a SmartFile.
+ *
+ * @signature bool close(file);
+ *
+ * @param[in,out] file The SmartFile to close.
+ * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
+ */
+
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 {
@@ -518,6 +634,17 @@ setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
 // Function context()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SmartFile#context
+ * @brief Return the SmartFile's dependent context object.
+ *
+ * @signature TDependentContext & context(smartFile);
+ *
+ * @param[in,out] smartFile The SmartFile to query for its context.
+ *
+ * @return TDependentContext The dependent context, type as returned from @link SmartFile#SmartFileContext @endlink.
+ */
+
 template <typename TFileType, typename TDirection, typename TSpec>
 inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
 context(SmartFile<TFileType, TDirection, TSpec> & file)
@@ -532,12 +659,8 @@ context(SmartFile<TFileType, TDirection, TSpec> const & file)
     return file.context;
 }
 
-// ----------------------------------------------------------------------------
-// Function getFileFormatExtensions()
-// ----------------------------------------------------------------------------
-
 // --------------------------------------------------------------------------
-// Function _getFileFormatExtensions()
+// Function _getCompressionFormatExtensions()
 // --------------------------------------------------------------------------
 
 template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
@@ -620,7 +743,21 @@ _getCompressionExtensions(
     _getCompressionExtensions(stringSet, TTagList(), compress, primaryExtensionOnly);
 }
 
+// ----------------------------------------------------------------------------
+// Function getFileFormatExtensions()
+// ----------------------------------------------------------------------------
 
+/*!
+ * @fn SmartFile#getFileFormatExtensions
+ * @brief Static function that returns a list of allowed file format extension.
+ *
+ * @signature TExtensionVector getFileFormatExtensions(smartFile)
+ *
+ * @param[in] smartFile The SmartFile to query.
+ * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
+ *
+ * This is a shortcut to @link SmartFile#getFileFormatExtensions @endlink.
+ */
 
 template <typename TFileType, typename TDirection, typename TSpec>
 static std::vector<std::string>
@@ -628,7 +765,6 @@ getFileFormatExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
     return file.getFileFormatExtensions();
 }
-
 
 }  // namespace seqan
 

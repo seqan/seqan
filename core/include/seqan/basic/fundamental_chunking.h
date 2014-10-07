@@ -45,11 +45,40 @@ namespace seqan {
 // Direction Tags
 // --------------------------------------------------------------------------
 
+/*!
+ * @defgroup DirectionTags Direction Tags
+ * @brief Tags for selecting a direction.
+ */
+
+/*!
+ * @tag DirectionTags#Input
+ * @headerfile <seqan/basic.h>
+ * @brief Tag for selecting the input direction.
+ *
+ * @signature typedef Tag<Input_> Input;
+ */
+
 struct Input_;
 typedef Tag<Input_> Input;
 
+/*!
+ * @tag DirectionTags#Output
+ * @headerfile <seqan/basic.h>
+ * @brief Tag for selecting the output direction.
+ *
+ * @signature typedef Tag<Output_> Output;
+ */
+
 struct Output_;
 typedef Tag<Output_> Output;
+
+/*!
+ * @tag DirectionTags#Bidirectional
+ * @headerfile <seqan/basic.h>
+ * @brief Tag for allowing both input and output.
+ *
+ * @signature typedef Tag<Bidirectional_> Bidirectional;
+ */
 
 struct Bidirectional_;
 typedef Tag<Bidirectional_> Bidirectional;
@@ -61,6 +90,19 @@ typedef Tag<Bidirectional_> Bidirectional;
 // --------------------------------------------------------------------------
 // Metafunction Chunk
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn Chunk
+ * @headerfile <seqan/basic.h>
+ * @brief Return the chunk type for an object.
+ *
+ * @signature Chunk<TObject>::Type;
+ *
+ * @tparam TObject The object to query for its chunk type.
+ * @return Type    The chunk type of <tt>TObject</tt>.
+ *
+ * The default result type (if not overloaded) is @link Nothing @endlink.
+ */
 
 // Chunking is only supported for selected objects
 template <typename TObject>

@@ -29,13 +29,13 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: David Weese <david.weese@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in GFF or GTF format.
+// Smart file for reading/writing files in UCSC format.
 // ==========================================================================
 
-#ifndef SEQAN_GFF_IO_GFF_FILE_H_
-#define SEQAN_GFF_IO_GFF_FILE_H_
+#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
+#define SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
 
 namespace seqan {
 
@@ -52,28 +52,28 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @class GffFileIn
+ * @class UcscFileIn
  * @extends SmartFile
- * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for reading GFF and GTF files.
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Gff, Input> GffFileIn;
+ * @signature typedef SmartFile<Ucsc, Input> UcscFileIn;
  */
-typedef SmartFile<Gff, Input>   GffFileIn;
+typedef SmartFile<Ucsc, Input>   UcscFileIn;
 
 // ----------------------------------------------------------------------------
-// Typedef GffFileOut
+// Typedef UcscFileOut
 // ----------------------------------------------------------------------------
 
 /*!
- * @class GffFileOut
+ * @class UcscFileInOut
  * @extends SmartFile
- * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for writing GFF and GTF.
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Gff, Output> GffFileOut;
+ * @signature typedef SmartFile<Ucsc, Output> UcscFileOut;
  */
-typedef SmartFile<Gff, Output>  GffFileOut;
+typedef SmartFile<Ucsc, Output> UcscFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -84,9 +84,9 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
+struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 {
-    typedef CharString Type;
+    typedef UcscIOContext Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -94,101 +94,53 @@ struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
 {
-    typedef TagSelector<
-                TagList<Gff,
-                TagList<Gtf
-                > >
-            > Type;
+    typedef Ucsc Type;
 };
 
 // ----------------------------------------------------------------------------
-// Function readRecord()
+// Function readRecord(); UcscRecord
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn GffFileIn#readRecord
- * @brief Reading GFF and GTF records from a GffFileIn.
+ * @fn UcscFileIn#readRecord
+ * @brief Reading records from a UcscFileIn.
  *
  * @signature void readRecord(record, file);
  *
- * @param[out] record The @link GffRecord @endlink to write to.
- * @param[in]  file   The GffFileIn to read from.
+ * @param[out] record The resulting @link UcscRecord @endlink.
+ * @param[out] file   The UcscFileIn to read from.
  *
- * @throw IOError if something went wrong.
- *
- * Both GFF and GTF records can be read into a GffRecord.  The format is detected by the GffFileIn.
+ * @throw IOError in case of problems.
  */
-
-template <typename TForwardIter, typename TFormats>
-inline void
-readRecord(GffRecord & record,
-           CharString & buffer,
-           TForwardIter & iter,
-           TagSelector<TFormats> const & /* format */)  // format is ignored as it will be autodetected per record
-{
-    readRecord(record, buffer, iter);
-}
-
-// convient GffFile variant
 template <typename TSpec>
-inline void
-readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
+void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()
+// Function write(); UcscRecord
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn GffFileOut#writeRecord
- * @brief Writing GFF and GTF records to a GffFileOut.
+ * @fn UcscFileIn#writeRecord
+ * @brief Writing records to a UcscFileIn.
  *
- * @signature void writeRecord(record, file);
+ * @signature void readRecord(record, file);
  *
- * @param[in]  file   The GffFileIn to read from.
- * @param[out] record The @link GffRecord @endlink to write out.
+ * @param[out] file   The UcscFileIn to write to.
+ * @param[out] record The @link UcscRecord @endlink to write out.
  *
- * @throw IOError if something went wrong.
- *
- * @link GffRecord @endlink objects can be written to both GFF and GTF files.  The format is chosen depending on
- * the parameters of the GffFileOut (which will auto-detect it by default).
+ * @throw IOError in case of problems.
  */
-
-// support for dynamically chosen file formats
-template <typename TTarget>
-inline void
-writeRecord(TTarget & /* target */,
-            GffRecord & /* record */,
-            TagSelector<> const & /* format */)
-{
-    SEQAN_FAIL("GffFileOut: File format not specified.");
-}
-
-template <typename TTarget, typename TTagList>
-inline void
-writeRecord(TTarget & target,
-            GffRecord & record,
-            TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        writeRecord(target, record, TFormat());
-    else
-        writeRecord(target, record, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
 template <typename TSpec>
-inline void
-writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
+void writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord & record)
 {
     writeRecord(file.iter, record, file.format);
 }
 
 }  // namespace seqan
 
-#endif // SEQAN_GFF_IO_GFF_FILE_H_
+#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_

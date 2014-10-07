@@ -55,13 +55,27 @@ struct StreamIterator {};
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class StreamIterator
+// Class StreamBuffer
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class StreamBuffer
+ * @headerfile <seqan/stream.h>
+ * @brief Buffer to use in stream.
+ *
+ * @signature template <typename TValue[, typenam TTraits]>
+ *            StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
+ *
+ * @tparam TValue  The value type of the stream buffer.
+ * @tparam TTraits The traits to use, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
+ */
+
+// TODO(holtgrew): Add documentation for member functions.
 
 // Unfortunately some of the most useful members of basic_streambuf are
 // protected, so we define a subclass to cast and access them
 template <typename TValue, typename TTraits_ = std::char_traits<TValue> >
-class StreamBuffer: public std::basic_streambuf<TValue, TTraits_>
+class StreamBuffer : public std::basic_streambuf<TValue, TTraits_>
 {
 public:
     typedef TTraits_ TTraits;
@@ -158,6 +172,37 @@ public:
     }
 };
 
+// ----------------------------------------------------------------------------
+// Class StreamIterator
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class StreamIterator
+ * @extends Iter
+ * @brief Abstract base class for input and output stream iterators.
+ *
+ * @signature template <typename TStream, typename TDirection>
+ *            class Iter<TStream, StreamIterator<TDirection> >;
+ *
+ * @tparam TStream    The @link StreamConcept @endlink to iterate over.
+ * @tparam TDirection The iterator direction, one of the @link StreamIteratorTags @endlink.
+ */
+
+// ----------------------------------------------------------------------------
+// Class Input StreamIterator
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class InputStreamIterator Input StreamIterator
+ * @extends StreamIterator
+ * @brief @link Iter @endlink specialiazion for reading from @link StreamConcept streams @endlink.
+ *
+ * @signature template <typename TStream>
+ *            class Iter<TStream, StreamIterator<Input> >;
+ *
+ * @tparam TStream    The @link StreamConcept @endlink to iterate over.
+ */
+
 template <typename TStream>
 class Iter<TStream, StreamIterator<Input> >
 {
@@ -169,21 +214,47 @@ public:
 
     TStreamBuffer *streamBuf;
 
-    Iter():
-        streamBuf()
+    /*!
+     * @fn InputStreamIterator::Iter
+     * @brief The constructors.
+     *
+     * @signature Iter::Iter();
+     * @signature Iter::Iter(stream);
+     * @signature Iter::Iter(streamBuffer);
+     *
+     * @param[in] stream    The <tt>TStream</tt> to read from.
+     * @param[in] streamBuf A @link StreamBuffer @endlink to read from.
+     *
+     * Allows default construction, construction from stream, as well as from a @link StreamBuffer @endlink.
+     */
+    Iter() : streamBuf()
     {}
 
-    Iter(TIStream& stream):
+    Iter(TIStream & stream) :
         streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
     {
         stream.exceptions(std::ios_base::badbit);
     }
 
-    Iter(TStreamBuffer *buf):
+    Iter(TStreamBuffer * buf) :
         streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
     {}
 };
 
+// ----------------------------------------------------------------------------
+// Class StreamIterator
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class OutputStreamIterator Output StreamIterator
+ * @extends StreamIterator
+ * @brief @link Iter @endlink specialiazion for writing to @link StreamConcept streams @endlink.
+ *
+ * @signature template <typename TStream>
+ *            class Iter<TStream, StreamIterator<Output> >;
+ *
+ * @tparam TStream    The @link StreamConcept @endlink to iterate over.
+ */
 template <typename TStream>
 class Iter<TStream, StreamIterator<Output> >
 {
@@ -195,11 +266,23 @@ public:
 
     TStreamBuffer *streamBuf;
 
-    Iter():
-        streamBuf()
+    /*!
+     * @fn Iter::Iter
+     * @brief Constructor.
+     *
+     * @signature Iter::Iter()
+     * @signature Iter::Iter(stream)
+     * @signature Iter::Iter(streamBuf)
+     *
+     * @param[in] stream    The <tt>TStream</tt> to write to.
+     * @param[in] streamBuf A @link StreamBuffer @endlink to write to.
+     *
+     * Allows default construction, construction from stream, as well as from a @link StreamBuffer @endlink.
+     */
+    Iter() : streamBuf()
     {}
 
-    Iter(TOStream& stream):
+    Iter(TOStream & stream):
         streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
     {
         stream.exceptions(std::ios_base::badbit);
@@ -233,6 +316,16 @@ public:
 // Metafunction Chunk
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn StreamBuffer#Chunk
+ * @brief Return chunk type for StreamBuffer
+ *
+ * @signature Chunk<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its chunk type.
+ * @return Type          The chunk type of the stream buffer.
+ */
+
 template <typename TValue, typename TTraits>
 struct Chunk<StreamBuffer<TValue, TTraits> >
 {
@@ -246,6 +339,16 @@ struct Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >:
 // ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn StreamBuffer#Reference
+ * @brief Return reference for StreamBuffer.
+ *
+ * @signature Reference<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its reference type.
+ * @return Type          The reference type of the stream buffer.
+ */
 
 template <typename TStream>
 struct Reference<Iter<TStream, StreamIterator<Input> > >:
@@ -265,6 +368,16 @@ struct Reference<Iter<TStream, StreamIterator<Output> > >
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn StreamBuffer#GetValue
+ * @brief Return get value for StreamBuffer.
+ *
+ * @signature GetValue<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its get value type.
+ * @return Type          The get value type of the stream buffer.
+ */
+
 template <typename TStream>
 struct GetValue<Iter<TStream, StreamIterator<Input> > >:
     Reference<Iter<TStream, StreamIterator<Input> > const> {};
@@ -273,6 +386,16 @@ struct GetValue<Iter<TStream, StreamIterator<Input> > >:
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn StreamBuffer#Position
+ * @brief Return position for StreamBuffer.
+ *
+ * @signature Position<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its position type.
+ * @return Type          The position type of the stream buffer.
+ */
+
 template <typename TStream, typename TDirection>
 struct Position<Iter<TStream, StreamIterator<TDirection> > > : Position<TStream> {};
 
@@ -280,12 +403,32 @@ struct Position<Iter<TStream, StreamIterator<TDirection> > > : Position<TStream>
 // Metafunction Difference
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn StreamBuffer#Difference
+ * @brief Return difference for StreamBuffer.
+ *
+ * @signature Difference<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its difference type.
+ * @return Type          The difference type of the stream buffer.
+ */
+
 template <typename TStream, typename TDirection>
 struct Difference<Iter<TStream, StreamIterator<TDirection> > > : Difference<TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn StreamBuffer#Size
+ * @brief Return size for StreamBuffer.
+ *
+ * @signature Size<TStreamBuffer>::Type;
+ *
+ * @tparam TStreamBuffer The StreamBuffer to query for its size type.
+ * @return Type          The size type of the stream buffer.
+ */
 
 template <typename TStream, typename TDirection>
 struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
@@ -298,12 +441,34 @@ struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
 // Function directionIterator()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn StreamConcept#directionIterator
+ * @brief Returns direction iterator for Stream.
+ *
+ * @sigature TDirIter directionIterator(stream, dirTag);
+ *
+ * @param[in] stream The @link Stream @endlink object to compute iterator for.
+ * @param[in] dirTag Direction tag, one of the @link StreamDirectionTags @endlink.
+ */
+
 template <typename TStream, typename TDirection>
 inline SEQAN_FUNC_ENABLE_IF(Is<StreamConcept<TStream> >, Iter<TStream, StreamIterator<TDirection> >)
 directionIterator(TStream &stream, TDirection const &)
 {
     return Iter<TStream, StreamIterator<TDirection> >(stream);
 }
+
+/*!
+ * @fn ContainerConcept#directionIterator
+ * @brief Returns direction iterator for a container.
+ *
+ * @signature TDirIter directionIterator(streamBuf, dirTag);
+ *
+ * @param[in] streamBuf The @link ContainerConcept container @endlink object to compute iterator for.
+ * @param[in] dirTag    Direction tag, one of the @link StreamDirectionTags @endlink.
+ *
+ * @return TDirIter The resulting @link ContainerConcept#DirectionIterator DirectionIterator @endlink.
+ */
 
 template <typename TContainer, typename TDirection>
 inline SEQAN_FUNC_DISABLE_IF(Is<StreamConcept<TContainer> >, typename Iterator<TContainer, Rooted>::Type)
@@ -315,6 +480,18 @@ directionIterator(TContainer &cont, TDirection const &)
 // ----------------------------------------------------------------------------
 // Function reserveChunk()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn StreamIterator#reserveChunk
+ * @brief Reserve a chunk in the host of the StreamIterator
+ *
+ * @sigature void reserveChunk(iter, len, dirTag);
+ *
+ * @param[in] iter   The @link StreamIterator @endlink object to reserve chunks for.
+ * @param[in] len    The length of the chunk to reserve.
+ * @param[in] dirTag Direction tag, one of @link StreamDirectionTags#Input Input @endlink and @link
+ *                   StreamDirectionTags#Input Output @endlink .
+ */
 
 template <typename TStream, typename TDirection, typename TSize>
 inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize, Input dir)
@@ -331,6 +508,8 @@ inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize
 // ----------------------------------------------------------------------------
 // Function advanceChunk()
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Documentation missing below here.
 
 template <typename TStream, typename TDirection, typename TSize>
 inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
