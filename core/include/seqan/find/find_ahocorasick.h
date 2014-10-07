@@ -261,7 +261,7 @@ void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
 	//_createTrieNodeAttributes(me.data_graph, me.data_terminalStateMap, nodeMap);
 	//String<String<char> > edgeMap;
 	//_createEdgeAttributes(me.data_graph,edgeMap);
-	//write(strm,me.data_graph,nodeMap,edgeMap,DotDrawing());
+	//writeRecords(strm,me.data_graph,nodeMap,edgeMap,DotDrawing());
 	//strm.close();
 	// Supply links
 	//for(unsigned int i=0;i<length(me.data_supplyMap);++i) {

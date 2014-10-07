@@ -534,7 +534,7 @@ getAnnotation(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 ...type:Spec.AnnotationTree Iterator
 ..returns:The name of the current annotation.
 ...remarks:This a reference to the corresponding position in the @Memvar.FragmentStore#annotationNameStore@.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.AnnotationTree Iterator#setName
 ..include:seqan/store.h
 */
@@ -567,7 +567,7 @@ getName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 ..param.iter:An annotation tree iterator.
 ...type:Spec.AnnotationTree Iterator
 ..param.name:The new identifier of the current annotation element.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.AnnotationTree Iterator#getName
 ..include:seqan/store.h
 */
@@ -603,7 +603,7 @@ setName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TName const & n
 ...type:Spec.AnnotationTree Iterator
 ..returns:The name of the parent of the current annotation.
 ...remarks:This a reference to the corresponding position in the @Memvar.FragmentStore#annotationNameStore@.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.AnnotationTree Iterator#getName
 ..include:seqan/store.h
 */
@@ -647,7 +647,7 @@ getParentName(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 ...type:Spec.AnnotationTree Iterator
 ..returns:The type name of the current annotation, e.g. "exon" or "mRNA".
 ...remarks:This a reference to an entry in the @Memvar.FragmentStore#annotationTypeStore@.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.setType
 ..include:seqan/store.h
 */
@@ -666,7 +666,7 @@ getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @signature void setType(it, typeName);
  *
  * @param[in,out] it       The iterator to the annotation to set the type name for.
- * @param[in]     typeName The name of the type (e.g. "exon" or "mRNA").  Type: @link SequenceConcept @endlink.
+ * @param[in]     typeName The name of the type (e.g. "exon" or "mRNA").  Type: @link ContainerConcept @endlink.
  *
  * @see AnnotationTreeIterator#getType
  */
@@ -680,7 +680,7 @@ getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 ..param.iter:An annotation tree iterator.
 ...type:Spec.AnnotationTree Iterator
 ..param.typeName:The new type name, e.g. "exon" or "mRNA".
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.getType
 ..include:seqan/store.h
 */
@@ -774,8 +774,8 @@ clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @signature void assignValueByKey(it, key, value);
  *
  * @param[in,out] it    The AnnotationTreeIterator to
- * @param[in]     key   The key whose value should be changed.  Type: @link SequenceConcept @endlink.
- * @param[in]     value The value that should be assigned.  Type: @link SequenceConcept @endlink.
+ * @param[in]     key   The key whose value should be changed.  Type: @link ContainerConcept @endlink.
+ * @param[in]     value The value that should be assigned.  Type: @link ContainerConcept @endlink.
  *
  * @see AnnotationTreeIterator#clearValues
  * @see AnnotationTreeIterator#getValueByKey
@@ -790,9 +790,9 @@ clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 ..param.iter:An annotation tree iterator.
 ...type:Spec.AnnotationTree Iterator
 ..param.key:The key whose value should be changed.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.value:The new value of the key.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Function.clearValues
 ..see:Function.getValueByKey
 ..include:seqan/store.h
@@ -812,7 +812,8 @@ assignValueByKey(
  * @fn AnnotationTreeIterator#getValueByKey
  * @brief Retrieve a key's value in the current annotation.
  *
- * @signature bool getValueByKey(it, key, value);
+ * @signature bool getValueByKey(it, key);
+ * @signature bool getValueByKey(value, it, key);
  *
  * @param[in]  it    The AnnotationTreeIterator for which to retrieve the key.
  * @param[in]  key   The key to get the value for.
@@ -828,13 +829,13 @@ assignValueByKey(
 ..summary:Given a key, retrieve its value of the current annotation.
 ..cat:Fragment Store
 ..signature:getValueByKey(iter, key)
-..signature:getValueByKey(iter, key, value)
+..signature:getValueByKey(value, iter, key)
 ..param.iter:An annotation tree iterator.
 ...type:Spec.AnnotationTree Iterator
 ..param.key:The key to retrieve the value from.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.value:The sequence where the return value should be wrote to.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..returns:The three-parameter function returns a boolean indicating whether a non-empty value was returned.
 ..returns:The two-parameter function returns the value for the given key.
 ...type:nolink:bool
@@ -847,9 +848,9 @@ assignValueByKey(
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline bool 
 getValueByKey(
-	Iter<TFragmentStore, AnnotationTree<TSpec> > const & it,
-	TKey const & key,
-	TValue & value)
+    TValue & value,
+    Iter<TFragmentStore, AnnotationTree<TSpec> > const & it,
+	TKey const & key)
 {
 	return annotationGetValueByKey(*it.store, getAnnotation(it), key, value);
 }

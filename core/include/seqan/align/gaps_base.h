@@ -73,7 +73,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 
 /*!
  * @class Gaps
- * @implements SequenceConcept
+ * @implements ContainerConcept
  * @headerfile <seqan/align.h>
  * @brief Store the gapped version of a sequence.
  *
@@ -83,7 +83,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @tparam TSequence The type of the underlying sequence.
  * @tparam TSpec     Tag for specialization.
  *
- * Gaps wrap a @link SequenceConcept Sequence @endlink and allows to (1) insert gaps into the sequence and (2) select
+ * Gaps wrap a @link ContainerConcept Sequence @endlink and allows to (1) insert gaps into the sequence and (2) select
  * an infix of the gapped sequence (clipping).  The gaps are not inserted into the underlying sequence (source) but
  * stored separately.  Using the clipping is optional and meant for selecting parts of the alignment as a part of the
  * result of a local alignment algorithm.
@@ -114,11 +114,11 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 /**
 .Class.Gaps
 ..cat:Alignments
-..implements:Concept.SequenceConcept
+..implements:Concept.ContainerConcept
 ..summary:Efficient storage of gaps for a sequence.
 ..signature:Gaps<TSequence, TSpec>
 ..description.text:
-Gaps wrap a @Concept.SequenceConcept@ and allows to (1) insert gaps into the sequence and (2) select an infix of the gapped sequence (clipping).
+Gaps wrap a @Concept.ContainerConcept@ and allows to (1) insert gaps into the sequence and (2) select an infix of the gapped sequence (clipping).
 The gaps are not inserted into the underlying sequence (source) but stored separately.
 Using the clipping is optional and meant for selecting parts of the alignment as a part of the result of a local alignment algorithm.
 ..description.image:gaps_illustration|Illustration of Gaps object and positions with clipping.
@@ -142,7 +142,7 @@ toSourcePosition(gaps, 4) == 4
 toViewPosition(gaps, 0) == -1
 toViewPosition(gaps, 5) == 9
 ..param.TSequence:The type of the underlying sequence.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.TSpec:Specialization tag.
 ..include:seqan/align.h
  */
@@ -319,7 +319,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function iter()
 // ----------------------------------------------------------------------------
 
-// From SequenceConcept, only overwriting documentation here.
+// From ContainerConcept, only overwriting documentation here.
 
 /*!
  * @fn Gaps#iter
@@ -404,7 +404,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function length()
 // ----------------------------------------------------------------------------
 
-// From SequenceConcept, only overwriting documentation here.
+// From ContainerConcept, only overwriting documentation here.
 
 /*!
  * @fn Gaps#length
@@ -1227,24 +1227,20 @@ clipped view position:     0123456
 // Function write()
 // ----------------------------------------------------------------------------
 
-template <typename TFile, typename TSource, typename TIDString, typename TSpec>
+template <typename TTarget, typename TSource, typename TSpec>
 inline void
-write(TFile & target,
-	  Gaps<TSource, TSpec> const & source, 
-	  TIDString const &,
-	  Raw)
+write(TTarget & target,
+	  Gaps<TSource, TSpec> const & source)
 {
-//IOREV _nodoc_ specialization not documented
-
 	// Print gaps row
 	typedef typename Iterator<Gaps<TSource, TSpec> const>::Type TIter;
 	TIter begin_ = begin(source);
 	TIter end_ = end(source);
 	for (; begin_ != end_; ++begin_) {
 		if (isGap(begin_))
-			streamPut(target, gapValue<char>());
-		else 
-			streamPut(target, convert<char>(*begin_));
+			writeValue(target, gapValue<char>());
+		else
+			writeValue(target, convert<char>(getValue(begin_)));
 	}
 }
 
@@ -1254,23 +1250,13 @@ write(TFile & target,
 
 // TODO(holtgrew): Document appropriately.
 
-template <typename TStream, typename TSource, typename TSpec>
-inline TStream &
-operator<<(TStream & stream, Gaps<TSource, TSpec> const & gaps)
+template <typename TTarget, typename TSource, typename TSpec>
+inline TTarget &
+operator<<(TTarget & target, Gaps<TSource, TSpec> const & gaps)
 {
-    typedef Gaps<TSource, TSpec> const             TGaps;
-    typedef typename Iterator<TGaps, Rooted>::Type TIter;
-
-    for (TIter it = begin(gaps, Rooted()); !atEnd(it); goNext(it))
-    {
-        // TODO(holtgrew): Ideally, we could simply print the expanded alphabet char but that is broken.
-        if (isGap(it))
-            stream << gapValue<char>();
-        else
-            stream << convert<char>(*it);
-    }
-
-    return stream;
+    typename DirectionIterator<TTarget, Output>::Type it = directionIterator(target, Output());
+    write(it, gaps);
+    return target;
 }
 
 // ----------------------------------------------------------------------------
@@ -1404,7 +1390,7 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
  * @signature void assignSource(gaps, seq);
  *
  * @param[in,out] gaps The Gaps object to assign the source of.
- * @param[in]     seq  The @link SequenceConcept sequence @endlink to assign to the underlying string.
+ * @param[in]     seq  The @link ContainerConcept sequence @endlink to assign to the underlying string.
  */
 
 /**
@@ -1415,7 +1401,7 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
 ..signature:void assignSource(gaps, sequence)
 ..param.gaps:The @Class.Gaps@ object to assign the source of.
 ...type:Class.Gaps
-..param.sequence:The @Concept.SequenceConcept@ to assign as the source.
+..param.sequence:The @Concept.ContainerConcept@ to assign as the source.
 ...type:Metafunction.Source
 ..remarks:This will copy $sequence$ into the source of $gaps$.
 ..returns:$void$
@@ -1445,7 +1431,7 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 ..signature:void setSource(gaps, sequence)
 ..param.gaps:The @Class.Gaps@ object to set the source of.
 ...type:Class.Gaps
-..param.sequence:The @Concept.SequenceConcept@ to set as the source.
+..param.sequence:The @Concept.ContainerConcept@ to set as the source.
 ...type:Metafunction.Source
 ..remarks:This will avoid copying if possible.
 ..returns:$void$

@@ -59,83 +59,62 @@ typedef Tag<Roi_> Roi;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function writeRecord()                                           [RoiHeader]
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+void writeRecord(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
+{
+    write(target, "#ROI 0.3\n"
+                  "##ref\t"
+                  "begin_pos\t"
+                  "end_pos\t"
+                  "region_name\t"
+                  "length\t"
+                  "strand\t"
+                  "max_count\t");
+    for (unsigned i = 0; i < length(header.extraColumns); ++i)
+    {
+        write(target, header.extraColumns[i]);
+        write(target, "\t");
+    }
+    write(target, "counts\n");
+}
+
+// ----------------------------------------------------------------------------
 // Function writeRecord()                                           [RoiRecord]
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Error handling.
-
-// Variant without I/O Context.
-
-template <typename TStream>
-int writeRecord(TStream & out, RoiRecord const & record, Roi const & /*tag*/)
+template <typename TTarget>
+void writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/)
 {
-    streamPut(out, record.ref);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.beginPos + 1);  // 0-based to 1-based
-    streamWriteChar(out, '\t');
-    streamPut(out, record.endPos);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.name);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.len);
-    streamWriteChar(out, '\t');
-    streamWriteChar(out, record.strand);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.countMax);
-    streamWriteChar(out, '\t');
+    write(target, record.ref);
+    writeValue(target, '\t');
+    appendNumber(target, record.beginPos + 1);  // 0-based to 1-based
+    writeValue(target, '\t');
+    appendNumber(target, record.endPos);
+    writeValue(target, '\t');
+    write(target, record.name);
+    writeValue(target, '\t');
+    appendNumber(target, record.len);
+    writeValue(target, '\t');
+    writeValue(target, record.strand);
+    writeValue(target, '\t');
+    appendNumber(target, record.countMax);
+    writeValue(target, '\t');
     for (unsigned i = 0; i < length(record.data); ++i)
     {
-        streamPut(out, record.data[i]);
-        streamWriteChar(out, '\t');
+        write(target, record.data[i]);
+        writeValue(target, '\t');
     }
-    
+
     for (unsigned i = 0; i < length(record.count); ++i)
     {
         if (i > 0)
-            streamWriteChar(out, ',');
-        streamPut(out, record.count[i]);
+            writeValue(target, ',');
+        appendNumber(target, record.count[i]);
     }
-    streamWriteChar(out, '\n');
-
-    return 0;
-}
-
-// Variant with I/O Context.
-
-template <typename TStream, typename TNameStore, typename TNameStoreCache>
-int writeRecord(TStream & out, RoiRecord const & record,
-                RoiIOContext<TNameStore, TNameStoreCache> const & context,
-                Roi const & /*tag*/)
-{
-    streamPut(out, nameStore(context)[record.rID]);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.beginPos + 1);  // 0-based to 1-based
-    streamWriteChar(out, '\t');
-    streamPut(out, record.endPos);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.name);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.len);
-    streamWriteChar(out, '\t');
-    streamWriteChar(out, record.strand);
-    streamWriteChar(out, '\t');
-    streamPut(out, record.countMax);
-    streamWriteChar(out, '\t');
-    for (unsigned i = 0; i < length(record.data); ++i)
-    {
-        streamPut(out, record.data[i]);
-        streamWriteChar(out, '\t');
-    }
-    
-    for (unsigned i = 0; i < length(record.count); ++i)
-    {
-        if (i > 0)
-            streamWriteChar(out, ',');
-        streamPut(out, record.count[i]);
-    }
-    streamWriteChar(out, '\n');
-
-    return 0;
+    writeValue(target, '\n');
 }
 
 }  // namespace seqan

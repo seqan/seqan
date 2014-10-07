@@ -170,7 +170,7 @@ void _setupParser(TParser & parser)
     addDescription(parser, " SGIP - Solution of Graph Isomorphism Problem");
     addUsageLine(parser, "-o <orginal graph> [Option]");    
     addSection(parser, "Mandatory Options");
-    addOption(parser, ArgParseOption("o", "orginal", "File containing orginal graph", ArgParseArgument::INPUTFILE,"IN"));
+    addOption(parser, ArgParseOption("o", "orginal", "File containing orginal graph", ArgParseArgument::INPUT_FILE,"IN"));
     setRequired(parser, "o");
     addSection(parser, "Main Options");
     addOption(parser, ArgParseOption("a", "algorithm", "Algorithm used for searching metric dimension", ArgParseArgument::STRING));
@@ -178,7 +178,7 @@ void _setupParser(TParser & parser)
     addOption(parser, ArgParseOption("s", "searching", "Searching algorithm used for detecting resolving set,heuristic 0 bruteforce 1.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "searching", "0");
     addOption(parser, ArgParseOption("i", "isomorphism", "To check whether two given graphs are isomorphic"));
-    addOption(parser, ArgParseOption("c", "comparitive", "File containing comparitive graph", ArgParseArgument::INPUTFILE,"IN"));
+    addOption(parser, ArgParseOption("c", "comparitive", "File containing comparitive graph", ArgParseArgument::INPUT_FILE,"IN"));
     addOption(parser, ArgParseOption("od", "odimension", "Specified initial dimension of orginal graph by user", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "odimension", "3");
     addOption(parser, ArgParseOption("cd", "cdimension", "Specified initial dimension of comparitive graph by user", ArgParseArgument::INTEGER));

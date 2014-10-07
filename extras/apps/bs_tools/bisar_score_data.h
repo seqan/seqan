@@ -5,13 +5,13 @@
 namespace seqan {
 
 struct BsCaseCT_;
-typedef Tag<BsCaseCT_>   BsCaseCT; 
+typedef Tag<BsCaseCT_>   BsCaseCT;
 
 struct BsCaseGA_;
 typedef Tag<BsCaseGA_>   BsCaseGA;
 
 struct Left_;
-typedef Tag<Left_>   Left; 
+typedef Tag<Left_>   Left;
 
 struct Right_;
 typedef Tag<Right_>  Right;
@@ -19,10 +19,10 @@ typedef Tag<Right_>  Right;
 
 
 struct BsNonSimple_;        // Tag for assuming most simple model: simple substitution matrix, equal error distributions
-typedef Tag<BsNonSimple_>   BsNonSimple; 
+typedef Tag<BsNonSimple_>   BsNonSimple;
 
 struct BsSimple_;
-typedef Tag<BsSimple_>      BsSimple; 
+typedef Tag<BsSimple_>      BsSimple;
 
 template <typename TBsCase, typename TModel, typename TSegment, typename TCellDescriptor = InnerCell>
 struct BsTagList
@@ -31,9 +31,9 @@ struct BsTagList
     typedef TModel              TypeModel;
     typedef TSegment            TypeSeqment;
     typedef TCellDescriptor     TypeCellDescriptor;
-}; 
+};
 
-// Substitution matrix 
+// Substitution matrix
 template <typename TValue = double, typename TSpec1 = BsCaseCT, typename TSpec2 = BsNonSimple>
 class BsSubstitutionMatrix;
 
@@ -49,7 +49,7 @@ public:
 
     // The data table.
     TValue data_tab[TAB_SIZE];
- 
+
     BsSubstitutionMatrix(TValue &fMeth, TValue &fBsConversion, TValue &seqIdentity, TValue &fN)
     {
         TValue fA = 1.0/4.0 - fN/16.0;  // Uniform base distribution, taking reference Ns into account
@@ -66,13 +66,13 @@ public:
         TValue fCRead = fC - fC *(1.0-fMeth) * fBsConversion;  // Compute expected frequency of Cs in Bs reads
         TValue fTRead = fT + fC *(1.0-fMeth) * fBsConversion;  // .. of Ts
 
-        TValue pCC = fMatch*(1.0-fMeth)*(1.0-fBsConversion) + fMatch*fMeth;   // Prob. that C stays C: no substitution and (unmethylated and not converted or methylated) 
-        TValue pCT = fSubst + fMatch*(1.0-fMeth)*fBsConversion;         // Prob. that C turns into T: substitution or unmethylated and converted 
+        TValue pCC = fMatch*(1.0-fMeth)*(1.0-fBsConversion) + fMatch*fMeth;   // Prob. that C stays C: no substitution and (unmethylated and not converted or methylated)
+        TValue pCT = fSubst + fMatch*(1.0-fMeth)*fBsConversion;         // Prob. that C turns into T: substitution or unmethylated and converted
         // add prob. that methylated and converted?
         static TValue const tab[25] = {
                       //A,                      C,                          G,                          T,                                  N (ref?)
                       fMatch/(fA*fA),           fSubst/(fA*fCRead),         fSubst/(fA*fG),             fSubst/(fA*fTRead),                         0,     // A
-                      fSubst/(fC*fA),           pCC/(fC*fCRead),            fSubst/(fC*fG),             pCT/(fC*fTRead),                            0,     // C   Ref:C - read:T  ?     
+                      fSubst/(fC*fA),           pCC/(fC*fCRead),            fSubst/(fC*fG),             pCT/(fC*fTRead),                            0,     // C   Ref:C - read:T  ?
                       fSubst/(fG*fA),           fSubst/(fG*fCRead),         fMatch/(fG*fG),             fSubst/(fG*fTRead),                         0,     // G
                       fSubst/(fT*fA),           fSubst/(fT*fCRead),         fSubst/(fT*fG),             fMatch/(fT*fTRead),                         0,     // T
                       fNtoX/(fN*fA),            fNtoX/(fN*fCRead),          fNtoX/(fN*fG),              fNtoX/(fN*fTRead),                          0      // N in ref
@@ -83,7 +83,7 @@ public:
 
 
 template <typename TValue>
-class BsSubstitutionMatrix<TValue, BsCaseGA, BsSimple > 
+class BsSubstitutionMatrix<TValue, BsCaseGA, BsSimple >
 {
 public:
     // Static computation of the required array size.
@@ -116,7 +116,7 @@ public:
         static TValue const tab[25] = {
                       //A,                                      C,                          G,                                      T,                          N (ref?)
                       fMatch/(fA*fARead),                       fSubst/(fA*fC),             fSubst/(fA*fGRead),                     fSubst/(fA*fT),             0,     // A
-                      fSubst/(fC*fARead),                       fMatch/(fC*fC),             fSubst/(fC*fGRead),                     fSubst/(fC*fT),             0,     // C   Ref:C - read:T  ?     
+                      fSubst/(fC*fARead),                       fMatch/(fC*fC),             fSubst/(fC*fGRead),                     fSubst/(fC*fT),             0,     // C   Ref:C - read:T  ?
                       pGA/(fG*fARead),                          fSubst/(fG*fC),             pGG/(fG*fGRead),                        fSubst/(fG*fT),             0,     // G
                       fSubst/(fT*fARead),                       fSubst/(fT*fC),             fSubst/(fT*fGRead),                     fMatch/(fT*fT),             0,     // T
                       fNtoX/(fN*fARead),                        fNtoX/(fN*fC),              fNtoX/(fN*fGRead),                      fNtoX/(fN*fT),              0      // N in ref
@@ -135,7 +135,7 @@ struct SeqErrorFreqs;
 
 // Default sequencing error frequencies (substitutions only)
 template <typename TValue>
-struct SeqErrorFreqs<TValue, BsNonSimple> {    
+struct SeqErrorFreqs<TValue, BsNonSimple> {
     enum {
         VALUE_SIZE = ValueSize<Dna5>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
@@ -143,14 +143,14 @@ struct SeqErrorFreqs<TValue, BsNonSimple> {
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-                        // Column sum must be 1   (in the current model) 
+
+                        // Column sum must be 1   (in the current model)
         static TValue const _data[TAB_SIZE] = {
                 // To A, C, G, T, N (ref?)
                         0,            (0.14/0.38),   (0.05/0.16),    (0.05/0.21),    1.0/4.0,    // From A
                        (0.13/0.25),    0,            (0.02/0.16),    (0.04/0.21),    1.0/4.0,    // C
                        (0.04/0.25),   (0.08/0.38),    0,             (0.12/0.21),    1.0/4.0,
-                       (0.08/0.25),   (0.15/0.38),   (0.09/0.16),     0,             1.0/4.0,    
+                       (0.08/0.25),   (0.15/0.38),   (0.09/0.16),     0,             1.0/4.0,
                        0,              0,             0,              0,             0      // N?
         };
         return _data;
@@ -168,15 +168,15 @@ struct SeqErrorFreqs<TValue, BsSimple> {
 
     static inline TValue const * getData() {
         SEQAN_CHECKPOINT;
-        
-        TValue fE = 1.0/3.0;                        // Column sum must be 1    
+
+        TValue fE = 1.0/3.0;                        // Column sum must be 1
         static TValue const _data[TAB_SIZE] = {
                 // To A, C, G, T, N (ref?)
                       0,    fE,   fE,   fE, 1.0/4.0,    // From A
                       fE,   0,    fE,   fE, 1.0/4.0,    // C
                       fE,   fE,   0,    fE, 1.0/4.0,
-                      fE,   fE,   fE,   0,  1.0/4.0,    
-                      0,    0,    0,    0,  0 
+                      fE,   fE,   fE,   0,  1.0/4.0,
+                      0,    0,    0,    0,  0
         };
         return _data;
     }
@@ -192,10 +192,10 @@ struct SeqErrorFreqsTo<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
+        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
-                                                // A,    C,     G,     T,    N   
-        static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};      // siehe Dohm et.al. 2011 
+                                                // A,    C,     G,     T,    N
+        static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};      // siehe Dohm et.al. 2011
 
         return _data;
     }
@@ -209,8 +209,8 @@ struct SeqErrorFreqsTo<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
-                                                // A,    C,     G,     T,    N   
+        SEQAN_CHECKPOINT;
+                                                // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.25, 0.38, 0.16, 0.21, 0.2};      // siehe Dohm et.al. 2011 // TODO N?
 
         return _data;
@@ -227,7 +227,7 @@ struct BaseErrorFreqsFrom<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
+        SEQAN_CHECKPOINT;
                                                 // A,  C,    G,    T     N
         static TValue const _data[VALUE_SIZE] =  {0.25, 0.19, 0.24, 0.33, 0.0};      // siehe Dohm et.al. 2008
         return _data;                                                                // N  stays N
@@ -241,7 +241,7 @@ struct BaseErrorFreqsFrom<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
+        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
                                                 // A,  C,    G,    T     N
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};      // siehe Dohm et.al. 2008
@@ -262,8 +262,8 @@ struct InsErrorFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
-                                                // A,    C,     G,     T,    N   
+        SEQAN_CHECKPOINT;
+                                                // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.43, 0.065, 0.065, 0.43, 0.01};      // siehe Dohm et.al. 2011 // TODO N?
 
         return _data;
@@ -277,9 +277,9 @@ struct InsErrorFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
-        TValue f = 1.0/5.0;                   
-        static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};   
+        SEQAN_CHECKPOINT;
+        TValue f = 1.0/5.0;
+        static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};
         return _data;
     }
 };
@@ -295,8 +295,8 @@ struct DelErrorFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
-                                                // A,    C,     G,     T,    N   
+        SEQAN_CHECKPOINT;
+                                                // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.42, 0.075, 0.075, 0.42, 0.00};      // siehe Dohm et.al. 2011
 
         return _data;
@@ -310,7 +310,7 @@ struct DelErrorFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT; 
+        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};
         return _data;
@@ -348,13 +348,13 @@ public:
     TValue fG;
     TValue fT;
     TValue fN;
-    
+
     BsSubstitutionMatrix(TValue &fMeth, TValue &fBsConversion):
         fMatch(0.89/4.0),
         fSubst(0.09/12.0),
         fNtoX(0.02/4.0),
-        fTransi(0.5/4.0),  
-        fTransv(0.5/8.0),  
+        fTransi(0.5/4.0),
+        fTransv(0.5/8.0),
         fA(0.9/4.0),
         fC(0.9/4.0),
         fG(0.9/4.0),
@@ -366,13 +366,13 @@ public:
         TValue fCRead = fC - fC *(1.0-fMeth) * fBsConversion;  // Compute expected frequency of Cs in Bs reads
         TValue fTRead = fT + fC *(1.0-fMeth) * fBsConversion;  // .. of Ts
 
-        TValue pCC = fMatch*(1.0-fMeth)*(1.0-fBsConversion) + fMatch*fMeth;   // Prob. that C stays C: no substitution and (unmethylated and not converted or methylated) 
-        TValue pCT = fSubst*fTransi + fMatch*(1.0-fMeth)*fBsConversion;         // Prob. that C turns into T: substitution or unmethylated and converted 
+        TValue pCC = fMatch*(1.0-fMeth)*(1.0-fBsConversion) + fMatch*fMeth;   // Prob. that C stays C: no substitution and (unmethylated and not converted or methylated)
+        TValue pCT = fSubst*fTransi + fMatch*(1.0-fMeth)*fBsConversion;         // Prob. that C turns into T: substitution or unmethylated and converted
         // add prob. that methylated and converted?
         static TValue const tab[25] = {
                       //A,                      C,                                  G,                          T,                                                  N (ref?)
                       fMatch/(fA*fA),           fSubst*fTransv/(fA*fCRead),         fSubst*fTransi/(fA*fG),     fSubst*fTransv/(fA*fTRead),                         0,     // A
-                      fSubst*fTransv/(fC*fA),   pCC/(fC*fCRead),                    fSubst*fTransv/(fC*fG),     pCT/(fC*fTRead),                                    0,     // C   Ref:C - read:T  ?     
+                      fSubst*fTransv/(fC*fA),   pCC/(fC*fCRead),                    fSubst*fTransv/(fC*fG),     pCT/(fC*fTRead),                                    0,     // C   Ref:C - read:T  ?
                       fSubst*fTransi/(fG*fA),   fSubst*fTransv/(fG*fCRead),         fMatch/(fG*fG),             fSubst*fTransv/(fG*fTRead),                         0,     // G
                       fSubst*fTransv/(fT*fA),   fSubst*fTransi/(fT*fCRead),         fSubst*fTransv/(fT*fG),     fMatch/(fT*fTRead),                                 0,     // T
                       fNtoX/(fN*fA),            fNtoX/(fN*fCRead),                  fNtoX/(fN*fG),              fNtoX/(fN*fTRead),                                  0
@@ -382,7 +382,7 @@ public:
 };
 
 template <typename TValue>
-class BsSubstitutionMatrix<TValue, BsCaseGA, BsNonSimple > 
+class BsSubstitutionMatrix<TValue, BsCaseGA, BsNonSimple >
 {
 public:
     // Static computation of the required array size.
@@ -406,11 +406,11 @@ public:
     TValue fN;
 
     BsSubstitutionMatrix(TValue &fMeth, TValue &fBsConversion):
-        fMatch(0.89/4.0), 
-        fSubst(0.09/12.0), 
+        fMatch(0.89/4.0),
+        fSubst(0.09/12.0),
         fNtoX(0.02/4.0),
-        fTransi(0.5/4.0),  
-        fTransv(0.5/8.0),  
+        fTransi(0.5/4.0),
+        fTransv(0.5/8.0),
         fA(0.9/4.0),
         fC(0.9/4.0),
         fG(0.9/4.0),
@@ -427,7 +427,7 @@ public:
         static TValue const tab[25] = {
                       //A,                                              C,                          G,                                              T,                          N (ref?)
                       fMatch/(fA*fARead),                               fSubst*fTransv/(fA*fC),     fSubst*fTransi/(fA*fGRead),                     fSubst*fTransv/(fA*fT),     0,     // A
-                      fSubst*fTransv/(fC*fARead),                       fMatch/(fC*fC),             fSubst*fTransv/(fC*fGRead),                     fSubst*fTransi/(fC*fT),     0,     // C   Ref:C - read:T  ?     
+                      fSubst*fTransv/(fC*fARead),                       fMatch/(fC*fC),             fSubst*fTransv/(fC*fGRead),                     fSubst*fTransi/(fC*fT),     0,     // C   Ref:C - read:T  ?
                       pGA/(fG*fARead),                                  fSubst*fTransv/(fG*fC),     pGG/(fG*fGRead),                                fSubst*fTransv/(fG*fT),     0,     // G
                       fSubst*fTransv/(fT*fARead),                       fSubst*fTransi/(fT*fC),     fSubst*fTransv/(fT*fGRead),                     fMatch/(fT*fT),             0,     // T
                       fNtoX/(fN*fARead),                                fNtoX/(fN*fC),              fNtoX/(fN*fGRead),                              fNtoX/(fN*fT),              0

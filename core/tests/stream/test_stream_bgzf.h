@@ -40,44 +40,6 @@
 
 #include "test_stream_generic.h"
 
-SEQAN_DEFINE_TEST(test_stream_bgzf_metafunctions)
-{
-    using namespace seqan;
-
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, IsInput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, IsOutput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, HasPeek>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, HasFilename>::Type::VALUE;
-        SEQAN_ASSERT_NOT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginBegin> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginEnd> >::Type::VALUE;
-        SEQAN_ASSERT_NOT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginCurrent> >::Type::VALUE;
-        SEQAN_ASSERT_NOT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<Bgzf>, Tell>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-}
-
 // Simple example of reading from BGZF Stream.
 SEQAN_DEFINE_TEST(test_stream_bgzf_read_simple_usage)
 {

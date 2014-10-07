@@ -25,11 +25,11 @@ int const TranslateTableDna5OrdValueToDna5OrdValueComplement_<T>::VALUE[5] = {3,
 template <typename TValue> struct FunctorDna5OrdValueComplement;
 
 template <>
-struct FunctorDna5OrdValueComplement<int> : public std::unary_function<int,int> 
+struct FunctorDna5OrdValueComplement<int> : public std::unary_function<int,int>
 {
     inline int operator()(int x) const
     {
-        return TranslateTableDna5OrdValueToDna5OrdValueComplement_<>::VALUE[x]; 
+        return TranslateTableDna5OrdValueToDna5OrdValueComplement_<>::VALUE[x];
     }
 };
 
@@ -70,9 +70,9 @@ sequenceEntryForScore(Score<int, BsCaseGA > const & /*scoringScheme*/, TSequence
 
 
 template<typename TScore, typename TSubstMatrix, typename TSeqErrorFreqs>
-inline void 
-computeBsScores(TScore &sc_data, 
-                TSubstMatrix const &s, 
+inline void
+computeBsScores(TScore &sc_data,
+                TSubstMatrix const &s,
                 TSeqErrorFreqs const &seqErrorFreqs,
                 BsCaseCT const &,
                 Left const &)
@@ -80,7 +80,7 @@ computeBsScores(TScore &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned i = 0; i < 5; ++i)    // Ref base
@@ -92,7 +92,7 @@ computeBsScores(TScore &sc_data,
 
                 for (unsigned o = 0; o < 5; ++o)
                 {
-                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[o*5 + j]; // Seq error 
+                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[o*5 + j]; // Seq error
                     //if (q == 62 && i == 1  && (j == 1 || j == 3) )
                         //std::cout << "Ref:C read:C/T: " << (Dna5)j << " o: " << (Dna5)o << "  subScore: " << (s[i*5 + o] * e * seqErrorFreqs[o*5 + j]) << " s: " << s[i*5 + o] << "  seqError:" << seqErrorFreqs[o*5 + j] << std::endl;
                 }
@@ -102,9 +102,9 @@ computeBsScores(TScore &sc_data,
 }
 
 template<typename TScore, typename TSubstMatrix, typename TSeqErrorFreqs>
-inline void 
-computeBsScores(TScore &sc_data, 
-                TSubstMatrix const &s, 
+inline void
+computeBsScores(TScore &sc_data,
+                TSubstMatrix const &s,
                 TSeqErrorFreqs const &seqErrorFreqs,
                 BsCaseCT const &,
                 Right const &)
@@ -113,7 +113,7 @@ computeBsScores(TScore &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned i = 0; i < 5; ++i)    // Ref base
@@ -125,7 +125,7 @@ computeBsScores(TScore &sc_data,
 
                 for (unsigned o = 0; o < 5; ++o)
                 {
-                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[fCompl(o)*5 + fCompl(j)]; // Seq error (regarding original read sequence) 
+                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[fCompl(o)*5 + fCompl(j)]; // Seq error (regarding original read sequence)
                 }
             }
         }
@@ -133,9 +133,9 @@ computeBsScores(TScore &sc_data,
 }
 
 template<typename TScore, typename TSubstMatrix, typename TSeqErrorFreqs>
-inline void 
-computeBsScores(TScore &sc_data, 
-                TSubstMatrix const &s, 
+inline void
+computeBsScores(TScore &sc_data,
+                TSubstMatrix const &s,
                 TSeqErrorFreqs const &seqErrorFreqs,
                 BsCaseGA const &,
                 Left const &)
@@ -144,7 +144,7 @@ computeBsScores(TScore &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned i = 0; i < 5; ++i)    // Ref base
@@ -156,7 +156,7 @@ computeBsScores(TScore &sc_data,
 
                 for (unsigned o = 0; o < 5; ++o)
                 {
-                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[fCompl(o)*5 + fCompl(j)]; // Seq error (regarding original read sequence)  
+                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[fCompl(o)*5 + fCompl(j)]; // Seq error (regarding original read sequence)
                 }
             }
         }
@@ -165,9 +165,9 @@ computeBsScores(TScore &sc_data,
 
 
 template<typename TScore, typename TSubstMatrix, typename TSeqErrorFreqs>
-inline void 
-computeBsScores(TScore &sc_data, 
-                TSubstMatrix const &s, 
+inline void
+computeBsScores(TScore &sc_data,
+                TSubstMatrix const &s,
                 TSeqErrorFreqs const &seqErrorFreqs,
                 BsCaseGA const &,
                 Right const &)
@@ -175,7 +175,7 @@ computeBsScores(TScore &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned i = 0; i < 5; ++i)    // Ref base
@@ -187,7 +187,7 @@ computeBsScores(TScore &sc_data,
 
                 for (unsigned o = 0; o < 5; ++o)
                 {
-                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[o*5 + j]; // Seq error 
+                    if (o != j) sc_data[q][i][j] += s[i*5 + o] * e * seqErrorFreqs[o*5 + j]; // Seq error
                     //if (q == 62 && i == 1  && (j == 1 || j == 3) )
                         //std::cout << "Ref:C read:C/T: " << (Dna5)j << " o: " << (Dna5)o << "  subScore: " << (s[i*5 + o] * e * seqErrorFreqs[o*5 + j]) << " s: " << s[i*5 + o] << "  seqError:" << seqErrorFreqs[o*5 + j] << std::endl;
                 }
@@ -197,22 +197,22 @@ computeBsScores(TScore &sc_data,
 }
 
 //////////////////////////////////////////////////////////////////////
-// ReadGapScores 
+// ReadGapScores
 //////////////////////////////////////////////////////////////////////
 
 
 template<typename TScores, typename TValue, typename TSubstMatrix, typename TDelErrorFreqs, typename TOptions>
 inline void
-computeReadGapScores(TScores &sc_data, 
-                     TValue const &gapScore, 
-                     TSubstMatrix const &s, 
+computeReadGapScores(TScores &sc_data,
+                     TValue const &gapScore,
+                     TSubstMatrix const &s,
                      TDelErrorFreqs const &delErrorFreqs,
                      TOptions &options,
                      BsCaseCT const &,
                      Left const &)
 {
     resize(sc_data, 5, Exact());
-    TValue e = options.delErrorRate; 
+    TValue e = options.delErrorRate;
     for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be deleted
     {
         sc_data[b] = exp(gapScore*options.lambda) * (1.0-e);   // Genome deletion, but no seq error
@@ -225,9 +225,9 @@ computeReadGapScores(TScores &sc_data,
 
 template<typename TScores, typename TValue, typename TSubstMatrix, typename TDelErrorFreqs, typename TOptions>
 inline void
-computeReadGapScores(TScores &sc_data, 
-                     TValue const &gapScore, 
-                     TSubstMatrix const &s, 
+computeReadGapScores(TScores &sc_data,
+                     TValue const &gapScore,
+                     TSubstMatrix const &s,
                      TDelErrorFreqs const &delErrorFreqs,
                      TOptions &options,
                      BsCaseCT const &,
@@ -235,7 +235,7 @@ computeReadGapScores(TScores &sc_data,
 {
     FunctorDna5OrdValueComplement<int> fCompl;
     resize(sc_data, 5, Exact());
-    TValue e = options.delErrorRate; 
+    TValue e = options.delErrorRate;
     for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be deleted
     {
         sc_data[b] = exp(gapScore*options.lambda) * (1.0-e);   // Genome deletion, but no seq error
@@ -248,9 +248,9 @@ computeReadGapScores(TScores &sc_data,
 
 template<typename TScores, typename TValue, typename TSubstMatrix, typename TDelErrorFreqs, typename TOptions>
 inline void
-computeReadGapScores(TScores &sc_data, 
-                     TValue const &gapScore, 
-                     TSubstMatrix const &s, 
+computeReadGapScores(TScores &sc_data,
+                     TValue const &gapScore,
+                     TSubstMatrix const &s,
                      TDelErrorFreqs const &delErrorFreqs,
                      TOptions &options,
                      BsCaseGA const &,
@@ -258,7 +258,7 @@ computeReadGapScores(TScores &sc_data,
 {
     FunctorDna5OrdValueComplement<int> fCompl;
     resize(sc_data, 5, Exact());
-    TValue e = options.delErrorRate; 
+    TValue e = options.delErrorRate;
     for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be deleted
     {
         sc_data[b] = exp(gapScore*options.lambda) * (1.0-e);   // Genome deletion, but no seq error
@@ -271,16 +271,16 @@ computeReadGapScores(TScores &sc_data,
 
 template<typename TScores, typename TValue, typename TSubstMatrix, typename TDelErrorFreqs, typename TOptions>
 inline void
-computeReadGapScores(TScores &sc_data, 
-                     TValue const &gapScore, 
-                     TSubstMatrix const &s, 
+computeReadGapScores(TScores &sc_data,
+                     TValue const &gapScore,
+                     TSubstMatrix const &s,
                      TDelErrorFreqs const &delErrorFreqs,
                      TOptions &options,
                      BsCaseGA const &,
                      Right const &)
 {
     resize(sc_data, 5, Exact());
-    TValue e = options.delErrorRate; 
+    TValue e = options.delErrorRate;
     for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be deleted
     {
         sc_data[b] = exp(gapScore*options.lambda) * (1.0-e);   // Genome deletion, but no seq error
@@ -293,15 +293,15 @@ computeReadGapScores(TScores &sc_data,
 
 
 //////////////////////////////////////////////////////////////////////
-// RefGapScores 
+// RefGapScores
 //////////////////////////////////////////////////////////////////////
 
 
 template<typename TScores, typename TValue, typename TInsErrorFreqs, typename TSeqErrorFreqs, typename TOptions>
 inline void
-computeRefGapScores(TScores &sc_data, 
-                    TValue const &simpleScore, 
-                    TInsErrorFreqs * &insErrorFreqs, 
+computeRefGapScores(TScores &sc_data,
+                    TValue const &simpleScore,
+                    TInsErrorFreqs * &insErrorFreqs,
                     TSeqErrorFreqs * &seqErrorFreqs,
                     TOptions &options,
                     BsCaseCT const &,
@@ -310,13 +310,13 @@ computeRefGapScores(TScores &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be inserted
         {
             sc_data[q][b] = exp(simpleScore*options.lambda) * (1.0-e);   // Genome insertion, but no seq error
-            sc_data[q][b] += 1.0 * e * insErrorFreqs[b];               // No genome insertion, but insertion seq error 
+            sc_data[q][b] += 1.0 * e * insErrorFreqs[b];               // No genome insertion, but insertion seq error
             for (unsigned i = 0; i < 5; ++i)
             {
                 if (i != b) sc_data[q][b] += exp(simpleScore*options.lambda) * e * seqErrorFreqs[i*5 + b];  // Genome insertion and seq error
@@ -327,9 +327,9 @@ computeRefGapScores(TScores &sc_data,
 
 template<typename TScores, typename TValue, typename TInsErrorFreqs, typename TSeqErrorFreqs, typename TOptions>
 inline void
-computeRefGapScores(TScores &sc_data, 
-                    TValue const &simpleScore, 
-                    TInsErrorFreqs * &insErrorFreqs, 
+computeRefGapScores(TScores &sc_data,
+                    TValue const &simpleScore,
+                    TInsErrorFreqs * &insErrorFreqs,
                     TSeqErrorFreqs * &seqErrorFreqs,
                     TOptions &options,
                     BsCaseCT const &,
@@ -339,28 +339,28 @@ computeRefGapScores(TScores &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be inserted
         {
             sc_data[q][b] = exp(simpleScore*options.lambda) * (1.0-e);   // Genome insertion, but no seq error
-            sc_data[q][b] += 1.0 * e * insErrorFreqs[fCompl(b)];               // No genome insertion, but insertion seq error 
+            sc_data[q][b] += 1.0 * e * insErrorFreqs[fCompl(b)];               // No genome insertion, but insertion seq error
             for (unsigned i = 0; i < 5; ++i)
             {
                 if (i != b) sc_data[q][b] += exp(simpleScore*options.lambda) * e * seqErrorFreqs[fCompl(i)*5 + fCompl(b)];  // Genome insertion and seq error
-            } 
+            }
         }
     }
 }
 
 template<typename TScores, typename TValue, typename TInsErrorFreqs, typename TSeqErrorFreqs, typename TOptions>
 inline void
-computeRefGapScores(TScores &sc_data, 
-                    TValue const &simpleScore, 
-                    TInsErrorFreqs * &insErrorFreqs, 
+computeRefGapScores(TScores &sc_data,
+                    TValue const &simpleScore,
+                    TInsErrorFreqs * &insErrorFreqs,
                     TSeqErrorFreqs * &seqErrorFreqs,
-                    TOptions &options,   
+                    TOptions &options,
                     BsCaseGA const &,
                     Left const &)
 {
@@ -368,26 +368,26 @@ computeRefGapScores(TScores &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be inserted
         {
             sc_data[q][b] = exp(simpleScore*options.lambda) * (1.0-e);   // Genome insertion, but no seq error
-            sc_data[q][b] += 1.0 * e * insErrorFreqs[fCompl(b)];               // No genome insertion, but insertion seq error 
+            sc_data[q][b] += 1.0 * e * insErrorFreqs[fCompl(b)];               // No genome insertion, but insertion seq error
             for (unsigned i = 0; i < 5; ++i)
             {
                 if (i != b) sc_data[q][b] += exp(simpleScore*options.lambda) * e * seqErrorFreqs[fCompl(i)*5 + fCompl(b)];  // Genome insertion and seq error
-            } 
+            }
         }
     }
 }
 
 template<typename TScores, typename TValue, typename TInsErrorFreqs, typename TSeqErrorFreqs, typename TOptions>
 inline void
-computeRefGapScores(TScores &sc_data, 
-                    TValue const &simpleScore, 
-                    TInsErrorFreqs * &insErrorFreqs, 
+computeRefGapScores(TScores &sc_data,
+                    TValue const &simpleScore,
+                    TInsErrorFreqs * &insErrorFreqs,
                     TSeqErrorFreqs * &seqErrorFreqs,
                     TOptions &options,
                     BsCaseGA const &,
@@ -396,17 +396,17 @@ computeRefGapScores(TScores &sc_data,
     resize(sc_data, 63, Exact());
     for (unsigned q = 0; q < 63; ++q)
     {
-        long double e = pow(10, -(long double)q/10.0); 
+        long double e = pow(10, -(long double)q/10.0);
 
         resize(sc_data[q], 5, Exact());
         for (unsigned b = 0; b < 5; ++b)    // Base which is assumed to be inserted
         {
             sc_data[q][b] = exp(simpleScore*options.lambda) * (1.0-e);   // Genome insertion, but no seq error
-            sc_data[q][b] += 1.0 * e * insErrorFreqs[b];               // No genome insertion, but insertion seq error 
+            sc_data[q][b] += 1.0 * e * insErrorFreqs[b];               // No genome insertion, but insertion seq error
             for (unsigned i = 0; i < 5; ++i)
             {
                 if (i != b) sc_data[q][b] += exp(simpleScore*options.lambda) * e * seqErrorFreqs[i*5 + b];  // Genome insertion and seq error
-            } 
+            }
         }
     }
 }
@@ -434,10 +434,10 @@ public:
 
     // Use default values apart of gap costs
     /*template<typename TOptions>
-    Score(TValue simple_gap_extend, TValue simple_gap_open, TValue delErrorRate, TOptions &options)   
+    Score(TValue simple_gap_extend, TValue simple_gap_open, TValue delErrorRate, TOptions &options)
     {
         BsSubstitutionMatrix<TValue, TBsCase, BsSimple> bsSubstitutionMatrix;
-        TValue const * seqErrorFreqs = SeqErrorFreqs<TValue, BsNonSimple>::getData(); 
+        TValue const * seqErrorFreqs = SeqErrorFreqs<TValue, BsNonSimple>::getData();
         TValue const * insErrorFreqs = InsErrorFreqs<TValue, BsNonSimple>::getData();
         TValue const * delErrorFreqs = DelErrorFreqs<TValue, BsNonSimple>::getData();
         computeBsScores((*this).data, bsSubstitutionMatrix.data_tab, seqErrorFreqs, TBsCase(), TSegment());
@@ -449,15 +449,15 @@ public:
 
     // User defined rates
     template<typename TOptions, typename TBsSubstitutionMatrix, typename TValue>
-    Score(TOptions &options, 
-            TBsSubstitutionMatrix &bsSubstitutionMatrix, 
+    Score(TOptions &options,
+            TBsSubstitutionMatrix &bsSubstitutionMatrix,
             TValue const * &seqErrorFreqs,
             TValue const * &insErrorFreqs,
             TValue const * &delErrorFreqs)
     {
         computeBsScores((*this).data, bsSubstitutionMatrix.data_tab, seqErrorFreqs, TBsCase(), TSegment());
 
-        computeReadGapScores((*this).data_gap_open_read, options.gapOpenScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());     
+        computeReadGapScores((*this).data_gap_open_read, options.gapOpenScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());
         computeReadGapScores((*this).data_gap_extend_read, options.gapExtendScore, bsSubstitutionMatrix.data_tab, delErrorFreqs, options, TBsCase(), TSegment());
 
         computeRefGapScores((*this).data_gap_open_ref, options.gapOpenScore, insErrorFreqs, seqErrorFreqs, options, TBsCase(), TSegment());
@@ -475,10 +475,10 @@ scoreGapOpenVertical(
     Score<int, BsTagList<TBsCase, TModel, TSegment> > const & me,
     TSeqHValue const & /*seqHVal*/,
     TSeqVValue const & seqVVal)
-{ 
-    unsigned int qual = getQualityValue(seqVVal); 
+{
+    unsigned int qual = getQualityValue(seqVVal);
     unsigned int j = (Dna5)seqVVal;  // Read base
-    
+
     return (int)(std::log10(me.data_gap_open_ref[qual][j]) *10000 + 0.5);
 }
 
@@ -500,9 +500,9 @@ scoreGapExtendVertical(
     TSeqHValue const & /*seqHVal*/,
     TSeqVValue const & seqVVal)
 {
-    unsigned int qual = getQualityValue(seqVVal); 
+    unsigned int qual = getQualityValue(seqVVal);
     unsigned int j = (Dna5)seqVVal;  // Read base
-    
+
     return (int)(std::log10(me.data_gap_extend_ref[qual][j]) *10000 + 0.5);
 }
 
@@ -536,14 +536,14 @@ scoreGapOpen(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
 
 template <typename TBsCase, typename TModel, typename TSegment, typename TVal1>
 inline int
-score(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & sc, TVal1 val1, Dna5Q val2) 
+score(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & sc, TVal1 val1, Dna5Q val2)
 {
-    unsigned int i = (Dna5) val1;  
+    unsigned int i = (Dna5) val1;
     unsigned int j = (Dna5) val2;
-    int qual = getQualityValue(val2);  
+    int qual = getQualityValue(val2);
 
     //std::cout << "qual: " << qual << std::endl;
-    return (int)(std::log10(sc.data[qual][i][j]) *10000 + 0.5); 
+    return (int)(std::log10(sc.data[qual][i][j]) *10000 + 0.5);
 }
 
 

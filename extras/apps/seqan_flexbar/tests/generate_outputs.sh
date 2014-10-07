@@ -16,10 +16,10 @@ ${BASE}sflexFilter
 ../../../seqan-git/extras/apps/seqan_flexbar/tests/testsample.fq -tl 3 -tr 4 -ml 70 -u 1 -s A -fl 70 -ni -o filter_test.fq > filter_test.stdout
 
 ${BASE}sflexAR
-./../../seqan-git/extras/apps/seqan_flexbar/tests/testsample.fq -a ../../../seqan-git/extras/apps/seqan_flexbar/tests/adapter.fasta -o ar_test.fq -ni > ar_test.stdout
+./../../seqan-git/extras/apps/seqan_flexbar/tests/testsample.fq -a ../../../seqan-git/extras/apps/seqan_flexbar/tests/adapter.fa -o ar_test.fq -ni > ar_test.stdout
 
 ${BASE}sflexDMulti
 ../../../seqan-git/extras/apps/seqan_flexbar/tests/testsample_multiplex.fq
--b ../../../seqan-git/extras/apps/seqan_flexbar/tests/barcodes.fasta -o
-test_de_multi.fastq -ni > test_de_multi.stdout
+-b ../../../seqan-git/extras/apps/seqan_flexbar/tests/barcodes.fa -o
+test_de_multi.fq -ni > test_de_multi.stdout
 

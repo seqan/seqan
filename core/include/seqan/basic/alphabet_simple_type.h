@@ -316,6 +316,18 @@ struct IsSimple<SimpleType<TValue, TSpec> >
 };
 
 // ----------------------------------------------------------------------------
+// Concept Convertible
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TSource>
+struct Is< Convertible<SimpleType<TValue, TSpec>, TSource> > :
+    Is< FundamentalConcept<TSource> > {};
+
+template <typename TTarget, typename TValue, typename TSpec>
+struct Is< Convertible<TTarget, SimpleType<TValue, TSpec> > > :
+    Is< FundamentalConcept<TTarget> > {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 

@@ -50,9 +50,8 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     seqan::FragmentStore<> store;
     seqan::CharString samPath = SEQAN_PATH_TO_ROOT();
     append(samPath, "/core/tests/consensus/small_example.sam");
-    std::fstream samIn(toCString(samPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(samIn.good());
-    read(samIn, store, seqan::Sam());
+    seqan::BamFileIn fSamIn(toCString(samPath));
+    readRecords(store, fSamIn);
 
     seqan::AlignedReadLayout layout;
     // layoutAlignment(layout, store);
@@ -66,7 +65,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
 
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 160, 0, 1000);            
+    printAlignment(ss, layout, store, 0, 0, 160, 0, 1000);            
 
     // Check Result.
     char const * expected =

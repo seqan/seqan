@@ -6,7 +6,7 @@
 
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>      // For printing SeqAn Strings.
+#include <seqan/stream.h>      // For printing SeqAn Strings.
 #include <seqan/modifier.h>
 
 using namespace seqan;

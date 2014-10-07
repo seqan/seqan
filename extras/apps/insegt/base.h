@@ -24,16 +24,6 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-template <typename TStream>
-inline void
-_streamPutDouble(TStream & target, double number)
-{
-SEQAN_CHECKPOINT
-    char str[BitsPerValue<double>::VALUE];
-    sprintf(str, "%f", number);
-    streamPut(target, str);
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // create possible tuples with length n:
 //////////////////////////////////////////////////////////////////////////////

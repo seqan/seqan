@@ -13,8 +13,8 @@ int main()
     appendValue(quals, "IIIIIIIIIHII");
     appendValue(quals, "IIIIIIIIIIII");
 
-    if (seqan::write2(std::cout, ids, seqs, quals, seqan::Fastq()) != 0)
-        return 1;  // Error writing.
+    seqan::SeqFileOut seqOut(std::cout, seqan::Fastq());
+    seqan::writeRecords(seqOut, ids, seqs, quals);
 
     return 0;
 }

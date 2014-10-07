@@ -98,7 +98,7 @@ getClippedPos(unsigned & posBegin, unsigned & posEnd, BamAlignmentRecord const &
 
 // Returns clipped infix of seq member.
 
-inline Infix<CharString>::Type
+inline Infix<IupacString>::Type
 clippedSeqInfix(BamAlignmentRecord & record)
 {
     unsigned begPos = 0, endPos = 0;
@@ -106,7 +106,7 @@ clippedSeqInfix(BamAlignmentRecord & record)
     return infix(record.seq, begPos, endPos);
 }
 
-inline Infix<CharString const>::Type
+inline Infix<IupacString const>::Type
 clippedSeqInfix(BamAlignmentRecord const & record)
 {
     unsigned begPos = 0, endPos = 0;

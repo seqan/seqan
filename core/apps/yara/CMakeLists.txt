@@ -83,11 +83,11 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable(yara_indexer indexer.cpp
-                            store_genome.h
                             misc_tags.h
                             misc_timer.h
                             misc_options.h
                             misc_types.h
+                            store_seqs.h
                             bits_matches.h
                             index_fm.h)
 
@@ -102,12 +102,14 @@ add_executable(yara_mapper    mapper.cpp
                               mapper_selector.h
                               mapper_aligner.h
                               mapper_writer.h
-                              store_reads.h
-                              store_genome.h
+                              file_pair.h
+                              file_prefetched.h
+                              store_seqs.h
                               misc_tags.h
                               misc_timer.h
                               misc_options.h
                               misc_types.h
+                              bits_reads.h
                               bits_hits.h
                               bits_matches.h
                               bits_context.h

@@ -504,22 +504,24 @@ appendLocalMatch(TLocalMatchStore & store,
     resize(store.cigarStore, back(store.matchStore).id + 1);
     // TODO(holtgrew): Something can go wrong when parsing CIGAR string, need return value?
     // Parse out cigar string.
+    /*
     typedef Stream<CharArray<char const *> > TCharArrayStream;
     TCharArrayStream cigarStream(&cigarStringBuffer[0], &cigarStringBuffer[0] + length(cigarStringBuffer));
     RecordReader<TCharArrayStream, SinglePass<> > recordReader(cigarStream);
+    */
+    DirectionIterator<CharString const, Input>::Type iter = begin(cigarStringBuffer);
     CharString numBuf;
-    while (!atEnd(recordReader))
+    while (!atEnd(iter))
     {
         // Get number string into buffer.
         clear(numBuf);
-        readDigits(numBuf, recordReader);
+        readUntil(numBuf, iter, NotFunctor<IsDigit>());
         unsigned num = 0;
-        bool success = lexicalCast2<unsigned>(num, numBuf);
-        SEQAN_ASSERT(success);
-        (void)success;
+        lexicalCast<unsigned>(num, numBuf);
+
         // Read operation char and advance record reader.
-        char op = value(recordReader);
-        goNext(recordReader);
+        char op;
+        readOne(op, iter);
         // Append CIGAR element to CIGAR string.
         appendValue(back(store.cigarStore), CigarElement<>(op, num));
     }

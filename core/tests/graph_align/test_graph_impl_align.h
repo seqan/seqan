@@ -614,8 +614,8 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphOutput)
 	// GraphViz DOT output.
 	sstream.str("");
 	expected.str("");
-	write(sstream, g, DotDrawing());
-  expected   << "graph G {\n"
+	writeRecords(sstream, g, DotDrawing());
+    expected << "graph G {\n"
              << "\n"
              << "/* Graph Attributes */\n"
              << "graph [rankdir = LR];\n"
