@@ -104,10 +104,10 @@ public:
     String<__int32> exonBegin;
 
     /*!
-     * @var CharString UcscRecord::exonEnd
+     * @var CharString UcscRecord::exonEnds
      * @brief End of the exon, defaults to <tt>-1</tt>.
      */
-    String<__int32> exonEnd;
+    String<__int32> exonEnds;
 
     /*!
      * @var CharString UcscRecord::proteinName
@@ -179,7 +179,7 @@ inline void clear(UcscRecord & record)
     record.cdsBegin = -1;
     record.cdsEnd = -1;
     clear(record.exonBegin);
-    clear(record.exonEnd);
+    clear(record.exonEnds);
     clear(record.proteinName);
 
     record.annotationBeginPos = -1;
