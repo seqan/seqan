@@ -8,7 +8,7 @@ int main()
     String<char> text = "to be";
     std::cout << text << std::endl;
     appendValue(text, ' ');
-    std::cout << "Last sign is whitespace? " << endsWith(text, ' ') << std::endl;
+    std::cout << "Last sign is whitespace? " << endsWith(text, " ") << std::endl;
     // Erasing whitespaces in text
     eraseBack(text);
     erase(text, 2);
