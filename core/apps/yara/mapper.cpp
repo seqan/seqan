@@ -51,20 +51,21 @@ struct Options;
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include <seqan/store.h>
 #include <seqan/parallel.h>
 
 // ----------------------------------------------------------------------------
 // App headers
 // ----------------------------------------------------------------------------
 
+#include "file_pair.h"
+#include "file_prefetched.h"
+#include "store_seqs.h"
 #include "misc_timer.h"
 #include "misc_tags.h"
 #include "misc_types.h"
 #include "misc_options.h"
-#include "store_reads.h"
-#include "store_genome.h"
 #include "index_fm.h"
+#include "bits_reads.h"
 #include "bits_hits.h"
 #include "bits_context.h"
 #include "bits_matches.h"
@@ -103,37 +104,39 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDescription(parser);
 
     // Setup mandatory arguments.
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP> <\\fISE-READS FILE\\fP>");
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP> <\\fIPE-READS FILE 1\\fP> <\\fIPE-READS FILE 2\\fP>");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE INDEX PREFIX\\fP> <\\fISE-READS FILE\\fP>");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE INDEX PREFIX\\fP> <\\fIPE-READS FILE 1\\fP> <\\fIPE-READS FILE 2\\fP>");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, "fasta fa");
-    setHelpText(parser, 0, "A reference genome file.");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTPREFIX, "REFERENCE INDEX PREFIX"));
+    setHelpText(parser, 0, "An indexed reference genome.");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    setValidValues(parser, 1, options.readsExtensionList);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS FILE", true));
+    setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pairs read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Displays diagnostic output per batch of reads."));
 
-    // Setup index options.
-    addSection(parser, "Input Options");
-
-    setIndexPrefix(parser);
-
     // Setup output options.
     addSection(parser, "Output Options");
 
-    setOutputFile(parser, options);
+    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
+                                     Default: use the reads filename prefix.",
+                                     ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
+
+    addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
+                                     ArgParseOption::STRING));
+    setDefaultValue(parser, "read-group", options.readGroup);
+
+    addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
 
     addOption(parser, ArgParseOption("os", "output-secondary", "Output suboptimal alignments as secondary alignments. \
                                                                 Default: output suboptimal alignments inside XA tag."));
 
-    addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
-
     addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
                                                              Read Alignment BEnchMArk (RABEMA)."));
+
 
     // Setup mapping options.
     addSection(parser, "Mapping Options");
@@ -202,8 +205,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     if (res != ArgumentParser::PARSE_OK)
         return res;
 
-    // Parse genome input file.
-    getArgumentValue(options.genomeFile, parser, 0);
+    // Parse indexed genome input file.
+    getArgumentValue(options.contigsIndexFile, parser, 0);
 
     // Parse read input files.
     switch (getArgumentValueCount(parser, 1))
@@ -221,19 +224,20 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         return ArgumentParser::PARSE_ERROR;
     }
 
-    // Parse reads input type.
-    getInputType(options, options.readsFile.i1);
-
     // Parse output file.
-    getOutputFile(options.outputFile, options, parser, options.readsFile.i1, "");
+    getOptionValue(options.outputFile, parser, "output-file");
+    if (!isSet(parser, "output-file"))
+    {
+        options.outputFile = trimExtension(options.readsFile.i1);
+        appendValue(options.outputFile, '.');
+        append(options.outputFile, "sam");
+    }
 
-    // Parse output format.
-    getOutputFormat(options, options.outputFile);
-    getOptionValue(options.outputSecondary, parser, "output-secondary");
+    // Parse output options.
+    getOptionValue(options.readGroup, parser, "read-group");
     options.outputHeader = !isSet(parser, "no-header");
-
-    // Parse genome index prefix.
-    getIndexPrefix(options, parser);
+    getOptionValue(options.outputSecondary, parser, "output-secondary");
+    getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.
     unsigned errorRate;
@@ -264,8 +268,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     getOptionValue(options.readsCount, parser, "reads-batch");
 
-    getOptionValue(options.rabema, parser, "output-rabema");
-
     if (isSet(parser, "verbose")) options.verbose = 1;
     if (isSet(parser, "vverbose")) options.verbose = 2;
 
@@ -284,128 +286,51 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 }
 
 // ----------------------------------------------------------------------------
-// Function configureAnchoring()
+// Function configureMapper()
 // ----------------------------------------------------------------------------
 
 //template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing, typename TStrategy>
-//void configureAnchoring(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-//                        TOutputFormat const & format, TSequencing const & sequencing, TStrategy const & strategy)
+//void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 //{
 //    if (options.anchorOne)
-//        spawnMapper(options, execSpace, threading, format, sequencing, strategy, AnchorOne());
+//        spawnMapper(options, threading, sequencing, strategy, AnchorOne());
 //    else
-//        spawnMapper(options, execSpace, threading, format, sequencing, strategy, AnchorBoth());
+//        spawnMapper(options, threading, sequencing, strategy, AnchorBoth());
 //}
 
-// ----------------------------------------------------------------------------
-// Function configureInputType()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing, typename TStrategy>
-void configureInputType(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                        TOutputFormat const & format, TSequencing const & sequencing, TStrategy const & strategy)
-{
-    switch (options.inputType)
-    {
-    case PLAIN:
-        return spawnMapper(options, execSpace, threading, Nothing(), format, sequencing, strategy);
-
-#ifdef SEQAN_HAS_ZLIB
-    case GZIP:
-        return spawnMapper(options, execSpace, threading, GZFile(), format, sequencing, strategy);
-#endif
-
-#ifdef SEQAN_HAS_BZIP2
-    case BZIP2:
-        return spawnMapper(options, execSpace, threading, BZ2File(), format, sequencing, strategy);
-#endif
-
-    default:
-        return;
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function configureStrategy()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing>
-void configureStrategy(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                       TOutputFormat const & format, TSequencing const & sequencing)
+template <typename TThreading, typename TSequencing>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 {
     switch (options.mappingMode)
     {
     case STRATA:
-        return configureInputType(options, execSpace, threading, format, sequencing, Strata());
+        return spawnMapper(options, threading, sequencing, Strata());
 
     case ALL:
-        return configureInputType(options, execSpace, threading, format, sequencing, All());
+        return spawnMapper(options, threading, sequencing, All());
 
     default:
         return;
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function configureSequencing()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading, typename TOutputFormat>
-void configureSequencing(Options const & options, TExecSpace const & execSpace, TThreading const & threading,
-                         TOutputFormat const & format)
+template <typename TThreading>
+void configureMapper(Options const & options, TThreading const & threading)
 {
     if (options.singleEnd)
-        configureStrategy(options, execSpace, threading, format, SingleEnd());
+        configureMapper(options, threading, SingleEnd());
     else
-        configureStrategy(options, execSpace, threading, format, PairedEnd());
-
-//        configureAnchoring(options, execSpace, threading, format, PairedEnd(), All());
+        configureMapper(options, threading, PairedEnd());
 }
-
-// ----------------------------------------------------------------------------
-// Function configureOutputFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace, typename TThreading>
-void configureOutputFormat(Options const & options, TExecSpace const & execSpace, TThreading const & threading)
-{
-    switch (options.outputFormat)
-    {
-    case SAM:
-        return configureSequencing(options, execSpace, threading, Sam());
-
-#ifdef SEQAN_HAS_ZLIB
-    case BAM:
-        return configureSequencing(options, execSpace, threading, Bam());
-#endif
-
-    default:
-        return;
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function configureThreading()
-// ----------------------------------------------------------------------------
-
-template <typename TExecSpace>
-void configureThreading(Options const & options, TExecSpace const & execSpace)
-{
-#ifdef _OPENMP
-    if (options.threadsCount > 1)
-        configureOutputFormat(options, execSpace, Parallel());
-    else
-#endif
-        configureOutputFormat(options, execSpace, Serial());
-}
-
-// ----------------------------------------------------------------------------
-// Function configureMapper()
-// ----------------------------------------------------------------------------
 
 void configureMapper(Options const & options)
 {
-    configureThreading(options, ExecHost());
+#ifdef _OPENMP
+    if (options.threadsCount > 1)
+        configureMapper(options, Parallel());
+    else
+#endif
+        configureMapper(options, Serial());
 }
 
 // ----------------------------------------------------------------------------
