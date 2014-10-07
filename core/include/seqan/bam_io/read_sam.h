@@ -314,9 +314,9 @@ readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
-    SEQAN_ASSERT_EQ((__uint32)0 - 1, BamAlignmentRecord::INVALID_POS);
+    SEQAN_ASSERT_EQ((__int32)0 - 1, BamAlignmentRecord::INVALID_POS);
     readUntil(buffer, iter, nextEntry);
-    record.beginPos = lexicalCast<__uint32>(buffer) - 1;
+    record.beginPos = (__int32)lexicalCast<__uint32>(buffer) - 1;
     skipOne(iter, IsTab());
 
     // MAPQ
@@ -372,7 +372,7 @@ readRecord(BamAlignmentRecord & record,
     {
         clear(buffer);
         readUntil(buffer, iter, nextEntry);
-        record.pNext = lexicalCast<__uint32>(buffer) - 1;
+        record.pNext = (__int32)lexicalCast<__uint32>(buffer) - 1;
     }
     skipOne(iter, IsTab());
 
