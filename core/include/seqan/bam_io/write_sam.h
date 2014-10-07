@@ -153,7 +153,7 @@ inline void write(TTarget & target,
 
     writeValue(target, '\t');
 
-    SEQAN_ASSERT_EQ(BamAlignmentRecord::INVALID_POS + 1, (__uint32)0);
+    SEQAN_ASSERT_EQ(BamAlignmentRecord::INVALID_POS + 1, (__int32)0);
     appendNumber(target, record.beginPos + 1);
 
     writeValue(target, '\t');

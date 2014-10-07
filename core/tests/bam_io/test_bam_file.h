@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
     seqan::BamFileOut bamFileOut(bamFileIn, toCString(tmpPath));
     // Copy header.  The header is automatically written out before the first record.
 
-    BamHeader header;
+    seqan::BamHeader header;
     readRecord(header, bamFileIn);
     writeRecord(bamFileOut, header);
 
