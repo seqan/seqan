@@ -102,6 +102,7 @@ add_executable(yara_mapper    mapper.cpp
                               mapper_selector.h
                               mapper_aligner.h
                               mapper_writer.h
+                              basic_alphabet.h
                               file_pair.h
                               file_prefetched.h
                               store_seqs.h
