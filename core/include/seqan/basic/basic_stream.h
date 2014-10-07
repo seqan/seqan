@@ -276,13 +276,13 @@ struct IosOpenMode<Bidirectional, TDummy>
 
 
 template <typename TDummy>
-const int IosOpenMode<Input, TDummy>::VALUE = std::ios::in;
+const int IosOpenMode<Input, TDummy>::VALUE = std::ios::in | std::ios::binary;
 
 template <typename TDummy>
-const int IosOpenMode<Output, TDummy>::VALUE = std::ios::out;
+const int IosOpenMode<Output, TDummy>::VALUE = std::ios::out | std::ios::binary;
 
 template <typename TDummy>
-const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
+const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out | std::ios::binary;
 
 
 // --------------------------------------------------------------------------
