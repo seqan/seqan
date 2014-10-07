@@ -54,9 +54,14 @@ class SimpleType;
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO(holtgrew): Remove Ascii and Unicode alias. Also see #849.
+// TODO(holtgrew): Remove these in the future when the implications are clear.
+//                 wchar_t appears to be broken in C++98, in that it does not
+//                 allow to obtain the same behaviour on Unix and Windows.
+//                 Maybe there will be a good way out with C++11/14.
+//
+//                 Also see http://stackoverflow.com/questions/6300804/
+//                 GitHub Issue: seqan/seqan #548
 typedef char Ascii;
-//typedef unsigned char Byte;  // TODO(holtgrew): Disabling, remove together with Ascii and Unicode with #849
 typedef wchar_t Unicode;
 
 // ============================================================================

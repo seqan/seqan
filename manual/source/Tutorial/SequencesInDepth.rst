@@ -136,7 +136,7 @@ The next example illustrates how the different strategies could be used:
    assign(str, "TATAGGGG", Limit());
    std::cout << dnaSeq << std::endl;
    // Use the default expansion strategy.
-   append(str, "GCGCGC");
+   append(dnaSeq, "GCGCGC");
    std::cout << dnaSeq << std::endl;
 
 .. code-block:: console

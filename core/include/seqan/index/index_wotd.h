@@ -107,6 +107,60 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * TODO(holtgrew): Ask David.
  */
+
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexWotd#indexSA
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., WotdSA)</tt>.
+ *
+ * @signature TSa indexSA(index);
+ *
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ *
+ * @return TSa A reference to the @link WOTDIndexFibres#WotdSA @endlink fibre (partially sorted suffix array).
+ */
+ 
+/*!
+ * @fn IndexWotd#indexDir
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., WotdDir())</tt>.
+ * @signature TFibre indexDir(index);
+ * 
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ * 
+ * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre (tree structure).
+ */
+
+/*!
+ * @fn IndexWotd#saAt
+ * @headerfile <seqan/index.h>
+ * @note Advanced functionality, not commonly used.
+ * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
+ *
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the @link WOTDIndexFibres#WotdSA @endlink fibre.
+ *                To be more precise, a reference to a position containing a value of type
+ *                @link SAValue @endlink is returned (or a proxy).
+ */
+
+/*!
+ * @fn IndexWotd#dirAt
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
+ *
+ * @signature TFibre dirAt(position, index);
+ * 
+ * @param[in] index    The @link IndexWotd @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ * 
+ * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre.
+ */
+
 	typedef FibreText		WotdText;
 	typedef FibreRawText	WotdRawText;
 	typedef FibreSA         WotdSA;
@@ -135,6 +189,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 /*!
  * @class IndexWotd
  * @extends Index
+ * @implements StringTreeConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
  *        trees").
@@ -256,6 +311,9 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		typedef typename Size< typename Fibre< Index<TText, IndexWotd<TSpec> >, WotdRawText >::Type >::Type Type;
     };
 */
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexWotd<TSpec> >);
 
 
 //////////////////////////////////////////////////////////////////////////////

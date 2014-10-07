@@ -173,9 +173,11 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_seek);
 
+    // Issue 489
+    SEQAN_CALL_TEST(test_bam_io_sam_file_issue_489);
+
     // Test BAM indices.
     SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
-
 #endif
 }
 SEQAN_END_TESTSUITE

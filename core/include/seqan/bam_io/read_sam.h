@@ -175,28 +175,36 @@ readRecord(BamHeaderRecord & record,
     else
         SEQAN_THROW(ParseError("Unknown SAM header type!"));
 
+    CharString &buffer = context.buffer;
+    
     if (record.type == BAM_HEADER_COMMENT)
     {
         skipOne(iter, IsTab());
-        CharString &buffer = context.buffer;
+
+        appendValue(record.tags, Pair<CharString>());
+
+        clear(buffer);
         readLine(buffer, iter);
-        appendValue(record.tags, Pair<CharString>(CharString(), buffer));
+        assign(back(record.tags).i2, buffer, Exact());
     }
     else
     {
         // Read the rest of the line into the tag field of record.
-        CharString key, val;
         while (!atEnd(iter) && value(iter) == '\t')
         {
-            clear(key);
-            clear(val);
-
             skipOne(iter, IsTab());
-            readUntil(key, iter, EqualsChar<':'>());
-            skipOne(iter);
-            readUntil(val, iter, OrFunctor<IsTab, IsNewline>());
 
-            appendValue(record.tags, Pair<CharString>(key, val));
+            appendValue(record.tags, Pair<CharString>());
+
+            clear(buffer);
+            readUntil(buffer, iter, EqualsChar<':'>());
+            assign(back(record.tags).i1, buffer, Exact());
+
+            skipOne(iter, EqualsChar<':'>());
+
+            clear(buffer);
+            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+            assign(back(record.tags).i2, buffer, Exact());
         }
         // Skip remaining line break
         skipLine(iter);
@@ -306,6 +314,7 @@ readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
+    SEQAN_ASSERT_EQ((__uint32)0 - 1, BamAlignmentRecord::INVALID_POS);
     readUntil(buffer, iter, nextEntry);
     record.beginPos = lexicalCast<__uint32>(buffer) - 1;
     skipOne(iter, IsTab());
@@ -363,10 +372,7 @@ readRecord(BamAlignmentRecord & record,
     {
         clear(buffer);
         readUntil(buffer, iter, nextEntry);
-        if (buffer == "0")
-            record.pNext = BamAlignmentRecord::INVALID_POS;
-        else
-            record.pNext = lexicalCast<__uint32>(buffer) - 1;
+        record.pNext = lexicalCast<__uint32>(buffer) - 1;
     }
     skipOne(iter, IsTab());
 
