@@ -57,6 +57,7 @@ struct Options;
 // App headers
 // ----------------------------------------------------------------------------
 
+#include "basic_alphabet.h"
 #include "file_pair.h"
 #include "file_prefetched.h"
 #include "store_seqs.h"
