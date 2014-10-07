@@ -45,7 +45,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_average)
 {
     using namespace seqan;
 
-    Accumulator<int, Average> acc;
+    Accumulator<int, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -60,7 +60,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_count)
 {
     using namespace seqan;
 
-    Accumulator<int, Average> acc;
+    Accumulator<int, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -75,7 +75,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_sum)
 {
     using namespace seqan;
 
-    Accumulator<int, Average> acc;
+    Accumulator<int, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -90,7 +90,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_clear)
 {
     using namespace seqan;
 
-    Accumulator<int, Average> acc;
+    Accumulator<int, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(count(acc), 0u);
 
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_average)
 {
     using namespace seqan;
 
-    Accumulator<double, Average> acc;
+    Accumulator<double, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_count)
 {
     using namespace seqan;
 
-    Accumulator<double, Average> acc;
+    Accumulator<double, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_sum)
 {
     using namespace seqan;
 
-    Accumulator<double, Average> acc;
+    Accumulator<double, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(sum(acc), 0);
 
@@ -152,7 +152,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_clear)
 {
     using namespace seqan;
 
-    Accumulator<double, Average> acc;
+    Accumulator<double, AccuAverage> acc;
 
     SEQAN_ASSERT_EQ(count(acc), 0u);
 

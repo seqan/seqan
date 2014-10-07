@@ -346,20 +346,20 @@ dumpAlignment(TFile & target, Align<TSource, TSpec> const & source)
 	// Print sequences
 	for(TRowsPosition i=0;i<row_count;++i) {
 		if (i == 0)
-			streamPut(target, "#Read:   ");
+			target << "#Read:   ";
 		else
-			streamPut(target, "#Genome: ");
+			target << "#Genome: ";
 		TRow& row_ = row(source, i);
 		typedef typename Iterator<typename Row<TAlign>::Type const>::Type TIter;
 		TIter begin1_ = iter(row_, begin_);
 		TIter end1_ = iter(row_, end_);
 		for (; begin1_ != end1_; ++begin1_) {
 			if (isGap(begin1_))
-			    streamPut(target, gapValue<char>());
+			    target << gapValue<char>();
 			else
-			    streamPut(target, *begin1_);
+			    target << *begin1_;
 		}
-		streamPut(target, '\n');
+		target << '\n';
 	}
 }
 
@@ -562,9 +562,14 @@ void dumpMatches(
 		scoreType.data_mismatch = -1;
 	resize(rows(align), 2);
 
-	std::ofstream file;
-	file.open(toCString(options.output), std::ios_base::out | std::ios_base::trunc);
-	if (!file.is_open()) {
+    VirtualStream<char, Output> file;
+    bool success;
+    if (!isEqual(options.output, "-"))
+        success = open(file, toCString(options.output));
+    else
+        success = open(file, std::cout, Nothing());
+ 
+	if (!success) {
 		std::cerr << "Failed to open output file" << std::endl;
 		return;
 	}
@@ -631,7 +636,7 @@ void dumpMatches(
 	
 	Dna5String gInf;
 	char _sep_ = '\t';
-	unsigned curReadId = 0;
+	unsigned currSeqNo = 0;
 
 	switch (options.outputFormat) 
 	{
@@ -872,21 +877,21 @@ void dumpMatches(
 				TQuality	qual = getValue(store.alignQualityStore, (*it).id);
 
 				// open genome file	
-				std::ifstream gFile;
-				gFile.open(toCString(genomeFileNameList[filecount]), std::ios_base::in | std::ios_base::binary);
-				if (!gFile.is_open())
+                SeqFileIn gFile;
+                if (!open(gFile, toCString(genomeFileNameList[filecount])))
 				{
 					std::cerr << "Couldn't open genome file." << std::endl;
 					break;
 				}
 
-				Dna5String	currGenome;
+                CharString currId;
+				Dna5String currGenome;
 				
 				// iterate over genome sequences
-				for(; !streamEof(gFile); ++curReadId)
-				{
-					read(gFile, currGenome, Fasta());			// read Fasta sequence
-					while(it != itEnd && (*it).contigId == curReadId)
+                for(; !atEnd(gFile); ++currSeqNo)
+                {
+                    readRecord(currId, currGenome, gFile);			// read Fasta sequence
+					while(it != itEnd && (*it).contigId == currSeqNo)
 					{
 						unsigned currReadNo = (*it).readId;
 						int unique = 1;
@@ -1043,12 +1048,13 @@ void dumpMatches(
 						++it;
 					}
 				}
-				gFile.close();
+				close(gFile);
 				++filecount;
 			}
 			break;
 
 		case 4: // Sam
+        {
             if (options.dontShrinkAlignments)
                 convertMatchesToGlobalAlignment(store, scoreType, False());
             else
@@ -1089,8 +1095,10 @@ void dumpMatches(
 //                unsigned r = positionSeqToGap(contigGaps, 5349800);
 //                printAlignment(std::cerr, Raw(), layout, store, 0, l, r, 0, 1000);
 //            }
-			write(file, store, Sam());
+            BamFileOut writer(file, Sam());
+			writeRecords(writer, store);
 			break;
+        }
 
 		case 5: // AFG
 			convertMatchesToGlobalAlignment(store, scoreType, True());
@@ -1098,11 +1106,12 @@ void dumpMatches(
 			break;
 	}
 
-	file.close();
+	close(file);
 
 	// get empirical error distribution
 	if (!empty(errorPrbFileName) && maxReadLength > 0)
 	{
+        std::ofstream file;
 		file.open(toCString(errorPrbFileName), std::ios_base::out | std::ios_base::trunc);
 		if (file.is_open())
 		{

@@ -232,6 +232,10 @@ specialization tag class.
 ..see:Spec.Dna5Q
 */
 
+#ifndef SEQAN_DEFAULT_QUALITY
+#define SEQAN_DEFAULT_QUALITY 40
+#endif
+
 struct DnaQ_ {};
 typedef SimpleType <unsigned char, DnaQ_> DnaQ;
 
@@ -254,8 +258,8 @@ template <> struct BitsPerValue<DnaQ>
 
 template <> struct HasQualities<DnaQ>
 {
-    enum { VALUE = true };
     typedef True Type;
+    static const bool VALUE = true;
 };
 
 template <>
@@ -273,7 +277,13 @@ struct QualityValueSize<DnaQ>
 ///.Function.getQualityValue.param.c.type:Spec.DnaQ
 ///.Function.getQualityValue.class:Spec.DnaQ
 
-inline int getQualityValue(DnaQ const & c) 
+template <typename TValue>
+inline int getQualityValue(TValue const &) 
+{
+    return 0;
+}
+
+inline int getQualityValue(DnaQ const & c)
 {
     return c.value >> 2;
 }
@@ -325,7 +335,7 @@ void assignQualityValue(char & q, DnaQ c)
  * 
  * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.
  * 
- * Note that the default quality value is set to 60.
+ * Note that the default quality value is set to 40.
  * 
  * @see Dna5
  * @see DnaQ
@@ -345,7 +355,7 @@ The 'N' character ("unkown nucleotide") is encoded by 4.
 ...text:Objects of type $Dna5$ can be converted to various other types and vice versa. 
 ...text:$Dna5Q$ is typedef for $SimpleType<char,Dna5Q_>$, while $Dna5Q_$ is a helper
 specialization tag class.
-...text:Note that the default quality value is set to 60.
+...text:Note that the default quality value is set to 40.
 ..see:Metafunction.ValueSize
 */
 
@@ -373,8 +383,8 @@ template <> struct BitsPerValue<Dna5Q>
 
 template <> struct HasQualities<Dna5Q>
 {
-    enum { VALUE = true };
     typedef True Type;
+    static const bool VALUE = true;
 };
 
 template <>
@@ -769,28 +779,28 @@ struct BitsPerValue<SimpleType<TValue, Finite<SIZE> > >
 // char
 // ----------------------------------------------------------------------------
 
-inline void assign(char & c_target, 
+inline void assign(char & c_target,
                    Dna const & source)
 {
     c_target = TranslateTableDna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char & c_target, 
+inline void assign(char & c_target,
                    Dna5 const & source)
 {
     c_target = TranslateTableDna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char& target,
+inline void assign(char & c_target,
                    Rna const & source)
 {
-        target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
+    c_target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
 }
 
-inline void assign(char& target,
+inline void assign(char & c_target,
                    Rna5 const & source)
 {
-        target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
+    c_target = TranslateTableRna5ToAscii_<>::VALUE[source.value];
 }
 
 inline void assign(char & c_target, Iupac const & source)
@@ -949,7 +959,7 @@ struct CompareTypeImpl<Rna, __uint8>
 
 inline void assign(Rna & target, __uint8 c_source)
 {
-        target.value = TranslateTableByteToRna_<>::VALUE[c_source];
+    target.value = TranslateTableByteToDna_<>::VALUE[c_source];
 }
 
 template <>
@@ -960,7 +970,7 @@ struct CompareTypeImpl<Rna, char>
 
 inline void assign(Rna & target, char c_source)
 {
-        target.value = TranslateTableAsciiToRna_<>::VALUE[(unsigned char)c_source];
+    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -971,7 +981,7 @@ struct CompareTypeImpl<Rna, Unicode>
 
 inline void assign(Rna & target, Unicode c_source)
 {
-        target.value = TranslateTableAsciiToRna_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -997,7 +1007,7 @@ struct CompareTypeImpl<Rna5, __uint8>
 
 inline void assign(Rna5 & target, __uint8 c_source)
 {
-        target.value = TranslateTableByteToRna5_<>::VALUE[c_source];
+    target.value = TranslateTableByteToDna5_<>::VALUE[c_source];
 }
 
 template <>
@@ -1008,7 +1018,7 @@ struct CompareTypeImpl<Rna5, char>
 
 inline void assign(Rna5 & target, char c_source)
 {
-        target.value = TranslateTableAsciiToRna5_<>::VALUE[(unsigned char)c_source];
+    target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -1019,7 +1029,7 @@ struct CompareTypeImpl<Rna5, Unicode>
 
 inline void assign(Rna5 & target, Unicode c_source)
 {
-        target.value = TranslateTableAsciiToRna5_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableAsciiToDna5_<>::VALUE[(unsigned char)c_source];
 }
 
 template <>
@@ -1147,7 +1157,7 @@ struct CompareTypeImpl<DnaQ, Dna>
 
 inline void assign(DnaQ & target, Dna const & source)
 {
-    target.value = source.value | (60 << 2);
+    target.value = source.value | (SEQAN_DEFAULT_QUALITY << 2);
 }
 
 template <>
@@ -1164,10 +1174,21 @@ inline void assign(Dna & target, DnaQ const & source)
 template <>
 struct CompareTypeImpl<DnaQ, Iupac>
 {
-    typedef Dna Type;
+    typedef Iupac Type;
 };
 
 inline void assign(DnaQ & target, Iupac const & source)
+{
+    assign(target, (Dna) source);
+}
+
+template <>
+struct CompareTypeImpl<Iupac, DnaQ>
+{
+    typedef Iupac Type;
+};
+
+inline void assign(Iupac & target, DnaQ const & source)
 {
     assign(target, (Dna) source);
 }
@@ -1485,10 +1506,11 @@ inline void assign(Dna5Q & target, Dna5 const & source)
     // We perform the conversion from DNA5 with qualities to DNA5 by a simple
     // table lookup.  The lookup below is equivalent to the following line:
     //
-    // target.value = (source.value == 4)? Dna5QValueN_ : source.value | (60 << 2);
+    // target.value = (source.value == 4)? Dna5QValueN_ : source.value | (40 << 2);
 
     static const unsigned table[] = {
-        (60 << 2) + 0, (60 << 2) + 1, (60 << 2) + 2, (60 << 2) + 3, Dna5QValueN_
+        (SEQAN_DEFAULT_QUALITY << 2) + 0, (SEQAN_DEFAULT_QUALITY << 2) + 1,
+        (SEQAN_DEFAULT_QUALITY << 2) + 2, (SEQAN_DEFAULT_QUALITY << 2) + 3, Dna5QValueN_
     };
     target.value = table[source.value];
 }
@@ -1562,7 +1584,7 @@ inline void assign(Dna5Q & target, Unicode c_source)
 template <>
 struct CompareTypeImpl<Dna5Q, Iupac>
 {
-    typedef Dna5 Type;
+    typedef Iupac Type;
 };
 
 inline void assign(Dna5Q & target, Iupac const & source)
@@ -1570,7 +1592,18 @@ inline void assign(Dna5Q & target, Iupac const & source)
     assign(target, (Dna5)source);
 }
 
-inline void 
+template <>
+struct CompareTypeImpl<Iupac, Dna5Q>
+{
+    typedef Iupac Type;
+};
+
+inline void assign(Iupac & target, Dna5Q const & source)
+{
+    assign(target, (Dna5)source);
+}
+
+inline void
 assign(Dna5Q & target, Dna5Q const & source)
 {
     target.value = source.value;

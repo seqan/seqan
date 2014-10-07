@@ -39,6 +39,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
 // #include <seqan/parallel.h>
 
 #include <seqan/translation.h>

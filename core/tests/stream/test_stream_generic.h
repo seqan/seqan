@@ -43,18 +43,20 @@ void testStreamReadSimpleUsage(TStream & stream)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     // Read first line.
     char buffer[100];
     char *ptr = buffer;
-    while (!streamEof(stream)) {
-        int res = streamReadChar(*ptr, stream);
-        SEQAN_ASSERT_EQ(res, 0);
+    while (!atEnd(iter))
+    {
+        *ptr = *iter++;
+        SEQAN_ASSERT(stream.good());
         SEQAN_ASSERT_LT(ptr, buffer + 100);
         if (*(ptr++) == '\n')
             break;
     }
-    char c;
-    streamReadChar(c, stream);
+    char c = *iter++;
     SEQAN_ASSERT_EQ(c, 'W');
 }
 
@@ -64,32 +66,16 @@ void testStreamReadComplexUsage(TStream & stream)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     // Read lines and check whether the last one is terminated with a '\n'.
-    char c = '\0';
     bool wasEol = false;
-    while (!streamEof(stream)) {
-        int res = streamReadChar(c, stream);
-        if (res == EOF)
-            break;
+    while (!atEnd(iter))
+    {
+        char c = *iter++;
         wasEol = (c == '\n');
     }
     SEQAN_ASSERT_NOT(wasEol);
-}
-
-// Helper for testStreamEof() below, to conditionally run streamTell, or
-// return defaultValue.
-template <typename TStream>
-int _runStreamTell(TStream & stream, int /*defaultValue*/, seqan::True const &)
-{
-    using namespace seqan;
-    return streamTell(stream);
-}
-
-template <typename TStream>
-int _runStreamTell(TStream & /*stream*/, int defaultValue, seqan::False const &)
-{
-    using namespace seqan;
-    return defaultValue;
 }
 
 // Test of streamEof().
@@ -98,25 +84,25 @@ void testStreamEof(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
+
     const char buffer[] = "This is a test.";
     
-    SEQAN_ASSERT_NOT(streamEof(stream));
+    SEQAN_ASSERT_NOT(atEnd(iter));
     char c;
-    for (int i = 0; i < 15; ++i) {
-        SEQAN_ASSERT_NOT(streamEof(stream));
-        int res = streamReadChar(c, stream);
-        SEQAN_ASSERT_EQ(res, 0);
+    for (int i = 0; i < 15; ++i)
+    {
+        SEQAN_ASSERT_NOT(atEnd(iter));
+        readOne(c, iter);
         SEQAN_ASSERT_EQ(c, buffer[i]);
         if (checkTell)
-            SEQAN_ASSERT_EQ(_runStreamTell(stream, i + 1, typename HasStreamFeature<TStream, Tell>::Type()), i + 1);
+            SEQAN_ASSERT(position(iter) == i + 1 || position(iter) == -1);
     }
     // SEQAN_ASSERT_NOT(streamEof(stream));  // Not portable, inconsistent behaviour.
-    int res = streamReadChar(c, stream);
-    SEQAN_ASSERT_NEQ(res, 0);
-    SEQAN_ASSERT(streamEof(stream));
+    readOne(c, iter);
+    SEQAN_ASSERT_NOT(atEnd(iter));
     if (checkTell)
-        SEQAN_ASSERT(_runStreamTell(stream, 15, typename HasStreamFeature<TStream, Tell>::Type()) == 15 ||
-                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+        SEQAN_ASSERT(position(iter) == 15 || position(iter) == -1);
 }
 
 // Test of streamPeek().
@@ -125,18 +111,13 @@ void testStreamPeek(TStream & stream)
 {
     using namespace seqan;
 
-    char c;
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
-    int res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, 'T');
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, 'T');
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, 'T');
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
+
+    SEQAN_ASSERT_EQ(position(iter), 0);
+    SEQAN_ASSERT_EQ(*iter, 'T');
+    SEQAN_ASSERT_EQ(*iter, 'T');
+    SEQAN_ASSERT_EQ(*iter, 'T');
+    SEQAN_ASSERT_EQ(position(iter), 0);
 }
 
 // Test of testStreamReadBlock(), limit is longer than stream.
@@ -145,15 +126,14 @@ void testStreamReadBlockHitLimit(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
+
     String<char> buffer;
-    resize(buffer, 20);
-    size_t charsRead = streamReadBlock(begin(buffer, Standard()), stream, 20);
-    resize(buffer, charsRead);
+    size_t charsRead = read(buffer, iter, 20);
     SEQAN_ASSERT_EQ(charsRead, 10u);
-    SEQAN_ASSERT_EQ(strcmp(toCString(buffer), "XXXXXXXXXX"), 0);
+    SEQAN_ASSERT_EQ(buffer, "XXXXXXXXXX");
     if (checkTell)
-        SEQAN_ASSERT(_runStreamTell(stream, 10, typename HasStreamFeature<TStream, Tell>::Type()) == 10 ||
-                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+        SEQAN_ASSERT(position(iter) == 10 || position(iter) == -1);
 }
 
 // Test of testStreamReadBlock(), limit is shorter than stream.
@@ -162,14 +142,13 @@ void testStreamReadBlockHitNoLimit(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     String<char> buffer;
-    resize(buffer, 20);
-    size_t charsRead = streamReadBlock(begin(buffer, Standard()), stream, 5);
-    resize(buffer, charsRead);
-    SEQAN_ASSERT_EQ(charsRead, 5u);
+    SEQAN_ASSERT_EQ(read(buffer, iter, 5), 5);
     SEQAN_ASSERT(buffer == "XXXXX");
     if (checkTell)
-        SEQAN_ASSERT(_runStreamTell(stream, 5, typename HasStreamFeature<TStream, Tell>::Type()) == 5);
+        SEQAN_ASSERT(position(iter) == 5 || position(iter) == -1);
 }
 
 // Test of testStreamWriteBlock(), iterator interface.
@@ -178,12 +157,13 @@ void testStreamWriteBlock(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
+
     String<char> buffer;
     append(buffer, "ABCDEFGH");
-    size_t charsWritten = streamWriteBlock(stream, begin(buffer, Standard()), length(buffer));
-    SEQAN_ASSERT_EQ(charsWritten, 8u);
+    write(iter, buffer);
     if (checkTell)
-        SEQAN_ASSERT_EQ(_runStreamTell(stream, 8, typename HasStreamFeature<TStream, Tell>::Type()), 8);
+        SEQAN_ASSERT(position(iter) == 8 || position(iter) == -1);
 }
 
 // Test of streamWriteChar().
@@ -192,14 +172,13 @@ void testStreamWriteChar(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
-    int res = streamWriteChar(stream, '3');
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamWriteChar(stream, '4');
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamWriteChar(stream, '5');
-    SEQAN_ASSERT_EQ(res, 0);
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
+
+    writeValue(iter, '3');
+    writeValue(iter, '4');
+    writeValue(iter, '5');
     if (checkTell)
-        SEQAN_ASSERT_EQ(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()), 3);
+        SEQAN_ASSERT(position(iter) == 3 || position(iter) == -1);
 }
 
 template <typename TStream>
@@ -207,91 +186,66 @@ void testStreamPut(TStream & stream)
 {
     using namespace seqan;
 
-    int res = streamPut(stream, 'c');
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
-    res = streamPut(stream, CharString("seq"));
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 'c');
+    write(iter, '\n');
 
-    res = streamPut(stream, "sss");
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    write(iter, CharString("seq"));
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 12);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    write(iter, "sss");
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 34u);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 12);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 56l);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 34u);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 78ul);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 56l);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 5.4f);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 78ul);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, 6.5);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 5.4f);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, Dna('A'));
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, 6.5);
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, DnaString("ACGT"));
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    writeValue(iter, Dna('A'));
+    writeValue(iter, '\n');
 
-    res = streamPut(stream, Dna5String("ACGTN"));
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamPut(stream, '\n');
-    SEQAN_ASSERT_EQ(res, 0);
+    write(iter, DnaString("ACGT"));
+    writeValue(iter, '\n');
+
+    write(iter, Dna5String("ACGTN"));
+    writeValue(iter, '\n');
 }
 
 
-// Test of streamReadChar().
+// Test of readOne().
 template <typename TStream>
 void testStreamReadChar(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     char c;
-    int res = streamReadChar(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
+    readOne(c, iter);
     SEQAN_ASSERT_EQ(c, '1');
-    res = streamReadChar(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
+    readOne(c, iter);
     SEQAN_ASSERT_EQ(c, '2');
-    res = streamReadChar(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
+    readOne(c, iter);
     SEQAN_ASSERT_EQ(c, '3');
     // SEQAN_ASSERT_NOT(streamEof(stream));  // Non-portable, different behaviour.
-    res = streamReadChar(c, stream);
-    SEQAN_ASSERT_NEQ(res, 0);
-    SEQAN_ASSERT(streamEof(stream));
+    readOne(c, iter);
+    SEQAN_ASSERT(atEnd(iter));
     if (checkTell)
-        SEQAN_ASSERT(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()) == 3 ||
-                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+        SEQAN_ASSERT(position(iter) == 3 || position(iter) == -1);
 }
 
 // Test of streamSeek().
@@ -300,31 +254,25 @@ void testStreamSeek(TStream & stream)
 {
     using namespace seqan;
 
+    typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
+
     // TODO(holtgrew): Do real tests for all variants.
     // TODO(holtgrew): Use constant for origin in the future.
-    char c;
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
-    int res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, '0');
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 0);
+    SEQAN_ASSERT_EQ(*iter, '0');
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 0);
 
-    res = streamSeek(stream, 4, SEEK_CUR);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 4);
+    setPosition(iter, 4);
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 4);
 
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, '4');
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 4);
+    SEQAN_ASSERT_EQ(*iter, '4');
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 4);
 
-    res = streamSeek(stream, -2, SEEK_CUR);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
+    setPosition(iter, 2);
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 2);
 
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(c, '2');
-    SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
+    SEQAN_ASSERT_EQ(*iter, '2');
+    SEQAN_ASSERT_EQ(static_cast<int>(position(iter)), 2);
 }
 
 #endif  // TEST_STREAM_TEST_STREAM_GENERIC_H_

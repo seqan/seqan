@@ -38,104 +38,58 @@
 #include <seqan/file.h>
 #include <seqan/bed_io.h>
 
+using namespace seqan;
+
 SEQAN_DEFINE_TEST(test_bed_read_bed3_record)
 {
     // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tsome data that is \tignored\n"
-       << "II\t999\t1000\tdata again!";
-    ss.seekg(0);
+    String<char> test = "I\t123\t456\tsome data that is \tignored\n";
+    append(test, "II\t999\t1000\tdata again!");
 
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed3> record;
+    seqan::CharString buffer;
 
     // Perform tests.
-
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
+    SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
+    SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
     SEQAN_ASSERT_EQ(record.data, "data again!");
-}
-
-SEQAN_DEFINE_TEST(test_bed_read_bed3_record_with_context)
-{
-    // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tsome data that is \tignored\n"
-       << "II\t999\t1000\tdata again!";
-    ss.seekg(0);
-
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
-
-    // The record to load into.
-    seqan::BedRecord<seqan::Bed3> record;
-
-    // The IO Context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    TNameStore refNames;
-    seqan::NameStoreCache<TNameStore> refNamesCache(refNames);
-    seqan::BedIOContext<TNameStore> bedIOContext(refNames, refNamesCache);
-
-    // Perform tests.
-
-    SEQAN_ASSERT_EQ(readRecord(record, reader, bedIOContext, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.rID, 0);
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
-    SEQAN_ASSERT_EQ(record.endPos, 456);
-    SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
-
-    SEQAN_ASSERT_EQ(length(refNames), 1u);
-    SEQAN_ASSERT_EQ(refNames[0], "I");
-
-    SEQAN_ASSERT_EQ(readRecord(record, reader, bedIOContext, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.rID, 1);
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
-    SEQAN_ASSERT_EQ(record.endPos, 1000);
-    SEQAN_ASSERT_EQ(record.data, "data again!");
-
-    SEQAN_ASSERT_EQ(length(refNames), 2u);
-    SEQAN_ASSERT_EQ(refNames[1], "II");
 }
 
 SEQAN_DEFINE_TEST(test_bed_read_bed4_record)
 {
-    // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tNAME\tsome data that is \tignored\n"
-       << "II\t999\t1000\tNAME2\tdata again!";
-    ss.seekg(0);
+    String<char> test = "I\t123\t456\tNAME\tsome data that is \tignored\n";
+    append(test, "II\t999\t1000\tNAME2\tdata again!");
 
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    // Iterator to use
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed4> record;
+    seqan::CharString buffer;
 
     // Perform tests.
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
+    SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
+    SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
     SEQAN_ASSERT_EQ(record.name, "NAME2");
     SEQAN_ASSERT_EQ(record.data, "data again!");
@@ -144,30 +98,29 @@ SEQAN_DEFINE_TEST(test_bed_read_bed4_record)
 SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
 {
     // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tNAME\t3\tsome data that is \tignored\n"
-       << "II\t999\t1000\tNAME2\t2e5\tdata again!";
-    ss.seekg(0);
+    String<char> test = "I\t123\t456\tNAME\t3\tsome data that is \tignored\n";
+    append(test, "II\t999\t1000\tNAME2\t2e5\tdata again!");
 
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    // Iterator to use
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed5> record;
+    CharString buffer;
 
     // Perform tests.
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
+    SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.score, "3");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
+    SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
     SEQAN_ASSERT_EQ(record.name, "NAME2");
     SEQAN_ASSERT_EQ(record.score, "2e5");
@@ -177,31 +130,30 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
 SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
 {
     // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tNAME\t3\t-\tsome data that is \tignored\n"
-       << "II\t999\t1000\tNAME2\t2e5\t.\tdata again!";
-    ss.seekg(0);
+    String<char> test = "I\t123\t456\tNAME\t3\t-\tsome data that is \tignored\n";
+    append(test, "II\t999\t1000\tNAME2\t2e5\t.\tdata again!");
 
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    // Iterator to use
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed6> record;
+    CharString buffer;
 
     // Perform tests.
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
+    SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.score, "3");
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
+    SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
     SEQAN_ASSERT_EQ(record.name, "NAME2");
     SEQAN_ASSERT_EQ(record.score, "2e5");
@@ -212,27 +164,26 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
 SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
 {
     // Prepare in-memory data.
-    std::stringstream ss;
-    ss << "I\t123\t456\tNAME\t3\t-\t33\t66\t255,0,0\t3\t10,11,12\t1,2,3\tsome data that is \tignored\n"
-       << "II\t999\t1000\tNAME2\t2e5\t.\t44\t55\t0,0,0\t3\t3,4,5\t4,5,6\tdata again!";
-    ss.seekg(0);
+    String<char> test = "I\t123\t456\tNAME\t3\t-\t33\t66\t255,0,0\t3\t10,11,12\t1,2,3\tsome data that is \tignored\n";
+    append(test, "II\t999\t1000\tNAME2\t2e5\t.\t44\t55\t0,0,0\t3\t3,4,5\t4,5,6\tdata again!");
 
-    // RecordReader to use.
-    seqan::RecordReader<std::stringstream, seqan::SinglePass<> > reader(ss);
+    // Iterator to use
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
     seqan::BedRecord<seqan::Bed12> record;
+    CharString buffer;
 
     // Perform tests.
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
-    SEQAN_ASSERT_EQ(record.beginPos, 122);
+    SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.score, "3");
     SEQAN_ASSERT_EQ(record.strand, '-');
-    SEQAN_ASSERT_EQ(record.thickBegin, 32);
+    SEQAN_ASSERT_EQ(record.thickBegin, 33);
     SEQAN_ASSERT_EQ(record.thickEnd, 66);
     SEQAN_ASSERT(record.itemRgb == seqan::BedRgb(255, 0, 0));
     SEQAN_ASSERT_EQ(record.blockCount, 3);
@@ -241,19 +192,19 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.blockSizes[1], 11);
     SEQAN_ASSERT_EQ(record.blockSizes[2], 12);
     SEQAN_ASSERT_EQ(length(record.blockBegins), 3u);
-    SEQAN_ASSERT_EQ(record.blockBegins[0], 0);
-    SEQAN_ASSERT_EQ(record.blockBegins[1], 1);
-    SEQAN_ASSERT_EQ(record.blockBegins[2], 2);
+    SEQAN_ASSERT_EQ(record.blockBegins[0], 1);
+    SEQAN_ASSERT_EQ(record.blockBegins[1], 2);
+    SEQAN_ASSERT_EQ(record.blockBegins[2], 3);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Bed()), 0);
+    readRecord(record, buffer, iter, seqan::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
-    SEQAN_ASSERT_EQ(record.beginPos, 998);
+    SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
     SEQAN_ASSERT_EQ(record.name, "NAME2");
     SEQAN_ASSERT_EQ(record.score, "2e5");
     SEQAN_ASSERT_EQ(record.strand, '.');
-    SEQAN_ASSERT_EQ(record.thickBegin, 43);
+    SEQAN_ASSERT_EQ(record.thickBegin, 44);
     SEQAN_ASSERT_EQ(record.thickEnd, 55);
     SEQAN_ASSERT(record.itemRgb == seqan::BedRgb(0, 0, 0));
     SEQAN_ASSERT_EQ(record.blockCount, 3);
@@ -262,9 +213,9 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.blockSizes[1], 4);
     SEQAN_ASSERT_EQ(record.blockSizes[2], 5);
     SEQAN_ASSERT_EQ(length(record.blockBegins), 3u);
-    SEQAN_ASSERT_EQ(record.blockBegins[0], 3);
-    SEQAN_ASSERT_EQ(record.blockBegins[1], 4);
-    SEQAN_ASSERT_EQ(record.blockBegins[2], 5);
+    SEQAN_ASSERT_EQ(record.blockBegins[0], 4);
+    SEQAN_ASSERT_EQ(record.blockBegins[1], 5);
+    SEQAN_ASSERT_EQ(record.blockBegins[2], 6);
     SEQAN_ASSERT_EQ(record.data, "data again!");
 }
 
@@ -272,7 +223,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 {
     seqan::BedRecord<seqan::Bed3> record1;
     record1.ref = "I";
-    record1.beginPos = 122;
+    record1.beginPos = 123;
     record1.endPos = 456;
     record1.data = "some data that is \tignored";
 
@@ -283,58 +234,21 @@ SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
     record2.data = "data again!";
 
     // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, seqan::Bed()), 0);
+    String<char> out;
+    writeRecord(out, record1, seqan::Bed());
+    writeRecord(out, record2, seqan::Bed());
 
     // Compar string stream to expected value.
-    char const * EXPECTED =
-            "I\t123\t456\tsome data that is \tignored\n"
-            "II\t1000\t1000\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
-}
-
-SEQAN_DEFINE_TEST(test_bed_write_bed3_record_with_context)
-{
-    // The IO Context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    TNameStore refNames;
-    appendValue(refNames, "0");
-    appendValue(refNames, "1");
-    seqan::NameStoreCache<TNameStore> refNamesCache(refNames);
-    seqan::BedIOContext<TNameStore> bedIOContext(refNames, refNamesCache);
-
-    seqan::BedRecord<seqan::Bed3> record1;
-    record1.ref = "I";
-    record1.rID = 1;
-    record1.beginPos = 122;
-    record1.endPos = 456;
-    record1.data = "some data that is \tignored";
-
-    seqan::BedRecord<seqan::Bed3> record2;
-    record2.ref = "II";
-    record2.rID = 0;
-    record2.beginPos = 999;
-    record2.endPos = 1000;
-    record2.data = "data again!";
-
-    // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, bedIOContext, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, bedIOContext, seqan::Bed()), 0);
-
-    // Compar string stream to expected value.
-    char const * EXPECTED =
-            "1\t123\t456\tsome data that is \tignored\n"
-            "0\t1000\t1000\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+    String<char> expected = "I\t123\t456\tsome data that is \tignored\n";
+    append(expected, "II\t999\t1000\tdata again!\n");
+    SEQAN_ASSERT_EQ(out, expected);
 }
 
 SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
 {
     seqan::BedRecord<seqan::Bed4> record1;
     record1.ref = "I";
-    record1.beginPos = 122;
+    record1.beginPos = 123;
     record1.endPos = 456;
     record1.name = "NAME1";
     record1.data = "some data that is \tignored";
@@ -347,22 +261,21 @@ SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
     record2.data = "data again!";
 
     // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, seqan::Bed()), 0);
+    String<char> out;
+    writeRecord(out, record1, seqan::Bed());
+    writeRecord(out, record2, seqan::Bed());
 
     // Compar string stream to expected value.
-    char const * EXPECTED =
-            "I\t123\t456\tNAME1\tsome data that is \tignored\n"
-            "II\t1000\t1000\tNAME2\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+    String<char> expected = "I\t123\t456\tNAME1\tsome data that is \tignored\n";
+    append(expected, "II\t999\t1000\tNAME2\tdata again!\n");
+    SEQAN_ASSERT_EQ(out, expected);
 }
 
 SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
 {
     seqan::BedRecord<seqan::Bed5> record1;
     record1.ref = "I";
-    record1.beginPos = 122;
+    record1.beginPos = 123;
     record1.endPos = 456;
     record1.name = "NAME1";
     record1.score = "5";
@@ -376,23 +289,22 @@ SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
     record2.score = "3e5";
     record2.data = "data again!";
 
-    // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, seqan::Bed()), 0);
+    // Write BED records to string stream.String<char> out;
+    String<char> out;
+    writeRecord(out, record1, seqan::Bed());
+    writeRecord(out, record2, seqan::Bed());
 
     // Compar string stream to expected value.
-    char const * EXPECTED =
-            "I\t123\t456\tNAME1\t5\tsome data that is \tignored\n"
-            "II\t1000\t1000\tNAME2\t3e5\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+    String<char> expected = "I\t123\t456\tNAME1\t5\tsome data that is \tignored\n";
+    append(expected, "II\t999\t1000\tNAME2\t3e5\tdata again!\n");
+    SEQAN_ASSERT_EQ(out, expected);
 }
 
 SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
 {
     seqan::BedRecord<seqan::Bed6> record1;
     record1.ref = "I";
-    record1.beginPos = 122;
+    record1.beginPos = 123;
     record1.endPos = 456;
     record1.name = "NAME1";
     record1.score = "5";
@@ -409,22 +321,21 @@ SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
     record2.data = "data again!";
 
     // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, seqan::Bed()), 0);
+    String<char> out;
+    writeRecord(out, record1, seqan::Bed());
+    writeRecord(out, record2, seqan::Bed());
 
     // Compar string stream to expected value.
-    char const * EXPECTED =
-            "I\t123\t456\tNAME1\t5\t-\tsome data that is \tignored\n"
-            "II\t1000\t1000\tNAME2\t3e5\t.\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+    String<char> expected = "I\t123\t456\tNAME1\t5\t-\tsome data that is \tignored\n";
+    append(expected, "II\t999\t1000\tNAME2\t3e5\t.\tdata again!\n");
+    SEQAN_ASSERT_EQ(out, expected);
 }
 
 SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 {
     seqan::BedRecord<seqan::Bed12> record1;
     record1.ref = "I";
-    record1.beginPos = 122;
+    record1.beginPos = 123;
     record1.endPos = 456;
     record1.name = "NAME1";
     record1.score = "5";
@@ -461,64 +372,62 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
     record2.data = "data again!";
 
     // Write BED records to string stream.
-    std::stringstream ss;
-    SEQAN_ASSERT_EQ(writeRecord(ss, record1, seqan::Bed()), 0);
-    SEQAN_ASSERT_EQ(writeRecord(ss, record2, seqan::Bed()), 0);
+    String<char> out;
+    writeRecord(out, record1, seqan::Bed());
+    writeRecord(out, record2, seqan::Bed());
 
     // Compar string stream to expected value.
-    char const * EXPECTED =
-            "I\t123\t456\tNAME1\t5\t-\t124\t234\t10,20,30\t2\t10,20\t2,14\tsome data that is \tignored\n"
-            "II\t1000\t1000\tNAME2\t3e5\t.\t124\t234\t10,20,30\t2\t10,20\t2,14\tdata again!\n";
-    SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
+    String<char> expected =
+            "I\t123\t456\tNAME1\t5\t-\t123\t234\t10,20,30\t2\t10,20\t3,15\tsome data that is \tignored\n"
+            "II\t999\t1000\tNAME2\t3e5\t.\t123\t234\t10,20,30\t2\t10,20\t3,15\tdata again!\n";
+    SEQAN_ASSERT_EQ(out, expected);
 }
 
-SEQAN_DEFINE_TEST(test_bed_bed_stream_read)
+SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 {
     seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
     append(inPath, "/extras/tests/bed_io/example.bed");
 
-    seqan::BedStream bedStream(toCString(inPath));
-    SEQAN_ASSERT(isGood(bedStream));
+    seqan::BedFileIn bedStream(toCString(inPath));
 
     seqan::BedRecord<seqan::Bed3> record1;
-    SEQAN_ASSERT_EQ(readRecord(record1, bedStream), 0);
+    readRecord(record1, bedStream);
 
     SEQAN_ASSERT_EQ(record1.ref, "chr7");
-    SEQAN_ASSERT_EQ(record1.beginPos, 127471195);
+    SEQAN_ASSERT_EQ(record1.beginPos, 127471196);
     SEQAN_ASSERT_EQ(record1.endPos, 127472363);
     SEQAN_ASSERT_EQ(record1.data, "Pos1\t0\t+\t127471196\t127472363\t255,0,0");
 
     seqan::BedRecord<seqan::Bed3> record2;
-    SEQAN_ASSERT_EQ(readRecord(record2, bedStream), 0);
+    readRecord(record2, bedStream);
     SEQAN_ASSERT(atEnd(bedStream));
 
     SEQAN_ASSERT_EQ(record2.ref, "chr8");
-    SEQAN_ASSERT_EQ(record2.beginPos, 127472362);
+    SEQAN_ASSERT_EQ(record2.beginPos, 127472363);
     SEQAN_ASSERT_EQ(record2.endPos, 127473530);
     SEQAN_ASSERT_EQ(record2.data, "Pos2\t0\t+\t127472363\t127473530\t255,0,0");
 }
 
-SEQAN_DEFINE_TEST(test_bed_bed_stream_write)
+SEQAN_DEFINE_TEST(test_bed_bed_file_write)
 {
     seqan::CharString tmpPath = SEQAN_PATH_TO_ROOT();
     append(tmpPath, ".bed");
 
-    seqan::BedStream bedStream(toCString(tmpPath), seqan::BedStream::WRITE);
-    SEQAN_ASSERT(isGood(bedStream));
+    seqan::BedFileOut bedStream(toCString(tmpPath));
 
     seqan::BedRecord<seqan::Bed3> record1;
     record1.ref = "chr7";
-    record1.beginPos = 127471195;
+    record1.beginPos = 127471196;
     record1.endPos = 127472363;
     record1.data = "Pos1\t0\t+\t127471196\t127472363\t255,0,0";
-    SEQAN_ASSERT_EQ(writeRecord(bedStream, record1), 0);
+    writeRecord(bedStream, record1);
 
     seqan::BedRecord<seqan::Bed3> record2;
     record2.ref = "chr8";
-    record2.beginPos = 127472362;
+    record2.beginPos = 127472363;
     record2.endPos = 127473530;
     record2.data = "Pos2\t0\t+\t127472363\t127473530\t255,0,0";
-    SEQAN_ASSERT_EQ(writeRecord(bedStream, record2), 0);
+    writeRecord(bedStream, record2);
 
     close(bedStream);
 
@@ -531,7 +440,6 @@ SEQAN_BEGIN_TESTSUITE(test_bed_io)
 {
     // Reading of BED records.
     SEQAN_CALL_TEST(test_bed_read_bed3_record);
-    SEQAN_CALL_TEST(test_bed_read_bed3_record_with_context);
     SEQAN_CALL_TEST(test_bed_read_bed4_record);
     SEQAN_CALL_TEST(test_bed_read_bed5_record);
     SEQAN_CALL_TEST(test_bed_read_bed6_record);
@@ -539,14 +447,14 @@ SEQAN_BEGIN_TESTSUITE(test_bed_io)
 
     // Writing of BED records.
     SEQAN_CALL_TEST(test_bed_write_bed3_record);
-    SEQAN_CALL_TEST(test_bed_write_bed3_record_with_context);
     SEQAN_CALL_TEST(test_bed_write_bed4_record);
     SEQAN_CALL_TEST(test_bed_write_bed5_record);
     SEQAN_CALL_TEST(test_bed_write_bed6_record);
     SEQAN_CALL_TEST(test_bed_write_bed12_record);
 
     // BED Stream
-    SEQAN_CALL_TEST(test_bed_bed_stream_read);
-    SEQAN_CALL_TEST(test_bed_bed_stream_write);
+    SEQAN_CALL_TEST(test_bed_bed_file_read);
+    SEQAN_CALL_TEST(test_bed_bed_file_write);
 }
+
 SEQAN_END_TESTSUITE

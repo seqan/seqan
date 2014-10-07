@@ -69,7 +69,10 @@ SEQAN_CONCEPT(StringTreeConcept, (TIndex))
 
 
 template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((StringTreeConcept), Index<TText, IndexEsa<TSpec> >);
+SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> >), (StringTreeConcept));
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 /**
 .Spec.VSTree Iterator:
@@ -1396,7 +1399,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param[in] iterator An iterator of a string tree.
  * 
  * @return TInfix All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
- *                Type @link SequenceConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
+ *                Type @link ContainerConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
  * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 

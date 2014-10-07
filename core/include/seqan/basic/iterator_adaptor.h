@@ -44,6 +44,9 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TValue>
+inline size_t length(TValue const * me);
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -220,6 +223,30 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction GetValue
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TIterator, typename TSpec>
+struct GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > > :
+    GetValue<TIterator> {};
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
+//    GetValue<TIterator const> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > > :
+//    GetValue<TIterator> {};
+//
+//template <typename TContainer, typename TIterator, typename TSpec>
+//struct Value<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const> :
+//    GetValue<TIterator const> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction IteratorDefaultImp_
 // ----------------------------------------------------------------------------
 
@@ -228,6 +255,17 @@ struct IteratorDefaultImp_<T, Rooted>
 {
     typedef typename Iterator<T, Standard>::Type TStandardIterator;
     typedef Iter<T, AdaptorIterator<TStandardIterator> > Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Chunk
+// ----------------------------------------------------------------------------
+
+// Chunk interface for rooted iterators
+template <typename TContainer, typename TValue, typename TSpec>
+struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
+{
+    typedef Range<TValue*> Type;
 };
 
 // ============================================================================
@@ -258,7 +296,7 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return _dereference<TContainer &>(me.data_container);
+    return _referenceCast<TContainer &>(me.data_container);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
@@ -419,6 +457,26 @@ value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return value(hostIterator(me));
+}
+
+// ----------------------------------------------------------------------------
+// Function getValue()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TIterator, typename TSpec>
+inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
+getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
+{
+    SEQAN_CHECKPOINT;
+    return getValue(hostIterator(me));
+}
+
+template <typename TContainer, typename TIterator, typename TSpec>
+inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
+{
+    SEQAN_CHECKPOINT;
+    return getValue(hostIterator(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -725,14 +783,14 @@ operator-=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
-atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
-{
-    SEQAN_CHECKPOINT;
-    return atEnd(me, container(me));
-}
-
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
+//{
+//    SEQAN_CHECKPOINT;
+//    return atEnd(me, container(me));
+//}
+//
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
 atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
@@ -756,6 +814,54 @@ assign(Iter<TTargetContainer, AdaptorIterator<TIterator, TSpec> > & target,
     SEQAN_CHECKPOINT;
     target.data_container = container(source);
     target.data_iterator = begin(container(source)) + position(source);
+}
+
+// ----------------------------------------------------------------------------
+// Function reserveChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TSpec, typename TSize>
+inline void reserveChunk(Iter<TContainer, TSpec> &iter, TSize size, Output)
+{
+    typedef Iter<TContainer, TSpec> TIter;
+
+    TContainer &cont = container(iter);
+    typename Position<TIter>::Type pos = position(iter);
+    typename Size<TIter>::Type len = length(cont);
+
+    if (pos < len)
+        return;
+
+    len += size;
+    if (len <= capacity(cont))
+        return;
+
+    reserve(cont, len);
+    setPosition(iter, pos);
+}
+
+template <typename TContainer, typename TSpec, typename TSize>
+inline void reserveChunk(Iter<TContainer, TSpec> &, TSize, Input)
+{}
+
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+// AdaptorIterator
+template <typename TChunk, typename TContainer, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Input)
+{
+    return assignRange(result, hostIterator(rootedIter), end(container(rootedIter), Standard()));
+}
+
+template <typename TChunk, typename TContainer, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &rootedIter, Output)
+{
+    TContainer &cont = container(rootedIter);
+    return assignRange(result, hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
 }
 
 }  // namespace seqan

@@ -118,7 +118,7 @@ struct Value<Score<TValue, TSpec> > {
  * @signature SequenceEntryForScore<TScore, TSequence>::Type;
  * 
  * @tparam TScore    The score type to use. Types: Score
- * @tparam TSequence The underlying sequence of the alignments or gaps. Types: SequenceConcept
+ * @tparam TSequence The underlying sequence of the alignments or gaps. Types: ContainerConcept
  * 
  * @return Type The type to use for representing a character in a sequence over its position.
  * 
@@ -138,7 +138,7 @@ struct Value<Score<TValue, TSpec> > {
 ..param.TScore:The score type to use.
 ...type:Class.Score
 ..param.TSequence:The underlying sequence of the alignments or gaps.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..return:The type to use for the representation of sequence entries.
 ..see:Metafunction.Score#SequenceEntryForScore
 ..see:Function.Score#sequenceEntryForScore
@@ -176,7 +176,7 @@ struct SequenceEntryForScore
 ..param.scoringScheme:The scoring scheme to get the representation for.
 ...type:Class.Score
 ..param.seq:The sequence to get the representation for.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..param.pos:The position of the character.
 ..return:
 Representation of the character $seq[pos]$ to be used for the given scoring scheme.

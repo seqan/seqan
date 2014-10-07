@@ -766,12 +766,10 @@ findEdge(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TCargo, typename TSpec, typename TIDString>
+template <typename TFile, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Undirected<TCargo, TSpec> > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Undirected<TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_
 	SEQAN_CHECKPOINT
@@ -781,47 +779,47 @@ write(TFile & target,
 	typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
 	TIterConst it = begin(g.data_vertex, Standard());
 	TIterConst itEnd = end(g.data_vertex, Standard());
-	streamPut(target,"Adjacency list:\n");
+	write(target, "Adjacency list:\n");
 	TVertexDescriptor pos = 0;
 	for(;it != itEnd; ++it, ++pos) {
 		TVertexDescriptor sourceV = pos;
-		streamPut(target, (int)sourceV);
-		streamPut(target," -> ");
+		appendNumber(target, (int)sourceV);
+		write(target, " -> ");
 		TEdgeStump* current = *it;
 		while(current!=0) {
 			TVertexDescriptor adjV = getTarget(current);
 			if (adjV != sourceV) {
-				streamPut(target, (int)adjV);
-				streamPut(target, ',');
+				appendNumber(target, (int)adjV);
+				writeValue(target, ',');
 				current=getNextS(current);
 			} else {
 				adjV = getSource(current);
-				streamPut(target, (int)adjV);
-				streamPut(target, ',');
+				appendNumber(target, (int)adjV);
+				writeValue(target, ',');
 				current=getNextT(current);
 			}
 		}
-		streamPut(target, '\n');
+		writeValue(target, '\n');
 	}
 	it = begin(g.data_vertex, Standard());
 	pos = 0;
-	streamPut(target,"Edge list:\n");
+	write(target, "Edge list:\n");
 	for(; it != itEnd; ++it, ++pos) {
 		TVertexDescriptor sourceV = pos;
 		TEdgeStump* current = *it;
 		while(current!=0) {
 			TVertexDescriptor targetV = getTarget(current);
 			if (sourceV != targetV) {
-				streamPut(target,"Source: ");
-				streamPut(target, (int)sourceV);		
-				streamPut(target, ',');
-				streamPut(target,"Target: ");
-				streamPut(target, (int)targetV);
-				streamPut(target, ' ');
-				streamPut(target,"(Id: ");
-				streamPut(target, (int)_getId(current));
-				streamPut(target, ')');
-				streamPut(target, '\n');
+				write(target, "Source: ");
+				appendNumber(target, (int)sourceV);
+				writeValue(target, ',');
+				write(target, "Target: ");
+				appendNumber(target, (int)targetV);
+				writeValue(target, ' ');
+				write(target, "(Id: ");
+				appendNumber(target, (int)_getId(current));
+				writeValue(target, ')');
+				writeValue(target, '\n');
 				current=getNextS(current);
 			} else {
 				current=getNextT(current);

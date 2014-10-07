@@ -13,8 +13,9 @@ int main(int argc, char const ** argv)
     }
 
     // Open BGZF file for reading.
-    seqan::Stream<seqan::Bgzf> inStream;
-    if (!open(inStream, argv[1], "r"))
+    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
+    TInStream inStream;
+    if (!open(inStream, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
         return 1;
@@ -29,13 +30,9 @@ int main(int argc, char const ** argv)
     }
 
     // Copy over data.
-    seqan::CharString buffer;
-    resize(buffer, 1000);
-    while (!seqan::atEnd(inStream) && seqan::streamError(inStream) == 0)
-    {
-        int num = seqan::streamReadBlock(&buffer[0], inStream, length(buffer));
-        seqan::streamWriteBlock(outStream, &buffer[0], num);
-    }
-    
+    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
+    while (!seqan::atEnd(reader))
+        read(outStream, reader, 1000);
+
     return 0;
 }

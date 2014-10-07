@@ -2,7 +2,7 @@
 //#include <iostream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/align.h>
 
 int main()

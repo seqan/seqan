@@ -560,7 +560,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @signature void sortAlignedReads(alignStore, sortTag);
  * @signature void sortAlignedReads(alignStore, lessFunctor);
  *
- * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ * @param[in,out] alignStore  The @link ContainerConcept sequence @endlink of @link AlignedReadStoreElement @endlink
  *                            to be sorted, e.g. @link FragmentStore::alignedReadStore @endlink.
  * @param[in]     sortTag     Tag for selecting the member to sort by.  See @link SortAlignedReadTags @endlink.
  * @param[in]     lessFunctor A functor to pass to <tt>std::stable_sort</tt> for sorting the sequence.
@@ -578,7 +578,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @signature TIter1 lowerBoundAlignedReads(alignStore, value, sortTag);
  * @signature TIter2 lowerBoundAlignedReads(itBegin, itEnd, value, sortTag);
  *
- * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ * @param[in,out] alignStore  The @link ContainerConcept sequence @endlink of @link AlignedReadStoreElement @endlink
  *                            to be searched, e.g. @link FragmentStore::alignedReadStore @endlink.
  * @param[in]     itBegin     Iterator to the begin of the sequence to search.
  * @param[in]     itEnd       Iterator to the end of the sequence to search.
@@ -602,7 +602,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @signature TIter1 upperBoundAlignedReads(alignStore, value, sortTag);
  * @signature TIter2 upperBoundAlignedReads(itBegin, itEnd, value, sortTag);
  *
- * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ * @param[in,out] alignStore  The @link ContainerConcept sequence @endlink of @link AlignedReadStoreElement @endlink
  *                            to be searched, e.g. @link FragmentStore::alignedReadStore @endlink.
  * @param[in]     itBegin     Iterator to the begin of the sequence to search.
  * @param[in]     itEnd       Iterator to the end of the sequence to search.

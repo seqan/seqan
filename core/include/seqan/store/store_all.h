@@ -1230,10 +1230,10 @@ annotationAssignValueByKey (
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey, typename TValue>
 inline bool 
 annotationGetValueByKey (
+    TValue & value,
 	FragmentStore<TSpec, TConfig> & fragStore, 
 	TAnnotation const & annotation,
-	TKey const & key,
-	TValue & value)
+	TKey const & key)
 {
 	typedef typename TAnnotation::TValues	TValues;
 	typedef typename Size<TValues>::Type	TKeyId;
@@ -1253,20 +1253,22 @@ annotationGetValueByKey (
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey>
-inline CharString 
-annotationGetValueByKey (
+inline typename Id<TAnnotation>::Type
+annotationGetValueIdByKey (
 	FragmentStore<TSpec, TConfig> & fragStore, 
 	TAnnotation const & annotation,
 	TKey const & key)
 {
-	typedef typename TAnnotation::TValues	TValues;
-	typedef typename Size<TValues>::Type	TKeyId;
-	
+	typedef typename TAnnotation::TValues           TValues;
+	typedef typename Size<TValues>::Type            TKeyId;
+
+    static const typename Value<typename TAnnotation::TValues const>::Type emptyString;
+
 	TKeyId keyId = 0;
 	if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
-		return annotation.values[keyId];
-	else
-		return "";
+        if (keyId < length(annotation.values) && !empty(annotation.values[keyId]))
+            return keyId;
+    return TAnnotation::INVALID_ID;
 }
 
 /*!
@@ -1348,7 +1350,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  * @signature TSize appendRead(store, read, name[, matePairId]);
  *
  * @param[in,out] store      The FragmentStore to append the read to.
- * @param[in]     read       The read sequence.  Type: @link SequenceConcept @endlink.
+ * @param[in]     read       The read sequence.  Type: @link ContainerConcept @endlink.
  * @param[in]     name       The name of the read.  Type: @link CharString @endlink.
  * @param[in]     matePairId ID of the mate-pair that this read is part of.  Default:
  *                           <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.
@@ -2101,17 +2103,16 @@ void layoutAlignment(AlignedReadLayout &layout, FragmentStore<TSpec, TConfig> &s
 	}
 }
 
-template <typename TStream, typename TFormatTag, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
+template <typename TStream, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
 	TStream &stream, 
-	Tag<TFormatTag> const & /*format*/,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TReadGaps &readGaps,
 	TAlignedRead &alignedRead,
 	TLine)
 {
-//	write(stream, readGaps, "", format);
+//	stream << readGaps;
 
 	typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
 	typedef typename Iterator<TReadGaps, Standard>::Type TIterator;
@@ -2125,33 +2126,31 @@ inline void _printRead(
 	for (; it != itEnd; ++it, ++cit)
 	{
 		if (isGap(it))
-            streamPut(stream, '*');
+            stream << '*';
         else if (convert<Dna5>(*cit) == convert<Dna5>(*it))
-            streamPut(stream, identityChar);
+            stream << identityChar;
         else
-            streamPut(stream, convert<Dna5>(*it));
+            stream << convert<Dna5>(*it);
 	}
 }
 
-template <typename TStream, typename TFormatTag, typename TContigGaps, typename TContigName>
+template <typename TStream, typename TContigGaps, typename TContigName>
 inline void _printContig(
 	TStream &stream,
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TContigName const &)
 {
-	write(stream, contigGaps, "", format);
+	stream << contigGaps;
 }
 
 /*!
  * @fn AlignedReadLayout#printAlignment
  * @brief Prints a window of the visible layout of reads into a std::outstream.
  *
- * @signature void printAlignment(stream, format, layout, store, contigID, posBegin, posEnd, lineBegin, lineEnd);
+ * @signature void printAlignment(stream, layout, store, contigID, posBegin, posEnd, lineBegin, lineEnd);
  *
  * @param[in,out] stream    The std::ostream to print to.
- * @param[in]     format    The output format, e.g. <tt>Raw</tt>.
  * @param[in]     layout    The @link AlignedReadLayout @endlink computed earlier in @link
  *                          AlignedReadLayout#layoutAlignment @endlink.
  * @param[in]     store     The FragmentStore that this layout belongs to.
@@ -2170,13 +2169,10 @@ inline void _printContig(
 ..class:Class.AlignedReadLayout
 ..summary:Prints a window of the visible layout of reads into a outstream.
 ..cat:Fragment Store
-..signature:printAlignment(stream, format, layout, store, contigId, posBegin, posEnd, lineBegin, lineEnd)
+..signature:printAlignment(stream, layout, store, contigId, posBegin, posEnd, lineBegin, lineEnd)
 ..param.stream:A C++ outstream, e.g. std::cout.
 ..param.layout:A layout structure created by a previous call of @Function.layoutAlignment@.
 ...type:Class.AlignedReadLayout
-..param.format:Output format.
-...type:Tag.File Format.tag.Raw
-...remarks: This tag is used for subsequent calls of @Function.write@ for contig and read gaps data structures.
 ..param.store:The fragment store.
 ...type:Class.FragmentStore
 ..param.contigId:The $contigId$ of the affected contig.
@@ -2190,11 +2186,10 @@ The empty space is then filled with whitespaces.
 ..include:seqan/store.h
 */
 
-template <typename TStream, typename TFormatTag, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
+template <typename TStream, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
 void printAlignment(
 	TStream &stream, 
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &layout, 
+	AlignedReadLayout &layout,
 	FragmentStore<TSpec, TConfig> &store, 
 	TContigId contigId,
 	TPos posBegin, TPos posEnd,
@@ -2220,7 +2215,9 @@ void printAlignment(
 
 	typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >	TContigGaps;
 	typedef Gaps<CharString, AnchorGaps<typename TAlignedRead::TGapAnchors> >	TReadGaps;
-	
+
+    typedef typename DirectionIterator<TStream, Output>::Type       TOutIter;
+
 	TContigGaps	contigGaps;
 	if ((TId)contigId < length(store.contigStore))
 	{
@@ -2229,11 +2226,11 @@ void printAlignment(
 //		TContigGaps	contigGaps(store.contigStore[contigId].seq, store.contigStore[contigId].gaps);
 		setClippedBeginPosition(contigGaps, posBegin);
 		setClippedEndPosition(contigGaps, posEnd);
-		_printContig(stream, format, layout, contigGaps, store.contigNameStore[contigId]);
-		stream << '\n';
-	} else
-		stream << '\n';
-	
+		_printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
+	};
+    TOutIter iter = directionIterator(stream, Output());
+    writeValue(iter, '\n');
+
 	if ((TId)contigId >= length(layout.contigRows))
 		return;
 	
@@ -2292,16 +2289,20 @@ void printAlignment(
 			if ((TPos)cBegin < posBegin)
 				setClippedBeginPosition(readGaps, posBegin - (TPos)cBegin);
 			else
+            {
+                TOutIter iter = directionIterator(stream, Output());
 				for (; cursor < (TPos)cBegin; ++cursor)
-					stream << ' ';
-			
+                    writeValue(iter, ' ');
+            }
+
 			if (posEnd < (TPos)cEnd)
 				setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
 			
-			_printRead(stream, format, layout, contigGaps, readGaps, align, line);
+			_printRead(stream, layout, contigGaps, readGaps, align, line);
 			cursor = cEnd;
 		}
-		stream << '\n';
+        TOutIter iter = directionIterator(stream, Output());
+        writeValue(iter, '\n');
 	}
 }
 

@@ -62,7 +62,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addOption(parser, seqan::ArgParseOption("j", "int64", "set a 64 bit integer option", seqan::ArgParseArgument::INT64));
     addOption(parser, seqan::ArgParseOption("s", "string", "set a string option", seqan::ArgParseArgument::STRING, "", true));
     setValidValues(parser, "s", "a b c");
-    addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUTFILE));
+    addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "f", "fasta");
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
     setValidValues(parser, "o", "sam");

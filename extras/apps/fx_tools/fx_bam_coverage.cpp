@@ -110,12 +110,12 @@ parseArgs(FxBamCoverageOptions & options,
 
     // Two input files: Genome, and mapping.
     addOption(parser, seqan::ArgParseOption("r", "in-reference", "Path to the reference file.",
-                                            seqan::ArgParseArgument::INPUTFILE, "IN.fa"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "in-reference", "fasta fa");
     setRequired(parser, "in-reference");
 
     addOption(parser, seqan::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
-                                            seqan::ArgParseArgument::INPUTFILE));
+                                            seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "in-mapping", "sam bam");
     setRequired(parser, "in-mapping");
 

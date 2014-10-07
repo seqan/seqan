@@ -1,6 +1,6 @@
 #include <iostream>
 #include <seqan/sequence.h> 
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 // Function to print simple alignment between two sequences with the same length
