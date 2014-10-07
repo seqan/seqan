@@ -90,7 +90,7 @@ struct Options
 template <typename TIndexSpec, typename TSpec = void>
 struct Indexer
 {
-    typedef SeqStore<Nothing>                       TContigs;
+    typedef SeqStore<void, YaraContigsConfig>       TContigs;
     typedef Index<YaraContigsFM, TIndexSpec>        TIndex;
 
     TContigs            contigs;
