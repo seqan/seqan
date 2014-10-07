@@ -55,6 +55,19 @@ struct IsView;
 // class Range
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class Range
+ * @headerfile <seqan/basic.h>
+ * @brief A range between two iterators.
+ *
+ * @signature template <typename TIterator>
+ *            class Range;
+ *
+ * @tparam The type of the iterator to use.
+ */
+
+// TODO(holtgrew): Completely missing documentation.
+
 template <typename TIterator>
 class Range
 {

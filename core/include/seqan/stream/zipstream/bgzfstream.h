@@ -746,7 +746,7 @@ public:
 	istream_reference get_istream()	{ return serializer.istream;};
 };
 
-/*! \brief Base class for zip ostreams
+/* \brief Base class for zip ostreams
 
 Contains a basic_bgzf_streambuf.
 */
@@ -793,7 +793,7 @@ private:
 	bgzf_streambuf_type m_buf;
 };
 
-/*! \brief Base class for unzip istreams
+/* \brief Base class for unzip istreams
 
 Contains a basic_unbgzf_streambuf.
 */
@@ -837,7 +837,7 @@ private:
 	unbgzf_streambuf_type m_buf;
 };
 
-/*! \brief A zipper ostream
+/*brief A zipper ostream
 
 This class is a ostream decorator that behaves 'almost' like any other ostream.
 
@@ -905,7 +905,7 @@ private:
     static void put_long(ostream_reference out_, unsigned long x_);
 };
 
-/*! \brief A zipper istream
+/* \brief A zipper istream
 
 This class is a istream decorator that behaves 'almost' like any other ostream.
 

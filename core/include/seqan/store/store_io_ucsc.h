@@ -149,7 +149,7 @@ template <typename TSpec, typename TConfig, typename TFile, typename TFormatSpec
 inline void
 readRecords(FragmentStore<TSpec, TConfig> & fragStore,
             TFile & file,
-            Tag<Ucsc_<TFormatSpec> > const &)
+            Tag<Ucsc_<TFormatSpec> > const & tag)
 {
     typename DirectionIterator<TFile, Input>::Type iter = directionIterator(file, Input());
 
@@ -158,7 +158,7 @@ readRecords(FragmentStore<TSpec, TConfig> & fragStore,
 
     // get first character from the stream
     UcscRecord record;
-    UcscContext ctx;
+    UcscIOContext ctx;
 
     refresh(fragStore.contigNameStoreCache);
     refresh(fragStore.annotationNameStoreCache);
@@ -166,7 +166,7 @@ readRecords(FragmentStore<TSpec, TConfig> & fragStore,
 
     while (!atEnd(iter))
     {
-        readRecord(record, iter, ctx);
+        readRecord(record, ctx, iter, tag);
         _storeOneAnnotation(fragStore, record);
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);
@@ -270,7 +270,7 @@ writeRecords(TTargetStream & target,
 
     for (TId id = 0; it != itEnd; ++it, ++id)
         if (_retrieveOneAnnotation(record, store, *it, id, format))
-            writeRecord(iter, record);
+            writeRecord(iter, record, format);
 }
 
 } // namespace SEQAN_NAMESPACE_MAIN

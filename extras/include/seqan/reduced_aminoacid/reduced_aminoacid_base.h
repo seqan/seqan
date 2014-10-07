@@ -69,7 +69,7 @@ namespace seqan {
  * and your compiler supports alias templates (Visual Studio >= 2006-2014, any fairly
  * recent Clang, GCC). Otherwise you have to use the underscored type and 
  * the full definition, i.e.
- * SimpleType<unsigned char, ReducedAminoAcid_<TReductionSpec> >.
+ * <tt>SimpleType&lt;unsigned char, ReducedAminoAcid_&lt;TReductionSpec&gt; &gt;</tt>.
  *
  * @see ClusterReduction
  * @see Murphy10
