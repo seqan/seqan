@@ -200,25 +200,25 @@ void readRecord(UcscRecord & record,
     // read column 4: transcript begin position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationBeginPos = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.annotationBeginPos = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 5: transcript end position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationEndPos = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.annotationEndPos = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.cdsBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 7: CDS end position
     clear(ucscIOContext.buffer);
     readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsEnd = lexicalCast<__uint64>(ucscIOContext.buffer);
+    record.cdsEnd = lexicalCast<__uint32>(ucscIOContext.buffer);
     skipOne(iter, IsTab());
 
     // read column 8: exon count
@@ -235,7 +235,7 @@ void readRecord(UcscRecord & record,
         readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempBegin;
-        tempBegin = lexicalCast<__uint64>(ucscIOContext.buffer);
+        tempBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
     }
@@ -248,7 +248,7 @@ void readRecord(UcscRecord & record,
         readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
 
         unsigned long long tempEnd;
-        tempEnd =  lexicalCast<__uint64>(ucscIOContext.buffer);
+        tempEnd =  lexicalCast<__uint32>(ucscIOContext.buffer);
         appendValue(record.exonEnd, tempEnd);
         skipOne(iter);
     }
@@ -264,7 +264,7 @@ void readRecord(UcscRecord & record,
     // adapt positions
     if (orientation == '-')
     {
-        __uint64 tmp = record.annotationBeginPos;
+        __uint32 tmp = record.annotationBeginPos;
         record.annotationBeginPos = record.annotationEndPos;
         record.annotationEndPos = tmp;
         tmp = record.cdsBegin;
@@ -325,8 +325,8 @@ void writeRecord(TTarget & target,
     writeValue(target, '\t');
 
     // write column 3: orientation
-    __uint64 transBeginPos, transEndPos;
-    __uint64 cdsBeginPos, cdsEndPos;
+    __uint32 transBeginPos, transEndPos;
+    __uint32 cdsBeginPos, cdsEndPos;
     if (record.annotationBeginPos < record.annotationEndPos)
     {
         writeValue(target, '+');
