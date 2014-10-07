@@ -135,7 +135,7 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 seqan::ArgumentParser::ParseResult
 parseArgs(SakOptions & options,
           int argc,
-          char const ** argv)
+          char ** argv)
 {
     seqan::ArgumentParser parser("sak");
     setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
@@ -294,7 +294,7 @@ char const * yesNo(bool b)
 // Function main()
 // ---------------------------------------------------------------------------
 
-int main(int argc, char const ** argv)
+int main(int argc, char ** argv)
 {
     double startTime = 0;
 
