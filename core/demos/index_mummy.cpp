@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 
 using namespace std;
 using namespace seqan;
@@ -54,15 +55,16 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 			continue;
 		}
 
-		if (argv[arg][0] != '-') {
-			ifstream file;
-			file.open(argv[arg], ios_base::in | ios_base::binary);
-			if (!file.is_open()) {
-				cerr << "Import of sequence " << argv[arg] << " failed." << endl;
+		if (argv[arg][0] != '-')
+        {
+            SeqFileIn file;
+			if (!open(file, argv[arg]))
+            {
+				cerr << "Failed to open file " << argv[arg] << endl;
 				return 1;
 			}
-			read(file, indexText(index)[seq], Fasta());
-			file.close();
+            CharString id;
+			readRecord(id, indexText(index)[seq], file);
 			++seq;
 		}
 	}

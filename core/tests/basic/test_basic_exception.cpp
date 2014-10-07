@@ -34,8 +34,7 @@
 // Tests for the sub module basic_exception.
 // ==========================================================================
 
-#include <seqan/basic/basic_debug.h>
-#include <seqan/basic/basic_exception.h>
+#include <seqan/basic.h>
 
 #include "test_basic_exception.h"
 

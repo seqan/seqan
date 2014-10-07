@@ -651,12 +651,10 @@ findEdge(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TAlphabet, typename TCargo, typename TSpec, typename TIDString>
+template<typename TFile, typename TAlphabet, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_
 	SEQAN_CHECKPOINT
@@ -666,29 +664,30 @@ write(TFile & target,
 	typedef typename Size<TAlphabet>::Type TSize;
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 
-	streamPut(target,"Automaton - State: (Input / NextState)\n");
+	write(target, "Automaton - State: (Input / NextState)\n");
 	typedef typename Iterator<String<AutomatonEdgeArray<TEdge, TAlphabet> > const, Standard>::Type TIterConst;
 	TIterConst it = begin(g.data_vertex, Standard());
 	TIterConst itEnd = end(g.data_vertex, Standard());
 	TVertexDescriptor pos = 0;
-	for(;it!=itEnd;++it, ++pos) {
-		if (!idInUse(g.data_id_managerV, pos)) continue;
+	for (; it != itEnd; ++it, ++pos)
+    {
+		if (!idInUse(g.data_id_managerV, pos))
+            continue;
 		TVertexDescriptor sourceVertex = pos;
-		streamPut(target, (int)sourceVertex);
-		streamPut(target,": ");
-		for(TSize i=0;i< (TSize) ValueSize<TAlphabet>::VALUE;++i) {
-			streamPut(target, ' ');
-			streamPut(target, '(');
-			streamPut(target, TAlphabet(i));
-			streamPut(target, ' ');
-			streamPut(target, '/');
-			streamPut(target, ' ');
-			if (g.data_vertex[sourceVertex].data_edge[i].data_target ==  nilVal) streamPut(target,"nil");
-			else streamPut(target, (int)g.data_vertex[sourceVertex].data_edge[i].data_target);
-			streamPut(target, ')');
-			streamPut(target, ' ');
+		appendNumber(target, (int)sourceVertex);
+		write(target, ": ");
+		for (TSize i = 0; i < (TSize) ValueSize<TAlphabet>::VALUE; ++i)
+        {
+			write(target, " (");
+			writeValue(target, TAlphabet(i));
+			write(target, " / ");
+			if (g.data_vertex[sourceVertex].data_edge[i].data_target ==  nilVal)
+                write(target, "nil");
+			else
+                appendNumber(target, (int)g.data_vertex[sourceVertex].data_edge[i].data_target);
+			write(target, ") ");
 		}
-		streamPut(target, '\n');
+		writeValue(target, '\n');
 	}
 }
 
@@ -952,7 +951,7 @@ getSuccessor(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  *
  * @param[in]     a       An Automaton.
  * @param[in]     v       The descriptor of the vertex to start at.
- * @param[in]     str     The @link SequenceConcept @endlink to parse.
+ * @param[in]     str     The @link ContainerConcept @endlink to parse.
  * @param[in,out] beginIt Begin iterator to sequence to parse.  Set to the first character that could not be parsed
  *                        or to the value of endIt if all of the string was parsed.
  * @param[in]     endIt   End iterator to sequence to parse.

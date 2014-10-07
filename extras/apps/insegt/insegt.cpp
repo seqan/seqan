@@ -81,9 +81,9 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // We require two arguments.
     addDescription(parser, "Input to INSEGT is a SAM file containing the alignments and"
                           " a file containing the annotations of the reference genome, either in GFF or GTF format.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, "sam");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 1, "gff gtf");
     // Define Options -- Section Modification Options
 
@@ -141,9 +141,13 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     getArgumentValue(options.nameSAM, parser, 0);
     getArgumentValue(options.nameGFF, parser, 1);
     if (endsWith(options.nameGFF, ".gff"))
+    {
         options.gtf = false;
+    }
     else if (endsWith(options.nameGFF, ".gtf"))
+    {
         options.gtf = true;
+    }
     else 
     {
         std::cerr << "ERROR: Input format of annotation file must be either GFF or GTF!\n";

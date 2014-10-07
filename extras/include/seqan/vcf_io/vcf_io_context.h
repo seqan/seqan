@@ -116,33 +116,61 @@ VcfIOContext objects store the names of (and provide a cache for) reference and 
 ..summary:Name store cache for the sample names.
 */
 
+template <
+    typename TNameStore_ = StringSet<CharString>,
+    typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
+    typename TStorageSpec = Owner<> >
 class VcfIOContext
 {
 public:
-    typedef StringSet<CharString> TNameStore_;
-    typedef NameStoreCache<TNameStore_> TNameStoreCache_;
+    typedef TNameStore_ TNameStore;
+    typedef TNameStoreCache_ TNameStoreCache;
 
-    // Pointer to the sequence names store.
-    TNameStore_ * sequenceNames;
+    typedef typename StorageSwitch<TNameStore, TStorageSpec>::Type      TNameStoreMember;
+    typedef typename StorageSwitch<TNameStoreCache, TStorageSpec>::Type TNameStoreCacheMember;
+
     // Cache for the sequence name lookup.
-    NameStoreCache<TNameStore_> sequenceNamesCache;
-    // Pointer to the sample name store.
-    TNameStore_ * sampleNames;
-    // Cache for the sample name lookup.
-    NameStoreCache<TNameStore_> sampleNamesCache;
+    TNameStoreMember        _contigNames;
+    TNameStoreCacheMember   _contigNamesCache;
 
-    // Default constructor.
+    // Cache for the sample name lookup.
+    TNameStoreMember        _sampleNames;
+    TNameStoreCacheMember   _sampleNamesCache;
+
+    CharString              buffer;
+
     VcfIOContext() :
-            sequenceNames(), sequenceNamesCache(*sequenceNames),
-            sampleNames(), sampleNamesCache(*sampleNames)
+        _contigNames(TNameStoreMember()),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 (TNameStoreCache*)NULL,
+                                 _contigNames)),
+        _sampleNames(TNameStoreMember()),
+        _sampleNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 (TNameStoreCache*)NULL,
+                                 _sampleNames))
     {}
 
-    // Construct directly with references to stores.
-    VcfIOContext(TNameStore_ & sequenceNames, TNameStore_ & sampleNames) :
-            sequenceNames(&sequenceNames),
-            sequenceNamesCache(sequenceNames),
-            sampleNames(&sampleNames),
-            sampleNamesCache(sequenceNames)
+    VcfIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
+        _contigNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &nameStoreCache_,
+                                 _contigNames)),
+        _sampleNames(TNameStoreMember()),
+        _sampleNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 (TNameStoreCache*)NULL,
+                                 _sampleNames))
+    {}
+
+    template <typename TOtherStorageSpec>
+    VcfIOContext(VcfIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
+        _contigNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(contigNames(other))),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &contigNamesCache(other),
+                                 _contigNames)),
+        _sampleNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(sampleNames(other))),
+        _sampleNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &sampleNamesCache(other),
+                                 _sampleNames))
     {}
 };
 
@@ -153,6 +181,34 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStore &
+contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStore &>(context._contigNames);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStoreCache &
+contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStore &
+sampleNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStore &>(context._sampleNames);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStoreCache &
+sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStoreCache &>(context._sampleNamesCache);
+}
 
 }  // namespace seqan
 

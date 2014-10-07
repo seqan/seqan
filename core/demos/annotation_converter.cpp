@@ -39,8 +39,8 @@ int main(int argc, const char *argv[])
 	if (isSetLong(parser, "read-gff"))
 	{
 		getOptionValueLong(parser, "read-gff", fileName);
-		ifstream file(toCString(fileName), ios_base::in | ios_base::binary);
-		read(file, store, Gff());
+		GffFileIn file(toCString(fileName));
+		readRecords(store, file);
 	}
 	if (isSetLong(parser, "read-ucsc"))
 	{
@@ -48,8 +48,8 @@ int main(int argc, const char *argv[])
 		ifstream file1(toCString(fileName), ios_base::in | ios_base::binary);
 		fileName = getOptionValuesLong(parser, "read-ucsc")[1];
 		ifstream file2(toCString(fileName), ios_base::in | ios_base::binary);
-		read(file1, store, Ucsc());
-		read(file2, store, Ucsc());
+		readRecords(store, file1, Ucsc());
+		readRecords(store, file2, Ucsc());
 	}
 
 	// EXPORT
@@ -57,13 +57,13 @@ int main(int argc, const char *argv[])
 	{
 		getOptionValueLong(parser, "write-gff", fileName);
 		ofstream file(toCString(fileName), ios_base::out | ios_base::binary);
-		write(file, store, Gff());
+		writeRecords(file, store, Gff());
 	}
 	if (isSetLong(parser, "write-gtf"))
 	{
 		getOptionValueLong(parser, "write-gtf", fileName);
 		ofstream file(toCString(fileName), ios_base::out | ios_base::binary);
-		write(file, store, Gtf());
+		writeRecords(file, store, Gtf());
 	}
 	if (isSetLong(parser, "write-ucsc"))
 	{
@@ -71,8 +71,8 @@ int main(int argc, const char *argv[])
 		ofstream file1(toCString(fileName), ios_base::out | ios_base::binary);
 		fileName = getOptionValuesLong(parser, "write-ucsc")[1];
 		ofstream file2(toCString(fileName), ios_base::out | ios_base::binary);
-		write(file1, store, Ucsc());
-		write(file2, store, UcscIsoforms());
+		writeRecords(file1, store, Ucsc());
+		writeRecords(file2, store, UcscIsoforms());
 	}
 	
 	return 0;

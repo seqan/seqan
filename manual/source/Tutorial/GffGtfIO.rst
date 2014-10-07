@@ -218,8 +218,8 @@ The class :dox:`GffRecord` stores one record in a Gff file.
        char phase;          // one of '0', '1', '2', and '.'
 
        // The key/value list, split into a list of keys and values.
-       StringSet<CharString> tagName;
-       StringSet<CharString> tagValue;
+       StringSet<CharString> tagNames;
+       StringSet<CharString> tagValues;
 
        // Returns float value for an invalid score.
        static float INVALID_SCORE();

@@ -42,8 +42,15 @@
 // ===========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+//#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/sequence.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifndef PLATFORM_WINDOWS
+#include <unistd.h>
+#endif
 
 // ===========================================================================
 // The ArgParse Headers.

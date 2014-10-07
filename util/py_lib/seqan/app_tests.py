@@ -33,6 +33,7 @@ import subprocess
 import shutil
 import sys
 import tempfile
+import gzip
 
 def md5ForFile(f, block_size=2**20):
     """Compute MD5 of a file.
@@ -294,13 +295,30 @@ def runTest(test_conf):
     for tuple_ in test_conf.to_diff:
         expected_path, result_path = tuple_[:2]
         binary = False
+        gunzip = False
         transforms = [NormalizeLineEndingsTransform()]
         if len(tuple_) >= 3:
             if tuple_[2] == 'md5':
                 binary = True
+            elif tuple_[2] == 'gunzip':
+                binary = True
+                gunzip = True
             else:
                 transforms += tuple_[2]
         try:
+            if gunzip:
+                f = gzip.open(expected_path, 'rb')
+                expected_md5 = md5ForFile(f)
+                f.close()
+                f = gzip.open(result_path, 'rb')
+                result_md5 = md5ForFile(f)
+                f.close()
+                if expected_md5 == result_md5:
+                    continue
+                else:
+                    tpl = (expected_path, expected_md5, result_md5, result_path)
+                    print >>sys.stderr, 'md5(gunzip(%s)) == %s != %s == md5(gunzip(%s))' % tpl
+                    result = False
             if binary:
                 with open(expected_path, 'rb') as f:
                     expected_md5 = md5ForFile(f)

@@ -44,11 +44,10 @@
 #endif  // #if SEQAN_HAS_BZIP2
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/stream.h>
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
-#include <seqan/misc/misc_cmdparser.h>
 
 const int MB = 1024*1024;
 
@@ -91,14 +90,15 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         char filenameBuffer[1000];
         strncpy(filenameBuffer, toCString(tempFilename), 999);
 
-        std::fstream file(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
-        SEQAN_ASSERT(file.is_open());
+        std::fstream fileStream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+        SeqFileOut file(fileStream, Fasta());
+        context(file).options = SequenceOutputOptions(0);
 
         before = sysTime();
         std::cerr << "Writing with new IO (no linebreaks, fstream) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
-        file.close();
+            writeRecord(file, metas[i], seqs[i]);
+        close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
         unlink(filenameBuffer);
@@ -120,21 +120,21 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
         unlink(filenameBuffer);
     }
-    {
-        CharString tempFilename = SEQAN_TEMP_FILENAME();
-        char filenameBuffer[1000];
-        strncpy(filenameBuffer, toCString(tempFilename), 999);
-        FILE * file = fopen(filenameBuffer, "wb+");
-
-        before = sysTime();
-        std::cerr << "Writing with new IO (no linebreaks,  cstdio) .... " << std::flush;
-        for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
-        fclose(file);
-        after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
-        unlink(filenameBuffer);
-    }
+//    {
+//        CharString tempFilename = SEQAN_TEMP_FILENAME();
+//        char filenameBuffer[1000];
+//        strncpy(filenameBuffer, toCString(tempFilename), 999);
+//        FILE * file = fopen(filenameBuffer, "wb+");
+//
+//        before = sysTime();
+//        std::cerr << "Writing with new IO (no linebreaks,  cstdio) .... " << std::flush;
+//        for (int i = 0; i < 4; ++i)
+//            writeRecord(file, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
+//        fclose(file);
+//        after = sysTime();
+//        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+//        unlink(filenameBuffer);
+//    }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
         char filenameBuffer[1000];
@@ -142,12 +142,13 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
 
         std::fstream file(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
         SEQAN_ASSERT(file.is_open());
+        DirectionIterator<std::fstream, Output>::Type iter(file);
 
         before = sysTime();
         std::cerr << "Writing with new IO (with linebreaks, fstream) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta());
-        file.close();
+            writeRecord(iter, metas[i], seqs[i], Fasta());
+        close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
         unlink(filenameBuffer);
@@ -169,21 +170,21 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
         unlink(filenameBuffer);
     }
-    {
-        CharString tempFilename = SEQAN_TEMP_FILENAME();
-        char filenameBuffer[1000];
-        strncpy(filenameBuffer, toCString(tempFilename), 999);
-        FILE * file = fopen(filenameBuffer, "wb+");
-
-        before = sysTime();
-        std::cerr << "Writing with new IO (with linebreaks, cstdio) .... " << std::flush;
-        for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta());
-        fclose(file);
-        after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
-        unlink(filenameBuffer);
-    }
+//    {
+//        CharString tempFilename = SEQAN_TEMP_FILENAME();
+//        char filenameBuffer[1000];
+//        strncpy(filenameBuffer, toCString(tempFilename), 999);
+//        FILE * file = fopen(filenameBuffer, "wb+");
+//
+//        before = sysTime();
+//        std::cerr << "Writing with new IO (with linebreaks, cstdio) .... " << std::flush;
+//        for (int i = 0; i < 4; ++i)
+//            writeRecord(file, metas[i], seqs[i], Fasta());
+//        fclose(file);
+//        after = sysTime();
+//        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+//        unlink(filenameBuffer);
+//    }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
         char filenameBuffer[1000];
@@ -191,12 +192,13 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
 
         std::fstream file(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
         SEQAN_ASSERT(file.is_open());
+        DirectionIterator<std::fstream, Output>::Type iter(file);
 
         before = sysTime();
         std::cerr << "Writing with old IO.... to " << std::flush;
         for (int i = 0; i < 4; ++i)
-            write(file, seqs[i], metas[i], Fasta());
-        file.close();
+            writeRecord(iter, seqs[i], metas[i], Fasta());
+        close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
         unlink(filenameBuffer);

@@ -12,7 +12,7 @@ MAPPER=$PATH/yara_mapper
 
 # Run with different organisms.
 for organism in adeno; do
-    ${INDEXER} input/$organism-genome.fa -xp gold/$organism-genome
+    ${INDEXER} input/$organism-genome.fa -o gold/$organism-genome
 done
 
 # ============================================================
@@ -27,6 +27,6 @@ MAPPER_SUFFIX=("t1") # "t8")
 for organism in adeno; do
     # Run with different arguments.
     for ((a=0; a<${#MAPPER_ARGS[@]}; a++)); do
-        ${MAPPER} input/$organism-genome.fa -xp gold/$organism-genome input/$organism-reads_1.fa -o gold/$organism-reads_1.${MAPPER_SUFFIX[$a]}.sam ${MAPPER_ARGS[$a]}
+        ${MAPPER} gold/$organism-genome input/$organism-reads_1.fa -o gold/$organism-reads_1.${MAPPER_SUFFIX[$a]}.sam ${MAPPER_ARGS[$a]}
     done
 done

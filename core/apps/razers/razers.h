@@ -26,6 +26,7 @@
 #include <fstream>
 
 #include <seqan/find.h>
+#include <seqan/seq_io.h>
 #include <seqan/index.h>
 
 namespace SEQAN_NAMESPACE_MAIN
@@ -155,6 +156,8 @@ namespace SEQAN_NAMESPACE_MAIN
 #endif
 
 		String<VerificationTask_, MMap<> > verifications;
+
+        SeqFileIn   readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
 
 		RazerSOptions() 
 		{
@@ -473,7 +476,7 @@ template <typename TReadSet, typename TNameSet, typename TRazerSOptions>
 bool loadReads(
 	TReadSet &reads, 
 	TNameSet &fastaIDs, 
-	const char *fileName, 
+	SeqFileIn &seqFile,
 	TRazerSOptions &options)
 {
 	bool countN = !(options.matchN || options.outputFormat == 1);
@@ -481,40 +484,26 @@ bool loadReads(
 	if(options.microRNA) countN = false;
 #endif
 
-	MultiFasta multiFasta;
-	if (!open(multiFasta.concat, fileName, OPEN_RDONLY)) return false;
-
-	AutoSeqFormat format;
-	guessFormat(multiFasta.concat, format);	
-	split(multiFasta, format);
-
-	unsigned seqCount = length(multiFasta);
-#ifndef RAZERS_CONCATREADS
-	resize(reads, seqCount, Exact());
-#endif
-	if (options.readNaming == 0)
-		resize(fastaIDs, seqCount, Exact());
-	
+	CharString fastaId;
 	String<Dna5Q> seq;
 	CharString qual;
 	
 	unsigned kickoutcount = 0;
 	unsigned maxReadLength = 0;
-	for(unsigned i = 0; i < seqCount; ++i) 
+	while (!atEnd(seqFile))
 	{
+        readRecord(fastaId, seq, qual, seqFile);
 		if (options.readNaming == 0
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
 			|| options.fastaIdQual
 #endif
 			)
-			assignSeqId(fastaIDs[i], multiFasta[i], format);	// read Fasta id
-		assignSeq(seq, multiFasta[i], format);					// read Read sequence
-		assignQual(qual, multiFasta[i], format);				// read ascii quality values  
+			appendValue(fastaIDs, fastaId); // append Fasta id
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
 		//check if sequence has a clip tag
 		if(options.minClippedLen > 0)
 		{
-			if(!_clipReads(fastaIDs[i],seq,qual,options))
+			if(!_clipReads(back(fastaIDs),seq,qual,options))
 			{
 				clear(seq);
 				clear(qual);
@@ -523,11 +512,11 @@ bool loadReads(
 		}
 		if(options.fastaIdQual && !empty(seq))
 		{
-			if(options.minClippedLen == 0)_clipReads(fastaIDs[i],seq,qual,options); // if the header wasnt clipped before, then clip now!! necessary for quality in header
-			qual = suffix(fastaIDs[i],length(fastaIDs[i])-length(seq));
+			if(options.minClippedLen == 0)_clipReads(back(fastaIDs),seq,qual,options); // if the header wasnt clipped before, then clip now!! necessary for quality in header
+			qual = suffix(back(fastaIDs),length(back(fastaIDs))-length(seq));
 			if(options.readNaming == 0)
-				fastaIDs[i] = prefix(fastaIDs[i],length(fastaIDs[i])-length(seq));
-			else clear(fastaIDs[i]);
+				back(fastaIDs) = prefix(back(fastaIDs),length(back(fastaIDs))-length(seq));
+			else clear(back(fastaIDs));
 		}
 #endif
 		if (countN)
@@ -558,59 +547,57 @@ bool loadReads(
 		assignQualities(seq, qual); 
 		if (options.trimLength > 0 && length(seq) > (unsigned)options.trimLength)
 			resize(seq, options.trimLength);
-#ifdef RAZERS_CONCATREADS
 		appendValue(reads, seq, Generous());
-#else
-		assign(reads[i], seq, Exact());
-#endif
 		if (maxReadLength < length(seq))
 			maxReadLength = length(seq);
 	}
-#ifdef RAZERS_CONCATREADS
-	reserve(reads.concat, length(reads.concat), Exact());
-#endif
 
 	typedef Shape<Dna, SimpleShape> TShape;
 	typedef typename SAValue< Index<TReadSet, IndexQGram<TShape, OpenAddressing> > >::Type TSAValue;
 	TSAValue sa(0, 0);
 	sa.i1 = ~sa.i1;
 	sa.i2 = ~sa.i2;
-	
+
+    bool success = true;
 	if ((unsigned)sa.i1 < length(reads) - 1)
 	{
 		::std::cerr << "Maximal read number of " << (unsigned)sa.i1 + 1 << " exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
+		success = false;
 	}
 	if ((unsigned)sa.i2 < maxReadLength - 1)
 	{
 		::std::cerr << "Maximal read length of " << (unsigned)sa.i2 + 1 << " bps exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
-		seqCount = 0;
+		success = false;
 	}
 	
 	if (options._debugLevel > 1 && kickoutcount > 0) 
 		::std::cerr << "Ignoring " << kickoutcount << " low quality reads.\n";
-	return (seqCount > 0);
+	return success;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Read the first sequence of a multi-sequence file
 // and return its length
-inline int estimateReadLength(char const *fileName)
+inline int estimateReadLength(SeqFileIn &seqFile)
 {
-	MultiFasta multiFasta;
-	if (!open(multiFasta.concat, fileName, OPEN_RDONLY))	// open the whole file
+	if (atEnd(seqFile))
 		return RAZERS_READS_FAILED;
 
-	AutoSeqFormat format;
-	guessFormat(multiFasta.concat, format);					// guess file format
-	split(multiFasta, format);								// divide into single sequences
+    typedef String<char, Array<1000> > TBuffer;
 
-	if (length(multiFasta) == 0)
-		return 0;
+    // read chunk into buffer
+    TBuffer buffer;
+    resize(buffer, capacity(buffer));
+    size_t len = seqFile.stream.readsome(&buffer[0], length(buffer));
+    for (size_t i = 0; i < len; ++i)
+        seqFile.stream.unget();
+    resize(buffer, len);
 
-	Dna5String firstRead;
-	assignSeq(firstRead, multiFasta[0], format);			// read the first sequence
-	return length(firstRead);
+    // parse record from buffer
+    DirectionIterator<TBuffer, Input>::Type iter = directionIterator(buffer, Input());
+    CharString fastaId, seq;
+    readRecord(fastaId, seq, iter, seqFile.format);
+    return length(seq);
 }
 
 
@@ -637,24 +624,18 @@ bool loadGenomes(TGenomeSet &genomes, const char *fileName)
 template <typename TGenomeSet>
 bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 {
-	unsigned gSeqNo = 0;
-	unsigned filecount = 0;
-	while(filecount < length(fileNameList))
+    SeqFileIn seqFile;
+    StringSet<CharString> ids;
+	for (size_t i = 0; i != length(fileNameList); ++i)
 	{
-		MultiFasta multiFasta;
-		if (!open(multiFasta.concat, toCString(fileNameList[filecount]), OPEN_RDONLY)) return false;
-		split(multiFasta, Fasta());
+		if (!open(seqFile, toCString(fileNameList[i])))
+            return false;
 
-		unsigned seqCount = length(multiFasta);
-		if(length(genomes) < gSeqNo+seqCount) 
-			resize(genomes,gSeqNo+seqCount);
-		for(unsigned i = 0; i < seqCount; ++i)
-			assignSeq(genomes[gSeqNo+i], multiFasta[i], Fasta());		// read Genome sequence
-		gSeqNo += seqCount;
-		++filecount;
+        readRecords(ids, genomes, seqFile);
+        clear(ids);
+        close(seqFile);
 	}
-	resize(genomes,gSeqNo);
-	return (gSeqNo > 0);
+	return length(genomes);
 }
 
 #ifdef RAZERS_MICRO_RNA
@@ -2026,17 +2007,15 @@ int mapSingleReads(
     options.timeCompactMatches = 0;
 	options.timeMaskDuplicates = 0;
 
-	unsigned filecount = 0;
 	unsigned numFiles = length(genomeFileNameList);
 	unsigned gseqNo = 0;
 
 	// open genome files, one by one	
-	while (filecount < numFiles)
+	for (unsigned filecount = 0; filecount < numFiles; ++filecount)
 	{
 		// open genome file	
-		::std::ifstream file;
-		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
-		if (!file.is_open())
+		SeqFileIn file;
+		if (!open(file, toCString(genomeFileNameList[filecount])))
 			return RAZERS_GENOME_FAILED;
 
 		// remove the directory prefix of current genome file
@@ -2052,16 +2031,15 @@ int mapSingleReads(
 		unsigned gseqNoWithinFile = 0;
 		// iterate over genome sequences
 		SEQAN_PROTIMESTART(find_time);
-		for(; !_streamEOF(file); ++gseqNo)
+		for(; !atEnd(file); ++gseqNo)
 		{
+            readRecord(id, genome, file);               // read Fasta id and sequence
 			if (options.genomeNaming == 0)
-			{
-				//readID(file, id, Fasta());			// read Fasta id
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
+            {
+                cropAfterFirst(id, IsWhitespace());     // crop id after the first whitespace
 				appendValue(genomeNames, id, Generous());
-			}
-			read(file, genome, Fasta());			// read Fasta sequence
-			
+            }
+
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
 			if (options.forward)
@@ -2076,8 +2054,6 @@ int mapSingleReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
-		++filecount;
 	}
 
 	if (options._debugLevel >= 1)

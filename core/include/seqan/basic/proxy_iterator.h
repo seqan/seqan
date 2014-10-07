@@ -138,10 +138,15 @@ public:
         return getValue(data_iterator);
     }
 
-    operator unsigned int() const
-    {
-        return static_cast<unsigned int>(getValue(data_iterator));
-    }
+//    operator TAccessor_() const
+//    {
+//        return getValue(data_iterator);
+//    }
+
+//    operator unsigned int() const
+//    {
+//        return static_cast<unsigned int>(getValue(data_iterator));
+//    }
 };
 
 // ============================================================================

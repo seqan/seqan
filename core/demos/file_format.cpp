@@ -4,7 +4,8 @@
 #include <cstdio>
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
+#include <seqan/seq_io.h>
 
 using namespace seqan;
 
@@ -13,24 +14,24 @@ int main()
 ///Open a standard library stream for binary write. 
 ///You can use both C++ iostreams or old style FILE pointer.
 ///The file format is Fasta.
-	std::FILE * fl = std::fopen("testfile.fa", "wb");
-    write(fl, "aacagtattagaccactaggaccct", "a test file", Fasta());
-	close (fl);
+	std::ofstream fl("testfile.fa");
+    DirectionIterator<std::ofstream, Output>::Type out = directionIterator(fl, Output());
+    writeRecord(out, "a test file", "aacagtattagaccactaggaccct", Fasta());
+	fl.close();
 ///Read a fasta file.
-	std::fstream fstrm;
-	fstrm.open("testfile.fa", std::ios_base::in | std::ios_base::binary);
+	std::ifstream fstrm("testfile.fa");
+    DirectionIterator<std::ifstream, Input>::Type in = directionIterator(fstrm, Input());
 	String<char> fasta_tag;
 	String<Dna> fasta_seq;
-///Read the meta-information.
-	readMeta(fstrm, fasta_tag, Fasta());
+///Read the meta-information and the sequence.
+	readRecord(fasta_tag, fasta_seq, in, Fasta());
 	std::cout << fasta_tag << "\n";	//prints "a test file"
-///Read the sequence.
-	read(fstrm, fasta_seq, Fasta());
 	std::cout << fasta_seq << "\n";	//prints the sequence
 	fstrm.close();
 ///Open a file using a file reader string.
-	String<Dna, FileReader<Fasta> > fr("testfile.fa");
-	std::cout << fr << "\n";			//prints the sequence
+	SeqFileIn sfin("testfile.fa");
+	readRecord(fasta_tag, fasta_seq, sfin);
+	std::cout << fasta_seq << "\n";			//prints the sequence
 	return 0;
 }
 

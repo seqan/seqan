@@ -474,10 +474,10 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     }
 
 /*!
- * @fn File#size
+ * @fn File#length
  * @brief Return the file size.
  *
- * @signature TSize size(file);
+ * @signature TSize length(file);
  *
  * @param[in] file The File object to query for its size.
  *
@@ -485,11 +485,11 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  */
 
 /**
-.Function.size:
+.Function.length:
 ..class:Class.File
 ..summary:Gets the file size.
 ..cat:Input/Output
-..signature:size(file)
+..signature:length(file)
 ..param.file:A File object.
 ...type:Class.File
 ..returns:The file size measured in bytes.
@@ -497,7 +497,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 */
 
     template < typename TSpec >
-    inline typename Size<File<TSpec> >::Type size(File<TSpec> &me) 
+    inline typename Size<File<TSpec> >::Type length(File<TSpec> &me) 
 	{
 //IOREV
         typename Size<File<TSpec> >::Type old_pos = tell(me);

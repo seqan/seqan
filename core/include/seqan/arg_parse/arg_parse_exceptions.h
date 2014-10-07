@@ -45,19 +45,8 @@ namespace seqan {
 // Class ParseError
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.ParseError
-..cat:Miscellaneous
-..summary:General ParseError.
-*/
-
-class ParseError : public RuntimeError
-{
-public:
-    ParseError(std::string const & option) :
-        RuntimeError(option)
-    {}
-};
+// Defined in core/include/seqan/stream/tokenization.h
+struct ParseError;
 
 // ----------------------------------------------------------------------------
 // Class InvalidOption

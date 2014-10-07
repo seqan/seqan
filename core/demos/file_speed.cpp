@@ -2,7 +2,7 @@
 //#define SEQAN_DEBUG
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <iostream>
 
 using namespace seqan;
@@ -93,10 +93,8 @@ int main()
 {
 	resize(block1, blockSize);
 	resize(block2, blockSize);
-	cout << "asyncWrite() using FILE*        ";		testThroughput< FILE* >				("file_speed1.bin");
 	cout << "asyncWrite() using sync. File   ";		testThroughput< File< Sync<> > >	("file_speed2.bin");
 	cout << "asyncWrite() using async. File  ";		testThroughput< File< Async<> > >	("file_speed3.bin");
-	cout << "ExtString using FILE*       ";		testExtString< FILE* >				("file_speed4.bin");
 	cout << "ExtString using sync. File  ";		testExtString< File< Sync<> > >		("file_speed5.bin");
 	cout << "ExtString using async. File ";		testExtString< File< Async<> > >	("file_speed6.bin");
 	cout << "Memory Mapped String        ";		testMMapString< File< Async<> > >	("file_speed7.bin");

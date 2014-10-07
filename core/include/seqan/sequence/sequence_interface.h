@@ -61,7 +61,7 @@ namespace seqan {
  * If no overflow tag is specified, most operations use the default overflow strategy given by @link
  * DefaultOverflowImplicit @endlink or @link DefaultOverflowExplicit @endlink, depending on the kind of operation.
  * 
- * @see SequenceConcept#computeGenerousCapacity
+ * @see StringConcept#computeGenerousCapacity
  * @see DefaultOverflowImplicit
  * @see DefaultOverflowExplicit
  * 
@@ -83,9 +83,9 @@ namespace seqan {
  * strategy limits the number of capacity changes, so that resizing takes armotized constant time.  Use this strategy if
  * the total amount of storage is unkown at first.
  * 
- * The new capacity is computed by @link SequenceConcept#computeGenerousCapacity @endlink. By default, it is
+ * The new capacity is computed by @link StringConcept#computeGenerousCapacity @endlink. By default, it is
  * guaranteed not to exceed about three halfs of the space that is used to store the data.  The user can overload
- * @link SequenceConcept#computeGenerousCapacity @endlink in order to change this behavior.
+ * @link StringConcept#computeGenerousCapacity @endlink in order to change this behavior.
  * 
  * @tag OverflowStrategyTags#Exact
  * @headerfile <seqan/sequence.h> 
@@ -169,7 +169,7 @@ typedef Tag<TagExact_> Exact;
  *
  * This function is used for functions that cause an implicit change of a container's size, like e.g. through
  * @link AssignableConcept#assign @endlink, @link ContainerConcept#append @endlink and
- * @link SequenceConcept#replace @endlink.
+ * @link StringConcept#replace @endlink.
  */
 
 /**
@@ -208,7 +208,7 @@ struct DefaultOverflowImplicit
  * @return Type The resulting expantion tag for <tt>T</tt>.
  *
  * This function is used for functions that change a container's size explicitly, like e.g.
- * @link SequenceConcept#resize @endlink.
+ * @link StringConcept#resize @endlink.
  */
 
 /**
@@ -232,59 +232,10 @@ struct DefaultOverflowExplicit
 };
 
 // --------------------------------------------------------------------------
-// Metafunction IsContiguous
-// --------------------------------------------------------------------------
-
-/*!
- * @mfn IsContiguous
- * @headerfile <seqan/sequence.h>
- * @brief Determines whether a container stores its elements contiguously in memory.
- *
- * @signature IsContiguous<T>::Type;
- * @signature IsContiguous<T>::VALUE;
- *
- * @tparam T The type that is tested for being a string.
- *
- * @return Type  Either <tt>True</tt> or <tt>False</tt>, depending on whether <tt>T</tt> is stored contiguously.
- * @return VALUE Either <tt>true</tt> or <tt>false</tt>, depending on whether <tt>T</tt> is stored contiguously.
- *
- * A sequence container is "contiguous", if its elements are stored in a single contiguous array.  Examples for
- * contiguous sequences are AllocString or char arrays.
- *
- * If an object <tt>obj</tt> is a contiguous sequence, then <tt>begin(obj)</tt> can be converted to a pointer to the
- * first element of the content array.
- */
-
-/**
-.Metafunction.IsContiguous:
-..cat:Sequences
-..summary:Determines whether a container stores its elements in a contiguous array.
-..signature:IsContiguous<T>::VALUE
-..param.T:Type that is tested for being a string.
-..returns.param.VALUE:$true$ if $T$ is a string, $false$ otherwise.
-..remarks:Definition: A sequence container is "contiguous", if its elements
-    are stored in a single contiguous array.
-    Examples for contiguous sequences are @Spec.Alloc String@ or @Adaption.char array@.
-..remarks:If an object $obj$ is a contiguous sequence, then $begin(obj)$ can be
-    converted to a pointer to the first element of the content array.
-..include:seqan/sequence.h
-*/
-template <typename T>
-struct IsContiguous
-{
-    typedef False Type;
-    enum { VALUE = false };
-};
-
-template <typename T>
-struct IsContiguous<T const>
-    : public IsContiguous<T> {};
-
-// --------------------------------------------------------------------------
 // Metafunction IsSequence
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): Deprecate in favour of Is<SequenceConcept>?
+// TODO(holtgrew): Deprecate in favour of Is<StringConcept>?
 
 /*!
  * @mfn IsSequence
@@ -1154,7 +1105,7 @@ length(T const & /*me*/)
 // --------------------------------------------------------------------------
 
 /*!
- * @fn SequenceConcept#capacity
+ * @fn StringConcept#capacity
  * @headerfile <seqan/sequence.h>
  * @brief Returns the capacity of a sequence.
  *
@@ -1247,7 +1198,7 @@ _computeSizeForCapacity(T const & /*me*/,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn SequenceConcept#computeGenerousCapacity
+ * @fn StringConcept#computeGenerousCapacity
  * @headerfile <seqan/sequence.h>
  * @brief Capacity for generous expansion.
  *
@@ -1526,7 +1477,7 @@ appendValue(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn SequenceConcept#insert
+ * @fn StringConcept#insert
  * @headerfile <seqan/sequence.h>
  * @brief Inserts a sequence into another sequence.
  *
@@ -1601,13 +1552,13 @@ insert(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn SequenceConcept#insertValue
+ * @fn StringConcept#insertValue
  * @headerfile <seqan/sequence.h>
  * @brief Inserts an element into a sequence.
  *
  * @signature void insertValue(seq, pos, val[, tag]);
  *
- * @param[in,out] seq  The @link SequenceConcept sequence @endlink to insert element into.
+ * @param[in,out] seq  The @link StringConcept sequence @endlink to insert element into.
  * @param[in]     pos  The position to insert at.
  * @param[in]     val  The value to insert at <tt>pos</tt> into <tt>seq<tt/>.
  * @param[in]     tag  The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
@@ -1654,7 +1605,7 @@ insertValue(T const & me,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn SequenceConcept#replace
+ * @fn StringConcept#replace
  * @headerfile <seqan/sequence.h>
  * @brief Replaces a part of a sequence with another sequence.
  *
@@ -1820,7 +1771,7 @@ _capacityReturned(T &,
  * 
  * This function allows to increase the capacity but not the length of a container.
  * 
- * Use @link SequenceConcept#resize @endlink if you want to change the size of a container.
+ * Use @link StringConcept#resize @endlink if you want to change the size of a container.
  * 
  * @section Remarks
  * 

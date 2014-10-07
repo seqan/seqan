@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <davod.weese@fu-berlin.de>
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // A minimal subset of the Boost Concept Checking Library.  A lot of the code
@@ -781,9 +782,12 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @headerfile <seqan/basic.h>
  * 
  * 
- * @signature template<> SEQAN_CONCEPT_IMPL(implementedConcepts, name)
- *            template<typename T, int I> SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
- * 
+ * @signature template<>    // required, even if name has no template arguments
+ *            SEQAN_CONCEPT_IMPL((name), implementedConcepts)
+ *
+ *            template<typename T, int I>
+ *            SEQAN_CONCEPT_IMPL((name<T,I>), implementedConcepts)
+ *
  * @param implementedConcepts Identifiers of concepts that are fulfilled by the model.  This is a sequence of the
  *                            Boost Preprocessor Library, read <a
  *                            href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
@@ -798,7 +802,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @code{.cpp}
  * template <typename TValue, typename TSpec>
- * SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
+ * SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));
  * @endcode
  */
 
@@ -807,11 +811,12 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 ..cat:Concepts
 ..summary:Defines which concepts a model fulfills.
 ..signature:
-template<> 
-SEQAN_CONCEPT_IMPL(implementedConcepts, name)
+template<>  // required, even if name has no template arguments
+SEQAN_CONCEPT_IMPL((name), implementedConcepts)
 
 template<typename T, int I>
-SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
+SEQAN_CONCEPT_IMPL((name<T,I>), implementedConcepts)
+..param.name:Model type, i.e. an identifier or an identifier with template arguments.
 ..param.implementedConcepts:Identifiers of concepts that are fulfilled by the model.
 ..param.name:Model type, i.e. an identifier or an identifier with template arguments.
 ...remarks:This is a sequence of the Boost Preprocessor Library, read @http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html|more@.
@@ -819,20 +824,34 @@ SEQAN_CONCEPT_IMPL(implementedConcepts, name<T,I>)
 A model of a concept must pass the concept check via @Macro.SEQAN_CONCEPT_ASSERT@.
 ..example.code:
 template <typename TValue, typename TSpec>
-SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));
 ..include:seqan/basic.h
  */
 
-# define SEQAN_CONCEPT_IMPL(implementedConcepts, ...)                                                   \
-    struct Implements<__VA_ARGS__>                                                                      \
+
+// STRIP_PARENS macro by Steven Watanabe (http://lists.boost.org/boost-users/2010/08/61429.php)
+#define SEQAN_APPLY(macro, args) SEQAN_APPLY_I(macro, args)
+#define SEQAN_APPLY_I(macro, args) macro args
+#define SEQAN_STRIP_PARENS(x) SEQAN_EVAL((SEQAN_STRIP_PARENS_I x), x)
+#define SEQAN_STRIP_PARENS_I(...) 1,1
+#define SEQAN_EVAL(test, x) SEQAN_EVAL_I(test, x)
+#define SEQAN_EVAL_I(test, x) SEQAN_MAYBE_STRIP_PARENS(SEQAN_TEST_ARITY test, x)
+#define SEQAN_TEST_ARITY(...) SEQAN_APPLY(SEQAN_TEST_ARITY_I, (__VA_ARGS__, 2, 1))
+#define SEQAN_TEST_ARITY_I(a,b,c,...) c
+#define SEQAN_MAYBE_STRIP_PARENS(cond, x) SEQAN_MAYBE_STRIP_PARENS_I(cond, x)
+#define SEQAN_MAYBE_STRIP_PARENS_I(cond, x) SEQAN_PP_CAT(SEQAN_MAYBE_STRIP_PARENS_, cond)(x)
+#define SEQAN_MAYBE_STRIP_PARENS_1(x) x
+#define SEQAN_MAYBE_STRIP_PARENS_2(x) SEQAN_APPLY(SEQAN_MAYBE_STRIP_PARENS_2_I, x)
+#define SEQAN_MAYBE_STRIP_PARENS_2_I(...) __VA_ARGS__
+
+# define SEQAN_CONCEPT_IMPL(model, implementedConcepts)                                                 \
+    struct Implements<SEQAN_STRIP_PARENS(model)>                                                        \
     {                                                                                                   \
-        typedef __VA_ARGS__ TModel;                                                                     \
         typedef                                                                                         \
-            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,(TModel),implementedConcepts)             \
+            SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_LIST_prefix,model,implementedConcepts)                \
             SEQAN_PP_REPEAT(SEQAN_PP_SEQ_SIZE(implementedConcepts),SEQAN_CONCEPT_LIST_suffix,~) Type;   \
     }
 
-    
 // helper for the SEQAN_CONCEPT, above.
 # define SEQAN_CONCEPT_typename(r, ignored, index, t) \
     SEQAN_PP_COMMA_IF(index) typename t
@@ -841,7 +860,7 @@ SEQAN_CONCEPT_IMPL((StringConcept), String<TValue, TSpec>);
 # define SEQAN_CONCEPT_REFINE_superclass(r, params, index, t) \
     SEQAN_PP_COMMA_IF(index) t<SEQAN_PP_SEQ_ENUM(params)>
 # define SEQAN_CONCEPT_LIST_prefix(r, params, index, t) \
-    SEQAN_PP_COMMA_IF(index) TagList<t<SEQAN_PP_SEQ_ENUM(params)>
+    SEQAN_PP_COMMA_IF(index) TagList<t<SEQAN_STRIP_PARENS(params)>
 # define SEQAN_CONCEPT_LIST_suffix(z, n, text) > 
 
 // ============================================================================
@@ -907,7 +926,7 @@ void sameType(T, T) { }
  * @section Examples
  * 
  * @code{.cpp}
- * Is<SequenceConcept<TSeq> >::Type
+ * Is<StringConcept<TSeq> >::Type
  * IfC<Is<ContainerConcept<TSeq> >::VALUE, T1, T2>::Type
  *  
  * std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;     // 1
@@ -926,9 +945,12 @@ void sameType(T, T) { }
  * SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
  * SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
  *  
- * SEQAN_CONCEPT_IMPL((ConceptA)(ConceptB), Alice);
- * SEQAN_CONCEPT_IMPL((ConceptC), Bob);
- *  
+ * template<>   // Alice has no template arguments
+ * SEQAN_CONCEPT_IMPL(Alice, (ConceptA)(ConceptB));
+ *
+ * template<>   // Bob has no template arguments
+ * SEQAN_CONCEPT_IMPL(Bob, (ConceptC));
+ *
  * std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
  * std::cout << Is< ConceptB<Alice> >::VALUE << std::endl; // 1
  * std::cout << Is< ConceptC<Alice> >::VALUE << std::endl; // 0
@@ -957,7 +979,7 @@ void sameType(T, T) { }
 If @Tag.Logical Values.tag.True@/$true$ is returned, $TConcept$ must pass the concept test via @Macro.SEQAN_CONCEPT_ASSERT@.
 It can be used to switch between different implementations depending on the concept of a type, or in combination with @Macro.SEQAN_FUNC_ENABLE_IF@ to make a function only visible to types of certain concepts.
 ..example.code:
-Is<SequenceConcept<TSeq> >::Type
+Is<StringConcept<TSeq> >::Type
 IfC<Is<ContainerConcept<TSeq> >::VALUE, T1, T2>::Type
 
 std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;     // 1
@@ -973,10 +995,11 @@ SEQAN_CONCEPT(ConceptB, (T)) {};
 SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
 SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
 
-template <>
-SEQAN_CONCEPT_IMPL((ConceptA)(ConceptB), Alice);
-template <>
-SEQAN_CONCEPT_IMPL((ConceptC), Bob);
+template<>
+SEQAN_CONCEPT_IMPL(Alice, (ConceptA)(ConceptB));
+
+template<> 
+SEQAN_CONCEPT_IMPL(Bob, (ConceptC));
 
 std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
 std::cout << Is< ConceptB<Alice> >::VALUE << std::endl; // 1
