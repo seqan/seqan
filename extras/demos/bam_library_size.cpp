@@ -149,11 +149,11 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     libInfo.defaultOrient = orientations[orientMax];
 
     // Trim off the chimera peak in mate-pair libraries.
-    if (libInfo.defaultOrient == LibraryInfo::R_MINUS && (runningMean / pairCount) >= 1000u)
+    if ((libInfo.defaultOrient == LibraryInfo::R_MINUS) && (pairCount > 0) && (runningMean / pairCount) >= 1000u)
     {
         typedef TVecISize::const_iterator TVecISizeIter;
         TVecISize vecISizeTmp;
-        for(TVecISizeIter it = vecISize.begin(); it < vecISize.end(); ++it)
+        for (TVecISizeIter it = vecISize.begin(); it < vecISize.end(); ++it)
             if (*it > 1000)
                 vecISizeTmp.push_back(*it);
         std::swap(vecISize, vecISizeTmp);

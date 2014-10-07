@@ -341,14 +341,17 @@ typedef TagList<int,
 
 struct BamAlignmentRecordCore
 {
-    __int32 rID;
-    __int32 beginPos;
-    __uint32 _l_qname:8, mapQ:8, bin:16;
-    __uint32 _n_cigar:16, flag:16;
-    __int32 _l_qseq;  // _l_qname, _n_cigar and _l_qseq for internal usage
-    __int32 rNextId;
-    __int32 pNext;
-    __int32 tLen;
+            __int32 rID;
+            __int32 beginPos;
+    mutable __uint32 _l_qname:8;
+            __uint32 mapQ:8;
+    mutable __uint32 bin:16;
+    mutable __uint32 _n_cigar:16;
+            __uint32 flag:16;
+    mutable __int32 _l_qseq;  // _l_qname, _n_cigar and _l_qseq for internal usage
+            __int32 rNextId;
+            __int32 pNext;
+            __int32 tLen;
 };
 
 class BamAlignmentRecord : public BamAlignmentRecordCore

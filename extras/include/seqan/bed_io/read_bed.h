@@ -152,9 +152,8 @@ _readBedRecordNoData(BedRecord<Bed3> & record,
     // TODO(singer): Realy __int32 for a position ???
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    // TODO(singer): WHy - 1???
-    // "chromStart - The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0." from UCSC
-    record.beginPos = lexicalCast<__int32>(buffer) - 1;
+    // NB: in contrast to many other text-based formats, UCSC BED uses 0-based and not 1-based coordinates.
+    record.beginPos = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read END.
@@ -240,7 +239,7 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     // Read THICK BEGIN
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.thickBegin = lexicalCast<__int32>(buffer) - 1;
+    record.thickBegin = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read THICK END
@@ -289,13 +288,12 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     {
         clear(buffer);
         readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-        appendValue(record.blockBegins, lexicalCast<int>(buffer) - 1);
+        appendValue(record.blockBegins, lexicalCast<int>(buffer));
         skipOne(iter);
     }
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
-    appendValue(record.blockBegins, lexicalCast<int>(buffer) - 1);
-    // TODO(singer): Why can there be more columns than 12???
+    appendValue(record.blockBegins, lexicalCast<int>(buffer));
     if (isNewline(value(iter)))
     {
         skipLine(iter);

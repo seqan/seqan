@@ -680,7 +680,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setDate(parser, SEQAN_DATE);
 #endif
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "DATABASE", true));
     setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "Database files in Fasta/Fastq or text format (lines are strings).");
 

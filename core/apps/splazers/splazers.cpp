@@ -315,10 +315,10 @@ int main(int argc, const char *argv[])
     setVersion(parser, "1.1");
     setDate(parser, "Apr 2011" );
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
     std::vector<std::string> exts = seqan::SeqFileIn::getFileFormatExtensions();
     exts.push_back(".sam");
     setValidValues(parser, 1, exts);

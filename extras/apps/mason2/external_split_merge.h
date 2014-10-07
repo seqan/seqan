@@ -122,7 +122,7 @@ public:
     unsigned numContigs;
 
     // The file pointers for each contig.
-    std::vector<FILE *> files;
+    std::vector<std::fstream *> files;
     // The names of the temporary files (required on Windows).
     std::vector<std::string> fileNames;
 
@@ -161,8 +161,8 @@ template <typename TTag>
 class FastxJoiner
 {
 public:
-    // The type of the record reader to use.
-    typedef seqan::RecordReader<FILE *, seqan::SinglePass<> > TReader;
+    // The type of the input iterator to use.
+    typedef typename seqan::DirectionIterator<std::fstream, seqan::Input>::Type TInputIterator;
 
     // The IdSplitter to use.
     IdSplitter * splitter;
@@ -172,8 +172,8 @@ public:
     seqan::StringSet<seqan::CharString> ids, seqs, quals;
     // Maps files for activeness.
     std::vector<bool> active;
-    // Record reads, one for each input file.
-    std::vector<TReader *> readers;
+    // Input iterators, one for each input file.
+    std::vector<TInputIterator> inputIterators;
 
     FastxJoiner() : splitter(), numActive(0)
     {}
@@ -181,13 +181,6 @@ public:
     FastxJoiner(IdSplitter & splitter) : splitter(&splitter), numActive(0)
     {
         _init();
-    }
-
-    ~FastxJoiner()
-    {
-        for (unsigned i = 0; i < readers.size(); ++i)
-            delete readers[i];
-        readers.clear();
     }
 
     void _init();
@@ -218,9 +211,6 @@ public:
 class SamJoiner
 {
 public:
-    // The type of the record reader to use.
-    typedef seqan::RecordReader<FILE *, seqan::SinglePass<> > TReader;
-
     // The IdSplitter to use.
     IdSplitter * splitter;
     // Number of active files.
@@ -229,33 +219,28 @@ public:
     seqan::String<seqan::BamAlignmentRecord> records;
     // Maps files for activeness.
     std::vector<bool> active;
-    // Record reads, one for each input file.
-    std::vector<TReader *> readers;
+    // Input BAM files, one for each input file.
+    std::vector<seqan::BamFileIn *> bamFileIns;
 
     // One of the identical BAM headers.
     seqan::BamHeader header;
-    // The reference sequence name store and cache.
-    seqan::StringSet<seqan::CharString> nameStore;
-    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > nameStoreCache;
-    seqan::BamIOContext<seqan::StringSet<seqan::CharString> > context;
 
-    SamJoiner() : splitter(), numActive(0), nameStoreCache(nameStore), context(nameStore, nameStoreCache)
+    SamJoiner() : splitter(), numActive(0)
     {}
 
-    SamJoiner(IdSplitter & splitter) :
-            splitter(&splitter), numActive(0), nameStoreCache(nameStore), context(nameStore, nameStoreCache)
+    SamJoiner(IdSplitter & splitter, seqan::BamFileOut * outPtr) :
+            splitter(&splitter), numActive(0)
     {
-        init();
+        init(outPtr);
     }
 
     ~SamJoiner()
     {
-        for (unsigned i = 0; i < readers.size(); ++i)
-            delete readers[i];
-        readers.clear();
+        for (unsigned i = 0; i < bamFileIns.size(); ++i)
+            delete bamFileIns[i];
     }
 
-    void init();
+    void init(seqan::BamFileOut * outPtr);
 
     bool _loadNext(seqan::BamAlignmentRecord & record, unsigned idx);
 
@@ -290,7 +275,7 @@ void FastxJoiner<TTag>::_init()
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        readers.push_back(new TReader(splitter->files[i]));
+        inputIterators.push_back(directionIterator(*splitter->files[i], seqan::Input()));
         active[i] = _loadNext(ids[i], seqs[i], quals[i], i);
         numActive += (active[i] != false);
     }
@@ -304,13 +289,9 @@ template <typename TTag>
 template <typename TSeq>
 bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned idx)
 {
-    if (seqan::atEnd(*readers[idx]))
+    if (seqan::atEnd(inputIterators[idx]))
         return false;
-    if (readRecord(id, seq, qual, *readers[idx], TTag()) != 0)
-    {
-        std::cerr << "ERROR: Problem reading temporary data.\n";
-        exit(1);
-    }
+    readRecord(id, seq, qual, inputIterators[idx], TTag());
     return true;
 }
 

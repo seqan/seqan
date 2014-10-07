@@ -182,25 +182,17 @@ void RoiBuilder::pushRecord(seqan::BamAlignmentRecord const & record)
 
 void RoiBuilder::writeHeader()
 {
-    out << "#ROI " << VERSION_ROI_H << "\n";
-
-    out << "##ref\t"
-        << "start\t"
-        << "end\t"
-        << "name\t"
-        << "length\t"
-        << "strand\t"
-        << "max_count\t"
-        << "num_reads\t"
-        << "gc_content\t"
-        << "counts\n";
+    seqan::RoiHeader header;
+    appendValue(header.extraColumns, "num_reads");
+    appendValue(header.extraColumns, "gc_content");
+    seqan::writeRecord(roiFileOut, header);
 }
 
 // ---------------------------------------------------------------------------
 // Member Function RoiBuilder::writeRecord()
 // ---------------------------------------------------------------------------
 
-int RoiBuilder::writeRecord(seqan::RoiRecord & record,
+int RoiBuilder::writeRecord(MyRoiRecord & record,
                             seqan::String<TProfileChar> const & profile)
 {
     // Compute maximal count.
@@ -230,11 +222,7 @@ int RoiBuilder::writeRecord(seqan::RoiRecord & record,
     snprintf(buffer, 99, "%4.4f", cgContent);
     appendValue(record.data, buffer);
 
-    if (seqan::writeRecord(out, record, seqan::Roi()) != 0)
-    {
-        std::cerr << "ERROR: Could not write to output file!\n";
-        return 1;
-    }
+    seqan::writeRecord(roiFileOut, record);
     return 0;
 }
 
@@ -283,7 +271,7 @@ int RoiBuilder::writeCurrentRecord()
         return writeRecord(currentRoi, currentProfile);
 
     // Write out connected components.
-    seqan::RoiRecord infixRecord;
+    MyRoiRecord infixRecord;
     seqan::String<TProfileChar> infixProfile;
     for (unsigned i = 0; i < length(pairs); ++i)
     {

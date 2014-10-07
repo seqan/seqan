@@ -346,7 +346,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
                    "tweaking various parameters.");
 
     addSection(parser, "Main Options");
-    addOption(parser, seqan::ArgParseOption("s", "seq", "FASTA file with two sequences.", seqan::ArgParseOption::INPUTFILE, "IN"));
+    addOption(parser, seqan::ArgParseOption("s", "seq", "FASTA file with two sequences.", seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "seq");
     setValidValues(parser, "seq", getFileFormatExtensions(Fasta()));
     addOption(parser, seqan::ArgParseOption("a", "alphabet", "Sequence alphabet.", seqan::ArgParseOption::STRING, "ALPHABET"));

@@ -234,7 +234,8 @@ public:
 
     Iter(TObject & _original) :
         orig(_original),
-        minDist(0)
+        minDist(0),
+        trim(true)
     {
         goBegin(*this);
     }
@@ -249,7 +250,8 @@ public:
 
     Iter(TObject & _original, MinimalCtor) :
         orig(_original),
-        minDist(0) {}
+        minDist(0),
+        trim(true) {}
 
     Iter(TObject & _original, unsigned _minDist, bool _trim, MinimalCtor) :
         orig(_original),
@@ -298,6 +300,7 @@ public:
     Iter(TObject & _original) :
         orig(_original),
         minDist(0),
+        currentDistance(0),
         trim(true)
     {
         goBegin(*this);
@@ -306,6 +309,7 @@ public:
     Iter(TObject & _original, unsigned _minDist, bool _trim) :
         orig(_original),
         minDist(_minDist),
+        currentDistance(0),
         trim(_trim)
     {
         goBegin(*this);
@@ -313,11 +317,14 @@ public:
 
     Iter(TObject & _original, MinimalCtor) :
         orig(_original),
-        minDist(0) {}
+        minDist(0),
+        currentDistance(0),
+        trim(true) {}
 
     Iter(TObject & _original, unsigned _minDist, bool _trim, MinimalCtor) :
         orig(_original),
         minDist(_minDist),
+        currentDistance(0),
         trim(_trim) {}
 
     inline bool _reinit(int pos, int posOrig)

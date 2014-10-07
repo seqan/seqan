@@ -114,17 +114,17 @@ struct MagicHeader<Raw, T> :
 template <typename T>
 struct FileFormatExtensions<Fasta, T>
 {
-    static char const * VALUE[6];
+    static char const * VALUE[2];
 };
 template <typename T>
-char const * FileFormatExtensions<Fasta, T>::VALUE[6] =
+char const * FileFormatExtensions<Fasta, T>::VALUE[2] =
 {
     ".fa",      // default output extension
-    ".fasta",
-    ".faa",     // FASTA Amino Acid file
-    ".ffn",     // FASTA nucleotide coding regions file
-    ".fna",     // FASTA Nucleic Acid file
-    ".frn"
+    ".fasta"
+//    ".faa",     // FASTA Amino Acid file
+//    ".ffn",     // FASTA nucleotide coding regions file
+//    ".fna",     // FASTA Nucleic Acid file
+//    ".frn"
 };
 
 
@@ -144,13 +144,13 @@ char const * FileFormatExtensions<Fastq, T>::VALUE[2] =
 template <typename T>
 struct FileFormatExtensions<Raw, T>
 {
-    static char const * VALUE[2];
+    static char const * VALUE[1];
 };
 template <typename T>
-char const * FileFormatExtensions<Raw, T>::VALUE[2] =
+char const * FileFormatExtensions<Raw, T>::VALUE[1] =
 {
-    ".txt",     // default output extension
-    ".seq"
+    ".txt"      // default output extension
+//    ".seq"
 };
 
 // ----------------------------------------------------------------------------

@@ -54,48 +54,125 @@ typedef Tag<Roi_> Roi;
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Roi, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<Roi, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<Roi, T>::VALUE[1] =
+{
+    ".roi"     // default output extension
+};
+
+
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [RoiRecord]
+// Function readRecord()                                            [RoiHeader]
 // ----------------------------------------------------------------------------
 
-// TODO(singer): get rid of internal buffers!
-
-// Variant without NameStoreCache.
-
 template <typename TForwardIter>
-inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*tag*/)
+void readRecord(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
 {
     typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 
-    CharString buffer;
+    // skip first hash
+    skipOne(iter, EqualsChar<'#'>());
+    if (!atEnd(iter) && *iter != '#')
+        skipLine(iter);  // skip ROI line if any.
+
+    // check if column header present
+    if (!atEnd(iter) && *iter != '#')
+        return;  // no header
+    // skip run of hashes
+    skipUntil(iter, NotFunctor<EqualsChar<'#'> >());
+
+    // skip REF\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip START\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip END\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip NAME\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip LENGTH\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip STRAND\t
+    skipUntil(iter, TNextEntry());
+    skipOne(iter, EqualsChar<'\t'>());
+
+    // skip MAX_COUNT
+    skipUntil(iter, TNextEntry());
+
+    do
+    {
+        resize(header.extraColumns, length(header.extraColumns) + 1);
+        skipOne(iter, EqualsChar<'\t'>());
+        readUntil(header.extraColumns[length(header.extraColumns) - 1], iter, TNextEntry());
+    }
+    while (!atEnd(iter) && !IsNewline()(*iter));
+
+    resize(header.extraColumns, length(header.extraColumns) - 1);
+    skipLine(iter);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord()                                            [RoiRecord]
+// ----------------------------------------------------------------------------
+
+template <typename TForwardIter>
+void readRecord(RoiRecord & record, RoiIOContext & context, TForwardIter & iter, Roi const & /*tag*/)
+{
+    typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 
     // Read reference name.
     clear(record.ref);
     readUntil(record.ref, iter, TNextEntry());
-    record.rID = RoiRecord::INVALID_REFID;
 
     // Skip TAB.
     skipOne(iter, IsTab());
 
     // Read and parse start position.
-    clear(buffer);
-    readUntil(buffer, iter, TNextEntry());
-    if (!lexicalCast(record.beginPos, buffer))
-        throw BadLexicalCast(record.beginPos, buffer);
+    clear(context.buffer);
+    readUntil(context.buffer, iter, TNextEntry());
+    if (!lexicalCast(record.beginPos, context.buffer))
+        throw BadLexicalCast(record.beginPos, context.buffer);
     record.beginPos -= 1;  // transform to 0-based
 
     // Skip TAB.
     skipOne(iter, IsTab());
 
     // Read and parse end position.
-    clear(buffer);
-    readUntil(buffer, iter, TNextEntry());
-    if (!lexicalCast(record.endPos, buffer))
-        throw BadLexicalCast(record.endPos, buffer);
+    clear(context.buffer);
+    readUntil(context.buffer, iter, TNextEntry());
+    if (!lexicalCast(record.endPos, context.buffer))
+        throw BadLexicalCast(record.endPos, context.buffer);
 
     // Skip TAB.
     skipOne(iter, IsTab());
@@ -108,10 +185,10 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
     skipOne(iter, IsTab());
 
     // Read and parse region length.
-    clear(buffer);
-    readUntil(buffer, iter, TNextEntry());
-    if (!lexicalCast(record.len, buffer))
-        throw BadLexicalCast(record.len, buffer);
+    clear(context.buffer);
+    readUntil(context.buffer, iter, TNextEntry());
+    if (!lexicalCast(record.len, context.buffer))
+        throw BadLexicalCast(record.len, context.buffer);
 
     // Skip TAB.
     skipOne(iter, IsTab());
@@ -123,10 +200,10 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
     skipOne(iter, IsTab());
 
     // Read max count.
-    clear(buffer);
-    readUntil(buffer, iter, TNextEntry());
-    if (!lexicalCast(record.countMax, buffer))
-        throw BadLexicalCast(record.countMax, buffer);
+    clear(context.buffer);
+    readUntil(context.buffer, iter, TNextEntry());
+    if (!lexicalCast(record.countMax, context.buffer))
+        throw BadLexicalCast(record.countMax, context.buffer);
 
     // Skip TAB.
     skipOne(iter, IsTab());
@@ -134,63 +211,40 @@ inline void readRecord(RoiRecord & record, TForwardIter & iter, Roi const & /*ta
     // Read data field.
     do
     {
-        clear(buffer);
-        readUntil(buffer, iter, TNextEntry());
+        clear(context.buffer);
+        readUntil(context.buffer, iter, TNextEntry());
         if (!atEnd(iter))
         {
-            if(!IsNewline()(value(iter)))
-                appendValue(record.data, buffer);
+            if (!IsNewline()(value(iter)))
+                appendValue(record.data, context.buffer);
+            else
+                break;
 
             skipOne(iter);
         }
-        else
-            break;
-
     }
     while (true);
-
-    // TODO(holtgrew): Read additional information.
+    skipLine(iter);
 
     // Individual counts.
     clear(record.count);
-    CharString castBuffer;
-    DirectionIterator<String<char>, Input>::Type castIter = begin(buffer);
+    DirectionIterator<String<char>, Input>::Type castIter = begin(context.buffer);
 
     while (!atEnd(castIter))
     {
-        clear(castBuffer);
-        readUntil(castBuffer, castIter, OrFunctor<EqualsChar<','>, IsNewline>());
-        if (!empty(castBuffer))
+        clear(context.castBuffer);
+        readUntil(context.castBuffer, castIter, OrFunctor<EqualsChar<','>, IsNewline>());
+        if (!empty(context.castBuffer))
         {
             unsigned count = 0;
-            if (!lexicalCast(count, castBuffer))
-                throw BadLexicalCast(count, castBuffer);
+            if (!lexicalCast(count, context.castBuffer))
+                throw BadLexicalCast(count, context.castBuffer);
             appendValue(record.count, count);
             record.countMax = std::max(record.countMax, back(record.count));
         }
         if (!atEnd(castIter))
             skipOne(castIter);
     }
-}
-
-// Variant with NameStoreCache.
-
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache>
-inline void readRecord(RoiRecord & record,
-               TForwardIter & iter,
-               RoiIOContext<TNameStore, TNameStoreCache> & context,
-               Roi const & tag)
-{
-    readRecord(record, iter, tag);
-    
-    // Translate chrom to rID using the context.  If there is no such sequence name in the context yet then we add it.
-    unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
-    {
-        idx = length(nameStore(context));
-        appendName(nameStore(context), record.ref, nameStoreCache(context));
-    }
-    record.rID = idx;
 }
 
 }  // namespace seqan

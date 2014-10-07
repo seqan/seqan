@@ -721,15 +721,15 @@ int main(int argc, const char *argv[])
     setVersion(parser, "1.0");
     setDate(parser, "Jul 2011" );
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME", true));
 
     //////////////////////////////////////////////////////////////////////////////
     // Define options
 
     addSection(parser, "Main Options:");
 
-    addOption(parser, ArgParseOption("ip", "input-predicted", "Input GFF file that contains predicted variants", ArgParseOption::INPUTFILE));
-    addOption(parser, ArgParseOption("ir", "input-reference", "Input GFF file that contains reference variants", ArgParseOption::INPUTFILE));
+    addOption(parser, ArgParseOption("ip", "input-predicted", "Input GFF file that contains predicted variants", ArgParseOption::INPUT_FILE));
+    addOption(parser, ArgParseOption("ir", "input-reference", "Input GFF file that contains reference variants", ArgParseOption::INPUT_FILE));
 
 	addOption(parser, ArgParseOption("pt",  "position-tolerance",   "Position tolerance in bp (for indel comparison)", ArgParseOption::DOUBLE));
     setMinValue(parser, "position-tolerance", "0");   
@@ -745,7 +745,7 @@ int main(int argc, const char *argv[])
 
     addSection(parser, "Output Options:");
 
-    addOption(parser, ArgParseOption("r", "ranges", "File containing ranges of indel sizes to inspect separately (specifying [rangeBegin,rangeEnd) intervals, see example file ranges.txt)", ArgParseOption::INPUTFILE));
+    addOption(parser, ArgParseOption("r", "ranges", "File containing ranges of indel sizes to inspect separately (specifying [rangeBegin,rangeEnd) intervals, see example file ranges.txt)", ArgParseOption::INPUT_FILE));
     addOption(parser, ArgParseOption("o", "output", "Indel output filename", ArgParseOption::OUTPUTFILE));
     addOption(parser, ArgParseOption("on", "outputFN", "Output filename for false negative reference indels", ArgParseOption::OUTPUTFILE));
     addOption(parser, ArgParseOption("os", "outputSnp", "SNP output filename", ArgParseOption::OUTPUTFILE));

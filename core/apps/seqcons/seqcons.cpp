@@ -54,13 +54,13 @@ seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, 
 
 
 	addSection(parser, "Main Options:");
-	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::INPUTFILE, "<FASTA reads file>"));
+	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::INPUT_FILE, "<FASTA reads file>"));
     setValidValues(parser, "reads", "fa fasta");
-	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::INPUTFILE, "<AMOS afg file>"));
+	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::INPUT_FILE, "<AMOS afg file>"));
     setValidValues(parser, "afg", "afg");
-	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::INPUTFILE, "<Sam file>"));
+	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::INPUT_FILE, "<Sam file>"));
     setValidValues(parser, "s", "sam");
-	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUTFILE, "<FASTA contigs file>"));
+	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUT_FILE, "<FASTA contigs file>"));
     setValidValues(parser, "contigs", "fa fasta");
 	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUTFILE, "<Filename>"));
 	setValidValues(parser, "outfile", "afg seqan cgb sam");

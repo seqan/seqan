@@ -94,44 +94,53 @@ struct NameStoreLess_
 /*!
  * @class NameStoreCache
  * @headerfile <seqan/misc/misc_name_store_cache.h>
- * @brief Stores a mapping from names to ids.
+ * @brief Fast mapping from string names to numeric ids.
+ *
+ * NameStore objects store a binary search tree (using <tt>std::map&lt;&gt;</tt>) on a @link StringSet @endlink (the
+ * name store).  They store a pointer to this name store but not the name store itself.
+ *
+ * When adding values to the name store using @link NameStoreCache#appendName @endlink, the cache (i.e, the binary
+ * search tree) is automatically updated.  When modifying the name store when not using @link NameStoreCache#appendName
+ * @endlink, you have to use @link NameStoreCache#refresh @endlink to update the cache after modifying and before
+ * querying.
+ *
+ * The fast lookups can be performed using @link NameStoreCache#getIdByName @endlink and @link NameStoreCache#nameToId
+ * @endlink.  The query function @link NameStoreCache#nameToId @endlink, the cache can also be modified (and thus
+ * updated).
  *
  * @signature template <typename TNameStore[, typename TName]>
  *            class NameStoreCache;
  *
- * @tparam TNameStore The type to use for the name store.  Usually a @link StringSet @endlink.
- * @tparam TName      The type to use for the names.  Defaults to <tt>Value&lt;TNameStore&gt;::Type</tt>.
+ * @tparam TNameStore The type to use for the name store.  Usually a @link StringSet @endlink of
+ *                    @link CharString @endlink.
+ * @tparam TName      The type to use for the names, defaults to <tt>Value&lt;TNameStore&gt;::Type</tt>.
  *
+ * @section Example
  *
- * @fn NameStoreCache::NameStoreCache
- * @brief Constructor
+ * The demo below shows how to initialize a NameStoreCache with an existing name store, lookup existing names, add new
+ * names, and add names during lookup.
  *
- * @signature NameStoreCache::NameStoreCache(nameStore);
+ * @include demos/misc/name_store_cache.cpp
  *
- * @param[in] nameStore The name store to manage the cache for.
+ * Here is the output:
+ *
+ * @include demos/misc/name_store_cache.cpp.stdout
  */
 
-/**
-.Class.NameStoreCache
-..summary:Stores a mapping from names to ids.
-..cat:Fragment Store
-..signature:FragmentStore<>
-..signature:NameStoreCache<TNameStore[, TName]>
-..param.TNameStore:The name store to be cached.
-...see:Class.FragmentStore
-..param.TName:The name type.
-...default:$Value<TNameStore>::Type$
-...type:Shortcut.CharString
+/*!
+ * @fn NameStoreCache::NameStoreCache
+ * @brief Constructors.
+ *
+ * NameStore cache offers the default constructor, copy constructor, and construction using an existing name store.
+ *
+ * @signature NameStoreCache::NameStoreCache();
+ * @signature NameStoreCache::NameStoreCache(other);
+ * @signature NameStoreCache::NameStoreCache(nameStore);
+ *
+ * @param[in] other     The other NameStoreCache to copy from.
+ * @param[in] nameStore A NameStore for which a pointer is stored.
+ */
 
-.Memfunc.NameStoreCache#NameStoreCache
-..summary:Constructor
-..signature:NameStoreCache<TNameStore, TName> (nameStore)
-..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
-...see:Class.FragmentStore
-..class:Class.NameStoreCache
-..include:seqan/store.h
-*/
-	
 template <typename TNameStore, typename TName = typename Value<TNameStore>::Type>
 class NameStoreCache
 {
@@ -189,16 +198,16 @@ host(NameStoreCache<TNameStore, TName> const & cache)
 }
 
 // ----------------------------------------------------------------------------
-// refresh()
+// Function clear()
 // ----------------------------------------------------------------------------
 
 /*!
  * @fn NameStoreCache#clear
- * @brief Clears a NameStoreCache.
+ * @brief Reset the NameStoreCache (not the name store).
  *
  * @signature void clear(cache);
  *
- * @param[in,out] nameStore The NameStoreCache to clear.
+ * @param[in,out] cache The NameStoreCache to clear.
  */
 
 template <typename TNameStore, typename TName>
@@ -208,6 +217,21 @@ clear(NameStoreCache<TNameStore, TName> &cache)
     cache.nameSet.clear();
 }
 
+// ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn NameStoreCache#empty
+ * @brief Query whether there are any entries in the cache (not the name store).
+ *
+ * @signature bool empty(cache);
+ *
+ * @param[in,out] cache The NameStoreCache to clear.
+ *
+ * @return bool <tt>true</tt> if the NameStoreCache is empty.
+ */
+
 template <typename TNameStore, typename TName>
 inline bool
 empty(NameStoreCache<TNameStore, TName> const &cache)
@@ -215,13 +239,19 @@ empty(NameStoreCache<TNameStore, TName> const &cache)
     return cache.nameSet.empty();
 }
 
+// ----------------------------------------------------------------------------
+// Function refresh()
+// ----------------------------------------------------------------------------
+
 /*!
  * @fn NameStoreCache#refresh
- * @brief Recreate a NameStoreCache.
+ * @brief Rebuild the name store cache.
+ *
+ * Use this after modifying the underlying NameStore before querying.
  *
  * @signature void refresh(cache);
  *
- * @param[in,out] nameStore The NameStoreCache to refresh.
+ * @param[in,out] nameStore The NameStoreCache to rebuild.
  */
 
 template <typename TNameStore, typename TName>
@@ -234,110 +264,73 @@ refresh(NameStoreCache<TNameStore, TName> &cache)
 }
 
 // ----------------------------------------------------------------------------
-// appendName()
+// Function appendName()
 // ----------------------------------------------------------------------------
 
 /*!
  * @fn NameStoreCache#appendName
  * @brief Append a name to a name store and register it in the cache.
  *
- * @signature void appendName(nameStore, name, cache);
+ * The NameStoreCache only registers update to the name store when performed by this function.
  *
- * @param[in,out] nameStore The name store to append the name to.
- * @param[in]     name      The name to append to the store.
+ * @signature void appendName(cache, name);
+ *
  * @param[in,out] cache     The NameStoreCache to use for faster access.
+ * @param[in]     name      The name to append to the store (@link ContainerConcept#Value @endlink of
+ *                          <tt>TNameStore</tt>).
  */
 
-/**
-.Function.appendName:
-..summary:Appends a name to a name store.
-..cat:Fragment Store
-..signature:appendName(nameStore, name[, cache])
-..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
-...see:Class.FragmentStore
-..param.name:The name to be appended.
-...type:Shortcut.CharString
-..param.cache:A structure to efficiently retrieve the id for a given name. See @Function.getIdByName@.
-...default:Tag.Nothing
-...type:Class.NameStoreCache
-..see:Function.getIdByName
-..include:seqan/store.h
-*/
-
 template <typename TNameStore, typename TName>
-inline void
-appendName(TNameStore &nameStore, TName const & name)
+void appendName(TNameStore & nameStore, TName const & name)
 {
     appendValue(nameStore, name, Generous());
 }
 
 template <typename TCNameStore, typename TCName, typename TName>
-inline void
-appendName(NameStoreCache<TCNameStore, TCName> &cache, TName const & name)
+void appendName(NameStoreCache<TCNameStore, TCName> & cache, TName const & name)
 {
     appendValue(host(cache), name, Generous());
     cache.nameSet.insert(length(host(cache)) - 1);
 }
 
+// TODO(holtgrew): Add deprecation annotation for compiler warnings.
+
 // deprecated.
 // In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
 template <typename TNameStore, typename TName, typename TContext>
-inline void
-appendName(TNameStore &nameStore, TName const & name, TContext &)
+void appendName(TNameStore &nameStore, TName const & name, TContext &)
 {
     appendName(nameStore, name);
 }
 
 // deprecated.
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
-inline void
-appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
+void appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
     appendValue(nameStore, name, Generous());
     context.nameSet.insert(length(nameStore) - 1);
 }
 
 // ----------------------------------------------------------------------------
-// getIdByName()
+// Function getIdByName()
 // ----------------------------------------------------------------------------
 
 /*!
  * @fn NameStoreCache#getIdByName
  * @brief Get id/index of a string in a name store using a NameStoreCache.
  *
- * @signature bool getIdByName(nameStore, name, idx[, cache]);
+ * @signature bool getIdByName(idx, name, cache);
  *
- * @param[in]     nameStore The name store to search the name in (<tt>TNameStore</tt>).
+ * @param[out]    idx       The variable to store the index in the store of (@link IntegerConcept @endlink).
  * @param[in]     name      The name to search in the name store (@link ContainerConcept#Value @endlink of
  *                          <tt>TNameStore</tt>).
- * @param[out]    idx       The variable to store the id/index at (@link IntegerConcept @endlink).
- * @param[in,out] cache     The NameStoreCache to use for speeding up the lookup.  If omitted then a linear
- *                          search is used.
+ * @param[in]     cache     The NameStoreCache to use for speeding up the lookup.
  *
  * @return bool <tt>true</tt> if the name could be found and <tt>false</tt> otherwise.
  */
 
-/**
-.Function.getIdByName:
-..summary:Get the id/index of a string in a name store with a cache.
-..cat:Fragment Store
-..signature:getIdByName(nameStore, name, id[, cache])
-..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
-...see:Class.FragmentStore
-..param.name:The name to be searched.
-...type:Shortcut.CharString
-..param.id:The resulting id.
-..param.cache:A structure to efficiently retrieve the id for a given name. If ommited a brute force method is used to search.
-...default:Tag.Nothing
-...type:Class.NameStoreCache
-..returns:$true$ if the name was found and $false$ if not.
-..see:Function.getIdByName
-..include:seqan/store.h
-*/
-
-template <typename TNameStore, typename TName, typename TPos>
-inline bool
-getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
+template <typename TPos, typename TNameStore, typename TName>
+bool getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
 {
     typedef typename Iterator<TNameStore const, Standard>::Type TNameStoreIter;
     
@@ -402,9 +395,32 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
     return getIdByName(pos, context, name);
 }
 
+// ----------------------------------------------------------------------------
+// Function nametoId()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn NameStoreCache#nameToId
+ * @brief Translate a name to a numeric id, adding the name to the store and cache if new.
+ *
+ * @signature TPos nameToId(cache, name);
+ *
+ * @param[in,out] cache The NameStoreCache use for translating the name to a numeric id.
+ * @param[in]     name  The name to add (@link ContainerConcept#Value @endlink of <tt>TNameStore</tt>).
+ *
+ * @return TPos The numeric id of the name in the store and cache (@link ContainerConcept#Position Position @endlink of
+ *              <tt>TNameStore</tt>).
+ *
+ * @note Since <tt>cache</tt> is modified if <tt>name</tt> is not known in cache, it is a <b>non-const</b> parameter
+ *       for this function.
+ *
+ * If <tt>name</tt> is in <tt>cache</tt> then its numeric position/index/id in the name store is returned.  If it is not
+ * in the name store then it is appended to the name store and registered with the NameStoreCache.
+ */
+
 // Append contig name to name store, if not known already.
 template <typename TNameStore, typename TName, typename TName2>
-inline typename Position<TNameStore>::Type
+typename Position<TNameStore>::Type
 nameToId(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
 {
     typename Size<TNameStore>::Type nameId = 0;

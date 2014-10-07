@@ -2008,6 +2008,16 @@ TA
 ///.Function.goNext.param.iterator.type:Spec.TopDownHistory Iterator
 ///.Function.goNext.class:Spec.TopDownHistory Iterator
 
+// TODO(holtgrew): Dave needs to update this.
+/*!
+ * @fn VSTreeIterator#goNext
+ * @brief Go to next tree node.
+ *
+ * @signature void goNext(it);
+ *
+ * @param[in,out] it VSTreeIterator to advance.
+ */
+
 	template < typename TIndex, typename TSpec >
 	inline void goNext(Iter<TIndex, VSTree<TSpec> > &it) {
 		goNext(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree<TSpec> > >::Type());

@@ -330,7 +330,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     addDescription(parser, "(c) Copyright 2009 by Tobias Rausch");
 
     addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("s", "seq", "Name of multi-fasta input file.", ArgParseArgument::INPUTFILE));
+    addOption(parser, ArgParseOption("s", "seq", "Name of multi-fasta input file.", ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "seq", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
 
     addOption(parser, ArgParseOption("a", "alphabet", "The used sequence alphabet.", ArgParseArgument::STRING));
@@ -360,7 +360,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     addOption(parser,
               ArgParseOption("l", "libraries", "Name of match file. "
                              "To select multiple files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
 
@@ -371,16 +371,16 @@ _setUpArgumentParser(ArgumentParser & parser)
       addOption(parser,
               ArgParseOption("mu", "mummer", "Name of \\fIMUMmer\\fP match file. "
                              "To select multiple \\fIMUMmer\\fP files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     addOption(parser,
               ArgParseOption("al", "aln", "Name of \\fIFASTA\\fP align file."
                              "To select multiple \\fIFASTA\\fP files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     addOption(
             parser,
             ArgParseOption("li", "lib", "Name of \\fIT-Coffee\\fP library. "
                            "To select multiple \\fIT-Coffee\\fP libraries recall this option with different arguments.",
-                           ArgParseArgument::INPUTFILE, "", true));
+                           ArgParseArgument::INPUT_FILE, "", true));
      */
 
     addSection(parser, "Scoring Options:");
@@ -418,7 +418,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     addOption(
             parser,
             ArgParseOption("i", "infile", "Name of the alignment file <\\fIFASTA FILE\\fP>",
-                           ArgParseArgument::INPUTFILE));
+                           ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "infile", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
 
 }
