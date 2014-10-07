@@ -33,8 +33,10 @@
 // ==========================================================================
 // Thread-safe queue
 // ==========================================================================
-// TODO(weese:) We could replace the spinlocks by semaphores and suspend the
-//              waiting thread if the queue is empty or fixed-size and full.
+// This queue (almost) lock-free. It only uses spin-locks when the queue must
+// be resized or for blocking if the queue is full or empty.
+//
+// If the queue is often empty or full, the suspendable queue should be used.
 
 #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 #define SEQAN_PARALLEL_PARALLEL_QUEUE_H_
@@ -84,8 +86,10 @@ public:
     typedef typename Host<ConcurrentQueue>::Type                TString;
     typedef typename Size<TString>::Type                        TSize;
     typedef typename Atomic<TSize>::Type                        TAtomicSize;
-    typedef typename IsSameType<TSpec, Limit>::Type             TFixedCapacity;
-    typedef typename If<TFixedCapacity, Serial, Parallel>::Type TLockTag;
+    typedef typename If<typename IsSameType<TSpec, Limit>::Type,
+                        Serial,
+                        typename DefaultParallelSpec<ConcurrentQueue>::Type
+                     >::Type                                    TLockTag;
 
     TString                 data;
     mutable ReadWriteLock   lock;           char pad1[SEQAN_CACHE_LINE_SIZE - sizeof(ReadWriteLock)];
@@ -176,6 +180,16 @@ private:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction DefaultParallelSpec
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct DefaultParallelSpec<ConcurrentQueue<TValue, Serial> >
+{
+    typedef Serial Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -471,7 +485,7 @@ template <typename TValue, typename TSpec>
 inline bool
 tryPopFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
-    return tryPopFront(result, me, Parallel());
+    return tryPopFront(result, me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 // ----------------------------------------------------------------------------
@@ -570,7 +584,7 @@ template <typename TValue, typename TSpec>
 inline bool
 popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
 {
-    return popFront(result, me, Parallel());
+    return popFront(result, me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 /*!
@@ -608,7 +622,7 @@ template <typename TValue, typename TSpec>
 inline TValue SEQAN_FORWARD_RETURN
 popFront(ConcurrentQueue<TValue, TSpec> & me)
 {
-    return popFront(me, Parallel());
+    return popFront(me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 template <typename TValue, typename TSpec, typename TValue2>
@@ -641,7 +655,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
     typedef typename Size<TString>::Type                    TSize;
     typedef typename Iterator<TString, Standard>::Type      TIter;
 
-    bool queueIsResizable = IsSameType<TLockTag, Parallel>::VALUE;
+    bool queueIsResizable = !IsSameType<TLockTag, Limit>::VALUE;
     ignoreUnusedVariableWarning(queueIsResizable);
     SEQAN_ASSERT(queueIsResizable);
 
@@ -781,7 +795,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
             TValue2 SEQAN_FORWARD_CARG val,
             Tag<TExpand> expandTag)
 {
-    appendValue(me, SEQAN_FORWARD(TValue, val), expandTag, Parallel());
+    appendValue(me, SEQAN_FORWARD(TValue, val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 }  // namespace seqan

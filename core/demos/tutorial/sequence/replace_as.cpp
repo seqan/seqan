@@ -1,5 +1,5 @@
 #include <iostream>
-#include <seqan/file.h>  // For String output to std::cout.
+#include <seqan/stream.h>  // For String output to std::cout.
 #include <seqan/sequence.h>
 
 using namespace seqan;

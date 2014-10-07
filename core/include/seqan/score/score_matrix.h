@@ -150,8 +150,7 @@ public:
 ...type:Class.String
 ..see:Function.loadScoreMatrix
      */
-    template <typename TString>
-    Score(TString const & filename, TValue _gap_extend = -1)
+    explicit Score(char const * filename, TValue _gap_extend = -1)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_extend) {
         SEQAN_CHECKPOINT;
         loadScoreMatrix(*this, filename);
@@ -161,8 +160,7 @@ public:
 .Memfunc.Score Matrix#Score
 ..signature:Score(filename, gapExtend, gapOpen)
      */
-    template <typename TString>
-    Score(TString const & filename, TValue _gap_extend, TValue _gap_open)
+    Score(char const * filename, TValue _gap_extend, TValue _gap_open)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
         SEQAN_CHECKPOINT;
         loadScoreMatrix(*this, filename);

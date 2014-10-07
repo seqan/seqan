@@ -1684,17 +1684,29 @@ class DocProcessor(object):
                 if name in c.all_extended:
                     continue  # Skip to break loops.
                 c.all_extended.add(name)
+                if name not in doc.top_level_entries:
+                    self.logWarning('Could not find entry for extending: %s', name)
+                    continue
                 q += doc.top_level_entries[name].extends
         # Now, build list of all extending clsses into c.all_extending.
         for c in classes:
             for name in c.all_extended:
+                if name not in doc.top_level_entries:
+                    self.logWarning('Could not find entry for extending: %s', name)
+                    continue
                 doc.top_level_entries[name].all_extending.add(c.name)
         # Build list of all direct implementing classes for all concepts.
         for cl in classes:
             for name in cl.implements:
                 if '\u0001' in name:
                     continue  # Skip transitive inheritance.
+                if not doc.top_level_entries.get(name):
+                    self.logWarning('Could not find entry for implementing: %s', name)
+                    continue
                 co = doc.top_level_entries[name]
+                if co.kind != 'concept':
+                    self.logWarning('Only concepts can be implemented.')
+                    continue
                 co.all_implementing.add(cl.name)
                 co.all_implementing.update(cl.all_extending)
         # Build list of all implemented concepts for all classes.

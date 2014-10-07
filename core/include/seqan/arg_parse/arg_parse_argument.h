@@ -78,7 +78,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  *
  * @section Examples
  *
- * In the following example, the types <tt>INPUTFILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
+ * In the following example, the types <tt>INPUT_FILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
  *
  * @include demos/arg_parse/argument_parser.cpp
  */
@@ -96,7 +96,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @val ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
- * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUTFILE;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUT_FILE;
  * @brief Argument is an input file.
  *
  * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
@@ -139,7 +139,7 @@ ArgParseArgument.
 ...table:$ArgParseArgument::INTEGER$|Argument is an integer
 ...table:$ArgParseArgument::INT64|Argument is a 64 bit integer
 ...table:$ArgParseArgument::DOUBLE$|A float
-...table:$ArgParseArgument::INPUTFILE$|An input file
+...table:$ArgParseArgument::INPUT_FILE$|An input file
 ...table:$ArgParseArgument::OUTPUTFILE$|An output file
  ..param.argumentLabel:Defines a user defined argument label for the help output. If this option is
  not set, ArgParseArgument will automatically define a label based on the ArgumentType.
@@ -161,7 +161,7 @@ public:
         INTEGER,     // .. an integer
         INT64,       // .. a 64 bit integer
         DOUBLE,      // .. a float
-        INPUTFILE,   // .. an inputfile (implicitly also a string)
+        INPUT_FILE,   // .. an inputfile (implicitly also a string)
         OUTPUTFILE,  // .. an outputfile (implicitly also a string)
         INPUTPREFIX, // .. an inputprefix (implicitly also a string)
         OUTPUTPREFIX // .. an outoutprefix (implicitly also a string)
@@ -256,7 +256,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "string";
         break;
 
-    case ArgParseArgument::INPUTFILE:
+    case ArgParseArgument::INPUT_FILE:
         typeName = "inputfile";
         break;
 
@@ -348,7 +348,7 @@ inline bool isListArgument(ArgParseArgument const & me)
 inline bool isStringArgument(ArgParseArgument const & me)
 {
     return (me._argumentType == ArgParseArgument::STRING) ||
-           (me._argumentType == ArgParseArgument::INPUTFILE) ||
+           (me._argumentType == ArgParseArgument::INPUT_FILE) ||
            (me._argumentType == ArgParseArgument::OUTPUTFILE) ||
            (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
            (me._argumentType == ArgParseArgument::OUTPUTPREFIX) ;
@@ -487,7 +487,7 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 
 inline bool isInputFileArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::INPUTFILE;
+    return me._argumentType == ArgParseArgument::INPUT_FILE;
 }
 
 // ----------------------------------------------------------------------------
@@ -816,11 +816,11 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * setValidValues(stringArg, values);  // one of {"four", "five"}
  * @endcode
  *
- * An example for an input file option.  Note that by changing <tt>INPUTFILE</tt> to <tt>OUTPUTFILE</tt> below,
+ * An example for an input file option.  Note that by changing <tt>INPUT_FILE</tt> to <tt>OUTPUTFILE</tt> below,
  * the example would be the same for output files.
  *
  * @code{.cpp}
- * seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUTFILE);
+ * seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE);
  * setValidValues(fileArg, "fq fastq");  // file must end in ".fq" or ".fastq"
  *
  * std::vector<std::string> values;
@@ -974,7 +974,7 @@ inline bool _compareExtension(std::string const & str, std::string const & ext)
 
 // The parameter i gives the index of the value in the argument.
 
-inline void _checkStringRestrictions(ArgParseArgument const & me, std::string value,
+inline void _checkStringRestrictions(ArgParseArgument const & me, std::string const &value,
                                      unsigned i)
 {
     typedef std::vector<std::string>::const_iterator TVectorIterator;
@@ -982,6 +982,14 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string va
     // we only check valid values for files and string arguments, but not for prefix arguments
     if (!empty(me.validValues) && !(isInputPrefixArgument(me) || isOutputPrefixArgument(me)))
     {
+        // The file name "-" is reserved for stdin or stdout
+        if ((isInputFileArgument(me) || isOutputFileArgument(me)) && value == "-")
+            return;
+
+        // Allow the filename to be a pipe (without checking its extension)
+        if (isInputFileArgument(me) && _isPipe(value.c_str()))
+            return;
+
         bool isContained = false;
         for (TVectorIterator validValue = me.validValues.begin();
              validValue != me.validValues.end();
@@ -1325,7 +1333,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
  * @headerfile <seqan/arg_parse.h>
  * @brief Returns the file extension for the given file argument.
  *
- * Only valid when argument is an INPUTFILE or OUTPUTFILE.
+ * Only valid when argument is an INPUT_FILE or OUTPUTFILE.
  *
  * Halts the program if not an input or output file argument.
  *
@@ -1345,7 +1353,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 .Function.ArgParseArgument#getFileExtension
 ..class:Class.ArgParseArgument
 ..summary:Returns the file extension for the given file argument.
-..description:Only valid when argument is an INPUTFILE or OUTPUTFILE.
+..description:Only valid when argument is an INPUT_FILE or OUTPUTFILE.
 ..cat:Miscellaenous
 ..signature:std::string getFileExtension(argument[, pos]);
 ..param.argument:The @Class.ArgParseArgument@ object.
@@ -1360,7 +1368,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {
-    if (me._argumentType != ArgParseArgument::INPUTFILE &&
+    if (me._argumentType != ArgParseArgument::INPUT_FILE &&
         me._argumentType != ArgParseArgument::OUTPUTFILE)
         SEQAN_FAIL("Cannot get file extension from non-file argument/option.");
 

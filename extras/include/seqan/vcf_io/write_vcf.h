@@ -64,9 +64,9 @@ namespace seqan {
  * @headerfile <seqan/vcf_io.h>
  * @brief Write a VcfHeader.
  *
- * @signature int write(stream, header, context, Vcf());
+ * @signature int write(target, header, context, Vcf());
  *
- * @param[in,out] stream  The StreamConcept to write to.
+ * @param[in,out] target  The StreamConcept to write to.
  * @param[out]    header  The VcfHeader to write.
  * @param[in,out] context VcfIOContext to use.
  *
@@ -88,31 +88,29 @@ namespace seqan {
 ..include:seqan/vcf_io.h
 */
 
-template <typename TStream>
-int write(TStream & stream,
-          VcfHeader const & header,
-          VcfIOContext const & /*vcfIOContext*/,
-          Vcf const & /*tag*/)
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+writeRecord(TTarget & target,
+            VcfHeader const & header,
+            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            Vcf const & /*tag*/)
 {
-    for (unsigned i = 0; i < length(header.headerRecords); ++i)
+    for (unsigned i = 0; i < length(header); ++i)
     {
-        streamWriteBlock(stream, "##", 2);
-        streamWriteBlock(stream, &header.headerRecords[i].key[0], length(header.headerRecords[i].key));
-        streamWriteChar(stream, '=');
-        streamWriteBlock(stream, &header.headerRecords[i].value[0], length(header.headerRecords[i].value));
-        streamWriteChar(stream, '\n');
+        write(target, "##");
+        write(target, header[i].key);
+        writeValue(target, '=');
+        write(target, header[i].value);
+        writeValue(target, '\n');
     }
 
-    streamWriteBlock(stream, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT",
-                     length("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"));
-    for (unsigned i = 0; i < length(header.sampleNames); ++i)
+    write(target, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
+    for (unsigned i = 0; i < length(sampleNames(context)); ++i)
     {
-        streamWriteChar(stream, '\t');
-        streamWriteBlock(stream, &header.sampleNames[i][0], length(header.sampleNames[i]));
+        writeValue(target, '\t');
+        write(target, sampleNames(context)[i]);
     }
-    streamWriteChar(stream, '\n');
-
-    return streamError(stream);
+    writeValue(target, '\n');
 }
 
 // ----------------------------------------------------------------------------
@@ -125,9 +123,9 @@ int write(TStream & stream,
  * @headerfile <seqan/vcf_io.h>
  * @brief Write a VcfRecord.
  *
- * @signature int writeRecord(stream, record, context, Vcf());
+ * @signature int writeRecord(target, record, context, Vcf());
  *
- * @param[in,out] stream  The StreamConcept to write to.
+ * @param[in,out] target  The StreamConcept to write to.
  * @param[out]    record  The VcfRecord to write.
  * @param[in,out] context VcfIOContext to use.
  *
@@ -149,62 +147,79 @@ int write(TStream & stream,
 ..include:seqan/vcf_io.h
 */
 
-template <typename TStream>
-int writeRecord(TStream & stream,
-                VcfRecord const & record,
-                VcfIOContext const & vcfIOContext,
-                Vcf const & /*tag*/)
+template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+writeRecord(TTarget & target,
+            VcfRecord const & record,
+            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            Vcf const & /*tag*/)
 {
-    streamWriteBlock(stream, &(*vcfIOContext.sequenceNames)[record.rID][0],
-                     length((*vcfIOContext.sequenceNames)[record.rID]));
-    streamWriteChar(stream, '\t');
-    streamPut(stream, record.beginPos + 1);
-    streamWriteChar(stream, '\t');
+    // CHROM
+    write(target, contigNames(context)[record.rID]);
+    writeValue(target, '\t');
+
+    // POS
+    appendNumber(target, record.beginPos + 1);
+    writeValue(target, '\t');
+
+    // ID
     if (empty(record.id))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.id[0], length(record.id));
-    streamWriteChar(stream, '\t');
+        write(target, record.id);
+    writeValue(target, '\t');
+
+    // REF
     if (empty(record.ref))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.ref[0], length(record.ref));
-    streamWriteChar(stream, '\t');
+        write(target, record.ref);
+    writeValue(target, '\t');
+
+    // ALT
     if (empty(record.alt))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.alt[0], length(record.alt));
-    streamWriteChar(stream, '\t');
+        write(target, record.alt);
+    writeValue(target, '\t');
+
+    // QUAL
     if (record.qual != record.qual)  // only way to test for nan
-        streamWriteChar(stream, '.');
+        writeValue(target, '.');
     else
-        streamPut(stream, record.qual);
-    streamWriteChar(stream, '\t');
+        appendNumber(target, record.qual);
+
+    // FILTER
+    writeValue(target, '\t');
     if (empty(record.filter))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.filter[0], length(record.filter));
-    streamWriteChar(stream, '\t');
+        write(target, record.filter);
+    writeValue(target, '\t');
+
+    // INFO
     if (empty(record.info))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.info[0], length(record.info));
-        streamWriteChar(stream, '\t');
+        write(target, record.info);
+
+    // FORMAT
+    writeValue(target, '\t');
     if (empty(record.format))
-        streamWriteBlock(stream, ".", 1);
+        writeValue(target, '.');
     else
-        streamWriteBlock(stream, &record.format[0], length(record.format));
+        write(target, record.format);
+
+    // The samples.
     for (unsigned i = 0; i < length(record.genotypeInfos); ++i)
     {
-        streamWriteChar(stream, '\t');
+        writeValue(target, '\t');
         if (empty(record.genotypeInfos[i]))
-            streamWriteBlock(stream, ".", 1);
+            writeValue(target, '.');
         else
-            streamWriteBlock(stream, &record.genotypeInfos[i][0], length(record.genotypeInfos[i]));
+            write(target, record.genotypeInfos[i]);
     }
-    streamWriteChar(stream, '\n');
-
-    return streamError(stream);
+    writeValue(target, '\n');
 }
 
 }  // namespace seqan

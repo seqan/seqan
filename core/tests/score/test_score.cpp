@@ -203,7 +203,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
     // Test with path to file constructor.
     {
         // Call appropriate constructor.
-        const TScore matrixScore(pathToBlosum62);
+        const TScore matrixScore(toCString(pathToBlosum62));
         // Assert score state.
         SEQAN_ASSERT_EQ(-1, scoreGap(matrixScore));
         SEQAN_ASSERT_EQ(-1, scoreGapExtend(matrixScore));
@@ -218,7 +218,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
     {
         // Call appropriate constructor.
         const TValue kGapScore = 1;
-        TScore matrixScore(pathToBlosum62, kGapScore);
+        TScore matrixScore(toCString(pathToBlosum62), kGapScore);
         // Assert score state.
         SEQAN_ASSERT_EQ(kGapScore, scoreGap(matrixScore));
         SEQAN_ASSERT_EQ(kGapScore, scoreGapExtend(matrixScore));
@@ -234,7 +234,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
         // Define constant test data and call appropriate constructor.
         const TValue kGapExtensionScore = 1;
         const TValue kGapOpenScore = 2;
-        TScore matrixScore(pathToBlosum62, kGapExtensionScore, kGapOpenScore);
+        TScore matrixScore(toCString(pathToBlosum62), kGapExtensionScore, kGapOpenScore);
         // Assert score state.
         SEQAN_ASSERT_EQ(kGapExtensionScore, scoreGap(matrixScore));
         SEQAN_ASSERT_EQ(kGapExtensionScore, scoreGapExtend(matrixScore));
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_file) {
     String<char> pathToBlosum62(pathToTestSrc);
     append(pathToTestSrc, "BLOSUM62");
     // TODO(holtgrew): If the file does not exist, a bus error occurs, code should catch this case and print an error.
-    loadScoreMatrix(sc, pathToTestSrc, meta);
+    loadScoreMatrix(meta, sc, toCString(pathToTestSrc));
 
     // Compare fixture BLOSUM62 matrix to built-in one.
     {
@@ -280,13 +280,15 @@ SEQAN_DEFINE_TEST(test_score_matrix_file) {
     // Store and load the fixture BLOSUM62 matrix again.
     {
         const char *temp_filename = SEQAN_TEMP_FILENAME();
-        FILE *fl = fopen(temp_filename, "wb");
-        write(fl, sc, meta);
-        fclose(fl);
+        {
+            std::ofstream fl(temp_filename);
+            typename DirectionIterator<std::ofstream, Output>::Type it = directionIterator(fl, Output());
+            write(it, sc, meta);
+        }
 
         Score<int, ScoreMatrix<> > sc2;
         String<char> meta2;
-        loadScoreMatrix(sc2, temp_filename, meta2);
+        SEQAN_ASSERT(loadScoreMatrix(meta2, sc2, temp_filename));
         assertAminoAcidMatricesAreEqual(sc, sc2);
         SEQAN_ASSERT_EQ(meta, meta2);
     }
@@ -294,12 +296,14 @@ SEQAN_DEFINE_TEST(test_score_matrix_file) {
     // Store and load the built-in matrix again.
     {
         const char *temp_filename = SEQAN_TEMP_FILENAME();
-        FILE *fl = fopen(temp_filename, "wb");
-        write(fl, Blosum62());
-        fclose(fl);
+        {
+            std::ofstream fl(temp_filename);
+            typename DirectionIterator<std::ofstream, Output>::Type it = directionIterator(fl, Output());
+            write(it, Blosum62());
+        }
 
         Score<int, ScoreMatrix<> > sc2;
-        loadScoreMatrix(sc2, temp_filename);
+        SEQAN_ASSERT(loadScoreMatrix(sc2, temp_filename));
         assertAminoAcidMatricesAreEqual(sc2, Blosum62());
     }
 
@@ -466,41 +470,6 @@ SEQAN_DEFINE_TEST(test_score_simple) {
 }
 
 
-// Test the _sprintfValue() functions from score_matrix.h.
-SEQAN_DEFINE_TEST(test_score_matrix_sprintf_value) {
-    // Size of the buffers to sprintfValue() to below.
-    const int kBufferSize = 100;
-
-    // Test with type unsigned.
-    {
-        char buffer[kBufferSize];
-        _sprintfValue(buffer, static_cast<unsigned>(1.5));
-        SEQAN_ASSERT_EQ(0, strcmp(buffer, "1"));
-    }
-
-    // Test with type int.
-    {
-        char buffer[kBufferSize];
-        _sprintfValue(buffer, static_cast<int>(1.5));
-        SEQAN_ASSERT_EQ(0, strcmp(buffer, "1"));
-    }
-
-    // Test with type float.
-    {
-        char buffer[kBufferSize];
-        _sprintfValue(buffer, static_cast<float>(1.5));
-        SEQAN_ASSERT_EQ(0, strcmp(buffer, "1.5"));
-    }
-
-    // Test with type double.
-    {
-        char buffer[kBufferSize];
-        _sprintfValue(buffer, static_cast<double>(1.5));
-        SEQAN_ASSERT_EQ(0, strcmp(buffer, "1.5"));
-    }
-}
-
-
 // Test the built-in data matrices by comparing them to the matrices
 // from test data files.
 SEQAN_DEFINE_TEST(test_score_matrix_data) {
@@ -525,7 +494,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToBlosum30(pathToTestSrc);
         append(pathToBlosum30, "BLOSUM30");
         // Load matrix.
-        TScore loadedBlosum30(pathToBlosum30);
+        TScore loadedBlosum30(toCString(pathToBlosum30));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedBlosum30, blosum30);
     }
@@ -542,7 +511,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToBlosum45(pathToTestSrc);
         append(pathToBlosum45, "BLOSUM45");
         // Load matrix.
-        TScore loadedBlosum45(pathToBlosum45);
+        TScore loadedBlosum45(toCString(pathToBlosum45));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedBlosum45, blosum45);
     }
@@ -559,7 +528,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToBlosum62(pathToTestSrc);
         append(pathToBlosum62, "BLOSUM62");
         // Load matrix.
-        TScore loadedBlosum62(pathToBlosum62);
+        TScore loadedBlosum62(toCString(pathToBlosum62));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedBlosum62, blosum62);
     }
@@ -576,7 +545,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToBlosum80(pathToTestSrc);
         append(pathToBlosum80, "BLOSUM80");
         // Load matrix.
-        TScore loadedBlosum80(pathToBlosum80);
+        TScore loadedBlosum80(toCString(pathToBlosum80));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedBlosum80, blosum80);
     }
@@ -593,7 +562,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToPam40(pathToTestSrc);
         append(pathToPam40, "PAM40");
         // Load matrix.
-        TScore loadedPam40(pathToPam40);
+        TScore loadedPam40(toCString(pathToPam40));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedPam40, pam40);
     }
@@ -610,7 +579,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToPam120(pathToTestSrc);
         append(pathToPam120, "PAM120");
         // Load matrix.
-        TScore loadedPam120(pathToPam120);
+        TScore loadedPam120(toCString(pathToPam120));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedPam120, pam120);
     }
@@ -627,7 +596,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToPam200(pathToTestSrc);
         append(pathToPam200, "PAM200");
         // Load matrix.
-        TScore loadedPam200(pathToPam200);
+        TScore loadedPam200(toCString(pathToPam200));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedPam200, pam200);
     }
@@ -644,7 +613,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToPam250(pathToTestSrc);
         append(pathToPam250, "PAM250");
         // Load matrix.
-        TScore loadedPam250(pathToPam250);
+        TScore loadedPam250(toCString(pathToPam250));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedPam250, pam250);
     }
@@ -661,7 +630,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
         String<char> pathToVTML200(pathToTestSrc);
         append(pathToVTML200, "VTML200I");
         // Load matrix.
-        TScore loadedVTML200(pathToVTML200);
+        TScore loadedVTML200(toCString(pathToVTML200));
         // Compare loaded with built-in matrix.
         assertAminoAcidMatricesAreEqual(loadedVTML200, vtml200);
     }
@@ -705,7 +674,6 @@ SEQAN_BEGIN_TESTSUITE(test_score) {
     SEQAN_CALL_TEST(test_score_edit);
     SEQAN_CALL_TEST(test_score_matrix);
     SEQAN_CALL_TEST(test_score_matrix_file);
-    SEQAN_CALL_TEST(test_score_matrix_sprintf_value);
     SEQAN_CALL_TEST(test_score_matrix_data);
     SEQAN_CALL_TEST(test_score_sequence_entry_for_score);
 }

@@ -34,14 +34,15 @@
 // Tests for the sub module basic_fundamental.
 // ==========================================================================
 
-#include <seqan/basic/basic_debug.h>
-#include <seqan/basic/basic_concept.h>
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
 
 #include "test_basic_fundamental_concepts.h"
 
 SEQAN_BEGIN_TESTSUITE(test_basic_concept)
 {
-    // No tests, everything here happens at compile time.
+    SEQAN_CALL_TEST(test_basic_concepts_concept_impl);
+    SEQAN_CALL_TEST(test_basic_concepts_concept_refine);
 }
 SEQAN_END_TESTSUITE
 

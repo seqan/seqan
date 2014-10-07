@@ -11,30 +11,27 @@ int main(int argc, char ** argv)
 {
     if (argc != 2)
     {
-        std::cerr << "USAGE: " << argv[1] << " IN.gff\n";
+        std::cerr << "USAGE: " << argv[0] << " IN.gff\n";
         return 1;
     }
 
-    GffStream gffIn(argv[1]);
-    if (!isGood(gffIn))
+    try
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading!\n";
-        return 1;
-    }
-
-    GffRecord record;
-    while (!atEnd(gffIn))
-    {
-        if (readRecord(record, gffIn) != 0)
+        GffFileIn gffIn(argv[1]);
+        GffRecord record;
+        while (!atEnd(gffIn))
         {
-            std::cerr << "ERROR: Problem reading from " << argv[1] << "\n";
-            return 1;
-        }
+            readRecord(record, gffIn);
 
-        // Note that we print the position 1-based since we use text output
-        // whereas it is 0-based in the GffRecord.
-        std::cout << gffIn.sequenceNames[record.rID]
-                  << "\t" << (record.beginPos + 1) << "\n";
+            // Note that we print the position 1-based since we use text output
+            // whereas it is 0-based in the GffRecord.
+            std::cout << record.ref << "\t" << (record.beginPos + 1) << "\n";
+        }
+    }
+    catch (Exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 1;
     }
 
     return 0;

@@ -99,7 +99,7 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  *
  * @signature void longestIncreasingSubsequence(str, pos);
  *
- * @param[in]  str An arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  str An arbitrary @link ContainerConcept @endlink object.
  * @param[out] pos A String with the positions that belong to the longest increasing subsequence.
  *
  * @section Remarks
@@ -202,8 +202,8 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  *
  * @signature void longestCommonSubsequence(str1, str2, nSize, pos);
  *
- * @param[in]  str1  An arbitrary @link SequenceConcept @endlink object.
- * @param[in]  str2  A second arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  str1  An arbitrary @link ContainerConcept @endlink object.
+ * @param[in]  str2  A second arbitrary @link ContainerConcept @endlink object.
  * @param[in]  nSize The neighbourhood size to use.
  * @param[out] pos   A String with pairs of positions that indicate the longest common subsequence.
  *
@@ -366,7 +366,7 @@ globalAlignment(TAlign& align,
  *
  * @signature void heaviestIncreasingSubsequence(str, weights, pos);
  *
- * @param[in]  str     An arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  str     An arbitrary @link ContainerConcept @endlink object.
  * @param[in]  weights A String with a weight for each position in the string.
  * @param[out] pos     A String with positions that indicate the members of the heaviest increasing subsequence.
  *

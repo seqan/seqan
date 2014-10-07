@@ -1,6 +1,6 @@
 // FRAGMENT(headers)
 #include <seqan/basic.h>
-#include <seqan/file.h>  // For printing Seqan strings.
+#include <seqan/stream.h>  // For printing Seqan strings.
 #include <seqan/misc/misc_cmdparser.h>
 
 int main(int argc, const char *argv[]) {

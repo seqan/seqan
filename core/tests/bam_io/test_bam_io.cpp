@@ -33,7 +33,8 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/stream.h>
 
 #include "test_bam_alignment_record.h"
 #include "test_bam_header_record.h"
@@ -42,12 +43,13 @@
 #include "test_bam_tags_dict.h"
 #include "test_read_sam.h"
 #include "test_write_sam.h"
-#if SEQAN_HAS_ZLIB
 #include "test_read_bam.h"
 #include "test_write_bam.h"
+
+#if SEQAN_HAS_ZLIB
 #include "test_bam_index.h"
-#endif  // #if SEQAN_HAS_ZLIB
-#include "test_bam_stream.h"
+#include "test_bam_file.h"
+#endif
 
 SEQAN_BEGIN_TESTSUITE(test_bam_io)
 {
@@ -149,30 +151,33 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_sam_write_alignment);
 
     // Test BAM I/O.
-#if SEQAN_HAS_ZLIB
     SEQAN_CALL_TEST(test_bam_io_bam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_read_alignment);
     SEQAN_CALL_TEST(test_bam_io_bam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_write_alignment);
 
-    // Test BAM indices.
-    SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
-#endif  // #if SEQAN_HAS_ZLIB
-
     // Test BamStream class.
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_file_size);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_read_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_read_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_write_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_write_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_file_size);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_ex1);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_write_header);
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_write_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_file_size);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_records);
+
+#if SEQAN_HAS_ZLIB
+
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_seek);
 
     // Issue 489
-    SEQAN_CALL_TEST(test_bam_io_bam_stream_issue_489);
+    SEQAN_CALL_TEST(test_bam_io_sam_file_issue_489);
+
+    // Test BAM indices.
+    SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
+#endif
 }
 SEQAN_END_TESTSUITE

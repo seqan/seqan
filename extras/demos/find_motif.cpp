@@ -1,6 +1,7 @@
 ///A tutorial about motif search.
 #include <iostream>
 #include "seqan/find_motif.h"
+#include "seqan/stream.h"
 
 using namespace seqan;
 

@@ -360,9 +360,9 @@ _createEdgeAttributes(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TStringSet, typename TCargo, typename TSpec>
+template <typename TTarget, typename TStringSet, typename TCargo, typename TSpec>
 inline void
-_writeGraphFooter(TFile & file,
+_writeGraphFooter(TTarget & iter,
 				  Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 				  DotDrawing)
 {
@@ -378,47 +378,47 @@ _writeGraphFooter(TFile & file,
 		TSize j = 0;
 		TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();	
 		TVertexDescriptor previousVertex = nilVertex;
-		while(j<length(str[i])) {
+		while(j<length(str[i]))
+        {
 			TVertexDescriptor nextVertex = findVertex(const_cast<TGraph&>(g), seqId, j);
 			if (nextVertex == nilVertex) {
 				++j;
 				continue;
 			}
-			if (previousVertex != nilVertex) {
-				streamPut(file, previousVertex);
-				streamPut(file, " -- ");
-				streamPut(file, nextVertex);
-				streamPut(file, " [");
-				streamPut(file, "len=3.0, arrowhead=vee");
-				streamPut(file, "];\n");
+			if (previousVertex != nilVertex)
+            {
+                appendNumber(iter, previousVertex);
+				write(iter, " -- ");
+                appendNumber(iter, nextVertex);
+				write(iter, " [len=3.0, arrowhead=vee];\n");
 			}
 			previousVertex = nextVertex;
 			j += fragmentLength(g, nextVertex);
 		}
 	}
-	streamPut(file, '\n');
+	writeValue(iter, '\n');
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TStringSet, typename TCargo, typename TSpec>
+template <typename TTarget, typename TStringSet, typename TCargo, typename TSpec>
 inline void
-_writeGraphType(TFile & file,
+_writeGraphType(TTarget & iter,
 				Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
 				DotDrawing)
 {
-    streamPut(file, "graph");
+    write(iter, "graph");
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TStringSet, typename TCargo, typename TSpec>
+template <typename TTarget, typename TStringSet, typename TCargo, typename TSpec>
 inline void
-_writeEdgeType(TFile & file,
+_writeEdgeType(TTarget & iter,
 			   Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
 			   DotDrawing)
 {
-    streamPut(file, " -- ");
+    write(iter, " -- ");
 }
 
 }  // namespace seqan

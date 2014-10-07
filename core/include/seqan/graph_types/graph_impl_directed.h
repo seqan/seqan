@@ -993,12 +993,10 @@ findEdge(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TCargo, typename TSpec, typename TIDString>
+template <typename TFile, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Directed<TCargo, TSpec> > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Directed<TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_
 	SEQAN_CHECKPOINT
@@ -1009,35 +1007,32 @@ write(TFile & target,
 	TIterConst it = begin(g.data_vertex, Standard());
 	TIterConst itEnd = end(g.data_vertex, Standard());
 	TVertexDescriptor pos = 0;
-	streamPut(target,"Adjacency list:\n");
+	write(target, "Adjacency list:\n");
 	for(;it!=itEnd;++it, ++pos) {
 		if (!idInUse(_getVertexIdManager(g), pos)) continue;
 		TEdgeStump* current = getValue(it);
-		streamPut(target, (int)pos);
-		streamPut(target," -> ");
+		appendNumber(target, (int)pos);
+		write(target, " -> ");
 		while(current!=0) {
-			streamPut(target, (int)getTarget(current));
-			streamPut(target, ',');
+			appendNumber(target, (int)getTarget(current));
+			writeValue(target, ',');
 			current=getNextT(current);
 		}
-		streamPut(target, '\n');
+		writeValue(target, '\n');
 	}
 	it = begin(g.data_vertex, Standard());
 	pos = 0;
-	streamPut(target,"Edge list:\n");
+	write(target, "Edge list:\n");
 	for(;it!=itEnd;++it, ++pos) {
 		TEdgeStump* current = getValue(it);
 		while(current!=0) {
-			streamPut(target,"Source: ");
-			streamPut(target, (int)pos);		
-			streamPut(target, ',');
-			streamPut(target,"Target: ");
-			streamPut(target, (int)getTarget(current));
-			streamPut(target, ' ');
-			streamPut(target,"(Id: ");
-			streamPut(target, (int)_getId(current));
-			streamPut(target, ')');
-			streamPut(target, '\n');
+			write(target, "Source: ");
+			appendNumber(target, (int)pos);
+			write(target, ",Target: ");
+			appendNumber(target, (int)getTarget(current));
+			write(target, " (Id: ");
+			appendNumber(target, (int)_getId(current));
+			write(target, ")\n");
 			current=getNextT(current);
 		}
 	}

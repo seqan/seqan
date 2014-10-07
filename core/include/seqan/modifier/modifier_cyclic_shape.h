@@ -415,9 +415,11 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const & me, Ta
 {
     typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > const,
         Tag<TTagSpec> const>::Type TResult;
+    typedef typename Size<CyclicShape<TSpec> >::Type TSize;
+
     TResult tmp(begin(host(me), tag_));
     _copyCargo(tmp, me);
-    host(tmp) += cargo(me).loffset;
+    host(tmp) += (TSize)cargo(me).loffset;
     return tmp;
 }
 
@@ -428,9 +430,11 @@ begin(ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > > & me, Tag<TTag
 {
     typedef typename Iterator<ModifiedString<THost, ModCyclicShape<CyclicShape<TSpec> > >,
         Tag<TTagSpec> const>::Type TResult;
+    typedef typename Size<CyclicShape<TSpec> >::Type TSize;
+
     TResult tmp(begin(host(me), tag_));
     _copyCargo(tmp, me);
-    host(tmp) += cargo(me).loffset;
+    host(tmp) += (TSize)cargo(me).loffset;
     return tmp;
 }
 

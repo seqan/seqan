@@ -72,24 +72,22 @@ int main(int argc, char const ** argv)
     std::cerr << "Reading FASTA " << argv[1] << std::endl;
     StringSet<CharString> refNameStore;
     StringSet<Dna5String> seqs;
-    std::fstream inSeq(argv[1], std::ios::binary | std::ios::in);
-    if (!inSeq.good())
+    SeqFileIn inSeq;
+    if (!open(inSeq, argv[1]))
     {
         std::cerr << "Could not open FASTA file " << argv[1] << std::endl;
         return 1;
     }
-    RecordReader<std::fstream, SinglePass<> > reader(inSeq);
-    if (read2(refNameStore, seqs, reader, Fasta()) != 0)
-        return 1;
+    readRecords(refNameStore, seqs, inSeq);
     for (unsigned i = 0; i < length(refNameStore); ++i)
         trimSeqHeaderToId(refNameStore[i]);
     
     // Open BGZF stream.
     std::cerr << "Opening BAM " << argv[2] << std::endl;
-    Stream<Bgzf> stream;
-    if (!open(stream, argv[2], "r"))
+    BamFileIn bamFileIn;
+    if (!open(bamFileIn, argv[2]))
     {
-        std::cerr << "[ERROR] Could not open BAM file" << argv[1] << std::endl;
+        std::cerr << "[ERROR] Could not open SAM/BAM file" << argv[2] << std::endl;
         return 1;
     }
 
@@ -98,24 +96,16 @@ int main(int argc, char const ** argv)
     NameStoreCache<StringSet<CharString> > refNameStoreCache(refNameStore);
     BamIOContext<StringSet<CharString> > context(refNameStore, refNameStoreCache);
     BamHeader header;
-    if (readRecord(header, context, stream, Bam()) != 0)
-    {
-        std::cerr << "[ERROR] Could not read header from BAM file!" << std::endl;
-        return 1;
-    }
+    readRecord(header, bamFileIn);
 
     // Stream through file, getting alignment and dumping it.
     std::cerr << "Reading Alignments..." << std::endl;
     Align<Dna5String> align;
     BamAlignmentRecord record;
-    while (!atEnd(stream))
+    BamFileOut samOut(std::cout, Sam());
+    while (!atEnd(bamFileIn))
     {
-        clear(record);
-        if (readRecord(record, context, stream, Bam()) != 0)
-        {
-            std::cerr << "[ERROR] Error reading alignment!" << std::endl;
-            return 1;
-        }
+        readRecord(record, bamFileIn);
 
         if (record.rID == BamAlignmentRecord::INVALID_REFID)
             continue;  // Skip * reference.
@@ -123,7 +113,7 @@ int main(int argc, char const ** argv)
         // Convert BAM record to alignment.
         bamRecordToAlignment(align, seqs[record.rID], record);
         // Dump record as SAM and the alignment.
-        write2(std::cout, record, context, Sam());
+        writeRecord(samOut, record);
         std::cout << align << std::endl;
     }
 

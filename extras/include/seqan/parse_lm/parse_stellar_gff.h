@@ -77,18 +77,16 @@ typedef Tag<StellarGff_> StellarGff;
 ..include:seqan/parse_lm.h
  */
 
-template <typename TLocalMatchStore, typename TStream, typename TPassSpec>
-int
+template <typename TLocalMatchStore, typename TForwardIter>
+inline void
 readRecord(TLocalMatchStore & store,
-           RecordReader<TStream, SinglePass<TPassSpec> > & recordReader,
+           TForwardIter & iter,
            StellarGff const & /*tag*/)
 {
     typedef typename TLocalMatchStore::TPosition TPosition;
-    //typedef typename TLocalMatchStore::TPosition TId;
-    
+
     // Read line.
     CharString buffer;
-    int res = 0;
     char subjectStrand = 'X';
 
     CharString subjectName;
@@ -99,133 +97,136 @@ readRecord(TLocalMatchStore & store,
     TPosition queryEndPos = 0;
 
     // Field: SUBJECT
-    res = readUntilChar(subjectName, recordReader, '\t');
-    if (res) return res;
+    readUntil(subjectName, iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: SOURCE
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: TYPE
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: START
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectBeginPos = lexicalCast<TPosition>(buffer) - 1;
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: END
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     subjectEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: SCORE
-    res = skipUntilChar(recordReader, '\t');
-    if (res) return res;
+    skipUntil(iter, IsTab());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: STRAND
     clear(buffer);
-    res = readNChars(buffer, recordReader, 1);
-    if (res) return res;
-    subjectStrand = buffer[0];
-    if (subjectStrand != '+' && subjectStrand != '-')
-        return 1;  // FORMAT ERROR, should probably be a constant
+    readOne(subjectStrand, iter, OrFunctor<EqualsChar<'+'>, EqualsChar<'-'> >());
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
+
     // Field: FRAME
-    res = skipNChars(recordReader, 1);
-    if (res) return res;
+    skipOne(iter);
+
     // Skip TAB.
-    res = skipChar(recordReader, '\t');
-    if (res) return res;
+    skipOne(iter, IsTab());
 
     // The GROUP field contains the information about the query.
     // query sequence
-    res = readUntilChar(queryName, recordReader, ';');
-    if (res) return res;
+    readUntil(queryName, iter, EqualsChar<';'>());
+
     // Skip semicolon.
-    res = skipChar(recordReader, ';');
-    if (res) return res;
+    skipOne(iter, EqualsChar<';'>());
+
     // "seq2Range="
     clear(buffer);
-    res = readUntilChar(buffer, recordReader, '=');
-    if (res) return res;
+    readUntil(buffer, iter, EqualsChar<'='>());
     if (buffer != "seq2Range")
-        return 1;  // FORMAT ERROR, should probably be a constant
+    {
+        throw ParseError("Format error; Expected 'seq2Range'");
+        return;  // FORMAT ERROR, should probably be a constant
+    }
     // Skip '='
-    res = skipChar(recordReader, '=');
-    if (res) return res;
+    skipOne(iter, EqualsChar<'='>());
+
     // query begin pos
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryBeginPos = lexicalCast<TPosition>(buffer) - 1;
+
     // skip comma
-    res = skipChar(recordReader, ',');
-    if (res) return res;
+    skipOne(iter, EqualsChar<','>());
+
     // query end pos
     clear(buffer);
-    res = readDigits(buffer, recordReader);
-    if (res) return res;
+    readUntil(buffer, iter, NotFunctor<IsDigit>());
     queryEndPos = lexicalCast<TPosition>(buffer);
+
     // Skip semicolon.
-    res = skipChar(recordReader, ';');
-    if (res) return res;
+    skipOne(iter, EqualsChar<';'>());
+
     // Skip "eValue=*;"
     clear(buffer);
-    res = readUntilChar(buffer, recordReader, '=');
-    if (res) return res;
+    readUntil(buffer, iter, EqualsChar<'='>());
     if (buffer != "eValue")
-        return 1;  // FORMAT ERROR, should probably be a constant
+    {
+        throw ParseError("Format error; Expected 'eValue'");
+        return;  // FORMAT ERROR, should probably be a constant
+    }
+
     // Skip '='
-    res = skipChar(recordReader, '=');
-    if (res) return res;
+    skipOne(iter, EqualsChar<'='>());
+
     // Skip until semicolon.
-    res = skipUntilChar(recordReader, ';');
-    if (res) return res;
+    skipUntil(iter, EqualsChar<';'>());
+
     // And skip the semicolon.
-    res = skipChar(recordReader, ';');
-    if (res) return res;
+    skipOne(iter, EqualsChar<';'>());
+
     // Skip "cigar".
     clear(buffer);
-    res = readUntilChar(buffer, recordReader, '=');
-    if (res) return res;
+    readUntil(buffer, iter, EqualsChar<'='>());
     if (buffer != "cigar")
-        return 1;  // FORMAT ERROR, should probably be a constant
+    {
+        throw ParseError("Format error; Expected 'cigar'");
+        return;  // FORMAT ERROR, should probably be a constant
+    }
+
     // Skip '='
-    res = skipChar(recordReader, '=');
-    if (res) return res;
+    skipOne(iter, EqualsChar<'='>());
+
     // Read cigar string.
     clear(buffer);
-    res = readUntilChar(buffer, recordReader, ';');
+    readUntil(buffer, iter, EqualsChar<';'>());
+
     // Skip semicolon.
-    res = skipChar(recordReader, ';');
-    if (res) return res;
+    skipOne(iter, EqualsChar<';'>());
+
     // ignore rest of the field, skip to next line
-    skipLine(recordReader);
+    skipLine(iter);
 
 	// Finally, append the local match.
     if (subjectStrand == '-')
         ::std::swap(subjectBeginPos, subjectEndPos);
     appendLocalMatch(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos, buffer);
-
-    return 0;
 }
 
 }  // namespace seqan

@@ -31,139 +31,139 @@ template<typename TProb, typename TErrorProb, typename TMethOptions>
 inline void
 getSingleBaseProbHaploF(TProb &singleProb, Dna i, DnaM h, TErrorProb &e, bool & origin, TMethOptions &methOptions)
 {
-    if (methOptions.uniformSeqErrorsCalling) 
+    if (methOptions.uniformSeqErrorsCalling)
     {
         if ( h == 'C')                              // Haplotype C
-        {                     
-            if (i == 'C')                                               // correct and not converted + converted and error  
-                singleProb = (1.0-e)*(1.0-methOptions.convRate) ; //+ methOptions.convRate*(e/3.0);  
-            else if (i == 'T')                                          // error + correct and converted 
-                singleProb = e/3.0 + (1.0-e)*(methOptions.convRate);          
-            else                                                        // error            
+        {
+            if (i == 'C')                                               // correct and not converted + converted and error
+                singleProb = (1.0-e)*(1.0-methOptions.convRate) ; //+ methOptions.convRate*(e/3.0);
+            else if (i == 'T')                                          // error + correct and converted
+                singleProb = e/3.0 + (1.0-e)*(methOptions.convRate);
+            else                                                        // error
                 singleProb = e/3.0;
-        } 
+        }
         else if ( h == 'D')                         // Haplotype Cm
-        {                     
-            if (i == 'C')                                               // correct and not converted + converted and error    
+        {
+            if (i == 'C')                                               // correct and not converted + converted and error
                 singleProb = (1.0-e)*(1.0-methOptions.methConvRate); // + methOptions.methConvRate*(e/3.0);
             else if (i == 'T')                                          // error + correct and converted
                 singleProb = e/3.0 + (1.0-e)*methOptions.methConvRate;
-            else                                                        // error 
+            else                                                        // error
                 singleProb = e/3.0;
-        } 
+        }
         else if ( h == 'G')                         // Haplotype G
         {
-            if (i == 'G')          
+            if (i == 'G')
                 singleProb = 1.0 - e;
-            else                                  
+            else
                 singleProb = e/3.0;
-        } 
+        }
             else if ( h == 'H')                         // Haplotype Gm
         {
-            if (i == 'G')         
+            if (i == 'G')
                 singleProb = 1.0 - e;
-            else                                    
+            else
                 singleProb = e/3.0;
-        } 
-        else                                        // Haplotype T, A: no bs 
+        }
+        else                                        // Haplotype T, A: no bs
         {
             if (i == h)
-                singleProb = 1.0 - e; 
+                singleProb = 1.0 - e;
             else
-                singleProb = e/3.0; 
+                singleProb = e/3.0;
         }
     }
     else
     {
         // temporary, just to try
-        // 
-        TProb const *seqErrorFreqs = SeqErrorFreqsN<TProb, BsNonSimple>::getData();  
-        //TProb const *seqErrorFreqsTo = SeqErrorFreqsTo<TProb, BsNonSimple>::getData();  
+        //
+        TProb const *seqErrorFreqs = SeqErrorFreqsN<TProb, BsNonSimple>::getData();
+        //TProb const *seqErrorFreqsTo = SeqErrorFreqsTo<TProb, BsNonSimple>::getData();
 
         if (origin)
         {
             if ( h == 'C')                              // Haplotype C
-            {                     
-                if (i == 'C')                                                
-                    singleProb = (1.0-e)*(1-methOptions.convRate) ; 
-                else if (i == 'T')                                       
-                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] + (1.0-e)*(methOptions.convRate);          
-                else                                                
+            {
+                if (i == 'C')
+                    singleProb = (1.0-e)*(1-methOptions.convRate) ;
+                else if (i == 'T')
+                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] + (1.0-e)*(methOptions.convRate);
+                else
                     singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)];
-            } 
+            }
             else if ( h == 'D')                         // Haplotype Cm
-            {                     
-                if (i == 'C')                                                  
-                    singleProb = (1.0-e)*(1.0-methOptions.methConvRate); 
-                else if (i == 'T')                          
+            {
+                if (i == 'C')
+                    singleProb = (1.0-e)*(1.0-methOptions.methConvRate);
+                else if (i == 'T')
                     singleProb = e*seqErrorFreqs[1*5 + ordValue(i)]  + (1.0-e)*methOptions.methConvRate;
-                else                                                        
+                else
                     singleProb = e*seqErrorFreqs[1*5 + ordValue(i)] ;
-            } 
+            }
             else if ( h == 'G')                         // Haplotype G
             {
-                if (i == 'G')          
+                if (i == 'G')
                     singleProb = 1.0 - e;
-                else                                  
+                else
                     singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] ;
-            } 
+            }
             else if ( h == 'H')                         // Haplotype Gm
             {
-                if (i == 'G')         
+                if (i == 'G')
                     singleProb = 1.0 - e;
-                else                                    
+                else
                     singleProb = e*seqErrorFreqs[2*5 + ordValue(i)] ;
-            } 
-            else                                        // Haplotype T, A: no bs 
+            }
+            else                                        // Haplotype T, A: no bs
             {
                 if (i == h)
-                    singleProb = 1.0 - e; 
+                    singleProb = 1.0 - e;
                 else
-                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] ; 
+                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] ;
             }
         }
         else    // use sequencing error probs from RC
         {
-            FunctorDna5OrdValueComplement<int> fCompl; 
+            FunctorDna5OrdValueComplement<int> fCompl;
              if ( h == 'C')                              // Haplotype C
-            {                     
-                if (i == 'C')                                               
-                    singleProb = (1.0-e)*(1-methOptions.convRate) ; 
-                else if (i == 'T')                                           
-                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] + (1.0-e)*(methOptions.convRate);          
-                else                                                               
+            {
+                if (i == 'C')
+                    singleProb = (1.0-e)*(1-methOptions.convRate) ;
+                else if (i == 'T')
+                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] + (1.0-e)*(methOptions.convRate);
+                else
                     singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))];
-            } 
+            }
             else if ( h == 'D')                         // Haplotype Cm
-            {                     
-                if (i == 'C')                                        
-                    singleProb = (1.0-e)*(1.0-methOptions.methConvRate); 
-                else if (i == 'T')                                      
+            {
+                if (i == 'C')
+                    singleProb = (1.0-e)*(1.0-methOptions.methConvRate);
+                else if (i == 'T')
                     singleProb = e*seqErrorFreqs[fCompl(1)*5 + fCompl(ordValue(i))]  + (1.0-e)*methOptions.methConvRate;
-                else                                            
+                else
                     singleProb = e*seqErrorFreqs[fCompl(1)*5 + fCompl(ordValue(i))] ;
-            } 
+            }
             else if ( h == 'G')                         // Haplotype G
             {
-                if (i == 'G')          
+                if (i == 'G')
                     singleProb = 1.0 - e;
-                else                                  
+                else
                     singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] ;
-            } 
+            }
             else if ( h == 'H')                         // Haplotype Gm
             {
-                if (i == 'G')         
+                if (i == 'G')
                     singleProb = 1.0 - e;
-                else                                    
+                else
                     singleProb = e*seqErrorFreqs[fCompl(2)*5 + fCompl(ordValue(i))] ;
-            } 
-            else                                        // Haplotype T, A: no bs 
+            }
+            else                                        // Haplotype T, A: no bs
             {
                 if (i == h)
-                    singleProb = 1.0 - e; 
+                    singleProb = 1.0 - e;
                 else
-                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] ; 
-            }       
+                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] ;
+            }
         }
     }
 }
@@ -176,134 +176,134 @@ getSingleBaseProbHaploR(TProb &singleProb, Dna i, DnaM h, TErrorProb &e, bool & 
     {
         // i is read base corresponding to forward strand
         if ( h == 'C')                              // Haplotype C
-        {                     
-            if (i == 'C')           
-                singleProb = 1.0-e;  
-            else                                   
-                singleProb = e/3.0;
-        } 
-        else if ( h == 'D')                         // Haplotype Cm
-        {                     
-            if (i == 'C')          
+        {
+            if (i == 'C')
                 singleProb = 1.0-e;
-            else                                   
+            else
                 singleProb = e/3.0;
-        } 
+        }
+        else if ( h == 'D')                         // Haplotype Cm
+        {
+            if (i == 'C')
+                singleProb = 1.0-e;
+            else
+                singleProb = e/3.0;
+        }
         else if ( h == 'G')                         // Haplotype G
         {
-            if (i == 'G')          
+            if (i == 'G')
                 singleProb = (1.0-e)*(1-methOptions.convRate); //+ methOptions.convRate*(e/3.0);    // TODO: why not included???
             else if (i == 'A')
                 singleProb = e/3.0 + (1.0-e)*methOptions.convRate;
-            else                                  
+            else
                 singleProb = e/3.0;
-        } 
+        }
         else if ( h == 'H')                         // Haplotype Gm
         {
-            if (i == 'G')         
+            if (i == 'G')
                 singleProb = (1.0-e)*(1-methOptions.methConvRate); // + methOptions.methConvRate*(e/3.0);
             else if (i == 'A')
                 singleProb = e/3.0 + (1.0-e)*methOptions.methConvRate;
-            else                                    
+            else
                 singleProb = e/3.0;
-         } 
-        else                                        // Haplotype T, A: no bs 
+         }
+        else                                        // Haplotype T, A: no bs
         {
             if (i == h)
-                singleProb = 1.0 - e; 
+                singleProb = 1.0 - e;
             else
-                singleProb = e/3.0; 
+                singleProb = e/3.0;
         }
     }
     else
     {
         // temporary, just to try
-        TProb const *seqErrorFreqs = SeqErrorFreqsN<TProb, BsNonSimple>::getData(); 
+        TProb const *seqErrorFreqs = SeqErrorFreqsN<TProb, BsNonSimple>::getData();
         if (origin)
         {
-            FunctorDna5OrdValueComplement<int> fCompl; 
+            FunctorDna5OrdValueComplement<int> fCompl;
            // i is read base corresponding to forward strand
             if ( h == 'C')                              // Haplotype C
-            {                     
-                if (i == 'C')           
-                    singleProb = 1.0-e;  
-                else                                   
-                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))];
-            } 
-            else if ( h == 'D')                         // Haplotype Cm
-            {                     
-                if (i == 'C')          
+            {
+                if (i == 'C')
                     singleProb = 1.0-e;
-                else                                   
+                else
+                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))];
+            }
+            else if ( h == 'D')                         // Haplotype Cm
+            {
+                if (i == 'C')
+                    singleProb = 1.0-e;
+                else
                     singleProb = e*seqErrorFreqs[fCompl(1)*5 + fCompl(ordValue(i))];
-            } 
+            }
             else if ( h == 'G')                         // Haplotype G
             {
-                if (i == 'G')          
+                if (i == 'G')
                     singleProb = (1.0-e)*(1-methOptions.convRate); //+ methOptions.convRate*(e/3.0);    // TODO: why not included???
                 else if (i == 'A')
                     singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))] + (1.0-e)*methOptions.convRate;
-                else                                  
+                else
                     singleProb = e/3.0;
-            } 
+            }
             else if ( h == 'H')                         // Haplotype Gm
             {
-                if (i == 'G')         
+                if (i == 'G')
                     singleProb = (1.0-e)*(1-methOptions.methConvRate); // + methOptions.methConvRate*(e/3.0);
                 else if (i == 'A')
                     singleProb = e*seqErrorFreqs[fCompl(2)*5 + fCompl(ordValue(i))] + (1.0-e)*methOptions.methConvRate;
-                else                                    
+                else
                     singleProb = e*seqErrorFreqs[fCompl(2)*5 + fCompl(ordValue(i))];
-             } 
-            else                                        // Haplotype T, A: no bs 
+             }
+            else                                        // Haplotype T, A: no bs
             {
                 if (i == h)
-                    singleProb = 1.0 - e; 
+                    singleProb = 1.0 - e;
                 else
-                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))]; 
+                    singleProb = e*seqErrorFreqs[fCompl(ordValue(h))*5 + fCompl(ordValue(i))];
             }
         }
         else
         {
             // This read was projected to original BS strand, thus this is the original base
             if ( h == 'C')                              // Haplotype C
-            {                     
-                if (i == 'C')           
-                    singleProb = 1.0-e;  
-                else                                   
-                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)];
-            } 
-            else if ( h == 'D')                         // Haplotype Cm
-            {                     
-                if (i == 'C')          
+            {
+                if (i == 'C')
                     singleProb = 1.0-e;
-                else                                   
+                else
+                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)];
+            }
+            else if ( h == 'D')                         // Haplotype Cm
+            {
+                if (i == 'C')
+                    singleProb = 1.0-e;
+                else
                     singleProb = e*seqErrorFreqs[1*5 + ordValue(i)];
-            } 
+            }
             else if ( h == 'G')                         // Haplotype G
             {
-                if (i == 'G')          
+                if (i == 'G')
                     singleProb = (1.0-e)*(1-methOptions.convRate); //+ methOptions.convRate*(e/3.0);    // TODO: why not included???
                 else if (i == 'A')
                     singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)] + (1.0-e)*methOptions.convRate;
-                else                                  
+                else
                     singleProb = e/3.0;
-            } 
+            }
             else if ( h == 'H')                         // Haplotype Gm
             {
-                if (i == 'G')         
+                if (i == 'G')
                     singleProb = (1.0-e)*(1-methOptions.methConvRate); // + methOptions.methConvRate*(e/3.0);
                 else if (i == 'A')
                     singleProb = e*seqErrorFreqs[2*5 + ordValue(i)] + (1.0-e)*methOptions.methConvRate;
-                else                                    
+                else
                     singleProb = e*seqErrorFreqs[2*5 + ordValue(i)];
-             } 
-            else                                        // Haplotype T, A: no bs 
+             }
+            else                                        // Haplotype T, A: no bs
             {
                 if (i == h)
-                    singleProb = 1.0 - e; 
+                    singleProb = 1.0 - e;
                 else
-                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)]; 
+                    singleProb = e*seqErrorFreqs[ordValue(h)*5 + ordValue(i)];
             }
         }
     }
@@ -354,7 +354,7 @@ adjustConstantsSize(TConstantSet &constantSet, TStrand strand, Naive const &)
             eraseBack(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'T')][i]);
         }
     }
-    else 
+    else
     {
         for (unsigned i = 0; i <= 1; ++i)
         {
@@ -395,13 +395,13 @@ inline TCoeffs polynomialMultipl(TCoeffs &coeffs1, TCoeffs &coeffs2)
 
 // Get coeffs for meth cases and (partial) likelihoods for other cases
 template<typename TConstantSet, typename TLHoods, typename TQStrings, typename TMapqs, typename TOriginString, typename TCounts, typename TMethOptions, typename TRefContext, typename TMethod>
-inline void 
-constructConstantsAndLHoods(TConstantSet &constantSet, 
-                            TLHoods &lHoods, 
-                            TQStrings &qualF, TQStrings &qualR, 
-                            TMapqs &mapqsF, TMapqs &mapqsR, 
-                            TOriginString & originStringF, TOriginString & originStringR, 
-                            TCounts &countF, TCounts &countR, 
+inline void
+constructConstantsAndLHoods(TConstantSet &constantSet,
+                            TLHoods &lHoods,
+                            TQStrings &qualF, TQStrings &qualR,
+                            TMapqs &mapqsF, TMapqs &mapqsR,
+                            TOriginString & originStringF, TOriginString & originStringR,
+                            TCounts &countF, TCounts &countR,
                             TMethOptions &methOptions,
                             TRefContext &refContext,
                             TMethod const &)
@@ -418,21 +418,21 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
     // For reads on other strand: caclulate already likelihood, since this is independent on beta
     // Multiply later
     // for each observed base type
-    for (unsigned i = 0; i < 4; ++i)  
+    for (unsigned i = 0; i < 4; ++i)
     {
         // for all reads mapped on forward strand
         for (unsigned j = 0; j < length(qualF[i]); ++j)
         {
             long double qual =  static_cast<long double>(ordValue(qualF[i][j])-33);
             /*
-            if (candidatePos + startCoord == 908640 || candidatePos + startCoord == 985089 )  
+            if (candidatePos + startCoord == 908640 || candidatePos + startCoord == 985089 )
             {
                 std::cout << qual << std::endl;
             }
             */
 
             // If quality is below threshold, ignore read for all further calculations
-            if (qual < 1 || (methOptions.useMapq && mapqsF[i][j] < 1))   
+            if (qual < 1 || (methOptions.useMapq && mapqsF[i][j] < 1))
             {
                 adjustConstantsSize(constantSet, 'F', TMethod());
                 continue;
@@ -452,16 +452,16 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                     long double e_m = pow(10.0L, (long double)(- mapqsF[i][j]/10.0));
                     singleProbs[h] = (1.0 -  e_m) * singleProbs[h];
                     double sim = 0.98;  // expected similarity
-                    //  TODO how to deal with prob. to observe this base in wrong mapping ? 
+                    //  TODO how to deal with prob. to observe this base in wrong mapping ?
                     if ((Dna)i == 'C' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
                     else if ((int)i == refContext.refAllele) singleProbs[h] += e_m * (sim*0.25);
-                    else if ((Dna)i == 'T' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25); 
-                    else if ((Dna)i == 'C') singleProbs[h] += e_m * ((1.0-sim)*0.5*0.25); 
-                    else if ((Dna)i == 'T') singleProbs[h] += e_m * ((1.0-sim)*1.5*0.25); 
-                    else singleProbs[h] += e_m * ((1.0-sim)*1.0*0.25); 
+                    else if ((Dna)i == 'T' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
+                    else if ((Dna)i == 'C') singleProbs[h] += e_m * ((1.0-sim)*0.5*0.25);
+                    else if ((Dna)i == 'T') singleProbs[h] += e_m * ((1.0-sim)*1.5*0.25);
+                    else singleProbs[h] += e_m * ((1.0-sim)*1.0*0.25);
                 }
             }
-         
+
             // Calculate likelihood for diploid genotypes
             for (unsigned h1 = 0; h1 < 4; ++h1)
             {
@@ -474,7 +474,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                         if (countF_CT >= minCountCT)
                         {
                             long double pC = singleProbs[ordValue((Dna)'C')];
-                            long double pCm = singleProbs[ordValue((DnaM)'D')]; 
+                            long double pCm = singleProbs[ordValue((DnaM)'D')];
                             long double pOther = 0.0;
                             addFactorToConstants(constantSet[(h1<<2)|h2], pC, pCm, pOther, rF, TMethod());
                         }
@@ -490,7 +490,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                         }
                     }
                     else if ((Dna)h1 == 'C' || (Dna)h2 == 'C')  // CX
-                    { 
+                    {
                         if (countF_CT >= minCountCT)
                         {
                             long double pC = singleProbs[ordValue((Dna)'C')];
@@ -513,13 +513,13 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
         {
             long double qual =  static_cast<long double>(ordValue(qualR[i][j])-33);
             // If quality is below threshold, ignore read for all further calculations
-            if (qual < 1 || (methOptions.useMapq && mapqsR[i][j] < 1))   
+            if (qual < 1 || (methOptions.useMapq && mapqsR[i][j] < 1))
             {
                 adjustConstantsSize(constantSet, 'R', TMethod());
                 continue;
             }
 
-            long double e = pow(10.0L, (long double)(-qual/10.0));  
+            long double e = pow(10.0L, (long double)(-qual/10.0));
             // likelihood to observe single base under assumption of given genotype
             String<long double> singleProbs;
             resize(singleProbs, 6);
@@ -534,13 +534,13 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                     double sim = 0.98;
                     if ((Dna)i == 'G' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
                     else if ((int)i == refContext.refAllele) singleProbs[h] += e_m * (sim*0.25);
-                    else if ((Dna)i == 'A' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25); 
-                    else if ((Dna)i == 'G') singleProbs[h] += e_m * ((1.0-sim)*0.5*0.25); 
-                    else if ((Dna)i == 'A') singleProbs[h] += e_m * ((1.0-sim)*1.5*0.25); 
-                    else singleProbs[h] += e_m * ((1.0-sim)*1.0*0.25); 
+                    else if ((Dna)i == 'A' && (Dna)refContext.refAllele == 'C') singleProbs[h] += e_m * (sim*0.5*0.25);
+                    else if ((Dna)i == 'G') singleProbs[h] += e_m * ((1.0-sim)*0.5*0.25);
+                    else if ((Dna)i == 'A') singleProbs[h] += e_m * ((1.0-sim)*1.5*0.25);
+                    else singleProbs[h] += e_m * ((1.0-sim)*1.0*0.25);
               }
             }
-            
+
             // Calculate likelihood for diploid genotypes
             for (int h1 = 0; h1 < 4; ++h1)
             {
@@ -552,12 +552,12 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                         if ( (countF_CT >= minCountCT) && (countR_CT >= minCountCT))
                         {
                             // G
-                            long double pC = singleProbs[ordValue((Dna)'G')];  
+                            long double pC = singleProbs[ordValue((Dna)'G')];
                             long double pCm = singleProbs[ordValue((DnaM)'H')];
                             long double pOther = singleProbs[ordValue((DnaM)'C')];
                             addFactorToConstants(constantSet[(h2<<2)|h1], pC, pCm, pOther, rR, TMethod());
                         }
-                    } 
+                    }
                     else if ((Dna)h1 == 'G' && (Dna)h2 == 'G')  // GG
                     {
                         if (countR_CT >= minCountCT)
@@ -567,7 +567,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                             long double pOther = 0.0;
                             addFactorToConstants(constantSet[(h1<<2)|h2], pC, pCm, pOther, rR, TMethod());
                         }
-                    } 
+                    }
                     else if ((Dna)h1 == 'G' || (Dna)h2 == 'G')   // GX
                     {
                         if (countR_CT >= minCountCT)
@@ -577,7 +577,7 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
                             long double pOther = singleProbs[((Dna)h1=='G')? h2:h1];
                             addFactorToConstants(constantSet[(h1<<2)|h2], pC, pCm, pOther, rR, TMethod());
                         }
-                    } 
+                    }
                     else            // XX, no beta to maximize
                     {
                         long double p = 0.5*singleProbs[h1] + 0.5*singleProbs[h2];
@@ -591,13 +591,13 @@ constructConstantsAndLHoods(TConstantSet &constantSet,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// 
+//
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Check if borders are better (for newton method)
 template<typename TLHood, typename TBeta, typename TFunctor, typename TEvalMethod>
-inline TBeta 
+inline TBeta
 verifyBeta(TLHood &lHood, TBeta &beta, TFunctor &functor, TEvalMethod const &)
 {
     bool eBViolated = false;
@@ -606,7 +606,7 @@ verifyBeta(TLHood &lHood, TBeta &beta, TFunctor &functor, TEvalMethod const &)
 
     TBeta b_0 = 0.0;
     TLHood f_0 = functor(eBViolated, b_0);
-    if (eBViolated) f_0 = 0.0; 
+    if (eBViolated) f_0 = 0.0;
 
     TBeta b_1 = 1.0;
     TLHood f_1 = functor(eBViolated, b_1);
@@ -635,9 +635,9 @@ template<typename TBeta, typename TLHood, typename TConstants, typename TMethOpt
 inline void
 getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta /*&guess*/, TMethOptions &/*methOptions*/, Sampling const &, Naive const &)
 {
-#ifdef CALL_PROFILE 
+#ifdef CALL_PROFILE
     double timeStamp = sysTime();
-#endif 
+#endif
     FctNaive_0N<long double> fctNaive(constants);
 
     TLHood maxlHood = 0.0;
@@ -651,7 +651,7 @@ getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta /*&gu
             betaMax = currBeta;
             maxlHood = currlHood;
         }
-    } 
+    }
     beta = betaMax;
     lHood = maxlHood;
 #ifdef CALL_PROFILE
@@ -665,10 +665,10 @@ template<typename TBeta, typename TLHood, typename TConstants, typename TMethOpt
 inline void
 getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta &guess, TMethOptions &methOptions, Newton const &, LogFunction const &)
 {
-#ifdef CALL_PROFILE 
+#ifdef CALL_PROFILE
     double timeStamp = sysTime();
-#endif 
-    typedef typename boost::math::tuple<TBeta, TBeta> TTuple; 
+#endif
+    typedef typename boost::math::tuple<TBeta, TBeta> TTuple;
 
     boost::uintmax_t maxIter = 10;
     //std::cout << " Guess: " << guess << std::endl;
@@ -679,9 +679,9 @@ getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta &gues
     FctLog_02N<long double> myF02(constants);
     TTuple tupleR = myF02(beta);
     long double f_2R = boost::math::get<1>(tupleR);
-    if (f_2R >= 0)     
+    if (f_2R >= 0)
     {
-        getMaximizingBeta(beta, lHood, constants, guess, methOptions, Sampling(), Naive()); 
+        getMaximizingBeta(beta, lHood, constants, guess, methOptions, Sampling(), Naive());
         ++methOptions.countPlanB;
     }
     else
@@ -692,7 +692,7 @@ getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta &gues
     }
 
     if (methOptions.helpPrint)   // certain pos
-    { 
+    {
         std::cout << "Log function: " << std::endl;
         for (TBeta b =0.0; b <= 1.0; b+=0.05)
         {
@@ -710,14 +710,14 @@ getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta &gues
 
 
 template<typename TBetas, typename TLHoods, typename TConstantSet, typename TCounts, typename TMethOptions, typename TMethod, typename TEvalMethod>
-inline void 
+inline void
 getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCounts &countF, TCounts &countR, TMethOptions &methOptions, TMethod const &, TEvalMethod const &, unsigned &pos)
 {
     typedef typename Value<TLHoods>::Type   TLHood;
 
     unsigned minCountCT = 1;    // We do not have to limit this here, since this is taken into account in prob. calculations later anyway
-    resize(betas, 4*4, 0.666, Exact());   
-    long double guess;   
+    resize(betas, 4*4, 0.666, Exact());
+    long double guess;
     unsigned countF_CT = countF[ordValue((Dna)'C')] + countF[ordValue((Dna)'T')];
     unsigned countR_CT = countR[ordValue((Dna)'G')] + countR[ordValue((Dna)'A')];
 
@@ -728,14 +728,14 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
             // Compute beta values and assign corresponding probs to lHoods
             if ( ((Dna)h1 == 'C' && (Dna)h2 == 'G')) // CG
             {
-                if ((countF_CT >= minCountCT) && (countR_CT >= minCountCT))                // TODO C/T threshold to take meth level into account ?? problem: could bias score, result  
+                if ((countF_CT >= minCountCT) && (countR_CT >= minCountCT))                // TODO C/T threshold to take meth level into account ?? problem: could bias score, result
                 {
-                    // C: lHood from froward strand reads 
+                    // C: lHood from froward strand reads
                     guess = (long double)countF[ordValue((Dna)'C')]/(long double)(countF_CT);
                     TLHood lHood;
                     getMaximizingBeta(betas[h1<<2|h2], lHood, constantSet[(h1<<2)|h2], guess, methOptions, TMethod(), TEvalMethod());
                     lHoods[(h1<<2)|h2] = lHood;
-                    // G: lHood from reverse strand reads 
+                    // G: lHood from reverse strand reads
                     guess = (long double)countR[ordValue((Dna)'G')]/(long double)(countR_CT);
                     getMaximizingBeta(betas[h2<<2|h1], lHood, constantSet[(h2<<2)|h1], guess, methOptions, TMethod(), TEvalMethod());
                     lHoods[(h1<<2)|h2] *= lHood;
@@ -757,11 +757,11 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
                     TLHood lHood;
                     if (pos == 104)
                     {
-                        methOptions.helpPrint = true; 
+                        methOptions.helpPrint = true;
                         std::cout << (Dna)h1 << (Dna)h2 << std::endl;
                     }
                     getMaximizingBeta(betas[h1<<2|h2], lHood, constantSet[(h1<<2)|h2], guess, methOptions, TMethod(), TEvalMethod());
-                    methOptions.helpPrint = false; 
+                    methOptions.helpPrint = false;
                     lHoods[(h1<<2)|h2] *= lHood;
                }
                 else        // if not enough Cs and Ts: do not iterate and set prob to 0
@@ -784,7 +784,7 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
                 else
                 {
                     betas[h1<<2|h2] = 666.0;
-                    lHoods[(h1<<2)|h2] = 0.0;        
+                    lHoods[(h1<<2)|h2] = 0.0;
                 }
             }
             else if ((Dna)h1 == 'C' || (Dna)h2 == 'C')
@@ -795,11 +795,11 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
                     TLHood lHood;
                     if (pos == 104 && (Dna)h1 == 'C' && (Dna)h2 == 'C')
                     {
-                        methOptions.helpPrint = true; 
+                        methOptions.helpPrint = true;
                         std::cout << (Dna)h1 << (Dna)h2 << std::endl;
                     }
                     getMaximizingBeta(betas[h1<<2|h2], lHood, constantSet[(h1<<2)|h2], guess, methOptions, TMethod(), TEvalMethod());
-                    methOptions.helpPrint = false; 
+                    methOptions.helpPrint = false;
                     lHoods[(h1<<2)|h2] *= lHood;
                }
                 else
@@ -822,7 +822,7 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
                     betas[h1<<2|h2] = 666.0;
                     lHoods[(h1<<2)|h2] = 0.0;
                }
-            } 
+            }
         }
     }
 }
@@ -833,7 +833,7 @@ inline void
 setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCounts &countR, Naive const &)
 {
     clear(lHoods);
-    resize(lHoods, 4*4, 1.0, Exact()); 
+    resize(lHoods, 4*4, 1.0, Exact());
 
     clear(constantSet);
     resize(constantSet, 4*4, Exact());
@@ -846,29 +846,29 @@ setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCou
     for (unsigned i = 0; i <= 1; ++i)
     {
         // Forward strand methylations
-        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'C')], 2, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'C')], 2, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'G')], 2, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'T')], 2, Exact());  
+        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'C')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'C')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'G')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'T')], 2, Exact());
         // Reverse strand methylations
-        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'G')], 2, Exact()); 
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'C')], 2, Exact());   
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'G')], 2, Exact()); 
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'T')], 2, Exact()); 
+        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'G')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'C')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'G')], 2, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'T')], 2, Exact());
     }
     // resize for number of reads
     for (unsigned j = 0; j <= 1; ++j)
     {
         // Forward strand methylations
-        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'C')][j], covF, 0.0, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'C')][j], covF, 0.0, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'G')][j], covF, 0.0, Exact());  
-        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'T')][j], covF, 0.0, Exact());  
+        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'C')][j], covF, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'C')][j], covF, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'G')][j], covF, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'C')<<2|ordValue((Dna)'T')][j], covF, 0.0, Exact());
         // Reverse strand methylations
-        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'G')][j], covR, 0.0, Exact()); 
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'C')][j], covR, 0.0, Exact());   
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'G')][j], covR, 0.0, Exact()); 
-        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'T')][j], covR, 0.0, Exact()); 
+        resize(constantSet[ordValue((Dna)'A')<<2|ordValue((Dna)'G')][j], covR, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'C')][j], covR, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'G')][j], covR, 0.0, Exact());
+        resize(constantSet[ordValue((Dna)'G')<<2|ordValue((Dna)'T')][j], covR, 0.0, Exact());
     }
 }
 
@@ -876,7 +876,7 @@ template<typename TConstantSet, typename TLHoods, typename TCounts>
 inline void
 setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCounts &countR, LogFunction const &)
 {
-    setUpConstants(constantSet, lHoods, countF, countR, Naive());  
+    setUpConstants(constantSet, lHoods, countF, countR, Naive());
 }
 
 
@@ -902,9 +902,9 @@ computePostProbs(TPostProbs &postProbs, TLHoods &lHoods, TRefContext &refContext
         {
             if(options._debugLevel > 1)
                 std::cout << (Dna)refContext.refAllele << (Dna)h1 << (Dna)h2 << "  " << std::setprecision (25) << "genPrior: " << std::setprecision (25) << (long double)methOptions.genPriors[ refContext.refAllele<<4| ordValue((Dna)((DnaM)h1))<<2 | ordValue((Dna)((DnaM)h2))] << "  lHood  " << (long double)lHoods[(h1<<2)| h2] << std::endl;
-            
+
             // future: maybe take bsPriors into account, take context into account !!!
-            postProbs[(h1<<2)| h2] = methOptions.genPriors[ refContext.refAllele<<4| h1<<2 | h2] * lHoods[(h1<<2)| h2] / obsBasesProb;   
+            postProbs[(h1<<2)| h2] = methOptions.genPriors[ refContext.refAllele<<4| h1<<2 | h2] * lHoods[(h1<<2)| h2] / obsBasesProb;
 
             if(options._debugLevel > 1)
                  std::cout << std::setprecision (25) << "candidateProb: " << (Dna)refContext.refAllele << (Dna)h1 << (Dna)h2 << "  " << postProbs[(h1<<2)| h2] << "  context" << refContext.contextF << refContext.contextR << std::endl;
@@ -914,20 +914,20 @@ computePostProbs(TPostProbs &postProbs, TLHoods &lHoods, TRefContext &refContext
 
 
 template<typename TProbs, typename TBetas, typename TMethOptions, typename TOptions, typename TQStrings, typename TMapqs, typename TOriginString, typename TCounts, typename TRefContext>
-inline void 
-getCandidateProbs(TProbs &postProbs, TBetas &betas, 
-                  TMethOptions &methOptions, TOptions &options, 
-                  TQStrings &qualF, TQStrings &qualR, 
-                  TMapqs &mapqsF, TMapqs &mapqsR, 
-                  TOriginString & originStringF, 
-                  TOriginString & originStringR,  
-                  TCounts &countF, TCounts &countR, 
+inline void
+getCandidateProbs(TProbs &postProbs, TBetas &betas,
+                  TMethOptions &methOptions, TOptions &options,
+                  TQStrings &qualF, TQStrings &qualR,
+                  TMapqs &mapqsF, TMapqs &mapqsR,
+                  TOriginString & originStringF,
+                  TOriginString & originStringR,
+                  TCounts &countF, TCounts &countR,
                   TRefContext &refContext)
 {
     if (methOptions.ignoreBs) // Snp calling without bs conversions
         methOptions.convRate = 0.0;
- 
-    String<long double> lHoods;  // likelihoods to observe observed data under assumption of given genotypes 
+
+    String<long double> lHoods;  // likelihoods to observe observed data under assumption of given genotypes
     String<String<String<long double> > > constantSet;
 
     // Naive and Sampling Method
@@ -969,7 +969,7 @@ doBsCalling(TCounts & countF,
     int genotypeRef = (refContext.refAllele<<2) | refContext.refAllele;
 
     String<long double> candidateProbs;
-    String<long double> betas; 
+    String<long double> betas;
     resize(candidateProbs, 4*4); // for simplicity; not all are used
 
     getCandidateProbs(candidateProbs, betas, methOptions, options, qualF, qualR, mapqsF, mapqsR, originStringF, originStringR, countF, countR, refContext);
@@ -989,7 +989,7 @@ doBsCalling(TCounts & countF,
             {
                 std::cout << std::setprecision (50) << "current genotype: " << (Dna)h1 << (Dna)h2 <<  "probs: " << candidateProbs[(h1<<2)| h2] << std::endl;
             }*/
-            if (candidateProbs[(h1<<2)| h2] >= maxProb1) 
+            if (candidateProbs[(h1<<2)| h2] >= maxProb1)
             {
                 maxProb2 = maxProb1;
                 genotype2 = (allele1<<2)|allele2;
@@ -1016,9 +1016,9 @@ doBsCalling(TCounts & countF,
         meth.genotypeCalled = false;
         ++methOptions.countScoreTooLow;
     }
-    else 
+    else
         meth.genotypeCalled = true;
-    
+
     /*if (refContext.pos == 693)
     {
         std::cout << " Pos 693" << std::endl;
@@ -1030,14 +1030,14 @@ doBsCalling(TCounts & countF,
     meth.methLevel1 = betas[genotype1];
     if ((Dna)allele1 == 'C' && (Dna)allele2 == 'G')
         meth.methLevel2 = betas[(ordValue((Dna)'G')<<2)|ordValue((Dna)'C')];
-    
+
     // If bs case:
     // Genotype was called = score was good enough to call
     if (meth.genotypeCalled && ((Dna)allele1 == 'C' || (Dna)allele1 == 'G' || (Dna)allele2 == 'C' || (Dna)allele2 == 'G') )     // TODO: think how to hand call threshold
     {
         meth.bsCalled = true;
     }
-    else 
+    else
         meth.bsCalled = false;
 
 
@@ -1050,7 +1050,7 @@ doBsCalling(TCounts & countF,
         std::cout << std::setprecision (50) << " prob genotype CG.." << (long double)candidateProbs[ordValue((Dna)'C')<<2|ordValue((Dna)'G')]  << "  beta: " << betas[ordValue((Dna)'C')<<2|ordValue((Dna)'G')] <<  std::endl;
         //std::cout << std::setprecision (25) << " prob genotype3.." << (long double)candidateProbs[0>>2|2]  <<  std::endl;
     }*/
- 
+
     return true;
 }
 
@@ -1063,16 +1063,16 @@ inline bool
 writeMeth(TVcfStream &vcfStream,
        TBedStream &bedStream,
        TMethylVariant &meth,
-       TQualities &qualityStringF, 
+       TQualities &qualityStringF,
        TQualities &qualityStringR,
-       TRefContext &refContext, 
+       TRefContext &refContext,
        unsigned realCoverage,
        TMethOptions &methOptions,
        TOptions &/*options*/)
 {
-#ifdef CALL_PROFILE 
+#ifdef CALL_PROFILE
     double timeStamp = sysTime();
-#endif 
+#endif
 
     // VCF
      if(meth.genotypeCalled && ((meth.genotype>>2) != refContext.refAllele || (meth.genotype%4) != refContext.refAllele) )
@@ -1083,7 +1083,7 @@ writeMeth(TVcfStream &vcfStream,
         record.id = "snp";
         record.ref = (Dna)refContext.refAllele;
         CharString alt;
-        if ((meth.genotype>>2) != refContext.refAllele && (meth.genotype%4) != refContext.refAllele) 
+        if ((meth.genotype>>2) != refContext.refAllele && (meth.genotype%4) != refContext.refAllele)
         {
             appendValue(alt, (Dna)(meth.genotype>>2));
             appendValue(alt, ',');
@@ -1093,7 +1093,7 @@ writeMeth(TVcfStream &vcfStream,
         {
             appendValue(alt, (Dna)(meth.genotype>>2));
         }
-        else 
+        else
         {
             appendValue(alt, (Dna)(meth.genotype%4));
         }
@@ -1105,59 +1105,59 @@ writeMeth(TVcfStream &vcfStream,
         record.info = "FB:";
         std::stringstream ss;
         ss << length(qualityStringF[0]);   // Top: A
-        CharString str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        CharString str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringF[1]);   // Top: C
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringF[2]);   // Top: G
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringF[3]);   // Top: T
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ";");
         append(record.info, "RB=");
         ss <<  length(qualityStringR[0]);   // Bot: A
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringR[1]);   // Bot: C
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringR[2]);   // Bot: G
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ",");
         ss <<  length(qualityStringR[3]);   // Bot: T
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(record.info, str);
         append(record.info, ";");
         // TODO vv qualities
 
         record.format =  "GT:DP:GS:MP";
         CharString genotypeInfos;
-        if ((meth.genotype>>2) != refContext.refAllele && (meth.genotype%4) != refContext.refAllele) 
+        if ((meth.genotype>>2) != refContext.refAllele && (meth.genotype%4) != refContext.refAllele)
         {
             append(genotypeInfos, "1|2:");
         }
@@ -1166,146 +1166,141 @@ writeMeth(TVcfStream &vcfStream,
             append(genotypeInfos, "0|1:");
         }
         ss <<  realCoverage;
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(genotypeInfos, str);
         append(genotypeInfos, ":");
         ss <<  meth.score;
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(genotypeInfos, str);
         append(genotypeInfos, ":");
         ss <<  meth.genotypeProb;
-        str = ss.str();  
-        ss.str("");  
-        ss.clear(); 
+        str = ss.str();
+        ss.str("");
+        ss.clear();
         append(genotypeInfos, str);
         appendValue(record.genotypeInfos, genotypeInfos);
 
-        if (writeRecord(vcfStream, record) != 0)
-            std::cerr << "ERROR: Problem writing output file."; 
+        writeRecord(vcfStream, record);
     }
 
     // BED
     if (meth.bsCalled)
     {
         BedRecord<Bed6> bedRecord;
-        bedRecord.rID = 0; // refContext.genomeID;
+        bedRecord.ref = contigNames(context(vcfStream))[0];
         bedRecord.beginPos = refContext.pos;
         bedRecord.endPos = refContext.pos + 1;
         bedRecord.name = ".";
         std::stringstream ss;
         ss <<  meth.score;
-        CharString str = ss.str();  
-        ss.str("");  
-        ss.clear();  
+        CharString str = ss.str();
+        ss.str("");
+        ss.clear();
         bedRecord.score = str;
 
-        if ((Dna)(meth.genotype>>2)  == 'C' && (Dna)(meth.genotype%4) == 'G')   
+        if ((Dna)(meth.genotype>>2)  == 'C' && (Dna)(meth.genotype%4) == 'G')
         {
             bedRecord.strand = '+';
             ss <<  meth.methLevel1;
-            str = ss.str();  
-            ss.str("");  
-            ss.clear(); 
+            str = ss.str();
+            ss.str("");
+            ss.clear();
             bedRecord.data = str;
-            if (writeRecord(bedStream, bedRecord) != 0)
-                std::cerr << "ERROR: Problem writing output file.";
+            writeRecord(bedStream, bedRecord);
             bedRecord.strand = '-';
             ss << meth.methLevel2;
-            str = ss.str();  
-            ss.str("");  
-            ss.clear(); 
+            str = ss.str();
+            ss.str("");
+            ss.clear();
             bedRecord.data = str;
-            if (writeRecord(bedStream, bedRecord) != 0)
-                std::cerr << "ERROR: Problem writing output file.";     // CG genotype: 2 BED entries
+            writeRecord(bedStream, bedRecord);
 
             // Some stats...
-            if (refContext.contextF == 0) 
+            if (refContext.contextF == 0)
             {
                 ++methOptions.countCG;
-                methOptions.statsCGMethylated += meth.methLevel1; 
+                methOptions.statsCGMethylated += meth.methLevel1;
             }
-            else if (refContext.contextF == 1) 
+            else if (refContext.contextF == 1)
             {
                 ++methOptions.countCHG;
-                methOptions.statsCHGMethylated += meth.methLevel1; 
+                methOptions.statsCHGMethylated += meth.methLevel1;
             }
             else
             {
                 ++methOptions.countCHH;
-                methOptions.statsCHHMethylated += meth.methLevel1; 
+                methOptions.statsCHHMethylated += meth.methLevel1;
             }
-            if (refContext.contextR == 0) 
+            if (refContext.contextR == 0)
             {
                 ++methOptions.countCG;
-                methOptions.statsCGMethylated += meth.methLevel2; 
+                methOptions.statsCGMethylated += meth.methLevel2;
             }
-            else if (refContext.contextR == 1) 
+            else if (refContext.contextR == 1)
             {
                 ++methOptions.countCHG;
-                methOptions.statsCHGMethylated += meth.methLevel2; 
+                methOptions.statsCHGMethylated += meth.methLevel2;
             }
             else
             {
                 ++methOptions.countCHH;
-                methOptions.statsCHHMethylated += meth.methLevel2; 
+                methOptions.statsCHHMethylated += meth.methLevel2;
             }
         }
         else if ((Dna)(meth.genotype>>2)  == 'C')
         {
             bedRecord.strand = '+';
             ss <<  meth.methLevel1;
-            str = ss.str();  
-            ss.str("");  
-            ss.clear(); 
+            str = ss.str();
+            ss.str("");
+            ss.clear();
             bedRecord.data = str;
-           if (writeRecord(bedStream, bedRecord) != 0)
-                std::cerr << "ERROR: Problem writing output file.";
+            writeRecord(bedStream, bedRecord);
 
-            if (refContext.contextF == 0) 
+            if (refContext.contextF == 0)
             {
                 ++methOptions.countCG;
-                methOptions.statsCGMethylated += meth.methLevel1; 
+                methOptions.statsCGMethylated += meth.methLevel1;
             }
-            else if (refContext.contextF == 1) 
+            else if (refContext.contextF == 1)
             {
                 ++methOptions.countCHG;
-                methOptions.statsCHGMethylated += meth.methLevel1; 
+                methOptions.statsCHGMethylated += meth.methLevel1;
             }
             else
             {
                 ++methOptions.countCHH;
-                methOptions.statsCHHMethylated += meth.methLevel1; 
+                methOptions.statsCHHMethylated += meth.methLevel1;
             }
-        } 
+        }
         else if ((Dna)(meth.genotype>>2)  == 'G')
         {
             bedRecord.strand = '-';
             ss <<  meth.methLevel1;
-            str = ss.str();  
-            ss.str("");  
-            ss.clear(); 
+            str = ss.str();
+            ss.str("");
+            ss.clear();
             bedRecord.data = str;
-            if (writeRecord(bedStream, bedRecord) != 0)
-                std::cerr << "ERROR: Problem writing output file.";
+            writeRecord(bedStream, bedRecord);
 
-            if (refContext.contextR == 0) 
+            if (refContext.contextR == 0)
             {
                 ++methOptions.countCG;
-                methOptions.statsCGMethylated += meth.methLevel1; 
+                methOptions.statsCGMethylated += meth.methLevel1;
             }
-            else if (refContext.contextR == 1) 
+            else if (refContext.contextR == 1)
             {
                 ++methOptions.countCHG;
-                methOptions.statsCHGMethylated += meth.methLevel1; 
+                methOptions.statsCHGMethylated += meth.methLevel1;
             }
             else
             {
                 ++methOptions.countCHH;
-                methOptions.statsCHHMethylated += meth.methLevel1; 
+                methOptions.statsCHHMethylated += meth.methLevel1;
             }
         }
     }
