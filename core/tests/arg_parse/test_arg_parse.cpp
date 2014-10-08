@@ -141,6 +141,7 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_argument_valid_values);
 
     SEQAN_CALL_TEST(test_argument_parser);
+    SEQAN_CALL_TEST(test_parse_non_const_cstring);
 
     // default value test
     SEQAN_CALL_TEST(test_default_value);
