@@ -376,7 +376,7 @@ public:
 
     void _readFirstRecord(MyGffRecord & record)
     {
-        record.rID = seqan::GffRecord::INVALID_IDX;  // uninitialized
+        record.rID = record.INVALID_IDX;  // uninitialized
 
         bool found = false;
         while (!found && !atEnd(gffFileIn))
