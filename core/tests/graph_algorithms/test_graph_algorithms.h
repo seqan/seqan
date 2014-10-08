@@ -238,7 +238,6 @@ void Test_HeapTree() {
 
 //////////////////////////////////////////////////////////////////////////////
 void Test_BreadthFirstSearch() {
-//IOREV _notio_
 //____________________________________________________________________________
 // Breadth-First Search
 	typedef Graph<Undirected<> > TGraph;
@@ -253,14 +252,14 @@ void Test_BreadthFirstSearch() {
 	
 	//Create the graph
 	TGraph g;
-	addEdges(g,edges, numEdges);
+	addEdges(g, edges, numEdges);
 
 	// Predecessor and distance map
 	String<TVertexDescriptor> predMap;
 	String<TVertexDescriptor> distMap;
 
 	// Bfs
-	breadthFirstSearch(g, 1, predMap, distMap);
+	breadthFirstSearch(predMap, distMap, g, 1);
 	
 	SEQAN_ASSERT(getProperty(distMap, 0) == 1);
 	SEQAN_ASSERT(getProperty(distMap, 1) == 0);
@@ -296,7 +295,7 @@ void Test_DepthFirstSearch() {
 
 	//Create the graph
 	Graph<> g;
-	addEdges(g,edges, numEdges);
+	addEdges(g, edges, numEdges);
 
 	// Predecessor and distance map
 	String<unsigned int> predMap;
@@ -304,7 +303,7 @@ void Test_DepthFirstSearch() {
 	String<unsigned int> finishingTimeMap;
 
 	// Dfs
-	depthFirstSearch(g, predMap, discoveryTimeMap, finishingTimeMap);
+	depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g);
 
 	SEQAN_ASSERT(getProperty(discoveryTimeMap, 0) == 1);
 	SEQAN_ASSERT(getProperty(discoveryTimeMap, 1) == 2);
@@ -348,7 +347,7 @@ void Test_TopologicalSort() {
 	String<TVertexDescriptor> order;
 	
 	// Topological sort
-	topologicalSort(g, order);
+	topologicalSort(order, g);
 
 	SEQAN_ASSERT(getValue(order, 0) == 8);
 	SEQAN_ASSERT(getValue(order, 1) == 5);
@@ -384,7 +383,7 @@ void Test_StronglyConnectedComponents() {
 	String<unsigned int> component;
 	
 	// Strongly Connected Components
-	stronglyConnectedComponents(g, component);
+	stronglyConnectedComponents(component, g);
 
 	SEQAN_ASSERT(getValue(component, 0) == 3);
 	SEQAN_ASSERT(getValue(component, 1) == 3);
@@ -420,7 +419,7 @@ void Test_ConnectedComponents() {
 	String<unsigned int> component;
 	
 	//Connected Components
-	connectedComponents(g, component);
+	connectedComponents(component, g);
 
 	SEQAN_ASSERT(getValue(component, 0) == 0);
 	SEQAN_ASSERT(getValue(component, 1) == 0);
@@ -455,7 +454,7 @@ void Test_PrimsAlgorithm() {
 	// Tree and predecessor map 
 	String<TVertexDescriptor> predMap;
 
-	primsAlgorithm(g, 0, weightMap, predMap);
+	primsAlgorithm(predMap, g, 0, weightMap);
 
 	SEQAN_ASSERT(getProperty(predMap, 0) == getNil<TVertexDescriptor>());
 	SEQAN_ASSERT(getProperty(predMap, 1) == 0);
@@ -493,7 +492,7 @@ void Test_KruskalsAlgorithm() {
 
 	// Tree edges
 	String<TVertexDescriptor> treeEdges;
-	kruskalsAlgorithm(g, 0, weightMap, treeEdges);
+	kruskalsAlgorithm(treeEdges, g, 0, weightMap);
 
 	SEQAN_ASSERT_EQ(length(treeEdges), 16u);
 	SEQAN_ASSERT_EQ(getValue(treeEdges, 0), 6u);
@@ -532,7 +531,7 @@ void Test_MST_All() {
 	
 		// Prim1
 		String<unsigned int> predMapOut;
-		primsAlgorithmSpaceEfficient(myGraph, 0, weightMapInput, predMapOut);
+		primsAlgorithmSpaceEfficient(predMapOut, myGraph, 0, weightMapInput);
 		typedef std::set<EdgeDescriptor<Graph<Undirected<> > >::Type> TEdgeSet;
 		TEdgeSet edgeSet1;
 		_collectEdges(myGraph,predMapOut,0,edgeSet1);
@@ -543,7 +542,7 @@ void Test_MST_All() {
 
 		// Prim2
 		String<unsigned int> predMapOut2;
-		primsAlgorithm(myGraph, 0, weightMapInput, predMapOut2);
+		primsAlgorithm(predMapOut2, myGraph, 0, weightMapInput);
 		TEdgeSet edgeSet2;
 		_collectEdges(myGraph,predMapOut2,0,edgeSet2);
 		unsigned int sum2 = 0;
@@ -555,7 +554,7 @@ void Test_MST_All() {
 		if (sum1 != 0) {
 			// Kruskal
 			String<unsigned int> treeEdges;
-			kruskalsAlgorithm(myGraph, 0, weightMapInput, treeEdges);
+			kruskalsAlgorithm(treeEdges, myGraph, 0, weightMapInput);
 			for(unsigned int i = 0; i < length(treeEdges); i = i + 2) {
 				sum3 += getProperty(weightMapInput, findEdge(myGraph, value(treeEdges, i), value(treeEdges, i + 1)));
 			}
@@ -595,7 +594,7 @@ void Test_DagShortestPath() {
 	String<unsigned int> distMap;
 
 	// DAG-Shortest path(Graph, sourceVertex_vertex, weightMap, predMap, distMap)
-	dagShortestPath(g,1,weightMap,predMap,distMap);
+	dagShortestPath(predMap, distMap, g, 1, weightMap);
 	
 	SEQAN_ASSERT(getProperty(distMap, 1) == 0);
 	SEQAN_ASSERT(getProperty(distMap, 2) == 2);
@@ -638,7 +637,7 @@ void Test_BellmanFord() {
 	String<unsigned int> distMap;
 
 	// Bellman-Ford
-	bool noNegativeCycle = bellmanFordAlgorithm(g,0,weightMap,predMap,distMap);
+	bool noNegativeCycle = bellmanFordAlgorithm(predMap, distMap, g, 0, weightMap);
 
 	SEQAN_ASSERT(getProperty(distMap, 0) == 0);
 	SEQAN_ASSERT(getProperty(distMap, 1) == 8);
@@ -681,7 +680,7 @@ void Test_Dijkstra() {
 	String<unsigned int> distMap;
 
 	// Dijkstra
-	dijkstra(g,0,weightMap,predMap,distMap);
+	dijkstra(predMap, distMap, g, 0, weightMap);
 
 	SEQAN_ASSERT(getProperty(distMap, 0) == 0);
 	SEQAN_ASSERT(getProperty(distMap, 1) == 8);
@@ -723,7 +722,7 @@ void Test_AllPairsShortestPath() {
 	String<TVertexDescriptor> predMat;
 
 	// All-Pairs shortest path
-	allPairsShortestPath(g,weightMap, distMat, predMat);
+	allPairsShortestPath(distMat, predMat, g, weightMap);
 
 	unsigned int len = (unsigned int) sqrt((double) length(distMat));
 	SEQAN_ASSERT(getValue(distMat, 0*len + 0) == 0);
@@ -806,7 +805,7 @@ void Test_FloydWarshall() {
 	String<TVertexDescriptor> predMat;
 
 	// Floyd-Warshall
-	floydWarshallAlgorithm(g,weightMap, distMat, predMat);
+	floydWarshallAlgorithm(distMat, predMat, g, weightMap);
 
 	unsigned int len = (unsigned int) sqrt((double) length(distMat));
 	SEQAN_ASSERT(getValue(distMat, 0*len + 0) == 0);
@@ -883,7 +882,7 @@ void Test_TransitiveClosure() {
 
 	// Transitive-Closure
 	String<bool> closure;
-	transitiveClosure(g,closure);
+	transitiveClosure(closure, g);
 	
 	unsigned int len = (unsigned int) sqrt((double) length(closure));
 	SEQAN_ASSERT(getValue(closure, 0*len + 0) == 1);
@@ -929,7 +928,7 @@ void Test_FordFulkerson() {
 
 	// Out-parameter
 	String<unsigned int> flow;	
-	unsigned int valF = fordFulkersonAlgorithm(g, 0, 3, capMap, flow);
+	unsigned int valF = fordFulkersonAlgorithm(flow, g, 0, 3, capMap);
 	
 	SEQAN_ASSERT(valF == 23);
 	TEdgeIterator itEdge(g);
@@ -965,7 +964,7 @@ void Test_PathGrowingAlgorithm() {
 	String<bool> edgeMap;	
 
 	// EdgeMap indicates whether an edge is selected or not
-	unsigned int weight = pathGrowingAlgorithm(g, weightMap, edgeMap);
+	unsigned int weight = pathGrowingAlgorithm(edgeMap, g, weightMap);
 
 	SEQAN_ASSERT(weight == 49);
 	SEQAN_ASSERT(getProperty(edgeMap, findEdge(g, 0, 7)) == true);

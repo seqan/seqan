@@ -26,7 +26,7 @@ int main()
     // Run Floyd-Warshall algorithm.
     String<int> distMat;
     String<TVertexDescriptor> predMat;
-    floydWarshallAlgorithm(g, weightMap, distMat, predMat);
+    floydWarshallAlgorithm(distMat, predMat, g, weightMap);
 
     // Print result to stdout.
     unsigned int len = static_cast<unsigned>(std::sqrt((double)length(distMat)));

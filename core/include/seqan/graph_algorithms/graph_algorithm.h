@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -78,13 +78,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements a breadth-first search on a graph.
  * 
- * @signature void breadthFirstSearch(g, source, predecessor, distance);
+ * @signature void breadthFirstSearch(predecessor, distance, g, source);
  * 
+ * @param[out] predecessor A property map.  The predecessor map stores implicitly the breadth-first tree.
+ * @param[out] distance    A property map.  The distance map indicates at what depth a vertex was discovered.
  * @param[in]  g           Undirected Graph, Directed Graph
  * @param[in]  source      A vertex descriptor.  The breadth-first search is started from this vertex.
  *                         Types: VertexDescriptor
- * @param[out] predecessor A property map.  The predecessor map stores implicitly the breadth-first tree.
- * @param[out] distance    A property map.  The distance map indicates at what depth a vertex was discovered.
  * 
  * Breadth-first search computes the distance from source to all reachable vertices.  It also produces a breath-first
  * tree where each node has a predecessor/parent.
@@ -97,34 +97,11 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @see depthFirstSearch
  */
-
-/**
-.Function.breadthFirstSearch:
-..cat:Graph
-..summary:Implements a breadth-first search on a graph.
-..remarks:Breadth-first search computes the distance from source to all reachable
-vertices. It also produces a breath-first tree where each node has a predecessor / parent.
-..signature:breadthFirstSearch(g, source, predecessor, distance)
-..param.g:In-parameter:A graph.
-...type:Spec.Undirected Graph
-...type:Spec.Directed Graph
-..param.source:In-parameter:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-...remarks:The breadth-first search is started from this vertex.
-..param.predecessor:Out-parameter:A property map.
-...remarks:The predecessor map stores implicitly the breadth-first tree.
-..param.distance:Out-parameter:A property map.
-...remarks:The distance map indicates at what depth a vertex was discovered.
-..returns:void.
-..see:Function.depthFirstSearch
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TPredecessorMap, typename TDistanceMap>
-void
-breadthFirstSearch(Graph<TSpec> const& g,
-					 TVertexDescriptor const source,
-					 TPredecessorMap& predecessor, 
-					 TDistanceMap& distance)
+template <typename TSpec, typename TVertexDescriptor, typename TPredecessorMap, typename TDistanceMap>
+void breadthFirstSearch(TPredecessorMap & predecessor, 
+                        TDistanceMap & distance,
+                        Graph<TSpec> const & g,
+                        TVertexDescriptor const source)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -176,7 +153,7 @@ breadthFirstSearch(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TVertexDescriptor, typename TTokenMap, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap, typename TVal>
+template <typename TSpec, typename TVertexDescriptor, typename TTokenMap, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap, typename TVal>
 void
 _dfsVisit(Graph<TSpec> const& g,
 		   TVertexDescriptor const u,
@@ -186,8 +163,6 @@ _dfsVisit(Graph<TSpec> const& g,
 		   TFinishingTimeMap& finish,
 		   TVal& time)
 {
-	SEQAN_CHECKPOINT
-
 	typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
 
 	assignProperty(tokenMap, u, true);
@@ -213,12 +188,12 @@ _dfsVisit(Graph<TSpec> const& g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements a depth-first search on a graph.
  * 
- * @signature void depthFirstSearch(g, predecessor, discovery, finish);
+ * @signature void depthFirstSearch(predecessor, discovery, finish, g);
  * 
- * @param[in]  g           A graph. Types: Undirected Graph, Directed Graph
  * @param[out] predecessor A property map.Predecessor subgraph produced by the depth-first search.
  * @param[out] discovery   A property map.The discovery time of a vertex v.
  * @param[out] finish      A property map.The time when v's adjacency list has been fully explored.
+ * @param[in]  g           A graph. Types: Undirected Graph, Directed Graph
  * 
  * In contrast to a breadth-first search the depth-first search is repeated from multiple sources if the graph is not
  * connected.  Hence, depth-first search produces a depth-first forest.  To ensure each vertex ends up in exactly one
@@ -232,34 +207,11 @@ _dfsVisit(Graph<TSpec> const& g,
  * 
  * @see breadthFirstSearch
  */
-
-/**
-.Function.depthFirstSearch:
-..cat:Graph
-..summary:Implements a depth-first search on a graph.
-..remarks:In contrast to a breadth-first search the depth-first search is repeated from multiple sources if the graph is not connected.
-Hence, depth-first search produces a depth-first forest. To ensure each vertex ends up in exactly one tree we need not just a distance but a
-discovery and finishing time.
-..signature:depthFirstSearch(g, predecessor, discovery, finish)
-..param.g:In-parameter:A graph.
-...type:Spec.Undirected Graph
-...type:Spec.Directed Graph
-..param.predecessor:Out-parameter:A property map.
-...remarks:Predecessor subgraph produced by the depth-first search.
-..param.discovery:Out-parameter:A property map.
-...remarks:The discovery time of a vertex v.
-..param.finish:Out-parameter:A property map.
-...remarks:The time when v's adjacency list has been fully explored.
-..returns:void.
-..see:Function.breadthFirstSearch
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap>
-void
-depthFirstSearch(Graph<TSpec> const& g,
-				   TPredecessorMap& predecessor,
-				   TDiscoveryTimeMap& disc,
-				   TFinishingTimeMap& finish)
+template <typename TSpec, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap>
+void depthFirstSearch(TPredecessorMap & predecessor,
+                      TDiscoveryTimeMap & disc,
+                      TFinishingTimeMap & finish,
+                      Graph<TSpec> const & g)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
@@ -318,24 +270,9 @@ depthFirstSearch(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/topological_sort.cpp.stdout
  */
-
-/**
-.Function.topologicalSort:
-..cat:Graph
-..summary:Performs a topological sort on a directed acyclic graph (DAG).
-..remarks:A topological sort is a linear ordering of all its vertices such that if the graph contains an edge (u,v) then u appears before v in the ordering.
-..signature:topologicalSort(g, topSort)
-..param.g:In-parameter:A directed acyclic graph.
-...type:Spec.Directed Graph
-..param.topSort:Out-parameter:A topological ordering of the vertices.
-...type:Class.String
-..returns:void.
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor>
-void
-topologicalSort(Graph<TSpec> const & g,
-				 String<TVertexDescriptor> & topSort)
+template <typename TSpec, typename TVertexDescriptor>
+void topologicalSort(String<TVertexDescriptor> & topSort,
+                     Graph<TSpec> const & g)
 {
 	typedef typename Size<Graph<TSpec> >::Type TSize;
 
@@ -345,7 +282,7 @@ topologicalSort(Graph<TSpec> const & g,
 	String<TSize> finishingTimeMap;
 	
 	// Perform DFS.
-	depthFirstSearch(g, predMap, discoveryTimeMap, finishingTimeMap);
+	depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g);
     SEQAN_ASSERT_EQ(numVertices(g), length(predMap));
     SEQAN_ASSERT_EQ(numVertices(g), length(discoveryTimeMap));
     SEQAN_ASSERT_EQ(numVertices(g), length(finishingTimeMap));
@@ -380,12 +317,12 @@ topologicalSort(Graph<TSpec> const & g,
  * @fn stronglyConnectedComponents
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Decomposes a directed graph into its strongly connected components.
- * @signature TSize stronglyConnectedComponents(g, components);
+ * @signature TSize stronglyConnectedComponents(components, g);
  *
- * @param[in]  g A directed graph. Types: Directed Graph
  * @param[out] components
  *               A property map.Each vertex is mapped to a component id.  If two vertices share the same id they are
  *               in the same component.
+ * @param[in]  g A directed graph. Types: Directed Graph
  *
  * @return TSize Number of strongly connected components, Size type of g.
  *
@@ -395,24 +332,10 @@ topologicalSort(Graph<TSpec> const & g,
  *
  * @include demos/graph_algorithms/strongly_connected_components.cpp.stdout
  */
-
-/**
-.Function.stronglyConnectedComponents:
-..cat:Graph
-..summary:Decomposes a directed graph into its strongly connected components.
-..signature:stronglyConnectedComponents(g, components)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.components:Out-parameter:A property map.
-...remarks:Each vertex is mapped to a component id. If two vertices share the same id they are in the same component.
-..returns:$Size<TGraph>::Type$, number of strongly connected components.
-..include:seqan/graph_algorithms.h
-*/
-
-template<typename TSpec, typename TComponents>
+template <typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type
-stronglyConnectedComponents(Graph<TSpec> const& g_source,
-							  TComponents& components)
+stronglyConnectedComponents(TComponents & components,
+                            Graph<TSpec> const & g_source)
 {
 	// Initialization
 	typedef Graph<TSpec> TGraph;
@@ -426,7 +349,7 @@ stronglyConnectedComponents(Graph<TSpec> const& g_source,
 	String<TSize> finishingTimeMap;
 
 	// Dfs
-	depthFirstSearch(g_source, predMap, discoveryTimeMap, finishingTimeMap);
+	depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g_source);
 
 	Graph<TSpec> g;
 	transpose(g_source, g);
@@ -490,12 +413,12 @@ stronglyConnectedComponents(Graph<TSpec> const& g_source,
  * 
  * @brief Decomposes an undirected graph into its connected components.
  * 
- * @signature TSize connectedComponents(g, components);
+ * @signature TSize connectedComponents(components, g);
  * 
- * @param[in]  g An undirected graph. Types: Undirected Graph
  * @param[out] components
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id
  *               they are in the same component.
+ * @param[in]  g An undirected graph. Types: Undirected Graph
  * 
  * @return TSize The number of components.
  * 
@@ -536,54 +459,10 @@ stronglyConnectedComponents(Graph<TSpec> const& g_source,
  * 4 -> 1
  * @endcode
  */
-
-/**
-.Function.connectedComponents:
-..cat:Graph
-..summary:Decomposes an undirected graph into its connected components.
-..signature:connectedComponents(g, components)
-..param.g:In-parameter:An undirected graph.
-...type:Spec.Undirected Graph
-..param.components:Out-parameter:A property map.
-...remarks:Each vertex is mapped to a component id. If two vertices share the same id they are in the same component.
-..returns: The number of components.
-..example:A simple example on how to use this function.
-..example.code:
-// Build Input.
-Graph<Undirected<> > graph;
-for (unsigned i = 0; i < 5; ++i)
-    addVertex(graph);
-addEdge(graph, 0, 1);
-addEdge(graph, 0, 3);
-addEdge(graph, 2, 4);
-String<unsigned> components;
-unsigned numComponents = 0;
-
-// Call Algorithm.
-numComponents = connectedComponents(g, components);
-
-// Print Result.
-std::cout << "Number of components: " << numComponents << std::endl;
-std::cout << std::endl << "Vertex -> Component" << std::endl;
-for (unsigned i = 0; i < length(components); ++i)
-    std::cout << i << " -> " << components[i] << std::endl;
-..example:The output now is:
-..example.code:
-Number of components: 2
-
-Vertex -> Component
-0 -> 0
-1 -> 0
-2 -> 1
-3 -> 0
-4 -> 1
-..include:seqan/graph_algorithms.h
-*/
-
-template<typename TSpec, typename TComponents>
+template <typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type
-connectedComponents(Graph<TSpec> const & g,
-                    TComponents & components)
+connectedComponents(TComponents & components,
+                    Graph<TSpec> const & g)
 {
     typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
 
@@ -631,14 +510,14 @@ connectedComponents(Graph<TSpec> const & g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes a minimum spanning tree on a graph.
  *
- * @signature void primsAlgorithm(g, source, weight, predecessor);
+ * @signature void primsAlgorithm(predecessor, g, source, weight);
  *
- * @param[in] g      An undirected graph. Types: Undirected Graph
- * @param[in] source A source vertex. Types: VertexDescriptor
- * @param[in] weight Edge weights.
  * @param[out] predecessor
  *                   A property map.  A property map that represents predecessor relationships among vertices.  It
  *                   determines a minimum spanning tree.
+ * @param[in] g      An undirected graph. Types: Undirected Graph
+ * @param[in] source A source vertex. Types: VertexDescriptor
+ * @param[in] weight Edge weights.
  *
  * @section Example
  *
@@ -648,31 +527,12 @@ connectedComponents(Graph<TSpec> const & g,
  *
  * @see kruskalsAlgorithm
  */
-
-/**
-.Function.primsAlgorithm:
-..cat:Graph
-..summary:Computes a minimum spanning tree on a graph.
-..signature:primsAlgorithm(g, source, weight, predecessor)
-..param.g:In-parameter:An undirected graph.
-...type:Spec.Undirected Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.weight:In-parameter:Edge weights.
-..param.predecessor:Out-parameter:A property map.
-...remarks:A property map that represents predecessor relationships among vertices. It determines a minimum spanning tree.
-..returns:void.
-..see:Function.kruskalsAlgorithm
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap>
-void
-primsAlgorithm(Graph<TSpec> const& g,
-				TVertexDescriptor const source,
-				TWeightMap const& weight,
-				TPredecessorMap& predecessor)
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap>
+void primsAlgorithm(TPredecessorMap & predecessor,
+                    Graph<TSpec> const & g,
+                    TVertexDescriptor const source,
+                    TWeightMap const & weight)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
@@ -722,14 +582,13 @@ primsAlgorithm(Graph<TSpec> const& g,
 	}
 }
 
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap>
-void
-primsAlgorithmSpaceEfficient(Graph<TSpec> const& g,
-							   TVertexDescriptor const source,
-							   TWeightMap const& weight,
-							   TPredecessorMap& predecessor)
+// TODO(holtgrew): Document.
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap>
+void primsAlgorithmSpaceEfficient(TPredecessorMap & predecessor,
+                                  Graph<TSpec> const & g,
+                                  TVertexDescriptor const source,
+                                  TWeightMap const & weight)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
@@ -782,14 +641,14 @@ primsAlgorithmSpaceEfficient(Graph<TSpec> const& g,
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TWeight, typename TPair>
-struct LessPairI1_ :
-	public ::std::unary_function<Pair<TWeight, TPair>, bool>
+template <typename TWeight, typename TPair>
+struct LessPairI1_ : public ::std::unary_function<Pair<TWeight, TPair>, bool>
 {
-	inline bool
-	operator() (Pair<TWeight, TPair> const& a1, Pair<TWeight, TPair> const& a2) const {
-		return (a1.i1 < a2.i1);
-	}
+    bool operator() (Pair<TWeight, TPair> const & a1,
+                     Pair<TWeight, TPair> const & a2) const
+    {
+        return (a1.i1 < a2.i1);
+    }
 };
 
 /*!
@@ -797,7 +656,7 @@ struct LessPairI1_ :
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes a minimum spanning tree on a graph.
  *
- * @signature void kruskalsAlgorithm(g, source, weight, edges);
+ * @signature void kruskalsAlgorithm(edges, g, source, weight);
  *
  * @param[in] g      An undirected graph. Types: Undirected Graph
  * @param[in] source A source vertex. Types: VertexDescriptor
@@ -813,30 +672,11 @@ struct LessPairI1_ :
  *
  * @see primsAlgorithm
  */
-
-/**
-.Function.kruskalsAlgorithm:
-..cat:Graph
-..summary:Computes a minimum spanning tree on a graph.
-..signature:kruskalsAlgorithm(g, source, weight, edges)
-..param.g:In-parameter:An undirected graph.
-...type:Spec.Undirected Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.weight:In-parameter:Edge weights.
-..param.edges:Out-parameter:Array of vertex descriptors.
-...remarks:Array or string where two consecutive entries are an edge.
-..returns:void.
-..see:Function.primsAlgorithm
-..include:seqan/graph_algorithms.h
-*/
-
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TEdges>
-void
-kruskalsAlgorithm(Graph<TSpec> const & g,
-				   TVertexDescriptor const,
-				   TWeightMap const & weight,
-				   TEdges & edges)
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TEdges>
+void kruskalsAlgorithm(TEdges & edges,
+                       Graph<TSpec> const & g,
+                       TVertexDescriptor const,
+                       TWeightMap const & weight)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
@@ -883,12 +723,12 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Compute weakly connected components of a directed graph.
  * 
- * @signature TSize weaklyConnectedComponents(g, components);
+ * @signature TSize weaklyConnectedComponents(components, g);
  * 
- * @param[in]  g A @link DirectedGraph @endlink to use for the input.
  * @param[out] components
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id they
  *               are in the same component.
+ * @param[in]  g A @link DirectedGraph @endlink to use for the input.
  * 
  * @return TSize The number of weakly connected components  (Metafunction: @link Graph#Size @endlink of the type
  *               of <tt>g</tt>).
@@ -897,27 +737,12 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
  * The union find data structure is used since the graph implementations do not allow the efficient iteration of
  * in-edges.
  */
-
-/**
-.Function.weaklyConnectedComponents:
-..cat:Graph
-..summary:Compute weakly connected components of a directed graph.
-..signature:weaklyConnectedComponents(g, components)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.components:Out-parameter:A property map.
-...remarks:Each vertex is mapped to a component id. If two vertices share the same id they are in the same component.
-..returns:$Size<TGraph>::Type$, number of weakly connected components.
-..remarks:The running time is $O(n a(n, n))$ where $a$ is the inverse Ackermann function and thus almost linear. The union find data structure is used since the graph implementations do not allow the efficient iteration of in-edges.
-..include:seqan/graph_algorithms.h
- */
-
-template<typename TSpec, typename TComponents>
+template <typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type
-weaklyConnectedComponents(Graph<TSpec> const & g,
-                          TComponents & components)
+weaklyConnectedComponents(TComponents & components,
+                          Graph<TSpec> const & g)
+                          
 {
-	SEQAN_CHECKPOINT;
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
@@ -963,7 +788,7 @@ weaklyConnectedComponents(Graph<TSpec> const & g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessorMap, typename TVertexDescriptor, typename TNameMap>
+template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor, typename TNameMap>
 inline void
 _printPath(Graph<TSpec> const& g,
 			TPredecessorMap const& predecessor,
@@ -983,7 +808,7 @@ _printPath(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessorMap, typename TVertexDescriptor1, typename TVertexDescriptor2>
+template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor1, typename TVertexDescriptor2>
 inline void
 _printPath(Graph<TSpec> const& g,
 			TPredecessorMap const& predecessor,
@@ -1002,7 +827,7 @@ _printPath(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessorMap, typename TVertexDescriptor1, typename TVertexDescriptor2, typename TEdgeSet>
+template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor1, typename TVertexDescriptor2, typename TEdgeSet>
 inline bool
 _collectEdges(Graph<TSpec> const& g,
 			   TPredecessorMap const& predecessor,
@@ -1022,7 +847,7 @@ _collectEdges(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessorMap, typename TVertexDescriptor, typename TEdgeSet>
+template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor, typename TEdgeSet>
 inline bool
 _collectEdges(Graph<TSpec> const& g,
 			   TPredecessorMap const& predecessor,
@@ -1043,13 +868,13 @@ _collectEdges(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
 inline void 
-_initializeSingleSource(Graph<TSpec> const& g,
-						  TVertexDescriptor const source,
-						  TWeightMap const& weight,
-						  TPredecessorMap& predecessor, 
-						  TDistanceMap& distance)
+_initializeSingleSource(TPredecessorMap & predecessor, 
+                        TDistanceMap & distance,
+                        Graph<TSpec> const & g,
+                        TVertexDescriptor const source,
+                        TWeightMap const & weight)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -1068,7 +893,7 @@ _initializeSingleSource(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap, typename TVertexDescriptor, typename TEdgeDescriptor>
+template <typename TSpec, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap, typename TVertexDescriptor, typename TEdgeDescriptor>
 inline void 
 _relax(Graph<TSpec> const& g,
 	    TWeightMap const& weight,
@@ -1099,15 +924,15 @@ _relax(Graph<TSpec> const& g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes shortest paths from a single source in a directed acyclic graph (DAG).
  *
- * @signature void dagShortestPath(g, source, weight, predecessor, distance);
+ * @signature void dagShortestPath(predecessor, distance, g, source, weight);
  *
  * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
  *                         It determines a shortest-paths tree.
  * @param[out] distance    A property map.  Indicates for each vertex th distance from the source.
- * @param[out] weight      A weight map.  In a directed acyclic graph edge weights can be negative because no cycles
  *                         do exist.
- * @param[in] g            A directed acyclic graph. Types: Directed Graph
- * @param[in] source       A source vertex. Types: VertexDescriptor
+ * @param[out] g           A directed acyclic graph. Types: Directed Graph
+ * @param[in]  source      A source vertex. Types: VertexDescriptor
+ * @param[in]  weight      A weight map.  In a directed acyclic graph edge weights can be negative because no cycles
  *
  * @section Example
  *
@@ -1118,34 +943,12 @@ _relax(Graph<TSpec> const& g,
  * @see bellmanFordAlgorithm
  * @see dijkstra
  */
-
-/**
-.Function.dagShortestPath:
-..cat:Graph
-..summary:Computes shortest paths from a single source in a directed acyclic graph (DAG).
-..signature:dagShortestPath(g, source, weight, predecessor, distance)
-..param.g:In-parameter:A directed acyclic graph.
-...type:Spec.Directed Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.weight:In-parameter:A weight map.
-...remarks:In a directed acyclic graph edge weights can be negative because no cycles do exist.
-..param.predecessor:Out-parameter:A property map.
-...remarks:A property map that represents predecessor relationships among vertices. It determines a shortest-paths tree.
-..param.distance:Out-parameter:A property map.
-...remarks:Indicates for each vertex the distance from the source.
-..returns:void.
-..see:Function.bellmanFordAlgorithm
-..see:Function.dijkstra
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-void
-dagShortestPath(Graph<TSpec> const& g,
-				  TVertexDescriptor const source,
-				  TWeightMap const& weight,
-				  TPredecessorMap& predecessor,
-				  TDistanceMap& distance)
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
+void dagShortestPath(TPredecessorMap & predecessor,
+                     TDistanceMap & distance,
+                     Graph<TSpec> const & g,
+                     TVertexDescriptor const source,
+                     TWeightMap const & weight)
 {
 	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef typename Iterator<String<TVertexDescriptor>, Rooted>::Type TStringIterator;
@@ -1156,9 +959,9 @@ dagShortestPath(Graph<TSpec> const& g,
 
 	// Topological sort
 	String<TVertexDescriptor> order;
-	topologicalSort(g, order);
+	topologicalSort(order, g);
 
-	_initializeSingleSource(g, source, weight, predecessor, distance);
+	_initializeSingleSource(predecessor, distance, g, source, weight);
 
 	//DAG Shortest Paths
 	TStringIterator it = begin(order);
@@ -1186,12 +989,12 @@ dagShortestPath(Graph<TSpec> const& g,
  *
  * @signature bool bellmanFordAlgorithm(g, source, weight, predecessor, distance)
  *
- * @param[in]  g           A directed graph. Types: Directed Graph
- * @param[in]  source      A source vertex. Types: VertexDescriptor
- * @param[in]  weight      A weight map.A property map with edge weights.  Edge weights may be negative.
  * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
  *                         It determines a shortest-paths tree.
  * @param[out] distance    A property map.Indicates for each vertex the distance from the source.
+ * @param[in]  g           A directed graph. Types: Directed Graph
+ * @param[in]  source      A source vertex. Types: VertexDescriptor
+ * @param[in]  weight      A weight map.A property map with edge weights.  Edge weights may be negative.
  *
  * @return bool true if the graph has no negative weight cycles, false otherwise.
  *
@@ -1207,38 +1010,13 @@ dagShortestPath(Graph<TSpec> const& g,
  * @see dagShortestPath
  * @see dijkstra
  */
-
-/**
-.Function.bellmanFordAlgorithm:
-..cat:Graph
-..summary:Computes shortest paths from a single source in a directed graph.
-..remarks:Edge weights may be negative in the Bellman-Ford algorithm.
-The out parameters are only valid if the algorithm returns true.
-..signature:bellmanFordAlgorithm(g, source, weight, predecessor, distance)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.weight:In-parameter:A weight map.
-...remarks:A property map with edge weights. Edge weights may be negative.
-..param.predecessor:Out-parameter:A property map.
-...remarks:A property map that represents predecessor relationships among vertices. It determines a shortest-paths tree.
-..param.distance:Out-parameter:A property map.
-...remarks:Indicates for each vertex the distance from the source.
-..returns:True if the graph has no negative weight cycles, false otherwise.
-..see:Function.dagShortestPath
-..see:Function.dijkstra
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-bool
-bellmanFordAlgorithm(Graph<TSpec> const& g,
-					   TVertexDescriptor const source,
-					   TWeightMap const& weight,
-					   TPredecessorMap& predecessor,
-					   TDistanceMap& distance)
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
+bool bellmanFordAlgorithm(TPredecessorMap & predecessor,
+                          TDistanceMap & distance,
+                          Graph<TSpec> const & g,
+                          TVertexDescriptor const source,
+                          TWeightMap const & weight)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Size<Graph<TSpec> >::Type TSize;
 
 	// Initialization
@@ -1246,7 +1024,7 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
 	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 	resizeVertexMap(g,predecessor);
 	resizeVertexMap(g,distance);
-	_initializeSingleSource(g, source, weight, predecessor, distance);
+	_initializeSingleSource(predecessor, distance, g, source, weight);
 
 	// Run Bellman-Ford
 	for(TSize i=0; i<numVertices(g) - 1; ++i) {
@@ -1285,7 +1063,7 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
  * @fn dijkstra
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes shortest paths from a single source in a graph.
- * @signature void dijkstra(g, source, weight, predecessor, distance);
+ * @signature void dijkstra(predecessor, distance, g, source, weight);
  *
  * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
  *                         It determines a shortest-paths tree.
@@ -1307,35 +1085,12 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
  * @see dagShortestPath
  * @see bellmanFordAlgorithm
  */
-
-/**
-.Function.dijkstra:
-..cat:Graph
-..summary:Computes shortest paths from a single source in a graph.
-..remarks:Edge weights have to be nonnegative.
-..signature:dijkstra(g, source, weight, predecessor, distance)
-..param.g:In-parameter:A graph.
-...type:Spec.Directed Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.weight:In-parameter:A weight map.
-...remarks:A property map with edge weights. Edge weights have to be nonnegative.
-..param.predecessor:Out-parameter:A property map.
-...remarks:A property map that represents predecessor relationships among vertices. It determines a shortest-paths tree.
-..param.distance:Out-parameter:A property map.
-...remarks:Indicates for each vertex the distance from the source.
-..returns:void
-..see:Function.dagShortestPath
-..see:Function.bellmanFordAlgorithm
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-void
-dijkstra(Graph<TSpec> const& g,
-		 TVertexDescriptor const source,
-		 TWeightMap const& weight,
-		 TPredecessorMap& predecessor,
-		 TDistanceMap& distance)
+template <typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
+void dijkstra(TPredecessorMap & predecessor,
+              TDistanceMap & distance,
+              Graph<TSpec> const & g,
+              TVertexDescriptor const source,
+              TWeightMap const & weight)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Value<TDistanceMap>::Type TDistVal;
@@ -1383,64 +1138,6 @@ dijkstra(Graph<TSpec> const& g,
 	}
 }
 
-//template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-//void 
-//dijkstra(Graph<TSpec> const& g,
-//		 TVertexDescriptor const source,
-//		 TWeightMap const& weight,
-//		 TPredecessorMap& predecessor, 
-//		 TDistanceMap& distance)
-//{
-//	SEQAN_CHECKPOINT
-//	typedef Graph<TSpec> TGraph;
-//	typedef typename Size<TGraph>::Type TSize;
-//	typedef typename Value<TDistanceMap>::Type TDistVal;
-//	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-//	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-//	
-//	// Initialization
-//	resizeVertexMap(g,predecessor);
-//	resizeVertexMap(g,distance);
-//
-//	_initializeSingleSource(g, source, weight, predecessor, distance);
-//	
-//	String<bool> setS;
-//	resizeVertexMap(g, setS);
-//	TVertexIterator it(g);
-//	for(;!atEnd(it);++it) {
-//		assignProperty(setS, getValue(it), false);
-//	}
-//	TDistVal infDist = _getInfinityDistance(weight);
-//	TVertexDescriptor nilVertex = getNil<typename VertexDescriptor<TGraph>::Type>();
-//
-//	// Run Dijkstra
-//	TSize count = numVertices(g);
-//	while (count > 0) {
-//		// Extract min
-//		TDistVal min = infDist;
-//		TVertexDescriptor u = nilVertex;
-//		TVertexIterator it_find(g);
-//		for(;!atEnd(it_find);++it_find) {
-//			if(getProperty(setS,getValue(it_find))==true) continue;
-//			if ((u == nilVertex) ||
-//				(getProperty(distance,getValue(it_find))<getProperty(distance,u))) {
-//					u = getValue(it_find);
-//					min = getProperty(distance,getValue(it_find));
-//			}
-//		}
-//		assignProperty(setS, u, true);
-//		TOutEdgeIterator itout(g, u);
-//		for(;!atEnd(itout);++itout) {
-//			_relax(g,weight,predecessor, distance, u, getValue(itout));
-//		}
-//		--count;
-//	}
-//}
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 // All-Pairs shortest paths
@@ -1455,7 +1152,7 @@ dijkstra(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessor, typename TVertexDescriptor>
+template <typename TSpec, typename TPredecessor, typename TVertexDescriptor>
 inline void
 _printAllPairsShortestPath(Graph<TSpec> const& g,
                            TPredecessor& predecessor, 
@@ -1477,7 +1174,7 @@ _printAllPairsShortestPath(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
+template <typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
 void 
 _initializeAllPairs(Graph<TSpec> const& g,
 						TWeightMap const& weight,
@@ -1521,7 +1218,7 @@ _initializeAllPairs(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TMatrix, typename TPredecessor, typename TInfDist>
+template <typename TMatrix, typename TPredecessor, typename TInfDist>
 void 
 _extendShortestPaths(TMatrix& local,
 					   TMatrix& w,
@@ -1566,14 +1263,14 @@ _extendShortestPaths(TMatrix& local,
  * @brief Finds shortest paths between all pairs of vertices in a graph.
  * @signature void allPairsShortestPath(graph, weight, distance, predecessor);
  *
- * @param[in]  graph       A @link DirectedGraph Directed Graph @endlink.
- * @param[in]  weight      A property map with edge weights. Edge weights may be negative.
  * @param[out] distance    A @link Matrix @endlink with distances. Entry <tt>(i,j)</tt> in this matrix indicates the
  *                         distance from vertex <tt>i</tt> to vertex <tt>j</tt>.
  * @param[out] predecessor A @link Matrix @endlink with predecessors. Entry <tt>(i,j)</tt> in this matrix indicates the
  *                         predecessor of <tt>j</tt> on a shortest path from vertex <tt>i</tt> to vertex <tt>j</tt>.
  *                         You can use <tt>_printAllPairsShortestPath(graph, predecessor, i, j)</tt> to print the
  *                         shortest path from <tt>i</tt> to <tt>j</tt>.
+ * @param[in]  graph       A @link DirectedGraph Directed Graph @endlink.
+ * @param[in]  weight      A property map with edge weights. Edge weights may be negative.
  *
  * @section Example
  *
@@ -1583,35 +1280,12 @@ _extendShortestPaths(TMatrix& local,
  *
  * @see floydWarshallAlgorithm
  */
-
-/**
-.Function.allPairsShortestPath:
-..cat:Graph
-..summary:Finds shortest paths between all pairs of vertices in a graph.
-..signature:allPairsShortestPath(g, weight, distance, predecessor)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.weight:In-parameter:A weight map.
-...remarks:A property map with edge weights. Edge weights may be negative.
-..param.distance:Out-parameter:A matrix with distances.
-...type:Class.Matrix
-...remarks:Entry (i,j) in this matrix indicates the distance from vertex i to vertex j.
-..param.predecessor:Out-parameter:A matrix with predecessors.
-...type:Class.Matrix
-...remarks:Entry (i,j) in this matrix indicates the predecessor of j on a shortest path from vertex i to vertex j.
-You can use _printAllPairsShortestPath(g, predecessor, i, j) to print the shortest path from i to j.
-..returns:void
-..see:Function.floydWarshallAlgorithm
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
-void 
-allPairsShortestPath(Graph<TSpec> const& g,
-						TWeightMap const& weight,
-						TMatrix& distMatrix,
-						TPredecessor& predecessor)
+template <typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
+void allPairsShortestPath(TMatrix & distMatrix,
+                          TPredecessor & predecessor,
+                          Graph<TSpec> const & g,
+                          TWeightMap const & weight)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Value<TWeightMap>::Type TWeightVal;
 	TWeightVal infWeight = _getInfinityDistance(weight);
@@ -1659,36 +1333,12 @@ allPairsShortestPath(Graph<TSpec> const& g,
  *
  * @see allPairsShortestPath
  */
-
-/**
-.Function.floydWarshallAlgorithm:
-..cat:Graph
-..summary:Finds shortest paths between all pairs of vertices in a graph.
-..signature:floydWarshallAlgorithm(g, weight, distance, predecessor)
-..remarks:The graph must be free of negative-weight cycles.
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.weight:In-parameter:A weight map.
-...remarks:A property map with edge weights. Edge weights may be negative.
-..param.distance:Out-parameter:A matrix with distances.
-...type:Class.Matrix
-...remarks:Entry (i,j) in this matrix indicates the distance from vertex i to vertex j.
-..param.predecessor:Out-parameter:A matrix with predecessors.
-...type:Class.Matrix
-...remarks:Entry (i,j) in this matrix indicates the predecessor of j on a shortest path from vertex i to vertex j.
-You can use _printAllPairsShortestPath(g, predecessor, i, j) to print the shortest path from i to j.
-..returns:void
-..see:Function.allPairsShortestPath
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
-void
-floydWarshallAlgorithm(Graph<TSpec> const& g,
-			   TWeightMap const& weight,
-			   TMatrix& distMatrix,
-			   TPredecessor& predecessor)
+template <typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
+void floydWarshallAlgorithm(TMatrix & distMatrix,
+                            TPredecessor & predecessor,
+                            Graph<TSpec> const & g,
+                            TWeightMap const & weight)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Value<TMatrix>::Type TMatrixVal;
 
@@ -1727,7 +1377,7 @@ floydWarshallAlgorithm(Graph<TSpec> const& g,
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Determines whether there is a path between any two given vertices or not.
  *
- * @signature void transitiveClosure(g, closure);
+ * @signature void transitiveClosure(closure, g);
  *
  * @param[out] closure A matrix which indicates the closure.  Entry (i,j) in this matrix indicates whether there is a
  *                     path from i to j in the graph or not.  Types: Matrix
@@ -1739,26 +1389,10 @@ floydWarshallAlgorithm(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/transitive_closure.cpp.stdout
  */
-
-/**
-.Function.transitiveClosure:
-..cat:Graph
-..summary:Determines whether there is a path between any two given vertices or not.
-..signature:transitiveClosure(g, closure)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.closure:Out-parameter:A matrix which indicates the closure.
-...type:Class.Matrix
-...remarks:Entry (i,j) in this matrix indicates whether there is a path from i to j in the graph or not.
-..returns:void
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TMatrix>
-void
-transitiveClosure(Graph<TSpec> const& g,
-				   TMatrix& closure)
+template <typename TSpec, typename TMatrix>
+void transitiveClosure(TMatrix& closure,
+                       Graph<TSpec> const & g)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Size<TMatrix>::Type TSize;
 
 	// Initialize first closure matrix
@@ -1796,14 +1430,13 @@ transitiveClosure(Graph<TSpec> const& g,
 
 
 //////////////////////////////////////////////////////////////////////////////
-template<typename TSpec, typename TCapMap, typename TFlowMap, typename TResidualGraph>
+template <typename TSpec, typename TCapMap, typename TFlowMap, typename TResidualGraph>
 void
 _buildResidualGraph(Graph<TSpec> const& g,
 					  TCapMap const& capacity,
 					  TFlowMap const& flow,
 					  TResidualGraph& rG)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
@@ -1836,10 +1469,10 @@ _buildResidualGraph(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TPredecessorMap, typename TVertexDescriptor>
+template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor>
 inline typename Size<Graph<TSpec> >::Type
-_getMinimumAug(Graph<TSpec> const& rG,
-				 TPredecessorMap& predecessor,
+_getMinimumAug(Graph<TSpec> const & rG,
+				 TPredecessorMap & predecessor,
 				 TVertexDescriptor const source,
 				 TVertexDescriptor sink)
 {
@@ -1886,13 +1519,13 @@ _getMinimumAug(Graph<TSpec> const& rG,
  * 
  * @brief Computes a maximum flow in a directed graph.
  * 
- * @signature TValue fordFulkeronAlgorithm(g, source, sink, capacity, flow);
+ * @signature TValue fordFulkeronAlgorithm(flow, g, source, sink, capacity);
  * 
  * @param[out] flow     A property map with the flow of each edge.
- * @param[in]  capacity A property map of edge capacities.
- * @param[in]  sink     A sink vertex.  Types: VertexDescriptor
  * @param[in]  g        A directed graph.  Types: Directed Graph
  * @param[in]  source   A source vertex.  Types: VertexDescriptor
+ * @param[in]  sink     A sink vertex.  Types: VertexDescriptor
+ * @param[in]  capacity A property map of edge capacities.
  * 
  * @return TValue The value of the flow.  TValue is the Value tpye of the type of flow.
  *
@@ -1902,32 +1535,14 @@ _getMinimumAug(Graph<TSpec> const& rG,
  *
  * @include demos/graph_algorithms/ford_fulkerson_algorithm.cpp.stdout
  */
-
-/**
-.Function.fordFulkersonAlgorithm:
-..cat:Graph
-..summary:Computes a maximum flow in a directed graph.
-..signature:fordFulkersonAlgorithm(g, source, sink, capacity, flow)
-..param.g:In-parameter:A directed graph.
-...type:Spec.Directed Graph
-..param.source:In-parameter:A source vertex.
-...type:Metafunction.VertexDescriptor
-..param.sink:In-parameter:A sink vertex.
-...type:Metafunction.VertexDescriptor
-..param.capacity:In-parameter:A property map of edge capacities.
-..param.flow:Out-parameter:A property map with the flow of each edge.
-..returns:The value of the flow.
-..include:seqan/graph_algorithms.h
-*/
-template<typename TSpec, typename TVertexDescriptor, typename TCapMap, typename TFlowMap>
+template <typename TSpec, typename TVertexDescriptor, typename TCapMap, typename TFlowMap>
 typename Value<TFlowMap>::Type
-fordFulkersonAlgorithm(Graph<TSpec> const& g,
-			   TVertexDescriptor const source,
-			   TVertexDescriptor const sink,
-			   TCapMap const& capacity,
-			   TFlowMap& flow)
+fordFulkersonAlgorithm(TFlowMap & flow,
+                       Graph<TSpec> const & g,
+                       TVertexDescriptor const source,
+                       TVertexDescriptor const sink,
+                       TCapMap const & capacity)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
@@ -1950,7 +1565,7 @@ fordFulkersonAlgorithm(Graph<TSpec> const& g,
 	// Determine whether the sink is reachable
 	String<TVertexDescriptor> predMap;
 	String<TVertexDescriptor> distMap;
-	breadthFirstSearch(rG, source, predMap, distMap);
+	breadthFirstSearch(predMap, distMap, rG, source);
 	
 	while (getProperty(predMap, sink) != nilPred) {
 		TFlow inc = _getMinimumAug(rG, predMap, source, sink);
@@ -1963,11 +1578,11 @@ fordFulkersonAlgorithm(Graph<TSpec> const& g,
 			if (getProperty(predMap, u) == v) assignProperty(flow, e, getProperty(flow, e) - inc);
 		}
 		// Build the residual graph
-		_buildResidualGraph(g,capacity, flow, rG);
+		_buildResidualGraph(g, capacity, flow, rG);
 		// Determine whether the sink is reachable
 		clear(predMap);
 		clear(distMap);
-		breadthFirstSearch(rG, source, predMap, distMap);
+		breadthFirstSearch(predMap, distMap, rG, source);
 	}
 
 	TFlow valF = 0;
@@ -2011,13 +1626,12 @@ fordFulkersonAlgorithm(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TWeightMap, typename TEdgeMap>
+template <typename TSpec, typename TWeightMap, typename TEdgeMap>
 typename Value<TWeightMap>::Type
-pathGrowingAlgorithm(Graph<TSpec>& g,
-					   TWeightMap const& weightMap,
-					   TEdgeMap& edgeMap1)
+pathGrowingAlgorithm(TEdgeMap & edgeMap1,
+                     Graph<TSpec> const & g,
+                     TWeightMap const & weightMap)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename Value<TWeightMap>::Type TValue;
 	typedef typename Size<Graph<TSpec> >::Type TSize;
@@ -2089,11 +1703,11 @@ pathGrowingAlgorithm(Graph<TSpec>& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TVertexMap, typename TEdges>
-inline typename Size<Graph<TSpec> >::Type
-bipartiteMatching(Graph<TSpec>& g,			  
-					TVertexMap& vertMap,
-					String<TEdges>& edges)
+template <typename TSpec, typename TVertexMap, typename TEdges>
+typename Size<Graph<TSpec> >::Type
+bipartiteMatching(String<TEdges> & edges,
+                  Graph<TSpec> const & g,
+                  TVertexMap const & vertMap)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
@@ -2142,7 +1756,7 @@ bipartiteMatching(Graph<TSpec>& g,
 
 /////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TVertexMap, typename TWeightMap, typename TEdges>
+template <typename TSpec, typename TVertexMap, typename TWeightMap, typename TEdges>
 inline typename Value<TWeightMap>::Type
 _weightedBipartiteMatching(Graph<TSpec>& g,
 							  TVertexMap& vertMap,
@@ -2308,12 +1922,12 @@ _weightedBipartiteMatching(Graph<TSpec>& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TVertexMap, typename TWeightMap, typename TEdges>
-inline typename Value<TWeightMap>::Type
-weightedBipartiteMatching(Graph<TSpec>& g,
-							TVertexMap& vertMap,
-							TWeightMap& weightMap,
-							String<TEdges>& edges)
+template <typename TSpec, typename TVertexMap, typename TWeightMap, typename TEdges>
+typename Value<TWeightMap>::Type
+weightedBipartiteMatching(String<TEdges> & edges,
+                          Graph<TSpec> const & g,
+                          TVertexMap const & vertMap,
+                          TWeightMap const & weightMap)
 {
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
@@ -2399,7 +2013,6 @@ weightedBipartiteMatching(Graph<TSpec>& g,
 	return weight;
 }
 
-
-}// namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

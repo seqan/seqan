@@ -27,7 +27,7 @@ int main()
     // Compute all-pairs shortest path.
     String<int> distMat;
     String<TVertexDescriptor> predMat;
-    allPairsShortestPath(g, weightMap, distMat, predMat);
+    allPairsShortestPath(distMat, predMat, g, weightMap);
 
     // Print the result to stdout.
     unsigned int len = static_cast<unsigned>(std::sqrt((double)length(distMat)));

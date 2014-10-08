@@ -25,7 +25,7 @@ int main()
 
     // Compute strongly connected components.
     String<unsigned int> component;
-    stronglyConnectedComponents(g, component);
+    stronglyConnectedComponents(component, g);
 
     // Print result to stdout.
     std::cout << "Strongly Connected Components: \n";

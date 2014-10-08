@@ -24,11 +24,11 @@ int main()
     String<int> weightMap;
     assignEdgeMap(g, weightMap, weights);
     String<char> nameMap;
-    assignVertexMap(g,nameMap, names);
+    assignVertexMap(g, nameMap, names);
 
     // Run Prim's algorithm.
     String<TVertexDescriptor> predMap;
-    primsAlgorithm(g, 0, weightMap, predMap);
+    primsAlgorithm(predMap, g, 0, weightMap);
 
     // Print result to stdout.
     std::cout << "Minimum Spanning Tree (Prim's algorithm): \n";

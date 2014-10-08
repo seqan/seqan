@@ -28,7 +28,7 @@ int main()
     // detects negative cycles.
     String<unsigned int> predMap;
     String<unsigned int> distMap;
-    bool noNegativeCycle = bellmanFordAlgorithm(g,0,weightMap,predMap,distMap);
+    bool noNegativeCycle = bellmanFordAlgorithm(predMap, distMap, g, 0, weightMap);
 
     // Print result to stdout.
     std::cout << "Single-Source Shortest Paths: " << "\n"

@@ -456,7 +456,7 @@ void _getDistanceMatrixBfs(seqan::Graph<seqan::Undirected<TCargo, TSpec> > const
     for (TIterator it(graph); !atEnd(it); goNext(it))
     {
         TVertexDescriptor v = getValue(it);
-        breadthFirstSearch(graph, v, predmap[v], mat[v]);
+        breadthFirstSearch(predmap[v], mat[v], graph, v);
     }
 }
 

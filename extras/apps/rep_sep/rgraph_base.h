@@ -129,7 +129,7 @@ bool hasMultipleComponents(ReadGraph<TColumnAlphabet, TAlignedReadStoreElement, 
     typedef String<TSize> TComponentMap;
 
     TComponentMap components;
-    TSize component_count = connectedComponents(me.graph,components);
+    TSize component_count = connectedComponents(components, me.graph);
 
     return (component_count > 1);
 }

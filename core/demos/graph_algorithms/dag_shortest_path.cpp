@@ -26,7 +26,7 @@ int main()
     // Run DAG shortest path computation from vertex with descriptor 1.
     String<unsigned> predMap;
     String<unsigned> distMap;
-    dagShortestPath(g, 1, weightMap,predMap,distMap);
+    dagShortestPath(predMap,distMap, g, 1, weightMap);
 
     // Print result to stdout.
     std::cout << "Single-Source Shortest Paths in DAG: \n";
