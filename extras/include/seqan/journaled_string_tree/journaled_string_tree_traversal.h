@@ -1818,13 +1818,6 @@ _execConsumerThread(ConcurrentQueue<TValue> & queue,
 {
     while (popFront(traverser._traverserCore, queue))
         _internallyExecuteConsumerThread(traverser, externalAlg, delegate);
-
-    // TODO(rmaerker): Check if this can be removed.
-    while (!empty(queue))
-    {
-        if (tryPopFront(traverser._traverserCore, queue, Parallel()))
-            _internallyExecuteConsumerThread(traverser, externalAlg, delegate);
-    }
 }
 
 // ----------------------------------------------------------------------------
