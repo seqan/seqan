@@ -64,10 +64,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "mrna0001");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Name");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "sonichedgehog;hehe");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "sonichedgehog;hehe");
 
     readRecord(record, buffer, iter);
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
@@ -78,10 +78,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "exon00001");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "mrn a0001");
 
     readRecord(record, buffer, iter);
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
@@ -92,12 +92,12 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "exon00002");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Name");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "");
-    SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
-    SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00002");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValues[2], "mrna0001");
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
@@ -155,22 +155,22 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(length(record.tagName), 7u);
-    SEQAN_ASSERT_EQ(length(record.tagValue), 7u);
-    SEQAN_ASSERT_EQ(record.tagName[0], "pgene_type");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "p");
-    SEQAN_ASSERT_EQ(record.tagName[1], "protein");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "Q8ZKU6");
-    SEQAN_ASSERT_EQ(record.tagName[2], "exon_index");
-    SEQAN_ASSERT_EQ(record.tagValue[2], "1");
-    SEQAN_ASSERT_EQ(record.tagName[3], "name");
-    SEQAN_ASSERT_EQ(record.tagValue[3], "Q8ZKU6.Yersinia_pestis.chrAL590842.mb0");
-    SEQAN_ASSERT_EQ(record.tagName[4], "tax_id");
-    SEQAN_ASSERT_EQ(record.tagValue[4], "632");
-    SEQAN_ASSERT_EQ(record.tagName[5], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[5], "1");
-    SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
+    SEQAN_ASSERT_EQ(length(record.tagNames), 7u);
+    SEQAN_ASSERT_EQ(length(record.tagValues), 7u);
+    SEQAN_ASSERT_EQ(record.tagNames[0], "pgene_type");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "p");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "protein");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "Q8ZKU6");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "exon_index");
+    SEQAN_ASSERT_EQ(record.tagValues[2], "1");
+    SEQAN_ASSERT_EQ(record.tagNames[3], "name");
+    SEQAN_ASSERT_EQ(record.tagValues[3], "Q8ZKU6.Yersinia_pestis.chrAL590842.mb0");
+    SEQAN_ASSERT_EQ(record.tagNames[4], "tax_id");
+    SEQAN_ASSERT_EQ(record.tagValues[4], "632");
+    SEQAN_ASSERT_EQ(record.tagNames[5], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[5], "1");
+    SEQAN_ASSERT_EQ(record.tagNames[6], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
 
     readRecord(record, buffer, iter);
     SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
@@ -181,22 +181,22 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(length(record.tagName), 7u);
-    SEQAN_ASSERT_EQ(length(record.tagValue), 7u);
-    SEQAN_ASSERT_EQ(record.tagName[0], "pgene_type");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "p");
-    SEQAN_ASSERT_EQ(record.tagName[1], "protein");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "Q8ZL54");
-    SEQAN_ASSERT_EQ(record.tagName[2], "exon_index");
-    SEQAN_ASSERT_EQ(record.tagValue[2], "1");
-    SEQAN_ASSERT_EQ(record.tagName[3], "name");
-    SEQAN_ASSERT_EQ(record.tagValue[3], "Q8ZL54.Yersinia_pestis.chrAL590842.mb0");
-    SEQAN_ASSERT_EQ(record.tagName[4], "tax_id");
-    SEQAN_ASSERT_EQ(record.tagValue[4], "632");
-    SEQAN_ASSERT_EQ(record.tagName[5], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[5], "2");
-    SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:2");
+    SEQAN_ASSERT_EQ(length(record.tagNames), 7u);
+    SEQAN_ASSERT_EQ(length(record.tagValues), 7u);
+    SEQAN_ASSERT_EQ(record.tagNames[0], "pgene_type");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "p");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "protein");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "Q8ZL54");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "exon_index");
+    SEQAN_ASSERT_EQ(record.tagValues[2], "1");
+    SEQAN_ASSERT_EQ(record.tagNames[3], "name");
+    SEQAN_ASSERT_EQ(record.tagValues[3], "Q8ZL54.Yersinia_pestis.chrAL590842.mb0");
+    SEQAN_ASSERT_EQ(record.tagNames[4], "tax_id");
+    SEQAN_ASSERT_EQ(record.tagValues[4], "632");
+    SEQAN_ASSERT_EQ(record.tagNames[5], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[5], "2");
+    SEQAN_ASSERT_EQ(record.tagNames[6], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[6], "urn:lsid:pseudogene.org:632.Pseudogene:2");
 
     SEQAN_ASSERT(atEnd(iter));
 }
@@ -222,12 +222,12 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "gene1");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "trans2");
-    SEQAN_ASSERT_EQ(record.tagName[2], "position");
-    SEQAN_ASSERT_EQ(record.tagValue[2], "43");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "gene1");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "trans2");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "position");
+    SEQAN_ASSERT_EQ(record.tagValues[2], "43");
 
     readRecord(record, buffer, iter);
     SEQAN_ASSERT_EQ(record.ref, "240");
@@ -238,10 +238,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "140.000");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.1");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "140.000");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.1");
 
     readRecord(record, buffer, iter);
     SEQAN_ASSERT_EQ(record.ref, "340");
@@ -252,10 +252,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "140.000");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.2");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "140.000");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.2");
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
@@ -313,10 +313,10 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "mrna0001");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Name");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "sonichedgehog;hehe");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "sonichedgehog;hehe");
 
     readRecord(record, gffStream);
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
@@ -327,10 +327,10 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "exon00001");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "mrn a0001");
 
     readRecord(record, gffStream);
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
@@ -341,12 +341,12 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "ID");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "exon00002");
-    SEQAN_ASSERT_EQ(record.tagName[1], "Name");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "");
-    SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
-    SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00002");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValues[2], "mrna0001");
 }
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
@@ -367,10 +367,10 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "gene1");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "trans2");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "gene1");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "trans2");
 
     readRecord(record, gffStream);
     SEQAN_ASSERT_EQ(record.ref, "240");
@@ -381,10 +381,10 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "140.000");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.1");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "140.000");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.1");
 
     readRecord(record, gffStream);
     SEQAN_ASSERT_EQ(record.ref, "340");
@@ -395,10 +395,10 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_NEQ(record.score, record.score);
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
-    SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "140.000");
-    SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.2");
+    SEQAN_ASSERT_EQ(record.tagNames[0], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "140.000");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.2");
 }
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)

@@ -216,11 +216,7 @@ int main(int argc, char const ** argv)
         unsigned numBins = (sequenceLength(faiIndex, i) + options.windowSize - 1) / options.windowSize;
         resize(bins[i], numBins);
         seqan::Dna5String contigSeq;
-        if (readSequence(contigSeq, faiIndex, i) != 0)
-        {
-            std::cerr << "\nERROR: Could not read sequence " << sequenceName(faiIndex, i) << " from file!\n";
-            return 1;
-        }
+        readSequence(contigSeq, faiIndex, i);
 
         for (unsigned bin = 0; bin < numBins; ++bin)
         {
@@ -245,28 +241,24 @@ int main(int argc, char const ** argv)
               << "\n"
               << "Computing Coverage...";
 
-    seqan::BamStream bamStream(toCString(options.inBamPath));
-    if (!isGood(bamStream))
+    seqan::BamFileIn bamFile;
+    if (!open(bamFile, toCString(options.inBamPath)))
     {
         std::cerr << "Could not open " << options.inBamPath << "!\n";
         return 1;
     }
 
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFile))
     {
-        if (readRecord(record, bamStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read record from BAM file!\n";
-            return 1;
-        }
+        readRecord(record, bamFile);
 
         if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan::BamAlignmentRecord::INVALID_REFID)
             continue;  // Skip these records.
 
         int contigId = 0;
-        seqan::CharString const & contigName = nameStore(bamStream.bamIOContext)[record.rID];
-        if (!getIdByName(faiIndex, contigName, contigId))
+        seqan::CharString const & contigName = nameStore(context(bamFile))[record.rID];
+        if (!getIdByName(contigId, faiIndex, contigName))
         {
             std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
             return 1;
