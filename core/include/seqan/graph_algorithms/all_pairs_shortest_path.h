@@ -62,100 +62,100 @@ namespace seqan {
 template <typename TSpec, typename TPredecessor, typename TVertexDescriptor>
 inline void
 _printAllPairsShortestPath(Graph<TSpec> const& g,
-                           TPredecessor& predecessor, 
+                           TPredecessor& predecessor,
                            TVertexDescriptor const i,
                            TVertexDescriptor const j)
 {
-	typedef typename Size<TPredecessor>::Type TSize;
-	TSize len = getIdUpperBound(g.data_id_managerV);
-	if (i==j) {
-		std::cout << i;
-	} else if (getValue(predecessor, i*len+j) == getNil<typename VertexDescriptor<Graph<TSpec> >::Type>()) {
-		std::cout << "No path from " << i << " to " << j << " exists.";
-	} else {
-		_printAllPairsShortestPath(g,predecessor, i, (TVertexDescriptor) getValue(predecessor, i*len+j));
-		std::cout << "," << j;
-	}
+    typedef typename Size<TPredecessor>::Type TSize;
+    TSize len = getIdUpperBound(g.data_id_managerV);
+    if (i==j) {
+        std::cout << i;
+    } else if (getValue(predecessor, i*len+j) == getNil<typename VertexDescriptor<Graph<TSpec> >::Type>()) {
+        std::cout << "No path from " << i << " to " << j << " exists.";
+    } else {
+        _printAllPairsShortestPath(g,predecessor, i, (TVertexDescriptor) getValue(predecessor, i*len+j));
+        std::cout << "," << j;
+    }
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSpec, typename TWeightMap, typename TMatrix, typename TPredecessor>
-void 
+void
 _initializeAllPairs(Graph<TSpec> const& g,
-						TWeightMap const& weight,
-						TMatrix& matrix,
-						TPredecessor& predecessor)
+                        TWeightMap const& weight,
+                        TMatrix& matrix,
+                        TPredecessor& predecessor)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-	typedef typename Size<TMatrix>::Type TSize;
-	typedef typename Value<TWeightMap>::Type TWeightVal;
-	typedef typename Value<TPredecessor>::Type TPredVal;
-	
-	// Create adjacency-like matrix
-	TSize len = getIdUpperBound(g.data_id_managerV);
-	resize(matrix, len * len);
-	resize(predecessor, len * len);
-	TWeightVal infWeight = _getInfinityDistance(weight);
-	TPredVal nilPred = getNil<TVertexDescriptor>();
-	for (TSize row=0;row < len;++row) {
-		for (TSize col=0;col < len;++col) {
-			if (row != col) assignValue(matrix, row*len + col, infWeight);
-			else assignValue(matrix, row*len + col, 0);
-			assignValue(predecessor, row*len + col, nilPred);
-		}
-	}
+    typedef Graph<TSpec> TGraph;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename Size<TMatrix>::Type TSize;
+    typedef typename Value<TWeightMap>::Type TWeightVal;
+    typedef typename Value<TPredecessor>::Type TPredVal;
 
-	// Include edge weights and initial predecessors
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		TVertexDescriptor u = getValue(it);
-		TOutEdgeIterator itout(g, u);
-		for(;!atEnd(itout);++itout) {
-			TVertexDescriptor v = targetVertex(g,getValue(itout));
-			assignValue(matrix, u*len + v, getProperty(weight, getValue(itout)));
-			assignValue(predecessor, u*len + v, u);
-		}
-	}
+    // Create adjacency-like matrix
+    TSize len = getIdUpperBound(g.data_id_managerV);
+    resize(matrix, len * len);
+    resize(predecessor, len * len);
+    TWeightVal infWeight = _getInfinityDistance(weight);
+    TPredVal nilPred = getNil<TVertexDescriptor>();
+    for (TSize row=0;row < len;++row) {
+        for (TSize col=0;col < len;++col) {
+            if (row != col) assignValue(matrix, row*len + col, infWeight);
+            else assignValue(matrix, row*len + col, 0);
+            assignValue(predecessor, row*len + col, nilPred);
+        }
+    }
+
+    // Include edge weights and initial predecessors
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        TVertexDescriptor u = getValue(it);
+        TOutEdgeIterator itout(g, u);
+        for(;!atEnd(itout);++itout) {
+            TVertexDescriptor v = targetVertex(g,getValue(itout));
+            assignValue(matrix, u*len + v, getProperty(weight, getValue(itout)));
+            assignValue(predecessor, u*len + v, u);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TMatrix, typename TPredecessor, typename TInfDist>
-void 
+void
 _extendShortestPaths(TMatrix& local,
-					   TMatrix& w,
-					   TPredecessor& predecessor,
-					   TInfDist const infDist)
+                       TMatrix& w,
+                       TPredecessor& predecessor,
+                       TInfDist const infDist)
 {
-	typedef typename Value<TMatrix>::Type TMatrixVal;
-	typedef typename Value<TPredecessor>::Type TPredVal;
-	typedef typename Size<TMatrix>::Type TSize;
-	TMatrix oldLocal = local;
-	TPredecessor oldPredecessor = predecessor;
-	TSize len = (TSize) std::sqrt((double) length(oldLocal));
-	for(TSize i = 0; i<len;++i) {
-		for(TSize j = 0; j<len;++j) {
-			if (i==j) continue;
-			assignValue(local, i*len+j,infDist);
-			TPredVal ind = 0;
-			for(TSize k = 0; k<len;++k) {
-				TMatrixVal min1 = getValue(local, i*len+j);
-				TMatrixVal min2 = getValue(oldLocal, i*len+k) + getValue(w, k*len + j);
-				if (min2 < min1) {
-					assignValue(local, i*len+j,min2);
-					ind = k;
-				}
-			}
-			if (getValue(oldLocal, i*len+j) > getValue(local, i*len+j)) {
-				assignValue(predecessor, i*len+j,ind);
-			}
-		}
-	}
+    typedef typename Value<TMatrix>::Type TMatrixVal;
+    typedef typename Value<TPredecessor>::Type TPredVal;
+    typedef typename Size<TMatrix>::Type TSize;
+    TMatrix oldLocal = local;
+    TPredecessor oldPredecessor = predecessor;
+    TSize len = (TSize) std::sqrt((double) length(oldLocal));
+    for(TSize i = 0; i<len;++i) {
+        for(TSize j = 0; j<len;++j) {
+            if (i==j) continue;
+            assignValue(local, i*len+j,infDist);
+            TPredVal ind = 0;
+            for(TSize k = 0; k<len;++k) {
+                TMatrixVal min1 = getValue(local, i*len+j);
+                TMatrixVal min2 = getValue(oldLocal, i*len+k) + getValue(w, k*len + j);
+                if (min2 < min1) {
+                    assignValue(local, i*len+j,min2);
+                    ind = k;
+                }
+            }
+            if (getValue(oldLocal, i*len+j) > getValue(local, i*len+j)) {
+                assignValue(predecessor, i*len+j,ind);
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -193,19 +193,19 @@ void allPairsShortestPath(TMatrix & distMatrix,
                           Graph<TSpec> const & g,
                           TWeightMap const & weight)
 {
-	typedef typename Size<TMatrix>::Type TSize;
-	typedef typename Value<TWeightMap>::Type TWeightVal;
-	TWeightVal infWeight = _getInfinityDistance(weight);
+    typedef typename Size<TMatrix>::Type TSize;
+    typedef typename Value<TWeightMap>::Type TWeightVal;
+    TWeightVal infWeight = _getInfinityDistance(weight);
 
-	// Initialize first distance matrix
-	_initializeAllPairs(g,weight,distMatrix,predecessor);
+    // Initialize first distance matrix
+    _initializeAllPairs(g,weight,distMatrix,predecessor);
 
-	TSize len = (TSize) sqrt((double) length(distMatrix));
-	TMatrix local = distMatrix;
-	for(TSize m=2;m<len;++m) {
-		_extendShortestPaths(local,distMatrix,predecessor, infWeight);
-	}
-	distMatrix = local;
+    TSize len = (TSize) sqrt((double) length(distMatrix));
+    TMatrix local = distMatrix;
+    for(TSize m=2;m<len;++m) {
+        _extendShortestPaths(local,distMatrix,predecessor, infWeight);
+    }
+    distMatrix = local;
 }
 
 }  // namespace seqan

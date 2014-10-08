@@ -87,53 +87,53 @@ void primsAlgorithm(TPredecessorMap & predecessor,
                     TVertexDescriptor const source,
                     TWeightMap const & weight)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-	typedef typename Value<TPredecessorMap>::Type TPred;
-	typedef typename Value<TWeightMap>::Type TWeight;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename Value<TPredecessorMap>::Type TPred;
+    typedef typename Value<TWeightMap>::Type TWeight;
 
-	typedef ::std::pair<TWeight, TVertexDescriptor> TWeightVertexPair;
-	std::priority_queue<TWeightVertexPair, std::vector<TWeightVertexPair>, std::greater<TWeightVertexPair> > q;
-	
-	// Initialization
-	String<bool> tokenMap;
-	String<TWeight> key;
-	TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
-	TWeight infWeight = _getInfinityDistance(weight);
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,tokenMap);
-	resizeVertexMap(g,key);
+    typedef ::std::pair<TWeight, TVertexDescriptor> TWeightVertexPair;
+    std::priority_queue<TWeightVertexPair, std::vector<TWeightVertexPair>, std::greater<TWeightVertexPair> > q;
 
-	TVertexIterator it(g);
-	while(!atEnd(it)) {
-		TVertexDescriptor u = getValue(it);
-		if (u == source) q.push(std::make_pair(0, u));
-		assignProperty(predecessor, u, nilPred);
-		assignProperty(key, u, infWeight);
-		assignProperty(tokenMap, u, false);
-		goNext(it);
-	}
+    // Initialization
+    String<bool> tokenMap;
+    String<TWeight> key;
+    TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
+    TWeight infWeight = _getInfinityDistance(weight);
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,tokenMap);
+    resizeVertexMap(g,key);
 
-	assignProperty(key, source, 0);
-	while(!q.empty()) {
-		TVertexDescriptor u = q.top().second;
-		q.pop();
-		if (getProperty(tokenMap, u)) continue;
-		assignProperty(tokenMap, u, true);
-		TOutEdgeIterator itOut(g,u);
-		while(!atEnd(itOut)) {
-			TVertexDescriptor v = targetVertex(itOut);
-			TWeight w = getProperty(weight, getValue(itOut));
-			if ((!getProperty(tokenMap, v)) &&
-				(w < getProperty(key, v))) {
-					assignProperty(predecessor, v, u);
-					assignProperty(key, v, w);
-					q.push(std::make_pair(w, v));
-			}
-			goNext(itOut);
-		}
-	}
+    TVertexIterator it(g);
+    while(!atEnd(it)) {
+        TVertexDescriptor u = getValue(it);
+        if (u == source) q.push(std::make_pair(0, u));
+        assignProperty(predecessor, u, nilPred);
+        assignProperty(key, u, infWeight);
+        assignProperty(tokenMap, u, false);
+        goNext(it);
+    }
+
+    assignProperty(key, source, 0);
+    while(!q.empty()) {
+        TVertexDescriptor u = q.top().second;
+        q.pop();
+        if (getProperty(tokenMap, u)) continue;
+        assignProperty(tokenMap, u, true);
+        TOutEdgeIterator itOut(g,u);
+        while(!atEnd(itOut)) {
+            TVertexDescriptor v = targetVertex(itOut);
+            TWeight w = getProperty(weight, getValue(itOut));
+            if ((!getProperty(tokenMap, v)) &&
+                (w < getProperty(key, v))) {
+                    assignProperty(predecessor, v, u);
+                    assignProperty(key, v, w);
+                    q.push(std::make_pair(w, v));
+            }
+            goNext(itOut);
+        }
+    }
 }
 
 // TODO(holtgrew): Document.
@@ -143,50 +143,50 @@ void primsAlgorithmSpaceEfficient(TPredecessorMap & predecessor,
                                   TVertexDescriptor const source,
                                   TWeightMap const & weight)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-	typedef typename Value<TPredecessorMap>::Type TPred;
-	typedef typename Value<TWeightMap>::Type TWeight;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename Value<TPredecessorMap>::Type TPred;
+    typedef typename Value<TWeightMap>::Type TWeight;
 
-	// Set-up the priority queue
-	typedef Pair<TVertexDescriptor, TWeight> TKeyValue;
-	typedef HeapTree<TKeyValue, std::less<TWeight>, KeyedHeap<> > TKeyedHeap;
-	TKeyedHeap priorityQueue;
-	
-	// Initialization
-	String<bool> tokenMap;
-	TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
-	TWeight infWeight = _getInfinityDistance(weight);
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,tokenMap);
+    // Set-up the priority queue
+    typedef Pair<TVertexDescriptor, TWeight> TKeyValue;
+    typedef HeapTree<TKeyValue, std::less<TWeight>, KeyedHeap<> > TKeyedHeap;
+    TKeyedHeap priorityQueue;
 
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		TVertexDescriptor u = value(it);
-		heapInsert(priorityQueue, TKeyValue(u, infWeight));
-		assignProperty(predecessor, u, nilPred);
-		assignProperty(tokenMap, u, false);
-	}
-	heapChangeValue(priorityQueue, source, 0);
+    // Initialization
+    String<bool> tokenMap;
+    TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
+    TWeight infWeight = _getInfinityDistance(weight);
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,tokenMap);
 
-	// Iterate until queue is empty
-	while(!empty(priorityQueue)) {
-		TKeyValue kv = heapExtractRoot(priorityQueue);
-		TVertexDescriptor u = kv.i1;
-		assignProperty(tokenMap, u, true);
-		if (kv.i2 == infWeight) continue;
-		TOutEdgeIterator itOut(g,u);
-		for(;!atEnd(itOut);goNext(itOut)) {
-			TVertexDescriptor v = targetVertex(itOut);
-			if (getProperty(tokenMap, v)) continue;
-			TWeight w = getProperty(weight, getValue(itOut));
-			if (w < heapGetValue(priorityQueue, v)) {
-				assignProperty(predecessor, v, u);
-				heapChangeValue(priorityQueue, v, w);
-			}
-		}
-	}
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        TVertexDescriptor u = value(it);
+        heapInsert(priorityQueue, TKeyValue(u, infWeight));
+        assignProperty(predecessor, u, nilPred);
+        assignProperty(tokenMap, u, false);
+    }
+    heapChangeValue(priorityQueue, source, 0);
+
+    // Iterate until queue is empty
+    while(!empty(priorityQueue)) {
+        TKeyValue kv = heapExtractRoot(priorityQueue);
+        TVertexDescriptor u = kv.i1;
+        assignProperty(tokenMap, u, true);
+        if (kv.i2 == infWeight) continue;
+        TOutEdgeIterator itOut(g,u);
+        for(;!atEnd(itOut);goNext(itOut)) {
+            TVertexDescriptor v = targetVertex(itOut);
+            if (getProperty(tokenMap, v)) continue;
+            TWeight w = getProperty(weight, getValue(itOut));
+            if (w < heapGetValue(priorityQueue, v)) {
+                assignProperty(predecessor, v, u);
+                heapChangeValue(priorityQueue, v, w);
+            }
+        }
+    }
 }
 
 }  // namespace seqan

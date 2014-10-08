@@ -90,31 +90,31 @@ void floydWarshallAlgorithm(TMatrix & distMatrix,
                             Graph<TSpec> const & g,
                             TWeightMap const & weight)
 {
-	typedef typename Size<TMatrix>::Type TSize;
-	typedef typename Value<TMatrix>::Type TMatrixVal;
+    typedef typename Size<TMatrix>::Type TSize;
+    typedef typename Value<TMatrix>::Type TMatrixVal;
 
-	// Initialize first distance matrix
-	_initializeAllPairs(g,weight,distMatrix,predecessor);
+    // Initialize first distance matrix
+    _initializeAllPairs(g,weight,distMatrix,predecessor);
 
-	// Floyd-Warshall
-	TSize len = (TSize) std::sqrt((double) length(distMatrix));
-	TMatrix local = distMatrix;
-	for(TSize k=0;k<len;++k) {
-		for(TSize i=0;i<len;++i) {
-			for(TSize j=0;j<len;++j) {
-				TMatrixVal min1 = getValue(distMatrix, i*len+j);
-				TMatrixVal min2 = getValue(distMatrix, i*len+k) + getValue(distMatrix, k*len + j);
-				if (min2 < min1) {
-					assignValue(local, i*len+j,min2);
-					assignValue(predecessor, i*len+j,getValue(predecessor, k*len+j));
-				} else {
-					assignValue(local, i*len+j,min1);
-					assignValue(predecessor, i*len+j, getValue(predecessor, i*len+j));
-				}
-			}
-		}
-		distMatrix=local;
-	}
+    // Floyd-Warshall
+    TSize len = (TSize) std::sqrt((double) length(distMatrix));
+    TMatrix local = distMatrix;
+    for(TSize k=0;k<len;++k) {
+        for(TSize i=0;i<len;++i) {
+            for(TSize j=0;j<len;++j) {
+                TMatrixVal min1 = getValue(distMatrix, i*len+j);
+                TMatrixVal min2 = getValue(distMatrix, i*len+k) + getValue(distMatrix, k*len + j);
+                if (min2 < min1) {
+                    assignValue(local, i*len+j,min2);
+                    assignValue(predecessor, i*len+j,getValue(predecessor, k*len+j));
+                } else {
+                    assignValue(local, i*len+j,min1);
+                    assignValue(predecessor, i*len+j, getValue(predecessor, i*len+j));
+                }
+            }
+        }
+        distMatrix=local;
+    }
 }
 
 }  // namespace seqan

@@ -61,24 +61,24 @@ namespace seqan {
 
 /*!
  * @fn connectedComponents
- * 
+ *
  * @headerfile <seqan/graph_algorithms.h>
- * 
+ *
  * @brief Decomposes an undirected graph into its connected components.
- * 
+ *
  * @signature TSize connectedComponents(components, g);
- * 
+ *
  * @param[out] components
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id
  *               they are in the same component.
  * @param[in]  g An undirected graph. Types: Undirected Graph
- * 
+ *
  * @return TSize The number of components.
- * 
+ *
  * @section Examples
- * 
+ *
  * A simple example on how to use this function.
- * 
+ *
  * @code{.cpp}
  * // Build Input.
  * Graph<Undirected<> > graph;
@@ -89,10 +89,10 @@ namespace seqan {
  * addEdge(graph, 2, 4);
  * String<unsigned> components;
  * unsigned numComponents = 0;
- *  
+ *
  * // Call Algorithm.
  * numComponents = connectedComponents(g, components);
- *  
+ *
  * // Print Result.
  * std::cout << "Number of components: " << numComponents << std::endl;
  * std::cout << std::endl << "Vertex -> Component" << std::endl;
@@ -100,10 +100,10 @@ namespace seqan {
  *     std::cout << i << " -> " << components[i] << std::endl;
  * @endcode
  * The output now is:
- * 
+ *
  * @code{.console}
  * Number of components: 2
- *  
+ *
  * Vertex -> Component
  * 0 -> 0
  * 1 -> 0
