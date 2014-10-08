@@ -436,8 +436,23 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
     typedef typename TTraits::TContigSeqs           TContigSeqs;
     typedef typename Value<TContigSeqs>::Type       TContigSeq;
 
-    if (!open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE))
-        throw RuntimeError("Error while opening output file.");
+    bool opened = false;
+
+    if (empty(me.options.outputFile))
+    {
+//#if SEQAN_HAS_ZLIB
+//        if (options.bamFormat)
+//            opened = open(me.outputFile, std::cout, Bam(), OPEN_WRONLY);
+//        else
+//#endif
+            opened = open(me.outputFile, std::cout, Sam());
+    }
+    else
+    {
+        opened = open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE);
+    }
+
+    if (!opened) throw RuntimeError("Error while opening output file.");
 
     setNameStore(context(me.outputFile), me.contigs.names);
 
