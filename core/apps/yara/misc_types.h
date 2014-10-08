@@ -48,11 +48,11 @@ using namespace seqan;
 // String Spec
 // ----------------------------------------------------------------------------
 
-//#ifndef YARA_INDEXER
-//typedef MMap<>  YaraStringSpec;
-//#else
+#ifndef YARA_INDEXER
+typedef MMap<>  YaraStringSpec;
+#else
 typedef Alloc<> YaraStringSpec;
-//#endif
+#endif
 
 // ============================================================================
 // Index Types
