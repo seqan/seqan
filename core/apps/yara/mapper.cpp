@@ -116,19 +116,26 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pair read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
-    addOption(parser, ArgParseOption("vv", "vverbose", "Displays diagnostic output per batch of reads."));
+    addOption(parser, ArgParseOption("vv", "vverbose", "Displays extensive statistics for each batch of reads."));
 
     // Setup output options.
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
-                                     Default: write the file to standard output.",
+    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. Default: write the file to standard output.",
                                      ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
 
-//    addOption(parser, ArgParseOption("b", "bam", "Write to standard output in BAM format. Default: write in SAM format. \
-//                                                  Note: when specifying the option --output-file, the output format is \
-//                                                  implicitly provided by the filename extension."));
+    addOption(parser, ArgParseOption("f", "output-format", "Specify an output format. Note: when specifying the option \
+                                                            --output-file, the output format is taken from the filename \
+                                                            extension.", ArgParseOption::STRING));
+    std::vector<std::string> extensions = BamFileOut::getFileFormatExtensions();
+    forEach(extensions, [](std::string & extension) { extension.erase(0, 1); });
+    setValidValues(parser, "output-format", extensions);
+    setDefaultValue(parser, "output-format", "sam");
+
+#if SEQAN_HAS_ZLIB
+    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off the compression of BAM written to standard output."));
+#endif
 
     addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
                                      ArgParseOption::STRING));
@@ -137,7 +144,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("nh", "no-header", "Do not output the SAM/BAM header. Default: output the header."));
 
     addOption(parser, ArgParseOption("os", "output-secondary", "Output secondary alignments as separate SAM/BAM records. \
-                                                                Default: output secondary alignments inside the XA tag."));
+                                                                Default: output secondary alignments inside the XA tag \
+                                                                of the primary alignment."));
 
     addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
                                                              Read Alignment BEnchMArk (RABEMA)."));
@@ -196,7 +204,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "threads", options.threadsCount);
 #endif
 
-    addOption(parser, ArgParseOption("r", "reads-batch", "Specify the number of reads to process in one batch.",
+    addOption(parser, ArgParseOption("rb", "reads-batch", "Specify the number of reads to process in one batch.",
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "reads-batch", "1000");
     setMaxValue(parser, "reads-batch", "1000000");
@@ -236,12 +244,20 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output file.
     getOptionValue(options.outputFile, parser, "output-file");
-//    if (!isSet(parser, "output-file"))
-//    {
-//        options.outputFile = trimExtension(options.readsFile.i1);
-//        appendValue(options.outputFile, '.');
-//        append(options.outputFile, "sam");
-//    }
+
+    // Parse output format.
+    CharString outputFormat;
+    if (getOptionValue(outputFormat, parser, "output-format"))
+    {
+        insert(outputFormat, 0, ".");
+        guessFormatFromFilename(outputFormat, options.outputFormat);
+    }
+    else
+        assign(options.outputFormat, Sam());
+
+#if SEQAN_HAS_ZLIB
+    getOptionValue(options.uncompressedBam, parser, "uncompressed-bam");
+#endif
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
@@ -250,12 +266,12 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.
-    unsigned errorRate;
+        unsigned errorRate;
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
     unsigned strataRate;
-    getOptionValue(strataRate, parser, "strata-rate");
+    if (getOptionValue(strataRate, parser, "strata-rate"))
         options.strataRate = strataRate / 100.0;
 
     if (isSet(parser, "all"))
